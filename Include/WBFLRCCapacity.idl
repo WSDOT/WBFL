@@ -118,6 +118,8 @@ library WBFLRCCapacity
       [propget,helpcontext(IDH_IStressStrain_ModulusOfElasticity),helpstring("propety ModulusOfElasticity")] HRESULT ModulusOfElasticity([out,retval]Float64* pE);
 
       /// Computes stress for the specified level of strain
+      ///
+      /// Return S_FALSE if the strain exceeds the strain limits of the material
       [helpcontext(IDH_IStressStrain_ComputeStress),helpstring("method ComputeStress")] HRESULT ComputeStress([in] Float64 strain,[out,retval]Float64* pVal);
 
       /// Returns the range of strain values applicable to the model
@@ -1208,16 +1210,29 @@ library WBFLRCCapacity
 	interface IGeneralSection : IUnknown
 	{
       /// Adds a shape, it's constituative models, and initial strain state to the section model
+      ///
+      /// A linear variation of the initial strain is assumed over the depth of the shape.
+      /// Incremental strains due to imposed section curvature are divided by Le to get the net strain.
 		[helpcontext(IDH_IGeneralSection_AddShape),helpstring("method AddShape")] HRESULT AddShape(
+         [in]BSTR bstrName, ///< Name that identifies the shape (eg Deck, Girder, Rebar, etc)
          [in]IShape* pShape, ///< The shape of a component of the cross section
          [in]IStressStrain* pfgMaterial, ///< The foreground material constituative model
          [in]IStressStrain* pbgMaterial, ///< The background material constituative model
-         [in]Float64 ei, ///< Initial strain level (typically the initial strain in a pretensioned reinforcement member)
-         [in]Float64 Le ///< Strain elongation length (typically 0.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
+         [in]IPlane3d* pInitialStrain, ///< Initial strain. This parameter can be set to Nothing (nullptr) if there is not initial strains
+         [in]Float64 Le, ///< Strain elongation length (typically 1.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
+         [in]VARIANT_BOOL vbIsPrimaryShape ///< Indicates if this is the primary shape of the section. Initial strains of the primary shape are combined with the incremental solution strains to form the solution strain plane. The last shape to be designated as the primary shape will be considered the one and only primary shape
       );
 
       /// Number of shapes in the cross setion
 		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
+
+      /// Index of the primary shape
+      [propput, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]IndexType shapeIdx);
+      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([out, retval]IndexType* pShapeIdx);
+
+      /// Name of the sname
+      [propput, helpstring("property Name")] HRESULT Name([in]CollectionIndexType shapeIdx, [in]BSTR bstrName);
+      [propget, helpstring("property Name")] HRESULT Name([in]CollectionIndexType shapeIdx, [out, retval]BSTR* pbstrName);
 
       /// The shape of an element of the cross section
 		[propget,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[out,retval]IShape** pShape);
@@ -1235,9 +1250,9 @@ library WBFLRCCapacity
       [propget,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
 		[propputref,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
 
-      /// Initial strain level (typically the initial strain in a pretensioned reinforcement member)
-      [propget, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [out, retval]Float64* ei);
-      [propput, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [in]Float64 ei);
+      /// Initial strain at the top of the shape
+      [propget, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [out, retval]IPlane3d** pStrainPlane);
+      [propputref, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [in]IPlane3d* strainPlane);
 
       /// Strain elongation length (typically 0.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
       [propget, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElongationLength")] HRESULT ElongationLength([in]CollectionIndexType shapeIdx, [out, retval]Float64* Le);
@@ -1258,11 +1273,14 @@ library WBFLRCCapacity
       /// Initilizes the slice with its properties.
 		[helpcontext(IDH_IGeneralSectionSlice_InitSlice),helpstring("method InitSlice")] 
       HRESULT InitSlice(
+         [in]IndexType shapeIdx, ///< Index of the general section shape from which this slice is cut
          [in]IShape* pShape, ///< Shape of the slice
          [in]Float64 A, ///< Slice area
          [in]Float64 cgX, ///< Horizontal location of the slice centroid
          [in]Float64 cgY, ///< Vertical location of the slice centroid
-         [in]Float64 strain, ///< Strain at the slice centroid
+         [in]Float64 initial_strain, ///< Initial strain at CG of slice
+         [in]Float64 delta_strain, ///< Strain increment
+         [in]Float64 total_strain, ///< Total strain at CG of slice
          [in]Float64 fgStress, ///< Foreground stress at the slice centroid
          [in]Float64 bgStress, ///< Background stress at the slice centroid
          [in]IStressStrain* pfgMaterial, ///< Foreground material stress-strain model
@@ -1275,14 +1293,23 @@ library WBFLRCCapacity
       /// Location of slice centroid
 		[propget,helpcontext(IDH_IGeneralSectionSlice_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pCG);
 
-      /// Strain at the slice centroid
-		[propget,helpcontext(IDH_IGeneralSectionSlice_Strain),helpstring("property Strain")] HRESULT Strain([out,retval]Float64* pStrain);
+      /// Initial strain at CG of slice
+      [propget, helpcontext(IDH_IGeneralSectionSlice_Strain), helpstring("property InitialStrain")] HRESULT InitialStrain([out, retval]Float64* pStrain);
+
+      /// Strain increment at CG of slice
+      [propget, helpcontext(IDH_IGeneralSectionSlice_Strain), helpstring("property IncrementalStrain")] HRESULT IncrementalStrain([out, retval]Float64* pStrain);
+
+      /// Total strain at CG of slice
+		[propget,helpcontext(IDH_IGeneralSectionSlice_Strain),helpstring("property TotalStrain")] HRESULT TotalStrain([out,retval]Float64* pStrain);
 
       /// Foreground stress at the slice centroid
 		[propget,helpcontext(IDH_IGeneralSectionSlice_ForegroundStress),helpstring("property ForegroundStress")] HRESULT ForegroundStress([out,retval]Float64* pfgStress);
 
       /// Background stress at the slice centroid
       [propget,helpcontext(IDH_IGeneralSectionSlice_BackgroundStress),helpstring("property BackgroundStress")] HRESULT BackgroundStress([out,retval]Float64* pbgStress);
+
+      /// Index of the general section shape from which this slice is taken
+      [propget, helpstring("property ShapeIndex")] HRESULT ShapeIndex([out, retval]IndexType* pShapeIdx);
 
       /// Shape of the slice
       [propget,helpcontext(IDH_IGeneralSectionSlice_Shape),helpstring("property Shape")] HRESULT Shape([out,retval]IShape** pShape);
@@ -1351,6 +1378,9 @@ library WBFLRCCapacity
 
       /// Returns a slice
 		[propget,helpcontext(IDH_IGeneralSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] CollectionIndexType sliceIdx,[out,retval]IGeneralSectionSlice** pSlice);
+
+      /// Returns a collection of IGeneralSectionSlice objects for a specific shape in the IGeneralSection model
+      [helpstring("FindSlices")] HRESULT FindSlices([in]IndexType shapeIdx, [out, retval]IUnkArray** ppSlices);
 	};
 
    /// Interface for objects performing biaxial fiber based general section analysis
@@ -1384,7 +1414,7 @@ library WBFLRCCapacity
       /// Analyses the section for a given state of strain
 		[helpcontext(IDH_IGeneralSectionSolver_Solve),helpstring("method Solve")] 
       HRESULT Solve(
-         [in] IPlane3d* strainPlane, ///< Plane3d object representing the state of strain
+         [in] IPlane3d* incrementalStrainPlane, ///< Plane3d object representing the state of incremental strain. The incremental strain is added to the initial strain defined in the general section model resulting in the total strain. The total strain is input to the IStressStrain objects to compute stress.
          [out,retval]IGeneralSectionSolution** solution ///< The solution to the analysis
       );
 	};
@@ -1582,12 +1612,15 @@ library WBFLRCCapacity
       /// At equilibrium T + C = 0 so C = -T. Assume the point (0,0) is at the bottom of the girder. The location of the resultant tension and compression forces are at Yc and Yt, respectively. 
       /// Yc > 0 and Yt > 0 and Yc > Yt. Therefore, Mn = C*Yc + T*Yt = -T*Yc + T*Yt = T*(Yt - Yc). 
       /// With Yc > Yt, Yt - Yc < 0 and T > 0. The product of a positive number and a negative number is negative. "Negative moments" have positive values.
+      ///
+      /// This analysis adds the initial strains to an incremental strain plane to determine the total state of strains. The total strain at the centroid of each slice is
+      /// used to compute the stress and force contribution of the slice. The incremental strain plane is varied until the equilibrium state is found.
       [helpcontext(IDH_IMomentCapacitySolver_Solve),helpstring("method Solve")]
       HRESULT Solve(
          [in]Float64 Fz, ///< Externally applied axial force.
          [in] Float64 angle, ///< Direction of the neutral axis (radians), measured counter-clockwise from the X axis
-         [in] Float64 k_or_ec, ///< Curvature of the section if solutionMethod is smFixedCurvature, other strain at the extreme compression fiber when solutionMethod is smFixedCompressionStrain
-         [in] Float64 strainLocation, ///< Distance from a line parallel to the neutral axis passing through (0,0) to the location where strain is specified by k_or_ec. Distance is greater than zero whoen the strain specified by k_or_ec is on the left side of this line. This parameter is only used if solutionMethod is smFixedStrain.
+         [in] Float64 k_or_ec, ///< Curvature of the section if solutionMethod is smFixedCurvature, otherwise the strain increment at the extreme compression or tension fiber or at a specified elevation in the section dependon solutionMethod.
+         [in] Float64 strainLocation, ///< Distance from a line parallel to the neutral axis passing through (0,0) to the location where strain is specified by k_or_ec. Distance is greater than zero when the strain specified by k_or_ec is on the left side of this line. This parameter is only used if solutionMethod is smFixedStrain.
          [in] SolutionMethod solutionMethod, ///< Indicates the method of solution.
          [out,retval] IMomentCapacitySolution** solution ///< The solution of the moment capacity analysis
       );
@@ -2045,6 +2078,20 @@ library WBFLRCCapacity
       [helpstring("GetConcreteParameters")] HRESULT GetConcreteParameters([out]Float64* pfr, [out]Float64* pfcc, [out]Float64* pecc);
 	};
 
+   /// Interface for objects implementing the modified Ramberg-Osgood function for stress-strain model of prestressing reinforcement
+   ///
+   /// \f$ f_{ps} = E_p \epsilon_p \left[ A + \frac{1-A}{\left[1+(B \epsilon_p)^C \right]^\frac{1}{C}} \right] \f$
+   [
+      uuid(829E3A8E-F73F-46C7-BDB5-2CA575A8F5BE),
+      oleautomation,
+      helpstring("IRambergOsgoodModel Interface"),
+      pointer_default(unique)
+   ]
+   interface IRambergOsgoodModel : IUnknown
+   {
+      [helpstring("method Init")] HRESULT Init([in]Float64 A, [in]Float64 B, [in]Float64 C, [in]Float64 Eps, [in]Float64 fpu,[in]Float64 minStrain,[in]Float64 maxStrain);
+   };
+
    /// Interface for objects implementing the Power Formula stress-strain model for prestress reinforcement
    ///
    /// Grade 270 Low Relaxation \f$ f_{ps} = \epsilon_{ps}\left[887 + \frac{27613}{(1+(112.4\epsilon_{ps})^{7.36})^{\frac{1}{7.36}}}\right] \le 270 ksi \f$
@@ -2270,6 +2317,19 @@ library WBFLRCCapacity
       interface IStressStrain;
       interface ISupportUnitServer;
       interface IStructuredStorage2;
+   };
+
+   /// Material model for pretensioning strands based on the modified Ramberg-Osgood model
+   ///
+   /// Implements the IRambergOsgoodModel, IStressStrain, and ISupportUnitServer interfaces
+   [
+      uuid(FD96764F-8857-4346-AB8A-144636A54A87),
+      helpstring("RambergOsgoodModel Class")
+   ]
+   coclass RambergOsgoodModel
+   {
+      [default] interface IRambergOsgoodModel;
+      interface IStressStrain;
    };
 
    /// Material model for steel pretensioning strands based on the PowerFormula.

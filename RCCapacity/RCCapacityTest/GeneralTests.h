@@ -27,5 +27,6 @@
 #define INCLUDED_GENERALTESTS_H_
 
 void TestISupportUnitServer(IUnknown* punk);
+void DumpSolution(IGeneralSection* section, IMomentCapacitySolution* solution);
 
 #endif // INCLUDED_GENERALTESTS_H_

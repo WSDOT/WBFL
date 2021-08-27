@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "WBFLRCCapacity.h"
 #include "GeneralSectionSlice.h"
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -61,13 +62,17 @@ STDMETHODIMP CGeneralSectionSlice::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // IGeneralSectionSlice
-STDMETHODIMP CGeneralSectionSlice::InitSlice(IShape* pShape,Float64 A,Float64 cgX,Float64 cgY,Float64 strain,Float64 fgStress,Float64 bgStress,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial)
+STDMETHODIMP CGeneralSectionSlice::InitSlice(IndexType shapeIdx,IShape* pShape,Float64 A,Float64 cgX,Float64 cgY,Float64 initialStrain, Float64 incrementalStrain, Float64 totalStrain,Float64 fgStress,Float64 bgStress,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial)
 {
+   ATLASSERT(::IsEqual(initialStrain + incrementalStrain, totalStrain));
+   m_ShapeIdx = shapeIdx;
    m_Shape = pShape;
    m_Area = A;
    m_cgX = cgX;
    m_cgY = cgY;
-   m_Strain = strain;
+   m_InitialStrain = initialStrain;
+   m_IncrementalStrain = incrementalStrain;
+   m_TotalStrain = totalStrain;
    m_fgStress = fgStress;
    m_bgStress = bgStress;
    m_fgMaterial = pfgMaterial;
@@ -93,10 +98,24 @@ STDMETHODIMP CGeneralSectionSlice::get_CG(IPoint2d** pCG)
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSectionSlice::get_Strain(Float64* pStrain)
+STDMETHODIMP CGeneralSectionSlice::get_InitialStrain(Float64* pStrain)
 {
    CHECK_RETVAL(pStrain);
-   *pStrain = m_Strain;
+   *pStrain = m_InitialStrain;
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSectionSlice::get_IncrementalStrain(Float64* pStrain)
+{
+   CHECK_RETVAL(pStrain);
+   *pStrain = m_IncrementalStrain;
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSectionSlice::get_TotalStrain(Float64* pStrain)
+{
+   CHECK_RETVAL(pStrain);
+   *pStrain = m_TotalStrain;
    return S_OK;
 }
 
@@ -139,5 +158,12 @@ STDMETHODIMP CGeneralSectionSlice::get_Shape(IShape** pShape)
    CHECK_RETOBJ(pShape);
    (*pShape) = m_Shape;
    (*pShape)->AddRef();
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSectionSlice::get_ShapeIndex(IndexType* pShapeIdx)
+{
+   CHECK_RETVAL(pShapeIdx);
+   *pShapeIdx = m_ShapeIdx;
    return S_OK;
 }

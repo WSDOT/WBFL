@@ -40,6 +40,7 @@ static char THIS_FILE[] = __FILE__;
 // CGeneralSection
 HRESULT CGeneralSection::FinalConstruct()
 {
+   m_PrimaryShapeIdx = INVALID_INDEX;
    return S_OK;
 }
 
@@ -64,7 +65,7 @@ STDMETHODIMP CGeneralSection::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // IGeneralSection
-STDMETHODIMP CGeneralSection::AddShape(IShape* pShape,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial,Float64 ei,Float64 Le)
+STDMETHODIMP CGeneralSection::AddShape(BSTR bstrName,IShape* pShape,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial,IPlane3d* initialStrain,Float64 Le,VARIANT_BOOL vbPrimaryShape)
 {
    if ( pShape == nullptr )
       return E_INVALIDARG;
@@ -74,7 +75,16 @@ STDMETHODIMP CGeneralSection::AddShape(IShape* pShape,IStressStrain* pfgMaterial
 
    ATLASSERT(1.0 <= Le); // Le should be 1 for unit or greater...
 
-   m_SectionItems.emplace_back(pShape,pfgMaterial,pbgMaterial,ei,Le);
+   m_SectionItems.emplace_back(bstrName,pShape,pfgMaterial,pbgMaterial,initialStrain,Le);
+   if (m_SectionItems.back().initialStrain == nullptr)
+   {
+      m_SectionItems.back().initialStrain.CoCreateInstance(CLSID_Plane3d);
+   }
+
+   if (vbPrimaryShape == VARIANT_TRUE)
+   {
+      m_PrimaryShapeIdx = m_SectionItems.size() - 1;
+   }
 
    return S_OK;
 }
@@ -84,6 +94,44 @@ STDMETHODIMP CGeneralSection::get_ShapeCount(CollectionIndexType* nShapes)
    CHECK_RETVAL(nShapes);
    *nShapes = m_SectionItems.size();
    return S_OK;
+}
+
+STDMETHODIMP CGeneralSection::put_PrimaryShape(IndexType shapeIdx)
+{
+   if (m_SectionItems.size() <= shapeIdx)
+      return E_INVALIDARG;
+
+   m_PrimaryShapeIdx = shapeIdx;
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSection::get_PrimaryShape(IndexType* pShapeIdx)
+{
+   CHECK_RETVAL(pShapeIdx);
+   ATLASSERT(m_PrimaryShapeIdx != INVALID_INDEX); // did you forget to designate one shape as the primary???
+   *pShapeIdx = m_PrimaryShapeIdx;
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSection::put_Name(CollectionIndexType shapeIdx, BSTR bstrName)
+{
+   CHECK_IN(bstrName);
+
+   if (m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX)
+      return E_INVALIDARG;
+
+   m_SectionItems[shapeIdx].bstrName = bstrName;
+
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSection::get_Name(CollectionIndexType shapeIdx, BSTR* pbstrName)
+{
+   CHECK_RETSTRING(pbstrName);
+   if (m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX)
+      return E_INVALIDARG;
+
+   return m_SectionItems[shapeIdx].bstrName.CopyTo(pbstrName);
 }
 
 STDMETHODIMP CGeneralSection::get_Shape(CollectionIndexType shapeIdx,IShape** pShape)
@@ -163,23 +211,25 @@ STDMETHODIMP CGeneralSection::putref_BackgroundMaterial(CollectionIndexType shap
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::get_InitialStrain(CollectionIndexType shapeIdx,Float64* ei)
+STDMETHODIMP CGeneralSection::get_InitialStrain(CollectionIndexType shapeIdx,IPlane3d** pStrainPlane)
 {
-   CHECK_RETVAL(ei);
+   CHECK_RETOBJ(pStrainPlane);
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
-   *ei = m_SectionItems[shapeIdx].ei;
-
-   return S_OK;
+   return m_SectionItems[shapeIdx].initialStrain.CopyTo(pStrainPlane);
 }
 
-STDMETHODIMP CGeneralSection::put_InitialStrain(CollectionIndexType shapeIdx,Float64 ei)
+STDMETHODIMP CGeneralSection::putref_InitialStrain(CollectionIndexType shapeIdx,IPlane3d* pStrainPlane)
 {
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
-   m_SectionItems[shapeIdx].ei = ei;
+   m_SectionItems[shapeIdx].initialStrain = pStrainPlane;
+   if (m_SectionItems[shapeIdx].initialStrain == nullptr)
+   {
+      m_SectionItems[shapeIdx].initialStrain.CoCreateInstance(CLSID_Plane3d);
+   }
 
    return S_OK;
 }
@@ -212,18 +262,7 @@ STDMETHODIMP CGeneralSection::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("GeneralSection"),2.0);
-
-   pSave->put_Property(CComBSTR("SectionItemCount"),CComVariant(m_SectionItems.size()));
-
-   for ( auto& item : m_SectionItems )
-   {
-      pSave->put_Property(CComBSTR("Shape"),CComVariant(item.shape));
-      pSave->put_Property(CComBSTR("FGMaterial"),item.fgMaterial ? CComVariant(item.fgMaterial) : 0);
-      pSave->put_Property(CComBSTR("BGMaterial"),item.bgMaterial ? CComVariant(item.bgMaterial) : 0);
-      pSave->put_Property(CComBSTR("InitialStrain"), CComVariant(item.ei));
-      pSave->put_Property(CComBSTR("ElongationLength"), CComVariant(item.Le)); // added in vesion 2
-   }
+   pSave->BeginUnit(CComBSTR("GeneralSection"),1.0);
 
    pSave->EndUnit();
 
@@ -237,65 +276,6 @@ STDMETHODIMP CGeneralSection::Load(IStructuredLoad2* pLoad)
    CComVariant var;
    pLoad->BeginUnit(CComBSTR("GeneralSection"));
 
-   Float64 version;
-   pLoad->get_Version(&version);
-
-   m_SectionItems.clear();
-
-   CollectionIndexType count;
-   if ( FAILED(pLoad->get_Property(CComBSTR("SectionItemCount"), &var) ) )
-      return STRLOAD_E_INVALIDFORMAT;
-   count = var.lVal;
-
-   for ( CollectionIndexType index = 0; index < count; index++ )
-   {
-      SectionItem item;
-
-      if (FAILED(pLoad->get_Property(CComBSTR("Shape"), &var)))
-      {
-         return STRLOAD_E_INVALIDFORMAT;
-      }
-      var.punkVal->QueryInterface(&item.shape);
-
-      if (FAILED(pLoad->get_Property(CComBSTR("FGMaterial"), &var)))
-      {
-         return STRLOAD_E_INVALIDFORMAT;
-      }
-
-      if ( var.punkVal )
-      {
-         var.punkVal->QueryInterface(&item.fgMaterial);
-      }
-
-      if (FAILED(pLoad->get_Property(CComBSTR("BGMaterial"), &var)))
-      {
-         return STRLOAD_E_INVALIDFORMAT;
-      }
-
-      if ( var.punkVal )
-      {
-         var.punkVal->QueryInterface(&item.bgMaterial);
-      }
-
-      if (FAILED(pLoad->get_Property(CComBSTR("InitialStrain"), &var)))
-      {
-         return STRLOAD_E_INVALIDFORMAT;
-      }
-      item.ei = var.dblVal;
-
-      if (1 < version)
-      {
-         // added in version 2
-
-         if (FAILED(pLoad->get_Property(CComBSTR("ElongationLength"), &var)))
-         {
-            return STRLOAD_E_INVALIDFORMAT;
-         }
-         item.Le = var.dblVal;
-      }
-
-      m_SectionItems.push_back(item);
-   }
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);

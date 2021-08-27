@@ -92,6 +92,8 @@ public:
 
    STDMETHOD(get_SliceCount)(/*[out,retval]*/CollectionIndexType* nSlices) override;
 	STDMETHOD(get_Slice)(/*[in]*/ CollectionIndexType sliceIdx,/*[out,retval]*/IGeneralSectionSlice** pSlice) override;
+
+	STDMETHOD(FindSlices)(/*[in]*/IndexType shapeIdx, /*[out, retval]*/IUnkArray** ppSlices) override;
 };
 
 #endif //__GeneralSectionSolution_H_

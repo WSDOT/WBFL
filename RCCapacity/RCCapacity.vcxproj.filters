@@ -136,6 +136,9 @@
     <ClCompile Include="UHPConcrete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RambergOsgoodModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AxialInteractionCurveSolver.h">
@@ -273,6 +276,9 @@
     <ClInclude Include="UHPConcrete.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RambergOsgoodModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLRCCapacity.idl" />
@@ -403,6 +409,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="UHPConcrete.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RambergOsgoodModel.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

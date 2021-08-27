@@ -559,7 +559,7 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    if ( solution == nullptr )
       return E_INVALIDARG;
 
-   HRESULT hr;
+   HRESULT hr = S_OK;
 
    // solve with method of false position (aka regula falsi method)
    // http://en.wikipedia.org/wiki/False_position_method
@@ -583,6 +583,8 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
       {
          break; // converged
       }
+
+      hr = S_OK; // need to reset for each iteration - there may have been an overstrained material in a previous interation but the solution was incorrect. don't want to carry that bad state into this iteration
 
       eo_r = (Fz_upper*eo_lower - Fz_lower*eo_upper) / ( Fz_upper - Fz_lower );
       UpdateStrainPlane(angle,k_or_ec,strainLocation,solutionMethod,eo_r);
@@ -651,12 +653,55 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    m_GeneralSolution->get_CompressionResultantLocation(&cgC);
    m_GeneralSolution->get_TensionResultantLocation(&cgT);
 
-   CComPtr<IPlane3d> strainPlane;
-   m_StrainPlane->Clone(&strainPlane);
+   //CComPtr<IPlane3d> strainPlane;
+   //m_StrainPlane->Clone(&strainPlane);
+
+   // build the total strain plane by "Adding" the initial strians with the incremental solution strain
+   //
+   
+   // Get the incremental strain plane
+   CComPtr<IPlane3d> incremental_strain_plane;
+   m_StrainPlane->Clone(&incremental_strain_plane);
+
+   // get the initial strain plane for the primary shape
+   CComPtr<IGeneralSection> section;
+   m_GeneralSolver->get_Section(&section);
+   IndexType primaryShapeIdx;
+   section->get_PrimaryShape(&primaryShapeIdx);
+   CComPtr<IPlane3d> initial_strain_plane;
+   section->get_InitialStrain(primaryShapeIdx, &initial_strain_plane);
+
+   // get three points on the initial strain plane
+   CComPtr<IPoint3d> A1, A2, A3;
+   A1.CoCreateInstance(CLSID_Point3d);
+   A2.CoCreateInstance(CLSID_Point3d);
+   A3.CoCreateInstance(CLSID_Point3d);
+   Float64 Z;
+   initial_strain_plane->GetZ(-100, 100, &Z);
+   A1->Move(-100, 100, Z);
+   initial_strain_plane->GetZ(100, 100, &Z);
+   A2->Move(100, 100, Z);
+   initial_strain_plane->GetZ(-100, -100, &Z);
+   A3->Move(-100, -100, Z);
+
+   // get the incremental strain on these three points
+   // and offset the initial strain by the increment strain
+   incremental_strain_plane->GetZ(-100, 100, &Z);
+   A1->Offset(0, 0, Z);
+   incremental_strain_plane->GetZ(100, 100, &Z);
+   A2->Offset(0, 0, Z);
+   incremental_strain_plane->GetZ(-100, -100, &Z);
+   A3->Offset(0, 0, Z);
+
+   // create a new plane... the total strain plane through these three points
+   CComPtr<IPlane3d> total_strain_plane;
+   total_strain_plane.CoCreateInstance(CLSID_Plane3d);
+   total_strain_plane->ThroughPoints(A1, A2, A3);
 
    CComPtr<ILine2d> neutralAxis;
    m_GeneralSolution->get_NeutralAxis(&neutralAxis);
-   (*solution)->InitSolution(Pz,Mx,My,strainPlane,neutralAxis,cgC,C,cgT,T,m_GeneralSolution);
+   //(*solution)->InitSolution(Pz,Mx,My,strainPlane,neutralAxis,cgC,C,cgT,T,m_GeneralSolution);
+   (*solution)->InitSolution(Pz, Mx, My, total_strain_plane, neutralAxis, cgC, C, cgT, T, m_GeneralSolution);
    m_GeneralSolution = 0;
 
    if (hr == S_FALSE)

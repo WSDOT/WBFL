@@ -222,7 +222,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
          // because the cross section is not a simple rectangle, as suggested in LRFD C5.9.2.3.1b, we have to numerically
       // integrate the stress over the cross section. The WBFL::RCCapacity library, General Section service, has this capability
       // however it uses a strain plane and a stress-strain model. We can fake it out be using the stress plane as the strain
-      // plane and creating a stress-strain model that simplye coverts the "strain" to a stress by returning the provided "strain"
+         // plane and creating a stress-strain model that simply coverts the "strain" to a stress by returning the provided "strain"
       // See CTensionStressPlaneModel for more details.
          CComObject<CTensionStressPlaneModel>* pMaterialModel;
          CComObject<CTensionStressPlaneModel>::CreateInstance(&pMaterialModel);
@@ -234,7 +234,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
          generalSection.CoCreateInstance(CLSID_GeneralSection);
 
          //generalSection->AddShape(pRequirements->shape, ssModel, nullptr, 0, 1.0); // no need to use full shape when we have the tension side shape
-         generalSection->AddShape(pRequirements->tensionArea, ssModel, nullptr, 0, 1.0); // use the tension side shape
+         generalSection->AddShape(CComBSTR(""),pRequirements->tensionArea, ssModel, nullptr, nullptr, 1.0, VARIANT_TRUE); // use the tension side shape
 
          CComPtr<IGeneralSectionSolver> solver;
          solver.CoCreateInstance(CLSID_GeneralSectionSolver);

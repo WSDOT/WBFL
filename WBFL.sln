@@ -25,6 +25,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenericBridgeTest", "Generi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGenericBridgeTools", "GenericBridgeTools\GenericBridgeTools.vcxproj", "{3959272E-B5D9-4404-BE07-3235109FD1FC}"
 	ProjectSection(ProjectDependencies) = postProject
+		{49CF0439-37D0-434B-A40C-629932B9A74B} = {49CF0439-37D0-434B-A40C-629932B9A74B}
 		{262CE7A1-072B-4578-B45C-75546FA4C384} = {262CE7A1-072B-4578-B45C-75546FA4C384}
 	EndProjectSection
 EndProject

@@ -74,22 +74,24 @@ private:
 
    typedef struct SHAPEINFO
    {
+      IndexType ShapeIdx; // index of the shape in the general section model
       CComPtr<IShape> Shape;
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
-      Float64 ei; // initial strain
+      CComPtr<IPlane3d> InitialStrain;
       Float64 Le; // elongation length (typically 1 unit, but can be different for unbonded reinforcement elements)
-      SHAPEINFO(IShape* pShape, IStressStrain* pFG, IStressStrain* pBG, Float64 ei,Float64 Le) : Shape(pShape), FgMaterial(pFG), BgMaterial(pBG), ei(ei), Le(Le)
+      SHAPEINFO(IndexType shapeIdx, IShape* pShape, IStressStrain* pFG, IStressStrain* pBG, IPlane3d* pInitialStrain,Float64 Le) : ShapeIdx(shapeIdx), Shape(pShape), FgMaterial(pFG), BgMaterial(pBG), InitialStrain(pInitialStrain), Le(Le)
       {}
    } SHAPEINFO;
 
    typedef struct SLICEINFO
    {
-      Float64 Area;
-      Float64 Top;
-      Float64 Bottom;
+      IndexType ShapeIdx; // index of the general section shape from which this slice is taken
+      Float64 Area; // slice area
+      Float64 Top; // top of slice elevation (may be off the section)
+      Float64 Bottom; // bottom of slice elevation (may be off the sectino)
       CComPtr<IPoint2d> pntCG;
-      Float64 ei; // initial strain
+      Float64 ei; // initial strain at the centroid of this slice
       Float64 Le; // elongation length (typically 1 unit, but can be different for unbonded reinforcement elements)
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
@@ -101,7 +103,7 @@ private:
    long m_nSlices;
    Float64 m_SliceGrowthFactor; // height of last slice is slice growth factor times the height of the first slice
 
-   HRESULT AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& slice,IPlane3d* strainPlane,Float64& P,Float64& Mx,Float64& My,Float64& fg_stress,Float64& bg_stress,Float64& stress,Float64& strain,bool& bExceededStrainLimits);
+   HRESULT AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& slice,IPlane3d* incrementalStrainPlane,Float64& P,Float64& Mx,Float64& My,Float64& fg_stress,Float64& bg_stress,Float64& stress,Float64& incrementalStrain,Float64& totalStrain,bool& bExceededStrainLimits);
    HRESULT SliceShape(const SHAPEINFO& shapeInfo,Float64 angle,Float64 sliceTop,Float64 sliceBottom,SLICEINFO& sliceInfo);
    Float64 GetNeutralAxisAngle();
 

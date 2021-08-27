@@ -227,7 +227,7 @@ STDMETHODIMP CPSPowerFormula::ComputeStress(Float64 strain,Float64* pVal)
 
    *pVal = sign*fps;
 
-   return m_MaxStrain < sign* strain ? S_FALSE : S_OK;
+   return ::IsLT(m_MaxStrain,sign* strain) ? S_FALSE : S_OK;
 }
 
 STDMETHODIMP CPSPowerFormula::StrainLimits(Float64* minStrain,Float64* maxStrain)

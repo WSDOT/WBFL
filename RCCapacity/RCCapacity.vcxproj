@@ -257,6 +257,7 @@
     <ClCompile Include="PCISolutionEx.cpp" />
     <ClCompile Include="PCISolver.cpp" />
     <ClCompile Include="PSPowerFormula.cpp" />
+    <ClCompile Include="RambergOsgoodModel.cpp" />
     <ClCompile Include="RCBeam.cpp" />
     <ClCompile Include="RCBeam2.cpp" />
     <ClCompile Include="RCBeam2Ex.cpp" />
@@ -306,6 +307,7 @@
     <None Include="PCISolutionEx.rgs" />
     <None Include="PCISolver.rgs" />
     <None Include="PSPowerFormula.rgs" />
+    <None Include="RambergOsgoodModel.rgs" />
     <None Include="RCBeam.rgs" />
     <None Include="RCBeam2.rgs" />
     <None Include="RCBeam2Ex.rgs" />
@@ -361,6 +363,7 @@
     <ClInclude Include="PCISolutionEx.h" />
     <ClInclude Include="PCISolver.h" />
     <ClInclude Include="PSPowerFormula.h" />
+    <ClInclude Include="RambergOsgoodModel.h" />
     <ClInclude Include="RCBeam.h" />
     <ClInclude Include="RCBeam2.h" />
     <ClInclude Include="RCBeam2Ex.h" />

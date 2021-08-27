@@ -42,8 +42,11 @@ class ATL_NO_VTABLE CGeneralSectionSlice :
 public:
 	CGeneralSectionSlice()
 	{
+      m_ShapeIdx = INVALID_INDEX;
       m_Area = 0;
-      m_Strain = 0;
+      m_InitialStrain = 0;
+      m_IncrementalStrain = 0;
+      m_TotalStrain = 0;
       m_cgX = 0;
       m_cgY = 0;
       m_fgStress = 0;
@@ -64,12 +67,15 @@ END_COM_MAP()
 
 
 private:
+   IndexType m_ShapeIdx;
    CComPtr<IShape> m_Shape;
    CComPtr<IStressStrain> m_fgMaterial;
    CComPtr<IStressStrain> m_bgMaterial;
    Float64 m_Area;
    Float64 m_cgX, m_cgY;
-   Float64 m_Strain;
+   Float64 m_InitialStrain;
+   Float64 m_IncrementalStrain;
+   Float64 m_TotalStrain;
    Float64 m_fgStress;
    Float64 m_bgStress;
 
@@ -79,15 +85,18 @@ public:
 
 // IGeneralSectionSlice
 public:
-   STDMETHOD(InitSlice)(/*[in]*/IShape* pShape,/*[in]*/Float64 A,/*[in]*/Float64 cgX,/*[in]*/Float64 cgY,/*[in]*/Float64 strain,/*[in]*/Float64 fgStress,/*[in]*/Float64 bgStress,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial) override;
+   STDMETHOD(InitSlice)(/*[in]*/IndexType shapeIdx,/*[in]*/IShape* pShape,/*[in]*/Float64 A,/*[in]*/Float64 cgX,/*[in]*/Float64 cgY,/*[in]*/Float64 initialStrain,/*[in]*/Float64 deltaStrain,/*[in]*/Float64 totalStrain,/*[in]*/Float64 fgStress,/*[in]*/Float64 bgStress,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial) override;
    STDMETHOD(get_Area)(/*[out,retval]*/Float64* pArea) override;
 	STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pCG) override;
-	STDMETHOD(get_Strain)(/*[out,retval]*/Float64* pStrain) override;
-	STDMETHOD(get_ForegroundStress)(/*[out,retval]*/Float64* pfgStress) override;
+   STDMETHOD(get_InitialStrain)(/*[out,retval]*/Float64* pStrain) override;
+   STDMETHOD(get_IncrementalStrain)(/*[out,retval]*/Float64* pStrain) override;
+   STDMETHOD(get_TotalStrain)(/*[out,retval]*/Float64* pStrain) override;
+   STDMETHOD(get_ForegroundStress)(/*[out,retval]*/Float64* pfgStress) override;
 	STDMETHOD(get_BackgroundStress)(/*[out,retval]*/Float64* pbgStress) override;
    STDMETHOD(get_ForegroundMaterial)(/*[out,retval]*/IStressStrain** pMaterial) override;
    STDMETHOD(get_BackgroundMaterial)(/*[out,retval]*/IStressStrain** pMaterial) override;
    STDMETHOD(get_Shape)(/*[out,retval]*/IShape** pShape) override;
+   STDMETHOD(get_ShapeIndex)(/*[out, retval]*/IndexType* pShapeIdx) override;
 };
 
 #endif //__GeneralSectionSlice_H_

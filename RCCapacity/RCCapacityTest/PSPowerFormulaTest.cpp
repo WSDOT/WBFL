@@ -72,6 +72,8 @@ void CPSPowerFormulaTest::Test()
    TRY_TEST( ss->ComputeStress(-0.1,&val), S_OK );
    TRY_TEST( IsEqual(val,-1861584469.1559,0.0001), true );
 
+   TRY_TEST(ss->ComputeStress(0.035, &val), S_OK);
+
    CComQIPtr<ISupportErrorInfo> eInfo(ss);
    TRY_TEST( eInfo != nullptr, true);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);

@@ -79,7 +79,7 @@ STDMETHODIMP CSectionBuilder::RectangularColumn(Float64 H,Float64 W,Float64 cove
    column->put_Width(W);
    CComQIPtr<IShape> column_shape(column);
 
-   pSection->AddShape(column_shape,concrete,nullptr,0.00,1.0);
+   pSection->AddShape(CComBSTR("Column"),column_shape, concrete, nullptr, nullptr, 1.0, VARIANT_TRUE);
 
 
    // rebar
@@ -99,7 +99,7 @@ STDMETHODIMP CSectionBuilder::RectangularColumn(Float64 H,Float64 W,Float64 cove
       center->Move(x,y);
 
       CComQIPtr<IShape> top_bar_shape(top_bar);
-      pSection->AddShape(top_bar_shape,rebar,concrete,0.00, 1.0);
+      pSection->AddShape(CComBSTR("Top Bar"),top_bar_shape, rebar, concrete, nullptr, 1.0, VARIANT_FALSE);
 
       CComPtr<ICircle> bottom_bar;
       bottom_bar.CoCreateInstance(CLSID_Circle);
@@ -110,7 +110,7 @@ STDMETHODIMP CSectionBuilder::RectangularColumn(Float64 H,Float64 W,Float64 cove
       center->Move(x,-y);
 
       CComQIPtr<IShape> bottom_bar_shape(bottom_bar);
-      pSection->AddShape(bottom_bar_shape,rebar,concrete,0.00, 1.0);
+      pSection->AddShape(CComBSTR("Bottom Bar"),bottom_bar_shape, rebar, concrete, nullptr, 1.0, VARIANT_FALSE);
    }
 
    // do left and right bars
@@ -127,7 +127,7 @@ STDMETHODIMP CSectionBuilder::RectangularColumn(Float64 H,Float64 W,Float64 cove
       center->Move(x,y);
 
       CComQIPtr<IShape> left_bar_shape(left_bar);
-      pSection->AddShape(left_bar_shape,rebar,concrete,0.00, 1.0);
+      pSection->AddShape(CComBSTR("Left Bar"),left_bar_shape, rebar, concrete, nullptr, 1.0, VARIANT_FALSE);
 
    
       CComPtr<ICircle> right_bar;
@@ -139,7 +139,7 @@ STDMETHODIMP CSectionBuilder::RectangularColumn(Float64 H,Float64 W,Float64 cove
       center->Move(-x,y);
 
       CComQIPtr<IShape> right_bar_shape(right_bar);
-      pSection->AddShape(right_bar_shape,rebar,concrete,0.00, 1.0);
+      pSection->AddShape(CComBSTR("Right Bar"),right_bar_shape, rebar, concrete, nullptr, 1.0, VARIANT_FALSE);
    }
 
    (*section) = pSection;
@@ -164,7 +164,7 @@ STDMETHODIMP CSectionBuilder::CircularColumn(Float64 D,Float64 cover,long Nb,Flo
    column->put_Radius(D/2);
    CComQIPtr<IShape> column_shape(column);
 
-   pSection->AddShape(column_shape,concrete,nullptr,0.00, 1.0);
+   pSection->AddShape(CComBSTR("Column"),column_shape, concrete, nullptr, nullptr, 1.0, VARIANT_TRUE);
 
    CComPtr<IPoint2d> center;
    column->get_Center(&center);
@@ -203,7 +203,7 @@ STDMETHODIMP CSectionBuilder::CircularColumn(Float64 D,Float64 cover,long Nb,Flo
 
       CComQIPtr<IShape> bar_shape(bar);
 
-      pSection->AddShape(bar_shape,rebar,concrete,0.00, 1.0);
+      pSection->AddShape(CComBSTR("Bar"),bar_shape, rebar, concrete, nullptr, 1.0, VARIANT_FALSE);
 
       point.Release();
    }

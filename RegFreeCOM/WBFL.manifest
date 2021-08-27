@@ -1587,6 +1587,9 @@
      <comClass clsid="{75C05DC6-48F7-476B-B67A-ABD58180F9FB}"
                 tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
                 description="PSPowerFormula Class"></comClass>
+     <comClass clsid="{FD96764F-8857-4346-AB8A-144636A54A87}"
+                tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
+                description="RambergOsgoodModel Class"></comClass>
      <comClass clsid="{F3C1A16E-C1F0-4d60-93F2-4017A0472B7C}"
           tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
           description="LRFDPrestressFormula Class"></comClass>

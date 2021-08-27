@@ -141,6 +141,7 @@ IDR_CRACKEDSECTIONSLICE REGISTRY DISCARDABLE    "CrackedSectionSlice.rgs"
 IDR_LRFDPRESTRESSFORMULA REGISTRY "LRFDPrestressFormula.rgs"
 IDR_LRFDSOLUTION REGISTRY "LRFDSolution.rgs"
 IDR_LRFDSOLUTIONEX REGISTRY "LRFDSolutionEx.rgs"
+IDR_RAMBERGOSGOODMODEL REGISTRY "RambergOsgoodModel.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //

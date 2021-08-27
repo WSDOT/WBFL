@@ -160,3 +160,27 @@ STDMETHODIMP CGeneralSectionSolution::get_Slice(CollectionIndexType sliceIdx,IGe
    punk.QueryInterface(pSlice);
    return S_OK;
 }
+
+STDMETHODIMP CGeneralSectionSolution::FindSlices(IndexType shapeIdx, IUnkArray** ppSlices)
+{
+   CHECK_RETOBJ(ppSlices);
+   CComPtr<IUnkArray> slices;
+   slices.CoCreateInstance(CLSID_UnkArray);
+
+   CollectionIndexType nSlices;
+   m_Slices->get_Count(&nSlices);
+   for (IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++)
+   {
+      CComPtr<IUnknown> punk;
+      m_Slices->get_Item(sliceIdx, &punk);
+      CComQIPtr<IGeneralSectionSlice> slice(punk);
+      IndexType thisShapeIdx;
+      slice->get_ShapeIndex(&thisShapeIdx);
+      if (thisShapeIdx == shapeIdx)
+      {
+         slices->Add(punk);
+      }
+   }
+
+   return slices.CopyTo(ppSlices);
+}

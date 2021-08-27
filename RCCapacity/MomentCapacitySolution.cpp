@@ -180,6 +180,9 @@ STDMETHODIMP CMomentCapacitySolution::get_GeneralSectionSolution(IGeneralSection
 {
    CHECK_RETOBJ(solution);
    (*solution) = m_Solution;
-   (*solution)->AddRef();
+   if (*solution)
+   {
+      (*solution)->AddRef();
+   }
    return S_OK;
 }

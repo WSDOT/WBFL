@@ -133,11 +133,11 @@ void CMomentCapacitySolverTest::Test()
    CComQIPtr<IStressStrain> material1(concrete);
    CComQIPtr<IStressStrain> material2(rebar);
 
-   section->AddShape(shape1,material1,nullptr,0, 1.0); // beam
-   section->AddShape(shape2,material2,nullptr,0, 1.0); // bar 1
-   section->AddShape(shape3,material2,nullptr,0, 1.0); // bar 2
-   section->AddShape(shape4,material2,nullptr,0, 1.0); // bar 3
-   section->AddShape(shape5,material2,nullptr,0, 1.0); // bar 4
+   section->AddShape(CComBSTR("Beam"),shape1, material1, nullptr, nullptr, 1.0, VARIANT_TRUE); // beam
+   section->AddShape(CComBSTR("Bar 1"), shape2,material2,nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 1
+   section->AddShape(CComBSTR("Bar 2"), shape3,material2,nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 2
+   section->AddShape(CComBSTR("Bar 3"), shape4,material2,nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 3
+   section->AddShape(CComBSTR("Bar 4"), shape5,material2,nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 4
 
 
    CComPtr<IMomentCapacitySolver> solver;

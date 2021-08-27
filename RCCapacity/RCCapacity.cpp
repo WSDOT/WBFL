@@ -81,6 +81,7 @@
 #include "CrackedSectionSlice.h"
 #include "CrackedSectionSolver.h"
 #include "CrackedSectionSolution.h"
+#include "RambergOsgoodModel.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -131,6 +132,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_CrackedSectionSlice,CCrackedSectionSlice)
    OBJECT_ENTRY(CLSID_CrackedSectionSolver,CCrackedSectionSolver)
    OBJECT_ENTRY(CLSID_CrackedSectionSolution,CCrackedSectionSolution)
+   OBJECT_ENTRY(CLSID_RambergOsgoodModel, CRambergOsgoodModel)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

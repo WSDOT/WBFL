@@ -266,6 +266,8 @@ STDMETHODIMP CUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
 
    Float64 Ec = GetEc();
 
+   HRESULT hr = S_OK;
+
    if (0 < strain)
    {
       // tension
@@ -282,19 +284,28 @@ STDMETHODIMP CUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
       else
       {
          // beyond localization so can't carry any tension
-         *pVal = 0;
+         *pVal = (m_ftloc < 1.2 * m_ftcr) ? m_gamma * m_ftcr : ::LinInterp(strain - e_tcr, m_gamma * m_ftcr, m_gamma * m_ftloc, m_etloc - e_tcr);
+         hr = S_FALSE;
       }
    }
    else
    {
       // compression
-      Float64 e_cp = -1.0*m_alpha*m_fc / Ec;
-      if (e_cp < strain) // this looks backwards, but it's not... compression strain is negative so the larger value is closer to zero
-         *pVal = strain*Ec;
-      else if (::IsLE(m_ecu,strain))
-         *pVal = -1.0*m_alpha*m_fc; // negative for compression
+      strain = fabs(strain);
+      Float64 e_cp = 1.0*m_alpha*m_fc / Ec;
+      if (strain < e_cp)
+      {
+         *pVal = -strain * Ec;
+      }
+      else if (::IsLE(strain, -m_ecu))
+      {
+         *pVal = -1.0 * m_alpha * m_fc; // negative for compression
+      }
       else
-         *pVal = 0.0; // beyond maximum strain
+      {
+         *pVal = -1.0 * m_alpha * m_fc;// 0.0; // beyond maximum strain
+         hr = S_FALSE;
+      }
    }
 
    // The stress is in KSI, convert it to base units because that is what the caller expects
@@ -302,7 +313,7 @@ STDMETHODIMP CUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
    m_UnitServer->get_UnitConvert(&convert);
    convert->ConvertToBaseUnits(*pVal,CComBSTR("ksi"),pVal);
 
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CUHPConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)
