@@ -411,9 +411,9 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
          // P1 and P2 are arbitray points on the X-axis (Y=0)
          Float64 d = 1000; // distance between P1 and P2.
 
-         // If m_Yfurthest is at Y=0 we will have 3 co-linear points to make a plane... you can't define a plane that way.
-         // When m_Yfurthest is zero, adjust the Y location where we are varying the strain
-         Float64 Y = IsZero(m_YFurthest) ? 10 : 0; 
+         // If m_Yfurthest is close to 0 we will have 3 points that are nearly co-linear plane... this will form a bad plane (too steep of a slope).
+         // When this is the case, adjust the Y location where we are varying the strain
+         Float64 Y = InRange(-1.0, m_YFurthest, 1.0) ? 10 : 0;
 
          Float64 sin_angle = sin(angle);
          Float64 cos_angle = cos(angle);
