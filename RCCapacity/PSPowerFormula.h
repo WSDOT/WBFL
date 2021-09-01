@@ -98,6 +98,7 @@ public:
 	STDMETHOD(put_Grade)(/*[in]*/StrandGradeType grade) override;
    STDMETHOD(get_ProductionMethod)(/*[out,retval]*/ProductionMethodType* type) override;
 	STDMETHOD(put_ProductionMethod)(/*[in]*/ProductionMethodType type) override;
+   STDMETHOD(SetStrainLimits)(/*[in]*/Float64 eMin, /*[in]*/Float64 eMax) override;
 
 // IStressStrain
 public:

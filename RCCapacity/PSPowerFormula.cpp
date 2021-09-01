@@ -122,6 +122,13 @@ STDMETHODIMP CPSPowerFormula::put_ProductionMethod(ProductionMethodType type)
    return S_OK;
 }
 
+STDMETHODIMP CPSPowerFormula::SetStrainLimits(Float64 eMin, Float64 eMax)
+{
+   m_MinStrain = eMin;
+   m_MaxStrain = eMax;
+   return S_OK;
+}
+
 STDMETHODIMP CPSPowerFormula::put_Name(BSTR name)
 {
    m_bstrName = name;

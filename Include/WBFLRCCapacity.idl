@@ -2119,6 +2119,8 @@ library WBFLRCCapacity
       /// Strand production method
 		[propget,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([out,retval]ProductionMethodType* type);
 		[propput,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([in]ProductionMethodType type);
+
+      [helpstring("method SetStrainLimits")] HRESULT SetStrainLimits([in]Float64 eMin, [in]Float64 eMax);
 	};
 
    /// Interface for objects implementing the stress-strain model for prestress reinforcement from AASHTO LRFD 5.6.3.1.1
