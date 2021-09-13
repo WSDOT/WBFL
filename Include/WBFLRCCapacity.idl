@@ -148,7 +148,7 @@ library WBFLRCCapacity
 		[propget, helpcontext(IDH_IRCBeam_bw),helpstring("property bw")] HRESULT bw([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_bw),helpstring("property bw")] HRESULT bw([in] Float64 newVal);
 
-      /// Height of flange
+      /// Height of flangeIPo
 		[propget, helpcontext(IDH_IRCBeam_hf),helpstring("property hf")] HRESULT hf([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_hf),helpstring("property hf")] HRESULT hf([in] Float64 newVal);
 
@@ -2120,6 +2120,11 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([out,retval]ProductionMethodType* type);
 		[propput,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([in]ProductionMethodType type);
 
+      /// A factor multiplied with the computed stress.
+      [propput, helpstring("property ReductionFactor")] HRESULT ReductionFactor([in]Float64 factor);
+      [propget, helpstring("property ReductionFactor")] HRESULT ReductionFactor([out,retval]Float64* factor);
+
+      /// Sets the elongation strain limits for the material
       [helpstring("method SetStrainLimits")] HRESULT SetStrainLimits([in]Float64 eMin, [in]Float64 eMax);
 	};
 

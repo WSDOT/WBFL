@@ -62,6 +62,8 @@ HRESULT CPSPowerFormula::FinalConstruct()
 
    SetupUnits();
 
+   m_ReductionFactor = 1.0;
+
    m_MinStrain = -10; // doesn't facture in compression
    m_MaxStrain =  0.035;
 
@@ -119,6 +121,19 @@ STDMETHODIMP CPSPowerFormula::get_ProductionMethod(ProductionMethodType* type)
 STDMETHODIMP CPSPowerFormula::put_ProductionMethod(ProductionMethodType type)
 {
    m_ProductionMethod = type;
+   return S_OK;
+}
+
+STDMETHODIMP CPSPowerFormula::put_ReductionFactor(Float64 factor)
+{
+   m_ReductionFactor = factor;
+   return S_OK;
+}
+
+STDMETHODIMP CPSPowerFormula::get_ReductionFactor(Float64* factor)
+{
+   CHECK_RETVAL(factor);
+   *factor = m_ReductionFactor;
    return S_OK;
 }
 
@@ -232,7 +247,7 @@ STDMETHODIMP CPSPowerFormula::ComputeStress(Float64 strain,Float64* pVal)
    // The stress is in KSI, convert it to base units because that is what the caller expects
    m_Convert->ConvertToBaseUnits(fps,m_ksiUnit,&fps);
 
-   *pVal = sign*fps;
+   *pVal = m_ReductionFactor*sign*fps;
 
    return ::IsLT(m_MaxStrain,sign* strain) ? S_FALSE : S_OK;
 }

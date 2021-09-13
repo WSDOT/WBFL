@@ -74,6 +74,7 @@ private:
    long m_MaxIter;
    bool m_bFurthestPointUpdated;
    Float64 m_XFurthest, m_YFurthest;
+   Float64 m_Top, m_Bottom;
 
    bool m_bUpdateLimits;
    Float64 m_FzTensionLimit, m_MxTensionLimit, m_MyTensionLimit, m_eoTensionLimit;

@@ -103,6 +103,7 @@
 #define RPT_FPY italic(ON) << Sub2(_T("f"),_T("py")) << italic(OFF)
 #define RPT_FPS italic(ON) << Sub2(_T("f"),_T("ps")) << italic(OFF)
 #define RPT_FPE italic(ON) << Sub2(_T("f"),_T("pe")) << italic(OFF)
+#define RPT_FPX italic(ON) << Sub2(_T("f"),_T("px")) << italic(OFF)
 #define RPT_FPC italic(ON) << Sub2(_T("f"),_T("pc")) << italic(OFF)
 #define RPT_FPO italic(ON) << Sub2(_T("f"),_T("po")) << italic(OFF)
 #define RPT_FPBT italic(ON) << Sub2(_T("f"),_T("pbt")) << italic(OFF)

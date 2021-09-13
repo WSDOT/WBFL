@@ -143,8 +143,8 @@ STDMETHODIMP CMomentCapacitySolver::Solve(Float64 Fz,Float64 angle,Float64 k_or_
 {
    // initialize some parameters using during the solution
    m_bFurthestPointUpdated = false;
-   m_XFurthest = -999999;
-   m_YFurthest = -999999;
+   m_XFurthest = -Float64_Max;
+   m_YFurthest = -Float64_Max;
 
    // Get the forces and strains that bound the solution
 
@@ -233,13 +233,26 @@ HRESULT CMomentCapacitySolver::UpdateLimits()
    CComPtr<IGeneralSection> section;
    get_Section(&section);
 
-   Float64 compStrain =  10000;
-   Float64 tensStrain = -10000;
+   Float64 compStrain =  Float64_Max;
+   Float64 tensStrain = -Float64_Max;
+
+   m_Top = -Float64_Max;
+   m_Bottom = Float64_Max;
    
    CollectionIndexType nShapes;
    section->get_ShapeCount(&nShapes);
    for (CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
    {
+      CComPtr<IShape> shape;
+      section->get_Shape(shapeIdx, &shape);
+      CComPtr<IRect2d> bbox;
+      shape->get_BoundingBox(&bbox);
+      Float64 t, b;
+      bbox->get_Top(&t);
+      bbox->get_Bottom(&b);
+      m_Top = Max(m_Top, t);
+      m_Bottom = Min(m_Bottom, b);
+
       CComPtr<IStressStrain> material;
       section->get_ForegroundMaterial(shapeIdx, &material);
 
@@ -398,6 +411,7 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
       }
       else
       {
+         //UpdateFurthestPoint(angle, solutionMethod); // this also updates m_Top and m_Bottom
          if (solutionMethod == smFixedStrain)
          {
             m_XFurthest = 0;
@@ -411,14 +425,20 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
          // P1 and P2 are arbitray points on the X-axis (Y=0)
          Float64 d = 1000; // distance between P1 and P2.
 
+         // One strain is set at m_Yfurthest. Set the other strain at either the top or bottom of the section being analyzed
+         // This assumes (0,0) is somewhere on the girder section
+         Float64 Y = IsEqual(m_YFurthest,m_Top) ? m_Bottom :
+            IsEqual(m_YFurthest,m_Bottom) ? m_Top : 
+            (m_YFurthest < 0 ? m_Top : m_Bottom);
+
          // If m_Yfurthest is close to 0 we will have 3 points that are nearly co-linear plane... this will form a bad plane (too steep of a slope).
          // When this is the case, adjust the Y location where we are varying the strain
-         Float64 Y = InRange(-1.0, m_YFurthest, 1.0) ? 10 : 0;
+         //Float64 Y = InRange(-1.0, m_YFurthest, 1.0) ? 10 : 0;
 
          Float64 sin_angle = sin(angle);
          Float64 cos_angle = cos(angle);
-         m_P1->Move(-d*cos_angle - Y*sin_angle, -d*sin_angle + Y*cos_angle, eo);
-         m_P2->Move( d*cos_angle - Y*sin_angle,  d*sin_angle + Y*cos_angle, eo);
+         m_P1->Move(-d*cos_angle - Y*sin_angle, -d*sin_angle + Y/**cos_angle*/, eo);
+         m_P2->Move( d*cos_angle - Y*sin_angle,  d*sin_angle + Y/**cos_angle*/, eo);
 
          m_P3->Move(m_XFurthest, m_YFurthest, ec);
          m_StrainPlane->ThroughPoints(m_P1, m_P2, m_P3);
@@ -462,7 +482,7 @@ void CMomentCapacitySolver::UpdateFurthestPoint(Float64 angle, SolutionMethod so
    // IShape::FurthestDistance will return a value less than zero if the entire shape
    // is on the opposite side of the line than we are interested in.
 
-   Float64 furthest_distance = -99999999;
+   Float64 furthest_distance = -Float64_Max;
 
    CollectionIndexType shape_count;
    section->get_ShapeCount(&shape_count);
