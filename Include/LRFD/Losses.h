@@ -31,6 +31,8 @@
 #include <Lrfd\PsStrand.h>
 #include <Lrfd\ElasticShortening.h>
 
+#include <array>
+
 
 #define TEMPORARY_STRAND 0
 #define PERMANENT_STRAND 1
@@ -38,6 +40,9 @@
 #define SERVICE_I_LIVELOAD 0
 #define SERVICE_III_LIVELOAD 1
 #define FATIGUE_LIVELOAD 2
+
+#define WITH_ELASTIC_GAIN_REDUCTION 0
+#define WITHOUT_ELASTIC_GAIN_REDUCTION 1
 
 class LRFDCLASS lrfdLosses : public lrfdVersionMgrListener
 {
@@ -78,9 +83,9 @@ public:
               Float64 Ecd,  // Modulus of elasticity of deck
 
               Float64 Mdlg,  // Dead load moment of girder only
-              Float64 Madlg,  // Additional dead load on girder section
-              Float64 Msidl1, // Superimposed dead loads, stage 1
-              Float64 Msidl2, // Superimposed dead loads, stage 2
+              const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+              const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+              const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
               // Transform/Gross properties
               Float64 Ag,    // Area of girder
@@ -245,14 +250,17 @@ public:
    Float64 GetGdrMoment() const;
 
    // addition moment on non-composite girder
-   void SetAddlGdrMoment(Float64 Madlg);
+   void SetAddlGdrMoment(const std::vector<std::pair<Float64, Float64>>& Madlg);
    Float64 GetAddlGdrMoment() const;
+   const std::vector<std::pair<Float64, Float64>>& GetAddlGdrMoment2() const;
 
    // moment due to superimposed dead loads
-   void SetSidlMoment1(Float64 Msidl);
+   void SetSidlMoment1(const std::vector<std::pair<Float64, Float64>>& Msidl);
    Float64 GetSidlMoment1() const;
-   void SetSidlMoment2(Float64 Msidl);
+   const std::vector<std::pair<Float64, Float64>>& GetSidlMoment1_2() const;
+   void SetSidlMoment2(const std::vector<std::pair<Float64, Float64>>& Msidl);
    Float64 GetSidlMoment2() const;
+   const std::vector<std::pair<Float64, Float64>>& GetSidlMoment2_2() const;
 
    //------------------------------------------------------------------------
    // Post-tension related parameters
@@ -321,8 +329,8 @@ public:
    virtual Float64 TemporaryStrand_RelaxationLossesBeforeTransfer() const;
    virtual Float64 TemporaryStrand_ElasticShorteningLosses() const;
 
-   Float64 ElasticGainDueToDeckPlacement() const;
-   Float64 ElasticGainDueToSIDL() const;
+   Float64 ElasticGainDueToDeckPlacement(bool bApplyElasticGainReduction) const;
+   Float64 ElasticGainDueToSIDL(bool bApplyElasticGainReduction) const;
    Float64 ElasticGainDueToDeckShrinkage() const;
    Float64 ElasticGainDueToLiveLoad(Float64 Mllim) const;
 
@@ -391,11 +399,11 @@ public:
 
    //------------------------------------------------------------------------
    // Change in stress at level of permanent strand due to deck placement
-   Float64 GetDeltaFcd1() const;
+   Float64 GetDeltaFcd1(bool bApplyElasticGainReduction) const;
 
    //------------------------------------------------------------------------
    // Change in stress at level of permanent strand due to superimposed dead loads
-   Float64 GetDeltaFcd2() const;
+   Float64 GetDeltaFcd2(bool bApplyElasticGainReduction) const;
 
    //------------------------------------------------------------------------
    // Change in stress at level of permanent strand due to live load
@@ -459,9 +467,12 @@ protected:
    Float64 m_FrictionCoefficient;
    Float64 m_AngleChange;
    Float64 m_Mdlg;  // Dead load moment of girder
-   Float64 m_Madlg; // Additional dead load moment on girder section
-   Float64 m_Msidl1; // Superimposed dead loads
-   Float64 m_Msidl2; // Superimposed dead loads
+   mutable std::array<Float64, 2> m_Madlg; // Summation of additional dead load moment on girder section (with and without elastic gain reduction factor)
+   mutable std::array<Float64, 2> m_Msidl1;// Superimposed dead loads
+   mutable std::array<Float64, 2> m_Msidl2;// Superimposed dead loads
+   std::vector<std::pair<Float64,Float64>> m_InputMadlg; // Additional dead load moment on girder section (moment, elastic gain reduction factor)
+   std::vector<std::pair<Float64, Float64>> m_InputMsidl1; // Superimposed dead loads
+   std::vector<std::pair<Float64, Float64>> m_InputMsidl2; // Superimposed dead loads
    Float64 m_ti; // initial time
 
    // Transformed/Gross Properties
@@ -494,11 +505,12 @@ protected:
    mutable lrfdElasticShortening m_ElasticShortening;
 
    // array index is 0=temporary strand, 1 = permanent strand
-   mutable Float64 m_dfpR0[2]; // initial relaxation
-   mutable Float64 m_dfpES[2]; // elastic shrinkage
+   mutable std::array<Float64, 2> m_dfpR0; // initial relaxation
+   mutable std::array<Float64, 2> m_dfpES; // elastic shrinkage
 
-   mutable Float64 m_dfpED; // elastic gain due to deck placement
-   mutable Float64 m_dfpSIDL; // elastic gain due to superimposed dead loads
+   // array index is 0=without elastic gain reduction, 1=with elastic gain reduction
+   mutable std::array<Float64, 2> m_dfpED; // elastic gain due to deck placement
+   mutable std::array<Float64, 2> m_dfpSIDL; // elastic gain due to superimposed dead loads
    mutable Float64 m_dfpSS; // elastic gain due to deck shrinkage
 
    // post tension losses
@@ -521,8 +533,8 @@ protected:
    mutable Float64 m_dfptr; // change in stress in perm strands due to removal of temp strands
    mutable Float64 m_Ptr;   // force in temp strand at time of removal
 
-   mutable Float64 m_DeltaFcd1; // change in stress at level of permanent strand due to deck placement
-   mutable Float64 m_DeltaFcd2; // change in stress at level of permanent strand due to superimposed dead loads
+   mutable std::array<Float64, 2> m_DeltaFcd1; // change in stress at level of permanent strand due to deck placement
+   mutable std::array<Float64, 2> m_DeltaFcd2; // change in stress at level of permanent strand due to superimposed dead loads
 
    mutable Float64 m_dfpF;  // friction loss 
    mutable Float64 m_dfpFT; // total friction loss 
@@ -573,12 +585,17 @@ inline lrfdLosses::SectionPropertiesType lrfdLosses::GetSectionPropertiesType() 
 
 inline void lrfdLosses::SetGdrMoment(Float64 Mdlg) { m_Mdlg = Mdlg; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetGdrMoment() const { return m_Mdlg; }
-inline void lrfdLosses::SetAddlGdrMoment(Float64 Madlg) { m_Madlg = Madlg; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetAddlGdrMoment() const { return m_Madlg; }
-inline void lrfdLosses::SetSidlMoment1(Float64 Msidl) { m_Msidl1 = Msidl; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetSidlMoment1() const { return m_Msidl1; }
-inline void lrfdLosses::SetSidlMoment2(Float64 Msidl) { m_Msidl2 = Msidl; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetSidlMoment2() const { return m_Msidl2; }
+inline void lrfdLosses::SetAddlGdrMoment(const std::vector<std::pair<Float64, Float64>>& Madlg) { m_InputMadlg = Madlg; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetAddlGdrMoment() const { if (m_IsDirty) UpdateLosses();  return m_Madlg[WITH_ELASTIC_GAIN_REDUCTION]; }
+inline const std::vector<std::pair<Float64, Float64>>& lrfdLosses::GetAddlGdrMoment2() const { return m_InputMadlg; }
+
+inline void lrfdLosses::SetSidlMoment1(const std::vector<std::pair<Float64, Float64>>& Msidl) { m_InputMsidl1 = Msidl; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetSidlMoment1() const { if (m_IsDirty) UpdateLosses(); return m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION]; }
+inline const std::vector<std::pair<Float64, Float64>>& lrfdLosses::GetSidlMoment1_2() const { return m_InputMsidl1; }
+
+inline void lrfdLosses::SetSidlMoment2(const std::vector<std::pair<Float64, Float64>>& Msidl) { m_InputMsidl2 = Msidl; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetSidlMoment2() const { if (m_IsDirty) UpdateLosses();  return m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION]; }
+inline const std::vector<std::pair<Float64, Float64>>& lrfdLosses::GetSidlMoment2_2() const { return m_InputMsidl2; }
 
 inline void lrfdLosses::SetGirderLength(Float64 lg) { m_Lg = lg; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetGirderLength() const {  return m_Lg; }

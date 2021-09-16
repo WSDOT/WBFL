@@ -164,9 +164,9 @@ public:
                          Float64 Ksh,  // deck shrinkage strain effectiveness
                          
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads, stage 1
-                         Float64 Msidl2, // Superimposed dead loads, stage 2
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 rh,  // Relative humidity [0,100]
                          Float64 ti,   // Time until prestress transfer
@@ -389,8 +389,8 @@ private:
    mutable Float64 m_ebid;
    mutable Float64 m_ebih;
    mutable Float64 m_Kid;
-   mutable Float64 m_Kih[2];
-   mutable Float64 m_KL[2];
+   mutable std::array<Float64, 2> m_Kih;
+   mutable std::array<Float64, 2> m_KL;
    mutable Float64 m_ebif;
    mutable Float64 m_ebdf;
    mutable Float64 m_Kdf;
@@ -404,10 +404,10 @@ private:
    mutable Float64 m_dfpR2;
 
    // hauling losses
-   mutable Float64 m_dfpSRH[2];
-   mutable Float64 m_dfpCRH[2];
-   mutable Float64 m_dfpR1H[2];
-   mutable Float64 m_dfpTH[2];
+   mutable std::array<Float64, 2> m_dfpSRH;
+   mutable std::array<Float64, 2> m_dfpCRH;
+   mutable std::array<Float64, 2> m_dfpR1H;
+   mutable std::array<Float64, 2> m_dfpTH;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

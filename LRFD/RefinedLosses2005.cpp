@@ -146,9 +146,9 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 Ksh,  // deck shrinkage strain effectiveness
                          
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 rh,  // Relative humidity [0,100]
                          Float64 ti,   // Time until prestress transfer
@@ -939,7 +939,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_dfpCR = (m_Ep/m_Eci)*(fcgp + m_dfpp)*m_CreepInitialToDeck.GetCreepCoefficient()*m_Kid;
 
    // Relaxation of Prestressing Strands [5.9.5.4.2c]
-#pragma Reminder("NOTE") // do we have to consider effect of PT if used???
+   // do we have to consider effect of PT if used???
    Float64 fpt = m_FpjPerm - m_dfpR0[PERMANENT_STRAND] - m_dfpES[PERMANENT_STRAND];
    Float64 td  = ::ConvertFromSysUnits(m_td,unitMeasure::Day);
    Float64 ti  = ::ConvertFromSysUnits(m_ti,unitMeasure::Day);
@@ -1033,28 +1033,35 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
    if (IsZero(m_ApsPerm))
    {
-      m_DeltaFcd1 = 0;
+      m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+      m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
    }
    else
    {
-      Float64 mx = m_Madlg;
-      Float64 my = 0;
-      m_DeltaFcd1 = (my*m_Ixx + mx*m_Ixy)*m_epermFinal.X() / D + (mx*m_Iyy + my*m_Ixy)*m_epermFinal.Y() / D; // biaxial on non-composite section
+      m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = (/*my * m_Ixx +*/ m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] * m_Ixy) * m_epermFinal.X() / D + (m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] * m_Iyy/* + my * m_Ixy*/) * m_epermFinal.Y() / D; // biaxial on non-composite section
+      m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = (/*my * m_Ixx +*/ m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] * m_Ixy) * m_epermFinal.X() / D + (m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] * m_Iyy/* + my * m_Ixy*/) * m_epermFinal.Y() / D; // biaxial on non-composite section
    }
    
    // uniaxial stresses on composite section
-   Float64 deltaFcd2a = IsZero(m_ApsPerm) ? 0 : (m_Msidl1*(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1); // stage 1 composite... typically, longitudinal joints are composite but before topping is composite
-   Float64 deltaFcd2b = IsZero(m_ApsPerm) ? 0 : (m_Msidl2*(m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2); // stage 2 composite... typically, topping is now composite
-   m_DeltaFcd2 = deltaFcd2a + deltaFcd2b;
-   
+   std::array<Float64, 2> deltaFcd2a{// stage 1 composite... typically, longitudinal joints are composite but before topping is composite
+      IsZero(m_ApsPerm) ? 0 : (m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] * (m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1),
+      IsZero(m_ApsPerm) ? 0 : (m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] * (m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1)
+   };
+   std::array<Float64, 2> deltaFcd2b{// stage 2 composite... typically, topping is now composite
+      IsZero(m_ApsPerm) ? 0 : (m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] * (m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2),
+      IsZero(m_ApsPerm) ? 0 : (m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] * (m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2)
+   };
+   m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION] = deltaFcd2a[WITH_ELASTIC_GAIN_REDUCTION] + deltaFcd2b[WITH_ELASTIC_GAIN_REDUCTION];
+   m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION] = deltaFcd2a[WITHOUT_ELASTIC_GAIN_REDUCTION] + deltaFcd2b[WITHOUT_ELASTIC_GAIN_REDUCTION];
+
    Float64 P = (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm;
    Float64 mx = P*m_epermFinal.Y();
-   Float64 my = 0;
-   m_DeltaFcd3 = P/m_Ag + (my*m_Ixx + mx*m_Ixy)*-m_epermFinal.X()/D - (mx*m_Iyy + my*m_Ixy)*-m_epermFinal.Y()/D;
+   m_DeltaFcd3 = P/m_Ag + (/*my*m_Ixx +*/ mx*m_Ixy)*-m_epermFinal.X()/D - (mx*m_Iyy /*+ my*m_Ixy*/)*-m_epermFinal.Y()/D;
    
    // change sign because these moments cause tension at the level of
-   // the strands which reduces creep
-   m_DeltaFcd = -1.0*(m_DeltaFcd1 + m_DeltaFcd2 + m_DeltaFcd3);
+   // the strands which reduces creep - use WITHOUT_ELASTIC_GAIN_REDUCTION because this elastic gain is baked into the LRFD/NCHRP 496 forumulation
+   // and can't be reduced. the reduction only applies to the elastic gains that approximate transformed section analysis
+   m_DeltaFcd = -1.0*(m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] + m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION] + m_DeltaFcd3);
 
    if ( IsZero(m_ApsPerm) )
    {
@@ -1074,10 +1081,12 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    }
 
    // Elastic gain due to deck placement
-   m_dfpED = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcd1;
+   m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] = IsZero(m_ApsPerm) ? 0 : (m_Ep / m_Ec) * m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION];
+   m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION] = IsZero(m_ApsPerm) ? 0 : (m_Ep / m_Ec) * m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION];
 
    // Elastic gain due to superimposed dead loads
-   m_dfpSIDL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcd2;
+   m_dfpSIDL[WITH_ELASTIC_GAIN_REDUCTION] = IsZero(m_ApsPerm) ? 0 : (m_Ep / m_Ec) * m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION];
+   m_dfpSIDL[WITHOUT_ELASTIC_GAIN_REDUCTION] = IsZero(m_ApsPerm) ? 0 : (m_Ep / m_Ec) * m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION];
 
    // Relaxation of Prestressing Strands [5.9.5.4.3c]
    m_dfpR2 = m_dfpR1;
@@ -1108,10 +1117,10 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // LRFD 2007 has a "-" in 1/Ac - epc*ed/I
    // we use a "+" because ed is < 0 for typical construction per our sign convension
-   m_DeltaFcdf = m_eddf*m_Ad*m_Ecd*(1/m_Acn + (epc*m_ed)/m_Icn)/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
+   m_DeltaFcdf = m_eddf * m_Ad * m_Ecd * (1 / m_Acn + (epc * m_ed) / m_Icn) / (1 + 0.7 * m_CreepDeck.GetCreepCoefficient());
 
    // if there aren't any strands, then there can't be gain due to deck shrinkage
-   m_dfpSS = IsZero(m_ApsPerm) ? 0.0 : (m_Ep/m_Ec)*m_DeltaFcdf*m_Kdf*(1 + 0.7*m_CreepDeckToFinal.GetCreepCoefficient());
+   m_dfpSS = IsZero(m_ApsPerm) ? 0.0 : (m_Ep / m_Ec) * m_DeltaFcdf * m_Kdf * (1 + 0.7 * m_CreepDeckToFinal.GetCreepCoefficient());
 }
 
 
@@ -1197,7 +1206,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    m_dfpCRH[PERMANENT_STRAND] = (m_Ep/m_Eci)*(fcgp+m_dfpp)*m_CreepInitialToHauling.GetCreepCoefficient()*m_Kih[PERMANENT_STRAND];
 
    // Relaxation of Prestressing Strands [5.9.5.4.2c]
-#pragma Reminder("NOTE") // consider m_dfpp???
+   // consider m_dfpp???
    Float64 th  = ::ConvertFromSysUnits(m_th,unitMeasure::Day);
    Float64 ti  = ::ConvertFromSysUnits(m_ti,unitMeasure::Day);
 
@@ -1389,9 +1398,9 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          1.0,
                          
                          2701223.1744837998,  // Dead load moment of girder only
-                         2144430.8154568151,  // Additional dead load on girder section
-                         0,
-                         494526.00384487113, // Superimposed dead loads
+                         std::vector<std::pair<Float64, Float64>>{std::make_pair(2144430.8154568151, 1.0)},  // Additional dead load on girder section
+                         std::vector<std::pair<Float64, Float64>>{std::make_pair(0, 1.0)},
+                         std::vector<std::pair<Float64, Float64>>{std::make_pair(494526.00384487113, 1.0)}, // Superimposed dead loads
 
                          75,  // Relative humidity [0,100]
                          86400.000000000000,   // Time until prestress transfer

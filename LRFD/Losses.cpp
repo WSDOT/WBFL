@@ -79,9 +79,9 @@ lrfdLosses::lrfdLosses(Float64 x,
    Float64 Ecd,  // Modulus of elasticity of deck
 
    Float64 Mdlg,  // Dead load moment of girder only
-   Float64 Madlg,  // Additional dead load on girder section
-   Float64 Msidl1, // Superimposed dead loads
-   Float64 Msidl2, // Superimposed dead loads
+   const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section
+   const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads
+   const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads
 
    Float64 Ag,   // area of girder
    Float64 Ixx,   // moment of inertia of girder
@@ -152,9 +152,9 @@ lrfdLosses::lrfdLosses(Float64 x,
    m_FpyTemp = lrfdPsStrand::GetYieldStrength(m_GradeTemp, m_TypeTemp);
 
    m_Mdlg = Mdlg;
-   m_Madlg = Madlg;
-   m_Msidl1 = Msidl1;
-   m_Msidl2 = Msidl2;
+   m_InputMadlg = Madlg;
+   m_InputMsidl1 = Msidl1;
+   m_InputMsidl2 = Msidl2;
 
    m_bIgnoreInitialRelaxation = bIgnoreInitialRelaxation;
 
@@ -232,9 +232,9 @@ lrfdLosses::lrfdLosses()
    m_FpyTemp               = lrfdPsStrand::GetYieldStrength( m_GradeTemp, m_TypeTemp );
 
    m_Mdlg                  = 0;
-   m_Madlg                 = 0;
-   m_Msidl1 = 0;
-   m_Msidl2 = 0;
+   //m_Madlg                 = 0;
+   //m_Msidl1 = 0;
+   //m_Msidl2 = 0;
 
    m_bIgnoreInitialRelaxation = true;
 
@@ -281,8 +281,10 @@ void lrfdLosses::Init()
    m_dfpR0[PERMANENT_STRAND] = 0;
    m_dfpES[TEMPORARY_STRAND] = 0;
    m_dfpES[PERMANENT_STRAND] = 0;
-   m_dfpED = 0;
-   m_dfpSIDL = 0;
+   m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+   m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+   m_dfpSIDL[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+   m_dfpSIDL[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
    m_dfpSS = 0;
    m_dfpp = 0;
    m_fpL = 0;
@@ -301,8 +303,10 @@ void lrfdLosses::Init()
    m_fptr = 0;
    m_dfptr = 0;
    m_Ptr = 0;
-   m_DeltaFcd1 = 0;
-   m_DeltaFcd2 = 0;
+   m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+   m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+   m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+   m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
    m_dfpF = 0;
    m_dfpFT = 0;
    m_dfpA = 0;
@@ -852,24 +856,24 @@ Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
    return m_dfpES[TEMPORARY_STRAND];
 }
 
-Float64 lrfdLosses::ElasticGainDueToDeckPlacement() const
+Float64 lrfdLosses::ElasticGainDueToDeckPlacement(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty ) 
    {
       UpdateLosses();
    }
 
-   return m_dfpED;
+   return bApplyElasticGainReduction ? m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] : m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
-Float64 lrfdLosses::ElasticGainDueToSIDL() const
+Float64 lrfdLosses::ElasticGainDueToSIDL(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty ) 
    {
       UpdateLosses();
    }
 
-   return m_dfpSIDL;
+   return bApplyElasticGainReduction ? m_dfpSIDL[WITH_ELASTIC_GAIN_REDUCTION] : m_dfpSIDL[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
 Float64 lrfdLosses::ElasticGainDueToDeckShrinkage() const
@@ -1085,24 +1089,24 @@ Float64 lrfdLosses::GetDeltaFpp() const
    return m_dfpp;
 }
 
-Float64 lrfdLosses::GetDeltaFcd1() const
+Float64 lrfdLosses::GetDeltaFcd1(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty )
    {
       UpdateLosses();
    }
 
-   return m_DeltaFcd1;
+   return bApplyElasticGainReduction ? m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] : m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
-Float64 lrfdLosses::GetDeltaFcd2() const
+Float64 lrfdLosses::GetDeltaFcd2(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty )
    {
       UpdateLosses();
    }
 
-   return m_DeltaFcd2;
+   return bApplyElasticGainReduction ? m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION] : m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
 Float64 lrfdLosses::GetDeltaFcdLL(Float64 Mllim) const
@@ -1117,6 +1121,31 @@ void lrfdLosses::UpdateLosses() const
    if ( !bUpdating )
    {
       bUpdating = true;
+
+      m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+      m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+      for (const auto& moment : m_InputMadlg)
+      {
+         m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second; // moment*factor
+         m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first; // moment
+      }
+
+      m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+      m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+      for (const auto& moment : m_InputMsidl1)
+      {
+         m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second;
+         m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first;
+      }
+
+      m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+      m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+      for (const auto& moment : m_InputMsidl2)
+      {
+         m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second;
+         m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first;
+      }
+
       try
       {
          if ( m_bValidateParameters )

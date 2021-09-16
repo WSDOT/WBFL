@@ -87,9 +87,9 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -278,11 +278,13 @@ void lrfdRefinedLossesTxDOT2013::UpdateLongTermLosses() const
    {
       m_dfpSR = shrinkage_losses( m_H, m_Fci, m_Ep );
 
-      m_Msd = m_Madlg + m_Msidl1 + m_Msidl2;
+      m_Msd = m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] + m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] + m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION];
+      Float64 msd = m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] + m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] + m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION];
 
-      m_DeltaFcd1 = -1 * m_Msd * m_epermFinal.Y()/m_Ixx;
+      m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = -1 * m_Msd * m_epermFinal.Y() / m_Ixx;
+      m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = -1 * msd * m_epermFinal.Y() / m_Ixx;
 
-      m_dfpCR = creep_losses( m_H, m_Fci, m_Eci, m_Ep, m_ElasticShortening.PermanentStrand_Fcgp(), m_DeltaFcd1 );
+      m_dfpCR = creep_losses( m_H, m_Fci, m_Eci, m_Ep, m_ElasticShortening.PermanentStrand_Fcgp(), m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION]);
 
       if (lrfdElasticShortening::fcgp07Fpu == m_ElasticShortening.GetFcgpComputationMethod())
       {

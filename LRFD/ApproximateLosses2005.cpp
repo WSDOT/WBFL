@@ -94,9 +94,9 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -442,7 +442,8 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
       // If the strands aren't jacked, then there can't be losses.
       m_dfpLT = 0.0;
       m_dfpTH = 0.0;
-      m_dfpED = 0.0;
+      m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] = 0.0;
+      m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0.0;
    }
    else
    {
@@ -481,15 +482,19 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
       }
 
       // Elastic gain due to deck placement
-      Float64 mx = m_Madlg;
-      Float64 my = 0;
       Float64 D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
-      m_DeltaFcd1 = (mx*m_Ixx + my*m_Ixy)*m_epermFinal.X() / D + (mx*m_Iyy + my*m_Ixy)*m_epermFinal.Y() / D; // biaxial on non-composite section
-      m_dfpED = (m_Ep/m_Ec)*m_DeltaFcd1;
+      m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = (m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] *m_Ixx/* + my*m_Ixy*/)*m_epermFinal.X() / D + (m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] *m_Iyy/* + my*m_Ixy*/)*m_epermFinal.Y() / D; // biaxial on non-composite section
+      m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] = (m_Ep/m_Ec)*m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION];
+
+      m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = (m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] * m_Ixx/* + my*m_Ixy*/) * m_epermFinal.X() / D + (m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] * m_Iyy/* + my*m_Ixy*/) * m_epermFinal.Y() / D; // biaxial on non-composite section
+      m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION] = (m_Ep / m_Ec) * m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION];
 
       // Elastic gain due to superimposed dead loads
-      m_DeltaFcd2 = m_Msidl1*(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2*( m_Ybc2 - m_Ybg + m_epermFinal.Y() )/m_Ic2; // uniaxial on composite section
-      m_dfpSIDL = (m_Ep/m_Ec)*m_DeltaFcd2;
+      m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION] = m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] *(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] *( m_Ybc2 - m_Ybg + m_epermFinal.Y() )/m_Ic2; // uniaxial on composite section
+      m_dfpSIDL[WITH_ELASTIC_GAIN_REDUCTION] = (m_Ep/m_Ec)*m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION];
+
+      m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION] = m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] * (m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] * (m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2; // uniaxial on composite section
+      m_dfpSIDL[WITHOUT_ELASTIC_GAIN_REDUCTION] = (m_Ep / m_Ec) * m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION];
    }
 }
 
