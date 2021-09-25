@@ -237,7 +237,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
             CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
             Float64 Xcg, Ycg;
             top_slice.pntCG->Location(&Xcg, &Ycg);
-            pSlice->InitSlice(top_slice.ShapeIdx,top_slice.SliceShape,top_slice.Area,Xcg,Ycg,top_slice.ei,incremental_strain,total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+            pSlice->InitSlice(top_slice.ShapeIdx,top_slice.SliceShape,top_slice.Area,Xcg,Ycg,top_slice.ei,incremental_strain,total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial, bExceededStrainLimits ? VARIANT_TRUE : VARIANT_FALSE);
             pSlice->QueryInterface(&pUnkTopSlice);
 
 #if defined _DEBUG_LOGGING
@@ -276,7 +276,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
             CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
             Float64 Xcg, Ycg;
             bottom_slice.pntCG->Location(&Xcg, &Ycg);
-            pSlice->InitSlice(bottom_slice.ShapeIdx,bottom_slice.SliceShape,bottom_slice.Area,Xcg,Ycg, bottom_slice.ei, incremental_strain, total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+            pSlice->InitSlice(bottom_slice.ShapeIdx,bottom_slice.SliceShape,bottom_slice.Area,Xcg,Ycg, bottom_slice.ei, incremental_strain, total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial, bExceededStrainLimits ? VARIANT_TRUE : VARIANT_FALSE);
             pSlice->QueryInterface(&pUnkBottomSlice);
 
 #if defined _DEBUG_LOGGING
@@ -323,7 +323,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
          CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
          Float64 Xcg, Ycg;
          slice.pntCG->Location(&Xcg, &Ycg);
-         pSlice->InitSlice(slice.ShapeIdx,slice.SliceShape,slice.Area,Xcg,Ycg, slice.ei, incremental_strain, total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+         pSlice->InitSlice(slice.ShapeIdx,slice.SliceShape,slice.Area,Xcg,Ycg, slice.ei, incremental_strain, total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial, bExceededStrainLimits ? VARIANT_TRUE : VARIANT_FALSE);
          CComPtr<IUnknown> punk;
          pSlice->QueryInterface(&punk);
          slices->Add(punk);

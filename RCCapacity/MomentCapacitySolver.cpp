@@ -426,14 +426,9 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
          Float64 d = 1000; // distance between P1 and P2.
 
          // One strain is set at m_Yfurthest. Set the other strain at either the top or bottom of the section being analyzed
-         // This assumes (0,0) is somewhere on the girder section
-         Float64 Y = IsEqual(m_YFurthest,m_Top) ? m_Bottom :
-            IsEqual(m_YFurthest,m_Bottom) ? m_Top : 
-            (m_YFurthest < 0 ? m_Top : m_Bottom);
-
-         // If m_Yfurthest is close to 0 we will have 3 points that are nearly co-linear plane... this will form a bad plane (too steep of a slope).
-         // When this is the case, adjust the Y location where we are varying the strain
-         //Float64 Y = InRange(-1.0, m_YFurthest, 1.0) ? 10 : 0;
+         Float64 dist_to_top = fabs(m_Top - m_YFurthest);
+         Float64 dist_to_bottom = fabs(m_YFurthest - m_Bottom);
+         Float64 Y = (dist_to_top < dist_to_bottom) ? m_Bottom : m_Top;
 
          Float64 sin_angle = sin(angle);
          Float64 cos_angle = cos(angle);

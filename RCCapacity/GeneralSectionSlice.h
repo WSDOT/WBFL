@@ -51,6 +51,7 @@ public:
       m_cgY = 0;
       m_fgStress = 0;
       m_bgStress = 0;
+      m_vbExceededStrainLimit = VARIANT_FALSE;
 	}
 
    HRESULT FinalConstruct();
@@ -78,6 +79,7 @@ private:
    Float64 m_TotalStrain;
    Float64 m_fgStress;
    Float64 m_bgStress;
+   VARIANT_BOOL m_vbExceededStrainLimit;
 
 // ISupportsErrorInfo
 public:
@@ -85,7 +87,7 @@ public:
 
 // IGeneralSectionSlice
 public:
-   STDMETHOD(InitSlice)(/*[in]*/IndexType shapeIdx,/*[in]*/IShape* pShape,/*[in]*/Float64 A,/*[in]*/Float64 cgX,/*[in]*/Float64 cgY,/*[in]*/Float64 initialStrain,/*[in]*/Float64 deltaStrain,/*[in]*/Float64 totalStrain,/*[in]*/Float64 fgStress,/*[in]*/Float64 bgStress,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial) override;
+   STDMETHOD(InitSlice)(/*[in]*/IndexType shapeIdx,/*[in]*/IShape* pShape,/*[in]*/Float64 A,/*[in]*/Float64 cgX,/*[in]*/Float64 cgY,/*[in]*/Float64 initialStrain,/*[in]*/Float64 deltaStrain,/*[in]*/Float64 totalStrain,/*[in]*/Float64 fgStress,/*[in]*/Float64 bgStress,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial, /*[in]*/VARIANT_BOOL vbExceededStrainLimit) override;
    STDMETHOD(get_Area)(/*[out,retval]*/Float64* pArea) override;
 	STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pCG) override;
    STDMETHOD(get_InitialStrain)(/*[out,retval]*/Float64* pStrain) override;
@@ -97,6 +99,7 @@ public:
    STDMETHOD(get_BackgroundMaterial)(/*[out,retval]*/IStressStrain** pMaterial) override;
    STDMETHOD(get_Shape)(/*[out,retval]*/IShape** pShape) override;
    STDMETHOD(get_ShapeIndex)(/*[out, retval]*/IndexType* pShapeIdx) override;
+   STDMETHOD(ExceededStrainLimit)(/*[out, retval]*/VARIANT_BOOL* pvbExceededStrainLimit) override;
 };
 
 #endif //__GeneralSectionSlice_H_

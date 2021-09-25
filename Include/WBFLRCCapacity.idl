@@ -1284,7 +1284,8 @@ library WBFLRCCapacity
          [in]Float64 fgStress, ///< Foreground stress at the slice centroid
          [in]Float64 bgStress, ///< Background stress at the slice centroid
          [in]IStressStrain* pfgMaterial, ///< Foreground material stress-strain model
-         [in]IStressStrain* pbgMaterial ///< Background material stress-strain model
+         [in]IStressStrain* pbgMaterial, ///< Background material stress-strain model
+         [in]VARIANT_BOOL vbExceededStrainLimit ///< Indicates if total_strain exceeds the strain limits of this slice
       );
 
       /// Slice area
@@ -1319,6 +1320,9 @@ library WBFLRCCapacity
 
       /// Background material stress-strain model
 		[propget,helpcontext(IDH_IGeneralSectionSlice_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([out,retval]IStressStrain** pMaterial);
+
+      /// Indicates if the strain limit of the foreground material at this slice were exceeded
+      [helpstring("method ExceededStrainLimit")] HRESULT ExceededStrainLimit([out, retval]VARIANT_BOOL* pvbExceededStrainLimit);
 	};
 
    /// Interface representing the solution to a biaxial fiber based general section analysis

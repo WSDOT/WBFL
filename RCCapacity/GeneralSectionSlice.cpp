@@ -62,7 +62,7 @@ STDMETHODIMP CGeneralSectionSlice::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // IGeneralSectionSlice
-STDMETHODIMP CGeneralSectionSlice::InitSlice(IndexType shapeIdx,IShape* pShape,Float64 A,Float64 cgX,Float64 cgY,Float64 initialStrain, Float64 incrementalStrain, Float64 totalStrain,Float64 fgStress,Float64 bgStress,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial)
+STDMETHODIMP CGeneralSectionSlice::InitSlice(IndexType shapeIdx,IShape* pShape,Float64 A,Float64 cgX,Float64 cgY,Float64 initialStrain, Float64 incrementalStrain, Float64 totalStrain,Float64 fgStress,Float64 bgStress,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial, VARIANT_BOOL vbExceededStrainLimit)
 {
    ATLASSERT(::IsEqual(initialStrain + incrementalStrain, totalStrain));
    m_ShapeIdx = shapeIdx;
@@ -77,6 +77,7 @@ STDMETHODIMP CGeneralSectionSlice::InitSlice(IndexType shapeIdx,IShape* pShape,F
    m_bgStress = bgStress;
    m_fgMaterial = pfgMaterial;
    m_bgMaterial = pbgMaterial;
+   m_vbExceededStrainLimit = vbExceededStrainLimit;
    return S_OK;
 }
 
@@ -165,5 +166,12 @@ STDMETHODIMP CGeneralSectionSlice::get_ShapeIndex(IndexType* pShapeIdx)
 {
    CHECK_RETVAL(pShapeIdx);
    *pShapeIdx = m_ShapeIdx;
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSectionSlice::ExceededStrainLimit(VARIANT_BOOL* pvbExceededStrainLimit)
+{
+   CHECK_RETVAL(pvbExceededStrainLimit);
+   *pvbExceededStrainLimit = m_vbExceededStrainLimit;
    return S_OK;
 }
