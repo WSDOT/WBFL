@@ -519,6 +519,45 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
    Float64 eo_lower = (solutionMethod == smFixedCompressionStrain ? k_or_ec : -0.0035);
    Float64 eo_upper = (solutionMethod == smFixedTensionStrain ? k_or_ec : 0.11);
 
+   //if (solutionMethod == smFixedStrain)
+   //{
+   //   Float64 dist_to_top = fabs(m_Top - strainLocation);
+   //   Float64 dist_to_bottom = fabs(strainLocation - m_Bottom);
+   //   Float64 H = dist_to_top + dist_to_bottom;
+   //   if (IsZero(angle))
+   //   {
+   //      // positive moment case - compression on top
+   //      if (dist_to_top < dist_to_bottom)
+   //      {
+   //         // strain control is at bottom of section
+   //         eo_lower = k_or_ec * H / fabs(strainLocation);
+   //         eo_upper *= 2;
+   //      }
+   //      else
+   //      {
+   //         // strain control is at top of section
+   //         eo_lower = 0.0;
+   //         eo_upper *= 2;
+   //      }
+   //   }
+   //   else if (IsEqual(angle, M_PI))
+   //   {
+   //      // negative moment case - compression on bottom
+   //      if (dist_to_top < dist_to_bottom)
+   //      {
+   //         // strain control is at bottom of section
+   //         eo_upper = 0.0;
+   //         eo_lower *= 2;
+   //      }
+   //      else
+   //      {
+   //         // strain control is at top of section
+   //         eo_upper = k_or_ec * (H - fabs(strainLocation)) / fabs(strainLocation);
+   //         eo_lower *= 2;
+   //      }
+   //   }
+   //}
+
    Float64 Fz_lower = 0;
    Float64 Fz_upper = 0;
 
@@ -585,6 +624,8 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    hr = GetNeutralAxisParameterRange(k_or_ec,strainLocation,solutionMethod,angle,Fz,&eo_lower,&eo_upper,&Fz_lower,&Fz_upper);
    if ( FAILED(hr) )
       return hr;
+
+   ATLASSERT(eo_lower < eo_upper);
 
    Float64 Mx,My;
 
