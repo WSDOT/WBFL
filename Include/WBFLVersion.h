@@ -28,5 +28,5 @@
 #include <sdkddkver.h>
 
 #ifndef _WBFL_VERSION
-#define _WBFL_VERSION 620 // version 6.2.0
+#define _WBFL_VERSION 700 // version 7.0.0
 #endif 
