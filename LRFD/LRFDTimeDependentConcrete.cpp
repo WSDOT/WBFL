@@ -515,6 +515,9 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
 
 Float64 lrfdLRFDTimeDependentConcrete::GetConcreteStrengthFactor() const
 {
+   // this method is only valide for pre-2005 loss methods
+   // 2005 and later, kf is a function of the concrete strength at time of loading
+   ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims);
    Validate();
    return m_kf;
 }
@@ -565,26 +568,19 @@ void lrfdLRFDTimeDependentConcrete::Validate() const
    // and we'll get into a recursive loop. Mark validation complete here so that doesn't
    // happen. When GetFc returns we will finish the validation.
 
-
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
-      Float64 fci = GetFc(m_TimeAtCasting + 28);
+      Float64 fc = GetFc(m_TimeAtCasting + 28);
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
-         fci = ::ConvertFromSysUnits(fci,unitMeasure::MPa);
-         m_kf = 62.0/(42 + fci);
+         fc = ::ConvertFromSysUnits(fc, unitMeasure::MPa);
+         m_kf = 62.0/(42 + fc);
       }
       else
       {
-         fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
-         m_kf = 1/(0.67 + (fci/9.0));
-      }
+         fc = ::ConvertFromSysUnits(fc, unitMeasure::KSI);
+         m_kf = 1/(0.67 + (fc/9.0));
    }
-   else
-   {
-      Float64 fci = GetFc(m_TimeAtCasting + 28);
-      fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
-      m_kf = 5.0/(1.0+fci);
    }
 }
 
@@ -624,6 +620,14 @@ Float64 lrfdLRFDTimeDependentConcrete::ModE(Float64 fc,Float64 density) const
    }
 
    return e;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::ComputeConcreteStrengthFactor(Float64 t) const
+{
+   Float64 fci = GetFc(m_TimeAtCasting + t);
+   fci = ::ConvertFromSysUnits(fci, unitMeasure::KSI);
+   Float64 kf = 5.0 / (1.0 + fci);
+   return kf;
 }
 
 void lrfdLRFDTimeDependentConcrete::InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails>& pDetails) const
@@ -686,12 +690,10 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
    }
 
 
-   Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
-   fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
-   Float64 kf = 5.0/(1.0 + fci);
+   Float64 kf = ComputeConcreteStrengthFactor(m_AgeAtInitialLoading);
 
    Float64 ktd;
-   fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
+   Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
       fci = ::ConvertFromSysUnits(fci,unitMeasure::MPa);
@@ -740,10 +742,10 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
 
    Float64 khs = (2.0 - 0.014*m_RelativeHumidity);
    
+   Float64 kf = ComputeConcreteStrengthFactor(m_AgeAtInitialLoading);
+
    Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
    fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
-   Float64 kf = 5.0/(1.0 + fci);
-
    Float64 ktd = (shrinkage_time)/(12*(100.0 - 4.0*fci)/(fci + 20) + shrinkage_time);
 
    Float64 esh = -m_ShrinkageK1*m_ShrinkageK2*ks*khs*kf*ktd*0.48E-3;
@@ -801,29 +803,31 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
       return pDetails;
    }
 
+   Float64 kf = ComputeConcreteStrengthFactor(age_at_loading);
+
    Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
    pDetails->fci = fci;
 
    Float64 ktd;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      fci = ::ConvertFromSysUnits(fci,unitMeasure::MPa);
+      fci = ::ConvertFromSysUnits(fci, unitMeasure::MPa);
       ktd = (maturity)/(61.0 - 0.58*fci + maturity);
    }
    else
    {
-      fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
+      fci = ::ConvertFromSysUnits(fci, unitMeasure::KSI);
       ktd = (maturity)/(61.0 - 4.0*fci + maturity);
    }
 
    
    Float64 ks = GetSizeFactorCreep(t,tla);
    Float64 ti = age_at_loading;
-   Float64 Y = m_CreepK1*m_CreepK2*m_Cu*ks*m_khc*m_kf*ktd*pow(ti,-0.118);
+   Float64 Y = m_CreepK1*m_CreepK2*m_Cu*ks*m_khc*kf*ktd*pow(ti,-0.118);
 
    pDetails->kvs = ks;
    pDetails->khc = m_khc;
-   pDetails->kf = m_kf;
+   pDetails->kf = kf;
    pDetails->ktd = ktd;
    pDetails->Ct = Y;
 
@@ -848,19 +852,20 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
 
    Float64 khc = (1.56 - 0.008*m_RelativeHumidity);
    
+   Float64 kf = ComputeConcreteStrengthFactor(age_at_loading);
+
    Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
    pDetails->fci = fci;
    fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
-   m_kf = 5.0/(1.0 + fci);
 
    Float64 ktd = (maturity)/(12*(100.0 - 4.0*fci)/(fci + 20) + maturity);
 
    Float64 ti = age_at_loading;
-   Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*m_kf*ktd*pow(ti,-0.118);
+   Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*kf*ktd*pow(ti,-0.118);
 
    pDetails->kvs = ks;
    pDetails->khc = m_khc;
-   pDetails->kf = m_kf;
+   pDetails->kf = kf;
    pDetails->ktd = ktd;
    pDetails->Ct = Y;
 

@@ -201,12 +201,15 @@ private:
 
    mutable Float64 m_khs; // relative humidity factor for shrinkage
    mutable Float64 m_khc; // relative humidity factor for creep
-   mutable Float64 m_kf;  // concrete strength factor
+   mutable Float64 m_kf;  // concrete strength factor (only valid for pre-2005 LRFD)
 
    mutable bool m_bIsValid;
    void Validate() const;
 
    Float64 ModE(Float64 fc,Float64 density) const;
+
+   // computes kf. For creep, t is the concrete age at loading. For shrinkage, t is the concrete age at initial loading
+   Float64 ComputeConcreteStrengthFactor(Float64 t) const;
 
    void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails>& pDetails) const;
    std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
