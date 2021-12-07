@@ -404,6 +404,7 @@
     <ClInclude Include="..\Include\GenericBridge\GenericBridgeExp.h" />
     <ClInclude Include="..\Include\GenericBridge\GirderSectionImpl.h" />
     <ClInclude Include="..\Include\GenericBridge\Helpers.h" />
+    <ClInclude Include="..\Include\GenericBridge\SplicedGirderSegmentImpl.h" />
     <ClInclude Include="AlignmentOffsetStrategy.h" />
     <ClInclude Include="BearingLayout.h" />
     <ClInclude Include="BoxBeamEndBlockSegment.h" />
@@ -460,7 +461,6 @@
     <ClInclude Include="SegmentItem.h" />
     <ClInclude Include="Segments.h" />
     <ClInclude Include="SidewalkBarrier.h" />
-    <ClInclude Include="SplicedGirderSegmentImpl.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="SuperstructureMember.h" />
     <ClInclude Include="SuperstructureMemberCollection.h" />

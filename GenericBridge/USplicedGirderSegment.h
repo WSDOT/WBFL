@@ -28,7 +28,7 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "SplicedGirderSegmentImpl.h"
+#include <GenericBridge/SplicedGirderSegmentImpl.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CUSplicedGirderSegment
