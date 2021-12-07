@@ -417,9 +417,6 @@
     <ClInclude Include="VoidedSlabSection2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SuperstructureMemberSegmentImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\GenericBridge\AutoLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>

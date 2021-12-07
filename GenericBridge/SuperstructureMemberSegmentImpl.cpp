@@ -24,7 +24,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "SuperstructureMemberSegmentImpl.h"
+#include <GenericBridge\SuperstructureMemberSegmentImpl.h>
 #include <GenericBridge\Helpers.h>
 
 #ifdef _DEBUG

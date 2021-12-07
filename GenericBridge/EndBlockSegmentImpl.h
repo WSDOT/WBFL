@@ -33,7 +33,7 @@
 #include <array>
 #include "WBFLGenericBridge.h"
 #include "ItemDataManager.h"
-#include "SuperstructureMemberSegmentImpl.h"
+#include <GenericBridge\SuperstructureMemberSegmentImpl.h>
 
 
 template<class T_IBeam>

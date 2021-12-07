@@ -29,7 +29,7 @@
 
 #include "resource.h"       // main symbols
 #include "ItemDataManager.h"
-#include "SuperstructureMemberSegmentImpl.h"
+#include <GenericBridge\SuperstructureMemberSegmentImpl.h>
 #include <array>
 
 #define START_ENDBLOCK_ZONE 0

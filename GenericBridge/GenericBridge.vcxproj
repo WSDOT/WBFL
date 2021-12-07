@@ -464,7 +464,6 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="SuperstructureMember.h" />
     <ClInclude Include="SuperstructureMemberCollection.h" />
-    <ClInclude Include="SuperstructureMemberSegmentImpl.h" />
     <ClInclude Include="TaperedGirderSegment.h" />
     <ClInclude Include="Tendon.h" />
     <ClInclude Include="TendonCollection.h" />

@@ -25,7 +25,10 @@
 
 #pragma once
 
-class CSuperstructureMemberSegmentImpl
+#include <GenericBridge\GenericBridgeExp.h>
+#include <array>
+
+class WBFLGENERICBRIDGECLASS CSuperstructureMemberSegmentImpl
 {
 public:
    CSuperstructureMemberSegmentImpl();
@@ -65,7 +68,7 @@ public:
    ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
-   Float64 m_HaunchDepth[3];
+   std::array<Float64, 3> m_HaunchDepth;
    // Can determine how to compute haunch depth at set time
    enum HaunchMode { hmPrismatic, hmLinear, hmParabolic } m_HaunchMode;
    Float64 m_Fillet;
