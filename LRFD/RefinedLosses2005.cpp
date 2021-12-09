@@ -1018,11 +1018,11 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetK2(m_CreepK2);
 
    // 2. Creep coefficient - deck to final
-   m_CreepDeckToFinal.SetCuringMethod(lrfdCreepCoefficient2005::Normal);
+   m_CreepDeckToFinal.SetCuringMethod(m_CuringMethod);
    m_CreepDeckToFinal.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeckToFinal.SetFc(m_Fci);
    m_CreepDeckToFinal.SetInitialAge(m_td);
-   m_CreepDeckToFinal.SetMaturity(m_tf- m_CreepDeckToFinal.GetAdjustedInitialAge());
+   m_CreepDeckToFinal.SetMaturity(m_tf - m_td);
    m_CreepDeckToFinal.SetRelHumidity(m_H);
    m_CreepDeckToFinal.SetSurfaceArea(m_S);
    m_CreepDeckToFinal.SetVolume(m_V);
@@ -1447,7 +1447,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value, 163455953.25443751) );
 
    value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value, 178191173.41146442) );
+   TRY_TESTME( IsEqual(value, 178391688.87407646) );
 
    // temporary strands
    value = loss.TemporaryStrand_BeforeTransfer();
