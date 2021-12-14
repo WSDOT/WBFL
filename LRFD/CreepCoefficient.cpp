@@ -299,6 +299,7 @@ void lrfdCreepCoefficient::Update() const
       m_tiAdjusted += m_CuringMethodTimeAdjustmentFactor - one_day; // days
    }
 
+   Float64 ti = ::ConvertFromSysUnits(m_tiAdjusted, unitMeasure::Day);
    Float64 t = ::ConvertFromSysUnits( m_t, unitMeasure::Day );
 
    a = t/(26.0*pow(e,x1*VS)+t);
@@ -307,13 +308,13 @@ void lrfdCreepCoefficient::Update() const
 
    m_kc = (a/b)*(c/2.587);
 
-   if (t < m_tiAdjusted)
+   if (t < ti)
    {
       m_Ct = 0;
    }
    else
    {
-      m_Ct = 3.5*m_kc*m_kf*(1.58 - m_H / 120.)*pow(m_tiAdjusted, -0.118) * (pow(t - m_tiAdjusted, 0.6) / (10.0 + pow(t - m_tiAdjusted, 0.6)));
+      m_Ct = 3.5*m_kc*m_kf*(1.58 - m_H / 120.)*pow(ti, -0.118) * (pow(t - ti, 0.6) / (10.0 + pow(t - ti, 0.6)));
    }
 
    m_bUpdate = false;
