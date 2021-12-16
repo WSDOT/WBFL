@@ -290,7 +290,7 @@ void lrfdCreepCoefficient::Update() const
    }
 
    m_tiAdjusted = m_ti;
-   if ( m_CuringMethod == Accelerated )
+   if ( m_CuringMethod == Accelerated && m_ti < ::ConvertToSysUnits(7.0, unitMeasure::Day))
    {
       // NCHRP 496...
       // ti = age of concrete, in days, when load is initially applied for accelerated curing, 
