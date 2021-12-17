@@ -622,9 +622,9 @@ Float64 lrfdLRFDTimeDependentConcrete::ModE(Float64 fc,Float64 density) const
    return e;
 }
 
-Float64 lrfdLRFDTimeDependentConcrete::ComputeConcreteStrengthFactor(Float64 t) const
+Float64 lrfdLRFDTimeDependentConcrete::ComputeConcreteStrengthFactor() const
 {
-   Float64 fci = GetFc(m_TimeAtCasting + t);
+   Float64 fci = GetFc(m_TimeAtCasting + m_CureTime);
    fci = ::ConvertFromSysUnits(fci, unitMeasure::KSI);
    Float64 kf = 5.0 / (1.0 + fci);
    return kf;
@@ -690,7 +690,8 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
    }
 
 
-   Float64 kf = ComputeConcreteStrengthFactor(m_AgeAtInitialLoading);
+   //Float64 kf = ComputeConcreteStrengthFactor(m_AgeAtInitialLoading);
+   Float64 kf = ComputeConcreteStrengthFactor();
 
    Float64 ktd;
    Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
@@ -742,7 +743,8 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
 
    Float64 khs = (2.0 - 0.014*m_RelativeHumidity);
    
-   Float64 kf = ComputeConcreteStrengthFactor(m_AgeAtInitialLoading);
+//   Float64 kf = ComputeConcreteStrengthFactor(m_AgeAtInitialLoading);
+   Float64 kf = ComputeConcreteStrengthFactor();
 
    Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
    fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
@@ -780,7 +782,8 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
 
    Float64 Y = 3.5*kc*m_kf*m_khc*kla*kt;
 
-   pDetails->fci = GetFc(m_TimeAtCasting + 28);
+   //pDetails->fci = GetFc(m_TimeAtCasting + 28);
+   pDetails->fci = GetFc(m_TimeAtCasting + m_CureTime);
    pDetails->kc = kc;
    pDetails->kf = m_kf;
    pDetails->Ct = Y;
@@ -803,9 +806,11 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
       return pDetails;
    }
 
-   Float64 kf = ComputeConcreteStrengthFactor(age_at_loading);
+   //Float64 kf = ComputeConcreteStrengthFactor(age_at_loading);
+   Float64 kf = ComputeConcreteStrengthFactor();
 
-   Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
+   //Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
+   Float64 fci = GetFc(m_TimeAtCasting + m_CureTime);
    pDetails->fci = fci;
 
    Float64 ktd;
@@ -852,9 +857,11 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
 
    Float64 khc = (1.56 - 0.008*m_RelativeHumidity);
    
-   Float64 kf = ComputeConcreteStrengthFactor(age_at_loading);
+   //Float64 kf = ComputeConcreteStrengthFactor(age_at_loading);
+   Float64 kf = ComputeConcreteStrengthFactor();
 
-   Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
+   //Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
+   Float64 fci = GetFc(m_TimeAtCasting + m_CureTime);
    pDetails->fci = fci;
    fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
 

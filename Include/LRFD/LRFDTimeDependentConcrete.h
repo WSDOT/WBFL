@@ -208,8 +208,7 @@ private:
 
    Float64 ModE(Float64 fc,Float64 density) const;
 
-   // computes kf. For creep, t is the concrete age at loading. For shrinkage, t is the concrete age at initial loading
-   Float64 ComputeConcreteStrengthFactor(Float64 t) const;
+   Float64 ComputeConcreteStrengthFactor() const;
 
    void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails>& pDetails) const;
    std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
