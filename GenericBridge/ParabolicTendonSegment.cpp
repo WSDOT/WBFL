@@ -224,55 +224,28 @@ STDMETHODIMP CParabolicTendonSegment::get_Slope(Float64 z,IVector3d** slope)
 
 STDMETHODIMP CParabolicTendonSegment::get_Length(Float64* length)
 {
-   ATLASSERT(IsZero(m_Slope)); // this is a major assumption in the calculation!!!
-   // Reference: http://en.wikipedia.org/wiki/Parabola
+   // approximate the length of the tendon by summing straigh line chords from the centerline
+   // a more exact method is available here  https://www.math.drexel.edu/~tolya/arc_length_x%5E2.pdf
+   // but this method requires some manipulation since it only uses y=x^2 whereas our equation is y=Ax^2 + Bx + C
+   *length = 0;
 
-   // NOTE: since the general case is a parabola in an arbitrary plane that is
-   // parallel to the Z axis we need to work in the plane of the parabola.
-   // (Think working in the plane of a U-beam web)
-
-   Float64 dx,dy,dz;
-   ProjectedLength(&dx,&dy,&dz);
-
-   // need change in elevation from start to end of parabola in plane
-   // of parabola
-   Float64 dh = sqrt(dx*dx + dy*dy);
-
-   if ( IsZero(dh) )
+   CComPtr<IPoint3dCollection> points;
+   get_Centerline(tmPath, &points);
+   IndexType nPoints;
+   points->get_Count(&nPoints);
+   CComPtr<IPoint3d> p1, p2;
+   IndexType idx = 0;
+   points->get_Item(idx++, &p1);
+   for (; idx < nPoints; idx++)
    {
-      // parabola is flat... it is actually a straight line
-      return m_GeomUtil->Distance(m_Start,m_End,length);
+      p2.Release();
+      points->get_Item(idx, &p2);
+      Float64 ds;
+      p2->DistanceEx(p1, &ds);
+      (*length) += ds;
+
+      p1 = p2;
    }
-
-   // get constants of the parabolic arc for the equation in the form of
-   // h = Az^2 + Bz + C. All we really need is A
-   Float64 A;
-   if ( m_SlopeEnd == qcbLeft )
-   {
-      // Slope is known at the left end
-      A = (dh - dz*m_Slope)/(dz*dz);
-   }
-   else
-   {
-      A = -(dh - dz*m_Slope)/(dz*dz);
-   }
-
-   // compute the focal length
-   ATLASSERT( !IsZero(A) );
-   Float64 f = fabs(1.0/(4*A)); // absolute value because the focal length is a distance
-
-   Float64 h = dz/2;
-   Float64 q = sqrt(f*f + h*h);
-
-   *length = h*q/f + f*log( (h+q)/f );
-
-#if defined _DEBUG
-   // the curve length should be longer then the straigh line between
-   // segment end points.
-   Float64 straightLineLength;
-   m_GeomUtil->Distance(m_Start,m_End,&straightLineLength);
-   ATLASSERT( straightLineLength < *length);
-#endif
 
    return S_OK;
 }
