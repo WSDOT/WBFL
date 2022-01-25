@@ -169,6 +169,11 @@ public:
    Float64 GetSizeFactorShrinkage(Float64 t) const;
    Float64 GetConcreteStrengthFactor() const;
 
+   // PCI UHPC parameters
+   void SetFirstCrackStrength(Float64 ffc);
+   Float64 GetFirstCrackStrength() const;
+   void SetPostCrackingTensileStrength(Float64 frr);
+   Float64 GetPostCrackingTensileStrength() const;
 
 protected:
    // prevent copying and assignment (use CreateClone instead)
@@ -202,6 +207,10 @@ private:
    mutable Float64 m_khs; // relative humidity factor for shrinkage
    mutable Float64 m_khc; // relative humidity factor for creep
    mutable Float64 m_kf;  // concrete strength factor (only valid for pre-2005 LRFD)
+
+   // PCI UHPC parameters
+   Float64 m_ffc; // first crack tensile strength
+   Float64 m_frr; // post-crack residual tensile strength
 
    mutable bool m_bIsValid;
    void Validate() const;

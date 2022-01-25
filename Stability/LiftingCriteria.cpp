@@ -34,19 +34,12 @@ using namespace WBFL::Stability;
 
 LiftingCriteria::LiftingCriteria()
 {
-   Lambda = 0.0;
-
    CompressionCoefficient_GlobalStress = 0;
    CompressionCoefficient_PeakStress = 0;
-   TensionCoefficient = 0;
-   bMaxTension = false;
-   MaxTension = 0;
 
    MinFScr = Float64_Max;
    MinFSf  = Float64_Max;
 
    AllowableCompression_GlobalStress = 0;
    AllowableCompression_PeakStress = 0;
-   AllowableTension          = 0;
-   AllowableTensionWithRebar = 0;
 }

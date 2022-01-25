@@ -25,9 +25,8 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LumpSumLosses.h>
 #include <Lrfd\XPsLosses.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,27 +74,10 @@ lrfdLosses()
    m_Final                   = final;
 }
 
-lrfdLumpSumLosses::lrfdLumpSumLosses(const lrfdLumpSumLosses& rOther)
-{
-   MakeCopy( rOther );
-}
-
 lrfdLumpSumLosses::~lrfdLumpSumLosses()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdLumpSumLosses& lrfdLumpSumLosses::operator=(const lrfdLumpSumLosses& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
 Float64 lrfdLumpSumLosses::PermanentStrand_BeforeTransfer() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_BeforeXfer : 0;
@@ -383,44 +365,6 @@ void lrfdLumpSumLosses::SetAfterDeckPlacementLosses(Float64 loss)
 void lrfdLumpSumLosses::SetFinalLosses(Float64 loss)
 {
    m_Final = loss;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdLumpSumLosses::MakeAssignment( const lrfdLumpSumLosses& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void lrfdLumpSumLosses::MakeCopy( const lrfdLumpSumLosses& rOther )
-{
-   lrfdLosses::MakeCopy(rOther);
-
-   m_BeforeXfer              = rOther.m_BeforeXfer;
-   m_AfterXfer               = rOther.m_AfterXfer;
-   m_AtLifting               = rOther.m_AtLifting;
-   m_AtShipping              = rOther.m_AtShipping;
-   m_BeforeTempStrandRemoval = rOther.m_BeforeTempStrandRemoval;
-   m_AfterTempStrandRemoval  = rOther.m_AfterTempStrandRemoval;
-   m_AfterDeckPlacement      = rOther.m_AfterDeckPlacement;
-   m_AfterSIDL               = rOther.m_AfterSIDL;
-   m_Final                   = rOther.m_Final;
 }
 
 void lrfdLumpSumLosses::ValidateParameters() const

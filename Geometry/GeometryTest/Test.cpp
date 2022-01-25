@@ -83,6 +83,9 @@
 
 #include "TestBeamShapeFactory.h"
 
+#include "TestNUDeckedIBeam.h"
+#include "TestPCIDeckedIBeam.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -140,6 +143,9 @@ int main(int argc, LPTSTR  argv[])
    CTestGenericShape::Test();
 
    CTestBeamShapeFactory::Test();
+
+   CTestNUDeckedIBeam::Test();
+   CTestPCIDeckedIBeam::Test();
 
    ::CoUninitialize();
 

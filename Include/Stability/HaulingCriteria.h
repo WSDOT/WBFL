@@ -24,6 +24,7 @@
 #pragma once
 
 #include <Stability\StabilityExp.h>
+#include <Stability\HaulingTensionStressLimit.h>
 #include <array>
 
 namespace WBFL
@@ -45,22 +46,15 @@ namespace WBFL
       public:
          HaulingCriteria();
 
-         Float64 Lambda; ///< concrete density modification factor (see LRFD 5.4.2.8)
-
-         Float64 CompressionCoefficient_GlobalStress; ///< Compression stress limit coefficienent for global stress
-         Float64 CompressionCoefficient_PeakStress; ///< Compression stress limit coefficient for peak stress
-         std::array<Float64, 2> TensionCoefficient; ///< Tension stress limit coefficient (array index is HaulingSlope)
-         std::array<bool, 2> bMaxTension; ///< Boolean indicating if there is a maximum tension stress limit (array index is HaulingSlope)
-         std::array<Float64, 2> MaxTension; ///< Maximum tension stress limit (array index is HaulingSlope)
-         std::array<Float64, 2> TensionCoefficientWithRebar; ///< Tension stress limit coefficient for sections with adequate reinforcement (array index is HaulingSlope)
-
          Float64 MinFScr; ///< Minimum factor of safety against cracking
          Float64 MinFSf;  ///< Minimum factor of safety against failure
 
          Float64 AllowableCompression_GlobalStress; ///< Compression stress limit for global stress
          Float64 AllowableCompression_PeakStress; ///< Compression stress limit for peak stress
-         std::array<Float64, 2> AllowableTension; ///< Tension stress limit (array index is HaulingSlope)
-         std::array<Float64, 2> AllowableTensionWithRebar; ///< Tension tension stress limit if there is adequate rebar (array index is HaulingSlope)
+         Float64 CompressionCoefficient_GlobalStress; ///< Compression stress limit coefficienent for global stress
+         Float64 CompressionCoefficient_PeakStress; ///< Compression stress limit coefficient for peak stress
+
+         std::shared_ptr<IHaulingTensionStressLimit> TensionStressLimit;
 
          Float64 MaxClearSpan; ///< Maximum clear span between supports
          Float64 MaxLeadingOverhang; ///< Maximum leading overhang (overhang nearest tractor)

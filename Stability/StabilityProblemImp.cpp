@@ -23,6 +23,7 @@
 
 #include <Stability\StabilityLib.h>
 #include <Stability\StabilityProblemImp.h>
+#include <WBFLGenericBridge.h> // for ISegment
 #include <UnitMgt\UnitMgt.h>
 #include <algorithm>
 

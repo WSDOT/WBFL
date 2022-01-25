@@ -29,7 +29,6 @@
 #include <Lrfd\VersionMgr.h>
 #include <MathEx.h>
 #include <Units\Units.h>
-#include <Units\SysUnits.h>
 #include <GeometricPrimitives\GeometricPrimitives.h>
 #include <GeometricPrimitives\LineSegment2d.h>
 #include <GeometricPrimitives\GeomOp2d.h>
@@ -401,7 +400,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    }
    else
    {
-      if (pData->ConcreteType == matConcrete::Normal || pData->ConcreteType == matConcrete::UHPC)
+      if (pData->ConcreteType == matConcrete::Normal)
       {
          sqrt_fc = sqrt(fc);
       }
@@ -416,6 +415,14 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       else if (pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct)
       {
          sqrt_fc = 0.85*sqrt(fc);
+      }
+      else if (pData->ConcreteType == matConcrete::PCI_UHPC)
+      {
+         ATLASSERT(false); // Vci/Vcw doesn't support PCI UHPC
+      }
+      else
+      {
+         ATLASSERT(false); // is there a new concrete type?
       }
    }
 

@@ -324,6 +324,23 @@
          <progid>WBFLGeometry.BoxBeam.1</progid>
       </comClass>
 
+      <comClass clsid="{F663062C-9209-4D00-88BE-FA82BA411A93}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="NUDecked I-Beam Class"
+                threadingModel="Apartment"
+                progid="WBFLGeometry.NUDeckedIBeam">
+         <progid>WBFLGeometry.NUDeckedIBeam.1</progid>
+      </comClass>
+
+
+      <comClass clsid="{904FC6A6-EB6A-4066-8D6F-325829DB32B2}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="PCI UHPC Decked I-Beam Class"
+                threadingModel="Apartment"
+                progid="WBFLGeometry.PCIDeckedIBeam">
+         <progid>WBFLGeometry.PCIDeckedIBeam.1</progid>
+      </comClass>
+
       <comClass clsid="{4B272221-CF8C-40C6-9281-12C8277B668A}"
                 tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                 description="BeamShapeFactory Class"
@@ -1424,6 +1441,15 @@
       <comClass clsid="{9AC4752D-388F-4536-ABB6-B13933322915}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="PrestressingStrand"></comClass>
+
+      <comClass clsid="{597871DD-6755-4A26-ADB9-A2A346F8D85A}"
+          tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+          description="NUDeckedBulbTeeSection Class"></comClass>
+
+      <comClass clsid="{66ADFC75-BC7E-4738-9AE6-0BAE5352C0C0}"
+          tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+          description="PCIDeckedBulbTeeSection Class"></comClass>
+
       <typelib tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                version="1.0"
                helpdir=""
@@ -1584,7 +1610,10 @@
      <comClass clsid="{FCB202FA-D5B0-4ADB-9B1B-4A4B9A7128AA}"
           tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
           description="UHPConcrete Class"></comClass>
-     <comClass clsid="{75C05DC6-48F7-476B-B67A-ABD58180F9FB}"
+      <comClass clsid="{4A4F98C2-3F36-4E45-A00A-6A26727D8ACE}"
+     tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
+     description="PCIUHPConcrete Class"></comClass>
+      <comClass clsid="{75C05DC6-48F7-476B-B67A-ABD58180F9FB}"
                 tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
                 description="PSPowerFormula Class"></comClass>
      <comClass clsid="{FD96764F-8857-4346-AB8A-144636A54A87}"

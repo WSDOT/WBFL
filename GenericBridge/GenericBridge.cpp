@@ -188,6 +188,8 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_RebarSectionItem,CRebarSectionItem)
    OBJECT_ENTRY_NON_CREATEABLE(CCastingRegion)
    OBJECT_ENTRY(CLSID_CastingRegions,CCastingRegions)
+   OBJECT_ENTRY(CLSID_NUDeckedBulbTeeSection,CNUDeckedBulbTeeSection)
+   OBJECT_ENTRY(CLSID_PCIDeckedBulbTeeSection,CPCIDeckedBulbTeeSection)
 END_OBJECT_MAP()
 
 

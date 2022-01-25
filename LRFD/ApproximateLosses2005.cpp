@@ -27,9 +27,7 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XPsLosses.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -128,27 +126,10 @@ lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeT
 {
 }
 
-lrfdApproximateLosses2005::lrfdApproximateLosses2005(const lrfdApproximateLosses2005& rOther)
-{
-   MakeCopy( rOther );
-}
-
 lrfdApproximateLosses2005::~lrfdApproximateLosses2005()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdApproximateLosses2005& lrfdApproximateLosses2005::operator=(const lrfdApproximateLosses2005& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
 Float64 lrfdApproximateLosses2005::TemporaryStrand_RelaxationLossesAtXfer() const
 {
    if ( IsZero(m_ApsTemp) || IsZero(m_FpjTemp) )
@@ -375,36 +356,6 @@ Float64 lrfdApproximateLosses2005::GetStrengthFactor() const
    {
       return 5/(1 + ::ConvertFromSysUnits(m_Fci,unitMeasure::KSI));
    }
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdApproximateLosses2005::MakeAssignment( const lrfdApproximateLosses2005& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdApproximateLosses2005::MakeCopy( const lrfdApproximateLosses2005& rOther )
-{
-   lrfdLosses::MakeCopy(rOther);
-
-   m_dfpTH = rOther.m_dfpTH;
-   m_dfpLT = rOther.m_dfpLT;
 }
 
 void lrfdApproximateLosses2005::ValidateParameters() const

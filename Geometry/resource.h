@@ -73,6 +73,8 @@
 #define IDR_BULBTEE2                    145
 #define IDR_BEAMSHAPEFACTORY            146
 #define IDR_PRECASTBEAM2                147
+#define IDR_NUDECKEDIBEAM               148
+#define IDR_PCIDECKEDIBEAM              149
 
 #define IDS_E_NOTNORMALIZED             512
 #define IDS_E_ZEROMAGNITUDE             513

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.PCIDeckedIBeam.1 = s 'PCI UHPC Decked I-Beam Class'
+	{
+		CLSID = s '{904FC6A6-EB6A-4066-8D6F-325829DB32B2}'
+	}
+	WBFLGeometry.PCIDeckedIBeam = s 'PCI UHPC Decked I-Beam Class'
+	{
+		CLSID = s '{904FC6A6-EB6A-4066-8D6F-325829DB32B2}'
+		CurVer = s 'WBFLGeometry.PCIDeckedIBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {904FC6A6-EB6A-4066-8D6F-325829DB32B2} = s 'PCI UHPC Decked I-Beam Class'
+		{
+			ProgID = s 'WBFLGeometry.PCIDeckedIBeam.1'
+			VersionIndependentProgID = s 'WBFLGeometry.PCIDeckedIBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

@@ -125,7 +125,7 @@ library WBFLRCCapacity
       /// Returns the range of strain values applicable to the model
 	  [helpcontext(IDH_IStressStrain_StrainLimits),helpstring("method StrainLimits")] HRESULT StrainLimits([out]Float64* minStrain,[out]Float64* maxStrain);
 
-     /// Returns the strain that cooresponds to the peak stress
+     /// Returns the strain that corresponds to the peak stress
 	  [propget,helpcontext(IDH_IStressStrain_StrainAtPeakStress),helpstring("property StrainAtPeakStress")] HRESULT StrainAtPeakStress([out,retval]Float64* strain);
 	};
 
@@ -950,7 +950,7 @@ library WBFLRCCapacity
    /// Mechanical Behavior and Design Properties of Ultra-High Perfornace Concrete
    /// El-Helou, Rafic, Haber, Z., Graybeal, B.
    /// (Unpublished as of 2020)
-   /// /todo - Update refrence after publication
+   /// /todo - Update reference after publication
    [
       object,
       uuid(850587AD-4547-40F8-8870-CF8D47F4068E),
@@ -991,6 +991,22 @@ library WBFLRCCapacity
       /// Reduction factor to account for the variability in tensile stress parameters.
       [propget, helpstring("property gamma")] HRESULT gamma([out, retval] Float64 *pVal);
       [propput, helpstring("property gamma")] HRESULT gamma([in] Float64 newVal);
+   };
+
+
+   /// Interface defining properties of Ultra High Performance Concrete (UHPC) per PCI Structural Design Guidance
+   [
+      object,
+      uuid(D42D7A1F-C488-475A-A9F6-1B1754C1549E),
+      oleautomation,
+      helpstring("IPCIUHPConcrete Interface"),
+      pointer_default(unique)
+   ]
+   interface IPCIUHPConcrete : IUnknown
+   {
+      /// Specified 28 day concrete strength.
+      [propget, helpstring("property fc")] HRESULT fc([out, retval] Float64* pVal);
+      [propput, helpstring("property fc")] HRESULT fc([in] Float64 newVal);
    };
 
    /// Interface defining an elastic-plastic mild steel reinforcement model.
@@ -2325,6 +2341,22 @@ library WBFLRCCapacity
    coclass UHPConcrete
    {
       [default] interface IUHPConcrete;
+      interface IStressStrain;
+      interface ISupportUnitServer;
+      interface IStructuredStorage2;
+   };
+
+   /// Material model for PCI-UHP concrete.
+   ///
+   /// Implements the IPCIUHPConcrete, IStressStrain, and ISupportUnitServer interfaces
+   [
+      uuid(4A4F98C2-3F36-4E45-A00A-6A26727D8ACE),
+      helpcontext(IDH_IUnconfinedConcrete),
+      helpstring("PCIUHPConcrete Class")
+   ]
+   coclass PCIUHPConcrete
+   {
+      [default] interface IPCIUHPConcrete;
       interface IStressStrain;
       interface ISupportUnitServer;
       interface IStructuredStorage2;

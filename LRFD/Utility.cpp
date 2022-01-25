@@ -25,7 +25,6 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\Utility.h>
 #include <Lrfd\VersionMgr.h>
-#include <Units\SysUnits.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -131,10 +131,9 @@ namespace WBFL
          /// Returns the concrete strength required to satisfy the compression stress limit
          Float64 RequiredFcCompression() const;
 
-         /// Returns the concrete strenght required to satisfy the tension stress limit for sections without sufficient auxilary reinforcement
+         /// Returns the concrete strength required to satisfy the tension stress limit
          Float64 RequiredFcTension() const;
-
-         /// Returns the concrete strenght required to satisfy the tension stress limit for sections with sufficient auxilary reinforcement
+         Float64 RequiredFcTensionWithoutRebar() const;
          Float64 RequiredFcTensionWithRebar() const;
 
       private:

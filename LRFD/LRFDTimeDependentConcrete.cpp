@@ -70,6 +70,8 @@ m_ShrinkageK1(1.0),
 m_ShrinkageK2(1.0),
 m_Lambda(1.0)
 {
+   Float64 fcMin, fpeak;
+   lrfdConcreteUtil::GetPCIUHPCMinProperties(&fcMin, &m_ffc, &fpeak, &m_frr);
 }
 
 lrfdLRFDTimeDependentConcrete::lrfdLRFDTimeDependentConcrete(const lrfdLRFDTimeDependentConcrete& rOther) :
@@ -92,6 +94,9 @@ m_Lambda(1.0)
    m_Beta     = rOther.m_Beta;
    m_Eshu     = rOther.m_Eshu;
    m_Cu       = rOther.m_Cu;
+
+   m_ffc = rOther.m_ffc;
+   m_frr = rOther.m_frr;
 }
 
 void lrfdLRFDTimeDependentConcrete::SetA(Float64 a)
@@ -522,6 +527,26 @@ Float64 lrfdLRFDTimeDependentConcrete::GetConcreteStrengthFactor() const
    return m_kf;
 }
 
+void lrfdLRFDTimeDependentConcrete::SetFirstCrackStrength(Float64 ffc)
+{
+   m_ffc = ffc;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetFirstCrackStrength() const
+{
+   return m_ffc;
+}
+
+void lrfdLRFDTimeDependentConcrete::SetPostCrackingTensileStrength(Float64 frr)
+{
+   m_frr = frr;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetPostCrackingTensileStrength() const
+{
+   return m_frr;
+}
+
 void lrfdLRFDTimeDependentConcrete::Validate() const
 {
    if ( m_bIsValid )
@@ -580,7 +605,7 @@ void lrfdLRFDTimeDependentConcrete::Validate() const
       {
          fc = ::ConvertFromSysUnits(fc, unitMeasure::KSI);
          m_kf = 1/(0.67 + (fc/9.0));
-   }
+      }
    }
 }
 

@@ -64,10 +64,6 @@ class LRFDCLASS lrfdConcreteUtil
 {
 public:
    // GROUP: ENUMERATIONS
-   enum DensityType { NormalDensity,
-                      AllLowDensity,
-                      SandLowDensity
-   };
 
    // GROUP: LIFECYCLE
 
@@ -89,7 +85,8 @@ public:
    static Float64 GetLWCDensityLimit();
 
    // Gets the valid range of UHPC concrete strength
-   static void GetUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax);
+   static void GetPCIUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax);
+   static void GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, Float64* pfpeak, Float64* pfrr);
 
    //------------------------------------------------------------------------
    // Returns the modulus of elasticity of concrete.  The modulus of elasticity
@@ -105,7 +102,7 @@ public:
    //------------------------------------------------------------------------
    // Returns the modulus of rupture.  The modulus of rupture is computed in
    // accordnace with Article 5.4.2.6
-   static Float64 ModRupture(Float64 fc, DensityType densityType);
+   static Float64 ModRupture(Float64 fc, matConcrete::Type concreteType);
    static Float64 ModRupture(Float64 fc, Float64 k);
 
    //------------------------------------------------------------------------
@@ -113,31 +110,13 @@ public:
    // with Article 5.7.2.2
    static Float64 Beta1(Float64 fc);
 
-   //------------------------------------------------------------------------
-   // Return shear friction factor per 5.8.4.2
-   // normal density concrete only
-   static Float64 ShearFrictionFactor(bool isRoughened);
-
-   //------------------------------------------------------------------------
-   // Return cohesion factor per 5.8.4.2
-   // normal density concrete only
-   static Float64 ShearCohesionFactor(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType);
-
-   //------------------------------------------------------------------------
-   // Return K1 factor per 5.8.4.2
-   // normal density concrete only
-   static Float64 HorizShearK1(bool isRoughened);
-
-   //------------------------------------------------------------------------
-   // Return K2 factor per 5.8.4.2
-   // normal density concrete only
-   static Float64 HorizShearK2(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType);
+   static void InterfaceShearParameters(bool isRoughened, matConcrete::Type girderConcType, matConcrete::Type deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2);
 
    //------------------------------------------------------------------------
    // Return nominal horizontal shear resistances per 5.8.4.1
    // Three resistances are returned for eqn's 1-3.
    // The governing resistance is determined by taking the min of these three
-   static void HorizontalShearResistances(Float64 c, Float64 u, Float64 K1, Float64 K2,
+   static void InterfaceShearResistances(Float64 c, Float64 u, Float64 K1, Float64 K2,
                                           Float64 Acv, Float64 Avf, Float64 Pc,
                                           Float64 fc, Float64 fy,
                                           Float64* penqn1, Float64* penqn2, Float64* penqn3);
@@ -223,7 +202,7 @@ private:
    // GROUP: OPERATIONS
    // GROUP: ACCESS
    // GROUP: INQUIRY
-   static Float64 ModRupture(Float64 fc, DensityType densityType,Float64 k);
+   static Float64 ModRupture(Float64 fc, matConcrete::Type concreteType,Float64 k);
 };
 
 // INLINE METHODS

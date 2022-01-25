@@ -27,9 +27,7 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XPsLosses.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -127,27 +125,10 @@ lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeT
    m_FcgpMethod = method;
 }
 
-lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(const lrfdRefinedLossesTxDOT2013& rOther)
-{
-   MakeCopy( rOther );
-}
-
 lrfdRefinedLossesTxDOT2013::~lrfdRefinedLossesTxDOT2013()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdRefinedLossesTxDOT2013& lrfdRefinedLossesTxDOT2013::operator=(const lrfdRefinedLossesTxDOT2013& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
 Float64 lrfdRefinedLossesTxDOT2013::TemporaryStrand_TimeDependentLossesAtShipping() const
 {
    return PermanentStrand_TimeDependentLossesAtShipping();
@@ -373,45 +354,6 @@ Float64 lrfdRefinedLossesTxDOT2013::GetSdMoment() const
     }
 
     return m_Msd;
-}
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdRefinedLossesTxDOT2013::MakeAssignment( const lrfdRefinedLossesTxDOT2013& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void lrfdRefinedLossesTxDOT2013::MakeCopy( const lrfdRefinedLossesTxDOT2013& rOther )
-{
-   lrfdLosses::MakeCopy(rOther);
-
-   m_dfpSR = rOther.m_dfpSR;
-   m_dfpCR = rOther.m_dfpCR;
-   m_dfpR2 = rOther.m_dfpR2;
-   m_dfpR1 = rOther.m_dfpR1;
-
-   m_KL     = rOther.m_KL;
-   m_fpt    = rOther.m_fpt;
-   m_Msd    = rOther.m_Msd;
-
-   m_Shipping = rOther.m_Shipping;
-   m_FcgpMethod = rOther.m_FcgpMethod;
 }
 
 void lrfdRefinedLossesTxDOT2013::Init() const

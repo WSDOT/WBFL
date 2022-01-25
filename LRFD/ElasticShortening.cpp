@@ -26,8 +26,7 @@
 #include <Lrfd\PsStrand.h>
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
-#include <Units\SysUnits.h>
-#include <MathEx.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

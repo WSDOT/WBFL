@@ -82,8 +82,6 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
    bool bLabelWind   = (0 < nWindCases   ? true : false);
    bool bIsCF        = (0 < nCFCases     ? true : false);
 
-   bool bLambda = (lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() ? true : false);
-
    HaulingImpact impactUsage = pStabilityProblem->GetImpactUsage();
 
    for ( int s = 0; s < 2; s++ )
@@ -226,32 +224,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
       *pPara << _T("Compression stress limit (general) = -") << criteria.CompressionCoefficient_GlobalStress << RPT_FC << _T(" = ") << stress.SetValue(criteria.AllowableCompression_GlobalStress) << rptNewLine;
       *pPara << _T("Compression stress limit (with lateral bending) = -") << criteria.CompressionCoefficient_PeakStress << RPT_FC << _T(" = ") << stress.SetValue(criteria.AllowableCompression_PeakStress) << rptNewLine;
 
-      *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(criteria.TensionCoefficient[slope]);
-      if ( bLambda )
-      {
-         *pPara << symbol(lambda);
-      }
-      *pPara << symbol(ROOT) << RPT_FC;
-      if ( criteria.bMaxTension[slope] )
-      {
-         *pPara << _T(" but not more than ") << stress.SetValue(criteria.MaxTension[slope]);
-      }
-      *pPara << _T(" = " ) << stress.SetValue(criteria.AllowableTension[slope]) << rptNewLine;
-
-      if ( segment )
-      {
-         *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(criteria.TensionCoefficientWithRebar[slope]);
-         if ( bLambda )
-         {
-            *pPara << symbol(lambda);
-         }
-         *pPara << symbol(ROOT) << RPT_FC;
-         *pPara << _T(" if bonded reinforcement sufficient to resist the tensile force in the concrete is provided = ") << stress.SetValue(criteria.AllowableTensionWithRebar[slope]) << rptNewLine;
-      }
-      else
-      {
-         *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated because reinforcement is not modeled.") << rptNewLine;
-      }
+      criteria.TensionStressLimit->ReportTensionLimit(slope, pPara, pDisplayUnits);
 
       *pPara << _T("Minimum factor of safety against cracking = ") << scalar.SetValue(criteria.MinFScr) << rptNewLine;
       
@@ -266,32 +239,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
          *pPara << symbol(infinity) << rptNewLine;
       }
 
-      fcReqd = pArtifact->RequiredFcTension(slope);
-      *pPara << RPT_FC << _T(" required for tensile stress = ");
-      if ( fcReqd < 0 )
-      {
-         ATLASSERT(fcReqd == -99999);
-         *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
-      }
-      else
-      {
-         *pPara << stress.SetValue(fcReqd) << rptNewLine;
-      }
-
-      if ( segment )
-      {
-         fcReqd = pArtifact->RequiredFcTensionWithRebar(slope);
-         *pPara << RPT_FC << _T(" required for tensile stress with bonded reinforcement sufficient to resist the tensile force in the concrete = ");
-         if ( fcReqd < 0 )
-         {
-            ATLASSERT(fcReqd == -99999);
-            *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
-         }
-         else
-         {
-            *pPara << stress.SetValue(fcReqd) << rptNewLine;
-         }
-      }
+      criteria.TensionStressLimit->ReportRequiredConcreteStrength(slope, pArtifact, pPara, pDisplayUnits);
 
       *pPara << _T("The tensile stress case with the minimum C/D ratio governs") << rptNewLine;
 

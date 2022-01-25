@@ -130,6 +130,12 @@
     <ClCompile Include="LldfTxdotSpreadSlab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PCIUHPCLosses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PCIUHPCCreepCoefficient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\LRFD\ApproximateLosses.h">
@@ -274,6 +280,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\LldfTxdotSpreadSlab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\PCIUHPCLosses.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\PCIUHPCCreepCoefficient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

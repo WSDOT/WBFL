@@ -24,6 +24,7 @@
 #pragma once
 
 #include <Stability\StabilityExp.h>
+#include <Stability\LiftingTensionStressLimit.h>
 
 namespace WBFL
 {
@@ -36,23 +37,15 @@ namespace WBFL
       public:
          LiftingCriteria();
 
-         Float64 Lambda; ///< concrete density modification factor (see LRFD 5.4.2.8)
-
-         Float64 CompressionCoefficient_GlobalStress; ///< Global compression compression limit coefficient (x*f'c)
-         Float64 CompressionCoefficient_PeakStress; ///< Peak compression compression limit coefficient (x*f'c)
-
-         Float64 TensionCoefficient; ///< Tension limit coefficient (x*sqrt(f'c)) for sections without sufficient auxilary reinforcement
-         bool bMaxTension; ///< Boolean value indicating if there is a maximum value of the tension stress limit
-         Float64 MaxTension; ///< If applicable, the maximum value of the tension stress limit
-         Float64 TensionCoefficientWithRebar; ///< Tension limit coefficient (x*sqrt(f'c)) for sections with sufficient auxilary reinforcement
-
          Float64 MinFScr; ///< minimum factor of safety against cracking
          Float64 MinFSf;  ///< minimum factor of safety against failure
 
          Float64 AllowableCompression_GlobalStress; ///< compression stress limit
          Float64 AllowableCompression_PeakStress; ///< compression stress limit
-         Float64 AllowableTension; ///< tension stress limit for sections without sufficient auxilary reinforcement
-         Float64 AllowableTensionWithRebar; ///< tension stress limit for sections with sufficient auxilary reinforcement
+         Float64 CompressionCoefficient_GlobalStress; ///< Global compression compression limit coefficient (x*f'c)
+         Float64 CompressionCoefficient_PeakStress; ///< Peak compression compression limit coefficient (x*f'c)
+
+         std::shared_ptr<ILiftingTensionStressLimit> TensionStressLimit; ///< Model for tension stress limit. 
       };
    }
 }

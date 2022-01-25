@@ -205,6 +205,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="NoncompositeApproximateLosses2005.cpp" />
+    <ClCompile Include="PCIUHPCCreepCoefficient.cpp" />
+    <ClCompile Include="PCIUHPCLosses.cpp" />
     <ClCompile Include="PsStrand.cpp" />
     <ClCompile Include="PTRefinedLosses.cpp" />
     <ClCompile Include="Rebar.cpp" />
@@ -255,6 +257,8 @@
     <ClInclude Include="..\Include\LRFD\LRFRVersionMgrListener.h" />
     <ClInclude Include="..\Include\LRFD\LumpSumLosses.h" />
     <ClInclude Include="..\Include\LRFD\NoncompositeApproximateLosses2005.h" />
+    <ClInclude Include="..\Include\LRFD\PCIUHPCCreepCoefficient.h" />
+    <ClInclude Include="..\Include\LRFD\PCIUHPCLosses.h" />
     <ClInclude Include="..\Include\LRFD\PsStrand.h" />
     <ClInclude Include="..\Include\Lrfd\PTRefinedLosses.h" />
     <ClInclude Include="..\Include\LRFD\Rebar.h" />

@@ -293,26 +293,12 @@ bool LiftingCheckArtifact::PassedTensionCheck() const
 #if defined REBAR_FOR_DIRECT_TENSION
 Float64 LiftingCheckArtifact::GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact) const
 {
-   if (sectionResult.altTensionRequirements[impact].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact].AsRequired)
-   {
-      return m_Criteria.AllowableTensionWithRebar;
-   }
-   else
-   {
-      return m_Criteria.AllowableTension;
-   }
+   return m_Criteria.TensionStressLimit->GetTensionLimit(sectionResult,impact);
 }
 #else
 Float64 LiftingCheckArtifact::GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
 {
-   if (sectionResult.altTensionRequirements[impact][wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact][wind].AsRequired)
-   {
-      return m_Criteria.AllowableTensionWithRebar;
-   }
-   else
-   {
-      return m_Criteria.AllowableTension;
-   }
+   return m_Criteria.TensionStressLimit->GetTensionLimit(sectionResult, impact, wind);
 }
 #endif
 
@@ -330,34 +316,15 @@ Float64 LiftingCheckArtifact::RequiredFcCompression() const
 
 Float64 LiftingCheckArtifact::RequiredFcTension() const
 {
-   Float64 maxStress = m_Results.MaxStress;
-   Float64 coeff = m_Criteria.TensionCoefficient;
-   Float64 lambda = m_Criteria.Lambda;
+   return m_Criteria.TensionStressLimit->GetRequiredFcTension(this);
+}
 
-   Float64 fcReqd = 0;
-   if ( 0 < maxStress )
-   {
-      fcReqd = pow(maxStress/(coeff*lambda),2);
-   }
-
-   if ( m_Criteria.bMaxTension && m_Criteria.MaxTension < maxStress )
-   {
-      fcReqd = -99999; // doesn't matter what f'c is, tension will never be satisfied
-   }
-
-   return fcReqd;
+Float64 LiftingCheckArtifact::RequiredFcTensionWithoutRebar() const
+{
+    return m_Criteria.TensionStressLimit->GetRequiredFcTensionWithoutRebar(this);
 }
 
 Float64 LiftingCheckArtifact::RequiredFcTensionWithRebar() const
 {
-   Float64 maxStress = m_Results.MaxStress;
-   Float64 coeff = m_Criteria.TensionCoefficientWithRebar;
-   Float64 lambda = m_Criteria.Lambda;
-
-   Float64 fcReqd = 0;
-   if ( 0 < maxStress )
-   {
-      fcReqd = pow(maxStress/(coeff*lambda),2);
-   }
-   return fcReqd;
+    return m_Criteria.TensionStressLimit->GetRequiredFcTensionWithRebar(this);
 }

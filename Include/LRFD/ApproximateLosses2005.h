@@ -147,21 +147,7 @@ public:
                          bool bValidateParameters
                          );
 
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdApproximateLosses2005(const lrfdApproximateLosses2005& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    ~lrfdApproximateLosses2005();
-
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdApproximateLosses2005& operator=(const lrfdApproximateLosses2005& rOther);
-
-   // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
    Float64 TemporaryStrand_RelaxationLossesAtXfer() const;
@@ -205,49 +191,13 @@ public:
    #endif // _UNITTEST
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdApproximateLosses2005& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
    mutable Float64 m_dfpTH; // time dependent losses at shipping/hauling
    mutable Float64 m_dfpLT;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
    Float64 RelaxationLossesAtXfer(bool bPerm) const;
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdApproximateLosses2005& rOther );
-
-   //------------------------------------------------------------------------
    virtual void ValidateParameters() const override;
-
-   //------------------------------------------------------------------------
    virtual void UpdateLongTermLosses() const override;
-   
-   //------------------------------------------------------------------------
    virtual void UpdateHaulingLosses() const override;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_APPROXIMATELOSSES2005_H_

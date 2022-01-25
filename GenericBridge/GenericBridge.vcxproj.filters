@@ -666,6 +666,12 @@
     <None Include="FlangedGirderSection2.rgs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="NUDeckedBulbTeeSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PCIDeckedBulbTeeSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

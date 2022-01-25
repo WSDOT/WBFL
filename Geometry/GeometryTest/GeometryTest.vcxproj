@@ -205,6 +205,8 @@
     <ClCompile Include="TestNUBeam.cpp" />
     <ClCompile Include="TestNUBeam2.cpp" />
     <ClCompile Include="TestNUBeam3.cpp" />
+    <ClCompile Include="TestNUDeckedIBeam.cpp" />
+    <ClCompile Include="TestPCIDeckedIBeam.cpp" />
     <ClCompile Include="TestPlane3d.cpp" />
     <ClCompile Include="TestPlateGirder.cpp" />
     <ClCompile Include="TestPoint2d.cpp" />
@@ -253,6 +255,8 @@
     <ClInclude Include="TestMultiWeb.h" />
     <ClInclude Include="TestMultiWeb2.h" />
     <ClInclude Include="TestNUBeam.h" />
+    <ClInclude Include="TestNUDeckedIBeam.h" />
+    <ClInclude Include="TestPCIDeckedIBeam.h" />
     <ClInclude Include="TestPlane3d.h" />
     <ClInclude Include="TestPlateGirder.h" />
     <ClInclude Include="TestPoint2d.h" />

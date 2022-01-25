@@ -151,10 +151,9 @@ namespace WBFL
          /// Returns the concrete strength required to satisfy the compression stress limit
          Float64 RequiredFcCompression(HaulingSlope slope /*! Roadway slope type*/) const;
 
-         /// Returns the concrete strenght required to satisfy the tension stress limit for sections without sufficient auxilary reinforcement
+         /// Returns the concrete strength required to satisfy the tension stress limit
          Float64 RequiredFcTension(HaulingSlope slope /*! Roadway slope type*/) const;
-
-         /// Returns the concrete strenght required to satisfy the tension stress limit for sections with sufficient auxilary reinforcement
+         Float64 RequiredFcTensionWithoutRebar(HaulingSlope slope /*! Roadway slope type*/) const;
          Float64 RequiredFcTensionWithRebar(HaulingSlope slope /*! Roadway slope type*/) const;
 
       private:

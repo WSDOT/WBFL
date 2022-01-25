@@ -57,7 +57,7 @@ LOG
 class MATCLASS matConcrete
 {
 public:
-   enum Type { Normal, AllLightweight,SandLightweight, UHPC };
+   enum Type { Normal, AllLightweight,SandLightweight, PCI_UHPC };
 
    // GROUP: LIFECYCLE
 
@@ -161,8 +161,19 @@ public:
    //------------------------------------------------------------------------
    Float64 GetMaxAggregateSize() const;
 
+   // Set/Get the fiber length for fiber reinforced materials
+   void SetFiberLength(Float64 length);
+   Float64 GetFiberLength() const;
+
+
    void SetLambda(Float64 lambda);
    Float64 GetLambda() const;
+
+   //--------------------- UHPC Properties
+   void SetFirstCrackStrength(Float64 ffc);
+   Float64 GetFirstCrackStrength() const;
+   void SetPostCrackingTensileStrength(Float64 frr);
+   Float64 GetPostCrackingTensileStrength() const;
 
    // GROUP: INQUIRY
 
@@ -225,7 +236,12 @@ private:
    Float64     m_Density;
    Float64     m_ModE;
    Float64     m_MaxAggregateSize;
+   Float64     m_FiberLength;
    Float64     m_Lambda;
+
+   // UHPC
+   Float64 m_ffc;
+   Float64 m_frr;
 
    bool m_bIsDamaged;
    std::set<matConcreteListener*,std::less<matConcreteListener*>, std::allocator<matConcreteListener*> > m_Listeners;

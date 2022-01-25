@@ -40,4 +40,5 @@ struct LRFDCLASS REBARDEVLENGTHDETAILS
    Float64 ldb1;
    Float64 ldb2;
    Float64 ldb; // controlling value
+   Float64 ld; // factor*ldb
 };

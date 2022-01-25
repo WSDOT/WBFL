@@ -24,7 +24,6 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\RebarPool.h>
-#include <Units\SysUnits.h>
 #include <algorithm>
 
 #ifdef _DEBUG

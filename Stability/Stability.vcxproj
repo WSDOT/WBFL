@@ -199,6 +199,7 @@
     <ClCompile Include="HaulingCriteria.cpp" />
     <ClCompile Include="HaulingResults.cpp" />
     <ClCompile Include="HaulingStabilityReporter.cpp" />
+    <ClCompile Include="HaulingTensionStressLimit.cpp" />
     <ClCompile Include="LiftingCheckArtifact.cpp" />
     <ClCompile Include="LiftingCriteria.cpp" />
     <ClCompile Include="LiftingResults.cpp" />
@@ -210,6 +211,7 @@
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="StabilityEngineer.cpp" />
     <ClCompile Include="StabilityProblemImp.cpp" />
+    <ClCompile Include="LiftingTensionStressLimit.cpp" />
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +222,7 @@
     <ClInclude Include="..\Include\Stability\HaulingCriteria.h" />
     <ClInclude Include="..\Include\Stability\HaulingResults.h" />
     <ClInclude Include="..\Include\Stability\HaulingStabilityReporter.h" />
+    <ClInclude Include="..\Include\Stability\HaulingTensionStressLimit.h" />
     <ClInclude Include="..\Include\Stability\LiftingCheckArtifact.h" />
     <ClInclude Include="..\Include\Stability\LiftingCriteria.h" />
     <ClInclude Include="..\Include\Stability\LiftingResults.h" />
@@ -233,6 +236,7 @@
     <ClInclude Include="..\Include\Stability\StabilityProblem.h" />
     <ClInclude Include="..\Include\Stability\StabilityProblemImp.h" />
     <ClInclude Include="..\Include\Stability\StabilityTypes.h" />
+    <ClInclude Include="..\Include\Stability\LiftingTensionStressLimit.h" />
     <ClInclude Include="..\Include\Stability\UnitTest.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

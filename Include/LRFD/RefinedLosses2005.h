@@ -116,13 +116,13 @@ public:
                          Float64 friction,
                          Float64 angleChange,
 
-                         Float64 CreepK1,
-                         Float64 CreepK2,
+                         //Float64 CreepK1,
+                         //Float64 CreepK2,
                          Float64 ShrinkageK1,
                          Float64 ShrinkageK2,
                          
-                         Float64 DeckCreepK1,
-                         Float64 DeckCreepK2,
+                         //Float64 DeckCreepK1,
+                         //Float64 DeckCreepK2,
                          Float64 DeckShrinkageK1,
                          Float64 DeckShrinkageK2,
 
@@ -133,10 +133,10 @@ public:
                          Float64 Eci,  // Modulus of elasticity of girder at transfer
                          Float64 Ecd,  // Modulus of elasticity of deck
                          
-                         Float64 V,    // Volumne of girder
-                         Float64 S,    // Surface area of girder
-                         Float64 VSlab,    // Volumne of slab
-                         Float64 SSlab,    // Surface area of slab
+                         //Float64 V,    // Volumne of girder
+                         //Float64 S,    // Surface area of girder
+                         //Float64 VSlab,    // Volumne of slab
+                         //Float64 SSlab,    // Surface area of slab
 
                          Float64 Ag,   // area of girder
                          Float64 Ixx,   // moment of inertia of girder
@@ -173,28 +173,19 @@ public:
                          Float64 th,   // Time at hauling
                          Float64 td,   // Time to deck placement
                          Float64 tf,   // Final time
-                         lrfdCreepCoefficient2005::CuringMethod curingMethod,
-                         Float64 tCuringAdjustment, // time scale factor for curing method
+                         //lrfdCreepCoefficient2005::CuringMethod curingMethod,
+                         //Float64 tCuringAdjustment, // time scale factor for curing method
                          bool bIgnoreInitialRelaxation,
                          bool bValidateParameters,
-                         RelaxationLossMethod relaxationMethod
+                         RelaxationLossMethod relaxationMethod,
+                         std::shared_ptr<const lrfdCreepCoefficient2005>& pGirderCreepLoaded,
+                         std::shared_ptr<const lrfdCreepCoefficient2005>& pDeckCreep
                          );
-
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdRefinedLosses2005(const lrfdRefinedLosses2005& rOther);
 
    //------------------------------------------------------------------------
    // Destructor
    ~lrfdRefinedLosses2005();
 
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdRefinedLosses2005& operator=(const lrfdRefinedLosses2005& rOther);
-
-   // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
    // loss from transfer to shipping
@@ -227,11 +218,8 @@ public:
 
 
    //------------------------------------------------------------------------
-   const lrfdCreepCoefficient2005& GetCreepInitialToShipping() const;
-   const lrfdCreepCoefficient2005& GetCreepInitialToFinal() const;
-   const lrfdCreepCoefficient2005& GetCreepInitialToDeck() const;
-   const lrfdCreepCoefficient2005& GetCreepDeckToFinal() const;
-   const lrfdCreepCoefficient2005& GetCreepDeck() const;
+   std::shared_ptr<const lrfdCreepCoefficient2005> GetGirderCreep() const;
+   std::shared_ptr<const lrfdCreepCoefficient2005> GetDeckCreep() const;
 
    //------------------------------------------------------------------------
    Float64 GetTemporaryStrandFcgp() const;
@@ -259,32 +247,9 @@ public:
    // GROUP: ACCESS
 
 
-   // Volume of non-composite member
-   void SetVolume(Float64 V);
-   Float64 GetVolume() const;
-
-   // Surface area of non-composite member
-   void SetSurfaceArea(Float64 S);
-   Float64 GetSurfaceArea() const;
-
-   // Volumne of slab
-   void SetVolumeSlab(Float64 V);
-   Float64 GetVolumeSlab() const;
-
-   // Surface area of slab
-   void SetSurfaceAreaSlab(Float64 S);
-   Float64 GetSurfaceAreaSlab() const;
-
    // Returns true if the girder concrete strinkage strain is increased by 20%
    // per LRFD 5.4.2.3.3
    bool AdjustShrinkageStrain() const;
-
-   void SetCuringMethod(lrfdCreepCoefficient2005::CuringMethod method);
-   lrfdCreepCoefficient2005::CuringMethod GetCuringMethod() const;
-
-   void SetCuringMethodTimeAdjustmentFactor(Float64 f);
-   Float64 GetCuringMethodTimeAdjustmentFactor() const;
-   Float64 GetAdjustedInitialAge() const;
 
    void SetAgeAtHauling(Float64 t);
    Float64 GetAgeAtHauling() const;
@@ -294,6 +259,14 @@ public:
 
    void SetFinalAge(Float64 t);
    Float64 GetFinalAge() const;
+
+   Float64 GetMaturityAtHauling() const;
+   Float64 GetMaturityAtDeckPlacement() const;
+   Float64 GetMaturityAtFinal() const;
+   Float64 GetMaturityDeckPlacementToFinal() const;
+
+   Float64 GetDeckInitialAge() const;
+   Float64 GetDeckMaturityAtFinal() const;
 
    virtual void GetDeckShrinkageEffects(Float64* pA,Float64* pM) const override;
 
@@ -316,13 +289,9 @@ public:
    Float64 GetDeckShrinakgeFactor() const;
 
 
-   Float64 GetGdrK1Creep() const { return m_CreepK1; }
-   Float64 GetGdrK2Creep() const { return m_CreepK2; }
    Float64 GetGdrK1Shrinkage() const { return m_ShrinkageK1; }
    Float64 GetGdrK2Shrinkage() const { return m_ShrinkageK2; }
 
-   Float64 GetDeckK1Creep() const { return m_DeckCreepK1; }
-   Float64 GetDeckK2Creep() const { return m_DeckCreepK2; }
    Float64 GetDeckK1Shrinkage() const { return m_DeckShrinkageK1; }
    Float64 GetDeckK2Shrinkage() const { return m_DeckShrinkageK2; }
 
@@ -336,41 +305,27 @@ public:
    #endif // _UNITTEST
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   virtual void ValidateParameters() const override;
+   virtual void UpdateLongTermLosses() const override;
+   virtual void UpdateHaulingLosses() const override;
+   virtual Float64 GetShrinkageHumidityFactor() const;
+   virtual Float64 GetShrinkageStrainAtHauling() const;
+   virtual Float64 GetShrinkageStrainAtDeckPlacement() const;
+   virtual Float64 GetShrinkageStrainAtFinal() const;
+   virtual Float64 GetDeckShrinkageStrain() const;
+   virtual Float64 GetShrinkageStrain_Girder() const;
+   virtual Float64 GetShrinkageStrain_Deck() const;
 
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdRefinedLosses2005& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Float64 m_V; // volumne (girder)
-   Float64 m_S; // surface area (girder)
-   Float64 m_VSlab; // volumne (slab)
-   Float64 m_SSlab; // surface area (slab)
    Float64 m_th; // time at hauling
    Float64 m_td; // age at deck placement
    Float64 m_tf; // final time
-   Float64 m_CuringMethodTimeAdjustmentFactor;
-   Float64 m_CreepK1;
-   Float64 m_CreepK2;
    Float64 m_ShrinkageK1;
    Float64 m_ShrinkageK2;
-   Float64 m_DeckCreepK1;
-   Float64 m_DeckCreepK2;
    Float64 m_DeckShrinkageK1;
    Float64 m_DeckShrinkageK2;
-   mutable lrfdCreepCoefficient2005::CuringMethod m_CuringMethod;
-   mutable lrfdCreepCoefficient2005 m_CreepInitialToFinal;
-   mutable lrfdCreepCoefficient2005 m_CreepInitialToDeck;
-   mutable lrfdCreepCoefficient2005 m_CreepInitialToHauling;
-   mutable lrfdCreepCoefficient2005 m_CreepDeckToFinal;
-   mutable lrfdCreepCoefficient2005 m_CreepDeck; // for deck shrinkage
+
+   std::shared_ptr<const lrfdCreepCoefficient2005> m_pGirderCreep;
+   std::shared_ptr<const lrfdCreepCoefficient2005> m_pDeckCreep;
 
    
    Float64 m_Ad;    // Area of composite deck
@@ -408,25 +363,6 @@ private:
    mutable std::array<Float64, 2> m_dfpCRH;
    mutable std::array<Float64, 2> m_dfpR1H;
    mutable std::array<Float64, 2> m_dfpTH;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdRefinedLosses2005& rOther );
-
-   //------------------------------------------------------------------------
-   virtual void ValidateParameters() const override;
-   
-   //------------------------------------------------------------------------
-   virtual void UpdateLongTermLosses() const override;
-   
-   //------------------------------------------------------------------------
-   virtual void UpdateHaulingLosses() const override;
-
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
 
 // INLINE METHODS

@@ -42,3 +42,5 @@
 #include <Stability\LiftingStabilityReporter.h>
 #include <Stability\HaulingCheckArtifact.h>
 #include <Stability\HaulingStabilityReporter.h>
+#include <Stability\LiftingTensionStressLimit.h>
+#include <Stability\HaulingTensionStressLimit.h>

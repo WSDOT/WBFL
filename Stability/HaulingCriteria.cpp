@@ -34,8 +34,6 @@ using namespace WBFL::Stability;
 
 HaulingCriteria::HaulingCriteria()
 {
-   Lambda = 0.0;
-
    CompressionCoefficient_GlobalStress = 0;
    CompressionCoefficient_PeakStress = 0;
    AllowableCompression_GlobalStress = 0;
@@ -44,14 +42,7 @@ HaulingCriteria::HaulingCriteria()
    MinFScr = Float64_Max;
    MinFSf  = Float64_Max;
 
-   for ( int s = 0; s < 2; s++ )
-   {
-      HaulingSlope slope = (HaulingSlope)s;
-      TensionCoefficient[slope] = 0;
-      bMaxTension[slope] = false;
-      MaxTension[slope] = 0;
-      TensionCoefficientWithRebar[slope] = 0;
-      AllowableTension[slope]          = 0;
-      AllowableTensionWithRebar[slope] = 0;
-   }
+   MaxClearSpan = 0;
+   MaxLeadingOverhang = 0;
+   MaxGirderWeight = 0;
 }

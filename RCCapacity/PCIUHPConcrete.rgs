@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.PCIUHPConcrete.1 = s 'PCIUHPConcrete Class'
+	{
+		CLSID = s '{4A4F98C2-3F36-4E45-A00A-6A26727D8ACE}'
+	}
+	WBFLRCCapacity.PCIUHPConcrete = s 'PCIUHPConcrete Class'
+	{
+		CLSID = s '{4A4F98C2-3F36-4E45-A00A-6A26727D8ACE}'
+		CurVer = s 'WBFLRCCapacity.PCIUHPConcrete.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4A4F98C2-3F36-4E45-A00A-6A26727D8ACE} = s 'PCIUHPConcrete Class'
+		{
+			ProgID = s 'WBFLRCCapacity.PCIUHPConcrete.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.PCIUHPConcrete'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

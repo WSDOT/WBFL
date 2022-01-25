@@ -45,6 +45,7 @@ m_CureMethod(matConcreteBase::Moist),
 m_StrengthDensity( 0 ),
 m_WeightDensity( 0 ),
 m_MaxAggregateSize(0),
+m_FiberLength(0),
 m_Type(matConcreteBase::Normal),
 m_Fct(0),
 m_bHasFct(false),
@@ -63,6 +64,7 @@ m_Name(rOther.m_Name)
    m_StrengthDensity  = rOther.m_StrengthDensity;
    m_WeightDensity    = rOther.m_WeightDensity;
    m_MaxAggregateSize = rOther.m_MaxAggregateSize;
+   m_FiberLength = rOther.m_FiberLength;
    m_Type             = rOther.m_Type;
    m_Fct              = rOther.m_Fct;
    m_bHasFct          = rOther.m_bHasFct;
@@ -102,8 +104,8 @@ std::_tstring matConcreteBase::GetTypeName(matConcreteBase::Type type,bool bFull
    case matConcreteBase::SandLightweight:
       return bFull ? _T("Sand Lightweight Concrete") : _T("SandLightweight");
 
-   case matConcreteBase::UHPC:
-      return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
+   case matConcreteBase::PCI_UHPC:
+      return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
    default:
       ATLASSERT(false); // is there a new type?
@@ -122,8 +124,8 @@ matConcreteBase::Type matConcreteBase::GetTypeFromTypeName(LPCTSTR strName)
    if ( std::_tstring(strName) == _T("SandLightweight") )
       return matConcreteBase::SandLightweight;
 
-   if (std::_tstring(strName) == _T("UHPC"))
-      return matConcreteBase::UHPC;
+   if (std::_tstring(strName) == _T("PCI-UHPC"))
+      return matConcreteBase::PCI_UHPC;
 
    ATLASSERT(false); // invalid name
    return matConcreteBase::Normal;
@@ -201,7 +203,7 @@ Float64 matConcreteBase::GetWeightDensity() const
 
 void matConcreteBase::SetMaxAggregateSize(Float64 size)
 {
-   if ( m_MaxAggregateSize != size )
+   if ( !IsEqual(m_MaxAggregateSize,size) )
    {
       m_MaxAggregateSize = size;
       OnChanged();
@@ -211,6 +213,20 @@ void matConcreteBase::SetMaxAggregateSize(Float64 size)
 Float64 matConcreteBase::GetMaxAggregateSize() const
 {
    return m_MaxAggregateSize;
+}
+
+void matConcreteBase::SetFiberLength(Float64 length)
+{
+   if (!IsEqual(m_FiberLength, length))
+   {
+      m_FiberLength = length;
+      OnChanged();
+   }
+}
+
+Float64 matConcreteBase::GetFiberLength() const
+{
+   return m_FiberLength;
 }
 
 void matConcreteBase::SetRelativeHumidity(Float64 rh)

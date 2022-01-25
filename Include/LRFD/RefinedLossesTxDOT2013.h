@@ -153,24 +153,9 @@ public:
                          bool bValidateParameters
                          );
 
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdRefinedLossesTxDOT2013(const lrfdRefinedLossesTxDOT2013& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    ~lrfdRefinedLossesTxDOT2013();
 
-   // GROUP: OPERATORS
 
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdRefinedLossesTxDOT2013& operator=(const lrfdRefinedLossesTxDOT2013& rOther);
-
-   // GROUP: OPERATIONS
-
-
-   // GROUP: ACCESS
    Float64 ShrinkageLosses() const;
    Float64 CreepLosses() const;
    Float64 RelaxationLossBeforeDeckPlacement() const;
@@ -200,11 +185,6 @@ public:
    #endif // _UNITTEST
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
    virtual void ValidateParameters() const override;
    virtual void UpdateLongTermLosses() const override;
    virtual void UpdateHaulingLosses() const override;
@@ -224,32 +204,8 @@ protected:
 
    lrfdElasticShortening::FcgpComputationMethod m_FcgpMethod;
 
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdRefinedLossesTxDOT2013& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
    void Init() const;
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdRefinedLossesTxDOT2013& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_REFINEDTXDOT2013LOSSES_H_

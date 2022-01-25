@@ -26,7 +26,6 @@
 #include <Lrfd\PsStrand.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XCodeVersion.h>
-#include <Units\SysUnits.h>
 #include <Math\QuadraticSolver.h>
 
 #ifdef _DEBUG
@@ -243,7 +242,7 @@ Float64 lrfdPsStrand::GetXferLength(const matPsStrand& strand,bool bEpoxyCoated)
    }
 }
 
-Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded, bool bUHPC)
+Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
 {
    Float64 k;
    Float64 d;
@@ -260,12 +259,7 @@ Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded, bool b
    }
 
 
-   if (bUHPC)
-   {
-      // order is important here... if UHPC k = 0.3 regardless of debonding or otherwise
-      k = 0.3;
-   }
-   else if ( bDebonded )
+   if ( bDebonded )
    {
       k = 2.0;
    }
@@ -281,13 +275,19 @@ Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded, bool b
    return k;
 }
 
-Float64 lrfdPsStrand::GetDevLength(const matPsStrand& strand,Float64 fps,Float64 fpe,Float64 mbrDepth,bool bDebonded, bool bUHPC)
+Float64 lrfdPsStrand::GetDevLength(const matPsStrand& strand, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded)
+{
+   Float64 db = strand.GetNominalDiameter();
+   return GetDevLength(db, fps, fpe, mbrDepth, bDebonded);
+}
+
+Float64 lrfdPsStrand::GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded)
 {
    Float64 ld;
-   Float64 k = GetDevLengthFactor(mbrDepth,bDebonded,bUHPC);
+   Float64 k = GetDevLengthFactor(mbrDepth,bDebonded);
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      Float64 db  = ::ConvertFromSysUnits(strand.GetNominalDiameter(),unitMeasure::Millimeter);
+      db  = ::ConvertFromSysUnits(db,unitMeasure::Millimeter);
       fps = ::ConvertFromSysUnits(fps,unitMeasure::MPa);
       fpe = ::ConvertFromSysUnits(fpe,unitMeasure::MPa);
       ld = k*db*(0.15*fps - 0.097*fpe);
@@ -295,7 +295,7 @@ Float64 lrfdPsStrand::GetDevLength(const matPsStrand& strand,Float64 fps,Float64
    }
    else
    {
-      Float64 db  = ::ConvertFromSysUnits(strand.GetNominalDiameter(),unitMeasure::Inch);
+      db  = ::ConvertFromSysUnits(db,unitMeasure::Inch);
       fps = ::ConvertFromSysUnits(fps,unitMeasure::KSI);
       fpe = ::ConvertFromSysUnits(fpe,unitMeasure::KSI);
       ld = k*db*(fps - 2.*fpe/3.);

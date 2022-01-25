@@ -32,7 +32,7 @@
 // PROJECT INCLUDES
 //
 #include <LRFD\LrfdExp.h>
-
+#include <LRFD\CreepCoefficient.h>
 
 // LOCAL INCLUDES
 //
@@ -58,11 +58,9 @@ LOG
    rab : 09.16.2005 : Created file
 *****************************************************************************/
 
-class LRFDCLASS lrfdCreepCoefficient2005
+class LRFDCLASS lrfdCreepCoefficient2005 : public lrfdCreepCoefficient
 {
 public:
-   enum CuringMethod { Normal, Accelerated };
-
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
@@ -70,50 +68,14 @@ public:
    lrfdCreepCoefficient2005();
 
    //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdCreepCoefficient2005(const lrfdCreepCoefficient2005& rOther);
-
-   //------------------------------------------------------------------------
    // Destructor
    virtual ~lrfdCreepCoefficient2005();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdCreepCoefficient2005& operator = (const lrfdCreepCoefficient2005& rOther);
-
-   // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   Float64 GetCreepCoefficient() const;
+   virtual Float64 GetCreepCoefficient(Float64 t, Float64 ti) const override;
 
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   void SetRelHumidity(Float64 H);
-   Float64 GetRelHumidity() const;
-
-   void SetVolume(Float64 V);
-   Float64 GetVolume() const;
-
-   void SetSurfaceArea(Float64 S);
-   Float64 GetSurfaceArea() const;
-
-   void SetFc(Float64 fc);
-   Float64 GetFc() const;
-
-   void SetMaturity(Float64 t);
-   Float64 GetMaturity() const;
-
-   void SetInitialAge(Float64 ti);
-   Float64 GetInitialAge() const;
-   Float64 GetAdjustedInitialAge() const;
-
-   void SetCuringMethod(CuringMethod method);
-   CuringMethod GetCuringMethod() const;
-
-   void SetCuringMethodTimeAdjustmentFactor(Float64 f);
-   Float64 GetCuringMethodTimeAdjustmentFactor() const;
+   virtual Float64 GetAdjustedInitialAge(Float64 ti) const override;
 
    void SetK1(Float64 k1);
    Float64 GetK1() const;
@@ -122,51 +84,28 @@ public:
 
    Float64 GetKvs() const;
    Float64 GetKhc() const;
-   Float64 GetKf() const;
-   Float64 GetKtd() const;
+   virtual Float64 GetKtd(Float64 t) const override;
 
    // GROUP: INQUIRY
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdCreepCoefficient2005& rOther);
+   virtual Float64 GetUltimateCreep() const;
+   virtual Float64 ComputeKvs() const;
+   virtual Float64 ComputeKhc() const;
+   virtual Float64 ComputeKf() const;
+   virtual Float64 ComputeKtd(Float64 t) const;
 
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdCreepCoefficient2005& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Float64 m_H;
-   Float64 m_Fc;
-   Float64 m_V;
-   Float64 m_S;
-   Float64 m_t;
-   Float64 m_ti;
-   CuringMethod m_CuringMethod;
-   Float64 m_CuringMethodTimeAdjustmentFactor;
    Float64 m_K1;
    Float64 m_K2;
 
-   mutable Float64 m_tiAdjusted; // adjusted for curing method
-   mutable Float64 m_Ct; // Creep factor
    mutable Float64 m_kvs; // volume-surface ratio factor
    mutable Float64 m_khc; // humidity factor
-   mutable Float64 m_kf;  // concrete strength factor
-   mutable Float64 m_ktd; // time factor
 
-   mutable bool m_bUpdate; // True if a parameter has been changed and an update is required
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   void Update() const;
+   virtual void Update() const;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

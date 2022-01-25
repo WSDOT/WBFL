@@ -2954,6 +2954,291 @@ library WBFLGeometry
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
+   /// Object representing the cross section of a Decked I-Beam based on the University of Nebraska (NU) precast concrete I-Beam section.
+/// This shape is intended for use with PCI UHPC girder bridges
+///
+/// \image html NUDeckedIBeam/NUDeckedIBeam.jpg   
+   [
+      object,
+      uuid(ABB8969A-87E6-43BF-99E9-73DBD2D5440E),
+      oleautomation,
+      helpstring("INUDeckedIBeam Interface"),
+      //helpcontext(IDH_INUBeam),
+      pointer_default(unique)
+   ]
+   interface INUDeckedIBeam : IUnknown
+   {
+      /// Top flange width
+      [propget, helpstring("property W1")] HRESULT W1([out, retval] Float64* pVal);
+      [propput, helpstring("property W1")] HRESULT W1([in] Float64 newVal);
+
+      /// Top flange overhang
+      [propget, helpstring("property W2")] HRESULT W2([out, retval] Float64* pVal);
+      [propput, helpstring("property W2")] HRESULT W2([in] Float64 newVal);
+
+      /// Top flange chamfer
+      [propget, helpstring("property W3")] HRESULT W3([out, retval] Float64* pVal);
+      [propput, helpstring("property W3")] HRESULT W3([in] Float64 newVal);
+
+      /// Bottom flange width
+      [propget, helpstring("property W4")] HRESULT W4([out, retval] Float64* pVal);
+      [propput, helpstring("property W4")] HRESULT W4([in] Float64 newVal);
+
+      /// Overall girder height
+      [propget, helpstring("property H")] HRESULT H([out, retval] Float64* pVal);
+      [propput, helpstring("property H")] HRESULT H([in] Float64 newVal);
+
+      /// A top flange depth dimension
+      [propget, helpstring("property D1")] HRESULT D1([out, retval] Float64* pVal);
+      [propput, helpstring("property D1")] HRESULT D1([in] Float64 newVal);
+
+      /// A top flange rib depth dimension
+      [propget, helpstring("property D2")] HRESULT D2([out, retval] Float64* pVal);
+      [propput, helpstring("property D2")] HRESULT D2([in] Float64 newVal);
+
+      /// Top flange depth at centerline web dimension
+      [propget, helpstring("property D3")] HRESULT D3([out, retval] Float64* pVal);
+      [propput, helpstring("property D3")] HRESULT D3([in] Float64 newVal);
+
+      /// Top flange rib depth at centerline web dimension
+      [propget, helpstring("property D4")] HRESULT D4([out, retval] Float64* pVal);
+      [propput, helpstring("property D4")] HRESULT D4([in] Float64 newVal);
+
+      /// A bottom flange depth dimension
+      [propget, helpstring("property D5")] HRESULT D5([out, retval] Float64* pVal);
+      [propput, helpstring("property D5")] HRESULT D5([in] Float64 newVal);
+
+      /// A bottom flange depth dimension
+      [propget, helpstring("property D6")] HRESULT D6([out, retval] Float64* pVal);
+      [propput, helpstring("property D6")] HRESULT D6([in] Float64 newVal);
+
+      /// Web width dimension
+      [propget, helpstring("property T")] HRESULT T([out, retval] Float64* pVal);
+      [propput, helpstring("property T")] HRESULT T([in] Float64 newVal);
+
+      /// Radius of top flange-web intersection
+      [propget, helpstring("property R1")] HRESULT R1([out, retval] Float64* pVal);
+      [propput, helpstring("property R1")] HRESULT R1([in] Float64 newVal);
+
+      /// Radius of bottom flange-web intersection
+      [propget, helpstring("property R2")] HRESULT R2([out, retval] Float64* pVal);
+      [propput, helpstring("property R2")] HRESULT R2([in] Float64 newVal);
+
+      /// Bottom flange chamfer dimension
+      [propget, helpstring("property C1")] HRESULT C1([out, retval] Float64* pVal);
+      [propput, helpstring("property C1")] HRESULT C1([in] Float64 newVal);
+
+      /// Hook point is located at intersection of the vertical centerline and the bottom of the bottom flange
+      [propget, helpstring("property HookPoint")] HRESULT HookPoint([out, retval] IPoint2d** hookPnt);
+      [propputref, helpstring("property HookPoint")] HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+      /// The overall height of the girder
+      [propget, helpstring("property Height")] HRESULT Height([out, retval] Float64* pVal);
+
+      /// Average of the web width dimensions
+      [propget, helpstring("property AvgWebWidth")] HRESULT AvgWebWidth([out, retval] Float64* pVal);
+
+      /// Out-to-out width of the bottom flange
+      [propget, helpstring("property BottomFlangeWidth")]
+      HRESULT BottomFlangeWidth([out, retval] Float64* pVal);
+
+      /// Out-to-out width of the top flange
+      [propget, helpstring("property TopFlangeWidth")] HRESULT TopFlangeWidth([out, retval] Float64* pVal);
+
+      /// Points defining the top flange
+      ///
+      /// \image html BulbTee/TopFlangePoints.png
+      [helpstring("property GetTopFlangePoints")]
+      HRESULT GetTopFlangePoints(
+         [out]IPoint2d** ppLeftTop,    ///< point at top-left flange tip
+         [out]IPoint2d** ppLeftBottom,  ///< point directly below the top-left flange tip
+         [out]IPoint2d** ppTopCentral,  ///< point at crown point in the top flange
+         [out]IPoint2d** ppRightTop,  ///< point at top-right flange tip
+         [out]IPoint2d** ppRightBottom ///< point directly below the top-right flange tip
+      );
+
+      /// Points defining the bottom flange
+      ///
+      /// \image html BulbTee/BottomFlangePoints.png
+      [helpstring("property GetBottomFlangePoints")]
+      HRESULT GetBottomFlangePoints(
+         [out]IPoint2d** ppLeftTop, ///< point directly above the bottom-left flange tip
+         [out]IPoint2d** ppLeftBottom,  ///< point at bottom-left flange tip
+         [out]IPoint2d** ppRightTop,  ///< point directly above the bottom-right flange tip
+         [out]IPoint2d** ppRightBottom ///< point at bottom-right flange tip
+      );
+
+      /// Thickness of the top flange
+      [helpstring("method GetTopFlangeThickness")]
+      HRESULT GetTopFlangeThickness(
+         [out]Float64* pHl, ///< Left flange tip
+         [out]Float64* pHc, ///< At centerline of web
+         [out]Float64* pHr  ///< Right flange tip
+      );
+
+      /// The XYPosition property
+      [propget, helpstring("property XYPosition")] HRESULT XYPosition([out, retval] IXYPosition** pVal);
+
+      /// The Shape property
+      [propget, helpstring("property Shape")] HRESULT Shape([out, retval] IShape** pVal);
+
+      /// The StructuredStorage property
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2** pStrStg);
+   };
+
+
+   /// Object representing the cross section of a Decked I-Beam based on the University of Nebraska (NU) precast concrete I-Beam section.
+   /// This shape is intended for use with PCI UHPC girder bridges
+   ///
+   /// \image html PCIUHPCDeckedIBeam/PCIUHPCDeckedIBeam.jpg   
+   [
+      object,
+      uuid(822A1F1E-A461-438A-8447-55CA89B78CA2),
+      oleautomation,
+      helpstring("IPCIDeckedIBeam Interface"),
+      //helpcontext(IDH_INUBeam),
+      pointer_default(unique)
+   ]
+   interface IPCIDeckedIBeam : IUnknown
+   {
+      /// Top flange width
+      [propget, helpstring("property W1")] HRESULT W1([out, retval] Float64* pVal);
+      [propput, helpstring("property W1")] HRESULT W1([in] Float64 newVal);
+
+      /// Top flange overhang
+      [propget, helpstring("property W2")] HRESULT W2([out, retval] Float64* pVal);
+      [propput, helpstring("property W2")] HRESULT W2([in] Float64 newVal);
+
+      /// Top flange chamfer
+      [propget, helpstring("property W3")] HRESULT W3([out, retval] Float64* pVal);
+      [propput, helpstring("property W3")] HRESULT W3([in] Float64 newVal);
+
+      /// Bottom flange width
+      [propget, helpstring("property W4")] HRESULT W4([out, retval] Float64* pVal);
+      [propput, helpstring("property W4")] HRESULT W4([in] Float64 newVal);
+
+      [propget, helpstring("property W5")] HRESULT W5([out, retval] Float64* pVal);
+      [propput, helpstring("property W5")] HRESULT W5([in] Float64 newVal);
+
+      [propget, helpstring("property W6")] HRESULT W6([out, retval] Float64* pVal);
+      [propput, helpstring("property W6")] HRESULT W6([in] Float64 newVal);
+
+      /// Overall girder height
+      [propget, helpstring("property H")] HRESULT H([out, retval] Float64* pVal);
+      [propput, helpstring("property H")] HRESULT H([in] Float64 newVal);
+
+      /// A top flange depth dimension
+      [propget, helpstring("property D1")] HRESULT D1([out, retval] Float64* pVal);
+      [propput, helpstring("property D1")] HRESULT D1([in] Float64 newVal);
+
+      /// A top flange rib depth dimension
+      [propget, helpstring("property D2")] HRESULT D2([out, retval] Float64* pVal);
+      [propput, helpstring("property D2")] HRESULT D2([in] Float64 newVal);
+
+      /// Top flange depth at centerline web dimension
+      [propget, helpstring("property D3")] HRESULT D3([out, retval] Float64* pVal);
+      [propput, helpstring("property D3")] HRESULT D3([in] Float64 newVal);
+
+      /// Top flange rib depth at centerline web dimension
+      [propget, helpstring("property D4")] HRESULT D4([out, retval] Float64* pVal);
+      [propput, helpstring("property D4")] HRESULT D4([in] Float64 newVal);
+
+      /// A bottom flange depth dimension
+      [propget, helpstring("property D5")] HRESULT D5([out, retval] Float64* pVal);
+      [propput, helpstring("property D5")] HRESULT D5([in] Float64 newVal);
+
+      /// A bottom flange depth dimension
+      [propget, helpstring("property D6")] HRESULT D6([out, retval] Float64* pVal);
+      [propput, helpstring("property D6")] HRESULT D6([in] Float64 newVal);
+
+      [propget, helpstring("property D7")] HRESULT D7([out, retval] Float64* pVal);
+      [propput, helpstring("property D7")] HRESULT D7([in] Float64 newVal);
+
+      [propget, helpstring("property D8")] HRESULT D8([out, retval] Float64* pVal);
+      [propput, helpstring("property D8")] HRESULT D8([in] Float64 newVal);
+
+      [propget, helpstring("property D9")] HRESULT D9([out, retval] Float64* pVal);
+      [propput, helpstring("property D9")] HRESULT D9([in] Float64 newVal);
+
+      /// Web width dimension
+      [propget, helpstring("property T")] HRESULT T([out, retval] Float64* pVal);
+      [propput, helpstring("property T")] HRESULT T([in] Float64 newVal);
+
+      /// Radius of top flange-web intersection
+      [propget, helpstring("property R1")] HRESULT R1([out, retval] Float64* pVal);
+      [propput, helpstring("property R1")] HRESULT R1([in] Float64 newVal);
+
+      /// Radius of bottom flange-web intersection
+      [propget, helpstring("property R2")] HRESULT R2([out, retval] Float64* pVal);
+      [propput, helpstring("property R2")] HRESULT R2([in] Float64 newVal);
+
+      [propget, helpstring("property R3")] HRESULT R3([out, retval] Float64* pVal);
+      [propput, helpstring("property R3")] HRESULT R3([in] Float64 newVal);
+
+      /// Bottom flange chamfer dimension
+      [propget, helpstring("property C1")] HRESULT C1([out, retval] Float64* pVal);
+      [propput, helpstring("property C1")] HRESULT C1([in] Float64 newVal);
+
+      /// Hook point is located at intersection of the vertical centerline and the bottom of the bottom flange
+      [propget, helpstring("property HookPoint")] HRESULT HookPoint([out, retval] IPoint2d** hookPnt);
+      [propputref, helpstring("property HookPoint")] HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+      /// The overall height of the girder
+      [propget, helpstring("property Height")] HRESULT Height([out, retval] Float64* pVal);
+
+      /// Average of the web width dimensions
+      [propget, helpstring("property AvgWebWidth")] HRESULT AvgWebWidth([out, retval] Float64* pVal);
+
+      /// Out-to-out width of the bottom flange
+      [propget, helpstring("property BottomFlangeWidth")]
+      HRESULT BottomFlangeWidth([out, retval] Float64* pVal);
+
+      /// Out-to-out width of the top flange
+      [propget, helpstring("property TopFlangeWidth")] HRESULT TopFlangeWidth([out, retval] Float64* pVal);
+
+      /// Points defining the top flange
+      ///
+      /// \image html BulbTee/TopFlangePoints.png
+      [helpstring("property GetTopFlangePoints")]
+      HRESULT GetTopFlangePoints(
+         [out]IPoint2d** ppLeftTop,    ///< point at top-left flange tip
+         [out]IPoint2d** ppLeftBottom,  ///< point directly below the top-left flange tip
+         [out]IPoint2d** ppTopCentral,  ///< point at crown point in the top flange
+         [out]IPoint2d** ppRightTop,  ///< point at top-right flange tip
+         [out]IPoint2d** ppRightBottom ///< point directly below the top-right flange tip
+      );
+
+      /// Points defining the bottom flange
+      ///
+      /// \image html BulbTee/BottomFlangePoints.png
+      [helpstring("property GetBottomFlangePoints")]
+      HRESULT GetBottomFlangePoints(
+         [out]IPoint2d** ppLeftTop, ///< point directly above the bottom-left flange tip
+         [out]IPoint2d** ppLeftBottom,  ///< point at bottom-left flange tip
+         [out]IPoint2d** ppRightTop,  ///< point directly above the bottom-right flange tip
+         [out]IPoint2d** ppRightBottom ///< point at bottom-right flange tip
+      );
+
+      /// Thickness of the top flange
+      [helpstring("method GetTopFlangeThickness")]
+      HRESULT GetTopFlangeThickness(
+         [out]Float64* pHl, ///< Left flange tip
+         [out]Float64* pHc, ///< At centerline of web
+         [out]Float64* pHr  ///< Right flange tip
+      );
+
+      /// The XYPosition property
+      [propget, helpstring("property XYPosition")] HRESULT XYPosition([out, retval] IXYPosition** pVal);
+
+      /// The Shape property
+      [propget, helpstring("property Shape")] HRESULT Shape([out, retval] IShape** pVal);
+
+      /// The StructuredStorage property
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2** pStrStg);
+   };
+
    /// Object representing the cross section of a deck bulb tee girder
    ///
    /// \image html BulbTee/BulbTee.jpg   
@@ -5553,8 +5838,40 @@ library WBFLGeometry
       interface IStructuredStorage2;
         // interface IPersist;
 	};
+    
+   /// Object representing the shape of a UHPC Decked I-Beam based on the University of Nebraska (NU) precast concrete I-Beam.
+/// Implements the INUDeckedIBeam interface.
+   [
+      uuid(F663062C-9209-4D00-88BE-FA82BA411A93),
+      helpstring("NUDeckedIBeam Class")
+      //helpcontext(IDH_INUBeam)
+   ]
+   coclass NUDeckedIBeam
+   {
+      [default] interface INUDeckedIBeam;
+      interface IShape;
+      interface IXYPosition;
+      interface IStructuredStorage2;
+      // interface IPersist;
+   };
 
-   /// Object representing the shape of a deck bulb tee precast concrete girder.
+   /// Object representing the shape of a UHPC Decked I-Beam based on the University of Nebraska (NU) precast concrete I-Beam.
+   /// Implements the INUDeckedIBeam interface.
+   [
+      uuid(904FC6A6-EB6A-4066-8D6F-325829DB32B2),
+      helpstring("PCIDeckedIBeam Class")
+      //helpcontext(IDH_INUBeam)
+   ]
+   coclass PCIDeckedIBeam
+   {
+      [default] interface IPCIDeckedIBeam;
+      interface IShape;
+      interface IXYPosition;
+      interface IStructuredStorage2;
+      // interface IPersist;
+   };
+
+    /// Object representing the shape of a deck bulb tee precast concrete girder.
    /// Implements the IBulbTee interface.
    [
 		uuid(83B73726-F71A-4400-BCD0-542E1332EE2A),

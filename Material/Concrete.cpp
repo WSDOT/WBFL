@@ -76,25 +76,31 @@ m_Fc( 0 ),
 m_Density( 0 ),
 m_ModE( 0 ),
 m_MaxAggregateSize(0),
+m_FiberLength(0),
 m_Type(matConcrete::Normal),
 m_Fct(0),
 m_bHasFct(false),
-m_Lambda(1.0)
+m_Lambda(1.0),
+m_ffc(0),
+m_frr(0)
 {
    m_bIsDamaged = false;
    // Don't call assert value because this material model is not valid.
 }
 
-matConcrete::matConcrete(const std::_tstring& name,Float64 fc,Float64 density,Float64 modE) :
-m_Name(name),
-m_Fc(fc),
-m_Density(density),
-m_ModE( modE ),
-m_MaxAggregateSize(0.0),
-m_Type(matConcrete::Normal),
-m_Fct(0),
-m_bHasFct(false),
-m_Lambda(1.0)
+matConcrete::matConcrete(const std::_tstring& name, Float64 fc, Float64 density, Float64 modE) :
+   m_Name(name),
+   m_Fc(fc),
+   m_Density(density),
+   m_ModE(modE),
+   m_MaxAggregateSize(0.0),
+   m_FiberLength(0.0),
+   m_Type(matConcrete::Normal),
+   m_Fct(0),
+   m_bHasFct(false),
+   m_Lambda(1.0),
+   m_ffc(0),
+   m_frr(0)
 {
    m_bIsDamaged = false;
    ASSERTVALID;
@@ -157,8 +163,8 @@ std::_tstring matConcrete::GetTypeName(matConcrete::Type type,bool bFull)
    case matConcrete::SandLightweight:
       return bFull ? _T("Sand Lightweight Concrete") : _T("SandLightweight");
 
-   case matConcrete::UHPC:
-      return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
+   case matConcrete::PCI_UHPC:
+      return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
    default:
       ATLASSERT(false); // is there a new type?
@@ -177,8 +183,8 @@ matConcrete::Type matConcrete::GetTypeFromTypeName(LPCTSTR strName)
    if ( std::_tstring(strName) == _T("SandLightweight") )
       return matConcrete::SandLightweight;
 
-   if (std::_tstring(strName) == _T("UHPC"))
-      return matConcrete::UHPC;
+   if (std::_tstring(strName) == _T("PCI-UHPC"))
+      return matConcrete::PCI_UHPC;
 
    ATLASSERT(false); // invalid name
    return matConcrete::Normal;
@@ -307,6 +313,20 @@ Float64 matConcrete::GetMaxAggregateSize() const
    return m_MaxAggregateSize;
 }
 
+void matConcrete::SetFiberLength(Float64 length)
+{
+   if (!IsEqual(m_FiberLength, length))
+   {
+      m_FiberLength = length;
+      NotifyAllListeners();
+   }
+}
+
+Float64 matConcrete::GetFiberLength() const
+{
+   return m_FiberLength;
+}
+
 void matConcrete::SetLambda(Float64 lambda)
 {
    if ( !IsEqual(m_Lambda,lambda) )
@@ -319,6 +339,34 @@ void matConcrete::SetLambda(Float64 lambda)
 Float64 matConcrete::GetLambda() const
 {
    return m_Lambda;
+}
+
+void matConcrete::SetFirstCrackStrength(Float64 ffc)
+{
+   if (!IsEqual(m_ffc, ffc))
+   {
+      m_ffc = ffc;
+      NotifyAllListeners();
+   }
+}
+
+Float64 matConcrete::GetFirstCrackStrength() const
+{
+   return m_ffc;
+}
+
+void matConcrete::SetPostCrackingTensileStrength(Float64 frr)
+{
+   if (!IsEqual(m_frr, frr))
+   {
+      m_frr = frr;
+      NotifyAllListeners();
+   }
+}
+
+Float64 matConcrete::GetPostCrackingTensileStrength() const
+{
+   return m_frr;
 }
 
 //======================== INQUIRY    =======================================
@@ -405,7 +453,10 @@ bool matConcrete::operator==(const matConcrete& rOther) const
    if ( !::IsEqual(m_ModE,rOther.m_ModE) )
       return false;
 
-   if ( !::IsEqual(m_MaxAggregateSize,rOther.m_MaxAggregateSize) )
+   if (!::IsEqual(m_MaxAggregateSize, rOther.m_MaxAggregateSize))
+      return false;
+
+   if (!::IsEqual(m_FiberLength, rOther.m_FiberLength))
       return false;
 
    if ( m_Type != rOther.m_Type )
@@ -418,6 +469,12 @@ bool matConcrete::operator==(const matConcrete& rOther) const
       return false;
 
    if ( !::IsEqual(m_Lambda,rOther.m_Lambda) )
+      return false;
+
+   if (!::IsEqual(m_ffc, rOther.m_ffc))
+      return false;
+
+   if (!::IsEqual(m_frr, rOther.m_frr))
       return false;
 
    return true;
@@ -436,10 +493,13 @@ void matConcrete::MakeCopy(const matConcrete& rOther)
    m_Density   = rOther.m_Density;
    m_ModE      = rOther.m_ModE;
    m_MaxAggregateSize = rOther.m_MaxAggregateSize;
+   m_FiberLength = rOther.m_FiberLength;
    m_Type      = rOther.m_Type;
    m_Fct        = rOther.m_Fct;
    m_bHasFct    = rOther.m_bHasFct;
    m_Lambda     = rOther.m_Lambda;
+   m_ffc = rOther.m_ffc;
+   m_frr = rOther.m_frr;
 
    ASSERTVALID;
 }

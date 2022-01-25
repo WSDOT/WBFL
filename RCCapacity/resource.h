@@ -72,6 +72,7 @@
 #define IDR_LRFDSOLUTIONEX             142
 #define IDR_UHPCONCRETE                143
 #define IDR_RAMBERGOSGOODMODEL         144
+#define IDR_PCIUHPCONCRETE            145
 
 #define IDS_E_INITCONCRETE              512
 #define IDS_E_SOLUTIONNOTFOUND          513

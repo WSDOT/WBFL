@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGeometry.NUDeckedIBeam.1 = s 'NUDecked I-Beam Class'
+	{
+		CLSID = s '{F663062C-9209-4D00-88BE-FA82BA411A93}'
+	}
+	WBFLGeometry.NUDeckedIBeam = s 'NUDecked I-Beam Class'
+	{
+		CLSID = s '{F663062C-9209-4D00-88BE-FA82BA411A93}'
+		CurVer = s 'WBFLGeometry.NUDeckedIBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F663062C-9209-4D00-88BE-FA82BA411A93} = s 'NUDecked I-Beam Class'
+		{
+			ProgID = s 'WBFLGeometry.NUDeckedIBeam.1'
+			VersionIndependentProgID = s 'WBFLGeometry.NUDeckedIBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

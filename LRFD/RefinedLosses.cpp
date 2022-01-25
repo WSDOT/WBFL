@@ -27,9 +27,7 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XPsLosses.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -126,24 +124,8 @@ lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeT
    m_Shipping = shipping;
 }
 
-lrfdRefinedLosses::lrfdRefinedLosses(const lrfdRefinedLosses& rOther)
-{
-   MakeCopy( rOther );
-}
-
 lrfdRefinedLosses::~lrfdRefinedLosses()
 {
-}
-
-//======================== OPERATORS  =======================================
-lrfdRefinedLosses& lrfdRefinedLosses::operator=(const lrfdRefinedLosses& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
 }
 
 //======================== OPERATIONS =======================================
@@ -317,45 +299,6 @@ void lrfdRefinedLosses::UpdateHaulingLosses() const
 {
    UpdateLongTermLosses();
 }
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdRefinedLosses::MakeAssignment( const lrfdRefinedLosses& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void lrfdRefinedLosses::MakeCopy( const lrfdRefinedLosses& rOther )
-{
-   lrfdLosses::MakeCopy(rOther);
-
-   m_dfpSR = rOther.m_dfpSR;
-   m_dfpCR = rOther.m_dfpCR;
-   m_dfpR2 = rOther.m_dfpR2;
-
-   m_Shipping = rOther.m_Shipping;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
 
 Float64 shrinkage_losses(Float64 h)
 {

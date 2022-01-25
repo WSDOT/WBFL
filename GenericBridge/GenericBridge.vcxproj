@@ -351,9 +351,11 @@
     <None Include="MultiWebSection.rgs" />
     <None Include="MultiWebSection2.rgs" />
     <None Include="NegativeMomentBridgeDeckRebarLayoutItem.rgs" />
+    <None Include="NUDeckedBulbTeeSection.rgs" />
     <None Include="NUGirderSection.rgs" />
     <None Include="NUSplicedGirderSegment.rgs" />
     <None Include="OverlaySlab.rgs" />
+    <None Include="PCIDeckedBulbTeeSection.rgs" />
     <None Include="Pier.rgs" />
     <None Include="PierCollection.rgs" />
     <None Include="PrecastSlab.rgs" />

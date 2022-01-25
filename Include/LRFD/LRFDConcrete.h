@@ -90,6 +90,11 @@ public:
    void SetLambda(Float64 lambda);
    Float64 GetLambda() const;
 
+   // PCI UHPC parameters
+   void SetFirstCrackStrength(Float64 ffc);
+   Float64 GetFirstCrackStrength() const;
+   void SetPostCrackingTensileStrength(Float64 frr);
+   Float64 GetPostCrackingTensileStrength() const;
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.

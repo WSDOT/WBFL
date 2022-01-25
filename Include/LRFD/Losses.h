@@ -26,10 +26,11 @@
 #define INCLUDED_LOSSES_H_
 #pragma once
 
-#include <Lrfd\LrfdExp.h>
-#include <Lrfd\VersionMgrListener.h>
-#include <Lrfd\PsStrand.h>
-#include <Lrfd\ElasticShortening.h>
+#include <LRFD\LrfdExp.h>
+#include <LRFD\VersionMgrListener.h>
+#include <LRFD\PsStrand.h>
+#include <LRFD\ElasticShortening.h>
+#include <LRFD\CreepCoefficient.h>
 
 #include <array>
 
@@ -115,10 +116,7 @@ public:
               Float64 ti,   // Time until prestress transfer
               bool bIgnoreInitialRelaxation, // if true, initialize relaxation is not computed
               bool bValidateLosses // if true, ValidateLossParameters() is called and lrfdXPsLosses exceptions will be thrown if the loss parameters are not valid
-              );
-
-   lrfdLosses(const lrfdLosses& rOther);
-   lrfdLosses& operator=(const lrfdLosses& rOther);
+   );
 
    //------------------------------------------------------------------------
    // Called by lrfdVersion when ever the code version or unit system changes
@@ -415,7 +413,7 @@ protected:
    void Init();
 
    void UpdateLosses() const;
-   void UpdateInitialLosses() const;
+   virtual void UpdateInitialLosses() const;
    virtual void UpdateRelaxationBeforeTransfer() const;
    virtual void UpdateElasticShortening() const;
    virtual void UpdatePostTensionLosses() const;
@@ -428,9 +426,6 @@ protected:
    virtual void UpdateHaulingLosses() const = 0;
    
    void UpdateTemporaryStrandRemovalEffect() const;
-
-   void MakeAssignment( const lrfdLosses& rOther );
-   void MakeCopy( const lrfdLosses& rOther );
 
    // Input Parameters
    SectionPropertiesType m_SectionProperties;

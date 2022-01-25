@@ -322,7 +322,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
             rebarSectionItem->get_RightExtension(&end);
 
             Float64 cut_length = Min(start, end);
-            Float64 fra = cut_length / devLengthDetails.ldb;
+            Float64 fra = cut_length / devLengthDetails.ld;
             fra = Min(fra, 1.0);
             dev_length_factor = fra;
          }

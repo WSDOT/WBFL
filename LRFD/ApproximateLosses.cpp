@@ -27,9 +27,7 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XPsLosses.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -76,7 +74,7 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 friction,
                          Float64 angleChange,
 
-                         lrfdConcreteUtil::DensityType concreteType,
+                         matConcrete::Type concreteType,
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -124,27 +122,10 @@ lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeT
    m_BeamType = beamType;
 }
 
-lrfdApproximateLosses::lrfdApproximateLosses(const lrfdApproximateLosses& rOther)
-{
-   MakeCopy( rOther );
-}
-
 lrfdApproximateLosses::~lrfdApproximateLosses()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdApproximateLosses& lrfdApproximateLosses::operator=(const lrfdApproximateLosses& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
 Float64 lrfdApproximateLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
 {
    return PermanentStrand_TimeDependentLossesAtShipping();
@@ -221,39 +202,6 @@ Float64 lrfdApproximateLosses::PermanentStrand_AfterTemporaryStrandRemoval() con
 
    Float64 loss = PermanentStrand_BeforeTemporaryStrandRemoval();
    return loss;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdApproximateLosses::MakeAssignment( const lrfdApproximateLosses& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void lrfdApproximateLosses::MakeCopy( const lrfdApproximateLosses& rOther )
-{
-   lrfdLosses::MakeCopy(rOther);
-   m_BeamType = rOther.m_BeamType;
-   m_PPR      = rOther.m_PPR;
-   m_dfpLT    = rOther.m_dfpLT;
-   m_Shipping = rOther.m_Shipping;
-   m_ConcreteType = rOther.m_ConcreteType;
 }
 
 void lrfdApproximateLosses::ValidateParameters() const
@@ -336,7 +284,7 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
          losses -= lowRelaxReduction;
       }
 
-      if ( m_ConcreteType != lrfdConcreteUtil::NormalDensity )
+      if ( m_ConcreteType != matConcrete::Normal )
       {
          losses += (is_si ? ::ConvertToSysUnits(35.,unitMeasure::MPa) : ::ConvertToSysUnits(5.0,unitMeasure::KSI));
       }

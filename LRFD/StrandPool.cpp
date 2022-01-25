@@ -26,7 +26,6 @@
 #include <Lrfd\StrandPool.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\AutoVersion.h>
-#include <Units\SysUnits.h>
 #include <algorithm>
 
 #ifdef _DEBUG

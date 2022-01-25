@@ -26,8 +26,6 @@
 #include <Lrfd\LiveLoadDistributionFactorBase.h>
 #include <Lrfd\Utility.h>
 #include <Lrfd\VersionMgr.h>
-#include <Units\SysUnits.h>
-#include <MathEx.h>
 #include <set>
 #include <algorithm>
 

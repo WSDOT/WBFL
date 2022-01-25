@@ -22,32 +22,34 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Lrfd\LrfdLib.h>
-#include <Lrfd\UnitTest.h>
-#include <Lrfd\AutoVersion.h>
-#include <Lrfd\ConcreteUtil.h>
-#include <Lrfd\ElasticShortening.h>
-#include <Lrfd\ApproximateLosses.h>
-#include <Lrfd\ApproximateLosses2005.h>
-#include <Lrfd\RefinedLosses.h>
-#include <Lrfd\RefinedLosses2005.h>
-#include <Lrfd\PsStrand.h>
-#include <Lrfd\Shear.h>
-#include <Lrfd\StrandPool.h>
-#include <Lrfd\VersionMgr.h>
-#include <Lrfd\RebarPool.h>
-#include <Lrfd\Utility.h>
-#include <Lrfd\LoadModifier.h>
-#include <Lrfd\LimitStateCalculator.h>
-#include <Lrfd\LldfTypeAEKIJ.h>
-#include <Lrfd\LldfTypeAEK.h>
-#include <Lrfd\LldfTypeBC.h>
-#include <Lrfd\LldfTypeHIJ.h>
-#include <Lrfd\LldfTypeG.h>
-#include <Lrfd\LldfTxdotMultiWeb.h>
-#include <Lrfd\LldfTxdotSpreadSlab.h>
-#include <Lrfd\CreepCoefficient.h>
-#include <Lrfd\CreepCoefficient2005.h>
+#include <LRFD\LrfdLib.h>
+#include <LRFD\UnitTest.h>
+#include <LRFD\AutoVersion.h>
+#include <LRFD\ConcreteUtil.h>
+#include <LRFD\ElasticShortening.h>
+#include <LRFD\ApproximateLosses.h>
+#include <LRFD\ApproximateLosses2005.h>
+#include <LRFD\RefinedLosses.h>
+#include <LRFD\RefinedLosses2005.h>
+#include <LRFD\PCIUHPCLosses.h>
+#include <LRFD\PsStrand.h>
+#include <LRFD\Shear.h>
+#include <LRFD\StrandPool.h>
+#include <LRFD\VersionMgr.h>
+#include <LRFD\RebarPool.h>
+#include <LRFD\Utility.h>
+#include <LRFD\LoadModifier.h>
+#include <LRFD\LimitStateCalculator.h>
+#include <LRFD\LldfTypeAEKIJ.h>
+#include <LRFD\LldfTypeAEK.h>
+#include <LRFD\LldfTypeBC.h>
+#include <LRFD\LldfTypeHIJ.h>
+#include <LRFD\LldfTypeG.h>
+#include <LRFD\LldfTxdotMultiWeb.h>
+#include <LRFD\LldfTxdotSpreadSlab.h>
+#include <LRFD\CreepCoefficient.h>
+#include <LRFD\CreepCoefficient2005.h>
+#include <LRFD\PCIUHPCCreepCoefficient.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -79,6 +81,7 @@ bool lrfdUnitTest::TestMe(dbgLog& rlog)
    tst &= lrfdApproximateLosses2005::TestMe(rlog);
    tst &= lrfdRefinedLosses::TestMe(rlog);
    tst &= lrfdRefinedLosses2005::TestMe(rlog);
+   tst &= lrfdPCIUHPCLosses::TestMe(rlog);
    tst &= lrfdPsStrand::TestMe(rlog);
    tst &= lrfdShear::TestMe(rlog);
    tst &= lrfdStrandPool::TestMe(rlog);
@@ -91,6 +94,7 @@ bool lrfdUnitTest::TestMe(dbgLog& rlog)
    tst &= lrfdLimitStateCalculator::TestMe(rlog);
    tst &= lrfdCreepCoefficient::TestMe(rlog);
    tst &= lrfdCreepCoefficient2005::TestMe(rlog);
+   tst &= lrfdPCIUHPCCreepCoefficient::TestMe(rlog);
 
    tst &= lrfdLldfTypeAEKIJ::TestMe(rlog);
    tst &= lrfdLldfTypeAEK::TestMe(rlog);

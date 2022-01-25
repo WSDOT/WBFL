@@ -24,11 +24,11 @@
 #pragma once
 
 #include <Stability\StabilityExp.h>
-#include <WBFLGenericBridge.h> // for ISegment
 #include <Material\ConcreteEx.h>
 #include <Stability\AnalysisPoint.h>
 
 class gpPoint2d;
+interface ISegment;
 
 namespace WBFL
 {

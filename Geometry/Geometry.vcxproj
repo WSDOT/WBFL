@@ -226,6 +226,8 @@
     <ClCompile Include="MultiWeb.cpp" />
     <ClCompile Include="MultiWeb2.cpp" />
     <ClCompile Include="NUBeam.cpp" />
+    <ClCompile Include="NUDeckedIBeam.cpp" />
+    <ClCompile Include="PCIDeckedIBeam.cpp" />
     <ClCompile Include="Plane3d.cpp" />
     <ClCompile Include="PlateGirder.cpp" />
     <ClCompile Include="Point2d.cpp" />
@@ -275,6 +277,8 @@
     <None Include="MultiWeb.rgs" />
     <None Include="MultiWeb2.rgs" />
     <None Include="NUBeam.rgs" />
+    <None Include="NUDeckedIBeam.rgs" />
+    <None Include="PCIDeckedIBeam.rgs" />
     <None Include="Plane3d.rgs" />
     <None Include="PlateGirder.rgs" />
     <None Include="Point2d.rgs" />
@@ -333,6 +337,8 @@
     <ClInclude Include="MultiWeb.h" />
     <ClInclude Include="MultiWeb2.h" />
     <ClInclude Include="NUBeam.h" />
+    <ClInclude Include="NUDeckedIBeam.h" />
+    <ClInclude Include="PCIDeckedIBeam.h" />
     <ClInclude Include="Plane3d.h" />
     <ClInclude Include="PlateGirder.h" />
     <ClInclude Include="Point2d.h" />

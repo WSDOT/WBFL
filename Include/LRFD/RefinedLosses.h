@@ -152,21 +152,10 @@ public:
                          bool bValidateParameters
                          );
 
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdRefinedLosses(const lrfdRefinedLosses& rOther);
 
    //------------------------------------------------------------------------
    // Destructor
    ~lrfdRefinedLosses();
-
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdRefinedLosses& operator=(const lrfdRefinedLosses& rOther);
-
-   // GROUP: OPERATIONS
 
 
    // GROUP: ACCESS
@@ -208,31 +197,7 @@ protected:
    mutable Float64 m_dfpR2;
 
    Float64 m_Shipping;
-
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdRefinedLosses& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdRefinedLosses& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_REFINEDLOSSES_H_

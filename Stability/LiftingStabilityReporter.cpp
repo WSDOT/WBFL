@@ -155,37 +155,11 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
       return;
    }
 
-   bool bLambda = (lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() ? true : false);
-
    *pPara << _T("Compression stress limit (general) = -") << criteria.CompressionCoefficient_GlobalStress << RPT_FCI << _T(" = ") << stress.SetValue(criteria.AllowableCompression_GlobalStress) << rptNewLine;
    *pPara << _T("Compression stress limit (with lateral bending) = -") << criteria.CompressionCoefficient_PeakStress << RPT_FCI << _T(" = ") << stress.SetValue(criteria.AllowableCompression_PeakStress) << rptNewLine;
-   
-   *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(criteria.TensionCoefficient);
-   if ( bLambda )
-   {
-      *pPara << symbol(lambda);
-   }
-   *pPara << symbol(ROOT) << RPT_FCI;
-   if ( criteria.bMaxTension )
-   {
-      *pPara << _T(" but not more than ") << stress.SetValue(criteria.MaxTension);
-   }
-   *pPara << _T(" = " ) << stress.SetValue(criteria.AllowableTension) << rptNewLine;
 
-   if ( segment )
-   {
-      *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(criteria.TensionCoefficientWithRebar);
-      if ( bLambda )
-      {
-         *pPara << symbol(lambda);
-      }
-      *pPara << symbol(ROOT) << RPT_FCI;
-      *pPara << _T(" if bonded reinforcement sufficient to resist the tensile force in the concrete is provided = ") << stress.SetValue(criteria.AllowableTensionWithRebar) << rptNewLine;
-   }
-   else
-   {
-      *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated because reinforcement is not modeled.") << rptNewLine;
-   }
+   criteria.TensionStressLimit->ReportTensionLimit(pPara, pDisplayUnits);
+   
 
    *pPara << _T("Minimum factor of safety against cracking = ") << scalar.SetValue(criteria.MinFScr) << rptNewLine;
    
@@ -200,32 +174,7 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
       *pPara << symbol(infinity) << rptNewLine;
    }
 
-   fcReqd = pArtifact->RequiredFcTension();
-   *pPara << RPT_FCI << _T(" required for tensile stress = ");
-   if ( fcReqd < 0 )
-   {
-      ATLASSERT(fcReqd == -99999);
-      *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
-   }
-   else
-   {
-      *pPara << stress.SetValue(fcReqd) << rptNewLine;
-   }
-
-   if ( segment )
-   {
-      fcReqd = pArtifact->RequiredFcTensionWithRebar();
-      *pPara << RPT_FCI << _T(" required for tensile stress with bonded reinforcement sufficient to resist the tensile force in the concrete = ");
-      if ( fcReqd < 0 )
-      {
-         ATLASSERT(fcReqd == -99999);
-         *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
-      }
-      else
-      {
-         *pPara << stress.SetValue(fcReqd) << rptNewLine;
-      }
-   }
+   criteria.TensionStressLimit->ReportRequiredConcreteStrength(pArtifact, pPara, pDisplayUnits);
 
    *pPara << _T("The tensile stress case with the minimum C/D ratio governs") << rptNewLine;
 
