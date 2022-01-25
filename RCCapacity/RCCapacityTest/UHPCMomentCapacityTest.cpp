@@ -901,7 +901,7 @@ void CUHPCMomentCapacityTest::Test3()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -215602.84316 /*17966.9 k-ft*/), true); // -215664.0 = 17972 k-ft from FHWA example slides
+   TRY_TEST(IsEqual(Mx, -215602.84328 /*17966.9 k-ft*/), true); // -215664.0 = 17972 k-ft from FHWA example slides
    TRY_TEST(IsZero(My), true);
    Float64 Ml = -Mx;
 
@@ -994,7 +994,7 @@ void CUHPCMomentCapacityTest::Test3()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -160319.2842, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -160319.2836, 0.0001), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mt = -Mx;
 

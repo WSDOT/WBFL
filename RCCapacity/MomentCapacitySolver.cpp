@@ -233,7 +233,7 @@ HRESULT CMomentCapacitySolver::UpdateLimits()
    CComPtr<IGeneralSection> section;
    get_Section(&section);
 
-   Float64 compStrain =  Float64_Max;
+   Float64 compStrain =  -Float64_Max;
    Float64 tensStrain = -Float64_Max;
 
    m_Top = -Float64_Max;
@@ -261,13 +261,13 @@ HRESULT CMomentCapacitySolver::UpdateLimits()
          continue; // shape is a void
       }
 
-      Float64 strain_at_peak_stress;
-      material->get_StrainAtPeakStress(&strain_at_peak_stress);
-      compStrain = Min(strain_at_peak_stress, compStrain);
+      Float64 min_strain, max_strain;
+      material->StrainLimits(&min_strain, &max_strain);
+      compStrain = Max(min_strain, compStrain);
+      ATLASSERT(compStrain < 0);
 
-      Float64 e_yield;
-      material->get_YieldStrain(&e_yield);
-      tensStrain = Max(e_yield, tensStrain);
+      tensStrain = Max(max_strain, tensStrain);
+      ATLASSERT(0 < tensStrain);
    }
 
    m_eoCompressionLimit = compStrain;
@@ -516,8 +516,8 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
       return Error(IDS_E_NEUTRALAXISNOTBOUNDED, IID_IMomentCapacitySolver, RC_E_NEUTRALAXISNOTBOUNDED);
    }
 
-   Float64 eo_lower = (solutionMethod == smFixedCompressionStrain ? k_or_ec : -0.0035);
-   Float64 eo_upper = (solutionMethod == smFixedTensionStrain ? k_or_ec : 0.11);
+   Float64 eo_lower = (solutionMethod == smFixedCompressionStrain ? k_or_ec : *peo_lower);
+   Float64 eo_upper = (solutionMethod == smFixedTensionStrain ? k_or_ec : *peo_upper);
 
    //if (solutionMethod == smFixedStrain)
    //{
@@ -589,7 +589,7 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
 
       Fz_upper -= Fz;
 
-      if ( Fz_lower*Fz_upper < 0 )
+      if ( Fz_lower*Fz_upper <= 0 )
       {
          bDone = true;
       }

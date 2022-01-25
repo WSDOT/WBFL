@@ -159,7 +159,7 @@ void CMomentCapacitySolverTest::Test()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST( IsZero(Fz,0.001), true );
-   TRY_TEST( IsEqual(Mx,-6898.04531), true );
+   TRY_TEST( IsEqual(Mx,-6898.030257), true );
    TRY_TEST( IsZero(My), true);
 
    Float64 ec;
@@ -177,7 +177,7 @@ void CMomentCapacitySolverTest::Test()
 
 
    TRY_TEST( IsZero(Fz,0.001), true );
-   TRY_TEST( IsEqual(Mx, 6898.04531), true );
+   TRY_TEST( IsEqual(Mx, 6898.030257), true );
    TRY_TEST( IsZero(My), true);
 
    strainPlane->GetZ(0.00,-H/2,&ec);
@@ -200,7 +200,7 @@ void CMomentCapacitySolverTest::Test()
 
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, 6884.3201, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, 6884.3301, 0.0001), true);
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, -H / 2, &ec);
