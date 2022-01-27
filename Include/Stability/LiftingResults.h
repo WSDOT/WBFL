@@ -107,7 +107,7 @@ namespace WBFL
 
          GirderSide AssumedTiltDirection; ///< Direction in which girder is assumed to tilt
 
-         bool bIsStable[3][2];  ///< if true, the girder is not stable for lifting... it will just roll over. If the girder is not stable, the analysis results below are not valid. Array indicies are [ImpactDirection][WindDirection]
+         std::array<std::array<bool, 2>, 3> bIsStable;  ///< if true, the girder is not stable for lifting... it will just roll over. If the girder is not stable, the analysis results below are not valid. Array indicies are [ImpactDirection][WindDirection]
 
          Float64 Pcrit; ///< critical buckling load
          Float64 Plift; ///< axial force due to inclination of lift cables for the no-impact case
@@ -116,7 +116,7 @@ namespace WBFL
 
          std::vector<LiftingSectionResult> vSectionResults; ///< analysis results for each analysis point in the stability problem object.
 
-         Float64 ThetaEq[3][2]; ///< roll angle at equilibrium. Array indicies are [ImpactDirection][WindDirection].
+         std::array<std::array<Float64, 2>, 3> ThetaEq; ///< roll angle at equilibrium. Array indicies are [ImpactDirection][WindDirection].
 
          Float64 MaxDirectStress; ///< maximum stress in plumb girder (most tensile value).
          IndexType MaxDirectStressAnalysisPointIndex; ///< analysis poiint index associated with the maximum girder stress.
@@ -141,9 +141,9 @@ namespace WBFL
          Corner MinStressCorner;            ///< corner where the minimum girder stress occurs.
 
          // controlling FScr for a load case
-         Float64 MinFScr[3][2];                  ///< minimum factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection].
-         IndexType FScrAnalysisPointIndex[3][2]; ///< analysis point index associated with the minimum factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection].
-         Corner FScrCorner[3][2];   ///< corner associated with the minimum factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection].
+         std::array<std::array<Float64, 2>, 3> MinFScr;                  ///< minimum factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection].
+         std::array<std::array<IndexType, 2>, 3> FScrAnalysisPointIndex; ///< analysis point index associated with the minimum factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection].
+         std::array<std::array<Corner, 2>, 3> FScrCorner;   ///< corner associated with the minimum factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection].
 
          // overall controlling FScr
          Float64 FScrMin;                  ///< minimum factor of safety against cracking
@@ -152,9 +152,9 @@ namespace WBFL
          WindDirection FScrMinWindDirection;      ///< wind direction associated with the minimum factor of safety against cracking
          Corner FScrMinCorner;             ///< corner associated with the minimum factor of safety against cracking
 
-         Float64 ThetaMax[3][2];     ///< maximum tilt angle of the cracked section. Array indicies are [ImpactDirection][WindDirection].
-         Float64 FsFailure[3][2];    ///< factor of safety against failure. Array indicies are [ImpactDirection][WindDirection].
-         Float64 AdjFsFailure[3][2]; ///< adjusted FS against failure (if FSfailure < FScr then FSfailure = FScr). Array indicies are [ImpactDirection][WindDirection].
+         std::array<std::array<Float64, 2>, 3> ThetaMax;     ///< maximum tilt angle of the cracked section. Array indicies are [ImpactDirection][WindDirection].
+         std::array<std::array<Float64, 2>, 3> FsFailure;    ///< factor of safety against failure. Array indicies are [ImpactDirection][WindDirection].
+         std::array<std::array<Float64, 2>, 3> AdjFsFailure; ///< adjusted FS against failure (if FSfailure < FScr then FSfailure = FScr). Array indicies are [ImpactDirection][WindDirection].
 
          Float64 MinFsFailure;         ///< minimum factor of safety against failure
          Float64 MinAdjFsFailure;      ///< corrosponding adjusted minimum factor of safety against failure

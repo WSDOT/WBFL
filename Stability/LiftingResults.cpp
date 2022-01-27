@@ -122,8 +122,6 @@ LiftingResults::LiftingResults()
    emag.fill(0);
    //dLift = 0;
 
-   memset((void*)ThetaEq, 0, sizeof(ThetaEq));
-
    MaxDirectStress = -Float64_Max;
    MaxDirectStressAnalysisPointIndex = 0;
    MaxDirectStressImpactDirection    = NoImpact;
@@ -146,9 +144,6 @@ LiftingResults::LiftingResults()
    MinStressWindDirection      = Left;
    MinStressCorner             = TopLeft;
 
-   memset((void*)FScrAnalysisPointIndex, 0, sizeof(FScrAnalysisPointIndex));
-   memset((void*)FScrCorner, 0, sizeof(FScrCorner));
-
    FScrMin = Float64_Max;
    FScrMinAnalysisPointIndex = 0;
    FScrMinImpactDirection    = NoImpact;
@@ -161,6 +156,11 @@ LiftingResults::LiftingResults()
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
+         ThetaEq[impact][wind] = 0.0;
+         ThetaMax[impact][wind] = 0.0;
+         FScrAnalysisPointIndex[impact][wind] = 0;
+         FScrCorner[impact][wind] = (Corner)0;
+
          MinFScr[impact][wind] = Float64_Max;
          FsFailure[impact][wind] = Float64_Max;
          AdjFsFailure[impact][wind] = Float64_Max;
@@ -168,9 +168,6 @@ LiftingResults::LiftingResults()
          bIsStable[impact][wind] = true;
       }
    }
-
-
-   memset((void*)(ThetaMax),0,sizeof(ThetaMax));
 
    MinFsFailure = Float64_Max;
    MinAdjFsFailure = Float64_Max;
