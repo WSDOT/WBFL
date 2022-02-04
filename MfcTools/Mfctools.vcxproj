@@ -195,6 +195,7 @@
     <ClCompile Include="ddxfolder.cpp" />
     <ClCompile Include="DocTemplateDialog.cpp" />
     <ClCompile Include="DocTemplateFinder.cpp" />
+    <ClCompile Include="ExcelWrapper.cpp" />
     <ClCompile Include="Format.cpp" />
     <ClCompile Include="HyperLink.cpp" />
     <ClCompile Include="LoadModifierPage.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="..\Include\MfcTools\ddxfolder.h" />
     <ClInclude Include="..\Include\MfcTools\DocTemplateDialog.h" />
     <ClInclude Include="..\Include\MfcTools\DocTemplateFinder.h" />
+    <ClInclude Include="..\Include\MfcTools\ExcelWrapper.h" />
     <ClInclude Include="..\Include\MfcTools\Exceptions.h" />
     <ClInclude Include="..\Include\MfcTools\Format.h" />
     <ClInclude Include="..\Include\MfcTools\HyperLink.h" />
