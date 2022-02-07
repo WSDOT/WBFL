@@ -74,6 +74,7 @@ m_XAxisNiceRange(true),
 m_YAxisNiceRange(true),
 m_PinYAxisAtZero(true),
 m_bIsotropicAxes(false),
+m_bHorizontalControlLine(true),
 m_MinZoomHeight(DEFAULT_ZOOM),
 m_MinZoomWidth(DEFAULT_ZOOM),
 m_Xmin(0),
@@ -94,21 +95,14 @@ m_Ymax(1)
    m_GridPenData.Style = PS_SOLID;
    m_GridPenData.Color = RGB(0,0,0);
    m_GridPenData.Width = 1;
+
+   m_HorzControlLinePenData.Style = PS_SOLID;
+   m_HorzControlLinePenData.Color = RGB(0, 0, 0);
+   m_HorzControlLinePenData.Width = 2;
 }
 
 grGraphXY::~grGraphXY()
 {
-}
-
-//======================== OPERATORS  =======================================
-grGraphXY& grGraphXY::operator= (const grGraphXY& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
 }
 
 //======================== OPERATIONS =======================================
@@ -483,6 +477,13 @@ void grGraphXY::SetGridPenStyle(int nPenStyle, int nWidth, COLORREF crColor)
    m_GridPenData.Width = nWidth;
 }
 
+void grGraphXY::SetHorizontalControlLinePenStyle(int nPenStyle, int nWidth, COLORREF crColor)
+{
+   m_HorzControlLinePenData.Style = nPenStyle;
+   m_HorzControlLinePenData.Color = crColor;
+   m_HorzControlLinePenData.Width = nWidth;
+}
+
 void grGraphXY::SetDataLabel(IndexType cookie,LPCTSTR lpszLabel)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
@@ -544,54 +545,6 @@ const grlibPointMapper& grGraphXY::GetClientAreaPointMapper(HDC hDC)
    return m_PointMapper;
 }
 
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void grGraphXY::MakeCopy(const grGraphXY& rOther)
-{
-   m_GraphDataMap  = rOther.m_GraphDataMap;
-   m_WorldRect     = rOther.m_WorldRect;
-   m_OutputRect    = rOther.m_OutputRect;
-
-   m_PointMapper = rOther.m_PointMapper;
-   m_IsBroken    = rOther.m_IsBroken;
-   m_DoDrawAxis  = rOther.m_DoDrawAxis;
-   m_DoDrawGrid  = rOther.m_DoDrawGrid;
-   m_bDrawLegend = rOther.m_bDrawLegend;
-
-   m_GraphTitle         = rOther.m_GraphTitle;
-   m_GraphTitleSize     = rOther.m_GraphTitleSize;
-   m_GraphSubtitle      = rOther.m_GraphSubtitle;
-   m_GraphSubtitleSize  = rOther.m_GraphSubtitleSize;
-
-   m_XAxis = rOther.m_XAxis;
-   m_YAxis = rOther.m_YAxis;
-   m_XAxisRangeForced = rOther.m_XAxisRangeForced;
-   m_XAxisNiceRange = rOther.m_XAxisNiceRange;
-   m_YAxisNiceRange = rOther.m_YAxisNiceRange;
-   m_GridPenData    = rOther.m_GridPenData;
-
-   m_ClientAreaColor = rOther.m_ClientAreaColor;
-
-   m_MinZoomHeight = rOther.m_MinZoomHeight;
-   m_MinZoomWidth  = rOther.m_MinZoomWidth;
-
-   m_Xmin = rOther.m_Xmin;
-   m_Xmax = rOther.m_Xmax;
-   m_Ymin = rOther.m_Ymin;
-   m_Ymax = rOther.m_Ymax;
-}
-
-void grGraphXY::MakeAssignment(const grGraphXY& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
 
 ////////////////////////// PRIVATE    ///////////////////////////////////////
 
@@ -1037,19 +990,25 @@ void grGraphXY::DrawAxes(HDC hDC)
          }
       }
    }
-   else
+
+   if(m_bHorizontalControlLine || !m_DoDrawGrid)
    {
       // don't draw grid, but do draw a horizontal line along Y=0
-      if ( (0 < top_val && bot_val < 0) || (top_val < 0 && 0 < bot_val))
+      if ( (0 <= top_val && bot_val <= 0) || (top_val <= 0 && 0 <= bot_val))
       {
          LONG   ldx, ldy, rdx, rdy;
 
          m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? left_val  : log10(left_val),  0., &ldx, &ldy);
          m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? right_val : log10(right_val), 0., &rdx, &rdy);
 
+         HPEN controlLinePen = CreatePen(m_HorzControlLinePenData.Style, m_HorzControlLinePenData.Width, m_HorzControlLinePenData.Color);
+         HPEN lastPen = (HPEN)::SelectObject(hDC, controlLinePen);
+
          POINT pnt;
          ::MoveToEx(hDC,ldx,ldy,&pnt);
          ::LineTo(hDC,rdx,rdy);
+
+         ::SelectObject(hDC, lastPen);
       }
    }
    ::SelectObject(hDC, old_hpen);
@@ -1222,6 +1181,16 @@ void grGraphXY::SetIsotropicAxes(bool bIsotropic)
 bool grGraphXY::GetIsotropicAxes() const
 {
    return m_bIsotropicAxes;
+}
+
+void grGraphXY::SetHorizontalControlLine(bool set)
+{
+   m_bHorizontalControlLine = set;
+}
+
+bool grGraphXY::GetHorizontalControlLine() const
+{
+   return m_bHorizontalControlLine;
 }
 
 int grGraphXY::UpdateLegendMetrics(HDC hDC)
