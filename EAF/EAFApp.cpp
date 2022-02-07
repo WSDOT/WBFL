@@ -243,7 +243,7 @@ BOOL CEAFApp::InitInstance()
       // Start the help window thread
       if (m_bUseHelpWindow)
       {
-         m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
+         StartHelpWindowThread();
       }
 
       if (IsFirstRun() && !cmdInfo.m_bCommandLineMode)
@@ -253,6 +253,14 @@ BOOL CEAFApp::InitInstance()
    }
 
 	return TRUE;
+}
+
+void CEAFApp::StartHelpWindowThread()
+{
+   if (m_pHelpWindowThread == nullptr)
+   {
+      m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
+   }
 }
 
 int CEAFApp::ExitInstance()
@@ -432,8 +440,10 @@ BOOL CEAFApp::UseOnlineDocumentation() const
 
 void CEAFApp::HelpWindowNavigate(LPCTSTR lpszURL)
 {
-   if (m_pHelpWindowThread)
+   if (m_bUseHelpWindow)
    {
+      if (m_pHelpWindowThread == nullptr) StartHelpWindowThread();
+
       m_pHelpWindowThread->Navigate(lpszURL);
    }
    else
