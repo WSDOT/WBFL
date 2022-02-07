@@ -40,6 +40,7 @@
 
 #include <MFCTools\Exceptions.h>
 #include <MFCTools\VersionInfo.h>
+#include <MfcTools\Prompts.h>
 
 #include <EAF\EAFAboutDlg.h>
 #include "UnitsDlg.h"
@@ -243,7 +244,7 @@ BOOL CEAFApp::InitInstance()
       // Start the help window thread
       if (m_bUseHelpWindow)
       {
-         StartHelpWindowThread();
+         m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
       }
 
       if (IsFirstRun() && !cmdInfo.m_bCommandLineMode)
@@ -253,14 +254,6 @@ BOOL CEAFApp::InitInstance()
    }
 
 	return TRUE;
-}
-
-void CEAFApp::StartHelpWindowThread()
-{
-   if (m_pHelpWindowThread == nullptr)
-   {
-      m_pHelpWindowThread = (CEAFHelpWindowThread*)AfxBeginThread(RUNTIME_CLASS(CEAFHelpWindowThread));
-   }
 }
 
 int CEAFApp::ExitInstance()
@@ -440,10 +433,8 @@ BOOL CEAFApp::UseOnlineDocumentation() const
 
 void CEAFApp::HelpWindowNavigate(LPCTSTR lpszURL)
 {
-   if (m_bUseHelpWindow)
+   if (m_pHelpWindowThread)
    {
-      if (m_pHelpWindowThread == nullptr) StartHelpWindowThread();
-
       m_pHelpWindowThread->Navigate(lpszURL);
    }
    else
@@ -591,6 +582,7 @@ BEGIN_MESSAGE_MAP(CEAFApp, CWinApp)
 	ON_COMMAND(EAFID_APP_LEGAL, OnAppLegal)
    ON_COMMAND(EAFID_HELP_SOURCE,OnHelpSource)
    ON_UPDATE_COMMAND_UI(EAFID_HELP_SOURCE,OnUpdateHelpSource)
+   ON_COMMAND(EAFID_HELP_VIEWER, OnHelpViewer)
 
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, OnFileNew)
@@ -663,6 +655,15 @@ void CEAFApp::OnAppLegal()
 void CEAFApp::OnHelpSource()
 {
    UseOnlineDocumentation(!m_bUseOnlineDocumentation);
+}
+
+void CEAFApp::OnHelpViewer()
+{
+   int result = AfxRBChoose(_T("Documentation Viewer"), _T("Select the documentation viewer.\n\nA restart of the application is required for this change to take effect."), _T("Built-in viewer\nDefault web browser"), m_bUseHelpWindow ? 0 : 1, TRUE);
+   if (result != -1)
+   {
+      m_bUseHelpWindow = (result == 0 ? TRUE : FALSE);
+   }
 }
 
 void CEAFApp::OnUpdateHelpSource(CCmdUI* pCmdUI)

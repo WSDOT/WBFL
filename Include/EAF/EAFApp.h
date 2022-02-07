@@ -186,7 +186,8 @@ protected:
 	afx_msg void OnAppLegal();
    afx_msg void OnHelpSource();
    afx_msg void OnUpdateHelpSource(CCmdUI* pCmdUI);
-	afx_msg void OnFileNew();
+   afx_msg void OnHelpViewer();
+   afx_msg void OnFileNew();
    afx_msg void OnFileOpen();
 	afx_msg void OnEditUnits();
    afx_msg void OnSIUnits();
@@ -245,8 +246,9 @@ protected:
    virtual CString GetDocumentationMapFile();
    virtual void LoadDocumentationMap();
 
-   BOOL m_bUseHelpWindow; // went TRUE, the default EAF Help Browser Window is used to display help content, otherwise the help documents are opened with the default shell action.
-   void StartHelpWindowThread();
+   BOOL m_bUseHelpWindow; // went TRUE, the built-in EAF Help Browser Window is used to display help content, otherwise the help documents are opened with the default shell action.
+   // this setting cannot be changed while the application is running. If you add a UI element to toggle this setting, the application must restart.
+   // this is because I could never get the viewer thread to start properly after InitInstance was called.
 
 private:
    CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
