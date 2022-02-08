@@ -54,12 +54,12 @@
     <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(WBFLDIR)\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
@@ -137,7 +137,7 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copying Apache Files</Message>
-      <Command>xcopy /y/d $(WBFLDIR)\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1D.dll $(WBFLDIR)\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
+      <Command>xcopy /y/d $(ARPDIR)\WBFL\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1D.dll $(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
     </PostBuildEvent>
     <Manifest>
       <OutputManifestFile>$(TargetPath).manifest</OutputManifestFile>
@@ -223,7 +223,7 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copying Apache Files</Message>
-      <Command>xcopy /y/d $(WBFLDIR)\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1.dll $(WBFLDIR)\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
+      <Command>xcopy /y/d $(ARPDIR)\WBFL\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1.dll $(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
