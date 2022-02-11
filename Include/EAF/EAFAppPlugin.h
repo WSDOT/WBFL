@@ -102,6 +102,9 @@ struct __declspec(uuid("{FAD83B53-6555-40ac-9B41-5B6A6EF4D16F}")) IEAFAppCommand
 
 interface IEAFAppCommandLine : IUnknown
 {
+   // Return the application name that goes with the \App= flag
+   virtual CString GetCommandLineAppName() const = 0;
+
    virtual CString GetUsageMessage() = 0;
 
    // Called by the framework to give this application plugin an opportinuity

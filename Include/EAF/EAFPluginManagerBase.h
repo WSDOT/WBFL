@@ -270,7 +270,10 @@ public:
       for(auto& item : m_Plugins)
       {
          auto plugin = item.second;
-         if ( plugin->GetName().CompareNoCase(lpszName) == 0 )
+
+         CComQIPtr<IEAFAppCommandLine> appCmdLine(plugin);
+
+         if (appCmdLine && appCmdLine->GetCommandLineAppName().CompareNoCase(lpszName) == 0 )
          {
             plugin.CopyTo(ppPlugin);
             return true;
