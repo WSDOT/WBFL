@@ -110,3 +110,9 @@ BOOL CGraphBuilder::CanPrint()
 {
    return TRUE;
 }
+
+bool CGraphBuilder::HandleDoubleClick(UINT nFlags,CPoint point)
+{
+   // do nothing by default
+    return false;
+}

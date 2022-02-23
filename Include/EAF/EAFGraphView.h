@@ -98,6 +98,7 @@ protected:
 protected:
 	//{{AFX_MSG(CEAFGraphView)
 	afx_msg void OnUpdateFilePrint(CCmdUI* pCmdUI);
+	afx_msg void OnLButtonDblClk(UINT nFlags,CPoint point);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

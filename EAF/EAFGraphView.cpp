@@ -65,7 +65,8 @@ BEGIN_MESSAGE_MAP(CEAFGraphView, CEAFView)
 	ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
-	//}}AFX_MSG_MAP
+   ON_WM_LBUTTONDBLCLK()
+   //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -237,4 +238,23 @@ void CEAFGraphView::UpdateViewTitle()
 
    CDocument* pDoc = GetDocument();
    pDoc->UpdateFrameCounts();
+}
+
+void CEAFGraphView::OnLButtonDblClk(UINT nFlags,CPoint point)
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
+   // Have the graphbuilder handle this
+   CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
+   std::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
+   bool bHandled(false);
+   if (pGraphBuilder)
+   {
+      bHandled = pGraphBuilder->HandleDoubleClick(nFlags,point);
+   }
+
+   if (!bHandled)
+   {
+      CEAFView::OnLButtonDblClk(nFlags,point);
+   }
 }

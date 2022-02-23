@@ -71,6 +71,9 @@ public:
    // Called by the framework to determine if printing commands can be enabled
    virtual BOOL CanPrint();
 
+   //
+   virtual bool HandleDoubleClick(UINT nFlags,CPoint point);
+
 protected:
    CString m_strName;
    const CBitmap* m_pBitmap;
