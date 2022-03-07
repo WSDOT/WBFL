@@ -21,34 +21,17 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GRAPHICSLIB_GRAPHICSLIBEXP_H_
-#define INCLUDED_GRAPHICSLIB_GRAPHICSLIBEXP_H_
 #pragma once
 
-// Define BUILDGRLIB when building this library
-// For static builds, define GRLIB
-// For static binding, define GRLIB
-// For dynamic binding, nothing is required to be defined
+#include <GraphicsLib/GraphicsLibExp.h>
+#include <WBFLTypes.h>
 
-#if defined (BUILDGRLIB) && !defined(GRLIB)
-#define GRCLASS __declspec(dllexport)
-#define GRFUNC  __declspec(dllexport)
-#define GRTPL   template class GRCLASS
-#elif defined(GRLIB)
-#define GRCLASS
-#define GRFUNC
-#define GRTPL
-#else
-#define GRCLASS __declspec(dllimport)
-#define GRFUNC
-#define GRTPL   extern template class GRCLASS
-#endif
+// Causes the compiler to instantiate the class and export it's symbols
+GRTPL SimplePointT<Float64>;
+GRTPL SimpleSizeT<Float64>;
+GRTPL SimpleRectT<Float64>;
 
-#if !defined INCLUDED_WBFLALL_H_
-#include <WbflAll.h>
-#endif
-
-#if !defined INCLUDED_GRAPHICSLIB_AUTOLIB_H_
-#include <GraphicsLib\AutoLib.h>
-#endif
-#endif // INCLUDED_GRAPHICSLIB_GRAPHICSLIBEXP_H_
+// Use alias declarations for a nice name (this is the modern version of typedef, see Modern Effective C++, Scott Meyers, Item #9)
+using GraphPoint = SimplePointT<Float64>;
+using GraphSize = SimpleSizeT<Float64>;
+using GraphRect = SimpleRectT<Float64>;

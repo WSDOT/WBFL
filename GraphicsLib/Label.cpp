@@ -49,7 +49,7 @@ grLabel::grLabel()
    Init();
 } 
 
-grLabel::grLabel(const gpPoint2d& point, const std::_tstring& label)
+grLabel::grLabel(const GraphPoint& point, const std::_tstring& label)
 {
    Init();
    m_HookPoint = point;
@@ -92,7 +92,7 @@ void grLabel::Draw(HDC hDC, const grlibPointMapper& mapper) const
       ::GetTextMetrics(hDC, &tm);
       LONG line_hgt = tm.tmHeight + tm.tmExternalLeading;
  
-      gpRect2d wbox = GetBoundingBox(hDC, mapper);
+      GraphRect wbox = GetBoundingBox(hDC, mapper);
       LONG dvx, dvy;
       mapper.WPtoDP(wbox.Left(), wbox.Top(), &dvx, &dvy);
       dvy += tm.tmAscent;
@@ -134,17 +134,17 @@ grLabel::VertPosition grLabel::GetVertPosition() const
    return m_VertPos;
 }
 
-void grLabel::SetHookPoint(const gpPoint2d& point)
+void grLabel::SetHookPoint(const GraphPoint& point)
 {
    m_HookPoint = point;
 }
 
-gpPoint2d grLabel::GetHookPoint() const
+GraphPoint grLabel::GetHookPoint() const
 {
    return m_HookPoint;
 }
 
-void grLabel::SetLocation(const gpPoint2d& point, HorizPosition hpos, VertPosition vpos)
+void grLabel::SetLocation(const GraphPoint& point, HorizPosition hpos, VertPosition vpos)
 {
    m_HookPoint = point;
    m_HorizPos = hpos;
@@ -173,12 +173,12 @@ Uint32 grLabel::GetPointSize() const
 }
 
 //======================== INQUIRY    =======================================
-gpRect2d grLabel::GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const
+GraphRect grLabel::GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const
 {
-   gpRect2d tmpBox;
+   GraphRect tmpBox;
 
    // get size of label in world coord's
-   gpSize2d tsiz(GetSize(hDC, mapper));
+   GraphSize tsiz(GetSize(hDC, mapper));
 
    // now orient it in space
    switch (m_HorizPos)
@@ -220,7 +220,7 @@ gpRect2d grLabel::GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const
    return tmpBox;
 }
 
-gpSize2d grLabel::GetSize(HDC hDC, const grlibPointMapper& mapper) const
+GraphSize grLabel::GetSize(HDC hDC, const grlibPointMapper& mapper) const
 {
    // get size in dc coords
    SIZE tsiz;
@@ -228,7 +228,7 @@ gpSize2d grLabel::GetSize(HDC hDC, const grlibPointMapper& mapper) const
    GetLabelSize(hDC, m_Labels, m_PointSize, &tsiz, &line_hgt);
 
    // convert to world
-   gpSize2d tmp;
+   GraphSize tmp;
    tmp.Dx() = tsiz.cx * mapper.GetScaleX();
    tmp.Dy() = tsiz.cy * mapper.GetScaleY();
    return tmp;
@@ -309,7 +309,7 @@ void grLabel::Dump(dbgDumpContext& os) const
 {
    os << "Dump for grLabel" << endl;
    os << "  m_HookPoint :"<< endl; 
-   m_HookPoint.Dump(os);
+   //m_HookPoint.Dump(os);
    IndexType siz = m_Labels.size();
    for (IndexType i = 0; i<siz; i++)
    {

@@ -28,7 +28,7 @@
 // SYSTEM INCLUDES
 //
 #include <GraphicsLib\GraphicsLibExp.h>
-#include <GeometricPrimitives\GeometricPrimitives.h>
+#include <GraphicsLib/GraphicsLibTypes.h>
 #include <vector>
 
 // PROJECT INCLUDES
@@ -135,19 +135,13 @@ public:
    void WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const;
    
    //------------------------------------------------------------------------
-   void WPtoDP(const gpPoint2d& p,LONG* dx,LONG* dy) const;
-
-   //------------------------------------------------------------------------
-   void WPtoDP(IPoint2d* pPoint,LONG* dx,LONG* dy) const;
+   void WPtoDP(const GraphPoint& p,LONG* dx,LONG* dy) const;
 
    //------------------------------------------------------------------------
    void DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const;
 
    //------------------------------------------------------------------------
-   gpPoint2d DPtoWP(LONG dx,LONG dy) const;
-   
-   //------------------------------------------------------------------------
-   void DPtoWP(LONG dx,LONG dy,IPoint2d** ppPoint) const;
+   GraphPoint DPtoWP(LONG dx,LONG dy) const;
 
    //------------------------------------------------------------------------
    void AddScale(Float64 scale);
@@ -161,25 +155,25 @@ public:
    void SetWorldExt(Float64 wx,Float64 wy);
    
    //------------------------------------------------------------------------
-   void SetWorldExt(const gpSize2d& wExt);
+   void SetWorldExt(const GraphSize& wExt);
    
    //------------------------------------------------------------------------
    void GetWorldExt(Float64* wx,Float64* wy) const;
    
    //------------------------------------------------------------------------
-   gpSize2d GetWorldExt() const;
+   GraphSize GetWorldExt() const;
    
    //------------------------------------------------------------------------
    void SetWorldOrg(Float64 wx,Float64 wy);
    
    //------------------------------------------------------------------------
-   void SetWorldOrg(const gpPoint2d& wOrg);
+   void SetWorldOrg(const GraphPoint& wOrg);
    
    //------------------------------------------------------------------------
    void GetWorldOrg(Float64* wx,Float64* wy) const;
    
    //------------------------------------------------------------------------
-   gpPoint2d GetWorldOrg() const;
+   GraphPoint GetWorldOrg() const;
    
    //------------------------------------------------------------------------
    void SetDeviceExt(LONG dx,LONG dy);

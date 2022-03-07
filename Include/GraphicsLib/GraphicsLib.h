@@ -31,6 +31,7 @@
    #error It is for external users only
 #endif
 
+#include <GraphicsLib\GraphicsLibTypes.h>
 #include <GraphicsLib\PointMapper.h>
 #include <GraphicsLib\AxisXY.h>
 #include <GraphicsLib\GraphXY.h>

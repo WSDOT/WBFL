@@ -104,7 +104,7 @@ public:
 
    //------------------------------------------------------------------------
    // Draw a rectangle
-   static void DrawRect(HDC hDC, const grlibPointMapper& mapper, const gpRect2d& rect, 
+   static void DrawRect(HDC hDC, const grlibPointMapper& mapper, const GraphRect& rect,
                         COLORREF borderColor=RGB(0,0,0), 
                         bool doFill=false, COLORREF fillColor=RGB(255,255,255));
    // GROUP: ACCESS

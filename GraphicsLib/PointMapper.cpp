@@ -134,17 +134,9 @@ void grlibPointMapper::WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const
    }
 } // WPtoDP
 
-void grlibPointMapper::WPtoDP(const gpPoint2d& p,LONG* dx,LONG* dy) const
+void grlibPointMapper::WPtoDP(const GraphPoint& p,LONG* dx,LONG* dy) const
 {
    WPtoDP( p.X(), p.Y(), dx, dy );
-}
-
-void grlibPointMapper::WPtoDP(IPoint2d* pPoint,LONG* dx,LONG* dy) const
-{
-   Float64 x,y;
-   pPoint->get_X(&x);
-   pPoint->get_Y(&y);
-   WPtoDP(x,y,dx,dy);
 }
 
 void grlibPointMapper::DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const
@@ -176,23 +168,11 @@ void grlibPointMapper::DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const
    }
 } // DPtoWP
 
-gpPoint2d grlibPointMapper::DPtoWP(LONG dx,LONG dy) const
+GraphPoint grlibPointMapper::DPtoWP(LONG dx,LONG dy) const
 {
    Float64 wx,wy;
    DPtoWP(dx,dy,&wx,&wy);
-   return gpPoint2d(wx,wy);
-}
-
-void grlibPointMapper::DPtoWP(LONG dx,LONG dy,IPoint2d** ppPoint) const
-{
-   Float64 wx,wy;
-   DPtoWP(dx,dy,&wx,&wy);
-
-   CComPtr<IPoint2d> point;
-   point.CoCreateInstance(CLSID_Point2d);
-   point->Move(wx,wy);
-   (*ppPoint) = point;
-   (*ppPoint)->AddRef();
+   return GraphPoint(wx,wy);
 }
 
 void grlibPointMapper::AddScale(Float64 scale)
@@ -226,7 +206,7 @@ void grlibPointMapper::SetWorldExt(Float64 wx,Float64 wy)
    UpdateDeviceExtents();
 } // SetWorldExt
 
-void grlibPointMapper::SetWorldExt(const gpSize2d& wExt)
+void grlibPointMapper::SetWorldExt(const GraphSize& wExt)
 {
    SetWorldExt( wExt.Dx(), wExt.Dy() );
 }
@@ -237,9 +217,9 @@ void grlibPointMapper::GetWorldExt(Float64* wx,Float64* wy) const
    *wy = m_WorldExtentY;
 } // GetWorldExt
 
-gpSize2d grlibPointMapper::GetWorldExt() const
+GraphSize grlibPointMapper::GetWorldExt() const
 {
-   return gpSize2d( m_WorldExtentX, m_WorldExtentY );
+   return GraphSize( m_WorldExtentX, m_WorldExtentY );
 }
 
 void grlibPointMapper::SetWorldOrg(Float64 wx,Float64 wy)
@@ -248,7 +228,7 @@ void grlibPointMapper::SetWorldOrg(Float64 wx,Float64 wy)
    m_WorldOriginY = wy;
 } // SetWorldOrg
 
-void grlibPointMapper::SetWorldOrg(const gpPoint2d& wOrg)
+void grlibPointMapper::SetWorldOrg(const GraphPoint& wOrg)
 {
    SetWorldOrg( wOrg.X(), wOrg.Y() );
 }
@@ -259,9 +239,9 @@ void grlibPointMapper::GetWorldOrg(Float64* wx,Float64* wy) const
    *wy = m_WorldOriginY;
 } // GetWorldOrg
 
-gpPoint2d grlibPointMapper::GetWorldOrg() const
+GraphPoint grlibPointMapper::GetWorldOrg() const
 {
-   return gpPoint2d( m_WorldOriginX, m_WorldOriginY );
+   return GraphPoint( m_WorldOriginX, m_WorldOriginY );
 }
 
 void grlibPointMapper::SetDeviceExt(LONG dx,LONG dy)

@@ -25,9 +25,6 @@
 #include <System\dllTest.h>
 #include <GraphicsLib\UnitTest.h>
 
-#include <initguid.h>
-#include <WBFLGeometry_i.c>
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE

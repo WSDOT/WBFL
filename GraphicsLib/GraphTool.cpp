@@ -254,7 +254,7 @@ void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 or
 }
 
 
-void grGraphTool::DrawRect(HDC hDC, const grlibPointMapper& mapper, const gpRect2d& rect, 
+void grGraphTool::DrawRect(HDC hDC, const grlibPointMapper& mapper, const GraphRect& rect,
                            COLORREF borderColor, 
                            bool doFill, COLORREF fillColor)
 {
@@ -268,8 +268,8 @@ void grGraphTool::DrawRect(HDC hDC, const grlibPointMapper& mapper, const gpRect
    POINT device_points[num_points]; // closed rect
    LONG  dx,dy;
 
-   gpPoint2d top_left = rect.TopLeft();
-   gpPoint2d bottom_right = rect.BottomRight();
+   GraphPoint top_left = rect.TopLeft();
+   GraphPoint bottom_right = rect.BottomRight();
 
    mapper.WPtoDP(top_left.X(),top_left.Y(),&dx,&dy);
    device_points[0].x = dx;

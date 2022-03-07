@@ -30,7 +30,6 @@
 #include <map>
 #include <GraphicsLib\GraphicsLibExp.h>
 #include <GraphicsLib\PointMapper.h>
-#include <WBFLGeometry.h>
 #include <system\INumericFormatToolBase.h>
 #include <GraphicsLib\AxisXY.h>
 
@@ -78,11 +77,11 @@ public:
 
    //------------------------------------------------------------------------
    // Adds an individual point to the graph.
-   void AddPoint(IndexType cookie,const gpPoint2d& rPoint);
+   void AddPoint(IndexType cookie,const GraphPoint& rPoint);
 
    //------------------------------------------------------------------------
    // Adds a collection of points to the graph.
-   void AddPoints(IndexType cookie,const std::vector<gpPoint2d>& vPoints);
+   void AddPoints(IndexType cookie,const std::vector<GraphPoint>& vPoints);
 
    //------------------------------------------------------------------------
    // Removes all the points from the graph
@@ -390,7 +389,7 @@ private:
       COLORREF Color;
    };
 
-   typedef std::vector<gpPoint2d> DataSeries;
+   typedef std::vector<GraphPoint> DataSeries;
 
    struct GraphData
    {
@@ -402,7 +401,7 @@ private:
    typedef std::map<IndexType,GraphData> GraphDataMap;
    GraphDataMap m_GraphDataMap;
 
-   gpRect2d m_WorldRect;
+   GraphRect m_WorldRect;
 
    RECT m_OutputRect;
    RECT m_LegendRect;

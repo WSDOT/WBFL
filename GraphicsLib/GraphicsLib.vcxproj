@@ -205,6 +205,7 @@
     <ClInclude Include="..\Include\GraphicsLib\GraphicsLib.h" />
     <ClInclude Include="..\Include\GraphicsLib\GraphicsLibExp.h" />
     <ClInclude Include="..\Include\GraphicsLib\GraphicsLibLib.h" />
+    <ClInclude Include="..\Include\GraphicsLib\GraphicsLibTypes.h" />
     <ClInclude Include="..\Include\GraphicsLib\GraphTool.h" />
     <ClInclude Include="..\Include\GraphicsLib\GraphXY.h" />
     <ClInclude Include="..\Include\GraphicsLib\Label.h" />
@@ -212,14 +213,6 @@
     <ClInclude Include="..\Include\GraphicsLib\UnitTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Geometry\Geometry.vcxproj">
-      <Project>{16e889a9-e3b0-4541-85b2-3a4d98fccb59}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Math\Math.vcxproj">
       <Project>{9c7b0108-aa89-413c-9d75-5d700f0aece1}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

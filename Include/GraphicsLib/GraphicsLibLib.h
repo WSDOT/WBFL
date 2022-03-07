@@ -40,6 +40,5 @@ DESCRIPTION
 #include <atlbase.h> // for using ATL CComPtr<>, etc
 #include <WBFLTypes.h>
 #include <WBFLTools.h>
-#include <WBFLGeometry.h>
 
 #endif // INCLUDED_GRAPHICSLIB_GRAPHICSLIBLIB_H_

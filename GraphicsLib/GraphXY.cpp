@@ -46,10 +46,10 @@ static const Float64 DEFAULT_ZOOM=1.0e-06;
 class PointSorter
 {
 public:
-   bool operator()(const gpPoint2d& p1, const gpPoint2d& p2) const;
+   bool operator()(const GraphPoint& p1, const GraphPoint& p2) const;
 };
 
-bool PointSorter::operator()(const gpPoint2d& p1,const gpPoint2d& p2) const
+bool PointSorter::operator()(const GraphPoint& p1,const GraphPoint& p2) const
 {
    return p1.X() < p2.X();
 }
@@ -137,7 +137,7 @@ IndexType grGraphXY::FindDataSeries(LPCTSTR lpszLabel)
    return INVALID_INDEX;
 }
 
-void grGraphXY::AddPoint(IndexType cookie,const gpPoint2d& rPoint)
+void grGraphXY::AddPoint(IndexType cookie,const GraphPoint& rPoint)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -148,7 +148,7 @@ void grGraphXY::AddPoint(IndexType cookie,const gpPoint2d& rPoint)
    }
 }
 
-void grGraphXY::AddPoints(IndexType cookie,const std::vector<gpPoint2d>& vPoints)
+void grGraphXY::AddPoints(IndexType cookie,const std::vector<GraphPoint>& vPoints)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -568,7 +568,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       DataSeries::iterator dataSeriesIterEnd(graphData.Series.end());
       for ( ; dataSeriesIter != dataSeriesIterEnd; dataSeriesIter++ )
       {
-         gpPoint2d& p = *dataSeriesIter;
+         GraphPoint& p = *dataSeriesIter;
          m_WorldRect.Left()   = min( p.X(), m_WorldRect.Left()  );
          m_WorldRect.Right()  = max( p.X(), m_WorldRect.Right() );
          m_WorldRect.Top()    = max( p.Y(), m_WorldRect.Top() );
@@ -591,7 +591,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    // make sure zero is in Y range if requested
    if (m_PinYAxisAtZero && m_YAxis.GetScale() == grAxisXY::LINEAR)
    {
-      gpPoint2d pnt((m_WorldRect.Left()+m_WorldRect.Right())/2., 0.0);
+      GraphPoint pnt((m_WorldRect.Left()+m_WorldRect.Right())/2., 0.0);
       m_WorldRect.BoundPoint(pnt);
    }
 
@@ -634,7 +634,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    {
       Float64 width = m_WorldRect.Width();
       Float64 height = m_WorldRect.Height();
-      gpPoint2d center = m_WorldRect.Center();
+      GraphPoint center = m_WorldRect.Center();
       if ( width < height )
       {
          m_WorldRect.Left()  = center.X() - height/2;
@@ -734,7 +734,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       client_bottom = log10(client_bottom);
    }
 
-   gpRect2d world_client_rect(client_left, client_bottom, client_right, client_top);
+   GraphRect world_client_rect(client_left, client_bottom, client_right, client_top);
 
    // set up for title and subtitle
 
@@ -872,7 +872,7 @@ void grGraphXY::DrawCurve(HDC hDC)
       DataSeries::iterator ds_iter;
       for ( ds_iter = gd.Series.begin(); ds_iter != gd.Series.end(); ds_iter++ )
       {
-         gpPoint2d p = *ds_iter;
+         GraphPoint p = *ds_iter;
          if ( scaleX == grAxisXY::INTEGRAL )
          {
             p.X() = count+1;

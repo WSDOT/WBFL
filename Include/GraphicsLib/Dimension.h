@@ -32,6 +32,7 @@
 //
 #include <GraphicsLib\GraphicsLibExp.h>
 #include <GraphicsLib\Label.h>
+#include <GraphicsLib/GraphicsLibTypes.h>
 
 // LOCAL INCLUDES
 //
@@ -111,7 +112,7 @@ public:
    //------------------------------------------------------------------------
    // Constructor - sets hook points and label
    // Horizontal dimension Above,Center by default.
-   grDimension(const gpPoint2d& pointA, const gpPoint2d& pointB, const std::_tstring& label);
+   grDimension(const GraphPoint& pointA, const GraphPoint& pointB, const std::_tstring& label);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -160,11 +161,11 @@ public:
 
    //------------------------------------------------------------------------
    // Set hook points for dimensioning. Will assert if points coincide
-   void SetHookPoints(const gpPoint2d& pointA, const gpPoint2d& pointB);
+   void SetHookPoints(const GraphPoint& pointA, const GraphPoint& pointB);
 
    //------------------------------------------------------------------------
    // Get hook points for dimensioning. Will assert if points coincide
-   void GetHookPoints(gpPoint2d* pointA, gpPoint2d* pointB) const;
+   void GetHookPoints(GraphPoint* pointA, GraphPoint* pointB) const;
 
    //------------------------------------------------------------------------
    // Set additional dimension offset. This offset will be added to the
@@ -213,7 +214,7 @@ public:
    // GROUP: INQUIRY
    //------------------------------------------------------------------------
    // Get bounding box for dimension to be drawn
-   gpRect2d GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const;
+   GraphRect GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const;
 
    //------------------------------------------------------------------------
    // Get approximate vertical height of dimension in device coordinates. This
@@ -237,8 +238,8 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   gpPoint2d m_PointA; // hook points
-   gpPoint2d m_PointB;
+   GraphPoint m_PointA; // hook points
+   GraphPoint m_PointB;
 
    DimensionStyle           m_Style;
    VerticalDimensionPos     m_VPos;
@@ -249,13 +250,13 @@ private:
 
    // mutable dimension geometry
    mutable bool m_IsUpdated;
-   mutable gpPoint2d m_LeftWitness[2];
-   mutable gpPoint2d m_RightWitness[2];
-   mutable gpPoint2d m_LeftLeader[2];
-   mutable gpPoint2d m_RightLeader[2];
-   mutable gpPoint2d m_LeftArrowLoc;
+   mutable GraphPoint m_LeftWitness[2];
+   mutable GraphPoint m_RightWitness[2];
+   mutable GraphPoint m_LeftLeader[2];
+   mutable GraphPoint m_RightLeader[2];
+   mutable GraphPoint m_LeftArrowLoc;
    mutable Float64   m_LeftArrowDir;
-   mutable gpPoint2d m_RightArrowLoc;
+   mutable GraphPoint m_RightArrowLoc;
    mutable Float64   m_RightArrowDir;
    mutable grLabel   m_Label;
 

@@ -66,6 +66,9 @@
     <ClInclude Include="..\Include\GraphicsLib\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\GraphicsLib\GraphicsLibTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GraphicsLib.def" />

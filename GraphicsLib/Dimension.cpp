@@ -53,7 +53,7 @@ static const Float64 LEADER_LINE_LENGTH = 2.0;   // length of leaders if text is
 
 // free function to draw an arrow - may want to put in a library some day
 void DrawArrow(HDC hDC, const grlibPointMapper& mapper, 
-               const gpPoint2d& endpt, Float64 dir);
+               const GraphPoint& endpt, Float64 dir);
 
 Float64 CalcVerticalDimHeight(Float64 spaceFactor, Float64 referenceHgt);
 //======================== LIFECYCLE  =======================================
@@ -69,7 +69,7 @@ m_AdditionalOffset(0)
    m_Label.SetPointSize(8);
 }
 
-grDimension::grDimension(const gpPoint2d& pointA, const gpPoint2d& pointB, const std::_tstring& label):
+grDimension::grDimension(const GraphPoint& pointA, const GraphPoint& pointB, const std::_tstring& label):
 m_PointA(pointA),
 m_PointB(pointB),
 m_VPos(Above),
@@ -205,13 +205,13 @@ grDimension::HorizontalDimensionPos grDimension::GetHorizontalDimensionPos() con
    return m_HPos;
 }
 
-void grDimension::SetHookPoints(const gpPoint2d& pointA, const gpPoint2d& pointB)
+void grDimension::SetHookPoints(const GraphPoint& pointA, const GraphPoint& pointB)
 {
    m_PointA = pointA;
    m_PointB = pointB;
 }
 
-void grDimension::GetHookPoints(gpPoint2d* pointA, gpPoint2d* pointB) const
+void grDimension::GetHookPoints(GraphPoint* pointA, GraphPoint* pointB) const
 {
    *pointA = m_PointA;
    *pointB = m_PointB;
@@ -251,14 +251,14 @@ Float64 grDimension::GetSpaceFactor() const
 
 //======================== INQUIRY    =======================================
 
-gpRect2d grDimension::GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const
+GraphRect grDimension::GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const
 {
    // update geometry
    if(!UpdateGeometry( hDC, mapper))
-      return gpRect2d();
+      return GraphRect();
 
    // bound text rect and all control points
-   gpRect2d rect = m_Label.GetBoundingBox(hDC, mapper);
+   GraphRect rect = m_Label.GetBoundingBox(hDC, mapper);
 
    rect.BoundPoint(m_PointA);
    rect.BoundPoint(m_PointB);
@@ -334,12 +334,12 @@ bool grDimension::UpdateHorizontal(HDC hDC, const grlibPointMapper& mapper) cons
    CHECK(!IsZero(xlen));
 
    // make sure we are going from left to right
-   gpPoint2d start_pt = (xlen>0 ? m_PointA : m_PointB);
-   gpPoint2d end_pt   = (xlen>0 ? m_PointB : m_PointA);
+   GraphPoint start_pt = (xlen>0 ? m_PointA : m_PointB);
+   GraphPoint end_pt   = (xlen>0 ? m_PointB : m_PointA);
    xlen = abs(xlen);
 
    // all metrics are based on font height. get the y size of the label 
-   gpSize2d wsiz;
+   GraphSize wsiz;
    wsiz = m_Label.GetSize(hDC, mapper);
    Float64 label_width   = wsiz.Dx();
    Float64 label_height  = wsiz.Dy();
@@ -445,7 +445,7 @@ bool grDimension::UpdateHorizontal(HDC hDC, const grlibPointMapper& mapper) cons
    m_RightArrowLoc.Y() = yline;
    m_RightArrowDir = m_HPos==Center ? 0.0 : M_PI;
 
-   gpPoint2d text_loc;
+   GraphPoint text_loc;
    text_loc.Y() = yline;
    // text
    if (m_HPos==Center)
@@ -486,13 +486,13 @@ bool grDimension::UpdateVertical(HDC hDC, const grlibPointMapper& mapper) const
       return false;
 
    // make sure we are going from left to right
-   gpPoint2d start_pt = (ylen<0 ? m_PointA : m_PointB);
-   gpPoint2d end_pt   = (ylen<0 ? m_PointB : m_PointA);
+   GraphPoint start_pt = (ylen<0 ? m_PointA : m_PointB);
+   GraphPoint end_pt   = (ylen<0 ? m_PointB : m_PointA);
 
    ylen = abs(ylen);
 
    // all metrics are based on font height. get the y size of the label 
-   gpSize2d wsiz;
+   GraphSize wsiz;
    wsiz = m_Label.GetSize(hDC, mapper);
    Float64 label_width   = wsiz.Dx();
    Float64 label_height  = wsiz.Dy();
@@ -597,7 +597,7 @@ bool grDimension::UpdateVertical(HDC hDC, const grlibPointMapper& mapper) const
    m_RightArrowDir = m_HPos==Center ? -M_PI/2. : M_PI/2.;
 
    // text location, orientation and bounds
-   gpPoint2d text_loc;
+   GraphPoint text_loc;
    text_loc.X() = xline;
    if (m_HPos==Center)
    {
@@ -632,9 +632,9 @@ void grDimension::Dump(dbgDumpContext& os) const
 {
    os << "Dump for grDimension" << endl;
    os << "m_PointA"<< endl;
-   m_PointA.Dump(os);
+   //m_PointA.Dump(os);
    os << "m_PointB"<< endl;
-   m_PointB.Dump(os);
+   //m_PointB.Dump(os);
    os << " m_Style = "<<m_Style<<endl;
    os << " m_VPos  = "<<m_VPos<<endl;
    os << " m_HPos  = "<<m_HPos<<endl;
@@ -657,7 +657,7 @@ bool grDimension::TestMe(dbgLog& rlog)
 
 
 void DrawArrow(HDC hDC, const grlibPointMapper& mapper, 
-               const gpPoint2d& endpt, Float64 dir)
+               const GraphPoint& endpt, Float64 dir)
 {
    /*
    // build arrow at zero degrees and rotate
