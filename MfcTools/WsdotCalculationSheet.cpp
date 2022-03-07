@@ -39,7 +39,6 @@ static char THIS_FILE[] = __FILE__;
 
 //======================== LIFECYCLE  =======================================
 WsdotCalculationSheet::WsdotCalculationSheet():
-m_Margins(20,10,10,10),
 m_MaxSheetNo(1),
 m_FontFace("Arial"),
 m_PointSize(100)
@@ -59,14 +58,13 @@ WsdotCalculationSheet::~WsdotCalculationSheet()
 //======================== OPERATORS  =======================================
 WsdotCalculationSheet& WsdotCalculationSheet::operator= (const WsdotCalculationSheet& rOther)
 {
-   if( this != &rOther )
+   if (this != &rOther)
    {
       MakeAssignment(rOther);
    }
 
    return *this;
 }
-
 //======================== OPERATIONS =======================================
 
 CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
@@ -291,15 +289,21 @@ CString WsdotCalculationSheet::GetFileName() const
    return m_FileName;
 }
 
-void WsdotCalculationSheet::SetMargins( const gpRect2d margins)
+void WsdotCalculationSheet::SetMargins(Float64 top,Float64 left,Float64 bottom,Float64 right)
 {
-   CHECK(margins.Left()>=0 && margins.Right()>=0 && margins.Top()>=0 && margins.Bottom()>=0 );
-   m_Margins = margins;
+   CHECK(left>=0 && right>=0 && top>=0 && bottom>=0 );
+   m_Left = left;
+   m_Top = top;
+   m_Right = right;
+   m_Bottom = bottom;
 }
 
-gpRect2d WsdotCalculationSheet::GetMargins() const
+void WsdotCalculationSheet::GetMargins(Float64* top, Float64* left, Float64* bottom, Float64* right) const
 {
-   return m_Margins;
+   *top = m_Top;
+   *left = m_Left;
+   *bottom = m_Bottom;
+   *right = m_Right;
 }
 
 void WsdotCalculationSheet::SetMaxSheetNumber(Uint32 maxSheetNumber)
@@ -319,7 +323,7 @@ Uint32 WsdotCalculationSheet::GetMaxSheetNumber() const
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-void WsdotCalculationSheet::MakeCopy(const WsdotCalculationSheet& rOther)
+ void WsdotCalculationSheet::MakeCopy(const WsdotCalculationSheet& rOther)
 {
    m_Title = rOther.m_Title;
    m_Engineer = rOther.m_Engineer;
@@ -328,14 +332,17 @@ void WsdotCalculationSheet::MakeCopy(const WsdotCalculationSheet& rOther)
    m_JobNumber = rOther.m_JobNumber;
    m_FileName = rOther.m_FileName;
    m_MaxSheetNo = rOther.m_MaxSheetNo;
-   m_Margins = rOther.m_Margins;
+   m_Top = rOther.m_Top;
+   m_Bottom = rOther.m_Bottom;
+   m_Left = rOther.m_Left;
+   m_Right = rOther.m_Right;
    m_FontFace = rOther.m_FontFace;
    m_PointSize = rOther.m_PointSize;
 }
 
 void WsdotCalculationSheet::MakeAssignment(const WsdotCalculationSheet& rOther)
 {
-   MakeCopy( rOther );
+   MakeCopy(rOther);
 }
 
 //======================== ACCESS     =======================================
@@ -366,10 +373,10 @@ bool WsdotCalculationSheet::CalculateMetrics(CDC* pDC)
    // border:
    m_LineSpacing = 6 * 10; // 6mm line spacing
 
-   m_Border.left   = LONG(m_Margins.Left()*10 - opnt.x);
-   m_Border.right  = LONG(mmhorz - m_Margins.Right()*10 - opnt.x);
-   m_Border.top    = LONG(-m_Margins.Top()*10 - opnt.y);
-   m_Border.bottom = LONG(-mmvert + m_Margins.Bottom()*10 - opnt.y);
+   m_Border.left   = LONG(m_Left*10 - opnt.x);
+   m_Border.right  = LONG(mmhorz - m_Right*10 - opnt.x);
+   m_Border.top    = LONG(-m_Top*10 - opnt.y);
+   m_Border.bottom = LONG(-mmvert + m_Bottom*10 - opnt.y);
 
    // center company name at top of page
    CFont* oldfont = pDC->SelectObject(&m_TitleFont);
