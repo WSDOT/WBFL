@@ -30,11 +30,15 @@
 #include <EAF\EAFDocTemplate.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFUtilities.h>
+#include <EAF\EAFDocument.h>
+#include <EAF\EAFStatusCenter.h>
 
 #include "AgentTools.h"
 
 #include <GraphManager\GraphManager.h>
 #include <IGraphManager.h>
+
+#include <MfcTools\Text.h>
 
 
 #ifdef _DEBUG
@@ -50,7 +54,8 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CEAFGraphView, CEAFView)
 
 CEAFGraphView::CEAFGraphView() :
-m_bIsPrinting(false)
+m_bIsPrinting(false),
+m_bUpdateError(false)
 {
 }
 
@@ -75,15 +80,33 @@ END_MESSAGE_MAP()
 void CEAFGraphView::OnDraw(CDC* pDC)
 {
    // deal with printing and reentrant behavior
-   if ( m_bIsPrinting )
+   if (m_bIsPrinting)
       return;
 
-   if ( pDC->IsPrinting())
+   if (pDC->IsPrinting())
       m_bIsPrinting = true;
 
-   CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
-   std::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
-   pGraphBuilder->DrawGraph(this,pDC);
+   if (m_bUpdateError)
+   {
+      CString msg;
+      AfxFormatString1(msg, IDS_E_UPDATE, m_ErrorMsg.c_str());
+
+      CFont font;
+      CFont* pOldFont = nullptr;
+      if (font.CreatePointFont(100, _T("Arial"), pDC))
+         pOldFont = pDC->SelectObject(&font);
+
+      MultiLineTextOut(pDC, 0, 0, msg);
+
+      if (pOldFont)
+         pDC->SelectObject(pOldFont);
+   }
+   else
+   {
+      CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
+      std::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
+      pGraphBuilder->DrawGraph(this, pDC);
+   }
 
    if ( m_bIsPrinting )
    {
@@ -124,6 +147,20 @@ void CEAFGraphView::OnUpdateFilePrint(CCmdUI* pCmdUI)
 
 void CEAFGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
 {
+   CEAFDocument* pDoc = (CEAFDocument*)GetDocument();
+   CEAFStatusCenter& statusCenter = pDoc->GetStatusCenter();
+
+   if (statusCenter.GetSeverity() == eafTypes::statusError)
+   {
+      m_bUpdateError = true;
+      m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");
+
+      Invalidate();
+      UpdateWindow();
+
+      return;
+   }
+
    CEAFView::OnUpdate( pSender, lHint, pHint ); // base class
 
    std::shared_ptr<CGraphBuilder> pBuilder(GetGraphBuilder());
@@ -160,9 +197,22 @@ std::shared_ptr<CGraphBuilder> CEAFGraphView::GetGraphBuilder()
 
 void CEAFGraphView::OnInitialUpdate() 
 {
+   CEAFDocument* pDoc = (CEAFDocument*)GetDocument();
+   CEAFStatusCenter& statusCenter = pDoc->GetStatusCenter();
+
+   if (statusCenter.GetSeverity() == eafTypes::statusError)
+   {
+      m_bUpdateError = true;
+      m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");
+
+      Invalidate();
+      UpdateWindow();
+
+      return;
+   }
+
    try
    {
-      CDocument* pDoc = GetDocument();
       CDocTemplate* pDocTemplate = pDoc->GetDocTemplate();
       ASSERT( pDocTemplate->IsKindOf(RUNTIME_CLASS(CEAFDocTemplate)) );
 

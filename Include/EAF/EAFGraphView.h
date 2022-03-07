@@ -104,4 +104,7 @@ protected:
 
    CRect m_PrintRect;
    bool m_bIsPrinting;
+	BOOL m_bUpdateError;   // true if an error occured while updating the report contents
+	std::_tstring m_ErrorMsg;
+
 };
