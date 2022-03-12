@@ -30,7 +30,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bool StatusItemCompare::operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b)
+bool StatusItemCompare::operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b) const
 {
    // Use a simple string compare with message. Older versions (pre Jan 2019) tried to get tricky
    // and use IsEqual, but this caused unexpected issues with the strict weak ordering

@@ -37,7 +37,7 @@
 #include <algorithm>
 #include <atlcom.h>
 #include <WBFLTools.h>
-#include <typeinfo.h>
+#include <typeinfo>
 #include <WBFLAtlExt.h>
 #include <WBFLTypes.h>
 

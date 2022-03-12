@@ -92,7 +92,7 @@ class _CopyVariantToInterface
 //       public CComRefCountTracer<CMyClass,CComObjectRootEx<CComSingleThreadModel> >,
 //       ...
 
-#include <typeinfo.h>
+#include <typeinfo>
 template <class C,class T>
 class CComRefCountTracer : public T
 {

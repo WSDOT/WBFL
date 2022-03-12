@@ -39,7 +39,7 @@ public:
 class StatusItemCompare
 {
 public:
-   bool operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b);
+   bool operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b) const;
 };
 
 class EAFCLASS CEAFStatusCenter

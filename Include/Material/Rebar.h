@@ -31,6 +31,7 @@
 // PROJECT INCLUDES
 //
 #include <Material\MaterialExp.h>
+#include <string>
 
 // LOCAL INCLUDES
 //

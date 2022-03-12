@@ -30,6 +30,7 @@
 #include "Helpers.h"
 
 #include <MathEx.h>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

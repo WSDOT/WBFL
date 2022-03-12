@@ -383,7 +383,7 @@ bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
 
 //======================== DEBUG      =======================================
 #if defined _DEBUG
-#include <TypeInfo.h>
+#include <TypeInfo>
 bool libLibraryManager::AssertValid() const
 {
    for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
