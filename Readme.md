@@ -60,6 +60,18 @@ Define BOOSTDIR and XSDDIR environment variables for the location where the boos
 
 Clone the repository into **drive letter**:/ARP/ and create an environment variable ARPDIR to this folder.
 
+#### Objective Grid
+WBFL forms the basis of the BridgeLink application suite. If your intent is to build the BridgeLink suite, you will need the Stingray ObjectiveGrid library from Preforce software. If you do not have ObjectiveGrid,
+you can still build the BridgeLink suite by following these steps:
+
+1. Open WBFL\Include\WBFLGrid.h and uncomment the #define _NOGRID macro
+2. Create a C:\Program Files\Preforce\Stingray Stuido 2021.1\Src folder
+3. Copy the dummy props file WBFL\SS-X64-PropSheet16.props into that folder.
+
+This will permit you to build the code. The substitute grid code does not simulate grid functionality. Dialogs and windows that use ObjectiveGrid are likely to crash the application when using the substitute code.
+
+The no-grid option is not well maintained. If you find that some methods are missing, please stub them out and submit a pull request.
+
 ## Authors
 This project is jointly developed by the Washington State and Texas Departments of Transportation
 
