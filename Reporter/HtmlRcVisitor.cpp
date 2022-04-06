@@ -68,7 +68,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 
-rptHtmlRcVisitor::rptHtmlRcVisitor(std::_tostream* pMyOstream, const rptPageLayout* MypPageLayout, const rptHtmlHelper&   rmyHelper, Uint32 logPixelsX, Uint32 logPixelsY):
+rptHtmlRcVisitor::rptHtmlRcVisitor(std::_tostream* pMyOstream, const rptPageLayout* MypPageLayout, const rptHtmlHelper& rmyHelper, Uint32 logPixelsX, Uint32 logPixelsY) :
    rptOutputRcVisitor(pMyOstream),
    m_Helper(rmyHelper),
    m_LogPixelsX(logPixelsX),
@@ -96,19 +96,24 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
    // "strings that look like " if we don't replace < and > with their HTML equivalent
 
    std::_tstring::size_type pos;
-   while( (pos = str.find( _T("<") )) != std::_tstring::npos )
+   while ((pos = str.find(_T("<"))) != std::_tstring::npos)
    {
-      str.replace(pos,1,_T("&lt;"));
+      str.replace(pos, 1, _T("&lt;"));
    }
 
-   while( (pos = str.find(_T(">"))) != std::_tstring::npos )
+   while ((pos = str.find(_T(">"))) != std::_tstring::npos)
    {
-      str.replace(pos,1,_T("&gt;"));
+      str.replace(pos, 1, _T("&gt;"));
    }
 
-   while( (pos = str.find(_T("—"))) != std::_tstring::npos )
+   while ((pos = str.find(_T("—"))) != std::_tstring::npos)
    {
-      str.replace(pos,1,_T("&mdash;"));
+      str.replace(pos, 1, _T("&mdash;"));
+   }
+
+   while ((pos = str.find(L'–')) != std::_tstring::npos)
+   {
+      str.replace(pos, 1, _T("&ndash;"));
    }
 
    if ( 0 < str.size() )
