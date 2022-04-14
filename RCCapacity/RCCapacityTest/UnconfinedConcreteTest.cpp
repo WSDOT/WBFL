@@ -78,7 +78,7 @@ void CUnconfinedConcreteTest::Test()
    TRY_TEST( ss->ComputeStress(0.00764,&val), S_OK );
    TRY_TEST( IsEqual(val,0.00), true );
    TRY_TEST( ss->ComputeStress(-0.00764,&val), S_FALSE ); // exceeds concrete crushing strai -0.003
-   TRY_TEST( IsEqual(val,-4423.4135491321513), true );
+   TRY_TEST( IsEqual(val, -78333650.161053866), true );
    TRY_TEST( ss->ComputeStress(-0.00245,&val), S_OK );
    TRY_TEST( IsEqual(val,-86277115.080388337), true );
 

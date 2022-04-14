@@ -87,6 +87,9 @@ private:
    HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod, Float64 strainLocation,IMomentCapacitySolution** solution);
    HRESULT ZeroCapacitySolution(IMomentCapacitySolution** solution);
 
+   void UpdateStrainPlane2(Float64 naAngle, Float64 x, Float64 y, Float64 ec, Float64 k);
+   HRESULT AnalyzeSection2(Float64 Fz, Float64 naAngle, Float64 k_or_ec, SolutionMethod solutionMethod, Float64 strainLocation, IMomentCapacitySolution** solution);
+
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;

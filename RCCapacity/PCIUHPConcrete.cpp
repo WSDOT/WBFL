@@ -121,8 +121,6 @@ STDMETHODIMP CPCIUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
 
    Float64 Ec = GetEc();
 
-   HRESULT hr = S_OK;
-
    if (0 < strain)
    {
       // tension
@@ -140,15 +138,13 @@ STDMETHODIMP CPCIUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
       {
          // beyond localization so can't carry any tension
          *pVal = 0.0; // ksi
-         hr = S_FALSE;
       }
    }
    else
    {
       // compression
       strain = fabs(strain);
-      *pVal = InRange(0.001, strain, 0.003) ? -0.85 * m_fc : 0;
-      hr = (0.003 < strain) ? S_FALSE : S_OK;
+      *pVal = InRange(0.001, strain, 0.003) ? -0.85 * m_fc : -0.85*m_fc*strain/0.001;
    }
 
    // The stress is in KSI, convert it to base units because that is what the caller expects
@@ -156,7 +152,11 @@ STDMETHODIMP CPCIUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
    m_UnitServer->get_UnitConvert(&convert);
    convert->ConvertToBaseUnits(*pVal, CComBSTR("ksi"), pVal);
 
-   return hr;
+   // NOTE: This stress-strain accomodates strains that are beyond the strain limit. For this reason,
+   // we don't return S_FALSE for strains exceeding the limits. If we did, the moment capacity solver would
+   // not converge.
+
+   return S_OK;
 }
 
 STDMETHODIMP CPCIUHPConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)

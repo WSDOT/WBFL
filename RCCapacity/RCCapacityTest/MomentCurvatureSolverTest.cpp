@@ -144,24 +144,4 @@ void CMomentCurvatureSolverTest::Test()
    solver->putref_Section(section);
    solver->put_Slices(20);
    solver->Solve(-200,0.00,&solution);
-
-//   TestISupportUnitServer(concrete);
-//
-//   CComQIPtr<IStressStrain> ss(concrete);
-//   TRY_TEST( ss != nullptr, true );
-//
-//   TRY_TEST( ss->ComputeStress(0.00764,nullptr), E_POINTER);
-//   TRY_TEST( ss->ComputeStress(0.00764,&val), S_OK );
-//   TRY_TEST( IsEqual(val,0.00), true );
-//   TRY_TEST( ss->ComputeStress(-0.00764,&val), S_OK );
-//   TRY_TEST( IsEqual(val,0.00), true );
-//   TRY_TEST( ss->ComputeStress(-0.00245,&val), S_OK );
-//   TRY_TEST( IsEqual(val,-86277115.), true );
-//
-//   CComQIPtr<ISupportErrorInfo> eInfo(ss);
-//   TRY_TEST( eInfo != nullptr, true);
-//   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IUnconfinedConcrete), S_OK);
-//   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);
-//   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);
-//   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_ISupportErrorInfo),   S_FALSE);
 }

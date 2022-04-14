@@ -71,6 +71,13 @@ END_COM_MAP()
    CComPtr<IUnitServer> m_UnitServer;
    CComBSTR m_bstrName;
 
+   // cached values - updated when f'c changes
+   Float64 m_n;
+   Float64 m_k;
+   Float64 m_Ec;
+   Float64 m_ec;
+
+   void UpdateParameters();
    Float64 GetEc();
 
 // ISupportsErrorInfo

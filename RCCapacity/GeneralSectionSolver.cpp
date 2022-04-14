@@ -162,7 +162,6 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
    slices.CoCreateInstance(CLSID_UnkArray);
 
    DecomposeSection(incrementalStrainPlane);
-   UpdateNeutralAxis(incrementalStrainPlane,m_NeutralAxis);
 
    Float64 C  = 0; // sum of compression forces
    Float64 T  = 0; // sum of tension forces
@@ -297,17 +296,9 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
 #endif // _DEBUG_LOGGING
          }
 
-         if (PI_OVER_2 <= angle && angle < 3*PI_OVER_2)
-         {
-            if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
-            if (pUnkTopSlice) slices->Add(pUnkTopSlice);
-         }
-         else
-         {
             if (pUnkTopSlice) slices->Add(pUnkTopSlice);
             if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
          }
-      }
       else
       {
          hr = AnalyzeSlice(slice, incrementalStrainPlane,P,Mx,My,fg_stress,bg_stress,stress,incremental_strain,total_strain, bExceededStrainLimitsThisSlice);
@@ -359,12 +350,6 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
       (*solution)->AddRef();
    }
 
-//   C  = IsZero(C)  ? 0 : C;
-//   T  = IsZero(T)  ? 0 : T;
-//   p  = IsZero(p)  ? 0 : p;
-//   mx = IsZero(mx) ? 0 : mx;
-//   my = IsZero(my) ? 0 : my;
-
    // locate centroid of resultant compression and tension forces
    // up to this point the cgC and cgT objects contain the sum of Force*CG
    Float64 x,y;
@@ -405,11 +390,11 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* incrementalStrainPlane)
    // we need to re-slice the section... slices must by parallel to the neutral axis
    if (m_bDecomposed && IsNeutralAxisParallel(incrementalStrainPlane))
    {
+      UpdateNeutralAxis(incrementalStrainPlane, m_NeutralAxis); // update the neutral axis for the current strain plain
       return; // section is decomposed and NA direction hasn't changed... analysis is good to go
    }
 
-   // Update the neutral axis direction
-   UpdateNeutralAxis(incrementalStrainPlane,m_NeutralAxis);
+   UpdateNeutralAxis(incrementalStrainPlane, m_NeutralAxis);
 
    // Get neutral axis angle
    Float64 angle = GetNeutralAxisAngle();

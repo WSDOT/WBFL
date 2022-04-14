@@ -31,6 +31,7 @@
 #include "UHPCMomentCapacityTest.h"
 #include "GeneralTests.h"
 #include <WBFLUnitServer.h>
+#include <Units\Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,6 +66,9 @@ void CUHPCMomentCapacityTest::Test1()
    
    // base units of kip and ksi
    hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
+   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
+   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
 
    // Get a general section
    CComPtr<IGeneralSection> section;
@@ -103,34 +107,36 @@ void CUHPCMomentCapacityTest::Test1()
    beam->put_Width(W);
 
    // #10 rebar
-   Float64 radius = sqrt(1.27/M_PI);
-   CComPtr<ICircle> bar1;
-   bar1.CoCreateInstance(CLSID_Circle);
-   bar1->put_Radius(radius);
+   Float64 Ab = 1.27;
    CComPtr<IPoint2d> center;
-   bar1->get_Center(&center);
-   center->Move(W/2-2,H/2-2);
 
-   CComPtr<ICircle> bar2;
-   bar2.CoCreateInstance(CLSID_Circle);
-   bar2->put_Radius(radius);
+   CComPtr<IGenericShape> bar1;
+   bar1.CoCreateInstance(CLSID_GenericShape);
+   bar1->put_Area(Ab);
    center.Release();
-   bar2->get_Center(&center);
-   center->Move(-(W/2-2),H/2-2);
+   bar1->get_Centroid(&center);
+   center->Move(W / 2 - 2, H / 2 - 2);
 
-   CComPtr<ICircle> bar3;
-   bar3.CoCreateInstance(CLSID_Circle);
-   bar3->put_Radius(radius);
+   CComPtr<IGenericShape> bar2;
+   bar2.CoCreateInstance(CLSID_GenericShape);
+   bar2->put_Area(Ab);
    center.Release();
-   bar3->get_Center(&center);
-   center->Move(-(W/2-2),-(H/2-2));
+   bar2->get_Centroid(&center);
+   center->Move(-(W / 2 - 2), H / 2 - 2);
 
-   CComPtr<ICircle> bar4;
-   bar4.CoCreateInstance(CLSID_Circle);
-   bar4->put_Radius(radius);
+   CComPtr<IGenericShape> bar3;
+   bar3.CoCreateInstance(CLSID_GenericShape);
+   bar3->put_Area(Ab);
    center.Release();
-   bar4->get_Center(&center);
-   center->Move(W/2-2,-(H/2-2));
+   bar3->get_Centroid(&center);
+   center->Move(-(W / 2 - 2), -(H / 2 - 2));
+
+   CComPtr<IGenericShape> bar4;
+   bar4.CoCreateInstance(CLSID_GenericShape);
+   bar4->put_Area(Ab);
+   center.Release();
+   bar4->get_Centroid(&center);
+   center->Move(W / 2 - 2, -(H / 2 - 2));
 
    CComQIPtr<IShape> shape1(beam);
    CComQIPtr<IShape> shape2(bar1);
@@ -168,7 +174,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST( IsZero(Fz,0.001), true );
-   TRY_TEST( IsEqual(Mx, -30283.59705), true );
+   TRY_TEST( IsEqual(Mx, -30283.27789), true );
    TRY_TEST( IsZero(My), true);
 
    Float64 ec;
@@ -190,7 +196,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -30283.5931, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -30283.27790, 0.0001), true);
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, -H / 2, &ec);
@@ -212,7 +218,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -33164.46646), true); 
+   TRY_TEST(IsEqual(Mx, -33162.03191), true); 
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, H / 2, &ec);
@@ -234,7 +240,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -33164.46646), true);
+   TRY_TEST(IsEqual(Mx, -33162.03191), true);
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, H / 2, &ec);
@@ -256,6 +262,9 @@ void CUHPCMomentCapacityTest::Test2()
    CComPtr<IUnitServer> unit_server;
    unit_server.CoCreateInstance(CLSID_UnitServer);
    hr = unit_server->SetBaseUnits(CComBSTR("12kslug"), CComBSTR("in"), CComBSTR("sec"), CComBSTR("F"), CComBSTR("deg"));
+   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
+   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
+   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
 
    // modified MN54 cross section
    CComPtr<INUBeam> beam;
@@ -522,24 +531,24 @@ void CUHPCMomentCapacityTest::Test2()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -212455.97339), true);
+   TRY_TEST(IsEqual(Mx, -237920.68923), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mc = -Mx;
 
    strainPlane->GetZ(0.00, 10.00, &ec); // strain at top of deck
-   TRY_TEST(IsEqual(ec, -0.005491), true);
+   TRY_TEST(IsEqual(ec,-0.00824344), true);
 
    strainPlane->GetZ(0.00, -h, &ec); // strain at bottom of beam
-   TRY_TEST(IsEqual(ec, 0.0072523), true);
+   TRY_TEST(IsEqual(ec, 0.0221146), true);
 
    strainPlane->GetZ(0.00, 0.00, &ec);
    TRY_TEST(IsEqual(ec, -0.0035), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis
-   TRY_TEST(IsEqual(Yna, -17.57766), true); 
+   TRY_TEST(IsEqual(Yna, -7.378604), true); 
 
    Float64 Yc = ec / Yna;
-   TRY_TEST(IsEqual(Yc, 0.0001991163, 0.000000001), true);
+   TRY_TEST(IsEqual(Yc, 0.00047434446, 0.000000001), true);
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    solution.Release();
@@ -554,7 +563,7 @@ void CUHPCMomentCapacityTest::Test2()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -228894.0802, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -228894.0801, 0.0001), true);
    TRY_TEST(IsZero(My), true);
    Float64 Md = -Mx;
 
@@ -580,7 +589,7 @@ void CUHPCMomentCapacityTest::Test2()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -160306.7804, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -239340.350413), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mt = -Mx;
 
@@ -588,10 +597,10 @@ void CUHPCMomentCapacityTest::Test2()
    TRY_TEST(IsEqual(ec, 0.035 - ei), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis
-   TRY_TEST(IsEqual(Yna, -40.37118), true);
+   TRY_TEST(IsEqual(Yna, -6.588564), true);
 
    Float64 Yt = ec /(Yna - Y);
-   TRY_TEST(IsEqual(Yt, 0.00250828766, 0.000000001), true);
+   TRY_TEST(IsEqual(Yt, 0.000642314, 0.000000001), true);
 
    // Ductility ratio
    IndexType i = MinIndex(fabs(Yl), fabs(Yc), fabs(Yd), fabs(Yt)); // want least curvature
@@ -617,6 +626,9 @@ void CUHPCMomentCapacityTest::Test3()
    CComPtr<IUnitServer> unit_server;
    unit_server.CoCreateInstance(CLSID_UnitServer);
    hr = unit_server->SetBaseUnits(CComBSTR("12kslug"), CComBSTR("in"), CComBSTR("sec"), CComBSTR("F"), CComBSTR("deg"));
+   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
+   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
+   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
 
    // modified MN54 cross section
    CComPtr<INUBeam> beam;
@@ -929,24 +941,24 @@ void CUHPCMomentCapacityTest::Test3()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -225237.6749, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -238146.804901), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mc = -Mx;
 
    strainPlane->GetZ(0.00, 10.00, &ec); // strain at top of deck
-   TRY_TEST(IsEqual(ec, -0.006621228), true);
+   TRY_TEST(IsEqual(ec, -0.008287341), true);
 
    strainPlane->GetZ(0.00, -h, &ec); // strain at bottom of beam
-   TRY_TEST(IsEqual(ec, 0.01335463), true);
+   TRY_TEST(IsEqual(ec, 0.02235164), true);
 
    strainPlane->GetZ(0.00, 0.00, &ec);
    TRY_TEST(IsEqual(ec, -0.0035), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis
-   TRY_TEST(IsEqual(Yna, -11.213537), true);
+   TRY_TEST(IsEqual(Yna, -7.310948), true);
 
    Float64 Yc = ec / Yna;
-   TRY_TEST(IsEqual(Yc, 0.000312123, 0.000000001), true);
+   TRY_TEST(IsEqual(Yc, 0.000478734, 0.000000001), true);
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    // this case not in FHWA example
@@ -994,7 +1006,7 @@ void CUHPCMomentCapacityTest::Test3()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -160319.2836, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -239345.576092), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mt = -Mx;
 
@@ -1016,10 +1028,10 @@ void CUHPCMomentCapacityTest::Test3()
    TRY_TEST(IsEqual(ec, 0.035), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis
-   TRY_TEST(IsEqual(Yna, -40.39915), true);
+   TRY_TEST(IsEqual(Yna, -6.582841), true);
 
    Float64 Yt = ec / (Yna - Y);
-   TRY_TEST(IsEqual(Yt, 0.003017021, 0.000000001), true);
+   TRY_TEST(IsEqual(Yt, 0.000770634, 0.000000001), true);
 
    // Ductility ratio
    IndexType i = MinIndex(fabs(Yl), fabs(Yc), fabs(Yd), fabs(Yt)); // want least curvature
