@@ -1353,15 +1353,31 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    if ( hr == S_OK )
    {
       // put slab on top of beam
-      CComPtr<IShape> beam_shape;
-      si->get_Shape(&beam_shape);
-      CComQIPtr<IXYPosition> beam_position(beam_shape);
-      CComPtr<IPoint2d> beam_top_center;
-      beam_position->get_LocatorPoint(lpTopCenter,&beam_top_center);
+      CComQIPtr<IXYPosition> beam_position(cmpSection);
 
       Float64 xTC, yTC;
-      beam_top_center->get_X(&xTC);
-      beam_top_center->get_Y(&yTC);
+      CComPtr<IPoint2d> beam_top_center;
+
+      CComQIPtr<IFlangedDeckedSection> flanged_section(girder_section);
+      if (flanged_section)
+      {
+         CComPtr<IPoint2d> beam_bottom_center;
+         flanged_section->GetBottomCLPoint(&beam_bottom_center);
+         Float64 xBC, yBC;
+         beam_bottom_center->Location(&xBC, &yBC);
+         Float64 Hcl; // height at nominal centerline
+         flanged_section->GetCLHeight(&Hcl);
+         xTC = xBC;
+         yTC = yBC + Hcl;
+
+         beam_top_center.CoCreateInstance(CLSID_Point2d);
+         beam_top_center->Move(xTC, yTC);
+      }
+      else
+      {
+         beam_position->get_LocatorPoint(lpTopCenter, &beam_top_center);
+         beam_top_center->Location(&xTC,&yTC);
+      }
 
       // Tricky: We need xTC to be at the CL of the top flange but,
       //         get_LocatorPoint above is based on the top CL of the girder bounding box. This works 
@@ -1390,8 +1406,12 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
       }
 
       // move the composite so all the rebar inside the deck moves too
-      CComQIPtr<IXYPosition> deck_position(deckSection);
-      deck_position->put_LocatorPoint(lpBottomCenter,beam_top_center);
+      if (bFollowMatingSurfaceProfile == FALSE)
+      {
+         // if the deck shape follows the mating surface profile, it is in the correct position already
+         CComQIPtr<IXYPosition> deck_position(deckSection);
+         deck_position->put_LocatorPoint(lpBottomCenter, beam_top_center);
+      }
 
       // can't put a composite section inside of another composite section so
       // take each section item from the deck and put it into the main composite 
