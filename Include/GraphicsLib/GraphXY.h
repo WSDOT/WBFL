@@ -75,6 +75,11 @@ public:
    // Find an existing data series and return its cookie. Returns INVALID_INDEX if not found
    IndexType FindDataSeries(LPCTSTR lpszLabel);
 
+   std::vector<IndexType> GetCookies() const;
+
+   void GetDataSeriesData(IndexType cookie,std::_tstring* pLabel,int* pPenStyle,int* pWidth,COLORREF* pColor) const;
+   void GetDataSeriesPoints(IndexType cookie, std::vector<GraphPoint>* pvPoints) const;
+
    //------------------------------------------------------------------------
    // Adds an individual point to the graph.
    void AddPoint(IndexType cookie,const GraphPoint& rPoint);

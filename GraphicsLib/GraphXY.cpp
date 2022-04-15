@@ -137,6 +137,50 @@ IndexType grGraphXY::FindDataSeries(LPCTSTR lpszLabel)
    return INVALID_INDEX;
 }
 
+std::vector<IndexType> grGraphXY::GetCookies() const
+{
+    std::vector<IndexType> cookies;
+    for (const auto& index : m_GraphDataMap)
+    {
+       // only return cookies for series that contain data
+       if (index.second.Series.size() > 0)
+       {
+          cookies.push_back(index.first);
+       }
+    }
+
+    return cookies;
+}
+
+void grGraphXY::GetDataSeriesData(IndexType cookie, std::_tstring* pLabel, int* pPenStyle, int* pWidth, COLORREF* pColor) const
+{
+   GraphDataMap::const_iterator found = m_GraphDataMap.find(cookie);
+   if (found != m_GraphDataMap.end())
+   {
+      *pLabel = found->second.Label;
+      *pPenStyle = found->second.Pen.Style;
+      *pWidth = found->second.Pen.Width;
+      *pColor = found->second.Pen.Color;
+   }
+   else
+   {
+      ATLASSERT(0);
+   }
+}
+
+void grGraphXY::GetDataSeriesPoints(IndexType cookie, std::vector<GraphPoint>* pvPoints) const
+{
+   GraphDataMap::const_iterator found = m_GraphDataMap.find(cookie);
+   if (found != m_GraphDataMap.end())
+   {
+      *pvPoints = found->second.Series;
+   }
+   else
+   {
+      ATLASSERT(0);
+   }
+}
+
 void grGraphXY::AddPoint(IndexType cookie,const GraphPoint& rPoint)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
