@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// GeomModel - Geometric Modeling of shapes and sections
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -20,20 +20,13 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-#ifndef INCLUDED_GRAPHICSLIB_AUTOLIB_H_
-#define INCLUDED_GRAPHICSLIB_AUTOLIB_H_
 #pragma once
+#include <GeomModel/Primitives.h>
 
-#if !defined (BUILDGRLIB)
-
-#define GRLIB_AUTOLIBNAME "WBFLGraphicsLib.lib"
-
-#pragma comment(lib,GRLIB_AUTOLIBNAME)
-#if defined AUTOLIB
-#pragma message("Linking with " GRLIB_AUTOLIBNAME )
-#endif
-
-#endif // BUILDGRLIB
-
-#endif // INCLUDED_GRAPHICSLIB_AUTOLIB_H_
+namespace WBFL 
+{
+   namespace Geometry
+   {
+      void GenerateFillet(std::vector<Point2d>& vPoints, Float64 cx, Float64 cy, Float64 r, Float64 startAngle, Float64 delta, IndexType nSpaces);
+   }
+}

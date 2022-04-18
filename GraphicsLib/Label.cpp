@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Graphing - Line graph plotting and graph definition management library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// Geometry - Modeling of geometric primitives
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Graphing - Line graph plotting and graph definition management library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,19 +21,23 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_AUTOLIB_H_
-#define INCLUDED_GEOMETRY_AUTOLIB_H_
 #pragma once
 
-#if !defined (BUILDGEOMLIB)
+#include <Graphing/GraphingExp.h>
 
-#define GEOMETRY_AUTOLIBNAME "WBFLGeometricPrimitives.lib"
+namespace WBFL
+{
+   namespace Graphing
+   {
+/// Driver for unit tests
+class GRAPHINGCLASS UnitTest
+{
+public:
+   UnitTest() = delete;
+   UnitTest(const UnitTest&) = delete;
+   UnitTest& operator=(const UnitTest&) = delete;
 
-#pragma comment(lib,GEOMETRY_AUTOLIBNAME)
-#if defined AUTOLIB
-#pragma message("Linking with " GEOMETRY_AUTOLIBNAME )
-#endif
-
-#endif // BUILDGEOMLIB
-
-#endif // INCLUDED_GEOMETRY_AUTOLIB_H_
+   static bool TestMe(dbgLog& rlog);
+};
+   }; // Graphing
+}; // WBFL

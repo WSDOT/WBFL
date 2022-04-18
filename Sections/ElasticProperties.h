@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Geometry - Geometric Modeling Library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,6 +27,7 @@
 #define __ELASTICPROPERTIES_H_
 
 #include "resource.h"       // main symbols
+#include <GeomModel/ElasticProperties.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CElasticProperties
@@ -35,9 +36,7 @@ class ATL_NO_VTABLE CElasticProperties :
 	public CComCoClass<CElasticProperties, &CLSID_ElasticProperties>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CElasticProperties,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IElasticProperties,
-   public IStructuredStorage2,
-   public IPersistImpl<CElasticProperties>
+   public IElasticProperties
 {
 public:
 	CElasticProperties()
@@ -52,10 +51,8 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CElasticProperties)
 	COM_INTERFACE_ENTRY(IElasticProperties)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -63,7 +60,6 @@ END_COM_MAP()
 
 // IElasticProperties
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_PrincipleDirection)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_CoordinateSystem)(/*[out, retval]*/ CoordinateSystemType *pVal) override;
 	STDMETHOD(put_CoordinateSystem)(/*[in]*/ CoordinateSystemType newVal) override;
@@ -96,13 +92,8 @@ public:
    STDMETHOD(AddProperties)(/*[in]*/ IElasticProperties* props) override;
 	STDMETHOD(TransformProperties)(/*[in]*/ Float64 E,/*[out,retval]*/ IShapeProperties** props) override;
 
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
 private:
-   CComPtr<IShapeProperties> m_Props; // Actually has elastic properties
+	WBFL::Geometry::ElasticProperties m_Props;
 };
 
 #endif //__ELASTICPROPERTIES_H_

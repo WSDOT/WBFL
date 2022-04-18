@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Geometry - Geometric Modeling Library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,18 +32,17 @@
 
 class CCompositeSectionEx;
 typedef CComVectorCollectionNoEnum<ICompositeSectionEx,ICompositeSectionItemEx,CollectionIndexType> CompositeSectionExVectorImpl;
-typedef CPersistentCollection<CCompositeSectionEx,CompositeSectionExVectorImpl,CollectionIndexType> PersistentCompositeSectionEx;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCompositeSection
 class ATL_NO_VTABLE CCompositeSectionEx : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CCompositeSectionEx, &CLSID_CompositeSection>,
+	public CComCoClass<CCompositeSectionEx, &CLSID_CompositeSectionEx>,
    public IObjectSafetyImpl<CCompositeSectionEx,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public ISupportErrorInfo,
    public ISection,
    public IXYPosition,
-	public PersistentCompositeSectionEx
+	public CompositeSectionExVectorImpl
 {
 public:
 	CCompositeSectionEx()
@@ -60,14 +59,7 @@ BEGIN_COM_MAP(CCompositeSectionEx)
    COM_INTERFACE_ENTRY(ISection)
    COM_INTERFACE_ENTRY(IXYPosition)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY_CHAIN(PersistentCompositeSectionEx)
 END_COM_MAP()
-
-protected:
-   CComBSTR GetCollectionName()
-   {
-      return CComBSTR("CompositeSection"); // This is the "Unit Name" stored in the persistance stream
-   }
 
 public:
 // ISupportsErrorInfo
@@ -75,7 +67,6 @@ public:
 
 // ICompositeSection
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
 	STDMETHOD(get_Section)(/*[out, retval]*/ ISection* *pVal) override;
 //	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeSectionItem* *pVal) override;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Geometry - Geometric Modeling Library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,7 +23,7 @@
 
 // CompositeSectionEx.cpp : Implementation of CCompositeSectionEx
 #include "stdafx.h"
-#include "WBFLSections.h"
+#include "WBFLGeometry.h"
 #include "CompositeSectionEx.h"
 #include "CompositeSectionItemEx.h"
 #include "ElasticProperties.h"
@@ -45,8 +45,7 @@ STDMETHODIMP CCompositeSectionEx::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ICompositeSectionEx,
       &IID_ISection,
-      &IID_IXYPosition,
-		&IID_IStructuredStorage2,
+      &IID_IXYPosition
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -132,12 +131,6 @@ STDMETHODIMP CCompositeSectionEx::get_XYPosition(IXYPosition **pVal)
 {
    CHECK_RETOBJ(pVal);
    return QueryInterface( IID_IXYPosition, (void**)pVal );
-}
-
-STDMETHODIMP CCompositeSectionEx::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
 ///////////////////////////////////////////////

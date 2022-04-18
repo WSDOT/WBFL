@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Geometry - Geometric Modeling Library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,7 +23,7 @@
 
 // CompositeSectionItemEx.cpp : Implementation of CCompositeSectionItemEx
 #include "stdafx.h"
-#include "WBFLSections.h"
+#include "WBFLGeometry.h"
 #include "CompositeSectionItemEx.h"
 
 #ifdef _DEBUG
@@ -40,8 +40,7 @@ STDMETHODIMP CCompositeSectionItemEx::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_ICompositeSectionItemEx,
-		&IID_IStructuredStorage2
+		&IID_ICompositeSectionItemEx
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -150,61 +149,4 @@ STDMETHODIMP CCompositeSectionItemEx::put_Structural(VARIANT_BOOL newVal)
 {
    m_bStructural = newVal;
 	return S_OK;
-}
-
-STDMETHODIMP CCompositeSectionItemEx::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IStructuredStorage2
-STDMETHODIMP CCompositeSectionItemEx::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("CompositeSectionItemEx"),1.0);
-   pSave->put_Property(CComBSTR("Structural"),CComVariant(m_bStructural));
-   pSave->put_Property(CComBSTR("Dfg"),CComVariant(m_Dfg));
-   pSave->put_Property(CComBSTR("Dbg"),CComVariant(m_Dbg));
-   pSave->put_Property(CComBSTR("Efg"),CComVariant(m_Efg));
-   pSave->put_Property(CComBSTR("Ebg"),CComVariant(m_Ebg));
-   pSave->put_Property(CComBSTR("Shape"),CComVariant(m_Shape));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CCompositeSectionItemEx::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("CompositeSectionItem"));
-
-   pLoad->get_Property(CComBSTR("Structural"),&var);
-   m_bStructural = var.boolVal;
-
-   pLoad->get_Property(CComBSTR("Dfg"),&var);
-   m_Dfg = var.dblVal;
-
-   pLoad->get_Property(CComBSTR("Dbg"),&var);
-   m_Dbg = var.dblVal;
-
-   pLoad->get_Property(CComBSTR("Efg"),&var);
-   m_Efg = var.dblVal;
-
-   pLoad->get_Property(CComBSTR("Ebg"),&var);
-   m_Ebg = var.dblVal;
-
-   pLoad->get_Property(CComBSTR("Shape"),&var);
-   if ( FAILED( _CopyVariantToInterface<IShape>::copy(&m_Shape,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   return S_OK;
 }

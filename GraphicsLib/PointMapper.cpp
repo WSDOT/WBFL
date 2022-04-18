@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Graphing - Line graph plotting and graph definition management library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GraphicsLib\GraphicsLibLib.h>
-#include <GraphicsLib\PointMapper.h>
+#include "stdafx.h"
+#include <Graphing/PointMapper.h>
 #include <MathEx.h>
 
 #include <algorithm>
@@ -33,13 +33,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   grlibPointMapper
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::Graphing;
 
 LONG round_to_nearest_whole_number(Float64 x)
 {
@@ -56,7 +50,7 @@ LONG round_to_nearest_whole_number(Float64 x)
 
 //======================== LIFECYCLE  =======================================
 
-grlibPointMapper::grlibPointMapper()
+PointMapper::PointMapper()
 {
    m_WorldExtentX = 0.;
    m_WorldExtentY = 0.;
@@ -70,25 +64,25 @@ grlibPointMapper::grlibPointMapper()
    m_OriginalDeviceExtentX = 1;
    m_OriginalDeviceExtentY = 1;
 
-   m_MappingMode = Anisotropic;
-   m_MappingModeModifier = NoFit;
+   m_MappingMode = MapMode::Anisotropic;
+   m_MappingModeModifier = MapModeModifier::NoFit;
 
    m_PixelDensityX = 1.0;
    m_PixelDensityY = 1.0;
-} // grlibPointMapper
+} // PointMapper
 
-grlibPointMapper::grlibPointMapper(const grlibPointMapper& mapper)
+PointMapper::PointMapper(const PointMapper& mapper)
 {
    MakeCopy(mapper);
-} // grlibPointMapper
+} // PointMapper
 
-grlibPointMapper::~grlibPointMapper()
+PointMapper::~PointMapper()
 {
-} // ~grlibPointMapper
+} // ~PointMapper
 
 //======================== OPERATORS  =======================================
 
-grlibPointMapper& grlibPointMapper::operator = (const grlibPointMapper& mapper)
+PointMapper& PointMapper::operator = (const PointMapper& mapper)
 {
    if ( this != &mapper )
       MakeAssignment( mapper ); 
@@ -98,10 +92,10 @@ grlibPointMapper& grlibPointMapper::operator = (const grlibPointMapper& mapper)
 
 //======================== OPERATIONS =======================================
 
-void grlibPointMapper::WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const
+void PointMapper::WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const
 {
    // :NOTE: rab 11.14.96 : Assumed direction of axes
-   // :METHOD: grlibPointMapper::WPtoDP()
+   // :METHOD: PointMapper::WPtoDP()
    // It is assumed that the world axes increase up and to the left and the
    // device axes increase down and to the left. For this reason, the extent
    // ratio is negative in the y mapping.
@@ -134,15 +128,15 @@ void grlibPointMapper::WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const
    }
 } // WPtoDP
 
-void grlibPointMapper::WPtoDP(const GraphPoint& p,LONG* dx,LONG* dy) const
+void PointMapper::WPtoDP(const Point& p,LONG* dx,LONG* dy) const
 {
    WPtoDP( p.X(), p.Y(), dx, dy );
 }
 
-void grlibPointMapper::DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const
+void PointMapper::DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const
 {
    // :NOTE: rab 11.14.96 : Assumed direction of axes
-   // :METHOD: grlibPointMapper::DPtoWP()
+   // :METHOD: PointMapper::DPtoWP()
    // It is assumed that the world axes increase up and to the left and the
    // device axes increase down and to the left. For this reason, the extent
    // ratio is negative in the y mapping.
@@ -168,14 +162,14 @@ void grlibPointMapper::DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const
    }
 } // DPtoWP
 
-GraphPoint grlibPointMapper::DPtoWP(LONG dx,LONG dy) const
+Point PointMapper::DPtoWP(LONG dx,LONG dy) const
 {
    Float64 wx,wy;
    DPtoWP(dx,dy,&wx,&wy);
-   return GraphPoint(wx,wy);
+   return Point(wx,wy);
 }
 
-void grlibPointMapper::AddScale(Float64 scale)
+void PointMapper::AddScale(Float64 scale)
 {
    PRECONDITION(0.1 <= scale && scale < 1.0);
 
@@ -186,19 +180,19 @@ void grlibPointMapper::AddScale(Float64 scale)
       m_Scales.push_back(scale);
 
       // Update extents if using any of the fit map mode modifiers
-      if ( m_MappingModeModifier != NoFit )
+      if ( m_MappingModeModifier != MapModeModifier::NoFit )
          UpdateDeviceExtents();
    }
 } // AddScale
 
-void grlibPointMapper::ClearScales()
+void PointMapper::ClearScales()
 {
    m_Scales.clear();
 } // ClearScales
 
 //======================== ACCESS     =======================================
 
-void grlibPointMapper::SetWorldExt(Float64 wx,Float64 wy)
+void PointMapper::SetWorldExt(Float64 wx,Float64 wy)
 {
    m_WorldExtentX = wx;
    m_WorldExtentY = wy;
@@ -206,45 +200,45 @@ void grlibPointMapper::SetWorldExt(Float64 wx,Float64 wy)
    UpdateDeviceExtents();
 } // SetWorldExt
 
-void grlibPointMapper::SetWorldExt(const GraphSize& wExt)
+void PointMapper::SetWorldExt(const Size& wExt)
 {
    SetWorldExt( wExt.Dx(), wExt.Dy() );
 }
 
-void grlibPointMapper::GetWorldExt(Float64* wx,Float64* wy) const
+void PointMapper::GetWorldExt(Float64* wx,Float64* wy) const
 {
    *wx = m_WorldExtentX;
    *wy = m_WorldExtentY;
 } // GetWorldExt
 
-GraphSize grlibPointMapper::GetWorldExt() const
+Size PointMapper::GetWorldExt() const
 {
-   return GraphSize( m_WorldExtentX, m_WorldExtentY );
+   return Size( m_WorldExtentX, m_WorldExtentY );
 }
 
-void grlibPointMapper::SetWorldOrg(Float64 wx,Float64 wy)
+void PointMapper::SetWorldOrg(Float64 wx,Float64 wy)
 {
    m_WorldOriginX = wx;
    m_WorldOriginY = wy;
 } // SetWorldOrg
 
-void grlibPointMapper::SetWorldOrg(const GraphPoint& wOrg)
+void PointMapper::SetWorldOrg(const Point& wOrg)
 {
    SetWorldOrg( wOrg.X(), wOrg.Y() );
 }
 
-void grlibPointMapper::GetWorldOrg(Float64* wx,Float64* wy) const
+void PointMapper::GetWorldOrg(Float64* wx,Float64* wy) const
 {
    *wx = m_WorldOriginX;
    *wy = m_WorldOriginY;
 } // GetWorldOrg
 
-GraphPoint grlibPointMapper::GetWorldOrg() const
+Point PointMapper::GetWorldOrg() const
 {
-   return GraphPoint( m_WorldOriginX, m_WorldOriginY );
+   return Point( m_WorldOriginX, m_WorldOriginY );
 }
 
-void grlibPointMapper::SetDeviceExt(LONG dx,LONG dy)
+void PointMapper::SetDeviceExt(LONG dx,LONG dy)
 {
    m_OriginalDeviceExtentX = dx;
    m_OriginalDeviceExtentY = dy;
@@ -252,53 +246,53 @@ void grlibPointMapper::SetDeviceExt(LONG dx,LONG dy)
    UpdateDeviceExtents();
 } // SetDeviceExt
 
-void grlibPointMapper::GetDeviceExt(LONG* dx,LONG* dy) const
+void PointMapper::GetDeviceExt(LONG* dx,LONG* dy) const
 {
    *dx = m_OriginalDeviceExtentX;
    *dy = m_OriginalDeviceExtentY;
 } // GetDeviceExt
 
-void grlibPointMapper::GetAdjustedDeviceExt(LONG* dx,LONG* dy) const
+void PointMapper::GetAdjustedDeviceExt(LONG* dx,LONG* dy) const
 {
    *dx = m_DeviceExtentX;
    *dy = m_DeviceExtentY;
 } // GetAdjustedDeviceExt
 
-void grlibPointMapper::SetDeviceOrg(LONG dx,LONG dy)
+void PointMapper::SetDeviceOrg(LONG dx,LONG dy)
 {
    m_DeviceOriginX = dx;
    m_DeviceOriginY = dy;
 } // SetDeviceOrg
 
-void grlibPointMapper::GetDeviceOrg(LONG* dx,LONG* dy) const
+void PointMapper::GetDeviceOrg(LONG* dx,LONG* dy) const
 {
    *dx = m_DeviceOriginX;
    *dy = m_DeviceOriginY;
 } // GetDeviceOrg
 
-void grlibPointMapper::SetMappingMode(grlibPointMapper::MapMode mm)
+void PointMapper::SetMappingMode(PointMapper::MapMode mm)
 {
    m_MappingMode = mm;
    UpdateDeviceExtents();
 } // SetMappingMode
 
-grlibPointMapper::MapMode grlibPointMapper::GetMappingMode() const
+PointMapper::MapMode PointMapper::GetMappingMode() const
 {
    return m_MappingMode;
 } // GetMappingMode
 
-void grlibPointMapper::SetMappingModeModifier(grlibPointMapper::MapModeModifier mmm)
+void PointMapper::SetMappingModeModifier(PointMapper::MapModeModifier mmm)
 {
    m_MappingModeModifier = mmm;
    UpdateDeviceExtents();
 }
 
-grlibPointMapper::MapModeModifier grlibPointMapper::GetMappingModeModifier() const
+PointMapper::MapModeModifier PointMapper::GetMappingModeModifier() const
 {
    return m_MappingModeModifier;
 }
 
-void grlibPointMapper::SetPixelDensity(Float64 pdx,Float64 pdy)
+void PointMapper::SetPixelDensity(Float64 pdx,Float64 pdy)
 {
    m_PixelDensityX = pdx;
    m_PixelDensityY = pdy;
@@ -306,14 +300,14 @@ void grlibPointMapper::SetPixelDensity(Float64 pdx,Float64 pdy)
    UpdateDeviceExtents();
 } // SetPixelDensity
 
-void grlibPointMapper::GetPixelDensity(Float64* pdx,Float64* pdy) const
+void PointMapper::GetPixelDensity(Float64* pdx,Float64* pdy) const
 {
    *pdx = m_PixelDensityX;
    *pdy = m_PixelDensityY;
 } // GetPixelDensity
 
 //======================== INQUIRY    =======================================
-Float64 grlibPointMapper::GetScaleX() const
+Float64 PointMapper::GetScaleX() const
 {
    Float64 scale;
 
@@ -325,7 +319,7 @@ Float64 grlibPointMapper::GetScaleX() const
    return scale;
 } // GetScaleX
 
-Float64 grlibPointMapper::GetScaleY() const
+Float64 PointMapper::GetScaleY() const
 {
    Float64 scale;
 
@@ -352,7 +346,7 @@ Float64 grlibPointMapper::GetScaleY() const
 //======================== OPERATIONS =======================================
 
 
-void grlibPointMapper::MakeCopy(const grlibPointMapper& rOther)
+void PointMapper::MakeCopy(const PointMapper& rOther)
 {
    m_WorldExtentX          = rOther.m_WorldExtentX;
    m_WorldExtentY          = rOther.m_WorldExtentY;         
@@ -371,13 +365,13 @@ void grlibPointMapper::MakeCopy(const grlibPointMapper& rOther)
    m_MappingModeModifier   = rOther.m_MappingModeModifier;
 }
 
-void grlibPointMapper::MakeAssignment(const grlibPointMapper& rOther)
+void PointMapper::MakeAssignment(const PointMapper& rOther)
 {
    MakeCopy(rOther);
 }
 
 
-void grlibPointMapper::UpdateDeviceExtents()
+void PointMapper::UpdateDeviceExtents()
 {
    Float64 ns_world_ext_x;  // no-sign world extents
    Float64 ns_world_ext_y;
@@ -394,9 +388,9 @@ void grlibPointMapper::UpdateDeviceExtents()
    ns_device_ext_x =  abs(m_OriginalDeviceExtentX);
    ns_device_ext_y =  abs(m_OriginalDeviceExtentY);
 
-   if ( m_MappingMode == Anisotropic )
+   if ( m_MappingMode == MapMode::Anisotropic )
    {
-      if ( m_MappingModeModifier == BestFitX )
+      if ( m_MappingModeModifier == MapModeModifier::BestFitX )
       {
          scale = ns_world_ext_x * m_PixelDensityX / ns_device_ext_x;
          scale = GetBestFitScale(scale);
@@ -407,7 +401,7 @@ void grlibPointMapper::UpdateDeviceExtents()
             ns_device_ext_x = round_to_nearest_whole_number( ns_world_ext_x * m_PixelDensityX / scale );
       }
 
-      if ( m_MappingModeModifier == BestFitY )
+      if ( m_MappingModeModifier == MapModeModifier::BestFitY )
       {
          scale = ns_world_ext_y * m_PixelDensityY / ns_device_ext_y;
          scale = GetBestFitScale(scale);
@@ -418,7 +412,7 @@ void grlibPointMapper::UpdateDeviceExtents()
             ns_device_ext_y = round_to_nearest_whole_number( ns_world_ext_y * m_PixelDensityY / scale );
       }
    }
-   else if ( m_MappingMode == Isotropic )
+   else if ( m_MappingMode == MapMode::Isotropic )
    {
       Float64 s1;
       Float64 s2;
@@ -448,9 +442,9 @@ void grlibPointMapper::UpdateDeviceExtents()
          // s1 equals s2, and that is what isotropic is all about
       }
 
-      if ( m_MappingModeModifier == BestFitX ||
-           m_MappingModeModifier == BestFitY || 
-           m_MappingModeModifier == BestFitXY )
+      if ( m_MappingModeModifier == MapModeModifier::BestFitX ||
+           m_MappingModeModifier == MapModeModifier::BestFitY ||
+           m_MappingModeModifier == MapModeModifier::BestFitXY )
       {
          if (ns_device_ext_x != 0)
             scale = ns_world_ext_x * m_PixelDensityX / ns_device_ext_x;
@@ -485,7 +479,7 @@ void grlibPointMapper::UpdateDeviceExtents()
    m_DeviceExtentY = (m_OriginalDeviceExtentY < 0 ? -1 : 1) * ns_device_ext_y;
 } // UpdateDeviceExtents
 
-Float64 grlibPointMapper::GetBestFitScale(Float64 refScale)
+Float64 PointMapper::GetBestFitScale(Float64 refScale)
 {
    CHECK( 0 <= refScale );
 
@@ -533,11 +527,11 @@ Float64 grlibPointMapper::GetBestFitScale(Float64 refScale)
 
 
 #if defined _UNITTEST
-bool grlibPointMapper::TestMe(dbgLog& rlog)
+bool PointMapper::TestMe(dbgLog& rlog)
 {
-   TESTME_PROLOGUE("grlibPointMapper");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for grlibPointMapper");
-   TESTME_EPILOG("grlibPointMapper");
+   TESTME_PROLOGUE("PointMapper");
+   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for PointMapper");
+   TESTME_EPILOG("PointMapper");
 }
 #endif // _UNITTEST
 

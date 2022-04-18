@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphManager - Manages graph definitions
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Graphing - Line graph plotting and graph definition management library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,24 +23,24 @@
 
 #pragma once
 
-// Define BUILDGRAPHMANAGERLIB when building this library
-// For static builds, define GRAPHMANAGERLIB
-// For static binding, define GRAPHMANAGERLIB
+// Define BUILDGRAPHINGLIB when building this library
+// For static builds, define GRAPHINGLIB
+// For static binding, define GRAPHINGLIB
 // For dynamic binding, nothing is required to be defined
 
-#if defined (BUILDGRAPHMANAGERLIB) && !defined(GRAPHMANAGERLIB)
-#define GRAPHMANAGERCLASS __declspec(dllexport)
-#define GRAPHMANAGERFUNC  __declspec(dllexport)
-#define GRAPHMANAGERFUNCTEMPLATE   template class GRAPHMANAGERCLASS
-#elif defined(GRLIB)
-#define GRAPHMANAGERCLASS
-#define GRAPHMANAGERFUNC
-#define GRAPHMANAGERFUNCTEMPLATE
+#if defined (BUILDGRAPHINGLIB) && !defined(GRAPHINGLIB)
+#define GRAPHINGCLASS __declspec(dllexport)
+#define GRAPHINGFUNC  __declspec(dllexport)
+#define GRAPHINGTEMPLATE   template class GRAPHINGCLASS
+#elif defined(GRAPHINGLIB)
+#define GRAPHINGCLASS
+#define GRAPHINGFUNC
+#define GRAPHINGTEMPLATE
 #else
-#define GRAPHMANAGERCLASS __declspec(dllimport)
-#define GRAPHMANAGERFUNC
-#define GRAPHMANAGERFUNCTEMPLATE   extern template class GRAPHMANAGERCLASS
+#define GRAPHINGCLASS __declspec(dllimport)
+#define GRAPHINGFUNC
+#define GRAPHINGTEMPLATE   extern template class GRAPHINGCLASS
 #endif
 
 #include <WbflAll.h>
-#include <GraphManager\AutoLib.h>
+#include <Graphing/AutoLib.h>

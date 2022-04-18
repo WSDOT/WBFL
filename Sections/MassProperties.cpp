@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Geometry - Geometric Modeling Library
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,7 +23,7 @@
 
 // MassProperties.cpp : Implementation of CMassProperties
 #include "stdafx.h"
-#include "WBFLSections.h"
+#include "WBFLGeometry.h"
 #include "MassProperties.h"
 
 #ifdef _DEBUG
@@ -39,8 +39,7 @@ STDMETHODIMP CMassProperties::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-      &IID_IMassProperties,
-      &IID_IStructuredStorage2,
+      &IID_IMassProperties
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -53,13 +52,13 @@ STDMETHODIMP CMassProperties::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CMassProperties::get_MassPerLength(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_MPL;
+   *pVal = m_Props.GetMassPerLength();
 	return S_OK;
 }
 
 STDMETHODIMP CMassProperties::put_MassPerLength(Float64 newVal)
 {
-   m_MPL = newVal;
+   m_Props.SetMassPerLength(newVal);
 	return S_OK;
 }
 
@@ -68,42 +67,6 @@ STDMETHODIMP CMassProperties::AddProperties(IMassProperties *props)
    CHECK_IN(props);
    Float64 mpl;
    props->get_MassPerLength(&mpl);
-   m_MPL += mpl;
+   m_Props += mpl;
 	return S_OK;
-}
-
-STDMETHODIMP CMassProperties::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IStructuredStorage2
-STDMETHODIMP CMassProperties::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("MassProperties"),1.0);
-   pSave->put_Property(CComBSTR("MPL"),CComVariant(m_MPL));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CMassProperties::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("MassProperties"));
-
-   pLoad->get_Property(CComBSTR("MPL"),&var);
-   m_MPL = var.dblVal;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   return S_OK;
 }
