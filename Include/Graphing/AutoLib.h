@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,12 +21,13 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// stdafx.cpp : source file that includes just the standard includes
-//  stdafx.pch will be the pre-compiled header
-//  stdafx.obj will contain the pre-compiled type information
+#if !defined (BUILDGRAPHINGLIB)
 
-#include "stdafx.h"
+#define GRAPHING_AUTOLIBNAME "WBFLGraphing.lib"
 
-#ifdef _ATL_STATIC_REGISTRY
-#include <statreg.h>
+#pragma comment(lib,GRAPHING_AUTOLIBNAME)
+#if defined AUTOLIB
+#pragma message("Linking with " GRAPHING_AUTOLIBNAME )
 #endif
+
+#endif // BUILDGRAPHINGLIB

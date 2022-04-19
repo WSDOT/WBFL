@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
+// Geometry - Geometric Modeling Library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -37,9 +37,7 @@ class ATL_NO_VTABLE CCompositeBeam :
 	public ISupportErrorInfo,
 	public ISection,
 	public IXYPosition,
-	public ICompositeBeam,
-   public IStructuredStorage2,
-   public IPersistImpl<CCompositeBeam>
+	public ICompositeBeam
 {
 public:
 	CCompositeBeam()
@@ -54,12 +52,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CCompositeBeam)
 	COM_INTERFACE_ENTRY(ICompositeBeam)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISection)
 	COM_INTERFACE_ENTRY(IXYPosition)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -67,7 +63,6 @@ END_COM_MAP()
 
 // ICompositeBeam
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_Q)(/*[in]*/ Float64 location, /*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_QSlab)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_BeamDensity)(/*[out, retval]*/ Float64 *pVal) override;
@@ -114,13 +109,8 @@ public:
 	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
 protected:
-   CComPtr<ICompositeSection> m_Section;
+   CComPtr<ICompositeSectionEx> m_Section;
 
 private:
    void UpdateShapeLocations();

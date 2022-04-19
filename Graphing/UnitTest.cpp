@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// ReportManager - Manages report definitions
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,18 +21,23 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GRAPHMANAGER_AUTOLIB_H_
-#define INCLUDED_GRAPHMANAGER_AUTOLIB_H_
+#include "stdafx.h"
+#include <Graphing/UnitTest.h>
+#include <Graphing/PointMapper.h>
 
-#if !defined (BUILDGRAPHMANAGERLIB)
-
-#define GRAPHMANAGER_AUTOLIBNAME "WBFLGraphManager.lib"
-
-#pragma comment(lib,GRAPHMANAGER_AUTOLIBNAME)
-#if defined AUTOLIB
-#pragma message("Linking with " GRAPHMANAGER_AUTOLIBNAME )
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
-#endif // BUILDGRAPHMANAGERLIB
+using namespace WBFL::Graphing;
 
-#endif // INCLUDED_GRAPHMANAGER_AUTOLIB_H_
+bool UnitTest::TestMe(dbgLog& rlog)
+{
+   bool tst = true;
+#if defined _UNITTEST
+   tst &= PointMapper::TestMe(rlog);
+#endif
+   return tst;
+}

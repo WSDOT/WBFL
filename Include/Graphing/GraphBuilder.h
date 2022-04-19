@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphManager - Manages graph definitions
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -27,52 +27,75 @@
 
 #pragma once
 
-#include <GraphManager\GraphManagerExp.h>
+#include <Graphing/GraphingExp.h>
 
-//////////////////////////////////////////////////////
-// CGraphBuilder
-// Abstract base class for defining graph builders
-class GRAPHMANAGERCLASS CGraphBuilder
+namespace WBFL
+{
+   namespace Graphing
+   {
+
+/// Abstract base class for defining graph builders. This class implements methods for managing the GraphBuilder name and the end-user documentation for the resulting graph.
+class GRAPHINGCLASS GraphBuilder
 {
 public:
-	CGraphBuilder();
-   CGraphBuilder(const CGraphBuilder& other);
-	virtual ~CGraphBuilder();
-   bool operator==(const CGraphBuilder& other);
+   GraphBuilder();
+   GraphBuilder(const GraphBuilder& other) = default;
+	virtual ~GraphBuilder();
 
-   virtual void SetName(LPCTSTR strName);
-   virtual const std::_tstring& GetName() const;
+   GraphBuilder& operator=(const GraphBuilder& other) = default;
 
-   void InitDocumentation(LPCTSTR lpszDocSetName,UINT nHID);
+   bool operator==(const GraphBuilder& other) const;
+
+   /// Sets the name of the graph builder
+   void SetName(LPCTSTR strName);
+
+   /// Returns the name of the graph builder
+   virtual LPCTSTR GetName() const;
+
+   /// Initializes the associated end-user documentation
+   void InitDocumentation(LPCTSTR lpszDocSetName, ///< Name of the documentation set
+                          UINT nHID ///< Help topic identifier
+   );
+
+   /// Sets the end-user documentation set name
    void SetDocumentationSetName(LPCTSTR lpszDocSetName);
+
+   /// Returns the documentation set name
    const CString& GetDocumentationSetName() const;
+
+   /// Sets the help topic identifier
    void SetHelpID(UINT nID);
+
+   /// Returns the help topic identifier
    UINT GetHelpID() const;
 
+   /// Sets a bitmap to be displayed on menus for the graph
    void SetMenuBitmap(const CBitmap* pBmp);
+
+   /// Returns a bitmap for display on the menus
    const CBitmap* GetMenuBitmap();
 
-   // Creates the UI controls. The controls must be derived from the MFC CControlBar
-   // class (typically a CDialogBar). pParent will be the parent window of the control bar
-   // and nID will be the control bar ID passed into its Create method
+   /// Creates the UI controls. The controls must be derived from the MFC CControlBar
+   /// class (typically a CDialogBar). pParent will be the parent window of the control bar
+   /// and nID will be the control bar ID passed into its Create method
    virtual int InitializeGraphController(CWnd* pParent,UINT nID) = 0;
 
-   // Called by the framework when the graph needs to be drawn. The graph
-   // is drawn in the pGraphWnd using the pDC device context.
+   /// Called by the framework when the graph needs to be drawn. The graph
+   /// is drawn in the pGraphWnd using the pDC device context.
    virtual void DrawGraph(CWnd* pGraphWnd,CDC* pDC) = 0;
 
-   // Creates a clone of this graph builder. Implementation of this
-   // method is essential if your application permits multiple views
-   // of the same graph
-   virtual CGraphBuilder* Clone() const = 0;
+   /// Creates a clone of this graph builder. Implementation of this
+   /// method is essential if your application permits multiple views
+   /// of the same graph
+   virtual std::unique_ptr<GraphBuilder> Clone() const = 0;
 
-   // Called by the framework when the view class OnUpdate is called
+   /// Called by the framework when the view class OnUpdate is called
    virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
 
-   // Called by the framework to determine if printing commands can be enabled
+   /// Called by the framework to determine if printing commands can be enabled
    virtual BOOL CanPrint();
 
-   //
+   /// Called by the framework when an instance of the graph is left-button double-clicked on.
    virtual bool HandleDoubleClick(UINT nFlags,CPoint point);
 
 protected:
@@ -82,3 +105,6 @@ protected:
    CString m_strDocSetName;
    UINT m_nHelpID;
 };
+
+   }; // Graphing
+}; // WBFL

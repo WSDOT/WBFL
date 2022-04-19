@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphManager - Manages graph definitions
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -27,39 +27,71 @@
 
 #pragma once
 
-#include <GraphManager\GraphManagerExp.h>
-#include <GraphManager\GraphBuilder.h>
+#include <Graphing/GraphingExp.h>
+#include <Graphing/GraphBuilder.h>
 
 #include <map>
 #include <vector>
 
 #include <memory>
 
-class GRAPHMANAGERCLASS CGraphManager
+namespace WBFL
+{
+   namespace Graphing
+   {
+
+/// Class to manage graph builders for an application
+class GRAPHINGCLASS GraphManager
 {
 public:
-	CGraphManager(bool bSortByName = true);
-	virtual ~CGraphManager();
-   virtual void ClearAll();  // deletes all graph builders
+   GraphManager(bool bShortByName = true);
+	virtual ~GraphManager();
 
-   void SortByName(bool bSort);
-   bool SortByName() const;
-   
-   bool AddGraphBuilder(CGraphBuilder* pBuilder);
-   bool AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder);
-   IndexType GetGraphBuilderCount() const;
-   std::shared_ptr<CGraphBuilder> GetGraphBuilder(IndexType index);
-   std::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName);
-   std::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName);
-   std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName);
-   std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName);
+   /// Adds a graph builder to the manager. Makes a clone of the graph builder
+   bool AddGraphBuilder(GraphBuilder& graphBuilder);
+
+   /// Adds a graph builder to the manager.
+   bool AddGraphBuilder(std::unique_ptr<GraphBuilder>&& pGraphBuilder);
+
+   /// Returns the number of builders
+   CollectionIndexType GetGraphBuilderCount() const;
+
+   /// Returns a graph builder by index
+   std::unique_ptr<GraphBuilder>& GetGraphBuilder(IndexType index);
+
+   /// Returns a graph builder by name
+   std::unique_ptr<GraphBuilder>& GetGraphBuilder(LPCTSTR strGraphName);
+
+   /// Returns a graph builder by name
+   std::unique_ptr<GraphBuilder>& GetGraphBuilder(const std::_tstring& strGraphName);
+
+   /// Removes a graph builder by index
+   bool RemoveGraphBuilder(IndexType index);
+
+   /// Removes a graph builder by name
+   bool RemoveGraphBuilder(LPCTSTR strGraphName);
+
+   /// Removes a graph builder by name
+   bool RemoveGraphBuilder(const std::_tstring& strGraphName);
+
+   /// Clears all graph builders
+   virtual void ClearAll();
+
+   /// Returns a list of graph builder names
    std::vector<std::_tstring> GetGraphNames() const;
+
+   /// Gets a bitmap that represents the graph
    const CBitmap* GetMenuBitmap(LPCTSTR strReportName);
+
+   /// Gets a bitmap that represents the graph
    const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
 
 private:
-   std::vector<std::shared_ptr<CGraphBuilder>> m_GraphBuilders;
+   std::vector<std::unique_ptr<CGraphBuilder>> m_GraphBuilders;
    bool m_bSort{true};
    
    void Sort();
 };
+
+   }; // Graphing
+}; // WBFL

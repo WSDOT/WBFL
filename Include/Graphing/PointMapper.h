@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphicsLib - Utility library graphics
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,113 +21,90 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GRAPHICSLIB_POINTMAPPER_H_
-#define INCLUDED_GRAPHICSLIB_POINTMAPPER_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <GraphicsLib\GraphicsLibExp.h>
-#include <GraphicsLib/GraphicsLibTypes.h>
+#include <Graphing/GraphingExp.h>
+#include <Graphing/GraphingTypes.h>
 #include <vector>
 
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-struct IPoint2d;
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   grlibPointMapper
-
-   Maps points from world space to device space
-
-DESCRIPTION
-   Instances of this class are used to map Float64s to Int32s.
-   This is typically done for graphics in Windows. The device
-   points can be in any Windows mapping mode that you desire.
- 
-   The point mapping can be forced to conform to a scale.
-   This is useful when drawing on a hard copy (paper) and the
-   graphics need to conform to an engineering scale such as
-   1:50.  The best scale is selected from the list of available
-   scales.  You <B>MUST</B> provide the mapper with available scales
-   using the AddScale() method.  Scales values must be in the
-   range [0.1, 1.0).  You <B>MUST</B> also provide the mapper with
-   the pixel density of the device.  The world units and pixel 
-   density must be in consistant units. For example,  if
-   the pixel density is 300 dpi then world units must be in
-   inches.  In Windows, the pixel density can be easily
-   obtained from GetDeviceCaps() with LOGPIXELSX and
-   LOGPIXELSY arguements.
-
-  <pre>
-   Some common scales (world units in mm):
-   US Engineering Scale:
-   1 : 0.12 (1 : 10)
-   1 : 0.24 (1 : 20)
-   1 : 0.36 (1 : 30)
-   1 : 0.48 (1 : 40)
-   1 : 0.60 (1 : 50)
-   1 : 0.72 (1 : 60)
-
-   SI Engineering Scales:
-   1 : 0.100 (1 : 100)
-   1 : 0.125 (1 : 125)
-   1 : 0.150 (1 : 150)
-   1 : 0.200 (1 : 200)
-   1 : 0.250 (1 : 250)
-   1 : 0.500 (1 : 500)
-
-   Convert Dots-per-inch (dpi) to Dots-per-millimeter
-   divide by 25.4 mm/inch
-   </pre>
-
-   EXAMPLE
-   The following code snippet maps a 1 mile by 1 mile square
-   (given in feet) to a 100 by 200 pixel rectangle
-
-                grlibPointMapper mapper;
-                mapper.SetMappingMode( grlibPointMapper::Anisotropic );
-                mapper.SetWorldExt(5280.,5280.);
-                mapper.SetDeviceExt(100,200);
-                mapper.SetDeviceOrg(0,200);
-                mapper.WPtoDP(0.,0.,dx,dy);       // dx =   0, dy = 200
-                mapper.WPtoDP(5280.,5280.,dx,dy); // dx = 100, dy = 0
-                mapper.WPtoDP(5280.,0.,dx,dy);    // dx = 100, dy = 200
-   END
-*****************************************************************************/
-
-class GRCLASS grlibPointMapper
+namespace WBFL
+{
+   namespace Graphing
+   {
+/// Maps points from world space to device space
+/// 
+/// Instances of this class are used to map Float64s to Int32s.
+/// This is typically done for graphics in Windows. The device
+/// points can be in any Windows mapping mode that you desire.
+/// 
+/// The point mapping can be forced to conform to a scale.
+/// This is useful when drawing on a hard copy (paper) and the
+/// graphics need to conform to an engineering scale such as
+/// 1:50.  The best scale is selected from the list of available
+/// scales.  You <B>MUST</B> provide the mapper with available scales
+/// using the AddScale() method.  Scales values must be in the
+/// range [0.1, 1.0).  You <B>MUST</B> also provide the mapper with
+/// the pixel density of the device.  The world units and pixel 
+/// density must be in consistant units. For example,  if
+/// the pixel density is 300 dpi then world units must be in
+/// inches.  In Windows, the pixel density can be easily
+/// obtained from GetDeviceCaps() with LOGPIXELSX and
+/// LOGPIXELSY arguements.
+/// 
+/// Some common scales (world units in mm):
+/// US Engineering Scale:
+/// 1 : 0.12 (1 : 10)
+/// 1 : 0.24 (1 : 20)
+/// 1 : 0.36 (1 : 30)
+/// 1 : 0.48 (1 : 40)
+/// 1 : 0.60 (1 : 50)
+/// 1 : 0.72 (1 : 60)
+/// 
+/// SI Engineering Scales:
+/// 1 : 0.100 (1 : 100)
+/// 1 : 0.125 (1 : 125)
+/// 1 : 0.150 (1 : 150)
+/// 1 : 0.200 (1 : 200)
+/// 1 : 0.250 (1 : 250)
+/// 1 : 0.500 (1 : 500)
+/// 
+/// Convert Dots-per-inch (dpi) to Dots-per-millimeter
+/// divide by 25.4 mm/inch
+/// 
+/// EXAMPLE
+/// The following code snippet maps a 1 mile by 1 mile square
+/// (given in feet) to a 100 by 200 pixel rectangle
+/// 
+///              PointMapper mapper;
+///              mapper.SetMappingMode( PointMapper::Anisotropic );
+///              mapper.SetWorldExt(5280.,5280.);
+///              mapper.SetDeviceExt(100,200);
+///              mapper.SetDeviceOrg(0,200);
+///              mapper.WPtoDP(0.,0.,dx,dy);       // dx =   0, dy = 200
+///              mapper.WPtoDP(5280.,5280.,dx,dy); // dx = 100, dy = 0
+///              mapper.WPtoDP(5280.,0.,dx,dy);    // dx = 100, dy = 200
+class GRAPHINGCLASS PointMapper
 {
 public:
    // GROUP: ENUMERATIONS
-   enum MapMode { Isotropic, Anisotropic };
-   enum MapModeModifier { NoFit, BestFitX, BestFitY, BestFitXY };
+   enum class MapMode { Isotropic, Anisotropic };
+   enum class MapModeModifier { NoFit, BestFitX, BestFitY, BestFitXY };
 
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
-   grlibPointMapper();
+   PointMapper();
 
    //------------------------------------------------------------------------
-   grlibPointMapper(const grlibPointMapper& mapper);
+   PointMapper(const PointMapper& mapper);
 
    //------------------------------------------------------------------------
-   ~grlibPointMapper();
+   ~PointMapper();
 
    // GROUP: OPERATORS
 
    //------------------------------------------------------------------------
-   grlibPointMapper& operator = (const grlibPointMapper& mapper);
+   PointMapper& operator = (const PointMapper& mapper);
 
    // GROUP: OPERATIONS
    
@@ -135,13 +112,13 @@ public:
    void WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const;
    
    //------------------------------------------------------------------------
-   void WPtoDP(const GraphPoint& p,LONG* dx,LONG* dy) const;
+   void WPtoDP(const Point& p,LONG* dx,LONG* dy) const;
 
    //------------------------------------------------------------------------
    void DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const;
 
    //------------------------------------------------------------------------
-   GraphPoint DPtoWP(LONG dx,LONG dy) const;
+   Point DPtoWP(LONG dx,LONG dy) const;
 
    //------------------------------------------------------------------------
    void AddScale(Float64 scale);
@@ -155,25 +132,25 @@ public:
    void SetWorldExt(Float64 wx,Float64 wy);
    
    //------------------------------------------------------------------------
-   void SetWorldExt(const GraphSize& wExt);
+   void SetWorldExt(const Size& wExt);
    
    //------------------------------------------------------------------------
    void GetWorldExt(Float64* wx,Float64* wy) const;
    
    //------------------------------------------------------------------------
-   GraphSize GetWorldExt() const;
+   Size GetWorldExt() const;
    
    //------------------------------------------------------------------------
    void SetWorldOrg(Float64 wx,Float64 wy);
    
    //------------------------------------------------------------------------
-   void SetWorldOrg(const GraphPoint& wOrg);
+   void SetWorldOrg(const Point& wOrg);
    
    //------------------------------------------------------------------------
    void GetWorldOrg(Float64* wx,Float64* wy) const;
    
    //------------------------------------------------------------------------
-   GraphPoint GetWorldOrg() const;
+   Point GetWorldOrg() const;
    
    //------------------------------------------------------------------------
    void SetDeviceExt(LONG dx,LONG dy);
@@ -191,16 +168,16 @@ public:
    void GetDeviceOrg(LONG* dx,LONG* dy) const;
    
    //------------------------------------------------------------------------
-   void SetMappingMode(grlibPointMapper::MapMode mm);
+   void SetMappingMode(PointMapper::MapMode mm);
    
    //------------------------------------------------------------------------
-   grlibPointMapper::MapMode GetMappingMode() const;
+   PointMapper::MapMode GetMappingMode() const;
    
    //------------------------------------------------------------------------
-   void SetMappingModeModifier(grlibPointMapper::MapModeModifier mmm);
+   void SetMappingModeModifier(PointMapper::MapModeModifier mmm);
    
    //------------------------------------------------------------------------
-   grlibPointMapper::MapModeModifier GetMappingModeModifier() const;
+   PointMapper::MapModeModifier GetMappingModeModifier() const;
    
    //------------------------------------------------------------------------
    void SetPixelDensity(Float64 pdx,Float64 pdy);
@@ -261,18 +238,14 @@ private:
    void UpdateDeviceExtents();
    Float64 GetBestFitScale(Float64 refScale);
 
-   void MakeCopy(const grlibPointMapper& rOther);
-   void MakeAssignment(const grlibPointMapper& rOther);
+   void MakeCopy(const PointMapper& rOther);
+   void MakeAssignment(const PointMapper& rOther);
 
    // GROUP: ACCESS
 
    // GROUP: INQUIRY
 };
 
-// INLINE METHODS
-//
+   }; // Graphing
+}; // WBFL
 
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_GRAPHICSTOOLS_POINTMAPPER_H_

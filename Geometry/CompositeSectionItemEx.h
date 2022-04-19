@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
+// Geometry - Geometric Modeling Library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -35,9 +35,7 @@ class ATL_NO_VTABLE CCompositeSectionItemEx :
 	public CComCoClass<CCompositeSectionItemEx, &CLSID_CompositeSectionItemEx>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCompositeSectionItemEx,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public ICompositeSectionItemEx,
-   public IStructuredStorage2,
-   public IPersistImpl<CCompositeSectionItemEx>
+	public ICompositeSectionItemEx
 {
 public:
 	CCompositeSectionItemEx()
@@ -56,10 +54,8 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CCompositeSectionItemEx)
 	COM_INTERFACE_ENTRY(ICompositeSectionItemEx)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -67,7 +63,6 @@ END_COM_MAP()
 
 // ICompositeSectionItemEx
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_Structural)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
 	STDMETHOD(put_Structural)(/*[in]*/ VARIANT_BOOL newVal) override;
 	STDMETHOD(get_Dfg)(/*[out, retval]*/ Float64 *pVal) override;
@@ -80,11 +75,6 @@ public:
 	STDMETHOD(put_Ebg)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 	STDMETHOD(putref_Shape)(/*[in]*/ IShape* newVal) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    VARIANT_BOOL m_bStructural;

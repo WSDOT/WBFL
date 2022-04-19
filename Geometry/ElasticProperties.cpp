@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
+// Geometry - Geometric Modeling Library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -23,10 +23,9 @@
 
 // ElasticProperties.cpp : Implementation of CElasticProperties
 #include "stdafx.h"
-#include "WBFLSections.h"
+#include "WBFLGeometry.h"
 #include "ElasticProperties.h"
-
-#include <WBFLGeometry.h>
+#include "Helper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,16 +37,14 @@ static char THIS_FILE[] = __FILE__;
 // CElasticProperties
 HRESULT CElasticProperties::FinalConstruct()
 {
-   HRESULT hr = m_Props.CoCreateInstance(CLSID_ShapeProperties);
-   return hr;
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IElasticProperties,
-		&IID_IStructuredStorage2,
+		&IID_IElasticProperties
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -59,157 +56,206 @@ STDMETHODIMP CElasticProperties::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CElasticProperties::get_EA(Float64 *pVal)
 {
-   return m_Props->get_Area(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetEA();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_EA(Float64 newVal)
 {
-   return m_Props->put_Area(newVal);
+   m_Props.SetEA(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_Centroid(IPoint2d **pVal)
 {
-   return m_Props->get_Centroid(pVal);
+   CHECK_RETOBJ(pVal);
+   return CreatePoint(m_Props.GetCentroid(), pVal);
 }
 
 STDMETHODIMP CElasticProperties::put_Centroid(IPoint2d *newVal)
 {
-   return m_Props->put_Centroid(newVal);
+   CHECK_IN(newVal);
+   m_Props.SetCentroid(GetPoint(newVal));
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_EI11(Float64 *pVal)
 {
-   return m_Props->get_I11(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetEI11();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_EI22(Float64 *pVal)
 {
-   return m_Props->get_I22(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetEI22();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_EI12Max(Float64 *pVal)
 {
-   return m_Props->get_I12Max(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetEI12Max();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_EI12Min(Float64 *pVal)
 {
-   return m_Props->get_I12Min(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetEI12Min();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_EIxx(Float64 *pVal)
 {
-   return m_Props->get_Ixx(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetEIxx();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_EIxx(Float64 newVal)
 {
-   return m_Props->put_Ixx(newVal);
+   m_Props.SetEIxx(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_EIyy(Float64 *pVal)
 {
-   return m_Props->get_Iyy(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetEIyy();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_EIyy(Float64 newVal)
 {
-   return m_Props->put_Iyy(newVal);
+   m_Props.SetEIyy(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_EIxy(Float64 *pVal)
 {
-   return m_Props->get_Ixy(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetEIxy();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_EIxy(Float64 newVal)
 {
-   return m_Props->put_Ixy(newVal);
+   m_Props.SetEIxy(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_Xleft(Float64 *pVal)
 {
-   return m_Props->get_Xleft(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetXleft();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_Xleft(Float64 newVal)
 {
-   return m_Props->put_Xleft(newVal);
+   if (newVal < 0) return E_INVALIDARG;
+   m_Props.SetXleft(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_Xright(Float64 *pVal)
 {
-   return m_Props->get_Xright(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetXright();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_Xright(Float64 newVal)
 {
-   return m_Props->put_Xright(newVal);
+   if (newVal < 0) return E_INVALIDARG;
+   m_Props.SetXright(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_Ytop(Float64 *pVal)
 {
-   return m_Props->get_Ytop(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetYtop();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_Ytop(Float64 newVal)
 {
-   return m_Props->put_Ytop(newVal);
+   if (newVal < 0) return E_INVALIDARG;
+   m_Props.SetYtop(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_Ybottom(Float64 *pVal)
 {
-   return m_Props->get_Ybottom(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetYbottom();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_Ybottom(Float64 newVal)
 {
-   return m_Props->put_Ybottom(newVal);
+   if (newVal < 0) return E_INVALIDARG;
+   m_Props.SetYbottom(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_Origin(IPoint2d **pVal)
 {
-   return m_Props->get_Origin(pVal);
+   CHECK_RETOBJ(pVal);
+   return CreatePoint(m_Props.GetOrigin(), pVal);
 }
 
 STDMETHODIMP CElasticProperties::put_Origin(IPoint2d *newVal)
 {
-   return m_Props->put_Origin(newVal);
+   CHECK_IN(newVal);
+   m_Props.SetOrigin(GetPoint(newVal));
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_Orientation(Float64 *pVal)
 {
-   return m_Props->get_Orientation(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetOrientation();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_Orientation(Float64 newVal)
 {
-   return m_Props->put_Orientation(newVal);
+   m_Props.SetOrientation(newVal);
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_CoordinateSystem(CoordinateSystemType *pVal)
 {
-   return m_Props->get_CoordinateSystem(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = (CoordinateSystemType)(m_Props.GetCoordinateSystem());
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::put_CoordinateSystem(CoordinateSystemType newVal)
 {
-   return m_Props->put_CoordinateSystem(newVal);
+   m_Props.SetCoordinateSystem(WBFL::Geometry::ElasticProperties::CoordSystemType(newVal));
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::get_PrincipleDirection(Float64 *pVal)
 {
-   return m_Props->get_PrincipleDirection(pVal);
+   CHECK_RETVAL(pVal);
+   *pVal = m_Props.GetPrincipalDirection();
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::AddProperties(IElasticProperties* props)
 {
    CHECK_IN(props);
 
-   CComPtr<IShapeProperties> shapeProps;
-   props->TransformProperties(1.0,&shapeProps);
-
-   return m_Props->AddProperties(shapeProps);
+   CElasticProperties* pProps = dynamic_cast<CElasticProperties*>(props);
+   m_Props += pProps->m_Props;
+   return S_OK;
 }
 
 STDMETHODIMP CElasticProperties::TransformProperties(Float64 E,IShapeProperties** props)
@@ -225,85 +271,20 @@ STDMETHODIMP CElasticProperties::TransformProperties(Float64 E,IShapeProperties*
    if ( E <= 0 )
       return E_INVALIDARG;
 
-   Float64   area;
-   CComPtr<IPoint2d> centroid;
-   Float64   Ixx;
-   Float64   Iyy;
-   Float64   Ixy;
-   Float64   Xleft, Xright;
-   Float64   Ytop, Ybottom;
+   WBFL::Geometry::ShapeProperties shape_props = m_Props.TransformProperties(E);
+   shapeProps->put_Area(shape_props.GetArea());
 
-   // Make sure we are in centroidal coordinates
-   // That is the default for a new shape properties object
-   m_Props->put_CoordinateSystem(csCentroidal);
+   CComPtr<IPoint2d> cg;
+   CreatePoint(shape_props.GetCentroid(), &cg);
+   shapeProps->put_Centroid(cg);
 
-   m_Props->get_Area(&area);
-   area /= E;
-   shapeProps->put_Area(area);
-
-   m_Props->get_Centroid(&centroid);
-   shapeProps->put_Centroid(centroid);
-
-   m_Props->get_Ixx(&Ixx);
-   Ixx /= E;
-   shapeProps->put_Ixx(Ixx);
-
-   m_Props->get_Ixy(&Ixy);
-   Ixy /= E;
-   shapeProps->put_Ixy(Ixy);
-
-   m_Props->get_Iyy(&Iyy);
-   Iyy /= E;
-   shapeProps->put_Iyy(Iyy);
-
-   m_Props->get_Xleft(&Xleft);
-   shapeProps->put_Xleft(Xleft);
-
-   m_Props->get_Xright(&Xright);
-   shapeProps->put_Xright(Xright);
-
-   m_Props->get_Ytop(&Ytop);
-   shapeProps->put_Ytop(Ytop);
-
-   m_Props->get_Ybottom(&Ybottom);
-   shapeProps->put_Ybottom(Ybottom);
-
-   return S_OK;
-}
-
-STDMETHODIMP CElasticProperties::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IStructuredStorage2
-STDMETHODIMP CElasticProperties::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("ElasticProperties"),1.0);
-   pSave->put_Property(CComBSTR("Properties"),CComVariant(m_Props));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CElasticProperties::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("ElasticProperties"));
-
-   pLoad->get_Property(CComBSTR("Properties"),&var);
-   if ( FAILED( _CopyVariantToInterface<IShapeProperties>::copy(&m_Props,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
+   shapeProps->put_Ixx(shape_props.GetIxx());
+   shapeProps->put_Iyy(shape_props.GetIyy());
+   shapeProps->put_Ixy(shape_props.GetIxy());
+   shapeProps->put_Xleft(shape_props.GetXleft());
+   shapeProps->put_Xright(shape_props.GetXright());
+   shapeProps->put_Ytop(shape_props.GetYtop());
+   shapeProps->put_Ybottom(shape_props.GetYbottom());
 
    return S_OK;
 }

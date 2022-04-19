@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Sections - Model bridge member cross sections
+// Geometry - Geometric Modeling Library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -27,6 +27,7 @@
 #define __MASSPROPERTIES_H_
 
 #include "resource.h"       // main symbols
+#include <GeomModel/MassProperties.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CMassProperties
@@ -35,14 +36,11 @@ class ATL_NO_VTABLE CMassProperties :
 	public CComCoClass<CMassProperties, &CLSID_MassProperties>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CMassProperties,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IMassProperties,
-   public IStructuredStorage2,
-   public IPersistImpl<CMassProperties>
+	public IMassProperties
 {
 public:
 	CMassProperties()
 	{
-      m_MPL = 0.0;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_MASSPROPERTIES)
@@ -51,10 +49,8 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CMassProperties)
 	COM_INTERFACE_ENTRY(IMassProperties)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -62,18 +58,12 @@ END_COM_MAP()
 
 // IMassProperties
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(AddProperties)(/*[in]*/ IMassProperties* props) override;
 	STDMETHOD(get_MassPerLength)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_MassPerLength)(/*[in]*/ Float64 newVal) override;
 
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
 private:
-   Float64 m_MPL;
+	WBFL::Geometry::MassProperties m_Props;
 };
 
 #endif //__MASSPROPERTIES_H_

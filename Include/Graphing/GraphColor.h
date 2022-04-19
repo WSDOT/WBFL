@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphicsLib - Utility library graphics
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -23,22 +23,33 @@
 
 #pragma once
 
-#include <GraphicsLib\GraphicsLibExp.h>
+#include <Graphing/GraphingExp.h>
 
-class GRCLASS grGraphColor
+namespace WBFL
+{
+   namespace Graphing
+   {
+
+/// Class that implements a Hue-Saturation-Lightness (HSL) color model and returns a randomized graph color.
+/// Inspired by https://github.com/xuboying/randomcolor-cpp
+class GRAPHINGCLASS GraphColor
 {
 public:
-   grGraphColor();
+   GraphColor();
 
-   void SetHueRange(Float64 minHue,Float64 maxHue); // a value between 0 and 360
-   void SetSaturationRange(Float64 minSaturation, Float64 maxSaturation); // values between 0 and 1
-   void SetLightnessRange(Float64 minLightness,Float64 maxLightness); // values between 0 and 1
+   /// Sets the hue range. Enter values between 0 and 360
+   void SetHueRange(Float64 minHue,Float64 maxHue);
 
+   /// Sets the saturation range. Enter values between 0 and 1
+   void SetSaturationRange(Float64 minSaturation, Float64 maxSaturation);
 
-   // Returns randomized color based on seed
+   /// Sets the lightness range. Enter values between 0 and 1
+   void SetLightnessRange(Float64 minLightness,Float64 maxLightness);
+
+   /// Returns randomized color based on seed
    COLORREF GetColor(IndexType index);
 
-   // reset defaults
+   /// Reset defaults
    void Init();
 private:
 
@@ -47,5 +58,5 @@ private:
    Float64 m_MinLightness, m_MaxLightness;
 };
 
-
-
+   }; // Graphing
+}; // WBFL

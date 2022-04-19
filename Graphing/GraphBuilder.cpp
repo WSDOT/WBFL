@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphManager - Manages graph definitions
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -26,7 +26,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include <GraphManager\GraphBuilder.h>
+#include <Graphing/GraphBuilder.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -34,25 +34,23 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+using namespace WBFL::Graphing;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CGraphBuilder::CGraphBuilder()
+GraphBuilder::GraphBuilder()
 {
    m_pBitmap = nullptr;
    m_nHelpID = 0;
 }
 
-CGraphBuilder::CGraphBuilder(const CGraphBuilder& other)
+GraphBuilder::~GraphBuilder()
 {
-   m_pBitmap = other.m_pBitmap;
-   m_strName = other.m_strName;
-   m_nHelpID = other.m_nHelpID;
-   m_strDocSetName = other.m_strDocSetName;
 }
 
-CGraphBuilder::~CGraphBuilder()
+void GraphBuilder::SetName(LPCTSTR strName)
 {
 }
 
@@ -72,52 +70,52 @@ const std::_tstring& CGraphBuilder::GetName() const
    return m_strName;
 }
 
-void CGraphBuilder::InitDocumentation(LPCTSTR lpszDocSetName,UINT nHID)
+void GraphBuilder::InitDocumentation(LPCTSTR lpszDocSetName,UINT nHID)
 {
    m_strDocSetName = lpszDocSetName;
    m_nHelpID = nHID;
 }
 
-void CGraphBuilder::SetDocumentationSetName(LPCTSTR lpszDocSetName)
+void GraphBuilder::SetDocumentationSetName(LPCTSTR lpszDocSetName)
 {
    m_strDocSetName = lpszDocSetName;
 }
 
-const CString& CGraphBuilder::GetDocumentationSetName() const
+const CString& GraphBuilder::GetDocumentationSetName() const
 {
    return m_strDocSetName;
 }
 
-void CGraphBuilder::SetHelpID(UINT nID)
+void GraphBuilder::SetHelpID(UINT nID)
 {
    m_nHelpID = nID;
 }
 
-UINT CGraphBuilder::GetHelpID() const
+UINT GraphBuilder::GetHelpID() const
 {
    return m_nHelpID;
 }
 
-void CGraphBuilder::SetMenuBitmap(const CBitmap* pBmp)
+void GraphBuilder::SetMenuBitmap(const CBitmap* pBmp)
 {
    m_pBitmap = pBmp;
 }
 
-const CBitmap* CGraphBuilder::GetMenuBitmap()
+const CBitmap* GraphBuilder::GetMenuBitmap()
 {
    return m_pBitmap;
 }
 
-void CGraphBuilder::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
+void GraphBuilder::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
 }
 
-BOOL CGraphBuilder::CanPrint()
+BOOL GraphBuilder::CanPrint()
 {
    return TRUE;
 }
 
-bool CGraphBuilder::HandleDoubleClick(UINT nFlags,CPoint point)
+bool GraphBuilder::HandleDoubleClick(UINT nFlags,CPoint point)
 {
    // do nothing by default
     return false;

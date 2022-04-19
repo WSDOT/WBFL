@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphManager - Manages graph definitions
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //

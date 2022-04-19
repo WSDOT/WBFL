@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphManager - Manages graph definitions
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,18 +21,20 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// GraphManager.cpp: implementation of the CGraphManager class.
+// GraphManager.cpp: implementation of the GraphManager class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include <GraphManager\GraphManager.h>
+#include <Graphing/GraphManager.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
+
+using namespace WBFL::Graphing;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -42,7 +44,7 @@ CGraphManager::CGraphManager(bool bSortByName) : m_bSort(bSortByName)
 {
 }
 
-CGraphManager::~CGraphManager()
+GraphManager::~GraphManager()
 {
 }
 
@@ -65,7 +67,7 @@ void CGraphManager::ClearAll()
    m_GraphBuilders.clear();
 }
 
-bool CGraphManager::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
+bool GraphManager::AddGraphBuilder(GraphBuilder& graphBuilder)
 {
    std::_tstring strName = pGraphBuilder->GetName();
    auto& builder = GetGraphBuilder(strName);
@@ -78,63 +80,68 @@ bool CGraphManager::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
    return true;
 }
 
-bool CGraphManager::AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder)
+bool GraphManager::AddGraphBuilder(std::unique_ptr<GraphBuilder>&& pGraphBuilder)
 {
    std::_tstring strName = pGraphBuilder->GetName();
    auto& builder = GetGraphBuilder(strName);
    if (builder != nullptr) return false;
 
-   m_GraphBuilders.emplace_back(pGraphBuilder);
+   m_GraphBuilders.emplace_back(std::move(pGraphBuilder));
 
    if (m_bSort) Sort();
 
    return true;
 }
 
-IndexType CGraphManager::GetGraphBuilderCount() const
+IndexType GraphManager::GetGraphBuilderCount() const
 {
    return m_GraphBuilders.size();
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(LPCTSTR strGraphName)
+std::unique_ptr<GraphBuilder>& GraphManager::GetGraphBuilder(LPCTSTR strGraphName)
 {
    return GetGraphBuilder(std::_tstring(strGraphName));
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(IndexType index)
+std::unique_ptr<GraphBuilder>& GraphManager::GetGraphBuilder(IndexType index)
 {
    if (m_GraphBuilders.size() <= index) return nullptr;
    return m_GraphBuilders[index];
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(const std::_tstring& strGraphName)
+std::unique_ptr<GraphBuilder>& GraphManager::GetGraphBuilder(const std::_tstring& strGraphName)
 {
    auto found = std::find_if(m_GraphBuilders.begin(), m_GraphBuilders.end(), [strGraphName](auto& builder) {return builder->GetName() == strGraphName;});
    if (found != m_GraphBuilders.end())
       return *found;
    else
-      return nullptr;
+      return m_Nullptr;
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManager::RemoveGraphBuilder(LPCTSTR strGraphName)
+bool GraphManager::RemoveGraphBuilder(IndexType index)
+{
+   if (m_GraphBuilders.size() <= index) return false;
+   m_GraphBuilders.erase(m_GraphBuilders.begin() + index);
+   return true;
+}
+
+bool GraphManager::RemoveGraphBuilder(LPCTSTR strGraphName)
 {
    return RemoveGraphBuilder(std::_tstring(strGraphName));
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManager::RemoveGraphBuilder(const std::_tstring& strGraphName)
+bool GraphManager::RemoveGraphBuilder(const std::_tstring& strGraphName)
 {
    auto found = std::find_if(m_GraphBuilders.begin(), m_GraphBuilders.end(), [strGraphName](auto& builder) {return builder->GetName() == strGraphName; });
    if (found == m_GraphBuilders.end())
-      return nullptr;
-
-   std::shared_ptr<CGraphBuilder> graphBuilder = (*found);
+      return false;
 
    m_GraphBuilders.erase(found);
 
-   return graphBuilder;
+   return true;
 }
 
-std::vector<std::_tstring> CGraphManager::GetGraphNames() const
+std::vector<std::_tstring> GraphManager::GetGraphNames() const
 {
    std::vector<std::_tstring> names;
    for( const auto& entry : m_GraphBuilders)
@@ -145,14 +152,14 @@ std::vector<std::_tstring> CGraphManager::GetGraphNames() const
    return names;
 }
 
-const CBitmap* CGraphManager::GetMenuBitmap(LPCTSTR strGraphName)
+const CBitmap* GraphManager::GetMenuBitmap(LPCTSTR strGraphName)
 {
    return GetMenuBitmap(std::_tstring(strGraphName));
 }
 
-const CBitmap* CGraphManager::GetMenuBitmap(const std::_tstring& strGraphName)
+const CBitmap* GraphManager::GetMenuBitmap(const std::_tstring& strGraphName)
 {
-   std::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder(strGraphName);
+   std::unique_ptr<GraphBuilder>& pGraphBuilder = GetGraphBuilder(strGraphName);
    ATLASSERT( pGraphBuilder != nullptr ); // graph builder not found
 
    return pGraphBuilder->GetMenuBitmap();

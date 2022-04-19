@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphicsLib - Utility library graphics
+// Graphing - Line graph plotting and graph definition management library
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,24 +21,23 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GRAPHICSLIB_GRAPHICSLIBLIB_H_
-#define INCLUDED_GRAPHICSLIB_GRAPHICSLIBLIB_H_
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   Graphics Tools
-
-   Support library that provides low level graphics services.
-
-DESCRIPTION
-   Support library that provides low level graphics services.
-*****************************************************************************/
-
-#include <Private\WBFLPackage.h>
-
-#include <atlbase.h> // for using ATL CComPtr<>, etc
+#include <Graphing/GraphingExp.h>
 #include <WBFLTypes.h>
-#include <WBFLTools.h>
 
-#endif // INCLUDED_GRAPHICSLIB_GRAPHICSLIBLIB_H_
+namespace WBFL
+{
+   namespace Graphing
+   {
+      // Causes the compiler to instantiate the class and export it's symbols
+      GRAPHINGTEMPLATE SimplePointT<Float64>;
+      GRAPHINGTEMPLATE SimpleSizeT<Float64>;
+      GRAPHINGTEMPLATE SimpleRectT<Float64>;
+
+      // Use alias declarations for a nice name (this is the modern version of typedef, see Modern Effective C++, Scott Meyers, Item #9)
+      using Point = SimplePointT<Float64>;
+      using Size = SimpleSizeT<Float64>;
+      using Rect = SimpleRectT<Float64>;
+   }; // Graphing
+}; // WBFL

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphicsLib - Utility library graphics
+// GeomModel - Geometric Modeling of shapes and sections
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -20,10 +20,8 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-#include <GraphicsLib\GraphicsLibLib.h>
-#include <System\dllTest.h>
-#include <GraphicsLib\UnitTest.h>
+#include <GeomModel/GeomModelLib.h>
+#include "Helpers.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,16 +29,16 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-// Every DLL has an entry point DllEntryPoint
-BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
-                           DWORD     /*fdwRreason*/,
-                           LPVOID    /*plvReserved*/)
-{
-    return 1;   // Indicate that the DLL was initialized successfully.
-}
+using namespace WBFL::Geometry;
 
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(dbgLog& rlog) 
+void WBFL::Geometry::GenerateFillet(std::vector<Point2d>& vPoints, Float64 cx, Float64 cy, Float64 r, Float64 startAngle, Float64 delta, IndexType nSpaces)
 {
-   return grlibUnitTest::TestMe(rlog);
+   Float64 dAngle = delta / nSpaces;
+   for (IndexType i = 0; i <= nSpaces; i++)
+   {
+      Float64 x = cx + r * cos(startAngle + i * dAngle);
+      Float64 y = cy + r * sin(startAngle + i * dAngle);
+
+      vPoints.emplace_back(x, y);
+   }
 }
