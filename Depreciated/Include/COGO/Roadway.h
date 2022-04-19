@@ -61,7 +61,7 @@ DESCRIPTION
    Presently,  the hint field is not used.
 
 COPYRIGHT
-   Copyright © 1997-1998
+   Copyright © 1999-2022
    Washington State Department Of Transportation
    All Rights Reserved
 

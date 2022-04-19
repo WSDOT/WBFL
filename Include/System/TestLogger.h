@@ -54,7 +54,7 @@ DESCRIPTION
 
 
 COPYRIGHT
-   Copyright © 1997-1998
+   Copyright © 1999-2022
    Washington State Department Of Transportation
    All Rights Reserved
 
