@@ -210,37 +210,6 @@ void CTestStationEquationCollection::Test()
    TRY_TEST(idx,2);
    TRY_TEST(IsEqual(value,2800.0),true);
 
-
-   // Test Events
-   CComObject<CTestStationEquationCollection>* pTestStationEquationCollection;
-   CComObject<CTestStationEquationCollection>::CreateInstance(&pTestStationEquationCollection);
-   pTestStationEquationCollection->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestStationEquationCollection);
-   TRY_TEST(AtlAdvise(equations,punk,IID_IStationEquationCollectionEvents,&dwCookie),S_OK);
-
-   pTestStationEquationCollection->InitEventTest();
-   equations->Clear();
-   TRY_TEST(pTestStationEquationCollection->PassedEventTest(), true );
-
-   pTestStationEquationCollection->InitEventTest();
-   equation.Release();
-   equations->Add(1500,1350,&equation);
-   TRY_TEST(pTestStationEquationCollection->PassedEventTest(), true );
-
-   pTestStationEquationCollection->InitEventTest();
-   equation.Release();
-   equations->Add(2000,2150,&equation);
-   TRY_TEST(pTestStationEquationCollection->PassedEventTest(), true );
-
-   pTestStationEquationCollection->InitEventTest();
-   equations->Remove(0);
-   TRY_TEST(pTestStationEquationCollection->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(equations,IID_IStationEquationCollectionEvents,dwCookie),S_OK);
-   pTestStationEquationCollection->Release();
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(equations);
    TRY_TEST( eInfo != nullptr, true );
@@ -251,22 +220,4 @@ void CTestStationEquationCollection::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_StationEquationCollection,IID_IStationEquationCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_StationEquationCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestStationEquationCollection::OnEquationAdded(CollectionIndexType idx,IStationEquation* pp)
-{
-   Pass();
-   return S_OK;
-}
-
-STDMETHODIMP CTestStationEquationCollection::OnEquationRemoved(CollectionIndexType idx)
-{
-   Pass();
-   return S_OK;
-}
-
-STDMETHODIMP CTestStationEquationCollection::OnEquationsCleared()
-{
-   Pass();
-   return S_OK;
 }

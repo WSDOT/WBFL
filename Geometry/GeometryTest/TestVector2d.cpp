@@ -287,14 +287,7 @@ void CTestVector2d::Test()
    // Vector is zero length
    pVec2->put_X(0);
    pVec2->put_Y(0);
-   TRY_TEST(pVec->Projection(pVec2,&projection),S_OK);
-   TRY_TEST(IsZero(projection),true);
-
-   // Vector is zero length
-   pVec->put_X(0);
-   pVec->put_Y(0);
-   TRY_TEST(pVec->Projection(pVec2,&projection),S_OK);
-   TRY_TEST(IsZero(projection),true);
+   TRY_TEST(pVec->Projection(pVec2,&projection), GEOMETRY_E_ZEROMAGNITUDE); // can't project onto a zero length vector
 
    // Vectors are right angles (projection = 0)
    pVec->put_X(10);
@@ -477,6 +470,5 @@ void CTestVector2d::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Vector2d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IVector2d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 }

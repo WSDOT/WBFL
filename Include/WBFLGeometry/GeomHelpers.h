@@ -45,29 +45,29 @@ LOG
 class GEOMETRYCLASS geomUtil
 {
 public:
-   static HRESULT CreateParallelLineSegment(ILineSegment2d* pSeg, Float64 offset, ILineSegment2dFactory* pLineSegmentFactory, ILineSegment2d** pNewSeg);
+   static HRESULT CreateParallelLineSegment(ILineSegment2d* pSeg, Float64 offset, ILineSegment2d** pNewSeg);
    static HRESULT IsLineParallelToLineSegment(ILine2d* pLine, ILineSegment2d* pSeg, VARIANT_BOOL* pbResult);
    static HRESULT AreLineSegmentsParallel(ILineSegment2d* pSeg1, ILineSegment2d* pSeg2, VARIANT_BOOL* pbResult);
    static HRESULT AreLinesParallel(ILine2d* pLine1, ILine2d* pLine2, VARIANT_BOOL* pbResult);
-   static HRESULT IntersectLineWithLineSegment(ILine2d* pLine, ILineSegment2d* pSeg, IPoint2dFactory* pPointFactory, IPoint2d** ppPoint);
-   static HRESULT SegSegIntersect(ILineSegment2d* pSeg1, ILineSegment2d* pSeg2, IPoint2dFactory* pPointFactory, IPoint2d** ppPoint);
-   static HRESULT LineLineIntersect(ILine2d* l1, ILine2d *l2, IPoint2dFactory* pPointFactory, IPoint2d **ppPoint);
-   static HRESULT DivideLineSegment(ILineSegment2d* pSeg, IndexType nSpaces, IPoint2dFactory* pPointFactory, IPoint2dCollection** ppPoints);
-   static HRESULT DivideArc(IPoint2d* pStart, IPoint2d* pCenter, IPoint2d* pEnd, IndexType nSpaces, IPoint2dFactory* pPointFactory, IPoint2dCollection** ppPoints);
+   static HRESULT IntersectLineWithLineSegment(ILine2d* pLine, ILineSegment2d* pSeg, IPoint2d** ppPoint);
+   static HRESULT SegSegIntersect(ILineSegment2d* pSeg1, ILineSegment2d* pSeg2, IPoint2d** ppPoint);
+   static HRESULT LineLineIntersect(ILine2d* l1, ILine2d *l2, IPoint2d **ppPoint);
+   static HRESULT DivideLineSegment(ILineSegment2d* pSeg, IndexType nSpaces, IPoint2dCollection** ppPoints);
+   static HRESULT DivideArc(IPoint2d* pStart, IPoint2d* pCenter, IPoint2d* pEnd, IndexType nSpaces, IPoint2dCollection** ppPoints);
    static HRESULT DoesLineSegmentContainPoint(ILineSegment2d* pSeg, IPoint2d* pPoint, Float64 tolerance, VARIANT_BOOL* pbResult);
    static HRESULT DoesLineContainPoint(ILine2d* pLine, IPoint2d* pPoint, Float64 tolerance, VARIANT_BOOL* pbResult);
    static HRESULT AreLinesColinear(ILine2d* pLine1, ILine2d* pLine2, VARIANT_BOOL* pbResult);
-   static HRESULT CreateNormalLineThroughPoint(ILine2d* pLine, IPoint2d* pPoint, ILine2dFactory* pLineFactory, ILine2d** ppLine);
-   static HRESULT CreateParallelLine(ILine2d* pLine, Float64 dist, ILine2dFactory* pLineFactory, ILine2d** ppLine);
-   static HRESULT CreateParallelLineThroughPoint(ILine2d* pLine, IPoint2d* pPoint, ILine2dFactory* pLineFactory, ILine2d** ppLine);
-   static HRESULT PointOnLineNearest(ILine2d* pLine, IPoint2d* pPoint, IPoint2dFactory* pPointFactory, IPoint2d** ppPOLN);
+   static HRESULT CreateNormalLineThroughPoint(ILine2d* pLine, IPoint2d* pPoint, ILine2d** ppLine);
+   static HRESULT CreateParallelLine(ILine2d* pLine, Float64 dist, ILine2d** ppLine);
+   static HRESULT CreateParallelLineThroughPoint(ILine2d* pLine, IPoint2d* pPoint, ILine2d** ppLine);
+   static HRESULT PointOnLineNearest(ILine2d* pLine, IPoint2d* pPoint, IPoint2d** ppPOLN);
    static HRESULT ShortestDistanceToPoint(ILine2d* pLine, IPoint2d* pPoint, Float64* pDist);
    static HRESULT Magnitude(IPoint2d* pPoint, Float64* pMag);
    static HRESULT Distance(IPoint2d* p1, IPoint2d* p2, Float64* dist);
    static HRESULT Angle(IPoint2d* pStart, IPoint2d* pCenter, IPoint2d* pEnd, Float64* angle);
-   static HRESULT GenerateCircle(IndexType nPoints, IPoint2d* center, Float64 radius, Float64 initAngle, IPoint2dFactory* pPointFactory, IPoint2dCollection** points);
-   static HRESULT LineCircleIntersect(ILine2d *line, ICircle* circle, IPoint2dFactory* pPointFactory, IPoint2d** p1, IPoint2d** p2, short* nIntersect);
-   static HRESULT CircleCircleIntersect(ICircle* circle1, ICircle* circle2, IPoint2dFactory* pPointFactory, IPoint2d** p1, IPoint2d** p2, short* nIntersect);
+   static HRESULT GenerateCircle(IndexType nPoints, IPoint2d* center, Float64 radius, Float64 initAngle, IPoint2dCollection** points);
+   static HRESULT LineCircleIntersect(ILine2d *line, ICircle* circle, IPoint2d** p1, IPoint2d** p2, short* nIntersect);
+   static HRESULT CircleCircleIntersect(ICircle* circle1, ICircle* circle2, IPoint2d** p1, IPoint2d** p2, short* nIntersect);
    static HRESULT PointInTriangle(IPoint2d* p, IPoint2d* pA, IPoint2d* pB, IPoint2d* pC, VARIANT_BOOL* pbResult);
 
    static HRESULT Magnitude(IPoint3d* p,Float64 *pMag);

@@ -166,12 +166,9 @@ STDMETHODIMP CSuperelevation::put_BeginTransition(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_BeginTransition) )
-   {
-      m_BeginTransition.Release();
-      objStation->Clone(&m_BeginTransition);
-      Fire_OnSuperelevationChanged(this);
-   }
+
+   m_BeginTransition.Release();
+   objStation->Clone(&m_BeginTransition);
 
    return S_OK;
 }
@@ -197,12 +194,9 @@ STDMETHODIMP CSuperelevation::put_BeginFullSuper(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_BeginFullSuper) )
-   {
-      m_BeginFullSuper.Release();
-      objStation->Clone(&m_BeginFullSuper);
-      Fire_OnSuperelevationChanged(this);
-   }
+
+   m_BeginFullSuper.Release();
+   objStation->Clone(&m_BeginFullSuper);
 
    return S_OK;
 }
@@ -228,12 +222,9 @@ STDMETHODIMP CSuperelevation::put_EndFullSuper(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_EndFullSuper) )
-   {
-      m_EndFullSuper.Release();
-      objStation->Clone(&m_EndFullSuper);
-      Fire_OnSuperelevationChanged(this);
-   }
+
+   m_EndFullSuper.Release();
+   objStation->Clone(&m_EndFullSuper);
 
    return S_OK;
 }
@@ -259,12 +250,9 @@ STDMETHODIMP CSuperelevation::put_EndTransition(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_EndTransition) )
-   {
-      m_EndTransition.Release();
-      objStation->Clone(&m_EndTransition);
-      Fire_OnSuperelevationChanged(this);
-   }
+
+   m_EndTransition.Release();
+   objStation->Clone(&m_EndTransition);
 
    return S_OK;
 }
@@ -276,11 +264,7 @@ STDMETHODIMP CSuperelevation::get_EndTransition(IStation** station)
 
 STDMETHODIMP CSuperelevation::put_Rate(Float64 value)
 {
-   if (!IsEqual(m_Rate, value))
-   {
-      m_Rate = value;
-      Fire_OnSuperelevationChanged(this);
-   }
+   m_Rate = value;
    return S_OK;
 }
 
@@ -297,13 +281,7 @@ STDMETHODIMP CSuperelevation::put_PivotPoint(IndexType pntIdx)
    if ( pntIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
-   if (m_PivotPoint != pntIdx)
-   {
-      
-      m_PivotPoint = pntIdx;
-      Fire_OnSuperelevationChanged(this);
-   }
-
+   m_PivotPoint = pntIdx;
    return S_OK;
 }
 
@@ -317,11 +295,7 @@ STDMETHODIMP CSuperelevation::get_PivotPoint(IndexType* pntIdx)
 
 STDMETHODIMP CSuperelevation::put_BeginTransitionType(SuperTransitionType type)
 {
-   if ( m_BeginTransitionType != type )
-   { 
-      m_BeginTransitionType = type;
-      Fire_OnSuperelevationChanged(this);
-   }
+   m_BeginTransitionType = type;
    return S_OK;
 }
 
@@ -337,12 +311,8 @@ STDMETHODIMP CSuperelevation::SetBeginTransitionParameters(Float64 L1,Float64 L2
    if ( L1 < 0 || L2 < 0 )
       return E_INVALIDARG;
 
-   if ( !IsEqual(L1,m_BeginTransitionLength[0]) || !IsEqual(L2,m_BeginTransitionLength[1]) )
-   {
-      m_BeginTransitionLength[0] = L1;
-      m_BeginTransitionLength[1] = L2;
-      Fire_OnSuperelevationChanged(this);
-   }
+   m_BeginTransitionLength[0] = L1;
+   m_BeginTransitionLength[1] = L2;
 
    return S_OK;
 }
@@ -358,11 +328,7 @@ STDMETHODIMP CSuperelevation::GetBeginTransitionParameters(Float64* L1,Float64* 
 
 STDMETHODIMP CSuperelevation::put_EndTransitionType(SuperTransitionType type)
 {
-   if ( m_EndTransitionType != type )
-   { 
-      m_EndTransitionType = type;
-      Fire_OnSuperelevationChanged(this);
-   }
+   m_EndTransitionType = type;
    return S_OK;
 }
 
@@ -378,12 +344,8 @@ STDMETHODIMP CSuperelevation::SetEndTransitionParameters(Float64 L1,Float64 L2)
    if ( L1 < 0 || L2 < 0 )
       return E_INVALIDARG;
 
-   if ( !IsEqual(L1,m_EndTransitionLength[0]) || !IsEqual(L2,m_EndTransitionLength[1]) )
-   {
-      m_EndTransitionLength[0] = L1;
-      m_EndTransitionLength[1] = L2;
-      Fire_OnSuperelevationChanged(this);
-   }
+   m_EndTransitionLength[0] = L1;
+   m_EndTransitionLength[1] = L2;
 
    return S_OK;
 }

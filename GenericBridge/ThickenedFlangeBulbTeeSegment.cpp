@@ -83,7 +83,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
 
    HRESULT hr;
    CComPtr<IShape> primaryShape;
-   hr = get_PrimaryShape(Xs,sectionBias,coordinateSystem,&primaryShape);
+   hr = get_GirderShape(Xs,sectionBias,coordinateSystem,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -186,15 +186,15 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CComPtr<IShape> girderShape;
-   get_GirderShape(Xs, coordinateSystem, &girderShape);
+   get_BeamShape(Xs, coordinateSystem, &girderShape);
 
    CComPtr<IShape> shape;
    if (coordinateSystem == cstGirder)
    {
-      get_GirderShape(Xs, cstBridge, &shape);
+      get_BeamShape(Xs, cstBridge, &shape);
    }
    else
    {
@@ -250,7 +250,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetVolumeAndSurfaceArea(Float64* pV
          {
             Float64 X = 0;
             CComPtr<IShape> shape;
-            get_PrimaryShape(X, sbRight, cstGirder, &shape); // don't use the shape in m_Shapes. There is to flange thickening so we have to
+            get_GirderShape(X, sbRight, cstGirder, &shape); // don't use the shape in m_Shapes. There is to flange thickening so we have to
                                                               // get the primary shape so the effect of TFT is included
             Float64 prev_perimeter;
             shape->get_Perimeter(&prev_perimeter);
@@ -272,7 +272,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetVolumeAndSurfaceArea(Float64* pV
                X += dx;
 
                shape.Release();
-               get_PrimaryShape(X, sbLeft, cstGirder, &shape);
+               get_GirderShape(X, sbLeft, cstGirder, &shape);
 
                Float64 perimeter;
                shape->get_Perimeter(&perimeter);
@@ -535,7 +535,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_BackgroundMaterial(IndexType in
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_BeamShape(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -720,7 +720,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_JointMaterial(IMaterial** mater
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_JointShapes(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint)
 {
    CComPtr<IShape> primaryShape;
-   get_PrimaryShape(Xs,sbRight, coordinateSystem,&primaryShape);
+   get_GirderShape(Xs,sbRight, coordinateSystem,&primaryShape);
    CComQIPtr<IJointedSection> section(primaryShape);
    ATLASSERT(section);
    return section->GetJointShapes(ppLeftJoint, ppRightJoint);
@@ -902,7 +902,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
       CComQIPtr<IThickenedFlangeSegment> segment(leftSegment);
 
       CComPtr<IShape> leftGirderShape;
-      segment->get_GirderShape(distAlongLeftGirderLine,cstBridge, &leftGirderShape);
+      segment->get_BeamShape(distAlongLeftGirderLine,cstBridge, &leftGirderShape);
 
       CComQIPtr<IFlangedDeckedSection> leftSection(leftGirderShape);
 
@@ -1025,7 +1025,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
       CComQIPtr<IThickenedFlangeSegment> segment(rightSegment);
 
       CComPtr<IShape> rightGirderShape;
-      segment->get_GirderShape(distAlongRightGirderLine, cstBridge, &rightGirderShape);
+      segment->get_BeamShape(distAlongRightGirderLine, cstBridge, &rightGirderShape);
 
       CComQIPtr<IFlangedDeckedSection> rightSection(rightGirderShape);
 

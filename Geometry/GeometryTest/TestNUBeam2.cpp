@@ -37,8 +37,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define TEST_POINT(_point_,_x_,_y_) _point_[i]->get_X(&x); _point_[i++]->get_Y(&y); TRY_TEST(IsEqual(x,_x_),true); TRY_TEST(IsEqual(y,_y_),true);
-
 void CTestNUBeam::TestIShape()
 {
    CComPtr<IShape> shape;
@@ -94,14 +92,14 @@ void CTestNUBeam::TestIShape()
    props->get_Ixy(&ixy);
    cg.Release();
    props->get_Centroid(&cg);
-   TRY_TEST( IsEqual(area,643591.88418), true );
-   TRY_TEST( IsEqual(ixx,514253978920.25439), true );
-   TRY_TEST( IsEqual(iyy,25969895815.002979), true );
+   TRY_TEST( IsEqual(area, 643591.88418736495), true );
+   TRY_TEST( IsEqual(ixx, 514253978920.25220), true );
+   TRY_TEST( IsEqual(iyy, 25969895815.002991), true );
    TRY_TEST( IsEqual(ixy,0.0,0.0005), true );
    cg->get_X(&cgx);
    cg->get_Y(&cgy);
    TRY_TEST( IsEqual(cgx,0.0), true );
-   TRY_TEST( IsEqual(cgy,1093.14591620772), true );
+   TRY_TEST( IsEqual(cgy, 1093.1459162077181), true );
    CoordinateSystemType cst;
    props->get_CoordinateSystem(&cst);
    TRY_TEST( cst, csCentroidal );
@@ -121,7 +119,7 @@ void CTestNUBeam::TestIShape()
    //
    TRY_TEST( shape->get_Perimeter(nullptr), E_POINTER );
    TRY_TEST( shape->get_Perimeter(&val), S_OK );
-   TRY_TEST( IsEqual(val,8308.7371100129), true );
+   TRY_TEST( IsEqual(val, 8308.7371100128730), true );
 
    //
    // FurthestDistance
@@ -180,7 +178,7 @@ void CTestNUBeam::TestIShape2()
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
-   const CollectionIndexType nPoints = 172; // number of expected points
+   const CollectionIndexType nPoints = 174; // number of expected points
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
    TRY_TEST( cPoints, nPoints );
@@ -189,12 +187,13 @@ void CTestNUBeam::TestIShape2()
    coll->get__Enum(&Enum);
    CComPtr<IPoint2d> points[nPoints];
    ULONG fetched;
-   Enum->Next(172,&points[0],&fetched);
+   Enum->Next(174,&points[0],&fetched);
    TRY_TEST( fetched, nPoints );
 
    Float64 x,y;
    int i = 0;
 
+   TEST_POINT(points, 0., 0.);
    TEST_POINT(points,-487.5, 0.);
    TEST_POINT(points,-487.5, 99.1684601);
    TEST_POINT(points,-487.4033721, 102.27546);
@@ -281,6 +280,7 @@ void CTestNUBeam::TestIShape2()
    TEST_POINT(points,-612.3618154, 2377.274128);
    TEST_POINT(points,-612.5, 2380.988877);
    TEST_POINT(points,-612.5, 2400.);
+   TEST_POINT(points, 0.0, 2400.);
    TEST_POINT(points,612.5, 2400.);
    TEST_POINT(points,612.5, 2380.988877);
    TEST_POINT(points,612.3618154, 2377.274128);
@@ -378,7 +378,7 @@ void CTestNUBeam::TestIShape2()
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<INUBeam> beamClone(clone);
-   TRY_TEST( beamClone != 0, true );
+   TRY_TEST( beamClone != nullptr, true );
 
    Float64 val;
 

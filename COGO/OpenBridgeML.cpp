@@ -158,9 +158,9 @@ BOOL CreateAlignment(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,Ope
 
          CComPtr<ICompoundCurve> hc;
          hc.CoCreateInstance(CLSID_CompoundCurve);
-         hc->putref_PBT(pntPBT);
-         hc->putref_PI(pntPI);
-         hc->putref_PFT(pntPFT);
+         hc->put_PBT(pntPBT);
+         hc->put_PI(pntPI);
+         hc->put_PFT(pntPFT);
          hc->put_Radius(radius);
 
          if ( poi.EntrySpiralLength().present() )
@@ -260,10 +260,10 @@ BOOL GetProfile(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBrid
 
          // We have to set the bvc and evc as the PBG and PFG points and 
          // input the entry and exitfor this input method.
-         vc->putref_PBG(bvc);
+         vc->put_PBG(bvc);
          vc->put_EntryGrade(prevGrade);
 
-         vc->putref_PFG(evc);
+         vc->put_PFG(evc);
          vc->put_ExitGrade(thisGrade);
 
          pProfile->AddEx(vc);

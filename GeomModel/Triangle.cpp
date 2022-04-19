@@ -21,16 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\Triangle.h>
-#include <GeomModel\Polygon.h>
-#include <GeomModel\Properties.h>
-#include <GeomModel\ShapeUtils.h>
-#include <EngTools\MohrCircle.h>
-#include <math.h>
-#include <mathEx.h>
-#include <iostream>
-#include <memory>
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/Triangle.h>
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,357 +31,191 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   gmTriangle
-****************************************************************************/
+using namespace WBFL::Geometry;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
-gmTriangle::gmTriangle()
+Triangle::Triangle() :ShapeOnPolygonImpl()
 {
-   Init();
 }
 
-gmTriangle::gmTriangle(const gpPoint2d& hookPnt,Float64 h, Float64 w, Float64 c,
-                       Float64 rotAngle)
+Triangle::Triangle(std::shared_ptr<Point2d>& hookPnt, Float64 h, Float64 w, Float64 c, Float64 rotAngle) :
+   ShapeOnPolygonImpl(hookPnt), m_Height(h), m_Width(w), m_Offset(c), m_Rotation(rotAngle)
 {
    PRECONDITION(w>=0);
    PRECONDITION(h>=0);
-   Init();
-   m_HookPoint = hookPnt;
-   m_Height    = h;
-   m_Width     = w;
-   m_Offset    = c;
-   m_Rotation  = rotAngle;
 }
 
+Triangle::Triangle(const Point2d& hookPnt, Float64 h, Float64 w, Float64 c, Float64 rotAngle) :
+   ShapeOnPolygonImpl(hookPnt), m_Height(h), m_Width(w), m_Offset(c), m_Rotation(rotAngle)
+{
+   PRECONDITION(w >= 0);
+   PRECONDITION(h >= 0);
+}
 
-gmTriangle::~gmTriangle()
+Triangle::Triangle(const Triangle& other) : ShapeOnPolygonImpl(other)
+{
+   Copy(other);
+}
+
+Triangle::~Triangle()
 {
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-gpPoint2d gmTriangle::SetHookPoint(const gpPoint2d& hookPnt)
+Triangle& Triangle::operator=(const Triangle& other)
 {
-   gpPoint2d tmp = m_HookPoint;
-   m_HookPoint = hookPnt;
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-   return tmp;
+   if (this != &other)
+   {
+      __super::operator=(other);
+      Copy(other);
+   }
+   return *this;
 }
 
-gpPoint2d gmTriangle::GetHookPoint() const
+void Triangle::SetWidth(Float64 w)
 {
-   return m_HookPoint;
-}
-
-Float64 gmTriangle::SetWidth(Float64 w)
-{
-   PRECONDITION(w>=0);
-   Float64 tmp = m_Width;
    m_Width = w;
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-   return tmp;
+   SetDirtyFlag();
 }
 
-Float64 gmTriangle::GetWidth() const
+Float64 Triangle::GetWidth() const
 {
    return m_Width;
 }
 
-Float64 gmTriangle::SetHeight(Float64 h)
+void Triangle::SetHeight(Float64 h)
 {
-   PRECONDITION(h>=0);
-   Float64 tmp = m_Height;
    m_Height = h;
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-   return tmp;
+   SetDirtyFlag();
 }
 
-Float64 gmTriangle::GetHeight() const
+Float64 Triangle::GetHeight() const
 {
    return m_Height;
 }
 
-Float64 gmTriangle::SetOffset(Float64 c)
+void Triangle::SetOffset(Float64 c)
 {
-   Float64 tmp = m_Offset;
    m_Offset = c;
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-   return tmp;
+   SetDirtyFlag();
 }
 
-Float64 gmTriangle::GetOffset() const
+Float64 Triangle::GetOffset() const
 {
    return m_Offset;
 }
 
-Float64 gmTriangle::SetRotationAngle(Float64 rotAngle)
+void Triangle::SetRotationAngle(Float64 rotAngle)
 {
-   Float64 tmp = m_Rotation;
    m_Rotation = rotAngle;
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-   return tmp;
+   SetDirtyFlag();
 }
 
-Float64 gmTriangle::GetRotationAngle() const
+Float64 Triangle::GetRotationAngle() const
 {
    return m_Rotation;
 }
 
-
-void gmTriangle::GetProperties(gmProperties* pProperties) const
+void Triangle::DoOffset(const Size2d& delta)
 {
-   // Simple triangles are easy to get properties of, but this is not necessarily
-   // a simple triangle (consider m_Offset<0). 
-   // Consult gpPolygon2d for the right answer.
-
-   std::unique_ptr<gpPolygon2d> pgp(CreategpPolygon());
-
-   Float64 area, ixx, iyy, ixy;
-   gpPoint2d  cg;
-   pgp->GetProperties(&area, &ixx, &iyy, &ixy, &cg);
-
-   // deal with signs and hollowness
-   if( (area>0 && !IsSolid()) || (area<0 && IsSolid()) )
-   {
-      area *= -1;
-      ixx  *= -1;
-      iyy  *= -1;
-      ixy  *= -1;
-   }
-   // bounding box in centroidal coords
-   gpRect2d bb = pgp->GetBoundingBox();
-   bb.Offset(-cg.X(), -cg.Y());
-
-   Float64 perimeter;
-   perimeter = pgp->Perimeter();
-
-   *pProperties =  gmProperties(area , cg, ixx, iyy, ixy, 
-                                bb.Top(),bb.Bottom(),bb.Left(),bb.Right(),
-                                perimeter);
-
+   GetHookPoint()->Offset(delta);
+   SetDirtyFlag();
 }
 
-gpRect2d gmTriangle::GetBoundingBox() const
+void Triangle::DoRotate(const Point2d& center, Float64 angle)
 {
-   // again, simple triangles are easy, but...
-   std::unique_ptr<gpPolygon2d> pgp(CreategpPolygon());
-
-   return pgp->GetBoundingBox();
+   m_Rotation += angle;
+   GetHookPoint()->Rotate(center, angle);
+   SetDirtyFlag();
 }
 
-gmIShape* gmTriangle::CreateClone(bool bRegisterListeners) const
+std::unique_ptr<Shape> Triangle::CreateClone() const
 {
-   std::unique_ptr<gmTriangle> ph(new gmTriangle( *this ));// no memory leaks if DoRegister() throws
-
-   // copy listeners if requested.
-   if (bRegisterListeners)
-      ph->DoRegisterListeners(*this);
-
-   return ph.release();
+   return std::make_unique<Triangle>(*this);
 }
 
-gmIShape* gmTriangle::CreateClippedShape(const gpLine2d& line, 
-                                    gpLine2d::Side side) const
-{
-   // make shape into a gmpolygon and use its clip
-   std::unique_ptr<gmPolygon> poly(CreatePolygon());
-   return poly->CreateClippedShape(line,side);
-}
-
-gmIShape* gmTriangle::CreateClippedShape(const gpRect2d& r,
-                                     gmShapeImp::ClipRegion region
-                                     ) const
-{
-   // make shape into a gmpolygon and use its clip
-   std::unique_ptr<gmPolygon> poly(CreatePolygon());
-   return poly->CreateClippedShape(r, region);
-}
-
-Float64 gmTriangle::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const
-{
-   // make shape into a gmpolygon and use its clip
-   std::unique_ptr<gmPolygon> poly(CreatePolygon());
-   return poly->GetFurthestDistance(line,side);
-}
-
-void gmTriangle::Draw(HDC hDC, const grlibPointMapper& mapper) const
-{
-   std::unique_ptr<gmPolygon> poly(CreatePolygon());
-   poly->Draw(hDC,mapper);
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool gmTriangle::AssertValid() const
+bool Triangle::AssertValid() const
 {
-   if (m_Width<0) return false;
-   if (m_Height<0) return false;
-   return gmShapeImp::AssertValid();
+   return __super::AssertValid();
 }
 
-void gmTriangle::Dump(dbgDumpContext& os) const
+void Triangle::Dump(dbgDumpContext& os) const
 {
-   os << _T("*** Dump for gmTriangle ***")<<endl;
-   gmShapeImp::Dump( os );
+   os << _T("*** Dump for Triangle ***")<<endl;
+   __super::Dump(os);
    os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<<endl;
-   os << _T("  Hook Point      = (")<<m_HookPoint.X()<<_T(", ")<<m_HookPoint.Y()<<_T(")")<<endl;
+   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<<endl;
    os << _T("  Offset          =  ")<<m_Offset<<endl;
    os << _T("  Rotation        =  ")<<m_Rotation<<endl;
 }
 #endif // _DEBUG
 
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmTriangle::gmTriangle(const gmTriangle& rOther) :
-gmShapeImp(rOther)
+void Triangle::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 {
-   MakeCopy(rOther);
-}
-
-gmTriangle& gmTriangle::operator= (const gmTriangle& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void gmTriangle::DoTranslate(const gpSize2d& delta)
-{
-   m_HookPoint.Offset(delta);
-}
-
-void gmTriangle::DoRotate(const gpPoint2d& center, Float64 angle)
-{
-   m_Rotation += angle;
-   m_HookPoint.Rotate(center, angle);
-}
-
-
-void gmTriangle::MakeCopy(const gmTriangle& rOther)
-{
-   m_Height    = rOther.m_Height;
-   m_Width     = rOther.m_Width;
-   m_Offset    = rOther.m_Offset;
-   m_HookPoint = rOther.m_HookPoint;
-   m_Rotation  = rOther.m_Rotation;
-}
-
-void gmTriangle::MakeAssignment(const gmTriangle& rOther)
-{
-   gmShapeImp::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-gpPolygon2d* gmTriangle::CreategpPolygon() const
-{
-   if (m_Width<=0 || m_Height<=0) 
-      return nullptr;
-
-   std::auto_ptr<gpPolygon2d> ph(new gpPolygon2d());
-
    // create polygon geometry
-   gpPoint2d p1(0,0);
-   gpPoint2d p2(m_Width,0);
-   gpPoint2d p3(m_Offset,m_Height);
+   Point2d p1(0,0);
+   Point2d p2(m_Width,0);
+   Point2d p3(m_Offset,m_Height);
 
-   ph->AddPoint(p1);
-   ph->AddPoint(p2);
-   ph->AddPoint(p3);
+   polygon->AddPoint(p1);
+   polygon->AddPoint(p2);
+   polygon->AddPoint(p3);
 
    // move to hookpoint coordinates
-   ph->Offset(m_HookPoint.X(),m_HookPoint.Y());
+   polygon->Offset(*GetHookPoint());
 
    // rotate if needed
-   if (m_Rotation!=0.)
-      ph->Rotate(m_HookPoint, m_Rotation);
-
-   return ph.release();
+   if (m_Rotation != 0.)
+      polygon->Rotate(*GetHookPoint(), m_Rotation);
 }
 
-gmPolygon* gmTriangle::CreatePolygon() const
+void Triangle::Copy(const Triangle& other)
 {
-   std::auto_ptr<gpPolygon2d> pgp(CreategpPolygon());
-
-   // make an empty polygon with same traits as this.
-   std::auto_ptr<gmPolygon> ph(new gmPolygon(*pgp));
-   gmShapeUtils::CopyTraits(*this, ph.get());
-
-   return ph.release();
+   m_Height = other.m_Height;
+   m_Width = other.m_Width;
+   m_Offset = other.m_Offset;
+   m_Rotation = other.m_Rotation;
 }
-
-void gmTriangle::Init()
-{
-   m_Height    = 0.;
-   m_Width     = 0.;
-   m_Rotation  = 0.;
-   m_Offset    = 0.;
-   m_HookPoint = gpPoint2d(0,0);
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 
 #if defined _UNITTEST
-
-bool gmTriangle::TestMe(dbgLog& rlog)
+#include <GeomModel/UnitTest.h>
+bool Triangle::TestMe(dbgLog& rlog)
 {
-   TESTME_PROLOGUE("gmTriangle");
+   TESTME_PROLOGUE("Triangle");
 
-   gmTriangle rt(gpPoint2d(1,2),4,2,1);
+   Triangle rt(Point2d(1,2),4,2,1);
    TRY_TESTME( IsEqual(2., rt.GetWidth())) ;
    TRY_TESTME( IsEqual(4., rt.GetHeight())) ;
    TRY_TESTME( IsEqual(1., rt.GetOffset())) ;
-   TRY_TESTME( gpPoint2d(1,2) == rt.GetHookPoint()); 
-   gmProperties aprops;
-   rt.GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), 4.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixx(),   3.55, .1)) ;
-   TRY_TESTME ( IsEqual(aprops.Iyy(),   0.67, .1)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixy(),   0.00, .001)) ;
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(1,2,3,6)) ;
+   TRY_TESTME( Point2d(1,2) == *rt.GetHookPoint()); 
+   ShapeProperties aprops = rt.GetProperties();
+   TRY_TESTME ( IsEqual(aprops.GetArea(), 4.)) ;
+   TRY_TESTME ( IsEqual(aprops.GetIxx(),   3.55, .1)) ;
+   TRY_TESTME ( IsEqual(aprops.GetIyy(),   0.67, .1)) ;
+   TRY_TESTME ( IsEqual(aprops.GetIxy(),   0.00, .001)) ;
+   TRY_TESTME (rt.GetBoundingBox() == Rect2d(1,2,3,6)) ;
 
-   rt.SetHookPoint(gpPoint2d(0,0));
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(0,0,2,4)) ;
-   rt.Move(gmIShape::CenterCenter, gpPoint2d(0,0));
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(-1,-2,1,2)) ;
+   rt.SetHookPoint(Point2d(0,0));
+   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
+   rt.Move(Shape::LocatorPoint::CenterCenter, Point2d(0,0));
+   TRY_TESTME (rt.GetBoundingBox() == Rect2d(-1,-2,1,2)) ;
 
    Float64 ang = atan(.25);
    Float64 cosa = cos(ang);
-   rt.SetHookPoint(gpPoint2d(0,0));
-   rt.Rotate(gpPoint2d(0,0),ang);
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(0,0,2*cosa,4/cosa)) ;
+   rt.SetHookPoint(Point2d(0,0));
+   rt.Rotate(Point2d(0,0),ang);
+   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2*cosa,4/cosa)) ;
    rt.SetRotationAngle(0);
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(0,0,2,4)) ;
+   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
 
 #if defined _DEBUG
    rt.Dump(rlog.GetDumpCtx());
 #endif
 
-   TESTME_EPILOG("gmTriangle");
+
+   // Test hook point behavior
+   TRY_TESTME(UnitTest::TestHookPoint(rt) == true);
+
+   TESTME_EPILOG("Triangle");
 }
 #endif // _UNITTEST
 

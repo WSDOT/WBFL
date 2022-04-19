@@ -66,11 +66,8 @@ BEGIN_COM_MAP(CVoidedSlabSection2)
 END_COM_MAP()
 
 private:
-   CComPtr<ICompositeShape> m_CompositeShape; // beam is in position 0, slab is in position 1
    CComPtr<IVoidedSlab2> m_Beam;
-   CComPtr<IShape> m_Shape;
-   CComPtr<IXYPosition> m_Position;
-   Float64 m_Rotation;
+	Float64 m_Rotation{ 0.0 };
 
    bool ValidateWebIndex(WebIndexType idx);
    void GetWebs(Float64* pIntWeb,Float64* pExtWeb);
@@ -86,6 +83,9 @@ public:
 
 // IGirderSection
 public:
+   STDMETHOD(get_GirderShape)(/*[out, retval]*/IShape** ppShape) override;
+   STDMETHOD(get_VoidCount)(/*[out, retval]*/IndexType* pnVoids) override;
+   STDMETHOD(get_VoidShape)(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape) override;
    STDMETHOD(get_WorkPoint)(/*[out, retval]*/IPoint2d** ppWorkPoint) override;
    STDMETHOD(get_WebCount)(/*[out,retval]*/WebIndexType* nWebs) override;
 	STDMETHOD(get_WebLocation)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* location) override;
@@ -139,7 +139,6 @@ public:
 
 // ICompositeShape
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
    STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
    STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;

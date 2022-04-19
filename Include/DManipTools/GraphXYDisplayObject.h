@@ -29,6 +29,7 @@
 
 interface IPoint2d;
 interface iDataSet2d;
+interface iDisplayObject;
 
 // {12761816-B9BD-4f41-9BFB-8713C252C3DB}
 DEFINE_GUID(IID_iDataPointFactory, 

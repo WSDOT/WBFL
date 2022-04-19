@@ -27,7 +27,6 @@
 #define INCLUDED_COGOTEST_H_
 #pragma once
 
-HRESULT CheckPointType(IPoint2d* point);
 bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptions);
 
 #endif // INCLUDED_COGOTEST_H_

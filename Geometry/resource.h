@@ -75,6 +75,13 @@
 #define IDR_PRECASTBEAM2                147
 #define IDR_NUDECKEDIBEAM               148
 #define IDR_PCIDECKEDIBEAM              149
+#define IDR_ELASTICPROPERTIES           150
+#define IDR_MASSPROPERTIES              151
+#define IDR_COMPOSITESECTIONITEM        152
+#define IDR_COMPOSITESECTION            153
+#define IDR_COMPOSITEBEAM               154
+#define IDR_COMPOSITESECTIONITEMEX      155
+#define IDR_COMPOSITESECTIONEX          156
 
 #define IDS_E_NOTNORMALIZED             512
 #define IDS_E_ZEROMAGNITUDE             513

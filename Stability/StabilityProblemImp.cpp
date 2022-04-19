@@ -171,12 +171,12 @@ void Girder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Fl
 }
 
 // Assigns stress point values to a section. 
-void Girder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR)
+void Girder::SetStressPoints(IndexType sectIdx, const Point& pntTL, const Point& pntTR, const Point& pntBL, const Point& pntBR)
 {
    SetStressPoints(sectIdx, pntTL, pntTR, pntBL, pntBR, pntTL, pntTR, pntBL, pntBR);
 }
 
-void Girder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2)
+void Girder::SetStressPoints(IndexType sectIdx, const Point& pntTL, const Point& pntTR, const Point& pntBL, const Point& pntBR, const Point& pntTL2, const Point& pntTR2, const Point& pntBL2, const Point& pntBR2)
 {
    SectionProperties& props = m_vSectionProperties[sectIdx];
    if (props.m_pStressPoints == nullptr)
@@ -277,13 +277,13 @@ void Girder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* 
    ATLASSERT(false); // should never get here.... is X out of range?
 }
 
-void Girder::GetStressPoints(IndexType sectIdx, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(IndexType sectIdx, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const
 {
    const SectionProperties& props = m_vSectionProperties[sectIdx];
    GetStressPoints(props, section, pTL, pTR, pBL, pBR);
 }
 
-void Girder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(Float64 X, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const
 {
    Float64 Xstart = 0;
    for (const auto& props : m_vSectionProperties)
@@ -291,10 +291,10 @@ void Girder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2
       Float64 Xend = Xstart + props.L;
       if (::InRange(Xstart, X, Xend))
       {
-         gpPoint2d tl1, tr1, bl1, br1;
+         Point tl1, tr1, bl1, br1;
          GetStressPoints(props, Start, &tl1, &tr1, &bl1, &br1);
 
-         gpPoint2d tl2, tr2, bl2, br2;
+         Point tl2, tr2, bl2, br2;
          GetStressPoints(props, End, &tl2, &tr2, &bl2, &br2);
 
          pTL->X() = ::LinInterp(X - Xstart, tl1.X(), tl2.X(), props.L);

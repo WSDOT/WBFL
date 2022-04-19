@@ -21,17 +21,13 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\Section.h>
-#include <GeomModel\IShape.h>
-#include <GeomModel\ElasticProperties.h>
-#include <GeomModel\MassProperties.h>
-
-#include <GeomModel\Polygon.h>
-#include <MathEx.h>
-#include <iostream>
-
-#include <memory>
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/Section.h>
+#include <GeomModel/SectionComponent.h>
+#include <GeomModel/Shape.h>
+#include <GeomModel/ElasticProperties.h>
+#include <GeomModel/MassProperties.h>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,1062 +35,344 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   gmSection
-****************************************************************************/
+using namespace WBFL::Geometry;
 
+template <class T>
+inline bool IsValidIndex(IndexType idx, const T& container)
+{
+   return idx < container.size();
+}
 
 // create elastic props from a component
-gmElasticProperties make_elastic_properties(const gmSectionComponent& rCmp);
-gmMassProperties    make_mass_properties(const gmSectionComponent& rCmp);
+ElasticProperties make_elastic_properties(const SectionComponent& rCmp);
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
 
-//======================== LIFECYCLE  =======================================
-gmSection::gmSection()
-{
-   Init();
-}
-
-gmSection::~gmSection()
+Section::Section()
 {
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-gmSection* gmSection::CreateClone(bool bRegisterListeners) const
+Section::Section(const Section& other)
 {
-   std::unique_ptr<gmSection> ps(std::make_unique<gmSection>());
-
-   // copy member data
-   ps->m_ComponentContainer = m_ComponentContainer;
-   ps->m_DamageCount        = m_DamageCount;
-   ps->m_DamageTypeTally    = m_DamageTypeTally;
-   ps->m_LastKey            = m_LastKey;
-
-   // copy listeners if requested.
-   if (bRegisterListeners)
-      ps->DoRegisterListeners(*this);
-
-   return ps.release();
+   Copy(other);
 }
 
-
-void gmSection::Translate(const gpSize2d& delta)
+Section& Section::operator=(const Section& other)
 {
-   BeginDamage();
-   for (ComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
+   if (this != &other)
    {
-      gmIShape& rs = (*it).second->GetShape();
-      rs.Translate(delta);
+      Copy(other);
    }
-
-   NotifyAllListeners(gmSectionListener::PROPERTIES);
-   EndDamage();
+   return *this;
 }
 
-void gmSection::Rotate(const gpPoint2d& center, Float64 angle)
+Section::~Section()
 {
-   BeginDamage();
-   for (ComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
+}
+
+std::unique_ptr<Section> Section::CreateClone() const
+{
+   return std::make_unique<Section>(*this);
+}
+
+void Section::Offset(Float64 dx, Float64 dy)
+{
+   Offset(Size2d(dx, dy));
+}
+
+void Section::Offset(const Size2d& delta)
+{
+   std::for_each(std::begin(m_Components), std::end(m_Components), [&](auto& component) {component.GetShape().Offset(delta); });
+}
+
+void Section::Move(Shape::LocatorPoint lp, const Point2d& to)
+{
+   Offset(to - GetLocatorPoint(lp));
+}
+
+void Section::Move(const Point2d& from, const Point2d& to)
+{
+   Offset(to - from);
+}
+
+void Section::Rotate(Float64 cx, Float64 cy, Float64 angle)
+{
+   Rotate(Point2d(cx, cy), angle);
+}
+
+void Section::Rotate(const Point2d& center, Float64 angle)
+{
+   std::for_each(std::begin(m_Components), std::end(m_Components), [&](auto& component) {component.GetShape().Rotate(center, angle); });
+}
+
+void Section::SetHookPoint(std::shared_ptr<Point2d>& hookPnt)
+{
+   if (!m_Components.empty()) m_Components.front().GetShape().SetHookPoint(hookPnt);
+}
+
+void Section::SetHookPoint(const Point2d& hookPnt)
+{
+   if (!m_Components.empty()) m_Components.front().GetShape().SetHookPoint(hookPnt);
+}
+
+std::shared_ptr<Point2d>& Section::GetHookPoint()
+{
+   return m_Components.empty() ? m_DummyHookPoint : m_Components.front().GetShape().GetHookPoint();
+}
+
+const std::shared_ptr<Point2d>& Section::GetHookPoint() const
+{
+   return m_Components.empty() ? m_DummyHookPoint : m_Components.front().GetShape().GetHookPoint();
+}
+
+Point2d Section::GetLocatorPoint(Shape::LocatorPoint lp) const
+{
+   return m_Components.empty() ? Point2d(0, 0) : m_Components.front().GetShape().GetLocatorPoint(lp);
+}
+
+void Section::SetLocatorPoint(Shape::LocatorPoint lp, Point2d& position)
+{
+   Move(lp, position);
+}
+
+void Section::AddComponent(const Shape& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType)
+{
+   AddComponent(shape.CreateClone(), fgModE, fgDensity, bgModE, bgDensity, componentType);
+}
+
+void Section::AddComponent(std::unique_ptr<Shape>&& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType)
+{
+   m_Components.emplace_back(std::move(shape), fgModE, fgDensity, bgModE, bgDensity, componentType);
+}
+
+const SectionComponent& Section::GetComponent(IndexType idx) const
+{
+   if(IsValidIndex(idx,m_Components))
    {
-      gmIShape& rs = (*it).second->GetShape();
-      rs.Rotate(center, angle);
-   }
-
-   NotifyAllListeners(gmSectionListener::PROPERTIES);
-   EndDamage();
-}
-
-Uint32 gmSection::AddComponent(const gmIShape& rShape,
-                    Float64 modE, Float64 density,
-                    bool bIsStructural,
-                    bool bRegisterListeners)
-{
-   std::unique_ptr<gmIShape> psh(rShape.CreateClone(bRegisterListeners));
-   ComponentPtr psc(new gmSectionComponent(psh.get(), modE, 
-                                             density, bIsStructural));
-   psh.release();
-   psc->SetParent(this);
-   m_LastKey++;
-
-   m_ComponentContainer.insert(ComponentEntry(m_LastKey, psc));
-
-   NotifyAllListeners(gmSectionListener::PROPERTIES);
-
-   return m_LastKey;
-}
-
-const gmSectionComponent* gmSection::GetComponent(Uint32 key) const
-{
-   ConstComponentIterator const_iter = m_ComponentContainer.find(key);
-
-   if ( const_iter != m_ComponentContainer.end() )
-      return (*const_iter).second.get();
-   else
-      return nullptr;
-}
-
-gmSectionComponent* gmSection::GetComponent(Uint32 key)
-{
-   ComponentIterator iter = m_ComponentContainer.find(key);
-
-   if ( iter != m_ComponentContainer.end() )
-      return (*iter).second.get();
-   else
-      return nullptr;
-}
-
-bool gmSection::RemoveComponent(Uint32 key)
-{
-   ComponentIterator iter = m_ComponentContainer.find(key);
-   if ( iter != m_ComponentContainer.end() )
-   {
-      m_ComponentContainer.erase(iter);
-
-      NotifyAllListeners(gmSectionListener::PROPERTIES);
-
-      return true;
+      return m_Components[idx];
    }
    else
-      return false;
-}
-
-void gmSection::RemoveAllComponents()
-{
-   m_ComponentContainer.clear();
-   NotifyAllListeners(gmSectionListener::PROPERTIES);
-}
-
-void gmSection::GetElasticProperties(gmElasticProperties* pProperties) const
-{
-   gmElasticProperties sum;
-
-   // add up properties for all members of the composite
-   // ignore non-structural members.
-   for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
    {
-      const gmSectionComponent* pCmp = (*it).second.get();
-      if ( pCmp->IsStructural() )
+      throw std::invalid_argument("Section::GetComponent - invalid index");
+   }
+}
+
+SectionComponent& Section::GetComponent(IndexType idx)
+{
+   if (IsValidIndex(idx, m_Components))
+   {
+      return m_Components[idx];
+   }
+   else
+   {
+      throw std::invalid_argument("Section::GetComponent - invalid index");
+   }
+}
+
+void Section::RemoveComponent(IndexType idx)
+{
+   if (IsValidIndex(idx, m_Components))
+   {
+      m_Components.erase(m_Components.begin() + idx);
+   }
+   else
+   {
+      throw std::invalid_argument("Section::GetComponent - invalid index");
+   }
+}
+
+void Section::Clear()
+{
+   m_Components.clear();
+}
+
+ElasticProperties Section::GetElasticProperties() const
+{
+   ElasticProperties props;
+   std::for_each(std::cbegin(m_Components), std::cend(m_Components), 
+      [&](const auto& component)
       {
-         gmElasticProperties tmp = make_elastic_properties(*pCmp);
-         sum += tmp;
+         if (component.GetComponentType() == SectionComponent::ComponentType::Structural)
+         {
+            props += make_elastic_properties(component);
+         }
       }
-   }
-
-   *pProperties = sum;
+   );
+   return props;
 }
 
-void gmSection::GetMassProperties(gmMassProperties* pProperties) const
+MassProperties Section::GetMassProperties() const
 {
    Float64 sum = 0;
-   // add up properties for all members of the composite
-   for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      const gmIShape& rs= (*(*it).second).GetShape();
-      Float64 dens      = (*(*it).second).GetDensity();
-      gmProperties gp;
-      rs.GetProperties(&gp);
-
-      sum += dens*gp.Area();
-   }
-
-   pProperties->SetMassPerLength(sum);
+   std::for_each(std::cbegin(m_Components), std::cend(m_Components), 
+      [&](const auto& component)
+      {
+         sum += (component.GetForegroundDensity() - component.GetBackgroundDensity()) * component.GetShape().GetProperties().GetArea(); 
+      }
+   );
+   return MassProperties(sum);
 }
 
-gpRect2d gmSection::GetBoundingBox(bool bExcludeNonstructuralComponents) const
+Rect2d Section::GetBoundingBox(bool bExcludeNonstructuralComponents) const
 {
-   gpRect2d sum;
+   Rect2d boundingBox;
+   if (m_Components.size() == 0) return boundingBox;
 
-   bool first = true;
-   for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
+   auto begin = std::cbegin(m_Components);
+   auto iter = begin;
+   auto end = std::cend(m_Components);
+   for (; iter != end; iter++)
    {
-      const gmIShape& rs= (*(*it).second).GetShape();
-      if (first)
-      {
-         sum = rs.GetBoundingBox();
-         first = false;
-      }
+      const SectionComponent& component(*iter);
+      if (bExcludeNonstructuralComponents && component.GetComponentType() == SectionComponent::ComponentType::Nonstructural)
+         continue;
+
+      const Shape& shape = component.GetShape();
+      if (iter == begin)
+         boundingBox = shape.GetBoundingBox();
       else
+         boundingBox.Union(shape.GetBoundingBox());
+   }
+   return boundingBox;
+}
+
+std::unique_ptr<Section> Section::CreateClippedSection(const Line2d& line,Line2d::Side side) const
+{
+   std::unique_ptr<Section> clipped(std::make_unique<Section>());
+   std::for_each(std::cbegin(m_Components), std::cend(m_Components), 
+      [&](const auto& component)
       {
-         sum.Union(rs.GetBoundingBox());
+         auto clipped_shape = component.GetShape().CreateClippedShape(line, side);
+         if (clipped_shape) clipped->AddComponent(std::move(clipped_shape), component.GetForegroundModE(), component.GetForegroundDensity(), component.GetBackgroundModE(), component.GetBackgroundDensity(), component.GetComponentType());
       }
-   }
-   return sum;
+   );
+   return clipped;
 }
 
-gmSection* gmSection::CreateClippedSection(const gpLine2d& line,
-                                  gpLine2d::Side side) const
+std::unique_ptr<Section> Section::CreateClippedSection(const Rect2d& r, Section::ClipRegion region) const
 {
-   std::unique_ptr<gmSection> pcs(std::make_unique<gmSection>());
-
-   for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      const gmSectionComponent& sc = (*(*it).second);
-      const gmIShape& rs= sc.GetShape();
-      std::unique_ptr<gmIShape> pps (rs.CreateClippedShape(line, side));
-      if (pps.get() != nullptr)
+   std::unique_ptr<Section> clipped(std::make_unique<Section>());
+   std::for_each(std::cbegin(m_Components), std::cend(m_Components),
+      [&](const auto& component)
       {
-         pcs->AddComponent(*pps, sc.GetModE(), sc.GetDensity(), sc.IsStructural());
+         Shape::ClipRegion shape_region = (region == ClipRegion::In ? Shape::ClipRegion::In : Shape::ClipRegion::Out);
+         auto clipped_shape = component.GetShape().CreateClippedShape(r, shape_region);
+         if (clipped_shape) clipped->AddComponent(std::move(clipped_shape), component.GetForegroundModE(), component.GetForegroundDensity(), component.GetBackgroundModE(), component.GetBackgroundDensity(), component.GetComponentType());
       }
-   }
-
-   return pcs.release();
+   );
+   return clipped;
 }
 
-gmSection* gmSection::CreateClippedSection(const gpRect2d& r,
-                                gmSection::ClipRegion& region) const
+void Section::Copy(const Section& other)
 {
-   std::unique_ptr<gmSection> pcs(std::make_unique<gmSection>());
-
-   for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      const gmSectionComponent& sc = (*(*it).second);
-      const gmIShape& rs= sc.GetShape();
-
-      gmIShape::ClipRegion sreg;
-      if (region== In)
-         sreg = gmIShape::In;
-      else
-         sreg = gmIShape::Out;
-
-      std::unique_ptr<gmIShape> pps (rs.CreateClippedShape(r, sreg));
-      if (pps.get() != nullptr)
-      {
-         pcs->AddComponent(*pps, sc.GetModE(), sc.GetDensity(), sc.IsStructural());
-      }
-   }
-
-   return pcs.release();
-}
-
-void gmSection::EnableBorderMode(bool bEnable)
-{
-   for (ComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      gmIShape& rs= (*(*it).second).GetShape();
-      rs.EnableBorderMode(bEnable);
-   }
-}
-
-void gmSection::SetBorderColor(COLORREF color)
-{
-   for (ComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      gmIShape& rs= (*(*it).second).GetShape();
-      rs.SetBorderColor(color);
-   }
-}
-
-void gmSection::EnableFillMode(bool bEnable)
-{
-   for (ComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      gmIShape& rs= (*(*it).second).GetShape();
-      rs.EnableFillMode(bEnable);
-   }
-}
-
-void gmSection::SetFillColor(COLORREF color)
-{
-   for (ComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      gmIShape& rs= (*(*it).second).GetShape();
-      rs.SetFillColor(color);
-   }
-}
-
-void gmSection::Draw(HDC hDC, const grlibPointMapper& mapper) const
-{
-   for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      gmIShape& rs= (*(*it).second).GetShape();
-      rs.Draw(hDC, mapper);
-   }
-}
-
-void gmSection::RegisterListener(gmSectionListener* pListener)
-{
-   ASSERTVALID;
-   DoRegisterListener(pListener);
-}
-
-void gmSection::UnregisterListener(const gmSectionListener* pListener)
-{
-   ASSERTVALID;
-   PRECONDITION(pListener);
-
-   // have to do cast here because erase won't work otherwise
-   if(!m_ListenerList.erase((gmSectionListener*)pListener))
-   {
-      WARN(0,"Listener removal failed - probably unregistered twice");
-   }
-
-   pListener->OnUnregistered(this);
-}
-
-CollectionIndexType gmSection::ListenerCount() const
-{
-   ASSERTVALID;
-   return m_ListenerList.size();
-}
-
-void gmSection::BeginDamage()
-{
-   ASSERTVALID;
-   m_DamageCount++;
-}
-
-void gmSection::EndDamage()
-{
-   ASSERTVALID;
-   if (m_DamageCount!=0)
-   {
-      if (--m_DamageCount == 0)
-      {
-         // damage count is zero - notify listeners as to what has happened during the
-         // damaged period.
-         NotifyAllListeners(m_DamageTypeTally);
-         m_DamageTypeTally = 0;
-      }
-   }
-   else
-   {
-      WARN(0, "Call to EndDamage when damage count is zero");
-   }
-
-   ASSERTVALID;
-}
-
-bool gmSection::IsDamaged() const
-{
-   ASSERTVALID;
-   if (m_DamageCount > 0)
-      return true;
-   else
-      return false;
-}
-
-Int32 gmSection::DamagedCount() const
-{
-   ASSERTVALID;
-   return m_DamageCount;
-}
-
-void gmSection::NotifyAllListeners( Int32 lHint, const gmSectionComponent* pComponent)
-{
-   if (m_DamageCount > 0)
-   {
-      // we're damaged goods - just save the damage hint and wait until
-      // we've been repaired
-      m_DamageTypeTally |= lHint;
-   }
-   else
-   {
-      // we're flying in good shape - let our listeners know what happened
-      ListenerListIterator it;
-      for (it=m_ListenerList.begin(); it!=m_ListenerList.end(); it++)
-      {
-         (*it)->OnUpdate(this, lHint, pComponent);
-      }
-   }
+   m_Components.clear();
+   m_Components.insert(m_Components.begin(), std::cbegin(other.m_Components), std::cend(other.m_Components));
 }
 
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool gmSection::AssertValid() const
+bool Section::AssertValid() const
 {
    return true;
 }
 
-void gmSection::Dump(dbgDumpContext& os) const
+void Section::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gmSection" << endl;
-   os << "  m_DamageCount     = " << m_DamageCount << endl;
-   os << "  m_DamageTypeTally = " << m_DamageTypeTally << endl;
-   os << "  m_LastKey         = " << m_LastKey << endl;
-   os << "  Component Container has "<< m_ComponentContainer.size()<<endl;
-   for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
-   {
-      (*it).second->Dump(os);
-   }
-
+   os << "Dump for Section" << endl;
+   os << "  Component Container has "<< m_Components.size()<<endl;
+   std::for_each(std::cbegin(m_Components), std::cend(m_Components), [&](const auto& component) {component.Dump(os); });
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-#include <GeomModel\Rectangle.h>
-bool gmSection::TestMe(dbgLog& rlog)
+#include <GeomModel/Rectangle.h>
+#include <MathEx.h>
+bool Section::TestMe(dbgLog& rlog)
 {
-   TESTME_PROLOGUE("gmSection");
-
-//#pragma Reminder("Implement Unit Tests")
-//   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented");
+   TESTME_PROLOGUE("Section");
 
    // Test to verify non-structural components are not included in elastic properties,
    // but are included in mass properties
-   gmRectangle rect1( gpPoint2d(0,0), 20, 10 );
-   gmRectangle rect2( gpPoint2d(0,0), 20, 10 );
-   rect2.Move( gmIShape::BottomCenter, rect1.GetLocatorPoint( gmIShape::TopCenter ) );
-   gmSection section;
-   section.AddComponent( rect1, 1, 1, true );
-   section.AddComponent( rect2, 1, 2, false );
-   gmElasticProperties eProp;
-   gmMassProperties mProp;
+   Rectangle rect1( Point2d(0,0), 20, 10 );
+   Rectangle rect2( Point2d(0,0), 20, 10 );
+   rect2.Move( Shape::LocatorPoint::BottomCenter, rect1.GetLocatorPoint( Shape::LocatorPoint::TopCenter ) );
+   Section section;
+   section.AddComponent( rect1, 1, 1, 0, 0, SectionComponent::ComponentType::Structural);
+   section.AddComponent( rect2, 1, 2, 0, 0, SectionComponent::ComponentType::Nonstructural);
+   MassProperties mProp = section.GetMassProperties();
+   TRY_TESTME( IsEqual( mProp.GetMassPerLength(), 600. ) );
 
-   section.GetMassProperties( &mProp );
-   TRY_TESTME( IsEqual( mProp.MassPerLength(), 600. ) );
+   ElasticProperties eProp = section.GetElasticProperties();
+   TRY_TESTME( IsEqual( eProp.GetEA(), 200. ) );
 
-// RAB: I added this code to debug a release build problem.
-//
-//   rlog << "# Shapes = " << section.m_ComponentContainer.size() << endl;
-//   Float64 sum = 0;
-//   // add up properties for all members of the composite
-//   for (ConstComponentIterator it=section.m_ComponentContainer.begin();it!=section.m_ComponentContainer.end(); it++)
-//   {
-//      const gmIShape& rs= (*(*it).second).GetShape();
-//      Float64 dens      = (*(*it).second).GetDensity();
-//      gmProperties gp;
-//      rs.GetProperties(&gp);
-//
-//      sum += dens*gp.Area();
-//
-//      rlog << "Density = " << dens << endl;
-//      rlog << "Area = " << gp.Area() << endl;
-//
-//      const gmRectangle& rect = dynamic_cast<const gmRectangle&>(rs);
-//      rlog << "Height = " << rect.GetHeight() << endl;
-//      rlog << "Width = " << rect.GetWidth() << endl;
-//      rlog << "Top = " << rect.GetBoundingBox().Top() << endl;
-//      rlog << "Bottom = " << rect.GetBoundingBox().Bottom() << endl;
-//      rlog << "Left = " << rect.GetBoundingBox().Left() << endl;
-//      rlog << "Right = " << rect.GetBoundingBox().Right() << endl;
-//   }
-//   rlog << "MassPerLength = " << mProp.MassPerLength() << endl;
 
-   section.GetElasticProperties( &eProp );
-   TRY_TESTME( IsEqual( eProp.EA(), 200. ) );
+   // Create a hollow box and check the properties
+   //             10
+   //   +------------------------+
+   //   |           8            |
+   //   |  +------------------+  |       EA   = 40.0
+   //   |  |                  |  |       EIxx = 343.33333
+   //   |  |                  |  |       EIyy = 453.33333
+   //   |  |                  |5 | 8     EIxy = 0.0
+   //   |  |                  |  |       cg   = (5,4)
+   //   |  |                  |  |
+   //   |  +------------------+  |
+   //   |                        |
+   //   +------------------------+
+   //
+   section.Clear();
 
-   TESTME_EPILOG("gmSection");
+   Rectangle outerRect(Point2d(5, 4), 10, 8);;
+   Rectangle innerRect(Point2d(5, 4), 8, 5);
+
+   section.AddComponent(outerRect, 1.0, 1.0, 0.0, 0.0, SectionComponent::ComponentType::Structural);
+   section.AddComponent(innerRect, 0.0, 0.0, 1.0, 1.0, SectionComponent::ComponentType::Structural);
+   
+   ElasticProperties props = section.GetElasticProperties();
+   TRY_TESTME(IsEqual(props.GetEA(), 40.0));
+   TRY_TESTME(IsEqual(props.GetEIxx(), 343.33333));
+   TRY_TESTME(IsEqual(props.GetEIxy(), 0.00000));
+   TRY_TESTME(IsEqual(props.GetEIyy(), 453.33333));
+   TRY_TESTME(IsEqual(props.GetCentroid().X(), 5.0));
+   TRY_TESTME(IsEqual(props.GetCentroid().Y(), 4.0));
+
+   MassProperties mprops = section.GetMassProperties();
+   TRY_TESTME(IsEqual(mprops.GetMassPerLength(), 40.0));
+
+   Rect2d box = section.GetBoundingBox();
+   TRY_TESTME(IsEqual(box.Left(), 0.0));
+   TRY_TESTME(IsEqual(box.Right(), 10.0));
+   TRY_TESTME(IsEqual(box.Bottom(), 0.0));
+   TRY_TESTME(IsEqual(box.Top(), 8.0));
+
+   // tweak the bounding box and use it for a clipping rectangle
+   // Cover the top portion just above the void and clip.
+   // Area should be 10x1.5 = 15
+   box.Left() = -100;
+   box.Right() = 100;
+   box.Bottom() = 6.5;
+   box.Top() = 100;
+
+   auto clip = section.CreateClippedSection(box, Section::ClipRegion::In);
+   props = clip->GetElasticProperties();
+   TRY_TESTME(IsEqual(props.GetEA(), 15.0));
+
+   // Clip with line... Use the bottom of the clipping rect.
+   Line2d clipLine(box.BottomRight(), box.BottomLeft());
+   clip = section.CreateClippedSection(clipLine, Line2d::Side::Left);
+   props = clip->GetElasticProperties();
+   TRY_TESTME(IsEqual(props.GetEA(), 15.0));
+
+
+   TESTME_EPILOG("Section");
 }
 #endif // _UNITTEST
 
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void gmSection::SetShapeDirty(gmSectionComponent* psc, Int32 lHint)
+ElasticProperties make_elastic_properties(const SectionComponent& rCmp)
 {
-   NotifyAllListeners(lHint, psc);
-}
-
-
-void gmSection::DoRegisterListeners(const gmSection& rOwner)
-{
-   // copy listeners from owner section to this. Append them if
-   // this already has listeners.
-   ConstListenerListIterator it;
-   for (it=rOwner.m_ListenerList.begin(); it!=rOwner.m_ListenerList.end(); it++)
-   {
-      DoRegisterListener(*it);
-   }
-}
-
-void gmSection::DoRegisterListener(gmSectionListener* pListener)
-{
-   PRECONDITION(pListener);
-   // add listener to list
-   if (!m_ListenerList.insert(pListener).second)
-   {
-      WARN(0, "Listener insertion failed - probably duplicate");
-   }
-
-   pListener->OnRegistered(this);
-}
-
-void gmSection::Init()
-{
-   m_DamageCount = 0;
-   m_DamageTypeTally = 0;
-   m_LastKey = 0;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-/****************************************************************************
-CLASS
-   gmSectionComponent
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmSectionComponent::gmSectionComponent(gmIShape* pShape,
-                                       Float64 modE, Float64 density,
-                                       bool bIsStructural) :
-gmShapeListener(),
-m_bIsStructural(bIsStructural),
-m_Density(density),
-m_ModE(modE),
-m_pParent(nullptr)  // no parent section yet.
-{
-   PRECONDITION(pShape);
-   m_pShape = pShape;
-   m_pShape->RegisterListener(this);
-}
-
-gmSectionComponent::~gmSectionComponent()
-{
-   m_pShape->UnregisterListener(this);
-   delete m_pShape;
-}
-
-//======================== OPERATORS  =======================================
-
-//======================== OPERATIONS =======================================
-
-
-gmSectionComponent* gmSectionComponent::CreateClone(bool bRegisterListeners) const
-{
-   // clone the shape and unregister it from this
-   std::unique_ptr<gmIShape> ps(m_pShape->CreateClone(bRegisterListeners));
-   if(bRegisterListeners)
-      ps->UnregisterListener((gmShapeListener*)this);
-   // create a new componenent
-   return new gmSectionComponent(ps.get(), m_ModE, m_Density, m_bIsStructural);
-}
-
-const gmIShape& gmSectionComponent::GetShape() const
-{
-   return *m_pShape;
-}
-
-gmIShape& gmSectionComponent::GetShape()
-{
-   return *m_pShape;
-}
-
-Float64 gmSectionComponent::GetModE() const
-{
-   return m_ModE;
-}
-
-Float64 gmSectionComponent::SetModE(Float64 modE)
-{
-   Float64 tmp = m_ModE;
-   m_ModE = modE;
-   return tmp;
-}
-
-Float64 gmSectionComponent::GetDensity() const
-{
-   return m_Density;
-}
-
-Float64 gmSectionComponent::SetDensity(Float64 density)
-{
-   Float64 tmp = m_Density;
-   m_Density = density;
-   return tmp;
-}
-
-void gmSectionComponent::MakeStructural()
-{
-   m_bIsStructural = true;
-}
-
-void gmSectionComponent::MakeNonstructural()
-{
-   m_bIsStructural = false;
-}
-
-bool gmSectionComponent::IsStructural()const
-{
-   return m_bIsStructural;
-}
-
-void gmSectionComponent::OnUpdate(const gmIShape* pShape, Int32 lHint)
-{
-   if (m_pParent != nullptr)
-   {
-      // tell the parent section we're dirty
-      m_pParent->SetShapeDirty(this, lHint);
-   }
-   else
-   {
-      WARN(0, "SectionComponent has no parent section");
-   }
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmSectionComponent::AssertValid() const
-{
-   return gmShapeListener::AssertValid();
-}
-
-void gmSectionComponent::Dump(dbgDumpContext& os) const
-{
-   os << "Begin Dump for SectionComponent"<<endl;
-   gmShapeListener::Dump( os );
-   m_pShape->Dump(os);
-   os << "m_ModE          = "<< m_ModE<<endl;
-   os << "m_Density       = "<< m_Density<<endl;
-   os << "m_bIsStructural = "<< m_bIsStructural<<endl;
-   os << "m_pParent       = "<< m_pParent<<endl;
-   os << "end Dump for SectionComponent"<<endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool gmSectionComponent::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("gmSectionComponent");
-
-
-   TESTME_EPILOG("gmSectionComponent");
-}
-#endif // _UNITTEST
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmSectionComponent::SetParent(gmSection* ps)
-{
-   PRECONDITION(ps);
-   m_pParent = ps;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-/****************************************************************************
-CLASS
-   gmSectionComponentIter
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmSectionComponentIter::gmSectionComponentIter()
-{
-   Init();
-}
-
-gmSectionComponentIter::gmSectionComponentIter(gmSection* pSection)
-{
-   SetSection(pSection);
-}
-
-gmSectionComponentIter::gmSectionComponentIter(const gmSectionComponentIter& rOther)
-{
-   Init();
-   MakeCopy(rOther);
-}
-
-gmSectionComponentIter::~gmSectionComponentIter()
-{
-   Clean();
-}
-
-//======================== OPERATORS  =======================================
-gmSectionComponentIter& gmSectionComponentIter::operator= (const gmSectionComponentIter& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-
-void gmSectionComponentIter::SetSection(gmSection* pSection)
-{
-   PRECONDITION(pSection != nullptr);
-   m_pSection = pSection;
-   m_Iterator = pSection->m_ComponentContainer.begin();
-}
-
-void gmSectionComponentIter::Begin()
-{
-   PRECONDITION(m_pSection != nullptr);
-   m_Iterator = m_pSection->m_ComponentContainer.begin();
-}
-
-void gmSectionComponentIter::End()
-{
-   PRECONDITION(m_pSection != nullptr);
-   m_Iterator = m_pSection->m_ComponentContainer.end();
-}
-
-void gmSectionComponentIter::Next()
-{
-   PRECONDITION(m_pSection != nullptr);
-   CHECK(m_Iterator!=m_pSection->m_ComponentContainer.end());
-   m_Iterator++;
-}
-
-void gmSectionComponentIter::Prev()
-{
-   PRECONDITION(m_pSection != nullptr);
-   CHECK(m_Iterator!=m_pSection->m_ComponentContainer.begin());
-   m_Iterator--;
-}
-
-gmSectionComponentIter::operator void *() const
-{
-   if (m_pSection == nullptr)
-      return nullptr;
-   else if (m_Iterator==m_pSection->m_ComponentContainer.end())
-      return nullptr;
-   else
-      return (*m_Iterator).second.get();
-}
-
-gmSectionComponent* gmSectionComponentIter::CurrentComponent() const
-{
-   PRECONDITION(*this);
-   return (*m_Iterator).second.get();
-}
-
-const Uint32* gmSectionComponentIter::CurrentKey() const
-{
-   PRECONDITION(*this);
-   return &((*m_Iterator).first);
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmSectionComponentIter::AssertValid() const
-{
-   return true;
-}
-
-void gmSectionComponentIter::Dump(dbgDumpContext& os) const
-{
-   os<< "Dump for gmSectionComponentIter"<<endl;
-   os<< "   m_pSection = "<<m_pSection<<endl;
-}
-
-#endif // _DEBUG
-
-
-#if defined _UNITTEST
-bool gmSectionComponentIter::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("gmSectionComponentIter");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented");
-   TESTME_EPILOG("gmSectionComponentIter");
-}
-#endif // _UNITTEST
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmSectionComponentIter::MakeCopy(const gmSectionComponentIter& rOther)
-{
-   m_pSection = rOther.m_pSection;
-   m_Iterator = rOther.m_Iterator;
-}
-
-void gmSectionComponentIter::MakeAssignment(const gmSectionComponentIter& rOther)
-{
-   Clean();
-   Init();
-
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmSectionComponentIter::Init()
-{
-   m_pSection = nullptr;
-}
-
-void gmSectionComponentIter::Clean()
-{
-   // nothing to clean up.
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-/****************************************************************************
-CLASS
-   gmConstSectionComponentIter
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmConstSectionComponentIter::gmConstSectionComponentIter()
-{
-   Init();
-}
-
-gmConstSectionComponentIter::gmConstSectionComponentIter(const gmSection* pSection)
-{
-   SetSection(pSection);
-}
-
-gmConstSectionComponentIter::gmConstSectionComponentIter(const gmConstSectionComponentIter& rOther)
-{
-   Init();
-   MakeCopy(rOther);
-}
-
-gmConstSectionComponentIter::~gmConstSectionComponentIter()
-{
-   Clean();
-}
-
-//======================== OPERATORS  =======================================
-gmConstSectionComponentIter& gmConstSectionComponentIter::operator= (const gmConstSectionComponentIter& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-
-void gmConstSectionComponentIter::SetSection(const gmSection* pSection)
-{
-   PRECONDITION(pSection != nullptr);
-   m_pSection = pSection;
-   m_Iterator = pSection->m_ComponentContainer.begin();
-}
-
-void gmConstSectionComponentIter::Begin()
-{
-   PRECONDITION(m_pSection != nullptr);
-   m_Iterator = m_pSection->m_ComponentContainer.begin();
-}
-
-void gmConstSectionComponentIter::End()
-{
-   PRECONDITION(m_pSection != nullptr);
-   m_Iterator = m_pSection->m_ComponentContainer.end();
-}
-
-void gmConstSectionComponentIter::Next()
-{
-   PRECONDITION(m_pSection != nullptr);
-   CHECK(m_Iterator!=m_pSection->m_ComponentContainer.end());
-   m_Iterator++;
-}
-
-void gmConstSectionComponentIter::Prev()
-{
-   PRECONDITION(m_pSection != nullptr);
-   CHECK(m_Iterator!=m_pSection->m_ComponentContainer.begin());
-   m_Iterator--;
-}
-
-gmConstSectionComponentIter::operator void *() const
-{
-   if (m_pSection == nullptr)
-      return nullptr;
-   else if (m_Iterator==m_pSection->m_ComponentContainer.end())
-      return nullptr;
-   else
-      return (*m_Iterator).second.get();
-}
-
-const gmSectionComponent* gmConstSectionComponentIter::CurrentComponent() const
-{
-   PRECONDITION(*this);
-   return (*m_Iterator).second.get();
-}
-
-const Uint32* gmConstSectionComponentIter::CurrentKey() const
-{
-   PRECONDITION(*this);
-   return &((*m_Iterator).first);
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmConstSectionComponentIter::AssertValid() const
-{
-   return true;
-}
-
-void gmConstSectionComponentIter::Dump(dbgDumpContext& os) const
-{
-   os<< "Dump for gmConstSectionComponentIter"<<endl;
-}
-
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmConstSectionComponentIter::MakeCopy(const gmConstSectionComponentIter& rOther)
-{
-   m_pSection = rOther.m_pSection;
-   m_Iterator = rOther.m_Iterator;
-}
-
-void gmConstSectionComponentIter::MakeAssignment(const gmConstSectionComponentIter& rOther)
-{
-   Clean();
-   Init();
-
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmConstSectionComponentIter::Init()
-{
-   m_pSection = nullptr;
-}
-
-void gmConstSectionComponentIter::Clean()
-{
-   // nothing to clean up.
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-#if defined _UNITTEST
-bool gmConstSectionComponentIter::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("gmConstSectionComponentIter");
-
-   // create an angle shape. Taken from "Statics" 1st Ed. by J.L. Merriam, page 373
-   gmPolygon anglep;
-   Uint32 p1 = anglep.AddPoint(gpPoint2d(0 , 0));
-   Uint32 p2 = anglep.AddPoint(gpPoint2d(0 ,50));
-   Uint32 p3 = anglep.AddPoint(gpPoint2d(10,50));
-   Uint32 p4 = anglep.AddPoint(gpPoint2d(10,10));
-   Uint32 p5 = anglep.AddPoint(gpPoint2d(40,10));
-   Uint32 p6 = anglep.AddPoint(gpPoint2d(40, 0));  // don't close polygon
-
-   gmSection sang;
-   Int32 sid = sang.AddComponent(anglep, 1000., 10.);
-
-   gmElasticProperties aprops;
-   sang.GetElasticProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.EA(), 800000.)) ;
-   TRY_TESTME ( IsEqual(aprops.EIxx(),  181670000., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.EIyy(),  101670000., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.EIxy(), -750000000., 10.)) ;
-   TRY_TESTME ( sang.GetBoundingBox(false) == gpRect2d(0,0,40,50)) ;
-
-   gmMassProperties mprops;
-   sang.GetMassProperties(&mprops);
-   TRY_TESTME ( IsEqual(mprops.MassPerLength(), 8000.)) ;
-
-   // move things around a bit
-   sang.Translate(gpSize2d(20,20));
-   TRY_TESTME ( sang.GetBoundingBox(false) == gpRect2d(20,20,60,70)) ;
-
-   gmSectionComponent* pmycomp = sang.GetComponent(sid);
-   gmIShape& rshape = pmycomp->GetShape();
-   rshape.Translate(gpSize2d(-20,-20));
-   TRY_TESTME (sang.GetBoundingBox(false) == gpRect2d(0,0,40,50)) ;
-
-   // take a dump
-#if defined _DEBUG
-  sang.Dump(rlog.GetDumpCtx());
-#endif
-
-   // copy
-   std::unique_ptr<gmSection> sang2 (sang.CreateClone());
-   sang2->GetElasticProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.EA(), 800000.)) ;
-   TRY_TESTME ( IsEqual(aprops.EIxx(),  181670000., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.EIyy(),  101670000., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.EIxy(), -750000000., 10.)) ;
-   TRY_TESTME ( sang2->GetBoundingBox(false) == gpRect2d(0,0,40,50)) ;
-
-   // clip
-   std::unique_ptr<gmSection> pclip (sang2->CreateClippedSection(
-                       gpLine2d(gpPoint2d(10,0),gpPoint2d(10,20)), gpLine2d::Left));
-   pclip->GetElasticProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.EA(), 500000.)) ;
-   TRY_TESTME ( pclip->GetBoundingBox(false) == gpRect2d(0,0,10,50)) ;
-
-   // rotate
-   pclip->Rotate(gpPoint2d(0,0), -M_PI/2.);
-   pclip->GetElasticProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.EA(), 500000.)) ;
-   TRY_TESTME ( pclip->GetBoundingBox(false) == gpRect2d(0,-10,50,0)) ;
-
-   TESTME_EPILOG("gmConstSectionComponentIter");
-}
-
-#endif // _UNITTEST
-
-gmElasticProperties make_elastic_properties(const gmSectionComponent& rCmp)
-{
-   const gmIShape& rs= rCmp.GetShape();
-   Float64 e         = rCmp.GetModE();
-   gmProperties gp;
-   rs.GetProperties(&gp);
-
-   return gmElasticProperties(e*gp.Area(), gp.Centroid(), 
-                              e*gp.Ixx(),  e*gp.Iyy(), e*gp.Ixy(),
-                              gp.Ytop(),   gp.Ybottom(), gp.Xleft(), gp.Xright(), gp.Perimeter());
+   const Shape& rs = rCmp.GetShape();
+   Float64 e       = rCmp.GetForegroundModE() - rCmp.GetBackgroundModE();
+   ShapeProperties gp = rs.GetProperties();
+
+   return ElasticProperties(e * gp.GetArea(), gp.GetCentroid(), e * gp.GetIxx(), e * gp.GetIyy(), e * gp.GetIxy(), gp.GetXleft(),gp.GetYbottom(),gp.GetXright(),gp.GetYtop());
 }
 

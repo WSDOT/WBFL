@@ -48,7 +48,6 @@ HRESULT CAlignmentCollection::FinalConstruct()
 
 void CAlignmentCollection::FinalRelease()
 {
-   UnadviseAll();
    m_coll.clear();
 }
 
@@ -82,12 +81,7 @@ STDMETHODIMP CAlignmentCollection::putref_Item(CogoObjectID id, IAlignment *newV
    CComVariant& var = (*found).second;
 
    CComQIPtr<IAlignment> old_Alignment(var.pdispVal);
-   Unadvise(id,old_Alignment);
-
    var = newVal;
-   Advise(id,newVal);
-
-   Fire_OnAlignmentChanged(this,id,newVal);
 
 	return S_OK;
 }
@@ -110,11 +104,8 @@ STDMETHODIMP CAlignmentCollection::Remove(CogoObjectID id)
 
    CComVariant& var = (*found).second;
    CComQIPtr<IAlignment> pp(var.pdispVal);
-   Unadvise(id,pp);
 
    m_coll.erase(found);
-
-   Fire_OnAlignmentRemoved(this,id);
 
 	return S_OK;
 }
@@ -158,19 +149,12 @@ STDMETHODIMP CAlignmentCollection::AddEx(CogoObjectID id, IAlignment* newVal)
    CComVariant var(pDisp);
    m_coll.insert(std::make_pair(id,var));
 
-   // Hookup to the connection point
-   Advise(id,newVal);
-
-   Fire_OnAlignmentAdded(this,id,newVal);
-
 	return S_OK;
 }
 
 STDMETHODIMP CAlignmentCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnAlignmentsCleared(this);
 	return S_OK;
 }
 
@@ -297,60 +281,6 @@ STDMETHODIMP CAlignmentCollection::Clone(IAlignmentCollection* *clone)
    (*clone)->putref_Factory(m_Factory);
 
    return S_OK;
-}
-
-void CAlignmentCollection::Advise(CogoObjectID id,IAlignment* alignment)
-{
-   DWORD dwCookie;
-   HRESULT hr = AtlAdvise(alignment,GetUnknown(),IID_IAlignmentEvents,&dwCookie);
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection point with alignment object\n");
-      return;
-   }
-
-   m_Cookies.insert( std::make_pair(id,dwCookie) );
-
-   InternalRelease(); // Break circular reference
-}
-
-void CAlignmentCollection::Unadvise(CogoObjectID id,IAlignment* alignment)
-{
-   ATLASSERT(alignment != 0);
-
-   //
-   // Disconnection from connection Path
-   //
-
-   // Lookup the cookie
-   std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( id );
-   if ( found == m_Cookies.end() )
-   {
-      ATLTRACE("Failed to disconnect connection point with Path object\n");
-      return;
-   }
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection Path and disconnection
-   DWORD dwCookie = (*found).second;
-   HRESULT hr = AtlUnadvise(alignment,IID_IAlignmentEvents,dwCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
-   // Remove cookie from map
-   m_Cookies.erase( id );
-}
-
-void CAlignmentCollection::UnadviseAll()
-{
-   std::map<CogoObjectID,CComVariant>::iterator iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
-   {
-      CogoObjectID id = (*iter).first;
-      CComQIPtr<IAlignment> alignment( (*iter).second.pdispVal );
-      Unadvise(id,alignment);
-   }
 }
 
 HRESULT CAlignmentCollection::AlignmentNotFound(CogoObjectID id)

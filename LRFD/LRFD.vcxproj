@@ -289,9 +289,8 @@
       <Project>{905d99ea-8bc5-45ab-bd0e-9531bb9d9f95}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
+      <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Material\Material.vcxproj">
       <Project>{3904763e-7a13-445f-8544-260047d333cd}</Project>

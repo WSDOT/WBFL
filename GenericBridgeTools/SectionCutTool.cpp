@@ -619,7 +619,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             segment->get_Orientation(&orientation); // section view orientation
 
             CComPtr<IShape> girder_shape;
-            segment->get_PrimaryShape(girderPoint.Xs,sbLeft,cstBridge,&girder_shape);
+            segment->get_GirderShape(girderPoint.Xs,sbLeft,cstBridge,&girder_shape);
 
             CComQIPtr<IGirderSection> girder_section(girder_shape);
             ATLASSERT(girder_section);
@@ -2498,7 +2498,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IShape> primary_shape;
-   segment->get_PrimaryShape(Xs,sectionBias,coordinateSystem,&primary_shape);
+   segment->get_GirderShape(Xs,sectionBias,coordinateSystem,&primary_shape);
 
    CComQIPtr<ICompositeShape> compositeShape(primary_shape);
    ATLASSERT(compositeShape); // primary_shape must be a composite so we can put holes in it

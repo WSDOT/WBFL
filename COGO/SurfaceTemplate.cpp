@@ -112,12 +112,9 @@ STDMETHODIMP CSurfaceTemplate::put_Station(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_Station) )
-   {
-      m_Station.Release();
-      objStation->Clone(&m_Station);
-      Fire_OnSurfaceTemplateChanged(this);
-   }
+
+   m_Station.Release();
+   objStation->Clone(&m_Station);
 
    return S_OK;
 }
@@ -140,7 +137,6 @@ STDMETHODIMP CSurfaceTemplate::AddSegmentEx(ITemplateSegment* segment)
 {
    CHECK_IN(segment);
    m_Segments.push_back(segment);
-   Fire_OnTemplateSegmentAdded(this,segment);
    return S_OK;
 }
 
@@ -152,7 +148,6 @@ STDMETHODIMP CSurfaceTemplate::RemoveSegment(CollectionIndexType idx)
    }
 
    m_Segments.erase(m_Segments.begin() + idx);
-   Fire_OnTemplateSegmentRemoved(this);
    return S_OK;
 }
 
@@ -179,7 +174,6 @@ STDMETHODIMP CSurfaceTemplate::get_Item(CollectionIndexType idx,ITemplateSegment
 STDMETHODIMP CSurfaceTemplate::Clear()
 {
    m_Segments.clear();
-   Fire_OnTemplateSegmentsCleared(this);
    return S_OK;
 }
 

@@ -27,7 +27,6 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "CubicSpline.h"
-#include "PointFactory.h"
 
 #include <WBFLCogo\CogoHelpers.h>
 #include <string>
@@ -119,9 +118,6 @@ STDMETHODIMP CCubicSpline::AddPoints(IPoint2dCollection* points)
    }
 #endif // _DEBUG
 
-
-   Fire_OnSplineChanged(this);
-
    return S_OK;
 }
 
@@ -143,8 +139,6 @@ STDMETHODIMP CCubicSpline::AddPoint(Float64 x,Float64 y)
       UpdateSpline();
    }
 #endif // _DEBUG
-
-   Fire_OnSplineChanged(this);
 
    return S_OK;
 }
@@ -173,8 +167,6 @@ STDMETHODIMP CCubicSpline::AddPointEx(IPoint2d* point)
       UpdateSpline();
    }
 #endif // _DEBUG
-
-   Fire_OnSplineChanged(this);
 
    return S_OK;
 }
@@ -253,7 +245,6 @@ STDMETHODIMP CCubicSpline::Clear()
 {
    m_Points->Clear();
    m_bUpdateSpline = true;
-   Fire_OnSplineChanged(this);
    return S_OK;
 }
 
@@ -273,7 +264,6 @@ STDMETHODIMP CCubicSpline::put_StartDirection(VARIANT varDirection)
    }
 #endif // _DEBUG
 
-   Fire_OnSplineChanged(this);
    return S_OK;
 }
 
@@ -298,7 +288,6 @@ STDMETHODIMP CCubicSpline::put_EndDirection( VARIANT varDirection)
    }
 #endif // _DEBUG
 
-   Fire_OnSplineChanged(this);
    return S_OK;
 }
 
@@ -589,7 +578,7 @@ STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint,Flo
    dir->get_Value(&dirValue);
 
 
-   xfrm->putref_NewOrigin(p0);
+   xfrm->put_NewOrigin(p0);
    xfrm->put_RotationAngle(dirValue);
 
    CComPtr<IPoint2d> xfrmPoint;
@@ -602,7 +591,7 @@ STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint,Flo
    xfrmPoint.Release();
 
 
-   xfrm->putref_NewOrigin(pn);
+   xfrm->put_NewOrigin(pn);
    xfrm->put_RotationAngle(dirValue + M_PI);
    xfrm->XformEx(point, xfrmOldToNew, &xfrmPoint);
    Float64 x2;
@@ -638,16 +627,15 @@ STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint,Flo
       m_GeomUtil->PointOnLineNearest(line, point, &p2);
 
       Float64 d1, d2;
-      m_GeomUtil->Distance(point, p1, &d1);
-      m_GeomUtil->Distance(point, p2, &d2);
+      point->DistanceEx(p1, &d1);
+      point->DistanceEx(p2, &d2);
 
       if (d1 < d2)
       {
          // Point projects onto the back tangent bearing (it is before the curve)
          p1.QueryInterface(pNewPoint);
          ATLASSERT(*pNewPoint != nullptr);
-
-         m_GeomUtil->Distance(p0, p1, pDistFromStart);
+         p0->DistanceEx(p1, pDistFromStart);
          (*pDistFromStart) *= -1;
 
          ATLASSERT((*pDistFromStart) <= 0); // must be negative because it is before the curve
@@ -661,7 +649,7 @@ STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint,Flo
          Float64 Lt; // Total length of curve
          get_Length(&Lt);
 
-         m_GeomUtil->Distance(pn, p2, pDistFromStart);
+         pn->DistanceEx(p2, pDistFromStart);
          (*pDistFromStart) += Lt;
 
          ATLASSERT((*pDistFromStart) >= 0 && (*pDistFromStart) >= Lt);
@@ -688,7 +676,7 @@ STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint,Flo
       p.QueryInterface(pNewPoint);
       ATLASSERT(*pNewPoint != nullptr);
 
-      m_GeomUtil->Distance(p0, *pNewPoint, pDistFromStart);
+      p0->DistanceEx(*pNewPoint, pDistFromStart);
       (*pDistFromStart) *= -1;
 
       ATLASSERT((*pDistFromStart) <= 0); // must be negative because it is before the curve
@@ -798,7 +786,7 @@ STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint,Flo
 
       Float64 Lt;
       get_Length(&Lt);
-      m_GeomUtil->Distance(pn, *pNewPoint, pDistFromStart);
+      pn->DistanceEx(*pNewPoint, pDistFromStart);
       (*pDistFromStart) += Lt;
 
       *pvbOnProjection = VARIANT_TRUE;
@@ -1051,19 +1039,17 @@ STDMETHODIMP CCubicSpline::get_Length(Float64* pLength)
    return S_OK;
 }
 
-STDMETHODIMP CCubicSpline::get_PointFactory(IPoint2dFactory* *factory)
+STDMETHODIMP CCubicSpline::Offset(Float64 dx, Float64 dy)
 {
-   CHECK_RETOBJ(factory);
-   (*factory) = m_PointFactory;
-   (*factory)->AddRef();
-
-   return S_OK;
-}
-
-STDMETHODIMP CCubicSpline::putref_PointFactory(IPoint2dFactory *factory)
-{
-   CHECK_IN(factory);
-   m_PointFactory = factory;
+   IndexType nPoints;
+   m_Points->get_Count(&nPoints);
+   for (IndexType pntIdx = 0; pntIdx < nPoints; pntIdx++)
+   {
+      CComPtr<IPoint2d> pnt;
+      m_Points->get_Item(pntIdx, &pnt);
+      pnt->Offset(dx, dy);
+   }
+   m_bUpdateSpline = true;
    return S_OK;
 }
 
@@ -1100,11 +1086,6 @@ STDMETHODIMP CCubicSpline::Save(IStructuredSave2* pSave)
    
    CComQIPtr<IStructuredStorage2> ss2(m_Points);
    ss2->Save(pSave);
-
-   if (m_PointFactory)
-   {
-      pSave->put_Property(CComBSTR("PointFactory"),CComVariant(m_PointFactory));
-   }
    
    pSave->EndUnit();
 
@@ -1124,13 +1105,6 @@ STDMETHODIMP CCubicSpline::Load(IStructuredLoad2* pLoad)
 
    CComQIPtr<IStructuredStorage2> ss2(m_Points);
    ss2->Load(pLoad);
-
-   if ( SUCCEEDED(pLoad->get_Property(CComBSTR("PointFactory"),&var)) )
-   {
-      CComPtr<IPoint2dFactory> factory;
-      _CopyVariantToInterface<IPoint2dFactory>::copy(&factory,&var);
-      putref_PointFactory(factory);
-   }
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);
@@ -1231,7 +1205,7 @@ HRESULT CCubicSpline::CreateSplineSegments()
       end_angle   = cogoUtil::NormalizeAngle(m_EndDirection   - m_RotationAngle);
    }
 
-   m_CoordXform->putref_NewOrigin(p0);
+   m_CoordXform->put_NewOrigin(p0);
    m_CoordXform->put_RotationAngle(m_RotationAngle);
 
    // transform the points into the new coordinate system
@@ -1430,17 +1404,10 @@ CSplineSegment* CCubicSpline::FindSplineSegment(Float64 distance,Float64* pDistF
 
 void CCubicSpline::CreatePoint(IPoint2d** ppPoint)
 {
-   if (m_PointFactory)
-   {
-      m_PointFactory->CreatePoint(ppPoint);
-   }
-   else
-   {
-      CComPtr<IPoint2d> p;
-      p.CoCreateInstance(CLSID_Point2d);
-      (*ppPoint) = p;
-      (*ppPoint)->AddRef();
-   }
+   CComPtr<IPoint2d> p;
+   p.CoCreateInstance(CLSID_Point2d);
+   (*ppPoint) = p;
+   (*ppPoint)->AddRef();
 }
 
 HRESULT CCubicSpline::CheckValid()

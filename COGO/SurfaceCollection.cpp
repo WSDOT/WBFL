@@ -42,10 +42,10 @@ class SortSurfaces
 {
 public:
    SortSurfaces(IProfile* pProfile) { m_pProfile = pProfile; }
-   bool operator()(SurfaceType& pX,SurfaceType& pY)
+   bool operator()(CComVariant& pX, CComVariant& pY)
    {
-      CComVariant& varX = pX.second;
-      CComVariant& varY = pY.second;
+      CComVariant& varX = pX;
+      CComVariant& varY = pY;
       CComPtr<IStation> staX, staY;
       
       CComQIPtr<ISurface> csX(varX.pdispVal);
@@ -78,7 +78,6 @@ HRESULT CSurfaceCollection::FinalConstruct()
 
 void CSurfaceCollection::FinalRelease()
 {
-   UnadviseAll();
 }
 
 STDMETHODIMP CSurfaceCollection::InterfaceSupportsErrorInfo(REFIID riid)
@@ -136,8 +135,8 @@ STDMETHODIMP CSurfaceCollection::get_Item(CollectionIndexType idx, ISurface* *pV
    if ( !IsValidIndex(idx,m_coll) )
       return E_INVALIDARG;
 
-   SurfaceType& p = m_coll[idx];
-   CComVariant& varItem = p.second;
+   CComVariant& p = m_coll[idx];
+   CComVariant& varItem = p;
    varItem.pdispVal->QueryInterface(pVal);
    return S_OK;
 }
@@ -152,22 +151,11 @@ STDMETHODIMP CSurfaceCollection::putref_Item(CollectionIndexType idx,ISurface* p
       return E_INVALIDARG;
 
    // Get the item
-   SurfaceType& cst = m_coll[idx];
-   CComVariant& var = cst.second; // Variant holding IDispatch to Surface
+   CComVariant& cst = m_coll[idx];
+   CComVariant& var = cst; // Variant holding IDispatch to Surface
    pVal->putref_Profile(m_pProfile);
 
-   UnadviseElement(idx); // Unadvise from the current element
-
    var = pVal; // Associate new Surface with this variant
-
-   // Advise
-   DWORD dwCookie;
-   AdviseElement(pVal,&dwCookie);
-
-   // Update the cookie
-   cst.first = dwCookie;
-
-   Fire_OnSurfaceChanged(pVal);
 
    return S_OK;
 }
@@ -187,13 +175,10 @@ STDMETHODIMP CSurfaceCollection::Add(ISurface* surface)
 
    surface->putref_Profile(m_pProfile);
 
-   DWORD dwCookie;
-   AdviseElement(surface,&dwCookie);
-   m_coll.emplace_back( dwCookie,CComVariant(surface));
+   m_coll.emplace_back( CComVariant(surface));
 
    std::sort(std::begin(m_coll),std::end(m_coll),SortSurfaces(m_pProfile));
 
-   Fire_OnSurfaceAdded(surface);
    return S_OK;
 }
 
@@ -202,17 +187,13 @@ STDMETHODIMP CSurfaceCollection::Remove(CollectionIndexType idx)
    if ( idx < 0 || m_coll.size() <= idx )
       return E_INVALIDARG;
 
-   UnadviseElement(idx);
    m_coll.erase(m_coll.begin() + idx );
-   Fire_OnSurfaceRemoved();
    return S_OK;
 }
 
 STDMETHODIMP CSurfaceCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnSurfacesCleared();
    return S_OK;
 }
 
@@ -315,14 +296,6 @@ STDMETHODIMP CSurfaceCollection::get_StructuredStorage(IStructuredStorage2* *pSt
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// ISurfaceEvents
-STDMETHODIMP CSurfaceCollection::OnSurfaceChanged(ISurface * pSurface)
-{
-   Fire_OnSurfaceChanged(pSurface);
-   return S_OK;
-}
-
 STDMETHODIMP CSurfaceCollection::get__EnumSurfaces(IEnumSurfaces** retval)
 {
    CHECK_RETOBJ(retval);
@@ -330,8 +303,8 @@ STDMETHODIMP CSurfaceCollection::get__EnumSurfaces(IEnumSurfaces** retval)
    typedef CComEnumOnSTL<IEnumSurfaces,
                          &IID_IEnumSurfaces, 
                          ISurface*,
-                         CopyFromPair2Interface<SurfaceType,ISurface*>, 
-                         std::vector<SurfaceType>> Enum;
+                         _CopyVariantToInterface<ISurface>, 
+                         std::vector<CComVariant>> Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -356,7 +329,7 @@ STDMETHODIMP CSurfaceCollection::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
    for ( CollectionIndexType i = 0; i < count; i++ )
    {
-      pSave->put_Property(CComBSTR("Surface"),m_coll[i].second);
+      pSave->put_Property(CComBSTR("Surface"),m_coll[i]);
    }
 
    return S_OK;
@@ -384,55 +357,6 @@ STDMETHODIMP CSurfaceCollection::Load(IStructuredLoad2* pLoad)
    pLoad->EndUnit(&bEnd);
 
    return S_OK;
-}
-
-//////////////////////////////////////////
-// Helper methods
-
-void CSurfaceCollection::AdviseElement(ISurface* surface,DWORD* pdwCookie)
-{
-   CComPtr<ISurface> pCP(surface);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_ISurfaceEvents, pdwCookie );
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      ATLTRACE("Failed to establish connection point with Surface object\n");
-      return;
-   }
-
-   InternalRelease(); // Break circular reference
-}
-
-void CSurfaceCollection::UnadviseElement(CollectionIndexType idx)
-{
-   //
-   // Disconnection from connection Surface
-   //
-   SurfaceType& p = m_coll[idx];
-   if ( p.first == 0 )
-      return;
-
-   DWORD dwCookie = p.first;
-   CComVariant& var = p.second;
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( var.pdispVal );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_ISurfaceEvents, &pCP );
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   p.first = 0;
-}
-
-void CSurfaceCollection::UnadviseAll()
-{
-   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
-   {
-      UnadviseElement(i);
-   }
 }
 
 HRESULT CSurfaceCollection::OnBeforeSave(IStructuredSave2* pSave)

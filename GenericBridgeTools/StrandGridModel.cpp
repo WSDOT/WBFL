@@ -120,7 +120,7 @@ HRESULT CStrandGridModel::OnInitialize()
    // under top center (0,0) of girder. Apply an adjustment
    // to position the strand grid correctly
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(0.0, sbRight, cstGirder, &shape);
+   m_pSegment->get_GirderShape(0.0, sbRight, cstGirder, &shape);
 
    CComQIPtr<IAsymmetricSection> asymmetric(shape);
    if (asymmetric)
@@ -2026,7 +2026,7 @@ Float64 CStrandGridModel::GetSectionHeight(Float64 Xs)
 {
    Float64 Hg;
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(Xs,sbLeft,cstGirder,&shape);
+   m_pSegment->get_GirderShape(Xs,sbLeft,cstGirder,&shape);
    CComPtr<IRect2d> bbox;
    shape->get_BoundingBox(&bbox);
    bbox->get_Height(&Hg);

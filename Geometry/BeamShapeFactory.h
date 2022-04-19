@@ -22,11 +22,9 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+#pragma once
 
 // BeamShapeFactory.h : Declaration of the CBeamShapeFactory
-
-#ifndef __BEAMSHAPEFACTORY_H_
-#define __BEAMSHAPEFACTORY_H_
 
 #include "resource.h"       // main symbols
 
@@ -62,5 +60,3 @@ public:
 public:
 	STDMETHOD(CreateShape)(/*[in]*/BeamShapeType type,/*[out]*/IShape** ppShape) override;
 };
-
-#endif //__BEAMSHAPEFACTORY_H_

@@ -94,8 +94,8 @@ lrfdElasticShortening::lrfdElasticShortening(Float64 fpjPerm,   // jacking stres
                                              Float64 Ixx,    // moment of inertia of girder
                                              Float64 Iyy,
                                              Float64 Ixy,
-                                             const gpPoint2d& ePerm, // eccentricity of permanent ps strands
-                                             const gpPoint2d& eTemp, // eccentricity of temporary ps strands
+                                             const WBFL::Geometry::Point2d& ePerm, // eccentricity of permanent ps strands
+                                             const WBFL::Geometry::Point2d& eTemp, // eccentricity of temporary ps strands
                                              Float64 Mdlg,  // Dead load moment of girder only
                                              Float64 K,     // coefficient for post-tension members (N-1)/(2N)
                                              Float64 Eci,   // Modulus of elasticity of concrete at transfer

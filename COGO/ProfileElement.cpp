@@ -47,14 +47,11 @@ HRESULT CProfileElement::FinalConstruct()
 
    m_Type = pePoint;
 
-   Advise();
-
    return S_OK;
 }
 
 void CProfileElement::FinalRelease()
 {
-   Unadvise();
 }
 
 STDMETHODIMP CProfileElement::InterfaceSupportsErrorInfo(REFIID riid)
@@ -70,47 +67,6 @@ STDMETHODIMP CProfileElement::InterfaceSupportsErrorInfo(REFIID riid)
 			return S_OK;
 	}
 	return S_FALSE;
-}
-
-void CProfileElement::Advise()
-{
-   HRESULT hr;
-   if ( m_Type == pePoint )
-      hr = m_Value.Advise(GetUnknown(), IID_IProfilePointEvents, &m_dwCookie );
-   else
-      hr = m_Value.Advise(GetUnknown(), IID_IVertCurveEvents, &m_dwCookie );
-
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection point with ProfileElement object\n");
-      return;
-   }
-
-   InternalRelease(); // Break circular reference
-}
-
-void CProfileElement::Unadvise()
-{
-   if ( m_Value == nullptr )
-      return;
-
-   //
-   // Disconnection from connection point
-   //
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection ProfilePoint and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( m_Value );
-   CComPtr<IConnectionPoint> pCP;
-
-   if ( m_Type == pePoint )
-      pCPC->FindConnectionPoint( IID_IProfilePointEvents, &pCP );
-   else
-      pCPC->FindConnectionPoint( IID_IVertCurveEvents, &pCP );
-
-   HRESULT hr = pCP->Unadvise( m_dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
 }
 
 STDMETHODIMP CProfileElement::get_Type(ProfileElementType *pVal)
@@ -142,13 +98,8 @@ STDMETHODIMP CProfileElement::putref_Value(IUnknown* dispVal)
       return E_INVALIDARG;
 
 
-   Unadvise();
    m_Type = (point != nullptr ? pePoint : peVertCurve);
    m_Value = dispVal;
-   Advise();
-
-
-   Fire_OnProfileElementChanged(this);
 
 	return S_OK;
 }

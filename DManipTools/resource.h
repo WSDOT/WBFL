@@ -34,7 +34,6 @@
 #define IDR_DMANIPTOOLSDISPLAYOBJECTFACTORY	2008
 #define IDR_GRAPHXYDATAPROVIDER		2009
 
-
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

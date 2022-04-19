@@ -144,6 +144,26 @@ STDMETHODIMP CUGirderSection2::get_Beam(IUBeam2** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CUGirderSection2::get_GirderShape(IShape** ppShape)
+{
+   return m_Beam->get_Shape(ppShape);
+}
+
+STDMETHODIMP CUGirderSection2::get_VoidCount(/*[out, retval]*/IndexType* pnVoids)
+{
+   CHECK_RETVAL(pnVoids);
+   *pnVoids = 0;
+   return S_OK;
+}
+
+STDMETHODIMP CUGirderSection2::get_VoidShape(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape)
+{
+   CHECK_RETOBJ(ppShape);
+   ATLASSERT(false);
+   *ppShape = nullptr;
+   return E_INVALIDARG;
+}
+
 STDMETHODIMP CUGirderSection2::get_WorkPoint(IPoint2d** ppWorkPoint)
 {
    // work point is at top center
@@ -787,9 +807,4 @@ STDMETHODIMP CUGirderSection2::get_XYPosition(IXYPosition **pVal)
 {
    CHECK_RETOBJ(pVal);
    return m_CompositeShape->get_XYPosition(pVal);
-}
-
-STDMETHODIMP CUGirderSection2::get_StructuredStorage(IStructuredStorage2* *pStrStg)
-{
-   return m_CompositeShape->get_StructuredStorage(pStrStg);
 }

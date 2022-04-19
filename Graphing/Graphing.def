@@ -1,0 +1,2 @@
+LIBRARY        WBFLGraphing.dll
+EXPORTS  UnitTest @1

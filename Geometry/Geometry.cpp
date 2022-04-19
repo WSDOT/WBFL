@@ -63,9 +63,7 @@
 #include "GeomUtil.h"
 #include "CoordinateXform3d.h"
 #include "CoordinateXform2d.h"
-#include "PrimitiveFactory.h"
 #include "CircularSegment.h"
-#include "ShapeCollection.h"
 #include "PlateGirder.h"
 #include "NUBeam.h"
 #include "UBeam.h"
@@ -84,6 +82,11 @@
 #include "BeamShapeFactory.h"
 #include "NUDeckedIBeam.h"
 #include "PCIDeckedIBeam.h"
+#include "ElasticProperties.h"
+#include "MassProperties.h"
+#include "CompositeBeam.h"
+#include "CompositeSectionItemEx.h"
+#include "CompositeSectionEx.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -118,9 +121,7 @@ OBJECT_ENTRY(CLSID_Point3dCollection, CPoint3dCollection)
 OBJECT_ENTRY(CLSID_GeomUtil, CGeomUtil)
 OBJECT_ENTRY(CLSID_CoordinateXform3d, CCoordinateXform3d)
 OBJECT_ENTRY(CLSID_CoordinateXform2d, CCoordinateXform2d)
-OBJECT_ENTRY(CLSID_PrimitiveFactory, CPrimitiveFactory)
 OBJECT_ENTRY(CLSID_CircularSegment, CCircularSegment)
-OBJECT_ENTRY(CLSID_ShapeCollection, CShapeCollection)
 OBJECT_ENTRY(CLSID_PlateGirder, CPlateGirder)
 OBJECT_ENTRY(CLSID_UBeam, CUBeam)
 OBJECT_ENTRY(CLSID_NUBeam, CNUBeam)
@@ -139,6 +140,11 @@ OBJECT_ENTRY(CLSID_GenericShape, CGenericShape)
 OBJECT_ENTRY(CLSID_BeamShapeFactory, CBeamShapeFactory)
 OBJECT_ENTRY(CLSID_NUDeckedIBeam,CNUDeckedIBeam)
 OBJECT_ENTRY(CLSID_PCIDeckedIBeam,CPCIDeckedIBeam)
+OBJECT_ENTRY(CLSID_ElasticProperties, CElasticProperties)
+OBJECT_ENTRY(CLSID_MassProperties, CMassProperties)
+OBJECT_ENTRY(CLSID_CompositeBeam, CCompositeBeam)
+OBJECT_ENTRY(CLSID_CompositeSectionItemEx, CCompositeSectionItemEx)
+OBJECT_ENTRY(CLSID_CompositeSectionEx, CCompositeSectionEx)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

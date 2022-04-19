@@ -25,77 +25,26 @@
 #define INCLUDED_GEOMMODEL_UNITTEST_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
+#include <GeomModel/GeomModelExp.h>
 
-// PROJECT INCLUDES
-//
-#include <GeomModel\GeomModelExp.h>
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   gmUnitTest
-
-   Unit Testing class for the geometry package
-
-
-DESCRIPTION
-
-LOG
-   rdp : 05.27.1998 : Created file
-*****************************************************************************/
-
-class GEOMMODELCLASS gmUnitTest
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace Geometry
+   {
+      class Shape;
 
+      class GEOMMODELCLASS UnitTest
+      {
+      public:
+         UnitTest(const UnitTest&) = delete;
+         UnitTest& operator=(const UnitTest&) = delete;
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   static bool TestMe(dbgLog& rlog);
+         static bool TestMe(dbgLog& rlog);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         static bool TestHookPoint(Shape& shape);
+      };
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   gmUnitTest(const gmUnitTest&) = delete;
-   gmUnitTest& operator=(const gmUnitTest&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
+   }; // Geometry
+}; // WBFL
 
 #endif // INCLUDED_GEOMMODEL_UNITTEST_H_

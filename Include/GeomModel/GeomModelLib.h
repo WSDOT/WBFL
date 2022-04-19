@@ -21,24 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_GEOMMODELLIB_H_
-#define INCLUDED_GEOMMODEL_GEOMMODELLIB_H_
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   GeomModel
-
-   Support library that provides geometric modeling
-
-DESCRIPTION
-   Support library that provides geometric modeling.
-*****************************************************************************/
-
-#include <Private\WbflPackage.h>
-#include <WBFLTools.h>
-#include <WBFLGeometry.h>
-
-#include <memory>
-
-#endif // INCLUDED_GEOMMODEL_GEOMMODELLIB_H_
+#include <WBFLDebug.h>
+#include <WBFLTest.h>

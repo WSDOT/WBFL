@@ -49,7 +49,6 @@ HRESULT CCompoundCurveCollection::FinalConstruct()
 
 void CCompoundCurveCollection::FinalRelease()
 {
-   UnadviseAll();
    m_coll.clear();
 }
 
@@ -83,13 +82,9 @@ STDMETHODIMP CCompoundCurveCollection::putref_Item(CogoObjectID id, ICompoundCur
    CComVariant& var = (*found).second;
 
    CComQIPtr<ICompoundCurve> old_curve(var.pdispVal);
-   Unadvise(id,old_curve);
-
+   
    var = newVal;
-   Advise(id,newVal);
-
-   Fire_OnCompoundCurveChanged(id,newVal);
-
+   
 	return S_OK;
 }
 
@@ -111,11 +106,8 @@ STDMETHODIMP CCompoundCurveCollection::Remove(CogoObjectID id)
 
    CComVariant& var = (*found).second;
    CComQIPtr<ICompoundCurve> hc(var.pdispVal);
-   Unadvise(id,hc);
 
    m_coll.erase(found);
-
-   Fire_OnCompoundCurveRemoved(id);
 
 	return S_OK;
 }
@@ -179,19 +171,12 @@ STDMETHODIMP CCompoundCurveCollection::AddEx(CogoObjectID id, ICompoundCurve* ne
       return E_FAIL;
    }
 
-   // Hookup to the connection point
-   Advise(id,newVal);
-
-   Fire_OnCompoundCurveAdded(id,newVal);
-
 	return S_OK;
 }
 
 STDMETHODIMP CCompoundCurveCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnCompoundCurvesCleared();
 	return S_OK;
 }
 
@@ -317,79 +302,6 @@ STDMETHODIMP CCompoundCurveCollection::ID(CollectionIndexType index,CogoObjectID
    return S_OK;
 }
 
-////////////////////////////////////////////////
-
-STDMETHODIMP CCompoundCurveCollection::OnCompoundCurveChanged(ICompoundCurve* hc)
-{
-   CogoObjectID id;
-   HRESULT hr = FindID(hc,&id);
-
-   // This container only listens to events from point objects in this 
-   // container. If the id isn't found an error has been made somewhere
-   ATLASSERT( SUCCEEDED(hr) );
-
-   Fire_OnCompoundCurveChanged(id,hc);
-
-   return S_OK;
-}
-
-void CCompoundCurveCollection::Advise(CogoObjectID id,ICompoundCurve* hc)
-{
-   DWORD dwCookie;
-   CComPtr<ICompoundCurve> pCP(hc);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_ICompoundCurveEvents, &dwCookie );
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection point with CompoundCurve object\n");
-      return;
-   }
-
-   m_Cookies.insert( std::make_pair(id,dwCookie) );
-
-   InternalRelease(); // Break circular reference
-}
-
-void CCompoundCurveCollection::Unadvise(CogoObjectID id,ICompoundCurve* hc)
-{
-   ATLASSERT(hc != 0);
-
-   //
-   // Disconnection from connection point
-   //
-
-   // Lookup the cookie
-   std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( id );
-   if ( found == m_Cookies.end() )
-   {
-      ATLTRACE("Failed to disconnect connection point with CompoundCurve object\n");
-      return;
-   }
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( hc );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_ICompoundCurveEvents, &pCP );
-   DWORD dwCookie = (*found).second;
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   // Remove cookie from map
-   m_Cookies.erase( id );
-}
-
-void CCompoundCurveCollection::UnadviseAll()
-{
-   std::map<CogoObjectID,CComVariant>::iterator iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
-   {
-      CogoObjectID id = (*iter).first;
-      CComQIPtr<ICompoundCurve> hc( (*iter).second.pdispVal );
-      Unadvise(id,hc);
-   }
-}
 
 HRESULT CCompoundCurveCollection::CompoundCurveNotFound(CogoObjectID id)
 {

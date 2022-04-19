@@ -70,10 +70,15 @@ void CTestLineSegmentCollection::Test()
 
    CComPtr<IPoint2d> pnt;
    ls->get_StartPoint(&pnt);
-   TRY_TEST(pnt.IsEqualObject(start),true);
+   Float64 dist;
+   start->DistanceEx(pnt, &dist);
+   TRY_TEST(IsZero(dist), true);
+   // TRY_TEST(pnt.IsEqualObject(start),true); // COGO library is using "by value" semantics
    pnt.Release();
    ls->get_EndPoint(&pnt);
-   TRY_TEST(pnt.IsEqualObject(end),true);
+   end->DistanceEx(pnt, &dist);
+   TRY_TEST(IsZero(dist), true);
+   //TRY_TEST(pnt.IsEqualObject(end),true); // COGO library is using "by value" semantics
 
    pColl->Clear();
 
@@ -118,16 +123,20 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(pColl->get_Item(1,&ls),S_OK);
    pnt.Release();
    ls->get_StartPoint(&pnt);
-   TRY_TEST(pnt.IsEqualObject(start),true);
+   start->DistanceEx(pnt, &dist);
+   TRY_TEST(IsZero(dist), true);
+   // TRY_TEST(pnt.IsEqualObject(start),true); // COGO library is using "by value" semantics
    pnt.Release();
    ls->get_EndPoint(&pnt);
-   TRY_TEST(pnt.IsEqualObject(end),true);
+   end->DistanceEx(pnt, &dist);
+   TRY_TEST(IsZero(dist), true);
+   //TRY_TEST(pnt.IsEqualObject(end),true); // COGO library is using "by value" semantics
 
    // LineSegments in the container should be references. Change ls1 and see if ls changes
-   ls1->putref_StartPoint(end);
-   pnt.Release();
-   ls->get_StartPoint(&pnt);
-   TRY_TEST( pnt.IsEqualObject(end), true );
+   //ls1->put_StartPoint(end);
+   //pnt.Release();
+   //ls->get_StartPoint(&pnt);
+   //TRY_TEST( pnt.IsEqualObject(end), true );
 
    //
    // Test Remove
@@ -156,7 +165,7 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test putref_Item
+   // Test put_Item
    //
    TRY_TEST(pColl->AddEx(1,ls1),S_OK);
    TRY_TEST(pColl->AddEx(2,ls2),S_OK);
@@ -179,7 +188,7 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(pColl->FindID(ls4,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(ls4,&id),S_OK);
    TRY_TEST(id,4);
-   TRY_TEST(pColl->FindID(ls3,&id),E_FAIL); // ls3 is not part of collection, see putref_Item above
+   TRY_TEST(pColl->FindID(ls3,&id),E_FAIL); // ls3 is not part of collection, see put_Item above
 
    //
    // Test ID
@@ -239,62 +248,6 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(ls.IsEqualObject(ls4),true);
 
    //
-   // Factory
-   //
-   CComPtr<ILineSegment2dFactory> factory;
-   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
-   TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST(factory != nullptr,true);
-   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
-   TRY_TEST(pColl->putref_Factory(factory),S_OK);
-
-   //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestLineSegmentCollection>* pTestEvents;
-   CComObject<CTestLineSegmentCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestEvents);
-   TRY_TEST(AtlAdvise(pColl,punk,IID_ILineSegmentCollectionEvents,&dwCookie),S_OK);
-
-   // Add a LineSegment to the collection
-   pTestEvents->InitEventTest(1);
-   pColl->AddEx(1,ls1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change a LineSegment... Event should fire
-   pTestEvents->InitEventTest(1);
-   ls1->putref_StartPoint(start);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   pColl->AddEx(2,ls2);
-   pColl->AddEx(3,ls3);
-   pColl->AddEx(4,ls4);
-
-   // Remove a LineSegment
-   pTestEvents->InitEventTest(3);
-   pColl->Remove(3);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change LineSegment references
-   pTestEvents->InitEventTest(2);
-   pColl->putref_Item(2,ls4);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-
-   TRY_TEST(AtlUnadvise(pColl,IID_ILineSegmentCollectionEvents,dwCookie),S_OK);
-   pTestEvents->Release();
-
-   //
    // Test ISupportErrorInfo
    //
    CComQIPtr<ISupportErrorInfo> eInfo(pColl);
@@ -305,38 +258,4 @@ void CTestLineSegmentCollection::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_LineSegmentCollection,IID_ILineSegmentCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_LineSegmentCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentChanged(CogoObjectID id,ILineSegment2d* lineSeg)
-{
-//   MessageBox(nullptr,"LineSegmentChanged","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentAdded(CogoObjectID id,ILineSegment2d* lineSeg)
-{
-//   MessageBox(nullptr,"LineSegmentAdded","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentRemoved(CogoObjectID id)
-{
-//   MessageBox(nullptr,"LineSegmentRemoved","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentsCleared()
-{
-//   MessageBox(nullptr,"LineSegmentCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

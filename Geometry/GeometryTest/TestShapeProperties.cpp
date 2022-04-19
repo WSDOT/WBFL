@@ -159,7 +159,7 @@ void CTestShapeProperties::Test()
    //
    TRY_TEST( props->get_PrincipleDirection(nullptr), E_POINTER );
    TRY_TEST( props->get_PrincipleDirection(&val), S_OK );
-   TRY_TEST( IsEqual( val, 0.336452), true );
+   TRY_TEST( IsEqual( val, 0.33645), true );
 
    //
    // Principle Values
@@ -357,7 +357,7 @@ void CTestShapeProperties::Test()
    TRY_TEST( IsEqual(val,area), true );
 
    props->get_Orientation(&val);
-   TRY_TEST( IsEqual(val, 0.336452), true );
+   TRY_TEST( IsEqual(val, 0.33645), true );
 
    pntVal.Release();
    props->get_Centroid(&pntVal);
@@ -391,7 +391,7 @@ void CTestShapeProperties::Test()
    TRY_TEST( IsEqual(val,area), true );
 
    props->get_Orientation(&val);
-   TRY_TEST( IsEqual(val, 0.336452), true );
+   TRY_TEST( IsEqual(val, 0.33645), true );
 
    pntVal.Release();
    props->get_Centroid(&pntVal);
@@ -416,7 +416,6 @@ void CTestShapeProperties::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_ShapeProperties ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShapeProperties ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 }
 

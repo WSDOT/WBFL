@@ -29,12 +29,10 @@
 
 #include "resource.h"       // main symbols
 #include "Collections.h"
-#include "COGOCP.h"
 
-typedef std::pair<DWORD,CComVariant> SurfaceType;
-typedef std::vector<SurfaceType> Surfaces;
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<SurfaceType,VARIANT>, Surfaces > SurfacesEnum;
-typedef ICollectionOnSTLImpl<ISurfaceCollection, Surfaces, VARIANT, CopyFromPair2<SurfaceType,VARIANT>,SurfacesEnum> ISurfaceColl;
+typedef CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> > SurfacesEnum;
+typedef ICollectionOnSTLImpl<ISurfaceCollection, std::vector<CComVariant>, VARIANT, _Copy<VARIANT>, SurfacesEnum> ISurfaceColl;
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CSurfaceCollection
@@ -44,11 +42,8 @@ class ATL_NO_VTABLE CSurfaceCollection :
 	public CComCoClass<CSurfaceCollection, &CLSID_SurfaceCollection>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CSurfaceCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CSurfaceCollection>,
 	public ISurfaceColl,
-   public ISurfaceEvents,
    public IStructuredStorage2,
-   public CProxyDSurfaceCollectionEvents< CSurfaceCollection >,
    public IPersistImpl<CSurfaceCollection>
 {
 public:
@@ -67,18 +62,9 @@ BEGIN_COM_MAP(CSurfaceCollection)
    COM_INTERFACE_ENTRY(ISurfaceCollection)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY(ISurfaceEvents)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CSurfaceCollection)
-CONNECTION_POINT_ENTRY(IID_ISurfaceCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
 
    CComBSTR GetCollectionName() { return CComBSTR("Surfaces"); }
@@ -110,17 +96,9 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// ISurfaceEvents
-public:
-   STDMETHOD(OnSurfaceChanged)(/*[in]*/ ISurface* widening) override;
-
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-
-   void AdviseElement(ISurface* pSurface,DWORD* pdwCookie);
-   void UnadviseElement(CollectionIndexType idx);
-   void UnadviseAll();
 
    HRESULT ValidateStation(VARIANT varStation,bool bClone,IStation** station);
 

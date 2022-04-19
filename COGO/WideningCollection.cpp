@@ -42,10 +42,10 @@ class SortWidenings
 {
 public:
    SortWidenings(IProfile* pProfile) { m_pProfile = pProfile; }
-   bool operator()(WideningType& pX,WideningType& pY)
+   bool operator()(CComVariant& pX, CComVariant& pY)
    {
-      CComVariant& varX = pX.second;
-      CComVariant& varY = pY.second;
+      CComVariant& varX = pX;
+      CComVariant& varY = pY;
       CComPtr<IStation> staX, staY;
       
       CComQIPtr<IWidening> csX(varX.pdispVal);
@@ -69,7 +69,6 @@ HRESULT CWideningCollection::FinalConstruct()
 
 void CWideningCollection::FinalRelease()
 {
-   UnadviseAll();
 }
 
 STDMETHODIMP CWideningCollection::InterfaceSupportsErrorInfo(REFIID riid)
@@ -127,8 +126,8 @@ STDMETHODIMP CWideningCollection::get_Item(CollectionIndexType idx, IWidening* *
    if ( !IsValidIndex(idx,m_coll) )
       return E_INVALIDARG;
 
-   WideningType& p = m_coll[idx];
-   CComVariant& varItem = p.second;
+   CComVariant& p = m_coll[idx];
+   CComVariant& varItem = p;
    varItem.pdispVal->QueryInterface(pVal);
    return S_OK;
 }
@@ -147,22 +146,11 @@ STDMETHODIMP CWideningCollection::putref_Item(CollectionIndexType idx,IWidening*
    //   return hr;
 
    // Get the item
-   WideningType& cst = m_coll[idx];
-   CComVariant& var = cst.second; // Variant holding IDispatch to Widening
+   CComVariant& cst = m_coll[idx];
+   CComVariant& var = cst; // Variant holding IDispatch to Widening
    pVal->putref_Surface(m_pSurface);
 
-   UnadviseElement(idx); // Unadvise from the current element
-
    var = pVal; // Associate new Widening with this variant
-
-   // Advise
-   DWORD dwCookie;
-   AdviseElement(pVal,&dwCookie);
-
-   // Update the cookie
-   cst.first = dwCookie;
-
-   Fire_OnWideningChanged(pVal);
 
    return S_OK;
 }
@@ -184,11 +172,11 @@ STDMETHODIMP CWideningCollection::GetWidening(VARIANT varStation,IWidening** wid
       m_pSurface->get_Profile(&profile); 
    }
 
-   Widenings::iterator iter(m_coll.begin());
-   Widenings::iterator end(m_coll.end());
+   auto iter(m_coll.begin());
+   auto end(m_coll.end());
    for ( ; iter != end; iter++ )
    {
-      CComQIPtr<IWidening> thisWidening(iter->second.pdispVal);
+      CComQIPtr<IWidening> thisWidening(iter->pdispVal);
 
       CComPtr<IStation> startStation,endStation;
       thisWidening->get_BeginTransition(&startStation);
@@ -219,9 +207,7 @@ STDMETHODIMP CWideningCollection::AddEx(IWidening* widening)
 
    widening->putref_Surface(m_pSurface);
 
-   DWORD dwCookie;
-   AdviseElement(widening,&dwCookie);
-   m_coll.emplace_back(dwCookie,CComVariant(widening));
+   m_coll.emplace_back(CComVariant(widening));
 
    CComPtr<IProfile> profile;
    if ( m_pSurface )
@@ -231,7 +217,6 @@ STDMETHODIMP CWideningCollection::AddEx(IWidening* widening)
 
    std::sort(std::begin(m_coll),std::end(m_coll),SortWidenings(profile));
 
-   Fire_OnWideningAdded(widening);
    return S_OK;
 }
 
@@ -265,17 +250,13 @@ STDMETHODIMP CWideningCollection::Remove(CollectionIndexType idx)
    if ( idx < 0 || m_coll.size() <= idx )
       return E_INVALIDARG;
 
-   UnadviseElement(idx);
    m_coll.erase(m_coll.begin() + idx );
-   Fire_OnWideningRemoved();
    return S_OK;
 }
 
 STDMETHODIMP CWideningCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnWideningsCleared();
    return S_OK;
 }
 
@@ -315,14 +296,6 @@ STDMETHODIMP CWideningCollection::get_StructuredStorage(IStructuredStorage2* *pS
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// IWideningEvents
-STDMETHODIMP CWideningCollection::OnWideningChanged(IWidening * pWidening)
-{
-   Fire_OnWideningChanged(pWidening);
-   return S_OK;
-}
-
 STDMETHODIMP CWideningCollection::get__EnumWidenings(IEnumWidenings** retval)
 {
    CHECK_RETOBJ(retval);
@@ -330,8 +303,8 @@ STDMETHODIMP CWideningCollection::get__EnumWidenings(IEnumWidenings** retval)
    typedef CComEnumOnSTL<IEnumWidenings,
                          &IID_IEnumWidenings, 
                          IWidening*,
-                         CopyFromPair2Interface<WideningType,IWidening*>, 
-                         std::vector<WideningType>> Enum;
+                         _CopyVariantToInterface<IWidening>,
+                         std::vector<CComVariant>> Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -356,7 +329,7 @@ STDMETHODIMP CWideningCollection::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
    for ( CollectionIndexType i = 0; i < count; i++ )
    {
-      pSave->put_Property(CComBSTR("Widening"),m_coll[i].second);
+      pSave->put_Property(CComBSTR("Widening"),m_coll[i]);
    }
 
    return S_OK;
@@ -384,55 +357,6 @@ STDMETHODIMP CWideningCollection::Load(IStructuredLoad2* pLoad)
    pLoad->EndUnit(&bEnd);
 
    return S_OK;
-}
-
-//////////////////////////////////////////
-// Helper methods
-
-void CWideningCollection::AdviseElement(IWidening* widening,DWORD* pdwCookie)
-{
-   CComPtr<IWidening> pCP(widening);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_IWideningEvents, pdwCookie );
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      ATLTRACE("Failed to establish connection point with Widening object\n");
-      return;
-   }
-
-   InternalRelease(); // Break circular reference
-}
-
-void CWideningCollection::UnadviseElement(CollectionIndexType idx)
-{
-   //
-   // Disconnection from connection Widening
-   //
-   WideningType& p = m_coll[idx];
-   if ( p.first == 0 )
-      return;
-
-   DWORD dwCookie = p.first;
-   CComVariant& var = p.second;
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( var.pdispVal );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_IWideningEvents, &pCP );
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   p.first = 0;
-}
-
-void CWideningCollection::UnadviseAll()
-{
-   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
-   {
-      UnadviseElement(i);
-   }
 }
 
 HRESULT CWideningCollection::OnBeforeSave(IStructuredSave2* pSave)

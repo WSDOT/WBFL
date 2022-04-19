@@ -455,15 +455,6 @@
 #define IDH_ITriangle_XYPosition                         3005
 #define IDH_ITriangle_Shape                              3006
 
-#define IDH_IShapeCollection                             3200
-#define IDH_IShapeCollection__Enum                       3201
-#define IDH_IShapeCollection_Add                         3202
-#define IDH_IShapeCollection_Clear                       3203
-#define IDH_IShapeCollection_Count                       3204
-#define IDH_IShapeCollection_Item                        3205
-#define IDH_IShapeCollection_Remove                      3206
-#define IDH_IShapeCollection_ShapeProperties             3207
-
 #define IDH_IEnumShape                                   3300
 #define IDH_IEnumShape_Clone                             3301
 #define IDH_IEnumShape_Next                              3302

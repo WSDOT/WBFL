@@ -31,7 +31,6 @@
 #include "Direction.h"
 #include <WBFLCogo\CogoHelpers.h>
 #include <WBFLGeometry\GeomHelpers.h>
-#include "PointFactory.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -64,50 +63,50 @@ void CTransitionCurve::FinalRelease()
 
 void CTransitionCurve::Advise(IPoint2d* pnt,DWORD* pdwCookie)
 {
-   CComPtr<IConnectionPointContainer> pCPC;
-   CComPtr<IConnectionPoint> pCP;
-   HRESULT hr;
-   hr = pnt->QueryInterface(&pCPC);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
+   //CComPtr<IConnectionPointContainer> pCPC;
+   //CComPtr<IConnectionPoint> pCP;
+   //HRESULT hr;
+   //hr = pnt->QueryInterface(&pCPC);
+   //if ( FAILED(hr) )
+   //{
+   //   *pdwCookie = 0;
+   //   return;
+   //}
 
-   hr = pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
+   //hr = pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
+   //if ( FAILED(hr) )
+   //{
+   //   *pdwCookie = 0;
+   //   return;
+   //}
 
-   pCP->Advise(GetUnknown(),pdwCookie);
-   
-   InternalRelease();
+   //pCP->Advise(GetUnknown(),pdwCookie);
+   //
+   //InternalRelease();
 }
 
 void CTransitionCurve::Unadvise(IPoint2d* pnt,DWORD* pdwCookie)
 {
-   InternalAddRef();
+   //InternalAddRef();
 
-   CComPtr<IConnectionPointContainer> pCPC;
-   CComPtr<IConnectionPoint> pCP;
-   HRESULT hr;
-   hr = pnt->QueryInterface(&pCPC);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
+   //CComPtr<IConnectionPointContainer> pCPC;
+   //CComPtr<IConnectionPoint> pCP;
+   //HRESULT hr;
+   //hr = pnt->QueryInterface(&pCPC);
+   //if ( FAILED(hr) )
+   //{
+   //   *pdwCookie = 0;
+   //   return;
+   //}
 
-   hr = pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
+   //hr = pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
+   //if ( FAILED(hr) )
+   //{
+   //   *pdwCookie = 0;
+   //   return;
+   //}
 
-   pCP->Unadvise(*pdwCookie);
+   //pCP->Unadvise(*pdwCookie);
 }
 
 STDMETHODIMP CTransitionCurve::InterfaceSupportsErrorInfo(REFIID riid)
@@ -258,15 +257,13 @@ HRESULT CTransitionCurve::Init(IPoint2d* pStartPoint, IDirection* pStartDirectio
    Bearing(m_L, &m_EndDirection);
 
    m_PI.Release();
-   cogoUtil::IntersectBearings(m_StartPoint, CComVariant(m_StartDirection), 0.0, m_EndPoint, CComVariant(m_EndDirection), 0.0, m_PointFactory, &m_PI);
+   cogoUtil::IntersectBearings(m_StartPoint, CComVariant(m_StartDirection), 0.0, m_EndPoint, CComVariant(m_EndDirection), 0.0, &m_PI);
 
    Float64 d1, d2;
    m_StartPoint->DistanceEx(m_PI, &d1);
    m_EndPoint->DistanceEx(m_PI, &d2);
    m_U = Max(d1, d2); // long tangent
    m_V = Min(d1, d2); // short tangent
-
-   Fire_OnTransitionCurveChanged(this);
 
    return S_OK;
 }
@@ -418,14 +415,7 @@ STDMETHODIMP CTransitionCurve::PointOnCurve(Float64 distanceFromStart, IPoint2d*
    Float64 y_ = m_Sign*m_SignY*SpiralY(s, sweepAngle);
 
    CComPtr<IPoint2d> pnt;
-   if (m_PointFactory)
-   {
-       m_PointFactory->CreatePoint(&pnt);
-   }
-   else
-   {
-       pnt.CoCreateInstance(CLSID_Point2d);
-   }
+    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(x_, y_);
 
    geomUtil::XformToOriginal(m_SpiralOrigin, m_SpiralRotation, pnt);
@@ -494,7 +484,7 @@ STDMETHODIMP CTransitionCurve::ProjectPoint(IPoint2d* point, IPoint2d** pNewPoin
       line->ThroughPoints(m_StartPoint, pi);
 
       // compute offset from "point" to the back tangent (used to determine if it is closer to the back tangent than other points on the curve)
-      geomUtil::PointOnLineNearest(line, point, m_PointFactory, &bkTangentPoint);
+      geomUtil::PointOnLineNearest(line, point, &bkTangentPoint);
       point->DistanceEx(bkTangentPoint, &bkTangentOffset); // distance from the point to where it projects onto the back tangent
 
                                                            // compute distance along the back tangent to the projection point
@@ -531,7 +521,7 @@ STDMETHODIMP CTransitionCurve::ProjectPoint(IPoint2d* point, IPoint2d** pNewPoin
       line.CoCreateInstance(CLSID_Line2d);
       line->ThroughPoints(pi, m_EndPoint);
 
-      geomUtil::PointOnLineNearest(line, point, m_PointFactory, &fwdTangentPoint);
+      geomUtil::PointOnLineNearest(line, point, &fwdTangentPoint);
       point->DistanceEx(fwdTangentPoint, &fwdTangentOffset); // distance from the point to where it projects onto the foward tangent
 
                                                              // compute distance along the forard tangent to the projection point
@@ -625,13 +615,13 @@ STDMETHODIMP CTransitionCurve::Intersect(ILine2d* line, VARIANT_BOOL bProjectBac
       seg1.CoCreateInstance(CLSID_LineSegment2d);
       seg1->ThroughPoints(m_StartPoint, SPI);
       CComPtr<IPoint2d> pnt1;
-      geomUtil::IntersectLineWithLineSegment(line, seg1, m_PointFactory, &pnt1);
+      geomUtil::IntersectLineWithLineSegment(line, seg1, &pnt1);
 
       CComPtr<ILineSegment2d> seg2;
       seg2.CoCreateInstance(CLSID_LineSegment2d);
       seg2->ThroughPoints(SPI, m_EndPoint);
       CComPtr<IPoint2d> pnt2;
-      geomUtil::IntersectLineWithLineSegment(line, seg2, m_PointFactory, &pnt2);
+      geomUtil::IntersectLineWithLineSegment(line, seg2, &pnt2);
 
       if (pnt1 && pnt2)
       {
@@ -712,7 +702,7 @@ STDMETHODIMP CTransitionCurve::Intersect(ILine2d* line, VARIANT_BOOL bProjectBac
    {
        CComPtr<ILine2d> bkTangentLine;
        GetBkTangentLine(&bkTangentLine);
-       geomUtil::LineLineIntersect(line, bkTangentLine, m_PointFactory, &bkTangentPoint);
+       geomUtil::LineLineIntersect(line, bkTangentLine, &bkTangentPoint);
 
        // if there was an intersection point and the point is before the start of the Start-SPI line
        // then this is an intersection on the back tangent projection 
@@ -726,7 +716,7 @@ STDMETHODIMP CTransitionCurve::Intersect(ILine2d* line, VARIANT_BOOL bProjectBac
    {
        CComPtr<ILine2d> fwdTangentLine;
        GetFwdTangentLine(&fwdTangentLine);
-       geomUtil::LineLineIntersect(line, fwdTangentLine, m_PointFactory, &fwdTangentPoint);
+       geomUtil::LineLineIntersect(line, fwdTangentLine, &fwdTangentPoint);
 
        // if there was an intersection point and the point is after the end of the SPI-End line
        // then this is an intersection on the forward tangent projection 
@@ -757,24 +747,9 @@ STDMETHODIMP CTransitionCurve::Offset(Float64 dx,Float64 dy)
    m_StartPoint->Offset(dx, dy);
    m_EndPoint->Offset(dx, dy);
 
-   Fire_OnTransitionCurveChanged(this);
+   m_PI->Offset(dx, dy);
+   m_SpiralOrigin->Offset(dx, dy);
 
-   return S_OK;
-}
-
-STDMETHODIMP CTransitionCurve::get_PointFactory(IPoint2dFactory* *factory)
-{
-   CHECK_RETOBJ(factory);
-   (*factory) = m_PointFactory;
-   (*factory)->AddRef();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTransitionCurve::putref_PointFactory(IPoint2dFactory *factory)
-{
-   CHECK_IN(factory);
-   m_PointFactory = factory;
    return S_OK;
 }
 
@@ -789,7 +764,6 @@ STDMETHODIMP CTransitionCurve::Clone(ITransitionCurve* *clone)
    (*clone)->AddRef();
 
    pClone->Init(m_StartPoint, m_StartDirection, m_r1, m_r2, m_L, m_Type);
-   pClone->m_PointFactory = m_PointFactory;
 
    return S_OK;
 }

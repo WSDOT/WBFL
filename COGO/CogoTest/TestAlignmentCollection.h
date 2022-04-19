@@ -35,33 +35,11 @@
 #endif // _MSC_VER > 1000
 
 class ATL_NO_VTABLE CTestAlignmentCollection :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IAlignmentCollectionEvents
+   public CComObjectRootEx<CComSingleThreadModel>
 {
 public:
 	static void Test();
 	CTestAlignmentCollection();
-
-   void InitEventTest(CogoObjectID expectedID) { m_expectedID = expectedID; m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestAlignmentCollection)
-   COM_INTERFACE_ENTRY(IAlignmentCollectionEvents)
-END_COM_MAP()
-
-// IAlignmentCollectionEvents
-public:
-	STDMETHOD(OnAlignmentChanged)(IAlignmentCollection* coll,CogoObjectID key,IAlignment* Alignment);
-	STDMETHOD(OnAlignmentAdded)(IAlignmentCollection* coll,CogoObjectID key,IAlignment* Alignment);
-	STDMETHOD(OnAlignmentRemoved)(IAlignmentCollection* coll,CogoObjectID key);
-	STDMETHOD(OnAlignmentsCleared)(IAlignmentCollection* coll);
-	STDMETHOD(OnProfileChanged)(IAlignmentCollection* coll,IProfile* profile);
-	STDMETHOD(OnStationEquationsChanged)(IAlignmentCollection* coll,IStationEquationCollection* equations);
-
-private:
-   bool m_bTestState;
-   CogoObjectID m_expectedID;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTAlignmentCOLLECTION_H__B9E4933B_5E73_11D5_8C32_006097C68A9C__INCLUDED_)

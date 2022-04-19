@@ -63,8 +63,8 @@ void CTestCoordinateXform3d::Test()
    origin->put_Y(5);
    origin->put_Z(5);
 
-   TRY_TEST( pXform->putref_NewOrigin(nullptr), E_INVALIDARG );
-   TRY_TEST( pXform->putref_NewOrigin(origin), S_OK );
+   TRY_TEST( pXform->put_NewOrigin(nullptr), E_INVALIDARG );
+   TRY_TEST( pXform->put_NewOrigin(origin), S_OK );
 
    CComPtr<IPoint3d> o;
    TRY_TEST( pXform->get_NewOrigin(nullptr), E_POINTER );
@@ -83,8 +83,8 @@ void CTestCoordinateXform3d::Test()
    rv->put_Y(5);
    rv->put_Z(5);
 
-   TRY_TEST( pXform->putref_RotationVector(nullptr), E_INVALIDARG );
-   TRY_TEST( pXform->putref_RotationVector(rv), S_OK );
+   TRY_TEST( pXform->put_RotationVector(nullptr), E_INVALIDARG );
+   TRY_TEST( pXform->put_RotationVector(rv), S_OK );
 
    CComPtr<IVector3d> vec;
    TRY_TEST( pXform->get_RotationVector(nullptr), E_POINTER );
@@ -106,10 +106,17 @@ void CTestCoordinateXform3d::Test()
    origin->put_X(7);
    origin->put_Y(-4);
    origin->put_Z(0);
+   pXform->put_NewOrigin(origin);
 
    rv->put_X(0);
    rv->put_Y(0);
    rv->put_Z(0);
+   TRY_TEST(pXform->put_RotationVector(rv), GEOMETRY_E_ZEROMAGNITUDE);
+
+   rv->put_X(0);
+   rv->put_Y(0);
+   rv->put_Z(1);
+   pXform->put_RotationVector(rv);
 
    pXform->put_RotationAngle(27*M_PI/180);
 
@@ -119,10 +126,6 @@ void CTestCoordinateXform3d::Test()
 
    pnt.CoCreateInstance( CLSID_Point3d );
    pnt->Move( -9,7,0 );
-   TRY_TEST( pXform->Xform( &pnt.p, xfrmOldToNew ), GEOMETRY_E_ZEROMAGNITUDE ); // Rotation Vector is zero
-   rv->put_X(0);
-   rv->put_Y(0);
-   rv->put_Z(1);
 
    CComPtr<IPoint3d> result;
    TRY_TEST( pXform->XformEx( nullptr, xfrmOldToNew, &result ), E_INVALIDARG );
@@ -199,10 +202,12 @@ void CTestCoordinateXform3d::Test()
    origin->put_X(7);
    origin->put_Y(0);
    origin->put_Z(-4);
+   pXform->put_NewOrigin(origin);
 
    rv->put_X(0);
    rv->put_Y(-1);
    rv->put_Z(0);
+   pXform->put_RotationVector(rv);
 
    pnt->Move( -9,0,7 );
    TRY_TEST( pXform->Xform( &pnt.p, xfrmOldToNew ), S_OK );
@@ -227,10 +232,12 @@ void CTestCoordinateXform3d::Test()
    origin->put_X(0);
    origin->put_Y(7);
    origin->put_Z(-4);
+   pXform->put_NewOrigin(origin);
 
    rv->put_X(1);
    rv->put_Y(0);
    rv->put_Z(0);
+   pXform->put_RotationVector(rv);
 
    pnt->Move( 0,-9,7 );
    TRY_TEST( pXform->Xform( &pnt.p, xfrmOldToNew ), S_OK );
@@ -255,9 +262,13 @@ void CTestCoordinateXform3d::Test()
    origin->put_X(2.45);
    origin->put_Y(4.00);
    origin->put_Z(4.25);
+   pXform->put_NewOrigin(origin);
+
    rv->put_X(0);
    rv->put_Y(-1);
    rv->put_Z(-1);
+   pXform->put_RotationVector(rv);
+
    pXform->put_RotationAngle(62.5*M_PI/180);
 
    pnt->Move(3.9,2.1,7.0);
@@ -304,7 +315,6 @@ void CTestCoordinateXform3d::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_CoordinateXform3d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICoordinateXform3d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
 }

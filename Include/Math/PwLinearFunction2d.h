@@ -33,7 +33,7 @@
 #include <Math\MathExp.h>
 #include <Math\Function2d.h>
 #include <Math\1dRange.h>
-#include <GeometricPrimitives\GeometricPrimitives.h>
+#include <GeomModel/GeomModel.h>
 
 // LOCAL INCLUDES
 //
@@ -90,12 +90,12 @@ public:
    //------------------------------------------------------------------------
    // GetPoint
    // Returns the ith point. (zero-based)
-   virtual gpPoint2d GetPoint(CollectionIndexType pnum) const = 0;
+   virtual WBFL::Geometry::Point2d GetPoint(CollectionIndexType pnum) const = 0;
 
    //------------------------------------------------------------------------
    // GetPoints
    // Returns all points for the line segments which make up the function.
-   virtual std::vector<gpPoint2d> GetPoints() const = 0;
+   virtual std::vector<WBFL::Geometry::Point2d> GetPoints() const = 0;
 
 protected:
    // Prevent accidental copying and assignment

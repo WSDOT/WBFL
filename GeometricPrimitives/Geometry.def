@@ -1,2 +1,0 @@
-LIBRARY        WBFLGeometricPrimitives.dll
-EXPORTS  UnitTest @1

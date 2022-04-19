@@ -144,6 +144,11 @@ IDR_GENERICSHAPE        REGISTRY DISCARDABLE    "GenericShape.rgs"
 IDR_BEAMSHAPEFACTORY    REGISTRY DISCARDABLE    "BeamShapeFactory.rgs"
 IDR_NUDECKEDIBEAM       REGISTRY DISCARDABLE    "NUDeckedIBeam.rgs"
 IDR_PCIDECKEDIBEAM      REGISTRY DISCARDABLE    "PCIDeckedIBeam.rgs"
+IDR_ELASTICPROPERTIES   REGISTRY DISCARDABLE    "ElasticProperties.rgs"
+IDR_MASSPROPERTIES      REGISTRY DISCARDABLE    "MassProperties.rgs"
+IDR_COMPOSITEBEAM       REGISTRY DISCARDABLE    "CompositeBeam.rgs"
+IDR_COMPOSITESECTIONITEMEX REGISTRY DISCARDABLE    "CompositeSectionItemEx.rgs"
+IDR_COMPOSITESECTIONEX    REGISTRY DISCARDABLE    "CompositeSectionEx.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //

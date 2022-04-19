@@ -22,14 +22,12 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+#pragma once
 
 // Point3d.h : Declaration of the CPoint3d
 
-#ifndef __POINT3D_H_
-#define __POINT3D_H_
-
 #include "resource.h"       // main symbols
-#include "GeometryCP.h"
+#include <GeomModel/Primitives3d.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CPoint3d
@@ -38,19 +36,15 @@ class ATL_NO_VTABLE CPoint3d :
 	public CComCoClass<CPoint3d, &CLSID_Point3d>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CPoint3d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public IPoint3d,
-   public IStructuredStorage2,
-   public IPersist,
-   public CProxyDPoint3dEvents< CPoint3d >,
-   public IConnectionPointContainerImpl<CPoint3d>
+   public IPoint3d
 {
 public:
 	CPoint3d()
 	{
-      m_X = 0.00;
-      m_Y = 0.00;
-      m_Z = 0.00;
 	}
+
+   std::shared_ptr<WBFL::Geometry::Point3d>& GetPoint() { return m_pPoint; }
+   void SetPoint(std::shared_ptr<WBFL::Geometry::Point3d>& point) { m_pPoint = point; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_POINT3D)
 
@@ -58,21 +52,12 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CPoint3d)
 	COM_INTERFACE_ENTRY(IPoint3d)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 END_COM_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CPoint3d)
-	CONNECTION_POINT_ENTRY(IID_IPoint3dEvents)
-END_CONNECTION_POINT_MAP()
-
 private:
-   Float64 m_X;
-   Float64 m_Y;
-   Float64 m_Z;
+   std::shared_ptr<WBFL::Geometry::Point3d> m_pPoint{ std::make_shared<WBFL::Geometry::Point3d>() };
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -84,7 +69,6 @@ public:
    STDMETHOD(DistanceEx)(/*[in]*/IPoint3d* pOther,/*[out,retval]*/Float64* pDistance) override;
    STDMETHOD(Location)(/*[out]*/Float64* pX,/*[out]*/Float64* pY,/*[out]*/Float64* pZ) override;
    STDMETHOD(SameLocation)(/*[in]*/IPoint3d* pOther) override;
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 cz, /*[in]*/ IVector3d* vector,/*[in]*/ Float64 angle) override;
    STDMETHOD(RotateEx)(/*[in]*/ IPoint3d* center,/*[in]*/ IVector3d* vector,/*[in]*/ Float64 angle) override;
 	STDMETHOD(OffsetEx)(/*[in]*/ ISize3d* pSize) override;
@@ -97,16 +81,4 @@ public:
 	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_X)(/*[in]*/ Float64 newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
 };
-
-#endif //__POINT3D_H_

@@ -40,7 +40,6 @@
 #include "WBFLCogo_i.c"
 #include "WBFLGeometry_i.c"
 #include "WBFLBridgeGeometry_i.c"
-#include "WBFLSections_i.c"
 
 #include "GenericBridgeImpl.h"
 #include "BridgePier.h"

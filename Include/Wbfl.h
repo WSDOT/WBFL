@@ -45,7 +45,7 @@
 #endif // USE_WBFL_DEPRECIATED
 
 #include <EngTools\EngTools.h>
-#include <GeometricPrimitives\GeometricPrimitives.h>
+#include <GeomModel/GeomModel.h>
 #include <GeomModel\GeomModel.h>
 #include <GraphicsLib\GraphicsLib.h>
 #include <LibraryFw\LibraryFw.h>

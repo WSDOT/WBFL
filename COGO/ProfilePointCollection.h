@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 #include "Collections.h"
 
 class CProfilePointCollection;
@@ -41,10 +40,7 @@ typedef PersistentIDCollection<CProfilePointCollection,IProfilePointCollection,&
 class ATL_NO_VTABLE CProfilePointCollection : 
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CProfilePointCollection, &CLSID_ProfilePointCollection>,
-	public IConnectionPointContainerImpl<CProfilePointCollection>,
-	public ProfilePointCollectionImpl,
-   public IProfilePointEvents,
-   public CProxyDProfilePointCollectionEvents< CProfilePointCollection >
+	public ProfilePointCollectionImpl
 {
 public:
 	CProfilePointCollection()
@@ -59,17 +55,9 @@ DECLARE_REGISTRY_RESOURCEID(IDR_PROFILEPOINTCOLLECTION)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CProfilePointCollection)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY(IProfilePointEvents)
-
+   COM_INTERFACE_ENTRY(IProfilePointCollection)
    COM_INTERFACE_ENTRY_CHAIN(ProfilePointCollectionImpl)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CProfilePointCollection)
-   CONNECTION_POINT_ENTRY(IID_IProfilePointCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
    CComBSTR GetCollectionName() { return CComBSTR("ProfilePoints"); }
    CComBSTR GetItemName() { return CComBSTR("ProfilePoint"); }
@@ -92,21 +80,12 @@ public:
 	STDMETHOD(FindID)(/*[in]*/ IProfilePoint* pp,/*[out,retval]*/CogoObjectID* ID) override;
 	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
 
-// IProfilePointEvents
-public:
-	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp) override;
-
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
    HRESULT ProfilePointNotFound(CogoObjectID id);
    HRESULT ProfilePointAlreadyDefined(CogoObjectID id);
    HRESULT ProfilePointIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
-
-   void Advise(CogoObjectID id,IProfilePoint* pp);
-   void Unadvise(CogoObjectID id,IProfilePoint* pp);
-   void UnadviseAll();
-   std::map<CogoObjectID,DWORD> m_Cookies;
 
    CComPtr<IProfilePointFactory> m_Factory;
 };

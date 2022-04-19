@@ -91,12 +91,12 @@ void CGraphManagerAgent::SortByName(bool bSort)
 
 bool CGraphManagerAgent::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
 {
-   return m_GraphManager.AddGraphBuilder(pGraphBuilder);
+   return m_GraphManager.AddGraphBuilder(graphBuilder);
 }
 
-bool CGraphManagerAgent::AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder)
+bool CGraphManagerAgent::AddGraphBuilder(std::unique_ptr<WBFL::Graphing::GraphBuilder>&& pGraphBuilder)
 {
-   return m_GraphManager.AddGraphBuilder(pGraphBuilder);
+   return m_GraphManager.AddGraphBuilder(std::move(pGraphBuilder));
 }
 
 IndexType CGraphManagerAgent::GetGraphBuilderCount() const
@@ -104,27 +104,27 @@ IndexType CGraphManagerAgent::GetGraphBuilderCount() const
    return m_GraphManager.GetGraphBuilderCount();
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(LPCTSTR strGraphName)
+std::unique_ptr<WBFL::Graphing::GraphBuilder>& CGraphManagerAgent::GetGraphBuilder(LPCTSTR strGraphName)
 {
    return m_GraphManager.GetGraphBuilder(strGraphName);
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(IndexType index)
+std::unique_ptr<WBFL::Graphing::GraphBuilder>& CGraphManagerAgent::GetGraphBuilder(CollectionIndexType index)
 {
    return m_GraphManager.GetGraphBuilder(index);
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(const std::_tstring& strGraphName)
+std::unique_ptr<WBFL::Graphing::GraphBuilder>& CGraphManagerAgent::GetGraphBuilder(const std::_tstring& strGraphName)
 {
    return m_GraphManager.GetGraphBuilder(strGraphName);
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManagerAgent::RemoveGraphBuilder(LPCTSTR strGraphName)
+bool CGraphManagerAgent::RemoveGraphBuilder(LPCTSTR strGraphName)
 {
    return m_GraphManager.RemoveGraphBuilder(strGraphName);
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManagerAgent::RemoveGraphBuilder(const std::_tstring& strGraphName)
+bool CGraphManagerAgent::RemoveGraphBuilder(const std::_tstring& strGraphName)
 {
    return m_GraphManager.RemoveGraphBuilder(strGraphName);
 }

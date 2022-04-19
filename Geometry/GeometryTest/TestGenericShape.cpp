@@ -155,7 +155,7 @@ void CTestGenericShape::TestIShape()
    TRY_TEST( shape.CoCreateInstance( CLSID_GenericShape ), S_OK );
 
    CComQIPtr<IGenericShape> generic_shape(shape);
-   TRY_TEST( generic_shape != 0, true );
+   TRY_TEST( generic_shape != nullptr, true );
 
    CComPtr<IPoint2d> hookPnt;
    generic_shape->get_Centroid(&hookPnt);
@@ -286,7 +286,7 @@ void CTestGenericShape::TestIShape()
    TRY_TEST( shape->Clone(&clone), S_OK );
 
    CComQIPtr<IGenericShape> generic_shape_clone(clone);
-   TRY_TEST( generic_shape_clone != 0, true );
+   TRY_TEST( generic_shape_clone != nullptr, true );
    pnt.Release();
    generic_shape_clone->get_Centroid(&pnt);
    pnt->get_X(&x);
@@ -334,8 +334,8 @@ void CTestGenericShape::TestIShape()
    coll.Release();
    Enum.Release();
 
-   for ( ULONG i = 0; i < fetched; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
@@ -397,8 +397,8 @@ void CTestGenericShape::TestIShape()
 
    coll.Release();
    Enum.Release();
-   for ( ULONG i = 0; i < fetched; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST( clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
@@ -489,7 +489,7 @@ void CTestGenericShape::TestIXYPosition()
    TRY_TEST( position.CoCreateInstance( CLSID_GenericShape ), S_OK );
 
    CComQIPtr<IGenericShape> generic_shape(position);
-   TRY_TEST( generic_shape != 0, true );
+   TRY_TEST( generic_shape != nullptr, true );
 
    CComQIPtr<IShape> shape(position);
 
@@ -750,13 +750,12 @@ void CTestGenericShape::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_GenericShape ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IGenericShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

@@ -96,7 +96,7 @@ STDMETHODIMP CGeneralSection::get_ShapeCount(CollectionIndexType* nShapes)
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::put_PrimaryShape(IndexType shapeIdx)
+STDMETHODIMP CGeneralSection::put_GirderShape(IndexType shapeIdx)
 {
    if (m_SectionItems.size() <= shapeIdx)
       return E_INVALIDARG;
@@ -105,7 +105,7 @@ STDMETHODIMP CGeneralSection::put_PrimaryShape(IndexType shapeIdx)
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::get_PrimaryShape(IndexType* pShapeIdx)
+STDMETHODIMP CGeneralSection::get_GirderShape(IndexType* pShapeIdx)
 {
    CHECK_RETVAL(pShapeIdx);
    ATLASSERT(m_PrimaryShapeIdx != INVALID_INDEX); // did you forget to designate one shape as the primary???

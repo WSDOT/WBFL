@@ -30,7 +30,6 @@
 #define __VERTCURVECOLLECTION_H_
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 #include "Collections.h"
 
 class CVertCurveCollection;
@@ -42,10 +41,7 @@ class ATL_NO_VTABLE CVertCurveCollection :
 	public CComObjectRootEx<CComSingleThreadModel>,
 //   public CComRefCountTracer<CVertCurveCollection,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CVertCurveCollection, &CLSID_VertCurveCollection>,
-	public IConnectionPointContainerImpl<CVertCurveCollection>,
-	public VertCurveCollectionImpl,
-   public IVertCurveEvents,
-   public CProxyDVertCurveCollectionEvents< CVertCurveCollection >
+	public VertCurveCollectionImpl
 {
 public:
 	CVertCurveCollection()
@@ -60,18 +56,9 @@ DECLARE_REGISTRY_RESOURCEID(IDR_VERTCURVECOLLECTION)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CVertCurveCollection)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY(IVertCurveEvents)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
+	COM_INTERFACE_ENTRY(IVertCurveCollection)
    COM_INTERFACE_ENTRY_CHAIN(VertCurveCollectionImpl)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CVertCurveCollection)
-	CONNECTION_POINT_ENTRY(IID_IVertCurveCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
    CComBSTR GetCollectionName() { return CComBSTR("VertCurves"); }
    CComBSTR GetItemName() { return CComBSTR("VertCurve"); }
@@ -94,21 +81,12 @@ public:
 	STDMETHOD(FindID)(/*[in]*/ IVertCurve* vc,/*[out,retval]*/CogoObjectID* ID) override;
 	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
 
-// IVertCurveEvents
-public:
-	STDMETHOD(OnVertCurveChanged)(IVertCurve* vc) override;
-
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
    HRESULT VertCurveNotFound(CogoObjectID id);
    HRESULT VertCurveAlreadyDefined(CogoObjectID id);
    HRESULT VertCurveIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
-
-   void Advise(CogoObjectID id,IVertCurve* vc);
-   void Unadvise(CogoObjectID id,IVertCurve* vc);
-   void UnadviseAll();
-   std::map<CogoObjectID,DWORD> m_Cookies;
 
    CComPtr<IVertCurveFactory> m_Factory;
 };

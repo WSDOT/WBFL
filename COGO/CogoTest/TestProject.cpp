@@ -82,7 +82,6 @@ void CTestProject::Test()
    TRY_TEST(project->PointOnLineByPoints(5,3,1,2,0.0),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(5,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,9.0),true);
@@ -91,7 +90,6 @@ void CTestProject::Test()
    TRY_TEST(project->PointOnLineByPoints(6,4,1,2,0.0),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(6,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,9.0),true);
@@ -100,7 +98,6 @@ void CTestProject::Test()
    TRY_TEST(project->PointOnLineByPoints(7,3,1,2,4.24264068712),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(7,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,12.0),true);
@@ -109,7 +106,6 @@ void CTestProject::Test()
    TRY_TEST(project->PointOnLineByPoints(8,4,1,2,-4.24264068712),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(8,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,6.0),true);
@@ -128,7 +124,6 @@ void CTestProject::Test()
    TRY_TEST(project->PointOnLineSegment(9,3,1,0.0),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(9,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,9.0),true);
@@ -165,7 +160,6 @@ void CTestProject::Test()
    TRY_TEST(project->PointOnCurve(5,2,1),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(5,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,683.1287,0.001),true);

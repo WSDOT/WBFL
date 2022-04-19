@@ -61,7 +61,6 @@ void CTestCircularCurve::Test()
    //Test10b();
    //Test11a();
    //Test11b();
-   TestEvents();
 
    // Test curve direction
    CComPtr<ICircularCurve> hc;
@@ -134,14 +133,6 @@ void CTestCircularCurve::Test()
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
 
-   // PointFactory
-   CComPtr<IPoint2dFactory> factory;
-   TRY_TEST(hc->get_PointFactory(nullptr),E_POINTER);
-   TRY_TEST(hc->get_PointFactory(&factory),S_OK);
-   TRY_TEST(factory != nullptr,true);
-   TRY_TEST(hc->putref_PointFactory(nullptr),E_INVALIDARG);
-   TRY_TEST(hc->putref_PointFactory(factory),S_OK);
-
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_CircularCurve,IID_ICircularCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
@@ -168,13 +159,13 @@ void CTestCircularCurve::Test()
 //   pi->Move(700,1000);
 //   pft->Move(1000,1300);
 //
-//   TRY_TEST( hc->putref_PBT(nullptr), E_INVALIDARG );
-//   TRY_TEST( hc->putref_PI(nullptr), E_INVALIDARG );
-//   TRY_TEST( hc->putref_PFT(nullptr), E_INVALIDARG );
+//   TRY_TEST( hc->put_PBT(nullptr), E_INVALIDARG );
+//   TRY_TEST( hc->put_PI(nullptr), E_INVALIDARG );
+//   TRY_TEST( hc->put_PFT(nullptr), E_INVALIDARG );
 //
-//   TRY_TEST( hc->putref_PBT(pbt), S_OK );
-//   TRY_TEST( hc->putref_PI(pi), S_OK );
-//   TRY_TEST( hc->putref_PFT(pft), S_OK );
+//   TRY_TEST( hc->put_PBT(pbt), S_OK );
+//   TRY_TEST( hc->put_PI(pi), S_OK );
+//   TRY_TEST( hc->put_PFT(pft), S_OK );
 //
 //   CComPtr<IPoint2d> pnt;
 //   TRY_TEST( hc->get_PBT(nullptr), E_POINTER );
@@ -763,9 +754,9 @@ void CTestCircularCurve::Test()
 //   pi->Move(700,1000);
 //   pft->Move(1000,1300);
 //
-//   hc->putref_PBT(pbt);
-//   hc->putref_PI(pi);
-//   hc->putref_PFT(pft);
+//   hc->put_PBT(pbt);
+//   hc->put_PI(pi);
+//   hc->put_PFT(pft);
 //   hc->put_Radius(500);
 //   hc->put_SpiralLength(spEntry,100);
 //   hc->put_SpiralLength(spExit,0);
@@ -1217,9 +1208,9 @@ void CTestCircularCurve::Test()
 //   pi->Move(700,1000);
 //   pft->Move(1000,1300);
 //
-//   hc->putref_PBT(pbt);
-//   hc->putref_PI(pi);
-//   hc->putref_PFT(pft);
+//   hc->put_PBT(pbt);
+//   hc->put_PI(pi);
+//   hc->put_PFT(pft);
 //   hc->put_Radius(500);
 //   hc->put_SpiralLength(spEntry,0);
 //   hc->put_SpiralLength(spExit,200);
@@ -1938,13 +1929,13 @@ void CTestCircularCurve::Test4()
 //   pi->Move(700,1000);
 //   pft->Move(1000,1300);
 //
-//   TRY_TEST( hc->putref_PBT(nullptr), E_INVALIDARG );
-//   TRY_TEST( hc->putref_PI(nullptr), E_INVALIDARG );
-//   TRY_TEST( hc->putref_PFT(nullptr), E_INVALIDARG );
+//   TRY_TEST( hc->put_PBT(nullptr), E_INVALIDARG );
+//   TRY_TEST( hc->put_PI(nullptr), E_INVALIDARG );
+//   TRY_TEST( hc->put_PFT(nullptr), E_INVALIDARG );
 //
-//   TRY_TEST( hc->putref_PBT(pbt), S_OK );
-//   TRY_TEST( hc->putref_PI(pi), S_OK );
-//   TRY_TEST( hc->putref_PFT(pft), S_OK );
+//   TRY_TEST( hc->put_PBT(pbt), S_OK );
+//   TRY_TEST( hc->put_PI(pi), S_OK );
+//   TRY_TEST( hc->put_PFT(pft), S_OK );
 //
 //   CComPtr<IPoint2d> pnt;
 //   TRY_TEST( hc->get_PBT(nullptr), E_POINTER );
@@ -2440,84 +2431,3 @@ void CTestCircularCurve::Test4()
 //   TRY_TEST(IsEqual(px,1100.0),true);
 //   TRY_TEST(IsEqual(py,1400.0),true);
 //}
-
-void CTestCircularCurve::TestEvents()
-{
-	CComPtr<ICircularCurve> hc;
-	TRY_TEST(hc.CoCreateInstance(CLSID_CircularCurve), S_OK);
-
-	CComPtr<IPoint2d> pbt, pi, pft;
-	pbt.CoCreateInstance(CLSID_Point2d);
-	pi.CoCreateInstance(CLSID_Point2d);
-	pft.CoCreateInstance(CLSID_Point2d);
-
-	pbt->Move(0, 1000);
-	pi->Move(700, 1000);
-	pft->Move(1000, 700);
-
-	CComObject<CTestCircularCurve>* pTestCurve;
-	CComObject<CTestCircularCurve>::CreateInstance(&pTestCurve);
-	pTestCurve->AddRef();
-
-	DWORD dwCookie;
-	CComPtr<IUnknown> punk(pTestCurve);
-	TRY_TEST(AtlAdvise(hc, punk, IID_ICircularCurveEvents, &dwCookie), S_OK);
-
-	pTestCurve->InitEventTest();
-	hc->putref_PBT(pbt);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	pTestCurve->InitEventTest();
-	hc->putref_PI(pi);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	pTestCurve->InitEventTest();
-	hc->putref_PFT(pft);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	pTestCurve->InitEventTest();
-	hc->put_Radius(500);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	pTestCurve->InitEventTest();
-	pbt->Move(0, 150);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	pTestCurve->InitEventTest();
-	pi->Move(100, 150);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	pTestCurve->InitEventTest();
-	pft->Move(150, 250);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	CComPtr<IPoint2d> newPBT, newPI, newPFT; // non-event firing points
-	newPBT.CoCreateInstance(CLSID_Point2d);
-	newPI.CoCreateInstance(CLSID_Point2d);
-	newPFT.CoCreateInstance(CLSID_Point2d);
-	newPBT->Move(0, 1000);
-	newPI->Move(700, 1000);
-	newPFT->Move(1000, 700);
-
-	pTestCurve->InitEventTest();
-	hc->putref_PBT(newPBT);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	pTestCurve->InitEventTest();
-	hc->putref_PI(newPI);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	pTestCurve->InitEventTest();
-	hc->putref_PFT(newPFT);
-	TRY_TEST(pTestCurve->PassedEventTest(), true);
-
-	TRY_TEST(AtlUnadvise(hc, IID_ICircularCurveEvents, dwCookie), S_OK);
-	pTestCurve->Release();
-}
-
-STDMETHODIMP CTestCircularCurve::OnCircularCurveChanged(ICircularCurve* pp)
-{
-	//   ::MessageBox(nullptr,"OnCompoundCurveChanged","Event",MB_OK);
-	Pass();
-	return S_OK;
-}

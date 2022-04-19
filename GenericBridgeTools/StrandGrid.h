@@ -30,7 +30,7 @@
 
 #include "resource.h"       // main symbols
 
-#include <GeometricPrimitives\Primitives.h>
+#include <GeomModel/Primitives.h>
 #include <vector>
 #include <set>
 #include <MathEx.h>
@@ -270,9 +270,6 @@ private:
    CComPtr<IStrandMover> m_pStrandMover;
    StrandGridType m_StrandGridType;
    EndType m_EndType;
-
-   // geometry factory for performance
-   CComPtr<IPoint2dFactory> m_Point2dFactory;
 
    bool EvenStrandsOnLeft(IndexType gridIdx) const;
    bool IsLeftStrandPosition(GridPoint2d& gridPoint, IndexType positionIndex, bool bEvenStrandsOnLeft) const;

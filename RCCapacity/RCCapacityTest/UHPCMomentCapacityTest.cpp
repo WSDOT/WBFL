@@ -382,7 +382,7 @@ void CUHPCMomentCapacityTest::Test2()
    //CComPtr<IPoint2d> pnt7;
    //pnt7.CoCreateInstance(CLSID_Point2d);
    //pnt7->Move(0.0, -2); // 2" down from top
-   //layer7->putref_Centroid(pnt7);
+   //layer7->put_Centroid(pnt7);
    //CComQIPtr<IShape> layer7_shape(layer7);
 
    //
@@ -747,7 +747,7 @@ void CUHPCMomentCapacityTest::Test3()
    //CComPtr<IPoint2d> pnt7;
    //pnt7.CoCreateInstance(CLSID_Point2d);
    //pnt7->Move(0.0, -2); // 2" down from top
-   //layer7->putref_Centroid(pnt7);
+   //layer7->put_Centroid(pnt7);
    //CComQIPtr<IShape> layer7_shape(layer7);
 
    //

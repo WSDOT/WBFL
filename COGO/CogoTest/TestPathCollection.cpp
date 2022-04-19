@@ -98,7 +98,7 @@ void CTestPathCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test putref_Item
+   // Test put_Item
    //
    TRY_TEST(pColl->AddEx(1,Path),S_OK);
 
@@ -171,50 +171,6 @@ void CTestPathCollection::Test()
       testAlign.Release();
    }
 
-
-   //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestPathCollection>* pTestEvents;
-   CComObject<CTestPathCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestEvents);
-   TRY_TEST(AtlAdvise(pColl,punk,IID_IPathCollectionEvents,&dwCookie),S_OK);
-
-   // Add a Path to the collection
-   pTestEvents->InitEventTest(1);
-   pColl->AddEx(1,Path);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change the Path
-   pTestEvents->InitEventTest(1);
-   CComPtr<IPoint2d> point;
-   point.CoCreateInstance(CLSID_Point2d);
-   Path->AddEx(point);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Remove a Path
-   pTestEvents->InitEventTest(1);
-   pColl->Remove(1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-//   // Change Path references
-//   pTestEvents->InitEventTest(2);
-//   pColl->putref_Item(2,p4);
-//   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   TRY_TEST(AtlUnadvise(pColl,IID_IPathCollectionEvents,dwCookie),S_OK);
-   pTestEvents->Release();
-
    //
    // Test ISupportErrorInfo
    //
@@ -226,46 +182,4 @@ void CTestPathCollection::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_PathCollection,IID_IPathCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_PathCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestPathCollection::OnPathChanged(IPathCollection* coll,CogoObjectID id,IPath* vc)
-{
-//   MessageBox(nullptr,"PathChanged","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPathCollection::OnProfileChanged(IPathCollection* coll,IProfile* profile)
-{
-//   MessageBox(nullptr,"ProfileChanged","Event",MB_OK);
-   Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPathCollection::OnPathAdded(IPathCollection* coll,CogoObjectID id,IPath* Path)
-{
-//   MessageBox(nullptr,"PathAdded","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPathCollection::OnPathRemoved(IPathCollection* coll,CogoObjectID id)
-{
-//   MessageBox(nullptr,"PathRemoved","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPathCollection::OnPathsCleared(IPathCollection* coll)
-{
-//   MessageBox(nullptr,"PathCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

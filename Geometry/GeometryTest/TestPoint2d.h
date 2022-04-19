@@ -33,29 +33,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestPoint2d :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IPoint2dEvents
+class CTestPoint2d
 {
 public:
    CTestPoint2d();
 
    static void Test();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestPoint2d)
-   COM_INTERFACE_ENTRY(IPoint2dEvents)
-END_COM_MAP()
-
-// IPoint2dEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTPOINT2D_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

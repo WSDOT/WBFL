@@ -558,10 +558,10 @@ bool CGeneralSectionSolver::IsNeutralAxisParallel(IPlane3d* incrementalStrainPla
    CHRException hr;
 
    UpdateNeutralAxis(incrementalStrainPlane,m_TestLine);
-   VARIANT_BOOL bParallel;
-   hr = m_GeomUtil->AreLinesParallel(m_NeutralAxis,m_TestLine,&bParallel);
+   VARIANT_BOOL bSameDirection;
+   hr = m_GeomUtil->IsSameDirection(m_NeutralAxis, m_TestLine, &bSameDirection);
 
-   return bParallel == VARIANT_TRUE ? true : false;
+   return bSameDirection == VARIANT_TRUE ? true : false;
 }
 
 void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,ILine2d* line)

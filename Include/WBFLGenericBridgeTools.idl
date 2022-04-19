@@ -35,7 +35,6 @@ import "WBFLTypes.idl";
 import "WBFLTools.idl";
 import "WBFLUnitServer.idl";
 import "WBFLGeometry.idl";
-import "WBFLSections.idl";
 import "WBFLCogo.idl";
 import "WBFLBridgeGeometry.idl";
 import "WBFLGenericBridge.idl";

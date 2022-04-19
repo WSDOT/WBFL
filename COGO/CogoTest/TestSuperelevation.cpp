@@ -53,7 +53,7 @@ void CTestSuperelevation::Test()
 #pragma Reminder("UPDATE: methods that are not tested")
       //[helpstring("method Init")] HRESULT Init([in]IProfile* pProfile,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 Superelevation,[in]IndexType pnt1,[in]IndexType pnt2);
       //[propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      //[propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      //[propput, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
       //[helpstring("method Clone")] HRESULT Clone([out,retval]ISuperelevation** ppClone);
 
    CComPtr<IStation> objStation;
@@ -161,45 +161,6 @@ void CTestSuperelevation::Test()
    TRY_TEST(pSuperelevation->get_StructuredStorage(&ss),S_OK);
    TRY_TEST(ss != nullptr,true);
 
-
-   // Test Events
-   CComObject<CTestSuperelevation>* pTestSuperelevation;
-   CComObject<CTestSuperelevation>::CreateInstance(&pTestSuperelevation);
-   pTestSuperelevation->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestSuperelevation);
-   TRY_TEST(AtlAdvise(pSuperelevation,punk,IID_ISuperelevationEvents,&dwCookie),S_OK);
-
-
-   pTestSuperelevation->InitEventTest();
-   TRY_TEST(pSuperelevation->put_BeginTransition(CComVariant(200.0)),S_OK);
-   TRY_TEST(pTestSuperelevation->PassedEventTest(), true );
-
-   pTestSuperelevation->InitEventTest();
-   TRY_TEST(pSuperelevation->put_BeginFullSuper(CComVariant(200.0)),S_OK);
-   TRY_TEST(pTestSuperelevation->PassedEventTest(), true );
-
-   pTestSuperelevation->InitEventTest();
-   TRY_TEST(pSuperelevation->put_EndFullSuper(CComVariant(200.0)),S_OK);
-   TRY_TEST(pTestSuperelevation->PassedEventTest(), true );
-
-   pTestSuperelevation->InitEventTest();
-   TRY_TEST(pSuperelevation->put_EndTransition(CComVariant(200.0)),S_OK);
-   TRY_TEST(pTestSuperelevation->PassedEventTest(), true );
-
-
-   pTestSuperelevation->InitEventTest();
-   TRY_TEST(pSuperelevation->put_PivotPoint(0),S_OK);
-   TRY_TEST(pTestSuperelevation->PassedEventTest(), true );
-
-   pTestSuperelevation->InitEventTest();
-   TRY_TEST(pSuperelevation->put_Rate(0.06),S_OK);
-   TRY_TEST(pTestSuperelevation->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(pSuperelevation,IID_ISuperelevationEvents,dwCookie),S_OK);
-   pTestSuperelevation->Release();
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pSuperelevation);
    TRY_TEST( eInfo != nullptr, true );
@@ -210,10 +171,4 @@ void CTestSuperelevation::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_Superelevation,IID_ISuperelevation,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_Superelevation,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestSuperelevation::OnSuperelevationChanged(ISuperelevation* Superelevation)
-{
-   Pass();
-   return S_OK;
 }

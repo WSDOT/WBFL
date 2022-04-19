@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <GraphManager\GraphManager.h>
+#include <Graphing/GraphManager.h>
 
 
 // {FBA71046-0C05-4946-83DD-4C71A973C18D}

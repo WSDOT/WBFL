@@ -55,12 +55,6 @@ HRESULT CLinearTendonSegment::FinalConstruct()
       return hr;
    }
 
-   hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
-   if ( FAILED(hr) )
-   {
-      return hr;
-   }
-
    m_pTendon = nullptr;
 
    return S_OK;
@@ -254,7 +248,7 @@ STDMETHODIMP CLinearTendonSegment::get_Slope(Float64 z,IVector3d** slope)
 
 STDMETHODIMP CLinearTendonSegment::get_Length(Float64* length)
 {
-   return m_GeomUtil->Distance(m_Start,m_End,length);
+   return m_Start->DistanceEx(m_End, length);
 }
 
 STDMETHODIMP CLinearTendonSegment::ProjectedLength(Float64* dx,Float64* dy,Float64* dz)

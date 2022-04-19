@@ -66,7 +66,7 @@ void CTestPlane3d::Test()
    TRY_TEST( plane->GetX(5,5,&val),GEOMETRY_E_NOSOLUTIONS);
 
    TRY_TEST( plane->GetY(5,5,nullptr),E_POINTER);
-   TRY_TEST( plane->GetY(5,5,&val),GEOMETRY_E_INFINITESOLUTIONS);
+   TRY_TEST( plane->GetY(5,5,&val), GEOMETRY_E_NOSOLUTIONS);
 
    // Plane through three points
    CComPtr<IPoint3d> p1;
@@ -106,13 +106,13 @@ void CTestPlane3d::Test()
    TRY_TEST(plane->GetX(5,5,&val),S_OK);
    TRY_TEST(IsEqual(val,5.0),true );
 
-   TRY_TEST(plane->GetY(5,5,&val),GEOMETRY_E_INFINITESOLUTIONS); // Plane is parallel to Y axis
+   TRY_TEST(plane->GetY(5,5,&val), GEOMETRY_E_NOSOLUTIONS); // Plane is parallel to Y axis
 
    TRY_TEST(plane->GetZ(5,5,&val),S_OK);
    TRY_TEST(IsEqual(val,5.0),true );
 
    p3->Move(0,10,0); // point is now on the line
-   TRY_TEST(plane->ThroughLineEx(line,p3), GEOMETRY_E_POINTONLINE );
+   TRY_TEST(plane->ThroughLineEx(line,p3), GEOMETRY_E_COLINEAR);
 
    // Arbitrary Plane
    p1->Move(10,0,0);
@@ -138,7 +138,6 @@ void CTestPlane3d::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Plane3d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPlane3d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 }
 

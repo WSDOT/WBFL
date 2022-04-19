@@ -22,14 +22,13 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+#pragma once
 
 // GenericShape.h : Declaration of the CGenericShape
 
-#pragma once
-
 #include "resource.h"       // main symbols
-#include "GeometryCP.h"
-#include <WBFLTools.h> // IMohrCircle
+#include <GeomModel/GenericShape.h>
+#include "IShapeImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CGenericShape
@@ -39,13 +38,8 @@ class ATL_NO_VTABLE CGenericShape :
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CGenericShape,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
 	public IGenericShape,
-	public IShape,
-   public IXYPosition,
-   public IStructuredStorage2,
-   public IPersist,
-   public CProxyDPoint2dEvents< CGenericShape >,
-   public IConnectionPointContainerImpl<CGenericShape>,
-   public IPoint2dEvents
+   public IShape,
+   public IXYPosition
 {
 public:
 	CGenericShape()
@@ -55,41 +49,24 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
+	void SetShape(const WBFL::Geometry::GenericShape& shape);
+	WBFL::Geometry::GenericShape& GetShape() { return m_Shape; }
+
 DECLARE_REGISTRY_RESOURCEID(IDR_GENERICSHAPE)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CGenericShape)
 	COM_INTERFACE_ENTRY(IGenericShape)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IShape)
    COM_INTERFACE_ENTRY(IXYPosition)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY(IPoint2dEvents)
 END_COM_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CGenericShape)
-	CONNECTION_POINT_ENTRY(IID_IPoint2dEvents)
-END_CONNECTION_POINT_MAP()
-
 private:
-	CComPtr<IMohrCircle> m_MohrCircle;
-   CComPtr<IGeomUtil2d> m_GeomUtil;
-   CComPtr<IPoint2d> m_pCG; // CG of the shape... also the hook point
-   unsigned long  m_cgCookie;
-   Float64 m_Area;
-   Float64 m_Ixx;
-   Float64 m_Iyy;
-   Float64 m_Ixy;
-   Float64 m_Perimeter;
-   Float64 m_Rotation;
-   Float64   m_Xleft;   // Distance from centroid to left edge
-   Float64   m_Xright;  // Distance from centroid to right edge
-   Float64   m_Ytop;    // Distance from centroid to top edge
-   Float64   m_Ybottom; // Distance from centroid to bottom edge
+   WBFL::Geometry::GenericShape m_Shape;
+	CComPtr<IPoint2d> m_pCentroid;
 
 // ISupportErrorInfo
 public:
@@ -118,7 +95,6 @@ public:
    STDMETHOD(put_Ixy)(Float64 newVal) override;
 	STDMETHOD(get_Shape)(IShape* *pVal) override;
 	STDMETHOD(get_XYPosition)(IXYPosition* *pVal) override;
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStrStg) override;
 
 // IShape
 public:
@@ -141,17 +117,4 @@ public:
 	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo) override;
 	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPoint2dEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
 };

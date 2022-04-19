@@ -40,16 +40,16 @@ CLASS
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 // free functions
-void seek_right (const std::vector<gpPoint2d>& points, Float64 x, CollectionIndexType* segment)
+void seek_right (const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, CollectionIndexType* segment)
 {
    PRECONDITION(segment!=0);
-   std::vector<gpPoint2d>::size_type siz = points.size();
+   std::vector<WBFL::Geometry::Point2d>::size_type siz = points.size();
    CHECK(*segment<siz);
    CHECK(points[*segment-1].X() <= x);
 
    // assume that x is right of the left end of this segment.
-   std::vector<gpPoint2d>::size_type start = *segment;
-   for (std::vector<gpPoint2d>::size_type i=start; i<siz; i++)
+   std::vector<WBFL::Geometry::Point2d>::size_type start = *segment;
+   for (std::vector<WBFL::Geometry::Point2d>::size_type i=start; i<siz; i++)
    {
       if (::IsLE(x,points[i].X()) )
       {
@@ -61,16 +61,16 @@ void seek_right (const std::vector<gpPoint2d>& points, Float64 x, CollectionInde
    // x not in function range - throw
    THROW(mathXEvalError, Undefined);
 }
-void seek_left(const std::vector<gpPoint2d>& points, Float64 x, CollectionIndexType* segment)
+void seek_left(const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, CollectionIndexType* segment)
 {
    // assume that x is left of the right end of this segment.
    PRECONDITION(segment!=0);
-   std::vector<gpPoint2d>::size_type siz = points.size();
+   std::vector<WBFL::Geometry::Point2d>::size_type siz = points.size();
    CHECK(*segment<siz);
    CHECK(x<=points[*segment].X());
 
-   std::vector<gpPoint2d>::size_type start = *segment;
-   std::vector<gpPoint2d>::size_type i = start-1;
+   std::vector<WBFL::Geometry::Point2d>::size_type start = *segment;
+   std::vector<WBFL::Geometry::Point2d>::size_type i = start-1;
    bool loop=true;
    do
    {
@@ -91,7 +91,7 @@ void seek_left(const std::vector<gpPoint2d>& points, Float64 x, CollectionIndexT
    THROW(mathXEvalError, Undefined);
 }
 
-Float64 interpolate(const gpPoint2d& p1, const gpPoint2d& p2, Float64 x)
+Float64 interpolate(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2, Float64 x)
 {
    // vertical segments not allowed
    ATLASSERT( !IsEqual(p1.X(),p2.X()) );
@@ -106,7 +106,7 @@ Float64 interpolate(const gpPoint2d& p1, const gpPoint2d& p2, Float64 x)
    return LinInterp( a, l, h, delta);
 }
 
-bool point_sort(const gpPoint2d& p1,const gpPoint2d& p2)
+bool point_sort(const WBFL::Geometry::Point2d& p1,const WBFL::Geometry::Point2d& p2)
 {
    return p1.X() < p2.X();
 }
@@ -118,7 +118,7 @@ m_LastSegment(0)
 {
 }
 
-mathPwLinearFunction2dUsingPoints::mathPwLinearFunction2dUsingPoints(const std::vector<gpPoint2d>& points):
+mathPwLinearFunction2dUsingPoints::mathPwLinearFunction2dUsingPoints(const std::vector<WBFL::Geometry::Point2d>& points):
 mathPwLinearFunction2d(),
 m_Points(points),
 m_LastSegment(0)
@@ -203,7 +203,7 @@ math1dRange mathPwLinearFunction2dUsingPoints::GetRange() const
    ASSERTVALID;
    if (0 < m_Points.size())
    {
-      return math1dRange(m_Points.begin()->X(),math1dRange::Bound,
+      return math1dRange(m_Points.front().X(),math1dRange::Bound,
                          m_Points.back().X() ,math1dRange::Bound);
    }
    else
@@ -217,20 +217,20 @@ CollectionIndexType mathPwLinearFunction2dUsingPoints::GetNumPoints() const
    return m_Points.size();
 }
 
-gpPoint2d mathPwLinearFunction2dUsingPoints::GetPoint(CollectionIndexType pnum) const
+WBFL::Geometry::Point2d mathPwLinearFunction2dUsingPoints::GetPoint(CollectionIndexType pnum) const
 {
    ASSERTVALID;
    PRECONDITION(pnum<GetNumPoints());
    return m_Points[pnum];
 }
 
-std::vector<gpPoint2d> mathPwLinearFunction2dUsingPoints::GetPoints() const
+std::vector<WBFL::Geometry::Point2d> mathPwLinearFunction2dUsingPoints::GetPoints() const
 {
    ASSERTVALID;
    return m_Points;
 }
 
-void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<gpPoint2d>& points)
+void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<WBFL::Geometry::Point2d>& points)
 {
    ASSERTVALID;
    m_Points = points;
@@ -244,7 +244,7 @@ void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<gpPoint2d>& 
    ASSERTVALID;
 }
 
-CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(const gpPoint2d& point)
+CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(const WBFL::Geometry::Point2d& point)
 {
    ASSERTVALID;
    m_Points.push_back(point);
@@ -255,7 +255,7 @@ CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(const gpPoint2d&
 
 CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(Float64 X,Float64 Y)
 {
-   return AddPoint(gpPoint2d(X,Y));
+   return AddPoint(WBFL::Geometry::Point2d(X,Y));
 }
 
 void mathPwLinearFunction2dUsingPoints::Clear()
@@ -266,7 +266,7 @@ void mathPwLinearFunction2dUsingPoints::Clear()
 }
 
 Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dUsingPoints& rOther, 
-                                                   const math1dRange& range, gpPoint2d* p)
+                                                   const math1dRange& range, WBFL::Geometry::Point2d* p)
 {
    // first determine if we have a range in common
    math1dRange r = range.Intersection(GetRange());
@@ -299,7 +299,7 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
    CollectionIndexType this_curr =this_first;
    CollectionIndexType other_curr=other_first;
    bool loop=true;
-   gpPoint2d intersection_point;
+   WBFL::Geometry::Point2d intersection_point;
    while(loop)
    {
       // neither of these cases should ever happen, but...
@@ -314,9 +314,9 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
          return 0;
       }
 
-      gpLineSegment2d this_seg(m_Points[this_curr-1],m_Points[this_curr]);
-      gpLineSegment2d other_seg(rOther.m_Points[other_curr-1],rOther.m_Points[other_curr]);
-      Int16 st = gpGeomOp2d::Intersect(&intersection_point,this_seg, other_seg);
+      WBFL::Geometry::LineSegment2d this_seg(m_Points[this_curr-1],m_Points[this_curr]);
+      WBFL::Geometry::LineSegment2d other_seg(rOther.m_Points[other_curr-1],rOther.m_Points[other_curr]);
+      Int16 st = WBFL::Geometry::GeometricOperations::Intersect(this_seg, other_seg, &intersection_point);
       if (st != 0)
       {
          // it's possible that intersection could lie outside of intended range
@@ -417,21 +417,18 @@ void mathPwLinearFunction2dUsingPoints::MirrorAboutY(Float64 xLocation)
    // 2) New x values = 2*xLocation - x
    std::reverse(m_Points.begin(), m_Points.end());
 
-   for( std::vector<gpPoint2d>::iterator it=m_Points.begin(); it!=m_Points.end(); it++)
+   for(auto& point : m_Points)
    {
-      gpPoint2d& rpoint = *it;
-      Float64 x = rpoint.X();
-      rpoint.X() = 2*xLocation - x;
+      Float64 x = point.X();
+      point.X() = 2*xLocation - x;
    }
 }
 
 void mathPwLinearFunction2dUsingPoints::GetYValues(std::vector<Float64>& Yvec)
 {
-   for( std::vector<gpPoint2d>::const_iterator it=m_Points.begin(); it!=m_Points.end(); it++)
+   for (const auto& point : m_Points)
    {
-      const gpPoint2d& rpoint = *it;
-      Float64 y = rpoint.Y();
-      Yvec.push_back(y);
+      Yvec.push_back(point.Y());
    }
 }
 
@@ -440,10 +437,10 @@ void mathPwLinearFunction2dUsingPoints::ResetOuterRange( const math1dRange& rang
    Float64 xleft = range.GetLeftBoundLocation();
    Float64 xright = range.GetRightBoundLocation();
 
-   std::vector<gpPoint2d>::size_type siz = m_Points.size();
+   auto size = m_Points.size();
 
    // New range must fit at outer edges of function
-   if (siz < 2 || m_Points[1].X()<=xleft || xright<=m_Points[siz-2].X())
+   if (size < 2 || m_Points[1].X()<=xleft || xright<=m_Points[size-2].X())
    {
       ATLASSERT(false);
       THROW(mathXEvalError, Undefined);
@@ -537,10 +534,10 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
 
    // create a function
    mathPwLinearFunction2dUsingPoints fun1;
-   TRY_TESTME(fun1.AddPoint(gpPoint2d(-4,-2))==1);
-   TRY_TESTME(fun1.AddPoint(gpPoint2d(-3,-1))==2);
-   TRY_TESTME(fun1.AddPoint(gpPoint2d( 1, 2))==3);
-   TRY_TESTME(fun1.AddPoint(gpPoint2d( 3,-1))==4);
+   TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d(-4,-2))==1);
+   TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d(-3,-1))==2);
+   TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d( 1, 2))==3);
+   TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d( 3,-1))==4);
    TRY_TESTME(fun1.GetRange()==math1dRange(-4,math1dRange::Bound,3,math1dRange::Bound));
    TRY_TESTME(fun1.GetNumPoints()==4);
    TRY_TESTME(fun1.Evaluate(-4)==-2);
@@ -550,10 +547,10 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
    TRY_TESTME(fun1.Evaluate(-5./3.)==0.0);
    TRY_TESTME(fun1.Evaluate( 7./3.)==0.0);
    TRY_TESTME(fun1.Evaluate(0.0)==1.25);
-   TRY_TESTME(fun1.GetPoint(1)==gpPoint2d(-3,-1));
+   TRY_TESTME(fun1.GetPoint(1)== WBFL::Geometry::Point2d(-3,-1));
 
    // create another function
-   std::vector<gpPoint2d> pvec;
+   std::vector<WBFL::Geometry::Point2d> pvec;
    pvec.emplace_back(-5,1);
    pvec.emplace_back(-4.1,1);
    pvec.emplace_back(-3.4,1);
@@ -573,10 +570,10 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
       TRY_TESTME(e.GetReasonCode()==mathXEvalError::Undefined);
    }
    // intersection
-   gpPoint2d ip1,ip2;
+   WBFL::Geometry::Point2d ip1,ip2;
    math1dRange r(-3.5,math1dRange::Bound,.9,math1dRange::Bound);
    TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==1);
-   TRY_TESTME(ip1==gpPoint2d(-1./3.,1));
+   TRY_TESTME(ip1== WBFL::Geometry::Point2d(-1./3.,1));
    TRY_TESTME(fun2.Intersect(fun1,r,&ip2)==1);
    TRY_TESTME(ip1==ip2);
 
@@ -584,7 +581,7 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
    r.SetRightBoundLocation(250);
    TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==1);
    TRY_TESTME(fun2.Intersect(fun1,r,&ip2)==1);
-   TRY_TESTME(ip1==gpPoint2d(5./3.,1));
+   TRY_TESTME(ip1== WBFL::Geometry::Point2d(5./3.,1));
    TRY_TESTME(ip1==ip2);
 
    // set where an intersection does not occur

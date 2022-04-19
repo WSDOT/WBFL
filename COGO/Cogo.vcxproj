@@ -201,10 +201,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Geometry\Geometry.vcxproj">
       <Project>{16e889a9-e3b0-4541-85b2-3a4d98fccb59}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
@@ -254,14 +250,12 @@
     <ClCompile Include="CompoundCurveCollection.cpp" />
     <ClCompile Include="CompoundCurveFactory.cpp" />
     <ClCompile Include="LineSegmentCollection.cpp" />
-    <ClCompile Include="LineSegmentFactory.cpp" />
     <ClCompile Include="OpenBridgeML.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PathCollection.cpp" />
     <ClCompile Include="PathElement.cpp" />
     <ClCompile Include="PathFactory.cpp" />
     <ClCompile Include="PointCollection.cpp" />
-    <ClCompile Include="PointFactory.cpp" />
     <ClCompile Include="Profile.cpp" />
     <ClCompile Include="ProfileElement.cpp" />
     <ClCompile Include="ProfilePoint.cpp" />
@@ -365,7 +359,6 @@
     <ClInclude Include="Angle.h" />
     <ClInclude Include="AngleDisplayUnitFormatter.h" />
     <ClInclude Include="CircularCurve.h" />
-    <ClInclude Include="COGOCP.h" />
     <ClInclude Include="CogoEngine.h" />
     <ClInclude Include="CogoModel.h" />
     <ClInclude Include="Collections.h" />
@@ -376,13 +369,11 @@
     <ClInclude Include="CompoundCurveCollection.h" />
     <ClInclude Include="CompoundCurveFactory.h" />
     <ClInclude Include="LineSegmentCollection.h" />
-    <ClInclude Include="LineSegmentFactory.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PathCollection.h" />
     <ClInclude Include="PathElement.h" />
     <ClInclude Include="PathFactory.h" />
     <ClInclude Include="PointCollection.h" />
-    <ClInclude Include="PointFactory.h" />
     <ClInclude Include="Profile.h" />
     <ClInclude Include="ProfileElement.h" />
     <ClInclude Include="ProfilePoint.h" />

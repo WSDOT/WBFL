@@ -26,6 +26,7 @@
 #pragma once
 
 interface iPointDisplayObject;
+interface iCoordinateMap;
 
 interface iDrawPointStrategy : public IUnknown
 {

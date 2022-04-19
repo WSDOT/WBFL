@@ -150,7 +150,7 @@ void CTestPointCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test putref_Item
+   // Test put_Item
    //
    TRY_TEST(pColl->AddEx(1,p1),S_OK);
    TRY_TEST(pColl->AddEx(2,p2),S_OK);
@@ -173,7 +173,7 @@ void CTestPointCollection::Test()
    TRY_TEST(pColl->FindID(p2,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(p2,&id),S_OK);
    TRY_TEST(id,2);
-   TRY_TEST(pColl->FindID(p3,&id),E_FAIL); // p3 is not part of collection, see putref_Item above
+   TRY_TEST(pColl->FindID(p3,&id),E_FAIL); // p3 is not part of collection, see put_Item above
 
    //
    // Test ID
@@ -250,70 +250,6 @@ void CTestPointCollection::Test()
    TRY_TEST(point.IsEqualObject(p4),true);
 
    //
-   // PointFactory
-   //
-   CComPtr<IPoint2dFactory> factory;
-   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
-   TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST(factory != nullptr,true);
-   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
-   TRY_TEST(pColl->putref_Factory(factory),S_OK);
-
-
-   //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestPointCollection>* pTestEvents;
-   CComObject<CTestPointCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestEvents);
-   TRY_TEST(AtlAdvise(pColl,punk,IID_IPointCollectionEvents,&dwCookie),S_OK);
-
-   // Add a point to the collection
-   pTestEvents->InitEventTest(1);
-   pColl->AddEx(1,p1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Move a point... Event should fire
-   pTestEvents->InitEventTest(1);
-   p1->Move(15,15);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   pColl->AddEx(2,p2);
-   pColl->AddEx(3,p3);
-   pColl->AddEx(4,p4);
-
-   // Remove a point
-   pTestEvents->InitEventTest(3);
-   pColl->Remove(3);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change point references
-   pTestEvents->InitEventTest(2);
-   pColl->putref_Item(2,p4);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Add a point that doesn't support event firing
-   // This point should be successfully added.
-   // Review the profile output to verify that the approrate
-   // return paths were followed when this object was encountered
-   CComPtr<IPoint2d> geoPoint;
-   geoPoint.CoCreateInstance(CLSID_Point2d);
-   TRY_TEST(pColl->AddEx(6,geoPoint),S_OK);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   TRY_TEST(AtlUnadvise(pColl,IID_IPointCollectionEvents,dwCookie),S_OK);
-   pTestEvents->Release();
-
-   //
    // Test ISupportErrorInfo
    //
    CComQIPtr<ISupportErrorInfo> eInfo(pColl);
@@ -324,38 +260,4 @@ void CTestPointCollection::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_PointCollection,IID_IPointCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_PointCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestPointCollection::OnPointChanged(CogoObjectID id,IPoint2d* point)
-{
-//   MessageBox(nullptr,"PointChanged","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPointCollection::OnPointAdded(CogoObjectID id,IPoint2d* point)
-{
-//   MessageBox(nullptr,"PointAdded","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPointCollection::OnPointRemoved(CogoObjectID id)
-{
-//   MessageBox(nullptr,"PointRemoved","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPointCollection::OnPointsCleared()
-{
-//   MessageBox(nullptr,"PointCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

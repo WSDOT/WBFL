@@ -35,7 +35,6 @@ import "WBFLTypes.idl";
 import "WBFLTools.idl";
 import "WBFLGeometry.idl";
 import "WBFLUnitServer.idl";
-import "WBFLSections.idl";
 
 #include "RCCapacity.hh"
 
@@ -1243,8 +1242,8 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
 
       /// Index of the primary shape
-      [propput, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]IndexType shapeIdx);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([out, retval]IndexType* pShapeIdx);
+      [propput, helpstring("property GirderShape")] HRESULT GirderShape([in]IndexType shapeIdx);
+      [propget, helpstring("property GirderShape")] HRESULT GirderShape([out, retval]IndexType* pShapeIdx);
 
       /// Name of the sname
       [propput, helpstring("property Name")] HRESULT Name([in]CollectionIndexType shapeIdx, [in]BSTR bstrName);

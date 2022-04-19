@@ -30,7 +30,6 @@
 #include "Angle.h"
 #include "Direction.h"
 #include <WBFLCogo\CogoHelpers.h>
-#include "PointFactory.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -48,82 +47,19 @@ static Float64 tolerance = 0.1;
 // CCircularCurve
 HRESULT CCircularCurve::FinalConstruct()
 {
-   CComObject<CPointFactory>* pPF;
-   CComObject<CPointFactory>::CreateInstance(&pPF);
-
-   m_PointFactory = pPF;
-
-   m_PointFactory->CreatePoint(&m_PBT);
-   m_PointFactory->CreatePoint(&m_PI);
-   m_PointFactory->CreatePoint(&m_PFT);
+   m_PBT.CoCreateInstance(CLSID_Point2d);
+   m_PI.CoCreateInstance(CLSID_Point2d);
+   m_PFT.CoCreateInstance(CLSID_Point2d);
 
    m_PBT->Move(-1000,0);
    m_PI->Move(0,0);
    m_PFT->Move(1000,1000);
-
-   Advise(m_PBT,&m_dwPBT);
-   Advise(m_PI,&m_dwPI);
-   Advise(m_PFT,&m_dwPFT);
-
-   m_bHoldEvents = false;
-   m_bPendingEvents = false;
 
    return S_OK;
 }
 
 void CCircularCurve::FinalRelease()
 {
-   Unadvise(m_PBT, &m_dwPBT);
-   Unadvise(m_PI, &m_dwPI);
-   Unadvise(m_PFT, &m_dwPFT);
-}
-
-void CCircularCurve::Advise(IPoint2d* pnt,DWORD* pdwCookie)
-{
-   CComPtr<IConnectionPointContainer> pCPC;
-   CComPtr<IConnectionPoint> pCP;
-   HRESULT hr;
-   hr = pnt->QueryInterface(&pCPC);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
-
-   hr = pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
-
-   pCP->Advise(GetUnknown(),pdwCookie);
-   
-   InternalRelease();
-}
-
-void CCircularCurve::Unadvise(IPoint2d* pnt,DWORD* pdwCookie)
-{
-   InternalAddRef();
-
-   CComPtr<IConnectionPointContainer> pCPC;
-   CComPtr<IConnectionPoint> pCP;
-   HRESULT hr;
-   hr = pnt->QueryInterface(&pCPC);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
-
-   hr = pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
-
-   pCP->Unadvise(*pdwCookie);
 }
 
 STDMETHODIMP CCircularCurve::InterfaceSupportsErrorInfo(REFIID riid)
@@ -153,12 +89,7 @@ STDMETHODIMP CCircularCurve::putref_PBT(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
-   Unadvise(m_PBT,&m_dwPBT);
    m_PBT = newVal;
-   OnPointChanged(m_PBT);
-   Advise(m_PBT,&m_dwPBT);
-
-   Fire_OnCircularCurveChanged(this);
 
 	return S_OK;
 }
@@ -175,12 +106,7 @@ STDMETHODIMP CCircularCurve::putref_PI(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
-   Unadvise(m_PI,&m_dwPI);
    m_PI = newVal;
-   OnPointChanged(m_PI);
-   Advise(m_PI,&m_dwPI);
-
-   Fire_OnCircularCurveChanged(this);
 
 	return S_OK;
 }
@@ -197,12 +123,7 @@ STDMETHODIMP CCircularCurve::putref_PFT(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
-   Unadvise(m_PFT,&m_dwPFT);
    m_PFT = newVal;
-   OnPointChanged(m_PFT);
-   Advise(m_PFT,&m_dwPFT);
-
-   Fire_OnCircularCurveChanged(this);
 
 	return S_OK;
 }
@@ -220,7 +141,6 @@ STDMETHODIMP CCircularCurve::put_Radius(Float64 newVal)
       return E_INVALIDARG;
 
    m_Radius = newVal;
-   Fire_OnCircularCurveChanged(this);
 
    return S_OK;
 }
@@ -237,7 +157,7 @@ STDMETHODIMP CCircularCurve::get_PC(IPoint2d** pVal)
         Float64 T;
         get_TangentLength(&T);
 
-        cogoUtil::LocateByDistDir(m_PI, T, bkTanBrg, 0.0, m_PointFactory, &m_PC);
+        cogoUtil::LocateByDistDir(m_PI, T, bkTanBrg, 0.0, &m_PC);
     }
 
     m_PC->Clone(pVal);
@@ -256,7 +176,7 @@ STDMETHODIMP CCircularCurve::get_PT(IPoint2d** pVal)
         Float64 T;
         get_TangentLength(&T);
 
-        cogoUtil::LocateByDistDir(m_PI, T, fwdTanBrg, 0.0, m_PointFactory, &m_PT);
+        cogoUtil::LocateByDistDir(m_PI, T, fwdTanBrg, 0.0, &m_PT);
     }
 
     m_PT->Clone(pVal);
@@ -411,19 +331,19 @@ STDMETHODIMP CCircularCurve::get_Center(IPoint2d** pVal)
    ATLASSERT(SUCCEEDED(hr));
 
    CComPtr<ILine2d> n1, n2;
-   hr = geomUtil::CreateNormalLineThroughPoint(t1,PC,nullptr,&n1);
+   hr = geomUtil::CreateNormalLineThroughPoint(t1,PC,&n1);
    ATLASSERT(SUCCEEDED(hr));
-   hr = geomUtil::CreateNormalLineThroughPoint(t2,PT,nullptr,&n2);
+   hr = geomUtil::CreateNormalLineThroughPoint(t2,PT,&n2);
    ATLASSERT(SUCCEEDED(hr));
 
    CComPtr<IPoint2d> p;
-   hr = geomUtil::LineLineIntersect(n1,n2,m_PointFactory,&p);
+   hr = geomUtil::LineLineIntersect(n1,n2,&p);
    ATLASSERT(SUCCEEDED(hr));
 
 #if defined _DEBUG
    // intersect tangents... should intersect at PI
    CComPtr<IPoint2d> testPoint;
-   hr = geomUtil::LineLineIntersect(t1,t2,m_PointFactory,&testPoint);
+   hr = geomUtil::LineLineIntersect(t1,t2,&testPoint);
    ATLASSERT(SUCCEEDED(hr));
    Float64 x1,y1, x2,y2;
    m_PI->Location(&x1,&y1);
@@ -433,7 +353,7 @@ STDMETHODIMP CCircularCurve::get_Center(IPoint2d** pVal)
    // intersect forward tangent and its normal
    // should intersect at PC
    testPoint.Release();
-   hr = geomUtil::LineLineIntersect(t1,n1,m_PointFactory,&testPoint);
+   hr = geomUtil::LineLineIntersect(t1,n1,&testPoint);
    ATLASSERT(SUCCEEDED(hr));
    PC->Location(&x1,&y1);
    testPoint->Location(&x2,&y2);
@@ -442,7 +362,7 @@ STDMETHODIMP CCircularCurve::get_Center(IPoint2d** pVal)
    // intersect back tangent and its normal
    // should intersect at PT
    testPoint.Release();
-   hr = geomUtil::LineLineIntersect(t2,n2,m_PointFactory,&testPoint);
+   hr = geomUtil::LineLineIntersect(t2,n2,&testPoint);
    ATLASSERT(SUCCEEDED(hr));
    PT->Location(&x1,&y1);
    testPoint->Location(&x2,&y2);
@@ -581,7 +501,7 @@ STDMETHODIMP CCircularCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
        get_BkTangentBrg(&bkTanBrg);
        CComPtr<IPoint2d> pc;
        get_PC(&pc);
-       cogoUtil::LocateByDistDir(pc, distance, bkTanBrg, 0.0, m_PointFactory, pVal);
+       cogoUtil::LocateByDistDir(pc, distance, bkTanBrg, 0.0, pVal);
    }
    else if (L <= distance)
    {
@@ -590,7 +510,7 @@ STDMETHODIMP CCircularCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
        get_FwdTangentBrg(&fwdTanBrg);
        CComPtr<IPoint2d> pt;
        get_PT(&pt);
-       cogoUtil::LocateByDistDir(pt, distance - L, fwdTanBrg, 0.0, m_PointFactory, pVal);
+       cogoUtil::LocateByDistDir(pt, distance - L, fwdTanBrg, 0.0, pVal);
    }
    else
    {
@@ -649,7 +569,7 @@ STDMETHODIMP CCircularCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint
       line->ThroughPoints(pbt, pi);
 
       // compute offset from "point" to the back tangent (used to determine if it is closer to the back tangent than other points on the curve)
-      geomUtil::PointOnLineNearest(line, point, m_PointFactory, &bkTangentPoint);
+      geomUtil::PointOnLineNearest(line, point, &bkTangentPoint);
       point->DistanceEx(bkTangentPoint, &bkTangentOffset); // distance from the point to where it projects onto the back tangent
 
                                                            // compute distance along the back tangent to the projection point
@@ -686,7 +606,7 @@ STDMETHODIMP CCircularCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint
       CComPtr<IPoint2d> pc;
       get_PC(&pc);
 
-      cogoUtil::LineCircleIntersect(line, circle, point, m_PointFactory, &curvePoint);
+      cogoUtil::LineCircleIntersect(line, circle, point, &curvePoint);
       ATLASSERT(curvePoint != nullptr);
 
       CurveDirectionType dir;
@@ -729,7 +649,7 @@ STDMETHODIMP CCircularCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint
       line.CoCreateInstance(CLSID_Line2d);
       line->ThroughPoints(pi, pft);
 
-      geomUtil::PointOnLineNearest(line, point, m_PointFactory, &fwdTangentPoint);
+      geomUtil::PointOnLineNearest(line, point, &fwdTangentPoint);
       point->DistanceEx(fwdTangentPoint, &fwdTangentOffset); // distance from the point to where it projects onto the foward tangent
 
                                                              // compute distance along the forard tangent to the projection point
@@ -807,7 +727,7 @@ STDMETHODIMP CCircularCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
 
    CComPtr<IPoint2d> pnt1, pnt2;
    short nIntersect;
-   geomUtil::LineCircleIntersect(line,circle,m_PointFactory,&pnt1,&pnt2,&nIntersect);
+   geomUtil::LineCircleIntersect(line,circle,&pnt1,&pnt2,&nIntersect);
 
    Float64 delta;
    CurveDirectionType direction;
@@ -886,7 +806,7 @@ STDMETHODIMP CCircularCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
    {
       CComPtr<ILine2d> bkTangentLine;
       GetBkTangentLine(&bkTangentLine);
-      geomUtil::LineLineIntersect(line,bkTangentLine,m_PointFactory, &bkTangentPoint);
+      geomUtil::LineLineIntersect(line,bkTangentLine, &bkTangentPoint);
 
       // if there was an intersection point and the point is not before the start of the TS-PI line
       // then this isn't an intersection on the back tangent projection 
@@ -900,7 +820,7 @@ STDMETHODIMP CCircularCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
    {
       CComPtr<ILine2d> fwdTangentLine;
       GetFwdTangentLine(&fwdTangentLine);
-      geomUtil::LineLineIntersect(line,fwdTangentLine,m_PointFactory, &fwdTangentPoint);
+      geomUtil::LineLineIntersect(line,fwdTangentLine, &fwdTangentPoint);
 
       // if there was an intersection point and the point is not after the end of the PI-ST line
       // then this isn't an intersection on the forward tangent projection 
@@ -965,69 +885,47 @@ STDMETHODIMP CCircularCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
    return S_OK;
 }
 
-STDMETHODIMP CCircularCurve::get_PointFactory(IPoint2dFactory* *factory)
-{
-   CHECK_RETOBJ(factory);
-   (*factory) = m_PointFactory;
-   (*factory)->AddRef();
-
-   return S_OK;
-}
-
-STDMETHODIMP CCircularCurve::putref_PointFactory(IPoint2dFactory *factory)
-{
-   CHECK_IN(factory);
-   m_PointFactory = factory;
-   return S_OK;
-}
-
 STDMETHODIMP CCircularCurve::Offset(Float64 dx,Float64 dy)
 {
-   m_bHoldEvents = true;
-   m_bPendingEvents = false;
-
    m_PBT->Offset(dx,dy);
    m_PI->Offset(dx,dy);
    m_PFT->Offset(dx,dy);
 
-   m_bHoldEvents = false;
-   if ( m_bPendingEvents )
-   {
-      Fire_OnCircularCurveChanged(this);
-   }
+   if (m_PC) m_PC->Offset(dx, dy);
+   if (m_PT) m_PT->Offset(dx, dy);
 
    return S_OK;
 }
 
-///////////////////////////////////////////
-// IPointEvents
-STDMETHODIMP CCircularCurve::OnPointChanged(IPoint2d* point)
-{
-   if ( m_PC.IsEqualObject(point) || m_PT.IsEqualObject(point) )
-   {
-      return S_OK;
-   }
-
-   ATLASSERT( m_PBT.IsEqualObject(point) || 
-               m_PI.IsEqualObject(point) ||
-              m_PFT.IsEqualObject(point) );
-
-   m_PC.Release();
-   m_PT.Release();
-
-#ifdef _DEBUG
-   // Better be listening only to IPoint2d objects
-   CComQIPtr<IPoint2d> pointEx(point);
-   ATLASSERT( pointEx != nullptr );
-#endif // _DEBUG
-
-   if ( m_bHoldEvents )
-      m_bPendingEvents = true;
-   else
-      Fire_OnCircularCurveChanged(this);
-
-   return S_OK;
-}
+/////////////////////////////////////////////
+//// IPointEvents
+//STDMETHODIMP CCircularCurve::OnPointChanged(IPoint2d* point)
+//{
+//   if ( m_PC.IsEqualObject(point) || m_PT.IsEqualObject(point) )
+//   {
+//      return S_OK;
+//   }
+//
+//   ATLASSERT( m_PBT.IsEqualObject(point) || 
+//               m_PI.IsEqualObject(point) ||
+//              m_PFT.IsEqualObject(point) );
+//
+//   m_PC.Release();
+//   m_PT.Release();
+//
+//#ifdef _DEBUG
+//   // Better be listening only to IPoint2d objects
+//   CComQIPtr<IPoint2d> pointEx(point);
+//   ATLASSERT( pointEx != nullptr );
+//#endif // _DEBUG
+//
+//   if ( m_bHoldEvents )
+//      m_bPendingEvents = true;
+//   else
+//      Fire_OnCircularCurveChanged(this);
+//
+//   return S_OK;
+//}
 
 STDMETHODIMP CCircularCurve::Clone(ICircularCurve* *clone)
 {
@@ -1042,21 +940,19 @@ STDMETHODIMP CCircularCurve::Clone(ICircularCurve* *clone)
    (*clone)->put_Radius(m_Radius);
 
    CComPtr<IPoint2d> clonePBT;
-   m_PointFactory->CreatePoint(&clonePBT);
+   clonePBT.CoCreateInstance(CLSID_Point2d);
    clonePBT->MoveEx(m_PBT);
    (*clone)->putref_PBT(clonePBT);
 
    CComPtr<IPoint2d> clonePI;
-   m_PointFactory->CreatePoint(&clonePI);
+   clonePI.CoCreateInstance(CLSID_Point2d);
    clonePI->MoveEx(m_PI);
    (*clone)->putref_PI(clonePI);
    
    CComPtr<IPoint2d> clonePFT;
-   m_PointFactory->CreatePoint(&clonePFT);
+   clonePFT.CoCreateInstance(CLSID_Point2d);
    clonePFT->MoveEx(m_PFT);
    (*clone)->putref_PFT(clonePFT);
-
-   (*clone)->putref_PointFactory(m_PointFactory);
 
    return S_OK;
 }
@@ -1075,7 +971,6 @@ STDMETHODIMP CCircularCurve::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("PI"),CComVariant(m_PI));
    pSave->put_Property(CComBSTR("PFT"),CComVariant(m_PFT));
    pSave->put_Property(CComBSTR("Radius"),CComVariant(m_Radius));
-   pSave->put_Property(CComBSTR("PointFactory"),CComVariant(m_PointFactory));
    pSave->EndUnit();
 
    return S_OK;
@@ -1103,12 +998,6 @@ STDMETHODIMP CCircularCurve::Load(IStructuredLoad2* pLoad)
 
    pLoad->get_Property(CComBSTR("Radius"),&var);
    put_Radius(var.dblVal);
-
-   pLoad->get_Property(CComBSTR("PointFactory"),&var);
-   CComPtr<IPoint2dFactory> factory;
-   _CopyVariantToInterface<IPoint2dFactory>::copy(&factory,&var);
-   putref_PointFactory(factory);
-
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);
@@ -1198,7 +1087,7 @@ bool CCircularCurve::LineParallelToTangent(ILine2d* pTangentLine,ILine2d* pLine,
    geomUtil::Distance(pTangentPoint, center,&dist1);
 
    CComPtr<IPoint2d> poln;
-   geomUtil::PointOnLineNearest(pLine, center, m_PointFactory,&poln);
+   geomUtil::PointOnLineNearest(pLine, center, &poln);
 
    Float64 dist2;
    geomUtil::Distance(center,poln,&dist2);

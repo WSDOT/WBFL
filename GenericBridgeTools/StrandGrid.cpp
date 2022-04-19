@@ -60,8 +60,6 @@ HRESULT CStrandGrid::FinalConstruct()
    if ( FAILED(hr) )
       return hr;
 
-   geom_util->get_Point2dFactory(&m_Point2dFactory);
-
    hr = m_GridBoundingBox.CoCreateInstance(CLSID_Rect2d);
    if ( FAILED(hr) )
       return hr;
@@ -149,11 +147,10 @@ STDMETHODIMP CStrandGrid::get_GridPoint(/*[in]*/ GridIndexType idx,/*[out,retval
    Float64 x = pnt.dPointX;
    Float64 y = pnt.dPointY;
 
-   HRESULT hr = m_Point2dFactory->CreatePoint(point);
-   if ( FAILED(hr) )
-      return hr;
-   
-   (*point)->Move(x, y);
+   CComPtr<IPoint2d> p;
+   p.CoCreateInstance(CLSID_Point2d);
+   p->Move(x, y);
+   p.CopyTo(point);
 
    return S_OK;
 }
@@ -173,10 +170,7 @@ STDMETHODIMP CStrandGrid::get_GridPoints(/*[out,retval]*/IPoint2dCollection** po
       const GridPoint2d& pnt = *iter;
 
       CComPtr<IPoint2d> point;
-      HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-      if ( FAILED(hr) )
-         return hr;
-   
+      point.CoCreateInstance(CLSID_Point2d);
       point->Move(pnt.dPointX , pnt.dPointY );
 
       new_points->Add(point);
@@ -391,9 +385,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositions(/*[out,retval]*/IPoint2dCollection*
          if (nStrandsAtGridPoint == 1)
          {
             CComPtr<IPoint2d> point;
-            HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-            if ( FAILED(hr) )
-               return hr;
+            point.CoCreateInstance(CLSID_Point2d);
          
             // single strands must always be placed at center
             point->Move(xright, y);
@@ -403,17 +395,13 @@ STDMETHODIMP CStrandGrid::GetStrandPositions(/*[out,retval]*/IPoint2dCollection*
          {
             // place two strands at +/-X
             CComPtr<IPoint2d> point;
-            HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-            if ( FAILED(hr) )
-               return hr;
+            point.CoCreateInstance(CLSID_Point2d);
          
             point->Move(xleft, y);
             local_points->Add(point);
 
             CComPtr<IPoint2d> point2;
-            hr = m_Point2dFactory->CreatePoint(&point2);
-            if ( FAILED(hr) )
-               return hr;
+            point2.CoCreateInstance(CLSID_Point2d);
 
             point2->Move(xright, y);
             local_points->Add(point2);
@@ -767,9 +755,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
          if (nStrandsAtGridPoint == 1)
          {
             CComPtr<IPoint2d> point;
-            HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-            if ( FAILED(hr) )
-               return hr;
+            point.CoCreateInstance(CLSID_Point2d);
          
             // single strands must always be placed at center
             point->Move(xright, y);
@@ -779,17 +765,13 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
          {
             // place two strands at +/-X
             CComPtr<IPoint2d> point;
-            HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-            if ( FAILED(hr) )
-               return hr;
+            point.CoCreateInstance(CLSID_Point2d);
          
             point->Move(xleft, y);
             local_points->Add(point);
 
             CComPtr<IPoint2d> point2;
-            hr = m_Point2dFactory->CreatePoint(&point2);
-            if ( FAILED(hr) )
-               return hr;
+            point2.CoCreateInstance(CLSID_Point2d);
 
             point2->Move(xright, y);
             local_points->Add(point2);

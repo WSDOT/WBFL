@@ -272,55 +272,6 @@ void CTestPoint3d::Test()
    TRY_TEST( IsEqual(y,-5.0), true );
    TRY_TEST( IsEqual(z,-5.0), true );
 
-   // Test Events
-   CComObject<CTestPoint3d>* pTestPoint;
-   CComObject<CTestPoint3d>::CreateInstance(&pTestPoint);
-   pTestPoint->AddRef();
-
-   CComPtr<IUnknown> punk(pTestPoint);
-   DWORD dwCookie;
-   TRY_TEST(AtlAdvise(pPoint,punk,IID_IPoint3dEvents,&dwCookie),S_OK);
-
-   pTestPoint->InitEventTest();
-   pPoint->put_X(5);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->put_Y(5);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->put_Z(5);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->Move(10,10,10);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->MoveEx(pPoint2);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->Offset(-1,-1,-1);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->OffsetEx(pSize);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->Rotate(0.0,0.0,0.0,rv,M_PI);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->RotateEx(pPoint2,rv,M_PI/2);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(pPoint,IID_IPoint3dEvents,dwCookie),S_OK);
-   pTestPoint->Release();
-
-
    TestISupportErrorInfo();
 }
 
@@ -329,12 +280,5 @@ void CTestPoint3d::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Point3d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPoint3d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
-}
-
-STDMETHODIMP CTestPoint3d::OnPointChanged(IPoint3d* point)
-{
-   Pass();
-   return S_OK;
 }

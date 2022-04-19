@@ -34,32 +34,11 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestLineSegmentCollection :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ILineSegmentCollectionEvents
+class CTestLineSegmentCollection
 {
 public:
 	static void Test();
 	CTestLineSegmentCollection();
-
-   void InitEventTest(CogoObjectID expectedID) { m_expectedID = expectedID; m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestLineSegmentCollection)
-   COM_INTERFACE_ENTRY(ILineSegmentCollectionEvents)
-END_COM_MAP()
-
-// ILineSegmentCollectionEvents
-public:
-	STDMETHOD(OnLineSegmentChanged)(CogoObjectID key,ILineSegment2d* lineSeg);
-	STDMETHOD(OnLineSegmentAdded)(CogoObjectID key,ILineSegment2d* lineSeg);
-	STDMETHOD(OnLineSegmentRemoved)(CogoObjectID key);
-	STDMETHOD(OnLineSegmentsCleared)();
-
-private:
-   bool m_bTestState;
-   CogoObjectID m_expectedID;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTLineSegmentCOLLECTION_H__B9E4933B_5E73_11D5_8C32_006097C68A9C__INCLUDED_)

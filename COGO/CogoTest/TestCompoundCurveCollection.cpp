@@ -118,7 +118,7 @@ void CTestCompoundCurveCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test putref_Item
+   // Test put_Item
    //
    TRY_TEST(pColl->AddEx(1,hc),S_OK);
 
@@ -203,47 +203,6 @@ void CTestCompoundCurveCollection::Test()
    }
 
    //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestCompoundCurveCollection>* pTestEvents;
-   CComObject<CTestCompoundCurveCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestEvents);
-   TRY_TEST(AtlAdvise(pColl,punk,IID_ICompoundCurveCollectionEvents,&dwCookie),S_OK);
-
-   // Add a CompoundCurve to the collection
-   pTestEvents->InitEventTest(1);
-   pColl->AddEx(1,hc);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Move a CompoundCurve... Event should fire
-   pTestEvents->InitEventTest(1);
-   hc->put_Radius(150);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Remove a CompoundCurve
-   pTestEvents->InitEventTest(1);
-   pColl->Remove(1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-//   // Change CompoundCurve references
-//   pTestEvents->InitEventTest(2);
-//   pColl->putref_Item(2,p4);
-//   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   TRY_TEST(AtlUnadvise(pColl,IID_ICompoundCurveCollectionEvents,dwCookie),S_OK);
-   pTestEvents->Release();
-
-   //
    // Test ISupportErrorInfo
    //
    CComQIPtr<ISupportErrorInfo> eInfo(pColl);
@@ -254,38 +213,4 @@ void CTestCompoundCurveCollection::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_CompoundCurveCollection,IID_ICompoundCurveCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_CompoundCurveCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestCompoundCurveCollection::OnCompoundCurveChanged(CogoObjectID id,ICompoundCurve* hc)
-{
-//   MessageBox(nullptr,"CompoundCurveChanged","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestCompoundCurveCollection::OnCompoundCurveAdded(CogoObjectID id,ICompoundCurve* hc)
-{
-//   MessageBox(nullptr,"CompoundCurveAdded","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestCompoundCurveCollection::OnCompoundCurveRemoved(CogoObjectID id)
-{
-//   MessageBox(nullptr,"CompoundCurveRemoved","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestCompoundCurveCollection::OnCompoundCurvesCleared()
-{
-//   MessageBox(nullptr,"CompoundCurveCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

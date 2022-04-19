@@ -35,33 +35,12 @@
 #endif // _MSC_VER > 1000
 
 
-class CTestPoint2dCollection  :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IPoint2dCollectionEvents
+class CTestPoint2dCollection
 {
 public:
 	static void Test();
 	CTestPoint2dCollection();
 	virtual ~CTestPoint2dCollection();
-
-   void InitEventTest(CollectionIndexType expectedIndex) { m_expectedIndex = expectedIndex; m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestPoint2dCollection)
-   COM_INTERFACE_ENTRY(IPoint2dCollectionEvents)
-END_COM_MAP()
-
-// IPoint2dCollectionEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point);
-	STDMETHOD(OnPointAdded)(CollectionIndexType index,IPoint2d* point);
-	STDMETHOD(OnPointRemoved)(CollectionIndexType index);
-	STDMETHOD(OnPointsCleared)();
-
-private:
-   bool m_bTestState;
-   CollectionIndexType m_expectedIndex;
-   void Pass() { m_bTestState = true; }
 
 private:
 	static void TestISupportErrorInfo();

@@ -29,7 +29,6 @@
 #include "LineSegment2d.h"
 #include "Point2d.h"
 #include "Helper.h"
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,8 +43,7 @@ STDMETHODIMP CLineSegment2d::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_ILineSegment2d,
-      &IID_IStructuredStorage2
+		&IID_ILineSegment2d
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -57,90 +55,68 @@ STDMETHODIMP CLineSegment2d::InterfaceSupportsErrorInfo(REFIID riid)
 
 HRESULT CLineSegment2d::FinalConstruct()
 {
-   HRESULT hr = S_OK;
+   CComObject<CPoint2d>* pStart;
+   CComObject<CPoint2d>::CreateInstance(&pStart);
+   pStart->SetPoint(m_LineSegment.GetStartPoint());
+   pStart->QueryInterface(&m_Start);
 
-   hr = CreatePoint(0.00,0.00,nullptr,&m_pStart );
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = CrAdvise(m_pStart, this, IID_IPoint2dEvents, &m_dwStartCookie);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = CreatePoint(1.00,0.00,nullptr,&m_pEnd );
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = CrAdvise(m_pEnd, this, IID_IPoint2dEvents, &m_dwEndCookie);
-   if ( FAILED(hr) )
-      return hr;
-
-   m_bEventsOn = true;
+   CComObject<CPoint2d>* pEnd;
+   CComObject<CPoint2d>::CreateInstance(&pEnd);
+   pEnd->SetPoint(m_LineSegment.GetEndPoint());
+   pEnd->QueryInterface(&m_End);
 
    return S_OK;
 }
 
 void CLineSegment2d::FinalRelease()
 {
-   CrUnadvise(m_pStart, this, IID_IPoint2dEvents, m_dwStartCookie);
-   CrUnadvise(m_pEnd,   this, IID_IPoint2dEvents, m_dwEndCookie  );
+}
+
+void CLineSegment2d::SetLineSegment(const WBFL::Geometry::LineSegment2d& ls)
+{
+   m_LineSegment = ls;
+   dynamic_cast<CPoint2d*>(m_Start.p)->SetPoint(m_LineSegment.GetStartPoint());
+   dynamic_cast<CPoint2d*>(m_End.p)->SetPoint(m_LineSegment.GetEndPoint());
 }
 
 STDMETHODIMP CLineSegment2d::get_StartPoint(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   m_pStart->QueryInterface( pVal );
-
-   return S_OK;
+   return m_Start.QueryInterface(pVal);
 }
 
 STDMETHODIMP CLineSegment2d::putref_StartPoint(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
-
-   HRESULT hr = CrAssignPointer(m_pStart, newVal, this, IID_IPoint2dEvents, &m_dwStartCookie);
-   if ( SUCCEEDED(hr) )
-      Fire_OnLineSegmentChanged(this);
-
+   m_Start = newVal;
+   m_LineSegment.SetStartPoint(GetInnerPoint(m_Start));
    return S_OK;
 }
 
 STDMETHODIMP CLineSegment2d::get_EndPoint(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   m_pEnd->QueryInterface( pVal );
-
-   return S_OK;
+   return m_End.QueryInterface(pVal);
 }  
 
 STDMETHODIMP CLineSegment2d::putref_EndPoint(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
-   HRESULT hr = CrAssignPointer(m_pEnd, newVal, this, IID_IPoint2dEvents, &m_dwEndCookie);
-   if ( SUCCEEDED(hr) )
-      Fire_OnLineSegmentChanged(this);
-
+   m_End = newVal;
+   m_LineSegment.SetEndPoint(GetInnerPoint(m_End));
    return S_OK;
 }
 
-STDMETHODIMP CLineSegment2d::get_Length(Float64 *pVal)
+STDMETHODIMP CLineSegment2d::get_Length(Float64* pLength)
 {
-   CHECK_RETVAL(pVal);
-
-   CComPtr<IGeomUtil2d> pUtil;
-   CreateGeomUtil(&pUtil);
-   return pUtil->Distance(m_pStart,m_pEnd,pVal);
+   CHECK_RETVAL(pLength);
+   *pLength = m_LineSegment.Length();
+   return S_OK;
 }
 
 STDMETHODIMP CLineSegment2d::Rotate(Float64 cx, Float64 cy, Float64 angle)
 {
-   EventsOff();
-   m_pStart->Rotate( cx, cy, angle );
-   m_pEnd->Rotate( cx, cy, angle );
-   EventsOn();
-
+   m_LineSegment.Rotate(WBFL::Geometry::Point2d(cx, cy), angle);
    return S_OK;
 }
 
@@ -149,41 +125,20 @@ STDMETHODIMP CLineSegment2d::RotateEx(IPoint2d *pCenter, Float64 angle)
    CHECK_IN(pCenter);
 
    Float64 x,y;
-   pCenter->get_X(&x);
-   pCenter->get_Y(&y);
+   pCenter->Location(&x,&y);
 
    return Rotate(x,y,angle);
 }
 
 STDMETHODIMP CLineSegment2d::Offset2(Float64 distance)
 {
-   Float64 sx,sy;
-   m_pStart->Location(&sx,&sy);
-
-   Float64 ex,ey;
-   m_pEnd->Location(&ex,&ey);
-
-   Float64 dx = ex - sx;
-   Float64 dy = ey - sy;
-   Float64 length = sqrt(dx*dx + dy*dy);
-
-   Float64 x = 0;
-   Float64 y = 0;
-   if ( !IsZero(length) )
-   {
-      x = -distance*dy/length;
-      y =  distance*dx/length;
-   }
-
-   return Offset(x,y);
+   m_LineSegment.Offset(distance);
+   return S_OK;
 }
 
 STDMETHODIMP CLineSegment2d::Offset(Float64 dx, Float64 dy)
 {
-   EventsOff();
-   m_pStart->Offset(dx,dy);
-   m_pEnd->Offset(dx,dy);
-   EventsOn();
+   m_LineSegment.Offset(dx, dy);
 	return S_OK;
 }
 
@@ -191,10 +146,9 @@ STDMETHODIMP CLineSegment2d::OffsetEx(ISize2d *pSize)
 {
    CHECK_IN(pSize);
 
-   EventsOff();
-   m_pStart->OffsetEx( pSize );
-   m_pEnd->OffsetEx( pSize );
-   EventsOn();
+   Float64 dx, dy;
+   pSize->Dimensions(&dx, &dy);
+   return Offset(dx, dy);
 
    return S_OK;
 }
@@ -204,16 +158,34 @@ STDMETHODIMP CLineSegment2d::ThroughPoints(IPoint2d* p1, IPoint2d* p2)
    CHECK_IN(p1);
    CHECK_IN(p2);
 
-   HRESULT hr = CrAssignPointer(m_pStart, p1, this, IID_IPoint2dEvents, &m_dwStartCookie);
-   if ( FAILED(hr) )
-      return hr;
+   m_Start = p1;
+   m_End = p2;
+   m_LineSegment.ThroughPoints(GetInnerPoint(m_Start), GetInnerPoint(m_End));
 
-   hr = CrAssignPointer(m_pEnd, p2, this, IID_IPoint2dEvents, &m_dwEndCookie);
-   if ( FAILED(hr) )
-      return hr;
-
-   Fire_OnLineSegmentChanged(this);
    return S_OK;
+}
+
+STDMETHODIMP CLineSegment2d::ContainsPoint(IPoint2d* pPoint, Float64 tolerance, VARIANT_BOOL* pbResult)
+{
+   CHECK_RETVAL(pbResult);
+   *pbResult = MakeBool(m_LineSegment.ContainsPoint(GetPoint(pPoint), tolerance));
+   return S_OK;
+}
+
+STDMETHODIMP CLineSegment2d::Divide(IndexType nSpaces, IPoint2dCollection** ppPoints)
+{
+   CHECK_RETOBJ(ppPoints);
+   std::vector<WBFL::Geometry::Point2d> points;
+   try
+   {
+      points = m_LineSegment.Divide(nSpaces);
+   }
+   catch (...)
+   {
+      return E_INVALIDARG;
+   }
+
+   return CreatePointCollection(points, ppPoints);
 }
 
 STDMETHODIMP CLineSegment2d::Clone(ILineSegment2d** ppClone)
@@ -221,85 +193,15 @@ STDMETHODIMP CLineSegment2d::Clone(ILineSegment2d** ppClone)
    CHECK_RETOBJ(ppClone);
    CComObject<CLineSegment2d>* pClone;
    CComObject<CLineSegment2d>::CreateInstance(&pClone);
+
+   pClone->m_Start.Release();
+   m_Start->Clone(&pClone->m_Start);
+   pClone->m_End.Release();
+   m_End->Clone(&pClone->m_End);
+   pClone->m_LineSegment.ThroughPoints(GetInnerPoint(m_Start), GetInnerPoint(m_End));
+
    (*ppClone) = pClone;
    (*ppClone)->AddRef();
 
-   CComPtr<IPoint2d> start,end;
-   m_pStart->Clone(&start);
-   m_pEnd->Clone(&end);
-
-   pClone->ThroughPoints(start,end);
-
    return S_OK;
-}
-
-STDMETHODIMP CLineSegment2d::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IPersist
-STDMETHODIMP CLineSegment2d::GetClassID(CLSID* pClassID)
-{
-   CHECK_IN(pClassID);
-
-   *pClassID = GetObjectCLSID();
-   return S_OK;
-}
-
-// IStructuredStorage2
-STDMETHODIMP CLineSegment2d::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("LineSegment2d"),1.0);
-   pSave->put_Property(CComBSTR("Start"),CComVariant(m_pStart));
-   pSave->put_Property(CComBSTR("End"),  CComVariant(m_pEnd));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CLineSegment2d::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("LineSegment2d"));
-   
-   CrUnadvise(m_pStart, this, IID_IPoint2dEvents, m_dwStartCookie);
-   m_pStart.Release();
-
-   pLoad->get_Property(CComBSTR("Start"),&var);
-   if ( FAILED( _CopyVariantToInterface<IPoint2d>::copy(&m_pStart,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-   
-   CrUnadvise(m_pEnd,   this, IID_IPoint2dEvents, m_dwEndCookie  );
-   m_pEnd.Release();
-
-   pLoad->get_Property(CComBSTR("End"),&var);
-   if ( FAILED( _CopyVariantToInterface<IPoint2d>::copy(&m_pEnd,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   return S_OK;
-}
-
-
-void CLineSegment2d::EventsOff()
-{
-   m_bEventsOn = false;
-}
-
-void CLineSegment2d::EventsOn(bool bFire)
-{
-   m_bEventsOn = true;
-
-   if ( bFire )
-      Fire_OnLineSegmentChanged(this);
 }

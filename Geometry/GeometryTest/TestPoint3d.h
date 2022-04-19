@@ -36,30 +36,13 @@
 
 
 
-class CTestPoint3d  :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IPoint3dEvents
+class CTestPoint3d
 {
 public:
 	static void Test();
 	CTestPoint3d();
 	virtual ~CTestPoint3d();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestPoint3d)
-   COM_INTERFACE_ENTRY(IPoint3dEvents)
-END_COM_MAP()
-
-// IPoint3dEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint3d* point);
-
 private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
-
 	static void TestISupportErrorInfo();
 };
 

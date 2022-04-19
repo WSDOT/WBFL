@@ -32,6 +32,7 @@
 //
 #include <Math\MathExp.h>
 #include <Math\PwLinearFunction2d.h>
+#include <GeomModel/Primitives.h>
 
 // LOCAL INCLUDES
 //
@@ -68,7 +69,7 @@ public:
 
    //------------------------------------------------------------------------
    // Construct using an array of points
-   mathPwLinearFunction2dUsingPoints(const std::vector<gpPoint2d>& points);
+   mathPwLinearFunction2dUsingPoints(const std::vector<WBFL::Geometry::Point2d>& points);
 
    //------------------------------------------------------------------------
    // Destructor
@@ -95,23 +96,23 @@ public:
    //------------------------------------------------------------------------
    // GetPoint
    // Returns the ith point. (zero-based)
-   virtual gpPoint2d GetPoint(CollectionIndexType pnum) const override;
+   virtual WBFL::Geometry::Point2d GetPoint(CollectionIndexType pnum) const override;
 
    //------------------------------------------------------------------------
    // GetPoints
    // Returns all points for the line segments which make up the function.
-   virtual std::vector<gpPoint2d> GetPoints() const override;
+   virtual std::vector<WBFL::Geometry::Point2d> GetPoints() const override;
 
    //------------------------------------------------------------------------
    // SetPoints
    // Sets all points which make up the function
-   void SetPoints(const std::vector<gpPoint2d>& points);
+   void SetPoints(const std::vector<WBFL::Geometry::Point2d>& points);
 
    //------------------------------------------------------------------------
    // AddPoint
    // Adds a new point to the the end of the function. Returns the total number of 
    // points in the function including the new point.
-   CollectionIndexType AddPoint(const gpPoint2d& point);
+   CollectionIndexType AddPoint(const WBFL::Geometry::Point2d& point);
    CollectionIndexType AddPoint(Float64 X,Float64 Y);
 
    //------------------------------------------------------------------------
@@ -125,7 +126,7 @@ public:
    // overlapping,  p contains the coordinates of the first overlapping point..
    //------------------------------------------------------------------------
    Int16 Intersect(const mathPwLinearFunction2dUsingPoints& rOther, 
-                   const math1dRange& range, gpPoint2d* p);
+                   const math1dRange& range, WBFL::Geometry::Point2d* p);
 
    //------------------------------------------------------------------------
    // GetMaximumsInRange
@@ -165,7 +166,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::vector<gpPoint2d> m_Points;
+   std::vector<WBFL::Geometry::Point2d> m_Points;
 
    //------------------------------------------------------------------------
    // Optimize evaluations by assuming that the last segment evaluated was 

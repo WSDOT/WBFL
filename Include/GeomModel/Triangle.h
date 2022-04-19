@@ -25,261 +25,97 @@
 #define INCLUDED_GEOMMODEL_TRIANGLE_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
+#include <GeomModel/GeomModelExp.h>
+#include <GeomModel/ShapeOnPolygonImpl.h>
 
-// PROJECT INCLUDES
-//
-#include <GeomModel\GeomModelExp.h>
-#include <GeomModel\ShapeImp.h>
+namespace WBFL
+{
+   namespace Geometry
+   {
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-class gmPolygon;
-class gpPolygon2d;
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   gmTriangle
-
-   Derived from gmShapeImp,  this class represents a Triangle primitive. 
-
-
-DESCRIPTION
- The triangle is described by its height,  width,  offset,  rotation angle, 
- and is located by its hook point.  The rotation angle is measured from the 
- positive x-axis counter-clockwise.  The rotation angle defines the orientation
- of the base of the triangle (edge W). Rotation takes place about the hook point.
- The hook point of a triangle is at the lower left vertex.
-
-LOG
-   rdp : 12.22.1997 : Created file
-*****************************************************************************/
-
-class GEOMMODELCLASS gmTriangle : public gmShapeImp
+      /// Object representing a Triangle
+      ///
+      /// \image html Triangle/Triangle.jpg
+      /// Negative dimensions can be used to form a variety of triangular configurations.
+      /// \image html Triangle/Triangle2.jpg
+class GEOMMODELCLASS Triangle : public ShapeOnPolygonImpl
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Default constructor.  Creates a Triangle with height and width equal 
+   /// to zero,  with its hook point at (0,0).
+   Triangle();
 
-   //------------------------------------------------------------------------
-   // Default constructor.  Creates a Triangle with height and width equal 
-   // to zero,  with its hook point at (0,0).
-   gmTriangle();
+   /// Explicit constructor.  Explicit constructor.  Creates a triangle with 
+   /// height h, width w, and offset c.  The hook point is positioned at 
+   /// hookPnt.  The triangle can be rotated by rotAngle..
+   Triangle(std::shared_ptr<Point2d>& hookPnt, Float64 h, Float64 w, Float64 c = 0., Float64 rotAngle = 0.);
+   Triangle(const Point2d& hookPnt, Float64 h, Float64 w, Float64 c = 0., Float64 rotAngle = 0.);
 
-   //------------------------------------------------------------------------
-   // gmTriangle
-   // Explicit constructor.  Explicit constructor.  Creates a triangle with 
-   // height h, width w, and offset c.  The hook point is positioned at 
-   // hookPnt.  The triangle can be rotated by rotAngle..
-   gmTriangle(const gpPoint2d& hookPnt,Float64 h, Float64 w,  Float64 c = 0.,
-              Float64 rotAngle = 0.);
+   Triangle(const Triangle& other);
+   Triangle& operator=(const Triangle& other);
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~gmTriangle();
+   virtual ~Triangle();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   /// Sets the width of the Triangle.
+   void SetWidth(Float64 w);
 
-   //------------------------------------------------------------------------
-   // SetHookPoint
-   // Sets the location of the hook point to hookPnt.  Returns the previous 
-   // hook point location.
-   gpPoint2d SetHookPoint(const gpPoint2d& hookPnt);
-
-   //------------------------------------------------------------------------
-   // GetHookPoint
-   // Returns the location of the hook point.
-   gpPoint2d GetHookPoint() const;
-
-   //------------------------------------------------------------------------
-   // SetWidth
-   // Sets the width of the Triangle.  Returns the previous width.
-   Float64 SetWidth(Float64 w);
-
-   //------------------------------------------------------------------------
-   // GetWidth
-   // Returns the width of the Triangle.
+   /// Returns the width of the Triangle.
    Float64 GetWidth() const;
 
-   //------------------------------------------------------------------------
-   // SetHeight
-   // Sets the height of the Triangle.  Returns the previous height.
-   Float64 SetHeight(Float64 h);
+   /// Sets the height of the Triangle.
+   void SetHeight(Float64 h);
 
-   //------------------------------------------------------------------------
-   // GetHeight
-   // Returns the height of the Triangle.
+   /// Returns the height of the Triangle.
    Float64 GetHeight() const;
 
-   //------------------------------------------------------------------------
-   // SetOffset
-   // Sets the offset of the triangle.
-   Float64 SetOffset(Float64 c);
+   /// Sets the offset of the triangle.
+   void SetOffset(Float64 c);
 
-   //------------------------------------------------------------------------
-   // GetOffset
-   // Returns the offset of the triangle.
+   /// Returns the offset of the triangle.
    Float64 GetOffset() const;
 
-   //------------------------------------------------------------------------
-   // SetRotationAngle
-   // Sets the rotation angle of the triangle. The triangle is rotated about its hook point.
-   Float64 SetRotationAngle(Float64 rotAngle);
+   /// Sets the rotation angle of the triangle. The triangle is rotated about its hook point.
+   void SetRotationAngle(Float64 rotAngle);
 
-   //------------------------------------------------------------------------
-   // GetRotationAngle
-   // Returns the rotation angle of the triangle.
+   /// Returns the rotation angle of the triangle.
    Float64 GetRotationAngle() const;
 
+   /// Translates a shape by a delta amount.
+   virtual void DoOffset(const Size2d& delta) override;
 
-   //------------------------------------------------------------------------
-   // CreateClone
-   // Creates a clone of this broadcaster.  If bRegisterListeners is true the 
-   // listeners are registered with the clone.  This is a factory method,  
-   // you are responsible for freeing the memory allocated by this method.
-   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const override;
+   /// Rotates a shape.  The rotation is centered about point center.  The 
+   /// rotation angle is measured in radians counter clockwise.
+   virtual void DoRotate(const Point2d& center, Float64 angle) override;
 
-   //------------------------------------------------------------------------
-   // GetProperties
-   // Assigns a gmProperties object to the object pointed to by pProperties. 
-   // The origin of the shape properties object is the centroid of this shape
-   // with a rotation of zero.
-   virtual void GetProperties(gmProperties* pProperties) const override;
+   /// Creates a clone.
+   virtual std::unique_ptr<Shape> CreateClone() const override;
 
-   //------------------------------------------------------------------------
-   // GetBoundingBox
-   // Returns the smallest rectangle that bounds the entire shape.
-   virtual gpRect2d GetBoundingBox() const override;
-
-   //------------------------------------------------------------------------
-   // CreateClippedShape
-   // Clips this shape against line.  Clips away the portion of the shape on the
-   // side of the line defined by side.  This is a factory method.  You are 
-   // responsible for freeing the memory allocated by this method.  If the shape
-   // lies entirely on the clipping side of the line 0 is returned. Any listeners
-   // to the original section are not transferred to this new section.
-   virtual gmIShape* CreateClippedShape(const gpLine2d& line, 
-                                       gpLine2d::Side side) const;
-
-   //------------------------------------------------------------------------
-   // CreateClippedShape
-   // Clips this shape against Triangle r.  Clips in or out of the Triangle
-   // as specified by region.  This is a factory method.  You are responsible 
-   // for freeing memory allocated by this method.  This method returns 0 if, 
-   // the shape lies entirely within the clipping Triangle and region is set 
-   // to clip out, or the shape and the Triangle do not intersect and region 
-   // is to clip in. Any listeners to the original section are not transferred
-   // to this new section.
-   virtual gmIShape* CreateClippedShape(const gpRect2d& r,
-                                        gmShapeImp::ClipRegion region
-                                        ) const;
-
-   //------------------------------------------------------------------------
-   // GetFurthestDistance
-   // Returns the distance to a line that is parallel to line, on specified 
-   // side of line,  that passes through the furthest point on the shape 
-   // from line.
-   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const override;
-
-   //------------------------------------------------------------------------
-   // Draw
-   // Draws the shape on the given device context.  Mapping of the coordinates
-   // to the device space should be done using the supplied point mapper.
-   // Draw is for static displays only.  The drawing of this analytical 
-   // model is not intended for interactive, graphical editing.  Interactive 
-   // graphical editing is best left for a package specifically designed for 
-   // this purpose, such as jKit/GO.  In a package like jKit/GO,  a GO object
-   // would most likely delegate its drawing responsibility to the gmShapeImp 
-   // object it represents.
-   // Subject to removal if we can ever figure out the MVC stuff
-   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const override;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
 #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
+   /// Returns true if the class is in a valid state, otherwise returns false
    virtual bool AssertValid() const override;
 
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
+   /// Dumps the contents of the class to the given stream.
    virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST
-
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
+   /// Self-diagnostic test function.
    static bool TestMe(dbgLog& rlog);
-
 #endif // _UNITTEST
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   gmTriangle(const gmTriangle&);
-   gmTriangle& operator=(const gmTriangle&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // DoTranslate
-   // Called by the framework went the shape is to be translated.
-   virtual void DoTranslate(const gpSize2d& delta) override;
-
-   //------------------------------------------------------------------------
-   // DoRotate
-   // Called by the framework went the shape is to be rotated.
-   virtual void DoRotate(const gpPoint2d& center, Float64 angle) override;
-
-   //------------------------------------------------------------------------
-   void MakeCopy(const gmTriangle& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const gmTriangle& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
 
 private:
-   // GROUP: DATA MEMBERS
+   Float64 m_Height{ 0 };
+   Float64 m_Width{ 0 };
+   Float64 m_Offset{ 0 };
+   Float64 m_Rotation{ 0 };
 
-   Float64   m_Height;
-   Float64   m_Width;
-   Float64   m_Offset;
-   Float64   m_Rotation;
-   gpPoint2d m_HookPoint;
-
-   // GROUP: LIFECYCLE
-
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-   gmPolygon*   CreatePolygon() const;
-   gpPolygon2d* CreategpPolygon() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   void Copy(const Triangle& other);
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
+   }; // Geometry
+}; // WBFL
 
 #endif // INCLUDED_GEOMMODEL_Triangle_H_

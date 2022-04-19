@@ -661,13 +661,12 @@ void CTestBulbTee2::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST(eInfo.CoCreateInstance(CLSID_BulbTee2), S_OK);
-   TRY_TEST(eInfo != 0, true);
+   TRY_TEST(eInfo != nullptr, true);
 
    // Interfaces that should be supported
    TRY_TEST(eInfo->InterfaceSupportsErrorInfo(IID_IBulbTee2), S_OK);
    TRY_TEST(eInfo->InterfaceSupportsErrorInfo(IID_IShape), S_OK);
    TRY_TEST(eInfo->InterfaceSupportsErrorInfo(IID_IXYPosition), S_OK);
-   TRY_TEST(eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);
 
    // Interface that is not supported
    TRY_TEST(eInfo->InterfaceSupportsErrorInfo(IID_ISupportErrorInfo), S_FALSE);

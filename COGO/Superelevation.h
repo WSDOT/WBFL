@@ -28,7 +28,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -39,10 +38,8 @@ class ATL_NO_VTABLE CSuperelevation :
 	public CComCoClass<CSuperelevation, &CLSID_Superelevation>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CSuperelevation,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CSuperelevation>,
    public ISuperelevation,
    public IStructuredStorage2,
-   public CProxyDSuperelevationEvents< CSuperelevation >,
    public IPersistImpl<CSuperelevation>
 {
 public:
@@ -61,17 +58,9 @@ BEGIN_COM_MAP(CSuperelevation)
 	COM_INTERFACE_ENTRY(ISuperelevation)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
-
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CSuperelevation)
-CONNECTION_POINT_ENTRY(IID_ISuperelevationEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 public:

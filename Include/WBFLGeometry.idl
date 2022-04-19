@@ -37,7 +37,6 @@
 import "oaidl.idl";
 import "ocidl.idl";
 import "WBFLTypes.idl";
-import "WBFLTools.idl";
 
 // Context Help IDs
 #include <Geometry.hh>
@@ -47,16 +46,14 @@ cpp_quote("#define GEOMETRY_E_NOTNORMALIZED             MAKE_HRESULT(SEVERITY_ER
 cpp_quote("#define GEOMETRY_E_ZEROMAGNITUDE             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
 cpp_quote("#define GEOMETRY_E_MAGNITUDELESSTHANZERO     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
 cpp_quote("#define GEOMETRY_E_SAMEPOINTS                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,515)")
-cpp_quote("#define GEOMETRY_E_INFINITESOLUTIONS         MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,516)")
-cpp_quote("#define GEOMETRY_E_NOSOLUTIONS               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,517)")
-cpp_quote("#define GEOMETRY_E_RADIUS                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,518)")
-cpp_quote("#define GEOMETRY_E_DIMENSION                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,519)")
-cpp_quote("#define GEOMETRY_E_POINTONLINE               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,520)")
-cpp_quote("#define GEOMETRY_E_MIDORDINATE               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,521)")
-cpp_quote("#define GEOMETRY_E_ANGLE                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,522)")
-cpp_quote("#define GEOMETRY_E_DISTANCE                  MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,523)")
-cpp_quote("#define GEOMETRY_E_COINCIDENTPOINTS          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,524)")
-cpp_quote("#define GEOMETRY_E_COLINEAR                  MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,525)")
+cpp_quote("#define GEOMETRY_E_NOSOLUTIONS               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,516)")
+cpp_quote("#define GEOMETRY_E_RADIUS                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,517)")
+cpp_quote("#define GEOMETRY_E_DIMENSION                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,518)")
+cpp_quote("#define GEOMETRY_E_MIDORDINATE               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,519)")
+cpp_quote("#define GEOMETRY_E_ANGLE                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,520)")
+cpp_quote("#define GEOMETRY_E_DISTANCE                  MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,521)")
+cpp_quote("#define GEOMETRY_E_COINCIDENTPOINTS          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,522)")
+cpp_quote("#define GEOMETRY_E_COLINEAR                  MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,523)")
 
 [
 	uuid(55B8EF8A-FADF-11D2-8CDF-9849C70CC734),
@@ -267,10 +264,6 @@ library WBFLGeometry
          [in] Float64 angle ///< Rotation angle, measured counter-clockwise from the positive X axis.
       );
 
-      /// The StructuredStorage property
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-
       /// Returns S_OK if pOther is at the same location as this point, otherwise returns S_FALSE.
       [helpstring("method SameLocation"),helpcontext(IDH_IPoint2d_SameLocation)]
       HRESULT SameLocation([in]IPoint2d* pOther);
@@ -298,24 +291,6 @@ library WBFLGeometry
       /// Creates a clone of this object
       [helpstring("method Clone")/*,helpcontext(IDH_IPoint2d_Location)*/]
       HRESULT Clone([out,retval]IPoint2d** ppPoint);
-   };
-
-   /// Events fired by the Point2d object
-   [
-    object,
-    oleautomation,
-    uuid(11B3531F-ACDA-4b32-AAAB-28F9693256B2),
-    helpcontext(IDH_IPoint2d),
-    helpstring("IPoint2dEvents Interface"),
-    pointer_default(unique)
-   ]
-   interface IPoint2dEvents : IUnknown
-   {
-      /// Called when a point object changes.
-     [helpstring("event OnPointChanged"),helpcontext(IDH_IPoint2d_OnChanged)] 
-     HRESULT OnPointChanged(
-        IPoint2d* point ///< reference to the point after it has been changed
-     );
    };
 
    /// Interface defining a size representing the vertical and horizontal extents of a rectangular region
@@ -351,10 +326,6 @@ library WBFLGeometry
       /// Scaling factors greater than 1.0 enlarge the dimensions
 		[helpstring("method Scale"),helpcontext(IDH_ISize2d_Scale)]
       HRESULT Scale([in] Float64 factor);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
 
       /// Returns the dimensions
       [helpstring("method Dimensions"),helpcontext(IDH_ISize2d_Dimensions)]
@@ -568,10 +539,6 @@ library WBFLGeometry
       [helpstring("method Clone")/*,helpcontext(IDH_IRect2d_Clone)*/]
       HRESULT Clone([out,retval]IRect2d** clone);
 
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-
       /// Set the bounds of a rectangle
 		[helpstring("method SetBounds"),/* helpcontext(IDH_IRect2d_SetBounds)*/]
       HRESULT SetBounds(
@@ -744,10 +711,6 @@ library WBFLGeometry
       /// Creates a clone of this object
       [helpstring("method Clone")/*, helpcontext(IDH_IVector2d_Clone)*/]
 		HRESULT Clone([out,retval] IVector2d** ppClone);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 	
    /// Enumerates a collection of Point2d objects
@@ -832,10 +795,6 @@ library WBFLGeometry
 	  [propget,restricted,helpstring("property _Enum"),helpcontext(IDH_IPoint2dCollection__Enum)]
 	  HRESULT _Enum([out,retval] IEnumPoint2d** ppenum);
 
-     /// The StructuredStorage property
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-
       /// Reverses the order of the points in the collection
       [helpstring("method Reverse")]
       HRESULT Reverse();
@@ -867,41 +826,6 @@ library WBFLGeometry
       /// Removes points that are at the same location from the collection
       [helpstring("method RemoveDuplicatePoints")]
       HRESULT RemoveDuplicatePoints();
-   };
-
-   /// Events fired by a Point2dCollection object
-   [
-     object,
-     uuid(06927385-F7D8-4398-A34B-FE7CDF8D7E40),
-     oleautomation,
-     helpcontext(IDH_IPoint2dCollection),
-     helpstring("IPoint2dCollectionEvents Interface"),
-     pointer_default(unique)
-   ]
-   interface IPoint2dCollectionEvents : IUnknown
-   {
-      /// Fires when a point in the collection was changed.
-     [helpstring("event OnPointChanged"),helpcontext(IDH_IPoint2dCollection_OnPoint2dsChanged)] 
-     HRESULT OnPointChanged(
-        [in] IPoint2d* Point2d ///< the point that was changed
-     );
-
-     /// Fires when a point is added to the collection.
-     [helpstring("event OnPointAdded"),helpcontext(IDH_IPoint2dCollection_OnPoint2dAdded)] 
-     HRESULT OnPointAdded(
-        [in] CollectionIndexType idx, ///< Index where the point was added
-        [in] IPoint2d* Point2d ///< the point that was added to the collection
-     );
-
-     /// Fires just after a point is removed from the collection.
-     [helpstring("event OnPointRemoved"),helpcontext(IDH_IPoint2dCollection_OnPoint2dRemoved)] 
-     HRESULT OnPointRemoved(
-        [in] CollectionIndexType idx ///< index from where the point was removed
-     );
-
-     /// Fires just after the collection was cleared
-     [helpstring("event OnPointsCleared"),helpcontext(IDH_IPoint2dCollection_OnPoint2dsCleared)] 
-     HRESULT OnPointsCleared();
    };
 
    /// Interface defining a line segment in a two dimensional Cartesian coordinate system.
@@ -977,31 +901,18 @@ library WBFLGeometry
          [in] IPoint2d* p2 ///< end of line segment
       );
 
+      [helpstring("method ContainsPoint")]
+      HRESULT ContainsPoint([in]IPoint2d* pPoint, [in]Float64 tolerance, [out]VARIANT_BOOL* pbResult);
+
+      /// Divides the line segment into nSpaces equally divided spaces.  Returns
+      /// a vector containing the coordinate of each point.
+      /// \image html LineSegment2d/DivideLineSegment.jpg
+      [helpstring("method Divide")]
+      HRESULT Divide([in]IndexType nSpaces, [out]IPoint2dCollection** ppPoints);
+
       /// Creates a clone of this object
       [helpstring("method Clone")/*, helpcontext(IDH_ILineSegment2d_Cone)*/]
       HRESULT Clone([out,retval]ILineSegment2d** ppClone);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-   };
-
-   /// Events fired by the LineSegment2d object
-   [
-    object,
-    oleautomation,
-    uuid(EBECEDED-AF2B-4f51-8A8B-815EA425319F),
-    helpcontext(IDH_ILineSegment2d),
-    helpstring("ILineSegment2dEvents Interface"),
-    pointer_default(unique)
-   ]
-   interface ILineSegment2dEvents : IUnknown
-   {
-      /// Called when the line segment changes.
-    [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_ILineSegment2d_OnChanged)] 
-    HRESULT OnLineSegmentChanged(
-       ILineSegment2d* lineSegment ///< Reference to the line segment after it has changed
-    );
    };
 
    /// Interface defining a directed line of infinite length.
@@ -1083,13 +994,15 @@ library WBFLGeometry
 		[helpstring("method Reverse"), helpcontext(IDH_ILine2d_Reverse)]
 	  HRESULT Reverse();
 
+     [helpstring("method ContainsPoint")]
+     HRESULT ContainsPoint([in]IPoint2d* pPoint, [out]VARIANT_BOOL* pbResult);
+
+     [helpstring("method IsColinear")]
+     HRESULT IsColinear([in]ILine2d* pLine, [out]VARIANT_BOOL* pbResult);
+
      /// Creates a clone of this object
       [helpstring("method Clone")/*, helpcontext(IDH_ILine2d_Clone)*/]
 	  HRESULT Clone([out,retval]ILine2d** ppLine);
-
-     /// The StructuredStorage property
-     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Represents a point in a three dimensional Cartesian coordinate system.
@@ -1166,10 +1079,6 @@ library WBFLGeometry
          [in] Float64 angle ///< Rotation angle, in radians. Positive rotation follows the right hand rule.
       );
 
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-
       /// Returns S_OK if pOther is at the same location as this point, otherwise returns S_FALSE
       [helpstring("method SameLocation"),helpcontext(IDH_IPoint3d_SameLocation)]
       HRESULT SameLocation([in]IPoint3d* pOther);
@@ -1197,24 +1106,6 @@ library WBFLGeometry
       /// Creates a clone of this object
       [helpstring("method Clone")/*,helpcontext(IDH_IPoint3d_Location)*/]
       HRESULT Clone([out,retval]IPoint3d** ppPoint);
-   };
-
-   /// Events fired by the Point3d object
-   [
-    object,
-    oleautomation,
-    uuid(C001AE86-7A31-434e-8649-3096457FE412),
-    helpcontext(IDH_IPoint3d),
-    helpstring("IPoint3dEvents Interface"),
-    pointer_default(unique)
-   ]
-   interface IPoint3dEvents : IUnknown
-   {
-      /// Called when a point object changes.
-      [helpstring("event OnPointChanged"), helpcontext(IDH_IPoint3d_OnChanged)]
-    HRESULT OnPointChanged(
-       IPoint3d* point ///< reference to the point after it has been changed
-    );
    };
 
    /// Interface defining a line segment in a 3D Cartesian coordinate system.
@@ -1276,28 +1167,6 @@ library WBFLGeometry
       /// Creates a clone of this object
       [helpstring("method Clone")/*,helpcontext(IDH_ILineSegment2d_Clone)*/]
       HRESULT Clone([out,retval]ILineSegment3d** clone);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-   };
-
-   /// Events fired by the LineSegment3d object
-   [
-    object,
-    oleautomation,
-    uuid(708930E0-84C3-4f3e-A8FD-524E80D50918),
-    //helpcontext(IDH_ILineSegment2d),
-    helpstring("ILineSegment3dEvents Interface"),
-    pointer_default(unique)
-   ]
-   interface ILineSegment3dEvents : IUnknown
-   {
-      /// Called when the line segment changes.
-      [helpstring("event OnLineSegmentChanged")/*,helpcontext(IDH_ILineSegment2d_OnChanged)*/]
-    HRESULT OnLineSegmentChanged(
-       ILineSegment3d* lineSegment ///< Reference to the line segment after it has changed
-    );
    };
 
    /// Interface defining a size representing the extents of a rectangular prism
@@ -1348,10 +1217,6 @@ library WBFLGeometry
          [out]Float64* pDy, ///< Extent in the Y direction
          [out]Float64* pDz ///< Extent in the Z direction
       );
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
 
       /// Creates a clone of this object
       [helpstring("method Clone")/*,helpcontext(IDH_ISize3d_Clone)*/]
@@ -1505,10 +1370,6 @@ library WBFLGeometry
       /// Creates a clone of this object
       [helpstring("method Clone")/*, helpcontext(IDH_IVector3d_Clone)*/]
 		HRESULT Clone([out,retval] IVector3d** ppClone);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Represents a plane in three dimension space.
@@ -1536,7 +1397,7 @@ library WBFLGeometry
 
       /// Defines a plane that contains a line in the XY Plane and a point in space.
       ///
-      /// Returns GEOMETRY_E_POINTONLINE if pPnt is on pLine
+      /// Returns GEOMETRY_E_COLINEAR if pPnt is on pLine
 		[helpstring("method ThroughLineEx"),helpcontext(IDH_IPlane3d_ThroughLineEx)]
 		HRESULT ThroughLineEx(
          [in] ILine2d* pLine, ///< A line in the XY plane
@@ -1598,19 +1459,16 @@ library WBFLGeometry
          [out,retval]Float64* pDistance ///< Distance between the point and the plane
       );
 
-      /// Returns the point on the plane that is nearest the origin (0,0,0)
+      /// Returns the point on the plane that is nearest the specified point
 		[helpstring("method PointOnPlaneNearestOrigin")/*,helpcontext(IDH_IPlane3d_PointOnPlaneNearestOrigin)*/]
       HRESULT PointOnPlaneNearestOrigin(
+         [in]IPoint3d* pPoint, ///< The point to project onto the plane
          [out,retval]IPoint3d** ppPoint ///< Point on the plane nearest the origin
       );
 
       /// Creates a clone of this object
       [helpstring("method Clone"),helpcontext(IDH_IPlane3d_Clone)]
 		HRESULT Clone([out,retval]IPlane3d** clone);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Enumerates a collection of Point2d objects
@@ -1693,10 +1551,6 @@ library WBFLGeometry
          [out, retval] IPoint3d** pPoint ///< an object implementing the IPoint3d interface
       );
 
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-
       /// Reverses the order of the points in the collection
       [helpstring("method Reverse")]
       HRESULT Reverse();
@@ -1731,40 +1585,6 @@ library WBFLGeometry
       HRESULT RemoveDuplicatePoints();
    };
 
-   /// Events fired by a Point3dCollection object
-   [
-     object,
-     uuid(C895D8CE-7D4D-417b-838D-C55379830D21),
-     oleautomation,
-     helpcontext(IDH_IPoint3dCollection),
-     helpstring("IPoint3dCollectionEvents Interface"),
-     pointer_default(unique)
-   ]
-   interface IPoint3dCollectionEvents : IUnknown
-   {
-      /// Fires when a point in the collection was changed.
-      [helpstring("event OnPointChanged"),helpcontext(IDH_IPoint3dCollection_Item)]
-     HRESULT OnPointChanged(
-        [in] IPoint3d* Point3d ///< The point that changed
-     );
-
-     /// Fires when a point is added to the collection.
-     [helpstring("event OnPointAdded"),helpcontext(IDH_IPoint3dCollection_Item)]
-     HRESULT OnPointAdded(
-        [in] CollectionIndexType idx,  ///< Index where the point was added 
-        [in] IPoint3d* Point3d ///< the point that was added to the collection
-     );
-
-     /// Fires just after a point is removed from the collection.
-     [helpstring("event OnPointRemoved"),helpcontext(IDH_IPoint3dCollection_Item)]
-     HRESULT OnPointRemoved(
-        [in] CollectionIndexType idx ///< index from where the point was removed
-     );
-
-     /// Fires just after the collection was cleared
-     [helpstring("event OnPointsCleared"),helpcontext(IDH_IPoint3dCollection_Item)]
-     HRESULT OnPointsCleared();
-   };
 
    /// Interface for defining geometric properties of a shape
    [
@@ -1903,10 +1723,6 @@ library WBFLGeometry
       /// Add the properties of this ShapeProperties object with those of another ShapeProperties object. The properties of this object are updated.
 	   [helpstring("method AddProperties"),helpcontext(IDH_IShapePropertiesEx_AddProperties)]
 	   HRESULT AddProperties([in] IShapeProperties* props);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
 	};
 
    /// The IShape interface provides properties and methods that are applicable to all shape objects.
@@ -1994,64 +1810,6 @@ library WBFLGeometry
          [in] ULONG celt ///< Number of elements to skip
       );
    };
-
-   /// Interface for defining a collection of objects that implement the IShape interface
-   [
-       object,
-       uuid(2A9E6E21-B982-11d4-8B56-006097C68A9C),
-       oleautomation,
-       helpstring("IShapeCollection Interface"),
-	   helpcontext(IDH_IShapeCollection),
-       pointer_default(unique)
-   ]
-   interface IShapeCollection : IUnknown
-   {
-      /// Returns a shape from the collection
-      [propget, helpstring("Given an index, returns an item in the collection."),helpcontext(IDH_IPoint2dCollection_Item)]
-      HRESULT Item(
-         [in] CollectionIndexType Index, ///< index of the point to be retreived 
-         [out, retval] IShape** shape ///< an object implementing the IShape interface
-      );
-
-      /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
-      [propget, restricted, helpstring("returns an enumerator for the collection.")]
-      HRESULT _NewEnum([out, retval] IUnknown** retval);  
-       
-      /// Adds a reference to a Shape object to the collection.
-      [helpstring("method Add"),helpcontext(IDH_IShapeCollection_Add)]
-	  HRESULT Add([in] IShape* shape);
-
-     /// Number of items in the collection
-     [propget, helpstring("property Count"),helpcontext(IDH_IShapeCollection_Count)]
-	  HRESULT Count([out, retval] CollectionIndexType *pVal);
-
-     /// Removes a point from the collection. 
-     ///
-     /// All points beyond the specified index are moved up one position
-     [helpstring("method Remove"),helpcontext(IDH_IShapeCollection_Remove)]
-	  HRESULT Remove(
-        [in] CollectionIndexType Index ///< index of the point to be removed
-     );
-
-     /// Removes all items from the collection.
-     [helpstring("method Clear"),helpcontext(IDH_IShapeCollection_Clear)]
-	  HRESULT Clear();
-
-     /// Creates a ShapeProperties objevt for all the shapes in the collection
-     ///
-     /// All shapes are treated as positive areas (no voids).
-     /// No checking is performed to determine if shapes are overlapping.
-	  [propget, helpstring("property ShapeProperties"),helpcontext(IDH_IShapeCollection_ShapeProperties)]
-      HRESULT ShapeProperties([out,retval]IShapeProperties** props);
-
-      /// Returns an IEnumShape interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
-      [propget,restricted,helpstring("property _Enum"),helpcontext(IDH_IShapeCollection__Enum)]
-	  HRESULT _Enum([out,retval] IEnumShape** ppenum);
-
-     /// The StructuredStorage property
-     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-	};
 
    /// The IXYPosition interface provides properties and methods for manipulating the position of a shape in the XY plane.
 	[
@@ -2209,10 +1967,6 @@ library WBFLGeometry
       /// The XYPosition property
       [propget, helpstring("property XYPosition"),helpcontext(IDH_IGenericShape_XYPosition)]
 		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
 	};
 
    /// Interface of a shape defined by a general polygon.
@@ -2270,6 +2024,12 @@ library WBFLGeometry
          [in] IPoint2dCollection* pPoints ///< the points in the collection are added to the polygon
       );
 
+      /// Sets the points with a collection of Point2d objects to the polygon
+      [helpstring("method SetPoints"), helpcontext(IDH_IPolyShape_AddPoints)]
+      HRESULT SetPoints(
+         [in] IPoint2dCollection* pPoints ///< the points in the collection define the polygon
+      );
+
       /// Removes a point from the polygon
 		[helpstring("method RemovePoint"),helpcontext(IDH_IPolyShape_RemovePoint)]
 		HRESULT RemovePoint(
@@ -2287,6 +2047,13 @@ library WBFLGeometry
       /// Returns the number of points in the polygon
       [propget, helpstring("property Count"), helpcontext(IDH_IPolyShape_Count)]
       HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      /// Hook point is the first point in the shape
+      [propget, helpstring("property HookPoint")]
+      HRESULT HookPoint([out, retval] IPoint2d** hookPnt);
+
+      [propputref, helpstring("property HookPoint")]
+      HRESULT HookPoint([in] IPoint2d* hookPnt);
 
       /// The Shape property
       [propget, helpstring("property Shape"),helpcontext(IDH_IPolyShape_Shape)]
@@ -2315,10 +2082,6 @@ library WBFLGeometry
       /// Returns the collection of Point2d objects that make up the polygon
 		[propget, helpstring("property Points"),helpcontext(IDH_IPolyShape_Points)]
 		HRESULT Points([out,retval]IPoint2dCollection** coll);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing a Circle
@@ -2393,10 +2156,6 @@ library WBFLGeometry
       /// The Shape property
       [propget, helpstring("property Shape"),helpcontext(IDH_ICircle_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing a Rectangle
@@ -2440,10 +2199,6 @@ library WBFLGeometry
       /// The Shape property
       [propget, helpstring("property Shape"),helpcontext(IDH_IRectangle_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing a Triangle
@@ -2496,10 +2251,6 @@ library WBFLGeometry
       /// The Shape property
       [propget, helpstring("property Shape"),helpcontext(IDH_ITriangle_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a precast concrete I-Beam
@@ -2643,10 +2394,6 @@ library WBFLGeometry
       /// The Shape property
       [propget,  helpstring("property Shape"),helpcontext(IDH_IPrecastBeam_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a precast concrete I-Beam
@@ -2797,10 +2544,6 @@ library WBFLGeometry
       /// The Shape property
       [propget, helpstring("property Shape")/*, helpcontext(IDH_IPrecastBeam2_Shape)*/]
       HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a University of Nebraska (NU) precast concrete I-Beam
@@ -2948,10 +2691,6 @@ library WBFLGeometry
       /// The Shape property
       [propget, helpstring("property Shape"),helpcontext(IDH_INUBeam_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a Decked I-Beam based on the University of Nebraska (NU) precast concrete I-Beam section.
@@ -3081,10 +2820,6 @@ library WBFLGeometry
 
       /// The Shape property
       [propget, helpstring("property Shape")] HRESULT Shape([out, retval] IShape** pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2** pStrStg);
    };
 
 
@@ -3233,10 +2968,6 @@ library WBFLGeometry
 
       /// The Shape property
       [propget, helpstring("property Shape")] HRESULT Shape([out, retval] IShape** pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2** pStrStg);
    };
 
    /// Object representing the cross section of a deck bulb tee girder
@@ -3387,10 +3118,6 @@ library WBFLGeometry
       /// The Shape property
       [propget,  helpstring("property Shape"),helpcontext(IDH_IBulbTee_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a deck bulb tee girder
@@ -3618,10 +3345,6 @@ library WBFLGeometry
       /// The Shape property
       [propget, helpstring("property Shape"), helpcontext(IDH_IBulbTee_Shape)]
       HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
    
    /// Object representing the cross section of a multi-web girder
@@ -3719,10 +3442,6 @@ library WBFLGeometry
       /// The Shape property
       [propget,  helpstring("property Shape"),helpcontext(IDH_IMultiWeb_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a multi-web girder
@@ -3891,10 +3610,6 @@ library WBFLGeometry
       /// The Shape property
       [propget, helpstring("property Shape"), helpcontext(IDH_IMultiWeb2_Shape)]
       HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the shape of a traffic barrier
@@ -3994,91 +3709,7 @@ library WBFLGeometry
       /// The Shape property
       [propget, helpstring("property Shape"),helpcontext(IDH_ITrafficBarrier_Shape)]
 		HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
-
-   /// Interface used to create instances of objects that support the IPoint2d interface.
-	[
-		object,
-		uuid(EC5AC145-5CD0-11D3-8CDF-A057587EDC05),
-	   oleautomation,
-		helpstring("IPoint2dFactory Interface"),
-		helpcontext(IDH_IPoint2dFactory),
-		pointer_default(unique)
-	]
-	interface IPoint2dFactory : IUnknown
-	{
-      /// Create a default Point2d object
-      [helpstring("method CreatePoint"),helpcontext(IDH_IPoint2dFactory_CreatePoint)]
-		HRESULT CreatePoint([out,retval]IPoint2d** ppPoint);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-	};
-
-   /// Interface used to create instances of objects that support the IPoint3d interface.
-   [
-		object,
-		uuid(E74E1AA0-5D87-11d3-8CDF-A057587EDC05),
-	   oleautomation,
-		helpstring("IPoint3dFactory Interface"),
-		helpcontext(IDH_IPoint3dFactory),
-		pointer_default(unique)
-	]
-	interface IPoint3dFactory : IUnknown
-	{
-      /// Create a default Point3d object
-      [helpstring("method CreatePoint"),helpcontext(IDH_IPoint3dFactory_CreatePoint)]
-		HRESULT CreatePoint([out,retval]IPoint3d** ppPoint);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-	};
-
-   /// Interface used to create instances of objects that support the ILine2d interface.
-   [
-		object,
-		uuid(A2954980-5D17-11d3-8CDF-A057587EDC05),
-	   oleautomation,
-		helpstring("ILine2dFactory Interface"),
-		helpcontext(IDH_ILine2dFactory),
-		pointer_default(unique)
-	]
-	interface ILine2dFactory : IUnknown
-	{
-      /// Create a default Line2d object
-		[helpstring("method CreateLine"),helpcontext(IDH_ILine2dFactory_CreateLine)]
-		HRESULT CreateLine([out,retval]ILine2d** ppLine);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-	};
-
-   /// Interface used to create instances of objects that support the ILineSegment2d interface.
-   [
-		object,
-		uuid(C62D94E0-8AEB-11d3-8CDF-EFB6C2561C46),
-	   oleautomation,
-		helpstring("ILineSegment2dFactory Interface"),
-		helpcontext(IDH_ILineSegment2dFactory),
-		pointer_default(unique)
-	]
-	interface ILineSegment2dFactory : IUnknown
-	{
-      /// Create a default LineSegment2d object
-      [helpstring("method CreateLineSegment"),helpcontext(IDH_ILineSegment2dFactory_CreateLineSegment)]
-		HRESULT CreateLineSegment([out,retval]ILineSegment2d** ppLineSeg);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-	};
 
    /// Interface for 2D geometric utility methods
 	[
@@ -4100,14 +3731,6 @@ library WBFLGeometry
          [in,defaultvalue(0.00)] Float64 initAngle, ///< Counter-clockwise angle from the positive X-axis, measured in radians, that determines where the first point is located.
          [out,retval] IPoint2dCollection** points ///< The collection of points generated points
       );
-
-      /// Computes the distance between two points
-		[helpstring("method Distance"),helpcontext(IDH_IGeomUtil2d_Distance)]
-		HRESULT Distance([in] IPoint2d* p1,[in] IPoint2d* p2,[out,retval] Float64* dist);
-
-      /// Computes the distance from the origin to a point
-		[helpstring("method Magnitude"),helpcontext(IDH_IGeomUtil2d_Magnitude)]
-		HRESULT Magnitude([in] IPoint2d* pPoint,[out,retval] Float64* pMag);
 
       /// Computes the angle formed by three points
       /// \image html GeomUtil2d/Angle.jpg
@@ -4161,42 +3784,6 @@ library WBFLGeometry
          [in] ILine2d* pLine, ///< the source line
          [in] IPoint2d* pPoint, ///< The point that the normal line passes through
          [out,retval] ILine2d** ppLine ///< The normal line
-      );
-
-      /// Tests if two lines are colinear. Colinear lines lay on top of one another.
-		[helpstring("method AreLinesColinear"),helpcontext(IDH_IGeomUtil2d_AreLinesColinear)]
-		HRESULT AreLinesColinear(
-         [in] ILine2d* pLine1, ///< The first line
-         [in] ILine2d* pLine2, ///< The second line
-         [out,retval] VARIANT_BOOL* pbResult ///< Result of the comparison. VARIANT_TRUE if the lines are colinear, otherwise VARIANT_FALSE
-      );
-
-      /// Tests if a line contains a specified point.
-		[helpstring("method DoesLineContainPoint"),helpcontext(IDH_IGeomUtil2d_DoesLineContainPoint)]
-		HRESULT DoesLineContainPoint(
-         [in] ILine2d* pLine, ///< the line
-         [in] IPoint2d* pPoint, ///< the point
-         [in]Float64 tolerance, ///< distance tolerance indicated how close the point must be to the line for it to be considered contained
-         [out,retval] VARIANT_BOOL* pbResult ///< Result of the comparison. VARIANT_TRUE if the point is contained by the line, otherwise VARIANT_FALSE
-      );
-
-      /// Tests if a line segment contains a specified point.
-      [helpstring("method DoesLineSegmentContainPoint"),helpcontext(IDH_IGeomUtil2d_DoesLineSegmentContainPoint)]
-		HRESULT DoesLineSegmentContainPoint(
-         [in] ILineSegment2d* pSeg, ///< the line segment
-         [in] IPoint2d* pPoint, ///< the point
-         [in]Float64 tolerance, ///< distance tolerance indicated how close the point must be to the line for it to be considered contained
-         [out,retval] VARIANT_BOOL* pbResult ///< Result of the comparison. VARIANT_TRUE if the point is contained by the line segment, otherwise VARIANT_FALSE
-      );
-
-      /// Divides a line segment into equal length pieces.
-      /// The coordinates of N - 1 points are computed, where N is the number of spaces.
-      /// \image html GeomUtil2d/DivideLineSegment.jpg
-      [helpstring("method DivideLineSegment"),helpcontext(IDH_IGeomUtil2d_DivideLineSegment)]
-		HRESULT DivideLineSegment(
-         [in] ILineSegment2d* pSeg, ///< the line segment to be divided
-         [in] IndexType nSpaces, ///< the number of spaces between end points
-         [out,retval] IPoint2dCollection** ppPoints ///< collection containing the points
       );
 
       /// Divides an arch segment into equal length pieces.
@@ -4257,12 +3844,20 @@ library WBFLGeometry
          [out,retval] short* nIntersect ///< the number of intersection points (this is set to 3 if there is an infinite number of intersection points)
       );
 
-      /// Tests if two lines are parallel.
+      /// Tests if two lines are parallel. The lines can be in opposite directions.
 		[helpstring("method AreLinesParallel"),helpcontext(IDH_IGeomUtil2d_AreLinesParallel)]
 		HRESULT AreLinesParallel(
          [in] ILine2d* pLine1, ///< the first line
          [in] ILine2d* pLine2, ///< the second line
          [out,retval] VARIANT_BOOL* pbResult ///< the result of the comparison, VARIANT_TRUE if the lines are parallel, otherwise VARIANT_FALSE
+      );
+
+      /// Tests if two lines are parallel and in the same direction
+      [helpstring("method IsSameDirection")]
+      HRESULT IsSameDirection(
+         [in] ILine2d* pLine1, ///< the first line
+         [in] ILine2d* pLine2, ///< the second line
+         [out, retval] VARIANT_BOOL* pbResult ///< the result of the comparison, VARIANT_TRUE if the lines are parallel and in the same direction, otherwise VARIANT_FALSE
       );
 
       /// Tests if two line segments are parallel.
@@ -4301,37 +3896,6 @@ library WBFLGeometry
       );
 	};
 
-   /// Interface for 3D geometric utility methods
-   [
-		object,
-		uuid(A60E4EC0-5D87-11d3-8CDF-A057587EDC05),
-		oleautomation,
-		helpstring("IGeomUtil3d Interface"),
-		helpcontext(IDH_IGeomUtil3d),
-		pointer_default(unique)
-	]
-	interface IGeomUtil3d : IUnknown
-	{
-      /// Computes the distance between two points.
-      [helpstring("method Distance"),helpcontext(IDH_IGeomUtil3d_Distance)]
-		HRESULT Distance([in] IPoint3d* p1,[in] IPoint3d* p2,[out,retval] Float64* pDist);
-
-      /// Computes the distance from the origin to a point
-      [helpstring("property Magnitude"),helpcontext(IDH_IGeomUtil3d_Magnitude)]
-		HRESULT Magnitude([in] IPoint3d* p,[out, retval] Float64 *pMag);
-
-      /// Tests if a point is contained within a triangle defined by three non-coincident points.
-      /// The three points defining the triangle also define a plane.
-      [helpstring("method PointInTriangle")]
-      HRESULT PointInTriangle(
-         [in]IPoint3d* p, ///< the point
-         [in]IPoint3d* pA, ///< point at a vertex of the triangle
-         [in]IPoint3d* pB, ///< point at a vertex of the triangle
-         [in]IPoint3d* pC, ///< point at a vertex of the triangle
-         [out,retval]VARIANT_BOOL* pbResult ///< the result of the comparison, VARIANT_TRUE if the point is in the triangle, otherwise VARIANT_FALSE
-      );
-   };
-
    /// Interface for an object that provides utility functions
    ///
    /// The factory objects assigned to this object are used whenever new objects need to be created.
@@ -4348,38 +3912,6 @@ library WBFLGeometry
       /// 2D geometric utilities object
 		[propget,helpstring("property Geom2d"),helpcontext(IDH_IGeomUtil_Geom2d)]
 		HRESULT Geom2d([out,retval] IGeomUtil2d** util);
-
-      /// 3D geometric utilities object
-      [propget,helpstring("property Geom3d"),helpcontext(IDH_IGeomUtil_Geom3d)]
-		HRESULT Geom3d([out,retval] IGeomUtil3d** util);
-
-      /// Factory for creating Point2d objects
-		[propget,helpstring("property Point2dFactory"),helpcontext(IDH_IGeomUtil_Point2dFactory)]
-		HRESULT Point2dFactory([out, retval] IPoint2dFactory* *pVal);
-
-		[propputref, helpstring("property Point2dFactory"),helpcontext(IDH_IGeomUtil_Point2dFactory)]
-		HRESULT Point2dFactory([in] IPoint2dFactory* newVal);
-
-      /// Factory for creating Point3d objects
-      [propget, helpstring("property Point3dFactory"),helpcontext(IDH_IGeomUtil_Point3dFactory)]
-		HRESULT Point3dFactory([out, retval] IPoint3dFactory* *pVal);
-
-		[propputref, helpstring("property Point3dFactory"),helpcontext(IDH_IGeomUtil_Point3dFactory)]
-		HRESULT Point3dFactory([in] IPoint3dFactory* newVal);
-
-      /// Factory for creating Line2d objects
-      [propget, helpstring("property Line2dFactory"),helpcontext(IDH_IGeomUtil_Line2dFactory)]
-		HRESULT Line2dFactory([out, retval] ILine2dFactory* *pVal);
-
-		[propputref, helpstring("property Line2dFactory"),helpcontext(IDH_IGeomUtil_Line2dFactory)]
-		HRESULT Line2dFactory([in] ILine2dFactory* newVal);
-
-      /// Factory for creating LineSegment2d objects
-      [propget, helpstring("property LineSegment2dFactory"),helpcontext(IDH_IGeomUtil_LineSegment2dFactory)]
-		HRESULT LineSegment2dFactory([out, retval] ILineSegment2dFactory* *pVal);
-
-		[propputref, helpstring("property LineSegment2dFactory"),helpcontext(IDH_IGeomUtil_LineSegment2dFactory)]
-		HRESULT LineSegment2dFactory([in] ILineSegment2dFactory* newVal);
 	};
 
    /// Interface for object that performs 3D coordinate transformations
@@ -4410,7 +3942,7 @@ library WBFLGeometry
 		[propget, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform3d_NewOrigin)]
 		HRESULT NewOrigin([out, retval] IPoint3d **pVal);
 
-		[propputref, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform3d_NewOrigin)]
+		[propput, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform3d_NewOrigin)]
 		HRESULT NewOrigin([in] IPoint3d *newVal);
 
       /// Rotation angle of the new coordinate system. The new coordinate system is rotated about the RotationVector. The rotation angle is measured in Radians. A positive rotation follows the Right Hand Rule.
@@ -4424,7 +3956,7 @@ library WBFLGeometry
 		[propget, helpstring("property RotationVector"),helpcontext(IDH_ICoordinateXform3d_RotationVector)]
 		HRESULT RotationVector([out, retval] IVector3d **pVal);
 
-		[propputref, helpstring("property RotationVector"),helpcontext(IDH_ICoordinateXform3d_RotationVector)]
+		[propput, helpstring("property RotationVector"),helpcontext(IDH_ICoordinateXform3d_RotationVector)]
 		HRESULT RotationVector([in] IVector3d *newVal);
 
       /// Transforms the coordinates of a point. Coordinate transformation can be from the original system to the new system or from the new system to the original system.
@@ -4441,10 +3973,6 @@ library WBFLGeometry
          [in] XformType type, ///< the type of transformation. If type is xfrmOldToNew, point is in the original coordinate system and it is transformed into the new coordinate system. If type is xfrmNewToOld, point is in the new coordinate system and it is transformed into the original system.
          [out,retval] IPoint3d** result ///< the resulting point
       );
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Interface for object that performs 2D coordinate transformations
@@ -4473,7 +4001,7 @@ library WBFLGeometry
 		[propget, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform2d_NewOrigin)]
 		HRESULT NewOrigin([out, retval] IPoint2d* *pVal);
 
-		[propputref, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform2d_NewOrigin)]
+		[propput, helpstring("property NewOrigin"),helpcontext(IDH_ICoordinateXform2d_NewOrigin)]
 		HRESULT NewOrigin([in] IPoint2d* newVal);
 
       /// Rotation angle of the new coordinate system. The rotation angle is measured counter-clockwise from the positive X axis, in radians.
@@ -4497,10 +4025,6 @@ library WBFLGeometry
          [in] XformType type, ///< the type of transformation. If type is xfrmOldToNew, point is in the original coordinate system and it is transformed into the new coordinate system. If type is xfrmNewToOld, point is in the new coordinate system and it is transformed into the original system.
          [out, retval] IPoint2d** result ///< the resulting point
       );
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing a circular segment
@@ -4549,7 +4073,7 @@ library WBFLGeometry
 		[propget, helpstring("property Center"),helpcontext(IDH_ICircularSegment_Center)]
 		HRESULT Center([out, retval] IPoint2d* *pVal);
 
-		[propputref, helpstring("property Center"),helpcontext(IDH_ICircularSegment_Center)]
+		[propput, helpstring("property Center"),helpcontext(IDH_ICircularSegment_Center)]
 		HRESULT Center([in] IPoint2d* newVal);
 
       /// Mid-ordinate dimension
@@ -4573,9 +4097,8 @@ library WBFLGeometry
 		[propput, helpstring("property Rotation"),helpcontext(IDH_ICircularSegment_Rotation)]
 		HRESULT Rotation([in] Float64 newVal);
 
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+      [propget,helpstring("property Chord")]
+      HRESULT Chord([out, retval]ILineSegment2d** ppChord);
    };
 
    /// Object representing a built-up steel plate girder
@@ -4659,10 +4182,6 @@ library WBFLGeometry
 
 		[propputref, helpstring("property HookPoint"),helpcontext(IDH_IPlateGirder_HookPoint)]
       HRESULT HookPoint([in] IPoint2d* newVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a U-Beam girder
@@ -4811,10 +4330,6 @@ library WBFLGeometry
       /// The XYPosition property
       [propget, helpstring("property XYPosition"),helpcontext(IDH_IUBeam_XYPosition)]
       HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
 
@@ -4983,10 +4498,6 @@ library WBFLGeometry
       /// The XYPosition property
       [propget, helpstring("property XYPosition"),helpcontext(IDH_IUBeam2_XYPosition)]
       HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-
-     /// The StructuredStorage property
-     [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object that contains shape information for a shape in a CompositeShape object
@@ -5013,10 +4524,6 @@ library WBFLGeometry
 
       [propput, helpstring("property Void")/*,helpcontext(IDH_ICompositeShapeItem_Void)*/]
       HRESULT Void([in] VARIANT_BOOL newVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object that models a generic shape composed of shape item objects that implement the ICompositeShapeItem interface
@@ -5087,10 +4594,6 @@ library WBFLGeometry
          /// The XYPosition property
          [propget, helpstring("property XYPosition")/*,helpcontext(IDH_ICompositeShape_XYPosition)*/]
          HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-         
-         /// The StructuredStorage property
-         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-         HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a voided slab
@@ -5148,6 +4651,12 @@ library WBFLGeometry
       [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
       HRESULT HookPoint([in] IPoint2d* hookPnt);
 
+      [helpstring("method GetSlabShape")]
+      HRESULT GetSlabShape([out]IShape** ppShape);
+
+      [helpstring("method GetVoidShape")]
+      HRESULT GetVoidShape([in]IndexType idx, [out]IShape** ppShape);
+
       /// The Shape property
       [propget, helpstring("property Shape")/*,helpcontext(IDH_IVoidedSlab_Shape)*/]
       HRESULT Shape([out, retval] IShape* *pVal);
@@ -5155,10 +4664,6 @@ library WBFLGeometry
       /// The XYPosition property
       [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IVoidedSlab_XYPosition)*/]
       HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
 
@@ -5280,6 +4785,12 @@ library WBFLGeometry
       [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
       HRESULT HookPoint([in] IPoint2d* hookPnt);
 
+      [helpstring("method GetSlabShape")]
+      HRESULT GetSlabShape([out]IShape** ppShape);
+
+      [helpstring("method GetVoidShape")]
+      HRESULT GetVoidShape([in]IndexType idx, [out]IShape** ppShape);
+
       /// The XYPosition property
       [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IVoidedSlab_XYPosition)*/]
       HRESULT XYPosition([out, retval] IXYPosition* *pVal);
@@ -5287,10 +4798,6 @@ library WBFLGeometry
       /// The Shape property
       [propget,  helpstring("property Shape")/*,helpcontext(IDH_IVoidedSlab_Shape)*/]
       HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
    /// Object representing the cross section of a box beam
@@ -5469,6 +4976,12 @@ library WBFLGeometry
       [helpstring("property GetBoundaryPoints")]
       HRESULT GetBoundaryPoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
 
+      [helpstring("method GetBoxShape")]
+      HRESULT GetBoxShape([out]IShape** ppShape);
+
+      [helpstring("method GetVoidShape")]
+      HRESULT GetVoidShape([in]IndexType idx, [out]IShape** ppShape);
+
       /// The XYPosition property
       [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IBoxBeam_XYPosition)*/]
 	   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
@@ -5476,10 +4989,6 @@ library WBFLGeometry
       /// The Shape property
       [propget,  helpstring("property Shape")/*,helpcontext(IDH_IBoxBeam_Shape)*/]
 	   HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
 
@@ -5579,6 +5088,13 @@ library WBFLGeometry
       [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IDeckedSlabBeam_HookPoint)*/]
       HRESULT HookPoint([in] IPoint2d* hookPnt);
 
+
+      [helpstring("method GetSlabShape")]
+      HRESULT GetSlabShape([out]IShape** ppShape);
+
+      [helpstring("method GetVoidShape")]
+      HRESULT GetVoidShape([in]IndexType idx, [out]IShape** ppShape);
+
       /// The XYPosition property
       [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IDeckedSlabBeam_XYPosition)*/]
       HRESULT XYPosition([out, retval] IXYPosition* *pVal);
@@ -5586,10 +5102,6 @@ library WBFLGeometry
       /// The Shape property
       [propget,  helpstring("property Shape")/*,helpcontext(IDH_IDeckedSlabBeam_Shape)*/]
       HRESULT Shape([out, retval] IShape* *pVal);
-
-      /// The StructuredStorage property
-      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
 
@@ -5612,8 +5124,334 @@ library WBFLGeometry
    };
 
 
+   [
+      object,
+      uuid(866B0CBE-62C2-40D5-B12F-1168F7AF1C55),
+      oleautomation,
+      helpstring("IElasticProperties Interface"),
+      helpcontext(IDH_IElasticProperties),
+      pointer_default(unique)
+   ]
+   interface IElasticProperties : IUnknown
+   {
+      [propget, helpstring("property EA"), helpcontext(IDH_IElasticProperties_EA)]
+      HRESULT EA([out, retval] Float64* pVal);
+
+      [propput, helpstring("property EA"), helpcontext(IDH_IElasticProperties_EA)]
+      HRESULT EA([in] Float64 newVal);
+
+      [propget, helpstring("property Centroid"), helpcontext(IDH_IElasticProperties_Centroid)]
+      HRESULT Centroid([out, retval] IPoint2d** pVal);
+
+      [propput, helpstring("property Centroid"), helpcontext(IDH_IElasticProperties_Centroid)]
+      HRESULT Centroid([in] IPoint2d* newVal);
+
+      [propget, helpstring("property EI11"), helpcontext(IDH_IElasticProperties_EI11)]
+      HRESULT EI11([out, retval] Float64* pVal);
+
+      [propget, helpstring("property EI22"), helpcontext(IDH_IElasticProperties_EI22)]
+      HRESULT EI22([out, retval] Float64* pVal);
+
+      [propget, helpstring("property EI12Max"), helpcontext(IDH_IElasticProperties_EI12Max)]
+      HRESULT EI12Max([out, retval] Float64* pVal);
+
+      [propget, helpstring("property EI12Min"), helpcontext(IDH_IElasticProperties_EI12Min)]
+      HRESULT EI12Min([out, retval] Float64* pVal);
+
+      [propget, helpstring("property EIxx"), helpcontext(IDH_IElasticProperties_EIxx)]
+      HRESULT EIxx([out, retval] Float64* pVal);
+
+      [propput, helpstring("property EIxx"), helpcontext(IDH_IElasticProperties_EIxx)]
+      HRESULT EIxx([in] Float64 newVal);
+
+      [propget, helpstring("property EIyy"), helpcontext(IDH_IElasticProperties_EIyy)]
+      HRESULT EIyy([out, retval] Float64* pVal);
+
+      [propput, helpstring("property EIyy"), helpcontext(IDH_IElasticProperties_EIyy)]
+      HRESULT EIyy([in] Float64 newVal);
+
+      [propget, helpstring("property EIxy"), helpcontext(IDH_IElasticProperties_EIxy)]
+      HRESULT EIxy([out, retval] Float64* pVal);
+
+      [propput, helpstring("property EIxy"), helpcontext(IDH_IElasticProperties_EIxy)]
+      HRESULT EIxy([in] Float64 newVal);
+
+      [propget, helpstring("property Xleft"), helpcontext(IDH_IElasticProperties_Xleft)]
+      HRESULT Xleft([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Xleft"), helpcontext(IDH_IElasticProperties_Xleft)]
+      HRESULT Xleft([in] Float64 newVal);
+
+      [propget, helpstring("property Xright"), helpcontext(IDH_IElasticProperties_Xright)]
+      HRESULT Xright([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Xright"), helpcontext(IDH_IElasticProperties_Xright)]
+      HRESULT Xright([in] Float64 newVal);
+
+      [propget, helpstring("property Ytop"), helpcontext(IDH_IElasticProperties_Ytop)]
+      HRESULT Ytop([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Ytop"), helpcontext(IDH_IElasticProperties_Ytop)]
+      HRESULT Ytop([in] Float64 newVal);
+
+      [propget, helpstring("property Ybottom"), helpcontext(IDH_IElasticProperties_Ybottom)]
+      HRESULT Ybottom([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Ybottom"), helpcontext(IDH_IElasticProperties_Ybottom)]
+      HRESULT Ybottom([in] Float64 newVal);
+
+      [propget, helpstring("property Origin"), helpcontext(IDH_IElasticProperties_Origin)]
+      HRESULT Origin([out, retval] IPoint2d** pVal);
+
+      [propput, helpstring("property Origin"), helpcontext(IDH_IElasticProperties_Origin)]
+      HRESULT Origin([in] IPoint2d* newVal);
+
+      [propget, helpstring("property Orientation"), helpcontext(IDH_IElasticProperties_Orientation)]
+      HRESULT Orientation([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Orientation"), helpcontext(IDH_IElasticProperties_Orientation)]
+      HRESULT Orientation([in] Float64 newVal);
+
+      [propget, helpstring("property CoordinateSystem"), helpcontext(IDH_IElasticProperties_CoordinateSystem)]
+      HRESULT CoordinateSystem([out, retval] CoordinateSystemType* pVal);
+
+      [propput, helpstring("property CoordinateSystem"), helpcontext(IDH_IElasticProperties_CoordinateSystem)]
+      HRESULT CoordinateSystem([in] CoordinateSystemType newVal);
+
+      [propget, helpstring("property PrincipleDirection"), helpcontext(IDH_IElasticProperties_PrincipleDirection)]
+      HRESULT PrincipleDirection([out, retval] Float64* pVal);
+
+      [helpstring("method AddProperties"), helpcontext(IDH_IElasticProperties_AddProperties)]
+      HRESULT AddProperties([in] IElasticProperties* props);
+
+      [helpstring("method TransformProperties"), helpcontext(IDH_IElasticProperties_TransformProperties)]
+      HRESULT TransformProperties([in] Float64 E, [out, retval] IShapeProperties** props);
+   };
+
+   [
+      object,
+      uuid(BA78A143-A0DA-4081-BAF5-C7BF7ACF9850),
+      oleautomation,
+      helpstring("IMassProperties Interface"),
+      helpcontext(IDH_IMassProperties),
+      pointer_default(unique)
+   ]
+   interface IMassProperties : IUnknown
+   {
+      [propget, helpstring("property MassPerLength"), helpcontext(IDH_IMassProperties_MassPerLength)]
+      HRESULT MassPerLength([out, retval] Float64* pVal);
+
+      [propput, helpstring("property MassPerLength"), helpcontext(IDH_IMassProperties_MassPerLength)]
+      HRESULT MassPerLength([in] Float64 newVal);
+
+      [helpstring("method AddProperties"), helpcontext(IDH_IMassProperties_AddProperties)]
+      HRESULT AddProperties([in] IMassProperties* props);
+   };
+
+   [
+      object,
+      uuid(6467790E-93DE-489b-9D3A-00F2A547A172),
+      oleautomation,
+      helpstring("ISection Interface"),
+      helpcontext(IDH_ISection),
+      pointer_default(unique)
+   ]
+   interface ISection : IUnknown
+   {
+      [propget, helpstring("property BoundingBox"), helpcontext(IDH_ISection_BoundingBox)]
+      HRESULT BoundingBox([out, retval] IRect2d** pVal);
+
+      [propget, helpstring("property ElasticProperties"), helpcontext(IDH_ISection_ElasticProperties)]
+      HRESULT ElasticProperties([out, retval] IElasticProperties** pVal);
+
+      [propget, helpstring("property MassProperties"), helpcontext(IDH_ISection_MassProperties)]
+      HRESULT MassProperties([out, retval] IMassProperties** pVal);
+
+      [helpstring("method ClipIn"), helpcontext(IDH_ISection_ClipIn)]
+      HRESULT ClipIn([in] IRect2d* rect, [out, retval] ISection** section);
+
+      [helpstring("method ClipWithLine"), helpcontext(IDH_ISection_ClipWithLine)]
+      HRESULT ClipWithLine([in] ILine2d* line, [out, retval] ISection** section);
+
+      [helpstring("method Clone"), helpcontext(IDH_ISection_Clone)]
+      HRESULT Clone(ISection** clone);
+   };
+
+   [
+      object,
+      uuid(D7610038-0289-11D5-8BAE-006097C68A9C),
+      oleautomation,
+      helpstring("ICompositeBeam Interface"),
+      helpcontext(IDH_ICompositeBeam),
+      pointer_default(unique)
+   ]
+   interface ICompositeBeam : IUnknown
+   {
+      [propget, helpstring("property Beam"), helpcontext(IDH_ICompositeBeam_Beam)]
+      HRESULT Beam([out, retval] IShape** pVal);
+
+      [propputref, helpstring("property Beam"), helpcontext(IDH_ICompositeBeam_Beam)]
+      HRESULT Beam([in] IShape* newVal);
+
+      [propget, helpstring("property EffectiveSlabWidth"), helpcontext(IDH_ICompositeBeam_EffectiveSlabWidth)]
+      HRESULT EffectiveSlabWidth([out, retval] Float64* pVal);
+
+      [propput, helpstring("property EffectiveSlabWidth"), helpcontext(IDH_ICompositeBeam_EffectiveSlabWidth)]
+      HRESULT EffectiveSlabWidth([in] Float64 newVal);
+
+      [propget, helpstring("property TributarySlabWidth"), helpcontext(IDH_ICompositeBeam_TributarySlabWidth)]
+      HRESULT TributarySlabWidth([out, retval] Float64* pVal);
+
+      [propput, helpstring("property TributarySlabWidth"), helpcontext(IDH_ICompositeBeam_TributarySlabWidth)]
+      HRESULT TributarySlabWidth([in] Float64 newVal);
+
+      [propget, helpstring("property GrossSlabDepth"), helpcontext(IDH_ICompositeBeam_GrossSlabDepth)]
+      HRESULT GrossSlabDepth([out, retval] Float64* pVal);
+
+      [propput, helpstring("property GrossSlabDepth"), helpcontext(IDH_ICompositeBeam_GrossSlabDepth)]
+      HRESULT GrossSlabDepth([in] Float64 newVal);
+
+      [propget, helpstring("property SacrificialDepth"), helpcontext(IDH_ICompositeBeam_SacrificialDepth)]
+      HRESULT SacrificialDepth([out, retval] Float64* pVal);
+
+      [propput, helpstring("property SacrificialDepth"), helpcontext(IDH_ICompositeBeam_SacrificialDepth)]
+      HRESULT SacrificialDepth([in] Float64 newVal);
+
+      [propget, helpstring("property SlabE"), helpcontext(IDH_ICompositeBeam_SlabE)]
+      HRESULT SlabE([out, retval] Float64* pVal);
+
+      [propput, helpstring("property SlabE"), helpcontext(IDH_ICompositeBeam_SlabE)]
+      HRESULT SlabE([in] Float64 newVal);
+
+      [propget, helpstring("property SlabDensity"), helpcontext(IDH_ICompositeBeam_SlabDensity)]
+      HRESULT SlabDensity([out, retval] Float64* pVal);
+
+      [propput, helpstring("property SlabDensity"), helpcontext(IDH_ICompositeBeam_SlabDensity)]
+      HRESULT SlabDensity([in] Float64 newVal);
+
+      [propget, helpstring("property HaunchWidth"), helpcontext(IDH_ICompositeBeam_HaunchWidth)]
+      HRESULT HaunchWidth([out, retval] Float64* pVal);
+
+      [propput, helpstring("property HaunchWidth"), helpcontext(IDH_ICompositeBeam_HaunchWidth)]
+      HRESULT HaunchWidth([in] Float64 newVal);
+
+      [propget, helpstring("property HaunchDepth"), helpcontext(IDH_ICompositeBeam_HaunchDepth)]
+      HRESULT HaunchDepth([out, retval] Float64* pVal);
+
+      [propput, helpstring("property HaunchDepth"), helpcontext(IDH_ICompositeBeam_HaunchDepth)]
+      HRESULT HaunchDepth([in] Float64 newVal);
+
+      [propget, helpstring("property Section"), helpcontext(IDH_ICompositeBeam_Section)]
+      HRESULT Section([out, retval] ISection** pVal);
+
+      [propget, helpstring("property XYPosition"), helpcontext(IDH_ICompositeBeam_XYPosition)]
+      HRESULT XYPosition([out, retval] IXYPosition** pVal);
+
+      [propget, helpstring("property BeamE"), helpcontext(IDH_ICompositeBeam_BeamE)]
+      HRESULT BeamE([out, retval] Float64* pVal);
+
+      [propput, helpstring("property BeamE"), helpcontext(IDH_ICompositeBeam_BeamE)]
+      HRESULT BeamE([in] Float64 newVal);
+
+      [propget, helpstring("property BeamDensity"), helpcontext(IDH_ICompositeBeam_BeamDensity)]
+      HRESULT BeamDensity([out, retval] Float64* pVal);
+
+      [propput, helpstring("property BeamDensity"), helpcontext(IDH_ICompositeBeam_BeamDensity)]
+      HRESULT BeamDensity([in] Float64 newVal);
+
+      [propget, helpstring("property QSlab"), helpcontext(IDH_ICompositeBeam_QSlab)]
+      HRESULT QSlab([out, retval] Float64* pVal);
+
+      [propget, helpstring("property Q"), helpcontext(IDH_ICompositeBeam_Q)]
+      HRESULT Q([in] Float64 location, [out, retval] Float64* pVal);
+   };
+
+
+   [
+      object,
+      uuid(C6B42790-3DC8-487f-B33E-9B65167EFA3B),
+      oleautomation,
+      helpstring("ICompositeSectionItemEx Interface"),
+      helpcontext(IDH_ICompositeSectionItemEx),
+      pointer_default(unique)
+   ]
+   interface ICompositeSectionItemEx : IUnknown
+   {
+      [propget, helpstring("property Shape"), helpcontext(IDH_ICompositeSectionItemEx_Shape)]
+      HRESULT Shape([out, retval] IShape** pVal);
+
+      [propputref, helpstring("property Shape"), helpcontext(IDH_ICompositeSectionItemEx_Shape)]
+      HRESULT Shape([in] IShape* newVal);
+
+      [propget, helpstring("property Efg"), helpcontext(IDH_ICompositeSectionItemEx_Efg)]
+      HRESULT Efg([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Efg"), helpcontext(IDH_ICompositeSectionItemEx_Efg)]
+      HRESULT Efg([in] Float64 newVal);
+
+      [propget, helpstring("property Ebg"), helpcontext(IDH_ICompositeSectionItemEx_Ebg)]
+      HRESULT Ebg([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Ebg"), helpcontext(IDH_ICompositeSectionItemEx_Ebg)]
+      HRESULT Ebg([in] Float64 newVal);
+
+      [propget, helpstring("property Dfg"), helpcontext(IDH_ICompositeSectionItemEx_Dfg)]
+      HRESULT Dfg([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Dfg"), helpcontext(IDH_ICompositeSectionItemEx_Dfg)]
+      HRESULT Dfg([in] Float64 newVal);
+
+      [propget, helpstring("property Dbg"), helpcontext(IDH_ICompositeSectionItemEx_Dbg)]
+      HRESULT Dbg([out, retval] Float64* pVal);
+
+      [propput, helpstring("property Dbg"), helpcontext(IDH_ICompositeSectionItemEx_Dbg)]
+      HRESULT Dbg([in] Float64 newVal);
+
+      [propget, helpstring("property Structural"), helpcontext(IDH_ICompositeSectionItemEx_Structural)]
+      HRESULT Structural([out, retval] VARIANT_BOOL* pVal);
+
+      [propput, helpstring("property Structural"), helpcontext(IDH_ICompositeSectionItemEx_Structural)]
+      HRESULT Structural([in] VARIANT_BOOL newVal);
+   };
+
+
+   [
+      object,
+      uuid(EDEA2BF6-8E57-4bfa-8CD6-A007C6E1E032),
+      oleautomation,
+      helpstring("ICompositeSectionEx Interface"),
+      helpcontext(IDH_ICompositeSectionEx),
+      pointer_default(unique)
+   ]
+   interface ICompositeSectionEx : IUnknown
+   {
+      [propget, helpstring("property _NewEnum")]
+      HRESULT _NewEnum([out, retval] IUnknown** pVal);
+
+      [propget, helpstring("property Item"), helpcontext(IDH_ICompositeSectionEx_Item)]
+      HRESULT Item([in] CollectionIndexType idx, [out, retval] ICompositeSectionItemEx** pVal);
+
+      [helpstring("method AddSection"), helpcontext(IDH_ICompositeSectionEx_AddSection)]
+      HRESULT AddSection([in] IShape* shape, [in] Float64 Efg, [in] Float64 Ebg, [in] Float64 Dfg, [in]Float64 Dbg, [in] VARIANT_BOOL bStructural);
+
+      [helpstring("method AddSectionEx"), helpcontext(IDH_ICompositeSectionEx_AddSectionEx)]
+      HRESULT AddSectionEx([in] ICompositeSectionItemEx* sectionItem);
+
+      [helpstring("method Remove"), helpcontext(IDH_ICompositeSectionEx_Remove)]
+      HRESULT Remove([in] CollectionIndexType idx);
+
+      [propget, helpstring("property Count"), helpcontext(IDH_ICompositeSectionEx_Count)]
+      HRESULT Count([out, retval] CollectionIndexType* pVal);
+
+      [propget, helpstring("property Section"), helpcontext(IDH_ICompositeSectionEx_Section)]
+      HRESULT Section([out, retval] ISection** pVal);
+
+      [propget, helpstring("property XYPosition"), helpcontext(IDH_ICompositeSectionEx_XYPosition)]
+      HRESULT XYPosition([out, retval] IXYPosition** pVal);
+   };
+
    /// Represents a point in a two dimensional Cartesian coordinate system.
-   /// Implements the IPoint2d interface and fires events through the IPoint2dEvents interface
+   /// Implements the IPoint2d interface
    [
 		uuid(B0D56FA0-C8D6-11D2-8CDF-C55C1CA84A34),
       helpcontext(IDH_IPoint2d),
@@ -5622,9 +5460,6 @@ library WBFLGeometry
 	coclass Point2d
 	{
 		[default] interface IPoint2d;
-      [default, source] interface IPoint2dEvents;
-      interface IStructuredStorage2;
-      // interface IPersist;
 	};
 
    /// Size implementing the ISize2d interface
@@ -5636,8 +5471,6 @@ library WBFLGeometry
 	coclass Size2d
 	{
 		[default] interface ISize2d; 
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Rectangle object that implements the IRect2d interface
@@ -5651,8 +5484,6 @@ library WBFLGeometry
 	coclass Rect2d
 	{
 		[default] interface IRect2d;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// A vector in a two dimensional coordinate system
@@ -5665,12 +5496,10 @@ library WBFLGeometry
 	coclass Vector2d
 	{
 		[default] interface IVector2d;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// A collection of Point2d objects.
-   /// Implements the IPoint2dCollection interface and fires events through the IPoint2dCollectionEvents interface
+   /// Implements the IPoint2dCollection interface
    [
        uuid(B77D2448-96A0-11D2-88A7-006097C68A9C),
        helpstring("Point2dCollection Class"),
@@ -5679,9 +5508,6 @@ library WBFLGeometry
    coclass Point2dCollection
    {
        [default] interface IPoint2dCollection;
-       [default, source] interface IPoint2dCollectionEvents;
-       interface IStructuredStorage2;
-       // interface IPersist;
    };
 
    /// Represents a line segment in 2D space.
@@ -5694,9 +5520,6 @@ library WBFLGeometry
 	coclass LineSegment2d
 	{
 		[default] interface ILineSegment2d;
-      [default, source] interface ILineSegment2dEvents;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Represents a infinite line in 2D space.
@@ -5709,8 +5532,6 @@ library WBFLGeometry
 	coclass Line2d
 	{
 		[default] interface ILine2d;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Properties of geometric shapes.
@@ -5723,8 +5544,6 @@ library WBFLGeometry
 	coclass ShapeProperties
 	{
 		[default] interface IShapeProperties;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing a shape defined by a sequence of points forming a polygon
@@ -5739,8 +5558,6 @@ library WBFLGeometry
 		[default] interface IPolyShape;
       interface IShape;
       interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing a circular shape. 
@@ -5755,8 +5572,6 @@ library WBFLGeometry
 		[default] interface ICircle;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing a rectangular shape.
@@ -5771,8 +5586,6 @@ library WBFLGeometry
 		[default] interface IRectangle;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing a triangular shape.
@@ -5787,8 +5600,6 @@ library WBFLGeometry
 		[default] interface ITriangle;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing the shape of a precast concrete I-Beam.
@@ -5803,8 +5614,6 @@ library WBFLGeometry
 		[default] interface IPrecastBeam;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing the shape of a precast concrete I-Beam.
@@ -5819,8 +5628,6 @@ library WBFLGeometry
       [default] interface IPrecastBeam2;
       interface IShape;
       interface IXYPosition;
-      interface IStructuredStorage2;
-      // interface IPersist;
    };
 
    /// Object representing the shape of a University of Nebraska (NU) precast concrete I-Beam.
@@ -5835,8 +5642,6 @@ library WBFLGeometry
 		[default] interface INUBeam;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
     
    /// Object representing the shape of a UHPC Decked I-Beam based on the University of Nebraska (NU) precast concrete I-Beam.
@@ -5851,8 +5656,6 @@ library WBFLGeometry
       [default] interface INUDeckedIBeam;
       interface IShape;
       interface IXYPosition;
-      interface IStructuredStorage2;
-      // interface IPersist;
    };
 
    /// Object representing the shape of a UHPC Decked I-Beam based on the University of Nebraska (NU) precast concrete I-Beam.
@@ -5867,8 +5670,6 @@ library WBFLGeometry
       [default] interface IPCIDeckedIBeam;
       interface IShape;
       interface IXYPosition;
-      interface IStructuredStorage2;
-      // interface IPersist;
    };
 
     /// Object representing the shape of a deck bulb tee precast concrete girder.
@@ -5883,8 +5684,6 @@ library WBFLGeometry
 		[default] interface IBulbTee;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing the shape of a deck bulb tee precast concrete girder.
@@ -5899,8 +5698,6 @@ library WBFLGeometry
       [default] interface IBulbTee2;
       interface IShape;
       interface IXYPosition;
-      interface IStructuredStorage2;
-      // interface IPersist;
    };
 
    /// Object representing the shape of a traffic barrier
@@ -5915,12 +5712,10 @@ library WBFLGeometry
 		[default] interface ITrafficBarrier;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
    
    /// Represents a point in a 3D coordinate systems.
-   /// Implements the IPoint2d interface and fires events through the IPoint3dEvents interface
+   /// Implements the IPoint2d interface
 	[
 		uuid(4F37A661-03FE-11D3-8CDF-882D80988F34),
       helpcontext(IDH_IPoint3d),
@@ -5929,13 +5724,10 @@ library WBFLGeometry
 	coclass Point3d
 	{
 		[default] interface IPoint3d;
-      [default, source] interface IPoint3dEvents;
-      interface IStructuredStorage2;
-      // interface IPersist;
 	};
 
    /// Represents a line segment in a two dimensional coordinate system.
-   /// Implements the ISegment3d interface and fires events through the ILineSegment3dEvents interface
+   /// Implements the ISegment3d interface and fires
 	[
 		uuid(56CD2A28-FABF-4015-AA70-F27D95334249),
       //helpcontext(IDH_ILineSegment3d),
@@ -5944,9 +5736,6 @@ library WBFLGeometry
 	coclass LineSegment3d
 	{
 		[default] interface ILineSegment3d;
-      [default, source] interface ILineSegment3dEvents;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing a three dimensional rectangular prism.
@@ -5959,8 +5748,6 @@ library WBFLGeometry
 	coclass Size3d
 	{
 		[default] interface ISize3d;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing a vector in 3D space.
@@ -5973,8 +5760,6 @@ library WBFLGeometry
 	coclass Vector3d
 	{
 		[default] interface IVector3d;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing plane in 3D space. 
@@ -5987,12 +5772,10 @@ library WBFLGeometry
 	coclass Plane3d
 	{
 		[default] interface IPlane3d;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// A collection of Point3d objects
-   /// Implements the IPoint3dCollection interface and fires events through the IPoint3dCollectionEvents interface
+   /// Implements the IPoint3dCollection interface
    [
 		uuid(818E5101-1942-11D3-8CDF-DCD8D8F12565),
 		helpstring("Point3dCollection Class"),
@@ -6001,9 +5784,6 @@ library WBFLGeometry
 	coclass Point3dCollection
 	{
 		[default] interface IPoint3dCollection;
-      [default, source] interface IPoint3dCollectionEvents;
-		interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// An object that provides 2D and 3D geometric utility methods.
@@ -6018,8 +5798,6 @@ library WBFLGeometry
 	{
 		[default] interface IGeomUtil;
 		interface IGeomUtil2d;
-		interface IGeomUtil3d;
-        // interface IPersist;
 	};
 
    /// An object that can transform Point3d coordinates between coordinate systems.
@@ -6032,8 +5810,6 @@ library WBFLGeometry
 	coclass CoordinateXform3d
 	{
 		[default] interface ICoordinateXform3d;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// An object that can transform Point2d coordinates between coordinate systems.
@@ -6046,26 +5822,6 @@ library WBFLGeometry
 	coclass CoordinateXform2d
 	{
 		[default] interface ICoordinateXform2d;
-		interface IStructuredStorage2;
-        // interface IPersist;
-	};
-
-   /// Object that creates geometric primitives such as points and lines.
-   /// Implements the IPoint2dFactory, IPoint3dFactory, ILine2dFactory, and ILineSegment2dFactory interfaces.
-   [
-		uuid(EC5AC146-5CD0-11D3-8CDF-A057587EDC05),
-		helpstring("PrimitiveFactory Class"),
-		helpcontext(IDH_PrimitiveFactory)
-	]
-	coclass PrimitiveFactory
-	{
-		[default] interface IPoint2dFactory;
-		interface IPoint3dFactory;
-        interface ILine2dFactory;
-        interface ILineSegment2dFactory;
-
-        interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing a circular segment shape. 
@@ -6080,22 +5836,6 @@ library WBFLGeometry
 		[default] interface ICircularSegment;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
-	};
-
-   /// A collection of shape objects.
-   /// Implements the IShapeCollection interface
-	[
-		uuid(2A9E6E22-B982-11d4-8B56-006097C68A9C),
-		helpstring("ShapeCollection Class"),
-		helpcontext(IDH_IShapeCollection)
-	]
-	coclass ShapeCollection
-	{
-		[default] interface IShapeCollection;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing the shape of a built-up steel plate girder.
@@ -6109,8 +5849,6 @@ library WBFLGeometry
 		[default] interface IPlateGirder;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-        // interface IPersist;
 	};
 
    /// Object representing the shape of a trapezoidal, U-Beam, or tub precast concrete girder.
@@ -6124,8 +5862,6 @@ library WBFLGeometry
 		[default] interface IUBeam;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-      // interface IPersist;
 	};
 
    /// Object representing the shape of a trapezoidal, U-Beam, or tub precast concrete girder.
@@ -6139,8 +5875,6 @@ library WBFLGeometry
 		[default] interface IUBeam2;
 		interface IShape;
 		interface IXYPosition;
-      interface IStructuredStorage2;
-      // interface IPersist;
 	};
 
    /// Object representing the shape of a multi-web precast concrete girder.
@@ -6154,8 +5888,6 @@ library WBFLGeometry
 		[default] interface IMultiWeb;
 		interface IShape;
 		interface IXYPosition;
-	    interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object representing the shape of a multi-web precast concrete girder.
@@ -6169,8 +5901,6 @@ library WBFLGeometry
 		[default] interface IMultiWeb2;
 		interface IShape;
 		interface IXYPosition;
-	    interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object representing a shape that is part of a CompositeShape.
@@ -6182,8 +5912,6 @@ library WBFLGeometry
 	coclass CompositeShapeItem
 	{
 		[default] interface ICompositeShapeItem;
-		interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object representing a generic shape that composite of CompositeShapeItem objects.
@@ -6203,8 +5931,6 @@ library WBFLGeometry
 		[default] interface ICompositeShape;
 		interface IShape;
 		interface IXYPosition;
-		interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object representing the shape of a voided slab.
@@ -6218,8 +5944,6 @@ library WBFLGeometry
 		[default] interface IVoidedSlab;
 		interface IShape;
 		interface IXYPosition;
-		interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object representing the shape of a voided slab.
@@ -6233,8 +5957,6 @@ library WBFLGeometry
 		[default] interface IVoidedSlab2;
 		interface IShape;
 		interface IXYPosition;
-		interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object representing the shape of a box beam.
@@ -6248,8 +5970,6 @@ library WBFLGeometry
 	   [default] interface IBoxBeam;
 		interface IShape;
 		interface IXYPosition;
-		interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object representing the shape of a decked slab beam.
@@ -6263,8 +5983,6 @@ library WBFLGeometry
 		[default] interface IDeckedSlabBeam;
 		interface IShape;
 		interface IXYPosition;
-		interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object representing a generic shape. 
@@ -6278,8 +5996,6 @@ library WBFLGeometry
 		[default] interface IGenericShape;
 		interface IShape;
 		interface IXYPosition;
-		interface IStructuredStorage2;
-		// interface IPersist;
 	};
 
    /// Object that creates typical precast beam shapes
@@ -6293,4 +6009,54 @@ library WBFLGeometry
       [default] interface IBeamShapeFactory;
    };
 
+   [
+      uuid(FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6),
+      helpstring("ElasticProperties Class"),
+      helpcontext(IDH_IElasticProperties)
+   ]
+   coclass ElasticProperties
+   {
+      [default] interface IElasticProperties;
+   };
+   [
+      uuid(3925A3FA-34CD-4E06-AEDF-BCD1773E0810),
+      helpstring("MassProperties Class"),
+      helpcontext(IDH_IMassProperties)
+   ]
+   coclass MassProperties
+   {
+      [default] interface IMassProperties;
+   };
+
+   [
+      uuid(D7610039-0289-11D5-8BAE-006097C68A9C),
+      helpstring("CompositeBeam Class"),
+      helpcontext(IDH_ICompositeBeam)
+   ]
+   coclass CompositeBeam
+   {
+      [default] interface ICompositeBeam;
+   };
+
+
+   [
+      uuid(94267249-3C7D-40a3-BB21-DD8916BA4DE0),
+      helpstring("CompositeSectionItemEx Class"),
+      helpcontext(IDH_ICompositeSectionItemEx)
+   ]
+   coclass CompositeSectionItemEx
+   {
+      [default] interface ICompositeSectionItemEx;
+   };
+   [
+      uuid(85AB469B-A6A3-4057-848A-1572DAD74DE0),
+      helpstring("CompositeSectionEx Class"),
+      helpcontext(IDH_ICompositeSectionEx)
+   ]
+   coclass CompositeSectionEx
+   {
+      [default] interface ICompositeSectionEx;
+      interface ISection;
+      interface IXYPosition;
+   };
 };

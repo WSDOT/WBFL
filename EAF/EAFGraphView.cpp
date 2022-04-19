@@ -35,7 +35,7 @@
 
 #include "AgentTools.h"
 
-#include <GraphManager\GraphManager.h>
+#include <Graphing/GraphManager.h>
 #include <IGraphManager.h>
 
 #include <MfcTools\Text.h>
@@ -104,7 +104,7 @@ void CEAFGraphView::OnDraw(CDC* pDC)
    else
    {
       CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
-      std::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
+      std::unique_ptr<WBFL::Graphing::GraphBuilder>& pGraphBuilder(pParent->GetGraphBuilder());
       pGraphBuilder->DrawGraph(this, pDC);
    }
 
@@ -135,7 +135,7 @@ void CEAFGraphView::Dump(CDumpContext& dc) const
 // CEAFGraphView message handlers
 void CEAFGraphView::OnUpdateFilePrint(CCmdUI* pCmdUI) 
 {
-   std::shared_ptr<CGraphBuilder> pBuilder(GetGraphBuilder());
+   std::unique_ptr<WBFL::Graphing::GraphBuilder>& pBuilder(GetGraphBuilder());
    BOOL bCanPrint = FALSE;
    if ( pBuilder )
    {
@@ -163,7 +163,7 @@ void CEAFGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
    CEAFView::OnUpdate( pSender, lHint, pHint ); // base class
 
-   std::shared_ptr<CGraphBuilder> pBuilder(GetGraphBuilder());
+   std::unique_ptr<WBFL::Graphing::GraphBuilder>& pBuilder(GetGraphBuilder());
    pBuilder->OnUpdate(pSender,lHint,pHint);
 }
 
@@ -189,7 +189,7 @@ CEAFGraphChildFrame* CEAFGraphView::GetFrame()
    return pFrame;
 }
 
-std::shared_ptr<CGraphBuilder> CEAFGraphView::GetGraphBuilder()
+std::unique_ptr<WBFL::Graphing::GraphBuilder>& CEAFGraphView::GetGraphBuilder()
 {
    CEAFGraphChildFrame* pFrame = GetFrame();
    return pFrame->GetGraphBuilder();
@@ -271,7 +271,7 @@ void CEAFGraphView::UpdateViewTitle()
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
-   std::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
+   std::unique_ptr<WBFL::Graphing::GraphBuilder>& pGraphBuilder(pParent->GetGraphBuilder());
    if ( pGraphBuilder )
    {
       CString strTitle;
@@ -296,7 +296,7 @@ void CEAFGraphView::OnLButtonDblClk(UINT nFlags,CPoint point)
 
    // Have the graphbuilder handle this
    CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
-   std::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
+   std::unique_ptr<WBFL::Graphing::GraphBuilder>& pGraphBuilder(pParent->GetGraphBuilder());
    bool bHandled(false);
    if (pGraphBuilder)
    {

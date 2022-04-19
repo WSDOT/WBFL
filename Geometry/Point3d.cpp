@@ -27,10 +27,8 @@
 #include "stdafx.h"
 #include "WBFLGeometry.h"
 #include "Point3d.h"
-
+#include <GeomModel/CoordinateXform3d.h>
 #include <MathEx.h>
-#include "CoordinateXform3d.h"
-#include "Helper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,8 +43,7 @@ STDMETHODIMP CPoint3d::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IPoint3d,
-      &IID_IStructuredStorage2
+		&IID_IPoint3d
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -60,14 +57,13 @@ STDMETHODIMP CPoint3d::get_X(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_X;
+   *pVal = m_pPoint->X();
 	return S_OK;
 }
 
 STDMETHODIMP CPoint3d::put_X(Float64 newVal)
 {
-   m_X = newVal;
-   Fire_OnPointChanged(this);
+   m_pPoint->X() = newVal;
 	return S_OK;
 }
 
@@ -75,15 +71,14 @@ STDMETHODIMP CPoint3d::get_Y(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_Y;
+   *pVal = m_pPoint->Y();
 
 	return S_OK;
 }
 
 STDMETHODIMP CPoint3d::put_Y(Float64 newVal)
 {
-   m_Y = newVal;
-   Fire_OnPointChanged(this);
+   m_pPoint->Y() = newVal;
 	return S_OK;
 }
 
@@ -91,23 +86,19 @@ STDMETHODIMP CPoint3d::get_Z(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_Z;
+   *pVal = m_pPoint->Z();
 	return S_OK;
 }
 
 STDMETHODIMP CPoint3d::put_Z(Float64 newVal)
 {
-   m_Z = newVal;
-   Fire_OnPointChanged(this);
+   m_pPoint->Z() = newVal;
 	return S_OK;
 }
 
 STDMETHODIMP CPoint3d::Move(Float64 x, Float64 y, Float64 z)
 {
-   m_X = x;
-   m_Y = y;
-   m_Z = z;
-   Fire_OnPointChanged(this);
+   m_pPoint->Move(x, y, z);
 	return S_OK;
 }
 
@@ -123,10 +114,7 @@ STDMETHODIMP CPoint3d::MoveEx(IPoint3d *pPoint)
 
 STDMETHODIMP CPoint3d::Offset(Float64 dx, Float64 dy, Float64 dz)
 {
-   m_X += dx;
-   m_Y += dy;
-   m_Z += dz;
-   Fire_OnPointChanged(this);
+   m_pPoint->Offset(dx, dy, dz);
 	return S_OK;
 }
 
@@ -149,28 +137,16 @@ STDMETHODIMP CPoint3d::Rotate(Float64 cx,Float64 cy,Float64 cz,IVector3d* vector
    if ( bIsZero == VARIANT_TRUE )
       return Error(IDS_E_ZEROMAGNITUDE,IID_IPoint3d,GEOMETRY_E_ZEROMAGNITUDE);
 
-   CComObject<CCoordinateXform3d>* xform;
-   HRESULT hr = CComObject<CCoordinateXform3d>::CreateInstance( &xform );
-   if ( FAILED(hr) )
-      return hr;
+   WBFL::Geometry::Point3d origin(cx, cy, cz);
+   
+   Float64 x, y, z;
+   vector->get_X(&x); vector->get_Y(&y); vector->get_Z(&z);
+   WBFL::Geometry::Vector3d rv(x, y, z);
 
-   CComPtr<ICoordinateXform3d> pXform(xform); // Use smart pointer to prevent leaks
+   WBFL::Geometry::CoordinateXform3d xform(origin, rv, angle);
 
-   CComPtr<IPoint3d> origin;
-   hr = CreatePoint(cx,cy,cz,nullptr,&origin);
-   if ( FAILED(hr) )
-      return hr;
+   xform.Xform(*m_pPoint, WBFL::Geometry::CoordinateXform3d::Type::OldToNew);
 
-   xform->putref_RotationVector( vector );
-   xform->put_RotationAngle( angle );
-   xform->putref_NewOrigin( origin );
-
-   IPoint3d* pThis = (IPoint3d*)this;
-   hr = xform->Xform( &pThis, xfrmOldToNew );
-   if ( FAILED(hr) )
-      return hr;
-
-   Fire_OnPointChanged(this);
    return S_OK;
 }
 
@@ -185,12 +161,6 @@ STDMETHODIMP CPoint3d::RotateEx(IPoint3d* center,IVector3d* vector,Float64 angle
    return Rotate(cx,cy,cz,vector,angle);
 }
 
-STDMETHODIMP CPoint3d::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
 STDMETHODIMP CPoint3d::SameLocation(IPoint3d* pOther)
 {
    CHECK_IN(pOther);
@@ -198,7 +168,7 @@ STDMETHODIMP CPoint3d::SameLocation(IPoint3d* pOther)
    Float64 x,y,z;
    pOther->Location(&x,&y,&z);
 
-   if ( IsEqual(m_X,x) && IsEqual(m_Y,y) && IsEqual(m_Z,z) )
+   if ( IsEqual(m_pPoint->X(),x) && IsEqual(m_pPoint->Y(),y) && IsEqual(m_pPoint->Z(),z) )
       return S_OK;
    else
       return S_FALSE;
@@ -210,18 +180,15 @@ STDMETHODIMP CPoint3d::Location(Float64* pX,Float64* pY,Float64* pZ)
    CHECK_RETVAL(pY);
    CHECK_RETVAL(pZ);
 
-   *pX = m_X;
-   *pY = m_Y;
-   *pZ = m_Z;
+   m_pPoint->GetLocation(pX, pY, pZ);
+
    return S_OK;
 }
 
 STDMETHODIMP CPoint3d::Distance(Float64 x,Float64 y,Float64 z,Float64* pDistance)
 {
-   Float64 dx = x - m_X;
-   Float64 dy = y - m_Y;
-   Float64 dz = z - m_Z;
-   *pDistance = sqrt(dx*dx + dy*dy + dz*dz);
+   CHECK_RETVAL(pDistance);
+   *pDistance = m_pPoint->Distance(x, y, z);
    return S_OK;
 }
 
@@ -241,57 +208,10 @@ STDMETHODIMP CPoint3d::Clone(IPoint3d** ppPoint)
    if ( FAILED(hr) )
       return hr;
 
+   pPoint->m_pPoint = std::make_shared<WBFL::Geometry::Point3d>(*m_pPoint);
+
    (*ppPoint) = pPoint;
    (*ppPoint)->AddRef();
-
-   (*ppPoint)->Move(m_X,m_Y,m_Z);
-
-   return S_OK;
-}
-
-// IPersist
-STDMETHODIMP CPoint3d::GetClassID(CLSID* pClassID)
-{
-   CHECK_IN(pClassID);
-
-   *pClassID = GetObjectCLSID();
-   return S_OK;
-}
-
-// IStructuredStorage2
-STDMETHODIMP CPoint3d::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("Point3d"),1.0);
-   pSave->put_Property(CComBSTR("X"),CComVariant(m_X));
-   pSave->put_Property(CComBSTR("Y"),CComVariant(m_Y));
-   pSave->put_Property(CComBSTR("Z"),CComVariant(m_Z));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CPoint3d::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("Point3d"));
-   
-   pLoad->get_Property(CComBSTR("X"),&var);
-   m_X = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("Y"),&var);
-   m_Y = var.dblVal;
-
-   pLoad->get_Property(CComBSTR("Z"),&var);
-   m_Z = var.dblVal;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
 
    return S_OK;
 }

@@ -68,19 +68,15 @@ HRESULT CSurface::FinalConstruct()
    m_Superelevations->putref_Surface(this);
    m_Widenings->putref_Surface(this);
 
-   Advise();
-
    return S_OK;
 }
 
 void CSurface::FinalRelease()
 {
-   Unadvise();
 }
 
 HRESULT CSurface::Init(IProfile* pProfile,ISurfaceTemplateCollection* pSurfaceTemplates,IndexType alignmentPointIdx,IndexType profilePointIdx,ISuperelevationCollection* pSuperelevations,IWideningCollection* pWidenings)
 {
-   Unadvise();
    m_SurfaceTemplates.Release();
    m_Superelevations.Release();
    m_Widenings.Release();
@@ -88,7 +84,6 @@ HRESULT CSurface::Init(IProfile* pProfile,ISurfaceTemplateCollection* pSurfaceTe
    m_SurfaceTemplates = pSurfaceTemplates;
    m_Superelevations  = pSuperelevations;
    m_Widenings        = pWidenings;
-   Advise();
 
    m_AlignmentPointIdx = alignmentPointIdx;
    m_ProfilePointIdx   = profilePointIdx;
@@ -96,39 +91,6 @@ HRESULT CSurface::Init(IProfile* pProfile,ISurfaceTemplateCollection* pSurfaceTe
    putref_Profile(pProfile);
 
    return S_OK;
-}
-
-void CSurface::Advise()
-{
-   m_SurfaceTemplates.Advise(GetUnknown(),IID_ISurfaceTemplateCollectionEvents,&m_dwSurfaceTemplatesCookie);
-   InternalRelease();
-
-   m_Superelevations.Advise(GetUnknown(),IID_ISuperelevationCollectionEvents,&m_dwSuperelevationCookie);
-   InternalRelease();
-
-   m_Widenings.Advise(GetUnknown(),IID_IWideningCollectionEvents,&m_dwWideningCookie);
-   InternalRelease();
-}
-
-void CSurface::Unadvise()
-{
-   if ( m_dwSurfaceTemplatesCookie != 0 )
-   {
-      InternalAddRef();
-      AtlUnadvise(m_SurfaceTemplates,IID_ISurfaceTemplateCollectionEvents,m_dwSurfaceTemplatesCookie);
-   }
-
-   if ( m_dwSuperelevationCookie != 0 )
-   {
-      InternalAddRef();
-      AtlUnadvise(m_Superelevations,IID_ISuperelevationCollectionEvents,m_dwSuperelevationCookie);
-   }
-
-   if ( m_dwWideningCookie != 0 )
-   {
-      InternalAddRef();
-      AtlUnadvise(m_Widenings,IID_IWideningCollectionEvents,m_dwWideningCookie);
-   }
 }
 
 STDMETHODIMP CSurface::InterfaceSupportsErrorInfo(REFIID riid)
@@ -175,12 +137,7 @@ STDMETHODIMP CSurface::get_ID(CogoObjectID* id)
 
 STDMETHODIMP CSurface::put_ID(CogoObjectID id)
 {
-   if ( m_ID != id )
-   {
-      m_ID = id;
-      Fire_OnSurfaceChanged(this);
-   }
-
+   m_ID = id;
    return S_OK;
 }
 
@@ -218,11 +175,7 @@ STDMETHODIMP CSurface::put_AlignmentPoint(IndexType pntIdx)
    if ( pntIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
-   if ( m_ProfilePointIdx != pntIdx )
-   {
-      m_AlignmentPointIdx = pntIdx;
-      Fire_OnSurfaceChanged(this);
-   }
+   m_AlignmentPointIdx = pntIdx;
 
    return S_OK;
 }
@@ -239,11 +192,7 @@ STDMETHODIMP CSurface::put_ProfileGradePoint(IndexType pntIdx)
    if ( pntIdx == INVALID_INDEX )
       return E_INVALIDARG;
 
-   if ( m_ProfilePointIdx != pntIdx )
-   {
-      m_ProfilePointIdx = pntIdx;
-      Fire_OnSurfaceChanged(this);
-   }
+   m_ProfilePointIdx = pntIdx;
 
    return S_OK;
 }

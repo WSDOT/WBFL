@@ -44,9 +44,7 @@
 #include "Angle.h"
 #include "Direction.h"
 #include "PointCollection.h"
-#include "PointFactory.h"
 #include "CogoModel.h"
-#include "LineSegmentFactory.h"
 #include "LineSegmentCollection.h"
 #include "ProfilePoint.h"
 #include "ProfilePointCollection.h"
@@ -96,10 +94,8 @@ CComModule _Module;
 BEGIN_OBJECT_MAP(ObjectMap)
 OBJECT_ENTRY(CLSID_Angle, CAngle)
 OBJECT_ENTRY(CLSID_Direction, CDirection)
-OBJECT_ENTRY(CLSID_PointFactory, CPointFactory)
 OBJECT_ENTRY(CLSID_PointCollection, CPointCollection)
 OBJECT_ENTRY(CLSID_CogoModel, CCogoModel)
-OBJECT_ENTRY(CLSID_LineSegmentFactory, CLineSegmentFactory)
 OBJECT_ENTRY(CLSID_LineSegmentCollection, CLineSegmentCollection)
 OBJECT_ENTRY(CLSID_ProfilePoint, CProfilePoint)
 OBJECT_ENTRY(CLSID_ProfilePointCollection, CProfilePointCollection)

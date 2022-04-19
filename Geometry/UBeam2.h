@@ -22,14 +22,13 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+#pragma once
 
 // UBeam2.h : Declaration of the CUBeam2
 
-#ifndef __UBEAM2_H_
-#define __UBEAM2_H_
-
 #include "resource.h"       // main symbols
-#include "GeometryCP.h"
+#include <GeomModel/UBeam2.h>
+#include "IShapeImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CUBeam
@@ -39,13 +38,7 @@ class ATL_NO_VTABLE CUBeam2 :
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CUBeam2,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
 	public IUBeam2,
-	public IShape,
-   public IXYPosition,
-   public IStructuredStorage2,
-   public IPersist,
-   public IPoint2dEvents,
-   public CProxyDPoint2dEvents< CUBeam2 >,
-   public IConnectionPointContainerImpl<CUBeam2>
+	public IShapeXYPositionImpl<CUBeam2, WBFL::Geometry::UBeam2>
 {
 public:
 	CUBeam2()
@@ -55,6 +48,8 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
+	void SetShape(const WBFL::Geometry::UBeam2& shape);
+	virtual WBFL::Geometry::UBeam2& GetShape() override { return m_Beam; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_UBEAM2)
 
@@ -62,14 +57,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CUBeam2)
 	COM_INTERFACE_ENTRY(IUBeam2)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IShape)
    COM_INTERFACE_ENTRY(IXYPosition)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY(IPoint2dEvents)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -113,96 +104,13 @@ public:
 	STDMETHOD(get_WebSpacing)(/*[out,retval]*/Float64* spacing) override;
    STDMETHOD(put_UseOutlineOnly)(/*[in]*/VARIANT_BOOL bUseOutlineOnly) override;
    STDMETHOD(get_UseOutlineOnly)(/*[out,retval]*/VARIANT_BOOL* pUseOutlineOnly) override;
-
-// IShape
-	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal) override;
-   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal) override;
-	STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal) override;
-	STDMETHOD(get_PolyPoints)(/*[out,retval]*/ IPoint2dCollection** ppPolyPoints) override;
-	STDMETHOD(PointInShape)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
-	STDMETHOD(Clone)(/*[out,retval]*/ IShape** pClone) override;
-	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* pLine,/*[out,retval]*/ IShape** pShape) override;
-	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ IShape** pShape) override;
-
-// IXYPosition
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
-	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point) override;
-	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point) override;
-	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo) override;
-	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
-	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-	STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
-	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
-	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
-	STDMETHOD(get_Height)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_HookPoint)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_Height)(/*[out, retval]*/ Float64* pVal) override;
+	STDMETHOD(get_HookPoint)(/*[out, retval]*/ IPoint2d** pVal) override;
 	STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* newVal) override;
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPoint2dEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
-
+	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape** pVal) override;
+	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition** pVal) override;
 
 private:
-   CComPtr<IPoint2d> m_pHookPoint; // BottomCenter
-   CComPtr<IPolyShape> m_pShape; // Implementation Polygon
-   Float64   m_Rotation;
-   Float64   m_D1;
-   Float64   m_D2;
-   Float64   m_D3;
-   Float64   m_D4;
-   Float64   m_D5;
-   Float64   m_D6;
-   Float64   m_W1;
-   Float64   m_W2;
-   Float64   m_W3;
-   Float64   m_W4;
-   Float64   m_W5;
-   Float64   m_W6;
-   Float64   m_W7;
-   Float64   m_C1;
-   VARIANT_BOOL m_bUseOutlineOnly; // when true, the shape is taken to be just the overall outline
-                                   // the "U" is omitted and the resulting shape is basically a trapazoid
-                                   // This is typically set to VARIANT_TRUE to model U-beams in a section
-                                   // with an end block
-
-   // Objects needed to compute web thichkess
-   CComPtr<IPoint2d> m_P2;  // lower left corner
-   CComPtr<IPoint2d> m_P3;  // outer corner of flange and web
-   CComPtr<IPoint2d> m_P8;  // inner web corner
-   CComPtr<ILine2d> m_OuterWebLine; // line from P2 - P3 (along the outside of the web)
-   CComPtr<IGeomUtil2d> m_GeomUtil;
-   Float64 m_T;
-
-   bool   m_Dirty;
-
-   unsigned long   m_HookPointCookie;
-
-   HRESULT GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py);
-   HRESULT UpdateShape();
-
-
-   void MakeDirty()
-   {
-      m_Dirty = true;
-   }
-public :
-
-BEGIN_CONNECTION_POINT_MAP(CUBeam2)
-	CONNECTION_POINT_ENTRY(IID_IPoint2dEvents)
-END_CONNECTION_POINT_MAP()
-
+	WBFL::Geometry::UBeam2 m_Beam;
+	CComPtr<IPoint2d> m_HookPoint;
 };
-
-#endif //__UBEAM2_H_

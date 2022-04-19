@@ -49,7 +49,7 @@ import "WBFLGeometry.idl";
 import "WBFLLoading.idl";
 import "WBFLCogo.idl";
 import "WBFLBridgeGeometry.idl";
-import "WBFLSections.idl";
+import "WBFLGeometry.idl";
 
 #include "GenericBridge.hh"
 
@@ -1236,7 +1236,7 @@ library WBFLGenericBridge
    interface ISegment : IUnknown
    {
       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[in]SectionCoordinateSystemType coordinateSystem,[out,retval]IShape** ppShape);
+      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs,[in]SectionBias sectionBias,[in]SectionCoordinateSystemType coordinateSystem,[out,retval]IShape** ppShape);
       [helpstring("method GetVolumeAndSurfaceArea")] HRESULT GetVolumeAndSurfaceArea([out]Float64* pVolume, [out]Float64* pSurfaceArea);
       [propget, helpstring("property InternalSurfaceAreaOfVoids")] HRESULT InternalSurfaceAreaOfVoids([out, retval]Float64* pSurfaceArea);
 		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias, [in]SectionCoordinateSystemType coordinateSystem, [out,retval]ISection** ppSection);
@@ -1664,7 +1664,7 @@ library WBFLGenericBridge
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
       [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
 		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
-      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs, [in]SectionCoordinateSystemType coordinateSystem,[out, retval]IShape** ppShape);
+      [propget, helpstring("property BeamShape")] HRESULT BeamShape([in]Float64 Xs, [in]SectionCoordinateSystemType coordinateSystem,[out, retval]IShape** ppShape);
    };
 
 	[
@@ -1945,6 +1945,10 @@ library WBFLGenericBridge
 	]
 	interface IGirderSection : IUnknown
 	{
+		[propget, helpstring("property GirderShape")] HRESULT GirderShape([out, retval]IShape** ppShape);
+		[propget, helpstring("property VoidCount")] HRESULT VoidCount([out, retval]IndexType* pnVoids);
+		[propget, helpstring("property VoidShape")] HRESULT VoidShape([in]IndexType voidIdx, [out, retval]IShape** ppShape);
+
       [propget, helpstring("property WorkPoint")] HRESULT WorkPoint([out, retval]IPoint2d** ppWorkPoint);
 
 	   [propget,helpstring("property WebCount")] HRESULT WebCount([out,retval]WebIndexType* nWebs);

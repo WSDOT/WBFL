@@ -42,10 +42,10 @@ class SortSurfaceTemplates
 {
 public:
    SortSurfaceTemplates(IProfile* pProfile) { m_pProfile = pProfile; }
-   bool operator()(SurfaceTemplateType& pX,SurfaceTemplateType& pY)
+   bool operator()(CComVariant& pX, CComVariant& pY)
    {
-      CComVariant& varX = pX.second;
-      CComVariant& varY = pY.second;
+      CComVariant& varX = pX;
+      CComVariant& varY = pY;
       CComPtr<IStation> staX, staY;
       
       CComQIPtr<ISurfaceTemplate> csX(varX.pdispVal);
@@ -69,7 +69,6 @@ HRESULT CSurfaceTemplateCollection::FinalConstruct()
 
 void CSurfaceTemplateCollection::FinalRelease()
 {
-   UnadviseAll();
 }
 
 STDMETHODIMP CSurfaceTemplateCollection::InterfaceSupportsErrorInfo(REFIID riid)
@@ -127,8 +126,8 @@ STDMETHODIMP CSurfaceTemplateCollection::get_Item(CollectionIndexType idx, ISurf
    if ( !IsValidIndex(idx,m_coll) )
       return E_INVALIDARG;
 
-   SurfaceTemplateType& p = m_coll[idx];
-   CComVariant& varItem = p.second;
+   CComVariant& p = m_coll[idx];
+   CComVariant& varItem = p;
    varItem.pdispVal->QueryInterface(pVal);
    return S_OK;
 }
@@ -143,22 +142,11 @@ STDMETHODIMP CSurfaceTemplateCollection::putref_Item(CollectionIndexType idx,ISu
       return E_INVALIDARG;
 
    // Get the item
-   SurfaceTemplateType& cst = m_coll[idx];
-   CComVariant& var = cst.second; // Variant holding IDispatch to SurfaceTemplate
+   CComVariant& cst = m_coll[idx];
+   CComVariant& var = cst; // Variant holding IDispatch to SurfaceTemplate
    pVal->putref_Surface(m_pSurface);
 
-   UnadviseElement(idx); // Unadvise from the current element
-
    var = pVal; // Associate new SurfaceTemplate with this variant
-
-   // Advise
-   DWORD dwCookie;
-   AdviseElement(pVal,&dwCookie);
-
-   // Update the cookie
-   cst.first = dwCookie;
-
-   Fire_OnSurfaceTemplateChanged(pVal);
 
    return S_OK;
 }
@@ -189,8 +177,8 @@ STDMETHODIMP CSurfaceTemplateCollection::GetBoundingTemplates(VARIANT varStation
    else if (m_coll.size() == 1)
    {
       // only one template. It bounds all
-      SurfaceTemplateType& stType1 = m_coll.front();
-      CComVariant var1(stType1.second);
+      CComVariant& stType1 = m_coll.front();
+      CComVariant var1(stType1);
       CComQIPtr<ISurfaceTemplate> template1(var1.pdispVal);
       template1.CopyTo(ppStart);
       template1.CopyTo(ppEnd);
@@ -199,8 +187,8 @@ STDMETHODIMP CSurfaceTemplateCollection::GetBoundingTemplates(VARIANT varStation
    else
    {
       // Check if station is before or after all templates
-      SurfaceTemplateType& stType_front = m_coll.front();
-      CComVariant var_front(stType_front.second);
+      CComVariant& stType_front = m_coll.front();
+      CComVariant var_front(stType_front);
       CComQIPtr<ISurfaceTemplate> template_front(var_front.pdispVal);
       CComPtr<IStation> station_front;
       template_front->get_Station(&station_front);
@@ -214,8 +202,8 @@ STDMETHODIMP CSurfaceTemplateCollection::GetBoundingTemplates(VARIANT varStation
       }
       else
       {
-         SurfaceTemplateType& stType_back = m_coll.back();
-         CComVariant var_back(stType_back.second);
+         CComVariant& stType_back = m_coll.back();
+         CComVariant var_back(stType_back);
          CComQIPtr<ISurfaceTemplate> template_back(var_back.pdispVal);
          CComPtr<IStation> station_back;
          template_back->get_Station(&station_back);
@@ -230,16 +218,16 @@ STDMETHODIMP CSurfaceTemplateCollection::GetBoundingTemplates(VARIANT varStation
          else
          {
             // station is in between two templates - find bracketing templates
-            SurfaceTemplates::iterator iter1(m_coll.begin());
-            SurfaceTemplates::iterator iter2(iter1 + 1);
-            SurfaceTemplates::iterator end(m_coll.end());
+            auto iter1(m_coll.begin());
+            auto iter2(iter1 + 1);
+            auto end(m_coll.end());
             for (; iter2 != end; iter1++, iter2++)
             {
-               SurfaceTemplateType& stType1 = *iter1;
-               SurfaceTemplateType& stType2 = *iter2;
+               CComVariant& stType1 = *iter1;
+               CComVariant& stType2 = *iter2;
 
-               CComVariant var1(stType1.second);
-               CComVariant var2(stType2.second);
+               CComVariant var1(stType1);
+               CComVariant var2(stType2);
 
                CComQIPtr<ISurfaceTemplate> template1(var1.pdispVal);
                CComQIPtr<ISurfaceTemplate> template2(var2.pdispVal);
@@ -278,9 +266,7 @@ STDMETHODIMP CSurfaceTemplateCollection::Add(ISurfaceTemplate* pSurfaceTemplate)
 
    pSurfaceTemplate->putref_Surface(m_pSurface);
 
-   DWORD dwCookie;
-   AdviseElement(pSurfaceTemplate,&dwCookie);
-   m_coll.emplace_back( dwCookie,CComVariant(pSurfaceTemplate));
+   m_coll.emplace_back( CComVariant(pSurfaceTemplate));
 
    CComPtr<IProfile> profile;
    if ( m_pSurface )
@@ -289,7 +275,6 @@ STDMETHODIMP CSurfaceTemplateCollection::Add(ISurfaceTemplate* pSurfaceTemplate)
    }
    std::sort(std::begin(m_coll),std::end(m_coll),SortSurfaceTemplates(profile));
 
-   Fire_OnSurfaceTemplateAdded(pSurfaceTemplate);
    return S_OK;
 }
 
@@ -298,17 +283,13 @@ STDMETHODIMP CSurfaceTemplateCollection::Remove(CollectionIndexType idx)
    if ( idx < 0 || m_coll.size() <= idx )
       return E_INVALIDARG;
 
-   UnadviseElement(idx);
    m_coll.erase(m_coll.begin() + idx );
-   Fire_OnSurfaceTemplateRemoved();
    return S_OK;
 }
 
 STDMETHODIMP CSurfaceTemplateCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnSurfaceTemplatesCleared();
    return S_OK;
 }
 
@@ -348,32 +329,6 @@ STDMETHODIMP CSurfaceTemplateCollection::get_StructuredStorage(IStructuredStorag
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// ISurfaceTemplateEvents
-STDMETHODIMP CSurfaceTemplateCollection::OnSurfaceTemplateChanged(ISurfaceTemplate* pSurfaceTemplate)
-{
-   Fire_OnSurfaceTemplateChanged(pSurfaceTemplate);
-   return S_OK;
-}
-
-STDMETHODIMP CSurfaceTemplateCollection::OnTemplateSegmentAdded(ISurfaceTemplate* pSurfaceTemplate,ITemplateSegment* pTemplateSegment)
-{
-   Fire_OnSurfaceTemplateChanged(pSurfaceTemplate);
-   return S_OK;
-}
-
-STDMETHODIMP CSurfaceTemplateCollection::OnTemplateSegmentRemoved(ISurfaceTemplate* pSurfaceTemplate)
-{
-   Fire_OnSurfaceTemplateChanged(pSurfaceTemplate);
-   return S_OK;
-}
-
-STDMETHODIMP CSurfaceTemplateCollection::OnTemplateSegmentsCleared(ISurfaceTemplate* pSurfaceTemplate)
-{
-   Fire_OnSurfaceTemplateChanged(pSurfaceTemplate);
-   return S_OK;
-}
-
 STDMETHODIMP CSurfaceTemplateCollection::get__EnumSurfaceTemplates(IEnumSurfaceTemplates** retval)
 {
    CHECK_RETOBJ(retval);
@@ -381,8 +336,8 @@ STDMETHODIMP CSurfaceTemplateCollection::get__EnumSurfaceTemplates(IEnumSurfaceT
    typedef CComEnumOnSTL<IEnumSurfaceTemplates,
                          &IID_IEnumSurfaceTemplates, 
                          ISurfaceTemplate*,
-                         CopyFromPair2Interface<SurfaceTemplateType,ISurfaceTemplate*>, 
-                         std::vector<SurfaceTemplateType>> Enum;
+                         _CopyVariantToInterface<ISurfaceTemplate>, 
+                         std::vector<CComVariant>> Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -407,7 +362,7 @@ STDMETHODIMP CSurfaceTemplateCollection::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
    for ( CollectionIndexType i = 0; i < count; i++ )
    {
-      pSave->put_Property(CComBSTR("SurfaceTemplate"),m_coll[i].second);
+      pSave->put_Property(CComBSTR("SurfaceTemplate"),m_coll[i]);
    }
 
    return S_OK;
@@ -437,54 +392,6 @@ STDMETHODIMP CSurfaceTemplateCollection::Load(IStructuredLoad2* pLoad)
    return S_OK;
 }
 
-//////////////////////////////////////////
-// Helper methods
-
-void CSurfaceTemplateCollection::AdviseElement(ISurfaceTemplate* widening,DWORD* pdwCookie)
-{
-   CComPtr<ISurfaceTemplate> pCP(widening);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_ISurfaceTemplateEvents, pdwCookie );
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      ATLTRACE("Failed to establish connection point with SurfaceTemplate object\n");
-      return;
-   }
-
-   InternalRelease(); // Break circular reference
-}
-
-void CSurfaceTemplateCollection::UnadviseElement(CollectionIndexType idx)
-{
-   //
-   // Disconnection from connection SurfaceTemplate
-   //
-   SurfaceTemplateType& p = m_coll[idx];
-   if ( p.first == 0 )
-      return;
-
-   DWORD dwCookie = p.first;
-   CComVariant& var = p.second;
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( var.pdispVal );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_ISurfaceTemplateEvents, &pCP );
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   p.first = 0;
-}
-
-void CSurfaceTemplateCollection::UnadviseAll()
-{
-   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
-   {
-      UnadviseElement(i);
-   }
-}
 
 HRESULT CSurfaceTemplateCollection::OnBeforeSave(IStructuredSave2* pSave)
 {

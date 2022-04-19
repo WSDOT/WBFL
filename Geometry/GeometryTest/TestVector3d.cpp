@@ -212,15 +212,7 @@ void CTestVector3d::Test()
    pVec2->put_X(0);
    pVec2->put_Y(0);
    pVec2->put_Z(0);
-   TRY_TEST(pVec->Projection(pVec2,&projection),S_OK);
-   TRY_TEST(IsZero(projection),true);
-
-   // Vector is zero length
-   pVec->put_X(0);
-   pVec->put_Y(0);
-   pVec->put_Z(0);
-   TRY_TEST(pVec->Projection(pVec2,&projection),S_OK);
-   TRY_TEST(IsZero(projection),true);
+   TRY_TEST(pVec->Projection(pVec2,&projection), GEOMETRY_E_ZEROMAGNITUDE);
 
    // Vectors are right angles (projection = 0)
    pVec->put_X(10);
@@ -460,6 +452,5 @@ void CTestVector3d::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Vector3d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IVector3d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 }

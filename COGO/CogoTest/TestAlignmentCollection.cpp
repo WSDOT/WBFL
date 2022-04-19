@@ -98,7 +98,7 @@ void CTestAlignmentCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test putref_Item
+   // Test put_Item
    //
    TRY_TEST(pColl->AddEx(1,Alignment),S_OK);
 
@@ -173,63 +173,6 @@ void CTestAlignmentCollection::Test()
 
 
    //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestAlignmentCollection>* pTestEvents;
-   CComObject<CTestAlignmentCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestEvents);
-   TRY_TEST(AtlAdvise(pColl,punk,IID_IAlignmentCollectionEvents,&dwCookie),S_OK);
-
-   // Add a Alignment to the collection
-   pTestEvents->InitEventTest(1);
-   pColl->AddEx(1,Alignment);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change the Alignment
-   pTestEvents->InitEventTest(1);
-   CComPtr<IPoint2d> point;
-   point.CoCreateInstance(CLSID_Point2d);
-   Alignment->AddEx(point);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change the profile
-   CComPtr<IProfile> profile;
-   Alignment->get_Profile(&profile);
-   pTestEvents->InitEventTest(-1);
-   profile->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change the station equations
-   CComPtr<IStationEquationCollection> equations;
-   Alignment->get_StationEquations(&equations);
-   pTestEvents->InitEventTest(-1);
-   profile->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Remove a Alignment
-   pTestEvents->InitEventTest(1);
-   pColl->Remove(1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-//   // Change Alignment references
-//   pTestEvents->InitEventTest(2);
-//   pColl->putref_Item(2,p4);
-//   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   TRY_TEST(AtlUnadvise(pColl,IID_IAlignmentCollectionEvents,dwCookie),S_OK);
-   pTestEvents->Release();
-
-   //
    // Test ISupportErrorInfo
    //
    CComQIPtr<ISupportErrorInfo> eInfo(pColl);
@@ -240,54 +183,4 @@ void CTestAlignmentCollection::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_AlignmentCollection,IID_IAlignmentCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_AlignmentCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestAlignmentCollection::OnAlignmentChanged(IAlignmentCollection* coll,CogoObjectID id,IAlignment* vc)
-{
-//   MessageBox(nullptr,"AlignmentChanged","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignmentCollection::OnProfileChanged(IAlignmentCollection* coll,IProfile* profile)
-{
-//   MessageBox(nullptr,"ProfileChanged","Event",MB_OK);
-   Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignmentCollection::OnStationEquationsChanged(IAlignmentCollection* coll,IStationEquationCollection* equations)
-{
-//   MessageBox(nullptr,"StationEquationsChanged","Event",MB_OK);
-   Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignmentCollection::OnAlignmentAdded(IAlignmentCollection* coll,CogoObjectID id,IAlignment* Alignment)
-{
-//   MessageBox(nullptr,"AlignmentAdded","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignmentCollection::OnAlignmentRemoved(IAlignmentCollection* coll,CogoObjectID id)
-{
-//   MessageBox(nullptr,"AlignmentRemoved","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignmentCollection::OnAlignmentsCleared(IAlignmentCollection* coll)
-{
-//   MessageBox(nullptr,"AlignmentCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

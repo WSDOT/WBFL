@@ -31,9 +31,6 @@
     <ClCompile Include="TestCogoModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestCogoModelEvents.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestCubicSpline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -61,7 +58,7 @@
     <ClCompile Include="TestPathCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestPathElementcpp.cpp">
+    <ClCompile Include="TestPathElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestPoint.cpp">
@@ -73,7 +70,7 @@
     <ClCompile Include="TestProfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestProfileElementcpp.cpp">
+    <ClCompile Include="TestProfileElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestProfilePoint.cpp">
@@ -148,9 +145,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestCogoModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestCogoModelEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestCubicSpline.h">

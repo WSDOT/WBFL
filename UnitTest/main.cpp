@@ -42,14 +42,12 @@ static LPCTSTR lib_list[] = {
                                  _T("WBFLStability.dll"),
                                  _T("WBFLSystem.dll"),
                                  _T("WBFLRoark.dll"),
-                                 _T("WBFLGeometricPrimitives.dll"),
-                                 _T("WBFLGraphicsLib.dll"),
+                                 _T("WBFLGraphing.dll"),
                                  _T("WBFLGeomModel.dll"),
                                  _T("WBFLLibraryFw.dll"),
                                  _T("WBFLLrfd.dll"),
                                  _T("WBFLMaterial.dll"),
                                  _T("WBFLMath.dll"),
-                                 _T("WBFLReinforcedConcrete.dll"),
                                  _T("WBFLUnitMgt.dll"),
                                  _T("WBFLUnits.dll")//,
                                  //_T("WBFLBridgeAnalysis.dll"),
@@ -104,7 +102,7 @@ bool TestDll(LPCTSTR plibname, dbgLog& rlog)
 {
    HINSTANCE hLibrary;
    pUnitTest ptst;
-   bool      bt;
+   bool      bt = false;
    std::_tostringstream ost;
 
    std::_tstring dllname(plibname);
@@ -124,14 +122,21 @@ bool TestDll(LPCTSTR plibname, dbgLog& rlog)
          }
          catch(sysXBase* xb)
          {
-            ost<<_T("Handled uncaught sysXBase exception from :")<< dllname<<std::endl
+            ost<<_T("*** Failed *** Handled uncaught sysXBase exception from :")<< dllname<<std::endl
                <<_T("Reason was ")<<xb->GetReason()<<std::endl;
+            rlog << ost.str();
+            rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
+         }
+         catch (std::exception& e)
+         {
+            ost << _T("*** Failed *** Handled uncaught std::exception from :") << dllname << std::endl
+               << _T("Reason was ") << e.what() << std::endl;
             rlog << ost.str();
             rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
          }
          catch(...)
          {
-            ost<<_T("Handled uncaught exception from :")<< dllname<<std::endl;
+            ost<<_T("*** Failed *** Handled uncaught exception from :")<< dllname<<std::endl;
             rlog << ost.str();
             rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
          }
@@ -142,7 +147,7 @@ bool TestDll(LPCTSTR plibname, dbgLog& rlog)
       else
       {
          //failed to get UnitTest from dll
-         ost<<_T("Failed to load UnitTest function from: ")<< dllname<<std::endl;
+         ost<<_T("*** Failed *** Failed to load UnitTest function from: ")<< dllname<<std::endl;
          rlog << ost.str();
          rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
       }

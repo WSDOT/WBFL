@@ -259,40 +259,6 @@ void CTestProfile::Test1()
    vc.Release();
    vc.CoCreateInstance(CLSID_VertCurve);
 
-   // Test Events
-   CComObject<CTestProfile>* pTestProfile;
-   CComObject<CTestProfile>::CreateInstance(&pTestProfile);
-   pTestProfile->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestProfile);
-   TRY_TEST(AtlAdvise(profile,punk,IID_IProfileEvents,&dwCookie),S_OK);
-
-   pTestProfile->InitEventTest();
-   profile->Clear();
-   TRY_TEST(pTestProfile->PassedEventTest(), true );
-
-   pTestProfile->InitEventTest();
-   profile->AddEx(vc);
-   TRY_TEST(pTestProfile->PassedEventTest(), true );
-
-   pTestProfile->InitEventTest();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   vc->putref_PBG(point);
-   TRY_TEST(pTestProfile->PassedEventTest(), true );
-
-   pTestProfile->InitEventTest();
-   profile->AddEx(point);
-   TRY_TEST(pTestProfile->PassedEventTest(), true );
-
-   pTestProfile->InitEventTest();
-   point->put_Elevation(50);
-   TRY_TEST(pTestProfile->PassedEventTest(), true );
-
-
-   TRY_TEST(AtlUnadvise(profile,IID_IProfileEvents,dwCookie),S_OK);
-   pTestProfile->Release();
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(profile);
    TRY_TEST( eInfo != nullptr, true );
@@ -1732,7 +1698,7 @@ void CTestProfile::Test12()
 
    CComPtr<IVertCurve> vc;
    vc.CoCreateInstance(CLSID_VertCurve);
-   vc->putref_Profile(profile);
+   vc->put_Profile(profile);
    point.Release();
    vc->get_PBG(&point);
    station->SetStation(1,1100);
@@ -2246,13 +2212,6 @@ void CTestProfile::Test15()
    super->SetBeginTransitionParameters(150.0,150.0);
    Float64 elev;
    TRY_TEST(profile->Elevation(CComVariant(525),0,&elev),COGO_E_SUPERTRANSITIONERROR);
-}
-
-STDMETHODIMP CTestProfile::OnProfileChanged(IProfile* pp)
-{
-//   ::MessageBox(nullptr,"OnProfileChanged","Event",MB_OK);
-   Pass();
-   return S_OK;
 }
 
 void TestElevation(IProfile* profile,Float64 offset,Float64 results[],long minStation,long maxStation,long inc)

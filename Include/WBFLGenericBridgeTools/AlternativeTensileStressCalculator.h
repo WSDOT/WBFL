@@ -27,7 +27,7 @@
 #include <WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h>
 #include <Material\Concrete.h>
 #include <WBFLGeometry.h>
-#include <GeometricPrimitives\Primitives3d.h>
+#include <GeomModel/Primitives3d.h>
 #include <WBFLGenericBridge.h>
 
 #include <WBFLRCCapacity.h> // for IGeneralSectionSolution
@@ -62,10 +62,10 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    
    // coordindate and stress on top and bottom, left and right of girder section
    // Z = stress
-   gpPoint3d pntTopLeft;
-   gpPoint3d pntTopRight;
-   gpPoint3d pntBottomLeft;
-   gpPoint3d pntBottomRight;
+   WBFL::Geometry::Point3d pntTopLeft;
+   WBFL::Geometry::Point3d pntTopRight;
+   WBFL::Geometry::Point3d pntBottomLeft;
+   WBFL::Geometry::Point3d pntBottomRight;
 
    // Output
    CComPtr<IShape> tensionArea; // area in tension

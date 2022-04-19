@@ -66,11 +66,11 @@ public:
    static HRESULT DirectionFromVariant(VARIANT varDir,IDirection** dir);
    static HRESULT AngleFromVariant(VARIANT varAngle,IAngle** angle);
    static HRESULT StationFromVariant(VARIANT varStation,bool bClone,IStation** station);
-   static HRESULT LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* dir,Float64 offset,IPoint2dFactory* pFactory,IPoint2d** ppoint);
+   static HRESULT LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* dir,Float64 offset,IPoint2d** ppoint);
 
    static bool IsEqual(IPoint2d* p1,IPoint2d* p2);
    static void CopyPoint(IPoint2d* to,IPoint2d* from);
-   static void LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNearest,IPoint2dFactory* pFactory,IPoint2d** newPnt);
+   static void LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNearest,IPoint2d** newPnt);
 
    // Gets the parts of a bearing
 	static void GetBrgParts(Float64 brgVal,NSDirectionType* pnsDir,long* pDeg,long* pMin,Float64* pSec,EWDirectionType *pewDir);
@@ -139,10 +139,10 @@ public:
    static void CreateStation(IAlignment* pAlignment,Float64 normalizedStation,IStation** pSta);
    static void CreateStation(IStationEquationCollection* pEquations,Float64 normalizedStation,IStation** pSta);
 
-   static HRESULT CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 offset, ILine2dFactory* pLineFactory, ILine2d** line);
-   static HRESULT IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offset1, IPoint2d* p2, VARIANT varDir2, Float64 offset2, IPoint2dFactory* pPointFactory, IPoint2d** point);
-   static HRESULT IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64 offset, IPoint2d* pntCenter, Float64 radius, IPoint2d* pntNearest, IPoint2dFactory* pPointFactory, IPoint2d** point);
-   static HRESULT IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float64 r2, IPoint2d* nearest, IPoint2dFactory* pPointFactory, IPoint2d** point);
+   static HRESULT CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 offset, ILine2d** line);
+   static HRESULT IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offset1, IPoint2d* p2, VARIANT varDir2, Float64 offset2, IPoint2d** point);
+   static HRESULT IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64 offset, IPoint2d* pntCenter, Float64 radius, IPoint2d* pntNearest, IPoint2d** point);
+   static HRESULT IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float64 r2, IPoint2d* nearest, IPoint2d** point);
 
 private:
    cogoUtil() = delete;

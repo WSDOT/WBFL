@@ -118,7 +118,7 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
    STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
    STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,ISection** ppSection) override;
-   STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
+   STDMETHOD(get_GirderShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
    STDMETHOD(GetVolumeAndSurfaceArea)(Float64* pVolume, Float64* pSurfaceArea) override;
    STDMETHOD(get_InternalSurfaceAreaOfVoids)(Float64* pSurfaceArea) override;
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure, IShape** ppShape) override;
@@ -149,7 +149,7 @@ public:
    STDMETHOD(get_ShapeCount)(IndexType* nShapes) override;
    STDMETHOD(get_ForegroundMaterial)(IndexType index, IMaterial* *material) override;
    STDMETHOD(get_BackgroundMaterial)(IndexType index, IMaterial* *material) override;
-   STDMETHOD(get_GirderShape)(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
+   STDMETHOD(get_BeamShape)(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
 
 // ILongitudinalJoints
 public:

@@ -97,12 +97,8 @@ STDMETHODIMP CProfilePoint::put_Station(VARIANT varStation)
    if ( FAILED(hr) )
       return hr;
 
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_Station) )
-   {
-      m_Station.Release();
-      objStation->Clone(&m_Station);
-      Fire_OnProfilePointChanged(this);
-   }
+   m_Station.Release();
+   objStation->Clone(&m_Station);
 	return S_OK;
 }
 
@@ -115,11 +111,7 @@ STDMETHODIMP CProfilePoint::get_Elevation(Float64 *pVal)
 
 STDMETHODIMP CProfilePoint::put_Elevation(Float64 newVal)
 {
-   if ( newVal != m_Elevation )
-   {
-      m_Elevation = newVal;
-      Fire_OnProfilePointChanged(this);
-   }
+   m_Elevation = newVal;
 	return S_OK;
 }
 

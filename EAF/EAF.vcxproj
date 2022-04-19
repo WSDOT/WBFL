@@ -180,12 +180,11 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Graphing\Graphing.vcxproj">
+      <Project>{753feb16-ebca-4e67-9c3b-d0b9c4ec23f1}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\GraphManagerAgent\GraphManagerAgent.vcxproj">
       <Project>{d6cd1a2c-0027-4ed4-b892-fda3852d47ee}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\GraphManager\GraphManager.vcxproj">
-      <Project>{753feb16-ebca-4e67-9c3b-d0b9c4ec23f1}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\Mfctools\Mfctools.vcxproj">

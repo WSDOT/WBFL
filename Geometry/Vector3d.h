@@ -29,6 +29,7 @@
 #define __VECTOR3D_H_
 
 #include "resource.h"       // main symbols
+#include <GeomModel/Vector3d.h>
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -38,40 +39,33 @@ class ATL_NO_VTABLE CVector3d :
 	public CComCoClass<CVector3d, &CLSID_Vector3d>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CVector3d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public IVector3d,
-   public IStructuredStorage2,
-   public IPersist
+   public IVector3d
 {
 public:
 	CVector3d()
 	{
-      m_X = 1.00;
-      m_Y = 0.00;
-      m_Z = 0.00;
 	}
+
+	std::shared_ptr<WBFL::Geometry::Vector3d>& GetVector() { return m_pVector; }
+	void SetVector(std::shared_ptr<WBFL::Geometry::Vector3d>& Vector) { m_pVector = Vector; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_VECTOR3D)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CVector3d)
 	COM_INTERFACE_ENTRY(IVector3d)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 private:
-   Float64 m_X;
-   Float64 m_Y;
-   Float64 m_Z;
+	std::shared_ptr<WBFL::Geometry::Vector3d> m_pVector{ std::make_shared<WBFL::Geometry::Vector3d>(1,0,0) };
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IVector3d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ IVector3d** ppClone) override;
 	STDMETHOD(IncrementBy)(/*[in]*/ IVector3d* v,/*[out,retval]*/IVector3d** val) override;
 	STDMETHOD(Increment)(/*[in]*/ IVector3d* v) override;
@@ -96,15 +90,6 @@ public:
 	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_X)(/*[in]*/ Float64 newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__VECTOR3D_H_

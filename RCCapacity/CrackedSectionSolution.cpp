@@ -102,8 +102,8 @@ STDMETHODIMP CCrackedSectionSolution::get_ElasticProperties(IElasticProperties**
 {
    CHECK_RETOBJ(ppProps);
 
-   CComPtr<ICompositeSection> composite_section;
-   composite_section.CoCreateInstance(CLSID_CompositeSection);
+   CComPtr<ICompositeSectionEx> composite_section;
+   composite_section.CoCreateInstance(CLSID_CompositeSectionEx);
 
    // add each slice into a composite section object
    CollectionIndexType nSlices;
@@ -123,12 +123,12 @@ STDMETHODIMP CCrackedSectionSolution::get_ElasticProperties(IElasticProperties**
       if ( !IsZero(Efg) )
       {
          // only add slices that aren't cracked
-         composite_section->AddSection(shape,Efg,1,VARIANT_FALSE,VARIANT_TRUE);
+         composite_section->AddSection(shape,Efg,1,0.0,0.0,VARIANT_TRUE);
 
          if ( !IsZero(Ebg) )
          {
             // add the void
-            composite_section->AddSection(shape,Ebg,1,VARIANT_TRUE,VARIANT_TRUE);
+            composite_section->AddSection(shape,0.0,0.0,Ebg,1,VARIANT_TRUE);
          }
       }
    }

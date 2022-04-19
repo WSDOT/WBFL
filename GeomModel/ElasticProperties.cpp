@@ -21,10 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\ElasticProperties.h>
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/ElasticProperties.h>
 
-#include <EngTools\MohrCircle.h>
 #include <MathEx.h>
 #include <iostream>
 
@@ -34,218 +33,198 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   gmElasticProperties
-****************************************************************************/
+using namespace WBFL::Geometry;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmElasticProperties::gmElasticProperties():
-m_Properties()
+ElasticProperties::ElasticProperties()
 {
 }
 
-gmElasticProperties::gmElasticProperties(Float64 eA,
-                           const gpPoint2d& centroid,
+ElasticProperties::ElasticProperties(Float64 eA,
+                           const Point2d& centroid,
                            Float64 eIxx, Float64 eIyy, Float64 eIxy,
-                           Float64 yTop, Float64 yBottom,
-                           Float64 xLeft, Float64 xRight,
-                           Float64 perimeter):
-m_Properties(eA, centroid, eIxx, eIyy, eIxy, yTop, yBottom, xLeft, xRight,perimeter)
+                           Float64 xLeft, Float64 yBottom,
+                           Float64 xRight, Float64 yTop):
+m_Properties(eA, centroid, eIxx, eIyy, eIxy, xLeft, yBottom, xRight,yTop)
 {
 }
 
-
-
-gmElasticProperties::gmElasticProperties(const gmElasticProperties& rOther)
-{
-   MakeCopy(rOther);
-}
-
-gmElasticProperties::~gmElasticProperties()
+ElasticProperties::~ElasticProperties()
 {
 }
 
-//======================== OPERATORS  =======================================
-gmElasticProperties& gmElasticProperties::operator= (const gmElasticProperties& rOther)
+bool ElasticProperties::operator==(const ElasticProperties& rhs) const
 {
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
+   return m_Properties == rhs.m_Properties;
 }
 
-gmElasticProperties gmElasticProperties::operator+ (const gmElasticProperties& rhs) const
+bool ElasticProperties::operator!=(const ElasticProperties& rhs) const
 {
-   gmElasticProperties tmp(*this);
+   return !(*this == rhs);
+}
+
+ElasticProperties ElasticProperties::operator+ (const ElasticProperties& rhs) const
+{
+   ElasticProperties tmp(*this);
    return tmp+=rhs;
 }
 
 
-gmElasticProperties& gmElasticProperties::operator+= (const gmElasticProperties& rhs)
+ElasticProperties& ElasticProperties::operator+= (const ElasticProperties& rhs)
 {
    m_Properties+=rhs.m_Properties;
    return *this;
 }
 
-
-
-
-//======================== OPERATIONS =======================================
-
-Float64 gmElasticProperties::SetEA(Float64 eA)
+ElasticProperties ElasticProperties::operator- (const ElasticProperties& rhs) const
 {
-   return m_Properties.SetArea(eA);
+   ElasticProperties tmp(*this);
+   return tmp -= rhs;
 }
 
-gpPoint2d gmElasticProperties::SetCentroid(gpPoint2d cent)
+ElasticProperties& ElasticProperties::operator-= (const ElasticProperties& rhs)
 {
-   return m_Properties.SetCentroid(cent);
+   m_Properties -= rhs.m_Properties;
+   return *this;
 }
 
-Float64 gmElasticProperties::SetEIxx(Float64 eIxx)
+void ElasticProperties::SetEA(Float64 eA)
 {
-   return m_Properties.SetIxx(eIxx);
+   m_Properties.SetArea(eA);
 }
 
-Float64 gmElasticProperties::SetEIyy(Float64 eIyy)
+Float64 ElasticProperties::GetEA() const
 {
-   return m_Properties.SetIyy(eIyy);
+   return m_Properties.GetArea();
 }
 
-Float64 gmElasticProperties::SetEIxy(Float64 eIxy)
+void ElasticProperties::SetCentroid(const Point2d& cent)
 {
-   return m_Properties.SetIxy(eIxy);
+   m_Properties.SetCentroid(cent);
 }
 
-Float64 gmElasticProperties::SetYtop(Float64 ytop)
+const Point2d& ElasticProperties::GetCentroid() const
 {
-   return m_Properties.SetYtop(ytop);
+   return m_Properties.GetCentroid();
 }
 
-Float64 gmElasticProperties::SetYbottom(Float64 ybot)
+void ElasticProperties::SetEIxx(Float64 eIxx)
 {
-   return m_Properties.SetYbottom(ybot);
+   m_Properties.SetIxx(eIxx);
 }
 
-Float64 gmElasticProperties::SetXleft(Float64 xleft)
+Float64 ElasticProperties::GetEIxx() const
 {
-   return m_Properties.SetXleft(xleft);
+   return m_Properties.GetIxx();
 }
 
-Float64 gmElasticProperties::SetXright(Float64 xright)
+void ElasticProperties::SetEIyy(Float64 eIyy)
 {
-   return m_Properties.SetXright(xright);
+   m_Properties.SetIyy(eIyy);
 }
 
-Float64 gmElasticProperties::SetPerimeter(Float64 p)
+Float64 ElasticProperties::GetEIyy() const
 {
-   return m_Properties.SetPerimeter(p);
+   return m_Properties.GetIyy();
 }
 
-Float64 gmElasticProperties::EA() const
+void ElasticProperties::SetEIxy(Float64 eIxy)
 {
-   return m_Properties.Area();
+   m_Properties.SetIxy(eIxy);
 }
 
-gpPoint2d gmElasticProperties::Centroid() const
+Float64 ElasticProperties::GetEIxy() const
 {
-   return m_Properties.Centroid();
+   return m_Properties.GetIxy();
 }
 
-Float64 gmElasticProperties::EIxx() const
+void ElasticProperties::SetYtop(Float64 ytop)
 {
-   return m_Properties.Ixx();
+   m_Properties.SetYtop(ytop);
 }
 
-Float64 gmElasticProperties::EIyy() const
+Float64 ElasticProperties::GetYtop() const
 {
-   return m_Properties.Iyy();
+   return m_Properties.GetYtop();
 }
 
-Float64 gmElasticProperties::EIxy() const
+void ElasticProperties::SetYbottom(Float64 ybot)
 {
-   return m_Properties.Ixy();
+   m_Properties.SetYbottom(ybot);
 }
 
-Float64 gmElasticProperties::Ytop() const
+Float64 ElasticProperties::GetYbottom() const
 {
-   return m_Properties.Ytop();
+   return m_Properties.GetYbottom();
 }
 
-Float64 gmElasticProperties::Ybottom() const
+void ElasticProperties::SetXleft(Float64 xleft)
 {
-   return m_Properties.Ybottom();
+   m_Properties.SetXleft(xleft);
 }
 
-Float64 gmElasticProperties::Xleft() const
+Float64 ElasticProperties::GetXleft() const
 {
-   return m_Properties.Xleft();
+   return m_Properties.GetXleft();
 }
 
-Float64 gmElasticProperties::Xright() const
+void ElasticProperties::SetXright(Float64 xright)
 {
-   return m_Properties.Xright();
+   m_Properties.SetXright(xright);
 }
 
-Float64 gmElasticProperties::Perimeter() const
+Float64 ElasticProperties::GetXright() const
 {
-   return m_Properties.Perimeter();
+   return m_Properties.GetXright();
 }
 
-Float64 gmElasticProperties::EI11() const
+Float64 ElasticProperties::GetEI11() const
 {
-   return m_Properties.I11();
+   return m_Properties.GetI11();
 }
 
-Float64 gmElasticProperties::EI22() const
+Float64 ElasticProperties::GetEI22() const
 {
-   return m_Properties.I22();
+   return m_Properties.GetI22();
 }
 
-Float64 gmElasticProperties::PrincipalDirection() const
+Float64 ElasticProperties::GetPrincipalDirection() const
 {
-   return m_Properties.PrincipalDirection();
+   return m_Properties.GetPrincipalDirection();
 }
 
-Float64 gmElasticProperties::EI12Max() const
+Float64 ElasticProperties::GetEI12Max() const
 {
-   return m_Properties.I12Max();
+   return m_Properties.GetI12Max();
 }
 
-Float64 gmElasticProperties::EI12Min() const
+Float64 ElasticProperties::GetEI12Min() const
 {
-   return m_Properties.I12Min();
+   return m_Properties.GetI12Min();
 }
 
-void gmElasticProperties::SetCoordinateSystem(gmElasticProperties::CoordSystemType sys)
+void ElasticProperties::SetCoordinateSystem(ElasticProperties::CoordSystemType sys)
 {
-   gmProperties::CoordSystemType pct;
+   ShapeProperties::CoordSystemType pct;
    switch(sys)
    {
-      case Centroidal:
+   case CoordSystemType::Centroidal:
       {
-         pct=gmProperties::Centroidal;
+         pct= ShapeProperties::CoordSystemType::Centroidal;
          break;
       }
-      case Global:
+      case CoordSystemType::Global:
       {
-         pct=gmProperties::Global;
+         pct= ShapeProperties::CoordSystemType::Global;
          break;
       }
-      case Principal:
+      case CoordSystemType::Principal:
       {
-         pct=gmProperties::Principal;
+         pct= ShapeProperties::CoordSystemType::Principal;
          break;
       }
-      case UserDefined:
+      case CoordSystemType::UserDefined:
       {
-         pct=gmProperties::UserDefined;
+         pct= ShapeProperties::CoordSystemType::UserDefined;
          break;
       }
       default:
@@ -255,31 +234,31 @@ void gmElasticProperties::SetCoordinateSystem(gmElasticProperties::CoordSystemTy
    m_Properties.SetCoordinateSystem(pct);
 }
 
-gmElasticProperties::CoordSystemType gmElasticProperties::GetCoordinateSystem() const
+ElasticProperties::CoordSystemType ElasticProperties::GetCoordinateSystem() const
 {
-   gmElasticProperties::CoordSystemType epct=UserDefined;
+   ElasticProperties::CoordSystemType epct= CoordSystemType::UserDefined;
 
-   gmProperties::CoordSystemType pct = m_Properties.GetCoordinateSystem();
+   ShapeProperties::CoordSystemType pct = m_Properties.GetCoordinateSystem();
    switch(pct)
    {
-      case gmProperties::Centroidal:
+      case ShapeProperties::CoordSystemType::Centroidal:
       {
-         epct= Centroidal;
+         epct= CoordSystemType::Centroidal;
          break;
       }
-      case gmProperties::Global:
+      case ShapeProperties::CoordSystemType::Global:
       {
-         epct= Global;
+         epct= CoordSystemType::Global;
          break;
       }
-      case gmProperties::Principal:
+      case ShapeProperties::CoordSystemType::Principal:
       {
-         epct= Principal;
+         epct= CoordSystemType::Principal;
          break;
       }
-      case gmProperties::UserDefined:
+      case ShapeProperties::CoordSystemType::UserDefined:
       {
-         epct= UserDefined;
+         epct= CoordSystemType::UserDefined;
          break;
       }
       default:
@@ -289,33 +268,33 @@ gmElasticProperties::CoordSystemType gmElasticProperties::GetCoordinateSystem() 
    return epct;
 }
 
-void gmElasticProperties::SetOrigin(const gpPoint2d& origin)
+void ElasticProperties::SetOrigin(const Point2d& origin)
 {
    m_Properties.SetOrigin(origin);
 }
 
-gpPoint2d gmElasticProperties::GetOrigin() const
+const Point2d& ElasticProperties::GetOrigin() const
 {
    return m_Properties.GetOrigin();
 }
 
-void gmElasticProperties::SetOrientation(Float64 angle)
+void ElasticProperties::SetOrientation(Float64 angle)
 {
    m_Properties.SetOrientation(angle);
 }
 
-Float64 gmElasticProperties::GetOrientation() const
+Float64 ElasticProperties::GetOrientation() const
 {
    return m_Properties.GetOrientation();
 }
 
-gmProperties gmElasticProperties::TransformProperties(Float64 E) const
+ShapeProperties ElasticProperties::TransformProperties(Float64 E) const
 {
-   gmProperties props = m_Properties;
-   props.SetArea( props.Area()/E );
-   props.SetIxx( props.Ixx()/E );
-   props.SetIxy( props.Ixy()/E );
-   props.SetIyy( props.Iyy()/E );
+   ShapeProperties props = m_Properties;
+   props.SetArea( props.GetArea()/E );
+   props.SetIxx( props.GetIxx()/E );
+   props.SetIxy( props.GetIxy()/E );
+   props.SetIyy( props.GetIyy()/E );
 
    return props;
 }
@@ -324,14 +303,14 @@ gmProperties gmElasticProperties::TransformProperties(Float64 E) const
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
 #if defined _DEBUG
-bool gmElasticProperties::AssertValid() const
+bool ElasticProperties::AssertValid() const
 {
    return true;
 }
 
-void gmElasticProperties::Dump(dbgDumpContext& os) const
+void ElasticProperties::Dump(dbgDumpContext& os) const
 {
-   os << _T("Dump for gmElasticProperties") << endl;
+   os << _T("Dump for ElasticProperties") << endl;
    os << _T("Start Dump of implementation m_Properties:")<<endl;
    m_Properties.Dump(os);
    os << _T("End Dump of implementation m_Properties:")<<endl;
@@ -339,158 +318,120 @@ void gmElasticProperties::Dump(dbgDumpContext& os) const
 
 #endif // _DEBUG
 
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmElasticProperties::MakeCopy(const gmElasticProperties& rOther)
-{
-   m_Properties   = rOther.m_Properties;
-}
-
-void gmElasticProperties::MakeAssignment(const gmElasticProperties& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-bool GEOMMODELFUNC operator==(const gmElasticProperties& lhs, const gmElasticProperties& rhs)
-{
-   return lhs.m_Properties==rhs.m_Properties;
-}
-
-bool GEOMMODELFUNC operator!=(const gmElasticProperties& lhs, const gmElasticProperties& rhs)
-{
-   return !(lhs==rhs);
-}
-
 #if defined _UNITTEST
-#include <Units\SysUnits.h>
-bool gmElasticProperties::TestMe(dbgLog& rlog)
+bool ElasticProperties::TestMe(dbgLog& rlog)
 {
-   TESTME_PROLOGUE("gmElasticProperties"); 
+   TESTME_PROLOGUE("ElasticProperties"); 
 
    // try a point area
-      gmElasticProperties gpa(4., gpPoint2d(0,0), 0., 0., 0, 0,  0,  0, 0, 0);
-      TRY_TESTME( gpa.GetCoordinateSystem() == gmElasticProperties::Centroidal ) ;
-      TRY_TESTME( gpPoint2d(0,0) == gpa.Centroid() ) ;
-      TRY_TESTME( IsZero(4-gpa.EA()) ) ;
-      TRY_TESTME( IsZero(gpa.EI11()) ) ;
-      TRY_TESTME( IsZero(gpa.EI22()) ) ;
-      TRY_TESTME( IsZero(gpa.EIxy()) ) ;
-      TRY_TESTME( IsZero(gpa.EI12Max()) ) ;
-      TRY_TESTME( IsZero(gpa.EI12Min()) ) ;
-      TRY_TESTME( IsZero(gpa.Ytop()) ) ;
-      TRY_TESTME( IsZero(gpa.Ybottom()) ) ;
-      TRY_TESTME( IsZero(gpa.Xright()) ) ;
-      TRY_TESTME( IsZero(gpa.Xleft()) ) ;
+      ElasticProperties gpa(4., Point2d(0,0), 0., 0., 0, 0,  0,  0, 0);
+      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordSystemType::Centroidal ) ;
+      TRY_TESTME( Point2d(0,0) == gpa.GetCentroid() ) ;
+      TRY_TESTME( IsZero(4-gpa.GetEA()) ) ;
+      TRY_TESTME( IsZero(gpa.GetEI11()) ) ;
+      TRY_TESTME( IsZero(gpa.GetEI22()) ) ;
+      TRY_TESTME( IsZero(gpa.GetEIxy()) ) ;
+      TRY_TESTME( IsZero(gpa.GetEI12Max()) ) ;
+      TRY_TESTME( IsZero(gpa.GetEI12Min()) ) ;
+      TRY_TESTME( IsZero(gpa.GetYtop()) ) ;
+      TRY_TESTME( IsZero(gpa.GetYbottom()) ) ;
+      TRY_TESTME( IsZero(gpa.GetXright()) ) ;
+      TRY_TESTME( IsZero(gpa.GetXleft()) ) ;
 
       // move origin
-      gpPoint2d orn(4,-2);
+      Point2d orn(4,-2);
       gpa.SetOrigin(orn);
-      TRY_TESTME( gpa.GetCoordinateSystem() == gmElasticProperties::UserDefined ) ;
-      TRY_TESTME( gpPoint2d(-4,2) == gpa.Centroid() ) ;
-      TRY_TESTME( IsZero(4-gpa.EA())) ;
-      TRY_TESTME( IsZero( 63.43 - ::ConvertFromSysUnits(gpa.PrincipalDirection(), unitMeasure::Degree),.1)) ;
-      TRY_TESTME( IsZero(16-gpa.EIxx())) ;
-      TRY_TESTME( IsZero(64-gpa.EIyy())) ;
-      TRY_TESTME( IsZero(32+gpa.EIxy())) ;
-      TRY_TESTME( IsZero(80-gpa.EI11())) ;
-      TRY_TESTME( IsZero(gpa.EI22())) ;
-      TRY_TESTME( IsZero(40-gpa.EI12Max())) ;
-      TRY_TESTME( IsZero(40+gpa.EI12Min())) ;
-      TRY_TESTME( IsZero(gpa.Ytop())) ;
-      TRY_TESTME( IsZero(gpa.Ybottom())) ;
-      TRY_TESTME( IsZero(gpa.Xright())) ;
-      TRY_TESTME( IsZero(gpa.Xleft())) ;
+      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordSystemType::UserDefined ) ;
+      TRY_TESTME( Point2d(-4,2) == gpa.GetCentroid() ) ;
+      TRY_TESTME( IsZero(4-gpa.GetEA())) ;
+      TRY_TESTME( IsZero( -63.43 - ToDegrees(gpa.GetPrincipalDirection()),.1)) ;
+      TRY_TESTME( IsZero(16-gpa.GetEIxx())) ;
+      TRY_TESTME( IsZero(64-gpa.GetEIyy())) ;
+      TRY_TESTME( IsZero(32+gpa.GetEIxy())) ;
+      TRY_TESTME( IsZero(80-gpa.GetEI11())) ;
+      TRY_TESTME( IsZero(gpa.GetEI22())) ;
+      TRY_TESTME( IsZero(40-gpa.GetEI12Max())) ;
+      TRY_TESTME( IsZero(40+gpa.GetEI12Min())) ;
+      TRY_TESTME( IsZero(gpa.GetYtop())) ;
+      TRY_TESTME( IsZero(gpa.GetYbottom())) ;
+      TRY_TESTME( IsZero(gpa.GetXright())) ;
+      TRY_TESTME( IsZero(gpa.GetXleft())) ;
 
       // rotate 90 deg
       gpa.SetOrientation(M_PI/2);
-      TRY_TESTME( gpa.GetCoordinateSystem() == gmElasticProperties::UserDefined) ;
-      TRY_TESTME( gpPoint2d(2,4) == gpa.Centroid()) ;
-      TRY_TESTME( IsZero(4-gpa.EA())) ;
-      TRY_TESTME( IsZero(64-gpa.EIxx())) ;
-      TRY_TESTME( IsZero(16-gpa.EIyy())) ;
-      TRY_TESTME( IsZero(32-gpa.EIxy())) ;
-      TRY_TESTME( IsZero(80.-gpa.EI11())) ;
-      TRY_TESTME( IsZero(gpa.EI22())) ;
-      TRY_TESTME( IsZero(40-gpa.EI12Max())) ;
-      TRY_TESTME( IsZero(40+gpa.EI12Min())) ;
+      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordSystemType::UserDefined) ;
+      TRY_TESTME( Point2d(2,4) == gpa.GetCentroid()) ;
+      TRY_TESTME( IsZero(4-gpa.GetEA())) ;
+      TRY_TESTME( IsZero(64-gpa.GetEIxx())) ;
+      TRY_TESTME( IsZero(16-gpa.GetEIyy())) ;
+      TRY_TESTME( IsZero(32-gpa.GetEIxy())) ;
+      TRY_TESTME( IsZero(80.-gpa.GetEI11())) ;
+      TRY_TESTME( IsZero(gpa.GetEI22())) ;
+      TRY_TESTME( IsZero(40-gpa.GetEI12Max())) ;
+      TRY_TESTME( IsZero(40+gpa.GetEI12Min())) ;
 
    // try a 2x4 rectangle
-      gmElasticProperties gs2x4(8., gpPoint2d(0,0), 128./12., 32./12., 0, 2, -2, -1, 1, 0);
-      TRY_TESTME( IsZero(8-gs2x4.EA())) ;
-      TRY_TESTME( IsZero(128./12.-gs2x4.EI11())) ;
-      TRY_TESTME( IsZero(32./12-gs2x4.EI22())) ;
-      TRY_TESTME( IsZero(gs2x4.EIxy())) ;
-      TRY_TESTME( IsZero(4-gs2x4.EI12Max())) ;
-      TRY_TESTME( IsZero(4+gs2x4.EI12Min())) ;
-      TRY_TESTME( IsZero(2-gs2x4.Ytop())) ;
-      TRY_TESTME( IsZero(2+gs2x4.Ybottom())) ;
-      TRY_TESTME( IsZero(1-gs2x4.Xright())) ;
-      TRY_TESTME( IsZero(1+gs2x4.Xleft())) ;
+      ElasticProperties gs2x4(8., Point2d(0,0), 128./12., 32./12., 0, 1,2,1,2);
+      TRY_TESTME( IsZero(8-gs2x4.GetEA())) ;
+      TRY_TESTME( IsZero(128./12.-gs2x4.GetEI11())) ;
+      TRY_TESTME( IsZero(32./12-gs2x4.GetEI22())) ;
+      TRY_TESTME( IsZero(gs2x4.GetEIxy())) ;
+      TRY_TESTME( IsZero(4-gs2x4.GetEI12Max())) ;
+      TRY_TESTME( IsZero(4+gs2x4.GetEI12Min())) ;
+      TRY_TESTME( IsZero(2-gs2x4.GetYtop())) ;
+      TRY_TESTME( IsZero(2-gs2x4.GetYbottom())) ;
+      TRY_TESTME( IsZero(1-gs2x4.GetXright())) ;
+      TRY_TESTME( IsZero(1-gs2x4.GetXleft())) ;
 
       // move origin to user-defined location
       gs2x4.SetOrigin(orn); 
-      TRY_TESTME( IsZero(8-gs2x4.EA())) ;
-      TRY_TESTME( IsZero((128./12.+32)-gs2x4.EIxx())) ;
-      TRY_TESTME( IsZero((32./12+128)-gs2x4.EIyy())) ;
-      TRY_TESTME( IsZero(64+gs2x4.EIxy())) ;
-      TRY_TESTME( IsZero( 62.25 - ::ConvertFromSysUnits(gs2x4.PrincipalDirection(),unitMeasure::Degree),.01)) ;
-      TRY_TESTME( IsZero(77.67-gs2x4.EI12Max(),.01)) ;
-      TRY_TESTME( IsZero(2-gs2x4.Ytop())) ;
-      TRY_TESTME( IsZero(2+gs2x4.Ybottom())) ;
-      TRY_TESTME( IsZero(1-gs2x4.Xright())) ;
-      TRY_TESTME( IsZero(1+gs2x4.Xleft())) ;
+      TRY_TESTME( IsZero(8-gs2x4.GetEA())) ;
+      TRY_TESTME( IsZero((128./12.+32)-gs2x4.GetEIxx())) ;
+      TRY_TESTME( IsZero((32./12+128)-gs2x4.GetEIyy())) ;
+      TRY_TESTME( IsZero(64+gs2x4.GetEIxy())) ;
+      TRY_TESTME( IsZero( -62.25 - ToDegrees(gs2x4.GetPrincipalDirection()),.01)) ;
+      TRY_TESTME( IsZero(77.67-gs2x4.GetEI12Max(),.01)) ;
+      TRY_TESTME( IsZero(2-gs2x4.GetYtop())) ;
+      TRY_TESTME( IsZero(2-gs2x4.GetYbottom())) ;
+      TRY_TESTME( IsZero(1-gs2x4.GetXright())) ;
+      TRY_TESTME( IsZero(1-gs2x4.GetXleft())) ;
 
    // move origin back to centroid
-      gs2x4.SetCoordinateSystem(gmElasticProperties::Centroidal);
-      TRY_TESTME( gs2x4.GetCoordinateSystem() == gmElasticProperties::Centroidal) ;
-      TRY_TESTME( IsZero(8-gs2x4.EA())) ;
-      TRY_TESTME( IsZero(128./12.-gs2x4.EI11())) ;
-      TRY_TESTME( IsZero(32./12-gs2x4.EI22())) ;
-      TRY_TESTME( IsZero(gs2x4.EIxy())) ;
-      TRY_TESTME( IsZero(4-gs2x4.EI12Max())) ;
-      TRY_TESTME( IsZero(4+gs2x4.EI12Min())) ;
-      TRY_TESTME( IsZero(2-gs2x4.Ytop())) ;
-      TRY_TESTME( IsZero(2+gs2x4.Ybottom())) ;
-      TRY_TESTME( IsZero(1-gs2x4.Xright())) ;
-      TRY_TESTME( IsZero(1+gs2x4.Xleft())) ;
+      gs2x4.SetCoordinateSystem(ElasticProperties::CoordSystemType::Centroidal);
+      TRY_TESTME( gs2x4.GetCoordinateSystem() == ElasticProperties::CoordSystemType::Centroidal) ;
+      TRY_TESTME( IsZero(8-gs2x4.GetEA())) ;
+      TRY_TESTME( IsZero(128./12.-gs2x4.GetEI11())) ;
+      TRY_TESTME( IsZero(32./12-gs2x4.GetEI22())) ;
+      TRY_TESTME( IsZero(gs2x4.GetEIxy())) ;
+      TRY_TESTME( IsZero(4-gs2x4.GetEI12Max())) ;
+      TRY_TESTME( IsZero(4+gs2x4.GetEI12Min())) ;
+      TRY_TESTME( IsZero(2-gs2x4.GetYtop())) ;
+      TRY_TESTME( IsZero(2-gs2x4.GetYbottom())) ;
+      TRY_TESTME( IsZero(1-gs2x4.GetXright())) ;
+      TRY_TESTME( IsZero(1-gs2x4.GetXleft())) ;
 
    // try rotation to principal
-      gmElasticProperties gsr(4., gpPoint2d(0,0), 16., 64., -32, 2, -2, -1, 1, 0);
-      gsr.SetCoordinateSystem(gmElasticProperties::Principal);
-      TRY_TESTME( gsr.GetCoordinateSystem() == gmElasticProperties::Principal) ;
-      TRY_TESTME( IsZero(4-gsr.EA())) ;
-      TRY_TESTME( IsZero(80.-gsr.EI11())) ;
-      TRY_TESTME( IsZero(gsr.EI22())) ;
-      TRY_TESTME( IsZero(gsr.EIxy())) ;
-      TRY_TESTME( IsZero(40-gsr.EI12Max())) ;
-      TRY_TESTME( IsZero(40+gsr.EI12Min())) ;
+      ElasticProperties gsr(4., Point2d(0,0), 16., 64., -32, 1,2,1,2);
+      gsr.SetCoordinateSystem(ElasticProperties::CoordSystemType::Principal);
+      TRY_TESTME( gsr.GetCoordinateSystem() == ElasticProperties::CoordSystemType::Principal) ;
+      TRY_TESTME( IsZero(4-gsr.GetEA())) ;
+      TRY_TESTME( IsZero(80.-gsr.GetEI11())) ;
+      TRY_TESTME( IsZero(gsr.GetEI22())) ;
+      TRY_TESTME( IsZero(gsr.GetEIxy())) ;
+      TRY_TESTME( IsZero(40-gsr.GetEI12Max())) ;
+      TRY_TESTME( IsZero(40+gsr.GetEI12Min())) ;
 
    // try addition and subraction
-      gmElasticProperties gps1( 4., gpPoint2d( 4, 2), 0, 0, 0, 0, 0, 0, 0, 0);
-      gmElasticProperties gps2( 4., gpPoint2d(-4,-2), 0, 0, 0, 0, 0, 0, 0, 0);
-      gmElasticProperties gps4(-4., gpPoint2d(-4,-2), 0, 0, 0, 0, 0, 0, 0, 0);
-      gmElasticProperties gps3 = gps1 + gps2;
-      TRY_TESTME( IsZero(8-gps3.EA())) ;
-      TRY_TESTME( IsZero(160.-gps3.EI11())) ;
-      TRY_TESTME( IsZero(gps3.EI22())) ;
-      TRY_TESTME( IsZero(32-gps3.EIxx())) ;
-      TRY_TESTME( IsZero(128-gps3.EIyy())) ;
-      TRY_TESTME( IsZero(64-gps3.EIxy())) ;
+      ElasticProperties gps1( 4., Point2d( 4, 2), 0, 0, 0, 0, 0, 0, 0);
+      ElasticProperties gps2( 4., Point2d(-4,-2), 0, 0, 0, 0, 0, 0, 0);
+      ElasticProperties gps4(-4., Point2d(-4,-2), 0, 0, 0, 0, 0, 0, 0);
+      ElasticProperties gps3 = gps1 + gps2;
+      TRY_TESTME( IsZero(8-gps3.GetEA())) ;
+      TRY_TESTME( IsZero(160.-gps3.GetEI11())) ;
+      TRY_TESTME( IsZero(gps3.GetEI22())) ;
+      TRY_TESTME( IsZero(32-gps3.GetEIxx())) ;
+      TRY_TESTME( IsZero(128-gps3.GetEIyy())) ;
+      TRY_TESTME( IsZero(64-gps3.GetEIxy())) ;
 
       gps3 = gps3 + gps4;
       gps3.SetXleft(0);
@@ -504,7 +445,7 @@ bool gmElasticProperties::TestMe(dbgLog& rlog)
       gsr.Dump(rlog.GetDumpCtx());
 #endif
 
-   TESTME_EPILOG("gmElasticProperties");
+   TESTME_EPILOG("ElasticProperties");
 }
 
 #endif // _UNITTEST

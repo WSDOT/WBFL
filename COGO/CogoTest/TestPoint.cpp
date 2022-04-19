@@ -169,64 +169,12 @@ void CTestPoint::Test()
    TRY_TEST( pPoint->get_Y(&y), S_OK);
    TRY_TEST( IsEqual(y,0.0),true );
 
-   // Test Events
-   CComObject<CTestPoint>* pTestPoint;
-   CComObject<CTestPoint>::CreateInstance(&pTestPoint);
-   pTestPoint->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestPoint);
-   TRY_TEST(AtlAdvise(pPoint,punk,IID_IPoint2dEvents,&dwCookie),S_OK);
-
-   pTestPoint->InitEventTest();
-   pPoint->put_X(5);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->put_Y(5);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->Move(10,10);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->MoveEx(pPoint2);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->Offset(-1,-1);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->OffsetEx(pSize);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->Rotate(5,5,5);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   pTestPoint->InitEventTest();
-   pPoint->RotateEx(pCenter,5);
-   TRY_TEST(pTestPoint->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(pPoint,IID_IPoint2dEvents,dwCookie),S_OK);
-   pTestPoint->Release();
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pPoint);
    TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPoint2d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_Point2d,IID_IPoint2d,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Point2d,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestPoint::OnPointChanged(IPoint2d* point)
-{
-   Pass();
-   return S_OK;
 }

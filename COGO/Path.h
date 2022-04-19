@@ -33,12 +33,9 @@
 
 #include "Collections.h"
 #include <vector>
-#include "COGOCP.h"
 
-typedef std::pair<DWORD,CComVariant> PathType; // cookie,varient(IUnknown for PathElement)
-typedef std::vector<PathType> Paths;
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<PathType,VARIANT>, Paths > PathEnum;
-typedef ICollectionOnSTLImpl<IPath, Paths, VARIANT, CopyFromPair2<PathType,VARIANT>, PathEnum> IPathElementCollection;
+typedef CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> > PathEnum;
+typedef ICollectionOnSTLImpl<IPath, std::vector<CComVariant>, VARIANT, _Copy<VARIANT>, PathEnum> IPathElementCollection;
 
 struct Element
 {
@@ -55,11 +52,8 @@ class ATL_NO_VTABLE CPath :
 	public CComCoClass<CPath, &CLSID_Path>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CPath,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CPath>,
 	public IPathElementCollection,
    public IStructuredStorage2,
-	public IPathElementEvents,
-	public CProxyDPathEvents< CPath >,
    public IPersistImpl<CPath>
 {
 public:
@@ -77,18 +71,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CPath)
 	COM_INTERFACE_ENTRY(IPath)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPathElementEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CPath)
-CONNECTION_POINT_ENTRY(IID_IPathEvents)
-END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -116,8 +102,6 @@ public:
 	STDMETHOD(InsertEx)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IUnknown* dispElement) override;
 	STDMETHOD(Remove)(/*[in]*/ VARIANT varID) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory) override; 
-	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override; 
    STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction) override;
    STDMETHOD(CreateOffsetPath)(/*[in]*/ Float64 offset,/*[out,retval]*/IPath** path) override;
 	STDMETHOD(CreateConnectedPath)(/*[out,retval]*/IPath** path) override;
@@ -128,25 +112,10 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IPathElementEvents
-public:
-	STDMETHOD(OnPathElementChanged)(IPathElement * element)
-	{
-      m_PathElements.clear();
-      Fire_OnPathChanged(this);
-		return S_OK;
-	}
-
 private:
-   CComPtr<IPoint2dFactory> m_PointFactory;
-
    CComPtr<IGeomUtil2d> m_GeomUtil;
    CComPtr<ICogoEngine> m_CogoEngine;
    CComPtr<ICoordinateXform2d> m_Xform;
-
-   void AdviseElement(IPathElement* element,DWORD* pdwCookie);
-   void UnadviseElement(CollectionIndexType idx);
-   void UnadviseAll();
 
    std::vector<Element> m_PathElements; // not the same as m_coll. This is a fully connected path of elements
 

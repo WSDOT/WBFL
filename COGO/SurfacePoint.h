@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CSurfacePoint
@@ -39,8 +38,6 @@ class ATL_NO_VTABLE CSurfacePoint :
 	public CComCoClass<CSurfacePoint, &CLSID_SurfacePoint>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CSurfacePoint,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	//public IConnectionPointContainerImpl<CSurfacePoint>,
-	//public CProxyDSurfacePointEvents< CSurfacePoint >,
    public ISurfacePoint,
    public IStructuredStorage2,
    public IPersistImpl<CSurfacePoint>
@@ -66,16 +63,9 @@ BEGIN_COM_MAP(CSurfacePoint)
 	COM_INTERFACE_ENTRY(ISurfacePoint)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	//COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	//COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CSurfacePoint)
-//CONNECTION_POINT_ENTRY(IID_ISurfacePointEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 public:

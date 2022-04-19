@@ -27,7 +27,6 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "LineSegmentCollection.h"
-#include "LineSegmentFactory.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,15 +38,11 @@ static char THIS_FILE[] = __FILE__;
 // CLineSegmentCollection
 HRESULT CLineSegmentCollection::FinalConstruct()
 {
-   CComObject<CLineSegmentFactory>* pFactory;
-   CComObject<CLineSegmentFactory>::CreateInstance(&pFactory);
-   m_Factory = pFactory;
    return S_OK;
 }
 
 void CLineSegmentCollection::FinalRelease()
 {
-   UnadviseAll();
    m_coll.clear();
 }
 
@@ -98,14 +93,7 @@ STDMETHODIMP CLineSegmentCollection::putref_Item(CogoObjectID id, ILineSegment2d
    }
 
    CComVariant& var = (*found).second;
-
-   CComQIPtr<ILineSegment2d> old_ls(var.pdispVal);
-   Unadvise(id,old_ls);
-
    var = newVal;
-   Advise(id,newVal);
-
-   Fire_OnLineSegmentChanged(id,newVal);
 
 	return S_OK;
 }
@@ -128,7 +116,7 @@ STDMETHODIMP CLineSegmentCollection::Add(CogoObjectID id, IPoint2d* start, IPoin
    }
 
    CComPtr<ILineSegment2d> newLS;
-   m_Factory->CreateLineSegment(&newLS);
+   newLS.CoCreateInstance(CLSID_LineSegment2d);
 
    newLS->putref_StartPoint(start);
    newLS->putref_EndPoint(end);
@@ -157,11 +145,6 @@ STDMETHODIMP CLineSegmentCollection::AddEx(CogoObjectID id, ILineSegment2d* newV
    CComVariant var(pDisp);
    m_coll.insert(std::make_pair(id,var));
 
-   // Hookup to the connection point
-   Advise(id,newVal);
-
-   Fire_OnLineSegmentAdded(id,newVal);
-
 	return S_OK;
 }
 
@@ -174,22 +157,14 @@ STDMETHODIMP CLineSegmentCollection::Remove(CogoObjectID id)
       return LineSegNotFound(id);
    }
 
-   CComVariant& var = (*found).second;
-   CComQIPtr<ILineSegment2d> ls(var.pdispVal);
-   Unadvise(id,ls);
-
    m_coll.erase(found);
-
-   Fire_OnLineSegmentRemoved(id);
 
 	return S_OK;
 }
 
 STDMETHODIMP CLineSegmentCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnLineSegmentsCleared();
 	return S_OK;
 }
 
@@ -252,21 +227,6 @@ STDMETHODIMP CLineSegmentCollection::get__EnumLineSegments(IEnumLineSegments** p
    return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::get_Factory(ILineSegment2dFactory** factory)
-{
-   CHECK_RETOBJ(factory);
-   (*factory) = m_Factory;
-   (*factory)->AddRef();
-   return S_OK;
-}
-
-STDMETHODIMP CLineSegmentCollection::putref_Factory(ILineSegment2dFactory* factory)
-{
-   CHECK_IN(factory);
-   m_Factory = factory;
-   return S_OK;
-}
-
 STDMETHODIMP CLineSegmentCollection::ID(CollectionIndexType index,CogoObjectID* id)
 {
    CHECK_RETVAL(id);
@@ -294,8 +254,6 @@ STDMETHODIMP CLineSegmentCollection::Clone(ILineSegmentCollection* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   (*clone)->putref_Factory(m_Factory);
-
    CollectionIndexType count = 0;
    CComPtr<IEnumLineSegments> enumLS;
    get__EnumLineSegments(&enumLS);
@@ -303,7 +261,7 @@ STDMETHODIMP CLineSegmentCollection::Clone(ILineSegmentCollection* *clone)
    while ( enumLS->Next(1,&ls,nullptr) != S_FALSE )
    {
       CComPtr<ILineSegment2d> cloneLS;
-      m_Factory->CreateLineSegment(&cloneLS);
+      cloneLS.CoCreateInstance(CLSID_LineSegment2d);
 
       CComPtr<IPoint2d> start;
       CComPtr<IPoint2d> end;
@@ -327,83 +285,6 @@ STDMETHODIMP CLineSegmentCollection::Clone(ILineSegmentCollection* *clone)
    };
 
    return S_OK;
-}
-
-STDMETHODIMP CLineSegmentCollection::OnLineSegmentChanged(ILineSegment2d* lineSeg)
-{
-   CComQIPtr<ILineSegment2d> lineSegEx(lineSeg);
-   ATLASSERT( lineSegEx != nullptr ); // better be listening only to LineSegment2dEx objects
-
-   CogoObjectID id;
-   HRESULT hr = FindID(lineSegEx,&id);
-
-   // This container only listens to events from linesegment objects in this 
-   // container. If the id isn't found an error has been made somewhere
-   ATLASSERT( SUCCEEDED(hr) );
-
-
-   Fire_OnLineSegmentChanged(id,lineSegEx);
-
-   return S_OK;
-}
-
-
-void CLineSegmentCollection::Advise(CogoObjectID id,ILineSegment2d* lineSeg)
-{
-   DWORD dwCookie;
-   CComPtr<ILineSegment2d> pCP(lineSeg);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_ILineSegment2dEvents, &dwCookie );
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection point with LineSegment object\n");
-      return;
-   }
-
-   m_Cookies.insert( std::make_pair(id,dwCookie) );
-
-   InternalRelease(); // Break circular reference
-}
-
-void CLineSegmentCollection::Unadvise(CogoObjectID id,ILineSegment2d* lineSeg)
-{
-   ATLASSERT(lineSeg != 0);
-
-   //
-   // Disconnection from connection point
-   //
-
-   // Lookup the cookie
-   std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( id );
-   if ( found == m_Cookies.end() )
-   {
-      ATLTRACE("Failed to disconnect connection point with LineSegment object\n");
-      return;
-   }
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( lineSeg );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_ILineSegment2dEvents, &pCP );
-   DWORD dwCookie = (*found).second;
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   // Remove cookie from map
-   m_Cookies.erase( id );
-}
-
-void CLineSegmentCollection::UnadviseAll()
-{
-   std::map<CogoObjectID,CComVariant>::iterator iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
-   {
-      CogoObjectID id = (*iter).first;
-      CComQIPtr<ILineSegment2d> lineSeg( (*iter).second.pdispVal );
-      Unadvise(id,lineSeg);
-   }
 }
 
 HRESULT CLineSegmentCollection::LineSegNotFound(CogoObjectID id)
@@ -431,15 +312,15 @@ HRESULT CLineSegmentCollection::LineSegIDError(CogoObjectID id,UINT nHelpString,
 
 HRESULT CLineSegmentCollection::OnBeforeSave(IStructuredSave2* pSave)
 {
-   pSave->put_Property(CComBSTR("LineSegmentFactory"),CComVariant(m_Factory));
+   //pSave->put_Property(CComBSTR("LineSegmentFactory"),CComVariant(m_Factory));
    return S_OK;
 }
 
 HRESULT CLineSegmentCollection::OnBeforeLoad(IStructuredLoad2* pLoad)
 {
-   CComVariant var;
-   pLoad->get_Property(CComBSTR("LineSegmentFactory"),&var);
-   m_Factory.Release();
-   _CopyVariantToInterface<ILineSegment2dFactory>::copy(&m_Factory,&var);
+   //CComVariant var;
+   //pLoad->get_Property(CComBSTR("LineSegmentFactory"),&var);
+   //m_Factory.Release();
+   //_CopyVariantToInterface<ILineSegment2dFactory>::copy(&m_Factory,&var);
    return S_OK;
 }

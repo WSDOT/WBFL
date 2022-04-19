@@ -34,32 +34,15 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestTransitionCurve :
-   public CComObjectRootEx<CComSingleThreadModel>/*,
-   public ITransitionCurveEvents*/
+class CTestTransitionCurve
 {
 public:
    CTestTransitionCurve();
 
    static void Test();
 
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-//BEGIN_COM_MAP(CTestTransitionCurve)
-//   COM_INTERFACE_ENTRY(ITransitionCurveEvents)
-//END_COM_MAP()
-//
-//// ITransitionCurveEvents
-//public:
-//	STDMETHOD(OnTransitionCurveChanged)(ITransitionCurve* pp);
-
 private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
-
    static void Test1();
-   //static void TestEvents();
 };
 
 #endif // !defined(AFX_TESTTransitionCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

@@ -21,14 +21,12 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\Polygon.h>
-#include <GeomModel\Properties.h>
-#include <GeomModel\ShapeUtils.h>
-#include <GraphicsLib\PointMapper.h>
-#include <mathex.h>
-#include <iostream>
-#include <memory>
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/Polygon.h>
+#include <GeomModel/LineSegment2d.h>
+#include <MathEx.h>
+#include <stdexcept>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,690 +34,1281 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   gmPolygon
-****************************************************************************/
+using namespace WBFL::Geometry;
 
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmPolygon::gmPolygon() :
-gmShapeImp()
+IndexType GetIndex(IndexType idx, const std::vector<Point2d>& container, Polygon::Symmetry symmetry)
 {
-   Init();
+   return symmetry == Polygon::Symmetry::None || idx < container.size() ? idx : 2*(container.size() - 1) - idx;
 }
 
-//------------------------------------------------------------------------
-// Explicit constructor - construct from a gpPolygon2d
-gmPolygon::gmPolygon(const gpPolygon2d& rp):
-gmShapeImp(),
-m_PolygonImp(rp)
+bool IsValidIndex(IndexType idx, const std::vector<Point2d>& container, Polygon::Symmetry symmetry)
 {
-   // WARNING: Don't call Init() here.  The initialization list above calls the copy
-   //          c'tor for m_PolygonImp.  Init(), clears the points in the polygon.
-   //          We obviously don't want this to happen since the whole point of this
-   //          c'tor is the create a gmPolygon from a gpPolygon2d
-   //Init();
+   return GetIndex(idx, container, symmetry) < container.size();
 }
 
-gmPolygon::gmPolygon(const gmPolygon& rOther) :
-gmShapeImp(rOther)
+Polygon::Polygon() :
+ShapeImpl()
 {
-   Init();
-   MakeCopy(rOther);
 }
 
-gmPolygon::~gmPolygon()
+Polygon::Polygon(std::shared_ptr<Point2d>& hookPnt) :
+   ShapeImpl(hookPnt)
 {
-   Init();
 }
 
-//======================== OPERATORS  =======================================
-gmPolygon& gmPolygon::operator= (const gmPolygon& rOther)
+Polygon::~Polygon()
 {
-   if( this != &rOther )
+}
+
+void Polygon::SetSymmetry(Polygon::Symmetry sym,Float64 axis)
+{
+   m_Symmetry = sym;
+   m_SymmetryAxis = axis;
+}
+
+Polygon::Symmetry Polygon::GetSymmetry() const
+{
+   return m_Symmetry;
+}
+
+Float64 Polygon::GetSymmetryAxis() const
+{
+   return m_SymmetryAxis;
+}
+
+void Polygon::AddPoint(Float64 x, Float64 y)
+{
+   CHECK(isfinite(x)); CHECK(isfinite(y));
+   if (m_Points.empty())
+      GetHookPoint()->Move(x, y);
+
+   m_Points.emplace_back(x, y);
+   m_bIsDirty = true;
+}
+
+void Polygon::AddPoint(const Point2d& p)
+{
+   AddPoint(p.X(), p.Y());
+}
+
+void Polygon::AddPoints(const std::vector<Point2d>& points)
+{
+   if (m_Points.empty() && !points.empty())
+      GetHookPoint()->Move(points.front());
+
+   m_Points.insert(m_Points.begin(), points.cbegin(), points.cend());
+   m_bIsDirty = true;
+}
+
+void Polygon::SetPoints(const std::vector<Point2d>& points)
+{
+   if (m_Points.empty() && !points.empty())
+      GetHookPoint()->Move(points.front());
+
+   m_Points = points;
+   m_bIsDirty = true;
+}
+
+void Polygon::Clear()
+{
+   m_Points.clear();
+   m_Properties.Clear();
+   m_BoundingBox.SetNull();
+   m_Perimeter = 0.0;
+   GetHookPoint()->Move(0,0);
+   m_bIsDirty = true;
+}
+
+void Polygon::RemovePoint(IndexType idx)
+{
+   if (IsValidIndex(idx,m_Points,m_Symmetry))
    {
-      MakeAssignment(rOther);
-   }
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-
-Uint32 gmPolygon::AddPoint(const gpPoint2d& p)
-{
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-   return  m_PolygonImp.AddPoint(p);
-}
-
-void gmPolygon::Clear()
-{
-   m_PolygonImp.Clear();
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-}
-
-bool gmPolygon::RemovePoint(Uint32 key)
-{
-   if (m_PolygonImp.RemovePoint(key))
-   {
-      NotifyAllListeners(gmShapeListener::PROPERTIES);
-      return true;
-   }
-   else
-      return false;
-}
-
-const gpPoint2d* gmPolygon::GetPoint(Uint32 key) const
-{
-   return  m_PolygonImp.GetPoint(key);
-}
-
-CollectionIndexType gmPolygon::GetNumPoints() const
-{
-   return m_PolygonImp.GetNumPoints();
-}
-
-bool gmPolygon::ReplacePoint(Uint32 key,const gpPoint2d& p)
-{
-   if ( m_PolygonImp.ReplacePoint(key, p))
-   {
-      NotifyAllListeners(gmShapeListener::PROPERTIES);
-      return true;
-   }
-   else
-      return false;
-}
-
-void gmPolygon::GetProperties(gmProperties* pProperties) const
-{
-
-   Float64 area, ixx, iyy, ixy;
-   gpPoint2d cg;
-
-   m_PolygonImp.GetProperties(&area, &ixx, &iyy, &ixy, &cg);
-   Float64 perimeter = m_PolygonImp.Perimeter();
-
-   // deal with signs and hollowness
-   if( (area>0 && !IsSolid()) || (area<0 && IsSolid()) )
-   {
-      area *= -1;
-      ixx  *= -1;
-      iyy  *= -1;
-      ixy  *= -1;
-   }
-
-   gpRect2d bb = GetBoundingBox();
-   bb.Offset(-cg.X(), -cg.Y());
-
-   *pProperties = gmProperties(area , cg, ixx, iyy, ixy,
-                               bb.Top(),bb.Bottom(),bb.Left(),bb.Right(),
-                               perimeter);
-}
-
-void gmPolygon::GetArea(Float64* pArea, gpPoint2d* pCG) const
-{
-   m_PolygonImp.GetArea(pArea, pCG);
-
-   if( (*pArea>0 && !IsSolid()) || (*pArea<0 && IsSolid()) )
-   {
-      *pArea *= -1;
-   }
-}
-
-
-gpRect2d gmPolygon::GetBoundingBox() const
-{
-   return m_PolygonImp.GetBoundingBox();
-}
-
-
-gmIShape* gmPolygon::CreateClone(bool bRegisterListeners) const
-{
-   std::unique_ptr<gmPolygon> ph(new gmPolygon( *this ));// no memory leaks if DoRegister() throws
-
-   // copy listeners if requested.
-   if (bRegisterListeners)
-      ph->DoRegisterListeners(*this);
-
-   return ph.release();
-}
-
-gmIShape* gmPolygon::CreateClippedShape(const gpLine2d& line, gpLine2d::Side side) const
-{
-   // create a clipped polygon of this' polgonimp
-   // The definition of side is exactlly opposite for the gpPolygon2d class
-   // then it is for gmIShape. For this reason, side must be reversed.
-   gpPolygon2d* pt = m_PolygonImp.CreateClippedPolygon(line,side == gpLine2d::Left ? gpLine2d::Right : gpLine2d::Left); 
-
-   // if nothing there, return
-   if (pt!=0)
-   {
-      std::unique_ptr<gpPolygon2d> pi(pt);
-      // construct gmPolygon and copy this' traits to it
-      std::unique_ptr<gmPolygon> ph(new gmPolygon( *pi ));
-      gmShapeUtils::CopyTraits(*this, ph.get());
-      return ph.release();
-   }
-   else
-   {
-      return nullptr;
-   }
-}
-
-gmIShape* gmPolygon::CreateClippedShape(const gpRect2d& rect, gmShapeImp::ClipRegion region) const
-{
-   // convert enums
-   gpPolygon2d::ClipRegion gpr;
-   if (region==gmShapeImp::In)
-      gpr=gpPolygon2d::In;
-   else
-      gpr=gpPolygon2d::Out;
-
-   // create a clipped polygon of this' polgonimp
-   std::unique_ptr<gpPolygon2d> pi( m_PolygonImp.CreateClippedPolygon(rect,gpr) );
-   if (pi.get() != nullptr)
-   {
-      std::unique_ptr<gmPolygon> ph(new gmPolygon( *pi ));
-      gmShapeUtils::CopyTraits(*this, ph.get());
-      return ph.release();
-   }
-   else
-   {
-      return nullptr;
-   }
-}
-
-void gmPolygon::ComputeClippedArea(const gpLine2d& line, gpLine2d::Side side,
-                                Float64* pArea, gpPoint2d* pCG) const
-{
-
-   // The definition of side is exactlly opposite for the gpPolygon2d class
-   // than it is for gmIShape. For this reason, side must be reversed.
-   gpLine2d::Side local_side = (side == gpLine2d::Left ? gpLine2d::Right : gpLine2d::Left); 
-
-   std::unique_ptr<gpPolygon2d> pclipped( m_PolygonImp.CreateClippedPolygon(line,local_side) );
-   if (pclipped.get() != nullptr)
-   {
-      pclipped->GetArea(pArea, pCG);
-
-      // deal with signs and hollowness
-      if( (*pArea>0 && !IsSolid()) || (*pArea<0 && IsSolid()) )
+      m_Points.erase(m_Points.begin() + GetIndex(idx,m_Points,m_Symmetry));
+      if (idx == 0)
       {
-         *pArea *= -1;
+         if (m_Points.empty())
+            GetHookPoint()->Move(0,0);
+         else
+            GetHookPoint()->Move(m_Points.front());
+      }
+
+      m_bIsDirty = true;
+   }
+   else
+   {
+      throw std::invalid_argument("Polygon::RemovePoint - invalid index");
+   }
+}
+
+Point2d Polygon::GetPoint(IndexType idx) const
+{
+   UpdatePoints();
+   if (IsValidIndex(idx, m_Points, m_Symmetry))
+   {
+      Point2d p = m_Points[GetIndex(idx, m_Points, m_Symmetry)];
+      if (m_Symmetry != Symmetry::None && m_Points.size() <= idx)
+      {
+         p = GetMirroredPoint(p);
+      }
+      return p;
+   }
+   else
+   {
+      throw std::invalid_argument("Polygon::GetPoint - invalid index");
+   }
+}
+
+IndexType Polygon::GetCount() const
+{
+   return (m_Symmetry == Symmetry::None ? m_Points.size() : 2*m_Points.size());
+}
+
+void Polygon::ReplacePoint(IndexType idx, Float64 x, Float64 y)
+{
+   if (idx < m_Points.size())
+   {
+      m_Points[idx].Move(x,y);
+      if (idx == 0)
+         GetHookPoint()->Move(x, y);
+
+      m_bIsDirty = true;
+   }
+   else
+   {
+      throw std::invalid_argument("Polygon::ReplacePoint - invalid index");
+   }
+}
+
+void Polygon::ReplacePoint(IndexType idx,const Point2d& p)
+{
+   ReplacePoint(idx, p.X(), p.Y());
+}
+
+std::vector<Point2d> Polygon::GetPolyPoints() const
+{
+   UpdatePoints();
+   if (m_Symmetry == Symmetry::None)
+   {
+      return m_Points;
+   }
+   else
+   {
+      std::vector<Point2d> points;
+      GetAllPoints(&points);
+      return points;
+   }
+}
+
+ShapeProperties Polygon::GetProperties() const
+{
+   UpdateProperties();
+   return m_Properties;
+}
+
+Rect2d Polygon::GetBoundingBox() const
+{
+   UpdateProperties();
+   return m_BoundingBox;
+}
+
+bool Polygon::PointInShape(const Point2d& point) const
+{
+   if (m_Symmetry == Symmetry::X)
+   {
+      return PointInShape_Private(point) || PointInShape_Private(Point2d(point.X(), -point.Y()));
+   }
+   else if (m_Symmetry == Symmetry::Y)
+   {
+      return PointInShape_Private(point) || PointInShape_Private(Point2d(-point.X(), point.Y()));
+   }
+   else
+   {
+      return PointInShape_Private(point);
+   }
+}
+
+Float64 Polygon::GetPerimeter() const
+{
+   UpdateProperties();
+   return m_Perimeter;
+}
+
+void Polygon::DoOffset(const Size2d& delta)
+{
+   std::for_each(m_Points.begin(), m_Points.end(), [&](auto& point) {point.Offset(delta); });
+   if(!m_Points.empty()) GetHookPoint()->Offset(delta);
+   
+   if (m_Symmetry == Symmetry::X)
+      m_SymmetryAxis = delta.Dy();
+   else if (m_Symmetry == Symmetry::Y)
+      m_SymmetryAxis = delta.Dx();
+
+   m_bIsDirty = true;
+
+#if defined _DEBUG
+   if (!m_Points.empty())
+   {
+      CHECK(*GetHookPoint() == m_Points.front());
+   }
+#endif
+}
+
+void Polygon::DoRotate(const Point2d& center, Float64 angle)
+{
+   // rotation kills symmetry
+   std::vector<Point2d> points;
+   GetAllPoints(&points);
+   m_Points = points;
+   m_Symmetry = Symmetry::None;
+   m_SymmetryAxis = 0.0;
+
+   std::for_each(m_Points.begin(), m_Points.end(), [&](auto& point) {point.Rotate(center, angle); });
+   if (!m_Points.empty()) GetHookPoint()->Rotate(center, angle);
+   m_bIsDirty = true;
+
+#if defined _DEBUG
+   if (!m_Points.empty())
+   {
+      CHECK(*GetHookPoint() == m_Points.front());
+   }
+#endif
+}
+
+std::unique_ptr<Shape> Polygon::CreateClone() const
+{
+   return std::make_unique<Polygon>(*this);
+}
+
+std::unique_ptr<Shape> Polygon::CreateClippedShape(const Line2d& line, Line2d::Side side) const
+{
+   if (m_Symmetry == Symmetry::None)
+   {
+      return CreateClippedShape_Private(line, side, m_Points);
+   }
+   else
+   {
+      // Clipping symmetric shapes is complicated and often results in unsymmetric shapes.
+      // To make life easy, create the fully populated vector of points and operate as if the
+      // shape is not symmetric
+      std::vector<Point2d> points;
+      GetAllPoints(&points);
+      return CreateClippedShape_Private(line, side, points);
+   }
+}
+
+std::unique_ptr<Shape> Polygon::CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const
+{
+   // Before we do anything, make sure there is a chance for this shape to be clipped
+   // Check if this shape is inside, outside, or intersects with the clipping rectangle
+   Rect2d bounding_box = GetBoundingBox();
+   if (bounding_box.IsNull())
+      return nullptr;
+
+   Rect2d::RelPosition pos = r.GetPosition(bounding_box);
+   if (pos == Rect2d::RelPosition::Outside)
+   {
+      // the entire shape is outside of the clipping rectangle so nothing will remain after clipping
+      return std::unique_ptr<Shape>();
+   }
+   else if (pos == Rect2d::RelPosition::Contains)
+   {
+      // the entire shape is inside the clipping rectangle so the entire shape will remain after clipping
+      return CreateClone();
+   }
+
+   // this shape will be clipped
+
+   Line2d::Side side(region == Shape::ClipRegion::In ? Line2d::Side::Left : Line2d::Side::Right);
+
+   using ClippedShape = std::unique_ptr<Shape>;
+
+   // Clip by consecutively clipping against each edge of the rectangle
+
+   // clip with top edge of clipping rectangle
+   ClippedShape clip_top;
+   if (r.Top() < bounding_box.Top())
+      clip_top = CreateClippedShape(Line2d(r.TopLeft(), r.TopRight()), side);
+   else
+      clip_top = CreateClone();
+
+   CHECK(clip_top != nullptr);
+
+   // clip with right edge of clipping rectangle
+   ClippedShape clip_right;
+   if (r.Right() < bounding_box.Right())
+      clip_right = clip_top->CreateClippedShape(Line2d(r.TopRight(), r.BottomRight()), side);
+   else
+      clip_right.swap(clip_top);
+
+   CHECK(clip_right != nullptr);
+
+   // clip with bottom edge of clipping rectangle
+   ClippedShape clip_bottom;
+   if (bounding_box.Bottom() < r.Bottom())
+      clip_bottom = clip_right->CreateClippedShape(Line2d(r.BottomRight(), r.BottomLeft()), side);
+   else
+      clip_bottom.swap(clip_right);
+
+   CHECK(clip_bottom != nullptr);
+
+   // clip with left edge of clipping rectangle
+   ClippedShape clip_left;
+   if (bounding_box.Left() < r.Left())
+      clip_left = clip_bottom->CreateClippedShape(Line2d(r.BottomLeft(), r.TopLeft()), side);
+   else
+      clip_left.swap(clip_bottom);
+
+   return clip_left;
+}
+
+Float64 Polygon::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
+{
+   // need to determine which side of line each point is on. Implicit rep of line has normal
+   // vector which always points left.
+   Float64  c;
+   Vector2d n;
+   line.GetImplicit(&c, &n);
+
+   // change n to point toward desired side of line
+   if (Line2d::Side::Right == side)
+      n = -n;
+
+   // loop over all points to determine farthest point.
+   Float64 max_dist = -Float64_Max;
+   for(const auto& point : m_Points)
+   {
+      // get point on line closest to point.
+      Point2d nearest = line.PointOnLineNearest(point);
+      Float64 dist = point.Distance(nearest);  // always positive
+      Vector2d vec(point - nearest);
+
+      // Determine if point is on desired side or other side.
+      // Create a vector from point on line to point.
+      // if dot product with n is positive, point is on left
+      Float64 dot = n.Dot(vec);
+      if (dot < 0)  dist = -dist; // point on other side of line (negative direction)
+
+      if (m_Symmetry == Symmetry::X || m_Symmetry == Symmetry::Y)
+      {
+         Float64 xSign = m_Symmetry == Symmetry::X ? 1 : -1;
+         Float64 ySign = m_Symmetry == Symmetry::Y ? 1 : -1;
+         Point2d point2(xSign * point.X(), ySign * point.Y());
+         Point2d nearest2 = line.PointOnLineNearest(point2);
+         Float64 dist2 = point2.Distance(nearest2);
+         Vector2d vec2(point2 - nearest2);
+         Float64 dot2 = n.Dot(vec2);
+         if (dot2 < 0) dist2 = -dist2; // point on other side of line (negative direction)
+
+         if (dist < dist2)
+         {
+            // the symmetrical point is furthest
+            dist = dist2;
+         }
+      }
+
+      max_dist = Max(dist, max_dist);
+   }
+
+   return max_dist;
+}
+
+#if defined _DEBUG
+bool Polygon::AssertValid() const
+{
+   if (m_Points.empty()) return true;
+
+   // could add test for bowties here if a suitable algorithm can be found
+   auto iter = m_Points.begin();
+   auto end = m_Points.end();
+   Point2d p0(*iter);
+   iter++;
+   for (; iter != end; iter++)
+   {
+      Point2d p1(*iter);
+      Size2d size(p1 - p0);
+
+      if (m_Symmetry == Symmetry::X && IsZero(p0.Y()) && IsZero(size.Dy()))
+      {
+         // if symmetry is about the Y=0 axis, the points can't define an edge on that axis
+         return false;
+      }
+      else if (m_Symmetry == Symmetry::Y && IsZero(p0.X()) && IsZero(size.Dx()))
+      {
+         // if symmetry is about the X=0 axis, the points can't define an edge on that axis
+         return false;
+      }
+
+      p0 = p1;
+   }
+
+   return ShapeImpl::AssertValid();
+}
+
+void Polygon::Dump(dbgDumpContext& os) const
+{
+   os << _T("Dump for Polygon") << endl;
+   ShapeImpl::Dump( os );
+}
+
+#endif // _DEBUG
+
+void Polygon::UpdateProperties() const
+{
+   if (!m_bIsDirty) return;
+
+   ASSERTVALID;
+
+   // Intialize and check for null polygon.
+   Float64 area = 0.0;
+   Float64 ixx = 0.0;
+   Float64 iyy = 0.0;
+   Float64 ixy = 0.0;
+   Point2d centroid(0,0);
+   m_Perimeter = 0;
+
+   m_Properties.SetProperties(area, centroid, ixx, iyy, ixy, 0,0,0,0);
+
+   UpdatePoints();
+
+   if (m_Points.size() < 3)
+   {
+      return;
+   }
+
+   Float64 x0, y0;
+   Float64 x1, y1;
+   Float64 dy, dx;
+   Float64 ar, at;
+   Float64 g_ixx = 0, g_iyy = 0, g_ixy = 0; // moments of inertia about the global axes
+   Float64 c_ixx = 0, c_iyy = 0, c_ixy = 0; // moments of inertia about the centroid
+   Float64 area_local = 0;
+   Point2d cg;
+   
+   // loop over all points - make sure of closure
+
+   auto ip0 = m_Points.begin();
+   auto ip1 = ip0;
+   ip1++;
+
+   Float64 left = (*ip0).X();
+   Float64 right = (*ip0).X();
+   Float64 top = (*ip0).Y();
+   Float64 bottom = (*ip0).Y();
+
+   bool loop = true, last_round = false;
+   while (loop)
+   {
+      x0 = (*ip0).X();
+      y0 = (*ip0).Y();
+      x1 = (*ip1).X();
+      y1 = (*ip1).Y();
+
+      // record extreme points for bounding box
+      left = Min(x1, left);
+      right = Max(x1, right);
+      top = Max(y1, top);
+      bottom = Min(y1, bottom);
+
+      dx = x1 - x0;
+      dy = y1 - y0;
+
+      if (!last_round || (last_round && m_Symmetry == Symmetry::None))
+      {
+         m_Perimeter += sqrt(dx * dx + dy * dy);
+      }
+
+      ar = dx * y0;
+      at = 0.5 * dy * dx;
+
+      area_local += (ar + at);
+
+      // Centroid
+      cg.X() += ar * (x1 + x0) / 2 + at * (2 * dx / 3 + x0);
+      cg.Y() += ar * (y0 / 2) + at * (dy / 3 + y0);
+
+      // Inertia about global axes
+      g_ixx += (y0) * (y0) * (y0)*dx / 12 + ar * (y0 / 2) * (y0 / 2) +
+         dy * dy * dy * dx / 36 + at * (dy / 3 + y0) * (dy / 3 + y0);
+
+      g_iyy += (y0)*dx * dx * dx / 12 + ar * (x0 + dx / 2) * (x0 + dx / 2) +
+         dy * dx * dx * dx / 36 + at * (2 * dx / 3 + x0) * (2 * dx / 3 + x0);
+
+      g_ixy += ar * (y0 / 2) * (x0 + dx / 2) +
+         at * (dy / 3 + y0) * (2 * dx / 3 + x0) +
+         dy * dy * dx * dx / 72;
+
+      // loop termination test - need to go one more iteration if loop is not closed
+      if (last_round)
+      {
+         // just finished closure loop. time to quit
+         loop = false;
+      }
+      else
+      {
+         // increment for next go-around
+         ip0 = ip1;
+         ip1++;
+
+         if (ip1 == m_Points.end())
+         {
+            // check if extra loop is required for closure
+            ip1 = m_Points.begin();
+            const Point2d& lastp = (*ip0);   // convert to points here to avoid ugliness
+            const Point2d& beginp = (*ip1);
+            if (lastp != beginp)
+            {
+               // one more loop to close poly
+               last_round = true;
+            }
+            else
+            {
+               // loop is closed - just quit
+               loop = false;
+            }
+         }
+      }
+   }     // while
+
+   // If the Polygon has no area_local, then there is nothing left to compute.
+   if (IsZero(area_local))
+   {
+      cg.X() = (left + right) / 2.0;
+      cg.Y() = (top + bottom) / 2.0;
+
+      m_Properties.SetProperties(0, cg, 0, 0, 0, cg.X() - left, cg.Y() - bottom, right - cg.X(), top - cg.Y());
+      m_BoundingBox.Set(left, bottom, right, top);
+   }
+   else
+   {
+      // Finish centriod
+      cg.X() /= area_local;
+      cg.Y() /= area_local;
+
+      // Inertia about local axes
+      c_ixx = g_ixx - area_local * cg.Y() * cg.Y();
+      c_iyy = g_iyy - area_local * cg.X() * cg.X();
+      c_ixy = g_ixy - area_local * cg.X() * cg.Y();
+
+      // If the points are defined counter-clockwise, everything comes out -1 of what it should be
+      if (area_local < 0)
+      {
+         area_local *= -1;
+         c_ixx *= -1;
+         c_iyy *= -1;
+         c_ixy *= -1;
+
+         g_ixx *= -1;
+         g_iyy *= -1;
+         g_ixy *= -1;
+      }
+
+      if (m_Symmetry == Symmetry::X)
+      {
+         // the X-axis is an axis of symmetry, so far the properties are for half the shape
+         Float64 A = 2 * area_local;
+         Float64 cgx = cg.X();
+         Float64 cgy = cg.Y();
+
+         Float64 CGx = cgx;
+         Float64 CGy = m_SymmetryAxis;
+
+         c_ixx = 2 * (c_ixx + area_local * (CGy - cgy) * (CGy - cgy));
+         c_iyy = 2 * (c_iyy + area_local * (CGx - cgx) * (CGx - cgx));
+         c_ixy = 0; // Ixy is 0 for symmetric sections
+
+         area_local = A;
+         cg.Move(CGx, CGy);
+
+         if (IsLT(m_SymmetryAxis,top))
+            bottom = top - 2*(top - m_SymmetryAxis);
+         else
+            top = bottom + 2*(m_SymmetryAxis - bottom);
+
+         m_Perimeter *= 2;
+      }
+      else if (m_Symmetry == Symmetry::Y)
+      {
+         // the Y-axis is an axis of symmetry, so far the properties are for half the shape
+         Float64 A = 2 * area_local;
+         Float64 cgx = cg.X();
+         Float64 cgy = cg.Y();
+
+         Float64 CGx = m_SymmetryAxis;
+         Float64 CGy = cgy;
+
+         c_ixx = 2 * (c_ixx + area_local * (CGy-cgy) * (CGy - cgy));
+         c_iyy = 2 * (c_iyy + area_local * (CGx-cgx) * (CGx - cgx));
+         c_ixy = 0; // Ixy is 0 for symmetric sections
+
+         area_local = A;
+         cg.Move(CGx, CGy);
+
+         if (IsLT(m_SymmetryAxis,right))
+            left = right - 2 * (right - m_SymmetryAxis);
+         else
+            right = left + 2 * (m_SymmetryAxis - left);
+
+         m_Perimeter *= 2;
+      }
+
+      m_Properties.SetProperties(area_local, cg, c_ixx, c_iyy, c_ixy, cg.X() - left,cg.Y() - bottom,right -cg.X(), top - cg.Y());
+      m_BoundingBox.Set(left, bottom, right, top);
+   }
+
+   m_bIsDirty = false;
+}
+
+void Polygon::UpdatePoints() const
+{
+   if (m_Points.empty() || !IsHookPointChanged() ) return;
+
+   // hook point is not in the same location as the first point. that means the hook point has been moved
+   // update the point collection
+   Size2d size = *GetHookPoint() - m_Points.front();
+   std::for_each(m_Points.begin(),m_Points.end(), [&](auto& p) { return p.Offset(size); });
+   ShapeCurrentWithHookPoint();
+}
+
+bool Polygon::PointInShape_Private(const Point2d& point) const
+{
+   // Reference:
+   // "Use of the residue theorem in locating points within an
+   // arbitrary multiply-connected region"
+   // G. Steven Gipson
+   // Adv. Eng. Software, 1986, Vol. 8, No. 2
+
+   CollectionIndexType num_points = m_Points.size();
+   if (num_points < 3)
+      return false;   // points and lines can't contain anything.
+
+   const Float64 angular_tolerance = TWO_PI * 1.0e-02; // 2*pi*10^-2
+   // this is probably the correct way to do it, but we'll approximate for now
+   Rect2d rect = GetBoundingBox();
+   Float64 edgelen = min(rect.Width(), rect.Height());
+   Float64 dist = 2 * rect.TopLeft().Distance(rect.BottomRight());
+   if (IsZero(dist))
+      return false;
+
+   Float64 boundary_tolerance = edgelen / dist;
+   boundary_tolerance = min(1e-06, boundary_tolerance);
+
+   Float64 sum = 0;
+
+   auto ip0 = m_Points.begin();
+   auto ip1 = ip0;
+   ip1++;
+   bool loop = true, last_round = false;
+   while (loop)
+   {
+      Float64 x0 = (*ip0).X();
+      Float64 y0 = (*ip0).Y();
+      Float64 x1 = (*ip1).X();
+      Float64 y1 = (*ip1).Y();
+
+      // no calculation if points are coincident
+      if (x0 != x1 || y0 != y1)
+      {
+
+         // Compute components of two vectors formed by
+         // joining point in question with endpoints of 
+         // boundary segment
+         Float64 ax = x0 - point.X();
+         Float64 ay = y0 - point.Y();
+         Float64 bx = x1 - point.X();
+         Float64 by = y1 - point.Y();
+
+         // Form cross product of the vectors to determine
+         // the sign of the angular segment
+         Float64 cp = ax * by - ay * bx;
+         Float64 sign = cp < 0 ? -1 : 1;
+
+         // Test for vanishing cross product in case the test point is on the boundary.
+         //
+         // The line segment is used to make sure the point is actually 
+         // contained in the line segment, and not a projection of the line segment
+         if (IsZero(fabs(cp), boundary_tolerance) && LineSegment2d(Point2d(x0, y0), Point2d(x1, y1)).ContainsPoint(point))
+         {
+            // if the point is on the symmetry boundary, it may be inside the shape
+            if (
+               (m_Symmetry == Symmetry::X && IsEqual(y0, m_SymmetryAxis) && IsEqual(y1, m_SymmetryAxis)) ||
+               (m_Symmetry == Symmetry::Y && IsEqual(x0, m_SymmetryAxis) && IsEqual(x1, m_SymmetryAxis))
+               )
+            {
+               return true; // point is on a symmetry boundary edge so by definition, it is in the shape
+            }
+            else
+            {
+               return false; // not on the symmetry boundary so it must be on the edge so the point is not in the shape
+            }
+         }
+
+         // Compute dot product of two vectors for purpose of obtaining
+         // the actual angle subtended by the boundary increment.
+         Float64  dot = ax * bx + ay * by;
+         Float64  A2 = ax * ax + ay * ay;
+         Float64  B2 = bx * bx + by * by;
+         Float64  prod = A2 * B2;
+
+         // Compute angle
+         Float64  angle = 0;
+         if (!IsZero(prod), 1.0e-16)
+         {
+            Float64 x = dot / sqrt(prod);
+            if (IsZero(x - 1.0))
+               x = 1.0;
+
+            angle = acos(x);
+         }
+
+         // Add angle to running sum
+         sum += sign * angle;
+      }
+
+      // loop termination test - need to go one more iteration if loop is not closed
+      if (last_round)
+      {
+         // just finished closure loop. time to quit
+         loop = false;
+      }
+      else
+      {
+         // increment for next go-around
+         ip0 = ip1;
+         ip1++;
+         if (ip1 == m_Points.end())
+         {
+            // check if extra loop is required for closure
+            ip1 = m_Points.begin();
+            Point2d lastp = (*ip0);   // convert to points here to avoid ugliness
+            Point2d beginp = (*ip1);
+            if (lastp != beginp)
+            {
+               // one more loop to close poly
+               last_round = true;
+            }
+            else
+            {
+               // loop is closed - just quit
+               loop = false;
+            }
+         }
       }
    }
+
+   // Clean up round off errors in sum and determine if the point
+   // is in or out.
+   sum /= TWO_PI; // ( 1/2*PI )
+
+   bool contained;
+
+   if (IsEqual(sum, -1., angular_tolerance) || IsEqual(sum, 1., angular_tolerance))
+      contained = true;
+   else if (IsZero(sum, angular_tolerance))
+      contained = false;
    else
    {
-      *pArea=0.0;
-   }
-}
-
-
-
-Float64 gmPolygon::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const
-{
-   return m_PolygonImp.GetFurthestDistance(line,side);
-   
-}
-
-void gmPolygon::Draw(HDC hDC, const grlibPointMapper& mapper) const
-{
-   CollectionIndexType num_points = m_PolygonImp.GetNumPoints();
-   if (num_points==0) return;
-
-   POINT* device_points;
-   
-   // Setup pens and brushes
-
-   HBRUSH brush     = ::CreateSolidBrush( this->GetFillColor() );
-   HBRUSH old_brush = (HBRUSH)::SelectObject( hDC, brush );
-
-   HPEN pen     = ::CreatePen( PS_SOLID, 1, this->GetBorderColor() );
-   HPEN old_pen = (HPEN)::SelectObject( hDC, pen );
-
-
-   device_points = new POINT[num_points+1];  // add one for closure point
-
-   LONG point = 0;
-   gpPolyPointIter2d it(&(this->m_PolygonImp));
-   for (it.Begin(); it; it.Next())
-   {
-      LONG dx,dy;
-
-      const gpPoint2d* wp = it.CurrentPoint();
-      mapper.WPtoDP(wp->X(),wp->Y(),&dx,&dy);
-      device_points[point].x = dx;
-      device_points[point].y = dy;
-      point++;
+      CHECKX(false, _T("This should never happen"));
    }
 
-   device_points[num_points] = device_points[0]; // <<<< Force closure
+   return contained;
+}
 
-   if (IsFillModeEnabled())
+Point2d Polygon::GetMirroredPoint(const Point2d& point) const
+{
+   Float64 xSign = m_Symmetry == Symmetry::X ? 1 : -1;
+   Float64 ySign = m_Symmetry == Symmetry::Y ? 1 : -1;
+   Float64 xOffset = m_Symmetry == Symmetry::X ? 0 : m_SymmetryAxis;
+   Float64 yOffset = m_Symmetry == Symmetry::Y ? 0 : m_SymmetryAxis;
+   return Point2d(xSign * (point.X() - xOffset) + xOffset, ySign * (point.Y() - yOffset) + yOffset);
+}
+
+void Polygon::GetAllPoints(std::vector<Point2d>* points) const
+{
+   *points = m_Points;
+   Float64 xSign = m_Symmetry == Symmetry::X ? 1 : -1;
+   Float64 ySign = m_Symmetry == Symmetry::Y ? 1 : -1;
+   Float64 xOffset = m_Symmetry == Symmetry::X ? 0 : m_SymmetryAxis;
+   Float64 yOffset = m_Symmetry == Symmetry::Y ? 0 : m_SymmetryAxis;
+
+   auto iter = m_Points.rbegin();
+   auto end = m_Points.rend();
+   for (; iter != end; iter++)
    {
-      // ALTERNATE is the Windows default, I will set it here
-      // anyway just incase someone decides to change the default.
-      ::SetPolyFillMode(hDC,ALTERNATE);
-      ::Polygon(hDC,device_points,(int)num_points+1);
+      // working in reverse order, add the the mirrored points to the vector of points, but don't duplicate
+      // points on the axis of symmetry
+      const auto& point(*iter);
+      if( (m_Symmetry == Symmetry::X && !IsZero(point.Y()) || (m_Symmetry == Symmetry::Y && !IsZero(point.X()))))
+         points->emplace_back(GetMirroredPoint(point));
+   }
+   points->erase(std::unique(points->begin(), points->end()),points->end()); // remove adjacent duplications
+}
+
+std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, Line2d::Side side, const std::vector<Point2d>& points) const
+{
+   // could optimize this routine to work with Line2d and LineSegment2d, but 
+   // would not likely gain much.
+   Vector2d dir;
+   Point2d  pnt_a;
+   Point2d  pnt_b;
+
+   line.GetExplicit(&pnt_a, &dir);  // point on the line and direction vector
+   if (side == Line2d::Side::Right)
+   {
+      pnt_b = pnt_a.OffsetBy(dir.X(), dir.Y());
    }
    else
    {
-      ::Polyline(hDC,device_points,(int)num_points+1);
+      pnt_b = pnt_a.OffsetBy(-dir.X(), -dir.Y());
    }
 
-   delete[] device_points;
+   Float64 dx, dy; // components of the direction vector of the clipping line
+   Float64 nx, ny; // components of a vector normal to the clipping line
+   Float64 s;      // dot product of the normal vector and the position vector
+                  // of this Polygon
 
-   // Cleanup
-   ::SelectObject( hDC, old_brush );
-   ::DeleteObject( brush );
-   ::SelectObject( hDC, old_pen );
-   ::DeleteObject( pen );
-}
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmPolygon::AssertValid() const
-{
-   // could add test for bowties here if a suitable algorithm can be found
-   return gmShapeImp::AssertValid();
-}
-
-void gmPolygon::Dump(dbgDumpContext& os) const
-{
-   os << _T("Dump for gmPolygon") << endl;
-   m_PolygonImp.Dump(os);
-   gmShapeImp::Dump( os );
-}
-
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void gmPolygon::DoTranslate(const gpSize2d& delta)
-{
-   m_PolygonImp.Offset(delta);
-}
-
-void gmPolygon::DoRotate(const gpPoint2d& center, Float64 angle)
-{
-   m_PolygonImp.Rotate(center,angle);
-}
-
-void gmPolygon::MakeCopy(const gmPolygon& rOther)
-{
-   m_PolygonImp = rOther.m_PolygonImp;
-}
-
-void gmPolygon::MakeAssignment(const gmPolygon& rOther)
-{
-   Init();
-
-   gmShapeImp::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmPolygon::Init()
-{
-   m_PolygonImp.Clear();
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-/****************************************************************************
-CLASS
-   gmPolyPointIter
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmPolyPointIter::gmPolyPointIter()
-{
-   Init();
-}
-
-gmPolyPointIter::gmPolyPointIter(const gmPolygon* pPolygon)
-{
-   SetPolygon(pPolygon);
-}
-
-
-gmPolyPointIter::gmPolyPointIter(const gmPolyPointIter& rOther)
-{
-   Init();
-   MakeCopy(rOther);
-}
-
-gmPolyPointIter::~gmPolyPointIter()
-{
-   Clean();
-}
-
-//======================== OPERATORS  =======================================
-gmPolyPointIter& gmPolyPointIter::operator= (const gmPolyPointIter& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-
-void gmPolyPointIter::SetPolygon(const gmPolygon* pPolygon)
-{
-   PRECONDITION(pPolygon!=0);
-   m_pPolygon = pPolygon;
-   m_Iterator.SetPolygon(&(pPolygon->m_PolygonImp));
-}
-
-
-void gmPolyPointIter::Begin()
-{
-   PRECONDITION(m_pPolygon!=0);
-   m_Iterator.Begin();
-}
-
-void gmPolyPointIter::End()
-{
-   PRECONDITION(m_pPolygon!=0);
-   m_Iterator.End();
-}
-
-void gmPolyPointIter::Next()
-{
-   PRECONDITION(m_pPolygon!=0);
-   CHECK(m_Iterator);
-   m_Iterator.Next();
-}
-
-void gmPolyPointIter::Prev()
-{
-   PRECONDITION(m_pPolygon!=0);
-   m_Iterator.Prev();
-}
-
-gmPolyPointIter::operator void *() 
-{
-   if (m_pPolygon)
-      return m_Iterator;
-   else
+   // If the polyPolygon isn't at least a triangle, just get the heck outta here.
+   CollectionIndexType nPoints = points.size();
+   if (nPoints < 3)
       return nullptr;
-}
 
-// code duplication of above -- watch out!!
-gmPolyPointIter::operator void *() const
-{
-   if (m_pPolygon)
-      return m_Iterator;
-   else
+   // create an empty clipped Polygon - return empty if need be
+   std::unique_ptr<Polygon> clipped_Polygon(std::make_unique<Polygon>());
+   clipped_Polygon->m_Points.reserve(nPoints + 1);
+
+   dx = pnt_b.X() - pnt_a.X();
+   dy = pnt_b.Y() - pnt_a.Y();
+
+   nx = -dy;
+   ny = dx;
+
+   // get the vector of points from the Polygon and make sure that it's closed
+   std::vector<Point2d> my_points(points);
+   if (my_points.front() != my_points.back()) my_points.emplace_back(my_points.front());
+
+   Point2d last_added;
+   bool    was_last_added = false;
+
+   auto begin = my_points.begin();
+   auto end = my_points.end();
+   bool current_out;
+
+   Point2d last = *begin++;
+   s = nx * (last.X() - pnt_a.X()) + ny * (last.Y() - pnt_a.Y());
+
+   bool last_out = (s < 0) ? true : false;
+
+   if (!last_out)
+   {
+      last_added.Move(last.X(), last.Y());
+      was_last_added = true;
+      clipped_Polygon->AddPoint(last_added);
+   }
+
+   do
+   {
+      const Point2d& current = *begin++;
+      s = nx * (current.X() - pnt_a.X()) + ny * (current.Y() - pnt_a.Y());
+      current_out = (s < 0.0) ? true : false;
+
+      if (last_out && !current_out ||
+         !last_out && current_out)
+      {
+         // Find intersection
+
+         // A1*x + B1*y + C1 = 0
+         // A2*x + B2*y + C2 = 0
+         // Two equations, two unknowns
+
+         // Equation of clipping line
+         Float64 A1 = dy;
+         Float64 B1 = -dx;
+         Float64 C1 = dx * pnt_a.Y() - dy * pnt_a.X();
+
+         // Equation of line to be clipped
+         Float64 A2 = current.Y() - last.Y();
+         Float64 B2 = last.X() - current.X();
+         Float64 C2 = (current.X() - last.X()) * last.Y() - (current.Y() - last.Y()) * last.X();
+
+         Point2d intersect;
+         intersect.Y() = (A2 * C1 - A1 * C2) / (A1 * B2 - A2 * B1);
+
+         if (IsZero(A1) && IsZero(A2)) // lines are concident
+            intersect.X() = current.X();
+         else if (IsZero(A1)) // Clipping line is horizontal
+            intersect.X() = last.X() + (-B2 / A2) * (intersect.Y() - last.Y());
+         else
+            intersect.X() = -((B1 * intersect.Y() + C1) / A1);
+
+         // don't add duplicate points
+         if (!(was_last_added && intersect == last_added))
+         {
+            last_added = intersect;
+            was_last_added = true;
+            clipped_Polygon->AddPoint(last_added);
+         }
+      }
+
+      if (!current_out && !(was_last_added && current == last_added))
+      {
+         last_added = current;
+         was_last_added = true;
+         clipped_Polygon->AddPoint(current);
+      }
+
+      last = current;
+      last_out = current_out;
+
+   } while (begin != end);
+
+   // make sure clipped Polygon has enough points to be interesting
+   // If there are less than 3 points, it isn't a shape.
+   // If there are exactly 3 points, and the first and last points are the same
+   // it isn't a shape either (area is zero)
+   if (clipped_Polygon->m_Points.size() < 3 || (clipped_Polygon->m_Points.size() == 3 && clipped_Polygon->m_Points.front() == clipped_Polygon->m_Points.back()))
       return nullptr;
+   else
+      return clipped_Polygon;
 }
-
-const gpPoint2d* gmPolyPointIter::CurrentPoint() const
-{
-   PRECONDITION(*this);
-   return m_Iterator.CurrentPoint();
-}
-
-const Uint32* gmPolyPointIter::CurrentKey() const
-{
-   PRECONDITION(*this);
-   return m_Iterator.CurrentKey();
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmPolyPointIter::AssertValid() const
-{
-   return true;
-}
-
-void gmPolyPointIter::Dump(dbgDumpContext& os) const
-{
-   os<< _T("Dump for gmPolyPointIter") <<endl;
-   m_Iterator.Dump(os);
-}
-
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmPolyPointIter::MakeCopy(const gmPolyPointIter& rOther)
-{
-   m_pPolygon = rOther.m_pPolygon;
-   m_Iterator = rOther.m_Iterator;
-}
-
-void gmPolyPointIter::MakeAssignment(const gmPolyPointIter& rOther)
-{
-   Clean();
-   Init();
-
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmPolyPointIter::Init()
-{
-   m_pPolygon = 0;
-}
-
-void gmPolyPointIter::Clean()
-{
-   // nothing to clean up.
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 
 #if defined _UNITTEST
-
-bool gmPolygon::TestMe(dbgLog& rlog)
+#include <GeomModel/UnitTest.h>
+bool Polygon::TestMe(dbgLog& rlog)
 {
-   TESTME_PROLOGUE("gmPolygon");
+   TESTME_PROLOGUE("Polygon");
 
    // create an angle shape. Taken from "Statics" 1st Ed. by J.L. Merriam, page 373
 
-   gmPolygon anglep;
-   Uint32 p1 = anglep.AddPoint(gpPoint2d(0 , 0));
-   Uint32 p2 = anglep.AddPoint(gpPoint2d(0 ,50));
-   Uint32 p3 = anglep.AddPoint(gpPoint2d(10,50));
-   Uint32 p4 = anglep.AddPoint(gpPoint2d(10,10));
-   Uint32 p5 = anglep.AddPoint(gpPoint2d(40,10));
-   Uint32 p6 = anglep.AddPoint(gpPoint2d(40, 0));  // don't close polygon
+   Polygon anglep;
+   anglep.AddPoint(Point2d(0, 0));
+   anglep.AddPoint(Point2d(0, 50));
+   anglep.AddPoint(Point2d(10, 50));
+   anglep.AddPoint(Point2d(10, 10));
+   anglep.AddPoint(Point2d(40, 10));
+   anglep.AddPoint(Point2d(40, 0));  // don't close polygon
 
-   gmProperties aprops;
-   anglep.GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), 800.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixx(),  181666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Iyy(),  101666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixy(), -75000., 10.)) ;
-   TRY_TESTME (anglep.GetBoundingBox() == gpRect2d(0,0,40,50)) ;
+   ShapeProperties aprops = anglep.GetProperties();
+   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
+   TRY_TESTME(IsEqual(aprops.GetIxx(), 181666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIyy(), 101666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIxy(), -75000., 10.));
+   TRY_TESTME(anglep.GetBoundingBox() == Rect2d(0, 0, 40, 50));
 
    // test assignment
-   gmPolygon anglec = anglep;
-   anglec.GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), 800.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixx(),  181666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Iyy(),  101666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixy(), -75000., 10.)) ;
-   TRY_TESTME (anglep.GetBoundingBox() == gpRect2d(0,0,40,50)) ;
+   Polygon anglec = anglep;
+   aprops = anglec.GetProperties();
+   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
+   TRY_TESTME(IsEqual(aprops.GetIxx(), 181666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIyy(), 101666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIxy(), -75000., 10.));
+   TRY_TESTME(anglep.GetBoundingBox() == Rect2d(0, 0, 40, 50));
 
    // try translation
-   gpPoint2d center    = anglec.GetLocatorPoint(gmShapeImp::CenterCenter);
-   TRY_TESTME (center == gpPoint2d(20,25)) ;
-   gpPoint2d top_right = anglec.GetLocatorPoint(gmShapeImp::TopRight);
-   TRY_TESTME (top_right == gpPoint2d(40,50)) ;
+   Point2d center = anglec.GetLocatorPoint(Shape::LocatorPoint::CenterCenter);
+   TRY_TESTME(center == Point2d(20, 25));
+   Point2d top_right = anglec.GetLocatorPoint(Shape::LocatorPoint::TopRight);
+   TRY_TESTME(top_right == Point2d(40, 50));
 
    anglec.Move(center, top_right);
-   anglec.GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), 800.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixx(),  181666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Iyy(),  101666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixy(), -75000., 10.)) ;
-   TRY_TESTME (anglec.GetBoundingBox() == gpRect2d(20,25,60,75)) ;
+   aprops = anglec.GetProperties();
+   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
+   TRY_TESTME(IsEqual(aprops.GetIxx(), 181666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIyy(), 101666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIxy(), -75000., 10.));
+   TRY_TESTME(anglec.GetBoundingBox() == Rect2d(20, 25, 60, 75));
+
+   // turn shape into a rectangle
+   anglec.RemovePoint(4);
+   anglec.RemovePoint(3);
+   anglec.ReplacePoint(2, Point2d(60, 75));
+   aprops = anglec.GetProperties();
+   TRY_TESTME(IsEqual(aprops.GetArea(), 2000.));
+   TRY_TESTME(IsEqual(aprops.GetIxx(), 416666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIyy(), 266666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIxy(), 0., 1.));
+   TRY_TESTME(anglec.GetBoundingBox() == Rect2d(20, 25, 60, 75));
 
    // rotate to principal axes
    anglep.Rotate(center, -0.54105);
-   anglep.GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), 800.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixx(),  226666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Iyy(),   56666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixy(),     107., 10.)) ;
-
-   // make hollow
-   anglec.MakeSolid(false);
-   anglec.GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), -800.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixx(),  -181666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Iyy(),  -101666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixy(), 75000., 10.)) ;
-   TRY_TESTME (anglec.GetBoundingBox() == gpRect2d(20,25,60,75)) ;
-
-   // make solid again and turn our angle into a rectangle
-   anglec.MakeSolid(true);
-   TRY_TESTME ( anglec.RemovePoint(p4) ) ;
-   TRY_TESTME ( anglec.RemovePoint(p5) ) ;
-   TRY_TESTME ( anglec.ReplacePoint(p3,gpPoint2d(60,75)) );
-   anglec.GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), 2000.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixx(),  416666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Iyy(),  266666., 10.)) ;
-   TRY_TESTME ( IsEqual(aprops.Ixy(),  0., 1.)) ;
-   TRY_TESTME (anglec.GetBoundingBox() == gpRect2d(20,25,60,75)) ;
+   aprops = anglep.GetProperties();
+   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
+   TRY_TESTME(IsEqual(aprops.GetIxx(), 226666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIyy(), 56666., 10.));
+   TRY_TESTME(IsEqual(aprops.GetIxy(), 107., 10.));
 
    // create a line and find farthest point
-   gpLine2d down_left(gpPoint2d(25,25), gpVector2d(gpSize2d(1,-1)));
-   Float64 dist = anglec.GetFurthestDistance(down_left, gpLine2d::Left);
-   TRY_TESTME ( IsEqual(60.1,dist,.1)) ;
-   dist = anglec.GetFurthestDistance(down_left, gpLine2d::Right);
-   TRY_TESTME ( IsEqual(3.53, dist, .01)) ;
+   Line2d down_left(Point2d(25, 25), Vector2d(Size2d(1, -1)));
+   Float64 dist = anglec.GetFurthestDistance(down_left, Line2d::Side::Left);
+   TRY_TESTME(IsEqual(60.1, dist, .1));
+   dist = anglec.GetFurthestDistance(down_left, Line2d::Side::Right);
+   TRY_TESTME(IsEqual(3.53, dist, .01));
 
    // create a rectangle and clip it into a triangle
-   gmPolygon rect;
-   p1 = rect.AddPoint(gpPoint2d(0 , 0));
-   p2 = rect.AddPoint(gpPoint2d(0 ,50));
-   p3 = rect.AddPoint(gpPoint2d(40,50));
-   p4 = rect.AddPoint(gpPoint2d(40,0));
-   gpLine2d up_left(gpPoint2d(0,0), gpVector2d(gpSize2d(1,1)));
-   gpLine2d up_rgt(gpPoint2d(40,0), gpVector2d(gpSize2d(-3,5)));
-   std::unique_ptr<gmIShape> pfirst(rect.CreateClippedShape(up_left, gpLine2d::Left));
-   pfirst->GetProperties(&aprops);
-   TRY_TESTME( IsEqual(aprops.Area(), 800.) );
+   Polygon rect;
+   rect.AddPoint(Point2d(0, 0));
+   rect.AddPoint(Point2d(0, 50));
+   rect.AddPoint(Point2d(40, 50));
+   rect.AddPoint(Point2d(40, 0));
+   Line2d up_left(Point2d(0, 0), Vector2d(Size2d(1, 1)));
+   Line2d up_rgt(Point2d(40, 0), Vector2d(Size2d(-3, 5)));
+   std::unique_ptr<Shape> pfirst(rect.CreateClippedShape(up_left, Line2d::Side::Left));
+   aprops = pfirst->GetProperties();
+   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
+   TRY_TESTME(IsEqual(aprops.GetCentroid().X(), 26.666666667));
+   TRY_TESTME(IsEqual(aprops.GetCentroid().Y(), 13.333333333));
 
-   Float64 area;
-   gpPoint2d cg;
-   rect.ComputeClippedArea(up_left, gpLine2d::Left, &area, &cg);
-   TRY_TESTME(area==aprops.Area());
-   TRY_TESTME(cg==aprops.Centroid());
-
-   std::unique_ptr<gmIShape> ptriang(pfirst->CreateClippedShape(up_rgt, gpLine2d::Right));
-   ptriang->GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), 500.)) ;
-   TRY_TESTME (ptriang->GetBoundingBox() == gpRect2d(0,0,40,25)) ;
-
-   gmIShapeEx* exptr = dynamic_cast<gmIShapeEx*>(ptriang.get());
-   exptr->ComputeClippedArea(up_rgt, gpLine2d::Right, &area, &cg);
-   TRY_TESTME(area==aprops.Area());
-   TRY_TESTME(cg==aprops.Centroid());
+   std::unique_ptr<Shape> ptriang(pfirst->CreateClippedShape(up_rgt, Line2d::Side::Right));
+   aprops = ptriang->GetProperties();
+   TRY_TESTME(IsEqual(aprops.GetArea(), 500.));
+   TRY_TESTME(ptriang->GetBoundingBox() == Rect2d(0, 0, 40, 25));
 
    // clip triangle into a right triangle
-   gpRect2d clip_box(0,5,20,25);
-   std::unique_ptr<gmIShape> prtri(ptriang->CreateClippedShape(clip_box, gmShapeImp::In));
-   prtri->GetProperties(&aprops);
-   TRY_TESTME ( IsEqual(aprops.Area(), 112.5)) ;
-   TRY_TESTME (prtri->GetBoundingBox() == gpRect2d(5,5,20,20)) ;
+   Rect2d clip_box(0, 5, 20, 25);
+   std::unique_ptr<Shape> prtri(ptriang->CreateClippedShape(clip_box, Shape::ClipRegion::In));
+   aprops = prtri->GetProperties();
+   TRY_TESTME(IsEqual(aprops.GetArea(), 112.5));
+   TRY_TESTME(prtri->GetBoundingBox() == Rect2d(5, 5, 20, 20));
+
+   auto hookPnt = rect.GetHookPoint();
+   TRY_TESTME(*hookPnt == Point2d(0, 0));
+   hookPnt->Move(10, 10);
+   auto points = rect.GetPolyPoints();
+   TRY_TESTME(points[0] == Point2d(10, 10));
+   TRY_TESTME(points[1] == Point2d(10, 60));
+   TRY_TESTME(points[2] == Point2d(50, 60));
+   TRY_TESTME(points[3] == Point2d(50, 10));
+
 
 #if defined _DEBUG
    prtri->Dump(rlog.GetDumpCtx());
 #endif
 
-   TESTME_EPILOG("gmPolygon");
+   // Test hook point behavior
+   TRY_TESTME(UnitTest::TestHookPoint(anglep) == true);
+
+
+   // Test X-axis Symmetry (shape defined above Y=0)
+   //
+   //  (0,10) +=============+ (10,10)
+   //         |             |
+   //         |             |
+   //         |             |  Input
+   //         |             |
+   //  (0,0)  +=============+ (10,0)
+   //         :             :
+   //         :             :
+   //         :             :  Assumed from symmetry
+   //         :             :
+   // (0,-10) +-------------+ (10,-10)
+   Polygon sym_shape;
+   sym_shape.SetSymmetry(Polygon::Symmetry::X);
+   // shape is symmetric about the Y=0 axis so don't define an edge on that axis
+   sym_shape.AddPoint(10, 0);
+   sym_shape.AddPoint(10, 10);
+   sym_shape.AddPoint(0, 10);
+   sym_shape.AddPoint(0, 0);
+   
+   Polygon shape;
+   shape.AddPoint(0, -10);
+   shape.AddPoint(10, -10);
+   shape.AddPoint(10, 10);
+   shape.AddPoint(0, 10);
+   
+   TRY_TESTME(sym_shape.GetProperties() == shape.GetProperties());
+   TRY_TESTME(sym_shape.GetBoundingBox() == shape.GetBoundingBox());
+   TRY_TESTME(IsEqual(sym_shape.GetPerimeter(),shape.GetPerimeter()));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(5,  5)) == shape.PointInShape(Point2d(5,5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(5, -5)) == shape.PointInShape(Point2d(5, -5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, 5)) == shape.PointInShape(Point2d(-5, 5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
+
+   Line2d line(Point2d(-10, 20), Point2d(20, 20));
+   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Right), shape.GetFurthestDistance(line, Line2d::Side::Right)));
+   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Left), shape.GetFurthestDistance(line, Line2d::Side::Left)));
+
+   line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
+   auto clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);
+   auto clip2 = shape.CreateClippedShape(line, Line2d::Side::Left);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Right);
+   clip2 = shape.CreateClippedShape(line, Line2d::Side::Right);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   Rect2d clipRect(-15, -5, 15, 5);
+   clip1 = sym_shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
+   clip2 = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   // Test X-axis Symmetry (shape defined below Y=0)
+   //
+   //  (0,10) +-------------+ (10,10)
+   //         :             :
+   //         :             :
+   //         :             :  Assumed by symmetry
+   //         :             :
+   //  (0,0)  +=============+ (10,0)
+   //         |             |
+   //         |             |
+   //         |             |  Input
+   //         |             |
+   // (0,-10) +=============+ (10,-10)
+   sym_shape.Clear();
+   sym_shape.SetSymmetry(Polygon::Symmetry::X);
+   // shape is symmetric about the Y=0 axis so don't define an edge on that axis
+   sym_shape.AddPoint(0, 0);
+   sym_shape.AddPoint(0, -10);
+   sym_shape.AddPoint(10, -10);
+   sym_shape.AddPoint(10, 0);
+
+   TRY_TESTME(sym_shape.GetProperties() == shape.GetProperties());
+   TRY_TESTME(sym_shape.GetBoundingBox() == shape.GetBoundingBox());
+   TRY_TESTME(IsEqual(sym_shape.GetPerimeter(), shape.GetPerimeter()));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(5, 5)) == shape.PointInShape(Point2d(5, 5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(5, -5)) == shape.PointInShape(Point2d(5, -5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, 5)) == shape.PointInShape(Point2d(-5, 5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
+
+   line.ThroughPoints(Point2d(-10, 20), Point2d(20, 20));
+   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Right), shape.GetFurthestDistance(line, Line2d::Side::Right)));
+   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Left), shape.GetFurthestDistance(line, Line2d::Side::Left)));
+
+   line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
+   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);
+   clip2 = shape.CreateClippedShape(line, Line2d::Side::Left);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Right);
+   clip2 = shape.CreateClippedShape(line, Line2d::Side::Right);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   clipRect.Set(-15, -5, 15, 5);
+   clip1 = sym_shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
+   clip2 = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   // Test Y axis symmetry (shape defined right of X=0)
+   //  (-10,10)    (0,10)         (10,10)
+   //  +------------+=============+
+   //  :            |             |
+   //  :            |             |
+   //  :            |             |  Input
+   //  :            |             |
+   //  +------------+=============+
+   // (-10,0)     (0,0)          (10,0)
+   sym_shape.Clear();
+   sym_shape.SetSymmetry(Polygon::Symmetry::Y);
+   // shape is symmetric about the X=0 axis so don't define an edge on that axis
+   sym_shape.AddPoint(0, 0);
+   sym_shape.AddPoint(10, 0);
+   sym_shape.AddPoint(10, 10);
+   sym_shape.AddPoint(0, 10);
+
+   shape.Clear();
+   shape.AddPoint(-10,0);
+   shape.AddPoint(10, 0);
+   shape.AddPoint(10, 10);
+   shape.AddPoint(-10, 10);
+
+   TRY_TESTME(sym_shape.GetProperties() == shape.GetProperties());
+   TRY_TESTME(sym_shape.GetBoundingBox() == shape.GetBoundingBox());
+   TRY_TESTME(IsEqual(sym_shape.GetPerimeter(), shape.GetPerimeter()));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(5, 5)) == shape.PointInShape(Point2d(5, 5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(5, -5)) == shape.PointInShape(Point2d(5, -5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, 5)) == shape.PointInShape(Point2d(-5, 5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
+
+   line.ThroughPoints(Point2d(-20, -20), Point2d(-20, 20));
+   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Right), shape.GetFurthestDistance(line, Line2d::Side::Right)));
+   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Left), shape.GetFurthestDistance(line, Line2d::Side::Left)));
+
+   line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
+   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);
+   clip2 = shape.CreateClippedShape(line, Line2d::Side::Left);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Right);
+   clip2 = shape.CreateClippedShape(line, Line2d::Side::Right);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   clipRect.Set(-15, 2, 15, 8);
+   clip1 = sym_shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
+   clip2 = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+
+   // Test Y axis symmetry (shape defined left of X=0)
+   //  (-10,10)    (0,10)         (10,10)
+   //  +============+-------------+
+   //  |            |             :
+   //  |            |             :
+   //  |            |             :  Input
+   //  |            |             :
+   //  +============+-------------+
+   // (-10,0)     (0,0)          (10,0)
+   sym_shape.Clear();
+   sym_shape.SetSymmetry(Polygon::Symmetry::Y);
+   // shape is symmetric about the X=0 axis so don't define an edge on that axis
+   sym_shape.AddPoint(0, 10);
+   sym_shape.AddPoint(-10, 10);
+   sym_shape.AddPoint(-10, 0);
+   sym_shape.AddPoint(0, 0);
+
+   shape.Clear();
+   shape.AddPoint(-10, 0);
+   shape.AddPoint(10, 0);
+   shape.AddPoint(10, 10);
+   shape.AddPoint(-10, 10);
+
+   TRY_TESTME(sym_shape.GetProperties() == shape.GetProperties());
+   TRY_TESTME(sym_shape.GetBoundingBox() == shape.GetBoundingBox());
+   TRY_TESTME(IsEqual(sym_shape.GetPerimeter(), shape.GetPerimeter()));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(5, 5)) == shape.PointInShape(Point2d(5, 5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(5, -5)) == shape.PointInShape(Point2d(5, -5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, 5)) == shape.PointInShape(Point2d(-5, 5)));
+   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
+
+   line.ThroughPoints(Point2d(-20, -20), Point2d(-20, 20));
+   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Right), shape.GetFurthestDistance(line, Line2d::Side::Right)));
+   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Left), shape.GetFurthestDistance(line, Line2d::Side::Left)));
+
+   line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
+   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);
+   clip2 = shape.CreateClippedShape(line, Line2d::Side::Left);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Right);
+   clip2 = shape.CreateClippedShape(line, Line2d::Side::Right);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   clipRect.Set(-15, 2, 15, 8);
+   clip1 = sym_shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
+   clip2 = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
+   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
+   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
+   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
+
+   TESTME_EPILOG("Polygon");
 }
-
-
-bool gmPolyPointIter::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("gmPolyPointIter");
-
-   // create a polygon and iterate through its points
-   gmPolygon anglep;
-   Uint32 p1 = anglep.AddPoint(gpPoint2d(0 , 0));
-   Uint32 p2 = anglep.AddPoint(gpPoint2d(0 ,50));
-   Uint32 p3 = anglep.AddPoint(gpPoint2d(10,50));
-   Uint32 p4 = anglep.AddPoint(gpPoint2d(10,10));
-   Uint32 p5 = anglep.AddPoint(gpPoint2d(40,10));
-   Uint32 p6 = anglep.AddPoint(gpPoint2d(40, 0));
-
-   gmPolyPointIter my_it(&anglep);
-   Uint32 i = 0;
-   for(my_it.Begin(); my_it; my_it.Next())
-   {
-      i++;
-      if (i==3)
-         TRY_TESTME ( p3 == *my_it.CurrentKey()) ;
-      if (i==4)
-         TRY_TESTME (gpPoint2d(10,10) == *my_it.CurrentPoint()) ;
-      if (i==5)
-         TRY_TESTME (p5 == *my_it.CurrentKey()) ;
-   }
-
-   my_it.Prev();
-   TRY_TESTME (p6 == *my_it.CurrentKey()) ;
-
-   TRY_TESTME ( anglep.RemovePoint(p4) ) ;
-   TRY_TESTME ( anglep.RemovePoint(p5) ) ;
-   TRY_TESTME ( anglep.ReplacePoint(p3,gpPoint2d(60,75)) );
-
-   my_it.End();
-   gmPolyPointIter new_it = my_it;
-   new_it.Prev();
-   new_it.Prev();
-   TRY_TESTME (gpPoint2d(60,75) == *new_it.CurrentPoint()) ;
-
-#if defined _DEBUG
-   my_it.Dump(rlog.GetDumpCtx());
-#endif
-
-   TESTME_EPILOG("gmPolyPointIter");
-}
-
 #endif // _UNITTEST
-
-

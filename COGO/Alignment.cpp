@@ -30,7 +30,6 @@
 #include "Path.h"
 #include "Profile.h"
 #include <WBFLCogo\CogoHelpers.h>
-#include "PointFactory.h"
 #include "Station.h"
 #include "StationEquationCollection.h"
 #include <Float.h>
@@ -55,21 +54,13 @@ HRESULT CAlignment::FinalConstruct()
    CComObject<CProfile>::CreateInstance(&pProfile);
    m_Profile = pProfile;
 
-   HRESULT hr = m_Profile.Advise(GetUnknown(),IID_IProfileEvents,&m_dwProfileCookie);
-   ATLASSERT(SUCCEEDED(hr));
-   InternalRelease();
-
-   pProfile->putref_Alignment(this);
+   pProfile->put_Alignment(this);
 
    CComObject<CStationEquationCollection>* pEquations;
    CComObject<CStationEquationCollection>::CreateInstance(&pEquations);
    m_Equations = pEquations;
 
-   hr = m_Equations.Advise(GetUnknown(),IID_IStationEquationCollectionEvents,&m_dwEquationsCookie);
-   ATLASSERT(SUCCEEDED(hr));
-   InternalRelease();
-
-   pEquations->putref_Alignment(this);
+   pEquations->put_Alignment(this);
 
    m_RefStation = 0.0;
 
@@ -78,31 +69,12 @@ HRESULT CAlignment::FinalConstruct()
 
 void CAlignment::FinalRelease()
 {
-   InternalAddRef();
-   AtlUnadvise(m_Profile,IID_IProfileEvents,m_dwProfileCookie);
-
-   InternalAddRef();
-   AtlUnadvise(m_Equations,IID_IStationEquationCollectionEvents,m_dwEquationsCookie);
-
    PutPath(nullptr);
 }
 
 void CAlignment::PutPath(IPath* pPath)
 {
-   if (m_Path)
-   {
-      InternalAddRef();
-      AtlUnadvise(m_Path,IID_IPathEvents,m_dwPathCookie);
-   }
-
    m_Path = pPath;
-
-   if ( m_Path )
-   {
-      HRESULT hr = m_Path.Advise(GetUnknown(),IID_IPathEvents,&m_dwPathCookie);
-      ATLASSERT(SUCCEEDED(hr));
-      InternalRelease();
-   }
 }
 
 STDMETHODIMP CAlignment::InterfaceSupportsErrorInfo(REFIID riid)
@@ -144,11 +116,7 @@ STDMETHODIMP CAlignment::put_RefStation(VARIANT varStation)
    Float64 station;
    objStation->get_Value(&station);
 
-   if ( !IsEqual(m_RefStation,station) )
-   {
-      m_RefStation = station;
-      Fire_OnAlignmentChanged(this);
-   }
+   m_RefStation = station;
 
 	return S_OK;
 }
@@ -161,19 +129,12 @@ STDMETHODIMP CAlignment::get_Profile(IProfile **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CAlignment::putref_Profile(IProfile* pVal)
+STDMETHODIMP CAlignment::put_Profile(IProfile* pVal)
 {
    CHECK_IN(pVal);
 
-   InternalAddRef();
-   AtlUnadvise(m_Profile,IID_IProfileEvents,m_dwProfileCookie);
-
    m_Profile = pVal;
 
-   m_Profile.Advise(GetUnknown(),IID_IProfileEvents,&m_dwProfileCookie);
-   InternalRelease();
-
-   Fire_OnProfileChanged(m_Profile);
    return S_OK;
 }
 
@@ -185,19 +146,12 @@ STDMETHODIMP CAlignment::get_StationEquations(IStationEquationCollection* *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CAlignment::putref_StationEquations(IStationEquationCollection* pVal)
+STDMETHODIMP CAlignment::put_StationEquations(IStationEquationCollection* pVal)
 {
    CHECK_IN(pVal);
 
-   InternalAddRef();
-   AtlUnadvise(m_Equations,IID_IStationEquationCollectionEvents,m_dwProfileCookie);
-
    m_Equations = pVal;
 
-   m_Equations.Advise(GetUnknown(),IID_IStationEquationCollectionEvents,&m_dwProfileCookie);
-   InternalRelease();
-
-   Fire_OnStationEquationsChanged(m_Equations);
    return S_OK;
 }
 
@@ -373,7 +327,7 @@ STDMETHODIMP CAlignment::CreateSubAlignment(VARIANT varStartStation,VARIANT varE
 
    CComPtr<IProfile> cloneProfile;
    m_Profile->Clone(&cloneProfile);
-   pAlignment->putref_Profile(cloneProfile);
+   pAlignment->put_Profile(cloneProfile);
 
    // Only copy the station equations that are within the range we are creating
    CComPtr<IStationEquationCollection> equations;
@@ -443,7 +397,7 @@ STDMETHODIMP CAlignment::Clone(IAlignment* *clone)
 
    CComPtr<IProfile> cloneProfile;
    m_Profile->Clone(&cloneProfile);
-   pClone->putref_Profile(cloneProfile);
+   pClone->put_Profile(cloneProfile);
 
 
    CComPtr<IStationEquationCollection> equations;
@@ -485,7 +439,7 @@ STDMETHODIMP CAlignment::CreateOffsetAlignment(Float64 offset,IAlignment** ppAli
 
    CComPtr<IProfile> cloneProfile;
    m_Profile->Clone(&cloneProfile);
-   pClone->putref_Profile(cloneProfile);
+   pClone->put_Profile(cloneProfile);
 
 
    CComPtr<IStationEquationCollection> equations;
@@ -530,7 +484,7 @@ STDMETHODIMP CAlignment::CreateConnectedAlignment(IAlignment** ppAlignment)
 
    CComPtr<IProfile> cloneProfile;
    m_Profile->Clone(&cloneProfile);
-   pClone->putref_Profile(cloneProfile);
+   pClone->put_Profile(cloneProfile);
 
 
    CComPtr<IStationEquationCollection> equations;
@@ -615,12 +569,12 @@ STDMETHODIMP CAlignment::Load(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("Profile"),&var);
    CComPtr<IProfile> profile;
    _CopyVariantToInterface<IProfile>::copy(&profile,&var);
-   putref_Profile(profile);
+   put_Profile(profile);
 
    pLoad->get_Property(CComBSTR("StationEquations"),&var);
    CComPtr<IStationEquationCollection> equations;
    _CopyVariantToInterface<IStationEquationCollection>::copy(&equations,&var);
-   putref_StationEquations(equations);
+   put_StationEquations(equations);
 
    CComPtr<IStructuredStorage2> ss;
    m_Path->get_StructuredStorage(&ss);

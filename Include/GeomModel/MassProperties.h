@@ -25,126 +25,53 @@
 #define INCLUDED_GEOMMODEL_MASSPROPERTIES_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
+#include <GeomModel/GeomModelExp.h>
 
-// PROJECT INCLUDES
-//
-#include <GeomModel\GeomModelExp.h>
+namespace WBFL
+{
+   namespace Geometry
+   {
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   gmMassProperties
-
-   This class encapsulates the mass properties of a section.
-
-
-DESCRIPTION
-   This class encapsulates the mass properties of a section.
-
-LOG
-   rdp : 01.06.1998 : Created file
-*****************************************************************************/
-
-class GEOMMODELCLASS gmMassProperties
+/// This class encapsulates the mass properties of a section.
+class GEOMMODELCLASS MassProperties
 {
 public:
-   // GROUP: LIFECYCLE
+   MassProperties();
 
-   //------------------------------------------------------------------------
-   // Default constructor.  Initializes all the properties to zero.
-   gmMassProperties();
+   MassProperties(Float64 mpl);
 
-   //------------------------------------------------------------------------
-   // Explicit constructor.  Initializes the mass per length to mpl.
-   gmMassProperties(Float64 mpl);
+   /// This destructor is not virtual. It is not envisioned that this class will be extended through inheritance.
+   ~MassProperties();
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   gmMassProperties(const gmMassProperties& rOther);
+   MassProperties(const MassProperties&) = default;
+   MassProperties& operator=(const MassProperties&) = default;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~gmMassProperties();
+   MassProperties operator+(const MassProperties& other);
+   MassProperties operator-(const MassProperties& other);
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   gmMassProperties& operator = (const gmMassProperties& rOther);
+   MassProperties& operator+=(const MassProperties& other);
+   MassProperties& operator-=(const MassProperties& other);
 
-   // GROUP: OPERATIONS
+   /// Sets the mass per length of the section.
+   void SetMassPerLength(Float64 mpl);
+   
+   /// Returns the mass per length of the section.
+   Float64 GetMassPerLength() const;
 
-   //------------------------------------------------------------------------
-   // SetMassPerLength
-   // Sets the mass per length of the section. Returns the old value.
-   Float64 SetMassPerLength(Float64 mpl);
-
-   //------------------------------------------------------------------------
-   // MassPerLength
-   // Returns the mass per length of the section.
-   Float64 MassPerLength() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
 #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
    virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
    virtual void Dump(dbgDumpContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
    static bool TestMe(dbgLog& rlog);
 #endif // _UNITTEST
 
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const gmMassProperties& rOther);
-
-   //------------------------------------------------------------------------
-   virtual void MakeAssignment(const gmMassProperties& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-
-   Float64  m_Mpl;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   Float64  m_Mpl{ 0.0 };
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
+   }; // Geometry
+}; // WBFL
 
 #endif // INCLUDED_GEOMMODEL_MASSPROPERTIES_H_

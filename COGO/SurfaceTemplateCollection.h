@@ -29,12 +29,9 @@
 
 #include "resource.h"       // main symbols
 #include "Collections.h"
-#include "COGOCP.h"
 
-typedef std::pair<DWORD,CComVariant> SurfaceTemplateType;
-typedef std::vector<SurfaceTemplateType> SurfaceTemplates;
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<SurfaceTemplateType,VARIANT>, SurfaceTemplates > SurfaceTemplatesEnum;
-typedef ICollectionOnSTLImpl<ISurfaceTemplateCollection, SurfaceTemplates, VARIANT, CopyFromPair2<SurfaceTemplateType,VARIANT>,SurfaceTemplatesEnum> ISurfaceTemplateColl;
+typedef CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> > SurfaceTemplatesEnum;
+typedef ICollectionOnSTLImpl<ISurfaceTemplateCollection, std::vector<CComVariant>, VARIANT, _Copy<VARIANT>, SurfaceTemplatesEnum> ISurfaceTemplateColl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSurfaceTemplateCollection
@@ -44,11 +41,8 @@ class ATL_NO_VTABLE CSurfaceTemplateCollection :
 	public CComCoClass<CSurfaceTemplateCollection, &CLSID_SurfaceTemplateCollection>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CSurfaceTemplateCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CSurfaceTemplateCollection>,
 	public ISurfaceTemplateColl,
-   public ISurfaceTemplateEvents,
    public IStructuredStorage2,
-   public CProxyDSurfaceTemplateCollectionEvents< CSurfaceTemplateCollection >,
    public IPersistImpl<CSurfaceTemplateCollection>
 {
 public:
@@ -67,18 +61,9 @@ BEGIN_COM_MAP(CSurfaceTemplateCollection)
    COM_INTERFACE_ENTRY(ISurfaceTemplateCollection)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY(ISurfaceTemplateEvents)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CSurfaceTemplateCollection)
-CONNECTION_POINT_ENTRY(IID_ISurfaceTemplateCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
 
    CComBSTR GetCollectionName() { return CComBSTR("SurfaceTemplates"); }
@@ -109,20 +94,9 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// ISurfaceTemplateEvents
-public:
-   STDMETHOD(OnSurfaceTemplateChanged)(ISurfaceTemplate* pTemplate) override;
-   STDMETHOD(OnTemplateSegmentAdded)(ISurfaceTemplate* pTemplate,ITemplateSegment* pSegment) override;
-   STDMETHOD(OnTemplateSegmentRemoved)(ISurfaceTemplate* pTemplate) override;
-   STDMETHOD(OnTemplateSegmentsCleared)(ISurfaceTemplate* pTemplate) override;
-
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-
-   void AdviseElement(ISurfaceTemplate* pSurfaceTemplate,DWORD* pdwCookie);
-   void UnadviseElement(CollectionIndexType idx);
-   void UnadviseAll();
 
    //HRESULT ValidateStation(ISurfaceTemplate* pSurfaceTemplate);
    //HRESULT ValidateStation(VARIANT varStation,bool bClone,IStation** station);

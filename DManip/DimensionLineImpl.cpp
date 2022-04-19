@@ -778,11 +778,8 @@ void CDimensionLineImpl::UpdateTextBlock()
       CComPtr<IPoint2d> end;
       endSocket->GetPosition(&end);
 
-      CComPtr<IGeomUtil2d> util;
-      util.CoCreateInstance(CLSID_GeomUtil);
-
       Float64 dist;
-      util->Distance(start,end,&dist);
+      start->DistanceEx(end, &dist);
 
       CString strDist;
       strDist.Format(_T("%f"),dist);

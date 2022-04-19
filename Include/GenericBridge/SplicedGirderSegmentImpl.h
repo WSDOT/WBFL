@@ -195,7 +195,7 @@ public:
       return GetSection(stageIdx,Xs,sectionBias,coordinateSystem,ppSection);
    }
 
-	STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override
+	STDMETHOD(get_GirderShape)(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override
    {
       return GetPrimaryShape(Xs,sectionBias,coordinateSystem, ppShape);
    }
@@ -516,7 +516,7 @@ public:
             CComQIPtr<ISplicedGirderSegment> prevSegment(m_Impl.m_pPrevSegment);
             prevSegment->get_ClosureJointLength(etEnd, &L1);
             CComPtr<IShape> prevShape;
-            m_Impl.m_pPrevSegment->get_PrimaryShape(prevL, sbLeft, cstGirder, &prevShape);
+            m_Impl.m_pPrevSegment->get_GirderShape(prevL, sbLeft, cstGirder, &prevShape);
             prevShape->get_Perimeter(&P1);
             CComPtr<IShapeProperties> prevShapeProps;
             prevShape->get_ShapeProperties(&prevShapeProps);
@@ -525,7 +525,7 @@ public:
             // left end of this segment
             get_ClosureJointLength(etStart, &L2);
             CComPtr<IShape> shape;
-            get_PrimaryShape(L2, sbRight, cstGirder, &shape);
+            get_GirderShape(L2, sbRight, cstGirder, &shape);
             shape->get_Perimeter(&P2);
             CComPtr<IShapeProperties> shapeProps;
             shape->get_ShapeProperties(&shapeProps);
@@ -539,7 +539,7 @@ public:
             // right end of this segment
             get_ClosureJointLength(etEnd, &L1);
             CComPtr<IShape> shape;
-            get_PrimaryShape(L, sbLeft, cstGirder, &shape);
+            get_GirderShape(L, sbLeft, cstGirder, &shape);
             shape->get_Perimeter(&P1);
             CComPtr<IShapeProperties> shapeProps;
             shape->get_ShapeProperties(&shapeProps);
@@ -549,7 +549,7 @@ public:
             CComQIPtr<ISplicedGirderSegment> nextSegment(m_Impl.m_pNextSegment);
             nextSegment->get_ClosureJointLength(etStart, &L2);
             CComPtr<IShape> nextShape;
-            m_Impl.m_pNextSegment->get_PrimaryShape(L2, sbRight, cstGirder, &nextShape);
+            m_Impl.m_pNextSegment->get_GirderShape(L2, sbRight, cstGirder, &nextShape);
             nextShape->get_Perimeter(&P2);
             CComPtr<IShapeProperties> nextShapeProps;
             nextShape->get_ShapeProperties(&nextShapeProps);
@@ -733,7 +733,7 @@ protected:
             // compute V and S
             auto iter(vCuts.begin());
             CComPtr<IShape> shape;
-            get_PrimaryShape(iter->first, iter->second, cstGirder, &shape);
+            get_GirderShape(iter->first, iter->second, cstGirder, &shape);
             Float64 prev_perimeter;
             shape->get_Perimeter(&prev_perimeter);
             CComPtr<IShapeProperties> shapeProps;
@@ -755,7 +755,7 @@ protected:
                SectionBias bias = iter->second;
 
                shape.Release();
-               get_PrimaryShape(X, bias, cstGirder, &shape);
+               get_GirderShape(X, bias, cstGirder, &shape);
                Float64 perimeter;
                shape->get_Perimeter(&perimeter);
 
@@ -817,7 +817,7 @@ protected:
       }
 
       CComPtr<IShape> primaryShape;
-      HRESULT hr = get_PrimaryShape(Xs, sectionBias, coordinateSystem,&primaryShape);
+      HRESULT hr = get_GirderShape(Xs, sectionBias, coordinateSystem,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;

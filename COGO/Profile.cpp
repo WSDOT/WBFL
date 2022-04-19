@@ -46,8 +46,8 @@ public:
    SortProfileElements(IAlignment* pAlignment){ m_pAlignment = pAlignment; }
    bool operator()(ProfileType& pX,ProfileType& pY)
    {
-      CComVariant& varX = pX.second;
-      CComVariant& varY = pY.second;
+      CComVariant& varX = pX;
+      CComVariant& varY = pY;
       CComPtr<IStation> staX, staY;
       
       CComQIPtr<IProfileElement> peX(varX.pdispVal);
@@ -104,7 +104,6 @@ HRESULT CProfile::FinalConstruct()
    CComObject<CSurfaceCollection>::CreateInstance(&pSurfaces);
    m_Surfaces = pSurfaces;
    m_Surfaces->putref_Profile(this);
-   AdviseSurfaces();
 
    m_pAlignment = nullptr;
 
@@ -124,8 +123,6 @@ HRESULT CProfile::FinalConstruct()
 
 void CProfile::FinalRelease()
 {
-   UnadviseAll();
-   UnadviseSurfaces();
 }
 
 STDMETHODIMP CProfile::InterfaceSupportsErrorInfo(REFIID riid)
@@ -154,7 +151,7 @@ STDMETHODIMP CProfile::get_Item(CollectionIndexType idx,IProfileElement **pVal)
       return E_INVALIDARG;
 
    ProfileType& type = m_coll[idx];
-   CComVariant& var = type.second;
+   CComVariant& var = type;
    var.pdispVal->QueryInterface(pVal);
 
 	return S_OK;
@@ -171,20 +168,9 @@ STDMETHODIMP CProfile::putref_Item( CollectionIndexType idx, IProfileElement* pV
 
    // Get the item
    ProfileType& pt = m_coll[idx];
-   CComVariant& var = pt.second; // Variant holding IUnknown to ProfileElement
-
-   UnadviseElement(idx); // Unadvise from the current element
+   CComVariant& var = pt; // Variant holding IUnknown to ProfileElement
 
    var = pVal; // Associate new ProfileElement with this variant
-
-   // Advise
-   DWORD dwCookie;
-   AdviseElement(pVal,&dwCookie);
-
-   // Update the cookie
-   pt.first = dwCookie;
-
-   Fire_OnProfileChanged(this);
 
    return S_OK;
 }
@@ -222,15 +208,7 @@ STDMETHODIMP CProfile::putref_Surfaces(ISurfaceCollection* pSurfaces)
 {
    CHECK_IN(pSurfaces);
 
-   InternalAddRef();
-   AtlUnadvise(m_Surfaces,IID_ISurfaceCollectionEvents,m_dwSurfaceCollectionCookie);
-
    m_Surfaces = pSurfaces;
-
-   m_Surfaces.Advise(GetUnknown(),IID_ISurfaceCollectionEvents,&m_dwSurfaceCollectionCookie);
-   InternalRelease();
-
-   Fire_OnProfileChanged(this);
 
    return S_OK;
 }
@@ -238,13 +216,9 @@ STDMETHODIMP CProfile::putref_Surfaces(ISurfaceCollection* pSurfaces)
 STDMETHODIMP CProfile::Add(IProfileElement *element)
 {
    CHECK_IN(element);
-   DWORD dwCookie;
-   AdviseElement(element,&dwCookie);
    AssociateWithProfile(element);
-   m_coll.emplace_back(dwCookie,CComVariant(element) );
+   m_coll.emplace_back(CComVariant(element) );
    std::sort(std::begin(m_coll),std::end(m_coll),SortProfileElements(m_pAlignment));
-
-   Fire_OnProfileChanged(this);
 
 	return S_OK;
 }
@@ -277,7 +251,6 @@ STDMETHODIMP CProfile::Remove(VARIANT varID)
       if ( index < 0 || (long)m_coll.size() <= index )
          return E_INVALIDARG;
 
-      UnadviseElement(index);
       m_coll.erase(m_coll.begin() + index);
    }
    else if ( varID.vt == VT_UNKNOWN || varID.vt == VT_DISPATCH )
@@ -300,7 +273,7 @@ STDMETHODIMP CProfile::Remove(VARIANT varID)
       for ( iter = m_coll.begin(); iter < m_coll.end(); iter++ )
       {
          ProfileType& pt = *iter;
-         CComVariant& varElement = pt.second;
+         CComVariant& varElement = pt;
          CComQIPtr<IProfileElement> pe(varElement.punkVal);
          CComPtr<IUnknown> dispVal;
          pe->get_Value(&dispVal);
@@ -308,7 +281,6 @@ STDMETHODIMP CProfile::Remove(VARIANT varID)
               point   != nullptr && point.IsEqualObject(dispVal)              ||
               vc      != nullptr && vc.IsEqualObject(dispVal) )
          {
-            UnadviseElement(iter - m_coll.begin());
             AssociateWithProfile(pe,false);
             m_coll.erase(iter);
             bRemoved = true;
@@ -326,7 +298,6 @@ STDMETHODIMP CProfile::Remove(VARIANT varID)
       return E_INVALIDARG;
    }
 
-   Fire_OnProfileChanged(this);
 	return S_OK;
 }
 
@@ -475,9 +446,7 @@ STDMETHODIMP CProfile::RidgePointElevation(CogoObjectID id,VARIANT varStation,In
 
 STDMETHODIMP CProfile::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnProfileChanged(this);
    return S_OK;
 }
 
@@ -485,11 +454,9 @@ STDMETHODIMP CProfile::get__EnumProfileElements(IEnumProfileElements** retval)
 {
    CHECK_RETOBJ(retval);
 
-   typedef CComEnumOnSTL<IEnumProfileElements,
-                         &IID_IEnumProfileElements, 
-                         IProfileElement*,
-                         CopyFromPair2Interface<ProfileType,IProfileElement*>, 
-                         std::vector<ProfileType> > Enum;
+   typedef CComEnumOnSTL<IEnumProfileElements, &IID_IEnumProfileElements, IProfileElement*, 
+      _CopyVariantToInterface<IProfileElement>, std::vector<CComVariant> > Enum;
+
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -520,7 +487,7 @@ STDMETHODIMP CProfile::get_Alignment(IAlignment** ppAlignment)
    return S_OK;
 }
 
-STDMETHODIMP CProfile::putref_Alignment(IAlignment* pAlignment)
+STDMETHODIMP CProfile::put_Alignment(IAlignment* pAlignment)
 {
    m_pAlignment = pAlignment;
    return S_OK;
@@ -574,7 +541,7 @@ STDMETHODIMP CProfile::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
    for ( CollectionIndexType i = 0; i < count; i++ )
    {
-      pSave->put_Property(CComBSTR("ProfileElement"),m_coll[i].second);
+      pSave->put_Property(CComBSTR("ProfileElement"),m_coll[i]);
    }
    pSave->EndUnit(); // ProfileElements
 
@@ -606,10 +573,8 @@ STDMETHODIMP CProfile::Load(IStructuredLoad2* pLoad)
    pLoad->EndUnit(&bEnd); // ProfileElements
 
    pLoad->get_Property(CComBSTR("Surfaces"),&var);
-   UnadviseSurfaces();
    m_Surfaces.Release();
    _CopyVariantToInterface<ISurfaceCollection>::copy(&m_Surfaces,&var);
-   AdviseSurfaces();
 
    pLoad->EndUnit(&bEnd);
 
@@ -638,7 +603,7 @@ HRESULT CProfile::GradeAndElevation(IStation* pStation,Float64 offset,Float64* g
    }
 
    ProfileType pt = m_coll[0];
-   CComVariant varElement = pt.second;
+   CComVariant varElement = pt;
    CComQIPtr<IProfileElement> element(varElement.pdispVal);
    CComPtr<IUnknown> disp;
    ProfileElementType type;
@@ -668,7 +633,7 @@ HRESULT CProfile::GradeAndElevation(IStation* pStation,Float64 offset,Float64* g
    }
 
    pt = *(m_coll.end()-1);
-   varElement = pt.second;
+   varElement = pt;
    element.Release();
    disp.Release();
    CComPtr<IStation> endSta;
@@ -706,7 +671,7 @@ void CProfile::BeforeProfileGradeAndElevation(IStation* pStation,Float64* pGrade
    // Get the first element. If it is a vertical curve
    // the curve can compute the elevation
    ProfileType pt = m_coll[0];
-   CComVariant varElement = pt.second;
+   CComVariant varElement = pt;
    CComQIPtr<IProfileElement> element(varElement.pdispVal);
    CComPtr<IUnknown> disp;
    ProfileElementType type;
@@ -735,7 +700,7 @@ void CProfile::BeforeProfileGradeAndElevation(IStation* pStation,Float64* pGrade
 
       ATLASSERT(m_coll.size() > 1); // size == 1 should be handled elsewhere
       pt = m_coll[1];
-      varElement = pt.second;
+      varElement = pt;
       element.Release();
       varElement.pdispVal->QueryInterface(&element);
 
@@ -805,7 +770,7 @@ bool CompareProfileElements(const ProfileType& pt,const ProfileType& testPt)
    CComPtr<IProfile> profile;
 
    CComPtr<IStation> station;
-   const CComVariant& varElement = pt.second;
+   const CComVariant& varElement = pt;
    CComQIPtr<IProfileElement> element(varElement.pdispVal);
    CComPtr<IUnknown> disp;
    element->get_Value(&disp);
@@ -830,7 +795,7 @@ bool CompareProfileElements(const ProfileType& pt,const ProfileType& testPt)
    }
 
    CComPtr<IStation> testStation;
-   const CComVariant& varTestElement = testPt.second;
+   const CComVariant& varTestElement = testPt;
    CComQIPtr<IProfileElement> test_element(varTestElement.pdispVal);
    CComPtr<IUnknown> test_disp;
    test_element->get_Value(&test_disp);
@@ -857,7 +822,7 @@ void CProfile::ProfileGradeAndElevation(IStation* pStation,Float64* pGrade, Floa
    if ( m_coll.size() == 1 )
    {
       ProfileType& pt = m_coll[0];
-      CComVariant& varElement = pt.second;
+      CComVariant& varElement = pt;
       CComQIPtr<IProfileElement> element(varElement.pdispVal);
       CComPtr<IUnknown> disp;
       ProfileElementType type;
@@ -882,7 +847,7 @@ void CProfile::ProfileGradeAndElevation(IStation* pStation,Float64* pGrade, Floa
    }
 
    m_TestPoint->put_Station(CComVariant(pStation));
-   ProfileType findMe(-1,CComVariant(m_TestElement));
+   ProfileType findMe(m_TestElement);
    Profiles::iterator iter = std::upper_bound(m_coll.begin(),m_coll.end(),findMe,CompareProfileElements);
    if ( iter == m_coll.end() )
    {
@@ -925,8 +890,8 @@ void CProfile::ProfileGradeAndElevation(IStation* pStation,Float64* pGrade, Floa
 
    ProfileType& ptNext = *iter--;
    ProfileType& ptPrev = *iter;
-   CComVariant& varnextElement = ptNext.second;
-   CComVariant& varprevElement = ptPrev.second;
+   CComVariant& varnextElement = ptNext;
+   CComVariant& varprevElement = ptPrev;
    CComQIPtr<IProfileElement> nextElement(varnextElement.pdispVal);
    CComQIPtr<IProfileElement> prevElement(varprevElement.pdispVal);
 
@@ -1027,7 +992,7 @@ void CProfile::AfterProfileGradeAndElevation(IStation* pStation,Float64* pGrade,
    // Get the last element. If it is a vertical curve
    // the curve can compute the elevation
    ProfileType pt = *(m_coll.end()-1);
-   CComVariant varElement = pt.second;
+   CComVariant varElement = pt;
    CComQIPtr<IProfileElement> element(varElement.pdispVal);
    CComPtr<IUnknown> disp;
    ProfileElementType type;
@@ -1056,7 +1021,7 @@ void CProfile::AfterProfileGradeAndElevation(IStation* pStation,Float64* pGrade,
 
       ATLASSERT(m_coll.size() > 1); // size == 1 should be handled elsewhere
       pt = *(m_coll.end()-2);
-      varElement = pt.second;
+      varElement = pt;
       element.Release();
       varElement.pdispVal->QueryInterface(&element);
 
@@ -1241,7 +1206,7 @@ void CProfile::AssociateWithProfile(IProfileElement* element,bool bAssociate)
    if ( type == peVertCurve )
    {
       CComQIPtr<IVertCurve> vc(disp);
-      vc->putref_Profile(bAssociate ? this : nullptr);
+      vc->put_Profile(bAssociate ? this : nullptr);
    }
    else if ( type == pePoint )
    {
@@ -1253,62 +1218,6 @@ void CProfile::AssociateWithProfile(IProfileElement* element,bool bAssociate)
       ATLASSERT(false);
       // is there a new type?
    }
-}
-
-void CProfile::AdviseElement(IProfileElement* element,DWORD* pdwCookie)
-{
-   HRESULT hr = AtlAdvise(element,GetUnknown(),IID_IProfileElementEvents,pdwCookie);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      ATLTRACE("Failed to establish connection point with CrossSection object\n");
-      return;
-   }
-
-   InternalRelease(); // Break circular reference
-}
-
-void CProfile::UnadviseElement(CollectionIndexType idx)
-{
-   //
-   // Disconnection from connection CrossSection
-   //
-   ProfileType& p = m_coll[idx];
-   if ( p.first == 0 )
-   {
-      return;
-   }
-
-   DWORD dwCookie = (DWORD)p.first;
-   CComVariant& var = p.second;
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IProfileElementEvents, dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   p.first = 0;
-}
-
-void CProfile::UnadviseAll()
-{
-   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
-   {
-      UnadviseElement(i);
-   }
-}
-
-void CProfile::AdviseSurfaces()
-{
-   m_Surfaces.Advise(GetUnknown(),IID_ISurfaceCollectionEvents,&m_dwSurfaceCollectionCookie);
-   InternalRelease();
-}
-
-void CProfile::UnadviseSurfaces()
-{
-   InternalAddRef();
-   AtlUnadvise(m_Surfaces,IID_ISurfaceCollectionEvents,m_dwSurfaceCollectionCookie);
 }
 
 HRESULT CProfile::GetStation(VARIANT varStation,IStation** station)

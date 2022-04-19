@@ -94,20 +94,20 @@ CEAFGraphView* CEAFGraphChildFrame::GetGraphView()
    return pGraphView;
 }
 
-std::shared_ptr<CGraphBuilder> CEAFGraphChildFrame::GetGraphBuilder()
+std::unique_ptr<WBFL::Graphing::GraphBuilder>& CEAFGraphChildFrame::GetGraphBuilder()
 {
    return m_pMyGraphBuilder;
 }
 
 bool CEAFGraphChildFrame::CreateGraph(IndexType graphIdx)
 {
-   std::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder(graphIdx);
+   std::unique_ptr<WBFL::Graphing::GraphBuilder>& pGraphBuilder = GetGraphBuilder(graphIdx);
    if ( pGraphBuilder == nullptr )
       return false;
 
    // Because multiple graph views can be created, we have to create a clone
    // of the graph builder. Each view needs its own unique graph builder.
-   m_pMyGraphBuilder = std::shared_ptr<CGraphBuilder>(pGraphBuilder->Clone());
+   m_pMyGraphBuilder = std::unique_ptr<WBFL::Graphing::GraphBuilder>(pGraphBuilder->Clone());
 
    if ( m_pMyGraphBuilder->InitializeGraphController(this,AFX_IDW_CONTROLBAR_LAST) < 0 )
       return false;
@@ -122,7 +122,7 @@ bool CEAFGraphChildFrame::CreateGraph(IndexType graphIdx)
    return true;
 }
 
-std::shared_ptr<CGraphBuilder> CEAFGraphChildFrame::GetGraphBuilder(IndexType index)
+std::unique_ptr<WBFL::Graphing::GraphBuilder>& CEAFGraphChildFrame::GetGraphBuilder(IndexType index)
 {
    if ( m_pGraphMgr )
    {

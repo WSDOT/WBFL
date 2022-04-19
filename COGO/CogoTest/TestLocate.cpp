@@ -76,7 +76,6 @@ void CTestLocate::Test()
 
    TRY_TEST(locate->ByDistDir(3,2,10.0,CComVariant(PI_OVER_2),0.00),S_OK);
    points->get_Item(3,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,10.0),true);
@@ -85,7 +84,6 @@ void CTestLocate::Test()
    pnt.Release();
    TRY_TEST(locate->ByDistDir(4,2,10.0,CComVariant(PI_OVER_2),5.00),S_OK);
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,15.0),true);
@@ -94,7 +92,6 @@ void CTestLocate::Test()
    pnt.Release();
    TRY_TEST(locate->ByDistDir(5,2,10.0,CComVariant(PI_OVER_2),-5.00),S_OK);
    points->get_Item(5,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 5.0),true);
@@ -107,7 +104,6 @@ void CTestLocate::Test()
    pnt.Release();
    TRY_TEST(locate->ByDistDir(6,2,10.0,CComVariant(unkDir),0.00),S_OK);
    points->get_Item(6,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,2.92893218813),true);
@@ -116,7 +112,6 @@ void CTestLocate::Test()
    pnt.Release();
    TRY_TEST(locate->ByDistDir(7,2,10.0,CComVariant(dir),5.00),S_OK);
    points->get_Item(7,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,6.46446609407),true);
@@ -125,7 +120,6 @@ void CTestLocate::Test()
    pnt.Release();
    TRY_TEST(locate->ByDistDir(8,2,10.0,CComVariant(dir),-5.00),S_OK);
    points->get_Item(8,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,-0.60660171781),true);
@@ -134,7 +128,6 @@ void CTestLocate::Test()
    pnt.Release();
    TRY_TEST(locate->ByDistDir(9,2,-10.0,CComVariant(dir),0.00),S_OK);
    points->get_Item(9,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,17.07106781187),true);
@@ -154,7 +147,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->ByDistAngle(3,1,2,10.0,CComVariant(M_PI),0.0),S_OK);
    pnt.Release();
    points->get_Item(3,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,-7.07106781187),true);
@@ -163,7 +155,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->ByDistAngle(4,1,2,10.0,CComVariant(M_PI/4),0.0),S_OK);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 0.0),true);
@@ -175,7 +166,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->ByDistAngle(5,1,2,10.0,CComVariant(angle),-5.0),S_OK);
    pnt.Release();
    points->get_Item(5,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,  3.53553390594),true);
@@ -184,7 +174,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->ByDistAngle(6,1,2,-10.0,CComVariant(angle),-5.0),S_OK);
    pnt.Release();
    points->get_Item(6,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,3.53553390594),true);
@@ -204,7 +193,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->ByDistDefAngle(3,1,2,10.0,CComVariant(M_PI),0.0),S_OK);
    pnt.Release();
    points->get_Item(3,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,7.07106781187),true);
@@ -213,7 +201,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->ByDistDefAngle(4,1,2,10.0,CComVariant(M_PI/4),0.0),S_OK);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,  0.0),true);
@@ -225,7 +212,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->ByDistDefAngle(5,1,2,10.0,CComVariant(defAngle),-5.0),S_OK);
    pnt.Release();
    points->get_Item(5,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,  3.53553390594),true);
@@ -234,7 +220,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->ByDistDefAngle(6,1,2,-10.0,CComVariant(defAngle),-5.0),S_OK);
    pnt.Release();
    points->get_Item(6,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,3.53553390594),true);
@@ -248,7 +233,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->PointOnLine(3,1,2,20.0,0.0),S_OK);
    pnt.Release();
    points->get_Item(3,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,24.1421356237),true);
@@ -257,7 +241,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->PointOnLine(4,1,2,-20.0,0.0),S_OK);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,-4.1421356237),true);
@@ -266,7 +249,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->PointOnLine(5,1,2,10.0,5.0),S_OK);
    pnt.Release();
    points->get_Item(5,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,20.6066017178),true);
@@ -275,7 +257,6 @@ void CTestLocate::Test()
    TRY_TEST(locate->PointOnLine(6,1,2,10.0,-5.0),S_OK);
    pnt.Release();
    points->get_Item(6,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,13.5355339059),true);
@@ -349,14 +330,12 @@ void CTestLocate::Test()
    TRY_TEST(endID,6);
    pnt.Release();
    TRY_TEST(points->get_Item(startID,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,-3.53553390594),true);
    TRY_TEST(IsEqual(y, 3.53553390594),true);
    pnt.Release();
    TRY_TEST(points->get_Item(endID,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,16.4644660941),true);
@@ -367,14 +346,12 @@ void CTestLocate::Test()
    TRY_TEST(locate->ParallelLineByPoints(13,14,1,2,5.0),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(13,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 3.53553390594),true);
    TRY_TEST(IsEqual(y,-3.53553390594),true);
    pnt.Release();
    TRY_TEST(points->get_Item(14,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,23.5355339059),true);

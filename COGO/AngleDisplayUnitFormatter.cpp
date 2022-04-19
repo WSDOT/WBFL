@@ -78,8 +78,6 @@ STDMETHODIMP CAngleDisplayUnitFormatter::FormatSpecifiers( Uint32 width, Uint32 
       m_Notation      = notation;
       m_Justification = justify;
       m_ZeroTolerance = zeroTol;
-
-      Fire_OnFormatChanged();
    }
 
    return S_OK;
@@ -188,12 +186,7 @@ STDMETHODIMP CAngleDisplayUnitFormatter::get_CondensedFormat(VARIANT_BOOL *pVal)
 
 STDMETHODIMP CAngleDisplayUnitFormatter::put_CondensedFormat(VARIANT_BOOL newVal)
 {
-   if ( m_bCondensedFormat != newVal )
-   {
-      m_bCondensedFormat = newVal;
-      Fire_OnFormatChanged();
-   }
-
+   m_bCondensedFormat = newVal;
 	return S_OK;
 }
 
@@ -206,11 +199,6 @@ STDMETHODIMP CAngleDisplayUnitFormatter::get_Signed(VARIANT_BOOL *pVal)
 
 STDMETHODIMP CAngleDisplayUnitFormatter::put_Signed(VARIANT_BOOL newVal)
 {
-   if ( m_bSigned != newVal )
-   {
-      m_bSigned = newVal;
-      Fire_OnFormatChanged();
-   }
-
+   m_bSigned = newVal;
 	return S_OK;
 }

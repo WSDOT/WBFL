@@ -22,102 +22,60 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+#pragma once
 
 // LineSegment3d.h : Declaration of the CLineSegment3d
 
-#ifndef __LineSegment3d_H_
-#define __LineSegment3d_H_
-
 #include "resource.h"       // main symbols
-#include "GeometryCP.h"
+#include <GeomModel/LineSegment3d.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CLineSegment3d
-class ATL_NO_VTABLE CLineSegment3d : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CLineSegment3d, &CLSID_LineSegment3d>,
+class ATL_NO_VTABLE CLineSegment3d :
+   public CComObjectRootEx<CComSingleThreadModel>,
+   public CComCoClass<CLineSegment3d, &CLSID_LineSegment3d>,
    public ISupportErrorInfo,
-   public IObjectSafetyImpl<CLineSegment3d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public ILineSegment3d,
-   public IStructuredStorage2,
-   public IPersist,
-   public CProxyDLineSegment3dEvents< CLineSegment3d >,
-   public IConnectionPointContainerImpl<CLineSegment3d>,
-   public IPoint3dEvents
+   public IObjectSafetyImpl<CLineSegment3d, INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
+   public ILineSegment3d
 {
 public:
-	CLineSegment3d()
-	{
-	}
+   CLineSegment3d()
+   {
+   }
 
    HRESULT FinalConstruct();
    void FinalRelease();
+   void SetLineSegment(WBFL::Geometry::LineSegment3d& ls);
 
-DECLARE_REGISTRY_RESOURCEID(IDR_LINESEGMENT3D)
+   DECLARE_REGISTRY_RESOURCEID(IDR_LINESEGMENT3D)
 
-DECLARE_PROTECT_FINAL_CONSTRUCT()
+   DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CLineSegment3d)
-	COM_INTERFACE_ENTRY(ILineSegment3d)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(ISupportErrorInfo)
-   COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY(IPoint3dEvents)
-END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CLineSegment3d)
-	CONNECTION_POINT_ENTRY(IID_ILineSegment3dEvents)
-END_CONNECTION_POINT_MAP()
+   BEGIN_COM_MAP(CLineSegment3d)
+      COM_INTERFACE_ENTRY(ILineSegment3d)
+      COM_INTERFACE_ENTRY(ISupportErrorInfo)
+      COM_INTERFACE_ENTRY(IObjectSafety)
+   END_COM_MAP()
 
 private:
-   CComPtr<IPoint3d> m_pStart;
-   CComPtr<IPoint3d> m_pEnd;
-   DWORD m_dwStartCookie;
-   DWORD m_dwEndCookie;
+   WBFL::Geometry::LineSegment3d m_LineSegment;
+   CComPtr<IPoint3d> m_Start;
+   CComPtr<IPoint3d> m_End;
 
-   bool m_bEventsOn;
-   void EventsOff();
-   void EventsOn(bool bFire=true);
+   // ISupportsErrorInfo
+   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
-
-// ILineSegment3d
+   // ILineSegment3d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ILineSegment3d** ppClone) override;
    STDMETHOD(ThroughPoints)(/*[in]*/ IPoint3d* p1, /*[in]*/ IPoint3d* p2) override;
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize3d* pSize) override;
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy,/*[in]*/ Float64 dz) override;
-	//STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pCenter,/*[in]*/ Float64 angle) override;
-	//STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy, /*[in]*/ Float64 angle) override;
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_EndPoint)(/*[out, retval]*/ IPoint3d* *pVal) override;
-	STDMETHOD(putref_EndPoint)(/*[in]*/ IPoint3d* newVal) override;
-	STDMETHOD(get_StartPoint)(/*[out, retval]*/ IPoint3d* *pVal) override;
-	STDMETHOD(putref_StartPoint)(/*[in]*/ IPoint3d* newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-public :
-
-// IPoint3dEvents
-	STDMETHOD(OnPointChanged)(IPoint3d * point)
-	{
-      if ( m_bEventsOn )
-         Fire_OnLineSegmentChanged(this);
-
-      return S_OK;
-	}
+   STDMETHOD(OffsetEx)(/*[in]*/ ISize3d* pSize) override;
+   STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy,/*[in]*/ Float64 dz) override;
+   //STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pCenter,/*[in]*/ Float64 angle) override;
+   //STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy, /*[in]*/ Float64 angle) override;
+   STDMETHOD(get_Length)(/*[out, retval]*/ Float64* pVal) override;
+   STDMETHOD(get_EndPoint)(/*[out, retval]*/ IPoint3d** pVal) override;
+   STDMETHOD(putref_EndPoint)(/*[in]*/ IPoint3d* newVal) override;
+   STDMETHOD(get_StartPoint)(/*[out, retval]*/ IPoint3d** pVal) override;
+   STDMETHOD(putref_StartPoint)(/*[in]*/ IPoint3d* newVal) override;
 };
-
-#endif //__LineSegment3d_H_

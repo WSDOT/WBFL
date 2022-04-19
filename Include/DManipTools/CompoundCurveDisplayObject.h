@@ -26,6 +26,7 @@
 #pragma once
 
 interface ICompoundCurve;
+interface iDisplayObject;
 
 enum CompoundCurveDrawMode
 {

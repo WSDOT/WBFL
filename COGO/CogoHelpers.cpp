@@ -361,7 +361,7 @@ bool cogoUtil::IsPointBeforeStart(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoi
    Float64 angle;
    dir->get_Value(&angle);
 
-   xform->putref_NewOrigin(pStart);
+   xform->put_NewOrigin(pStart);
    xform->put_RotationAngle(angle);
 
    CComPtr<IPoint2d> p;
@@ -388,7 +388,7 @@ bool cogoUtil::IsPointAfterEnd(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoint)
    Float64 angle;
    dir->get_Value(&angle);
 
-   xform->putref_NewOrigin(pEnd);
+   xform->put_NewOrigin(pEnd);
    xform->put_RotationAngle(angle);
 
    CComPtr<IPoint2d> p;
@@ -423,7 +423,7 @@ void cogoUtil::CopyPoint(IPoint2d* to,IPoint2d* from)
    to->Move(x,y);
 }
 
-HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir,Float64 offset,IPoint2dFactory* pFactory,IPoint2d** ppoint)
+HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir,Float64 offset,IPoint2d** ppoint)
 {
    Float64 dx;
    Float64 dy;
@@ -449,33 +449,22 @@ HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir
    x += offset * sindir;
    y -= offset * cosdir;
 
-   if (pFactory)
-   {
-      pFactory->CreatePoint(ppoint);
-   }
-   else
-   {
-      CComPtr<IPoint2d> p;
-      p.CoCreateInstance(CLSID_Point2d);
-      p.CopyTo(ppoint);
-   }
+   CComPtr<IPoint2d> p;
+   p.CoCreateInstance(CLSID_Point2d);
+   p.CopyTo(ppoint);
 
    (*ppoint)->Move(x,y);
 
    return S_OK;
 }
 
-void cogoUtil::LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNearest,IPoint2dFactory* pFactory,IPoint2d** newPnt)
+void cogoUtil::LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNearest,IPoint2d** newPnt)
 {
    (*newPnt) = nullptr;
 
    CComPtr<IGeomUtil2d> geomUtil;
    geomUtil.CoCreateInstance(CLSID_GeomUtil);
    
-   CComQIPtr<IGeomUtil> gu(geomUtil);
-   CComQIPtr<IPoint2dFactory> factory2d(pFactory);
-   gu->putref_Point2dFactory(factory2d);
-
    short nIntersect;
    CComPtr<IPoint2d> p1, p2;
    geomUtil->LineCircleIntersect(line,circle,&p1,&p2,&nIntersect);
@@ -497,8 +486,8 @@ void cogoUtil::LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNe
       ATLASSERT(nIntersect == 2);
 
       Float64 d1, d2;
-      geomUtil->Distance(pntNearest,pnt1,&d1);
-      geomUtil->Distance(pntNearest,pnt2,&d2);
+      pntNearest->DistanceEx(pnt1, &d1);
+      pntNearest->DistanceEx(pnt2, &d2);
 
       if ( d2 < d1 )
       {
@@ -824,7 +813,7 @@ void cogoUtil::CreateStation(IStationEquationCollection* pEquations,Float64 norm
    }
 }
 
-HRESULT cogoUtil::CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 offset, ILine2dFactory* pLineFactory, ILine2d** line)
+HRESULT cogoUtil::CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 offset, ILine2d** line)
 {
    // Save the direction of the line before it is altered.
    Float64 dir;
@@ -836,7 +825,7 @@ HRESULT cogoUtil::CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 
    objDir->Clone(&objClone);
    objClone->IncrementBy(CComVariant(-PI_OVER_2));
 
-   HRESULT hr = cogoUtil::LocateByDistDir(pnt, offset, objClone, 0.0, nullptr, &pntLine);
+   HRESULT hr = cogoUtil::LocateByDistDir(pnt, offset, objClone, 0.0, &pntLine);
    ATLASSERT(SUCCEEDED(hr));
 
    // Create a vector in the direction of line
@@ -847,11 +836,7 @@ HRESULT cogoUtil::CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 
 
    // Create line
    CComPtr<ILine2d> newLine;
-   if (pLineFactory)
-      pLineFactory->CreateLine(&newLine);
-   else
-      newLine.CoCreateInstance(CLSID_Line2d);
-
+   newLine.CoCreateInstance(CLSID_Line2d);
    newLine->SetExplicit(pntLine, vec);
 
    *line = newLine;
@@ -860,7 +845,7 @@ HRESULT cogoUtil::CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 
    return S_OK;
 }
 
-HRESULT cogoUtil::IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offset1, IPoint2d* p2, VARIANT varDir2, Float64 offset2, IPoint2dFactory* pPointFactory, IPoint2d** point)
+HRESULT cogoUtil::IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offset1, IPoint2d* p2, VARIANT varDir2, Float64 offset2, IPoint2d** point)
 {
    CHECK_IN(p1);
    CHECK_IN(p2);
@@ -889,12 +874,12 @@ HRESULT cogoUtil::IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offse
    CComPtr<ILine2d> line[2];
    for (long i = 0; i < 2; i++)
    {
-      cogoUtil::CreateParallelLine(pnt[i], dir[i], offset[i], nullptr/*line factory*/, &line[i]);
+      cogoUtil::CreateParallelLine(pnt[i], dir[i], offset[i], &line[i]);
    }
 
    // Intersect the lines
    CComPtr<IPoint2d> p;
-   hr = geomUtil::LineLineIntersect(line[0], line[1], pPointFactory, &p);
+   hr = geomUtil::LineLineIntersect(line[0], line[1], &p);
    if (FAILED(hr))
       return hr;
 
@@ -910,7 +895,7 @@ HRESULT cogoUtil::IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offse
    return S_OK;
 }
 
-HRESULT cogoUtil::IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64 offset, IPoint2d* pntCenter, Float64 radius, IPoint2d* pntNearest, IPoint2dFactory* pPointFactory, IPoint2d** point)
+HRESULT cogoUtil::IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64 offset, IPoint2d* pntCenter, Float64 radius, IPoint2d* pntNearest, IPoint2d** point)
 {
    CHECK_IN(pnt1);
    CHECK_IN(pntCenter);
@@ -929,7 +914,7 @@ HRESULT cogoUtil::IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64
       return hr;
 
    CComPtr<ILine2d> line;
-   cogoUtil::CreateParallelLine(pnt1, dir, offset, nullptr, &line);
+   cogoUtil::CreateParallelLine(pnt1, dir, offset, &line);
 
    CComPtr<ICircle> circle;
    circle.CoCreateInstance(CLSID_Circle);
@@ -938,7 +923,7 @@ HRESULT cogoUtil::IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64
 
    CComPtr<IPoint2d> p1, p2;
    short nIntersect;
-   geomUtil::LineCircleIntersect(line, circle, pPointFactory, &p1, &p2, &nIntersect);
+   geomUtil::LineCircleIntersect(line, circle, &p1, &p2, &nIntersect);
 
    if (nIntersect == 0)
    {
@@ -969,7 +954,7 @@ HRESULT cogoUtil::IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64
    return S_OK;
 }
 
-HRESULT cogoUtil::IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float64 r2, IPoint2d* nearest, IPoint2dFactory* pPointFactory, IPoint2d** point)
+HRESULT cogoUtil::IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float64 r2, IPoint2d* nearest, IPoint2d** point)
 {
    CHECK_IN(c1);
    CHECK_IN(c2);
@@ -991,7 +976,7 @@ HRESULT cogoUtil::IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float
 
    CComPtr<IPoint2d> p1, p2;
    short nIntersect;
-   geomUtil::CircleCircleIntersect(circle1, circle2, pPointFactory, &p1, &p2, &nIntersect);
+   geomUtil::CircleCircleIntersect(circle1, circle2, &p1, &p2, &nIntersect);
 
    if (nIntersect == 0)
    {

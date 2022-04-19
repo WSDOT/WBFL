@@ -255,70 +255,6 @@ void CTestLineSegment3d::Test()
    //TRY_TEST(IsEqual(y, 20.0),true);
 
    TestISupportErrorInfo();
-
-
-   // Test Events
-   CComObject<CTestLineSegment3d>* pTestSegment;
-   CComObject<CTestLineSegment3d>::CreateInstance(&pTestSegment);
-   pTestSegment->AddRef();
-
-   CComPtr<IUnknown> punk(pTestSegment);
-   DWORD dwCookie;
-   TRY_TEST(AtlAdvise(pSeg,punk,IID_ILineSegment3dEvents,&dwCookie),S_OK);
-
-   pTestSegment->InitEventTest();
-   pSeg->Offset(10,20,0);
-   TRY_TEST(pTestSegment->PassedEventTest(), true );
-
-   pTestSegment->InitEventTest();
-   pSeg->OffsetEx(size);
-   TRY_TEST(pTestSegment->PassedEventTest(), true );
-
-   //pTestSegment->InitEventTest();
-   //pSeg->Rotate(10,20,0.25);
-   //TRY_TEST(pTestSegment->PassedEventTest(), true );
-
-   //pTestSegment->InitEventTest();
-   //pSeg->RotateEx(center,0.25);
-   //TRY_TEST(pTestSegment->PassedEventTest(), true );
-
-   pTestSegment->InitEventTest();
-   pStart->Move(4,4,0);
-   TRY_TEST(pTestSegment->PassedEventTest(), true );
-
-   pTestSegment->InitEventTest();
-   pEnd->Move(5,5,0);
-   TRY_TEST(pTestSegment->PassedEventTest(), true );
-
-   CComPtr<IPoint3d> newStart;
-   newStart.CoCreateInstance(CLSID_Point3d);
-   pTestSegment->InitEventTest();
-   pSeg->putref_StartPoint(newStart);
-   TRY_TEST(pTestSegment->PassedEventTest(), true );
-   pTestSegment->InitEventTest();
-   newStart->Move(4,4,0);
-   TRY_TEST(pTestSegment->PassedEventTest(), true );
-   pTestSegment->InitEventTest();
-   pStart->Move(4,4,0);
-   TRY_TEST(pTestSegment->PassedEventTest(), false );
-
-   CComPtr<IPoint3d> newEnd;
-   newEnd.CoCreateInstance(CLSID_Point3d);
-   pTestSegment->InitEventTest();
-   pSeg->putref_EndPoint(newEnd);
-   TRY_TEST(pTestSegment->PassedEventTest(), true );
-   pTestSegment->InitEventTest();
-   newEnd->Move(4,4,0);
-   TRY_TEST(pTestSegment->PassedEventTest(), true );
-   pTestSegment->InitEventTest();
-   pEnd->Move(4,4,0);
-   TRY_TEST(pTestSegment->PassedEventTest(), false );
-
-
-   TRY_TEST(AtlUnadvise(pSeg,IID_ILineSegment3dEvents,dwCookie),S_OK);
-
-   pTestSegment->Release();
-
 }
 
 void CTestLineSegment3d::TestISupportErrorInfo()
@@ -326,13 +262,5 @@ void CTestLineSegment3d::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_LineSegment3d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ILineSegment3d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
-}
-
-
-STDMETHODIMP CTestLineSegment3d::OnLineSegmentChanged(ILineSegment3d* lineSegment)
-{
-   Pass();
-   return S_OK;
 }

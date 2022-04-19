@@ -24,7 +24,6 @@
 // CompoundCurveDisplayObjectImpl.cpp : Implementation of CCompoundCurveDisplayObjectImpl
 #include "stdafx.h"
 #include <WBFLDManipTools.h>
-#include "DManipTools\DManipTools.h"
 #include "CompoundCurveDisplayObjectImpl.h"
 #include <MathEx.h>
 

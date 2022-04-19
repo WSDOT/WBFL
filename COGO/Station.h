@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CStation
@@ -41,9 +40,7 @@ class ATL_NO_VTABLE CStation :
    public IObjectSafetyImpl<CStation,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IStation,
    public IStructuredStorage2,
-   public IPersistImpl<CStation>,
-   public CProxyDStationEvents< CStation >,
-   public IConnectionPointContainerImpl<CStation>
+   public IPersistImpl<CStation>
 {
 public:
 	CStation()
@@ -61,7 +58,6 @@ BEGIN_COM_MAP(CStation)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 END_COM_MAP()
 
    Float64 m_Value;
@@ -95,11 +91,6 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 public :
-
-BEGIN_CONNECTION_POINT_MAP(CStation)
-	CONNECTION_POINT_ENTRY(IID_IStationEvents)
-END_CONNECTION_POINT_MAP()
-
 };
 
 #endif //__STATION_H_

@@ -122,7 +122,7 @@ void CTestVertCurveCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test putref_Item
+   // Test put_Item
    //
    TRY_TEST(pColl->AddEx(1,vc),S_OK);
 
@@ -193,55 +193,6 @@ void CTestVertCurveCollection::Test()
    }
 
    //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestVertCurveCollection>* pTestEvents;
-   CComObject<CTestVertCurveCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestEvents);
-   TRY_TEST(AtlAdvise(pColl,punk,IID_IVertCurveCollectionEvents,&dwCookie),S_OK);
-
-   // Add a VertCurve to the collection
-   pTestEvents->InitEventTest(1);
-   pColl->AddEx(1,vc);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Move a VertCurve... Event should fire
-   pTestEvents->InitEventTest(1);
-   pbg->put_Station(CComVariant(150));
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   pTestEvents->InitEventTest(1);
-   pbg->put_Elevation(150);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   pColl->AddEx(2,vc);
-   pColl->AddEx(3,vc);
-   pColl->AddEx(4,vc);
-
-   // Remove a VertCurve
-   pTestEvents->InitEventTest(1);
-   pColl->Remove(1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change VertCurve references
-   pTestEvents->InitEventTest(2);
-   pColl->putref_Item(2,vc);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   TRY_TEST(AtlUnadvise(pColl,IID_IVertCurveCollectionEvents,dwCookie),S_OK);
-   pTestEvents->Release();
-
-   //
    // Test ISupportErrorInfo
    //
    CComQIPtr<ISupportErrorInfo> eInfo(pColl);
@@ -252,38 +203,4 @@ void CTestVertCurveCollection::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_VertCurveCollection,IID_IVertCurveCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_VertCurveCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveChanged(CogoObjectID id,IVertCurve* vc)
-{
-//   MessageBox(nullptr,"VertCurveChanged","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveAdded(CogoObjectID id,IVertCurve* vc)
-{
-//   MessageBox(nullptr,"VertCurveAdded","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveRemoved(CogoObjectID id)
-{
-//   MessageBox(nullptr,"VertCurveRemoved","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestVertCurveCollection::OnVertCurvesCleared()
-{
-//   MessageBox(nullptr,"VertCurveCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

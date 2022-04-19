@@ -27,7 +27,6 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "PointCollection.h"
-#include "PointFactory.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,15 +38,11 @@ static char THIS_FILE[] = __FILE__;
 // CPointCollection
 HRESULT CPointCollection::FinalConstruct()
 {
-   CComObject<CPointFactory>* pFactory;
-   CComObject<CPointFactory>::CreateInstance(&pFactory);
-   m_Factory = pFactory;
    return S_OK;
 }
 
 void CPointCollection::FinalRelease()
 {
-   UnadviseAll();
 }
 
 
@@ -79,14 +74,7 @@ STDMETHODIMP CPointCollection::putref_Item(CogoObjectID id, IPoint2d *newVal)
    }
 
    CComVariant& var = (*found).second;
-
-   CComQIPtr<IPoint2d> old_point(var.pdispVal);
-   Unadvise(id,old_point);
-
    var = newVal;
-   Advise(id,newVal);
-
-   Fire_OnPointChanged(id,newVal);
 
 	return S_OK;
 }
@@ -107,13 +95,7 @@ STDMETHODIMP CPointCollection::Remove(CogoObjectID id)
       return PointNotFound(id);
    }
 
-   CComVariant& var = (*found).second;
-   CComQIPtr<IPoint2d> point(var.pdispVal);
-   Unadvise(id,point);
-
    m_coll.erase(found);
-
-   Fire_OnPointRemoved(id);
 
 	return S_OK;
 }
@@ -126,7 +108,7 @@ STDMETHODIMP CPointCollection::Add(CogoObjectID id, Float64 x, Float64 y,IPoint2
    }
 
    CComPtr<IPoint2d> newPoint;
-   m_Factory->CreatePoint(&newPoint);
+   newPoint.CoCreateInstance(CLSID_Point2d);
 
    newPoint->Move(x,y);
 
@@ -159,19 +141,12 @@ STDMETHODIMP CPointCollection::AddEx(CogoObjectID id, IPoint2d* newVal)
       return E_FAIL;
    }
 
-   // Hookup to the connection point
-   Advise(id,newVal);
-
-   Fire_OnPointAdded(id,newVal);
-
 	return S_OK;
 }
 
 STDMETHODIMP CPointCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnPointsCleared();
 	return S_OK;
 }
 
@@ -212,21 +187,6 @@ STDMETHODIMP CPointCollection::get__EnumIDs(IEnumIDs** ppenum)
 
    pEnum->QueryInterface( ppenum );
 
-   return S_OK;
-}
-
-STDMETHODIMP CPointCollection::get_Factory(IPoint2dFactory** factory)
-{
-   CHECK_RETOBJ(factory);
-   (*factory) = m_Factory;
-   (*factory)->AddRef();
-   return S_OK;
-}
-
-STDMETHODIMP CPointCollection::putref_Factory(IPoint2dFactory* factory)
-{
-   CHECK_IN(factory);
-   m_Factory = factory;
    return S_OK;
 }
 
@@ -276,8 +236,6 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   (*clone)->putref_Factory(m_Factory);
-
    CollectionIndexType count = 0;
    CComPtr<IEnumPoint2d> enumPoints;
    get__EnumPoints(&enumPoints);
@@ -285,7 +243,7 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
    while ( enumPoints->Next(1,&point,nullptr) != S_FALSE )
    {
       CComPtr<IPoint2d> clonePoint;
-      m_Factory->CreatePoint(&clonePoint);
+      clonePoint.CoCreateInstance(CLSID_Point2d);
 
       clonePoint->MoveEx(point);
 
@@ -377,95 +335,17 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
 
 HRESULT CPointCollection::OnBeforeSave(IStructuredSave2* pSave)
 {
-   pSave->put_Property(CComBSTR("PointFactory"),CComVariant(m_Factory));
+   //pSave->put_Property(CComBSTR("PointFactory"),CComVariant(m_Factory));
    return S_OK;
 }
 
 HRESULT CPointCollection::OnBeforeLoad(IStructuredLoad2* pLoad)
 {
-   CComVariant var;
-   pLoad->get_Property(CComBSTR("PointFactory"),&var);
-   m_Factory.Release();
-   _CopyVariantToInterface<IPoint2dFactory>::copy(&m_Factory,&var);
+   //CComVariant var;
+   //pLoad->get_Property(CComBSTR("PointFactory"),&var);
+   //m_Factory.Release();
+   //_CopyVariantToInterface<IPoint2dFactory>::copy(&m_Factory,&var);
    return S_OK;
-}
-
-////////////////////////////////////////////////
-
-STDMETHODIMP CPointCollection::OnPointChanged(IPoint2d* point)
-{
-   CComQIPtr<IPoint2d> pointEx(point);
-   // Better be listening only to IPoint2d objects
-   ATLASSERT( pointEx != nullptr );
-
-   CogoObjectID id;
-   HRESULT hr = FindID(pointEx,&id);
-
-   // This container only listens to events from point objects in this 
-   // container. If the id isn't found an error has been made somewhere
-   Fire_OnPointChanged(id,pointEx);
-
-   return S_OK;
-}
-
-void CPointCollection::Advise(CogoObjectID id,IPoint2d* point)
-{
-   ATLASSERT(point != 0);
-
-   DWORD dwCookie;
-   CComPtr<IPoint2d> pCP(point);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_IPoint2dEvents, &dwCookie );
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection point with Point object\n");
-      return;
-   }
-
-   m_Cookies.insert( std::make_pair(id,dwCookie) );
-
-   InternalRelease(); // Break circular reference
-}
-
-void CPointCollection::Unadvise(CogoObjectID id,IPoint2d* point)
-{
-   ATLASSERT(point != 0);
-
-   //
-   // Disconnection from connection point
-   //
-
-   // Lookup the cookie
-   std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( id );
-   if ( found == m_Cookies.end() )
-   {
-      ATLTRACE("Failed to disconnect connection point with Point object\n");
-      return;
-   }
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( point );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_IPoint2dEvents, &pCP );
-   DWORD dwCookie = (*found).second;
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   // Remove cookie from map
-   m_Cookies.erase( id );
-}
-
-void CPointCollection::UnadviseAll()
-{
-   std::map<CogoObjectID,CComVariant>::iterator iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
-   {
-      CogoObjectID id = (*iter).first;
-      CComQIPtr<IPoint2d> point( (*iter).second.pdispVal );
-      Unadvise(id,point);
-   }
 }
 
 HRESULT CPointCollection::PointNotFound(CogoObjectID id)

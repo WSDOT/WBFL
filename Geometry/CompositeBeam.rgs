@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLSections.CompositeBeam.1 = s 'CompositeBeam Class'
+	{
+		CLSID = s '{D7610039-0289-11D5-8BAE-006097C68A9C}'
+	}
+	WBFLSections.CompositeBeam = s 'CompositeBeam Class'
+	{
+		CLSID = s '{D7610039-0289-11D5-8BAE-006097C68A9C}'
+		CurVer = s 'WBFLSections.CompositeBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D7610039-0289-11D5-8BAE-006097C68A9C} = s 'CompositeBeam Class'
+		{
+			ProgID = s 'WBFLSections.CompositeBeam.1'
+			VersionIndependentProgID = s 'WBFLSections.CompositeBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

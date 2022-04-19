@@ -35,7 +35,7 @@
 #endif
 
 #include <Lrfd\PsStrand.h>
-#include <GeometricPrimitives\Primitives.h>
+#include <GeomModel/Primitives.h>
 
 // LOCAL INCLUDES
 //
@@ -96,8 +96,8 @@ public:
                          Float64 Ixx,    // moment of inertia of girder
                          Float64 Iyy,
                          Float64 Ixy,
-                         const gpPoint2d& ePerm, // eccentricity of permanent ps strands
-                         const gpPoint2d& eTemp, // eccentricity of temporary ps strands
+                         const WBFL::Geometry::Point2d& ePerm, // eccentricity of permanent ps strands
+                         const WBFL::Geometry::Point2d& eTemp, // eccentricity of temporary ps strands
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 K,     // coefficient for post-tension members (N-1)/(2N)
                          Float64 Eci,   // Modulus of elasticity of concrete at transfer
@@ -149,10 +149,10 @@ public:
    void    PermanentStrand_Aps(Float64 Aps);
    Float64 PermanentStrand_Aps() const;
 
-   void    TemporaryStrand_Eccentricty(const gpPoint2d& e);
-   const gpPoint2d& TemporaryStrand_Eccentricty() const;
-   void    PermanentStrand_Eccentricty(const gpPoint2d& e);
-   const gpPoint2d& PermanentStrand_Eccentricty() const;
+   void    TemporaryStrand_Eccentricty(const WBFL::Geometry::Point2d& e);
+   const WBFL::Geometry::Point2d& TemporaryStrand_Eccentricty() const;
+   void    PermanentStrand_Eccentricty(const WBFL::Geometry::Point2d& e);
+   const WBFL::Geometry::Point2d& PermanentStrand_Eccentricty() const;
 
    void GrossProperties(bool bGrossProperties);
    bool GrossProperties() const;
@@ -196,8 +196,8 @@ private:
    // GROUP: DATA MEMBERS
    Float64 m_ApsPerm;
    Float64 m_ApsTemp;
-   gpPoint2d m_ePerm;
-   gpPoint2d m_eTemp;  
+   WBFL::Geometry::Point2d m_ePerm;
+   WBFL::Geometry::Point2d m_eTemp;
 
    Float64 m_FpjPerm;   // Jacking stress
    Float64 m_FpjTemp;   // Jacking stress
@@ -253,10 +253,10 @@ inline Float64 lrfdElasticShortening::PermanentStrand_Aps() const      { return 
 inline void lrfdElasticShortening::GrossProperties(bool bGrossProperties) { m_bGrossProperties = bGrossProperties; m_bUpdate = true; }
 inline bool lrfdElasticShortening::GrossProperties() const { return m_bGrossProperties; }
 
-inline void    lrfdElasticShortening::TemporaryStrand_Eccentricty(const gpPoint2d& e) { m_eTemp = e; m_bUpdate = true; }
-inline const gpPoint2d& lrfdElasticShortening::TemporaryStrand_Eccentricty() const    { return m_eTemp; }
-inline void    lrfdElasticShortening::PermanentStrand_Eccentricty(const gpPoint2d& e) { m_ePerm = e; m_bUpdate = true; }
-inline const gpPoint2d& lrfdElasticShortening::PermanentStrand_Eccentricty() const    { return m_ePerm; }
+inline void    lrfdElasticShortening::TemporaryStrand_Eccentricty(const WBFL::Geometry::Point2d& e) { m_eTemp = e; m_bUpdate = true; }
+inline const WBFL::Geometry::Point2d& lrfdElasticShortening::TemporaryStrand_Eccentricty() const    { return m_eTemp; }
+inline void    lrfdElasticShortening::PermanentStrand_Eccentricty(const WBFL::Geometry::Point2d& e) { m_ePerm = e; m_bUpdate = true; }
+inline const WBFL::Geometry::Point2d& lrfdElasticShortening::PermanentStrand_Eccentricty() const    { return m_ePerm; }
 
 inline void    lrfdElasticShortening::GdrMoment(Float64 Mdlg) { m_Mdlg = Mdlg; m_bUpdate = true; }
 inline Float64 lrfdElasticShortening::GdrMoment() const       { return m_Mdlg; }

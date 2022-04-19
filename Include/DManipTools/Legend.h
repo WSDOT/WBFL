@@ -27,6 +27,9 @@
 
 class CRect;
 class CDC;
+interface iDragDataSink;
+interface iDragDataSource;
+interface iDisplayObject;
 
 
 // {55504B51-10F4-4c2e-9E61-974B2E38396C}

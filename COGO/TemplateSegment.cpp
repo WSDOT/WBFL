@@ -85,11 +85,7 @@ STDMETHODIMP CTemplateSegment::put_Width(Float64 width)
    if ( width < 0 )
       return E_INVALIDARG;
 
-   if ( !IsEqual(m_Width,width) )
-   {
-      m_Width = width;
-      Fire_OnTemplateSegmentChanged(this);
-   }
+   m_Width = width;
 
    return S_OK;
 }
@@ -103,11 +99,7 @@ STDMETHODIMP CTemplateSegment::get_Width(Float64* width)
 
 STDMETHODIMP CTemplateSegment::put_Slope(Float64 slope)
 {
-   if ( !IsEqual(m_Slope,slope) )
-   {
-      m_Slope = slope;
-      Fire_OnTemplateSegmentChanged(this);
-   }
+   m_Slope = slope;
 
    return S_OK;
 }
@@ -121,11 +113,7 @@ STDMETHODIMP CTemplateSegment::get_Slope(Float64* slope)
 
 STDMETHODIMP CTemplateSegment::put_SlopeType(TemplateSlopeType type)
 {
-   if ( m_SlopeType != type )
-   {
-      m_SlopeType = type;
-      Fire_OnTemplateSegmentChanged(this);
-   }
+   m_SlopeType = type;
 
    return S_OK;
 }

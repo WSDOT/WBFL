@@ -42,15 +42,6 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT CCoordinateXform2d::FinalConstruct()
 {
-   CComObject<CPoint2d>* origin;
-   HRESULT hr = CComObject<CPoint2d>::CreateInstance( &origin );
-   if ( FAILED(hr) ) return hr;
-
-//   origin->put_X(0.0);
-//   origin->put_Y(0.0);
-
-   origin->QueryInterface( &m_Origin );
-
    return S_OK;
 }
 
@@ -58,8 +49,7 @@ STDMETHODIMP CCoordinateXform2d::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_ICoordinateXform2d,
-      &IID_IStructuredStorage2
+		&IID_ICoordinateXform2d
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -72,35 +62,26 @@ STDMETHODIMP CCoordinateXform2d::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CCoordinateXform2d::get_NewOrigin(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   m_Origin->QueryInterface( pVal );
-
-   return S_OK;
+   return CreatePoint(m_Xform.GetNewOrigin(), pVal);
 }
 
-STDMETHODIMP CCoordinateXform2d::putref_NewOrigin(IPoint2d *newVal)
+STDMETHODIMP CCoordinateXform2d::put_NewOrigin(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
-
-   m_Origin = newVal;
-
+   m_Xform.SetNewOrigin(GetPoint(newVal));
    return S_OK;
 }
 
 STDMETHODIMP CCoordinateXform2d::get_RotationAngle(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-
-   *pVal = m_Angle;
-
+   *pVal = m_Xform.GetRotationAngle();
    return S_OK;
 }
 
 STDMETHODIMP CCoordinateXform2d::put_RotationAngle(Float64 newVal)
 {
-   m_Angle = newVal;
-   m_CosAngle = cos(m_Angle);
-   m_SinAngle = sin(m_Angle);
+   m_Xform.SetRotationAngle(newVal);
    return S_OK;
 }
 
@@ -108,105 +89,18 @@ STDMETHODIMP CCoordinateXform2d::Xform(IPoint2d** point,XformType type)
 {
    CHECK_INOUT(point);
 
-   HRESULT hr = S_OK;
-   if ( type == xfrmOldToNew )
-      hr = OldToNew( *point );
-   else
-      hr = NewToOld( *point );
+   WBFL::Geometry::Point2d p;
+   (*point)->Location(&p.X(), &p.Y());
+    m_Xform.Xform(p, type == xfrmOldToNew ? WBFL::Geometry::CoordinateXform2d::Type::OldToNew : WBFL::Geometry::CoordinateXform2d::Type::NewToOld);
+   (*point)->Move(p.X(), p.Y());
 
-   return hr;
+   return S_OK;
 }
 
 STDMETHODIMP CCoordinateXform2d::XformEx(IPoint2d* point, XformType type, IPoint2d** result)
 {
    CHECK_IN(point);
    CHECK_RETOBJ(result);
-   CreatePoint(point,nullptr,result);
+   CreatePoint(point,result);
    return Xform(result,type);
-}
-
-STDMETHODIMP CCoordinateXform2d::OldToNew(IPoint2d* point)
-{
-   Float64 x,y;
-   GetCoordinates(point,&x,&y);
-
-   Float64 xo,yo;
-   GetCoordinates(m_Origin,&xo,&yo);
-
-   Float64 x1,y1;
-   x1 =  (x-xo)*m_CosAngle + (y-yo)*m_SinAngle;
-   y1 = -(x-xo)*m_SinAngle + (y-yo)*m_CosAngle;
-
-   point->Move(x1,y1);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCoordinateXform2d::NewToOld(IPoint2d* point)
-{
-   Float64 x1,y1;
-   GetCoordinates(point,&x1,&y1);
-
-   Float64 xo,yo;
-   GetCoordinates(m_Origin,&xo,&yo);
-
-   Float64 x,y;
-   x = x1*m_CosAngle - y1*m_SinAngle + xo;
-   y = x1*m_SinAngle + y1*m_CosAngle + yo;
-
-   point->Move(x,y);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCoordinateXform2d::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IPersist
-STDMETHODIMP CCoordinateXform2d::GetClassID(CLSID* pClassID)
-{
-   CHECK_IN(pClassID);
-
-   *pClassID = GetObjectCLSID();
-   return S_OK;
-}
-
-// IStructuredStorage2
-STDMETHODIMP CCoordinateXform2d::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("CoordinateXform2d"),1.0);
-
-   // Save the offset constant
-   pSave->put_Property(CComBSTR("Angle"),CComVariant(m_Angle));
-   pSave->put_Property(CComBSTR("Origin"),CComVariant(m_Origin));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CCoordinateXform2d::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("CoordinateXform2d"));
-   
-   pLoad->get_Property(CComBSTR("Angle"),&var);
-   m_Angle = var.dblVal;
-
-   pLoad->get_Property(CComBSTR("Origin"),&var);
-   if ( FAILED( _CopyVariantToInterface<IPoint2d>::copy(&m_Origin,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   return S_OK;
 }

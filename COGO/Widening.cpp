@@ -150,12 +150,9 @@ STDMETHODIMP CWidening::put_BeginTransition(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_BeginTransition) )
-   {
-      m_BeginTransition.Release();
-      objStation->Clone(&m_BeginTransition);
-      Fire_OnWideningChanged(this);
-   }
+
+   m_BeginTransition.Release();
+   objStation->Clone(&m_BeginTransition);
 
    return S_OK;
 }
@@ -181,12 +178,9 @@ STDMETHODIMP CWidening::put_BeginFullWidening(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_BeginFullWidening) )
-   {
-      m_BeginFullWidening.Release();
-      objStation->Clone(&m_BeginFullWidening);
-      Fire_OnWideningChanged(this);
-   }
+
+   m_BeginFullWidening.Release();
+   objStation->Clone(&m_BeginFullWidening);
 
    return S_OK;
 }
@@ -212,12 +206,9 @@ STDMETHODIMP CWidening::put_EndFullWidening(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_EndFullWidening) )
-   {
-      m_EndFullWidening.Release();
-      objStation->Clone(&m_EndFullWidening);
-      Fire_OnWideningChanged(this);
-   }
+
+   m_EndFullWidening.Release();
+   objStation->Clone(&m_EndFullWidening);
 
    return S_OK;
 }
@@ -243,12 +234,9 @@ STDMETHODIMP CWidening::put_EndTransition(VARIANT varStation)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( !cogoUtil::IsEqual(profile,objStation,m_EndTransition) )
-   {
-      m_EndTransition.Release();
-      objStation->Clone(&m_EndTransition);
-      Fire_OnWideningChanged(this);
-   }
+
+   m_EndTransition.Release();
+   objStation->Clone(&m_EndTransition);
 
    return S_OK;
 }
@@ -260,11 +248,7 @@ STDMETHODIMP CWidening::get_EndTransition(IStation** station)
 
 STDMETHODIMP CWidening::put_Widening(Float64 value)
 {
-   if ( !IsEqual(m_Widening,value) )
-   {
-      m_Widening = value;
-      Fire_OnWideningChanged(this);
-   }
+   m_Widening = value;
    return S_OK;
 }
 
@@ -282,11 +266,7 @@ STDMETHODIMP CWidening::put_Segment(IndexType pntIdx,IndexType segmentIdx)
       return E_INVALIDARG;
    }
 
-   if ( m_SegmentIndex[pntIdx] != segmentIdx )
-   {
-      m_SegmentIndex[pntIdx] = segmentIdx;
-      Fire_OnWideningChanged(this);
-   }
+   m_SegmentIndex[pntIdx] = segmentIdx;
    return S_OK;
 }
 

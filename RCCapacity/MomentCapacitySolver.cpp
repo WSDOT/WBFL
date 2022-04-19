@@ -378,7 +378,7 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
    {
       // curvature is fixed... move the strain plain up/down changing the strain at the extreme point
       Float64 k = k_or_ec;
-      if ( IsZero(k,1e-20) )
+      if ( IsZero(k,1e-6) )
       {
          m_StrainPlane->ThroughAltitude(eo);
       }
@@ -733,7 +733,7 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    CComPtr<IGeneralSection> section;
    m_GeneralSolver->get_Section(&section);
    IndexType primaryShapeIdx;
-   section->get_PrimaryShape(&primaryShapeIdx);
+   section->get_GirderShape(&primaryShapeIdx);
    CComPtr<IPlane3d> initial_strain_plane;
    section->get_InitialStrain(primaryShapeIdx, &initial_strain_plane);
 
@@ -970,7 +970,7 @@ HRESULT CMomentCapacitySolver::AnalyzeSection2(Float64 Fz, Float64 naAngle, Floa
    CComPtr<IGeneralSection> section;
    m_GeneralSolver->get_Section(&section);
    IndexType primaryShapeIdx;
-   section->get_PrimaryShape(&primaryShapeIdx);
+   section->get_GirderShape(&primaryShapeIdx);
    CComPtr<IPlane3d> initial_strain_plane;
    section->get_InitialStrain(primaryShapeIdx, &initial_strain_plane);
 

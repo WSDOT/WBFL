@@ -408,21 +408,6 @@ library WBFLCogo
 		[propput, helpstring("property BearingFormat"),helpcontext(IDH_DirectionDisplayUnitFormatter_BearingFormat)] HRESULT BearingFormat([in] VARIANT_BOOL newVal);
    };
 
-   /// Callback interface for IPoint2d events
-    [
-       object,
-       oleautomation,
-       uuid(74B1E8A0-5EAC-11d5-8C32-006097C68A9C),
-	   helpcontext(IDH_Point),
-       helpstring("IPointEvents Interface"),
-       pointer_default(unique)
-    ]
-    interface IPointEvents : IUnknown
-    {
-       /// Called after a point changes.
-       [helpstring("event OnPointChanged"),helpcontext(IDH_Point_OnPointChanged)] HRESULT OnPointChanged(IPoint2d* point);
-    };
-
     /// Interface used to enumerate values in a container
     [
        object,
@@ -510,10 +495,6 @@ library WBFLCogo
         /// Returns the ID at a specific location in the collection
         [helpstring("method ID"), helpcontext(IDH_PointCollection_ID)] HRESULT ID([in] CollectionIndexType index, [out, retval] CogoObjectID* ID);
 
-         /// A factory object used to create new Point2d objects
-		   [propget, helpstring("method Factory"),helpcontext(IDH_PointCollection_Factory)] HRESULT Factory([out,retval]IPoint2dFactory** factory);
-		   [propputref, helpstring("method Factory"),helpcontext(IDH_PointCollection_Factory)] HRESULT Factory([in]IPoint2dFactory* factory);
-
          /// Clones the collection making a copy of all the contained objects
          [helpstring("method Clone"), helpcontext(IDH_PointCollection_Clone)] HRESULT Clone([out, retval]IPointCollection* *clone);
 
@@ -530,40 +511,6 @@ library WBFLCogo
          [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
     };
 
-    /// Callback interface for IPointCollection events
-    [
-        object,
-        uuid(74B1E8A1-5EAC-11d5-8C32-006097C68A9C),
-        oleautomation,
-		helpcontext(IDH_PointCollection),
-        helpstring("IPointCollection Interface"),
-        pointer_default(unique)
-    ]
-    interface IPointCollectionEvents : IUnknown
-    {
-       /// Called after a point is changed
-        [helpstring("event OnPointChanged"),helpcontext(IDH_PointCollection_OnPointChanged)] 
-        HRESULT OnPointChanged(
-           [in] CogoObjectID id, ///< Point ID
-           [in] IPoint2d* point ///< The point
-        );
-
-        /// Called after a point is added
-        [helpstring("event OnPointAdded"),helpcontext(IDH_PointCollection_OnPointAdded)] 
-        HRESULT OnPointAdded(
-           [in] CogoObjectID id, ///< Point ID
-           [in] IPoint2d* point ///< The point
-        );
-
-        /// Called after a point is removed
-        [helpstring("event OnPointRemoved"),helpcontext(IDH_PointCollection_OnPointRemoved)] 
-        HRESULT OnPointRemoved(
-           [in] CogoObjectID id ///< Point ID
-        );
-
-        /// Called when the collection is cleared
-        [helpstring("event OnPointsCleared"),helpcontext(IDH_PointCollection_OnPointsCleared)] HRESULT OnPointsCleared();
-    };
 
     /// Interface for transition curves
     ///
@@ -683,30 +630,11 @@ library WBFLCogo
           [in]Float64 dy ///< Distnace to offset the curve in the Y (North-South) direction.
        );
 
-       /// A factory for creating point objects
-       [propget, helpstring("property PointFactory")] HRESULT PointFactory([out, retval] IPoint2dFactory** factory);
-       [propputref, helpstring("property PointFactory")] HRESULT PointFactory([in] IPoint2dFactory* factory);
-
        /// Creates a clone of this object
        [helpstring("method Clone")] HRESULT Clone([out, retval] ITransitionCurve** clone);
 
        /// Returns a reference to an IStructuredStorage2 interface
        [propget, helpstring("property StructuredStorage")] HRESULT StructuredStorage([out, retval] IStructuredStorage2** pVal);
-    };
-
-    /// Callback interface for transition curve events.
-    [
-        object,
-        uuid(AF12E291-4EAF-464D-978A-65B018B4B794),
-        oleautomation,
-        //helpcontext(IDH_TransitionCurve),
-        helpstring("ITransitionCurveEvents Interface"),
-        pointer_default(unique)
-    ]
-    interface ITransitionCurveEvents : IUnknown
-    {
-        /// Called after a transition curve is changed.
-        [helpstring("event OnTransitionCurveChanged")/*, helpcontext(IDH_CompoundCurve_OnCompoundCurveChanged)*/] HRESULT OnTransitionCurveChanged([in] ITransitionCurve* curve);
     };
 
     /// Interface for compound horizontal curve objects.
@@ -902,33 +830,12 @@ library WBFLCogo
         [in]Float64 dy ///< Distnace to offset the curve in the Y (North-South) direction.
      );
 
-     /// A factory for creating point objects
-	   [propget, helpstring("property PointFactory"), helpcontext(IDH_CompoundCurve_PointFactory)] HRESULT PointFactory([out,retval] IPoint2dFactory* *factory);
-	   [propputref, helpstring("property PointFactory"), helpcontext(IDH_CompoundCurve_PointFactory)] HRESULT PointFactory([in] IPoint2dFactory *factory);
-
       /// Creates a clone of this object
       [helpstring("method Clone"), helpcontext(IDH_CompoundCurve_Clone)] HRESULT Clone([out,retval] ICompoundCurve* *clone);
 
       /// Returns a reference to an IStructuredStorage2 interface
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
-
-   /// Callback interface for horizontal curve events.
-   [
-       object,
-       uuid(4726E8C7-5B74-4cda-844B-4F7B1B5AB1ED),
-       oleautomation,
-	   helpcontext(IDH_CompoundCurve),
-       helpstring("ICompoundCurveEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface ICompoundCurveEvents : IUnknown
-   {
-      /// Called after a horizontal curve is changed.
-       [helpstring("event OnCompoundCurveChanged"), helpcontext(IDH_CompoundCurve_OnCompoundCurveChanged)] HRESULT OnCompoundCurveChanged([in] ICompoundCurve* hc);
-   };
-
-
 
    /// Interface for circular horizontal curve objects.
    ///
@@ -1046,10 +953,6 @@ library WBFLCogo
            [in]Float64 dy ///< Distnace to offset the curve in the Y (North-South) direction.
        );
 
-       /// A factory for creating point objects
-       [propget, helpstring("property PointFactory")] HRESULT PointFactory([out, retval] IPoint2dFactory** factory);
-       [propputref, helpstring("property PointFactory")] HRESULT PointFactory([in] IPoint2dFactory* factory);
-
        /// Creates a clone of this object
        [helpstring("method Clone")] HRESULT Clone([out, retval] ICircularCurve** clone);
 
@@ -1057,20 +960,6 @@ library WBFLCogo
        [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2** pVal);
    };
 
-   /// Callback interface for circular curve events.
-   [
-       object,
-       uuid(E0450841-8F31-470E-83AA-B4BE779533B8),
-       oleautomation,
-       //helpcontext(IDH_CompoundCurve),
-       helpstring("ICircularCurveEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface ICircularCurveEvents : IUnknown
-   {
-       /// Called after a circular curve is changed.
-       [helpstring("event OnCircularCurveChanged")] HRESULT OnCircularCurveChanged([in] ICircularCurve* hc);
-   };
 
 	/// Interface for objects that enumerate a collection of ILineSegment2d objects
 	[
@@ -1155,10 +1044,6 @@ library WBFLCogo
           [in] ILineSegment2d* ls, ///< The line segment
           [out,retval]CogoObjectID* ID ///< Identifier of the lie segment
        );
-     
-     /// A factory object used to create new LineSegment2d objects
-     [propget, helpstring("property Factory"),helpcontext(IDH_LineSegmentCollection_Factory)] HRESULT Factory([out,retval] ILineSegment2dFactory** factory);
-	   [propputref, helpstring("property Factory"),helpcontext(IDH_LineSegmentCollection_Factory)] HRESULT Factory([in] ILineSegment2dFactory* factory);
 
       /// Returns the ID at a specific location in the collection
       [helpstring("method ID"),helpcontext(IDH_LineSegmentCollection_ID)] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
@@ -1179,41 +1064,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
 
-
-   /// Callback interface for ILineSegmentCollection events
-   [
-       object,
-       uuid(99FA2E81-A3FB-4b10-A9A6-FB1F4F6CDE75),
-       oleautomation,
-	   helpcontext(IDH_LineSegmentCollection),
-       helpstring("ILineSegmentCollectionEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface ILineSegmentCollectionEvents : IUnknown
-   {
-      /// Called after a line segment is changed
-       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentChanged)] 
-       HRESULT OnLineSegmentChanged(
-          [in] CogoObjectID id, ///< Line Segment ID
-          [in] ILineSegment2d* lineSeg ///< The line segment
-       );
-
-       /// Called after a line segment is added
-       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentAdded)] 
-       HRESULT OnLineSegmentAdded(
-          [in] CogoObjectID id, ///< Line Segment ID
-          [in] ILineSegment2d* lineSeg ///< The line segment
-       );
-
-       /// Called after a line segment is removed
-       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentRemoved)] 
-       HRESULT OnLineSegmentRemoved(
-          [in] CogoObjectID id ///< Line Segment ID
-       );
-
-       /// Called when the collection is cleared
-       [helpstring("event OnLineSegmentsCleared"),helpcontext(IDH_LineSegmentCollection_OnLineSegmentsCleared)] HRESULT OnLineSegmentsCleared();
-   };
 
    /// Interface for objects that represent a Station.
 	[
@@ -1272,25 +1122,6 @@ library WBFLCogo
       /// The StructuredStorage property.
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
-
-   /// Callback interface for station events
-	[
-		object,
-		uuid(6FA473B2-94F8-4b46-9E28-1E05C17BFE79),
-		oleautomation,
-      helpcontext(IDH_Station),
-		helpstring("IStationEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IStationEvents : IUnknown
-   {
-      /// Called after a station is changed
-       [helpstring("event OnStationChanged"),helpcontext(IDH_Station_OnStationChanged)] 
-       HRESULT OnStationChanged(
-          [in]ZoneIndexType zoneIdx, ///< The station zone
-          [in]Float64 station ///< The station
-       );
-   };
 
    /// Interface for objects that define a station equation. StationEquation objects must be created in a StationEquationCollection.
    ///
@@ -1425,34 +1256,6 @@ library WBFLCogo
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
 
-   /// Callback interfaoce for IStationEquationCollection events
-   [
-       object,
-       uuid(459B10C5-0C87-4db8-9C2C-2AC15DD03A90),
-       oleautomation,
-	   helpcontext(IDH_StationEquationCollection),
-       helpstring("IStationEquationCollectionEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface IStationEquationCollectionEvents : IUnknown
-   {
-      /// Called after a station equation is added to the collection
-       [helpstring("event OnEquationAdded"),helpcontext(IDH_StationEquationCollection_OnEquationAdded)] 
-       HRESULT OnEquationAdded(
-          [in] CollectionIndexType idx, ///< Index in the collection
-          [in] IStationEquation* pp ///< The new station equation
-       );
-       
-       /// Called after a station equation is removed from the collection.
-       [helpstring("event OnEquationRemoved"),helpcontext(IDH_StationEquationCollection_OnEquationRemoved)] 
-       HRESULT OnEquationRemoved(
-          [in] CollectionIndexType idx ///< Index of the station equation before removal
-       );
-       
-       /// Called when the collection is cleared.
-       [helpstring("event OnEquationsCleared"),helpcontext(IDH_StationEquationCollection_OnEquationsCleared)] HRESULT OnEquationsCleared();
-  };
-
    /// Interface for objects that represent a point in a vertical profile.
    ///
    /// A profile point is defined by its station and elevation.
@@ -1484,25 +1287,6 @@ library WBFLCogo
        /// The StructuredStorage property.
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
-
-   /// Callback interface for ProfilePoint events
-   [
-       object,
-       uuid(E4FDF7A1-F29D-4e44-812F-8401A67E5B09),
-       oleautomation,
-	   helpcontext(IDH_ProfilePoint),
-       helpstring("IProfilePointEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface IProfilePointEvents : IUnknown
-   {
-      /// Called after a ProfilePoint is changed
-     [helpstring("event OnProfilePointChanged"),helpcontext(IDH_ProfilePoint_OnProfilePointChanged)] 
-     HRESULT OnProfilePointChanged(
-        [in]IProfilePoint* pp ///< The ProfilePoint
-     );
-   };
-
 
    /// Interface used to enumerate values in a container
    [
@@ -1634,40 +1418,6 @@ library WBFLCogo
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
 
-   /// Callback interface for IProfilePointCollection events
-   [
-       object,
-       uuid(D871C5DE-78F4-487a-9EDD-6F465BF74043),
-       oleautomation,
-	   helpcontext(IDH_ProfilePointCollection),
-       helpstring("IProfilePointCollectionEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface IProfilePointCollectionEvents : IUnknown
-   {
-      /// Called after a profile point is changed
-       [helpstring("event OnProfilePointChanged"),helpcontext(IDH_ProfilePointCollection_OnPointChanged)] 
-       HRESULT OnProfilePointChanged(
-          [in] CogoObjectID id, ///< Profile point ID
-          [in] IProfilePoint* pp ///< The profile point
-       );
-
-       /// Called after a profile point is added
-       [helpstring("event OnProfilePointAdded"),helpcontext(IDH_ProfilePointCollection_OnPointAdded)] 
-       HRESULT OnProfilePointAdded(
-          [in] CogoObjectID id, ///< ID of the profile point
-          [in] IProfilePoint* pp ///< The profile point
-       );
-
-       /// Called after the profile point is removed
-       [helpstring("event OnProfilePointRemoved"),helpcontext(IDH_ProfilePointCollection_OnPointRemoved)] 
-       HRESULT OnProfilePointRemoved(
-          [in] CogoObjectID id ///< The profile point identifier
-       );
-
-       /// Called when the collection is cleared
-       [helpstring("event OnProfilePointsCleared"),helpcontext(IDH_ProfilePointCollection_OnPointsCleared)] HRESULT OnProfilePointsCleared();
-  };
 
    /// Interface for objects that represent a parabolic vertical curve.
    ///
@@ -1704,7 +1454,7 @@ library WBFLCogo
 
       /// The associated Profile object
        [propget, helpstring("property Profile"), helpcontext(IDH_VertCurve_Profile)] HRESULT Profile([out, retval] IProfile* *pVal);
-       [propputref, helpstring("property Profile"), helpcontext(IDH_VertCurve_Profile)] HRESULT Profile([in] IProfile* newVal);
+       [propput, helpstring("property Profile"), helpcontext(IDH_VertCurve_Profile)] HRESULT Profile([in] IProfile* newVal);
 
        /// The point on back grade
        [propget, helpstring("property PBG"), helpcontext(IDH_VertCurve_PBG)] HRESULT PBG([out, retval] IProfilePoint* *pVal);
@@ -1791,24 +1541,6 @@ library WBFLCogo
      /// The StructuredStorage property
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
-
-   /// Callback interface for VertCurve events
-   [
-       object,
-       uuid(AD7A94E4-D030-42a0-8E6F-9CFEC582904C),
-       oleautomation,
-	   helpcontext(IDH_VertCurve),
-       helpstring("IVertCurveEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface IVertCurveEvents : IUnknown
-   {
-      /// Called after a VertCurve is changed
-     [helpstring("event OnVertCurveChanged"),helpcontext(IDH_VertCurve_OnVertCurveChanged)] 
-     HRESULT OnVertCurveChanged(
-        [in]IVertCurve* vc ///< The vertical curve
-     );
-  };
 
    /// Interface for objects that enumerate a collection of IVertCurve objects
    [
@@ -1930,40 +1662,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
 
-   /// Callback interface for IVertCurveCollection events
-   [
-       object,
-       uuid(EBD26472-9710-4c00-B1D4-88F5AE075B8D),
-       oleautomation,
-	   helpcontext(IDH_VertCurveCollection),
-       helpstring("IVertCurveCollection Interface"),
-       pointer_default(unique)
-   ]
-   interface IVertCurveCollectionEvents : IUnknown
-   {
-      /// Called after a vertical curve is changed
-      [helpstring("event OnVertCurveChanged"), helpcontext(IDH_VertCurveCollection_OnVertCurveChanged)] 
-      HRESULT OnVertCurveChanged(
-         [in] CogoObjectID id, ///< Vertical curve ID
-         [in] IVertCurve* vc ///< The vertical curve
-      );
-
-      /// Called after a vertical curve is added
-      [helpstring("event OnVertCurveAdded"), helpcontext(IDH_VertCurveCollection_OnVertCurveAdded)] 
-      HRESULT OnVertCurveAdded(
-         [in] CogoObjectID id, ///< Vertical curve ID
-         [in] IVertCurve* vc ///< The vertical curve
-      );
-
-      /// Called after a vertical curve is removed
-      [helpstring("event OnVertCurveRemoved"), helpcontext(IDH_VertCurveCollection_OnVertCurveRemoved)] 
-      HRESULT OnVertCurveRemoved(
-         [in] CogoObjectID id ///< Vertical curve ID
-      );
-
-      /// Called when the collection is cleared
-      [helpstring("event OnVertCurvesCleared"), helpcontext(IDH_VertCurveCollection_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared();
-   };
 	
    /// Interface for objects that enumerate a collection of ICompoundCurve objects
    [
@@ -2087,40 +1785,6 @@ library WBFLCogo
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
-   /// Callback interface for ICompoundCurveCollection events
-   [
-		object,
-		uuid(7322B2AD-A63B-4348-854C-ED1130B7EB49),
-		oleautomation,
-		helpcontext(IDH_CompoundCurveCollection),
-		helpstring("ICompoundCurveCollectionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface ICompoundCurveCollectionEvents : IUnknown
-   {
-      /// Called after a horizontal curve is changed
-      [helpstring("event OnCompoundCurveChanged"), helpcontext(IDH_CompoundCurveCollection_OnCompoundCurveChanged)] 
-      HRESULT OnCompoundCurveChanged(
-         [in] CogoObjectID id, ///< Horizontal curve ID
-         [in] ICompoundCurve* hc ///< The horizontal curve
-      );
-
-      /// Called after a horizontal curve is added
-      [helpstring("event OnCompoundCurveAdded"), helpcontext(IDH_CompoundCurveCollection_OnCompoundCurveAdded)] 
-      HRESULT OnCompoundCurveAdded(
-         [in] CogoObjectID id, ///< Horizontal curve ID
-         [in] ICompoundCurve* hc ///< The horizontal curve
-      );
-
-      /// Called after a horizontal curve is removed
-      [helpstring("event OnCompoundCurveRemoved"), helpcontext(IDH_CompoundCurveCollection_OnCompoundCurveRemoved)] 
-      HRESULT OnCompoundCurveRemoved(
-         [in] CogoObjectID id ///< Horizontal curve ID
-      );
-
-      /// Called when the collection is cleared
-      [helpstring("event OnCompoundCurvesCleared"), helpcontext(IDH_CompoundCurveCollection_OnCompoundCurvesCleared)] HRESULT OnCompoundCurvesCleared();
-   };
 
    /// Interface for objects that represent a cubic spline.
    ///
@@ -2209,30 +1873,18 @@ library WBFLCogo
      /// Returns the length of the spline
 	  [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* pLength);
 
-     /// A factory object used to create new Point2d objects
-     [propget, helpstring("property PointFactory")] HRESULT PointFactory([out,retval] IPoint2dFactory* *factory);
-      [propputref, helpstring("property PointFactory")] HRESULT PointFactory([in] IPoint2dFactory *factory);
+     /// Offsets the curve from its present location
+     [helpstring("method Offset")] HRESULT Offset
+     (
+        [in]Float64 dx, ///< Distance to offset the curve in the X (East-West) direction.
+        [in]Float64 dy ///< Distnace to offset the curve in the Y (North-South) direction.
+     );
 
       /// Creates a copy of the spline. Copies all the spline points and start and end tangents
       [helpstring("method Clone")] HRESULT Clone([out,retval] ICubicSpline* *clone);
 
       /// The StructuredStorage property.
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-   };
-
-   /// Callback interface for ICubicSpline events
-   [
-       object,
-       uuid(7A853591-F2A0-4b22-AB22-4ECE47D28F7A),
-       oleautomation,
-	   //helpcontext(IDH_CubicSpline),
-       helpstring("ICubicSplineEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface ICubicSplineEvents : IUnknown
-   {
-      /// Called after the spline is changed
-       [helpstring("event OnSplineChanged")/*, helpcontext(IDH_CubicSpline_OnSplineChanged)*/] HRESULT OnSplineChanged([in] ICubicSpline* spline);
    };
 
    /// Interface for objects that represent a Surface widening modification
@@ -2303,21 +1955,6 @@ library WBFLCogo
 
       /// The StructuredStorage property
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-   };
-
-   /// Callback interface for IWidening events
-   [
-      object,
-      uuid(4C081EEC-CB28-465c-AA42-93B92458E8F4),
-      oleautomation,
-      //helpcontext(IDH_Widening),
-      helpstring("IWideningEvents Interface"),
-      pointer_default(unique)
-   ]
-   interface IWideningEvents : IUnknown
-   {
-      /// Called after the widening has changed
-      [helpstring("event OnWideningChanged")] HRESULT OnWideningChanged([in]IWidening* pWidening);
    };
 
    /// Interface for objects that enumerate a collection of IWidening objects
@@ -2415,30 +2052,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
-   /// Callback interface for IWideningCollection events
-   [
-		object,
-		uuid(D3C1C368-EDBF-4302-8FC0-65B2150E1C57),
-		oleautomation,
-		//helpcontext(IDH_WideningCollection),
-		helpstring("IWideningCollectionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IWideningCollectionEvents : IUnknown
-   {
-      /// Called after a Widening is changed
-       [helpstring("event OnWideningChanged")/*, helpcontext(IDH_CrossSectionCollection_OnCrossSectionChanged)*/] HRESULT OnWideningChanged([in] IWidening* pWidening);
-
-       /// Called after a Widening is added
-       [helpstring("event OnWideningAdded")/*, helpcontext(IDH_CrossSectionCollection_OnPointAdded)*/] HRESULT OnWideningAdded([in] IWidening* pWidening);
-
-       /// Called after a Widening is removed
-       [helpstring("event OnWideningRemoved")/*, helpcontext(IDH_CrossSectionCollection_OnPointRemoved)*/] HRESULT OnWideningRemoved();
-
-       /// Called after the collection is cleared
-       [helpstring("event OnWideningsCleared")/*, helpcontext(IDH_CrossSectionCollection_OnPointsCleared)*/] HRESULT OnWideningsCleared();
-   };
-
    /// Interface for objects that represent a Surface superelevation modification
    ///
    /// A superelevation is defined by its limits, transitions, rate, and pivot point.
@@ -2526,21 +2139,6 @@ library WBFLCogo
       );
       [helpstring("method Clone")] HRESULT Clone([out,retval] ISuperelevation* *clone);
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-   };
-
-   /// Callback interface for ISuperelevation events
-   [
-      object,
-      uuid(B8D6C861-BFCA-4dc7-B65B-C7EE2ED6371F),
-      oleautomation,
-      //helpcontext(IDH_Superelevation),
-      helpstring("ISuperelevationEvents Interface"),
-      pointer_default(unique)
-   ]
-   interface ISuperelevationEvents : IUnknown
-   {
-      /// Called after a Superelevation is changed
-      [helpstring("event OnSuperelevationChanged")] HRESULT OnSuperelevationChanged([in]ISuperelevation* pSuperelevation);
    };
 
    /// Interface for objects that enumerate a collection of ISuperelevation objects
@@ -2643,29 +2241,6 @@ library WBFLCogo
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
-   /// Callback interface for ISuperelevationCollection events
-   [
-		object,
-		uuid(6E02AF30-D533-4bc3-9341-B901CF331FB1),
-		oleautomation,
-		//helpcontext(IDH_SuperelevationCollection),
-		helpstring("ISuperelevationCollectionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface ISuperelevationCollectionEvents : IUnknown
-   {
-      /// Called after a Superelevation is changed
-       [helpstring("event OnSuperelevationChanged")] HRESULT OnSuperelevationChanged([in] ISuperelevation* pSuperelevation);
-
-       /// Called after a Superelevation is added
-       [helpstring("event OnSuperelevationAdded")] HRESULT OnSuperelevationAdded([in] ISuperelevation* pSuperelevation);
-
-       /// Called after a Superelevation is removed
-       [helpstring("event OnSuperelevationRemoved")] HRESULT OnSuperelevationRemoved();
-
-       /// Called after the collection is cleared
-       [helpstring("event OnSuperelevationsCleared")] HRESULT OnSuperelevationsCleared();
-   };
 
    /// Interface defining a SurfaceTemplate segment.
    [
@@ -2702,21 +2277,6 @@ library WBFLCogo
 
       /// The StructuredStorage object
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-   };
-
-   /// Callback interface for ITemplateSegment events
-   [
-      object,
-      uuid(65775E88-FC55-4387-9752-5F45686DC55B),
-      oleautomation,
-      //helpcontext(IDH_TemplateSegment),
-      helpstring("ITemplateSegmentEvents Interface"),
-      pointer_default(unique)
-   ]
-   interface ITemplateSegmentEvents : IUnknown
-   {
-      /// Called after a template segment has changed
-      [helpstring("event OnTemplateSegmentChanged")] HRESULT OnTemplateSegmentChanged([in]ITemplateSegment* pSegment);
    };
 
    /// Interface defining a surface template.
@@ -2816,30 +2376,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
 
-   /// Callback interface for ISurfaceTemplate events
-   [
-      object,
-      uuid(E7E90090-DECB-4646-BAFB-4C8BF9B765B4),
-      oleautomation,
-      //helpcontext(IDH_SurfaceTemplate),
-      helpstring("ISurfaceTemplateEvents Interface"),
-      pointer_default(unique)
-   ]
-   interface ISurfaceTemplateEvents : IUnknown
-   {
-      /// Called after a SurfaceTemplate has changed
-      [helpstring("event OnSurfaceTemplateChanged")] HRESULT OnSurfaceTemplateChanged([in]ISurfaceTemplate* pTemplate);
-
-      /// Called when a TemplateSemgenet is added to a SurfaceTemplate
-      [helpstring("event OnTemplateSegmentAdded")] HRESULT OnTemplateSegmentAdded([in]ISurfaceTemplate* pTemplate,[in]ITemplateSegment* pSegment);
-
-      /// Called when a TemplateSegment is removed from a SurfaceTemplate
-      [helpstring("event OnTemplateSegmentRemoved")] HRESULT OnTemplateSegmentRemoved([in]ISurfaceTemplate* pTemplate);
-
-      /// Called when a SurfaceTemplate is cleared
-      [helpstring("event OnTemplateSegmentsCleared")] HRESULT OnTemplateSegmentsCleared([in]ISurfaceTemplate* pTemplate);
-   };
-
    /// Interface for objects that enumerate a collection of ISurfaceTemplate objects
 	[
 	   object,
@@ -2926,30 +2462,6 @@ library WBFLCogo
       /// The StructuredStorage property.
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
-
-   /// Callback interface for ISurfaceTemplateCollection events
-   [
-		object,
-		uuid(32093DF8-B30F-4377-9EA0-2369B2ED7C23),
-		oleautomation,
-		//helpcontext(IDH_SurfaceTemplateCollection),
-		helpstring("ISurfaceTemplateCollectionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface ISurfaceTemplateCollectionEvents : IUnknown
-   {
-      /// Called after a SurfaceTemplate has changed
-       [helpstring("event OnSurfaceTemplateChanged")] HRESULT OnSurfaceTemplateChanged([in] ISurfaceTemplate* pSurfaceTemplate);
-
-       /// Called after a SurfaceTemplate has been added
-       [helpstring("event OnSurfaceTemplateAdded")] HRESULT OnSurfaceTemplateAdded([in] ISurfaceTemplate* pSurfaceTemplate);
-
-       /// Called after a SurfaceTemplate has been removed
-       [helpstring("event OnSurfaceTemplateRemoved")] HRESULT OnSurfaceTemplateRemoved();
-
-       /// Called after the collection has been cleared
-       [helpstring("event OnSurfaceTemplatesCleared")] HRESULT OnSurfaceTemplatesCleared();
-   };
 
    /// Interface for objects that represent a point in a SurfaceProfile
    ///
@@ -3162,21 +2674,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
 
-   /// Callback interface for ISurface events
-   [
-      object,
-      uuid(19B01B9A-E4F1-4c8c-A255-3234AFC13CFC),
-      oleautomation,
-      //helpcontext(IDH_Surface),
-      helpstring("ISurfaceEvents Interface"),
-      pointer_default(unique)
-   ]
-   interface ISurfaceEvents : IUnknown
-   {
-      /// Called after the surface is changed
-      [helpstring("event OnSurfaceChanged")] HRESULT OnSurfaceChanged([in]ISurface* pSurface);
-   };
-
    /// Interface used to enumerate values in a container 
    [
 	   object,
@@ -3263,30 +2760,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
-   /// Callback interface for ISurfaceCollection events
-   [
-		object,
-		uuid(86CE6349-FF88-482f-91A6-E0BDC9D5B22A),
-		oleautomation,
-		//helpcontext(IDH_SurfaceCollection),
-		helpstring("ISurfaceCollectionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface ISurfaceCollectionEvents : IUnknown
-   {
-      /// Called after a surface has changed
-       [helpstring("event OnSurfaceChanged")] HRESULT OnSurfaceChanged([in] ISurface* pSurface);
-
-       /// Called after a surface is added
-       [helpstring("event OnSurfaceAdded")] HRESULT OnSurfaceAdded([in] ISurface* pSurface);
-
-       /// Called when a surface is removed
-       [helpstring("event OnSurfaceRemoved")] HRESULT OnSurfaceRemoved();
-
-       /// Called when the collection is cleared
-       [helpstring("event OnSurfaceCleared")] HRESULT OnSurfacesCleared();
-   };
-
    /// Interface for objects that represent an element in a profile.
    [
 		object,
@@ -3312,21 +2785,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
-   /// Callback interface for IProfileElement events
-   [
-		object,
-		uuid(EEB5D577-DAAE-4a84-9010-67820CF18AE7),
-		oleautomation,
-		helpcontext(IDH_ProfileElement),
-		helpstring("IProfileElementEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IProfileElementEvents : IUnknown
-   {
-      /// Called when a profile element changes
-      [helpstring("event OnProfileElementChanged"), helpcontext(IDH_ProfileElement_OnProfileElementChanged)] HRESULT OnProfileElementChanged([in] IProfileElement* pe);
-   };
-   
    /// Interface for objects that enumerate a collection of IProfileElements objects
    [
 	   object,
@@ -3471,21 +2929,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};
 
-   /// Callback interface for IProfile events
-   [
-		object,
-		uuid(0185AF42-F10A-4b4d-AB0E-58275D72E131),
-		oleautomation,
-		helpcontext(IDH_Profile),
-		helpstring("IProfileEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IProfileEvents : IUnknown
-	{
-      /// Called after the profile is changed
-	   [helpstring("event OnProifleChanged"), helpcontext(IDH_Profile_OnProifleChanged)] HRESULT OnProfileChanged([in] IProfile* profile);
-	};
-
    /// Interface for objects that represent an element in a path.
 	[
 		object,
@@ -3522,21 +2965,6 @@ library WBFLCogo
 
       /// The StructuredStorage property.
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-	};
-
-   /// Callback interface for IPathElement events
-   [
-		object,
-		uuid(6C8D62A8-6E1C-4c94-BD54-F3CDFA9E7B27),
-		oleautomation,
-		helpcontext(IDH_PathElement),
-		helpstring("IPathElementEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IPathElementEvents : IUnknown
-	{
-      /// Called when a path element changes
-	   [helpstring("event OnPathElementChanged"), helpcontext(IDH_PathElement_OnPathElementChanged)] HRESULT OnPathElementChanged([in] IPathElement* element);
 	};
 
    /// Interface for objects that enumerate a collection of IPathElements objects
@@ -3711,10 +3139,6 @@ library WBFLCogo
       /// Creates a copy of the path. Copies all PathElements.
       [helpstring("method Clone"), helpcontext(IDH_Path_Clone)] HRESULT Clone([out, retval] IPath* *clone);
 
-      /// A factory object used to create new Point2d objects
-      [propget, helpstring("property PointFactory"), helpcontext(IDH_Path_PointFactory)] HRESULT PointFactory([out, retval]IPoint2dFactory* *factory);
-      [propputref, helpstring("property PointFactory"), helpcontext(IDH_Path_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory);
-
       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
       [propget, restricted, helpstring("returns an enumerator for the collection.")]  HRESULT _NewEnum([out, retval] IUnknown** retval);
 
@@ -3723,21 +3147,6 @@ library WBFLCogo
 
       /// The StructuredStorage property.
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-	};
-
-   /// Callback interface for IPath events
-   [
-		object,
-		uuid(BC341CD7-1B43-4f73-9975-93B02DD949F2),
-		oleautomation,
-		helpcontext(IDH_Path),
-		helpstring("IPathEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IPathEvents : IUnknown
-	{
-      /// Called after the path is changed
-	   [helpstring("event OnPathChanged"), helpcontext(IDH_Alignment_OnAlignmentChanged)] HRESULT OnPathChanged([in] IPath* path);
 	};
 
    /// Interface for objects that enumerate a collection of IPath objects
@@ -3857,43 +3266,6 @@ library WBFLCogo
 
         /// The StructuredStorage property.
         [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
-	};
-
-   /// Callback interface for IPathCollection events
-   [
-		object,
-		uuid(176DAD7B-1209-47ad-9AC7-8901C6AEC89A),
-		oleautomation,
-		helpcontext(IDH_PathCollection),
-		helpstring("IPathCollectionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IPathCollectionEvents : IUnknown
-	{
-      /// Called after a path is changed
-      [helpstring("event OnPathChanged"), helpcontext(IDH_PathCollection_OnAlignmentChanged)] HRESULT OnPathChanged(
-         [in]IPathCollection* coll, ///< The PathCollection containing the Path object that changed
-         [in] CogoObjectID id, ///< ID of the Path that changed
-         [in] IPath* path ///< The Path that changed
-      );
-
-      /// Called after a Path is added
-       [helpstring("event OnPathAdded"), helpcontext(IDH_PathCollection_OnAlignmentAdded)] HRESULT OnPathAdded(
-          [in]IPathCollection* coll, ///< The PathCollection containing the Path that was added
-          [in] CogoObjectID id, ///< ID of the Path that was added
-          [in] IPath* path ///< The Path that was added
-       );
-
-       /// Called after a Path is removed
-       [helpstring("event OnPathRemoved"), helpcontext(IDH_PathCollection_OnAlignmentRemoved)] HRESULT OnPathRemoved(
-          [in]IPathCollection* coll, ///< The PathCollection that contained the Path object that was removed
-          [in] CogoObjectID id ///< ID of the Path that was removed
-       );
-
-       /// Called when the collection is cleared
-       [helpstring("event OnPathsCleared"), helpcontext(IDH_PathCollection_OnAlignmentCleared)] HRESULT OnPathsCleared(
-          [in]IPathCollection* coll ///< The PathCollection that was cleared.
-       );
 	};
 
    /// Interface defining an Alignment object
@@ -4091,10 +3463,6 @@ library WBFLCogo
       /// Creates a copy of the alignment. Copies all PathElements.
       [helpstring("method Clone"), helpcontext(IDH_Alignment_Clone)] HRESULT Clone([out, retval] IAlignment* *clone);
 
-      /// A factory object used to create new Point2d objects
-      [propget, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([out, retval]IPoint2dFactory* *factory);
-      [propputref, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory);
-
       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
       [propget, restricted, helpstring("returns an enumerator for the collection.")]  HRESULT _NewEnum([out, retval] IUnknown** retval);
 
@@ -4104,27 +3472,6 @@ library WBFLCogo
       /// The StructuredStorage property.
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
-
-   /// Callback interface for IAlignment events
-   [
-		object,
-		uuid(D99C606A-2AFA-4779-92BF-D2FB7E71D3B2),
-		oleautomation,
-		helpcontext(IDH_Alignment),
-		helpstring("IAlignmentEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IAlignmentEvents : IUnknown
-	{
-      /// Called after the alignemnt is changed
-      [helpstring("event OnAlignmentChanged"), helpcontext(IDH_Alignment_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in] IAlignment* alignment);
-
-      /// Called after the profile is changed
-	   [helpstring("event OnProfileChanged"), helpcontext(IDH_Alignment_OnProfileChanged)] HRESULT OnProfileChanged([in] IProfile* profile);
-
-      /// Called after the station equations are changed
-      [helpstring("event OnStationEquationsChanged"),helpcontext(IDH_Alignment_OnStationEquationsChanged)] HRESULT OnStationEquationsChanged([in]IStationEquationCollection* equations);
-	};
 
    /// Interface for objects that enumerate a collection of IAlignment objects
    [
@@ -4244,61 +3591,6 @@ library WBFLCogo
       /// The StructuredStorage property.
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
-
-   /// Callback interface for IAlignmentCollection events
-   [
-		object,
-		uuid(46D1C201-C51F-4eb1-AFCC-922DDBC62D16),
-		oleautomation,
-		helpcontext(IDH_AlignmentCollection),
-		helpstring("IAlignmentCollectionEvents Interface"),
-		pointer_default(unique)
-	]
-	interface IAlignmentCollectionEvents : IUnknown
-	{
-      /// Called after a profile is changed
-	   [helpstring("event OnProfileChanged"), helpcontext(IDH_AlignmentCollection_OnProfileChanged)] 
-      HRESULT OnProfileChanged(
-         [in]IAlignmentCollection* coll, ///< The AligmentCollection containing the Alignment whose Profile changed
-         [in] IProfile* profile ///< The Profile that changed
-      );
-
-      /// Called after station equations are changed
-      [helpstring("event OnStationEquationsChanged"),helpcontext(IDH_AlignmentCollection_OnStationEquationsChanged)] 
-      HRESULT OnStationEquationsChanged(
-         [in]IAlignmentCollection* coll, ///< The AligmentCollection containing the Alignment whose StationEquationCollection changed
-         [in]IStationEquationCollection* equations ///< The StationEquationCollection that changed.
-      );
-
-      /// Called after an alignment is changed
-	   [helpstring("event OnAlignmentChanged"), helpcontext(IDH_AlignmentCollection_OnAlignmentChanged)] 
-      HRESULT OnAlignmentChanged(
-         [in]IAlignmentCollection* coll, ///< The AlignmentCollection containing the Alignment object that changed
-         [in] CogoObjectID id, ///< ID of the Alignment that changed
-         [in] IAlignment* Alignment ///< The Alignment that changed
-      );
-
-      /// Called after an Alignment is added
-       [helpstring("event OnAlignmentAdded"), helpcontext(IDH_AlignmentCollection_OnAlignmentAdded)] 
-       HRESULT OnAlignmentAdded(
-          [in]IAlignmentCollection* coll, ///< The AlignmentCollection containing the Alignment that was added
-          [in] CogoObjectID id, ///< ID of the Alignemnt that was added
-          [in] IAlignment* Alignment ///< The Alignment that was added
-       );
-
-       /// Called after an Alignment is removed
-       [helpstring("event OnAlignmentRemoved"), helpcontext(IDH_AlignmentCollection_OnAlignmentRemoved)] 
-       HRESULT OnAlignmentRemoved(
-          [in]IAlignmentCollection* coll, ///< The AlignmentCollection that contained the Alignment object that was removed
-          [in] CogoObjectID id ///< ID of the Alignment that was removed
-       );
-
-       /// Called when the collection is cleared
-       [helpstring("event OnAlignmentsCleared"), helpcontext(IDH_AlignmentCollection_OnAlignmentCleared)] 
-       HRESULT OnAlignmentsCleared(
-          [in]IAlignmentCollection* coll ///< THe AlignmentCollection that was cleared
-       );
-	};
 
    /// Interface for measuring angles, distances, and angles in a COGO model.
    [
@@ -5091,14 +4383,6 @@ library WBFLCogo
 
       /// Interface for locating points tangent to circles
       [propget, helpstring("property Tangent"),helpcontext(IDH_CogoModel_Tangent)] HRESULT Tangent([out, retval] ITangent2* *pVal);
-
-      /// Factory for creating Point2d objects
-      [propputref, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory);
-      [propget, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory** factory);
-
-      /// Factory for creating LineSegment2d objects
-      [propputref, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([in]ILineSegment2dFactory* factory);
-      [propget, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([out,retval]ILineSegment2dFactory** factory);
 	};
 
    /// Interface defining a coordinate geometry model.
@@ -5156,14 +4440,6 @@ library WBFLCogo
       /// Interface for locating points tangent to circles
       [propget, helpstring("property Tangent"),helpcontext(IDH_CogoModel_Tangent)] HRESULT Tangent([out, retval] ITangent* *pVal);
 
-      /// Factory for creating Point2d objects
-      [propputref, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory);
-      [propget, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory** factory);
-
-      /// Factory for creating LineSegment2d objects
-      [propputref, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([in]ILineSegment2dFactory* factory);
-      [propget, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([out,retval]ILineSegment2dFactory** factory);
-
       /// Factory for creating ProfilePoint objects
       [propputref, helpstring("property ProfilePointFactory"),helpcontext(IDH_CogoModel_ProfilePointFactory)] HRESULT ProfilePointFactory([in]IProfilePointFactory* factory);
       [propget, helpstring("property ProfilePointFactory"),helpcontext(IDH_CogoModel_ProfilePointFactory)] HRESULT ProfilePointFactory([out,retval]IProfilePointFactory** factory);
@@ -5194,107 +4470,6 @@ library WBFLCogo
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
 
-   /// Callback interface for ICogoModel events
-   [
-       object,
-       uuid(BBD4B66A-6102-11d5-8C3A-006097C68A9C),
-       oleautomation,
-	   helpcontext(IDH_CogoModel),
-       helpstring("ICogoModelEvents Interface"),
-       pointer_default(unique)
-   ]
-   interface ICogoModelEvents : IUnknown
-   {
-      /// Called when a point in a model changes
-       [helpstring("event OnPointChanged"),helpcontext(IDH_CogoModel_OnPointChanged)] HRESULT OnPointChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IPoint2d* point);
-
-       /// Called when a point is added to a model
-       [helpstring("event OnPointAdded"),helpcontext(IDH_CogoModel_OnPointAdded)] HRESULT OnPointAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IPoint2d* point);
-
-       /// Called when a point is removed from a model
-       [helpstring("event OnPointRemoved"),helpcontext(IDH_CogoModel_OnPointRemoved)] HRESULT OnPointRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
-
-       /// Called when the points in a model are cleared
-       [helpstring("event OnPointsCleared"),helpcontext(IDH_CogoModel_OnPointsCleared)] HRESULT OnPointsCleared([in] ICogoModel* cm);
-
-       /// Called when a line segment in a model changes
-       [helpstring("event OnLineSegmentChanged"),helpcontext(IDH_CogoModel_OnLineSegmentChanged)] HRESULT OnLineSegmentChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] ILineSegment2d* lineSeg);
-
-       /// Called when a line segment is added to a model
-       [helpstring("event OnLineSegmentAdded"),helpcontext(IDH_CogoModel_OnLineSegmentAdded)] HRESULT OnLineSegmentAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] ILineSegment2d* lineSeg);
-
-       /// Called when a line segment is removed from a model
-       [helpstring("event OnLineSegmentRemoved"),helpcontext(IDH_CogoModel_OnLineSegmentRemoved)] HRESULT OnLineSegmentRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
-
-       /// Called when the line segments in a model are cleared
-       [helpstring("event OnLineSegmentsCleared"),helpcontext(IDH_CogoModel_OnLineSegmentsCleared)] HRESULT OnLineSegmentsCleared([in] ICogoModel* cm);
-
-       /// Called when a profile point in a model changes
-       [helpstring("event OnProfilePointChanged"),helpcontext(IDH_CogoModel_OnProfilePointChanged)] HRESULT OnProfilePointChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IProfilePoint* pp);
-
-       /// Called when a profile point is added to a model
-       [helpstring("event OnProfilePointAdded"),helpcontext(IDH_CogoModel_OnProfilePointAdded)] HRESULT OnProfilePointAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IProfilePoint* pp);
-
-       /// Called when a profile point is removed from a model
-       [helpstring("event OnProfilePointRemoved"),helpcontext(IDH_CogoModel_OnProfilePointRemoved)] HRESULT OnProfilePointRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
-
-       /// Called when the profile points in a model are cleared
-       [helpstring("event OnProfilePointsCleared"),helpcontext(IDH_CogoModel_OnProfilePointsCleared)] HRESULT OnProfilePointsCleared([in] ICogoModel* cm);
-
-       /// Called when a vertical curve in a model changes
-       [helpstring("event OnVertCurveChanged"),helpcontext(IDH_CogoModel_OnVertCurveChanged)] HRESULT OnVertCurveChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IVertCurve* vc);
-
-       /// Called when a vertical curve is added to a model
-       [helpstring("event OnVertCurveAdded"),helpcontext(IDH_CogoModel_OnVertCurveAdded)] HRESULT OnVertCurveAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IVertCurve* vc);
-
-       /// Called when a vertical curve is removed from a model
-       [helpstring("event OnVertCurveRemoved"),helpcontext(IDH_CogoModel_OnVertCurveRemoved)] HRESULT OnVertCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
-
-       /// Called when the vertical curves in a model are cleared
-       [helpstring("event OnVertCurvesCleared"),helpcontext(IDH_CogoModel_OnVertCurvesCleared)] HRESULT OnVertCurvesCleared([in] ICogoModel* cm);
-
-       /// Called when a horizontal curve in a model changes
-       [helpstring("event OnCompoundCurveChanged"),helpcontext(IDH_CogoModel_OnCompoundCurveChanged)] HRESULT OnCompoundCurveChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] ICompoundCurve* vc);
-
-       /// Called when a horizontal curve is added to a model
-       [helpstring("event OnCompoundCurveAdded"),helpcontext(IDH_CogoModel_OnCompoundCurveAdded)] HRESULT OnCompoundCurveAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] ICompoundCurve* vc);
-
-       /// Called when a horizontal curve is removed from a model
-       [helpstring("event OnCompoundCurveRemoved"),helpcontext(IDH_CogoModel_OnCompoundCurveRemoved)] HRESULT OnCompoundCurveRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
-       
-       /// Called when the horizontal curves in a model are cleared
-       [helpstring("event OnCompoundCurvesCleared"),helpcontext(IDH_CogoModel_OnCompoundCurvesCleared)] HRESULT OnCompoundCurvesCleared([in] ICogoModel* cm);
-
-       /// Called when a profile in a model changes
-       [helpstring("event OnProfileChanged"),helpcontext(IDH_CogoModel_OnProfileChanged)] HRESULT OnProfileChanged([in] ICogoModel* cm,[in] IProfile* profile);
-       
-       /// Called when station equations in a model changes
-       [helpstring("event OnStationEquationsChanged"),helpcontext(IDH_CogoModel_OnStationEquationsChanged)] HRESULT OnStationEquationsChanged([in] ICogoModel* cm,[in] IStationEquationCollection* equations);
-
-       /// Called when an alignment in a model changes
-       [helpstring("event OnAlignmentChanged"),helpcontext(IDH_CogoModel_OnAlignmentChanged)] HRESULT OnAlignmentChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IAlignment* alignment);
-
-       /// Called when an alignment is added to a model
-       [helpstring("event OnAlignmentAdded"),helpcontext(IDH_CogoModel_OnAlignmentAdded)] HRESULT OnAlignmentAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IAlignment* alignment);
-
-       /// Called when an alignment is removed from a model
-       [helpstring("event OnAlignmentRemoved"),helpcontext(IDH_CogoModel_OnAlignmentRemoved)] HRESULT OnAlignmentRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
-
-       /// Called when the alignments in a model are cleared
-       [helpstring("event OnAlignmentCleared"),helpcontext(IDH_CogoModel_OnAlignmentCleared)] HRESULT OnAlignmentsCleared([in] ICogoModel* cm);
-       
-       /// Called when a path in a model changes
-       [helpstring("event OnPathChanged"),helpcontext(IDH_CogoModel_OnPathChanged)] HRESULT OnPathChanged([in] ICogoModel* cm,[in] CogoObjectID id,[in] IPath* path);
-
-       /// Called when a path is added to a model
-       [helpstring("event OnPathAdded"),helpcontext(IDH_CogoModel_OnPathAdded)] HRESULT OnPathAdded([in] ICogoModel* cm,[in] CogoObjectID id,[in] IPath* path);
-
-       /// Called when a path is removed from a model
-       [helpstring("event OnPathRemoved"),helpcontext(IDH_CogoModel_OnPathRemoved)] HRESULT OnPathRemoved([in] ICogoModel* cm,[in] CogoObjectID id);
-
-       /// Called when the paths in a model are cleared
-       [helpstring("event OnPathCleared"),helpcontext(IDH_CogoModel_OnPathCleared)] HRESULT OnPathsCleared([in] ICogoModel* cm);
-   };
 
    /////////////////////////////////////////////////////////////
 
@@ -5335,7 +4510,6 @@ library WBFLCogo
    coclass PointCollection
    {
        [default] interface IPointCollection;
-       [default, source] interface IPointCollectionEvents;
       interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5351,7 +4525,6 @@ library WBFLCogo
    coclass LineSegmentCollection
    {
        [default] interface ILineSegmentCollection;
-       [default, source] interface ILineSegmentCollectionEvents;
       interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5376,7 +4549,6 @@ library WBFLCogo
      interface IProject;
      interface IDivide;
      interface ITangent;
-       [default, source] interface ICogoModelEvents;
       interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5411,7 +4583,6 @@ library WBFLCogo
    coclass ProfilePoint
    {
        [default] interface IProfilePoint;
-       [default, source] interface IProfilePointEvents;
        interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5427,7 +4598,6 @@ library WBFLCogo
    coclass ProfilePointCollection
    {
        [default] interface IProfilePointCollection;
-       [default, source] interface IProfilePointCollectionEvents;
       interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5443,7 +4613,6 @@ library WBFLCogo
    coclass VertCurve
    {
        [default] interface IVertCurve;
-       [default, source] interface IVertCurveEvents;
        interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5459,7 +4628,6 @@ library WBFLCogo
    coclass VertCurveCollection
    {
        [default] interface IVertCurveCollection;
-       [default, source] interface IVertCurveCollectionEvents;
       interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5475,7 +4643,6 @@ library WBFLCogo
    coclass CircularCurve
    {
        [default] interface ICircularCurve;
-       [default, source] interface ICircularCurveEvents;
        interface IStructuredStorage2;
        // interface IPersist;
    };
@@ -5491,7 +4658,6 @@ library WBFLCogo
    coclass CompoundCurve
    {
        [default] interface ICompoundCurve;
-       [default, source] interface ICompoundCurveEvents;
        interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5507,7 +4673,6 @@ library WBFLCogo
 	coclass CompoundCurveCollection
 	{
 		[default] interface ICompoundCurveCollection;
-		[default, source] interface ICompoundCurveCollectionEvents;
       interface IStructuredStorage2;
         // interface IPersist;
 	};
@@ -5525,7 +4690,6 @@ library WBFLCogo
    coclass CubicSpline
    {
        [default] interface ICubicSpline;
-		[default, source] interface ICubicSplineEvents;
        interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5540,7 +4704,6 @@ library WBFLCogo
    coclass TransitionCurve
    {
       [default] interface ITransitionCurve;
-      [default, source] interface ITransitionCurveEvents;
       interface IPathElement;
       interface IStructuredStorage2;
        interface IPersist;
@@ -5559,7 +4722,6 @@ library WBFLCogo
 	coclass ProfileElement
 	{
 		[default] interface IProfileElement;
-		[default, source] interface IProfileElementEvents;
       interface IStructuredStorage2;
 	   // interface IPersist;
    };
@@ -5580,7 +4742,6 @@ library WBFLCogo
 	coclass Profile
 	{
 		[default] interface IProfile;
-		[default, source] interface IProfileEvents;
       interface IStructuredStorage2;
         // interface IPersist;
 	};
@@ -5598,7 +4759,6 @@ library WBFLCogo
    coclass Widening
    {
       [default] interface IWidening;
-      [default,source] interface IWideningEvents;
       interface IStructuredStorage2;
    };
 
@@ -5613,7 +4773,6 @@ library WBFLCogo
    coclass WideningCollection
    {
       [default] interface IWideningCollection;
-      [default,source] interface IWideningCollectionEvents;
       interface IStructuredStorage2;
    };
 
@@ -5630,7 +4789,6 @@ library WBFLCogo
    coclass Superelevation
    {
       [default] interface ISuperelevation;
-      [default,source] interface ISuperelevationEvents;
       interface IStructuredStorage2;
    };
 
@@ -5645,7 +4803,6 @@ library WBFLCogo
    coclass SuperelevationCollection
    {
       [default] interface ISuperelevationCollection;
-      [default,source] interface ISuperelevationCollectionEvents;
       interface IStructuredStorage2;
    };
 
@@ -5660,7 +4817,6 @@ library WBFLCogo
    coclass TemplateSegment
    {
       [default] interface ITemplateSegment;
-      [default,source] interface ITemplateSegmentEvents;
       interface IStructuredStorage2;
    };
 
@@ -5678,7 +4834,6 @@ library WBFLCogo
    coclass SurfaceTemplate
    {
       [default] interface ISurfaceTemplate;
-      [default,source] interface ISurfaceTemplateEvents;
       interface IStructuredStorage2;
    };
 
@@ -5693,7 +4848,6 @@ library WBFLCogo
    coclass SurfaceTemplateCollection
    {
       [default] interface ISurfaceTemplateCollection;
-      [default,source] interface ISurfaceTemplateCollectionEvents;
       interface IStructuredStorage2;
    };
 
@@ -5710,7 +4864,6 @@ library WBFLCogo
    coclass Surface
    {
       [default] interface ISurface;
-      [default,source] interface ISurfaceEvents;
       interface IStructuredStorage2;
    };
 
@@ -5725,7 +4878,6 @@ library WBFLCogo
    coclass SurfaceCollection
    {
       [default] interface ISurfaceCollection;
-      [default,source] interface ISurfaceCollectionEvents;
       interface IStructuredStorage2;
    };
 
@@ -5745,7 +4897,6 @@ library WBFLCogo
 	coclass Alignment
 	{
 		[default] interface IAlignment;
-		[default, source] interface IAlignmentEvents;
       interface IStructuredStorage2;
         // interface IPersist;
 	};
@@ -5761,7 +4912,6 @@ library WBFLCogo
 	coclass AlignmentCollection
 	{
 		[default] interface IAlignmentCollection;
-		[default, source] interface IAlignmentCollectionEvents;
         interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5780,7 +4930,6 @@ library WBFLCogo
    coclass PathElement
    {
       [default] interface IPathElement;
-      [default, source] interface IPathElementEvents;
       interface IStructuredStorage2;
       // interface IPersist;
    };
@@ -5801,7 +4950,6 @@ library WBFLCogo
 	coclass Path
 	{
 		[default] interface IPath;
-		[default, source] interface IPathEvents;
       interface IStructuredStorage2;
         // interface IPersist;
 	};
@@ -5817,7 +4965,6 @@ library WBFLCogo
 	coclass PathCollection
 	{
 		[default] interface IPathCollection;
-		[default, source] interface IPathCollectionEvents;
         interface IStructuredStorage2;
         // interface IPersist;
    };
@@ -5929,34 +5076,6 @@ library WBFLCogo
         // interface IPersist;
 	};
 
-   /// A point factory object.
-   ///
-   /// Implements the IPointFactory interface.
-   [
-      uuid(F0151EC9-C520-4ec7-9581-35FC1685FAAB),
-      helpstring("PointFactory Class")
-   ]
-   coclass PointFactory
-   {
-      [default] interface IPoint2dFactory;
-      interface IStructuredStorage2;
-        // interface IPersist;
-   };
-
-   /// A line segment factory object.
-   ///
-   /// Implements the ILineSegment2dFactory interface.
-   [
-      uuid(B290D560-4DFC-404c-8CAF-CFBFE211234D),
-      helpstring("LineSegmentFactory Class")
-   ]
-   coclass LineSegmentFactory
-   {
-      [default] interface ILineSegment2dFactory;
-      interface IStructuredStorage2;
-        // interface IPersist;
-   };
-
    /// An object the represents a station along an alignment.
    ///
    /// Implements the IStation interface and fires events through the IStationEvents interface.
@@ -5967,7 +5086,6 @@ library WBFLCogo
 	coclass Station
 	{
 		[default] interface IStation;
-      [default,source] interface IStationEvents;
 	};
 
    /// An non-creatable object the represents a station equation. StationEquation objects must be created in a StationEquationCollection.
@@ -5993,7 +5111,6 @@ library WBFLCogo
    coclass StationEquationCollection
    {
 		[default] interface IStationEquationCollection;
-      [default,source] interface IStationEquationCollectionEvents;
    };
 
    /// An object that represents a point in a SurfaceProfile.

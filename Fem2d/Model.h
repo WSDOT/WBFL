@@ -218,7 +218,7 @@ private:
 
    // A simple cache for negative load case POI results - typically these results are asked for
    // sequentially
-#pragma Reminder("The following will cause problems if this class becomes multithreaded")
+//#pragma Reminder("The following will cause problems if this class becomes multithreaded")
    struct SimplePOIResultCache
    {
       SimplePOIResultCache():

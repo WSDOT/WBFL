@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 #include "Collections.h"
 
 class CPointCollection;
@@ -42,9 +41,6 @@ class ATL_NO_VTABLE CPointCollection :
 	public CComObjectRootEx<CComSingleThreadModel>,
 // public CComRefCountTracer<CPointCollection,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CPointCollection, &CLSID_PointCollection>,
-	public IConnectionPointContainerImpl<CPointCollection>,
-   public IPoint2dEvents,
-   public CProxyDPointCollectionEvents< CPointCollection >,
    public PointCollectionImpl
 {
 public:
@@ -60,17 +56,9 @@ DECLARE_REGISTRY_RESOURCEID(IDR_POINTCOLLECTION)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CPointCollection)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY(IPoint2dEvents)
-
+   COM_INTERFACE_ENTRY(IPointCollection)
    COM_INTERFACE_ENTRY_CHAIN(PointCollectionImpl)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CPointCollection)
-   CONNECTION_POINT_ENTRY(IID_IPointCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
    CComBSTR GetCollectionName() { return CComBSTR("Points"); }
    CComBSTR GetItemName() { return CComBSTR("Point"); }
@@ -92,29 +80,16 @@ public:
 // STDMETHOD(get__NewEnum)(IUnknown** retval) override;
    STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum) override;
 	STDMETHOD(FindID)(/*[in]*/ IPoint2d* point,/*[out,retval]*/CogoObjectID* ID) override;
-	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory) override;
-	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory) override;
 	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
    STDMETHOD(get__EnumPoints)(/*[out,retval]*/ IEnumPoint2d** ppenum) override;
 
-// IPointEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
-
 private:
-   CComPtr<IPoint2dFactory> m_Factory;
-
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
 
    HRESULT PointNotFound(CogoObjectID id);
    HRESULT PointAlreadyDefined(CogoObjectID id);
    HRESULT PointIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
-
-   void Advise(CogoObjectID id,IPoint2d* point);
-   void Unadvise(CogoObjectID id,IPoint2d* point);
-   void UnadviseAll();
-   std::map<CogoObjectID,DWORD> m_Cookies;
 };
 
 #endif //__PointCollection_H_

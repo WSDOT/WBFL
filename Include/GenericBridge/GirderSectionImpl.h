@@ -145,6 +145,26 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IGirderSection implementation
+   STDMETHODIMP get_GirderShape(IShape** ppShape)
+   {
+      return m_Beam->get_Shape(ppShape);
+   }
+
+   STDMETHODIMP get_VoidCount(/*[out, retval]*/IndexType* pnVoids)
+   {
+      CHECK_RETVAL(pnVoids);
+      *pnVoids = 0;
+      return S_OK;
+   }
+
+   STDMETHODIMP get_VoidShape(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape)
+   {
+      CHECK_RETOBJ(ppShape);
+      ATLASSERT(false);
+      *ppShape = nullptr;
+      return E_INVALIDARG;
+   }
+
    STDMETHODIMP get_WorkPoint(IPoint2d** ppWorkPoint) override
    {
       // work point is at top center
@@ -573,11 +593,6 @@ public:
    STDMETHODIMP get_XYPosition(IXYPosition* *pVal) override
    {
       return m_CompositeShape->get_XYPosition(pVal);
-   }
-
-   STDMETHODIMP get_StructuredStorage(IStructuredStorage2* *pStrStg) override
-   {
-      return m_CompositeShape->get_StructuredStorage(pStrStg);
    }
 };
 

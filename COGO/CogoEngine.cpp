@@ -27,8 +27,6 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "CogoEngine.h"
-#include "PointFactory.h"
-#include "LineSegmentFactory.h"
 #include "Angle.h"
 #include <WBFLCogo\CogoHelpers.h>
 
@@ -51,16 +49,6 @@ HRESULT CCogoEngine::FinalConstruct()
       return hr;
  
    CComQIPtr<IGeomUtil> gu(m_GeomUtil);
-
-   // Add a point factory to it
-   CComObject<CPointFactory>* pPointFactory;
-   CComObject<CPointFactory>::CreateInstance(&pPointFactory);
-   gu->putref_Point2dFactory(pPointFactory);
- 
-   // Add a line segment factory to it
-   CComObject<CLineSegmentFactory>* pLineSegmentFactory;
-   CComObject<CLineSegmentFactory>::CreateInstance(&pLineSegmentFactory);
-   gu->putref_LineSegment2dFactory(pLineSegmentFactory);
 
    return S_OK;
 }
@@ -99,11 +87,8 @@ HRESULT CCogoEngine::CreateParallelLine(IPoint2d* pnt,IDirection* objDir,Float64
    CComPtr<IDirection> objClone;
    objDir->Clone(&objClone);
    objClone->IncrementBy(CComVariant(-PI_OVER_2));
-   
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
 
-   HRESULT hr = cogoUtil::LocateByDistDir(pnt,offset,objClone,0.0,factory,&pntLine);
+   HRESULT hr = cogoUtil::LocateByDistDir(pnt,offset,objClone,0.0,&pntLine);
    ATLASSERT(SUCCEEDED(hr));
 
    // Create a vector in the direction of line
@@ -160,58 +145,6 @@ STDMETHODIMP CCogoEngine::get_Tangent(/*[out, retval]*/ ITangent2* *pVal)
    return QueryInterface(IID_ITangent2,(void**)pVal);
 }
 
-STDMETHODIMP CCogoEngine::putref_PointFactory(/*[in]*/IPoint2dFactory* factory)
-{
-   CHECK_IN(factory);
-   CComQIPtr<IGeomUtil> gu(m_GeomUtil);
-
-   CComQIPtr<IPoint2dFactory> factory2d(factory);
-   if ( factory2d == nullptr )
-      return E_FAIL; // object must also support IPoint2dFactory
-
-   gu->putref_Point2dFactory(factory2d);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoEngine::get_PointFactory(/*[out,retval]*/ IPoint2dFactory** factory)
-{
-   CHECK_RETOBJ(factory);
-   CComQIPtr<IGeomUtil> gu(m_GeomUtil);
-   CComPtr<IPoint2dFactory> f;
-   gu->get_Point2dFactory(&f);
-   f.QueryInterface(factory);
-   ATLASSERT( factory != nullptr ); // There should be no way for anything other than an Ex factory
-                                 // to get in here
-   return S_OK;
-}
-
-STDMETHODIMP CCogoEngine::putref_LineSegmentFactory(/*[in]*/ ILineSegment2dFactory* factory)
-{
-   CHECK_IN(factory);
-   CComQIPtr<IGeomUtil> gu(m_GeomUtil);
-
-   CComQIPtr<ILineSegment2dFactory> factory2d(factory);
-   if ( factory2d == nullptr )
-      return E_FAIL; // object must also support IPoint2dFactory
-
-   gu->putref_LineSegment2dFactory(factory2d);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoEngine::get_LineSegmentFactory(/*[out,retval]*/ILineSegment2dFactory** factory)
-{
-   CHECK_RETOBJ(factory);
-   CComQIPtr<IGeomUtil> gu(m_GeomUtil);
-   CComQIPtr<ILineSegment2dFactory> f;
-   gu->get_LineSegment2dFactory(&f);
-   f.QueryInterface(factory);
-   ATLASSERT( factory != nullptr ); // There should be no way for anything other than an Ex factory
-                                 // to get in here
-   return S_OK;
-}
-
 STDMETHODIMP CCogoEngine::Angle(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* vertex,/*[in]*/ IPoint2d* to,/*[out,retval]*/ IAngle** angle)
 {
    CHECK_IN(from);
@@ -260,9 +193,7 @@ STDMETHODIMP CCogoEngine::Distance(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* to
    CHECK_IN(from);
    CHECK_IN(to);
    CHECK_RETVAL(dist);
- 
-   HRESULT hr = m_GeomUtil->Distance(from,to,dist);
-   return hr;
+   return from->DistanceEx(to, dist);
 }
 
 STDMETHODIMP CCogoEngine::Direction(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* to,/*[out,retval]*/ IDirection** dir)
@@ -316,21 +247,18 @@ STDMETHODIMP CCogoEngine::ByDistAngle(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d*
       return hr;
    brgNormal->IncrementBy(CComVariant(PI_OVER_2)); // now it is the normal
 
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
-
    // Locate a point at the desired offset
    // This will be the reference point from which we locate the
    // desired point
    CComPtr<IPoint2d> refPnt;
-   hr = cogoUtil::LocateByDistDir(to,offset,brgNormal,0.00,factory,&refPnt);
+   hr = cogoUtil::LocateByDistDir(to,offset,brgNormal,0.00,&refPnt);
    ATLASSERT(SUCCEEDED(hr));
 
    // Locate the new point
    // Bearing of line is the backsight bearing plus the angle
    brgBacksight->IncrementBy(CComVariant(angle));
    CComPtr<IPoint2d> newPnt;
-   hr = cogoUtil::LocateByDistDir(refPnt,dist,brgBacksight,0.00,factory,&newPnt);
+   hr = cogoUtil::LocateByDistDir(refPnt,dist,brgBacksight,0.00,&newPnt);
    ATLASSERT(SUCCEEDED(hr));
 
    (*point) = newPnt;
@@ -373,14 +301,11 @@ STDMETHODIMP CCogoEngine::ByDistDefAngle(/*[in]*/ IPoint2d* from, /*[in]*/ IPoin
 
    brgNormal->IncrementBy(CComVariant(PI_OVER_2)); // now it is the normal
 
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
-
    // Locate a point at the desired offset
    // This will be the reference point from which we locate the
    // desired point
    CComPtr<IPoint2d> refPnt;
-   hr = cogoUtil::LocateByDistDir(to,offset,brgNormal,0.00,factory,&refPnt);
+   hr = cogoUtil::LocateByDistDir(to,offset,brgNormal,0.00,&refPnt);
    ATLASSERT(SUCCEEDED(hr));
 
    // Locate the new point
@@ -390,7 +315,7 @@ STDMETHODIMP CCogoEngine::ByDistDefAngle(/*[in]*/ IPoint2d* from, /*[in]*/ IPoin
    dir += M_PI;
    brgBacksight->IncrementBy(CComVariant(dir));
    CComPtr<IPoint2d> newPnt;
-   hr = cogoUtil::LocateByDistDir(refPnt,dist,brgBacksight,0.00,factory,&newPnt);
+   hr = cogoUtil::LocateByDistDir(refPnt,dist,brgBacksight,0.00,&newPnt);
    ATLASSERT(SUCCEEDED(hr));
 
    (*point) = newPnt;
@@ -411,10 +336,7 @@ STDMETHODIMP CCogoEngine::ByDistDir(/*[in]*/ IPoint2d* from, /*[in]*/ Float64 di
    if ( FAILED(hr) )
       return hr;
 
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
-
-   hr = cogoUtil::LocateByDistDir(from,dist,dir,offset,factory,point);
+   hr = cogoUtil::LocateByDistDir(from,dist,dir,offset,point);
    if ( FAILED(hr) )
       return hr;
 
@@ -439,16 +361,13 @@ STDMETHODIMP CCogoEngine::PointOnLine(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d
    // right normal of the line
    brgNormal->IncrementBy(CComVariant(-PI_OVER_2));
 
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
-
    // Locate the offset "from" point
    CComPtr<IPoint2d> pntOffset;
-   cogoUtil::LocateByDistDir(from,offset,brgNormal,0.00,factory,&pntOffset);
+   cogoUtil::LocateByDistDir(from,offset,brgNormal,0.00,&pntOffset);
    ATLASSERT(SUCCEEDED(hr));
 
    // Locate the point
-   hr = cogoUtil::LocateByDistDir(pntOffset,dist,brgLine,0.00,factory,point);
+   hr = cogoUtil::LocateByDistDir(pntOffset,dist,brgLine,0.00,point);
    ATLASSERT(SUCCEEDED(hr));
 
    return S_OK;
@@ -594,8 +513,8 @@ STDMETHODIMP CCogoEngine::BearingCircle(/*[in]*/ IPoint2d* pnt1, /*[in]*/ VARIAN
       ATLASSERT(nIntersect == 2);
 
       Float64 d1, d2;
-      m_GeomUtil->Distance(pntNearest,p1,&d1);
-      m_GeomUtil->Distance(pntNearest,p2,&d2);
+      pntNearest->DistanceEx(p1, &d1);
+      pntNearest->DistanceEx(p2, &d2);
 
       if ( d2 < d1 )
       {
@@ -648,8 +567,8 @@ STDMETHODIMP CCogoEngine::Circles(/*[in]*/ IPoint2d* c1, /*[in]*/ Float64 r1, /*
       ATLASSERT(nIntersect == 2);
 
       Float64 d1, d2;
-      m_GeomUtil->Distance(nearest,p1,&d1);
-      m_GeomUtil->Distance(nearest,p2,&d2);
+      nearest->DistanceEx(p1, &d1);
+      nearest->DistanceEx(p2, &d2);
 
       if ( d2 < d1 )
       {
@@ -703,8 +622,8 @@ STDMETHODIMP CCogoEngine::LineByPointsCircle(/*[in]*/ IPoint2d* pnt1, /*[in]*/ I
       ATLASSERT(nIntersect == 2);
 
       Float64 d1, d2;
-      m_GeomUtil->Distance(nearest,p1,&d1);
-      m_GeomUtil->Distance(nearest,p2,&d2);
+      nearest->DistanceEx(p1, &d1);
+      nearest->DistanceEx(p2, &d2);
 
       if ( d2 < d1 )
       {
@@ -820,10 +739,7 @@ STDMETHODIMP CCogoEngine::LineSegmentCircle(/*[in]*/ ILineSegment2d* seg, /*[in]
    circle->putref_Center(center);
    circle->put_Radius(radius);
 
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
-
-   cogoUtil::LineCircleIntersect(offsetLine,circle,nearest,factory,point);
+   cogoUtil::LineCircleIntersect(offsetLine,circle,nearest,point);
 
    return S_OK;
 }
@@ -895,9 +811,9 @@ STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex
       return E_INVALIDARG;
 
    Float64 d1, d2, d3;
-   m_GeomUtil->Distance(from,vertex,&d1);
-   m_GeomUtil->Distance(from,to,&d2);
-   m_GeomUtil->Distance(vertex,to,&d3);
+   from->DistanceEx(vertex, &d1);
+   from->DistanceEx(to, &d2);
+   vertex->DistanceEx(to, &d3);
    if ( IsZero(d1) || IsZero(d2) || IsZero(d3) )
    {
       return Error(IDS_E_ANGLE,IID_IDivide,COGO_E_ANGLE);
@@ -933,7 +849,7 @@ STDMETHODIMP CCogoEngine::BetweenPoints(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint
    seg->putref_StartPoint(from);
    seg->putref_EndPoint(to);
 
-   hr = m_GeomUtil->DivideLineSegment(seg,nParts,points);
+   hr = seg->Divide(nParts,points);
    if ( FAILED(hr) )
       return hr;
 
@@ -953,7 +869,7 @@ STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ Coll
    // Divide the line
    // The resulting collection contains the from and to points
    // Be sure not to add these points to the collection
-   hr = m_GeomUtil->DivideLineSegment(seg,nParts,points);
+   hr = seg->Divide(nParts,points);
    if ( FAILED(hr) )
       return hr;
 
@@ -1091,15 +1007,16 @@ STDMETHODIMP CCogoEngine::External(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 
    Hy = By + Br*sin(theta+delta);
 
    // create the two new points
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
+   CComPtr<IPoint2d> pnt1;
+   pnt1.CoCreateInstance(CLSID_Point2d);
+   CComPtr<IPoint2d> pnt2;
+   pnt2.CoCreateInstance(CLSID_Point2d);
 
-   CComPtr<IPoint2d> p1, p2;
-   factory->CreatePoint(t1);
-   factory->CreatePoint(t2);
+   pnt1->Move(Gx, Gy);
+   pnt2->Move(Hx, Hy);
 
-   (*t1)->Move(Gx,Gy);
-   (*t2)->Move(Hx,Hy);
+   pnt1.CopyTo(t1);
+   pnt2.CopyTo(t2);
 
    return S_OK;
 }
@@ -1165,15 +1082,16 @@ STDMETHODIMP CCogoEngine::Cross(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 rad
    Hy = By + radius2*sin(sH*theta+delta);
 
    // create the two new points
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
+   CComPtr<IPoint2d> pnt1;
+   pnt1.CoCreateInstance(CLSID_Point2d);
+   CComPtr<IPoint2d> pnt2;
+   pnt2.CoCreateInstance(CLSID_Point2d);
 
-   CComPtr<IPoint2d> p1, p2;
-   factory->CreatePoint(t1);
-   factory->CreatePoint(t2);
+   pnt1->Move(Gx, Gy);
+   pnt2->Move(Hx, Hy);
 
-   (*t1)->Move(Gx,Gy);
-   (*t2)->Move(Hx,Hy);
+   pnt1.CopyTo(t1);
+   pnt2.CopyTo(t2);
 
    return S_OK;
 }
@@ -1231,13 +1149,10 @@ STDMETHODIMP CCogoEngine::Point(/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radi
    Gx = Ax + radius*cos(sG*theta+delta);
    Gy = Ay + radius*sin(sG*theta+delta);
 
-   // create the two new points
-   CComPtr<IPoint2dFactory> factory;
-   get_PointFactory(&factory);
-
-   factory->CreatePoint(tangent);
-
-   (*tangent)->Move(Gx,Gy);
+   CComPtr<IPoint2d> pnt;
+   pnt.CoCreateInstance(CLSID_Point2d);
+   pnt->Move(Gx, Gy);
+   pnt.CopyTo(tangent);
 
    return S_OK;
 }

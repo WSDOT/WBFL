@@ -61,7 +61,6 @@ void CTestCompoundCurve::Test()
    Test10b();
    Test11a();
    Test11b();
-   TestEvents();
 
    // Test curve direction
    CComPtr<ICompoundCurve> hc;
@@ -133,14 +132,6 @@ void CTestCompoundCurve::Test()
    pft->Move(1000, -1500);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
-
-   // PointFactory
-   CComPtr<IPoint2dFactory> factory;
-   TRY_TEST(hc->get_PointFactory(nullptr),E_POINTER);
-   TRY_TEST(hc->get_PointFactory(&factory),S_OK);
-   TRY_TEST(factory != nullptr,true);
-   TRY_TEST(hc->putref_PointFactory(nullptr),E_INVALIDARG);
-   TRY_TEST(hc->putref_PointFactory(factory),S_OK);
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_CompoundCurve,IID_ICompoundCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);

@@ -237,10 +237,6 @@
       <Project>{5535d7f1-c5e4-48e8-be9c-bddf550ae1c3}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Geometry\Geometry.vcxproj">
       <Project>{16e889a9-e3b0-4541-85b2-3a4d98fccb59}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -253,16 +249,11 @@
       <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\GraphicsLib\GraphicsLib.vcxproj">
-      <Project>{dafd2249-df6b-4834-aec0-ddee31239496}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\Graphing\Graphing.vcxproj">
+      <Project>{753feb16-ebca-4e67-9c3b-d0b9c4ec23f1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\GraphManagerAgent\GraphManagerAgent.vcxproj">
       <Project>{d6cd1a2c-0027-4ed4-b892-fda3852d47ee}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\GraphManager\GraphManager.vcxproj">
-      <Project>{753feb16-ebca-4e67-9c3b-d0b9c4ec23f1}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\LBAM\LBAM.vcxproj">
@@ -341,10 +332,6 @@
       <Project>{28f296f8-5d99-4222-aab2-d62893413bb5}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\ReinforcedConcrete\ReinforcedConcrete.vcxproj">
-      <Project>{8a335a4f-f857-4e92-bddd-bf739c303e0d}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Reporter\Reporter.vcxproj">
       <Project>{f8a98e8e-6f54-43e6-8142-c09402c0ead4}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -359,14 +346,6 @@
     </ProjectReference>
     <ProjectReference Include="..\Roark\Roark.vcxproj">
       <Project>{74ea85b6-5198-4419-98d4-8d051174126e}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Sections\Sections.vcxproj">
-      <Project>{108fc286-5e10-4e25-9afe-207a005821d9}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Sections\SectionsTest\SectionsTest.vcxproj">
-      <Project>{9549b08f-6be2-4838-ae10-084c168098e2}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\Stability\Stability.vcxproj">

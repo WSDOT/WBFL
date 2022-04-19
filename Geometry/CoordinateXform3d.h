@@ -29,6 +29,7 @@
 #define __COORDINATEXFORM3D_H_
 
 #include "resource.h"       // main symbols
+#include <GeomModel/CoordinateXform3d.h>
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -38,9 +39,7 @@ class ATL_NO_VTABLE CCoordinateXform3d :
 	public CComCoClass<CCoordinateXform3d, &CLSID_CoordinateXform3d>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CCoordinateXform3d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public ICoordinateXform3d,
-   public IStructuredStorage2,
-   public IPersist
+   public ICoordinateXform3d
 {
 public:
 	CCoordinateXform3d()
@@ -55,19 +54,12 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CCoordinateXform3d)
 	COM_INTERFACE_ENTRY(ICoordinateXform3d)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 private:
-	CComPtr<IVector3d> m_pRotationVector;
-	Float64 m_Angle; // Angle of rotation about the rotation vector
-	CComPtr<IPoint3d> m_pNewOrigin;
-
-   HRESULT OldToNew(/*[in]*/ IPoint3d* point);
-	HRESULT NewToOld(/*[in]*/ IPoint3d* point);
+	WBFL::Geometry::CoordinateXform3d m_Xform;
 
 // ISupportsErrorInfo
 public:
@@ -75,24 +67,14 @@ public:
 
 // ICoordinateXform3d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(XformEx)(/*[in]*/ IPoint3d* point,/*[in]*/ XformType type,/*[out,retval]*/ IPoint3d** result) override;
    STDMETHOD(Xform)(/*[in,out]*/ IPoint3d** point,/*[in]*/ XformType type) override;
 	STDMETHOD(get_RotationVector)(/*[out, retval]*/ IVector3d **pVal) override;
-	STDMETHOD(putref_RotationVector)(/*[in]*/ IVector3d *newVal) override;
+	STDMETHOD(put_RotationVector)(/*[in]*/ IVector3d *newVal) override;
 	STDMETHOD(get_RotationAngle)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_RotationAngle)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_NewOrigin)(/*[out, retval]*/ IPoint3d **pVal) override;
-	STDMETHOD(putref_NewOrigin)(/*[in]*/ IPoint3d *newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
+	STDMETHOD(put_NewOrigin)(/*[in]*/ IPoint3d *newVal) override;
 };
 
 #endif //__COORDINATEXFORM3D_H_

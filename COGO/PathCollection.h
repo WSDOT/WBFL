@@ -31,7 +31,6 @@
 
 #include "resource.h"       // main symbols
 #include "Collections.h"
-#include "COGOCP.h"
 
 class CPathCollection;
 typedef PersistentIDCollection<CPathCollection,IPathCollection,&IID_IPathCollection,CogoObjectID,IPath> PathCollectionImpl;
@@ -42,10 +41,7 @@ class ATL_NO_VTABLE CPathCollection :
 	public CComObjectRootEx<CComSingleThreadModel>,
 //   public CComRefCountTracer<CPathCollection,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CPathCollection, &CLSID_PathCollection>,
-	public IConnectionPointContainerImpl<CPathCollection>,
-   public PathCollectionImpl,
-   public IPathEvents,
-	public CProxyDPathCollectionEvents< CPathCollection >
+   public PathCollectionImpl
 {
 public:
    CPathCollection() :
@@ -62,17 +58,9 @@ DECLARE_REGISTRY_RESOURCEID(IDR_PATHCOLLECTION)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CPathCollection)
-	COM_INTERFACE_ENTRY(IPathEvents)
-
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
+   COM_INTERFACE_ENTRY(IPathCollection)
    COM_INTERFACE_ENTRY_CHAIN(PathCollectionImpl)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CPathCollection)
-CONNECTION_POINT_ENTRY(IID_IPathCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
    void SetCollectionName(BSTR bstrCollectionName) { m_bstrCollectionName = bstrCollectionName; }
    void SetItemName(BSTR bstrItemName) { m_bstrItemName = bstrItemName; }
@@ -97,17 +85,8 @@ public:
    STDMETHOD(FindID)(/*[in]*/ IPath* Path,/*[out,retval]*/CogoObjectID* ID) override;
    STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum) override;
 //	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory) override;
-//	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory) override;
+//	STDMETHOD(put_Factory)(/*[in]*/IPoint2dFactory* factory) override;
    STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
-
-// IPathEvents
-	STDMETHOD(OnPathChanged)(IPath * Path) override
-	{
-      CogoObjectID id;
-      FindID(Path,&id);
-      Fire_OnPathChanged(this,id,Path);
-		return S_OK;
-	}
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
@@ -115,11 +94,6 @@ private:
    HRESULT PathNotFound(CogoObjectID id);
    HRESULT PathAlreadyDefined(CogoObjectID id);
    HRESULT PathIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
-
-   void Advise(CogoObjectID id,IPath* Path);
-   void Unadvise(CogoObjectID id,IPath* Path);
-   void UnadviseAll();
-   std::map<CogoObjectID,DWORD> m_Cookies;
 
    CComPtr<IPathFactory> m_Factory;
 

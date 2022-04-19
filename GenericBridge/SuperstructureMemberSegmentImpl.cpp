@@ -167,7 +167,7 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::get_LayoutLength(Float64 *pVal)
 
 // Not implemented
 // STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Section(StageIndexType stageIdx, Float64 distAlongSegment, ISection** ppSection)
-// STDMETHODIMP CSuperstructureMemberSegmentImpl::get_PrimaryShape(Float64 distAlongSegment, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+// STDMETHODIMP CSuperstructureMemberSegmentImpl::get_GirderShape(Float64 distAlongSegment, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 //STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Profile(VARIANT_BOOL bIncludeClosure, IShape** ppShape)
 
 STDMETHODIMP CSuperstructureMemberSegmentImpl::put_Orientation(Float64 orientation)

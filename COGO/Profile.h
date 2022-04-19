@@ -33,12 +33,12 @@
 
 #include "Collections.h"
 #include <vector>
-#include "COGOCP.h"
 
-typedef std::pair<DWORD,CComVariant> ProfileType;
+typedef CComVariant ProfileType;
 typedef std::vector<ProfileType> Profiles;
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<ProfileType,VARIANT>, Profiles > ProfileEnum;
-typedef ICollectionOnSTLImpl<IProfile, Profiles, VARIANT, CopyFromPair2<ProfileType,VARIANT>, ProfileEnum> IProfileCollection;
+typedef CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> > ProfileEnum;
+typedef ICollectionOnSTLImpl<IProfile, std::vector<CComVariant>, VARIANT, _Copy<VARIANT>, ProfileEnum> IProfileCollection;
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CProfile
@@ -48,12 +48,8 @@ class ATL_NO_VTABLE CProfile :
 	public CComCoClass<CProfile, &CLSID_Profile>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CProfile,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CProfile>,
    public IProfileCollection,
-   public ISurfaceCollectionEvents,
-   public IProfileElementEvents,
    public IStructuredStorage2,
-	public CProxyDProfileEvents< CProfile >,
    public IPersistImpl<CProfile>
 {
 public:
@@ -71,21 +67,12 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CProfile)
 	COM_INTERFACE_ENTRY(IProfile)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(ISurfaceCollectionEvents)
-	COM_INTERFACE_ENTRY(IProfileElementEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CProfile)
-CONNECTION_POINT_ENTRY(IID_IProfileEvents)
-END_CONNECTION_POINT_MAP()
-
-   STDMETHOD(putref_Alignment)(IAlignment* pAlignment);
+   STDMETHOD(put_Alignment)(IAlignment* pAlignment);
 
 
 // ISupportsErrorInfo
@@ -119,40 +106,10 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// ISurfaceCollectionEvents
-   STDMETHOD(OnSurfaceChanged)(ISurface* pSurface)
-   {
-      Fire_OnProfileChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSurfaceAdded)(ISurface* pSurface)
-   {
-      Fire_OnProfileChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSurfaceRemoved)()
-   {
-      Fire_OnProfileChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSurfacesCleared)()
-   {
-      Fire_OnProfileChanged(this);
-      return S_OK;
-   }
-
-
-// IProfileElementEvents
-	STDMETHOD(OnProfileElementChanged)(IProfileElement * pe)
-	{
-      Fire_OnProfileChanged(this);
-		return S_OK;
-	}
 
 private:
    IAlignment* m_pAlignment; // weak reference
    CComPtr<ISurfaceCollection> m_Surfaces;
-   DWORD m_dwSurfaceCollectionCookie;
 
    // objects used for searching the collection
    CComPtr<IProfileElement> m_TestElement;
@@ -166,14 +123,7 @@ private:
    void AfterProfileGradeAndElevation(IStation* pStation,Float64*grade, Float64* elev);
    HRESULT AdjustForOffset(IStation* pStation,Float64 offset,Float64 profileElev,Float64* pAdjElev,Float64* pSlope);
 
-   void AdviseElement(IProfileElement* element,DWORD* pdwCookie);
-   void UnadviseElement(CollectionIndexType idx);
-   void UnadviseAll();
-
    void AssociateWithProfile(IProfileElement* element,bool bAssociate=true);
-
-   void AdviseSurfaces();
-   void UnadviseSurfaces();
 };
 
 #endif //__PROFILE_H_

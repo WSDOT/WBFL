@@ -48,7 +48,6 @@ HRESULT CVertCurveCollection::FinalConstruct()
 
 void CVertCurveCollection::FinalRelease()
 {
-   UnadviseAll();
 }
 
 STDMETHODIMP CVertCurveCollection::get_Item(CogoObjectID id, IVertCurve **pVal)
@@ -80,13 +79,7 @@ STDMETHODIMP CVertCurveCollection::putref_Item(CogoObjectID id, IVertCurve *newV
 
    CComVariant& var = (*found).second;
 
-   CComQIPtr<IVertCurve> old_VertCurve(var.pdispVal);
-   Unadvise(id,old_VertCurve);
-
    var = newVal;
-   Advise(id,newVal);
-
-   Fire_OnVertCurveChanged(id,newVal);
 
 	return S_OK;
 }
@@ -107,13 +100,7 @@ STDMETHODIMP CVertCurveCollection::Remove(CogoObjectID id)
       return VertCurveNotFound(id);
    }
 
-   CComVariant& var = (*found).second;
-   CComQIPtr<IVertCurve> VertCurve(var.pdispVal);
-   Unadvise(id,VertCurve);
-
    m_coll.erase(found);
-
-   Fire_OnVertCurveRemoved(id);
 
 	return S_OK;
 }
@@ -173,19 +160,12 @@ STDMETHODIMP CVertCurveCollection::AddEx(CogoObjectID id, IVertCurve* newVal)
       return E_FAIL;
    }
 
-   // Hookup to the connection VertCurve
-   Advise(id,newVal);
-
-   Fire_OnVertCurveAdded(id,newVal);
-
 	return S_OK;
 }
 
 STDMETHODIMP CVertCurveCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnVertCurvesCleared();
 	return S_OK;
 }
 
@@ -280,20 +260,6 @@ STDMETHODIMP CVertCurveCollection::get_Factory(IVertCurveFactory* *factory)
    return S_OK;
 }
 
-STDMETHODIMP CVertCurveCollection::OnVertCurveChanged(IVertCurve* vc)
-{
-   CogoObjectID id;
-   HRESULT hr = FindID(vc,&id);
-
-   // This container only listens to events from VertCurve objects in this 
-   // container. If the ID isn't found an error has been made somewhere
-   ATLASSERT( SUCCEEDED(hr) );
-
-   Fire_OnVertCurveChanged(id,vc);
-
-   return S_OK;
-}
-
 STDMETHODIMP CVertCurveCollection::Clone(IVertCurveCollection* *clone)
 {
    CHECK_RETOBJ(clone);
@@ -323,64 +289,6 @@ STDMETHODIMP CVertCurveCollection::Clone(IVertCurveCollection* *clone)
    }
 
    return S_OK;
-}
-
-void CVertCurveCollection::Advise(CogoObjectID id,IVertCurve* vc)
-{
-   DWORD dwCookie;
-   CComPtr<IVertCurve> pCP(vc);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_IVertCurveEvents, &dwCookie );
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection VertCurve with VertCurve object\n");
-      return;
-   }
-
-   m_Cookies.insert( std::make_pair(id,dwCookie) );
-
-   InternalRelease(); // Break circular reference
-}
-
-void CVertCurveCollection::Unadvise(CogoObjectID id,IVertCurve* vc)
-{
-   ATLASSERT(vc != 0);
-
-   //
-   // Disconnection from connection VertCurve
-   //
-
-   // Lookup the cookie
-   std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( id );
-   if ( found == m_Cookies.end() )
-   {
-      ATLTRACE("Failed to disconnect connection VertCurve with VertCurve object\n");
-      return;
-   }
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection VertCurve and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( vc );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_IVertCurveEvents, &pCP );
-   DWORD dwCookie = (*found).second;
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   // Remove cookie from map
-   m_Cookies.erase( id );
-}
-
-void CVertCurveCollection::UnadviseAll()
-{
-   std::map<CogoObjectID,CComVariant>::iterator iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
-   {
-      CogoObjectID id = (*iter).first;
-      CComQIPtr<IVertCurve> vc( (*iter).second.pdispVal );
-      Unadvise(id,vc);
-   }
 }
 
 HRESULT CVertCurveCollection::VertCurveNotFound(CogoObjectID id)

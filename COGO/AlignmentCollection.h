@@ -31,7 +31,6 @@
 
 #include "resource.h"       // main symbols
 #include "Collections.h"
-#include "COGOCP.h"
 
 class CAlignmentCollection;
 typedef PersistentIDCollection<CAlignmentCollection,IAlignmentCollection,&IID_IAlignmentCollection,CogoObjectID,IAlignment> AlignmentCollectionImpl;
@@ -42,10 +41,7 @@ class ATL_NO_VTABLE CAlignmentCollection :
 	public CComObjectRootEx<CComSingleThreadModel>,
 //   public CComRefCountTracer<CAlignmentCollection,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CAlignmentCollection, &CLSID_AlignmentCollection>,
-	public IConnectionPointContainerImpl<CAlignmentCollection>,
-   public AlignmentCollectionImpl,
-   public IAlignmentEvents,
-	public CProxyDAlignmentCollectionEvents< CAlignmentCollection >
+	public AlignmentCollectionImpl
 {
 public:
    CAlignmentCollection() :
@@ -62,17 +58,9 @@ DECLARE_REGISTRY_RESOURCEID(IDR_ALIGNMENTCOLLECTION)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CAlignmentCollection)
-	COM_INTERFACE_ENTRY(IAlignmentEvents)
-
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
+   COM_INTERFACE_ENTRY(IAlignmentCollection)
    COM_INTERFACE_ENTRY_CHAIN(AlignmentCollectionImpl)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CAlignmentCollection)
-CONNECTION_POINT_ENTRY(IID_IAlignmentCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
    void SetCollectionName(BSTR bstrCollectionName) { m_bstrCollectionName = bstrCollectionName; }
    void SetItemName(BSTR bstrItemName) { m_bstrItemName = bstrItemName; }
@@ -97,29 +85,8 @@ public:
    STDMETHOD(FindID)(/*[in]*/ IAlignment* pAlignment,/*[out,retval]*/CogoObjectID* ID) override;
    STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum) override;
 //	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory) override;
-//	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory) override;
+//	STDMETHOD(put_Factory)(/*[in]*/IPoint2dFactory* factory) override;
    STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
-
-// IAlignmentEvents
-	STDMETHOD(OnAlignmentChanged)(IAlignment* pAlignment) override
-	{
-      CogoObjectID id;
-      FindID(pAlignment,&id);
-      Fire_OnAlignmentChanged(this,id,pAlignment);
-		return S_OK;
-	}
-
-	STDMETHOD(OnProfileChanged)(IProfile* pProfile) override
-	{
-      Fire_OnProfileChanged(this,pProfile);
-		return S_OK;
-	}
-
-   STDMETHOD(OnStationEquationsChanged)(IStationEquationCollection* equations) override
-   {
-      Fire_OnStationEquationsChanged(this,equations);
-      return S_OK;
-   }
 
 
 private:
@@ -128,11 +95,6 @@ private:
    HRESULT AlignmentNotFound(CogoObjectID id);
    HRESULT AlignmentAlreadyDefined(CogoObjectID id);
    HRESULT AlignmentIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
-
-   void Advise(CogoObjectID id,IAlignment* pAlignment);
-   void Unadvise(CogoObjectID id,IAlignment* pAlignment);
-   void UnadviseAll();
-   std::map<CogoObjectID,DWORD> m_Cookies;
 
    CComPtr<IAlignmentFactory> m_Factory;
 

@@ -346,16 +346,39 @@
                 description="BeamShapeFactory Class"
                 threadingModel="Apartment"
                 progid="WBFLGeometry.BeamShapeFactory">
-         <progid>WBFLGeometry.BeamShapeFactor.1</progid>
+         <progid>WBFLGeometry.BeamShapeFactory.1</progid>
       </comClass>
 
                <comClass clsid="{1114EB22-FE2E-11D2-8CDF-8AFA61D12734}"
                 tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                 description="GeomOp Class"
                 threadingModel="Apartment"
-                progid="Geometry.GeomOp">
-         <progid>Geometry.GeomOp.1</progid>
+                progid="WBFLGeometry.GeomOp">
+         <progid>WBFLGeometry.GeomOp.1</progid>
       </comClass>
+      
+      <comClass clsid="{FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="ElasticProperties Class"></comClass>
+      <comClass clsid="{3925A3FA-34CD-4E06-AEDF-BCD1773E0810}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="MassProperties Class"></comClass>
+      <comClass clsid="{9A0C379F-0945-41E5-8053-FD77B4FDBF59}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeSectionItem Class"></comClass>
+      <comClass clsid="{9B65E676-01C8-11D5-8BAC-006097C68A9C}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeSection Class"></comClass>
+      <comClass clsid="{D7610039-0289-11D5-8BAE-006097C68A9C}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeBeam Class"></comClass>
+      <comClass clsid="{94267249-3C7D-40a3-BB21-DD8916BA4DE0}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeSectionItemEx Class"></comClass>
+      <comClass clsid="{85AB469B-A6A3-4057-848A-1572DAD74DE0}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeSectionEx Class"></comClass>
+
       <typelib tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                version="1.0"
                helpdir=""
@@ -592,6 +615,9 @@
       <comClass clsid="{0462D6DF-25DB-4FA0-B8B2-7B855A702A99}"
                 tlbid="{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}"
                 description="GraphXyDataProvider Class"></comClass>
+      <comClass clsid="{5A4B1A95-1B49-4599-8B43-37D7039291F5}"
+          tlbid="{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}"
+          description="GirderSectionDrawStrategy Class"></comClass>
       <typelib tlbid="{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}"
                version="1.0"
                helpdir=""
@@ -1771,34 +1797,6 @@
                 tlbid="{9EC1DB46-A140-11D5-B05C-00105A9AF985}"
                 description="SectionStressResults Class"></comClass>
       <typelib tlbid="{9EC1DB46-A140-11D5-B05C-00105A9AF985}"
-               version="1.0"
-               helpdir=""
-               flags="HASDISKIMAGE"></typelib>
-   </file>
-   <file name="WBFLSections.dll"
-         hashalg="SHA1">
-      <comClass clsid="{FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="ElasticProperties Class"></comClass>
-      <comClass clsid="{3925A3FA-34CD-4E06-AEDF-BCD1773E0810}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="MassProperties Class"></comClass>
-      <comClass clsid="{9A0C379F-0945-41E5-8053-FD77B4FDBF59}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeSectionItem Class"></comClass>
-      <comClass clsid="{9B65E676-01C8-11D5-8BAC-006097C68A9C}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeSection Class"></comClass>
-      <comClass clsid="{D7610039-0289-11D5-8BAE-006097C68A9C}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeBeam Class"></comClass>
-      <comClass clsid="{94267249-3C7D-40a3-BB21-DD8916BA4DE0}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeSectionItemEx Class"></comClass>
-      <comClass clsid="{85AB469B-A6A3-4057-848A-1572DAD74DE0}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeSectionEx Class"></comClass>
-      <typelib tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
                version="1.0"
                helpdir=""
                flags="HASDISKIMAGE"></typelib>

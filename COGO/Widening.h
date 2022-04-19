@@ -28,7 +28,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -39,10 +38,8 @@ class ATL_NO_VTABLE CWidening :
 	public CComCoClass<CWidening, &CLSID_Widening>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CWidening,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CWidening>,
    public IWidening,
    public IStructuredStorage2,
-   public CProxyDWideningEvents< CWidening >,
    public IPersistImpl<CWidening>
 {
 public:
@@ -61,16 +58,9 @@ BEGIN_COM_MAP(CWidening)
 	COM_INTERFACE_ENTRY(IWidening)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
-
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CWidening)
-CONNECTION_POINT_ENTRY(IID_IWideningEvents)
-END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo

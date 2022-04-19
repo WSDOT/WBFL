@@ -243,61 +243,6 @@ void CTestAlignment::Test()
    TRY_TEST(alignment->get__EnumAlignmentElements(nullptr),E_POINTER);
    TRY_TEST(alignment->get__EnumAlignmentElements(&pEnum),S_OK);
 
-   // Test PointFactory
-   CComPtr<IPoint2dFactory> factory;
-   TRY_TEST(alignment->get_PointFactory(nullptr),E_POINTER);
-   TRY_TEST(alignment->get_PointFactory(&factory),S_OK);
-   TRY_TEST(alignment->putref_PointFactory(nullptr),E_INVALIDARG);
-   TRY_TEST(alignment->putref_PointFactory(factory),S_OK);
-
-   // Test Events
-   CComObject<CTestAlignment>* pTestAlignment;
-   CComObject<CTestAlignment>::CreateInstance(&pTestAlignment);
-   pTestAlignment->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestAlignment);
-   TRY_TEST(AtlAdvise(alignment,punk,IID_IAlignmentEvents,&dwCookie),S_OK);
-
-   // Create a new "clean" horizontal curve
-   hc.Release();
-   hc.CoCreateInstance(CLSID_CompoundCurve);
-
-   pTestAlignment->InitEventTest();
-   alignment->Clear();
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
-
-   pTestAlignment->InitEventTest();
-   alignment->AddEx(hc);
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
-
-   pTestAlignment->InitEventTest();
-   hc->putref_PBT(point);
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
-
-   pTestAlignment->InitEventTest();
-   alignment->AddEx(point);
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
-
-   pTestAlignment->InitEventTest();
-   point->put_X(50);
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
-
-   profile.Release();
-   alignment->get_Profile(&profile);
-   pTestAlignment->InitEventTest();
-   profile->Clear();
-   TRY_TEST(pTestAlignment->PassedEventTest(), true);
-
-   equations.Release();
-   alignment->get_StationEquations(&equations);
-   pTestAlignment->InitEventTest();
-   equations->Clear();
-   TRY_TEST(pTestAlignment->PassedEventTest(), true);
-
-   TRY_TEST(AtlUnadvise(alignment,IID_IAlignmentEvents,dwCookie),S_OK);
-   pTestAlignment->Release();
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(alignment);
    TRY_TEST( eInfo != nullptr, true );
@@ -314,24 +259,4 @@ void CTestAlignment::Test()
    CTestAlignment1::Test();
    CTestAlignment2::Test();
    CTestAlignment3::Test();
-}
-
-STDMETHODIMP CTestAlignment::OnAlignmentChanged(IAlignment* alignment)
-{
-   if ( alignment != nullptr )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignment::OnProfileChanged(IProfile* profile)
-{
-   Pass();
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignment::OnStationEquationsChanged(IStationEquationCollection* equations)
-{
-   Pass();
-   return S_OK;
 }

@@ -30,7 +30,7 @@
 #include <EAF\EAFExp.h>
 #include <EAF\EAFGraphChildFrame.h>
 #include <EAF\EAFGraphControlWindow.h>
-#include <GraphManager\GraphBuilder.h>
+#include <Graphing/GraphBuilder.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFGraphBuilderBase
@@ -43,7 +43,7 @@
 // draw the actual graph.
 
 class EAFCLASS CEAFGraphBuilderBase : public CCmdTarget, // we want to handle commands!
-                                      public CGraphBuilder
+                                      public WBFL::Graphing::GraphBuilder
 {
 public:
    CEAFGraphBuilderBase();

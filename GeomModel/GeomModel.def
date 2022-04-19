@@ -1,2 +1,2 @@
-LIBRARY        WBFLGeomModel.dll
+LIBRARY  WBFLGeomModel.dll
 EXPORTS  UnitTest @1

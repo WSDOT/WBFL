@@ -61,9 +61,9 @@ lrfdLosses::lrfdLosses(Float64 x,
    Float64 ApsPerm,  // area of permanent strand
    Float64 ApsTemp,   // area of TTS 
    Float64 aps,      // area of one temp strand
-   const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
-   const gpPoint2d& epermFinal,
-   const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
+   const WBFL::Geometry::Point2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+   const WBFL::Geometry::Point2d& epermFinal,
+   const WBFL::Geometry::Point2d& etemp, // eccentricty of temporary strands with respect to CG of girder
    lrfdLosses::TempStrandUsage usage,
    Float64 anchorSet,
    Float64 wobble,
@@ -386,7 +386,7 @@ Float64 lrfdLosses::GetStrandArea() const
    return m_aps;
 }
 
-void lrfdLosses::SetEccPermanentRelease(const gpPoint2d& e)
+void lrfdLosses::SetEccPermanentRelease(const WBFL::Geometry::Point2d& e)
 {
    if ( m_epermRelease != e )
    {
@@ -395,12 +395,12 @@ void lrfdLosses::SetEccPermanentRelease(const gpPoint2d& e)
    }
 }
 
-const gpPoint2d& lrfdLosses::GetEccPermanentRelease() const
+const WBFL::Geometry::Point2d& lrfdLosses::GetEccPermanentRelease() const
 {
    return m_epermRelease;
 }
 
-void lrfdLosses::SetEccPermanentFinal(const gpPoint2d& e)
+void lrfdLosses::SetEccPermanentFinal(const WBFL::Geometry::Point2d& e)
 {
    if ( m_epermFinal != e )
    {
@@ -409,12 +409,12 @@ void lrfdLosses::SetEccPermanentFinal(const gpPoint2d& e)
    }
 }
 
-const gpPoint2d& lrfdLosses::GetEccPermanentFinal() const
+const WBFL::Geometry::Point2d& lrfdLosses::GetEccPermanentFinal() const
 {
    return m_epermFinal;
 }
 
-void lrfdLosses::SetEccTemporary(const gpPoint2d& e)
+void lrfdLosses::SetEccTemporary(const WBFL::Geometry::Point2d& e)
 {
    if ( m_etemp != e )
    {
@@ -423,7 +423,7 @@ void lrfdLosses::SetEccTemporary(const gpPoint2d& e)
    }
 }
 
-const gpPoint2d& lrfdLosses::GetEccTemporary() const
+const WBFL::Geometry::Point2d& lrfdLosses::GetEccTemporary() const
 {
    return m_etemp;
 }
@@ -434,19 +434,19 @@ Float64 lrfdLosses::GetEccpc() const
    return m_epermFinal.Y() + (m_Ybc2 - m_Ybg);
 }
 
-gpPoint2d lrfdLosses::GetEccpgRelease() const
+WBFL::Geometry::Point2d lrfdLosses::GetEccpgRelease() const
 {
    // eccentricty of all strand on non-composite girder
    Float64 Aps = m_ApsPerm + m_ApsTemp;
-   gpPoint2d ecc = IsZero(Aps) ? gpPoint2d(0,0) : (m_ApsPerm*m_epermRelease + m_ApsTemp*m_etemp)/Aps;
+   WBFL::Geometry::Point2d ecc = IsZero(Aps) ? WBFL::Geometry::Point2d(0,0) : (m_ApsPerm*m_epermRelease + m_ApsTemp*m_etemp)/Aps;
    return ecc;
 }
 
-gpPoint2d lrfdLosses::GetEccpgFinal() const
+WBFL::Geometry::Point2d lrfdLosses::GetEccpgFinal() const
 {
    // eccentricty of all strand on non-composite girder
    Float64 Aps = m_ApsPerm + m_ApsTemp;
-   gpPoint2d ecc = IsZero(Aps) ? gpPoint2d(0,0) : (m_ApsPerm*m_epermFinal + m_ApsTemp*m_etemp)/Aps;
+   WBFL::Geometry::Point2d ecc = IsZero(Aps) ? WBFL::Geometry::Point2d(0,0) : (m_ApsPerm*m_epermFinal + m_ApsTemp*m_etemp)/Aps;
    return ecc;
 }
 

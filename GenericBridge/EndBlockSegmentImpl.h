@@ -181,7 +181,7 @@ public:
       }
    }
 
-   STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+   STDMETHOD(get_GirderShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
    {
       CHECK_RETOBJ(ppShape);
 
@@ -278,7 +278,7 @@ public:
       }
 
       CComPtr<IShape> shape;
-      get_PrimaryShape(Xs, sectionBias, coordinateSystem, &shape);
+      get_GirderShape(Xs, sectionBias, coordinateSystem, &shape);
 
       CComPtr<ICompositeSectionEx> section;
       section.CoCreateInstance(CLSID_CompositeSectionEx);
@@ -390,7 +390,7 @@ public:
 
             auto iter(vCuts.begin());
             CComPtr<IShape> shape;
-            get_PrimaryShape(iter->first, iter->second, cstGirder, &shape);
+            get_GirderShape(iter->first, iter->second, cstGirder, &shape);
             Float64 prev_perimeter;
             shape->get_Perimeter(&prev_perimeter);
             CComPtr<IShapeProperties> shapeProps;
@@ -412,7 +412,7 @@ public:
                SectionBias bias = iter->second;
 
                shape.Release();
-               get_PrimaryShape(X, bias, cstGirder, &shape);
+               get_GirderShape(X, bias, cstGirder, &shape);
                Float64 perimeter;
                shape->get_Perimeter(&perimeter);
 

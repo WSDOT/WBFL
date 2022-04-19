@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\MassProperties.h>
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/MassProperties.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,110 +30,124 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   gmMassProperties
-****************************************************************************/
+using namespace WBFL::Geometry;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmMassProperties::gmMassProperties():
+MassProperties::MassProperties():
 m_Mpl(0)
 {
 }
 
-gmMassProperties::gmMassProperties(Float64 mpl):
+MassProperties::MassProperties(Float64 mpl):
 m_Mpl(mpl)
 {
 }
 
-gmMassProperties::gmMassProperties(const gmMassProperties& rOther)
-{
-   MakeCopy(rOther);
-}
-
-gmMassProperties::~gmMassProperties()
+MassProperties::~MassProperties()
 {
 }
 
-//======================== OPERATORS  =======================================
-gmMassProperties& gmMassProperties::operator= (const gmMassProperties& rOther)
+MassProperties MassProperties::operator+(const MassProperties& other)
 {
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
+   return MassProperties(m_Mpl + other.m_Mpl);
+}
 
+MassProperties MassProperties::operator-(const MassProperties& other)
+{
+   return MassProperties(m_Mpl - other.m_Mpl);
+}
+
+MassProperties& MassProperties::operator+=(const MassProperties& other)
+{
+   m_Mpl += other.m_Mpl;
    return *this;
 }
 
-//======================== OPERATIONS =======================================
-
-Float64 gmMassProperties::SetMassPerLength(Float64 mpl)
+MassProperties& MassProperties::operator-=(const MassProperties& other)
 {
-   Float64 tmp = m_Mpl;
-   m_Mpl = mpl;
-   return tmp;
-
+   m_Mpl -= other.m_Mpl;
+   return *this;
 }
 
-Float64 gmMassProperties::MassPerLength() const
+void MassProperties::SetMassPerLength(Float64 mpl)
+{
+   m_Mpl = mpl;
+}
+
+Float64 MassProperties::GetMassPerLength() const
 {
    return m_Mpl;
 }
 
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool gmMassProperties::AssertValid() const
+bool MassProperties::AssertValid() const
 {
    return true;
 }
 
-void gmMassProperties::Dump(dbgDumpContext& os) const
+void MassProperties::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gmMassProperties" << endl;
+   os << "Dump for MassProperties" << endl;
    os << " m_Mpl   = "<< m_Mpl << endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool gmMassProperties::TestMe(dbgLog& rlog)
+#include <MathEx.h>
+bool MassProperties::TestMe(dbgLog& rlog)
 {
-   TESTME_PROLOGUE("gmMassProperties");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented");
-   TESTME_EPILOG("gmMassProperties");
+   TESTME_PROLOGUE("MassProperties");
+
+   MassProperties props;
+
+   // Default value should be zero
+   TRY_TESTME(IsZero(props.GetMassPerLength()));
+
+   props.SetMassPerLength(50.0);
+   TRY_TESTME(IsEqual(props.GetMassPerLength(), 50.0));
+
+   // Add mass properties
+   MassProperties props2;
+   props.SetMassPerLength(100);
+   props2.SetMassPerLength(5.5);
+   props += props2;
+   TRY_TESTME(IsEqual(props.GetMassPerLength(), 105.5));
+
+   props.SetMassPerLength(100);
+   props2.SetMassPerLength(5.5);
+   props2 += props;
+   TRY_TESTME(IsEqual(props2.GetMassPerLength(), 105.5));
+
+   props.SetMassPerLength(100);
+   props2.SetMassPerLength(5.5);
+   auto props3 = props + props2;
+   TRY_TESTME(IsEqual(props3.GetMassPerLength(), 105.5));
+
+   props.SetMassPerLength(100);
+   props2.SetMassPerLength(5.5);
+   props3 = props2 + props;
+   TRY_TESTME(IsEqual(props3.GetMassPerLength(), 105.5));
+
+
+   props.SetMassPerLength(100);
+   props2.SetMassPerLength(5.5);
+   props -= props2;
+   TRY_TESTME(IsEqual(props.GetMassPerLength(), 94.5));
+
+   props.SetMassPerLength(100);
+   props2.SetMassPerLength(5.5);
+   props2 -= props;
+   TRY_TESTME(IsEqual(props2.GetMassPerLength(), -94.5));
+
+   props.SetMassPerLength(100);
+   props2.SetMassPerLength(5.5);
+   props3 = props - props2;
+   TRY_TESTME(IsEqual(props3.GetMassPerLength(), 94.5));
+
+   props.SetMassPerLength(100);
+   props2.SetMassPerLength(5.5);
+   props3 = props2 - props;
+   TRY_TESTME(IsEqual(props3.GetMassPerLength(), -94.5));
+
+   TESTME_EPILOG("MassProperties");
 }
 #endif // _UNITTEST
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmMassProperties::MakeCopy(const gmMassProperties& rOther)
-{
-   m_Mpl = rOther.m_Mpl;
-}
-
-void gmMassProperties::MakeAssignment(const gmMassProperties& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

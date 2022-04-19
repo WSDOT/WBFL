@@ -30,7 +30,6 @@
 #define __StationEquationCOLLECTION_H_
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 #include "WBFLComCollections.h"
 
 class CStationEquationCollection;
@@ -44,10 +43,8 @@ class ATL_NO_VTABLE CStationEquationCollection :
 //   public CComRefCountTracer<CStationEquationCollection,CComObjectRootEx<CComSingleThreadModel> >,
 	public CComCoClass<CStationEquationCollection, &CLSID_StationEquationCollection>,
    public IObjectSafetyImpl<CStationEquationCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CStationEquationCollection>,
 	public ISupportErrorInfo,
-	public PersistentStationEquationCollection,
-   public CProxyDStationEquationCollectionEvents< CStationEquationCollection >
+	public PersistentStationEquationCollection
 {
 public:
 	CStationEquationCollection()
@@ -65,43 +62,19 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CStationEquationCollection)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-
    COM_INTERFACE_ENTRY_CHAIN(PersistentStationEquationCollection)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CStationEquationCollection)
-	CONNECTION_POINT_ENTRY(IID_IStationEquationCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
    CComBSTR GetCollectionName() { return CComBSTR("StationEquations"); }
    CComBSTR GetItemName() { return CComBSTR("StationEquation"); }
 
-   HRESULT putref_Alignment(/*[in]*/IAlignment* pAlignment);
+   HRESULT put_Alignment(/*[in]*/IAlignment* pAlignment);
    Float64 ComputeNormalizedStation(Float64 back);
    HRESULT BackStationError();
    HRESULT AheadStationError();
    HRESULT StationEquationError(UINT nHelpString,HRESULT hRes);
-
-   virtual HRESULT OnAfterAdd( StoredType* pVal, IndexType idx) override
-   { 
-      Fire_OnEquationAdded(idx,pVal->second.m_T);
-      return S_OK; 
-   }
-   
-   virtual HRESULT OnAfterRemove( IndexType idx) override
-   {
-      if ( !m_bClearing )
-         Fire_OnEquationRemoved(idx);
-
-      return S_OK; 
-   }
 
    virtual HRESULT OnBeforeClear() override
    { 
@@ -111,7 +84,6 @@ END_CONNECTION_POINT_MAP()
    virtual HRESULT OnAfterClear() override 
    { 
       m_bClearing = false;
-      Fire_OnEquationsCleared();
       return S_OK; 
    }
 

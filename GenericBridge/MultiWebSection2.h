@@ -88,6 +88,9 @@ public:
 
 // IGirderSection
 public:
+   STDMETHOD(get_GirderShape)(/*[out, retval]*/IShape** ppShape) override;
+   STDMETHOD(get_VoidCount)(/*[out, retval]*/IndexType* pnVoids) override;
+   STDMETHOD(get_VoidShape)(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape) override;
    STDMETHOD(get_WorkPoint)(/*[out, retval]*/IPoint2d** ppWorkPoint) override;
    STDMETHOD(get_WebCount)(/*[out,retval]*/WebIndexType* nWebs) override;
 	STDMETHOD(get_WebLocation)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* location) override;
@@ -151,7 +154,6 @@ public:
 
 // ICompositeShape
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg) override;
    STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
    STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;

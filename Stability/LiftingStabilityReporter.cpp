@@ -633,7 +633,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             pPara = new rptParagraph;
             *pChapter << pPara;
 
-            gpPoint2d pntTL, pntTR, pntBL, pntBR;
+            Point pntTL, pntTR, pntBL, pntBR;
             pGirder->GetStressPoints(0, Start, &pntTL, &pntTR, &pntBL, &pntBR);
             *pPara << _T("Top Left") << rptNewLine;
             *pPara << _T("X = ") << shortLength.SetValue(pntTL.X()) << rptNewLine;
@@ -809,7 +809,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             row++;
             (*pStressPointTable)(row, col++) << longLength.SetValue(L);
 
-            gpPoint2d pntTL, pntTR, pntBL, pntBR;
+            Point pntTL, pntTR, pntBL, pntBR;
             pGirder->GetStressPoints(sectIdx, Start, &pntTL, &pntTR, &pntBL, &pntBR);
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.X());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.Y());

@@ -28,7 +28,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 #include <Math\Math.h>
 #include <WBFLGeometry\GeomHelpers.h>
 
@@ -41,8 +40,6 @@ class ATL_NO_VTABLE CTransitionCurve :
 	public CComCoClass<CTransitionCurve, &CLSID_TransitionCurve>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CTransitionCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IConnectionPointContainerImpl<CTransitionCurve>,
-   public CProxyDTransitionCurveEvents< CTransitionCurve >,
    public ITransitionCurve,
    public IStructuredStorage2,
    public IPersistImpl<CTransitionCurve>
@@ -63,15 +60,9 @@ BEGIN_COM_MAP(CTransitionCurve)
    COM_INTERFACE_ENTRY(ITransitionCurve)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-   COM_INTERFACE_ENTRY(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CTransitionCurve)
-   CONNECTION_POINT_ENTRY(IID_ITransitionCurveEvents)
-END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -107,8 +98,6 @@ public:
    STDMETHOD(Move)(/*[in]*/ Float64 dist, /*[in]*/ IDirection* direction) override;
    STDMETHOD(Offset)(/*[in]*/Float64 dx,/*[in]*/Float64 dy) override;
 
-   STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory) override;
-   STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
    STDMETHOD(Clone)(/*[out, retval]*/ ITransitionCurve* *clone) override;
    STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
 
@@ -149,8 +138,6 @@ private:
 
    CComPtr<IPoint2d> m_SpiralOrigin;
    Float64 m_SpiralRotation;
-
-   CComPtr<IPoint2dFactory> m_PointFactory;
 
    void Advise(IPoint2d* pnt, DWORD* pdwCookie);
    void Unadvise(IPoint2d* pnt, DWORD* pdwCookie);

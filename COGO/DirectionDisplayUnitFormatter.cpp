@@ -73,16 +73,11 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::FormatSpecifiers( Uint32 width, Uin
    if ( width < 0 || precision < 0 || zeroTol < 0)
       return E_INVALIDARG;
 
-   if ( m_Width != width || m_Precision != precision || m_Notation != notation || m_Justification != justify || !IsEqual(m_ZeroTolerance,zeroTol))
-   {
-      m_Width         = width;
-      m_Precision     = precision;
-      m_Notation      = notation;
-      m_Justification = justify;
-      m_ZeroTolerance = zeroTol;
-
-      Fire_OnFormatChanged();
-   }
+   m_Width         = width;
+   m_Precision     = precision;
+   m_Notation      = notation;
+   m_Justification = justify;
+   m_ZeroTolerance = zeroTol;
 
    return S_OK;
 }
@@ -226,12 +221,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::get_CondensedFormat(VARIANT_BOOL *p
 
 STDMETHODIMP CDirectionDisplayUnitFormatter::put_CondensedFormat(VARIANT_BOOL newVal)
 {
-   if ( m_bCondensedFormat != newVal )
-   {
-      m_bCondensedFormat = newVal;
-      Fire_OnFormatChanged();
-   }
-
+   m_bCondensedFormat = newVal;
 	return S_OK;
 }
 
@@ -246,11 +236,6 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::get_BearingFormat(VARIANT_BOOL *pVa
 
 STDMETHODIMP CDirectionDisplayUnitFormatter::put_BearingFormat(VARIANT_BOOL newVal)
 {
-   if ( m_bBearingFormat != newVal )
-   {
-      m_bBearingFormat = newVal;
-      Fire_OnFormatChanged();
-   }
-
+   m_bBearingFormat = newVal;
 	return S_OK;
 }

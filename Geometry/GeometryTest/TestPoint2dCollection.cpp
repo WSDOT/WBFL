@@ -144,56 +144,6 @@ void CTestPoint2dCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestPoint2dCollection>* pTestEvents;
-   CComObject<CTestPoint2dCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   CComPtr<IUnknown> punk(pTestEvents);
-   DWORD dwCookie;
-   TRY_TEST(AtlAdvise(pColl,punk,IID_IPoint2dCollectionEvents,&dwCookie),S_OK);
-
-   // Add a point to the collection
-   pTestEvents->InitEventTest(0);
-   pColl->Add(p1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Move a point... Event should fire
-   pTestEvents->InitEventTest(0);
-   p1->Move(15,15);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   pColl->Add(p2);
-   pColl->Add(p3);
-   pColl->Add(p4);
-
-   // Remove a point
-   pTestEvents->InitEventTest(3);
-   pColl->Remove(3);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Add a point that doesn't support event firing
-   // This point should be successfully added.
-   // Review the profile output to verify that the approrate
-   // return paths were followed when this object was encountered
-   CComPtr<IPoint2d> geoPoint;
-   geoPoint.CoCreateInstance(CLSID_Point2d);
-   TRY_TEST(pColl->Add(geoPoint),S_OK);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   TRY_TEST(AtlUnadvise(pColl,IID_IPoint2dCollectionEvents,dwCookie),S_OK);
-
-   pTestEvents->Release();
-
-
-   //
    // Test _Enum
    //
    p1->put_X(10);
@@ -227,40 +177,5 @@ void CTestPoint2dCollection::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Point2dCollection ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPoint2dCollection ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
-}
-
-
-STDMETHODIMP CTestPoint2dCollection::OnPointChanged(IPoint2d* point)
-{
-//   MessageBox(nullptr,"PointChanged","Event",MB_OK);
-   Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPoint2dCollection::OnPointAdded(CollectionIndexType index,IPoint2d* point)
-{
-//   MessageBox(nullptr,"PointAdded","Event",MB_OK);
-   if ( index == m_expectedIndex )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPoint2dCollection::OnPointRemoved(CollectionIndexType index)
-{
-//   MessageBox(nullptr,"PointRemoved","Event",MB_OK);
-   if ( index == m_expectedIndex )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPoint2dCollection::OnPointsCleared()
-{
-//   MessageBox(nullptr,"PointCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

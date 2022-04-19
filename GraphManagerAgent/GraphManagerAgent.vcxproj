@@ -230,9 +230,8 @@
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GraphManager\GraphManager.vcxproj">
+    <ProjectReference Include="..\Graphing\Graphing.vcxproj">
       <Project>{753feb16-ebca-4e67-9c3b-d0b9c4ec23f1}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

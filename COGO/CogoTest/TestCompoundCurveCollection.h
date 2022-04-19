@@ -34,32 +34,11 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestCompoundCurveCollection :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ICompoundCurveCollectionEvents
+class CTestCompoundCurveCollection
 {
 public:
 	static void Test();
 	CTestCompoundCurveCollection();
-
-   void InitEventTest(CogoObjectID expectedID) { m_expectedID = expectedID; m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestCompoundCurveCollection)
-   COM_INTERFACE_ENTRY(ICompoundCurveCollectionEvents)
-END_COM_MAP()
-
-// ICompoundCurveCollectionEvents
-public:
-	STDMETHOD(OnCompoundCurveChanged)(CogoObjectID key,ICompoundCurve* vc);
-	STDMETHOD(OnCompoundCurveAdded)(CogoObjectID key,ICompoundCurve* vc);
-	STDMETHOD(OnCompoundCurveRemoved)(CogoObjectID key);
-	STDMETHOD(OnCompoundCurvesCleared)();
-
-private:
-   bool m_bTestState;
-   CogoObjectID m_expectedID;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTCompoundCurveCOLLECTION_H__B9E4933B_5E73_11D5_8C32_006097C68A9C__INCLUDED_)

@@ -36,8 +36,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define TEST_POINT(_point_,_x_,_y_) _point_[i]->get_X(&x); _point_[i++]->get_Y(&y); TRY_TEST(IsEqual(x,_x_),true); TRY_TEST(IsEqual(y,_y_),true);
-
 void CTestNUBeam::TestIShape3()
 {
    CComPtr<IShape> shape;
@@ -80,7 +78,7 @@ void CTestNUBeam::TestIShape3()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    // Verify clip by checking points
    CComPtr<IPoint2dCollection> coll;
@@ -98,19 +96,19 @@ void CTestNUBeam::TestIShape3()
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 89 );
+   TRY_TEST( cPoints, 90 );
 
-   for (CollectionIndexType i = 0; i < cPoints; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
 
    Enum.Release();
    coll->get__Enum(&Enum);
-   Enum->Next(89,&points[0],&fetched);
-   TRY_TEST( fetched, 89 );
+   Enum->Next(90,&points[0],&fetched);
+   TRY_TEST( fetched, 90 );
 
    int i = 0;
    Float64 x,y;
 
+   TEST_POINT(points, 0., 0.);
    TEST_POINT(points,-487.5, 0.);
    TEST_POINT(points,-487.5, 99.1684601);
    TEST_POINT(points,-487.4033721, 102.27546);
@@ -199,9 +197,9 @@ void CTestNUBeam::TestIShape3()
    TEST_POINT(points,487.4033721, 102.27546);
    TEST_POINT(points,487.5, 99.1684601);
    TEST_POINT(points,487.5, 0.);
-   TEST_POINT(points,-487.5, 0.); // closed polygon... repeat first point
+   TEST_POINT(points,0., 0.); // closed polygon... repeat first point
 
-   TRY_TEST(i,89);
+   TRY_TEST(i,cPoints);
 
    //
    // ClipIn
@@ -222,16 +220,16 @@ void CTestNUBeam::TestIShape3()
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( i = 0; i < nPoints; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 88 );
+   TRY_TEST( cPoints, 89 );
 
    coll->get__Enum(&Enum);
-   Enum->Next(88,&points[0],&fetched);
-   TRY_TEST( fetched, 88 );
+   Enum->Next(89,&points[0],&fetched);
+   TRY_TEST( fetched, 89 );
 
    i = 0;
 
@@ -279,6 +277,7 @@ void CTestNUBeam::TestIShape3()
    TEST_POINT(points,-612.3618154, 2377.274128);
    TEST_POINT(points,-612.5, 2380.988877);
    TEST_POINT(points,-612.5, 2400.);
+   TEST_POINT(points, 0., 2400.);
    TEST_POINT(points,612.5, 2400.);
    TEST_POINT(points,612.5, 2380.988877);
    TEST_POINT(points,612.3618154, 2377.274128);
@@ -324,5 +323,5 @@ void CTestNUBeam::TestIShape3()
    TEST_POINT(points,75., 2106.044491);
    TEST_POINT(points,75., 1500.);
 
-   TRY_TEST(i,88);
+   TRY_TEST(i,cPoints);
 }

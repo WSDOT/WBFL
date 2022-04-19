@@ -49,7 +49,7 @@
 #endif
 
 #if !defined INCLUDED_GEOMMODEL_AUTOLIB_H_
-#include <GeomModel\AutoLib.h>
+#include <GeomModel/AutoLib.h>
 #endif
 
 #endif // INCLUDED_GEOMMODEL_GEOMMODELEXP_H_

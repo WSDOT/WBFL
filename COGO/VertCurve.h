@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -41,11 +40,8 @@ class ATL_NO_VTABLE CVertCurve :
 	public CComCoClass<CVertCurve, &CLSID_VertCurve>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CVertCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CVertCurve>,
    public IVertCurve,
    public IStructuredStorage2,
-   public IProfilePointEvents,
-   public CProxyDVertCurveEvents< CVertCurve >,
    public IPersistImpl<CVertCurve>
 {
 public:
@@ -64,19 +60,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CVertCurve)
 	COM_INTERFACE_ENTRY(IVertCurve)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IProfilePointEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
-
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CVertCurve)
-CONNECTION_POINT_ENTRY(IID_IVertCurveEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 public:
@@ -87,7 +74,7 @@ public:
    STDMETHOD(get_ComputeFromGradePoints)(/*[out,retval]*/VARIANT_BOOL* pvbCompute) override;
    STDMETHOD(put_ComputeFromGradePoints)(/*[in]*/VARIANT_BOOL vbCompute) override;
    STDMETHOD(get_Profile)(IProfile* *pVal) override;
-   STDMETHOD(putref_Profile)(IProfile* newVal) override;
+   STDMETHOD(put_Profile)(IProfile* newVal) override;
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ IVertCurve* *clone) override;
 	STDMETHOD(get_A)(/*[out,retval]*/Float64* a) override;
@@ -124,10 +111,6 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IProfilePointEvents
-public:
-	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp) override;
-
 private:
    // if true, L1, L2, BVC, PVI, and EVC are computed from PBG, PFG, g1, and g2
    // assuming BVC=PBG and EVC=PFG
@@ -145,8 +128,6 @@ private:
    Float64 m_g1, m_g2; // entry and exit grades
 
    HRESULT IsValid(); // return S_OK if the curve is valid
-   void MyAdvise(IProfilePoint* pp,DWORD* pdwCookie);
-   void MyUnadvise(IProfilePoint* pp,DWORD dwCookie);
 
    bool m_bIsDirty;
    void MakeDirty();

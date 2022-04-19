@@ -72,7 +72,7 @@ class SimplePointT : private std::pair<T, T>
 {
 public:
    SimplePointT() : std::pair<T, T>(0, 0) {}
-   SimplePointT(T x, T y) : std::pair<T, T>(x, y) {}
+   SimplePointT(const T& x, const T& y) : std::pair<T, T>(x, y) {}
    SimplePointT(const SimplePointT&) = default;
    SimplePointT& operator=(const SimplePointT&) = default;
    ~SimplePointT() = default;
@@ -88,7 +88,7 @@ class SimpleSizeT : private std::pair<T, T>
 {
 public:
    SimpleSizeT() : std::pair<T, T>(0, 0) {}
-   SimpleSizeT(T x, T y) : std::pair<T, T>(x, y) {}
+   SimpleSizeT(const T& x, const T& y) : std::pair<T, T>(x, y) {}
    SimpleSizeT(const SimpleSizeT&) = default;
    SimpleSizeT& operator=(const SimpleSizeT&) = default;
    ~SimpleSizeT() = default;
@@ -134,10 +134,10 @@ public:
    /// Note: Both of the rectangles must be normalized or this function may fail. 
    /// You can call Normalize to normalize the rectangles before calling this function.
    SimpleRectT<T>& BoundPoint(const SimplePointT<T>& point) {
-      Left() = std::min(point.X(), Left());
-      Right() = std::max(point.X(), Right());
-      Bottom() = std::min(point.Y(), Bottom());
-      Top() = std::max(point.Y(), Top());
+      Left() = point.X() < Left() ? point.X() : Left(); // std::min(point.X(),Left()); // std::min and std::max cause compilation problems for some clients. don't know why. the algorithm header is included
+      Right() = Right() < point.X() ? point.X() : Right(); //std::max(point.X(),Right());
+      Bottom() = point.Y() < Bottom() ? point.Y() : Bottom();// std::min(point.Y(), Bottom());
+      Top() = Top() < point.Y() ? point.Y() : Top(); // std::max(point.Y(), Top());
       return *this;
    }
 };

@@ -177,86 +177,125 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arc.cpp" />
+    <ClCompile Include="BoxBeam.cpp" />
+    <ClCompile Include="BulbTee.cpp" />
     <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Circle2d.cpp" />
     <ClCompile Include="CircularSegment.cpp" />
+    <ClCompile Include="CompositeBeam.cpp" />
     <ClCompile Include="CompositeShape.cpp" />
+    <ClCompile Include="CoordinateXform2d.cpp" />
+    <ClCompile Include="CoordinateXform3d.cpp" />
+    <ClCompile Include="DeckedSlabBeam.cpp" />
     <ClCompile Include="ElasticProperties.cpp" />
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="GenericShape.cpp" />
+    <ClCompile Include="GeomOp2d.cpp" />
+    <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="Line2d.cpp" />
+    <ClCompile Include="LineSegment2d.cpp" />
+    <ClCompile Include="LineSegment3d.cpp" />
+    <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MassProperties.cpp" />
+    <ClCompile Include="MohrCircle.cpp" />
+    <ClCompile Include="MultiWeb.cpp" />
+    <ClCompile Include="MultiWeb2.cpp" />
     <ClCompile Include="NUBeam.cpp" />
+    <ClCompile Include="NUDeckedIBeam.cpp" />
+    <ClCompile Include="PCIDeckedIBeam.cpp" />
+    <ClCompile Include="Plane3d.cpp" />
+    <ClCompile Include="PlateGirder.cpp" />
     <ClCompile Include="Polygon.cpp" />
     <ClCompile Include="PrecastBeam.cpp" />
-    <ClCompile Include="Properties.cpp" />
+    <ClCompile Include="Primitives.cpp" />
+    <ClCompile Include="Primitives3d.cpp" />
+    <ClCompile Include="ShapeOnAlternativePolygonImpl.cpp" />
+    <ClCompile Include="ShapeOnCompositeImpl.cpp" />
+    <ClCompile Include="ShapeOnPolygonImpl.cpp" />
+    <ClCompile Include="ShapeProperties.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Section.cpp" />
-    <ClCompile Include="SectionListener.cpp" />
-    <ClCompile Include="ShapeImp.cpp" />
-    <ClCompile Include="ShapeListener.cpp" />
-    <ClCompile Include="ShapeUtils.cpp" />
+    <ClCompile Include="SectionComponent.cpp" />
+    <ClCompile Include="ShapeImpl.cpp" />
     <ClCompile Include="TrafficBarrier.cpp" />
     <ClCompile Include="Triangle.cpp" />
-    <ClCompile Include="Ubeam.cpp" />
+    <ClCompile Include="UBeam.cpp" />
+    <ClCompile Include="UBeam2.cpp" />
     <ClCompile Include="UnitTest.cpp" />
-    <ClCompile Include="WsdotPrecastBeams.cpp" />
+    <ClCompile Include="Vector2d.cpp" />
+    <ClCompile Include="Vector3d.cpp" />
+    <ClCompile Include="VoidedSlab.cpp" />
+    <ClCompile Include="VoidedSlab2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GeomModel.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\GeomModel\Arc.h" />
     <ClInclude Include="..\Include\GeomModel\AutoLib.h" />
+    <ClInclude Include="..\Include\GeomModel\BoxBeam.h" />
+    <ClInclude Include="..\Include\GeomModel\BulbTee.h" />
     <ClInclude Include="..\Include\GeomModel\Circle.h" />
+    <ClInclude Include="..\Include\GeomModel\Circle2d.h" />
     <ClInclude Include="..\Include\GeomModel\CircularSegment.h" />
+    <ClInclude Include="..\Include\GeomModel\CompositeBeam.h" />
     <ClInclude Include="..\Include\GeomModel\CompositeShape.h" />
+    <ClInclude Include="..\Include\GeomModel\CoordinateXform2d.h" />
+    <ClInclude Include="..\Include\GeomModel\CoordinateXform3d.h" />
+    <ClInclude Include="..\Include\GeomModel\DeckedSlabBeam.h" />
     <ClInclude Include="..\Include\GeomModel\ElasticProperties.h" />
+    <ClInclude Include="..\Include\GeomModel\GenericShape.h" />
     <ClInclude Include="..\Include\GeomModel\GeomModel.h" />
     <ClInclude Include="..\Include\GeomModel\GeomModelExp.h" />
     <ClInclude Include="..\Include\GeomModel\GeomModelLib.h" />
-    <ClInclude Include="..\Include\GeomModel\IPrecastBeam.h" />
-    <ClInclude Include="..\Include\GeomModel\IShape.h" />
+    <ClInclude Include="..\Include\GeomModel\GeomOp2d.h" />
+    <ClInclude Include="..\Include\GeomModel\FlangedBeam.h" />
+    <ClInclude Include="..\Include\GeomModel\Line2d.h" />
+    <ClInclude Include="..\Include\GeomModel\LineSegment2d.h" />
+    <ClInclude Include="..\Include\GeomModel\LineSegment3d.h" />
+    <ClInclude Include="..\Include\GeomModel\MultiWeb.h" />
+    <ClInclude Include="..\Include\GeomModel\MultiWeb2.h" />
+    <ClInclude Include="..\Include\GeomModel\NUDeckedIBeam.h" />
+    <ClInclude Include="..\Include\GeomModel\PCIDeckedIBeam.h" />
+    <ClInclude Include="..\Include\GeomModel\Plane3d.h" />
+    <ClInclude Include="..\Include\GeomModel\PlateGirder.h" />
+    <ClInclude Include="..\Include\GeomModel\Primitives.h" />
+    <ClInclude Include="..\Include\GeomModel\Primitives3d.h" />
+    <ClInclude Include="..\Include\GeomModel\SectionComponent.h" />
+    <ClInclude Include="..\Include\GeomModel\Shape.h" />
     <ClInclude Include="..\Include\GeomModel\MassProperties.h" />
     <ClInclude Include="..\Include\GeomModel\NUBeam.h" />
     <ClInclude Include="..\Include\GeomModel\Polygon.h" />
     <ClInclude Include="..\Include\GeomModel\PrecastBeam.h" />
-    <ClInclude Include="..\Include\GeomModel\Properties.h" />
+    <ClInclude Include="..\Include\GeomModel\ShapeOnAlternativePolygonImpl.h" />
+    <ClInclude Include="..\Include\GeomModel\ShapeOnCompositeImpl.h" />
+    <ClInclude Include="..\Include\GeomModel\ShapeOnPolygonImpl.h" />
+    <ClInclude Include="..\Include\GeomModel\ShapeProperties.h" />
     <ClInclude Include="..\Include\GeomModel\Rectangle.h" />
     <ClInclude Include="..\Include\GeomModel\Section.h" />
-    <ClInclude Include="..\Include\GeomModel\SectionListener.h" />
-    <ClInclude Include="..\Include\GeomModel\ShapeImp.h" />
-    <ClInclude Include="..\Include\GeomModel\ShapeListener.h" />
-    <ClInclude Include="..\Include\GeomModel\ShapeUtils.h" />
+    <ClInclude Include="..\Include\GeomModel\ShapeImpl.h" />
     <ClInclude Include="..\Include\GeomModel\TrafficBarrier.h" />
     <ClInclude Include="..\Include\GeomModel\Triangle.h" />
-    <ClInclude Include="..\Include\GeomModel\Ubeam.h" />
+    <ClInclude Include="..\Include\GeomModel\UBeam.h" />
+    <ClInclude Include="..\Include\GeomModel\UBeam2.h" />
     <ClInclude Include="..\Include\GeomModel\UnitTest.h" />
-    <ClInclude Include="..\Include\GeomModel\WsdotPrecastBeams.h" />
+    <ClInclude Include="..\Include\GeomModel\Vector2d.h" />
+    <ClInclude Include="..\Include\GeomModel\Vector3d.h" />
+    <ClInclude Include="..\Include\GeomModel\VoidedSlab.h" />
+    <ClInclude Include="..\Include\GeomModel\VoidedSlab2.h" />
+    <ClInclude Include="Helpers.h" />
+    <ClInclude Include="MohrCircle.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GeomModel.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EngTools\EngTools.vcxproj">
-      <Project>{fe54ede6-52c3-42c5-9348-710bc38a8ec0}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\GraphicsLib\GraphicsLib.vcxproj">
-      <Project>{dafd2249-df6b-4834-aec0-ddee31239496}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\System\System.vcxproj">
       <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Units\Units.vcxproj">
-      <Project>{9f2be387-53f3-4ed3-b343-f49f803e73df}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

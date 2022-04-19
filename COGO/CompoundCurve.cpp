@@ -30,7 +30,6 @@
 #include "Angle.h"
 #include "Direction.h"
 #include <WBFLCogo\CogoHelpers.h>
-#include "PointFactory.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -50,82 +49,19 @@ static Float64 tolerance = 0.1;
 // CCompoundCurve
 HRESULT CCompoundCurve::FinalConstruct()
 {
-   CComObject<CPointFactory>* pPF;
-   CComObject<CPointFactory>::CreateInstance(&pPF);
-
-   m_PointFactory = pPF;
-
-   m_PointFactory->CreatePoint(&m_PBT);
-   m_PointFactory->CreatePoint(&m_PI);
-   m_PointFactory->CreatePoint(&m_PFT);
+   m_PBT.CoCreateInstance(CLSID_Point2d);
+   m_PI.CoCreateInstance(CLSID_Point2d);
+   m_PFT.CoCreateInstance(CLSID_Point2d);
 
    m_PBT->Move(-1000,0);
    m_PI->Move(0,0);
    m_PFT->Move(1000,1000);
-
-   Advise(m_PBT,&m_dwPBT);
-   Advise(m_PI,&m_dwPI);
-   Advise(m_PFT,&m_dwPFT);
-
-   m_bHoldEvents = false;
-   m_bPendingEvents = false;
 
    return S_OK;
 }
 
 void CCompoundCurve::FinalRelease()
 {
-   Unadvise(m_PBT, &m_dwPBT);
-   Unadvise(m_PI, &m_dwPI);
-   Unadvise(m_PFT, &m_dwPFT);
-}
-
-void CCompoundCurve::Advise(IPoint2d* pnt,DWORD* pdwCookie)
-{
-   CComPtr<IConnectionPointContainer> pCPC;
-   CComPtr<IConnectionPoint> pCP;
-   HRESULT hr;
-   hr = pnt->QueryInterface(&pCPC);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
-
-   hr = pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
-
-   pCP->Advise(GetUnknown(),pdwCookie);
-   
-   InternalRelease();
-}
-
-void CCompoundCurve::Unadvise(IPoint2d* pnt,DWORD* pdwCookie)
-{
-   InternalAddRef();
-
-   CComPtr<IConnectionPointContainer> pCPC;
-   CComPtr<IConnectionPoint> pCP;
-   HRESULT hr;
-   hr = pnt->QueryInterface(&pCPC);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
-
-   hr = pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      return;
-   }
-
-   pCP->Unadvise(*pdwCookie);
 }
 
 STDMETHODIMP CCompoundCurve::InterfaceSupportsErrorInfo(REFIID riid)
@@ -155,12 +91,7 @@ STDMETHODIMP CCompoundCurve::putref_PBT(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
-   Unadvise(m_PBT,&m_dwPBT);
    m_PBT = newVal;
-   OnPointChanged(m_PBT);
-   Advise(m_PBT,&m_dwPBT);
-
-   Fire_OnCompoundCurveChanged(this);
 
 	return S_OK;
 }
@@ -177,12 +108,7 @@ STDMETHODIMP CCompoundCurve::putref_PI(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
-   Unadvise(m_PI,&m_dwPI);
    m_PI = newVal;
-   OnPointChanged(m_PI);
-   Advise(m_PI,&m_dwPI);
-
-   Fire_OnCompoundCurveChanged(this);
 
 	return S_OK;
 }
@@ -199,12 +125,7 @@ STDMETHODIMP CCompoundCurve::putref_PFT(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
 
-   Unadvise(m_PFT,&m_dwPFT);
    m_PFT = newVal;
-   OnPointChanged(m_PFT);
-   Advise(m_PFT,&m_dwPFT);
-
-   Fire_OnCompoundCurveChanged(this);
 
 	return S_OK;
 }
@@ -222,7 +143,6 @@ STDMETHODIMP CCompoundCurve::put_Radius(Float64 newVal)
       return E_INVALIDARG;
 
    m_Radius = newVal;
-   Fire_OnCompoundCurveChanged(this);
 
    return S_OK;
 }
@@ -248,8 +168,6 @@ STDMETHODIMP CCompoundCurve::put_SpiralLength(SpiralType spType,Float64 newVal)
       m_Ls1 = newVal;
    else
       m_Ls2 = newVal;
-
-   Fire_OnCompoundCurveChanged(this);
 
 	return S_OK;
 }
@@ -530,7 +448,7 @@ STDMETHODIMP CCompoundCurve::get_TS(IPoint2d* *pVal)
 
    if ( m_TS == nullptr )
    {
-      m_PointFactory->CreatePoint(&m_TS);
+      m_TS.CoCreateInstance(CLSID_Point2d);
 
       CComPtr<IDirection> bkTanBrg;
       get_BkTangentBrg(&bkTanBrg);
@@ -540,7 +458,7 @@ STDMETHODIMP CCompoundCurve::get_TS(IPoint2d* *pVal)
       get_BkTangentLength(&T);
 
       CComPtr<IPoint2d> pnt;
-      cogoUtil::LocateByDistDir(m_PI,T,bkTanBrg,0.0,m_PointFactory,&pnt);
+      cogoUtil::LocateByDistDir(m_PI,T,bkTanBrg,0.0,&pnt);
 
       Float64 x,y;
       pnt->Location(&x,&y);
@@ -558,7 +476,7 @@ STDMETHODIMP CCompoundCurve::get_ST(IPoint2d* *pVal)
 
    if ( m_ST == nullptr )
    {
-      m_PointFactory->CreatePoint(&m_ST);
+      m_ST.CoCreateInstance(CLSID_Point2d);
 
       CComPtr<IDirection> fwdTanBrg;
       get_FwdTangentBrg(&fwdTanBrg);
@@ -567,7 +485,7 @@ STDMETHODIMP CCompoundCurve::get_ST(IPoint2d* *pVal)
       get_FwdTangentLength(&T);
 
       CComPtr<IPoint2d> pnt;
-      cogoUtil::LocateByDistDir(m_PI,T,fwdTanBrg,0.0,m_PointFactory,&pnt);
+      cogoUtil::LocateByDistDir(m_PI,T,fwdTanBrg,0.0,&pnt);
 
       Float64 x,y;
       pnt->Location(&x,&y);
@@ -789,19 +707,19 @@ STDMETHODIMP CCompoundCurve::get_CC(IPoint2d** pVal)
    ATLASSERT(SUCCEEDED(hr));
 
    CComPtr<ILine2d> n1, n2;
-   hr = geomUtil::CreateNormalLineThroughPoint(t1,TS,nullptr,&n1);
+   hr = geomUtil::CreateNormalLineThroughPoint(t1,TS,&n1);
    ATLASSERT(SUCCEEDED(hr));
-   hr = geomUtil::CreateNormalLineThroughPoint(t2,ST,nullptr,&n2);
+   hr = geomUtil::CreateNormalLineThroughPoint(t2,ST,&n2);
    ATLASSERT(SUCCEEDED(hr));
 
    CComPtr<IPoint2d> p;
-   hr = geomUtil::LineLineIntersect(n1,n2,m_PointFactory,&p);
+   hr = geomUtil::LineLineIntersect(n1,n2,&p);
    ATLASSERT(SUCCEEDED(hr));
 
 #if defined _DEBUG
    // intersect tangents... should intersect at PI
    CComPtr<IPoint2d> testPoint;
-   geomUtil::LineLineIntersect(t1,t2,m_PointFactory,&testPoint);
+   geomUtil::LineLineIntersect(t1,t2,&testPoint);
    Float64 x1,y1, x2,y2;
    m_PI->Location(&x1,&y1);
    testPoint->Location(&x2,&y2);
@@ -810,7 +728,7 @@ STDMETHODIMP CCompoundCurve::get_CC(IPoint2d** pVal)
    // intersect forward tangent and its normal
    // should intersect at TS
    testPoint.Release();
-   geomUtil::LineLineIntersect(t1,n1,m_PointFactory,&testPoint);
+   geomUtil::LineLineIntersect(t1,n1,&testPoint);
    TS->Location(&x1,&y1);
    testPoint->Location(&x2,&y2);
    ATLASSERT( IsEqual(x1,x2) && IsEqual(y1,y2) );
@@ -818,7 +736,7 @@ STDMETHODIMP CCompoundCurve::get_CC(IPoint2d** pVal)
    // intersect back tangent and its normal
    // should intersect at ST
    testPoint.Release();
-   geomUtil::LineLineIntersect(t2,n2,m_PointFactory,&testPoint);
+   geomUtil::LineLineIntersect(t2,n2,&testPoint);
    ST->Location(&x1,&y1);
    testPoint->Location(&x2,&y2);
    ATLASSERT( IsEqual(x1,x2) && IsEqual(y1,y2) );
@@ -855,11 +773,11 @@ STDMETHODIMP CCompoundCurve::get_SPI(SpiralType spType,IPoint2d** pSPI)
       Float64 rotAngle;
       dir->get_Value(&rotAngle);
 
-      m_PointFactory->CreatePoint(pSPI);
-      (*pSPI)->put_X(X);
-      (*pSPI)->put_Y(-Y);
-      CComQIPtr<IPoint2d> spi(*pSPI);
-      geomUtil::XformToOriginal(TS, rotAngle, spi);
+      CComPtr<IPoint2d> SPI;
+      SPI.CoCreateInstance(CLSID_Point2d);
+      SPI->Move(X, -Y);
+      SPI.CopyTo(pSPI);
+      geomUtil::XformToOriginal(TS, rotAngle, SPI);
    }
    else
    {
@@ -875,11 +793,11 @@ STDMETHODIMP CCompoundCurve::get_SPI(SpiralType spType,IPoint2d** pSPI)
       Float64 rotAngle;
       dir->get_Value(&rotAngle);
 
-      m_PointFactory->CreatePoint(pSPI);
-      (*pSPI)->put_X(X);
-      (*pSPI)->put_Y(Y);
-      CComQIPtr<IPoint2d> spi(*pSPI);
-      geomUtil::XformToOriginal(ST, rotAngle, spi);
+      CComPtr<IPoint2d> SPI;
+      SPI.CoCreateInstance(CLSID_Point2d);
+      SPI->Move(X, Y);
+      SPI.CopyTo(pSPI);
+      geomUtil::XformToOriginal(ST, rotAngle, SPI);
    }
 
    return S_OK;
@@ -982,7 +900,7 @@ STDMETHODIMP CCompoundCurve::get_PCI(IPoint2d **pVal)
 
    // Intersect the 2 lines
    CComPtr<IPoint2d> p;
-   geomUtil::LineLineIntersect(l1,l2,m_PointFactory,&p);
+   geomUtil::LineLineIntersect(l1,l2,&p);
 
    p.QueryInterface(pVal);
    ATLASSERT( *pVal != nullptr );
@@ -1040,7 +958,7 @@ STDMETHODIMP CCompoundCurve::get_CCC(IPoint2d **pVal)
 
    // Intersect the 2 lines
    CComPtr<IPoint2d> p;
-   geomUtil::LineLineIntersect(l1,l2,m_PointFactory,&p);
+   geomUtil::LineLineIntersect(l1,l2,&p);
 
    p.QueryInterface(pVal);
    ATLASSERT( *pVal != nullptr );
@@ -1382,7 +1300,7 @@ STDMETHODIMP CCompoundCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
       get_BkTangentBrg(&bkTanBrg);
       CComPtr<IPoint2d> ts;
       get_TS(&ts);
-      cogoUtil::LocateByDistDir(ts,distance,bkTanBrg,0.0,m_PointFactory,pVal);
+      cogoUtil::LocateByDistDir(ts,distance,bkTanBrg,0.0,pVal);
    }
    else if ( Lt <= distance )
    {
@@ -1391,7 +1309,7 @@ STDMETHODIMP CCompoundCurve::PointOnCurve(Float64 distance,IPoint2d* *pVal)
       get_FwdTangentBrg(&fwdTanBrg);
       CComPtr<IPoint2d> st;
       get_ST(&st);
-      cogoUtil::LocateByDistDir(st,distance - Lt, fwdTanBrg, 0.0, m_PointFactory,pVal);
+      cogoUtil::LocateByDistDir(st,distance - Lt, fwdTanBrg, 0.0, pVal);
    }
    else
    {
@@ -1467,7 +1385,7 @@ STDMETHODIMP CCompoundCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint
       line->ThroughPoints(pbt, pi);
 
       // compute offset from "point" to the back tangent (used to determine if it is closer to the back tangent than other points on the curve)
-      geomUtil::PointOnLineNearest(line, point, m_PointFactory, &bkTangentPoint);
+      geomUtil::PointOnLineNearest(line, point, &bkTangentPoint);
       point->DistanceEx(bkTangentPoint, &bkTangentOffset); // distance from the point to where it projects onto the back tangent
 
                                                            // compute distance along the back tangent to the projection point
@@ -1512,7 +1430,7 @@ STDMETHODIMP CCompoundCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint
       CComPtr<IPoint2d> sc;
       get_SC(&sc);
 
-      cogoUtil::LineCircleIntersect(line, circle, point, m_PointFactory, &curvePoint);
+      cogoUtil::LineCircleIntersect(line, circle, point, &curvePoint);
       ATLASSERT(curvePoint != nullptr);
 
       CurveDirectionType dir;
@@ -1568,7 +1486,7 @@ STDMETHODIMP CCompoundCurve::ProjectPoint( IPoint2d* point, IPoint2d* *pNewPoint
       line.CoCreateInstance(CLSID_Line2d);
       line->ThroughPoints(pi, pft);
 
-      geomUtil::PointOnLineNearest(line, point, m_PointFactory, &fwdTangentPoint);
+      geomUtil::PointOnLineNearest(line, point, &fwdTangentPoint);
       point->DistanceEx(fwdTangentPoint, &fwdTangentOffset); // distance from the point to where it projects onto the foward tangent
 
                                                              // compute distance along the forard tangent to the projection point
@@ -1666,7 +1584,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
 
    CComPtr<IPoint2d> pnt1, pnt2;
    short nIntersect;
-   geomUtil::LineCircleIntersect(line,circle,m_PointFactory,&pnt1,&pnt2,&nIntersect);
+   geomUtil::LineCircleIntersect(line,circle,&pnt1,&pnt2,&nIntersect);
 
    Float64 delta;
    CurveDirectionType direction;
@@ -1763,13 +1681,13 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
          seg1.CoCreateInstance(CLSID_LineSegment2d);
          seg1->ThroughPoints(TS,SPI);
          CComPtr<IPoint2d> pnt1;
-         geomUtil::IntersectLineWithLineSegment(line,seg1,m_PointFactory,&pnt1);
+         geomUtil::IntersectLineWithLineSegment(line,seg1,&pnt1);
 
          CComPtr<ILineSegment2d> seg2;
          seg2.CoCreateInstance(CLSID_LineSegment2d);
          seg2->ThroughPoints(SPI,SC);
          CComPtr<IPoint2d> pnt2;
-         geomUtil::IntersectLineWithLineSegment(line,seg2,m_PointFactory,&pnt2);
+         geomUtil::IntersectLineWithLineSegment(line,seg2,&pnt2);
 
          if ( pnt1 && pnt2 )
          {
@@ -1820,10 +1738,10 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
                tangent_line->SetExplicit(POC, vector); // Line through the projected point, forward direction
 
                CComPtr<ILine2d> normal_line;
-               geomUtil::CreateNormalLineThroughPoint(tangent_line, POC, nullptr, &normal_line);
+               geomUtil::CreateNormalLineThroughPoint(tangent_line, POC, &normal_line);
 
                CComPtr<IPoint2d> point_on_line;
-               geomUtil::LineLineIntersect(line, normal_line, m_PointFactory, &point_on_line);
+               geomUtil::LineLineIntersect(line, normal_line, &point_on_line);
 
                Float64 offset;
                geomUtil::ShortestDistanceToPoint(tangent_line, point_on_line, &offset);
@@ -1899,13 +1817,13 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
          seg1.CoCreateInstance(CLSID_LineSegment2d);
          seg1->ThroughPoints(ST,SPI);
          CComPtr<IPoint2d> pnt1;
-         geomUtil::IntersectLineWithLineSegment(line,seg1,m_PointFactory,&pnt1);
+         geomUtil::IntersectLineWithLineSegment(line,seg1,&pnt1);
 
          CComPtr<ILineSegment2d> seg2;
          seg2.CoCreateInstance(CLSID_LineSegment2d);
          seg2->ThroughPoints(SPI,CS);
          CComPtr<IPoint2d> pnt2;
-         geomUtil::IntersectLineWithLineSegment(line,seg2,m_PointFactory,&pnt2);
+         geomUtil::IntersectLineWithLineSegment(line,seg2,&pnt2);
 
          if ( pnt1 && pnt2 )
          {
@@ -1956,10 +1874,10 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
                tangent_line->SetExplicit(POC, vector); // Line through the projected point, forward direction
 
                CComPtr<ILine2d> normal_line;
-               geomUtil::CreateNormalLineThroughPoint(tangent_line, POC, nullptr, &normal_line);
+               geomUtil::CreateNormalLineThroughPoint(tangent_line, POC, &normal_line);
 
                CComPtr<IPoint2d> point_on_line;
-               geomUtil::LineLineIntersect(line, normal_line,m_PointFactory, &point_on_line);
+               geomUtil::LineLineIntersect(line, normal_line,&point_on_line);
 
                Float64 offset;
                geomUtil::ShortestDistanceToPoint(tangent_line, point_on_line, &offset);
@@ -2014,7 +1932,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
    {
       CComPtr<ILine2d> bkTangentLine;
       GetBkTangentLine(&bkTangentLine);
-      geomUtil::LineLineIntersect(line,bkTangentLine,m_PointFactory, &bkTangentPoint);
+      geomUtil::LineLineIntersect(line,bkTangentLine,&bkTangentPoint);
 
       // if there was an intersection point and the point is not before the start of the TS-PI line
       // then this isn't an intersection on the back tangent projection 
@@ -2028,7 +1946,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
    {
       CComPtr<ILine2d> fwdTangentLine;
       GetFwdTangentLine(&fwdTangentLine);
-      geomUtil::LineLineIntersect(line,fwdTangentLine,m_PointFactory, &fwdTangentPoint);
+      geomUtil::LineLineIntersect(line,fwdTangentLine,&fwdTangentPoint);
 
       // if there was an intersection point and the point is not after the end of the PI-ST line
       // then this isn't an intersection on the forward tangent projection 
@@ -2115,69 +2033,47 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
    return S_OK;
 }
 
-STDMETHODIMP CCompoundCurve::get_PointFactory(IPoint2dFactory* *factory)
-{
-   CHECK_RETOBJ(factory);
-   (*factory) = m_PointFactory;
-   (*factory)->AddRef();
-
-   return S_OK;
-}
-
-STDMETHODIMP CCompoundCurve::putref_PointFactory(IPoint2dFactory *factory)
-{
-   CHECK_IN(factory);
-   m_PointFactory = factory;
-   return S_OK;
-}
-
 STDMETHODIMP CCompoundCurve::Offset(Float64 dx,Float64 dy)
 {
-   m_bHoldEvents = true;
-   m_bPendingEvents = false;
-
    m_PBT->Offset(dx,dy);
    m_PI->Offset(dx,dy);
    m_PFT->Offset(dx,dy);
 
-   m_bHoldEvents = false;
-   if ( m_bPendingEvents )
-   {
-      Fire_OnCompoundCurveChanged(this);
-   }
+   if (m_TS) m_TS->Offset(dx, dy);
+   if (m_ST) m_ST->Offset(dx, dy);
 
    return S_OK;
 }
 
-///////////////////////////////////////////
-// IPointEvents
-STDMETHODIMP CCompoundCurve::OnPointChanged(IPoint2d* point)
-{
-   if ( m_TS.IsEqualObject(point) || m_ST.IsEqualObject(point) )
-   {
-      return S_OK;
-   }
-
-   ATLASSERT( m_PBT.IsEqualObject(point) || 
-               m_PI.IsEqualObject(point) ||
-              m_PFT.IsEqualObject(point) );
-
-   m_TS.Release();
-   m_ST.Release();
-
-#ifdef _DEBUG
-   // Better be listening only to IPoint2d objects
-   CComQIPtr<IPoint2d> pointEx(point);
-   ATLASSERT( pointEx != nullptr );
-#endif // _DEBUG
-
-   if ( m_bHoldEvents )
-      m_bPendingEvents = true;
-   else
-      Fire_OnCompoundCurveChanged(this);
-
-   return S_OK;
-}
+/////////////////////////////////////////////
+//// IPointEvents
+//STDMETHODIMP CCompoundCurve::OnPointChanged(IPoint2d* point)
+//{
+//   if ( m_TS.IsEqualObject(point) || m_ST.IsEqualObject(point) )
+//   {
+//      return S_OK;
+//   }
+//
+//   ATLASSERT( m_PBT.IsEqualObject(point) || 
+//               m_PI.IsEqualObject(point) ||
+//              m_PFT.IsEqualObject(point) );
+//
+//   m_TS.Release();
+//   m_ST.Release();
+//
+//#ifdef _DEBUG
+//   // Better be listening only to IPoint2d objects
+//   CComQIPtr<IPoint2d> pointEx(point);
+//   ATLASSERT( pointEx != nullptr );
+//#endif // _DEBUG
+//
+//   if ( m_bHoldEvents )
+//      m_bPendingEvents = true;
+//   else
+//      Fire_OnCompoundCurveChanged(this);
+//
+//   return S_OK;
+//}
 
 STDMETHODIMP CCompoundCurve::Clone(ICompoundCurve* *clone)
 {
@@ -2194,21 +2090,19 @@ STDMETHODIMP CCompoundCurve::Clone(ICompoundCurve* *clone)
    (*clone)->put_Radius(m_Radius);
 
    CComPtr<IPoint2d> clonePBT;
-   m_PointFactory->CreatePoint(&clonePBT);
+   clonePBT.CoCreateInstance(CLSID_Point2d);
    clonePBT->MoveEx(m_PBT);
    (*clone)->putref_PBT(clonePBT);
 
    CComPtr<IPoint2d> clonePI;
-   m_PointFactory->CreatePoint(&clonePI);
+   clonePI.CoCreateInstance(CLSID_Point2d);
    clonePI->MoveEx(m_PI);
    (*clone)->putref_PI(clonePI);
    
    CComPtr<IPoint2d> clonePFT;
-   m_PointFactory->CreatePoint(&clonePFT);
+   clonePFT.CoCreateInstance(CLSID_Point2d);
    clonePFT->MoveEx(m_PFT);
    (*clone)->putref_PFT(clonePFT);
-
-   (*clone)->putref_PointFactory(m_PointFactory);
 
    return S_OK;
 }
@@ -2229,7 +2123,6 @@ STDMETHODIMP CCompoundCurve::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("Radius"),CComVariant(m_Radius));
    pSave->put_Property(CComBSTR("Ls1"),CComVariant(m_Ls1));
    pSave->put_Property(CComBSTR("Ls2"),CComVariant(m_Ls2));
-   pSave->put_Property(CComBSTR("PointFactory"),CComVariant(m_PointFactory));
    pSave->EndUnit();
 
    return S_OK;
@@ -2263,12 +2156,6 @@ STDMETHODIMP CCompoundCurve::Load(IStructuredLoad2* pLoad)
 
    pLoad->get_Property(CComBSTR("Ls2"),&var);
    put_SpiralLength(spExit,var.dblVal);
-
-   pLoad->get_Property(CComBSTR("PointFactory"),&var);
-   CComPtr<IPoint2dFactory> factory;
-   _CopyVariantToInterface<IPoint2dFactory>::copy(&factory,&var);
-   putref_PointFactory(factory);
-
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);
@@ -2339,11 +2226,10 @@ void CCompoundCurve::PointOnEntrySpiral(Float64 x,Float64 y,IPoint2d** pVal)
    get_Direction(&cd);
    Float64 k = (cd == cdLeft ? 1 : -1);
 
-   m_PointFactory->CreatePoint(pVal);
-   (*pVal)->put_X(x);
-   (*pVal)->put_Y(k*y);
-   CComQIPtr<IPoint2d> pnt(*pVal);
-
+   CComPtr<IPoint2d> pnt;
+   pnt.CoCreateInstance(CLSID_Point2d);
+   pnt->Move(x, k * y);
+   pnt.CopyTo(pVal);
    geomUtil::XformToOriginal(TS, rotAngle, pnt);
 }
 
@@ -2366,11 +2252,10 @@ void CCompoundCurve::PointOnExitSpiral(Float64 x,Float64 y,IPoint2d** pVal)
    get_Direction(&cd);
    Float64 k = (cd == cdLeft ? -1 : 1);
 
-   m_PointFactory->CreatePoint(pVal);
-   (*pVal)->put_X(x);
-   (*pVal)->put_Y(k*y);
-   CComQIPtr<IPoint2d> pnt(*pVal);
-
+   CComPtr<IPoint2d> pnt;
+   pnt.CoCreateInstance(CLSID_Point2d);
+   pnt->Move(x, k * y);
+   pnt.CopyTo(pVal);
    geomUtil::XformToOriginal(ST, rotAngle, pnt);
 }
 
@@ -2568,7 +2453,7 @@ bool CCompoundCurve::LineParallelToTangent(ILine2d* pTangentLine,ILine2d* pLine,
    geomUtil::Distance(pTangentPoint,CC,&dist1);
 
    CComPtr<IPoint2d> poln;
-   geomUtil::PointOnLineNearest(pLine,CC,m_PointFactory,&poln);
+   geomUtil::PointOnLineNearest(pLine,CC,&poln);
 
    Float64 dist2;
    geomUtil::Distance(CC,poln,&dist2);
@@ -2612,14 +2497,14 @@ void CCompoundCurve::GetCurveCenterNormalIntersectPoints(IPoint2d** pPOBT,IPoint
    CComPtr<ILine2d> bkTangentLine;
    GetBkTangentLine(&bkTangentLine);
 
-   geomUtil::LineLineIntersect(line,bkTangentLine,m_PointFactory,pPOBT);
+   geomUtil::LineLineIntersect(line,bkTangentLine,pPOBT);
    ATLASSERT(pPOBT != nullptr);
 
    // intersect line with forward tangent
    CComPtr<ILine2d> fwdTangentLine;
    GetFwdTangentLine(&fwdTangentLine);
 
-   geomUtil::LineLineIntersect(line,fwdTangentLine,m_PointFactory,pPOFT);
+   geomUtil::LineLineIntersect(line,fwdTangentLine,pPOFT);
    ATLASSERT(pPOFT != nullptr);
 }
 

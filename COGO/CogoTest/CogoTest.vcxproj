@@ -184,7 +184,6 @@
     <ClCompile Include="TestAngleDisplayUnitFormatter.cpp" />
     <ClCompile Include="TestCircularCurve.cpp" />
     <ClCompile Include="TestCogoModel.cpp" />
-    <ClCompile Include="TestCogoModelEvents.cpp" />
     <ClCompile Include="TestCompoundCurve.cpp" />
     <ClCompile Include="TestCompoundCurve2.cpp" />
     <ClCompile Include="TestCompoundCurveCollection.cpp" />
@@ -197,11 +196,11 @@
     <ClCompile Include="TestLocate.cpp" />
     <ClCompile Include="TestMeasure.cpp" />
     <ClCompile Include="TestPathCollection.cpp" />
-    <ClCompile Include="TestPathElementcpp.cpp" />
+    <ClCompile Include="TestPathElement.cpp" />
     <ClCompile Include="TestPoint.cpp" />
     <ClCompile Include="TestPointCollection.cpp" />
     <ClCompile Include="TestProfile.cpp" />
-    <ClCompile Include="TestProfileElementcpp.cpp" />
+    <ClCompile Include="TestProfileElement.cpp" />
     <ClCompile Include="TestProfilePoint.cpp" />
     <ClCompile Include="TestProfilePointCollection.cpp" />
     <ClCompile Include="TestProject.cpp" />
@@ -225,7 +224,6 @@
     <ClInclude Include="TestAngleDisplayUnitFormatter.h" />
     <ClInclude Include="TestCircularCurve.h" />
     <ClInclude Include="TestCogoModel.h" />
-    <ClInclude Include="TestCogoModelEvents.h" />
     <ClInclude Include="TestCompoundCurve.h" />
     <ClInclude Include="TestCompoundCurveCollection.h" />
     <ClInclude Include="TestCubicSpline.h" />

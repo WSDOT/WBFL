@@ -81,7 +81,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(3,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,5.0),true);
@@ -91,7 +90,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,12.0710678119),true);
@@ -120,7 +118,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,13.5355339059),true);
@@ -130,7 +127,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(5,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,6.46446609406),true);
@@ -140,7 +136,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(6,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,5.0),true);
@@ -169,7 +164,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(6,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,20.0),true);
@@ -179,7 +173,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(7,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,30.0),true);
@@ -189,7 +182,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(8,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,15.0),true);
@@ -217,7 +209,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,13.5355339059),true);
@@ -227,7 +218,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(5,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,6.46446609406),true);
@@ -237,7 +227,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(6,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,5.0),true);
@@ -264,7 +253,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(3,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,5.0),true);
@@ -274,7 +262,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,12.0710678119),true);
@@ -312,7 +299,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(3,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,5.0),true);
@@ -322,7 +308,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,12.0710678119),true);
@@ -367,7 +352,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(4,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,13.5355339059),true);
@@ -377,7 +361,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(5,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,6.46446609406),true);
@@ -387,7 +370,6 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_TRUE);
    pnt.Release();
    points->get_Item(6,&pnt);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,5.0),true);

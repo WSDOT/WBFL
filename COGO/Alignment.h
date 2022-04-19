@@ -31,15 +31,6 @@
 
 #include "resource.h"       // main symbols
 
-//#include "Collections.h"
-//#include <vector>
-#include "COGOCP.h"
-
-//typedef std::pair<DWORD,CComVariant> AlignmentType;
-//typedef std::vector<AlignmentType> Alignments;
-//typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<AlignmentType,VARIANT>, Alignments > AlignmentEnum;
-//typedef ICollectionOnSTLImpl<IAlignment, Alignments, VARIANT, CopyFromPair2<AlignmentType,VARIANT>, AlignmentEnum> IAlignmentElementCollection;
-
 /////////////////////////////////////////////////////////////////////////////
 // CAlignment
 class ATL_NO_VTABLE CAlignment : 
@@ -48,13 +39,8 @@ class ATL_NO_VTABLE CAlignment :
 	public CComCoClass<CAlignment, &CLSID_Alignment>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CAlignment,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CAlignment>,
    public IStructuredStorage2,
    public IAlignment,
-	public IPathEvents,
-	public IProfileEvents,
-   public IStationEquationCollectionEvents,
-	public CProxyDAlignmentEvents< CAlignment >,
    public IPersistImpl<CAlignment>
 {
 public:
@@ -67,8 +53,8 @@ public:
 
    void PutPath(IPath* pPath); // used by Clone
 
-   STDMETHOD(putref_Profile)(IProfile* pVal);
-	STDMETHOD(putref_StationEquations)(IStationEquationCollection* pVal);
+   STDMETHOD(put_Profile)(IProfile* pVal);
+	STDMETHOD(put_StationEquations)(IStationEquationCollection* pVal);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_ALIGNMENT)
 
@@ -77,20 +63,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CAlignment)
 	COM_INTERFACE_ENTRY(IAlignment)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPathEvents)
-	COM_INTERFACE_ENTRY(IProfileEvents)
-	COM_INTERFACE_ENTRY(IStationEquationCollectionEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CAlignment)
-   CONNECTION_POINT_ENTRY(IID_IAlignmentEvents)
-END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
@@ -126,10 +102,6 @@ public:
  //  { return m_Path->Offset(point,distance,offset); } // this method is not in the interface and is never used
    STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength) override
    { return m_Path->get_Length(pLength); }
-   STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory) override
-   { return m_Path->get_PointFactory(factory); }
-	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override
-   { return m_Path->putref_PointFactory(factory); }
    STDMETHOD(get__EnumAlignmentElements)(/*[out, retval]*/ IEnumPathElements** pVal)  override { return m_Path->get__EnumPathElements(pVal); }
    STDMETHOD(Clone)(/*[out,retval]*/ IAlignment* *clone) override;
    STDMETHOD(CreateOffsetAlignment)(/*[in]*/ Float64 offset,/*[out,retval]*/IAlignment** alignment) override;
@@ -151,60 +123,13 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IProfileEvents
-public:
-	STDMETHOD(OnProfileChanged)(IProfile * profile)
-	{
-      ATLASSERT(m_Profile.IsEqualObject(profile));
-      Fire_OnProfileChanged(profile);
-      return S_OK;
-	}
-
-// IPathEvents
-public:
-   STDMETHOD(OnPathChanged)(IPath* path)
-   {
-      ATLASSERT(m_Path.IsEqualObject(path));
-      Fire_OnAlignmentChanged(this);
-      return S_OK;
-   }
-
-// IStationEquationCollectionEvents
-public:
-   STDMETHOD(OnEquationAdded)(CollectionIndexType idx,IStationEquation* pp)
-   {
-#if defined _DEBUG
-      CComPtr<IStationEquation> equation;
-      m_Equations->get_Item(idx,&equation);
-      ATLASSERT(equation.IsEqualObject(pp));
-#endif
-      Fire_OnStationEquationsChanged(m_Equations);
-      return S_OK;
-   }
-
-   STDMETHOD(OnEquationRemoved)(CollectionIndexType idx)
-   {
-      Fire_OnStationEquationsChanged(m_Equations);
-      return S_OK;
-   }
-
-   STDMETHOD(OnEquationsCleared)()
-   {
-      Fire_OnStationEquationsChanged(m_Equations);
-      return S_OK;
-   }
-
 private:
    CComPtr<IPath> m_Path;
-   DWORD m_dwPathCookie;
-
    CComPtr<IProfile> m_Profile;
-   DWORD m_dwProfileCookie;
 
    Float64 m_RefStation;
 
    CComPtr<IStationEquationCollection> m_Equations;
-   DWORD m_dwEquationsCookie;
 
    HRESULT CreateStation(Float64 location,IStation** pStation);
    HRESULT StationToPathDistance(VARIANT varStation,Float64* distance);

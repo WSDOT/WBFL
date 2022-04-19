@@ -116,20 +116,6 @@ void CTestCogoModel::Test()
 
 
    // Test factories
-   CComPtr<IPoint2dFactory> pointFactory;
-   TRY_TEST(model->get_PointFactory(nullptr),E_POINTER);
-   TRY_TEST(model->get_PointFactory(&pointFactory),S_OK);
-   TRY_TEST(pointFactory != nullptr, true);
-   TRY_TEST(model->putref_PointFactory(nullptr),E_INVALIDARG);
-   TRY_TEST(model->putref_PointFactory(pointFactory),S_OK);
-
-   CComPtr<ILineSegment2dFactory> lsFactory;
-   TRY_TEST(model->get_LineSegmentFactory(nullptr),E_POINTER);
-   TRY_TEST(model->get_LineSegmentFactory(&lsFactory),S_OK);
-   TRY_TEST(lsFactory != nullptr, true);
-   TRY_TEST(model->putref_LineSegmentFactory(nullptr),E_INVALIDARG);
-   TRY_TEST(model->putref_LineSegmentFactory(lsFactory),S_OK);
-
    CComPtr<IProfilePointFactory> ppFactory;
    TRY_TEST(model->get_ProfilePointFactory(nullptr),E_POINTER);
    TRY_TEST(model->get_ProfilePointFactory(&ppFactory),S_OK);

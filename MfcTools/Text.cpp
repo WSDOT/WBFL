@@ -23,6 +23,7 @@
 
 #include "StdAfx.h"
 #include <MfcTools\Text.h>
+#include <ShellScalingApi.h> // needed for Per Monitor DPI information
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -68,4 +69,38 @@ void ChangeComboBoxString(CComboBox* pCB,int idx,LPCTSTR lpszNewString)
    pCB->SetItemData(idx,itemData);
    pCB->SetItemDataPtr(idx,pItemPtr);
    pCB->SetCurSel(cursel);
+}
+
+HFONT CreateRotatedFont(HDC hDC, LONG rotation, LONG nPointSize, LPCTSTR lpszFaceName)
+{
+   if (rotation > 3600 || rotation < 0)
+      rotation %= 3600;
+
+   LOGFONT logFont;
+   memset(&logFont, 0, sizeof(LOGFONT));
+   logFont.lfCharSet = DEFAULT_CHARSET;
+   logFont.lfHeight = nPointSize;
+   logFont.lfEscapement = rotation;
+   logFont.lfOrientation = rotation;
+   lstrcpyn(logFont.lfFaceName, lpszFaceName, sizeof(logFont.lfFaceName) / sizeof(logFont.lfFaceName[0]));
+
+   // convert nPointSize to logical units based on DC
+   POINT pt;
+   pt.y = ::GetDeviceCaps(hDC, LOGPIXELSY) * logFont.lfHeight;
+   pt.y /= 72;    // 72 points/inch
+   ::DPtoLP(hDC, &pt, 1);
+   POINT ptOrg = { 0, 0 };
+   ::DPtoLP(hDC, &ptOrg, 1);
+   logFont.lfHeight = -abs(pt.y - ptOrg.y);
+
+   // scale font based on monitor DPI scale setting
+   HWND hwnd = WindowFromDC(hDC);
+   HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+   UINT Xdpi, Ydpi;
+   HRESULT hr = GetDpiForMonitor(hMonitor, MDT_DEFAULT, &Xdpi, &Ydpi);
+   ATLASSERT(Xdpi == Ydpi);
+
+   logFont.lfHeight = MulDiv(logFont.lfHeight, Xdpi, USER_DEFAULT_SCREEN_DPI);
+
+   return CreateFontIndirect(&logFont);
 }

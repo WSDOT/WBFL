@@ -86,8 +86,8 @@ public:
 public:
    STDMETHOD(AddShape)(/*[in]*/BSTR bstrName,/*[in]*/IShape* pShape,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial,/*[in]*/IPlane3d* initialStrain,/*[in]*/Float64 Le,/*[in]*/VARIANT_BOOL vbPrimaryShape) override;
    STDMETHOD(get_ShapeCount)(/*[out,retval]*/CollectionIndexType* nShapes) override;
-   STDMETHOD(put_PrimaryShape)(/*[in]*/IndexType shapeIdx) override;
-   STDMETHOD(get_PrimaryShape)(/*[out, retval]*/IndexType* pShapeIdx) override;
+   STDMETHOD(put_GirderShape)(/*[in]*/IndexType shapeIdx) override;
+   STDMETHOD(get_GirderShape)(/*[out, retval]*/IndexType* pShapeIdx) override;
    STDMETHOD(put_Name)(/*[in]*/CollectionIndexType shapeIdx, /*[in]*/BSTR bstrName) override;
    STDMETHOD(get_Name)(/*[in]*/CollectionIndexType shapeIdx, /*[out, retval]*/BSTR* pbstrName) override;
    STDMETHOD(get_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IShape** pShape) override;

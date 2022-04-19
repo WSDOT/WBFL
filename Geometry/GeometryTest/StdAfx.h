@@ -64,6 +64,8 @@ inline bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptio
    return dwSupported == dwSupportedOptions;
 }
 
+#define TEST_POINT(_point_,_x_,_y_) _point_[i]->get_X(&x); _point_[i++]->get_Y(&y); TRY_TEST(IsEqual(x,_x_),true); TRY_TEST(IsEqual(y,_y_),true);
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

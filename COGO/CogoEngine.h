@@ -79,10 +79,6 @@ public:
    STDMETHOD(get_Project)(/*[out, retval]*/ IProject2* *pVal) override;
    STDMETHOD(get_Divide)(/*[out, retval]*/ IDivide2* *pVal) override;
    STDMETHOD(get_Tangent)(/*[out, retval]*/ ITangent2* *pVal) override;
-   STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override;
-   STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory** factory) override;
-   STDMETHOD(putref_LineSegmentFactory)(/*[in]*/ ILineSegment2dFactory* factory) override;
-   STDMETHOD(get_LineSegmentFactory)(/*[out,retval]*/ILineSegment2dFactory** factory) override;
 
 // IMeasure2
 public:

@@ -140,6 +140,35 @@ void CTestTriangle::TestIShape()
    hookPnt->Move(0,0);
 
    tri->putref_HookPoint(hookPnt);
+   tri->put_Height(5);
+   tri->put_Width(5);
+   tri->put_Offset(0);
+
+   CComPtr<IShapeProperties> props;
+   TRY_TEST(shape->get_ShapeProperties(nullptr), E_POINTER);
+   TRY_TEST(shape->get_ShapeProperties(&props), S_OK);
+   Float64 area, ixx, iyy, ixy, cgx, cgy;
+   CComPtr<IPoint2d> cg;
+
+   props->get_Area(&area);
+   props->get_Ixx(&ixx);
+   props->get_Iyy(&iyy);
+   props->get_Ixy(&ixy);
+   cg.Release();
+   props->get_Centroid(&cg);
+   TRY_TEST(IsEqual(area, 12.5), true);
+   TRY_TEST(IsEqual(ixx, 17.3611111111111), true);
+   TRY_TEST(IsEqual(iyy, 17.3611111111111), true);
+   TRY_TEST(IsEqual(ixy, -8.6805555555555), true);
+   cg->get_X(&cgx);
+   cg->get_Y(&cgy);
+   TRY_TEST(IsEqual(cgx, 1.666666666666666666), true);
+   TRY_TEST(IsEqual(cgy, 1.666666666666666666), true);
+   CoordinateSystemType cst;
+   props->get_CoordinateSystem(&cst);
+   TRY_TEST(cst, csCentroidal);
+
+   tri->putref_HookPoint(hookPnt);
    tri->put_Height(-5);
    tri->put_Width(-5);
    tri->put_Offset(0);
@@ -161,12 +190,9 @@ void CTestTriangle::TestIShape()
    //
    // ShapeProperties
    //
-   CComPtr<IShapeProperties> props;
+   props.Release();
    TRY_TEST( shape->get_ShapeProperties(nullptr), E_POINTER );
    TRY_TEST( shape->get_ShapeProperties(&props), S_OK );
-   Float64 area, ixx, iyy, ixy, cgx, cgy;
-   CComPtr<IPoint2d> cg;
-
    props->get_Area(&area);
    props->get_Ixx(&ixx);
    props->get_Iyy(&iyy);
@@ -181,7 +207,6 @@ void CTestTriangle::TestIShape()
    cg->get_Y(&cgy);
    TRY_TEST( IsEqual(cgx,-1.666666666666666666), true );
    TRY_TEST( IsEqual(cgy,-1.666666666666666666), true );
-   CoordinateSystemType cst;
    props->get_CoordinateSystem(&cst);
    TRY_TEST( cst, csCentroidal );
 
@@ -279,7 +304,7 @@ void CTestTriangle::TestIShape()
    TRY_TEST( shape->Clone(&clone), S_OK );
 
    CComQIPtr<ITriangle> triangle_clone(clone);
-   TRY_TEST( triangle_clone != 0, true );
+   TRY_TEST( triangle_clone != nullptr, true );
    pnt.Release();
    triangle_clone->get_HookPoint(&pnt);
    pnt->get_X(&x);
@@ -752,13 +777,12 @@ void CTestTriangle::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Triangle ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ITriangle ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

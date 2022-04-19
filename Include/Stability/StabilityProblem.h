@@ -27,11 +27,15 @@
 #include <Stability/AnalysisPoint.h>
 #include <Material/ConcreteEx.h>
 
-class gpPoint2d;
 interface ISegment;
 
 namespace WBFL
 {
+   namespace Geometry
+   {
+      class Point2d;
+   };
+
    namespace Stability
    {
       ///  Abstract interface for defining a girder for stability analysis
@@ -87,7 +91,7 @@ namespace WBFL
          /// \param[out] pTR top right stress point
          /// \param[out] pBL bottom left stress point
          /// \param[out] pBR bottom right stress point
-         virtual void GetStressPoints(IndexType sectIdx, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const = 0;
+         virtual void GetStressPoints(IndexType sectIdx, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const = 0;
 
          /// Gets the stress points at a specified location
          /// \param[in] X location along the girder
@@ -95,7 +99,7 @@ namespace WBFL
          /// \param[out] pTR top right stress point
          /// \param[out] pBL bottom left stress point
          /// \param[out] pBR bottom right stress point
-         virtual void GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const = 0;
+         virtual void GetStressPoints(Float64 X, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const = 0;
 
          /// Returns additional loads applied to the girder. The first parameters is the location of the load measured from
          /// the left end of the girder and the second is the magintude of the load. Positive values are in the direction of gravity (downwards).

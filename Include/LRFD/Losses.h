@@ -67,9 +67,9 @@ public:
               Float64 ApsPerm,  // area of permanent strand
               Float64 ApsTemp,  // area of TTS 
               Float64 aps,      // area of one strand
-              const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
-              const gpPoint2d& epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
-              const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
+              const WBFL::Geometry::Point2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
+              const WBFL::Geometry::Point2d& epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
+              const WBFL::Geometry::Point2d& etemp, // eccentricty of temporary strands with respect to CG of girder
               TempStrandUsage usage, // temporary strand usage type
               Float64 anchorSet, // anchor set for post-tensioned temporary top strands
               Float64 wobble,    // wobble coefficient for post-tensioned temporary top strands
@@ -199,23 +199,23 @@ public:
    // Strand Eccentricity
 
    // eccentricty of permanent strands on non-composite section at release
-   void SetEccPermanentRelease(const gpPoint2d& epc);
-   const gpPoint2d& GetEccPermanentRelease() const;
+   void SetEccPermanentRelease(const WBFL::Geometry::Point2d& epc);
+   const WBFL::Geometry::Point2d& GetEccPermanentRelease() const;
 
    // eccentricty of permanent strands on non-composite section at final
-   void SetEccPermanentFinal(const gpPoint2d& epc);
-   const gpPoint2d& GetEccPermanentFinal() const;
+   void SetEccPermanentFinal(const WBFL::Geometry::Point2d& epc);
+   const WBFL::Geometry::Point2d& GetEccPermanentFinal() const;
 
    // eccentricty of temporary strands on non-composite section
-   void SetEccTemporary(const gpPoint2d& epc);
-   const gpPoint2d& GetEccTemporary() const;
+   void SetEccTemporary(const WBFL::Geometry::Point2d& epc);
+   const WBFL::Geometry::Point2d& GetEccTemporary() const;
 
    // eccenticity of permanent strand on composite section (computed value)
    Float64 GetEccpc() const;
 
    // eccentricty of all strands on non-composite section (computed value)
-   gpPoint2d GetEccpgRelease() const; 
-   gpPoint2d GetEccpgFinal() const; 
+   WBFL::Geometry::Point2d GetEccpgRelease() const; 
+   WBFL::Geometry::Point2d GetEccpgFinal() const; 
 
    //------------------------------------------------------------------------
    // Section Properties
@@ -441,9 +441,9 @@ protected:
    matPsStrand::Type m_TypeTemp;
    matPsStrand::Grade m_GradeTemp;
    matPsStrand::Coating m_CoatingTemp;
-   gpPoint2d m_epermRelease; // CG of permanent prestress with respect to centroid of noncomposite section
-   gpPoint2d m_epermFinal; // CG of permanent prestress with respect to centroid of composite section
-   gpPoint2d m_etemp; // CG of temporary prestress 
+   WBFL::Geometry::Point2d m_epermRelease; // CG of permanent prestress with respect to centroid of noncomposite section
+   WBFL::Geometry::Point2d m_epermFinal; // CG of permanent prestress with respect to centroid of composite section
+   WBFL::Geometry::Point2d m_etemp; // CG of temporary prestress 
    Float64 m_ApsPerm; // Area of permanent strands
    Float64 m_ApsTemp; // Area of temporary strands
    Float64 m_aps;     // Area of one strand

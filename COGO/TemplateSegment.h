@@ -28,7 +28,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -39,10 +38,8 @@ class ATL_NO_VTABLE CTemplateSegment :
 	public CComCoClass<CTemplateSegment, &CLSID_TemplateSegment>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CTemplateSegment,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CTemplateSegment>,
    public ITemplateSegment,
    public IStructuredStorage2,
-   public CProxyDTemplateSegmentEvents< CTemplateSegment >,
    public IPersistImpl<CTemplateSegment>
 {
 public:
@@ -61,17 +58,10 @@ BEGIN_COM_MAP(CTemplateSegment)
 	COM_INTERFACE_ENTRY(ITemplateSegment)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
 
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CTemplateSegment)
-CONNECTION_POINT_ENTRY(IID_ITemplateSegmentEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 public:

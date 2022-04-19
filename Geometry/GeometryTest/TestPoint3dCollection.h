@@ -36,33 +36,12 @@
 
 
 
-class CTestPoint3dCollection  :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IPoint3dCollectionEvents
+class CTestPoint3dCollection
 {
 public:
 	static void Test();
 	CTestPoint3dCollection();
 	virtual ~CTestPoint3dCollection();
-
-   void InitEventTest(CollectionIndexType expectedIndex) { m_expectedIndex = expectedIndex; m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestPoint3dCollection)
-   COM_INTERFACE_ENTRY(IPoint3dCollectionEvents)
-END_COM_MAP()
-
-// IPointCollectionEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint3d* point);
-	STDMETHOD(OnPointAdded)(CollectionIndexType index,IPoint3d* point);
-	STDMETHOD(OnPointRemoved)(CollectionIndexType index);
-	STDMETHOD(OnPointsCleared)();
-
-private:
-   bool m_bTestState;
-   CollectionIndexType m_expectedIndex;
-   void Pass() { m_bTestState = true; }
 
 private:
 	static void TestISupportErrorInfo();

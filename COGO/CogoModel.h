@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCogoModel
@@ -40,7 +39,6 @@ class ATL_NO_VTABLE CCogoModel :
 	public CComCoClass<CCogoModel, &CLSID_CogoModel>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCogoModel,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CCogoModel>,
    public ICogoModel,
    public IMeasure,
    public ILocate,
@@ -49,14 +47,6 @@ class ATL_NO_VTABLE CCogoModel :
    public IDivide,
    public ITangent,
    public IStructuredStorage2,
-   public IPointCollectionEvents,
-   public ILineSegmentCollectionEvents,
-   public IProfilePointCollectionEvents,
-   public IVertCurveCollectionEvents,
-   public ICompoundCurveCollectionEvents,
-   public IPathCollectionEvents,
-   public IAlignmentCollectionEvents,
-   public CProxyDCogoModelEvents< CCogoModel >,
    public IPersistImpl<CCogoModel>
 {
 public:
@@ -67,13 +57,13 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   HRESULT PutRef_Alignments(IAlignmentCollection* alignments);
-   HRESULT PutRef_Paths(IPathCollection* paths);
-   HRESULT PutRef_CompoundCurves(ICompoundCurveCollection* CompoundCurves);
-   HRESULT PutRef_Lines(ILineSegmentCollection* lines);
-   HRESULT PutRef_Points(IPointCollection* points);
-   HRESULT PutRef_ProfilePoints(IProfilePointCollection* profilePoints);
-   HRESULT PutRef_VertCurves(IVertCurveCollection* vertCurves);
+   HRESULT put_Alignments(IAlignmentCollection* alignments);
+   HRESULT put_Paths(IPathCollection* paths);
+   HRESULT put_CompoundCurves(ICompoundCurveCollection* CompoundCurves);
+   HRESULT put_Lines(ILineSegmentCollection* lines);
+   HRESULT put_Points(IPointCollection* points);
+   HRESULT put_ProfilePoints(IProfilePointCollection* profilePoints);
+   HRESULT put_VertCurves(IVertCurveCollection* vertCurves);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_COGOMODEL)
 
@@ -88,27 +78,10 @@ BEGIN_COM_MAP(CCogoModel)
 	COM_INTERFACE_ENTRY(IDivide)
 	COM_INTERFACE_ENTRY(ITangent)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
-
-   COM_INTERFACE_ENTRY(IPointCollectionEvents)
-   COM_INTERFACE_ENTRY(ILineSegmentCollectionEvents)
-   COM_INTERFACE_ENTRY(IProfilePointCollectionEvents)
-   COM_INTERFACE_ENTRY(IVertCurveCollectionEvents)
-   COM_INTERFACE_ENTRY(ICompoundCurveCollectionEvents)
-   COM_INTERFACE_ENTRY(IPathCollectionEvents)
-   COM_INTERFACE_ENTRY(IAlignmentCollectionEvents)
-
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CCogoModel)
-   CONNECTION_POINT_ENTRY(IID_ICogoModelEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -128,10 +101,6 @@ public:
 	STDMETHOD(get_AlignmentFactory)(/*[out,retval]*/IAlignmentFactory** factory) override;
 	STDMETHOD(putref_PathFactory)(/*[in]*/IPathFactory* factory) override;
 	STDMETHOD(get_PathFactory)(/*[out,retval]*/IPathFactory** factory) override;
-	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override;
-	STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory** factory) override;
-	STDMETHOD(putref_LineSegmentFactory)(/*[in]*/ILineSegment2dFactory* factory) override;
-	STDMETHOD(get_LineSegmentFactory)(/*[out,retval]*/ILineSegment2dFactory** factory) override;
    STDMETHOD(get_Tangent)(/*[out, retval]*/ ITangent* *pVal) override;
    STDMETHOD(get_Divide)(/*[out, retval]*/ IDivide* *pVal) override;
 	STDMETHOD(get_Project)(/*[out, retval]*/ IProject* *pVal) override;
@@ -199,80 +168,16 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IPointCollectionEvents
-public:
-   STDMETHOD(OnPointChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* point) override;
-   STDMETHOD(OnPointAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* point) override;
-   STDMETHOD(OnPointRemoved)(/*[in]*/ CogoObjectID id) override;
-   STDMETHOD(OnPointsCleared)() override;
-
-// ILineSegmentCollectionEvents
-public:
-   STDMETHOD(OnLineSegmentChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ ILineSegment2d* lineSeg) override;
-   STDMETHOD(OnLineSegmentAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ ILineSegment2d* lineSeg) override;
-   STDMETHOD(OnLineSegmentRemoved)(/*[in]*/ CogoObjectID id) override;
-   STDMETHOD(OnLineSegmentsCleared)() override;
-
-// IProfilePointCollectionEvents
-public:
-   STDMETHOD(OnProfilePointChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* pp) override;
-   STDMETHOD(OnProfilePointAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* pp) override;
-   STDMETHOD(OnProfilePointRemoved)(/*[in]*/ CogoObjectID id) override;
-   STDMETHOD(OnProfilePointsCleared)() override;
-
-// IVertCurveCollectionEvents
-public:
-   STDMETHOD(OnVertCurveChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ IVertCurve* vc) override;
-   STDMETHOD(OnVertCurveAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ IVertCurve* vc) override;
-   STDMETHOD(OnVertCurveRemoved)(/*[in]*/ CogoObjectID id) override;
-   STDMETHOD(OnVertCurvesCleared)() override;
-
-// ICompoundCurveCollectionEvents
-public:
-   STDMETHOD(OnCompoundCurveChanged)(/*[in]*/ CogoObjectID id,/*[in]*/ ICompoundCurve* hc) override;
-   STDMETHOD(OnCompoundCurveAdded)(/*[in]*/ CogoObjectID id,/*[in]*/ ICompoundCurve* hc) override;
-   STDMETHOD(OnCompoundCurveRemoved)(/*[in]*/ CogoObjectID id) override;
-   STDMETHOD(OnCompoundCurvesCleared)() override;
-
-// IPathCollectionEvents
-public:
-   STDMETHOD(OnPathChanged)(/*[in]*/IPathCollection* coll,/*[in]*/CogoObjectID id, /*[in]*/IPath* path) override;
-   STDMETHOD(OnPathAdded)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoObjectID id,/*[in]*/ IPath* path) override;
-   STDMETHOD(OnPathRemoved)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoObjectID id) override;
-   STDMETHOD(OnPathsCleared)(/*[in]*/IPathCollection* coll) override;
-
-// IAlignmentCollectionEvents
-public:
-   STDMETHOD(OnAlignmentChanged)(/*[in]*/IAlignmentCollection* coll,/*[in]*/CogoObjectID id, /*[in]*/IAlignment* Alignment) override;
-   STDMETHOD(OnProfileChanged)(/*[in]*/IAlignmentCollection* coll,/*[in]*/ IProfile* profile) override;
-   STDMETHOD(OnAlignmentAdded)(/*[in]*/IAlignmentCollection* coll,/*[in]*/ CogoObjectID id,/*[in]*/ IAlignment* Alignment) override;
-   STDMETHOD(OnAlignmentRemoved)(/*[in]*/IAlignmentCollection* coll,/*[in]*/ CogoObjectID id) override;
-   STDMETHOD(OnAlignmentsCleared)(/*[in]*/IAlignmentCollection* coll) override;
-   STDMETHOD(OnStationEquationsChanged)(/*[in]*/IAlignmentCollection* coll,/*[in]*/IStationEquationCollection* equations) override;
-
 private:
    CComPtr<ICogoEngine> m_Engine;
 
    CComPtr<IPointCollection> m_Points;
-   DWORD m_dwPointsCookie;
-
    CComPtr<ILineSegmentCollection> m_Lines;
-   DWORD m_dwLinesCookie;
-
    CComPtr<IProfilePointCollection> m_ProfilePoints;
-   DWORD m_dwProfilePointsCookie;
-
    CComPtr<IVertCurveCollection> m_VertCurves;
-   DWORD m_dwVertCurvesCookie;
-
    CComPtr<ICompoundCurveCollection> m_CompoundCurves;
-   DWORD m_dwCompoundCurvesCookie;
-
    CComPtr<IAlignmentCollection> m_Alignments;
-   DWORD m_dwAlignmentCookie;
-
    CComPtr<IPathCollection> m_Paths;
-   DWORD m_dwPathCookie;
 };
 
 #endif //__COGOMODEL_H_

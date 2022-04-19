@@ -1219,7 +1219,7 @@ Float64 CStrandPointModel::GetSectionHeight(Float64 Xs) const
 {
    Float64 Hg;
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(Xs, sbLeft, cstGirder, &shape);
+   m_pSegment->get_GirderShape(Xs, sbLeft, cstGirder, &shape);
    CComPtr<IRect2d> bbox;
    shape->get_BoundingBox(&bbox);
    bbox->get_Height(&Hg);

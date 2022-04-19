@@ -52,12 +52,6 @@ HRESULT CParabolicTendonSegment::FinalConstruct()
       return hr;
    }
 
-   hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
-   if ( FAILED(hr) )
-   {
-      return hr;
-   }
-
    m_Slope = 0;
    m_SlopeEnd = qcbLeft;
 

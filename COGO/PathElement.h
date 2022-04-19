@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPathElement
@@ -40,16 +39,8 @@ class ATL_NO_VTABLE CPathElement :
 	public CComCoClass<CPathElement, &CLSID_PathElement>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CPathElement,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CPathElement>,
 	public IPathElement,
-	public ICircularCurveEvents,
-	public ITransitionCurveEvents,
-	public ICompoundCurveEvents,
-	public ILineSegment2dEvents,
-	public IPoint2dEvents,
-   public ICubicSplineEvents,
 	public IStructuredStorage2,
-	public CProxyDPathElementEvents< CPathElement >,
    public IPersistImpl<CPathElement>
 {
 public:
@@ -68,24 +59,9 @@ BEGIN_COM_MAP(CPathElement)
 	COM_INTERFACE_ENTRY(IPathElement)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY(ICircularCurveEvents)
-	COM_INTERFACE_ENTRY(ITransitionCurveEvents)
-	COM_INTERFACE_ENTRY(ICompoundCurveEvents)
-	COM_INTERFACE_ENTRY(ILineSegment2dEvents)
-	COM_INTERFACE_ENTRY(IPoint2dEvents)
-	COM_INTERFACE_ENTRY(ICubicSplineEvents)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CPathElement)
-CONNECTION_POINT_ENTRY(IID_IPathElementEvents)
-END_CONNECTION_POINT_MAP()
-
-   void GetControlPoints(std::vector<CComPtr<IPoint2d>>& points);
-
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -105,56 +81,9 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-
-	// ICircularCurveEvents
-	STDMETHOD(OnCircularCurveChanged)(ICircularCurve* hc)
-	{
-		ATLASSERT(m_Value.IsEqualObject(hc));
-		Fire_OnPathElementChanged(this);
-		return S_OK;
-	}
-	// ITransitionCurveEvents
-	STDMETHOD(OnTransitionCurveChanged)(ITransitionCurve* hc)
-	{
-		ATLASSERT(m_Value.IsEqualObject(hc));
-		Fire_OnPathElementChanged(this);
-		return S_OK;
-	}
-	// ICompoundCurveEvents
-	STDMETHOD(OnCompoundCurveChanged)(ICompoundCurve * hc)
-	{
-      ATLASSERT(m_Value.IsEqualObject(hc));
-      Fire_OnPathElementChanged(this);
-      return S_OK;
-	}
-// ILineSegment2dEvents
-	STDMETHOD(OnLineSegmentChanged)(ILineSegment2d * lineSeg)
-	{
-      ATLASSERT(m_Value.IsEqualObject(lineSeg));
-      Fire_OnPathElementChanged(this);
-      return S_OK;
-	}
-// IPoint2dEvents
-	STDMETHOD(OnPointChanged)(IPoint2d * point)
-	{
-      ATLASSERT(m_Value.IsEqualObject(point));
-      Fire_OnPathElementChanged(this);
-      return S_OK;
-	}
-// ICubicSplineEvents
-	STDMETHOD(OnSplineChanged)(ICubicSpline * spline)
-	{
-      ATLASSERT(m_Value.IsEqualObject(spline));
-      Fire_OnPathElementChanged(this);
-      return S_OK;
-	}
 private:
    PathElementType m_Type;
    CComPtr<IUnknown> m_Value;
-   DWORD m_dwCookie;
-
-   void Advise();
-   void Unadvise();
 };
 
 #endif //__PATHELEMENT_H_

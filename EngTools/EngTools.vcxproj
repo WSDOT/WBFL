@@ -197,10 +197,6 @@
     <ResourceCompile Include="EngTools.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\System\System.vcxproj">
       <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

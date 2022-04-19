@@ -21,12 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\UnitTest.h>
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/UnitTest.h>
 #include <System\dllTest.h>
-
-#include <initguid.h>
-#include <WBFLGeometry_i.c>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,5 +42,5 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
 // call unit test routines for all packages belonging to this dll.
 bool WINAPI UnitTest(dbgLog& rlog)
 {
-   return gmUnitTest::TestMe(rlog);
+   return WBFL::Geometry::UnitTest::TestMe(rlog);
 }

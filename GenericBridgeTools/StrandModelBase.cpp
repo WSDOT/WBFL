@@ -322,7 +322,7 @@ Float64 CStrandModelBase::GetGirderWidthAdjustment(Float64 Xs) const
 {
    Float64 Xadj = 0;
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(Xs, sbLeft, cstGirder, &shape);
+   m_pSegment->get_GirderShape(Xs, sbLeft, cstGirder, &shape);
 
    CComQIPtr<IAsymmetricSection> asymmetric(shape);
    if (asymmetric)

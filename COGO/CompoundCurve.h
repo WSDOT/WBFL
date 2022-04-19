@@ -30,8 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
-
 #include <Math\Math.h>
 
 class CEntrySpiralFunction;
@@ -45,9 +43,6 @@ class ATL_NO_VTABLE CCompoundCurve :
 	public CComCoClass<CCompoundCurve, &CLSID_CompoundCurve>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCompoundCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CCompoundCurve>,
-   public CProxyDCompoundCurveEvents< CCompoundCurve >,
-   public IPoint2dEvents,
    public ICompoundCurve,
    public IStructuredStorage2,
    public IPersistImpl<CCompoundCurve>
@@ -73,18 +68,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CCompoundCurve)
 	COM_INTERFACE_ENTRY(ICompoundCurve)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPoint2dEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CCompoundCurve)
-CONNECTION_POINT_ENTRY(IID_ICompoundCurveEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -93,8 +80,6 @@ END_CONNECTION_POINT_MAP()
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ ICompoundCurve* *clone) override;
-	STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory) override;
-	STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
 	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2) override;
    STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point, /*[out]*/ IPoint2d* *newPoint, /*[out]*/ Float64* distFromStart, /*[out]*/ VARIANT_BOOL* pvbOnProjection) override;
    STDMETHOD(PointOnCurve)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal) override;
@@ -152,16 +137,8 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IPointEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
-
 private:
-   bool m_bHoldEvents;
-   bool m_bPendingEvents;
-
    CComPtr<IPoint2d> m_PBT, m_PI, m_PFT;
-   DWORD m_dwPBT, m_dwPI, m_dwPFT;
 
    CComPtr<IPoint2d> m_TS, m_ST;
 
@@ -169,11 +146,7 @@ private:
    Float64 m_Ls1, m_Ls2;
 
    CComPtr<IGeomUtil2d> m_GeomUtil;
-   CComPtr<IPoint2dFactory> m_PointFactory;
    CComPtr<ICoordinateXform2d> m_Xform;
-
-   void Advise(IPoint2d* pnt,DWORD* pdwCookie);
-   void Unadvise(IPoint2d* pnt,DWORD* pdwCookie);
 
    Float64 SpiralX(Float64 ls,Float64 angle);
    Float64 SpiralY(Float64 ls,Float64 angle);

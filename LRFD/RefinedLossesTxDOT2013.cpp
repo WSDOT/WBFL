@@ -68,9 +68,9 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
-                         const gpPoint2d& epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
-                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
+                         const WBFL::Geometry::Point2d& epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
+                         const WBFL::Geometry::Point2d& etemp, // eccentricty of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,

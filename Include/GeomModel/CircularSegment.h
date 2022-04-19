@@ -25,264 +25,135 @@
 #define INCLUDED_GEOMMODEL_CIRCULARSEGMENT_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
+#include <GeomModel/GeomModelExp.h>
+#include <GeomModel/ShapeOnAlternativePolygonImpl.h>
+#include <GeomModel/LineSegment2d.h>
+/// <summary>
+/// 
+/// </summary>
+namespace WBFL
+{
+   namespace Geometry
+   {
+class Polygon;
 
-// PROJECT INCLUDES
-//
-#include <GeomModel\GeomModelExp.h>
-#include <GeomModel\ShapeImp.h>
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-class gmPolygon;
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   gmCircularSegmentSegment
-
-   Derived from gmShapeImp, this class represents a CircularSegment primitive. 
-
-
-DESCRIPTION
-   The CircularSegment is described by its radius, mid-ordinate, and rotation.
-   The hook point for a CircularSegment is the mid-point of the straight edge.
-
-LOG
-   rab : 08.19.2000 : Created
-*****************************************************************************/
-
-class GEOMMODELCLASS gmCircularSegment : public gmShapeImp
+/// Object representing a circular segment
+///
+/// \image html CircularSegment/CircularSegment.jpg
+///
+/// \f[ \alpha (radians) \f]
+/// \f[ A = r^2 \left(\alpha - \frac{\sin 2\alpha}{2} \right) \f]
+/// \f[ \overline{x} = \frac{4r}{3} \frac{\sin^3\alpha}{2\alpha-\sin 2\alpha} \f]
+/// \f[ \overline{y} = 0 \f]
+/// \f[ I_x = \frac{Ar^2}{4} \left(1 - \frac{4\sin^3\alpha\cos\alpha}{3(2\alpha-\sin2\alpha)} \right) \f]
+/// \f[ I_y = \frac{Ar^2}{4} \left(1 + \frac{4\sin^3\alpha\cos\alpha}{2\alpha-\sin2\alpha} \right) \f]
+class GEOMMODELCLASS CircularSegment : public ShapeOnAlternativePolygonImpl
 {
 public:
-   // GROUP: LIFECYCLE
+   CircularSegment();
+   CircularSegment(const Point2d& center, Float64 radius, Float64 midOrdinate, Float64 rotation);
 
-   //------------------------------------------------------------------------
-   // Default constructor.  Creates a Circle with radius equal 
-   // to zero,  with its hook point at (0,0).
-   gmCircularSegment();
+   virtual ~CircularSegment();
 
-   //------------------------------------------------------------------------
-   // gmCircularSegment
-   gmCircularSegment(const gpPoint2d& center,Float64 radius,Float64 midOrdinate,Float64 rotation);
+   CircularSegment(const CircularSegment&);
+   CircularSegment& operator=(const CircularSegment&);
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~gmCircularSegment();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   /// Locates the shape by placing the center of the circle at the specified point.
+   void SetCenter(const Point2d& center);
 
-   //------------------------------------------------------------------------
-   // SetHookPoint
-   // Sets the location of the hook point to hookPnt.  Returns the previous 
-   // hook point location.
-   gpPoint2d SetHookPoint(const gpPoint2d& hookPnt);
+   /// Gets the center of the circle
+   Point2d GetCenter() const;
 
-   //------------------------------------------------------------------------
-   // GetHookPoint
-   // Returns the location of the hook point.
-   gpPoint2d GetHookPoint() const;
+   /// Sets the Radius of the Circle.
+   void SetRadius(Float64 radius);
 
-   //------------------------------------------------------------------------
-   // SetCenter
-   // Sets the location of the center.  Returns the previous 
-   // center location.
-   gpPoint2d SetCenter(const gpPoint2d& center);
-
-   //------------------------------------------------------------------------
-   // GetCenter
-   // Returns the location of the center point.
-   gpPoint2d GetCenter() const;
-
-   //------------------------------------------------------------------------
-   // SetRadius
-   // Sets the Radius of the Circle.  Returns the previous Radius.
-   Float64 SetRadius(Float64 radius);
-
-   //------------------------------------------------------------------------
-   // GetRadius
-   // Returns the Radius of the Circle.
+   /// Returns the Radius of the Circle.
    Float64 GetRadius() const;
 
-   //------------------------------------------------------------------------
-   // SetMidOrdinate
-   // Sets the mid-ordinate. Returns the previous value.
-   Float64 SetMidOrdinate(Float64 mo);
+   /// Sets the mid-ordinate (aka sagitta).
+   void SetMidOrdinate(Float64 mo);
 
-   //------------------------------------------------------------------------
-   // GetMidOrdinate
-   // Returns the mid-ordinate
+   /// Returns the mid-ordinate (aka sagitta)
    Float64 GetMidOrdinate() const;
 
-   //------------------------------------------------------------------------
-   // SetRotation
-   // Sets the rotation. Returns the previous value.
-   Float64 SetRotation(Float64 rotation);
+   /// Returns the chord connecting the edges of the circular segment
+   LineSegment2d GetChord() const;
 
-   //------------------------------------------------------------------------
-   // GetRotation
-   // Returns the rotation
+   /// Sets the rotation.
+   void SetRotation(Float64 rotation);
+
+   /// Returns the rotation
    Float64 GetRotation() const;
 
-   //------------------------------------------------------------------------
-   // SetInteriorAngle
-   // Sets the interior angle. Returns the previous value.
-   Float64 SetInteriorAngle(Float64 ia);
+   /// Sets the interior angle.
+   void SetInteriorAngle(Float64 ia);
 
-   //------------------------------------------------------------------------
-   // GetInteriorAngle
-   // Returns the interior angle
+   /// Returns the interior angle
    Float64 GetInteriorAngle() const;
 
-   //------------------------------------------------------------------------
-   // GetProperties
-   // Assigns a gmProperties object to the object pointed to by pProperties. 
-   // The origin of the shape properties object is the centroid of this shape
-   // with a rotation of zero.
-   virtual void GetProperties(gmProperties* pProperties) const override;
+   /// Translates a shape by a delta amount.
+   virtual void DoOffset(const Size2d& delta) override;
 
-   //------------------------------------------------------------------------
-   // GetBoundingBox
-   // Returns the smallest rectangle that bounds the entire shape.
-   virtual gpRect2d GetBoundingBox() const override;
+   /// Rotates a shape.  The rotation is centered about point center.  The 
+   /// rotation angle is measured in radians counter clockwise.
+   virtual void DoRotate(const Point2d& center, Float64 angle) override;
 
-   //------------------------------------------------------------------------
-   // CreateClone
-   // Creates a clone of this broadcaster.  If bRegisterListeners is true the 
-   // listeners are registered with the clone.  This is a factory method,  
-   // you are responsible for freeing the memory allocated by this method.
-   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const override;
+   /// Returns the shape properties.
+   virtual ShapeProperties GetProperties() const override;
 
-   //------------------------------------------------------------------------
-   // CreateClippedShape
-   // Clips this shape against line.  Clips away the portion of the shape on the
-   // side of the line defined by side.  This is a factory method.  You are 
-   // responsible for freeing the memory allocated by this method.  If the shape
-   // lies entirely on the clipping side of the line 0 is returned. Any listeners
-   // to the original section are not transferred to this new section.
-   virtual gmIShape* CreateClippedShape(const gpLine2d& line, 
-                                       gpLine2d::Side side) const;
+   /// Returns the smallest rectangle that bounds the entire shape.
+   virtual Rect2d GetBoundingBox() const override;
 
-   //------------------------------------------------------------------------
-   // CreateClippedShape
-   // Clips this shape against Circle r.  Clips in or out of the Circle
-   // as specified by region.  This is a factory method.  You are responsible 
-   // for freeing memory allocated by this method.  This method returns 0 if, 
-   // the shape lies entirely within the clipping Circle and region is set 
-   // to clip out, or the shape and the Circle do not intersect and region 
-   // is to clip in. Any listeners to the original section are not transferred
-   // to this new section.
-   virtual gmIShape* CreateClippedShape(const gpRect2d& r,
-                                        gmShapeImp::ClipRegion region
-                                        ) const;
+   virtual bool PointInShape(const Point2d& p) const override;
+   virtual Float64 GetPerimeter() const override;
 
-   //------------------------------------------------------------------------
-   // GetFurthestDistance
-   // Returns the distance to a line that is parallel to line, on specified 
-   // side of line,  that passes through the furthest point on the shape 
-   // from line.
-   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const override;
+   // Creates a clone of this shape.
+   virtual std::unique_ptr<Shape> CreateClone() const override;
 
-   //------------------------------------------------------------------------
-   // Draw
-   // Draws the shape on the given device context.  Mapping of the coordinates
-   // to the device space should be done using the supplied point mapper.
-   // Draw is for static displays only.  The drawing of this analytical 
-   // model is not intended for interactive, graphical editing.  Interactive 
-   // graphical editing is best left for a package specifically designed for 
-   // this purpose, such as jKit/GO.  In a package like jKit/GO,  a GO object
-   // would most likely delegate its drawing responsibility to the gmShapeImp 
-   // object it represents.
-   // Subject to removal if we can ever figure out the MVC stuff
-   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const override;
+   /// Clips this shape against line.  Clips away the portion of the shape on the
+   /// side of the line defined by side. If the shape lies entirely on the clipping side of the line a nullptr is returned
+   virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
+   /// Clips this shape against Circle r.  Clips in or out of the Circle
+   /// as specified by region. This method returns a nullptr when 
+   /// the shape lies entirely within the clipping Circle and region is set 
+   /// to clip out, or the shape and the Circle do not intersect and region 
+   /// is to clip in.
+   virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override;
+
+   /// Returns the distance to a line that is parallel to line, on specified 
+   /// side of line,  that passes through the furthest point on the shape 
+   /// from line.
+   virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
+
 #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
+   /// Returns true if the class is in a valid state, otherwise returns false
    virtual bool AssertValid() const override;
 
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
+   /// Dumps the contents of the class to the given stream.
    virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
+   // Self-diagnostic test function.
    static bool TestMe(dbgLog& rlog);
 #endif // _UNITTEST
 
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   gmCircularSegment(const gmCircularSegment&);
-   gmCircularSegment& operator=(const gmCircularSegment&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // DoTranslate
-   // Called by the framework went the shape is to be translated.
-   virtual void DoTranslate(const gpSize2d& delta) override;
-
-   //------------------------------------------------------------------------
-   // DoRotate
-   // Called by the framework went the shape is to be rotated.
-   virtual void DoRotate(const gpPoint2d& center, Float64 angle) override;
-
-   //------------------------------------------------------------------------
-   void MakeCopy(const gmCircularSegment& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const gmCircularSegment& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
 
 private:
-   // GROUP: DATA MEMBERS
+   Float64 m_Radius{ 0.0 };
+   Float64 m_MidOrdinate{ 0.0 };
+   Float64 m_Rotation{ 0.0 };
 
-   Float64   m_Radius;
-   gpPoint2d m_HookPoint;
-   gpPoint2d m_Center;
-   Float64   m_MidOrdinate;
-   Float64   m_Rotation;
+   void UpdateHookPoint(const Point2d& center);
 
-   // GROUP: LIFECYCLE
-
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-   gmPolygon* CreatePolygon() const;
-   void UpdateHookPoint();
-   void EdgePoints(gpPoint2d* p1,gpPoint2d* p2) const;
-   gpLine2d BoundaryLine() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   void Copy(const CircularSegment& other);
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
+   }; // Geometry
+}; // WBFL
 
 #endif // INCLUDED_GEOMMODEL_CIRCULARSEGMENT_H_

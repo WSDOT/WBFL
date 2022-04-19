@@ -73,7 +73,7 @@ STDMETHODIMP CStationEquationCollection::get_Alignment(IAlignment** ppAlignment)
    return S_OK;
 }
 
-HRESULT CStationEquationCollection::putref_Alignment(IAlignment* pAlignment)
+HRESULT CStationEquationCollection::put_Alignment(IAlignment* pAlignment)
 {
    m_pAlignment = pAlignment;
    return S_OK;
@@ -117,7 +117,6 @@ STDMETHODIMP CStationEquationCollection::Add(Float64 back,Float64 ahead,IStation
 STDMETHODIMP CStationEquationCollection::Clear()
 {
    m_coll.clear();
-   Fire_OnEquationsCleared();
 	return S_OK;
 }
 

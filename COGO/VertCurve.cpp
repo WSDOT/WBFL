@@ -59,10 +59,6 @@ HRESULT CVertCurve::FinalConstruct()
    m_Factory->CreateProfilePoint(&m_BVC);
    m_Factory->CreateProfilePoint(&m_EVC);
 
-   MyAdvise(m_PBG,&m_dwPBG);
-   MyAdvise(m_PVI,&m_dwPVI);
-   MyAdvise(m_PFG,&m_dwPFG);
-
    m_vbComputeFromGrades = VARIANT_FALSE;
    m_bIsDirty = true;
 
@@ -91,9 +87,6 @@ HRESULT CVertCurve::FinalConstruct()
 
 void CVertCurve::FinalRelease()
 {
-   MyUnadvise(m_PBG,m_dwPBG);
-   MyUnadvise(m_PVI,m_dwPVI);
-   MyUnadvise(m_PFG,m_dwPFG);
 }
 
 STDMETHODIMP CVertCurve::InterfaceSupportsErrorInfo(REFIID riid)
@@ -122,12 +115,8 @@ STDMETHODIMP CVertCurve::get_ComputeFromGradePoints(VARIANT_BOOL* pvbCompute)
 
 STDMETHODIMP CVertCurve::put_ComputeFromGradePoints(VARIANT_BOOL vbCompute)
 {
-   if ( m_vbComputeFromGrades != vbCompute )
-   {
-      m_vbComputeFromGrades = vbCompute;
-      MakeDirty();
-      Fire_OnVertCurveChanged(this);
-   }
+   m_vbComputeFromGrades = vbCompute;
+   MakeDirty();
    return S_OK;
 }
 
@@ -143,7 +132,7 @@ STDMETHODIMP CVertCurve::get_Profile(IProfile* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CVertCurve::putref_Profile(IProfile* newVal)
+STDMETHODIMP CVertCurve::put_Profile(IProfile* newVal)
 {
    m_pProfile = newVal;
    m_Factory->putref_Profile(m_pProfile);
@@ -153,8 +142,6 @@ STDMETHODIMP CVertCurve::putref_Profile(IProfile* newVal)
    m_EVC->putref_Profile(m_pProfile);
    m_PFG->putref_Profile(m_pProfile);
    MakeDirty();
-
-   Fire_OnVertCurveChanged(this);
 
    return S_OK;
 }
@@ -175,15 +162,11 @@ STDMETHODIMP CVertCurve::putref_PBG(IProfilePoint *newVal)
       return hr;
    }
 
-   MyUnadvise(m_PBG,m_dwPBG);
    m_PBG->putref_Profile(nullptr);
    m_PBG = newVal;
    m_PBG->putref_Profile(m_pProfile);
-   MyAdvise(m_PBG,&m_dwPBG);
 
    MakeDirty();
-
-   Fire_OnVertCurveChanged(this);
 
    return S_OK;
 }
@@ -208,14 +191,11 @@ STDMETHODIMP CVertCurve::putref_PVI(IProfilePoint *newVal)
       return hr;
    }
 
-   MyUnadvise(m_PVI,m_dwPVI);
    m_PVI->putref_Profile(nullptr);
    m_PVI = newVal;
    m_PVI->putref_Profile(m_pProfile);
-   MyAdvise(m_PVI,&m_dwPVI);
-
+   
    MakeDirty();
-   Fire_OnVertCurveChanged(this);
 
    return S_OK;
 }
@@ -236,15 +216,11 @@ STDMETHODIMP CVertCurve::putref_PFG(IProfilePoint *newVal)
       return hr;
    }
 
-   MyUnadvise(m_PFG,m_dwPFG);
    m_PFG->putref_Profile(nullptr);
    m_PFG = newVal;
    m_PFG->putref_Profile(m_pProfile);
-   MyAdvise(m_PFG,&m_dwPFG);
 
    MakeDirty();
-
-   Fire_OnVertCurveChanged(this);
 
    return S_OK;
 }
@@ -264,12 +240,8 @@ STDMETHODIMP CVertCurve::put_L1(Float64 newVal)
       return E_INVALIDARG;
    }
 
-   if ( !IsEqual(m_L1,newVal) )
-   {
-      m_L1 = newVal;
-      MakeDirty();
-      Fire_OnVertCurveChanged(this);
-   }
+   m_L1 = newVal;
+   MakeDirty();
 
    return S_OK;
 }
@@ -290,12 +262,9 @@ STDMETHODIMP CVertCurve::put_L2(Float64 newVal)
       return E_INVALIDARG;
    }
 
-   if ( !IsEqual(m_L2,newVal) )
-   {
-      m_L2 = newVal;
-      MakeDirty();
-      Fire_OnVertCurveChanged(this);
-   }
+   m_L2 = newVal;
+   MakeDirty();
+
    return S_OK;
 }
 
@@ -323,12 +292,8 @@ STDMETHODIMP CVertCurve::get_Length(Float64 *pVal)
 
 STDMETHODIMP CVertCurve::put_EntryGrade(Float64 newVal)
 {
-   if ( !IsEqual(m_g1,newVal) )
-   {
-      m_g1 = newVal;
-      MakeDirty();
-      Fire_OnVertCurveChanged(this);
-   }
+   m_g1 = newVal;
+   MakeDirty();
 
    return S_OK;
 }
@@ -343,12 +308,8 @@ STDMETHODIMP CVertCurve::get_EntryGrade(Float64 *pVal)
 
 STDMETHODIMP CVertCurve::put_ExitGrade(Float64 newVal)
 {
-   if ( !IsEqual(m_g2,newVal) )
-   {
-      m_g2 = newVal;
-      MakeDirty();
-      Fire_OnVertCurveChanged(this);
-   }
+   m_g2 = newVal;
+   MakeDirty();
 
    return S_OK;
 }
@@ -1002,7 +963,7 @@ STDMETHODIMP CVertCurve::Clone(IVertCurve* *clone)
 
    // These items aren't cloned
    (*clone)->putref_ProfilePointFactory(m_Factory);
-   (*clone)->putref_Profile(m_pProfile);
+   (*clone)->put_Profile(m_pProfile);
 
    return S_OK;
 }
@@ -1104,41 +1065,6 @@ STDMETHODIMP CVertCurve::Load(IStructuredLoad2* pLoad)
    pLoad->EndUnit(&bEnd);
 
    return S_OK;
-}
-
-/////////////////////////////////////////////
-// IProfilePointEvents
-STDMETHODIMP CVertCurve::OnProfilePointChanged(IProfilePoint* pp)
-{
-//   ::MessageBox(nullptr,"CVertCurve::OnProfilePointChanged","Event",MB_OK);
-   MakeDirty();
-   Fire_OnVertCurveChanged(this);
-   return S_OK;
-}
-
-//////////////////////////////////////////////
-// Helper Methods
-void CVertCurve::MyAdvise(IProfilePoint* pp,DWORD* pdwCookie)
-{
-   HRESULT hr = AtlAdvise(pp,GetUnknown(),IID_IProfilePointEvents,pdwCookie);
-   if ( SUCCEEDED(hr) )
-   {
-      InternalRelease();
-   }
-   else
-   {
-      *pdwCookie = 0;
-   }
-}
-
-void CVertCurve::MyUnadvise(IProfilePoint* pp,DWORD dwCookie)
-{
-   if ( dwCookie != 0 )
-   {
-      InternalAddRef();
-   }
-
-   AtlUnadvise(pp,IID_IProfilePointEvents,dwCookie);
 }
 
 void CVertCurve::MakeDirty()

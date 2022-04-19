@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CDirectionDisplayUnitFormatter
@@ -39,9 +38,7 @@ class ATL_NO_VTABLE CDirectionDisplayUnitFormatter :
 	public CComCoClass<CDirectionDisplayUnitFormatter, &CLSID_DirectionDisplayUnitFormatter>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CDirectionDisplayUnitFormatter,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CDirectionDisplayUnitFormatter>,
-	public IDirectionDisplayUnitFormatter,
-	public CProxyDDisplayUnitFormatterEvents< CDirectionDisplayUnitFormatter >
+	public IDirectionDisplayUnitFormatter
 {
 public:
 	CDirectionDisplayUnitFormatter()
@@ -58,15 +55,8 @@ BEGIN_COM_MAP(CDirectionDisplayUnitFormatter)
 	COM_INTERFACE_ENTRY(IDirectionDisplayUnitFormatter)
    COM_INTERFACE_ENTRY(IDisplayUnitFormatter)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CDirectionDisplayUnitFormatter)
-   CONNECTION_POINT_ENTRY(IID_IDisplayUnitFormatterEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;

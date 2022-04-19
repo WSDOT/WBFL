@@ -44,14 +44,11 @@ HRESULT CPathElement::FinalConstruct()
    point.CoCreateInstance(CLSID_Point2d);
    point.QueryInterface(&m_Value);
 
-   Advise();
-
    return S_OK;
 }
 
 void CPathElement::FinalRelease()
 {
-   Unadvise();
 }
 
 STDMETHODIMP CPathElement::InterfaceSupportsErrorInfo(REFIID riid)
@@ -102,8 +99,6 @@ STDMETHODIMP CPathElement::putref_Value(IUnknown* newVal)
       return E_INVALIDARG;
    }
 
-   Unadvise();
-
    if ( point )
    {
       m_Type = petPoint;
@@ -134,11 +129,6 @@ STDMETHODIMP CPathElement::putref_Value(IUnknown* newVal)
    }
 
    m_Value = newVal;
-   
-   Advise();
-
-
-   Fire_OnPathElementChanged(this);
 
 	return S_OK;
 }
@@ -263,18 +253,18 @@ STDMETHODIMP CPathElement::Offset(Float64 dx,Float64 dy)
    break;
 
    case petLineSegment:
-      {
-         CComQIPtr<ILineSegment2d> ls(m_Value);
-         ls->Offset(dx,dy);
-      }
-      break;
+   {
+      CComQIPtr<ILineSegment2d> ls(m_Value);
+      ls->Offset(dx, dy);
+   }
+   break;
 
-   //case petCubicSpline:
-   //{
-   //   CComQIPtr<ICubicSpline> spline(m_Value);
-   //   spline->Offset(dx, dy);
-   //}
-   //break;
+   case petCubicSpline:
+   {
+      CComQIPtr<ICubicSpline> spline(m_Value);
+      spline->Offset(dx, dy);
+   }
+   break;
 
    default:
       ATLASSERT(false); // is there a new type?
@@ -373,6 +363,83 @@ STDMETHODIMP CPathElement::Load(IStructuredLoad2* pLoad)
 
    return S_OK;
 }
+
+void CPathElement::GetControlPoints(std::vector<CComPtr<IPoint2d>>& points)
+{
+   switch (m_Type)
+   {
+   case petPoint:
+   {
+      CComQIPtr<IPoint2d> point(m_Value);
+      points.push_back(point);
+   }
+   break;
+
+   case petCircularCurve:
+   {
+      CComQIPtr<ICircularCurve> hc(m_Value);
+      CComPtr<IPoint2d> pbt, pi, pft;
+      hc->get_PBT(&pbt);
+      hc->get_PI(&pi);
+      hc->get_PFT(&pft);
+      points.push_back(pbt);
+      points.push_back(pi);
+      points.push_back(pft);
+   }
+   break;
+
+   case petTransitionCurve:
+   {
+      CComQIPtr<ITransitionCurve> tc(m_Value);
+      CComPtr<IPoint2d> pntStart;
+      tc->get_Start(&pntStart);
+      points.push_back(pntStart);
+   }
+   break;
+
+   case petCompoundCurve:
+   {
+      CComQIPtr<ICompoundCurve> cc(m_Value);
+      CComPtr<IPoint2d> pbt, pi, pft;
+      cc->get_PBT(&pbt);
+      cc->get_PI(&pi);
+      cc->get_PFT(&pft);
+      points.push_back(pbt);
+      points.push_back(pi);
+      points.push_back(pft);
+   }
+   break;
+
+   case petLineSegment:
+   {
+      CComQIPtr<ILineSegment2d> ls(m_Value);
+      CComPtr<IPoint2d> pntStart, pntEnd;
+      ls->get_StartPoint(&pntStart);
+      ls->get_EndPoint(&pntEnd);
+      points.push_back(pntStart);
+      points.push_back(pntEnd);
+   }
+   break;
+
+   case petCubicSpline:
+   {
+      CComQIPtr<ICubicSpline> spline(m_Value);
+      IndexType nPoints;
+      spline->get_PointCount(&nPoints);
+      for (IndexType i = 0; i < nPoints; i++)
+      {
+         CComPtr<IPoint2d> p;
+         spline->get_Point(i, &p);
+         points.push_back(p);
+      }
+   }
+   break;
+
+   default:
+      ATLASSERT(false); // is there a new path element type?
+   }
+}
+
 
 void CPathElement::GetControlPoints(std::vector<CComPtr<IPoint2d>>& points)
 {

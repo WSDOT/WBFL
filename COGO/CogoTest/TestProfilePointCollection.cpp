@@ -166,7 +166,7 @@ void CTestProfilePointCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test putref_Item
+   // Test put_Item
    //
    TRY_TEST(pColl->AddEx(1,p1),S_OK);
    TRY_TEST(pColl->AddEx(2,p2),S_OK);
@@ -189,7 +189,7 @@ void CTestProfilePointCollection::Test()
    TRY_TEST(pColl->FindID(p4,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(p4,&id),S_OK);
    TRY_TEST(id,4);
-   TRY_TEST(pColl->FindID(p3,&id),E_FAIL); // p3 is not part of collection, see putref_Item above
+   TRY_TEST(pColl->FindID(p3,&id),E_FAIL); // p3 is not part of collection, see put_Item above
 
    //
    // Test ID
@@ -268,61 +268,6 @@ void CTestProfilePointCollection::Test()
    TRY_TEST( pEnumPP->Next(1,&pp,&fetched), S_FALSE );
 
    //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestProfilePointCollection>* pTestEvents;
-   CComObject<CTestProfilePointCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestEvents);
-   TRY_TEST(AtlAdvise(pColl,punk,IID_IProfilePointCollectionEvents,&dwCookie),S_OK);
-
-   // Start with a "clean" profile point
-   p1.Release();
-   p1.CoCreateInstance( CLSID_ProfilePoint );
-   p1->put_Station(CComVariant(10));
-   p1->put_Elevation(10);
-
-   // Add a ProfilePoint to the collection
-   pTestEvents->InitEventTest(1);
-   pColl->AddEx(1,p1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Move a ProfilePoint... Event should fire
-   pTestEvents->InitEventTest(1);
-   p1->put_Station(CComVariant(150));
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   pTestEvents->InitEventTest(1);
-   p1->put_Elevation(150);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   pColl->AddEx(2,p2);
-   pColl->AddEx(3,p3);
-   pColl->AddEx(4,p4);
-
-   // Remove a ProfilePoint
-   pTestEvents->InitEventTest(3);
-   pColl->Remove(3);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Change ProfilePoint references
-   pTestEvents->InitEventTest(2);
-   pColl->putref_Item(2,p4);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   TRY_TEST(AtlUnadvise(pColl,IID_IProfilePointCollectionEvents,dwCookie),S_OK);
-   pTestEvents->Release();
-
-   //
    // Test ISupportErrorInfo
    //
    CComQIPtr<ISupportErrorInfo> eInfo(pColl);
@@ -333,38 +278,4 @@ void CTestProfilePointCollection::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_ProfilePointCollection,IID_IProfilePointCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_ProfilePointCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestProfilePointCollection::OnProfilePointChanged(CogoObjectID id,IProfilePoint* pp)
-{
-//   MessageBox(nullptr,"ProfilePointChanged","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestProfilePointCollection::OnProfilePointAdded(CogoObjectID id,IProfilePoint* pp)
-{
-//   MessageBox(nullptr,"ProfilePointAdded","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestProfilePointCollection::OnProfilePointRemoved(CogoObjectID id)
-{
-//   MessageBox(nullptr,"ProfilePointRemoved","Event",MB_OK);
-   if ( id == m_expectedID )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestProfilePointCollection::OnProfilePointsCleared()
-{
-//   MessageBox(nullptr,"ProfilePointCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

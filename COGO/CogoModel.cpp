@@ -54,40 +54,25 @@ HRESULT CCogoModel::FinalConstruct()
    CComObject<CPointCollection>::CreateInstance(&pPoints);
    m_Points = pPoints;
 
-   hr = CrAdvise(m_Points,this,IID_IPointCollectionEvents,&m_dwPointsCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
    // Line segment collection
    hr = m_Lines.CoCreateInstance(CLSID_LineSegmentCollection);
    if ( FAILED(hr) )
       return hr;
-
-   hr = CrAdvise(m_Lines,this,IID_ILineSegmentCollectionEvents,&m_dwLinesCookie);
-   ATLASSERT(SUCCEEDED(hr));
 
    // ProfilePoints collection
    hr = m_ProfilePoints.CoCreateInstance(CLSID_ProfilePointCollection);
    if ( FAILED(hr) )
       return hr;
 
-   hr = CrAdvise(m_ProfilePoints,this,IID_IProfilePointCollectionEvents,&m_dwProfilePointsCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
    // VertCurves collection
    hr = m_VertCurves.CoCreateInstance(CLSID_VertCurveCollection);
    if ( FAILED(hr) )
       return hr;
 
-   hr = CrAdvise(m_VertCurves,this,IID_IVertCurveCollectionEvents,&m_dwVertCurvesCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
    // CompoundCurves collection
    hr = m_CompoundCurves.CoCreateInstance(CLSID_CompoundCurveCollection);
    if ( FAILED(hr) )
       return hr;
-
-   hr = CrAdvise(m_CompoundCurves,this,IID_ICompoundCurveCollectionEvents,&m_dwCompoundCurvesCookie);
-   ATLASSERT(SUCCEEDED(hr));
 
    // Alignments collection
    CComObject<CAlignmentCollection>* pAlignments;
@@ -99,10 +84,6 @@ HRESULT CCogoModel::FinalConstruct()
    pAlignments->SetItemName(CComBSTR("Alignment"));
    m_Alignments = pAlignments;
 
-   hr = CrAdvise(m_Alignments,this,IID_IAlignmentCollectionEvents,&m_dwAlignmentCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
-
    // Paths collection
    CComObject<CPathCollection>* pPaths;
    hr = CComObject<CPathCollection>::CreateInstance(&pPaths);
@@ -111,56 +92,60 @@ HRESULT CCogoModel::FinalConstruct()
 
    m_Paths = pPaths;
 
-   hr = CrAdvise(m_Paths,this,IID_IPathCollectionEvents,&m_dwPathCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
    return S_OK;
 }
 
 void CCogoModel::FinalRelease()
 {
-   CrUnadvise(m_Points,        this, IID_IPoint2dCollectionEvents,      m_dwPointsCookie);
-   CrUnadvise(m_Lines,         this, IID_ILineSegmentCollectionEvents,  m_dwLinesCookie);
-   CrUnadvise(m_ProfilePoints, this, IID_IProfilePointCollectionEvents, m_dwProfilePointsCookie);
-   CrUnadvise(m_VertCurves,    this, IID_IVertCurveCollectionEvents,    m_dwVertCurvesCookie);
-   CrUnadvise(m_CompoundCurves,    this, IID_ICompoundCurveCollectionEvents,    m_dwCompoundCurvesCookie);
-   CrUnadvise(m_Alignments,    this, IID_IAlignmentCollectionEvents,    m_dwAlignmentCookie);
-   CrUnadvise(m_Paths,         this, IID_IPathCollectionEvents,         m_dwPathCookie);
 }
 
-HRESULT CCogoModel::PutRef_Alignments(IAlignmentCollection* alignments)
+HRESULT CCogoModel::put_Alignments(IAlignmentCollection* alignments)
 {
-   return CrAssignPointer(m_Alignments,alignments,this,IID_IAlignmentCollectionEvents,&m_dwAlignmentCookie);
+   m_Alignments = alignments;
+   return S_OK;
+   //return CrAssignPointer(m_Alignments,alignments,this,IID_IAlignmentCollectionEvents,&m_dwAlignmentCookie);
 }
 
-HRESULT CCogoModel::PutRef_Paths(IPathCollection* paths)
+HRESULT CCogoModel::put_Paths(IPathCollection* paths)
 {
-   return CrAssignPointer(m_Paths,paths,this,IID_IPathCollectionEvents,&m_dwPathCookie);
+   m_Paths = paths;
+   return S_OK;
+   //return CrAssignPointer(m_Paths,paths,this,IID_IPathCollectionEvents,&m_dwPathCookie);
 }
 
-HRESULT CCogoModel::PutRef_CompoundCurves(ICompoundCurveCollection* CompoundCurves)
+HRESULT CCogoModel::put_CompoundCurves(ICompoundCurveCollection* compoundCurves)
 {
-   return CrAssignPointer(m_CompoundCurves,CompoundCurves,this,IID_ICompoundCurveCollectionEvents,&m_dwCompoundCurvesCookie);
+   m_CompoundCurves = compoundCurves;
+   return S_OK;
+   //return CrAssignPointer(m_CompoundCurves,compoundCurves,this,IID_ICompoundCurveCollectionEvents,&m_dwCompoundCurvesCookie);
 }
 
-HRESULT CCogoModel::PutRef_Lines(ILineSegmentCollection* lines)
+HRESULT CCogoModel::put_Lines(ILineSegmentCollection* lines)
 {
-   return CrAssignPointer(m_Lines,lines,this,IID_ILineSegmentCollectionEvents,&m_dwLinesCookie);
+   m_Lines = lines;
+   return S_OK;
+   //return CrAssignPointer(m_Lines,lines,this,IID_ILineSegmentCollectionEvents,&m_dwLinesCookie);
 }
 
-HRESULT CCogoModel::PutRef_Points(IPointCollection* points)
+HRESULT CCogoModel::put_Points(IPointCollection* points)
 {
-   return CrAssignPointer(m_Points,points,this,IID_IPointCollectionEvents,&m_dwPointsCookie);
+   m_Points = points;
+   return S_OK;
+   //return CrAssignPointer(m_Points,points,this,IID_IPointCollectionEvents,&m_dwPointsCookie);
 }
 
-HRESULT CCogoModel::PutRef_ProfilePoints(IProfilePointCollection* profilePoints)
+HRESULT CCogoModel::put_ProfilePoints(IProfilePointCollection* profilePoints)
 {
-   return CrAssignPointer(m_ProfilePoints,profilePoints,this,IID_IProfilePointCollectionEvents,&m_dwProfilePointsCookie);
+   m_ProfilePoints = profilePoints;
+   return S_OK;
+   //return CrAssignPointer(m_ProfilePoints,profilePoints,this,IID_IProfilePointCollectionEvents,&m_dwProfilePointsCookie);
 }
 
-HRESULT CCogoModel::PutRef_VertCurves(IVertCurveCollection* vertCurves)
+HRESULT CCogoModel::put_VertCurves(IVertCurveCollection* vertCurves)
 {
-   return CrAssignPointer(m_VertCurves,vertCurves,this,IID_IVertCurveCollectionEvents,&m_dwVertCurvesCookie);
+   m_VertCurves = vertCurves;
+   return S_OK;
+   //return CrAssignPointer(m_VertCurves,vertCurves,this,IID_IVertCurveCollectionEvents,&m_dwVertCurvesCookie);
 }
 
 STDMETHODIMP CCogoModel::InterfaceSupportsErrorInfo(REFIID riid)
@@ -295,28 +280,6 @@ STDMETHODIMP CCogoModel::get_Tangent(ITangent **pVal)
    return QueryInterface(IID_ITangent,(void**)pVal);
 }
 
-STDMETHODIMP CCogoModel::putref_PointFactory(IPoint2dFactory* factory)
-{
-   m_Points->putref_Factory(factory);
-   return m_Engine->putref_PointFactory(factory);
-}
-
-STDMETHODIMP CCogoModel::get_PointFactory(IPoint2dFactory** factory)
-{
-   return m_Engine->get_PointFactory(factory);
-}
-
-STDMETHODIMP CCogoModel::putref_LineSegmentFactory(ILineSegment2dFactory* factory)
-{
-   m_Lines->putref_Factory(factory);
-   return m_Engine->putref_LineSegmentFactory(factory);
-}
-
-STDMETHODIMP CCogoModel::get_LineSegmentFactory(ILineSegment2dFactory** factory)
-{
-   return m_Engine->get_LineSegmentFactory(factory);
-}
-
 STDMETHODIMP CCogoModel::putref_ProfilePointFactory(IProfilePointFactory* factory)
 {
    return m_ProfilePoints->putref_Factory(factory);
@@ -385,31 +348,31 @@ STDMETHODIMP CCogoModel::Clone(ICogoModel* *clone)
 
    CComPtr<IAlignmentCollection> cloneAlignments;
    m_Alignments->Clone(&cloneAlignments);
-   pClone->PutRef_Alignments(cloneAlignments);
+   pClone->put_Alignments(cloneAlignments);
 
    CComPtr<IPathCollection> clonePaths;
    m_Paths->Clone(&clonePaths);
-   pClone->PutRef_Paths(clonePaths);
+   pClone->put_Paths(clonePaths);
 
    CComPtr<ICompoundCurveCollection> cloneCompoundCurves;
    m_CompoundCurves->Clone(&cloneCompoundCurves);
-   pClone->PutRef_CompoundCurves(cloneCompoundCurves);
+   pClone->put_CompoundCurves(cloneCompoundCurves);
 
    CComPtr<ILineSegmentCollection> cloneLines;
    m_Lines->Clone(&cloneLines);
-   pClone->PutRef_Lines(cloneLines);
+   pClone->put_Lines(cloneLines);
 
    CComPtr<IPointCollection> clonePoints;
    m_Points->Clone(&clonePoints);
-   pClone->PutRef_Points(clonePoints);
+   pClone->put_Points(clonePoints);
 
    CComPtr<IProfilePointCollection> cloneProfilePoints;
    m_ProfilePoints->Clone(&cloneProfilePoints);
-   pClone->PutRef_ProfilePoints(cloneProfilePoints);
+   pClone->put_ProfilePoints(cloneProfilePoints);
 
    CComPtr<IVertCurveCollection> cloneVertCurves;
    m_VertCurves->Clone(&cloneVertCurves);
-   pClone->PutRef_VertCurves(cloneVertCurves);
+   pClone->put_VertCurves(cloneVertCurves);
 
    return S_OK;
 }
@@ -1675,9 +1638,9 @@ STDMETHODIMP CCogoModel::Save(IStructuredSave2* pSave)
 
    pSave->BeginUnit(CComBSTR("CogoModel"),1.0);
 
-   CComPtr<IPoint2dFactory> factory;
-   m_Engine->get_PointFactory(&factory);
-   pSave->put_Property(CComBSTR("PointFactory"),CComVariant(factory));
+   //CComPtr<IPoint2dFactory> factory;
+   //m_Engine->get_PointFactory(&factory);
+   //pSave->put_Property(CComBSTR("PointFactory"),CComVariant(factory));
 
    // Save collections by value (we own them by value here, no one can
    // give us a collection)
@@ -1714,10 +1677,10 @@ STDMETHODIMP CCogoModel::Load(IStructuredLoad2* pLoad)
 
    pLoad->BeginUnit(CComBSTR("CogoModel"));
    
-   pLoad->get_Property(CComBSTR("PointFactory"),&var);
-   CComPtr<IPoint2dFactory> factory;
-   _CopyVariantToInterface<IPoint2dFactory>::copy(&factory,&var);
-   m_Engine->putref_PointFactory(factory);
+   //pLoad->get_Property(CComBSTR("PointFactory"),&var);
+   //CComPtr<IPoint2dFactory> factory;
+   //_CopyVariantToInterface<IPoint2dFactory>::copy(&factory,&var);
+   //m_Engine->putref_PointFactory(factory);
 
    // Load collections by value (we own them by value here, no one can
    // give us a collection)
@@ -1744,238 +1707,6 @@ STDMETHODIMP CCogoModel::Load(IStructuredLoad2* pLoad)
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);
-
-   return S_OK;
-}
-
-////////////////////////////////////////////////////////
-// IPointCollectionEvents
-STDMETHODIMP CCogoModel::OnPointChanged(CogoObjectID id,IPoint2d* point)
-{
-   Fire_OnPointChanged(this,id,point);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnPointAdded(CogoObjectID id,IPoint2d* point)
-{
-   Fire_OnPointAdded(this,id,point);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnPointRemoved(CogoObjectID id)
-{
-   Fire_OnPointRemoved(this,id);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnPointsCleared()
-{
-   Fire_OnPointsCleared(this);
-   return S_OK;
-}
-
-////////////////////////////////////////////////////////
-// ILineSegmentCollectionEvents
-STDMETHODIMP CCogoModel::OnLineSegmentChanged(CogoObjectID id, ILineSegment2d* lineSeg)
-{
-   Fire_OnLineSegmentChanged(this,id,lineSeg);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnLineSegmentAdded(CogoObjectID id, ILineSegment2d* lineSeg)
-{
-   Fire_OnLineSegmentAdded(this,id,lineSeg);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnLineSegmentRemoved(CogoObjectID id)
-{
-   Fire_OnLineSegmentRemoved(this,id);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnLineSegmentsCleared()
-{
-   Fire_OnLineSegmentsCleared(this);
-   return S_OK;
-}
-
-////////////////////////////////////////////////////////
-// IProfilePointCollectionEvents
-STDMETHODIMP CCogoModel::OnProfilePointChanged(CogoObjectID id,IProfilePoint* pp)
-{
-   Fire_OnProfilePointChanged(this,id,pp);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnProfilePointAdded(CogoObjectID id,IProfilePoint* pp)
-{
-   Fire_OnProfilePointAdded(this,id,pp);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnProfilePointRemoved(CogoObjectID id)
-{
-   Fire_OnProfilePointRemoved(this,id);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnProfilePointsCleared()
-{
-   Fire_OnProfilePointsCleared(this);
-   return S_OK;
-}
-
-////////////////////////////////////////////////////////
-// IVertCurveCollectionEvents
-STDMETHODIMP CCogoModel::OnVertCurveChanged(CogoObjectID id,IVertCurve* vc)
-{
-   Fire_OnVertCurveChanged(this,id,vc);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnVertCurveAdded(CogoObjectID id,IVertCurve* vc)
-{
-   Fire_OnVertCurveAdded(this,id,vc);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnVertCurveRemoved(CogoObjectID id)
-{
-   Fire_OnVertCurveRemoved(this,id);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnVertCurvesCleared()
-{
-   Fire_OnVertCurvesCleared(this);
-   return S_OK;
-}
-
-////////////////////////////////////////////////////////
-// ICompoundCurveCollectionEvents
-STDMETHODIMP CCogoModel::OnCompoundCurveChanged(CogoObjectID id,ICompoundCurve* hc)
-{
-   Fire_OnCompoundCurveChanged(this,id,hc);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnCompoundCurveAdded(CogoObjectID id,ICompoundCurve* hc)
-{
-   Fire_OnCompoundCurveAdded(this,id,hc);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnCompoundCurveRemoved(CogoObjectID id)
-{
-   Fire_OnCompoundCurveRemoved(this,id);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnCompoundCurvesCleared()
-{
-   Fire_OnCompoundCurvesCleared(this);
-   return S_OK;
-}
-
-////////////////////////////////////////////////////////
-// IPathCollectionEvents
-
-STDMETHODIMP CCogoModel::OnPathChanged(IPathCollection* coll,CogoObjectID id,IPath* path)
-{
-   CComQIPtr<IAlignment> alignment(path);
-   if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentChanged(this,id,alignment);
-   else
-      Fire_OnPathChanged(this,id,path);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnPathAdded(IPathCollection* coll,CogoObjectID id,IPath* path)
-{
-   CComQIPtr<IAlignment> alignment(path);
-   if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentAdded(this,id,alignment);
-   else
-      Fire_OnPathAdded(this,id,path);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnPathRemoved(IPathCollection* coll,CogoObjectID id)
-{
-   if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentRemoved(this,id);
-   else
-      Fire_OnPathRemoved(this,id);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnPathsCleared(IPathCollection* coll)
-{
-   if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentsCleared(this);
-   else
-      Fire_OnPathsCleared(this);
-
-   return S_OK;
-}
-
-////////////////////////////////////////////////////////
-// IAlignmentCollectionEvents
-
-STDMETHODIMP CCogoModel::OnProfileChanged(IAlignmentCollection* coll,IProfile* profile)
-{
-   Fire_OnProfileChanged(this,profile);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnStationEquationsChanged(IAlignmentCollection* coll,IStationEquationCollection* equations)
-{
-   Fire_OnStationEquationsChanged(this,equations);
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnAlignmentChanged(IAlignmentCollection* coll,CogoObjectID id,IAlignment* Alignment)
-{
-   CComQIPtr<IAlignment> alignment(Alignment);
-   if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentChanged(this,id,alignment);
-   else
-      Fire_OnAlignmentChanged(this,id,Alignment);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnAlignmentAdded(IAlignmentCollection* coll,CogoObjectID id,IAlignment* Alignment)
-{
-   CComQIPtr<IAlignment> alignment(Alignment);
-   if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentAdded(this,id,alignment);
-   else
-      Fire_OnAlignmentAdded(this,id,Alignment);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnAlignmentRemoved(IAlignmentCollection* coll,CogoObjectID id)
-{
-   if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentRemoved(this,id);
-   else
-      Fire_OnAlignmentRemoved(this,id);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::OnAlignmentsCleared(IAlignmentCollection* coll)
-{
-   if ( m_Alignments.IsEqualObject(coll) )
-      Fire_OnAlignmentsCleared(this);
-   else
-      Fire_OnAlignmentsCleared(this);
 
    return S_OK;
 }

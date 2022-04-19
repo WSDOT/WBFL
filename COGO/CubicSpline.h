@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 #include <vector>
 #include <Math\Math.h>
 
@@ -43,10 +42,8 @@ class ATL_NO_VTABLE CCubicSpline :
 	public CComCoClass<CCubicSpline, &CLSID_CubicSpline>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCubicSpline,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CCubicSpline>,
    public ICubicSpline,
    public IStructuredStorage2,
-   public CProxyDCubicSplineEvents< CCubicSpline >,
    public IPersistImpl<CCubicSpline>
 {
 public:
@@ -70,14 +67,8 @@ BEGIN_COM_MAP(CCubicSpline)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CCubicSpline)
-   CONNECTION_POINT_ENTRY(IID_ICubicSplineEvents)
-END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -106,8 +97,7 @@ public:
    STDMETHOD(DistanceFromStartAtPoint)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ Float64* dist) override;
 	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/IPoint2dCollection** points) override;
    STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength) override;
-   STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory) override;
-   STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
+   STDMETHOD(Offset)(/*[in]*/Float64 dx, /*[in]*/Float64 dy) override;
    STDMETHOD(Clone)(/*[out,retval]*/ ICubicSpline* *clone) override;
    STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
 
@@ -135,7 +125,6 @@ private:
    CComPtr<ICoordinateXform2d> m_CoordXform;
    CComPtr<IGeomUtil2d> m_GeomUtil;
 
-   CComPtr<IPoint2dFactory> m_PointFactory;
    CComPtr<IPoint2dCollection> m_Points;
    Float64 m_StartDirection; // angle (rad) measured CCW from due east
    Float64 m_EndDirection;   // angle (rad) measured CCW from due east

@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CProfilePoint
@@ -39,8 +38,6 @@ class ATL_NO_VTABLE CProfilePoint :
 	public CComCoClass<CProfilePoint, &CLSID_ProfilePoint>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CProfilePoint,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CProfilePoint>,
-	public CProxyDProfilePointEvents< CProfilePoint >,
    public IProfilePoint,
    public IStructuredStorage2,
    public IPersistImpl<CProfilePoint>
@@ -64,16 +61,9 @@ BEGIN_COM_MAP(CProfilePoint)
 	COM_INTERFACE_ENTRY(IProfilePoint)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CProfilePoint)
-CONNECTION_POINT_ENTRY(IID_IProfilePointEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 public:

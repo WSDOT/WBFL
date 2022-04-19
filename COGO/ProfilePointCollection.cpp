@@ -49,7 +49,6 @@ HRESULT CProfilePointCollection::FinalConstruct()
 
 void CProfilePointCollection::FinalRelease()
 {
-   UnadviseAll();
 }
 
 STDMETHODIMP CProfilePointCollection::get_Item(CogoObjectID id, IProfilePoint **pVal)
@@ -80,14 +79,7 @@ STDMETHODIMP CProfilePointCollection::putref_Item(CogoObjectID id, IProfilePoint
    }
 
    CComVariant& var = (*found).second;
-
-   CComQIPtr<IProfilePoint> old_ProfilePoint(var.pdispVal);
-   Unadvise(id,old_ProfilePoint);
-
    var = newVal;
-   Advise(id,newVal);
-
-   Fire_OnProfilePointChanged(id,newVal);
 
 	return S_OK;
 }
@@ -110,11 +102,8 @@ STDMETHODIMP CProfilePointCollection::Remove(CogoObjectID id)
 
    CComVariant& var = (*found).second;
    CComQIPtr<IProfilePoint> pp(var.pdispVal);
-   Unadvise(id,pp);
 
    m_coll.erase(found);
-
-   Fire_OnProfilePointRemoved(id);
 
 	return S_OK;
 }
@@ -159,19 +148,12 @@ STDMETHODIMP CProfilePointCollection::AddEx(CogoObjectID id, IProfilePoint* newV
    CComVariant var(pDisp);
    m_coll.insert(std::make_pair(id,var));
 
-   // Hookup to the connection ProfilePoint
-   Advise(id,newVal);
-
-   Fire_OnProfilePointAdded(id,newVal);
-
 	return S_OK;
 }
 
 STDMETHODIMP CProfilePointCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnProfilePointsCleared();
 	return S_OK;
 }
 
@@ -297,78 +279,6 @@ STDMETHODIMP CProfilePointCollection::Clone(IProfilePointCollection* *clone)
    (*clone)->putref_Factory(m_Factory);
 
    return S_OK;
-}
-
-STDMETHODIMP CProfilePointCollection::OnProfilePointChanged(IProfilePoint* pp)
-{
-   CogoObjectID id;
-   HRESULT hr = FindID(pp,&id);
-
-   // This container only listens to events from ProfilePoint objects in this 
-   // container. If the id isn't found an error has been made somewhere
-   ATLASSERT( SUCCEEDED(hr) );
-
-   Fire_OnProfilePointChanged(id,pp);
-
-   return S_OK;
-}
-
-void CProfilePointCollection::Advise(CogoObjectID id,IProfilePoint* pp)
-{
-   DWORD dwCookie;
-   CComPtr<IProfilePoint> pCP(pp);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_IProfilePointEvents, &dwCookie );
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection ProfilePoint with ProfilePoint object\n");
-      return;
-   }
-
-   m_Cookies.insert( std::make_pair(id,dwCookie) );
-
-   InternalRelease(); // Break circular reference
-}
-
-void CProfilePointCollection::Unadvise(CogoObjectID id,IProfilePoint* pp)
-{
-   ATLASSERT(pp != 0);
-
-   //
-   // Disconnection from connection ProfilePoint
-   //
-
-   // Lookup the cookie
-   std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( id );
-   if ( found == m_Cookies.end() )
-   {
-      ATLTRACE("Failed to disconnect connection ProfilePoint with ProfilePoint object\n");
-      return;
-   }
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection ProfilePoint and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( pp );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_IProfilePointEvents, &pCP );
-   DWORD dwCookie = (*found).second;
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   // Remove cookie from map
-   m_Cookies.erase( id );
-}
-
-void CProfilePointCollection::UnadviseAll()
-{
-   std::map<CogoObjectID,CComVariant>::iterator iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
-   {
-      CogoObjectID id = (*iter).first;
-      CComQIPtr<IProfilePoint> pp( (*iter).second.pdispVal );
-      Unadvise(id,pp);
-   }
 }
 
 HRESULT CProfilePointCollection::ProfilePointNotFound(CogoObjectID id)

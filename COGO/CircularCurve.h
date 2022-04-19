@@ -30,8 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
-
 #include <Math\Math.h>
 
 
@@ -43,9 +41,6 @@ class ATL_NO_VTABLE CCircularCurve :
 	public CComCoClass<CCircularCurve, &CLSID_CircularCurve>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCircularCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CCircularCurve>,
-   public CProxyDCircularCurveEvents< CCircularCurve >,
-   public IPoint2dEvents,
    public ICircularCurve,
    public IStructuredStorage2,
    public IPersistImpl<CCircularCurve>
@@ -69,17 +64,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CCircularCurve)
 	COM_INTERFACE_ENTRY(ICircularCurve)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPoint2dEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CCircularCurve)
-CONNECTION_POINT_ENTRY(IID_ICircularCurveEvents)
-END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
@@ -89,8 +77,6 @@ END_CONNECTION_POINT_MAP()
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ ICircularCurve* *clone) override;
-	STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory) override;
-	STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
 	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2) override;
    STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point, /*[out]*/ IPoint2d* *newPoint, /*[out]*/ Float64* distFromStart, /*[out]*/ VARIANT_BOOL* pvbOnProjection) override;
    STDMETHOD(PointOnCurve)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal) override;
@@ -125,25 +111,12 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IPointEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
-
 private:
-   bool m_bHoldEvents;
-   bool m_bPendingEvents;
-
    CComPtr<IPoint2d> m_PBT, m_PI, m_PFT;
-   DWORD m_dwPBT, m_dwPI, m_dwPFT;
 
    CComPtr<IPoint2d> m_PC, m_PT;
 
    Float64 m_Radius;
-
-   CComPtr<IPoint2dFactory> m_PointFactory;
-
-   void Advise(IPoint2d* pnt,DWORD* pdwCookie);
-   void Unadvise(IPoint2d* pnt,DWORD* pdwCookie);
 
    // creates line objects for the curve tangents
    void GetBkTangentLine(ILine2d** line);

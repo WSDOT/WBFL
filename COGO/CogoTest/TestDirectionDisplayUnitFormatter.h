@@ -34,29 +34,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestDirectionDisplayUnitFormatter :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IDisplayUnitFormatterEvents
+class CTestDirectionDisplayUnitFormatter
 {
 public:
    CTestDirectionDisplayUnitFormatter();
 
    static void Test();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestDirectionDisplayUnitFormatter)
-   COM_INTERFACE_ENTRY(IDisplayUnitFormatterEvents)
-END_COM_MAP()
-
-// IDirectionDisplayUnitFormatterEvents
-public:
-	STDMETHOD(OnFormatChanged)();
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTDirectionDisplayUnitFormatter_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

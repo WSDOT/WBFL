@@ -47,8 +47,7 @@ STDMETHODIMP CCompositeShape::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ICompositeShape,
       &IID_IShape,
-      &IID_IXYPosition,
-		&IID_IStructuredStorage2,
+      &IID_IXYPosition
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -68,12 +67,6 @@ STDMETHODIMP CCompositeShape::get_XYPosition(IXYPosition **pVal)
 {
    CHECK_RETOBJ(pVal);
    return QueryInterface(IID_IXYPosition, (void**)pVal);
-}
-
-STDMETHODIMP CCompositeShape::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
 STDMETHODIMP CCompositeShape::AddShapeEx(ICompositeShapeItem *ShapeItem)

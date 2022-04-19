@@ -29,29 +29,10 @@
 
 #pragma once
 
-class ATL_NO_VTABLE CTestStationEquationCollection :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IStationEquationCollectionEvents
+class CTestStationEquationCollection
 {
 public:
    CTestStationEquationCollection();
 
    static void Test();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestStationEquationCollection)
-   COM_INTERFACE_ENTRY(IStationEquationCollectionEvents)
-END_COM_MAP()
-
-// IStationEquationCollectionEvents
-public:
-   STDMETHOD(OnEquationAdded)(CollectionIndexType idx,IStationEquation* pp);
-   STDMETHOD(OnEquationRemoved)(CollectionIndexType idx);
-   STDMETHOD(OnEquationsCleared)();
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };

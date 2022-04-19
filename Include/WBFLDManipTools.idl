@@ -60,6 +60,16 @@ library WBFLDManipTools
 		[default] interface IUnknown;
 	};
 
+
+	[
+		uuid(5A4B1A95-1B49-4599-8B43-37D7039291F5),
+		helpstring("GirderSectionDrawStrategy Class")
+	]
+	coclass GirderSectionDrawStrategy
+	{
+		[default] interface IUnknown;
+	};
+
    [
 		uuid(06C90828-5269-4b98-97E6-AECDDF4B0764),
 		helpstring("GraphXyDisplayObject Class")

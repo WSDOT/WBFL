@@ -66,11 +66,7 @@ STDMETHODIMP CStation::get_StationZoneIndex(ZoneIndexType *pVal)
 
 STDMETHODIMP CStation::put_StationZoneIndex(ZoneIndexType newVal)
 {
-   if ( m_ZoneIdx != newVal )
-   {
-      m_ZoneIdx = newVal;
-      Fire_OnStationChanged(m_ZoneIdx,m_Value);
-   }
+   m_ZoneIdx = newVal;
    return S_OK;
 }
 
@@ -83,12 +79,7 @@ STDMETHODIMP CStation::get_Value(Float64 *pVal)
 
 STDMETHODIMP CStation::put_Value(Float64 newVal)
 {
-   if ( !IsEqual(m_Value,newVal) )
-   {
-      m_Value = newVal;
-      Fire_OnStationChanged(m_ZoneIdx,m_Value);
-   }
-
+   m_Value = newVal;
 	return S_OK;
 }
 
@@ -101,11 +92,7 @@ STDMETHODIMP CStation::get_NormalizedValue(IAlignment* pAlignment,Float64* pValu
 
 STDMETHODIMP CStation::Offset(Float64 offset)
 {
-   if (!IsZero(offset))
-   {
-      m_Value += offset;
-      Fire_OnStationChanged(m_ZoneIdx, m_Value);
-   }
+   m_Value += offset;
    return S_OK;
 }
 
@@ -120,12 +107,8 @@ STDMETHODIMP CStation::GetStation(ZoneIndexType* pZoneIdx,Float64* pStation)
 
 STDMETHODIMP CStation::SetStation(ZoneIndexType zoneIdx,Float64 station)
 {
-   if ( m_ZoneIdx != zoneIdx || !IsEqual(m_Value,station) )
-   {
-      m_ZoneIdx = zoneIdx;
-      m_Value = station;
-      Fire_OnStationChanged(m_ZoneIdx,m_Value);
-   }
+   m_ZoneIdx = zoneIdx;
+   m_Value = station;
    return S_OK;
 }
 

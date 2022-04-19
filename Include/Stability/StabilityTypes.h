@@ -23,12 +23,26 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
+#include <Stability/StabilityExp.h>
+#include <WBFLTypes.h>
+#include <MathEx.h>
 
 namespace WBFL
 {
    namespace Stability
    {
+      // Causes the compiler to instantiate the class and export it's symbols
+      STABILITYTPL SimplePointT<Float64>;
+      class STABILITYCLASS Point : public SimplePointT<Float64>
+      {
+      public:
+         Point() = default;
+         Point(const Point& other) = default;
+         bool operator==(const Point& other) const { return IsEqual(X(), other.X()) && IsEqual(Y(), other.Y()); }
+         bool operator!=(const Point & other) const {return !operator==(other);}
+
+         Point& Offset(Float64 dx, Float64 dy) { X() += dx; Y() += dy; return *this; }
+      };
 
       /// Constant indicating the face of a girder
       typedef enum GirderFace

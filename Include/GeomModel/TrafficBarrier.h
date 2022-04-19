@@ -25,241 +25,114 @@
 #define INCLUDED_GEOMMODEL_TRAFFICBARRIER_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
+#include <GeomModel/GeomModelExp.h>
+#include <GeomModel/ShapeOnPolygonImpl.h>
 
-// PROJECT INCLUDES
-//
-#include <GeomModel\GeomModelExp.h>
-#include <GeomModel\ShapeImp.h>
-#include <GeometricPrimitives\Polygon2d.h>
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-class gmPolygon;
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   gmTrafficBarrier
-
-   This shape represents the cross section of a typical concrete traffic
-   barrier found on bridge structures.
+namespace WBFL
+{
+   namespace Geometry
+   {
+class Polygon;
 
 
-DESCRIPTION
-   This shape represents the cross section of a typical concrete traffic
-   barrier found on bridge structures.
-
-LOG
-   rab : 10.11.1998 : Created file
-*****************************************************************************/
-
-class GEOMMODELCLASS gmTrafficBarrier : public gmShapeImp
+/// Object representing the shape of a traffic barrier
+///
+/// \image html TrafficBarrier/TrafficBarrier.jpg   	
+class GEOMMODELCLASS TrafficBarrier : public ShapeOnPolygonImpl
 {
 public:
-   // GROUP: ENUMERATION
-   enum Orientation { Left, Right };
+   enum class Orientation { Left, Right };
 
-   // GROUP: LIFECYCLE
+   TrafficBarrier();
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   gmTrafficBarrier();
+   TrafficBarrier(Float64 x1,Float64 x2,Float64 x3,Float64 x4,Float64 x5,
+                  Float64 y1,Float64 y2,Float64 y3,
+                  Float64 tSlab,
+                  Orientation orient,
+      std::shared_ptr<Point2d>& hookPoint);
 
-   //------------------------------------------------------------------------
-   gmTrafficBarrier(Float64 x1,Float64 x2,Float64 x3,Float64 x4,Float64 x5,
-                    Float64 y1,Float64 y2,Float64 y3,
-                    Float64 tSlab,
-                    Orientation orient,
-                    const gpPoint2d& hookPoint);
+   TrafficBarrier(const TrafficBarrier& other) = default;
+   TrafficBarrier& operator=(const TrafficBarrier& other) = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   gmTrafficBarrier(const gmTrafficBarrier& rOther);
+   virtual ~TrafficBarrier();
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~gmTrafficBarrier();
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   gmTrafficBarrier& operator = (const gmTrafficBarrier& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void GetProperties(gmProperties* pProperties) const;
-
-   //------------------------------------------------------------------------
-   gpRect2d GetBoundingBox() const;
-
-   //------------------------------------------------------------------------
-   gmIShape* CreateClone(bool bRegisterListeners = false) const;
-
-   //------------------------------------------------------------------------
-   gmIShape* CreateClippedShape(const gpLine2d& line,
-                                gpLine2d::Side side) const;
-
-   //------------------------------------------------------------------------
-   gmIShape* CreateClippedShape(const gpRect2d& r,
-                                gmShapeImp::ClipRegion region ) const;
-
-   //------------------------------------------------------------------------
-   Float64 GetFurthestDistance(const gpLine2d& line,
-                               gpLine2d::Side side) const;
-
-   //------------------------------------------------------------------------
-   void Draw(HDC hdc,const grlibPointMapper& mapper) const;
-
-   //------------------------------------------------------------------------
-   Float64 SetX1(Float64 x1);
-
-   //------------------------------------------------------------------------
+   void SetX1(Float64 x1);
    Float64 GetX1() const;
 
-   //------------------------------------------------------------------------
-   Float64 SetX2(Float64 x2);
-
-   //------------------------------------------------------------------------
+   void SetX2(Float64 x2);
    Float64 GetX2() const;
 
-   //------------------------------------------------------------------------
-   Float64 SetX3(Float64 x3);
-
-   //------------------------------------------------------------------------
+   void SetX3(Float64 x3);
    Float64 GetX3() const;
 
-   //------------------------------------------------------------------------
-   Float64 SetX4(Float64 x4);
-
-   //------------------------------------------------------------------------
+   void SetX4(Float64 x4);
    Float64 GetX4() const;
 
-   //------------------------------------------------------------------------
-   Float64 SetX5(Float64 x5);
-
-   //------------------------------------------------------------------------
+   void SetX5(Float64 x5);
    Float64 GetX5() const;
 
-   //------------------------------------------------------------------------
-   Float64 SetY1(Float64 y1);
-
-   //------------------------------------------------------------------------
+   void SetY1(Float64 y1);
    Float64 GetY1() const;
 
-   //------------------------------------------------------------------------
-   Float64 SetY2(Float64 y2);
-
-   //------------------------------------------------------------------------
+   void SetY2(Float64 y2);
    Float64 GetY2() const;
 
-   //------------------------------------------------------------------------
-   Float64 SetY3(Float64 y3);
-
-   //------------------------------------------------------------------------
+   void SetY3(Float64 y3);
    Float64 GetY3() const;
 
-   //------------------------------------------------------------------------
-   Float64 SetSlabDepth(Float64 tSlab);
-
-   //------------------------------------------------------------------------
+   void SetSlabDepth(Float64 tSlab);
    Float64 GetSlabDepth() const;
 
-   //------------------------------------------------------------------------
-   Orientation SetOrientation(Orientation orient);
-
-   //------------------------------------------------------------------------
+   void SetOrientation(Orientation orient);
    Orientation GetOrientation() const;
 
-   //------------------------------------------------------------------------
-   gpPoint2d SetHookPoint(const gpPoint2d& hookPnt);
+   /// Translates a shape by a delta amount.
+   virtual void DoOffset(const Size2d& delta) override;
 
-   //------------------------------------------------------------------------
-   gpPoint2d GetHookPoint() const;
+   /// Rotates a shape.  The rotation is centered about point center.  The 
+   /// rotation angle is measured in radians counter clockwise.
+   virtual void DoRotate(const Point2d& center, Float64 angle) override;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   ShapeProperties GetProperties() const;
+
+   Rect2d GetBoundingBox() const;
+
+   std::unique_ptr<Shape> CreateClone() const;
+
+   std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const;
+
+   std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const;
+
+   Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const;
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   void DoTranslate(const gpSize2d& delta);
-
-   //------------------------------------------------------------------------
-   void DoRotate(const gpPoint2d& center,Float64 angle);
-
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const gmTrafficBarrier& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const gmTrafficBarrier& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
 
 private:
-   // GROUP: DATA MEMBERS
-   Float64 m_X1;
-   Float64 m_X2;
-   Float64 m_X3;
-   Float64 m_X4;
-   Float64 m_X5;
-   Float64 m_Y1;
-   Float64 m_Y2;
-   Float64 m_Y3;
-   Float64 m_tSlab;
-   Orientation m_Orientation;
-
-   gpPoint2d m_HookPoint;
-   Float64   m_Rotation;
-   gpPolygon2d m_PolyImp; // polygon implementation.
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   void Init();
-   gmPolygon* CreatePolygon() const;
-   void UpdatePolygon();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   Float64 m_Rotation{ 0.0 };
+   Float64 m_X1{ 0.0 };
+   Float64 m_X2{ 0.0 };
+   Float64 m_X3{ 0.0 };
+   Float64 m_X4{ 0.0 };
+   Float64 m_X5{ 0.0 };
+   Float64 m_Y1{ 0.0 };
+   Float64 m_Y2{ 0.0 };
+   Float64 m_Y3{ 0.0 };
+   Float64 m_tSlab{ 0.0 };
+   Orientation m_Orientation{ Orientation::Left };
 
 public:
-   // GROUP: DEBUG
    #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
    virtual bool AssertValid() const override;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
    virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
    static bool TestMe(dbgLog& rlog);
    #endif // _UNITTEST
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
+   }; // Geometry
+}; // WBFL
 
 #endif // INCLUDED_GEOMMODEL_TRAFFICBARRIER_H_

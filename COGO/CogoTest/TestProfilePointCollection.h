@@ -34,33 +34,11 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestProfilePointCollection :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IProfilePointCollectionEvents
+class CTestProfilePointCollection
 {
 public:
 	static void Test();
 	CTestProfilePointCollection();
-
-   void InitEventTest(CogoObjectID expectedID) { m_expectedID = expectedID; m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestProfilePointCollection)
-   COM_INTERFACE_ENTRY(IProfilePointCollectionEvents)
-END_COM_MAP()
-
-
-// IProfilePointCollectionEvents
-public:
-	STDMETHOD(OnProfilePointChanged)(CogoObjectID key,IProfilePoint* pp);
-	STDMETHOD(OnProfilePointAdded)(CogoObjectID key,IProfilePoint* pp);
-	STDMETHOD(OnProfilePointRemoved)(CogoObjectID key);
-	STDMETHOD(OnProfilePointsCleared)();
-
-private:
-   bool m_bTestState;
-   CogoObjectID m_expectedID;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTProfilePointCOLLECTION_H__B9E4933B_5E73_11D5_8C32_006097C68A9C__INCLUDED_)

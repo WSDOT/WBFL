@@ -31,7 +31,6 @@
 
 #include "resource.h"       // main symbols
 #include "Collections.h"
-#include "COGOCP.h"
 
 
 class CLineSegmentCollection;
@@ -45,10 +44,7 @@ class ATL_NO_VTABLE CLineSegmentCollection :
 	public CComCoClass<CLineSegmentCollection, &CLSID_LineSegmentCollection>,
 //	public ISupportErrorInfo,
 //   public IObjectSafetyImpl<CLineSegmentCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CLineSegmentCollection>,
-	public LineSegmentCollectionImpl,
-   public ILineSegment2dEvents,
-   public CProxyDLineSegmentCollectionEvents< CLineSegmentCollection >
+	public LineSegmentCollectionImpl
 {
 public:
 	CLineSegmentCollection()
@@ -63,21 +59,13 @@ DECLARE_REGISTRY_RESOURCEID(IDR_LINESEGMENTCOLLECTION)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CLineSegmentCollection)
-//	COM_INTERFACE_ENTRY(ILineSegmentCollection)
+	COM_INTERFACE_ENTRY(ILineSegmentCollection)
 //	COM_INTERFACE_ENTRY2(IDispatch,ILineSegmentCollection)
 //	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY(ILineSegment2dEvents)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 
 //   COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY_CHAIN(LineSegmentCollectionImpl)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CLineSegmentCollection)
-CONNECTION_POINT_ENTRY(IID_ILineSegmentCollectionEvents)
-END_CONNECTION_POINT_MAP()
 
 
    CComBSTR GetCollectionName() { return CComBSTR("LineSegments"); }
@@ -89,8 +77,6 @@ END_CONNECTION_POINT_MAP()
 // ILineSegmentCollection
 public:
 	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
-	STDMETHOD(get_Factory)(/*[out,retval]*/ ILineSegment2dFactory** factory) override;
-	STDMETHOD(putref_Factory)(/*[in]*/ ILineSegment2dFactory* factory) override;
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
    STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ ILineSegment2d* *pVal) override;
    STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ ILineSegment2d* newVal) override;
@@ -104,24 +90,13 @@ public:
    STDMETHOD(get__EnumLineSegments)(/*[out,retval]*/ IEnumLineSegments** ppenum) override;
    STDMETHOD(Clone)(/*[out,retval]*/ ILineSegmentCollection* *clone) override;
 
-// ILineSegmentEvents
-public:
-	STDMETHOD(OnLineSegmentChanged)(ILineSegment2d* lineSeg) override;
-
 private:
-   CComPtr<ILineSegment2dFactory> m_Factory;
-
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
 
    HRESULT LineSegNotFound(CogoObjectID id);
    HRESULT LineSegAlreadyDefined(CogoObjectID id);
    HRESULT LineSegIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
-
-   void Advise(CogoObjectID id,ILineSegment2d* lineSeg);
-   void Unadvise(CogoObjectID id,ILineSegment2d* lineSeg);
-   void UnadviseAll();
-   std::map<CogoObjectID,DWORD> m_Cookies;
 };
 
 #endif //__LINESEGMENTCOLLECTION_H_

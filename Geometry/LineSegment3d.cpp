@@ -27,7 +27,7 @@
 #include "stdafx.h"
 #include "WBFLGeometry.h"
 #include "LineSegment3d.h"
-#include "Point2d.h"
+#include "Point3d.h"
 #include "Helper.h"
 
 #ifdef _DEBUG
@@ -43,8 +43,7 @@ STDMETHODIMP CLineSegment3d::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_ILineSegment3d,
-      &IID_IStructuredStorage2
+		&IID_ILineSegment3d
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -56,81 +55,63 @@ STDMETHODIMP CLineSegment3d::InterfaceSupportsErrorInfo(REFIID riid)
 
 HRESULT CLineSegment3d::FinalConstruct()
 {
-   HRESULT hr = S_OK;
+   CComObject<CPoint3d>* pStart;
+   CComObject<CPoint3d>::CreateInstance(&pStart);
+   pStart->SetPoint(m_LineSegment.GetStartPoint());
+   pStart->QueryInterface(&m_Start);
 
-   hr = CreatePoint(0.00,0.00,0.00,nullptr,&m_pStart );
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = CrAdvise(m_pStart, this, IID_IPoint3dEvents, &m_dwStartCookie);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = CreatePoint(1.00,0.00,0.00,nullptr,&m_pEnd );
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = CrAdvise(m_pEnd, this, IID_IPoint3dEvents, &m_dwEndCookie);
-   if ( FAILED(hr) )
-      return hr;
-
-   m_bEventsOn = true;
+   CComObject<CPoint3d>* pEnd;
+   CComObject<CPoint3d>::CreateInstance(&pEnd);
+   pEnd->SetPoint(m_LineSegment.GetEndPoint());
+   pEnd->QueryInterface(&m_End);
 
    return S_OK;
 }
 
 void CLineSegment3d::FinalRelease()
 {
-   CrUnadvise(m_pStart, this, IID_IPoint3dEvents, m_dwStartCookie);
-   CrUnadvise(m_pEnd,   this, IID_IPoint3dEvents, m_dwEndCookie  );
+}
+
+void CLineSegment3d::SetLineSegment(WBFL::Geometry::LineSegment3d& ls)
+{
+   m_LineSegment = ls;
+   dynamic_cast<CPoint3d*>(m_Start.p)->SetPoint(m_LineSegment.GetStartPoint());
+   dynamic_cast<CPoint3d*>(m_End.p)->SetPoint(m_LineSegment.GetEndPoint());
 }
 
 STDMETHODIMP CLineSegment3d::get_StartPoint(IPoint3d **pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   m_pStart->QueryInterface( pVal );
-
-   return S_OK;
+   return m_Start.QueryInterface(pVal);
 }
 
 STDMETHODIMP CLineSegment3d::putref_StartPoint(IPoint3d *newVal)
 {
    CHECK_IN(newVal);
-
-   HRESULT hr = CrAssignPointer(m_pStart, newVal, this, IID_IPoint3dEvents, &m_dwStartCookie);
-   if ( SUCCEEDED(hr) )
-      Fire_OnLineSegmentChanged(this);
-
+   m_Start = newVal;
+   m_LineSegment.SetStartPoint(GetInnerPoint(m_Start));
    return S_OK;
 }
 
 STDMETHODIMP CLineSegment3d::get_EndPoint(IPoint3d **pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   m_pEnd->QueryInterface( pVal );
-
-   return S_OK;
+   return m_End.QueryInterface(pVal);
 }  
 
 STDMETHODIMP CLineSegment3d::putref_EndPoint(IPoint3d *newVal)
 {
    CHECK_IN(newVal);
-   HRESULT hr = CrAssignPointer(m_pEnd, newVal, this, IID_IPoint3dEvents, &m_dwEndCookie);
-   if ( SUCCEEDED(hr) )
-      Fire_OnLineSegmentChanged(this);
-
+   m_End = newVal;
+   m_LineSegment.SetEndPoint(GetInnerPoint(m_End));
    return S_OK;
 }
 
 STDMETHODIMP CLineSegment3d::get_Length(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-
-   CComPtr<IGeomUtil3d> pUtil;
-   CreateGeomUtil(&pUtil);
-   return pUtil->Distance(m_pStart,m_pEnd,pVal);
+   *pVal = m_LineSegment.GetLength();
+   return S_OK;
 }
 
 //STDMETHODIMP CLineSegment3d::Rotate(Float64 cx, Float64 cy, Float64 angle)
@@ -156,22 +137,16 @@ STDMETHODIMP CLineSegment3d::get_Length(Float64 *pVal)
 
 STDMETHODIMP CLineSegment3d::Offset(Float64 dx, Float64 dy,Float64 dz)
 {
-   EventsOff();
-   m_pStart->Offset(dx,dy,dz);
-   m_pEnd->Offset(dx,dy,dz);
-   EventsOn();
+   m_LineSegment.Offset(dx, dy, dz);
 	return S_OK;
 }
 
 STDMETHODIMP CLineSegment3d::OffsetEx(ISize3d *pSize)
 {
    CHECK_IN(pSize);
-
-   EventsOff();
-   m_pStart->OffsetEx( pSize );
-   m_pEnd->OffsetEx( pSize );
-   EventsOn();
-
+   Float64 dx, dy, dz;
+   pSize->Dimensions(&dx, &dy, &dz);
+   return Offset(dx, dy, dz);
    return S_OK;
 }
 
@@ -180,15 +155,9 @@ STDMETHODIMP CLineSegment3d::ThroughPoints(IPoint3d* p1, IPoint3d* p2)
    CHECK_IN(p1);
    CHECK_IN(p2);
 
-   HRESULT hr = CrAssignPointer(m_pStart, p1, this, IID_IPoint3dEvents, &m_dwStartCookie);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = CrAssignPointer(m_pEnd, p2, this, IID_IPoint3dEvents, &m_dwEndCookie);
-   if ( FAILED(hr) )
-      return hr;
-
-   Fire_OnLineSegmentChanged(this);
+   m_Start = p1;
+   m_End = p2;
+   m_LineSegment.ThroughPoints(GetInnerPoint(m_Start),GetInnerPoint(m_End));
    return S_OK;
 }
 
@@ -198,85 +167,14 @@ STDMETHODIMP CLineSegment3d::Clone(ILineSegment3d** ppClone)
    CComObject<CLineSegment3d>* pClone;
    CComObject<CLineSegment3d>::CreateInstance(&pClone);
 
-   CComPtr<IPoint3d> start,end;
-   m_pStart->Clone(&start);
-   m_pEnd->Clone(&end);
-
-   pClone->ThroughPoints(start,end);
+   pClone->m_Start.Release();
+   m_Start->Clone(&pClone->m_Start);
+   pClone->m_End.Release();
+   m_End->Clone(&pClone->m_End);
+   pClone->m_LineSegment.ThroughPoints(GetInnerPoint(m_Start), GetInnerPoint(m_End));
 
    (*ppClone) = pClone;
    (*ppClone)->AddRef();
 
    return S_OK;
-}
-
-STDMETHODIMP CLineSegment3d::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IPersist
-STDMETHODIMP CLineSegment3d::GetClassID(CLSID* pClassID)
-{
-   CHECK_IN(pClassID);
-
-   *pClassID = GetObjectCLSID();
-   return S_OK;
-}
-
-// IStructuredStorage2
-STDMETHODIMP CLineSegment3d::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("LineSegment3d"),1.0);
-   pSave->put_Property(CComBSTR("Start"),CComVariant(m_pStart));
-   pSave->put_Property(CComBSTR("End"),  CComVariant(m_pEnd));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CLineSegment3d::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("LineSegment3d"));
-   
-   CrUnadvise(m_pStart, this, IID_IPoint3dEvents, m_dwStartCookie);
-   m_pStart.Release();
-
-   pLoad->get_Property(CComBSTR("Start"),&var);
-   if ( FAILED( _CopyVariantToInterface<IPoint3d>::copy(&m_pStart,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-   
-   CrUnadvise(m_pEnd,   this, IID_IPoint3dEvents, m_dwEndCookie  );
-   m_pEnd.Release();
-
-   pLoad->get_Property(CComBSTR("End"),&var);
-   if ( FAILED( _CopyVariantToInterface<IPoint3d>::copy(&m_pEnd,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   return S_OK;
-}
-
-
-void CLineSegment3d::EventsOff()
-{
-   m_bEventsOn = false;
-}
-
-void CLineSegment3d::EventsOn(bool bFire)
-{
-   m_bEventsOn = true;
-
-   if ( bFire )
-      Fire_OnLineSegmentChanged(this);
 }

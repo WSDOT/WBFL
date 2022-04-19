@@ -675,7 +675,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
 
    // offset is distance between girder line point and deck point
    Float64 dist;
-   m_GeomUtil->Distance(pntSegment,pntEdge,&dist);
+   pntSegment->DistanceEx(pntEdge, &dist);
 
    // Distance is always a positive quantity... distance needs to be < 0 if inboard of the girder line
    // create a vector from pntSegment to pntDeck
@@ -805,7 +805,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,G
 
    // offset is distance between girder line point and deck point
    Float64 dist;
-   m_GeomUtil->Distance(pntGirder,pntDeck,&dist);
+   pntGirder->DistanceEx(pntDeck, &dist);
 
    // Distance is always a positive quantity... distance needs to be < 0 if inboard of the girder line
    // create a vector from pntGirder to pntDeck

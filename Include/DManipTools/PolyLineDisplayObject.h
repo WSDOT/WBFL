@@ -26,6 +26,7 @@
 #pragma once
 
 #include "DManipToolsTypes.h"
+interface iDisplayObject;
 
 typedef enum PolyLinePointType
 {

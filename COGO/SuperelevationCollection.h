@@ -29,12 +29,9 @@
 
 #include "resource.h"       // main symbols
 #include "Collections.h"
-#include "COGOCP.h"
 
-typedef std::pair<DWORD,CComVariant> SuperelevationType;
-typedef std::vector<SuperelevationType> Superelevations;
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<SuperelevationType,VARIANT>, Superelevations > SuperelevationsEnum;
-typedef ICollectionOnSTLImpl<ISuperelevationCollection, Superelevations, VARIANT, CopyFromPair2<SuperelevationType,VARIANT>,SuperelevationsEnum> ISuperelevationColl;
+typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT,VARIANT,_Copy<VARIANT>, std::vector<CComVariant> > SuperelevationsEnum;
+typedef ICollectionOnSTLImpl<ISuperelevationCollection,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>, SuperelevationsEnum> ISuperelevationColl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSuperelevationCollection
@@ -44,11 +41,8 @@ class ATL_NO_VTABLE CSuperelevationCollection :
 	public CComCoClass<CSuperelevationCollection, &CLSID_SuperelevationCollection>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CSuperelevationCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CSuperelevationCollection>,
 	public ISuperelevationColl,
-   public ISuperelevationEvents,
    public IStructuredStorage2,
-   public CProxyDSuperelevationCollectionEvents< CSuperelevationCollection >,
    public IPersistImpl<CSuperelevationCollection>
 {
 public:
@@ -67,19 +61,9 @@ BEGIN_COM_MAP(CSuperelevationCollection)
    COM_INTERFACE_ENTRY(ISuperelevationCollection)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY(ISuperelevationEvents)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CSuperelevationCollection)
-CONNECTION_POINT_ENTRY(IID_ISuperelevationCollectionEvents)
-END_CONNECTION_POINT_MAP()
-
 
    CComBSTR GetCollectionName() { return CComBSTR("Superelevations"); }
    CComBSTR GetItemName() { return CComBSTR("Superelevation"); }
@@ -110,17 +94,9 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// ISuperelevationEvents
-public:
-   STDMETHOD(OnSuperelevationChanged)(/*[in]*/ ISuperelevation* widening) override;
-
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-
-   void AdviseElement(ISuperelevation* pSuperelevation,DWORD* pdwCookie);
-   void UnadviseElement(CollectionIndexType idx);
-   void UnadviseAll();
 
    //HRESULT ValidateStation(ISuperelevation* pSuperelevation);
    //HRESULT ValidateStation(VARIANT varStation,bool bClone,IStation** station);

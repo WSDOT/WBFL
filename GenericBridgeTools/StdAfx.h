@@ -52,7 +52,6 @@ extern CComModule _Module;
 #include <WBFLGeometry.h>
 #include <WBFLUnitServer.h>
 #include <WBFLCogo.h>
-#include <WBFLSections.h>
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

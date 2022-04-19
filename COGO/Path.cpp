@@ -29,7 +29,6 @@
 #include "Path.h"
 #include "PathElement.h"
 #include <WBFLCogo\CogoHelpers.h>
-#include "PointFactory.h"
 #include "CubicSpline.h"
 #include "CompoundCurve.h"
 #include "CircularCurve.h"
@@ -54,10 +53,6 @@ HRESULT CPath::FinalConstruct()
       return hr;
    }
 
-   CComObject<CPointFactory>* pFactory;
-   CComObject<CPointFactory>::CreateInstance(&pFactory);
-   m_PointFactory = pFactory;
-
    CComObject<CCogoEngine>* pEngine;
    CComObject<CCogoEngine>::CreateInstance(&pEngine);
    m_CogoEngine = pEngine;
@@ -69,7 +64,6 @@ HRESULT CPath::FinalConstruct()
 
 void CPath::FinalRelease()
 {
-   UnadviseAll();
 }
 
 STDMETHODIMP CPath::InterfaceSupportsErrorInfo(REFIID riid)
@@ -103,8 +97,8 @@ STDMETHODIMP CPath::get_Item(CollectionIndexType idx, IPathElement* *pVal)
       return E_INVALIDARG;
    }
 
-   PathType& at = m_coll[idx];
-   CComVariant& var = at.second;
+   CComVariant& at = m_coll[idx];
+   CComVariant& var = at;
    var.pdispVal->QueryInterface(pVal);
 
 	return S_OK;
@@ -120,21 +114,10 @@ STDMETHODIMP CPath::putref_Item(CollectionIndexType idx, IPathElement *pVal)
    }
 
    // Get the item
-   PathType& at = m_coll[idx];
-   CComVariant& var = at.second; // Variant holding IUnknown to PathElement
-
-   UnadviseElement(idx); // Unadvise from the current element
+   CComVariant& at = m_coll[idx];
+   CComVariant& var = at; // Variant holding IUnknown to PathElement
 
    var = pVal; // Associate new PathElement with this variant
-
-   // Advise
-   DWORD dwCookie;
-   AdviseElement(pVal,&dwCookie);
-
-   // Update the cookie
-   at.first = dwCookie;
-
-   Fire_OnPathChanged(this);
 
    return S_OK;
 }
@@ -167,13 +150,10 @@ STDMETHODIMP CPath::Insert(CollectionIndexType idx, IPathElement* element)
       return E_INVALIDARG;
    }
 
-   DWORD dwCookie;
-   AdviseElement(element,&dwCookie);
-   m_coll.insert(m_coll.begin() + idx,std::make_pair(dwCookie,CComVariant(element)) );
+   m_coll.insert(m_coll.begin() + idx,CComVariant(element) );
 
    m_PathElements.clear();
    
-   Fire_OnPathChanged(this);
    return S_OK;
 }
 
@@ -241,7 +221,6 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
          return E_INVALIDARG;
       }
 
-      UnadviseElement(index);
       m_coll.erase(m_coll.begin() + index);
    }
    else if ( varID.vt == VT_UNKNOWN || varID.vt == VT_DISPATCH )
@@ -267,12 +246,11 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
          return E_INVALIDARG;
       }
 
-      Paths::iterator iter;
       bool bRemoved = false;
-      for ( iter = m_coll.begin(); iter < m_coll.end(); iter++ )
+      for ( auto iter = m_coll.begin(); iter < m_coll.end(); iter++ )
       {
-         PathType& at = *iter;
-         CComVariant& varElement = at.second;
+         CComVariant& at = *iter;
+         CComVariant& varElement = at;
          CComQIPtr<IPathElement> ae(varElement.punkVal);
          CComPtr<IUnknown> dispVal;
          ae->get_Value(&dispVal);
@@ -284,7 +262,6 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
               spline  != nullptr && ls.IsEqualObject(dispVal)                 ||
               hc      != nullptr && hc.IsEqualObject(dispVal) )
          {
-            UnadviseElement(iter - m_coll.begin());
             m_coll.erase(iter);
             bRemoved = true;
             break; // exit the loop
@@ -303,17 +280,13 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
 
    m_PathElements.clear();
    
-   Fire_OnPathChanged(this);
 	return S_OK;
 }
 
 STDMETHODIMP CPath::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
    m_PathElements.clear();
-
-   Fire_OnPathChanged(this);
    return S_OK;
 }
 
@@ -383,11 +356,11 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
       cogoUtil::Inverse(start,end,&length,&dirPath);
 
       CComPtr<IPoint2d> basePoint;
-      cogoUtil::LocateByDistDir(start,dist,dirPath,0.0,m_PointFactory,&basePoint);
+      cogoUtil::LocateByDistDir(start,dist,dirPath,0.0,&basePoint);
 
       if ( !IsZero(offset) )
       {
-         cogoUtil::LocateByDistDir(basePoint,offset,dir,0.0,m_PointFactory,newPoint);
+         cogoUtil::LocateByDistDir(basePoint,offset,dir,0.0,newPoint);
       }
       else
       {
@@ -417,7 +390,7 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
 
       if (!IsZero(offset))
       {
-         cogoUtil::LocateByDistDir(basePoint, offset, dir, 0.0, m_PointFactory, newPoint);
+         cogoUtil::LocateByDistDir(basePoint, offset, dir, 0.0,  newPoint);
       }
       else
       {
@@ -447,7 +420,7 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
 
       if (!IsZero(offset))
       {
-         cogoUtil::LocateByDistDir(basePoint, offset, dir, 0.0, m_PointFactory, newPoint);
+         cogoUtil::LocateByDistDir(basePoint, offset, dir, 0.0, newPoint);
       }
       else
       {
@@ -477,7 +450,7 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
 
       if ( !IsZero(offset) )
       {
-         cogoUtil::LocateByDistDir(basePoint,offset,dir,0.0,m_PointFactory,newPoint);
+         cogoUtil::LocateByDistDir(basePoint,offset,dir,0.0,newPoint);
       }
       else
       {
@@ -507,7 +480,7 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
 
       if ( !IsZero(offset) )
       {
-         cogoUtil::LocateByDistDir(basePoint,offset,dir,0.0,m_PointFactory,newPoint);
+         cogoUtil::LocateByDistDir(basePoint,offset,dir,0.0,newPoint);
       }
       else
       {
@@ -799,9 +772,8 @@ STDMETHODIMP CPath::get__EnumPathElements(IEnumPathElements** pVal)
    typedef CComEnumOnSTL<IEnumPathElements,
                          &IID_IEnumPathElements, 
                          IPathElement*,
-                         CopyFromPair2Interface<PathType,
-                                                IPathElement*>, 
-                                                std::vector<PathType>> Enum;
+      _CopyVariantToInterface<IPathElement>, 
+                                                std::vector<CComVariant>> Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -818,67 +790,6 @@ STDMETHODIMP CPath::get__EnumPathElements(IEnumPathElements** pVal)
    pEnum->QueryInterface( pVal );
 
    return S_OK;
-}
-
-STDMETHODIMP CPath::get_PointFactory(IPoint2dFactory* *factory)
-{
-   CHECK_RETOBJ(factory);
-   (*factory) = m_PointFactory;
-   (*factory)->AddRef();
-   return S_OK;
-}
-
-STDMETHODIMP CPath::putref_PointFactory(IPoint2dFactory* factory)
-{
-   CHECK_IN(factory);
-   m_PointFactory = factory;
-   return S_OK;
-}
-
-//////////////////////////////////////////////////////////
-// Helpers
-void CPath::AdviseElement(IPathElement* element,DWORD* pdwCookie)
-{
-   HRESULT hr = AtlAdvise(element,GetUnknown(),IID_IPathElementEvents,pdwCookie);
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      ATLTRACE("Failed to establish connection point with Path object\n");
-      return;
-   }
-
-   InternalRelease(); // Break circular reference
-}
-
-void CPath::UnadviseElement(CollectionIndexType idx)
-{
-   //
-   // Disconnection from connection CrossSection
-   //
-   PathType& p = m_coll[idx];
-   if ( p.first == 0 )
-   {
-      return;
-   }
-
-   DWORD dwCookie = (DWORD)p.first;
-   CComVariant& var = p.second;
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IPathElementEvents, dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   p.first = 0;
-}
-
-void CPath::UnadviseAll()
-{
-   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
-   {
-      UnadviseElement(i);
-   }
 }
 
 void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pElement)
@@ -1012,8 +923,8 @@ std::vector<Element>& CPath::GetPathElements()
       else
       {
          // There are multiple Path elements
-         Paths::iterator currIter = m_coll.begin();
-         Paths::iterator nextIter = currIter + 1;
+         auto currIter = m_coll.begin();
+         auto nextIter = currIter + 1;
          CComPtr<IPathElement> currElement, nextElement;
          Float64 currDist = 0.00;
          Float64 nextDist = currDist;
@@ -1021,12 +932,12 @@ std::vector<Element>& CPath::GetPathElements()
          {
             // NOTE: The order of these next 4 lines is critical
             bool bExtendBack = ( currIter == m_coll.begin() ? true : false );
-            PathType& atCurr = *currIter++;
-            PathType& atNext = *nextIter++;
+            CComVariant& atCurr = *currIter++;
+            CComVariant& atNext = *nextIter++;
             bool bExtendAhead = false;
 
-            CComVariant& varCurrElement = atCurr.second;
-            CComVariant& varNextElement = atNext.second;
+            CComVariant& varCurrElement = atCurr;
+            CComVariant& varNextElement = atNext;
 
             currElement.Release();
             nextElement.Release();
@@ -1799,8 +1710,6 @@ STDMETHODIMP CPath::Clone(IPath* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   (*clone)->putref_PointFactory(m_PointFactory);
-
    CComPtr<IEnumPathElements> enumPathElements;
    get__EnumPathElements(&enumPathElements);
    CComPtr<IPathElement> path_element;
@@ -1835,8 +1744,6 @@ STDMETHODIMP CPath::CreateOffsetPath(Float64 offset,IPath** path)
 
    (*path) = pClone;
    (*path)->AddRef();
-
-   (*path)->putref_PointFactory(m_PointFactory);
 
    std::vector<Element>& vElements = GetPathElements();
    const auto& begin = vElements.cbegin();
@@ -1967,6 +1874,7 @@ STDMETHODIMP CPath::CreateOffsetPath(Float64 offset,IPath** path)
    
             start->Offset(dxStart, dyStart);
             end->Offset(dxEnd, dyEnd);
+            ls->ThroughPoints(start, end);
          }
          break;
 
@@ -2078,8 +1986,6 @@ STDMETHODIMP CPath::CreateConnectedPath(IPath** path)
    (*path) = pClone;
    (*path)->AddRef();
 
-   (*path)->putref_PointFactory(m_PointFactory);
-   
    std::vector<Element>& vElements = GetPathElements();
    for (const auto& element : vElements)
    {
@@ -2106,8 +2012,6 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
 
    (*path) = pClone;
    (*path)->AddRef();
-
-   (*path)->putref_PointFactory(m_PointFactory);
 
    std::vector<Element>& vElements = GetPathElements();
    for (const auto& element : vElements)
@@ -2287,11 +2191,9 @@ STDMETHODIMP CPath::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
    for ( CollectionIndexType i = 0; i < count; i++ )
    {
-      pSave->put_Property(CComBSTR("PathElement"),m_coll[i].second);
+      pSave->put_Property(CComBSTR("PathElement"),m_coll[i]);
    }
    pSave->EndUnit(); // PathElements
-
-   pSave->put_Property(CComBSTR("PointFactory"),CComVariant(m_PointFactory));
 
    pSave->EndUnit();
 
@@ -2317,11 +2219,6 @@ STDMETHODIMP CPath::Load(IStructuredLoad2* pLoad)
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd); // PathElements
 
-   pLoad->get_Property(CComBSTR("PointFactory"),&var);
-   CComPtr<IPoint2dFactory> factory;
-   _CopyVariantToInterface<IPoint2dFactory>::copy(&factory,&var);
-   putref_PointFactory(factory);
-
    pLoad->EndUnit(&bEnd);
 
    return S_OK;
@@ -2338,8 +2235,8 @@ void CPath::CreateOffsetCircularCurve(Float64 offset, ICircularCurve* hc, IUnkno
    hc->get_PT(&PT);
 
    Float64 d1, d2;
-   m_GeomUtil->Distance(PC, CC, &d1);
-   m_GeomUtil->Distance(PT, CC, &d2);
+   PC->DistanceEx(CC, &d1);
+   PT->DistanceEx(CC, &d2);
 
    // It is useful to have line objects that represent the tangents of the curve.
    // Create them now because they will be used later.
@@ -2466,12 +2363,12 @@ void CPath::CreateOffsetTransitionCurve(Float64 offset, ITransitionCurve* hc, IU
    end_normal_line->SetExplicit(pntEnd, vEnd);
 
    CComPtr<IPoint2d> cc;
-   geomUtil::LineLineIntersect(start_normal_line, end_normal_line, nullptr, &cc);
+   geomUtil::LineLineIntersect(start_normal_line, end_normal_line, &cc);
 
    // find distance from start and end to the intersection point
    Float64 d1, d2;
-   m_GeomUtil->Distance(pntStart, cc, &d1);
-   m_GeomUtil->Distance(pntEnd, cc, &d2);
+   pntStart->DistanceEx(cc, &d1);
+   pntEnd->DistanceEx(cc, &d2);
 
    // Deal with the case of the curve degrading to a single point
    if ((curve_direction == cdRight && (d1 <= offset || d2 <= offset)) ||
@@ -2555,8 +2452,8 @@ void CPath::CreateOffsetCompoundCurve(Float64 offset,ICompoundCurve* hc,IUnknown
    hc->get_ST(&ST);
 
    Float64 d1,d2;
-   m_GeomUtil->Distance(TS,CC,&d1);
-   m_GeomUtil->Distance(ST,CC,&d2);
+   TS->DistanceEx(CC, &d1);
+   ST->DistanceEx(CC, &d2);
 
    // It is useful to have line objects that represent the tangents of the curve.
    // Create them now because they will be used later.
@@ -2903,7 +2800,6 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
          // locate point at start of line segment
          cloneStart.Release();
          locate->PointOnLine(lsStartPoint,lsEndPoint,start - lsStart, 0.00, &cloneStart);
-         clone->putref_StartPoint(cloneStart);
       }
       else
       {
@@ -2922,8 +2818,10 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
       {
          cloneEnd.Release();
          locate->PointOnLine(lsStartPoint,lsEndPoint,end - lsStart, 0.00, &cloneEnd);
-         clone->putref_EndPoint(cloneEnd);
       }
+
+      clone->putref_StartPoint(cloneStart);
+      clone->putref_EndPoint(cloneEnd);
 
       Float64 length;
       clone->get_Length(&length);

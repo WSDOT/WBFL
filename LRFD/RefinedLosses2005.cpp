@@ -87,9 +87,9 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,   // area of TTS 
                          Float64 aps,      // area of one temp strand
-                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
-                         const gpPoint2d& epermFinal,
-                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermFinal,
+                         const WBFL::Geometry::Point2d& etemp, // eccentricty of temporary strands with respect to CG of girder
                          lrfdLosses::TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,
@@ -654,7 +654,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // 2. Compute Kid
    Float64 Aps = m_ApsPerm;
-   gpPoint2d e = m_epermRelease;
+   WBFL::Geometry::Point2d e = m_epermRelease;
    if ( m_TempStrandUsage == lrfdRefinedLosses2005::tsPretensioned )
    {
       Aps += m_ApsTemp;
@@ -914,7 +914,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
 
    // Shrinkage of Girder Concrete [5.9.5.4.2a]
    Float64 Aps = m_ApsPerm;
-   gpPoint2d e = m_epermFinal;
+   WBFL::Geometry::Point2d e = m_epermFinal;
    if ( m_TempStrandUsage == lrfdRefinedLosses2005::tsPretensioned )
    {
       Aps += m_ApsTemp;
@@ -1106,9 +1106,9 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          0.0051799896399999995,  // area of permanent strand
                          0.00055999887999999998,  // area of TTS 
                          0.00013999972000000000,      // area of one strand
-                         gpPoint2d(0,0.73344249937779116), // eccentricty of permanent ps strands with respect to CG of girder
-                         gpPoint2d(0,0.73344249937779116), // eccentricty of permanent ps strands with respect to CG of girder
-                         gpPoint2d(0,-0.81870344656815441), // eccentricty of temporary strands with respect to CG of girder
+                         WBFL::Geometry::Point2d(0,0.73344249937779116), // eccentricty of permanent ps strands with respect to CG of girder
+                         WBFL::Geometry::Point2d(0,0.73344249937779116), // eccentricty of permanent ps strands with respect to CG of girder
+                         WBFL::Geometry::Point2d(0,-0.81870344656815441), // eccentricty of temporary strands with respect to CG of girder
                          
                          tsPretensioned, // temporary strand usage
 

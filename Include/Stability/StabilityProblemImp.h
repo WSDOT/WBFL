@@ -28,7 +28,6 @@
 #include <Stability/StabilityProblem.h>
 #include <set>
 #include <array>
-#include <GeometricPrimitives\GeometricPrimitives.h>
 
 namespace WBFL
 {
@@ -70,10 +69,10 @@ namespace WBFL
       /// Defines points on the perimeter of the girder section where stresses are computed and evaluated for a girder section.
       struct STABILITYCLASS StressPoints
       {
-         std::array<gpPoint2d, 2> pntTL; ///< Top left point. Array indicies are [Section].
-         std::array<gpPoint2d, 2> pntTR; ///< Top right point. Array indicies are [Section].
-         std::array<gpPoint2d, 2> pntBL; ///< Bottom left point. Array indicies are [Section].
-         std::array<gpPoint2d, 2> pntBR; ///< Bottom right point. Array indicies are [Section].
+         std::array<Point, 2> pntTL; ///< Top left point. Array indicies are [Section].
+         std::array<Point, 2> pntTR; ///< Top right point. Array indicies are [Section].
+         std::array<Point, 2> pntBL; ///< Bottom left point. Array indicies are [Section].
+         std::array<Point, 2> pntBR; ///< Bottom right point. Array indicies are [Section].
 
          /// Returns true if the objects are equal
          bool operator==(const StressPoints& other) const
@@ -212,10 +211,10 @@ namespace WBFL
          void SetSectionProperties(IndexType sectIdx, Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Yt, Float64 Hg, Float64 Wtf, Float64 Wbf, Float64 Ag2, Float64 Ixx2, Float64 Iyy2, Float64 Ixy2, Float64 Xcg2, Float64 Yt2, Float64 Hg2, Float64 Wtf2, Float64 Wbf2);
 
          /// Assigns stress point values to a section. Stress points are applied to both ends of the section.
-         void SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR);
+         void SetStressPoints(IndexType sectIdx, const Point& pntTL, const Point& pntTR, const Point& pntBL, const Point& pntBR);
 
          /// Assigns stress point values to a section. Stress points are specified for both ends of the section.
-         void SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2);
+         void SetStressPoints(IndexType sectIdx, const Point& pntTL, const Point& pntTR, const Point& pntBL, const Point& pntBR, const Point& pntTL2, const Point& pntTR2, const Point& pntBL2, const Point& pntBR2);
 
          /// Removes all point loads from the model.
          void ClearPointLoads();
@@ -230,8 +229,8 @@ namespace WBFL
          virtual Float64 GetSectionLength(IndexType sectIdx) const override;
          virtual void GetSectionProperties(IndexType sectIdx, Section section, Float64* pAg, Float64* pIxx, Float64* pIyy, Float64* pIxy, Float64* pXleft, Float64* pYtop, Float64* pHg, Float64* pWtop, Float64* pWbot) const override;
          virtual void GetSectionProperties(Float64 X, Float64* pAg, Float64* pIxx, Float64* pIyy, Float64* pIxy, Float64* pXleft, Float64* pYtop, Float64* pHg, Float64* pWtop, Float64* pWbot) const override;
-         virtual void GetStressPoints(IndexType sectIdx, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const override;
-         virtual void GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const override;
+         virtual void GetStressPoints(IndexType sectIdx, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const override;
+         virtual void GetStressPoints(Float64 X, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const override;
 
          virtual Float64 GetGirderLength() const override;
 
@@ -263,7 +262,7 @@ namespace WBFL
 
          Float64 m_Precamber{ 0.0 };
 
-         void GetStressPoints(const SectionProperties& props, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const;
+         void GetStressPoints(const SectionProperties& props, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const;
          void UpdateLength() const;
          mutable bool m_bLengthNeedsUpdate{ true };
          mutable Float64 m_L{ 0.0 };

@@ -76,7 +76,6 @@ private:
    Float64 m_Slope; // slope at either the start or end of the tendon segment (must be zero for now)
                     // when generalized, slope may need to be a vector as it is actually a 3D quantity
    DirectionType m_SlopeEnd; // specifies which end of the tendon segment has a slope of m_Slope
-   CComPtr<IGeomUtil3d> m_GeomUtil;
 
    const mathPolynomial2d& GetParabolaX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)
    const mathPolynomial2d& GetParabolaDX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)

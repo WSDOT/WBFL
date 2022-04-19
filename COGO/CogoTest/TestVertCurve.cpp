@@ -149,6 +149,7 @@ void CTestVertCurve::Test1()
 
    // high point at end
    pfg->put_Elevation(200);
+   vc->putref_PFG(pfg);
    point.Release();
    TRY_TEST( vc->get_HighPoint(&point), S_OK );
    station.Release();
@@ -169,6 +170,9 @@ void CTestVertCurve::Test1()
    pfg->put_Elevation(50);
 
    vc->put_L2(100);
+   vc->putref_PBG(pbg);
+   vc->putref_PVI(pvi);
+   vc->putref_PFG(pfg);
 
    // high point between ends
    point.Release();
@@ -192,6 +196,7 @@ void CTestVertCurve::Test1()
 
    // low point at start
    pbg->put_Elevation(10);
+   vc->putref_PBG(pbg);
    point.Release();
    TRY_TEST( vc->get_LowPoint(&point), S_OK );
    station.Release();
@@ -300,34 +305,6 @@ void CTestVertCurve::Test1()
    TRY_TEST( vc->get_E(L1+L2/2,&e), S_OK );
    TRY_TEST( IsEqual(e,0.8), true);
 
-
-   // Test Events
-   CComObject<CTestVertCurve>* pTestCurve;
-   CComObject<CTestVertCurve>::CreateInstance(&pTestCurve);
-   pTestCurve->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestCurve);
-   TRY_TEST(AtlAdvise(vc,punk,IID_IVertCurveEvents,&dwCookie),S_OK);
-
-   pTestCurve->InitEventTest();
-   vc->putref_PBG(pbg);
-   TRY_TEST(pTestCurve->PassedEventTest(), true );
-   
-   pTestCurve->InitEventTest();
-   vc->putref_PVI(pvi);
-   TRY_TEST(pTestCurve->PassedEventTest(), true );
-   
-   pTestCurve->InitEventTest();
-   vc->putref_PFG(pfg);
-   TRY_TEST(pTestCurve->PassedEventTest(), true );
-   
-   pTestCurve->InitEventTest();
-   pfg->put_Station(CComVariant(700));
-   TRY_TEST(pTestCurve->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(vc,IID_IVertCurveEvents,dwCookie),S_OK);
-   pTestCurve->Release();
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(vc);
@@ -461,6 +438,7 @@ void CTestVertCurve::Test2()
 
    // high point at end
    pfg->put_Elevation(200);
+   vc->putref_PFG(pfg);
    point.Release();
    TRY_TEST( vc->get_HighPoint(&point), S_OK );
    station.Release();
@@ -567,11 +545,4 @@ void CTestVertCurve::Test3()
    point->get_Elevation(&elev);
    TRY_TEST( IsEqual(sta,400.0), true );
    TRY_TEST(IsEqual(elev,200.0),true);
-}
-
-STDMETHODIMP CTestVertCurve::OnVertCurveChanged(IVertCurve* pp)
-{
-   //::MessageBox(nullptr,"OnVertCurveChanged","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

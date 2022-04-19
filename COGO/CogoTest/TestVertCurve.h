@@ -34,33 +34,17 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestVertCurve :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IVertCurveEvents
+class CTestVertCurve
 {
 public:
    CTestVertCurve();
 
    static void Test();
+
+private:
    static void Test1();
    static void Test2();
    static void Test3();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestVertCurve)
-   COM_INTERFACE_ENTRY(IVertCurveEvents)
-END_COM_MAP()
-
-
-// IVertCurveEvents
-public:
-	STDMETHOD(OnVertCurveChanged)(IVertCurve* pp);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTVertCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

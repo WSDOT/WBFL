@@ -83,7 +83,6 @@ void CTestDivide::Test()
    TRY_TEST(divide->Arc(4,1,2,1,3,4),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(4,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,7.07106781187),true);
@@ -91,7 +90,6 @@ void CTestDivide::Test()
 
    pnt.Release();
    TRY_TEST(points->get_Item(5,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,0.0),true);
@@ -99,7 +97,6 @@ void CTestDivide::Test()
 
    pnt.Release();
    TRY_TEST(points->get_Item(6,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,-7.07106781187),true);
@@ -123,7 +120,6 @@ void CTestDivide::Test()
    {
       pnt.Release();
       TRY_TEST(points->get_Item(i,&pnt),S_OK);
-      TRY_TEST(CheckPointType(pnt),S_OK);
       pnt->get_X(&x);
       pnt->get_Y(&y);
       TRY_TEST(IsEqual(x,(i-1)*10.),true);
@@ -154,7 +150,6 @@ void CTestDivide::Test()
    {
       pnt.Release();
       TRY_TEST(points->get_Item(i,&pnt),S_OK);
-      TRY_TEST(CheckPointType(pnt),S_OK);
       pnt->get_X(&x);
       pnt->get_Y(&y);
       TRY_TEST(IsEqual(x,(i-1)*10.),true);
@@ -184,7 +179,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(150,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,493.3008,0.001),true);
@@ -192,7 +186,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(151,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,547.4251,0.001),true);
@@ -200,7 +193,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(152,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,600.8740,0.001),true);
@@ -208,7 +200,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(153,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,653.0065,0.001),true);
@@ -216,7 +207,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(154,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,703.2089,0.001),true);
@@ -224,7 +214,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(155,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,750.8904,0.001),true);
@@ -232,7 +221,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(156,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,795.5411,0.001),true);
@@ -240,7 +228,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(157,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,837.3133,0.001),true);
@@ -248,7 +235,6 @@ void CTestDivide::Test()
    
    pnt.Release();
    TRY_TEST(points->get_Item(158,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,876.9803,0.001),true);

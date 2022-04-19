@@ -34,33 +34,11 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestPathCollection :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IPathCollectionEvents
+class CTestPathCollection
 {
 public:
 	static void Test();
 	CTestPathCollection();
-
-   void InitEventTest(CogoObjectID expectedID) { m_expectedID = expectedID; m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestPathCollection)
-   COM_INTERFACE_ENTRY(IPathCollectionEvents)
-END_COM_MAP()
-
-// IPathCollectionEvents
-public:
-	STDMETHOD(OnPathChanged)(IPathCollection* coll,CogoObjectID key,IPath* Path);
-	STDMETHOD(OnProfileChanged)(IPathCollection* coll,IProfile* profile);
-	STDMETHOD(OnPathAdded)(IPathCollection* coll,CogoObjectID key,IPath* Path);
-	STDMETHOD(OnPathRemoved)(IPathCollection* coll,CogoObjectID key);
-	STDMETHOD(OnPathsCleared)(IPathCollection* coll);
-
-private:
-   bool m_bTestState;
-   CogoObjectID m_expectedID;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTPathCOLLECTION_H__B9E4933B_5E73_11D5_8C32_006097C68A9C__INCLUDED_)

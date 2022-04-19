@@ -50,7 +50,6 @@
 #include "TestProject.h"
 #include "TestDivide.h"
 #include "TestTangent.h"
-#include "TestCogoModelEvents.h"
 #include "TestVertCurve.h"
 #include "TestVertCurveCollection.h"
 #include "TestCompoundCurve.h"
@@ -119,7 +118,6 @@ int main(int argc, TCHAR* argv[])
    CTestStation::Test();
 
    CTestCogoModel::Test();
-   CTestCogoModelEvents::Test();
    CTestMeasure::Test();
    CTestLocate::Test();
    CTestIntersect::Test();
@@ -130,23 +128,6 @@ int main(int argc, TCHAR* argv[])
    ::CoUninitialize();
 
 	return 1;
-}
-
-HRESULT CheckPointType(IPoint2d* point)
-{
-   CComPtr<IConnectionPointContainer> pCPC;
-   point->QueryInterface(&pCPC);
-
-   if ( pCPC == nullptr )
-      return E_FAIL;
-
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
-   
-   if ( pCP == nullptr )
-      return E_FAIL;
-
-   return S_OK;
 }
 
 bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptions)

@@ -51,7 +51,7 @@ CEAFGraphBuilderBase::CEAFGraphBuilderBase()
 }
 
 CEAFGraphBuilderBase::CEAFGraphBuilderBase(const CEAFGraphBuilderBase& other) :
-CGraphBuilder(other), CCmdTarget()
+   WBFL::Graphing::GraphBuilder(other), CCmdTarget()
 {
    m_bValidGraph = false;
    m_bUpdateError = false;

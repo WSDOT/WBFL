@@ -29,12 +29,9 @@
 
 #include "resource.h"       // main symbols
 #include "Collections.h"
-#include "COGOCP.h"
 
-typedef std::pair<DWORD,CComVariant> WideningType;
-typedef std::vector<WideningType> Widenings;
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<WideningType,VARIANT>, Widenings > WideningsEnum;
-typedef ICollectionOnSTLImpl<IWideningCollection, Widenings, VARIANT, CopyFromPair2<WideningType,VARIANT>,WideningsEnum> IWideningColl;
+typedef CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> > WideningsEnum;
+typedef ICollectionOnSTLImpl<IWideningCollection, std::vector<CComVariant>, VARIANT, _Copy<VARIANT>, WideningsEnum> IWideningColl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CWideningCollection
@@ -44,11 +41,8 @@ class ATL_NO_VTABLE CWideningCollection :
 	public CComCoClass<CWideningCollection, &CLSID_WideningCollection>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CWideningCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CWideningCollection>,
 	public IWideningColl,
-   public IWideningEvents,
    public IStructuredStorage2,
-   public CProxyDWideningCollectionEvents< CWideningCollection >,
    public IPersistImpl<CWideningCollection>
 {
 public:
@@ -67,19 +61,9 @@ BEGIN_COM_MAP(CWideningCollection)
    COM_INTERFACE_ENTRY(IWideningCollection)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
-   COM_INTERFACE_ENTRY(IWideningEvents)
    COM_INTERFACE_ENTRY(IObjectSafety)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CWideningCollection)
-CONNECTION_POINT_ENTRY(IID_IWideningCollectionEvents)
-END_CONNECTION_POINT_MAP()
-
 
    CComBSTR GetCollectionName() { return CComBSTR("Widenings"); }
    CComBSTR GetItemName() { return CComBSTR("Widening"); }
@@ -110,17 +94,9 @@ public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
-// IWideningEvents
-public:
-   STDMETHOD(OnWideningChanged)(/*[in]*/ IWidening* widening) override;
-
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-
-   void AdviseElement(IWidening* pWidening,DWORD* pdwCookie);
-   void UnadviseElement(CollectionIndexType idx);
-   void UnadviseAll();
 
    //HRESULT ValidateStation(IWidening* pWidening);
    //HRESULT ValidateStation(VARIANT varStation,bool bClone,IStation** station);

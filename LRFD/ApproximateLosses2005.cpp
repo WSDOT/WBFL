@@ -75,9 +75,9 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
-                         const gpPoint2d& epermFinal,
-                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermFinal,
+                         const WBFL::Geometry::Point2d& etemp, // eccentricty of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,

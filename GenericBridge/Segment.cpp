@@ -131,7 +131,7 @@ STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBi
    return S_OK;
 }
 
-STDMETHODIMP CSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+STDMETHODIMP CSegment::get_GirderShape(Float64 Xs, SectionBias sectionBias,SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )

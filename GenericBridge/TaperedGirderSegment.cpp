@@ -78,7 +78,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    }
 
    CComPtr<IShape> primaryShape;
-   HRESULT hr = get_PrimaryShape(Xs,sectionBias,coordinateSystem,&primaryShape);
+   HRESULT hr = get_GirderShape(Xs,sectionBias,coordinateSystem,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -184,7 +184,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    return S_OK;
 }
 
-STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+STDMETHODIMP CTaperedGirderSegment::get_GirderShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 

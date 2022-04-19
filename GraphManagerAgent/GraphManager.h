@@ -27,7 +27,7 @@
 
 #include "resource.h"       // main symbols
 #include "IGraphManager.h"
-#include <GraphManager\GraphBuilder.h>
+#include <Graphing/GraphBuilder.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CGraphManager
@@ -53,7 +53,7 @@ BEGIN_COM_MAP(CGraphManagerAgent)
 END_COM_MAP()
 
 private:
-   CGraphManager m_GraphManager;
+   WBFL::Graphing::GraphManager m_GraphManager;
    IBroker* m_pBroker; // weak reference
 
 // IAgentEx

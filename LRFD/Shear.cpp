@@ -29,9 +29,7 @@
 #include <Lrfd\VersionMgr.h>
 #include <MathEx.h>
 #include <Units\Units.h>
-#include <GeometricPrimitives\GeometricPrimitives.h>
-#include <GeometricPrimitives\LineSegment2d.h>
-#include <GeometricPrimitives\GeomOp2d.h>
+#include <GeomModel/GeomModel.h>
 #include <assert.h>
 
 #ifdef _DEBUG
@@ -747,14 +745,14 @@ void compute_theta_and_beta2(lrfdShearData* pData)
       ex_table[1] = get_ex(col+1);
       ex_calc[1] = compute_strain(pData,theta_guess[1]);
 
-      gpLineSegment2d l1(gpPoint2d(theta_guess[0],ex_calc[0]),  gpPoint2d(theta_guess[1],ex_calc[1]));
-      gpLineSegment2d l2(gpPoint2d(theta_guess[0],ex_table[0]), gpPoint2d(theta_guess[1],ex_table[1]));
+      WBFL::Geometry::LineSegment2d l1(WBFL::Geometry::Point2d(theta_guess[0],ex_calc[0]),  WBFL::Geometry::Point2d(theta_guess[1],ex_calc[1]));
+      WBFL::Geometry::LineSegment2d l2(WBFL::Geometry::Point2d(theta_guess[0],ex_table[0]), WBFL::Geometry::Point2d(theta_guess[1],ex_table[1]));
 
       //WATCH( _T("L1 = ") << l1.GetStartPoint() << _T(" ") << l1.GetEndPoint() );
       //WATCH( _T("L2 = ") << l2.GetStartPoint() << _T(" ") << l2.GetEndPoint() );
 
-      gpPoint2d p;
-      if ( gpGeomOp2d::Intersect( &p, l1, l2 ) == 1 )
+      WBFL::Geometry::Point2d p;
+      if (WBFL::Geometry::GeometricOperations::Intersect( l1, l2, &p ) == 1 )
       {
          bFoundSolution = true;
          theta = p.X();

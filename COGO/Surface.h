@@ -28,7 +28,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -39,13 +38,8 @@ class ATL_NO_VTABLE CSurface :
 	public CComCoClass<CSurface, &CLSID_Surface>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CSurface,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CSurface>,
    public ISurface,
    public IStructuredStorage2,
-   public ISurfaceTemplateCollectionEvents,
-   public ISuperelevationCollectionEvents,
-   public IWideningCollectionEvents,
-   public CProxyDSurfaceEvents< CSurface >,
    public IPersistImpl<CSurface>
 {
 public:
@@ -62,21 +56,11 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CSurface)
 	COM_INTERFACE_ENTRY(ISurface)
-   COM_INTERFACE_ENTRY(ISurfaceTemplateCollectionEvents)
-   COM_INTERFACE_ENTRY(ISuperelevationCollectionEvents)
-   COM_INTERFACE_ENTRY(IWideningCollectionEvents)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
-
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CSurface)
-CONNECTION_POINT_ENTRY(IID_ISurfaceEvents)
-END_CONNECTION_POINT_MAP()
 
 HRESULT Init(IProfile* pProfile,ISurfaceTemplateCollection* pSurfaceTemplates,IndexType alignmentPointIdx,IndexType profilePointIdx,ISuperelevationCollection* pSuperelevations,IWideningCollection* pWidenings);
 
@@ -107,79 +91,6 @@ public:
    STDMETHOD(Clone)(ISurface** ppClone) override;
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
-// ISurfaceTemplateCollectionEvents
-public:
-   STDMETHOD(OnSurfaceTemplateChanged)(ISurfaceTemplate* pSurfaceTemplate)
-   {
-      InvalidateRidgeLines();
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSurfaceTemplateAdded)(ISurfaceTemplate* pSurfaceTemplate)
-   {
-      InvalidateRidgeLines();
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSurfaceTemplateRemoved)()
-   {
-      InvalidateRidgeLines();
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSurfaceTemplatesCleared)()
-   {
-      InvalidateRidgeLines();
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-
-// IWideningCollectionEvents
-public:
-   STDMETHOD(OnWideningChanged)(IWidening* pWidening)
-   {
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnWideningAdded)(IWidening* pWidening)
-   {
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnWideningRemoved)()
-   {
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnWideningsCleared)()
-   {
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-
-//	ISuperelevationCollectionEvents
-public:
-   STDMETHOD(OnSuperelevationChanged)(ISuperelevation* pSuperelevation)
-   {
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSuperelevationAdded)(ISuperelevation* pSuperelevation)
-   {
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSuperelevationRemoved)()
-   {
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-   STDMETHOD(OnSuperelevationsCleared)()
-   {
-      Fire_OnSurfaceChanged(this);
-      return S_OK;
-   }
-
 // IStructuredStorage2
 public:
    STDMETHOD(Save)(IStructuredSave2* pSave) override;
@@ -194,18 +105,11 @@ private:
    CComPtr<ISuperelevationCollection> m_Superelevations;
    CComPtr<IWideningCollection> m_Widenings;
 
-   DWORD m_dwSurfaceTemplatesCookie;
-   DWORD m_dwSuperelevationCookie;
-   DWORD m_dwWideningCookie;
-
    HRESULT GetWidening(IStation* station,IndexType templateSegmentIdx,Float64* pWidening);
    HRESULT GetSuperelevation(IStation* station,IndexType templateSegmentIdx,Float64 slope,TemplateSlopeType slopeType,Float64* pSlope,TemplateSlopeType* pSlopeType);
    HRESULT CreateTemplateLine(ISurfaceTemplate* pSurfaceTemplate,ILineSegment2d** ppLine);
 
    HRESULT SurfaceError(UINT nHelpString,HRESULT hRes);
-
-   void Advise();
-   void Unadvise();
 
    void InvalidateRidgeLines();
    void ValidateRidgeLines();

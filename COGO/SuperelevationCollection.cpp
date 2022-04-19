@@ -42,10 +42,10 @@ class SortSuperelevations
 {
 public:
    SortSuperelevations(IProfile* pProfile) { m_pProfile = pProfile; }
-   bool operator()(SuperelevationType& pX,SuperelevationType& pY)
+   bool operator()(CComVariant& pX,CComVariant& pY)
    {
-      CComVariant& varX = pX.second;
-      CComVariant& varY = pY.second;
+      CComVariant& varX = pX;
+      CComVariant& varY = pY;
       CComPtr<IStation> staX, staY;
       
       CComQIPtr<ISuperelevation> csX(varX.pdispVal);
@@ -69,7 +69,6 @@ HRESULT CSuperelevationCollection::FinalConstruct()
 
 void CSuperelevationCollection::FinalRelease()
 {
-   UnadviseAll();
 }
 
 STDMETHODIMP CSuperelevationCollection::InterfaceSupportsErrorInfo(REFIID riid)
@@ -128,8 +127,8 @@ STDMETHODIMP CSuperelevationCollection::get_Item(CollectionIndexType idx, ISuper
    if ( !IsValidIndex(idx,m_coll) )
       return E_INVALIDARG;
 
-   SuperelevationType& p = m_coll[idx];
-   CComVariant& varItem = p.second;
+   CComVariant& p = m_coll[idx];
+   CComVariant& varItem = p;
    varItem.pdispVal->QueryInterface(pVal);
    return S_OK;
 }
@@ -148,22 +147,11 @@ STDMETHODIMP CSuperelevationCollection::putref_Item(CollectionIndexType idx,ISup
    //   return hr;
 
    // Get the item
-   SuperelevationType& cst = m_coll[idx];
-   CComVariant& var = cst.second; // Variant holding IDispatch to Superelevation
+   CComVariant& cst = m_coll[idx];
+   CComVariant& var = cst; // Variant holding IDispatch to Superelevation
    pVal->putref_Surface(m_pSurface);
 
-   UnadviseElement(idx); // Unadvise from the current element
-
    var = pVal; // Associate new Superelevation with this variant
-
-   // Advise
-   DWORD dwCookie;
-   AdviseElement(pVal,&dwCookie);
-
-   // Update the cookie
-   cst.first = dwCookie;
-
-   Fire_OnSuperelevationChanged(pVal);
 
    return S_OK;
 }
@@ -185,11 +173,11 @@ STDMETHODIMP CSuperelevationCollection::GetSuperelevation(VARIANT varStation,ISu
       m_pSurface->get_Profile(&profile); 
    }
 
-   Superelevations::iterator iter(m_coll.begin());
-   Superelevations::iterator end(m_coll.end());
+   auto iter(m_coll.begin());
+   auto end(m_coll.end());
    for ( ; iter != end; iter++ )
    {
-      CComQIPtr<ISuperelevation> thisSuperelevation(iter->second.pdispVal);
+      CComQIPtr<ISuperelevation> thisSuperelevation(iter->pdispVal);
 
       CComPtr<IStation> startStation,endStation;
       thisSuperelevation->get_BeginTransition(&startStation);
@@ -219,9 +207,7 @@ STDMETHODIMP CSuperelevationCollection::AddEx(ISuperelevation* superelevation)
    HRESULT hr = S_OK;
    superelevation->putref_Surface(m_pSurface);
 
-   DWORD dwCookie;
-   AdviseElement(superelevation,&dwCookie);
-   m_coll.emplace_back(dwCookie,CComVariant(superelevation));
+   m_coll.emplace_back(CComVariant(superelevation));
 
    CComPtr<IProfile> profile;
    if ( m_pSurface )
@@ -230,7 +216,6 @@ STDMETHODIMP CSuperelevationCollection::AddEx(ISuperelevation* superelevation)
    }
    std::sort(std::begin(m_coll),std::end(m_coll),SortSuperelevations(profile));
 
-   Fire_OnSuperelevationAdded(superelevation);
    return S_OK;
 }
 
@@ -264,17 +249,13 @@ STDMETHODIMP CSuperelevationCollection::Remove(CollectionIndexType idx)
    if ( idx < 0 || m_coll.size() <= idx )
       return E_INVALIDARG;
 
-   UnadviseElement(idx);
    m_coll.erase(m_coll.begin() + idx );
-   Fire_OnSuperelevationRemoved();
    return S_OK;
 }
 
 STDMETHODIMP CSuperelevationCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnSuperelevationsCleared();
    return S_OK;
 }
 
@@ -314,14 +295,6 @@ STDMETHODIMP CSuperelevationCollection::get_StructuredStorage(IStructuredStorage
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// ISuperelevationEvents
-STDMETHODIMP CSuperelevationCollection::OnSuperelevationChanged(ISuperelevation * pSuperelevation)
-{
-   Fire_OnSuperelevationChanged(pSuperelevation);
-   return S_OK;
-}
-
 STDMETHODIMP CSuperelevationCollection::get__EnumSuperelevations(IEnumSuperelevations** retval)
 {
    CHECK_RETOBJ(retval);
@@ -329,8 +302,8 @@ STDMETHODIMP CSuperelevationCollection::get__EnumSuperelevations(IEnumSupereleva
    typedef CComEnumOnSTL<IEnumSuperelevations,
                          &IID_IEnumSuperelevations, 
                          ISuperelevation*,
-                         CopyFromPair2Interface<SuperelevationType,ISuperelevation*>, 
-                         std::vector<SuperelevationType>> Enum;
+                         _CopyVariantToInterface<ISuperelevation>, 
+                         std::vector<CComVariant>> Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -355,7 +328,7 @@ STDMETHODIMP CSuperelevationCollection::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
    for ( CollectionIndexType i = 0; i < count; i++ )
    {
-      pSave->put_Property(CComBSTR("Superelevation"),m_coll[i].second);
+      pSave->put_Property(CComBSTR("Superelevation"),m_coll[i]);
    }
 
    return S_OK;
@@ -374,64 +347,15 @@ STDMETHODIMP CSuperelevationCollection::Load(IStructuredLoad2* pLoad)
    for ( long i = 0; i < count; i++ )
    {
       pLoad->get_Property(CComBSTR("Superelevation"),&var);
-      CComPtr<ISuperelevation> widening;
-      _CopyVariantToInterface<ISuperelevation>::copy(&widening,&var);
-      AddEx(widening);
+      CComPtr<ISuperelevation> superelevation;
+      _CopyVariantToInterface<ISuperelevation>::copy(&superelevation,&var);
+      AddEx(superelevation);
    }
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);
 
    return S_OK;
-}
-
-//////////////////////////////////////////
-// Helper methods
-
-void CSuperelevationCollection::AdviseElement(ISuperelevation* widening,DWORD* pdwCookie)
-{
-   CComPtr<ISuperelevation> pCP(widening);
-   HRESULT hr = pCP.Advise(GetUnknown(), IID_ISuperelevationEvents, pdwCookie );
-   if ( FAILED(hr) )
-   {
-      *pdwCookie = 0;
-      ATLTRACE("Failed to establish connection point with Superelevation object\n");
-      return;
-   }
-
-   InternalRelease(); // Break circular reference
-}
-
-void CSuperelevationCollection::UnadviseElement(CollectionIndexType idx)
-{
-   //
-   // Disconnection from connection Superelevation
-   //
-   SuperelevationType& p = m_coll[idx];
-   if ( p.first == 0 )
-      return;
-
-   DWORD dwCookie = p.first;
-   CComVariant& var = p.second;
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection point and disconnection
-   CComQIPtr<IConnectionPointContainer> pCPC( var.pdispVal );
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_ISuperelevationEvents, &pCP );
-   HRESULT hr = pCP->Unadvise( dwCookie );
-   ATLASSERT(SUCCEEDED(hr));
-
-   p.first = 0;
-}
-
-void CSuperelevationCollection::UnadviseAll()
-{
-   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
-   {
-      UnadviseElement(i);
-   }
 }
 
 HRESULT CSuperelevationCollection::OnBeforeSave(IStructuredSave2* pSave)

@@ -82,7 +82,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
    }
 
    CComPtr<IShape> primaryShape;
-   HRESULT hr = get_PrimaryShape(Xs,sectionBias,coordinateSystem,&primaryShape);
+   HRESULT hr = get_GirderShape(Xs,sectionBias,coordinateSystem,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
       return hr;
@@ -159,7 +159,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
 }
 
 
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+STDMETHODIMP CFlangedGirderEndBlockSegment::get_GirderShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -316,7 +316,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::GetVolumeAndSurfaceArea(Float64* pVo
 
          auto iter(vCuts.begin());
          CComPtr<IShape> shape;
-         get_PrimaryShape(iter->first, iter->second, cstGirder, &shape);
+         get_GirderShape(iter->first, iter->second, cstGirder, &shape);
          Float64 prev_perimeter;
          shape->get_Perimeter(&prev_perimeter);
          CComPtr<IShapeProperties> shapeProps;
@@ -338,7 +338,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::GetVolumeAndSurfaceArea(Float64* pVo
             SectionBias bias = iter->second;
 
             shape.Release();
-            get_PrimaryShape(X, bias, cstGirder, &shape);
+            get_GirderShape(X, bias, cstGirder, &shape);
             Float64 perimeter;
             shape->get_Perimeter(&perimeter);
 

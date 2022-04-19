@@ -48,7 +48,6 @@ HRESULT CPathCollection::FinalConstruct()
 
 void CPathCollection::FinalRelease()
 {
-   UnadviseAll();
    m_coll.clear();
 }
 
@@ -82,12 +81,8 @@ STDMETHODIMP CPathCollection::putref_Item(CogoObjectID id, IPath *newVal)
    CComVariant& var = (*found).second;
 
    CComQIPtr<IPath> old_Path(var.pdispVal);
-   Unadvise(id,old_Path);
 
    var = newVal;
-   Advise(id,newVal);
-
-   Fire_OnPathChanged(this,id,newVal);
 
 	return S_OK;
 }
@@ -110,11 +105,8 @@ STDMETHODIMP CPathCollection::Remove(CogoObjectID id)
 
    CComVariant& var = (*found).second;
    CComQIPtr<IPath> pp(var.pdispVal);
-   Unadvise(id,pp);
 
    m_coll.erase(found);
-
-   Fire_OnPathRemoved(this,id);
 
 	return S_OK;
 }
@@ -158,19 +150,12 @@ STDMETHODIMP CPathCollection::AddEx(CogoObjectID id, IPath* newVal)
    CComVariant var(pDisp);
    m_coll.insert(std::make_pair(id,var));
 
-   // Hookup to the connection Path
-   Advise(id,newVal);
-
-   Fire_OnPathAdded(this,id,newVal);
-
-	return S_OK;
+   return S_OK;
 }
 
 STDMETHODIMP CPathCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnPathsCleared(this);
 	return S_OK;
 }
 
@@ -299,59 +284,6 @@ STDMETHODIMP CPathCollection::Clone(IPathCollection* *clone)
    return S_OK;
 }
 
-void CPathCollection::Advise(CogoObjectID id,IPath* Path)
-{
-   DWORD dwCookie;
-   HRESULT hr = AtlAdvise(Path,GetUnknown(),IID_IPathEvents,&dwCookie);
-   if ( FAILED(hr) )
-   {
-      ATLTRACE("Failed to establish connection point with Path object\n");
-      return;
-   }
-
-   m_Cookies.insert( std::make_pair(id,dwCookie) );
-
-   InternalRelease(); // Break circular reference
-}
-
-void CPathCollection::Unadvise(CogoObjectID id,IPath* Path)
-{
-   ATLASSERT(Path != 0);
-
-   //
-   // Disconnection from connection Path
-   //
-
-   // Lookup the cookie
-   std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( id );
-   if ( found == m_Cookies.end() )
-   {
-      ATLTRACE("Failed to disconnect connection point with Path object\n");
-      return;
-   }
-
-   InternalAddRef(); // Counteract InternalRelease() in Advise
-
-   // Find the connection Path and disconnection
-   DWORD dwCookie = (*found).second;
-   HRESULT hr = AtlUnadvise(Path,IID_IPathEvents,dwCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
-   // Remove cookie from map
-   m_Cookies.erase( id );
-}
-
-void CPathCollection::UnadviseAll()
-{
-   std::map<CogoObjectID,CComVariant>::iterator iter;
-   for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
-   {
-      CogoObjectID id = (*iter).first;
-      CComQIPtr<IPath> Path( (*iter).second.pdispVal );
-      Unadvise(id,Path);
-   }
-}
 
 HRESULT CPathCollection::PathNotFound(CogoObjectID id)
 {
