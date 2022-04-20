@@ -161,16 +161,25 @@ Float64 lrfdPCIUHPCLosses::PermanentStrand_AutogenousShrinkage() const
    return m_dfpAS[PERMANENT_STRAND];
 }
 
-Float64 lrfdPCIUHPCLosses::TemporaryStrand_AfterTransfer() const
+Float64 lrfdPCIUHPCLosses::TemporaryStrand_AtShipping() const
 {
-   // adds autogenous shrinkage loss to the just after transfer values
-   return __super::TemporaryStrand_AfterTransfer() + TemporaryStrand_AutogenousShrinkage();
+   // adds autogenous shrinkage loss to the Shipping losses
+   // autogenous shrinkage occurs after release and initial lifting - the next stage is Shipping
+   return __super::TemporaryStrand_AtShipping() + TemporaryStrand_AutogenousShrinkage();
 }
 
-Float64 lrfdPCIUHPCLosses::PermanentStrand_AfterTransfer() const
+Float64 lrfdPCIUHPCLosses::PermanentStrand_AtShipping() const
 {
-   // adds autogenous shrinkage loss to the just after transfer values
-   return __super::PermanentStrand_AfterTransfer() + PermanentStrand_AutogenousShrinkage();
+   // adds autogenous shrinkage loss to the Shipping losses
+   // autogenous shrinkage occurs after release and initial lifting - the next stage is Shipping
+   return __super::PermanentStrand_AtShipping() + PermanentStrand_AutogenousShrinkage();
+}
+
+Float64 lrfdPCIUHPCLosses::PermanentStrand_AfterDeckPlacement() const
+{
+   // adds autogenous shrinkage loss... shipping loss is not included in AfterDeckPlacement
+   // so we need to add the autogenous shrinkage loss here as well
+   return __super::PermanentStrand_AfterDeckPlacement() + PermanentStrand_AutogenousShrinkage();
 }
 
 Float64 lrfdPCIUHPCLosses::GetShrinkageHumidityFactor() const
@@ -351,22 +360,22 @@ bool lrfdPCIUHPCLosses::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AfterTransfer();
-   TRY_TESTME( IsEqual(value, 118670466.43947211) );
+   TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AfterTemporaryStrandInstallation();
-   TRY_TESTME( IsEqual(value, 118670466.43947211) );
+   TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AtLifting();
-   TRY_TESTME( IsEqual(value, 118670466.43947211) );
+   TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AtShipping();
-   TRY_TESTME( IsEqual(value, 167933851.46498135) );
+   TRY_TESTME( IsEqual(value, 167933851.46498138) );
 
    value = loss.PermanentStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 167933851.46498135) );
+   TRY_TESTME( IsEqual(value, 167933851.46498138) );
 
    value = loss.PermanentStrand_AfterTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 167933851.46498135) );
+   TRY_TESTME( IsEqual(value, 167933851.46498138) );
 
    value = loss.PermanentStrand_AfterDeckPlacement();
    TRY_TESTME( IsEqual(value, 254346788.53940639) );
@@ -382,13 +391,13 @@ bool lrfdPCIUHPCLosses::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AfterTransfer();
-   TRY_TESTME( IsEqual(value, 132697404.61577277) );
+   TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AfterTemporaryStrandInstallation();
-   TRY_TESTME( IsEqual(value, 132697404.61577277) );
+   TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AtLifting();
-   TRY_TESTME( IsEqual(value, 132697404.61577277) );
+   TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AtShipping();
    TRY_TESTME( IsEqual(value, 175833472.45643902) );

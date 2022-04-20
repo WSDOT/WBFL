@@ -143,8 +143,10 @@ public:
    Float64 TemporaryStrand_AutogenousShrinkage() const;
    Float64 PermanentStrand_AutogenousShrinkage() const;
 
-   virtual Float64 TemporaryStrand_AfterTransfer() const override;
-   virtual Float64 PermanentStrand_AfterTransfer() const override;
+   virtual Float64 TemporaryStrand_AtShipping() const override;
+   virtual Float64 PermanentStrand_AtShipping() const override;
+   virtual Float64 PermanentStrand_AfterDeckPlacement() const override;
+
 #if defined _UNITTEST
    static bool TestMe(dbgLog& rlog);
 #endif // _UNITTEST
