@@ -472,6 +472,31 @@ void Polygon::UpdateProperties() const
 
    if (m_Points.size() < 3)
    {
+      if (m_Points.empty())
+      {
+         m_BoundingBox.SetNull();
+      }
+      else
+      {
+         Float64 left = Float64_Max;
+         Float64 right = -Float64_Max;
+         Float64 top = -Float64_Max;
+         Float64 bottom = Float64_Max;
+
+         for (const auto& point : m_Points)
+         {
+            Float64 x = point.X();
+            Float64 y = point.Y();
+
+            left = Min(x, left);
+            right = Max(x, right);
+            bottom = Min(y, bottom);
+            top = Max(y, top);
+         }
+
+         m_BoundingBox.Set(left, bottom, right, top);
+      }
+
       return;
    }
 
