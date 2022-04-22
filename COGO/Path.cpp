@@ -2240,14 +2240,31 @@ STDMETHODIMP CPath::Move(Float64 dist,IDirection* direction)
    dx = ::IsZero(dx) ? 0 : dx;
    dy = ::IsZero(dy) ? 0 : dy;
 
-   CComPtr<IEnumPathElements> enumPathElements;
-   get__EnumPathElements(&enumPathElements);
-   CComPtr<IPathElement> path_element;
-   while ( enumPathElements->Next(1,&path_element,nullptr) != S_FALSE )
+   // adjust the cached elements. the cached elements have references to the input elements so moving the cached elements
+   // that directly relate to an input element moves the input element as well
+   //
+   // We can't just simply over the elements because some adjacent elements may share common points.
+   // For example, there may be a common point between two line segments. We can't offset the two line
+   // segments by dx and dy because the commont point will be offset twice.
+   //
+   // The solution is to get the control points for every element and offset the control points
+   // The set is devised such that only unique points are captured
+   std::vector<CComPtr<IPoint2d>> points;
+   std::vector<Element>& vElements = GetPathElements();
+   for (const auto& element : vElements)
    {
-      path_element->Offset(dx,dy);
-      path_element.Release();
-   };
+      CComPtr<IPathElement> path_element = element.pathElement;
+      CPathElement* pPathElement = dynamic_cast<CPathElement*>(path_element.p);
+      pPathElement->GetControlPoints(points);
+   }
+
+   std::sort(points.begin(), points.end());
+   points.erase(std::unique(points.begin(), points.end(), [](auto p1, auto p2) {return p1.IsEqualObject(p2); }), points.end());
+
+   for (auto& point : points)
+   {
+      point->Offset(dx, dy);
+   }
 
    Fire_OnPathChanged(this);
 

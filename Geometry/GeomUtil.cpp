@@ -270,6 +270,8 @@ STDMETHODIMP CGeomUtil::Angle(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,
    dx2 = ex - cx;
    dy2 = ey - cy;
 
+   *angle = 0.0;
+
    if ( IsZero(dx1) && IsZero(dy1) || IsZero(dx2) && IsZero(dy2) )
       return Error(IDS_E_SAMEPOINTS,IID_IGeomUtil2d,GEOMETRY_E_SAMEPOINTS);
 

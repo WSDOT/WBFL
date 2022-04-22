@@ -771,6 +771,13 @@ STDMETHODIMP CCompoundCurve::get_CC(IPoint2d** pVal)
    get_TS(&TS);
    get_ST(&ST);
    
+   if (m_PI->SameLocation(TS) == S_OK || m_PI->SameLocation(ST) == S_OK)
+   {
+      // this curve is really just a point... CC is going to be at the same location
+      // creating lines t1 and t2 will fail below.... just you the PI and the CC and return
+      return m_PI->Clone(pVal);
+   }
+   
    CComPtr<ILine2d> t1, t2;
    t1.CoCreateInstance(CLSID_Line2d); // bk tangent (reversed)
    t2.CoCreateInstance(CLSID_Line2d); // fwd tangent (reversed)

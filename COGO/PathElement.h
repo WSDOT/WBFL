@@ -84,6 +84,8 @@ BEGIN_CONNECTION_POINT_MAP(CPathElement)
 CONNECTION_POINT_ENTRY(IID_IPathElementEvents)
 END_CONNECTION_POINT_MAP()
 
+   void GetControlPoints(std::vector<CComPtr<IPoint2d>>& points);
+
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;

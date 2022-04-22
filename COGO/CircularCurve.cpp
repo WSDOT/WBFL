@@ -392,7 +392,14 @@ STDMETHODIMP CCircularCurve::get_Center(IPoint2d** pVal)
    CComPtr<IPoint2d> PT;
    get_PC(&PC);
    get_PT(&PT);
-   
+
+   if (m_PI->SameLocation(PC) == S_OK || m_PI->SameLocation(PT) == S_OK)
+   {
+      // this curve is really just a point... CC is going to be at the same location
+      // creating lines t1 and t2 will fail below.... just you the PI and the CC and return
+      return m_PI->Clone(pVal);
+   }
+
    CComPtr<ILine2d> t1, t2;
    t1.CoCreateInstance(CLSID_Line2d); // bk tangent (reversed)
    t2.CoCreateInstance(CLSID_Line2d); // fwd tangent (reversed)
