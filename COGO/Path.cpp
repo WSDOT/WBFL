@@ -2170,8 +2170,6 @@ STDMETHODIMP CPath::Move(Float64 dist,IDirection* direction)
       point->Offset(dx, dy);
    }
 
-   Fire_OnPathChanged(this);
-
    return S_OK;
 }
 

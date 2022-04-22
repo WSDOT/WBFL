@@ -50,6 +50,7 @@ public:
 
    HRESULT FinalConstruct();
    void FinalRelease();
+   void GetControlPoints(std::vector<CComPtr<IPoint2d>>& points);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PATHELEMENT)
 
