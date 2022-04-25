@@ -138,8 +138,10 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
+   CComPtr<IPoint2d> m_OriginalPI;
    CComPtr<IPoint2d> m_PBT, m_PI, m_PFT;
 
+   void Validate();
    CComPtr<IPoint2d> m_TS, m_ST;
 
    Float64 m_Radius;

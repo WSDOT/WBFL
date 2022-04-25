@@ -55,6 +55,8 @@ HRESULT CCircularCurve::FinalConstruct()
    m_PI->Move(0,0);
    m_PFT->Move(1000,1000);
 
+   m_PI->Clone(&m_OriginalPI);
+
    return S_OK;
 }
 
@@ -108,6 +110,11 @@ STDMETHODIMP CCircularCurve::putref_PI(IPoint2d *newVal)
 
    m_PI = newVal;
 
+   m_OriginalPI.Release();
+   m_PC.Release();
+   m_PT.Release();
+   m_PI->Clone(&m_OriginalPI);
+
 	return S_OK;
 }
 
@@ -145,9 +152,21 @@ STDMETHODIMP CCircularCurve::put_Radius(Float64 newVal)
    return S_OK;
 }
 
+void CCircularCurve::Validate()
+{
+   if (m_PI->SameLocation(m_OriginalPI) == S_FALSE)
+   {
+      m_OriginalPI.Release();
+      m_PC.Release();
+      m_PT.Release();
+      m_PI->Clone(&m_OriginalPI);
+   }
+}
+
 STDMETHODIMP CCircularCurve::get_PC(IPoint2d** pVal)
 {
     CHECK_RETOBJ(pVal);
+    Validate();
     if (m_PC == nullptr)
     {
         CComPtr<IDirection> bkTanBrg;
@@ -167,7 +186,7 @@ STDMETHODIMP CCircularCurve::get_PC(IPoint2d** pVal)
 STDMETHODIMP CCircularCurve::get_PT(IPoint2d** pVal)
 {
     CHECK_RETOBJ(pVal);
-
+    Validate();
     if (m_PT == nullptr)
     {
         CComPtr<IDirection> fwdTanBrg;

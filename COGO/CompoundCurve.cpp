@@ -57,6 +57,8 @@ HRESULT CCompoundCurve::FinalConstruct()
    m_PI->Move(0,0);
    m_PFT->Move(1000,1000);
 
+   m_PI->Clone(&m_OriginalPI);
+
    return S_OK;
 }
 
@@ -109,6 +111,12 @@ STDMETHODIMP CCompoundCurve::putref_PI(IPoint2d *newVal)
    CHECK_IN(newVal);
 
    m_PI = newVal;
+
+   m_OriginalPI.Release();
+   m_PI->Clone(&m_OriginalPI);
+
+   m_TS.Release();
+   m_ST.Release();
 
 	return S_OK;
 }
@@ -442,9 +450,22 @@ STDMETHODIMP CCompoundCurve::get_FwdTangentLength(Float64* t)
    return S_OK;
 }
 
+void CCompoundCurve::Validate()
+{
+   if (m_OriginalPI->SameLocation(m_PI) == S_FALSE)
+   {
+      m_TS.Release();
+      m_ST.Release();
+      m_OriginalPI.Release();
+      m_PI->Clone(&m_OriginalPI);
+   }
+}
+
 STDMETHODIMP CCompoundCurve::get_TS(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
+
+   Validate();
 
    if ( m_TS == nullptr )
    {
@@ -473,6 +494,8 @@ STDMETHODIMP CCompoundCurve::get_TS(IPoint2d* *pVal)
 STDMETHODIMP CCompoundCurve::get_ST(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
+
+   Validate();
 
    if ( m_ST == nullptr )
    {
