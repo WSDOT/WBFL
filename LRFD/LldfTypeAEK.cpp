@@ -120,6 +120,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetMomentDF_Ext_1_Str
       if ( g.mg < g.RigidData.mg*skew )
       {
          g.ControllingMethod = RIGID_METHOD;
+         g.EqnData.bWasUsed = false;
          if ( m_bSkewMoment )
          {
             g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
@@ -148,6 +149,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetMomentDF_Ext_2_Str
       if ( g.mg < g.RigidData.mg*skew )
       {
          g.ControllingMethod = RIGID_METHOD;
+         g.EqnData.bWasUsed = false;
          if ( m_bSkewMoment )
          {
             g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
@@ -177,6 +179,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetShearDF_Ext_1_Stre
       if ( g.mg < g.RigidData.mg*skew )
       {
          g.ControllingMethod = RIGID_METHOD;
+         g.EqnData.bWasUsed = false;
          if ( m_bSkewShear )
          {
             g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
@@ -205,6 +208,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetShearDF_Ext_2_Stre
          if ( g.mg < g.RigidData.mg*skew )
          {
             g.ControllingMethod = RIGID_METHOD;
+            g.EqnData.bWasUsed = false;
             if ( m_bSkewShear )
             {
                g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
