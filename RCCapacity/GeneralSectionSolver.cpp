@@ -296,8 +296,16 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
 #endif // _DEBUG_LOGGING
          }
 
-            if (pUnkTopSlice) slices->Add(pUnkTopSlice);
-            if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
+            if (PI_OVER_2 <= angle && angle < 3 * PI_OVER_2)
+            {
+               if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
+               if (pUnkTopSlice) slices->Add(pUnkTopSlice);
+            }
+            else
+            {
+	            if (pUnkTopSlice) slices->Add(pUnkTopSlice);
+	            if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
+	         }
          }
       else
       {
