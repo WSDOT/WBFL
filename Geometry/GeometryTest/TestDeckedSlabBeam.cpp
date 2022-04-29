@@ -567,7 +567,7 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,11);
+   TRY_TEST( cPoints,10);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
@@ -588,7 +588,6 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    TEST_POINT(points, 61.125000, 112.000000);
    TEST_POINT(points, 70.125000, 112.000000);
    TEST_POINT(points, 70.125000, 100.000000);
-   TEST_POINT(points, 100.000000, 100.000000);
 
    TRY_TEST(i, cPoints);
 

@@ -233,9 +233,6 @@ void MultiWeb::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
    polygon->SetSymmetry(Polygon::Symmetry::Y);
 
-   // move the shape so that the bottom center is at (0,0)
-   polygon->Offset(Size2d(0, m_D1 + m_D2));
-
    if (!IsZero(m_Rotation))
       polygon->Rotate(Point2d(0, 0), m_Rotation);
 
@@ -264,8 +261,8 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    Rect2d box = beam.GetBoundingBox();
    TRY_TESTME(IsEqual(box.Left(), -36.));
    TRY_TESTME(IsEqual(box.Right(), 36.));
-   TRY_TESTME(IsEqual(box.Top(), 27.));
-   TRY_TESTME(IsEqual(box.Bottom(), 0.));
+   TRY_TESTME(IsEqual(box.Top(), 0.));
+   TRY_TESTME(IsEqual(box.Bottom(), -27.));
 
    //
    // ShapeProperties
@@ -276,7 +273,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    TRY_TESTME(IsEqual(props.GetIyy(), 285211.20703));
    TRY_TESTME(IsEqual(props.GetIxy(), 0.0));
    TRY_TESTME(IsEqual(props.GetCentroid().X(), 0.0));
-   TRY_TESTME(IsEqual(props.GetCentroid().Y(), 17.829700272479563));
+   TRY_TESTME(IsEqual(props.GetCentroid().Y(), -9.1702997275204368));
    TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal);
 
    TRY_TESTME(IsEqual(props.GetXleft(), 36.));
@@ -298,13 +295,13 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    Point2d p2(100, 20);
    Line2d line(p1, p2);
 
-   TRY_TESTME(IsEqual(beam.GetFurthestDistance(line, Line2d::Side::Right), 20.0));
+   TRY_TESTME(IsEqual(beam.GetFurthestDistance(line, Line2d::Side::Right), 47.0));
 
    // shape on left of line
    p1.Move(100, 20);
    p2.Move(-100, 20);
    line.ThroughPoints(p1, p2);
-   TRY_TESTME(IsEqual(beam.GetFurthestDistance(line, Line2d::Side::Right), 7.0));
+   TRY_TESTME(IsEqual(beam.GetFurthestDistance(line, Line2d::Side::Right), -20.0));
 
    // 
    // PolyPoints
@@ -313,30 +310,30 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    TRY_TESTME(points.size() == 18);
 
    int i = 0;
-   TRY_TESTME(points[i++] == Point2d(0, 27));
-   TRY_TESTME(points[i++] == Point2d(-36, 27));
-   TRY_TESTME(points[i++] == Point2d(-36, 21));
-   TRY_TESTME(points[i++] == Point2d(-22.875, 21));
-   TRY_TESTME(points[i++] == Point2d(-21.875, 0));
-   TRY_TESTME(points[i++] == Point2d(-16.625, 0));
-   TRY_TESTME(points[i++] == Point2d(-15.625, 21));
-   TRY_TESTME(points[i++] == Point2d(-3.625, 21));
-   TRY_TESTME(points[i++] == Point2d(-2.625, 0));
    TRY_TESTME(points[i++] == Point2d(0, 0));
-   TRY_TESTME(points[i++] == Point2d(2.625, 0));
-   TRY_TESTME(points[i++] == Point2d(3.625, 21));
-   TRY_TESTME(points[i++] == Point2d(15.625, 21));
-   TRY_TESTME(points[i++] == Point2d(16.625, 0));
-   TRY_TESTME(points[i++] == Point2d(21.875, 0));
-   TRY_TESTME(points[i++] == Point2d(22.875, 21));
-   TRY_TESTME(points[i++] == Point2d(36, 21));
-   TRY_TESTME(points[i++] == Point2d(36, 27));
+   TRY_TESTME(points[i++] == Point2d(-36, 0));
+   TRY_TESTME(points[i++] == Point2d(-36, -6));
+   TRY_TESTME(points[i++] == Point2d(-22.875, -6));
+   TRY_TESTME(points[i++] == Point2d(-21.875, -27));
+   TRY_TESTME(points[i++] == Point2d(-16.625, -27));
+   TRY_TESTME(points[i++] == Point2d(-15.625, -6));
+   TRY_TESTME(points[i++] == Point2d(-3.625, -6));
+   TRY_TESTME(points[i++] == Point2d(-2.625, -27));
+   TRY_TESTME(points[i++] == Point2d(0, -27));
+   TRY_TESTME(points[i++] == Point2d(2.625, -27));
+   TRY_TESTME(points[i++] == Point2d(3.625, -6));
+   TRY_TESTME(points[i++] == Point2d(15.625, -6));
+   TRY_TESTME(points[i++] == Point2d(16.625, -27));
+   TRY_TESTME(points[i++] == Point2d(21.875, -27));
+   TRY_TESTME(points[i++] == Point2d(22.875, -6));
+   TRY_TESTME(points[i++] == Point2d(36, -6));
+   TRY_TESTME(points[i++] == Point2d(36, 0));
    TRY_TESTME(i == points.size());
 
    //
    // PointInShape
    //
-   Point2d pnt(0, 5);
+   Point2d pnt(0, -5);
    TRY_TESTME(beam.PointInShape(pnt) == true);
 
    pnt.Move(500, 500);
@@ -350,8 +347,8 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    //
 
    // setup clipping line
-   p1.Move(-100, 10.0);
-   p2.Move(100, 10.0);
+   p1.Move(-100, -10.0);
+   p2.Move(100, -10.0);
 
    Line2d clipLine(p1, p2);
 
@@ -360,24 +357,24 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    TRY_TESTME(points.size() == 13);
    
    i = 0;
-   TRY_TESTME(points[i++] == Point2d(-22.3512, 10));
-   TRY_TESTME(points[i++] == Point2d(-21.875, 0));
-   TRY_TESTME(points[i++] == Point2d(-16.625, 0));
-   TRY_TESTME(points[i++] == Point2d(-16.1488, 10));
-   TRY_TESTME(points[i++] == Point2d(-3.10119, 10));
-   TRY_TESTME(points[i++] == Point2d(-2.625, 0));
-   TRY_TESTME(points[i++] == Point2d(0, 0));
-   TRY_TESTME(points[i++] == Point2d(2.625, 0));
-   TRY_TESTME(points[i++] == Point2d(3.10119, 10));
-   TRY_TESTME(points[i++] == Point2d(16.1488, 10));
-   TRY_TESTME(points[i++] == Point2d(16.625, 0));
-   TRY_TESTME(points[i++] == Point2d(21.875, 0));
-   TRY_TESTME(points[i++] == Point2d(22.3512, 10));
+   TRY_TESTME(points[i++] == Point2d(-22.68452, -10));
+   TRY_TESTME(points[i++] == Point2d(-21.875, -27));
+   TRY_TESTME(points[i++] == Point2d(-16.625, -27));
+   TRY_TESTME(points[i++] == Point2d(-15.81548, -10));
+   TRY_TESTME(points[i++] == Point2d(-3.43452, -10));
+   TRY_TESTME(points[i++] == Point2d(-2.625, -27));
+   TRY_TESTME(points[i++] == Point2d(0, -27));
+   TRY_TESTME(points[i++] == Point2d(2.625, -27));
+   TRY_TESTME(points[i++] == Point2d(3.43452, -10));
+   TRY_TESTME(points[i++] == Point2d(15.81548, -10));
+   TRY_TESTME(points[i++] == Point2d(16.625, -27));
+   TRY_TESTME(points[i++] == Point2d(21.875, -27));
+   TRY_TESTME(points[i++] == Point2d(22.68452, -10));
    TRY_TESTME(i == points.size());
 
    // clip in other direction
-   p1.Move(100, 10.0);
-   p2.Move(-100, 10.0);
+   p1.Move(100, -10.0);
+   p2.Move(-100, -10.0);
    clipLine.ThroughPoints(p1, p2);
 
    clip = beam.CreateClippedShape(clipLine, Line2d::Side::Left);
@@ -385,54 +382,54 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    TRY_TESTME(points.size() == 18);
 
    i = 0;
-   TRY_TESTME(points[i++] == Point2d(0, 27));
-   TRY_TESTME(points[i++] == Point2d(-36, 27));
-   TRY_TESTME(points[i++] == Point2d(-36, 21));
-   TRY_TESTME(points[i++] == Point2d(-22.875, 21));
-   TRY_TESTME(points[i++] == Point2d(-22.3512, 10));
-   TRY_TESTME(points[i++] == Point2d(-16.1488, 10));
-   TRY_TESTME(points[i++] == Point2d(-15.625, 21));
-   TRY_TESTME(points[i++] == Point2d(-3.625, 21));
-   TRY_TESTME(points[i++] == Point2d(-3.10119, 10));
-   TRY_TESTME(points[i++] == Point2d(3.10119, 10));
-   TRY_TESTME(points[i++] == Point2d(3.625, 21));
-   TRY_TESTME(points[i++] == Point2d(15.625, 21));
-   TRY_TESTME(points[i++] == Point2d(16.1488, 10));
-   TRY_TESTME(points[i++] == Point2d(22.3512, 10));
-   TRY_TESTME(points[i++] == Point2d(22.875, 21));
-   TRY_TESTME(points[i++] == Point2d(36, 21));
-   TRY_TESTME(points[i++] == Point2d(36, 27));
-   TRY_TESTME(points[i++] == Point2d(0, 27));
+   TRY_TESTME(points[i++] == Point2d(0, 0));
+   TRY_TESTME(points[i++] == Point2d(-36, 0));
+   TRY_TESTME(points[i++] == Point2d(-36, -6));
+   TRY_TESTME(points[i++] == Point2d(-22.875, -6));
+   TRY_TESTME(points[i++] == Point2d(-22.68452, -10));
+   TRY_TESTME(points[i++] == Point2d(-15.815476, -10));
+   TRY_TESTME(points[i++] == Point2d(-15.625, -6));
+   TRY_TESTME(points[i++] == Point2d(-3.625, -6));
+   TRY_TESTME(points[i++] == Point2d(-3.43452, -10));
+   TRY_TESTME(points[i++] == Point2d(3.43452, -10));
+   TRY_TESTME(points[i++] == Point2d(3.625, -6));
+   TRY_TESTME(points[i++] == Point2d(15.625, -6));
+   TRY_TESTME(points[i++] == Point2d(15.815476, -10));
+   TRY_TESTME(points[i++] == Point2d(22.68452, -10));
+   TRY_TESTME(points[i++] == Point2d(22.875, -6));
+   TRY_TESTME(points[i++] == Point2d(36, -6));
+   TRY_TESTME(points[i++] == Point2d(36, 0));
+   TRY_TESTME(points[i++] == Point2d(0, 0));
    TRY_TESTME(i == points.size());
 
    //
    // ClipIn
    //
-   Rect2d clipRect(-100, 20, 100, 30);
+   Rect2d clipRect(-100, -7, 100, 10);
 
    clip = beam.CreateClippedShape(clipRect, Shape::ClipRegion::In);
    points = clip->GetPolyPoints();
    TRY_TESTME(points.size() == 18);
 
    i = 0;
-   TRY_TESTME(points[i++] == Point2d(0, 27));
-   TRY_TESTME(points[i++] == Point2d(-36, 27));
-   TRY_TESTME(points[i++] == Point2d(-36, 21));
-   TRY_TESTME(points[i++] == Point2d(-22.875, 21));
-   TRY_TESTME(points[i++] == Point2d(-22.82738, 20));
-   TRY_TESTME(points[i++] == Point2d(-15.67262, 20));
-   TRY_TESTME(points[i++] == Point2d(-15.625, 21));
-   TRY_TESTME(points[i++] == Point2d(-3.625, 21));
-   TRY_TESTME(points[i++] == Point2d(-3.57738, 20));
-   TRY_TESTME(points[i++] == Point2d(3.57738, 20));
-   TRY_TESTME(points[i++] == Point2d(3.625, 21));
-   TRY_TESTME(points[i++] == Point2d(15.625, 21));
-   TRY_TESTME(points[i++] == Point2d(15.67262, 20));
-   TRY_TESTME(points[i++] == Point2d(22.82738, 20));
-   TRY_TESTME(points[i++] == Point2d(22.875, 21));
-   TRY_TESTME(points[i++] == Point2d(36, 21));
-   TRY_TESTME(points[i++] == Point2d(36, 27));
-   TRY_TESTME(points[i++] == Point2d(0, 27));
+   TRY_TESTME(points[i++] == Point2d(0, 0));
+   TRY_TESTME(points[i++] == Point2d(-36, 0));
+   TRY_TESTME(points[i++] == Point2d(-36, -6));
+   TRY_TESTME(points[i++] == Point2d(-22.875, -6));
+   TRY_TESTME(points[i++] == Point2d(-22.82738, -7));
+   TRY_TESTME(points[i++] == Point2d(-15.67262, -7));
+   TRY_TESTME(points[i++] == Point2d(-15.625, -6));
+   TRY_TESTME(points[i++] == Point2d(-3.625, -6));
+   TRY_TESTME(points[i++] == Point2d(-3.57738, -7));
+   TRY_TESTME(points[i++] == Point2d(3.57738, -7));
+   TRY_TESTME(points[i++] == Point2d(3.625, -6));
+   TRY_TESTME(points[i++] == Point2d(15.625, -6));
+   TRY_TESTME(points[i++] == Point2d(15.67262, -7));
+   TRY_TESTME(points[i++] == Point2d(22.82738, -7));
+   TRY_TESTME(points[i++] == Point2d(22.875, -6));
+   TRY_TESTME(points[i++] == Point2d(36, -6));
+   TRY_TESTME(points[i++] == Point2d(36, 0));
+   TRY_TESTME(points[i++] == Point2d(0, 0));
    TRY_TESTME(i == points.size());
 
    //
@@ -443,28 +440,27 @@ bool MultiWeb::TestMe(dbgLog& rlog)
 
    beam.Move(from, to);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 19);
+   TRY_TESTME(points.size() == 18);
 
    i = 0;
-   TRY_TESTME(points[i++] == Point2d(100, 127));
-   TRY_TESTME(points[i++] == Point2d(64, 127));
-   TRY_TESTME(points[i++] == Point2d(64, 121));
-   TRY_TESTME(points[i++] == Point2d(77.125, 121));
-   TRY_TESTME(points[i++] == Point2d(78.125, 100));
-   TRY_TESTME(points[i++] == Point2d(83.375, 100));
-   TRY_TESTME(points[i++] == Point2d(84.375, 121));
-   TRY_TESTME(points[i++] == Point2d(96.375, 121));
-   TRY_TESTME(points[i++] == Point2d(97.375, 100));
    TRY_TESTME(points[i++] == Point2d(100, 100));
-   TRY_TESTME(points[i++] == Point2d(102.625, 100));
-   TRY_TESTME(points[i++] == Point2d(103.625, 121));
-   TRY_TESTME(points[i++] == Point2d(115.625, 121));
-   TRY_TESTME(points[i++] == Point2d(116.625, 100));
-   TRY_TESTME(points[i++] == Point2d(121.875, 100));
-   TRY_TESTME(points[i++] == Point2d(122.875, 121));
-   TRY_TESTME(points[i++] == Point2d(136, 121));
-   TRY_TESTME(points[i++] == Point2d(136, 127));
-   TRY_TESTME(points[i++] == Point2d(100, 127));
+   TRY_TESTME(points[i++] == Point2d(64, 100));
+   TRY_TESTME(points[i++] == Point2d(64, 94));
+   TRY_TESTME(points[i++] == Point2d(77.125, 94));
+   TRY_TESTME(points[i++] == Point2d(78.125, 73));
+   TRY_TESTME(points[i++] == Point2d(83.375, 73));
+   TRY_TESTME(points[i++] == Point2d(84.375, 94));
+   TRY_TESTME(points[i++] == Point2d(96.375, 94));
+   TRY_TESTME(points[i++] == Point2d(97.375, 73));
+   TRY_TESTME(points[i++] == Point2d(100, 73));
+   TRY_TESTME(points[i++] == Point2d(102.625, 73));
+   TRY_TESTME(points[i++] == Point2d(103.625, 94));
+   TRY_TESTME(points[i++] == Point2d(115.625, 94));
+   TRY_TESTME(points[i++] == Point2d(116.625, 73));
+   TRY_TESTME(points[i++] == Point2d(121.875, 73));
+   TRY_TESTME(points[i++] == Point2d(122.875, 94));
+   TRY_TESTME(points[i++] == Point2d(136, 94));
+   TRY_TESTME(points[i++] == Point2d(136, 100));
    TRY_TESTME(i == points.size());
 
 
@@ -477,24 +473,24 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    TRY_TESTME(points.size() == 18);
 
    i = 0;
-   TRY_TESTME(points[i++] == Point2d(0, 27));
-   TRY_TESTME(points[i++] == Point2d(-36, 27));
-   TRY_TESTME(points[i++] == Point2d(-36, 21));
-   TRY_TESTME(points[i++] == Point2d(-22.875, 21));
-   TRY_TESTME(points[i++] == Point2d(-21.875, 0));
-   TRY_TESTME(points[i++] == Point2d(-16.625, 0));
-   TRY_TESTME(points[i++] == Point2d(-15.625, 21));
-   TRY_TESTME(points[i++] == Point2d(-3.625, 21));
-   TRY_TESTME(points[i++] == Point2d(-2.625, 0));
    TRY_TESTME(points[i++] == Point2d(0, 0));
-   TRY_TESTME(points[i++] == Point2d(2.625, 0));
-   TRY_TESTME(points[i++] == Point2d(3.625, 21));
-   TRY_TESTME(points[i++] == Point2d(15.625, 21));
-   TRY_TESTME(points[i++] == Point2d(16.625, 0));
-   TRY_TESTME(points[i++] == Point2d(21.875, 0));
-   TRY_TESTME(points[i++] == Point2d(22.875, 21));
-   TRY_TESTME(points[i++] == Point2d(36, 21));
-   TRY_TESTME(points[i++] == Point2d(36, 27));
+   TRY_TESTME(points[i++] == Point2d(-36, 0));
+   TRY_TESTME(points[i++] == Point2d(-36, -6));
+   TRY_TESTME(points[i++] == Point2d(-22.875, -6));
+   TRY_TESTME(points[i++] == Point2d(-21.875, -27));
+   TRY_TESTME(points[i++] == Point2d(-16.625, -27));
+   TRY_TESTME(points[i++] == Point2d(-15.625, -6));
+   TRY_TESTME(points[i++] == Point2d(-3.625, -6));
+   TRY_TESTME(points[i++] == Point2d(-2.625, -27));
+   TRY_TESTME(points[i++] == Point2d(0, -27));
+   TRY_TESTME(points[i++] == Point2d(2.625, -27));
+   TRY_TESTME(points[i++] == Point2d(3.625, -6));
+   TRY_TESTME(points[i++] == Point2d(15.625, -6));
+   TRY_TESTME(points[i++] == Point2d(16.625, -27));
+   TRY_TESTME(points[i++] == Point2d(21.875, -27));
+   TRY_TESTME(points[i++] == Point2d(22.875, -6));
+   TRY_TESTME(points[i++] == Point2d(36, -6));
+   TRY_TESTME(points[i++] == Point2d(36, 0));
    TRY_TESTME(i == points.size());
 
    // Test hook point behavior
@@ -511,7 +507,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::BottomLeft, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::BottomLeft);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(136, 100));
+   TRY_TESTME(*hookPnt == Point2d(136, 127));
 
    // BottomCenter
    hookPnt->Move(0, 0);
@@ -519,7 +515,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::BottomCenter, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::BottomCenter);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(100, 100));
+   TRY_TESTME(*hookPnt == Point2d(100, 127));
 
    // BottomRight
    hookPnt->Move(0, 0);
@@ -527,7 +523,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::BottomRight, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::BottomRight);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(64, 100));
+   TRY_TESTME(*hookPnt == Point2d(64, 127));
 
    // CenterLeft
    hookPnt->Move(0, 0);
@@ -535,7 +531,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::CenterLeft, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::CenterLeft);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(136, 86.5));
+   TRY_TESTME(*hookPnt == Point2d(136, 113.5));
 
    // CenterCenter
    hookPnt->Move(0, 0);
@@ -543,7 +539,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::CenterCenter, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::CenterCenter);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(100, 86.5));
+   TRY_TESTME(*hookPnt == Point2d(100, 113.5));
 
    // CenterRight
    hookPnt->Move(0, 0);
@@ -551,7 +547,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::CenterRight, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::CenterRight);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(64, 86.5));
+   TRY_TESTME(*hookPnt == Point2d(64, 113.5));
 
    // TopLeft
    hookPnt->Move(0, 0);
@@ -559,7 +555,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::TopLeft, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::TopLeft);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(136, 73));
+   TRY_TESTME(*hookPnt == Point2d(136, 100));
 
    // TopCenter
    hookPnt->Move(0, 0);
@@ -567,7 +563,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::TopCenter, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::TopCenter);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(100, 73));
+   TRY_TESTME(*hookPnt == Point2d(100, 100));
 
    // TopRight
    hookPnt->Move(0, 0);
@@ -575,7 +571,7 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    beam.SetLocatorPoint(Shape::LocatorPoint::TopRight, to);
    from = beam.GetLocatorPoint(Shape::LocatorPoint::TopRight);
    TRY_TESTME(from == Point2d(100, 100));
-   TRY_TESTME(*hookPnt == Point2d(64, 73));
+   TRY_TESTME(*hookPnt == Point2d(64, 100));
 
    // HookPoint
    hookPnt->Move(0, 0);
@@ -596,24 +592,24 @@ bool MultiWeb::TestMe(dbgLog& rlog)
    TRY_TESTME(points.size() == 18);
 
    i = 0;
-   TRY_TESTME(points[i++] == Point2d(0, -27));
-   TRY_TESTME(points[i++] == Point2d(36, -27));
-   TRY_TESTME(points[i++] == Point2d(36, -21));
-   TRY_TESTME(points[i++] == Point2d(22.875, -21));
-   TRY_TESTME(points[i++] == Point2d(21.875, 0));
-   TRY_TESTME(points[i++] == Point2d(16.625, 0));
-   TRY_TESTME(points[i++] == Point2d(15.625, -21));
-   TRY_TESTME(points[i++] == Point2d(3.625, -21));
-   TRY_TESTME(points[i++] == Point2d(2.625, 0));
    TRY_TESTME(points[i++] == Point2d(0, 0));
-   TRY_TESTME(points[i++] == Point2d(-2.625, 0));
-   TRY_TESTME(points[i++] == Point2d(-3.625, -21));
-   TRY_TESTME(points[i++] == Point2d(-15.625, -21));
-   TRY_TESTME(points[i++] == Point2d(-16.625, 0));
-   TRY_TESTME(points[i++] == Point2d(-21.875, 0));
-   TRY_TESTME(points[i++] == Point2d(-22.875, -21));
-   TRY_TESTME(points[i++] == Point2d(-36, -21));
-   TRY_TESTME(points[i++] == Point2d(-36, -27));
+   TRY_TESTME(points[i++] == Point2d(36, 0));
+   TRY_TESTME(points[i++] == Point2d(36, 6));
+   TRY_TESTME(points[i++] == Point2d(22.875, 6));
+   TRY_TESTME(points[i++] == Point2d(21.875, 27));
+   TRY_TESTME(points[i++] == Point2d(16.625, 27));
+   TRY_TESTME(points[i++] == Point2d(15.625, 6));
+   TRY_TESTME(points[i++] == Point2d(3.625, 6));
+   TRY_TESTME(points[i++] == Point2d(2.625, 27));
+   TRY_TESTME(points[i++] == Point2d(0, 27));
+   TRY_TESTME(points[i++] == Point2d(-2.625, 27));
+   TRY_TESTME(points[i++] == Point2d(-3.625, 6));
+   TRY_TESTME(points[i++] == Point2d(-15.625, 6));
+   TRY_TESTME(points[i++] == Point2d(-16.625, 27));
+   TRY_TESTME(points[i++] == Point2d(-21.875, 27));
+   TRY_TESTME(points[i++] == Point2d(-22.875, 6));
+   TRY_TESTME(points[i++] == Point2d(-36, 6));
+   TRY_TESTME(points[i++] == Point2d(-36, 0));
    TRY_TESTME(i == points.size());
 
    TESTME_EPILOG("MultiWeb");

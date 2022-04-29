@@ -408,7 +408,7 @@ bool DeckedSlabBeam::TestMe(dbgLog& rlog)
 
    // Check the points
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 11);
+   TRY_TESTME(points.size() == 10);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
@@ -421,7 +421,6 @@ bool DeckedSlabBeam::TestMe(dbgLog& rlog)
    TRY_TESTME(points[i++] == Point2d(61.125000, 112.000000));
    TRY_TESTME(points[i++] == Point2d(70.125000, 112.000000));
    TRY_TESTME(points[i++] == Point2d(70.125000, 100.000000));
-   TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    props = beam.GetProperties();

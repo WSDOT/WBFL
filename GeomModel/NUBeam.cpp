@@ -1144,7 +1144,7 @@ bool NUBeam::TestMe(dbgLog& rlog)
 
    beam.Move(from, to);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 175);
+   TRY_TESTME(points.size() == 174);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(points[i++] == Point2d(-387.500000, 100.000000));
@@ -1320,7 +1320,6 @@ bool NUBeam::TestMe(dbgLog& rlog)
    TRY_TESTME(points[i++] == Point2d(587.403372, 202.275460));
    TRY_TESTME(points[i++] == Point2d(587.500000, 199.168460));
    TRY_TESTME(points[i++] == Point2d(587.500000, 100.000000));
-   TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    //

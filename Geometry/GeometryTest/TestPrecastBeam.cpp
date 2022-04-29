@@ -675,14 +675,14 @@ void CTestPrecastBeam::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,17);
+   TRY_TEST( cPoints,16);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 21> points;
    ULONG fetched;
    Enum->Next(21,&points[0],&fetched);
-   TRY_TEST( fetched, 17 );
+   TRY_TEST( fetched, 16 );
 
    Float64 x,y;
    int i = 0;
@@ -702,7 +702,6 @@ void CTestPrecastBeam::TestIXYPosition()
    TEST_POINT(points, 100.127, 101.727);
    TEST_POINT(points, 100.546, 101.794);
    TEST_POINT(points, 100.546, 101.867);
-   TEST_POINT(points, 100.0, 101.867);
 
    TRY_TEST(i, cPoints);
 
@@ -729,11 +728,11 @@ void CTestPrecastBeam::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,17);
+   TRY_TEST( cPoints,16);
 
    coll->get__Enum(&Enum);
    Enum->Next(21,&points[0],&fetched);
-   TRY_TEST( fetched, 17 );
+   TRY_TEST( fetched, 16 );
 
    i = 0;
    TEST_POINT(points, 100.0, 101.867);
@@ -752,7 +751,6 @@ void CTestPrecastBeam::TestIXYPosition()
    TEST_POINT(points, 100.127, 101.727);
    TEST_POINT(points, 100.546, 101.794);
    TEST_POINT(points, 100.546, 101.867);
-   TEST_POINT(points, 100.0, 101.867);
 
    TRY_TEST(i, cPoints);
 

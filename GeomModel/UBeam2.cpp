@@ -864,7 +864,7 @@ bool UBeam2::TestMe(dbgLog& rlog)
 
    beam.Move(from, to);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 19);
+   TRY_TESTME(points.size() == 18);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
@@ -885,7 +885,6 @@ bool UBeam2::TestMe(dbgLog& rlog)
    TRY_TESTME(points[i++] == Point2d(144.125000, 134.125000));
    TRY_TESTME(points[i++] == Point2d(135.875000, 133.250000));
    TRY_TESTME(points[i++] == Point2d(127.500000, 100.000000));
-   TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    //

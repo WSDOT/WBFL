@@ -219,10 +219,10 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST( IsEqual(val, 36.), true );
 
    box->get_Top(&val);
-   TRY_TEST( IsEqual(val, 27.00), true );
+   TRY_TEST( IsEqual(val, 0.00), true );
 
    box->get_Bottom(&val);
-   TRY_TEST( IsEqual(val,0.), true );
+   TRY_TEST( IsEqual(val,-27.), true );
 
    //
    // ShapeProperties
@@ -246,7 +246,7 @@ void CTestMultiWeb::TestIShape()
    cg->get_X(&cgx);
    cg->get_Y(&cgy);
    TRY_TEST( IsEqual(cgx,0.0), true );
-   TRY_TEST( IsEqual(cgy, 17.8297002724796), true );
+   TRY_TEST( IsEqual(cgy, -9.1702997275204368), true );
    CoordinateSystemType cst;
    props->get_CoordinateSystem(&cst);
    TRY_TEST( cst, csCentroidal );
@@ -288,14 +288,14 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST( shape->FurthestDistance(nullptr,&dist), E_INVALIDARG );
    TRY_TEST( shape->FurthestDistance(line,nullptr), E_POINTER );
    TRY_TEST( shape->FurthestDistance(line,&dist), S_OK );
-   TRY_TEST( IsEqual(dist,20.000), true );
+   TRY_TEST( IsEqual(dist,47.000), true );
 
    // shape on left of line
    p1->Move(100,20);
    p2->Move(-100,20);
    line->ThroughPoints(p1,p2);
    TRY_TEST( shape->FurthestDistance(line,&dist), S_OK );
-   TRY_TEST( IsEqual(dist,7.0), true );
+   TRY_TEST( IsEqual(dist,-20.0), true );
 
    // 
    // PolyPoints
@@ -310,31 +310,31 @@ void CTestMultiWeb::TestIShape()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 18> points;
+   std::array<CComPtr<IPoint2d>, 19> points;
    ULONG fetched;
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    Float64 x,y;
    int i = 0;
-   TEST_POINT(points, 0., 27.);
-   TEST_POINT(points, -36., 27.);
-   TEST_POINT(points, -36., 21.);
-   TEST_POINT(points, -22.875, 21.);
-   TEST_POINT(points, -21.875, 0.);
-   TEST_POINT(points, -16.625, 0.);
-   TEST_POINT(points, -15.625, 21.);
-   TEST_POINT(points, -3.625, 21.);
-   TEST_POINT(points, -2.625, 0.);
    TEST_POINT(points, 0., 0.);
-   TEST_POINT(points, 2.625, 0.);
-   TEST_POINT(points, 3.625, 21.);
-   TEST_POINT(points, 15.625, 21.);
-   TEST_POINT(points, 16.625, 0.);
-   TEST_POINT(points, 21.875, 0.);
-   TEST_POINT(points, 22.875, 21.);
-   TEST_POINT(points, 36., 21.);
-   TEST_POINT(points, 36., 27.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, -36., -6.);
+   TEST_POINT(points, -22.875, -6.);
+   TEST_POINT(points, -21.875, -27.);
+   TEST_POINT(points, -16.625, -27.);
+   TEST_POINT(points, -15.625, -6.);
+   TEST_POINT(points, -3.625, -6.);
+   TEST_POINT(points, -2.625, -27.);
+   TEST_POINT(points, 0., -27.);
+   TEST_POINT(points, 2.625, -27.);
+   TEST_POINT(points, 3.625, -6.);
+   TEST_POINT(points, 15.625, -6.);
+   TEST_POINT(points, 16.625, -27.);
+   TEST_POINT(points, 21.875, -27.);
+   TEST_POINT(points, 22.875, -6.);
+   TEST_POINT(points, 36., -6.);
+   TEST_POINT(points, 36., 0.);
 
    TRY_TEST(i, cPoints);
 
@@ -372,7 +372,7 @@ void CTestMultiWeb::TestIShape()
    VARIANT_BOOL bPointInShape;
    CComPtr<IPoint2d> pnt;
    pnt.CoCreateInstance( CLSID_Point2d );
-   pnt->Move(0.0, 5.0);
+   pnt->Move(0.0, -5.0);
 
    TRY_TEST( shape->PointInShape(nullptr,&bPointInShape), E_INVALIDARG );
    TRY_TEST( shape->PointInShape(pnt,nullptr), E_POINTER );
@@ -392,8 +392,8 @@ void CTestMultiWeb::TestIShape()
    //
 
    // setup clipping line
-   p1->Move(-100,10.0);
-   p2->Move( 100,10.0);
+   p1->Move(-100,-10.0);
+   p2->Move( 100,-10.0);
 
    CComPtr<ILine2d> clipLine;
    clipLine.CoCreateInstance( CLSID_Line2d );
@@ -420,25 +420,26 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST( fetched, cPoints );
 
    i = 0;
-   TEST_POINT(points, -22.3512, 10.);
-   TEST_POINT(points, -21.875, 0.);
-   TEST_POINT(points, -16.625, 0.);
-   TEST_POINT(points, -16.1488, 10.);
-   TEST_POINT(points, -3.10119, 10.);
-   TEST_POINT(points, -2.625, 0.);
-   TEST_POINT(points, 0., 0.);
-   TEST_POINT(points, 2.625, 0.);
-   TEST_POINT(points, 3.10119, 10.);
-   TEST_POINT(points, 16.1488, 10.);
-   TEST_POINT(points, 16.625, 0.);
-   TEST_POINT(points, 21.875, 0.);
-   TEST_POINT(points, 22.3512, 10.);
+   TEST_POINT(points, -22.68452, -10.);
+   TEST_POINT(points, -21.875, -27.);
+   TEST_POINT(points, -16.625, -27.);
+   TEST_POINT(points, -15.81548, -10.);
+   TEST_POINT(points, -3.43452, -10.);
+   TEST_POINT(points, -2.625, -27.);
+   TEST_POINT(points, 0., -27.);
+   TEST_POINT(points, 2.625, -27.);
+   TEST_POINT(points, 3.43452, -10.);
+   TEST_POINT(points, 15.81548, -10.);
+   TEST_POINT(points, 16.625, -27.);
+   TEST_POINT(points, 21.875, -27.);
+   TEST_POINT(points, 22.68452, -10.);
+
 
    TRY_TEST(i, cPoints);
 
    // clip in other direction
-   p1->Move( 100,10.0);
-   p2->Move(-100,10.0);
+   p1->Move( 100,-10.0);
+   p2->Move(-100,-10.0);
 
    clipLine->ThroughPoints(p1,p2);
 
@@ -462,24 +463,25 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST( fetched, cPoints );
 
    i = 0;
-   TEST_POINT(points, 0., 27.);
-   TEST_POINT(points, -36., 27.);
-   TEST_POINT(points, -36., 21.);
-   TEST_POINT(points, -22.875, 21.);
-   TEST_POINT(points, -22.3512, 10.);
-   TEST_POINT(points, -16.1488, 10.);
-   TEST_POINT(points, -15.625, 21.);
-   TEST_POINT(points, -3.625, 21.);
-   TEST_POINT(points, -3.10119, 10.);
-   TEST_POINT(points, 3.10119, 10.);
-   TEST_POINT(points, 3.625, 21.);
-   TEST_POINT(points, 15.625, 21.);
-   TEST_POINT(points, 16.1488, 10.);
-   TEST_POINT(points, 22.3512, 10.);
-   TEST_POINT(points, 22.875, 21.);
-   TEST_POINT(points, 36., 21.);
-   TEST_POINT(points, 36., 27.);
-   TEST_POINT(points, 0., 27.);
+   TEST_POINT(points, 0., 0.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, -36., -6.);
+   TEST_POINT(points, -22.875, -6.);
+   TEST_POINT(points, -22.68452, -10.);
+   TEST_POINT(points, -15.815476, -10.);
+   TEST_POINT(points, -15.625, -6.);
+   TEST_POINT(points, -3.625, -6.);
+   TEST_POINT(points, -3.43452, -10.);
+   TEST_POINT(points, 3.43452, -10.);
+   TEST_POINT(points, 3.625, -6.);
+   TEST_POINT(points, 15.625, -6.);
+   TEST_POINT(points, 15.815476, -10.);
+   TEST_POINT(points, 22.68452, -10.);
+   TEST_POINT(points, 22.875, -6.);
+   TEST_POINT(points, 36., -6.);
+   TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 0., 0.);
+
    TRY_TEST(i, cPoints);
 
    //
@@ -491,8 +493,8 @@ void CTestMultiWeb::TestIShape()
    clipRect.CoCreateInstance( CLSID_Rect2d );
    clipRect->put_Left(-100);
    clipRect->put_Right(100);
-   clipRect->put_Top(30);
-   clipRect->put_Bottom(20);
+   clipRect->put_Top(0);
+   clipRect->put_Bottom(-7);
 
    TRY_TEST( shape->ClipIn(nullptr,&clip), E_INVALIDARG );
    TRY_TEST( shape->ClipIn(clipRect,nullptr), E_POINTER );
@@ -528,24 +530,25 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST( fetched, cPoints );
 
    i = 0;
-   TEST_POINT(points, 0., 27.);
-   TEST_POINT(points, -36., 27.);
-   TEST_POINT(points, -36., 21.);
-   TEST_POINT(points, -22.875, 21.);
-   TEST_POINT(points, -22.82738, 20.);
-   TEST_POINT(points, -15.67262, 20.);
-   TEST_POINT(points, -15.625, 21.);
-   TEST_POINT(points, -3.625, 21.);
-   TEST_POINT(points, -3.57738, 20.);
-   TEST_POINT(points, 3.57738, 20.);
-   TEST_POINT(points, 3.625, 21.);
-   TEST_POINT(points, 15.625, 21.);
-   TEST_POINT(points, 15.67262, 20.);
-   TEST_POINT(points, 22.82738, 20.);
-   TEST_POINT(points, 22.875, 21.);
-   TEST_POINT(points, 36., 21.);
-   TEST_POINT(points, 36., 27.);
-   TEST_POINT(points, 0., 27.);
+   TEST_POINT(points, 0., 0.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, -36., -6.);
+   TEST_POINT(points, -22.875, -6.);
+   TEST_POINT(points, -22.82738, -7.);
+   TEST_POINT(points, -15.67262, -7.);
+   TEST_POINT(points, -15.625, -6.);
+   TEST_POINT(points, -3.625, -6.);
+   TEST_POINT(points, -3.57738, -7.);
+   TEST_POINT(points, 3.57738, -7.);
+   TEST_POINT(points, 3.625, -6.);
+   TEST_POINT(points, 15.625, -6.);
+   TEST_POINT(points, 15.67262, -7.);
+   TEST_POINT(points, 22.82738, -7.);
+   TEST_POINT(points, 22.875, -6.);
+   TEST_POINT(points, 36., -6.);
+   TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 0., 0.);
+
 
    TRY_TEST(i, cPoints);
 }
@@ -593,7 +596,7 @@ void CTestMultiWeb::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,19);
+   TRY_TEST( cPoints,18);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
@@ -604,25 +607,24 @@ void CTestMultiWeb::TestIXYPosition()
 
    Float64 x,y;
    int i = 0;
-   TEST_POINT(points, 100., 127.);
-   TEST_POINT(points, 64., 127.);
-   TEST_POINT(points, 64., 121.);
-   TEST_POINT(points, 77.125, 121.);
-   TEST_POINT(points, 78.125, 100.);
-   TEST_POINT(points, 83.375, 100.);
-   TEST_POINT(points, 84.375, 121.);
-   TEST_POINT(points, 96.375, 121.);
-   TEST_POINT(points, 97.375, 100.);
    TEST_POINT(points, 100., 100.);
-   TEST_POINT(points, 102.625, 100.);
-   TEST_POINT(points, 103.625, 121.);
-   TEST_POINT(points, 115.625, 121.);
-   TEST_POINT(points, 116.625, 100.);
-   TEST_POINT(points, 121.875, 100.);
-   TEST_POINT(points, 122.875, 121.);
-   TEST_POINT(points, 136., 121.);
-   TEST_POINT(points, 136., 127.);
-   TEST_POINT(points, 100., 127.);
+   TEST_POINT(points, 64., 100.);
+   TEST_POINT(points, 64., 94.);
+   TEST_POINT(points, 77.125, 94.);
+   TEST_POINT(points, 78.125, 73.);
+   TEST_POINT(points, 83.375, 73.);
+   TEST_POINT(points, 84.375, 94.);
+   TEST_POINT(points, 96.375, 94.);
+   TEST_POINT(points, 97.375, 73.);
+   TEST_POINT(points, 100., 73.);
+   TEST_POINT(points, 102.625, 73.);
+   TEST_POINT(points, 103.625, 94.);
+   TEST_POINT(points, 115.625, 94.);
+   TEST_POINT(points, 116.625, 73.);
+   TEST_POINT(points, 121.875, 73.);
+   TEST_POINT(points, 122.875, 94.);
+   TEST_POINT(points, 136., 94.);
+   TEST_POINT(points, 136., 100.);
 
    TRY_TEST(i, cPoints);
 
@@ -653,24 +655,24 @@ void CTestMultiWeb::TestIXYPosition()
    TRY_TEST( fetched, cPoints );
 
    i = 0;
-   TEST_POINT(points, 0., 27.);
-   TEST_POINT(points, -36., 27.);
-   TEST_POINT(points, -36., 21.);
-   TEST_POINT(points, -22.875, 21.);
-   TEST_POINT(points, -21.875, 0.);
-   TEST_POINT(points, -16.625, 0.);
-   TEST_POINT(points, -15.625, 21.);
-   TEST_POINT(points, -3.625, 21.);
-   TEST_POINT(points, -2.625, 0.);
    TEST_POINT(points, 0., 0.);
-   TEST_POINT(points, 2.625, 0.);
-   TEST_POINT(points, 3.625, 21.);
-   TEST_POINT(points, 15.625, 21.);
-   TEST_POINT(points, 16.625, 0.);
-   TEST_POINT(points, 21.875, 0.);
-   TEST_POINT(points, 22.875, 21.);
-   TEST_POINT(points, 36., 21.);
-   TEST_POINT(points, 36., 27.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, -36., -6.);
+   TEST_POINT(points, -22.875, -6.);
+   TEST_POINT(points, -21.875, -27.);
+   TEST_POINT(points, -16.625, -27.);
+   TEST_POINT(points, -15.625, -6.);
+   TEST_POINT(points, -3.625, -6.);
+   TEST_POINT(points, -2.625, -27.);
+   TEST_POINT(points, 0., -27.);
+   TEST_POINT(points, 2.625, -27.);
+   TEST_POINT(points, 3.625, -6.);
+   TEST_POINT(points, 15.625, -6.);
+   TEST_POINT(points, 16.625, -27.);
+   TEST_POINT(points, 21.875, -27.);
+   TEST_POINT(points, 22.875, -6.);
+   TEST_POINT(points, 36., -6.);
+   TEST_POINT(points, 36., 0.);
 
    TRY_TEST(i, cPoints);
 
@@ -694,7 +696,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,136.000), true );
-   TRY_TEST(IsEqual(y,100.00), true );
+   TRY_TEST(IsEqual(y,127.00), true );
 
    // BottomCenter
    hookPnt->Move(0.0,0.0);
@@ -709,7 +711,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,100.0), true );
-   TRY_TEST(IsEqual(y,100.0), true );
+   TRY_TEST(IsEqual(y,127.0), true );
 
    // BottomRight
    hookPnt->Move(0,0);
@@ -723,8 +725,8 @@ void CTestMultiWeb::TestIXYPosition()
    TRY_TEST(IsEqual(y,100.000), true );
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,100.0-36), true );
-   TRY_TEST(IsEqual(y,100.0), true );
+   TRY_TEST(IsEqual(x,64.0), true );
+   TRY_TEST(IsEqual(y,127.0), true );
 
    // CenterLeft
    hookPnt->Move(0,0);
@@ -739,7 +741,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,136.0), true );
-   TRY_TEST(IsEqual(y,86.5), true );
+   TRY_TEST(IsEqual(y,113.5), true );
 
    // CenterCenter
    hookPnt->Move(0,0);
@@ -754,7 +756,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,100.0), true );
-   TRY_TEST(IsEqual(y,86.5), true );
+   TRY_TEST(IsEqual(y,113.5), true );
 
    // CenterRight
    hookPnt->Move(0,0);
@@ -769,7 +771,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,64.0), true );
-   TRY_TEST(IsEqual(y,86.5), true );
+   TRY_TEST(IsEqual(y,113.5), true );
 
    // TopLeft
    hookPnt->Move(0,0);
@@ -784,7 +786,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,136.0), true );
-   TRY_TEST(IsEqual(y,73.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
 
    // TopCenter
    hookPnt->Move(0,0);
@@ -799,7 +801,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,100.0), true );
-   TRY_TEST(IsEqual(y,73.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
 
    // TopRight
    hookPnt->Move(0,0);
@@ -814,7 +816,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 64.0), true );
-   TRY_TEST(IsEqual(y,73.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
 
    // HookPoint
    hookPnt->Move(0,0);
@@ -858,24 +860,24 @@ void CTestMultiWeb::TestIXYPosition()
    TRY_TEST( fetched, cPoints );
 
    i = 0;
-   TEST_POINT(points, 0., -27.);
-   TEST_POINT(points, 36., -27.);
-   TEST_POINT(points, 36., -21.);
-   TEST_POINT(points, 22.875, -21.);
-   TEST_POINT(points, 21.875, 0.);
-   TEST_POINT(points, 16.625, 0.);
-   TEST_POINT(points, 15.625, -21.);
-   TEST_POINT(points, 3.625, -21.);
-   TEST_POINT(points, 2.625, 0.);
    TEST_POINT(points, 0., 0.);
-   TEST_POINT(points, -2.625, 0.);
-   TEST_POINT(points, -3.625, -21.);
-   TEST_POINT(points, -15.625, -21.);
-   TEST_POINT(points, -16.625, 0.);
-   TEST_POINT(points, -21.875, 0.);
-   TEST_POINT(points, -22.875, -21.);
-   TEST_POINT(points, -36., -21.);
-   TEST_POINT(points, -36., -27.);
+   TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 36., 6.);
+   TEST_POINT(points, 22.875, 6.);
+   TEST_POINT(points, 21.875, 27.);
+   TEST_POINT(points, 16.625, 27.);
+   TEST_POINT(points, 15.625, 6.);
+   TEST_POINT(points, 3.625, 6.);
+   TEST_POINT(points, 2.625, 27.);
+   TEST_POINT(points, 0., 27.);
+   TEST_POINT(points, -2.625, 27.);
+   TEST_POINT(points, -3.625, 6.);
+   TEST_POINT(points, -15.625, 6.);
+   TEST_POINT(points, -16.625, 27.);
+   TEST_POINT(points, -21.875, 27.);
+   TEST_POINT(points, -22.875, 6.);
+   TEST_POINT(points, -36., 6.);
+   TEST_POINT(points, -36., 0.);
 
    TRY_TEST(i, cPoints); 
 }

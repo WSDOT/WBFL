@@ -811,7 +811,7 @@ bool PCIDeckedIBeam::TestMe(dbgLog& rlog)
    points = beam.GetPolyPoints();
 
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 151);
+   TRY_TESTME(points.size() == 150);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
@@ -964,7 +964,6 @@ bool PCIDeckedIBeam::TestMe(dbgLog& rlog)
    TRY_TESTME(points[i++] == Point2d(119.187500, 102.349145));
    TRY_TESTME(points[i++] == Point2d(119.187500, 101.000000));
    TRY_TESTME(points[i++] == Point2d(118.187500, 100.000000));
-   TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    //

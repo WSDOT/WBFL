@@ -427,12 +427,12 @@ bool Polygon::AssertValid() const
       Point2d p1(*iter);
       Size2d size(p1 - p0);
 
-      if (m_Symmetry == Symmetry::X && IsZero(p0.Y()) && IsZero(size.Dy()))
+      if (m_Symmetry == Symmetry::X && IsZero(p0.Y() - m_SymmetryAxis) && IsZero(size.Dy()))
       {
          // if symmetry is about the Y=0 axis, the points can't define an edge on that axis
          return false;
       }
-      else if (m_Symmetry == Symmetry::Y && IsZero(p0.X()) && IsZero(size.Dx()))
+      else if (m_Symmetry == Symmetry::Y && IsZero(p0.X() - m_SymmetryAxis) && IsZero(size.Dx()))
       {
          // if symmetry is about the X=0 axis, the points can't define an edge on that axis
          return false;
@@ -850,8 +850,6 @@ Point2d Polygon::GetMirroredPoint(const Point2d& point) const
 void Polygon::GetAllPoints(std::vector<Point2d>* points) const
 {
    *points = m_Points;
-   Float64 xSign = m_Symmetry == Symmetry::X ? 1 : -1;
-   Float64 ySign = m_Symmetry == Symmetry::Y ? 1 : -1;
    Float64 xOffset = m_Symmetry == Symmetry::X ? 0 : m_SymmetryAxis;
    Float64 yOffset = m_Symmetry == Symmetry::Y ? 0 : m_SymmetryAxis;
 
@@ -862,7 +860,7 @@ void Polygon::GetAllPoints(std::vector<Point2d>* points) const
       // working in reverse order, add the the mirrored points to the vector of points, but don't duplicate
       // points on the axis of symmetry
       const auto& point(*iter);
-      if( (m_Symmetry == Symmetry::X && !IsZero(point.Y()) || (m_Symmetry == Symmetry::Y && !IsZero(point.X()))))
+      if( (m_Symmetry == Symmetry::X && !IsZero(point.Y()-yOffset) || (m_Symmetry == Symmetry::Y && !IsZero(point.X()-xOffset))))
          points->emplace_back(GetMirroredPoint(point));
    }
    points->erase(std::unique(points->begin(), points->end()),points->end()); // remove adjacent duplications

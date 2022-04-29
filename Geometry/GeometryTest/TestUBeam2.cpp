@@ -707,7 +707,7 @@ void CTestUBeam2::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,19);
+   TRY_TEST( cPoints,18);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
@@ -736,7 +736,6 @@ void CTestUBeam2::TestIXYPosition()
    TEST_POINT(points, 144.125000, 134.125000);
    TEST_POINT(points, 135.875000, 133.250000);
    TEST_POINT(points, 127.500000, 100.000000);
-   TEST_POINT(points, 100.000000, 100.000000);
 
    TRY_TEST(i, cPoints);
 

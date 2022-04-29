@@ -127,6 +127,7 @@ void ShapeOnAlternativePolygonImpl::UpdatePolygon() const
    OnUpdatePolygon(m_Polygon);
    ShapeCurrentWithHookPoint();
    m_bIsDirty = false;
+   ASSERTVALID;
 }
 
 #if defined _DEBUG
