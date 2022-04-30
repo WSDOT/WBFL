@@ -239,9 +239,9 @@ void Polygon::DoOffset(const Size2d& delta)
    if(!m_Points.empty()) GetHookPoint()->Offset(delta);
    
    if (m_Symmetry == Symmetry::X)
-      m_SymmetryAxis = delta.Dy();
+      m_SymmetryAxis += delta.Dy();
    else if (m_Symmetry == Symmetry::Y)
-      m_SymmetryAxis = delta.Dx();
+      m_SymmetryAxis += delta.Dx();
 
    m_bIsDirty = true;
 
