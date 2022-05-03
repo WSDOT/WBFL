@@ -220,10 +220,10 @@ private:
 //
 // Function to support the 8th Edition, 2017 reorganization of chapter 5 of the Specifications
 // The mapping document for this endeavor by AASHTO T10 was called "Crosswalk", hence the function name
-inline LPCTSTR LrfdCw8th(LPCTSTR oldStr, LPCTSTR newStr)
+inline LPCTSTR LrfdCw8th(LPCTSTR oldStr, LPCTSTR newStr,lrfdVersionMgr::Version version=lrfdVersionMgr::GetVersion())
 {
    // Map to the current version of the spec
-   if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::EighthEdition2017)
+   if (version < lrfdVersionMgr::EighthEdition2017)
    {
       return oldStr;
    }
