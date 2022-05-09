@@ -24,40 +24,40 @@
 #pragma once
 
 #include <Stability/StabilityExp.h>
-#include <Stability/LiftingResults.h>
-#include <Stability/LiftingCriteria.h>
+#include <Stability/OneEndSeatedResults.h>
+#include <Stability/OneEndSeatedCriteria.h>
 
 namespace WBFL
 {
    namespace Stability
    {
 
-      /// Results of a lifting check analysis
-      class STABILITYCLASS LiftingCheckArtifact
+      /// Results of a OneEndSeated check analysis
+      class STABILITYCLASS OneEndSeatedCheckArtifact
       {
       public:
          /// Constructions a default artifact. 
          /// Init must be called to initialize the artifact with analysis results.
-         LiftingCheckArtifact();
+         OneEndSeatedCheckArtifact();
 
          /// Constructs a check artifact, initializing it with analysis results and check criteria.
          /// There is no need to call Init if this constructor is used.
-         LiftingCheckArtifact(
-            const LiftingResults& results, ///< Lifting analysis results
-            const LiftingCriteria& criteria ///< Lifting check criteria
+         OneEndSeatedCheckArtifact(
+            const OneEndSeatedResults& results, ///< OneEndSeated analysis results
+            const OneEndSeatedCriteria& criteria ///< OneEndSeated check criteria
          );
 
          /// Initializes this object
          void Init(
-            const LiftingResults& results, ///< Lifting analysis results
-            const LiftingCriteria& criteria ///< Lifting check criteria
+            const OneEndSeatedResults& results, ///< OneEndSeated analysis results
+            const OneEndSeatedCriteria& criteria ///< OneEndSeated check criteria
          );
 
-         /// Returns the results of a lifting analysis
-         const LiftingResults& GetLiftingResults() const;
+         /// Returns the results of a OneEndSeated analysis
+         const OneEndSeatedResults& GetOneEndSeatedResults() const;
 
-         /// Returns the lifting check criteria
-         const LiftingCriteria& GetCriteria() const;
+         /// Returns the OneEndSeated check criteria
+         const OneEndSeatedCriteria& GetCriteria() const;
 
          /// Analyzes the section results and retrieves the controlling tension stress case
          /// \param[in] sectionResult Analysis results to be evalauted
@@ -67,7 +67,7 @@ namespace WBFL
          /// \param[out] pfAllow Tension stress limit associated with the controlling case
          /// \param[out] pbPassed Indicates if the controlling case passes the specification check
          /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingTensionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         void GetControllingTensionCase(const OneEndSeatedSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
 
          /// Analyzes the section results and retrieves the controlling global compression case.
          /// \param[in] sectionResult Analysis results to be evalauted
@@ -76,7 +76,7 @@ namespace WBFL
          /// \param[out] pfAllow Tension stress limit associated with the controlling case
          /// \param[out] pbPassed Indicates if the controlling case passes the specification check
          /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingGlobalCompressionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         void GetControllingGlobalCompressionCase(const OneEndSeatedSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
 
          /// Analyzes the section results and retrieves the controlling peak compression case.
          /// \param[in] sectionResult Analysis results to be evalauted
@@ -86,9 +86,9 @@ namespace WBFL
          /// \param[out] pfAllow Tension stress limit associated with the controlling case
          /// \param[out] pbPassed Indicates if the controlling case passes the specification check
          /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingPeakCompressionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         void GetControllingPeakCompressionCase(const OneEndSeatedSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
 
-         /// Returns true if the lifting check was successful
+         /// Returns true if the OneEndSeated check was successful
          bool Passed() const;
 
          /// Returns true if the cracking check passed
@@ -96,6 +96,9 @@ namespace WBFL
 
          /// Returns true if the failure check passed
          bool PassedFailureCheck() const;
+
+         /// Returns true if the rollover check passed
+         bool PassedRolloverCheck() const;
 
          /// Returns true if the stress check without lateral load and tilt effects passed
          bool PassedDirectStressCheck() const;
@@ -119,13 +122,13 @@ namespace WBFL
          /// Returns the tension stress limit
          /// \param[in] sectionResult Analysis results to be evalauted
          /// \param[in] impact Impact direction
-         Float64 GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact) const;
+         Float64 GetAllowableTension(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact) const;
 #else
          /// Returns the tension stress limit
          /// \param[in] sectionResult Analysis results to be evalauted
          /// \param[in] impact Impact direction
          /// \param[in] wind Wind direction
-         Float64 GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const;
+         Float64 GetAllowableTension(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const;
 #endif
 
          /// Returns the concrete strength required to satisfy the compression stress limit
@@ -137,8 +140,8 @@ namespace WBFL
          Float64 RequiredFcTensionWithRebar() const;
 
       private:
-         LiftingResults m_Results;
-         LiftingCriteria m_Criteria;
+         OneEndSeatedResults m_Results;
+         OneEndSeatedCriteria m_Criteria;
       };
    }
 }

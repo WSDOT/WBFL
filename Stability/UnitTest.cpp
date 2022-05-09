@@ -21,12 +21,12 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\UnitTest.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/UnitTest.h>
 #include <Units\Units.h>
-#include <Stability\StabilityEngineer.h>
-#include <Stability\StabilityProblemImp.h>
-#include <Stability\AnalysisPointImp.h>
+#include <Stability/StabilityEngineer.h>
+#include <Stability/StabilityProblemImp.h>
+#include <Stability/AnalysisPointImp.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -56,6 +56,7 @@ bool UnitTest::TestMe(dbgLog& rlog)
 
    bResult &= UnitTest::PCILiftingExamples(rlog);
    bResult &= UnitTest::PCIHaulingExamples(rlog);
+   bResult &= UnitTest::OneEndSeated(rlog);
 
    TESTME_EPILOG("Stability");
 
@@ -96,7 +97,7 @@ bool UnitTest::PCILiftingExamples(dbgLog& rlog)
    LiftingStabilityProblem stabilityProblem;
    stabilityProblem.SetConcrete(concrete);
 
-   stabilityProblem.AddAnalysisPoint(new AnalysisPoint(L*0.4)); // harp point
+   stabilityProblem.AddAnalysisPoint(std::move(std::make_unique<AnalysisPoint>(0.4 * L))); // harp point
 
    // Example 6.1.1
    Float64 fpe = ::ConvertToSysUnits(1232.0,unitMeasure::Kip);
@@ -249,7 +250,7 @@ bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
    concrete.SetFlexureFr( ::ConvertToSysUnits(0.24*sqrt(fc),unitMeasure::KSI) );
    stabilityProblem.SetConcrete(concrete);
 
-   stabilityProblem.AddAnalysisPoint(new AnalysisPoint(L*0.4)); // harp point
+   stabilityProblem.AddAnalysisPoint(std::move(std::make_unique<AnalysisPoint>(0.4 * L))); // harp point
 
    // Example 6.2.1
    Float64 fpe = ::ConvertToSysUnits(1251.5,unitMeasure::Kip);
@@ -267,11 +268,11 @@ bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
    stabilityProblem.SetImpact( 0.0, 0.0 );
    stabilityProblem.SetImpactUsage(Both);
 
-   stabilityProblem.SetTruckRotationalStiffness(::ConvertToSysUnits(40500.,unitMeasure::KipInchPerRadian));
-   stabilityProblem.SetCrownSlope(0.06);
+   stabilityProblem.SetRotationalStiffness(::ConvertToSysUnits(40500., unitMeasure::KipInchPerRadian));
+   stabilityProblem.SetSupportSlope(0.06);
    stabilityProblem.SetSuperelevation(0.06);
-   stabilityProblem.SetWheelLineSpacing(::ConvertToSysUnits(72.,unitMeasure::Inch));
-   stabilityProblem.SetHeightOfRollAxisAboveRoadway(::ConvertToSysUnits(24.,unitMeasure::Inch));
+   stabilityProblem.SetSupportWidth(::ConvertToSysUnits(72., unitMeasure::Inch));
+   stabilityProblem.SetHeightOfRollAxis(::ConvertToSysUnits(24., unitMeasure::Inch));
 
 
    StabilityEngineer engineer;
@@ -324,7 +325,7 @@ bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
    stabilityProblem.SetTurningRadius(::ConvertToSysUnits(120,unitMeasure::Feet));
    stabilityProblem.SetVelocity(::ConvertToSysUnits(10.,unitMeasure::Mile)/::ConvertToSysUnits(1.0,unitMeasure::Hour));
    stabilityProblem.SetCentrifugalForceType(Adverse);
-   stabilityProblem.SetCrownSlope( 0.02 );
+   stabilityProblem.SetSupportSlope( 0.02 );
    stabilityProblem.SetSuperelevation( 0.02 );
    result = engineer.AnalyzeHauling(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
@@ -346,4 +347,83 @@ bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
       }
    }
    TESTME_EPILOG("PCIHaulingExamples");
+}
+
+bool UnitTest::OneEndSeated(dbgLog& rlog)
+{
+   TESTME_PROLOGUE("OneEndSeated");
+   Girder girder;
+   OneEndSeatedStabilityProblem stabilityProblem;
+
+   Float64 Hg = ::ConvertToSysUnits(72, unitMeasure::Inch);
+   Float64 Wtf = ::ConvertToSysUnits(42, unitMeasure::Inch);
+   Float64 Wbf = ::ConvertToSysUnits(26, unitMeasure::Inch);
+
+   Float64 Ag = ::ConvertToSysUnits(767, unitMeasure::Inch2);
+   Float64 Ix = ::ConvertToSysUnits(545894, unitMeasure::Inch4);
+   Float64 Iy = ::ConvertToSysUnits(37634, unitMeasure::Inch4);
+   Float64 Ixy = 0;
+   Float64 Xleft = Wtf / 2;
+   Float64 Ytop = ::ConvertToSysUnits(36.6 - 72, unitMeasure::Inch); // want neg because we are in section coordinates
+   Float64 L = ::ConvertToSysUnits(136, unitMeasure::Feet);
+   girder.AddSection(L, Ag, Ix, Iy, Ixy, Xleft, Ytop, Hg, Wtf, Wbf);
+
+   matConcreteEx concrete;
+   Float64 fc = 7.0;
+   concrete.SetFc(::ConvertToSysUnits(fc, unitMeasure::KSI));
+   concrete.SetDensity(::ConvertToSysUnits(0.150, unitMeasure::KipPerFeet3));
+   concrete.SetDensityForWeight(::ConvertToSysUnits(0.155, unitMeasure::KipPerFeet3));
+   Float64 Ec = lrfdConcreteUtil::ModE(concrete.GetType(), concrete.GetFc(), concrete.GetDensity(), false);
+   concrete.SetE(Ec);
+   concrete.SetFlexureFr(::ConvertToSysUnits(0.24 * sqrt(fc), unitMeasure::KSI));
+   stabilityProblem.SetConcrete(concrete);
+
+   stabilityProblem.AddAnalysisPoint(std::move(std::make_unique<AnalysisPoint>(0.4 * L))); // harp point
+
+   // Example 6.2.1
+   Float64 fpe = ::ConvertToSysUnits(1251.5, unitMeasure::Kip);
+   stabilityProblem.AddFpe(_T("Prestress"), 0.0, fpe, Xleft, -Hg + ::ConvertToSysUnits(7.91, unitMeasure::Inch));
+
+   stabilityProblem.SetCamber(::ConvertToSysUnits(2.92, unitMeasure::Inch));
+
+
+   stabilityProblem.SetSupportLocations(::ConvertToSysUnits(10, unitMeasure::Feet), ::ConvertToSysUnits(10, unitMeasure::Feet));
+   stabilityProblem.SetSeatedEnd(GirderSide::Left); // seated at left end, hanging from right end
+   stabilityProblem.SetSweepTolerance(2 * 0.000520833333);
+   stabilityProblem.SetSweepGrowth(::ConvertToSysUnits(1.0, unitMeasure::Inch));
+   stabilityProblem.SetSupportPlacementTolerance(::ConvertToSysUnits(1.0, unitMeasure::Inch));
+   stabilityProblem.SetYRollAxis(::ConvertToSysUnits(-48.0, unitMeasure::Inch) - Hg); // location of roll axes below top of girder);
+
+   stabilityProblem.SetImpact(0.0, 0.0);
+
+   stabilityProblem.SetRotationalStiffness(::ConvertToSysUnits(40500., unitMeasure::KipInchPerRadian));
+   stabilityProblem.SetRotationalStiffnessAdjustmentFactor(0.50);
+   stabilityProblem.SetSupportSlope(0.02);
+   stabilityProblem.SetSupportWidth(::ConvertToSysUnits(72., unitMeasure::Inch));
+   stabilityProblem.SetHeightOfRollAxis(::ConvertToSysUnits(24., unitMeasure::Inch));
+
+
+   StabilityEngineer engineer;
+
+   OneEndSeatedResults result = engineer.AnalyzeOneEndSeated(&girder, &stabilityProblem);
+   for (int i = 0; i < 3; i++)
+   {
+      ImpactDirection impact = (ImpactDirection)i;
+      for (int j = 0; j < 2; j++)
+      {
+         WindDirection wind = (WindDirection)j;
+         for (const auto& sectionResult : result.vSectionResults)
+         {
+            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopLeft], 3.010, 0.001));
+
+            TRY_TESTME(::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][TopLeft], unitMeasure::KSI), 0.0095, 0.001));
+            TRY_TESTME(::IsEqual(::ConvertFromSysUnits(sectionResult.f[impact][wind][BottomRight], unitMeasure::KSI), -3.203, 0.001));
+         }
+
+         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], 3.637, 0.001));
+         TRY_TESTME(::IsEqual(result.FsRollover[impact][wind], 2.975, 0.001));
+      }
+   }
+
+   TESTME_EPILOG("OneEndSeated");
 }

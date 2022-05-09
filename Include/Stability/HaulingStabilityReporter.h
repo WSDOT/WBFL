@@ -23,16 +23,15 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\StabilityProblem.h>
-#include <Stability\HaulingResults.h>
-#include <Stability\HaulingCheckArtifact.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/StabilityProblem.h>
+#include <Stability/HaulingResults.h>
+#include <Stability/HaulingCheckArtifact.h>
 
 namespace WBFL
 {
    namespace Stability
    {
-
       /// Generates reports for Hauling stability analysis
       class STABILITYCLASS HaulingStabilityReporter
       {

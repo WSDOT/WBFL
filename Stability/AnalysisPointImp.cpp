@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\AnalysisPointImp.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/AnalysisPointImp.h>
 #include <UnitMgt\UnitMgt.h>
 
 #ifdef _DEBUG
@@ -73,9 +73,9 @@ namespace WBFL
          return str;
       }
 
-      IAnalysisPoint* AnalysisPoint::Clone() const
+      std::unique_ptr<IAnalysisPoint> AnalysisPoint::Clone() const
       {
-         return new AnalysisPoint(*this);
+         return std::make_unique<AnalysisPoint>(*this);
       }
    }
 }

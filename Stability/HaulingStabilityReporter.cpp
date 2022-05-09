@@ -21,9 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\HaulingStabilityReporter.h>
-#include <Stability\ReportingConstants.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/HaulingStabilityReporter.h>
+#include <Stability/ReportingConstants.h>
 #include <EAF\EAFApp.h>
 #include <array>
 
@@ -337,7 +337,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
       {
          col = 0;
 
-         const IAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+         const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
          (*pStressTable)(row,col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength,offset,false));
 
          ImpactDirection impact;
@@ -726,10 +726,14 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
       *pPara << _T("Girder Weight with Overhang Brackets, ") << Sub2(_T("W"), _T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
       *pPara << _T("Overhang Bracket Eccentricity, ") << Sub2(_T("e"), _T("b")) << _T(" = ") << shortLength.SetValue(eb) << rptNewLine;
       *pPara << _T("Lateral eccentricty of girder weight with overhang brackets, ") << Sub2(_T("e"), _T("a")) << _T(" = ") Sub2(_T("W"), _T("b")) << _T("*") << Sub2(_T("e"), _T("b")) << _T("/(") << Sub2(_T("W"), _T("girder")) << _T("+") << Sub2(_T("W"), _T("b")) << _T(") = ") << shortLength.SetValue(pResults->ea) << rptNewLine;
+      *pPara << _T("Trailing end reaction due to girder weight and overhang brackets, ") << force.SetValue(pResults->Rl) << rptNewLine;
+      *pPara << _T("Leading end reaction due to girder weight and overhang brackets, ") << force.SetValue(pResults->Rr) << rptNewLine;
    }
    else
    {
       *pPara << _T("Girder Weight, ") << Sub2(_T("W"), _T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
+      *pPara << _T("Trailing end reaction due to girder weight, ") << force.SetValue(pResults->Rl) << rptNewLine;
+      *pPara << _T("Leading end reaction due to girder weight, ") << force.SetValue(pResults->Rr) << rptNewLine;
    }
 
    Float64 Ll,Lr;
@@ -738,14 +742,14 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    *pPara << _T("Leading support overhang, ")  << Sub2(_T("L"),_T("l")) << _T(" = ") << longLength.SetValue(Lr) << rptNewLine;
    *pPara << _T("Clear span between bunk points, ") << Sub2(_T("L"),_T("s")) << _T(" = ") << longLength.SetValue(pResults->Ls) << rptNewLine;
 
-   *pPara << _T("Height of roll axis above roadway, ") << H_RC << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetHeightOfRollAxisAboveRoadway()) << rptNewLine;
+   *pPara << _T("Height of roll axis above roadway, ") << H_RC << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetHeightOfRollAxis()) << rptNewLine;
    *pPara << _T("Location of Roll Axis below top of girder, ") << Sub2(_T("y"),_T("rc")) << _T(" = ") << shortLength.SetValue(-pStabilityProblem->GetYRollAxis()) << rptNewLine;
-   *pPara << _T("Truck Rotational Stiffness, ") << K_THETA << _T(" = ") << rotational_stiffness.SetValue(pStabilityProblem->GetTruckRotationalStiffness()) << rptNewLine;
-   *pPara << _T("Wheel line spacing (C-C distance between tires), ") << Sub2(_T("W"),_T("cc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetWheelLineSpacing()) << rptNewLine;
+   *pPara << _T("Truck Rotational Stiffness, ") << K_THETA << _T(" = ") << rotational_stiffness.SetValue(pStabilityProblem->GetRotationalStiffness()) << rptNewLine;
+   *pPara << _T("Wheel line spacing (C-C distance between tires), ") << Sub2(_T("W"), _T("cc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetSupportWidth()) << rptNewLine;
 
    CString slope_unit(pApp->GetUnitsMode() == eafTypes::umSI ? _T("m/m") : _T("ft/ft"));
 
-   *pPara << _T("Normal Crown Slope, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetCrownSlope() << _T(" ") << slope_unit << rptNewLine;
+   *pPara << _T("Normal Crown Slope, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSupportSlope() << _T(" ") << slope_unit << rptNewLine;
    *pPara << _T("Maximum Superelevation, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSuperelevation() << _T(" ") << slope_unit << rptNewLine;
 
    pStabilityProblem->GetImpact(&impactUp,&impactDown);
@@ -1301,7 +1305,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    {
       col = 0;
 
-      const IAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+      const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
 
       (*pPrestressTable)(row, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
 
@@ -1425,7 +1429,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    {
       col = 0;
 
-      const IAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+      const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
 
       (*pStressTable)(row, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
 
@@ -1934,7 +1938,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             {
                col = 0;
 
-               const IAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+               const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
                (*pTotalStressTable)(srow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
 
                (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][TopLeft]);
@@ -2061,7 +2065,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             // Failure
             ///////////////////////////////////////////////////////////////////////
 
-            Float64 alpha = (slope == Superelevation ? pStabilityProblem->GetSuperelevation() : pStabilityProblem->GetCrownSlope());
+            Float64 alpha = (slope == Superelevation ? pStabilityProblem->GetSuperelevation() : pStabilityProblem->GetSupportSlope());
 
             pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
             *pChapter << pPara;
@@ -2218,7 +2222,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             *pChapter << pPara;
 
             shortLength.ShowUnitTag(true);
-            *pPara << Z_MAX << _T(" = ") << Sub2(_T("W"), _T("cc")) << _T("/2 = ") << shortLength.SetValue(pStabilityProblem->GetWheelLineSpacing() / 2) << rptNewLine;
+            *pPara << Z_MAX << _T(" = ") << Sub2(_T("W"), _T("cc")) << _T("/2 = ") << shortLength.SetValue(pStabilityProblem->GetSupportWidth() / 2) << rptNewLine;
             shortLength.ShowUnitTag(false);
             *pPara << THETA_ROLLOVER << _T(" = tilt angle at roll over") << rptNewLine;
             if ((slope == NormalCrown && !IsZero(pResults->Wwind)) ||
@@ -2468,7 +2472,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             for (const auto& sectionResult : pResults->vSectionResults)
             {
                col = 0;
-               const IAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+               const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
                (*pRebarTable)(rrow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
                (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]].Yna);
                if (bSimpleFormat)

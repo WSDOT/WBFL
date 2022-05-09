@@ -21,9 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\HaulingTensionStressLimit.h>
-#include <Stability\HaulingCheckArtifact.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/HaulingTensionStressLimit.h>
+#include <Stability/HaulingCheckArtifact.h>
 #include <UnitMgt\UnitMgt.h>
 
 #ifdef _DEBUG

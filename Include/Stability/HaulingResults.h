@@ -23,9 +23,9 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\Results.h>
-#include <WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/Results.h>
+#include <WBFLGenericBridgeTools/AlternativeTensileStressCalculator.h>
 #include <array>
 
 namespace WBFL

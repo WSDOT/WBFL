@@ -21,22 +21,25 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include <Stability/StabilityLib.h>
+#include <Stability/OneEndSeatedCriteria.h>
 
-/*****************************************************************************
-LIBRARY
-   Stability
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-   Girder Stability Analysis
+using namespace WBFL::Stability;
 
-DESCRIPTION
-   Girder Stability Analysis
-*****************************************************************************/
+OneEndSeatedCriteria::OneEndSeatedCriteria()
+{
+   CompressionCoefficient_GlobalStress = 0;
+   CompressionCoefficient_PeakStress = 0;
 
-#include <Private\WBFLPackage.h>
-#include <Math\Math.h>
-#include <MathEx.h>
-#include <Reporter\Reporter.h>
-#include <LRFD\LRFD.h>
+   MinFScr = Float64_Max;
+   MinFSf  = Float64_Max;
 
-#include <Stability/StabilityTypes.h>
+   AllowableCompression_GlobalStress = 0;
+   AllowableCompression_PeakStress = 0;
+}

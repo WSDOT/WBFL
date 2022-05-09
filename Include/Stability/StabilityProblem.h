@@ -23,9 +23,9 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Material\ConcreteEx.h>
-#include <Stability\AnalysisPoint.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/AnalysisPoint.h>
+#include <Material/ConcreteEx.h>
 
 class gpPoint2d;
 interface ISegment;
@@ -34,7 +34,6 @@ namespace WBFL
 {
    namespace Stability
    {
-
       ///  Abstract interface for defining a girder for stability analysis
       class STABILITYCLASS IGirder
       {
@@ -179,10 +178,10 @@ namespace WBFL
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const = 0;
 
          /// Returns a vector of points where stress and cracking analysis is performed
-         virtual std::vector<IAnalysisPoint*> GetAnalysisPoints() const = 0;
+         virtual const std::vector<std::unique_ptr<IAnalysisPoint>>& GetAnalysisPoints() const = 0;
 
          /// Returns a specific analysis point
-         virtual const IAnalysisPoint* GetAnalysisPoint(IndexType idx) const = 0;
+         virtual const std::unique_ptr<IAnalysisPoint>& GetAnalysisPoint(IndexType idx) const = 0;
       };
 
 
@@ -195,24 +194,28 @@ namespace WBFL
       };
 
 
+      /// Abstract interface that extends IStabilityProblem for analysis of seated girders
+      class STABILITYCLASS ISeatedStabilityProblem : public IStabilityProblem
+      {
+      public:
+         /// Returns the rotational stiffness (Ktheta)
+         virtual Float64 GetRotationalStiffness() const = 0;
+
+         /// Returns the width of the support (center-to-center wheel spacing (Wcc) or bearing pad width)
+         virtual Float64 GetSupportWidth() const = 0;
+
+         /// Returns the height of the roll axis above the support
+         virtual Float64 GetHeightOfRollAxis() const = 0;
+
+         /// Returns the slope of the support(always a positive value)
+         virtual Float64 GetSupportSlope() const = 0;
+      };
       /// Abstract interface that extends IStabilityProblem for hauling analysis
-      class STABILITYCLASS IHaulingStabilityProblem : public IStabilityProblem
+      class STABILITYCLASS IHaulingStabilityProblem : public ISeatedStabilityProblem
       {
       public:
          /// Returns how impact is used in the analysis
          virtual HaulingImpact GetImpactUsage() const = 0;
-
-         /// Returns the truck rotational stiffness (Ktheta)
-         virtual Float64 GetTruckRotationalStiffness() const = 0;
-
-         /// Returns the center-to-center wheel spacing (Wcc)
-         virtual Float64 GetWheelLineSpacing() const = 0;
-
-         /// Returns the height of the roll axis above the roadway
-         virtual Float64 GetHeightOfRollAxisAboveRoadway() const = 0;
-
-         /// Returns the normal crown slope (always a positive value)
-         virtual Float64 GetCrownSlope() const = 0;
 
          /// Returns the superelevation rate (always a postive value)
          virtual Float64 GetSuperelevation() const = 0;
@@ -225,6 +228,30 @@ namespace WBFL
 
          /// Returns the type of centrifugal force
          virtual CFType GetCentrifugalForceType() const = 0;
+      };
+
+      /// Abstract interface that extends IStabilityProblem for analysis of girders seated at one end and hanging from the other
+      class STABILITYCLASS IOneEndSeatedStabilityProblem : public ISeatedStabilityProblem
+      {
+      public:
+         /// Returns the end of the girder that is seated
+         virtual GirderSide GetSeatedEnd() const = 0;
+
+         /// Returns the a factor to adjust rotational stiffness.
+         /// When analyzing cases where the seated end is on a truck, it is often convenient to
+         /// define the rotational stiffness of the full truck. This factor is multiplied with the
+         /// rotational stiffness to estimate the stiffness of one end of the truck.
+         virtual Float64 GetRotationalStiffnessAdjustmentFactor() const = 0;
+
+         /// Returns the location of the roll axis at the lifted end of the girder in girder section coordinates.
+         /// (0,0) is at the top center of the girder.
+         /// Positive values mean the roll axis is above the top of the girder.
+         /// For the seated at one end analysis, GetYRoll() and GetHeightOfRollAxis() pertain to the
+         /// seated end of the girder
+         virtual Float64 GetYRollLiftEnd() const = 0;
+
+         /// Lateral offset from CL Girder and Roll Axis at the lifting point to account for accidiental mis-alignment
+         virtual Float64 GetLiftPlacementTolerance() const = 0;
       };
    }
 }

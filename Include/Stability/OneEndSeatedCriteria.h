@@ -23,20 +23,28 @@
 
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   Stability
+#include <Stability/StabilityExp.h>
+#include <Stability/OneEndSeatedTensionStressLimit.h>
 
-   Girder Stability Analysis
+namespace WBFL
+{
+   namespace Stability
+   {
+      /// Criteria for OneEndSeated analysis
+      class STABILITYCLASS OneEndSeatedCriteria
+      {
+      public:
+         OneEndSeatedCriteria();
 
-DESCRIPTION
-   Girder Stability Analysis
-*****************************************************************************/
+         Float64 MinFScr; ///< minimum factor of safety against cracking
+         Float64 MinFSf;  ///< minimum factor of safety against failure
 
-#include <Private\WBFLPackage.h>
-#include <Math\Math.h>
-#include <MathEx.h>
-#include <Reporter\Reporter.h>
-#include <LRFD\LRFD.h>
+         Float64 AllowableCompression_GlobalStress; ///< compression stress limit
+         Float64 AllowableCompression_PeakStress; ///< compression stress limit
+         Float64 CompressionCoefficient_GlobalStress; ///< Global compression compression limit coefficient (x*f'c)
+         Float64 CompressionCoefficient_PeakStress; ///< Peak compression compression limit coefficient (x*f'c)
 
-#include <Stability/StabilityTypes.h>
+         std::shared_ptr<IOneEndSeatedTensionStressLimit> TensionStressLimit; ///< Model for tension stress limit. 
+      };
+   }
+}

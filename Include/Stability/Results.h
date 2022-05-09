@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
+#include <Stability/StabilityExp.h>
 #include <array>
 
 namespace WBFL
@@ -42,6 +42,9 @@ namespace WBFL
          Float64 Ls; ///< span length between supports
          Float64 Wg; ///< weight of girder including appurtenances
          Float64 ea; ///< lateral eccentricity of girder weight, including appurtenances
+
+         Float64 Rl; ///< Reaction at left end of girder due to self weight and appurtenances
+         Float64 Rr; ///< Reaction at right end of girder due ot self weight and appurtenances
 
          CalculationMethod XcgMethod; ///< Indicates the method that was used to compute the location of the center of mass
          Float64 Xleft; ///< horizontal location of the CG with respect to the roll axis

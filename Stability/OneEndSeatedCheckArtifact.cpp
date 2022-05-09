@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Stability/StabilityLib.h>
-#include <Stability/LiftingCheckArtifact.h>
+#include <Stability/OneEndSeatedCheckArtifact.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,32 +32,32 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Stability;
 
-LiftingCheckArtifact::LiftingCheckArtifact()
+OneEndSeatedCheckArtifact::OneEndSeatedCheckArtifact()
 {
 }
 
-LiftingCheckArtifact::LiftingCheckArtifact(const LiftingResults& results,const LiftingCriteria& criteria)
+OneEndSeatedCheckArtifact::OneEndSeatedCheckArtifact(const OneEndSeatedResults& results,const OneEndSeatedCriteria& criteria)
 {
    Init(results,criteria);
 }
 
-void LiftingCheckArtifact::Init(const LiftingResults& results,const LiftingCriteria& criteria)
+void OneEndSeatedCheckArtifact::Init(const OneEndSeatedResults& results,const OneEndSeatedCriteria& criteria)
 {
    m_Results = results;
    m_Criteria = criteria;
 }
 
-const LiftingResults& LiftingCheckArtifact::GetLiftingResults() const
+const OneEndSeatedResults& OneEndSeatedCheckArtifact::GetOneEndSeatedResults() const
 {
    return m_Results;
 }
 
-const LiftingCriteria& LiftingCheckArtifact::GetCriteria() const
+const OneEndSeatedCriteria& OneEndSeatedCheckArtifact::GetCriteria() const
 {
    return m_Criteria;
 }
 
-void LiftingCheckArtifact::GetControllingTensionCase(const LiftingSectionResult& sectionResult,ImpactDirection* pImpact,WindDirection* pWind,Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
+void OneEndSeatedCheckArtifact::GetControllingTensionCase(const OneEndSeatedSectionResult& sectionResult,ImpactDirection* pImpact,WindDirection* pWind,Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
 {
    Float64 Fallow;
    Float64 CD = Float64_Max;
@@ -102,7 +102,7 @@ void LiftingCheckArtifact::GetControllingTensionCase(const LiftingSectionResult&
    *pCD = CD;
 }
 
-void LiftingCheckArtifact::GetControllingGlobalCompressionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const
+void OneEndSeatedCheckArtifact::GetControllingGlobalCompressionCase(const OneEndSeatedSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const
 {
    Float64 fAllow = m_Criteria.AllowableCompression_GlobalStress;
    Float64 CD = Float64_Max;
@@ -134,7 +134,7 @@ void LiftingCheckArtifact::GetControllingGlobalCompressionCase(const LiftingSect
    *pCD = CD;
 }
 
-void LiftingCheckArtifact::GetControllingPeakCompressionCase(const LiftingSectionResult& sectionResult,ImpactDirection* pImpact,WindDirection* pWind,Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
+void OneEndSeatedCheckArtifact::GetControllingPeakCompressionCase(const OneEndSeatedSectionResult& sectionResult,ImpactDirection* pImpact,WindDirection* pWind,Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
 {
    Float64 fAllow = m_Criteria.AllowableCompression_PeakStress;
    Float64 CD = Float64_Max;
@@ -171,7 +171,7 @@ void LiftingCheckArtifact::GetControllingPeakCompressionCase(const LiftingSectio
    *pCD = CD;
 }
 
-bool LiftingCheckArtifact::Passed() const
+bool OneEndSeatedCheckArtifact::Passed() const
 {
    for (int i = 0; i < 3; i++)
    {
@@ -179,7 +179,7 @@ bool LiftingCheckArtifact::Passed() const
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
-         if (!m_Results.bIsStable[impact][wind])
+         if (!m_Results.bRotationalStability[impact][wind] || !m_Results.bRolloverStability[impact][wind])
          {
             return false;
          }
@@ -190,27 +190,32 @@ bool LiftingCheckArtifact::Passed() const
    return (PassedCrackingCheck() && PassedFailureCheck() && PassedStressCheck() && PassedDirectStressCheck());
 }
 
-bool LiftingCheckArtifact::PassedCrackingCheck() const
+bool OneEndSeatedCheckArtifact::PassedCrackingCheck() const
 {
-   return m_Criteria.MinFScr < m_Results.FScrMin;
+   return m_Criteria.MinFScr < m_Results.MinFScr;
 }
 
-bool LiftingCheckArtifact::PassedFailureCheck() const
+bool OneEndSeatedCheckArtifact::PassedFailureCheck() const
 {
    return m_Criteria.MinFSf < m_Results.MinAdjFsFailure;
 }
 
-bool LiftingCheckArtifact::PassedDirectStressCheck() const
+bool OneEndSeatedCheckArtifact::PassedRolloverCheck() const
+{
+   return m_Criteria.MinFSf < m_Results.MinFsRollover;
+}
+
+bool OneEndSeatedCheckArtifact::PassedDirectStressCheck() const
 {
    return PassedDirectCompressionCheck() && PassedDirectTensionCheck();
 }
 
-bool LiftingCheckArtifact::PassedDirectCompressionCheck() const
+bool OneEndSeatedCheckArtifact::PassedDirectCompressionCheck() const
 {
    return (::IsLE(m_Criteria.AllowableCompression_GlobalStress,m_Results.MinDirectStress) ? true : false);
 }
 
-bool LiftingCheckArtifact::PassedDirectTensionCheck() const
+bool OneEndSeatedCheckArtifact::PassedDirectTensionCheck() const
 {
    // since the allowable tension can change based on the amount of reinforcement
    // in the tension region, we have to check every point for every condition
@@ -248,17 +253,17 @@ bool LiftingCheckArtifact::PassedDirectTensionCheck() const
    return true;
 }
 
-bool LiftingCheckArtifact::PassedStressCheck() const
+bool OneEndSeatedCheckArtifact::PassedStressCheck() const
 {
    return PassedCompressionCheck() && PassedTensionCheck();
 }
 
-bool LiftingCheckArtifact::PassedCompressionCheck() const
+bool OneEndSeatedCheckArtifact::PassedCompressionCheck() const
 {
    return (::IsLE(m_Criteria.AllowableCompression_PeakStress,m_Results.MinStress) ? true : false);
 }
 
-bool LiftingCheckArtifact::PassedTensionCheck() const
+bool OneEndSeatedCheckArtifact::PassedTensionCheck() const
 {
    // since the allowable tension can change based on the amount of reinforcement
    // in the tension region, we have to check every point for every condition
@@ -291,18 +296,18 @@ bool LiftingCheckArtifact::PassedTensionCheck() const
 }
 
 #if defined REBAR_FOR_DIRECT_TENSION
-Float64 LiftingCheckArtifact::GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact) const
+Float64 OneEndSeatedCheckArtifact::GetAllowableTension(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact) const
 {
    return m_Criteria.TensionStressLimit->GetTensionLimit(sectionResult,impact);
 }
 #else
-Float64 LiftingCheckArtifact::GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
+Float64 OneEndSeatedCheckArtifact::GetAllowableTension(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
 {
    return m_Criteria.TensionStressLimit->GetTensionLimit(sectionResult, impact, wind);
 }
 #endif
 
-Float64 LiftingCheckArtifact::RequiredFcCompression() const
+Float64 OneEndSeatedCheckArtifact::RequiredFcCompression() const
 {
    Float64 minDirectStress = m_Results.MinDirectStress;
    Float64 global_coeff = m_Criteria.CompressionCoefficient_GlobalStress;
@@ -314,17 +319,17 @@ Float64 LiftingCheckArtifact::RequiredFcCompression() const
    return Max(fcReqd_Global, fcReqd_Peak);
 }
 
-Float64 LiftingCheckArtifact::RequiredFcTension() const
+Float64 OneEndSeatedCheckArtifact::RequiredFcTension() const
 {
    return m_Criteria.TensionStressLimit->GetRequiredFcTension(this);
 }
 
-Float64 LiftingCheckArtifact::RequiredFcTensionWithoutRebar() const
+Float64 OneEndSeatedCheckArtifact::RequiredFcTensionWithoutRebar() const
 {
     return m_Criteria.TensionStressLimit->GetRequiredFcTensionWithoutRebar(this);
 }
 
-Float64 LiftingCheckArtifact::RequiredFcTensionWithRebar() const
+Float64 OneEndSeatedCheckArtifact::RequiredFcTensionWithRebar() const
 {
     return m_Criteria.TensionStressLimit->GetRequiredFcTensionWithRebar(this);
 }

@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
+#include <Stability/StabilityExp.h>
 
 namespace WBFL
 {
@@ -44,6 +44,7 @@ namespace WBFL
 
          static bool PCILiftingExamples(dbgLog& rlog);
          static bool PCIHaulingExamples(dbgLog& rlog);
+         static bool OneEndSeated(dbgLog& rlog);
       };
    }
 }

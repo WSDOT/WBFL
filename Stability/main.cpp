@@ -22,9 +22,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <System\dllTest.h>
-#include <Stability\UnitTest.h>
+#include <Stability/StabilityLib.h>
+#include <System/dllTest.h>
+#include <Stability/UnitTest.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

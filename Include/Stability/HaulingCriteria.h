@@ -23,23 +23,14 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\HaulingTensionStressLimit.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/HaulingTensionStressLimit.h>
 #include <array>
 
 namespace WBFL
 {
    namespace Stability
    {
-
-      /*****************************************************************************
-      CLASS
-         Criteria
-
-      DESCRIPTION
-         Encapsulates the criteria for analysis
-      *****************************************************************************/
-
       /// Criteria for hauling analysis
       class STABILITYCLASS HaulingCriteria
       {

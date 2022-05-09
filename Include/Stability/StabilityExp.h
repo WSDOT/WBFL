@@ -43,7 +43,7 @@
 #endif
 
 #include <WbflAll.h>
-#include <Stability\AutoLib.h>
+#include <Stability/AutoLib.h>
 
 #define SHOW_FULL_CRACKING_TABLE
 #define REBAR_FOR_DIRECT_TENSION // adequacy of reinforcement to use the higher tension stress limit is based on direct tension (plumb section only) when this is defined, otherwise it is based on total tension (plumb + tilt)

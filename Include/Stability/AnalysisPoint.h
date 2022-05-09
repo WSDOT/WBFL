@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
+#include <Stability/StabilityExp.h>
 
 namespace WBFL
 {
@@ -47,7 +47,7 @@ namespace WBFL
          ) const = 0;
 
          /// Creates a copy of the analysis point
-         virtual IAnalysisPoint* Clone() const = 0;
+         virtual std::unique_ptr<IAnalysisPoint> Clone() const = 0;
       };
 
    }

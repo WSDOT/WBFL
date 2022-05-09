@@ -208,6 +208,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="OneEndSeatedCheckArtifact.cpp" />
+    <ClCompile Include="OneEndSeatedCriteria.cpp" />
+    <ClCompile Include="OneEndSeatedResults.cpp" />
+    <ClCompile Include="OneEndSeatedStabilityReporter.cpp" />
+    <ClCompile Include="OneEndSeatedTensionStressLimit.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="StabilityEngineer.cpp" />
     <ClCompile Include="StabilityProblemImp.cpp" />
@@ -227,6 +232,11 @@
     <ClInclude Include="..\Include\Stability\LiftingCriteria.h" />
     <ClInclude Include="..\Include\Stability\LiftingResults.h" />
     <ClInclude Include="..\Include\Stability\LiftingStabilityReporter.h" />
+    <ClInclude Include="..\Include\Stability\OneEndSeatedCheckArtifact.h" />
+    <ClInclude Include="..\Include\Stability\OneEndSeatedCriteria.h" />
+    <ClInclude Include="..\Include\Stability\OneEndSeatedResults.h" />
+    <ClInclude Include="..\Include\Stability\OneEndSeatedStabilityReporter.h" />
+    <ClInclude Include="..\Include\Stability\OneEndSeatedTensionStressLimit.h" />
     <ClInclude Include="..\Include\Stability\ReportingConstants.h" />
     <ClInclude Include="..\Include\Stability\Results.h" />
     <ClInclude Include="..\Include\Stability\Stability.h" />

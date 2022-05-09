@@ -23,14 +23,17 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\StabilityProblem.h>
-#include <Stability\LiftingCriteria.h>
-#include <Stability\LiftingResults.h>
-#include <Stability\HaulingCriteria.h>
-#include <Stability\HaulingResults.h>
-#include <Stability\LiftingCheckArtifact.h>
-#include <Stability\HaulingCheckArtifact.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/StabilityProblem.h>
+#include <Stability/LiftingCriteria.h>
+#include <Stability/LiftingResults.h>
+#include <Stability/HaulingCriteria.h>
+#include <Stability/HaulingResults.h>
+#include <Stability/OneEndSeatedResults.h>
+#include <Stability/OneEndSeatedCriteria.h>
+#include <Stability/LiftingCheckArtifact.h>
+#include <Stability/HaulingCheckArtifact.h>
+#include <Stability/OneEndSeatedCheckArtifact.h>
 
 #include <WBFLFem2d.h>
 
@@ -58,11 +61,17 @@ namespace WBFL
          /// Performs a hauling stress and stability analysis
          HaulingResults AnalyzeHauling(const IGirder* pGirder, const IHaulingStabilityProblem* pStabilityProblem) const;
 
-         /// Performs a lifting stress and stability analysis and compares the results to a set of criteria
+         /// Performs a stress and stability analysis for a girder seated at one end
+         OneEndSeatedResults AnalyzeOneEndSeated(const IGirder * pGirder, const IOneEndSeatedStabilityProblem * pStabilityProblem) const;
+
+         /// Performs a stress and stability analysis and compares the results to a set of criteria for the lifting condition
          LiftingCheckArtifact CheckLifting(const IGirder* pGirder, const ILiftingStabilityProblem* pStabilityProblem, const LiftingCriteria& criteria) const;
 
-         /// Performs a hauling stress and stability analysis and compares the results to a set of criteria
+         /// Performs a stress and stability analysis and compares the results to a set of criteria for the hauling condition
          HaulingCheckArtifact CheckHauling(const IGirder* pGirder, const IHaulingStabilityProblem* pStabilityProblem, const HaulingCriteria& criteria) const;
+
+         /// Performs a stress and stability analysis and compares the results to a set of criteria for the seated at one end condition
+         OneEndSeatedCheckArtifact CheckOneEndSeated(const IGirder* pGirder, const IOneEndSeatedStabilityProblem* pStabilityProblem, const OneEndSeatedCriteria& criteria) const;
 
       private:
          CComPtr<IRebarFactory> m_RebarFactory;
@@ -80,6 +89,8 @@ namespace WBFL
 
          // Common analysis code
          void Analyze(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results, IFem2dModel** ppModel) const;
+
+         void AnalyzeOneEndSeated(const IGirder * pGirder, const IOneEndSeatedStabilityProblem * pStabilityProblem, OneEndSeatedResults & results) const;
 
          // analyze for lifting
          void AnalyzeLifting(const IGirder* pGirder, const ILiftingStabilityProblem* pStabilityProblem, LiftingResults& results) const;

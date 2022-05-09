@@ -23,9 +23,9 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\HaulingResults.h>
-#include <Stability\HaulingCriteria.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/HaulingResults.h>
+#include <Stability/HaulingCriteria.h>
 
 namespace WBFL
 {

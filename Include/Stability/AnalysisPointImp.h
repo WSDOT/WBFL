@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\AnalysisPoint.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/AnalysisPoint.h>
 
 namespace WBFL
 {
@@ -53,7 +53,7 @@ namespace WBFL
          ) const override;
 
          /// Creates a copy of the analysis point
-         virtual IAnalysisPoint* Clone() const override;
+         virtual std::unique_ptr<IAnalysisPoint> Clone() const override;
 
       private:
          Float64 m_X;

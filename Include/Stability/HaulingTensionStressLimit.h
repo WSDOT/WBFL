@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\HaulingResults.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/HaulingResults.h>
 
 class rptParagraph;
 interface IEAFDisplayUnits;

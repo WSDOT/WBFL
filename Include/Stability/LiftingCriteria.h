@@ -23,14 +23,13 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\LiftingTensionStressLimit.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/LiftingTensionStressLimit.h>
 
 namespace WBFL
 {
    namespace Stability
    {
-
       /// Criteria for lifting analysis
       class STABILITYCLASS LiftingCriteria
       {

@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\StabilityProblemImp.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/StabilityProblemImp.h>
 #include <WBFLGenericBridge.h> // for ISegment
 #include <UnitMgt\UnitMgt.h>
 #include <algorithm>
@@ -37,16 +37,6 @@ using namespace WBFL::Stability;
 
 Girder::Girder()
 {
-   m_pSegment = nullptr;
-
-   m_Precamber = 0.0;
-
-   m_exb = 0.0;
-   m_Wb = 0.0;
-
-   m_DragCoefficient = 2.2; // default for I-Beams
-
-   m_bLengthNeedsUpdate = true;
 }
 
 Girder::~Girder()
@@ -376,39 +366,11 @@ void Girder::UpdateLength() const
 /////////////////////////////////////////////////////
 StabilityProblemImp::StabilityProblemImp()
 {
-   m_fy = 0;
-
-   m_bAdjustForXferLength = false;
-   m_XferLength = 0;
-
-   m_Camber = 0;
-   m_CamberMultiplier = 1.0;
-
-   m_bIncludeRollAxisLateralOffset = false;
-   m_LateralCamber = 0.0;
-
-   m_Ll = 0;
-   m_Lr = 0;
-
-   m_SweepTolerance = 0;
-   m_SweepGrowth = 0.0;
-   m_SupportPlacementTolerance = 0;
-
-   m_Yra = 0;
-
-   m_ImpactUp = 0;
-   m_ImpactDown = 0;
-
-   m_WindLoadType = Speed;
-   m_WindLoad = 0.;
-
-   m_eb = 0;
-   m_Wb = 0;
 }
 
 StabilityProblemImp::StabilityProblemImp(const StabilityProblemImp& other)
 {
-   MakeCopy(other);
+   *this = other;
 }
 
 StabilityProblemImp::~StabilityProblemImp()
@@ -418,10 +380,46 @@ StabilityProblemImp::~StabilityProblemImp()
 
 StabilityProblemImp& StabilityProblemImp::operator=(const StabilityProblemImp& other)
 {
-   if( this != &other )
+   // because analysis points are unique points, we need to do a deep copy
+   m_vAnalysisPoints.clear();
+   for (auto& analysisPoint : other.m_vAnalysisPoints)
    {
-      MakeAssignment(other);
+      m_vAnalysisPoints.emplace_back(std::move(analysisPoint->Clone()));
    }
+
+   m_bAdjustForXferLength = other.m_bAdjustForXferLength;
+   m_XferLength = other.m_XferLength;
+   m_Lg = other.m_Lg;
+
+   m_vFpe = other.m_vFpe;
+
+   m_Camber = other.m_Camber;
+   m_CamberMultiplier = other.m_CamberMultiplier;
+
+   m_bIncludeRollAxisLateralOffset = other.m_bIncludeRollAxisLateralOffset;
+   m_LateralCamber = other.m_LateralCamber;
+
+   m_Concrete = other.m_Concrete;
+
+   m_fy = other.m_fy;
+
+   m_Ll = other.m_Ll;
+   m_Lr = other.m_Lr;
+
+   m_SweepTolerance = other.m_SweepTolerance;
+   m_SweepGrowth = other.m_SweepGrowth;
+   m_SupportPlacementTolerance = other.m_SupportPlacementTolerance;
+
+   m_Yra = other.m_Yra;
+
+   m_ImpactUp = other.m_ImpactUp;
+   m_ImpactDown = other.m_ImpactDown;
+
+   m_WindLoadType = other.m_WindLoadType;
+   m_WindLoad = other.m_WindLoad;
+
+   m_eb = other.m_eb;
+   m_Wb = other.m_Wb;
 
    return *this;
 }
@@ -888,31 +886,27 @@ void StabilityProblemImp::GetAppurtenanceLoading(Float64* pex, Float64* pW) cons
 
 void StabilityProblemImp::ClearAnalysisPoints()
 {
-   for( const auto& pAnalysisPoint : m_vAnalysisPoints)
-   {
-      delete pAnalysisPoint;
-   }
    m_vAnalysisPoints.clear();
 }
 
-bool SortAnalysisPoints(IAnalysisPoint* pA,IAnalysisPoint* pB)
+bool SortAnalysisPoints(const std::unique_ptr<IAnalysisPoint>& pA,const std::unique_ptr<IAnalysisPoint>& pB)
 {
    return (pA->GetLocation() < pB->GetLocation());
 }
 
-void StabilityProblemImp::AddAnalysisPoint(IAnalysisPoint* pAnalysisPoint)
+void StabilityProblemImp::AddAnalysisPoint(std::unique_ptr<IAnalysisPoint>&& pAnalysisPoint)
 {
-   m_vAnalysisPoints.push_back(pAnalysisPoint);
+   m_vAnalysisPoints.emplace_back(std::move(pAnalysisPoint.release()));
    std::sort(m_vAnalysisPoints.begin(),m_vAnalysisPoints.end(),SortAnalysisPoints);
    //m_vAnalysisPoints.erase(std::unique(m_vAnalysisPoints.begin(),m_vAnalysisPoints.end(),IsEqual),m_vAnalysisPoints.end());
 }
 
-const std::vector<IAnalysisPoint*>& StabilityProblemImp::GetAnalysisPoints() const
+const std::vector<std::unique_ptr<IAnalysisPoint>>& StabilityProblemImp::GetAnalysisPoints() const
 {
    return m_vAnalysisPoints;
 }
 
-const IAnalysisPoint* StabilityProblemImp::GetAnalysisPoint(IndexType idx) const
+const std::unique_ptr<IAnalysisPoint>& StabilityProblemImp::GetAnalysisPoint(IndexType idx) const
 {
    return m_vAnalysisPoints[idx];
 }
@@ -922,13 +916,13 @@ bool StabilityProblemImp::CompareAnalysisPoints(const StabilityProblemImp& other
    if ( m_vAnalysisPoints.size() != other.m_vAnalysisPoints.size() )
       return false;
 
-   std::vector<IAnalysisPoint*>::const_iterator thisIter(m_vAnalysisPoints.begin());
-   std::vector<IAnalysisPoint*>::const_iterator thisIterEnd(m_vAnalysisPoints.end());
-   std::vector<IAnalysisPoint*>::const_iterator otherIter(other.m_vAnalysisPoints.begin());
+   auto thisIter(m_vAnalysisPoints.begin());
+   auto thisIterEnd(m_vAnalysisPoints.end());
+   auto otherIter(other.m_vAnalysisPoints.begin());
    for ( ; thisIter != thisIterEnd; thisIter++, otherIter++ )
    {
-      const IAnalysisPoint* pA(*thisIter);
-      const IAnalysisPoint* pB(*otherIter);
+      auto& pA(*thisIter);
+      auto& pB(*otherIter);
       if ( !::IsEqual(pA->GetLocation(),pB->GetLocation()) )
       {
          return false;
@@ -936,54 +930,6 @@ bool StabilityProblemImp::CompareAnalysisPoints(const StabilityProblemImp& other
    }
 
    return true;
-}
-
-void StabilityProblemImp::MakeCopy(const StabilityProblemImp& other)
-{
-   ClearAnalysisPoints();
-   for( const auto& pAnalysisPoint : other.m_vAnalysisPoints)
-   {
-      AddAnalysisPoint(pAnalysisPoint->Clone());
-   }
-
-   m_bAdjustForXferLength = other.m_bAdjustForXferLength;;
-   m_XferLength = other.m_XferLength;
-   m_Lg = other.m_Lg;
-
-   m_vFpe = other.m_vFpe;
-   
-   m_Camber = other.m_Camber;
-   m_CamberMultiplier = other.m_CamberMultiplier;
-
-   m_bIncludeRollAxisLateralOffset = other.m_bIncludeRollAxisLateralOffset;
-   m_LateralCamber = other.m_LateralCamber;
-
-   m_Concrete = other.m_Concrete;
-
-   m_fy = other.m_fy;
-
-   m_Ll = other.m_Ll;
-   m_Lr = other.m_Lr;
-
-   m_SweepTolerance = other.m_SweepTolerance;
-   m_SweepGrowth = other.m_SweepGrowth;
-   m_SupportPlacementTolerance = other.m_SupportPlacementTolerance;
-
-   m_Yra = other.m_Yra;
-
-   m_ImpactUp = other.m_ImpactUp;
-   m_ImpactDown = other.m_ImpactDown;
-
-   m_WindLoadType = other.m_WindLoadType;
-   m_WindLoad = other.m_WindLoad;
-
-   m_eb = other.m_eb;
-   m_Wb = other.m_Wb;
-}
-
-void StabilityProblemImp::MakeAssignment(const StabilityProblemImp& other)
-{
-   MakeCopy(other);
 }
 
 void Girder::GetStressPoints(const SectionProperties& props, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
@@ -1013,29 +959,12 @@ void Girder::GetStressPoints(const SectionProperties& props, Section section, gp
 
 ////////////////////////////////
 
-
 LiftingStabilityProblem::LiftingStabilityProblem()
 {
-   m_LiftAngle = PI_OVER_2;
-}
-
-LiftingStabilityProblem::LiftingStabilityProblem(const LiftingStabilityProblem& other)
-{
-   MakeCopy(other);
 }
 
 LiftingStabilityProblem::~LiftingStabilityProblem()
 {
-}
-
-LiftingStabilityProblem& LiftingStabilityProblem::operator=(const LiftingStabilityProblem& other)
-{
-   if( this != &other )
-   {
-      MakeAssignment(other);
-   }
-
-   return *this;
 }
 
 bool LiftingStabilityProblem::operator==(const LiftingStabilityProblem& other) const
@@ -1064,50 +993,13 @@ Float64 LiftingStabilityProblem::GetLiftAngle() const
    return m_LiftAngle;
 }
 
-void LiftingStabilityProblem::MakeCopy(const LiftingStabilityProblem& other)
-{
-   m_Imp = other.m_Imp;
-   m_LiftAngle = other.m_LiftAngle;
-}
-
-void LiftingStabilityProblem::MakeAssignment(const LiftingStabilityProblem& other)
-{
-   MakeCopy(other);
-}
-
 //////////////////////////////////
 HaulingStabilityProblem::HaulingStabilityProblem()
 {
-   m_ImpactUsage = Both;
-
-   m_Ktheta = 0;
-   m_Wcc = 0;
-   m_Hrc = 0;
-   m_Superelevation = 0;
-   m_CrownSlope = 0;
-   
-   m_Velocity = 0;
-   m_Radius = Float64_Max;
-   m_CFType = Favorable;
-}
-
-HaulingStabilityProblem::HaulingStabilityProblem(const HaulingStabilityProblem& other)
-{
-   MakeCopy(other);
 }
 
 HaulingStabilityProblem::~HaulingStabilityProblem()
 {
-}
-
-HaulingStabilityProblem& HaulingStabilityProblem::operator=(const HaulingStabilityProblem& other)
-{
-   if( this != &other )
-   {
-      MakeAssignment(other);
-   }
-
-   return *this;
 }
 
 bool HaulingStabilityProblem::operator==(const HaulingStabilityProblem& other) const
@@ -1160,42 +1052,42 @@ HaulingImpact HaulingStabilityProblem::GetImpactUsage() const
    return m_ImpactUsage;
 }
 
-void HaulingStabilityProblem::SetTruckRotationalStiffness(Float64 Ktheta)
+void HaulingStabilityProblem::SetRotationalStiffness(Float64 Ktheta)
 {
    m_Ktheta = Ktheta;
 }
 
-Float64 HaulingStabilityProblem::GetTruckRotationalStiffness() const
+Float64 HaulingStabilityProblem::GetRotationalStiffness() const
 {
    return m_Ktheta;
 }
 
-void HaulingStabilityProblem::SetWheelLineSpacing(Float64 Wcc)
+void HaulingStabilityProblem::SetSupportWidth(Float64 Wcc)
 {
    m_Wcc = Wcc;
 }
 
-Float64 HaulingStabilityProblem::GetWheelLineSpacing() const
+Float64 HaulingStabilityProblem::GetSupportWidth() const
 {
    return m_Wcc;
 }
 
-void HaulingStabilityProblem::SetHeightOfRollAxisAboveRoadway(Float64 Hrs)
+void HaulingStabilityProblem::SetHeightOfRollAxis(Float64 Hrs)
 {
    m_Hrc = Hrs;
 }
 
-Float64 HaulingStabilityProblem::GetHeightOfRollAxisAboveRoadway() const
+Float64 HaulingStabilityProblem::GetHeightOfRollAxis() const
 {
    return m_Hrc;
 }
 
-void HaulingStabilityProblem::SetCrownSlope(Float64 crown)
+void HaulingStabilityProblem::SetSupportSlope(Float64 crown)
 {
    m_CrownSlope = crown;
 }
 
-Float64 HaulingStabilityProblem::GetCrownSlope() const
+Float64 HaulingStabilityProblem::GetSupportSlope() const
 {
    return m_CrownSlope;
 }
@@ -1240,24 +1132,122 @@ CFType HaulingStabilityProblem::GetCentrifugalForceType() const
    return m_CFType;
 }
 
-void HaulingStabilityProblem::MakeCopy(const HaulingStabilityProblem& other)
+//////////////////////////////////
+OneEndSeatedStabilityProblem::OneEndSeatedStabilityProblem()
 {
-   m_Imp = other.m_Imp;
-
-   m_ImpactUsage = other.m_ImpactUsage;
-   m_Ktheta = other.m_Ktheta;
-   m_Wcc = other.m_Wcc;
-   m_Hrc = other.m_Hrc;
-   m_CrownSlope = other.m_CrownSlope;
-   m_Superelevation = other.m_Superelevation;
-   
-   m_Velocity = other.m_Velocity;
-   m_Radius = other.m_Radius;
-   m_CFType = other.m_CFType;
 }
 
-void HaulingStabilityProblem::MakeAssignment(const HaulingStabilityProblem& other)
+OneEndSeatedStabilityProblem::~OneEndSeatedStabilityProblem()
 {
-   MakeCopy(other);
 }
 
+bool OneEndSeatedStabilityProblem::operator==(const OneEndSeatedStabilityProblem& other) const
+{
+   if (m_Imp != other.m_Imp)
+      return false;
+
+   if (m_SeatedEnd != other.m_SeatedEnd)
+      return false;
+
+   if (!IsEqual(m_Ktheta, other.m_Ktheta))
+      return false;
+
+   if (!IsEqual(m_Wcc, other.m_Wcc))
+      return false;
+
+   if (!IsEqual(m_Hrc, other.m_Hrc))
+      return false;
+
+   if (!IsEqual(m_CrownSlope, other.m_CrownSlope))
+      return false;
+
+   if (!IsEqual(m_Kadjust, other.m_Kadjust))
+      return false;
+
+   return true;
+}
+
+bool OneEndSeatedStabilityProblem::operator!=(const OneEndSeatedStabilityProblem& other) const
+{
+   return !(*this == other);
+}
+
+void OneEndSeatedStabilityProblem::SetRotationalStiffness(Float64 Ktheta)
+{
+   m_Ktheta = Ktheta;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetRotationalStiffness() const
+{
+   return m_Ktheta;
+}
+
+void OneEndSeatedStabilityProblem::SetSupportWidth(Float64 Wcc)
+{
+   m_Wcc = Wcc;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetSupportWidth() const
+{
+   return m_Wcc;
+}
+
+void OneEndSeatedStabilityProblem::SetHeightOfRollAxis(Float64 Hrs)
+{
+   m_Hrc = Hrs;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetHeightOfRollAxis() const
+{
+   return m_Hrc;
+}
+
+void OneEndSeatedStabilityProblem::SetSupportSlope(Float64 crown)
+{
+   m_CrownSlope = crown;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetSupportSlope() const
+{
+   return m_CrownSlope;
+}
+
+void OneEndSeatedStabilityProblem::SetSeatedEnd(GirderSide end)
+{
+   m_SeatedEnd = end;
+}
+
+GirderSide OneEndSeatedStabilityProblem::GetSeatedEnd() const
+{
+   return m_SeatedEnd;
+}
+
+void OneEndSeatedStabilityProblem::SetYRollLiftEnd(Float64 Yroll)
+{
+   m_YrollLiftEnd = Yroll;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetYRollLiftEnd() const
+{
+   return m_YrollLiftEnd;
+}
+
+void OneEndSeatedStabilityProblem::SetLiftPlacementTolerance(Float64 elift)
+{
+   m_elift = elift;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetLiftPlacementTolerance() const
+{
+   return m_elift;
+}
+
+void OneEndSeatedStabilityProblem::SetRotationalStiffnessAdjustmentFactor(Float64 k)
+{
+   m_Kadjust = k;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetRotationalStiffnessAdjustmentFactor() const
+{
+   return m_Kadjust;
+}

@@ -22,8 +22,8 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Stability/StabilityLib.h>
-#include <Stability/LiftingTensionStressLimit.h>
-#include <Stability/LiftingCheckArtifact.h>
+#include <Stability/OneEndSeatedTensionStressLimit.h>
+#include <Stability/OneEndSeatedCheckArtifact.h>
 #include <UnitMgt\UnitMgt.h>
 
 #ifdef _DEBUG
@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Stability;
 
-CCLiftingTensionStressLimit::CCLiftingTensionStressLimit()
+CCOneEndSeatedTensionStressLimit::CCOneEndSeatedTensionStressLimit()
 {
    Lambda = 0.0;
 
@@ -47,7 +47,7 @@ CCLiftingTensionStressLimit::CCLiftingTensionStressLimit()
 }
 
 #if defined REBAR_FOR_DIRECT_TENSION
-Float64 CCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact) const
+Float64 CCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact) const
 {
    if (sectionResult.altTensionRequirements[impact].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact].AsRequired)
    {
@@ -59,7 +59,7 @@ Float64 CCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult&
    }
 }
 #else
-Float64 CCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
+Float64 CCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
 {
    if (sectionResult.altTensionRequirements[impact][wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact][wind].AsRequired)
    {
@@ -72,14 +72,14 @@ Float64 CCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult&
 }
 #endif
 
-Float64 CCLiftingTensionStressLimit::GetRequiredFcTension(const LiftingCheckArtifact* pArtifact) const
+Float64 CCOneEndSeatedTensionStressLimit::GetRequiredFcTension(const OneEndSeatedCheckArtifact* pArtifact) const
 {
    return Min(GetRequiredFcTensionWithoutRebar(pArtifact), GetRequiredFcTensionWithRebar(pArtifact));
 }
 
-Float64 CCLiftingTensionStressLimit::GetRequiredFcTensionWithoutRebar(const LiftingCheckArtifact* pArtifact) const
+Float64 CCOneEndSeatedTensionStressLimit::GetRequiredFcTensionWithoutRebar(const OneEndSeatedCheckArtifact* pArtifact) const
 {
-   Float64 maxStress = pArtifact->GetLiftingResults().MaxStress;
+   Float64 maxStress = pArtifact->GetOneEndSeatedResults().MaxStress;
 
    Float64 fcReqd = 0;
    if (0 < maxStress)
@@ -95,9 +95,9 @@ Float64 CCLiftingTensionStressLimit::GetRequiredFcTensionWithoutRebar(const Lift
    return fcReqd;
 }
 
-Float64 CCLiftingTensionStressLimit::GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const
+Float64 CCOneEndSeatedTensionStressLimit::GetRequiredFcTensionWithRebar(const OneEndSeatedCheckArtifact* pArtifact) const
 {
-   Float64 maxStress = pArtifact->GetLiftingResults().MaxStress;
+   Float64 maxStress = pArtifact->GetOneEndSeatedResults().MaxStress;
 
    Float64 fcReqd = 0;
    if (0 < maxStress)
@@ -107,7 +107,7 @@ Float64 CCLiftingTensionStressLimit::GetRequiredFcTensionWithRebar(const Lifting
    return fcReqd;
 }
 
-void CCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptSqrtPressureValue, tension_coeff, pDisplayUnits->SqrtPressure, false);
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
@@ -142,7 +142,7 @@ void CCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const 
    }
 }
 
-void CCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
@@ -176,7 +176,7 @@ void CCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCh
 
 
 
-UHPCLiftingTensionStressLimit::UHPCLiftingTensionStressLimit()
+UHPCOneEndSeatedTensionStressLimit::UHPCOneEndSeatedTensionStressLimit()
 {
    ffc = 0;
    fc28 = 0;
@@ -184,41 +184,41 @@ UHPCLiftingTensionStressLimit::UHPCLiftingTensionStressLimit()
 }
 
 #if defined REBAR_FOR_DIRECT_TENSION
-Float64 UHPCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact) const
+Float64 UHPCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact) const
 {
    return AllowableTension;
 }
 #else
-Float64 UHPCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
+Float64 UHPCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
 {
    return AllowableTension;
 }
 #endif
 
-Float64 UHPCLiftingTensionStressLimit::GetRequiredFcTension(const LiftingCheckArtifact* pArtifact) const
+Float64 UHPCOneEndSeatedTensionStressLimit::GetRequiredFcTension(const OneEndSeatedCheckArtifact* pArtifact) const
 {
-   Float64 maxStress = pArtifact->GetLiftingResults().MaxStress;
+   Float64 maxStress = pArtifact->GetOneEndSeatedResults().MaxStress;
    Float64 fcReqd = pow(1.5 * maxStress / ffc, 2) * fc28;
    return fcReqd;
 }
 
-Float64 UHPCLiftingTensionStressLimit::GetRequiredFcTensionWithoutRebar(const LiftingCheckArtifact* pArtifact) const
+Float64 UHPCOneEndSeatedTensionStressLimit::GetRequiredFcTensionWithoutRebar(const OneEndSeatedCheckArtifact* pArtifact) const
 {
     return GetRequiredFcTension(pArtifact);
 }
 
-Float64 UHPCLiftingTensionStressLimit::GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const
+Float64 UHPCOneEndSeatedTensionStressLimit::GetRequiredFcTensionWithRebar(const OneEndSeatedCheckArtifact* pArtifact) const
 {
     return GetRequiredFcTension(pArtifact);
 }
 
-void UHPCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
    *pPara << _T("Tension stress limit = (2/3)(") << RPT_STRESS(_T("fc")) << _T(")") << symbol(ROOT) << _T("(") << RPT_FCI << _T("/") << RPT_FC << _T(")") << _T(" = ") << stress.SetValue(AllowableTension) << rptNewLine;
 }
 
-void UHPCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
