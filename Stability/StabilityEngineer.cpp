@@ -975,7 +975,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
       if (segment)
       {
          rebarLayout->CreateRebarSection(X, INVALID_INDEX, &rebarSection);
-         segment->get_PrimaryShape(X, sbLeft, cstGirder, &shape); // this is in girder section coordinates
+         segment->get_GirderShape(X, sbLeft, cstGirder, &shape); // this is in girder section coordinates
 
          // position the shape in centroidal/stress pointscoordinates
          CComPtr<IShapeProperties> props;
@@ -1010,7 +1010,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
 
       Float64 D = Ixx * Iyy - Ixy * Ixy;
 
-      std::array<gpPoint2d, 4> pntStress;
+      std::array<Point, 4> pntStress;
       pGirder->GetStressPoints(X, &pntStress[TopLeft], &pntStress[TopRight], &pntStress[BottomLeft], &pntStress[BottomRight]);
 
       // stress due to prestressing

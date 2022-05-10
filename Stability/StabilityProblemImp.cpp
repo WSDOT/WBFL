@@ -932,7 +932,7 @@ bool StabilityProblemImp::CompareAnalysisPoints(const StabilityProblemImp& other
    return true;
 }
 
-void Girder::GetStressPoints(const SectionProperties& props, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(const SectionProperties& props, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const
 {
    if (props.m_pStressPoints)
    {
