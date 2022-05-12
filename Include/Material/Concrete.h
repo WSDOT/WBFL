@@ -174,6 +174,8 @@ public:
    Float64 GetFirstCrackStrength() const;
    void SetPostCrackingTensileStrength(Float64 frr);
    Float64 GetPostCrackingTensileStrength() const;
+   void SetAutogenousShrinkage(Float64 as);
+   Float64 GetAutogenousShrinkage() const;
 
    // GROUP: INQUIRY
 
@@ -242,6 +244,7 @@ private:
    // UHPC
    Float64 m_ffc;
    Float64 m_frr;
+   Float64 m_AutogenousShrinkage;
 
    bool m_bIsDamaged;
    std::set<matConcreteListener*,std::less<matConcreteListener*>, std::allocator<matConcreteListener*> > m_Listeners;

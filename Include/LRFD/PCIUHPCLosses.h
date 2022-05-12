@@ -80,9 +80,11 @@ public:
 
                          Float64 ShrinkageK1,
                          Float64 ShrinkageK2,
+                         Float64 AutogenousShrinkage,
                          
                          Float64 DeckShrinkageK1,
                          Float64 DeckShrinkageK2,
+                         Float64 DeckAutogenousShrinkage,
 
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
@@ -169,6 +171,7 @@ protected:
    bool m_bUHPCGirder, m_bPCTTGirder;
    bool m_bUHPCSlab, m_bPCTTSlab;
    Float64 m_eAS; // autogenous shrinkage strain
+   Float64 m_eASDeck;
    mutable std::array<Float64, 2> m_dfpAS;
 };
 

@@ -174,6 +174,8 @@ public:
    Float64 GetFirstCrackStrength() const;
    void SetPostCrackingTensileStrength(Float64 frr);
    Float64 GetPostCrackingTensileStrength() const;
+   void SetAutogenousShrinkage(Float64 as);
+   Float64 GetAutogenousShrinkage() const;
 
 protected:
    // prevent copying and assignment (use CreateClone instead)
@@ -211,6 +213,7 @@ private:
    // PCI UHPC parameters
    Float64 m_ffc; // first crack tensile strength
    Float64 m_frr; // post-crack residual tensile strength
+   Float64 m_AutogenousShrinkage;
 
    mutable bool m_bIsValid;
    void Validate() const;

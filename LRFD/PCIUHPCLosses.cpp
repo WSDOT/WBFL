@@ -64,9 +64,11 @@ lrfdPCIUHPCLosses::lrfdPCIUHPCLosses(
 
                          Float64 ShrinkageK1,
                          Float64 ShrinkageK2,
+                         Float64 AutogenousShrinkage,
                          
                          Float64 DeckShrinkageK1,
                          Float64 DeckShrinkageK2,
+                         Float64 DeckAutogenousShrinkage,
 
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
@@ -133,7 +135,8 @@ lrfdRefinedLosses2005(x, Lg, sectionProperties, gradePerm, typePerm, coatingPerm
    m_bUHPCSlab = bUHPCSlab;
    m_bPCTTGirder = bPCTTGirder;
    m_bPCTTSlab = bPCTTSlab;
-   m_eAS = 0.6e-3;
+   m_eAS = AutogenousShrinkage;
+   m_eASDeck = DeckAutogenousShrinkage;
    m_dfpAS[TEMPORARY_STRAND] = 0;
    m_dfpAS[PERMANENT_STRAND] = 0;
 }
@@ -296,7 +299,9 @@ bool lrfdPCIUHPCLosses::TestMe(dbgLog& rlog)
                          0, // angle change
 
                          1,1, // K for girder
+                         0.6e-3,
                          1,1, // K fog slab
+                         0.6e-3,
 
                          41368543.759020001,   // 28 day strength of girder concrete
                          35852736.609413415,  // Release strength
@@ -369,22 +374,22 @@ bool lrfdPCIUHPCLosses::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AtShipping();
-   TRY_TESTME( IsEqual(value, 167933851.46498138) );
+   TRY_TESTME( IsEqual(value, 155971364.15963775) );
 
    value = loss.PermanentStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 167933851.46498138) );
+   TRY_TESTME( IsEqual(value, 155971364.15963775) );
 
    value = loss.PermanentStrand_AfterTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 167933851.46498138) );
+   TRY_TESTME( IsEqual(value, 155971364.15963775) );
 
    value = loss.PermanentStrand_AfterDeckPlacement();
-   TRY_TESTME( IsEqual(value, 254346788.53940639) );
+   TRY_TESTME( IsEqual(value, 243615889.91274610) );
 
    value = loss.PermanentStrand_AfterSIDL();
-   TRY_TESTME( IsEqual(value, 254346788.53940639) );
+   TRY_TESTME( IsEqual(value, 243615889.91274610) );
 
    value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value, 255993650.81468126) );
+   TRY_TESTME( IsEqual(value, 256669979.16319764) );
 
    // temporary strands
    value = loss.TemporaryStrand_BeforeTransfer();
@@ -400,10 +405,10 @@ bool lrfdPCIUHPCLosses::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AtShipping();
-   TRY_TESTME( IsEqual(value, 175833472.45643902) );
+   TRY_TESTME( IsEqual(value, 166983083.96746388) );
 
    value = loss.TemporaryStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 175833472.45643902) );
+   TRY_TESTME( IsEqual(value, 166983083.96746388) );
 
    value = loss.TemporaryStrand_AfterTemporaryStrandRemoval();
    TRY_TESTME( IsEqual(value,0.) );

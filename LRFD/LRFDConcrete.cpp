@@ -169,6 +169,18 @@ Float64 lrfdLRFDConcrete::GetPostCrackingTensileStrength() const
    return m_FinalConcrete.GetPostCrackingTensileStrength();
 }
 
+void lrfdLRFDConcrete::SetAutogenousShrinkage(Float64 as)
+{
+   m_InitialConcrete.SetAutogenousShrinkage(as);
+   m_FinalConcrete.SetAutogenousShrinkage(as);
+}
+
+Float64 lrfdLRFDConcrete::GetAutogenousShrinkage() const
+{
+   ATLASSERT(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
+   return m_FinalConcrete.GetAutogenousShrinkage();
+}
+
 void lrfdLRFDConcrete::SetStartTime(Float64 t)
 {
    m_StartTime = t;

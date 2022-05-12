@@ -95,6 +95,8 @@ public:
    Float64 GetFirstCrackStrength() const;
    void SetPostCrackingTensileStrength(Float64 frr);
    Float64 GetPostCrackingTensileStrength() const;
+   void SetAutogenousShrinkage(Float64 as);
+   Float64 GetAutogenousShrinkage() const;
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.

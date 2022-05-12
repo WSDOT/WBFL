@@ -82,7 +82,8 @@ m_Fct(0),
 m_bHasFct(false),
 m_Lambda(1.0),
 m_ffc(0),
-m_frr(0)
+m_frr(0),
+m_AutogenousShrinkage(0)
 {
    m_bIsDamaged = false;
    // Don't call assert value because this material model is not valid.
@@ -100,7 +101,8 @@ matConcrete::matConcrete(const std::_tstring& name, Float64 fc, Float64 density,
    m_bHasFct(false),
    m_Lambda(1.0),
    m_ffc(0),
-   m_frr(0)
+   m_frr(0),
+   m_AutogenousShrinkage(0)
 {
    m_bIsDamaged = false;
    ASSERTVALID;
@@ -369,6 +371,20 @@ Float64 matConcrete::GetPostCrackingTensileStrength() const
    return m_frr;
 }
 
+void matConcrete::SetAutogenousShrinkage(Float64 as)
+{
+   if (!IsEqual(m_AutogenousShrinkage, as))
+   {
+      m_AutogenousShrinkage = as;
+      NotifyAllListeners();
+   }
+}
+
+Float64 matConcrete::GetAutogenousShrinkage() const
+{
+   return m_AutogenousShrinkage;
+}
+
 //======================== INQUIRY    =======================================
 CollectionIndexType matConcrete::ListenerCount() const
 {
@@ -477,6 +493,9 @@ bool matConcrete::operator==(const matConcrete& rOther) const
    if (!::IsEqual(m_frr, rOther.m_frr))
       return false;
 
+   if (!::IsEqual(m_AutogenousShrinkage, rOther.m_AutogenousShrinkage))
+      return false;
+
    return true;
 }
 
@@ -500,6 +519,7 @@ void matConcrete::MakeCopy(const matConcrete& rOther)
    m_Lambda     = rOther.m_Lambda;
    m_ffc = rOther.m_ffc;
    m_frr = rOther.m_frr;
+   m_AutogenousShrinkage = rOther.m_AutogenousShrinkage;
 
    ASSERTVALID;
 }

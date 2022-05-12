@@ -63,7 +63,9 @@ Float64 lrfdPCIUHPCCreepCoefficient::ComputeKf() const
 Float64 lrfdPCIUHPCCreepCoefficient::ComputeKtd(Float64 t) const
 {
    t = ::ConvertFromSysUnits(t, unitMeasure::Day);
-   return t / (24 + t);
+   Float64 fc = ::ConvertFromSysUnits(m_Fci, unitMeasure::KSI);
+   Float64 ktd = t / (12 * (100. - 4. * fc) / (fc + 20.) + t);
+   return ktd;
 }
 
 #if defined _UNITTEST
@@ -92,11 +94,11 @@ bool lrfdPCIUHPCCreepCoefficient::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( creep.GetKvs(), 1.0 ) );
    TRY_TESTME( IsEqual( creep.GetKf(),  1.0 ) );
    TRY_TESTME( IsEqual( creep.GetKhc(), 1.0 ) );
-   TRY_TESTME( IsEqual( creep.GetKtd(t), 0.833333) );
-   TRY_TESTME( IsEqual( creep.GetCreepCoefficient(t,ti), 1.0) );
+   TRY_TESTME( IsEqual( creep.GetKtd(t), 0.80460) );
+   TRY_TESTME( IsEqual( creep.GetCreepCoefficient(t,ti), 0.96552) );
 
    creep.PostCureThermalTreatment(true);
-   TRY_TESTME(IsEqual(creep.GetCreepCoefficient(t,ti), 0.25));
+   TRY_TESTME(IsEqual(creep.GetCreepCoefficient(t,ti), 0.24138));
 
    TESTME_EPILOG("lrfdPCIUHPCCreepCoefficient");
 }

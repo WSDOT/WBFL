@@ -68,7 +68,8 @@ m_CreepK1(1.0),
 m_CreepK2(1.0),
 m_ShrinkageK1(1.0),
 m_ShrinkageK2(1.0),
-m_Lambda(1.0)
+m_Lambda(1.0),
+m_AutogenousShrinkage(0)
 {
    Float64 fcMin, fpeak;
    lrfdConcreteUtil::GetPCIUHPCMinProperties(&fcMin, &m_ffc, &fpeak, &m_frr);
@@ -84,7 +85,8 @@ m_CreepK1(rOther.m_CreepK1),
 m_CreepK2(rOther.m_CreepK2),
 m_ShrinkageK1(rOther.m_ShrinkageK1),
 m_ShrinkageK2(rOther.m_ShrinkageK2),
-m_Lambda(1.0)
+m_Lambda(1.0),
+m_AutogenousShrinkage(0)
 {
    m_bIsValid = false;
    m_Fc28     = rOther.m_Fc28;
@@ -97,6 +99,7 @@ m_Lambda(1.0)
 
    m_ffc = rOther.m_ffc;
    m_frr = rOther.m_frr;
+   m_AutogenousShrinkage = rOther.m_AutogenousShrinkage;
 }
 
 void lrfdLRFDTimeDependentConcrete::SetA(Float64 a)
@@ -545,6 +548,16 @@ void lrfdLRFDTimeDependentConcrete::SetPostCrackingTensileStrength(Float64 frr)
 Float64 lrfdLRFDTimeDependentConcrete::GetPostCrackingTensileStrength() const
 {
    return m_frr;
+}
+
+void lrfdLRFDTimeDependentConcrete::SetAutogenousShrinkage(Float64 as)
+{
+   m_AutogenousShrinkage = as;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetAutogenousShrinkage() const
+{
+   return m_AutogenousShrinkage;
 }
 
 void lrfdLRFDTimeDependentConcrete::Validate() const
