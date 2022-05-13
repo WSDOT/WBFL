@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Units\UnitsLib.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,8 +30,17 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+void WBFL::Units::convert_from(Float64* pValue, Float64 cf, Float64 dim)
+{
+   if (dim != 0)
+   {
+      PRECONDITION(cf > 0);
+      cf = pow(cf, dim);
+      (*pValue) *= cf;
+   }
+}
 
-void convert_from( Float64* pValue, Float64 preTerm, Float64 cf, Float64 postTerm, Float64 dim )
+void WBFL::Units::convert_from( Float64* pValue, Float64 preTerm, Float64 cf, Float64 postTerm, Float64 dim )
 {
    if (dim != 0)
    {
@@ -47,7 +56,17 @@ void convert_from( Float64* pValue, Float64 preTerm, Float64 cf, Float64 postTer
    }
 }
 
-void convert_to( Float64* pValue, Float64 preTerm, Float64 cf, Float64 postTerm, Float64 dim )
+void WBFL::Units::convert_to(Float64* pValue, Float64 cf, Float64 dim)
+{
+   if (dim != 0)
+   {
+      PRECONDITION(cf > 0);
+      cf = pow(cf, dim);
+      (*pValue) /= cf;
+   }
+}
+
+void WBFL::Units::convert_to( Float64* pValue, Float64 preTerm, Float64 cf, Float64 postTerm, Float64 dim )
 {
    if (dim != 0)
    {
@@ -62,6 +81,3 @@ void convert_to( Float64* pValue, Float64 preTerm, Float64 cf, Float64 postTerm,
          *pValue -= preTerm;
    }
 }
-
-
-

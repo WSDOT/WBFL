@@ -51,10 +51,10 @@ namespace WBFL
          virtual Float64 GetRequiredFcTensionWithRebar(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const = 0;
 
          /// Reports the tension stress limit
-         virtual void ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const = 0;
+         virtual void ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const = 0;
 
          /// Reports the required concrete strength to satisfy the tension stress limit
-         virtual void ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const = 0;
+         virtual void ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const = 0;
       };
 
       /// Conventional concrete tension stress limit
@@ -71,8 +71,8 @@ namespace WBFL
          virtual Float64 GetRequiredFcTension(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const override;
          virtual Float64 GetRequiredFcTensionWithoutRebar(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const override;
          virtual Float64 GetRequiredFcTensionWithRebar(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const override;
-         virtual void ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const override;
-         virtual void ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
 
          Float64 Lambda; ///< concrete density modification factor (see LRFD 5.4.2.8)
 
@@ -102,8 +102,8 @@ namespace WBFL
          virtual Float64 GetRequiredFcTension(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const override { return 0; }
          virtual Float64 GetRequiredFcTensionWithoutRebar(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const override { return GetRequiredFcTension(slope, pArtifact); }
          virtual Float64 GetRequiredFcTensionWithRebar(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const override { return GetRequiredFcTension(slope, pArtifact); }
-         virtual void ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const override;
-         virtual void ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
 
          std::array<Float64, 2> AllowableTension; ///< Tension stress limit
       };

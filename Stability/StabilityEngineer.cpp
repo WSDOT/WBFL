@@ -37,7 +37,7 @@
 #include <array>
 #include <algorithm>
 
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 #include <LRFD\ConcreteUtil.h>
 #include <Math\CubicSolver.h>
 
@@ -745,7 +745,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
             altTensionRequirements.shape = shape;
             altTensionRequirements.rebarSection = rebarSection;
             altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
-            altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
+            altTensionRequirements.fsMax = WBFL::Units::ConvertToSysUnits(30.0, WBFL::Units::Measure::KSI);
             altTensionRequirements.bLimitBarStress = true;
             altTensionRequirements.concreteType = concrete.GetType();
             altTensionRequirements.fc = concrete.GetFc();
@@ -1244,7 +1244,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
             altTensionRequirements.shape = shape;
             altTensionRequirements.rebarSection = rebarSection;
             altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
-            altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
+            altTensionRequirements.fsMax = WBFL::Units::ConvertToSysUnits(30.0, WBFL::Units::Measure::KSI);
             altTensionRequirements.bLimitBarStress = true;
             altTensionRequirements.concreteType = concrete.GetType();
             altTensionRequirements.fc = concrete.GetFc();
@@ -1837,7 +1837,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                altTensionRequirements.shape = shape;
                altTensionRequirements.rebarSection = rebarSection;
                altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
-               altTensionRequirements.fsMax = ::ConvertToSysUnits(30.0, unitMeasure::KSI);
+               altTensionRequirements.fsMax = WBFL::Units::ConvertToSysUnits(30.0, WBFL::Units::Measure::KSI);
                altTensionRequirements.bLimitBarStress = true;
                altTensionRequirements.concreteType = concrete.GetType();
                altTensionRequirements.fc = concrete.GetFc();
@@ -2206,7 +2206,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
 
 
 
-   Float64 g = unitSysUnitsMgr::GetGravitationalAcceleration();
+   Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
    Float64 density = concrete.GetDensityForWeight();
    Float64 unitWeight = density*g;
 
@@ -2680,7 +2680,7 @@ Float64 StabilityEngineer::ComputeXcg(const IGirder* pGirder, const IStabilityPr
          Float64 Xbar1 = fabs(Xcg1 - Max(Wtop1,Wbot1) / 2);
          Float64 Xbar2 = fabs(Xcg2 - Max(Wtop2,Wbot2) / 2);
 
-         Float64 g = unitSysUnitsMgr::GetGravitationalAcceleration();
+         Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
          const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
          Float64 density = concrete.GetDensityForWeight();
          Float64 unitWeight = density*g;
@@ -2697,7 +2697,7 @@ Float64 StabilityEngineer::ComputeXcg(const IGirder* pGirder, const IStabilityPr
       Float64 xcg_wg = 0;
       Float64 Wg = 0;
 
-      Float64 g = unitSysUnitsMgr::GetGravitationalAcceleration();
+      Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
       const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
       Float64 density = concrete.GetDensityForWeight();
       Float64 unitWeight = density*g;
@@ -2783,7 +2783,7 @@ Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProb
    {
       ATLASSERT(m_FirstPoi - m_LastPoi + 1 == m_vPoi.size());
       CComQIPtr<IFem2dModelResults> femResults(pModel);
-      Float64 g = unitSysUnitsMgr::GetGravitationalAcceleration();
+      Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
 
       const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
       Float64 density = concrete.GetDensityForWeight();
@@ -2846,9 +2846,9 @@ Float64 StabilityEngineer::ComputePz(Float64 velocity,Float64 Cd) const
 {
    // LRFD 3.8.1.2
    // Kz and G = 1.0 for Service I
-   Float64 V = ::ConvertFromSysUnits(velocity,unitMeasure::MilePerHour);
+   Float64 V = WBFL::Units::ConvertFromSysUnits(velocity,WBFL::Units::Measure::MilePerHour);
    Float64 Pz = (2.56e-6)*V*V*Cd;
-   Pz = ::ConvertToSysUnits(Pz,unitMeasure::KSF);
+   Pz = WBFL::Units::ConvertToSysUnits(Pz,WBFL::Units::Measure::KSF);
    return Pz;
 }
 

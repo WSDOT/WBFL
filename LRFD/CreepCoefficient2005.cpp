@@ -58,7 +58,7 @@ Float64 lrfdCreepCoefficient2005::GetCreepCoefficient(Float64 t, Float64 ti) con
     if (m_bUpdate)
         Update();
 
-    ti = ::ConvertFromSysUnits(GetAdjustedInitialAge(ti), unitMeasure::Day);
+    ti = WBFL::Units::ConvertFromSysUnits(GetAdjustedInitialAge(ti), WBFL::Units::Measure::Day);
 
     Float64 C = GetUltimateCreep();
     Float64 ktd = GetKtd(t);
@@ -75,7 +75,7 @@ Float64 lrfdCreepCoefficient2005::GetAdjustedInitialAge(Float64 ti) const
       // NCHRP 496...
       // ti = age of concrete, in days, when load is initially applied
       // for accelerated curing, or the age minus 6 days for moist (normal) curing
-      Float64 one_day = ::ConvertToSysUnits(1.0, unitMeasure::Day);
+      Float64 one_day = WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Day);
       tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-one_day);
       if ( tiAdjusted < 0 )
       {
@@ -148,12 +148,12 @@ Float64 lrfdCreepCoefficient2005::ComputeKvs() const
    Float64 kvs;
    if (bSI)
    {
-      kvs = Max(kvs_limit, 1.45 - 0.0051 * ::ConvertFromSysUnits(VS, unitMeasure::Millimeter));
+      kvs = Max(kvs_limit, 1.45 - 0.0051 * WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Millimeter));
       ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {
-      kvs = Max(kvs_limit, 1.45 - 0.13 * ::ConvertFromSysUnits(VS, unitMeasure::Inch));
+      kvs = Max(kvs_limit, 1.45 - 0.13 * WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Inch));
    }
 
    return kvs;
@@ -170,12 +170,12 @@ Float64 lrfdCreepCoefficient2005::ComputeKf() const
    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
    if (bSI)
    {
-      kf = 35.0 / (7.0 + ::ConvertFromSysUnits(m_Fci, unitMeasure::MPa));
+      kf = 35.0 / (7.0 + WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::MPa));
       ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {
-      kf = 5.0 / (1.0 + ::ConvertFromSysUnits(m_Fci, unitMeasure::KSI));
+      kf = 5.0 / (1.0 + WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::KSI));
    }
 
    return kf;
@@ -190,24 +190,24 @@ Float64 lrfdCreepCoefficient2005::ComputeKtd(Float64 t) const
 {
    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
 
-   t = ::ConvertFromSysUnits(t, unitMeasure::Day);
+   t = WBFL::Units::ConvertFromSysUnits(t, WBFL::Units::Measure::Day);
 
    Float64 ktd;
    if (bSI)
    {
-      ktd = t / (61. - 0.58 * ::ConvertFromSysUnits(m_Fci, unitMeasure::MPa) + t);
+      ktd = t / (61. - 0.58 * WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::MPa) + t);
       ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {
       if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
       {
-         ktd = t / (61. - 4. * ::ConvertFromSysUnits(m_Fci, unitMeasure::KSI) + t);
+         ktd = t / (61. - 4. * WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::KSI) + t);
       }
       else
       {
          // ktd equation changed in LRFD 2015
-         Float64 fc = ::ConvertFromSysUnits(m_Fci, unitMeasure::KSI);
+         Float64 fc = WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::KSI);
          ktd = t / (12 * (100. - 4. * fc) / (fc + 20.) + t);
       }
    }
@@ -257,14 +257,14 @@ bool lrfdCreepCoefficient2005::TestMe(dbgLog& rlog)
 
    lrfdCreepCoefficient2005 creep;
    creep.SetCuringMethod(lrfdCreepCoefficient2005::Accelerated);
-   creep.SetFci(::ConvertToSysUnits(8.0,unitMeasure::KSI));
-   creep.SetCuringMethodTimeAdjustmentFactor(::ConvertToSysUnits(7, unitMeasure::Day));
+   creep.SetFci(WBFL::Units::ConvertToSysUnits(8.0,WBFL::Units::Measure::KSI));
+   creep.SetCuringMethodTimeAdjustmentFactor(WBFL::Units::ConvertToSysUnits(7, WBFL::Units::Measure::Day));
    creep.SetRelHumidity(75);
-   creep.SetSurfaceArea( ::ConvertToSysUnits(1.0,unitMeasure::Inch2) );
-   creep.SetVolume( ::ConvertToSysUnits(2.88,unitMeasure::Inch3) );
+   creep.SetSurfaceArea( WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Inch2) );
+   creep.SetVolume( WBFL::Units::ConvertToSysUnits(2.88,WBFL::Units::Measure::Inch3) );
 
-   Float64 ti = ::ConvertToSysUnits(1.0, unitMeasure::Day);
-   Float64 t = ::ConvertToSysUnits(120, unitMeasure::Day);
+   Float64 ti = WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Day);
+   Float64 t = WBFL::Units::ConvertToSysUnits(120, WBFL::Units::Measure::Day);
    TRY_TESTME( IsEqual( creep.GetKvs(), 1.0756 ) );
    TRY_TESTME( IsEqual( creep.GetKf(),  0.55555 ) );
    TRY_TESTME( IsEqual( creep.GetKhc(), 0.96 ) );

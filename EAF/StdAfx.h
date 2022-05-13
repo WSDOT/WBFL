@@ -66,7 +66,6 @@ extern CComModule _Module;
 
 #include <WBFLTools.h>
 
-#include <UnitMgt\UnitMgt.h>
 #include <afxdlgs.h>
 #include <afxwin.h>
 #include <afxmt.h>

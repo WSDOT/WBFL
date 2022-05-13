@@ -24,7 +24,7 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/OneEndSeatedTensionStressLimit.h>
 #include <Stability/OneEndSeatedCheckArtifact.h>
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -107,7 +107,7 @@ Float64 CCOneEndSeatedTensionStressLimit::GetRequiredFcTensionWithRebar(const On
    return fcReqd;
 }
 
-void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptSqrtPressureValue, tension_coeff, pDisplayUnits->SqrtPressure, false);
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
@@ -142,7 +142,7 @@ void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, c
    }
 }
 
-void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
@@ -212,13 +212,13 @@ Float64 UHPCOneEndSeatedTensionStressLimit::GetRequiredFcTensionWithRebar(const 
     return GetRequiredFcTension(pArtifact);
 }
 
-void UHPCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
    *pPara << _T("Tension stress limit = (2/3)(") << RPT_STRESS(_T("fc")) << _T(")") << symbol(ROOT) << _T("(") << RPT_FCI << _T("/") << RPT_FC << _T(")") << _T(" = ") << stress.SetValue(AllowableTension) << rptNewLine;
 }
 
-void UHPCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 

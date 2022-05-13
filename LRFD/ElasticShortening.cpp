@@ -40,9 +40,9 @@ CLASS
 ****************************************************************************/
 
 // preconvert for performance
-static const Float64 g_25000_MPA = ::ConvertToSysUnits(  25000, unitMeasure::MPa );
-static const Float64 g_1_MM2 = ::ConvertToSysUnits( 1, unitMeasure::Millimeter2 );
-static const Float64 g_1_MM4 = ::ConvertToSysUnits( 1, unitMeasure::Millimeter4 );
+static const Float64 g_25000_MPA = WBFL::Units::ConvertToSysUnits(  25000, WBFL::Units::Measure::MPa );
+static const Float64 g_1_MM2 = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter2 );
+static const Float64 g_1_MM4 = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter4 );
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================

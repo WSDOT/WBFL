@@ -41,18 +41,18 @@ CLASS
 ****************************************************************************/
 
 // precompute conversions
-static const Float64 g_17_MPA  = ::ConvertToSysUnits(17.0,unitMeasure::MPa);
-static const Float64 g_70_MPA  = ::ConvertToSysUnits(70.0,unitMeasure::MPa);
-static const Float64 g_27p95_MPA  = ::ConvertToSysUnits(27.95,unitMeasure::MPa);
-static const Float64 g_69p05_MPA  = ::ConvertToSysUnits(69.05,unitMeasure::MPa);
-static const Float64 g_105p05_MPA  = ::ConvertToSysUnits(105.05,unitMeasure::MPa);
+static const Float64 g_17_MPA  = WBFL::Units::ConvertToSysUnits(17.0,WBFL::Units::Measure::MPa);
+static const Float64 g_70_MPA  = WBFL::Units::ConvertToSysUnits(70.0,WBFL::Units::Measure::MPa);
+static const Float64 g_27p95_MPA  = WBFL::Units::ConvertToSysUnits(27.95,WBFL::Units::Measure::MPa);
+static const Float64 g_69p05_MPA  = WBFL::Units::ConvertToSysUnits(69.05,WBFL::Units::Measure::MPa);
+static const Float64 g_105p05_MPA  = WBFL::Units::ConvertToSysUnits(105.05,WBFL::Units::Measure::MPa);
 
-static const Float64 g_2p4_KSI    = ::ConvertToSysUnits(2.4,unitMeasure::KSI);
-static const Float64 g_2p5_KSI    = ::ConvertToSysUnits(2.5,unitMeasure::KSI);
-static const Float64 g_3p95_KSI   = ::ConvertToSysUnits(3.95,unitMeasure::KSI);
-static const Float64 g_10_KSI     = ::ConvertToSysUnits(10.0,unitMeasure::KSI);
-static const Float64 g_10p05_KSI  = ::ConvertToSysUnits(10.05,unitMeasure::KSI);
-static const Float64 g_15p05_KSI  = ::ConvertToSysUnits(15.05,unitMeasure::KSI);
+static const Float64 g_2p4_KSI    = WBFL::Units::ConvertToSysUnits(2.4,WBFL::Units::Measure::KSI);
+static const Float64 g_2p5_KSI    = WBFL::Units::ConvertToSysUnits(2.5,WBFL::Units::Measure::KSI);
+static const Float64 g_3p95_KSI   = WBFL::Units::ConvertToSysUnits(3.95,WBFL::Units::Measure::KSI);
+static const Float64 g_10_KSI     = WBFL::Units::ConvertToSysUnits(10.0,WBFL::Units::Measure::KSI);
+static const Float64 g_10p05_KSI  = WBFL::Units::ConvertToSysUnits(10.05,WBFL::Units::Measure::KSI);
+static const Float64 g_15p05_KSI  = WBFL::Units::ConvertToSysUnits(15.05,WBFL::Units::Measure::KSI);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -350,11 +350,11 @@ Float64 lrfdApproximateLosses2005::GetStrengthFactor() const
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
    if ( is_si )
    {
-      return 35/(7 + ::ConvertFromSysUnits(m_Fci,unitMeasure::MPa));
+      return 35/(7 + WBFL::Units::ConvertFromSysUnits(m_Fci,WBFL::Units::Measure::MPa));
    }
    else
    {
-      return 5/(1 + ::ConvertFromSysUnits(m_Fci,unitMeasure::KSI));
+      return 5/(1 + WBFL::Units::ConvertFromSysUnits(m_Fci,WBFL::Units::Measure::KSI));
    }
 }
 
@@ -406,30 +406,30 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
       Float64 dfpR0 = (m_ApsTemp*m_dfpR0[TEMPORARY_STRAND] + m_ApsPerm*m_dfpR0[PERMANENT_STRAND])/(m_ApsPerm+m_ApsTemp);
       if ( is_si )
       {
-         fpj = ::ConvertFromSysUnits( fpj,unitMeasure::MPa);
-         Float64 delta_fpR = ::ConvertFromSysUnits(PermanentStrand_RelaxationLossesAtXfer(),unitMeasure::MPa);
-         Float64 fpi = fpj - ::ConvertFromSysUnits(dfpR0,unitMeasure::MPa);
+         fpj = WBFL::Units::ConvertFromSysUnits( fpj,WBFL::Units::Measure::MPa);
+         Float64 delta_fpR = WBFL::Units::ConvertFromSysUnits(PermanentStrand_RelaxationLossesAtXfer(),WBFL::Units::Measure::MPa);
+         Float64 fpi = fpj - WBFL::Units::ConvertFromSysUnits(dfpR0,WBFL::Units::Measure::MPa);
          _ASSERTE(0 <= fpi);
 
          m_dfpLT = 10.*fpi*m_ApsPerm/m_Ag*gamma_H*gamma_ST + 83.*gamma_H*gamma_ST + delta_fpR;
-         m_dfpLT = ::ConvertToSysUnits( m_dfpLT, unitMeasure::MPa );
+         m_dfpLT = WBFL::Units::ConvertToSysUnits( m_dfpLT, WBFL::Units::Measure::MPa );
 
          m_dfpTH = 3.*fpi*m_ApsPerm/m_Ag*gamma_H*gamma_ST + 21*gamma_H*gamma_ST + delta_fpR/4;
-         m_dfpTH = ::ConvertToSysUnits( m_dfpTH, unitMeasure::MPa );
+         m_dfpTH = WBFL::Units::ConvertToSysUnits( m_dfpTH, WBFL::Units::Measure::MPa );
       }
       else
       {
-         fpj = ::ConvertFromSysUnits( fpj ,unitMeasure::KSI);
-         Float64 delta_fpR = ::ConvertFromSysUnits(PermanentStrand_RelaxationLossesAtXfer(),unitMeasure::KSI);
+         fpj = WBFL::Units::ConvertFromSysUnits( fpj ,WBFL::Units::Measure::KSI);
+         Float64 delta_fpR = WBFL::Units::ConvertFromSysUnits(PermanentStrand_RelaxationLossesAtXfer(),WBFL::Units::Measure::KSI);
 
-         Float64 fpi = fpj - ::ConvertFromSysUnits(dfpR0,unitMeasure::KSI);
+         Float64 fpi = fpj - WBFL::Units::ConvertFromSysUnits(dfpR0,WBFL::Units::Measure::KSI);
          _ASSERTE(0 <= fpi);
 
          m_dfpLT = 10.*fpi*m_ApsPerm/m_Ag*gamma_H*gamma_ST + 12.*gamma_H*gamma_ST + delta_fpR;
-         m_dfpLT = ::ConvertToSysUnits( m_dfpLT, unitMeasure::KSI );
+         m_dfpLT = WBFL::Units::ConvertToSysUnits( m_dfpLT, WBFL::Units::Measure::KSI );
 
          m_dfpTH = 3.*fpi*(m_ApsPerm+m_ApsTemp)/m_Ag*gamma_H*gamma_ST + 3*gamma_H*gamma_ST + delta_fpR/4;
-         m_dfpTH = ::ConvertToSysUnits( m_dfpTH, unitMeasure::KSI );
+         m_dfpTH = WBFL::Units::ConvertToSysUnits( m_dfpTH, WBFL::Units::Measure::KSI );
       }
 
       // Elastic gain due to deck placement
@@ -458,7 +458,7 @@ void lrfdApproximateLosses2005::UpdateHaulingLosses() const
 //======================== INQUERY    =======================================
 
 #if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
+#include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
 bool lrfdApproximateLosses2005::TestMe(dbgLog& rlog)
 {
@@ -466,16 +466,16 @@ bool lrfdApproximateLosses2005::TestMe(dbgLog& rlog)
 //
 //   lrfdAutoVersion av;
 //
-//   Float64 Fpj   = ::ConvertToSysUnits( 0.80*1860, unitMeasure::MPa );
-//   Float64 Ag    = ::ConvertToSysUnits( 486051, unitMeasure::Millimeter2 );
-//   Float64 Ig    = ::ConvertToSysUnits( 126011e6, unitMeasure::Millimeter4 );
-//   Float64 Ybg   = ::ConvertToSysUnits( 608, unitMeasure::Millimeter );
-//   Float64 e     = ::ConvertToSysUnits( 489, unitMeasure::Millimeter );
-//   Float64 Aps   = ::ConvertToSysUnits( 5133, unitMeasure::Millimeter2 );
-//   Float64 Mdlg  = ::ConvertToSysUnits( 1328, unitMeasure::KilonewtonMeter );
-//   Float64 Eci   = ::ConvertToSysUnits( 30360, unitMeasure::MPa );
-//   Float64 Fc    = ::ConvertToSysUnits( 48, unitMeasure::MPa );
-//   Float64 t     = ::ConvertToSysUnits( 4.0, unitMeasure::Day );
+//   Float64 Fpj   = WBFL::Units::ConvertToSysUnits( 0.80*1860, WBFL::Units::Measure::MPa );
+//   Float64 Ag    = WBFL::Units::ConvertToSysUnits( 486051, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Ig    = WBFL::Units::ConvertToSysUnits( 126011e6, WBFL::Units::Measure::Millimeter4 );
+//   Float64 Ybg   = WBFL::Units::ConvertToSysUnits( 608, WBFL::Units::Measure::Millimeter );
+//   Float64 e     = WBFL::Units::ConvertToSysUnits( 489, WBFL::Units::Measure::Millimeter );
+//   Float64 Aps   = WBFL::Units::ConvertToSysUnits( 5133, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Mdlg  = WBFL::Units::ConvertToSysUnits( 1328, WBFL::Units::Measure::KilonewtonMeter );
+//   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
+//   Float64 Fc    = WBFL::Units::ConvertToSysUnits( 48, WBFL::Units::Measure::MPa );
+//   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //   Float64 PPR   = 1.0;
 //
 //   lrfdApproximateLosses2005 loss( matPsStrand::Gr1860,
@@ -487,10 +487,10 @@ bool lrfdApproximateLosses2005::TestMe(dbgLog& rlog)
 //
 //   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition );
 //   Float64 loss1 = loss.ImmediatelyAfterXferLosses();
-//   TRY_TEST (  IsEqual( ::ConvertFromSysUnits(loss1,unitMeasure::MPa),165.7,0.1) );
+//   TRY_TEST (  IsEqual( WBFL::Units::ConvertFromSysUnits(loss1,WBFL::Units::Measure::MPa),165.7,0.1) );
 //
 //   Float64 loss2 = loss.FinalLosses();
-//   TRY_TEST (  IsEqual(::ConvertFromSysUnits(loss2,unitMeasure::MPa),339.8,0.1) );
+//   TRY_TEST (  IsEqual(WBFL::Units::ConvertFromSysUnits(loss2,WBFL::Units::Measure::MPa),339.8,0.1) );
 //
 //   loss.SetFpj(1);
 //   bool bDidCatch = false;

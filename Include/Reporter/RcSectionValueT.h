@@ -29,7 +29,7 @@
 #include <Reporter\RcSectionValue.h>
 #include <System\SectionValue.h>
 #include <Units\PhysicalT.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 #include <MathEx.h>
 
 
@@ -153,7 +153,7 @@ private:
 
    Float64 GetValue(Float64 v,bool bConvert = false) const
    {
-      Float64 value = bConvert ? ::ConvertFromSysUnits(v, *m_pUnitOfMeasure) : v;
+      Float64 value = bConvert ? WBFL::Units::ConvertFromSysUnits(v, *m_pUnitOfMeasure) : v;
 
       if ( IsZero( value, m_ZeroTolerance ) )
          value = 0.;
@@ -167,22 +167,22 @@ private:
    REPORTERTPL rptRcSectionValueT<u>; \
    typedef rptRcSectionValueT<u> t;
 
-DECLARE_RC_SECTION_VALUE( unitMass,           rptMassSectionValue           );
-DECLARE_RC_SECTION_VALUE( unitMassPerLength,  rptMassPerLEngthSectionValue  );
-DECLARE_RC_SECTION_VALUE( unitLength,         rptLengthSectionValue         );
-DECLARE_RC_SECTION_VALUE( unitTime,           rptTimeSectionValue           );
-DECLARE_RC_SECTION_VALUE( unitTemperature,    rptTemperatureSectionValue    );
-DECLARE_RC_SECTION_VALUE( unitAngle,          rptAngleSectionValue          );
-DECLARE_RC_SECTION_VALUE( unitLength2,        rptLength2SectionValue        );
-DECLARE_RC_SECTION_VALUE( unitLength3,        rptLength3SectionValue        );
-DECLARE_RC_SECTION_VALUE( unitLength4,        rptLength4SectionValue        );
-DECLARE_RC_SECTION_VALUE( unitPressure,       rptPressureSectionValue       );
-DECLARE_RC_SECTION_VALUE( unitDensity,        rptDensitySectionValue        );
-DECLARE_RC_SECTION_VALUE( unitForce,          rptForceSectionValue          );
-DECLARE_RC_SECTION_VALUE( unitForcePerLength, rptForcePerLengthSectionValue );
-DECLARE_RC_SECTION_VALUE( unitMomentPerAngle, rptMomentPerAngleSectionValue );
-DECLARE_RC_SECTION_VALUE( unitMoment,         rptMomentSectionValue         );
-DECLARE_RC_SECTION_VALUE( unitSqrtPressure,   rptSqrtPressureValue          );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Mass,           rptMassSectionValue           );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::MassPerLength,  rptMassPerLEngthSectionValue  );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Length,         rptLengthSectionValue         );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Time,           rptTimeSectionValue           );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Temperature,    rptTemperatureSectionValue    );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Angle,          rptAngleSectionValue          );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Length2,        rptLength2SectionValue        );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Length3,        rptLength3SectionValue        );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Length4,        rptLength4SectionValue        );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Pressure,       rptPressureSectionValue       );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Density,        rptDensitySectionValue        );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Force,          rptForceSectionValue          );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::ForcePerLength, rptForcePerLengthSectionValue );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::MomentPerAngle, rptMomentPerAngleSectionValue );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::Moment,         rptMomentSectionValue         );
+DECLARE_RC_SECTION_VALUE( WBFL::Units::SqrtPressure,   rptSqrtPressureValue          );
 
 typedef rptPressureSectionValue rptStressSectionValue;
 typedef rptLength2SectionValue  rptAreaSectionValue;

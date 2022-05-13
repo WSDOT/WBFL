@@ -24,6 +24,7 @@
 //
 #include "stdafx.h"
 #include <EAF\EAFCustomReport.h>
+#include <System\tokenizer.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

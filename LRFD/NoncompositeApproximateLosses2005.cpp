@@ -52,19 +52,19 @@ lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005()
    m_Level = Average;
    m_Grade = matPsStrand::Gr1860;
    m_Type  = matPsStrand::LowRelaxation;
-   m_Eci   = ::ConvertToSysUnits(  25000, unitMeasure::MPa );
+   m_Eci   = WBFL::Units::ConvertToSysUnits(  25000, WBFL::Units::Measure::MPa );
    m_Ep    = lrfdPsStrand::GetModE();
    m_Fpu   = lrfdPsStrand::GetUltimateStrength( m_Grade );
    m_Fpj   = 0.80*m_Fpu;
    m_Fpy   = lrfdPsStrand::GetYieldStrength( m_Grade, m_Type );
-   m_Aps   = ::ConvertToSysUnits( 1, unitMeasure::Millimeter2 );
-   m_Ag    = ::ConvertToSysUnits( 1, unitMeasure::Millimeter2 );
-   m_Ig    = ::ConvertToSysUnits( 1, unitMeasure::Millimeter4 );
+   m_Aps   = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter2 );
+   m_Ag    = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter2 );
+   m_Ig    = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter4 );
    m_Ybg   = 0;
    m_e     = 0;
    m_eperm = 0;
    m_Mdlg  = 0;
-   m_Fc    = ::ConvertToSysUnits(  48, unitMeasure::MPa );;
+   m_Fc    = WBFL::Units::ConvertToSysUnits(  48, WBFL::Units::Measure::MPa );;
    m_PPR   = 1.0;
    m_K = 1;
 }
@@ -289,8 +289,8 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLosses() const
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
    // Use a values that are just out of spec to avoid throwing for boundry values
    // that have a little round-off error in them.
-   Float64 fcMin = (is_si ? ::ConvertToSysUnits( 27.95, unitMeasure::MPa ) : ::ConvertToSysUnits( 3.95, unitMeasure::KSI ) );
-   Float64 fcMax = (is_si ? ::ConvertToSysUnits( 70.05, unitMeasure::MPa ) : ::ConvertToSysUnits( 10.05, unitMeasure::KSI ) );
+   Float64 fcMin = (is_si ? WBFL::Units::ConvertToSysUnits( 27.95, WBFL::Units::Measure::MPa ) : WBFL::Units::ConvertToSysUnits( 3.95, WBFL::Units::Measure::KSI ) );
+   Float64 fcMax = (is_si ? WBFL::Units::ConvertToSysUnits( 70.05, WBFL::Units::Measure::MPa ) : WBFL::Units::ConvertToSysUnits( 10.05, WBFL::Units::Measure::KSI ) );
    if ( m_Fc < fcMin || fcMax < m_Fc )
       THROW(lrfdXPsLosses,fcOutOfRange);
 
@@ -303,7 +303,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLosses() const
 void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
 {
    // Losses from jacking to release
-   Float64 t_days = ::ConvertFromSysUnits( m_Time, unitMeasure::Day );
+   Float64 t_days = WBFL::Units::ConvertFromSysUnits( m_Time, WBFL::Units::Measure::Day );
    Float64 A = (m_Type == matPsStrand::LowRelaxation ? 40. : 10. );
 
    if ( t_days*24. < 1 )
@@ -346,17 +346,17 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
    else
    {
       Float64 losses;
-      const unitStress* p_unit;
+      const WBFL::Units::Stress* p_unit;
 
       bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
 
       if ( is_si )
-         p_unit = &unitMeasure::MPa;
+         p_unit = &WBFL::Units::Measure::MPa;
       else
-         p_unit = &unitMeasure::KSI;
+         p_unit = &WBFL::Units::Measure::KSI;
 
       Float64 lowRelaxReduction = 0.0;
-      Float64 fc = ::ConvertFromSysUnits( m_Fc, *p_unit );
+      Float64 fc = WBFL::Units::ConvertFromSysUnits( m_Fc, *p_unit );
 
       switch (m_BeamType )
       {
@@ -396,7 +396,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
       if ( m_Type == matPsStrand::LowRelaxation )
          losses -= lowRelaxReduction;
 
-      m_dfApprox = ::ConvertToSysUnits( losses, *p_unit );
+      m_dfApprox = WBFL::Units::ConvertToSysUnits( losses, *p_unit );
    }
 }
 
@@ -404,7 +404,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
 //======================== INQUERY    =======================================
 
 #if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
+#include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
 bool lrfdNoncompositeApproximateLosses2005::TestMe(dbgLog& rlog)
 {
@@ -412,16 +412,16 @@ bool lrfdNoncompositeApproximateLosses2005::TestMe(dbgLog& rlog)
 
 //   lrfdAutoVersion av;
 //
-//   Float64 Fpj   = ::ConvertToSysUnits( 0.80*1860, unitMeasure::MPa );
-//   Float64 Ag    = ::ConvertToSysUnits( 486051, unitMeasure::Millimeter2 );
-//   Float64 Ig    = ::ConvertToSysUnits( 126011e6, unitMeasure::Millimeter4 );
-//   Float64 Ybg   = ::ConvertToSysUnits( 608, unitMeasure::Millimeter );
-//   Float64 e     = ::ConvertToSysUnits( 489, unitMeasure::Millimeter );
-//   Float64 Aps   = ::ConvertToSysUnits( 5133, unitMeasure::Millimeter2 );
-//   Float64 Mdlg  = ::ConvertToSysUnits( 1328, unitMeasure::KilonewtonMeter );
-//   Float64 Eci   = ::ConvertToSysUnits( 30360, unitMeasure::MPa );
-//   Float64 Fc    = ::ConvertToSysUnits( 48, unitMeasure::MPa );
-//   Float64 t     = ::ConvertToSysUnits( 4.0, unitMeasure::Day );
+//   Float64 Fpj   = WBFL::Units::ConvertToSysUnits( 0.80*1860, WBFL::Units::Measure::MPa );
+//   Float64 Ag    = WBFL::Units::ConvertToSysUnits( 486051, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Ig    = WBFL::Units::ConvertToSysUnits( 126011e6, WBFL::Units::Measure::Millimeter4 );
+//   Float64 Ybg   = WBFL::Units::ConvertToSysUnits( 608, WBFL::Units::Measure::Millimeter );
+//   Float64 e     = WBFL::Units::ConvertToSysUnits( 489, WBFL::Units::Measure::Millimeter );
+//   Float64 Aps   = WBFL::Units::ConvertToSysUnits( 5133, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Mdlg  = WBFL::Units::ConvertToSysUnits( 1328, WBFL::Units::Measure::KilonewtonMeter );
+//   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
+//   Float64 Fc    = WBFL::Units::ConvertToSysUnits( 48, WBFL::Units::Measure::MPa );
+//   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //   Float64 PPR   = 1.0;
 //
 //   lrfdNoncompositeApproximateLosses2005 loss( matPsStrand::Gr1860,
@@ -433,10 +433,10 @@ bool lrfdNoncompositeApproximateLosses2005::TestMe(dbgLog& rlog)
 //
 //   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition );
 //   Float64 loss1 = loss.ImmediatelyAfterXferLosses();
-//   TRY_TEST (  IsEqual( ::ConvertFromSysUnits(loss1,unitMeasure::MPa),165.7,0.1) );
+//   TRY_TEST (  IsEqual( WBFL::Units::ConvertFromSysUnits(loss1,WBFL::Units::Measure::MPa),165.7,0.1) );
 //
 //   Float64 loss2 = loss.FinalLosses();
-//   TRY_TEST (  IsEqual(::ConvertFromSysUnits(loss2,unitMeasure::MPa),339.8,0.1) );
+//   TRY_TEST (  IsEqual(WBFL::Units::ConvertFromSysUnits(loss2,WBFL::Units::Measure::MPa),339.8,0.1) );
 //
 //   loss.SetFpj(1);
 //   bool bDidCatch = false;

@@ -23,10 +23,9 @@
 
 #include <Units\UnitsLib.h>
 #include <Units\UnitTest.h>
-#include <Units\AutoSysUnits.h>
+#include <Units\AutoSystem.h>
 #include <Units\Measure.h>
-#include <Units\SysUnitsMgr.h>
-#include <Units\SysUnitsMgrListener.h>
+#include <Units\System.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,29 +33,18 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   unitUnitTest
-****************************************************************************/
+using namespace WBFL::Units;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-bool unitUnitTest::TestMe(dbgLog& rlog)
+bool UnitTest::TestMe(dbgLog& rlog)
 {
    bool tst=true;
+
 #if defined _UNITTEST
-
-   tst &= unitAutoSysUnits::TestMe(rlog);
-   tst &= unitMeasure::TestMe(rlog);
-   tst &= unitSysUnitsMgr::TestMe(rlog);
-   tst &= unitSysUnitsMgrListener::TestMe(rlog);
-
-
+   tst &= AutoSystem::TestMe(rlog);
+   tst &= Measure::TestMe(rlog);
+   tst &= System::TestMe(rlog);
 #endif
+
    return tst;
 }
 

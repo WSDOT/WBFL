@@ -39,6 +39,6 @@ DESCRIPTION
 #include <Private\WBFLPackage.h>
 #include <MathEx.h>
 #include <memory>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
 #endif // INCLUDED_LRFD_LRFDLIB_H_

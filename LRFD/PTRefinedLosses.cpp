@@ -60,16 +60,16 @@ lrfdPTRefinedLosses::lrfdPTRefinedLosses()
    m_Grade = matPsStrand::Gr1860;
    m_Type  = matPsStrand::LowRelaxation;
    m_Rh    = 70.;
-   m_Eci   = ::ConvertToSysUnits(  25000, unitMeasure::MPa );
+   m_Eci   = WBFL::Units::ConvertToSysUnits(  25000, WBFL::Units::Measure::MPa );
    m_Ep    = lrfdPsStrand::GetModE();
    m_Fpu   = lrfdPsStrand::GetUltimateStrength( m_Grade );
    m_Fpj   = 0.80*m_Fpu;
    m_Fpy   = lrfdPsStrand::GetYieldStrength( m_Grade, m_Type );
-   m_Aps   = ::ConvertToSysUnits( 1, unitMeasure::Millimeter2 );
-   m_Ag    = ::ConvertToSysUnits( 1, unitMeasure::Millimeter2 );
-   m_Ig    = ::ConvertToSysUnits( 1, unitMeasure::Millimeter4 );
+   m_Aps   = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter2 );
+   m_Ag    = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter2 );
+   m_Ig    = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter4 );
    m_Ybg   = 0;
-   m_Ic    = ::ConvertToSysUnits( 1, unitMeasure::Millimeter4 );
+   m_Ic    = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter4 );
    m_Ybc   = 0;
    m_e     = 0;
    m_Mdlg  = 0;
@@ -307,21 +307,21 @@ Float64 pt_shrinkage_losses(Float64 h)
 
    Float64 losses;
    Float64 A,B; // Coefficients in the loss equation
-   const unitStress* p_unit;
+   const WBFL::Units::Stress* p_unit;
 
    bool is_si = pt_IsSI();
 
    if ( is_si )
-      p_unit = &unitMeasure::MPa;
+      p_unit = &WBFL::Units::Measure::MPa;
    else
-      p_unit = &unitMeasure::KSI;
+      p_unit = &WBFL::Units::Measure::KSI;
 
    A = is_si ? 93.  : 13.5;
    B = is_si ? 0.85 : 0.123;
 
    losses = A - B*h;
 
-   losses = ::ConvertToSysUnits(losses, *p_unit );
+   losses = WBFL::Units::ConvertToSysUnits(losses, *p_unit );
    CHECK( losses >= 0. );
 
    return losses;
@@ -337,30 +337,30 @@ Float64 pt_creep_losses(Float64 fcgp, Float64 dfcdp)
 Float64 pt_relaxation_after_transfer(matPsStrand::Type type,Float64 fr,Float64 es,Float64 sr,Float64 cr)
 {
    bool is_si = pt_IsSI();
-   const unitStress* p_unit;
+   const WBFL::Units::Stress* p_unit;
    Float64 A;
 
    if ( is_si )
    {
-      p_unit = &unitMeasure::MPa;
+      p_unit = &WBFL::Units::Measure::MPa;
       A = 138.;
    }
    else
    {
-      p_unit = &unitMeasure::KSI;
+      p_unit = &WBFL::Units::Measure::KSI;
       A = 20.;
    }
 
    // Convert input values from system units to code units
-   fr = ::ConvertFromSysUnits(fr,*p_unit);
-   es = ::ConvertFromSysUnits(es,*p_unit);
-   sr = ::ConvertFromSysUnits(sr,*p_unit);
-   cr = ::ConvertFromSysUnits(cr,*p_unit);
+   fr = WBFL::Units::ConvertFromSysUnits(fr,*p_unit);
+   es = WBFL::Units::ConvertFromSysUnits(es,*p_unit);
+   sr = WBFL::Units::ConvertFromSysUnits(sr,*p_unit);
+   cr = WBFL::Units::ConvertFromSysUnits(cr,*p_unit);
 
    Float64 losses;
    losses = A - 0.3*fr - 0.4*es - 0.2*(sr+cr);
 
-   losses = ::ConvertToSysUnits(losses,*p_unit);
+   losses = WBFL::Units::ConvertToSysUnits(losses,*p_unit);
 
    if ( losses < 0 )
    {
@@ -372,7 +372,7 @@ Float64 pt_relaxation_after_transfer(matPsStrand::Type type,Float64 fr,Float64 e
 }
 
 #if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
+#include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
 bool lrfdPTRefinedLosses::TestMe(dbgLog& rlog)
 {
@@ -380,20 +380,20 @@ bool lrfdPTRefinedLosses::TestMe(dbgLog& rlog)
 //
 //   lrfdAutoVersion av;
 //
-//   Float64 Fpj   = ::ConvertToSysUnits( 0.80*1860, unitMeasure::MPa );
-//   Float64 Ag    = ::ConvertToSysUnits( 486051, unitMeasure::Millimeter2 );
-//   Float64 Ig    = ::ConvertToSysUnits( 126011e6, unitMeasure::Millimeter4 );
-//   Float64 Ybg   = ::ConvertToSysUnits( 608, unitMeasure::Millimeter );
-//   Float64 Ic    = ::ConvertToSysUnits( 283.7e9, unitMeasure::Millimeter4 );
-//   Float64 Ybc   = ::ConvertToSysUnits( 977, unitMeasure::Millimeter );
-//   Float64 e     = ::ConvertToSysUnits( 489, unitMeasure::Millimeter );
-//   Float64 Aps   = ::ConvertToSysUnits( 5133, unitMeasure::Millimeter2 );
-//   Float64 Mdlg  = ::ConvertToSysUnits( 1328, unitMeasure::KilonewtonMeter );
-//   Float64 Madlg = ::ConvertToSysUnits( 2900-1328, unitMeasure::KilonewtonMeter );
-//   Float64 Msidl = ::ConvertToSysUnits( 540+353, unitMeasure::KilonewtonMeter );
+//   Float64 Fpj   = WBFL::Units::ConvertToSysUnits( 0.80*1860, WBFL::Units::Measure::MPa );
+//   Float64 Ag    = WBFL::Units::ConvertToSysUnits( 486051, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Ig    = WBFL::Units::ConvertToSysUnits( 126011e6, WBFL::Units::Measure::Millimeter4 );
+//   Float64 Ybg   = WBFL::Units::ConvertToSysUnits( 608, WBFL::Units::Measure::Millimeter );
+//   Float64 Ic    = WBFL::Units::ConvertToSysUnits( 283.7e9, WBFL::Units::Measure::Millimeter4 );
+//   Float64 Ybc   = WBFL::Units::ConvertToSysUnits( 977, WBFL::Units::Measure::Millimeter );
+//   Float64 e     = WBFL::Units::ConvertToSysUnits( 489, WBFL::Units::Measure::Millimeter );
+//   Float64 Aps   = WBFL::Units::ConvertToSysUnits( 5133, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Mdlg  = WBFL::Units::ConvertToSysUnits( 1328, WBFL::Units::Measure::KilonewtonMeter );
+//   Float64 Madlg = WBFL::Units::ConvertToSysUnits( 2900-1328, WBFL::Units::Measure::KilonewtonMeter );
+//   Float64 Msidl = WBFL::Units::ConvertToSysUnits( 540+353, WBFL::Units::Measure::KilonewtonMeter );
 //   Float64 Rh    = 70.;
-//   Float64 Eci   = ::ConvertToSysUnits( 30360, unitMeasure::MPa );
-//   Float64 t     = ::ConvertToSysUnits( 4.0, unitMeasure::Day );
+//   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
+//   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //
 //   lrfdPTRefinedLosses loss( matPsStrand::Gr1860,
 //                      matPsStrand::LowRelaxation,
@@ -404,10 +404,10 @@ bool lrfdPTRefinedLosses::TestMe(dbgLog& rlog)
 //
 //   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition );
 //   Float64 loss1 = loss.ImmediatelyAfterXferLosses();
-//   TRY_TEST (  IsEqual( ::ConvertFromSysUnits(loss1,unitMeasure::MPa),165.7,0.1) );
+//   TRY_TEST (  IsEqual( WBFL::Units::ConvertFromSysUnits(loss1,WBFL::Units::Measure::MPa),165.7,0.1) );
 //
 //   Float64 loss2 = loss.FinalLosses();
-//   TRY_TEST (  IsEqual(::ConvertFromSysUnits(loss2,unitMeasure::MPa),394.2,0.1) );
+//   TRY_TEST (  IsEqual(WBFL::Units::ConvertFromSysUnits(loss2,WBFL::Units::Measure::MPa),394.2,0.1) );
 //
 //   loss.SetFpj(1);
 //   bool bDidCatch = false;

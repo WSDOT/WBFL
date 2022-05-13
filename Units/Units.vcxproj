@@ -177,34 +177,39 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AutoSysUnits.cpp" />
+    <ClCompile Include="AutoSystem.cpp" />
+    <ClCompile Include="IndirectMeasure.cpp" />
+    <ClCompile Include="Library.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Measure.cpp" />
     <ClCompile Include="StationFormat.cpp" />
-    <ClCompile Include="SysUnits.cpp" />
-    <ClCompile Include="SysUnitsMgr.cpp" />
-    <ClCompile Include="SysUnitsMgrListener.cpp" />
+    <ClCompile Include="Convert.cpp" />
+    <ClCompile Include="System.cpp" />
     <ClCompile Include="UnitTest.cpp" />
+    <ClCompile Include="UnitValueNumericalFormatTools.cpp" />
     <ClCompile Include="XUnit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Units\AutoLib.h" />
-    <ClInclude Include="..\Include\Units\AutoSysUnits.h" />
+    <ClInclude Include="..\Include\Units\AutoSystem.h" />
     <ClInclude Include="..\Include\Units\Convert.h" />
+    <ClInclude Include="..\Include\Units\IndirectMeasure.h" />
+    <ClInclude Include="..\Include\Units\Library.h" />
+    <ClInclude Include="..\Include\Units\LibraryT.h" />
     <ClInclude Include="..\Include\Units\Measure.h" />
     <ClInclude Include="..\Include\Units\PhysicalT.h" />
     <ClInclude Include="..\Include\Units\StationFormat.h" />
-    <ClInclude Include="..\Include\Units\SysUnits.h" />
-    <ClInclude Include="..\Include\Units\SysUnitsMgr.h" />
-    <ClInclude Include="..\Include\Units\SysUnitsMgrListener.h" />
+    <ClInclude Include="..\Include\Units\System.h" />
     <ClInclude Include="..\Include\Units\Units.h" />
     <ClInclude Include="..\Include\Units\UnitsExp.h" />
     <ClInclude Include="..\Include\Units\UnitsLib.h" />
     <ClInclude Include="..\Include\Units\UnitTest.h" />
+    <ClInclude Include="..\Include\Units\UnitValueNumericalFormatTools.h" />
     <ClInclude Include="..\Include\Units\XUnit.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Units.def" />

@@ -255,7 +255,7 @@ bool lrfdPCIUHPCLosses::TestMe(dbgLog& rlog)
 
    std::shared_ptr<lrfdPCIUHPCCreepCoefficient> pGirderCreep = std::make_shared<lrfdPCIUHPCCreepCoefficient>();
    pGirderCreep->SetCuringMethod(lrfdPCIUHPCCreepCoefficient::Accelerated);
-   pGirderCreep->SetCuringMethodTimeAdjustmentFactor(::ConvertToSysUnits(7, unitMeasure::Day));
+   pGirderCreep->SetCuringMethodTimeAdjustmentFactor(WBFL::Units::ConvertToSysUnits(7, WBFL::Units::Measure::Day));
    pGirderCreep->SetFci(35852736.609413415);
    pGirderCreep->SetRelHumidity(75);
    pGirderCreep->SetSurfaceArea(6.9711699425657105);
@@ -265,7 +265,7 @@ bool lrfdPCIUHPCLosses::TestMe(dbgLog& rlog)
 
    std::shared_ptr<lrfdCreepCoefficient2005> pDeckCreep = std::make_shared<lrfdCreepCoefficient2005>();
    pDeckCreep->SetCuringMethod(lrfdCreepCoefficient2005::Normal);
-   pDeckCreep->SetCuringMethodTimeAdjustmentFactor(::ConvertToSysUnits(7, unitMeasure::Day));
+   pDeckCreep->SetCuringMethodTimeAdjustmentFactor(WBFL::Units::ConvertToSysUnits(7, WBFL::Units::Measure::Day));
    pDeckCreep->SetFci(0.8 * 27579029.172680002); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
    pDeckCreep->SetRelHumidity(75);
    pDeckCreep->SetSurfaceArea(1.8288000000760127);

@@ -44,7 +44,7 @@ CLASS
 //======================== LIFECYCLE  =======================================
 lrfdCreepCoefficient::lrfdCreepCoefficient()
 {
-   m_CuringMethodTimeAdjustmentFactor = ::ConvertToSysUnits(7.0,unitMeasure::Day);
+   m_CuringMethodTimeAdjustmentFactor = WBFL::Units::ConvertToSysUnits(7.0,WBFL::Units::Measure::Day);
    m_bUpdate = true;
 }
 
@@ -61,12 +61,12 @@ Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
     Float64 VSMax;
     if (bSI)
     {
-        VS = ::ConvertFromSysUnits(VS, unitMeasure::Millimeter);
+        VS = WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Millimeter);
         VSMax = 150.0; // millimeters
     }
     else
     {
-        VS = ::ConvertFromSysUnits(VS, unitMeasure::Inch);
+        VS = WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Inch);
         VSMax = 6.0; // inches
     }
 
@@ -85,7 +85,7 @@ Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
         x2 = -0.54;
     }
 
-    t = ::ConvertFromSysUnits(t, unitMeasure::Day);
+    t = WBFL::Units::ConvertFromSysUnits(t, WBFL::Units::Measure::Day);
 
     a = t / (26.0 * pow(e, x1 * VS) + t);
     b = t / (45.0 + t);
@@ -101,11 +101,11 @@ Float64 lrfdCreepCoefficient::GetCreepCoefficient(Float64 t, Float64 ti) const
         Update();
 
     Float64 tiAdjusted = GetAdjustedInitialAge(ti);
-    tiAdjusted = ::ConvertFromSysUnits(tiAdjusted, unitMeasure::Day);
+    tiAdjusted = WBFL::Units::ConvertFromSysUnits(tiAdjusted, WBFL::Units::Measure::Day);
 
     Float64 kc = ComputeKtd(t);
 
-    t = ::ConvertFromSysUnits(t, unitMeasure::Day); // do after calling ComputeKtd because it expects t in system units
+    t = WBFL::Units::ConvertFromSysUnits(t, WBFL::Units::Measure::Day); // do after calling ComputeKtd because it expects t in system units
 
     Float64 Ct;
     if (t < tiAdjusted)
@@ -167,12 +167,12 @@ Float64 lrfdCreepCoefficient::GetSurfaceArea() const
 Float64 lrfdCreepCoefficient::GetAdjustedInitialAge(Float64 ti) const
 {
     Float64 tiAdjusted = ti;
-    if (m_CuringMethod == Accelerated && ti < ::ConvertToSysUnits(7.0,unitMeasure::Day))
+    if (m_CuringMethod == Accelerated && ti < WBFL::Units::ConvertToSysUnits(7.0,WBFL::Units::Measure::Day))
     {
         // NCHRP 496...
         // ti = age of concrete, in days, when load is initially applied
         // for accelerated curing, or the age minus 6 days for moist (normal) curing
-        Float64 one_day = ::ConvertToSysUnits(1.0, unitMeasure::Day);
+        Float64 one_day = WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Day);
         tiAdjusted += m_CuringMethodTimeAdjustmentFactor - one_day; // days
     }
 
@@ -223,11 +223,11 @@ Float64 lrfdCreepCoefficient::ComputeKf() const
     Float64 kf;
     if (bSI)
     {
-        kf = 62.0 / (42.0 + ::ConvertFromSysUnits(m_Fci, unitMeasure::MPa));
+        kf = 62.0 / (42.0 + WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::MPa));
     }
     else
     {
-        kf = 1.0 / (0.67 + (::ConvertFromSysUnits(m_Fci, unitMeasure::KSI) / 9.0));
+        kf = 1.0 / (0.67 + (WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::KSI) / 9.0));
     }
 
     return kf;

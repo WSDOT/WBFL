@@ -24,7 +24,7 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/LiftingTensionStressLimit.h>
 #include <Stability/LiftingCheckArtifact.h>
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -107,7 +107,7 @@ Float64 CCLiftingTensionStressLimit::GetRequiredFcTensionWithRebar(const Lifting
    return fcReqd;
 }
 
-void CCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptSqrtPressureValue, tension_coeff, pDisplayUnits->SqrtPressure, false);
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
@@ -142,7 +142,7 @@ void CCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const 
    }
 }
 
-void CCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
@@ -212,13 +212,13 @@ Float64 UHPCLiftingTensionStressLimit::GetRequiredFcTensionWithRebar(const Lifti
     return GetRequiredFcTension(pArtifact);
 }
 
-void UHPCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
    *pPara << _T("Tension stress limit = (2/3)(") << RPT_STRESS(_T("fc")) << _T(")") << symbol(ROOT) << _T("(") << RPT_FCI << _T("/") << RPT_FC << _T(")") << _T(" = ") << stress.SetValue(AllowableTension) << rptNewLine;
 }
 
-void UHPCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 

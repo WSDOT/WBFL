@@ -116,7 +116,7 @@ bool lrfdTxdotLldfSpreadSlab::TestRangeOfApplicability(Location loc) const
 
 bool lrfdTxdotLldfSpreadSlab::DoTestRangeOfApplicablity(bool doThrow) const
 {
-   Float64 L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
+   Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,WBFL::Units::Measure::Feet);
 
    if ( IsLT(L, 31.0) )
       THROW_DF( lrfdXRangeOfApplicability, SpanLength, _T("Span length is too short. Must be greater or equal to 31.0 ft"));
@@ -124,7 +124,7 @@ bool lrfdTxdotLldfSpreadSlab::DoTestRangeOfApplicablity(bool doThrow) const
    if ( IsGT(51.0, L) )
       THROW_DF( lrfdXRangeOfApplicability, SpanLength, _T("Span length is too long. Must be less than or equal to 51.0 ft"));
 
-   Float64 S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
+   Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg,WBFL::Units::Measure::Feet);
 
    if ( IsLT(S, 6.5) )
       THROW_DF( lrfdXRangeOfApplicability, Spacing, _T("Girder spacing is too small. Must be greater than or equal to 6.5 ft"));
@@ -132,7 +132,7 @@ bool lrfdTxdotLldfSpreadSlab::DoTestRangeOfApplicablity(bool doThrow) const
    if ( IsGT(11.0, S) )
       THROW_DF( lrfdXRangeOfApplicability, Spacing, _T("Girder spacing is too large. Must be less than or equal to 11.0 ft"));
 
-   Float64 d = ::ConvertFromSysUnits(m_d,unitMeasure::Inch);
+   Float64 d = WBFL::Units::ConvertFromSysUnits(m_d,WBFL::Units::Measure::Inch);
 
    if ( IsLT(d, 12.0) )
       THROW_DF( lrfdXRangeOfApplicability, GirderDepth, _T("Girder depth is too small. Must be greater than or equal to 12.0 in"));
@@ -140,7 +140,7 @@ bool lrfdTxdotLldfSpreadSlab::DoTestRangeOfApplicablity(bool doThrow) const
    if ( IsGT(21.0, d) )
       THROW_DF( lrfdXRangeOfApplicability, GirderDepth, _T("Girder depth is too large. Must be less than or equal to 21.0 in"));
 
-   Float64 ts = ::ConvertFromSysUnits(m_ts,unitMeasure::Inch);
+   Float64 ts = WBFL::Units::ConvertFromSysUnits(m_ts,WBFL::Units::Measure::Inch);
 
    if ( IsLT(ts, 8.0) )
       THROW_DF( lrfdXRangeOfApplicability, GirderDepth, _T("Slab depth is too small. Must be greater than or equal to 8.0 in"));
@@ -164,9 +164,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_I
    bool isAppl = DoTestRangeOfApplicablity(false);
    if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
-      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
-      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L, WBFL::Units::Measure::Feet);
+      Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg, WBFL::Units::Measure::Feet);
+      Float64 d = WBFL::Units::ConvertFromSysUnits(m_d, WBFL::Units::Measure::Inch);
 
       if (GetNb() == 1)
       {
@@ -207,9 +207,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_I
    bool isAppl = DoTestRangeOfApplicablity(false);
    if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
-      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
-      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L, WBFL::Units::Measure::Feet);
+      Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg, WBFL::Units::Measure::Feet);
+      Float64 d = WBFL::Units::ConvertFromSysUnits(m_d, WBFL::Units::Measure::Inch);
 
       if (GetNb() == 1)
       {
@@ -250,9 +250,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_E
    bool isAppl = DoTestRangeOfApplicablity(false);
    if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
-      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
-      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L, WBFL::Units::Measure::Feet);
+      Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg, WBFL::Units::Measure::Feet);
+      Float64 d = WBFL::Units::ConvertFromSysUnits(m_d, WBFL::Units::Measure::Inch);
 
       if (GetNb() == 1)
       {
@@ -302,9 +302,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetMomentDF_E
    bool isAppl = DoTestRangeOfApplicablity(false);
    if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
-      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
-      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L, WBFL::Units::Measure::Feet);
+      Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg, WBFL::Units::Measure::Feet);
+      Float64 d = WBFL::Units::ConvertFromSysUnits(m_d, WBFL::Units::Measure::Inch);
 
       if (GetNb() == 1)
       {
@@ -354,9 +354,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_In
    bool isAppl = DoTestRangeOfApplicablity(false);
    if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
-      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
-      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L, WBFL::Units::Measure::Feet);
+      Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg, WBFL::Units::Measure::Feet);
+      Float64 d = WBFL::Units::ConvertFromSysUnits(m_d, WBFL::Units::Measure::Inch);
 
       if (GetNb() == 1)
       {
@@ -398,9 +398,9 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdTxdotLldfSpreadSlab::GetShearDF_I
    bool isAppl = DoTestRangeOfApplicablity(false);
    if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      Float64 L = ::ConvertFromSysUnits(m_L, unitMeasure::Feet);
-      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
-      Float64 d = ::ConvertFromSysUnits(m_d, unitMeasure::Inch);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L, WBFL::Units::Measure::Feet);
+      Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg, WBFL::Units::Measure::Feet);
+      Float64 d = WBFL::Units::ConvertFromSysUnits(m_d, WBFL::Units::Measure::Inch);
 
       if (GetNb() == 1)
       {
@@ -442,7 +442,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ex
    bool isAppl = DoTestRangeOfApplicablity(false);
    if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+      Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg, WBFL::Units::Measure::Feet);
 
       if (GetNb() == 1)
       {
@@ -492,7 +492,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfSpreadSlab::GetShearDF_Ex
    bool isAppl = DoTestRangeOfApplicablity(false);
    if (isAppl || m_RangeOfApplicabilityAction == roaIgnore)
    {
-      Float64 S = ::ConvertFromSysUnits(m_Savg, unitMeasure::Feet);
+      Float64 S = WBFL::Units::ConvertFromSysUnits(m_Savg, WBFL::Units::Measure::Feet);
 
       if (GetNb() == 1)
       {
@@ -576,15 +576,15 @@ bool lrfdTxdotLldfSpreadSlab::TestMe(dbgLog& rlog)
 
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
-   Float64 Savg = ::ConvertToSysUnits( 7.5, unitMeasure::Feet );
+   Float64 Savg = WBFL::Units::ConvertToSysUnits( 7.5, WBFL::Units::Measure::Feet );
    Int16 Nb = 5;
    std::vector<Float64> spacings;
    spacings.assign(Nb-1, Savg);
-   Float64 d = ::ConvertToSysUnits( 15.0, unitMeasure::Inch );
-   Float64 L = ::ConvertToSysUnits( 40.5, unitMeasure::Feet );
-   Float64 ts = ::ConvertToSysUnits( 8.0, unitMeasure::Inch );
+   Float64 d = WBFL::Units::ConvertToSysUnits( 15.0, WBFL::Units::Measure::Inch );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 40.5, WBFL::Units::Measure::Feet );
+   Float64 ts = WBFL::Units::ConvertToSysUnits( 8.0, WBFL::Units::Measure::Inch );
    Int16 Nl = 3;
-   Float64 wLane = ::ConvertToSysUnits( 12.0, unitMeasure::Feet );
+   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
    Float64 ohang = Savg/2.0;
 
    lrfdTxdotLldfSpreadSlab df(1,Savg,spacings,ohang,ohang,Nl,wLane,d,L,ts,0.0,0.0);

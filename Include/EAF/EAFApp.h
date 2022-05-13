@@ -42,7 +42,7 @@
 
 #include <WBFLTools.h>
 
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 
 typedef void(*DocCallback)(CDocument* pDoc,void* pStuff); 
 
@@ -204,7 +204,7 @@ protected:
 public:
    eafTypes::UnitMode GetUnitsMode() const;
    void SetUnitsMode(eafTypes::UnitMode newVal);
-   const unitmgtIndirectMeasure* GetDisplayUnits() const;
+   const WBFL::Units::IndirectMeasure* GetDisplayUnits() const;
 
    void AddUnitModeListener(iUnitModeListener* pListener);
    void RemoveUnitModeListener(iUnitModeListener* pListener);
@@ -279,8 +279,8 @@ private:
    // Display Units
    void InitDisplayUnits();
    void UpdateDisplayUnits();
-   unitmgtLibrary m_UnitLibrary;
-   const unitmgtIndirectMeasure* m_pDisplayUnits; // current setting
+   WBFL::Units::Library m_UnitLibrary;
+   const WBFL::Units::IndirectMeasure* m_pDisplayUnits; // current setting
    eafTypes::UnitMode m_Units;
    std::set<iUnitModeListener*> m_UnitModeListeners;
    void Fire_UnitsChanging();

@@ -26,7 +26,7 @@
 #include <Lrfd\Losses.h>
 #include <Lrfd\XPsLosses.h>
 #include <Lrfd\VersionMgr.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
 
 #ifdef _DEBUG
@@ -1178,7 +1178,7 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
          THROW(lrfdXPsLosses,fpjOutOfRange);
       }
 
-      Float64 t_days = ::ConvertFromSysUnits( m_ti, unitMeasure::Day );
+      Float64 t_days = WBFL::Units::ConvertFromSysUnits( m_ti, WBFL::Units::Measure::Day );
       Float64 Aperm = (m_TypePerm == matPsStrand::LowRelaxation ? 40. : 10. );
       Float64 Atemp = (m_TypeTemp == matPsStrand::LowRelaxation ? 40. : 10. );
 
@@ -1289,15 +1289,15 @@ void lrfdLosses::UpdatePostTensionLosses() const
       Float64 K, x, lg;
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
-         K = ::ConvertFromSysUnits(m_WobbleCoefficient,unitMeasure::PerMillimeter);
-         x = ::ConvertFromSysUnits(m_X,unitMeasure::Millimeter);
-         lg = ::ConvertFromSysUnits(m_Lg,unitMeasure::Millimeter);
+         K = WBFL::Units::ConvertFromSysUnits(m_WobbleCoefficient,WBFL::Units::Measure::PerMillimeter);
+         x = WBFL::Units::ConvertFromSysUnits(m_X,WBFL::Units::Measure::Millimeter);
+         lg = WBFL::Units::ConvertFromSysUnits(m_Lg,WBFL::Units::Measure::Millimeter);
       }
       else
       {
-         K = ::ConvertFromSysUnits(m_WobbleCoefficient,unitMeasure::PerFeet);
-         x = ::ConvertFromSysUnits(m_X,unitMeasure::Feet);
-         lg = ::ConvertFromSysUnits(m_Lg,unitMeasure::Feet);
+         K = WBFL::Units::ConvertFromSysUnits(m_WobbleCoefficient,WBFL::Units::Measure::PerFeet);
+         x = WBFL::Units::ConvertFromSysUnits(m_X,WBFL::Units::Measure::Feet);
+         lg = WBFL::Units::ConvertFromSysUnits(m_Lg,WBFL::Units::Measure::Feet);
       }
 
       m_dfpF  = m_FpjTemp*(1 - exp(-(K*x  + m_AngleChange*m_FrictionCoefficient)));

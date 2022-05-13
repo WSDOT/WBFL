@@ -52,7 +52,7 @@ void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder
    *pChapter << pPara;
 
    CEAFApp* pApp = EAFGetApp();
-   const unitmgtIndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
+   const WBFL::Units::IndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
 
    INIT_SCALAR_PROTOTYPE(rptRcScalar, scalar, pDisplayUnits->Scalar);
    INIT_UV_PROTOTYPE( rptStressUnitValue,   stress,       pDisplayUnits->Stress, true);
@@ -507,7 +507,7 @@ void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder
 void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IOneEndSeatedStabilityProblem* pStabilityProblem,const OneEndSeatedResults* pResults,rptChapter* pChapter, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
 {
    CEAFApp* pApp = EAFGetApp();
-   const unitmgtIndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
+   const WBFL::Units::IndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
 
    CComPtr<ISegment> segment;
    pGirder->GetSegment(&segment);

@@ -23,7 +23,7 @@
 
 #include <Material\MatLib.h>
 #include <Material\Rebar.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,28 +38,28 @@ CLASS
 // -1 means the material is not defined
 // Index 0 = A615, 1 = A706, 2 = A1035
 
-static Float64 gs_Fy40[3] = { ::ConvertToSysUnits(40,unitMeasure::KSI), -1, -1 };
-static Float64 gs_Fu40[3] = { ::ConvertToSysUnits(60,unitMeasure::KSI), -1, -1 };
-static Float64 gs_Es40[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), -1, -1 };
+static Float64 gs_Fy40[3] = { WBFL::Units::ConvertToSysUnits(40,WBFL::Units::Measure::KSI), -1, -1 };
+static Float64 gs_Fu40[3] = { WBFL::Units::ConvertToSysUnits(60,WBFL::Units::Measure::KSI), -1, -1 };
+static Float64 gs_Es40[3] = { WBFL::Units::ConvertToSysUnits(29000,WBFL::Units::Measure::KSI), -1, -1 };
 
-static Float64 gs_Fy60[3] = { ::ConvertToSysUnits(60,unitMeasure::KSI),    ::ConvertToSysUnits(60,unitMeasure::KSI), -1 };
-static Float64 gs_Fu60[3] = { ::ConvertToSysUnits(90,unitMeasure::KSI),    ::ConvertToSysUnits(80,unitMeasure::KSI), -1 };
-static Float64 gs_Es60[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::ConvertToSysUnits(29000,unitMeasure::KSI), -1 };
-static Float64 gs_Fy75[3] = { ::ConvertToSysUnits(75,unitMeasure::KSI),    -1, -1 };
-static Float64 gs_Fu75[3] = { ::ConvertToSysUnits(100,unitMeasure::KSI),   -1, -1 };
-static Float64 gs_Es75[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), -1, -1 };
+static Float64 gs_Fy60[3] = { WBFL::Units::ConvertToSysUnits(60,WBFL::Units::Measure::KSI),    WBFL::Units::ConvertToSysUnits(60,WBFL::Units::Measure::KSI), -1 };
+static Float64 gs_Fu60[3] = { WBFL::Units::ConvertToSysUnits(90,WBFL::Units::Measure::KSI),    WBFL::Units::ConvertToSysUnits(80,WBFL::Units::Measure::KSI), -1 };
+static Float64 gs_Es60[3] = { WBFL::Units::ConvertToSysUnits(29000,WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(29000,WBFL::Units::Measure::KSI), -1 };
+static Float64 gs_Fy75[3] = { WBFL::Units::ConvertToSysUnits(75,WBFL::Units::Measure::KSI),    -1, -1 };
+static Float64 gs_Fu75[3] = { WBFL::Units::ConvertToSysUnits(100,WBFL::Units::Measure::KSI),   -1, -1 };
+static Float64 gs_Es75[3] = { WBFL::Units::ConvertToSysUnits(29000,WBFL::Units::Measure::KSI), -1, -1 };
 
-static Float64 gs_Fy80[3] = { ::ConvertToSysUnits(80,unitMeasure::KSI),    ::ConvertToSysUnits(80,unitMeasure::KSI), -1 };
-static Float64 gs_Fu80[3] = { ::ConvertToSysUnits(105,unitMeasure::KSI),    ::ConvertToSysUnits(100,unitMeasure::KSI), -1 };
-static Float64 gs_Es80[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::ConvertToSysUnits(29000,unitMeasure::KSI), -1 };
+static Float64 gs_Fy80[3] = { WBFL::Units::ConvertToSysUnits(80,WBFL::Units::Measure::KSI),    WBFL::Units::ConvertToSysUnits(80,WBFL::Units::Measure::KSI), -1 };
+static Float64 gs_Fu80[3] = { WBFL::Units::ConvertToSysUnits(105,WBFL::Units::Measure::KSI),    WBFL::Units::ConvertToSysUnits(100,WBFL::Units::Measure::KSI), -1 };
+static Float64 gs_Es80[3] = { WBFL::Units::ConvertToSysUnits(29000,WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(29000,WBFL::Units::Measure::KSI), -1 };
 
-static Float64 gs_Fy100[3] = { -1, -1, ::ConvertToSysUnits(100,unitMeasure::KSI) };
-static Float64 gs_Fu100[3] = { -1, -1, ::ConvertToSysUnits(150,unitMeasure::KSI) };
-static Float64 gs_Es100[3] = { -1, -1, ::ConvertToSysUnits(29000,unitMeasure::KSI) };
+static Float64 gs_Fy100[3] = { -1, -1, WBFL::Units::ConvertToSysUnits(100,WBFL::Units::Measure::KSI) };
+static Float64 gs_Fu100[3] = { -1, -1, WBFL::Units::ConvertToSysUnits(150,WBFL::Units::Measure::KSI) };
+static Float64 gs_Es100[3] = { -1, -1, WBFL::Units::ConvertToSysUnits(29000,WBFL::Units::Measure::KSI) };
 
-static Float64 gs_Fy120[3] = { -1, -1, ::ConvertToSysUnits(120,unitMeasure::KSI) };
-static Float64 gs_Fu120[3] = { -1, -1, ::ConvertToSysUnits(150,unitMeasure::KSI) };
-static Float64 gs_Es120[3] = { -1, -1, ::ConvertToSysUnits(29000,unitMeasure::KSI) };
+static Float64 gs_Fy120[3] = { -1, -1, WBFL::Units::ConvertToSysUnits(120,WBFL::Units::Measure::KSI) };
+static Float64 gs_Fu120[3] = { -1, -1, WBFL::Units::ConvertToSysUnits(150,WBFL::Units::Measure::KSI) };
+static Float64 gs_Es120[3] = { -1, -1, WBFL::Units::ConvertToSysUnits(29000,WBFL::Units::Measure::KSI) };
 
 static Float64 gs_Elongation_A615[6][11] = {
    //#3   #4     #5    #6   #7     #8    #9    #10   #11   #14  #18
@@ -92,31 +92,31 @@ static Float64 gs_Elongation_A1035[6][11] = {
 };
 
 static Float64 gs_Area[11] = {
-   ::ConvertToSysUnits(0.11,unitMeasure::Inch2),  // #3 
-   ::ConvertToSysUnits(0.20,unitMeasure::Inch2),  // #4
-   ::ConvertToSysUnits(0.31,unitMeasure::Inch2),  // #5
-   ::ConvertToSysUnits(0.44,unitMeasure::Inch2),  // #6
-   ::ConvertToSysUnits(0.60,unitMeasure::Inch2),  // #7
-   ::ConvertToSysUnits(0.79,unitMeasure::Inch2),  // #8 
-   ::ConvertToSysUnits(1.00,unitMeasure::Inch2),  // #9
-   ::ConvertToSysUnits(1.27,unitMeasure::Inch2),  // #10
-   ::ConvertToSysUnits(1.56,unitMeasure::Inch2),  // #11
-   ::ConvertToSysUnits(2.25,unitMeasure::Inch2),  // #14
-   ::ConvertToSysUnits(4.00,unitMeasure::Inch2)   // #18
+   WBFL::Units::ConvertToSysUnits(0.11,WBFL::Units::Measure::Inch2),  // #3 
+   WBFL::Units::ConvertToSysUnits(0.20,WBFL::Units::Measure::Inch2),  // #4
+   WBFL::Units::ConvertToSysUnits(0.31,WBFL::Units::Measure::Inch2),  // #5
+   WBFL::Units::ConvertToSysUnits(0.44,WBFL::Units::Measure::Inch2),  // #6
+   WBFL::Units::ConvertToSysUnits(0.60,WBFL::Units::Measure::Inch2),  // #7
+   WBFL::Units::ConvertToSysUnits(0.79,WBFL::Units::Measure::Inch2),  // #8 
+   WBFL::Units::ConvertToSysUnits(1.00,WBFL::Units::Measure::Inch2),  // #9
+   WBFL::Units::ConvertToSysUnits(1.27,WBFL::Units::Measure::Inch2),  // #10
+   WBFL::Units::ConvertToSysUnits(1.56,WBFL::Units::Measure::Inch2),  // #11
+   WBFL::Units::ConvertToSysUnits(2.25,WBFL::Units::Measure::Inch2),  // #14
+   WBFL::Units::ConvertToSysUnits(4.00,WBFL::Units::Measure::Inch2)   // #18
 };
 
 static Float64 gs_Diameter[11] = {
-   ::ConvertToSysUnits(0.375,unitMeasure::Inch),  // #3
-   ::ConvertToSysUnits(0.500,unitMeasure::Inch),  // #4
-   ::ConvertToSysUnits(0.625,unitMeasure::Inch),  // #5
-   ::ConvertToSysUnits(0.750,unitMeasure::Inch),  // #6
-   ::ConvertToSysUnits(0.875,unitMeasure::Inch),  // #7
-   ::ConvertToSysUnits(1.000,unitMeasure::Inch),  // #8 
-   ::ConvertToSysUnits(1.128,unitMeasure::Inch),  // #9
-   ::ConvertToSysUnits(1.270,unitMeasure::Inch),  // #10
-   ::ConvertToSysUnits(1.410,unitMeasure::Inch),  // #11
-   ::ConvertToSysUnits(1.693,unitMeasure::Inch),  // #14
-   ::ConvertToSysUnits(2.257,unitMeasure::Inch)   // #18
+   WBFL::Units::ConvertToSysUnits(0.375,WBFL::Units::Measure::Inch),  // #3
+   WBFL::Units::ConvertToSysUnits(0.500,WBFL::Units::Measure::Inch),  // #4
+   WBFL::Units::ConvertToSysUnits(0.625,WBFL::Units::Measure::Inch),  // #5
+   WBFL::Units::ConvertToSysUnits(0.750,WBFL::Units::Measure::Inch),  // #6
+   WBFL::Units::ConvertToSysUnits(0.875,WBFL::Units::Measure::Inch),  // #7
+   WBFL::Units::ConvertToSysUnits(1.000,WBFL::Units::Measure::Inch),  // #8 
+   WBFL::Units::ConvertToSysUnits(1.128,WBFL::Units::Measure::Inch),  // #9
+   WBFL::Units::ConvertToSysUnits(1.270,WBFL::Units::Measure::Inch),  // #10
+   WBFL::Units::ConvertToSysUnits(1.410,WBFL::Units::Measure::Inch),  // #11
+   WBFL::Units::ConvertToSysUnits(1.693,WBFL::Units::Measure::Inch),  // #14
+   WBFL::Units::ConvertToSysUnits(2.257,WBFL::Units::Measure::Inch)   // #18
 };
 
 int SizeIndex(matRebar::Size size)

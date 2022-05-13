@@ -379,12 +379,12 @@ Float64 shrinkage_losses(Float64 H, Float64 fci, Float64 Ep)
    CHECK( InRange(0.,H,100.) );
 
    // No si unit conversion in Texas
-   fci = ::ConvertFromSysUnits(fci, unitMeasure::KSI );
-   Ep  = ::ConvertFromSysUnits(Ep, unitMeasure::KSI );
+   fci = WBFL::Units::ConvertFromSysUnits(fci, WBFL::Units::Measure::KSI );
+   Ep  = WBFL::Units::ConvertFromSysUnits(Ep, WBFL::Units::Measure::KSI );
 
    Float64 losses = Ep*( (140-H)/(4.8+fci) )*4.4e-05;
 
-   losses = ::ConvertToSysUnits(losses, unitMeasure::KSI );
+   losses = WBFL::Units::ConvertToSysUnits(losses, WBFL::Units::Measure::KSI );
    CHECK( losses >= 0. );
 
    return losses;
@@ -393,21 +393,21 @@ Float64 shrinkage_losses(Float64 H, Float64 fci, Float64 Ep)
 Float64 creep_losses(Float64 H, Float64 fci, Float64 Eci, Float64 Ep, Float64 fcgp, Float64 dfcdp)
 {
    CHECK( InRange(0.,H,100.) );
-   fci   = ::ConvertFromSysUnits(fci, unitMeasure::KSI );
-   Eci   = ::ConvertFromSysUnits(Eci, unitMeasure::KSI );
-   Ep    = ::ConvertFromSysUnits(Ep, unitMeasure::KSI );
-   fcgp  = ::ConvertFromSysUnits(fcgp, unitMeasure::KSI );
-   dfcdp = ::ConvertFromSysUnits(dfcdp, unitMeasure::KSI );
+   fci   = WBFL::Units::ConvertFromSysUnits(fci, WBFL::Units::Measure::KSI );
+   Eci   = WBFL::Units::ConvertFromSysUnits(Eci, WBFL::Units::Measure::KSI );
+   Ep    = WBFL::Units::ConvertFromSysUnits(Ep, WBFL::Units::Measure::KSI );
+   fcgp  = WBFL::Units::ConvertFromSysUnits(fcgp, WBFL::Units::Measure::KSI );
+   dfcdp = WBFL::Units::ConvertFromSysUnits(dfcdp, WBFL::Units::Measure::KSI );
                                                      
    Float64 loss = 0.1*((195-H)/(4.8+fci))*(Ep/Eci)*(fcgp+0.6*dfcdp);
 
-   loss = ::ConvertToSysUnits(loss, unitMeasure::KSI );
+   loss = WBFL::Units::ConvertToSysUnits(loss, WBFL::Units::Measure::KSI );
    loss = (loss < 0 ) ? 0 : loss;
    return loss;
 }
 
 #if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
+#include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
 bool lrfdRefinedLossesTxDOT2013::TestMe(dbgLog& rlog)
 {
@@ -415,20 +415,20 @@ bool lrfdRefinedLossesTxDOT2013::TestMe(dbgLog& rlog)
 //
 //   lrfdAutoVersion av;
 //
-//   Float64 Fpj   = ::ConvertToSysUnits( 0.80*1860, unitMeasure::MPa );
-//   Float64 Ag    = ::ConvertToSysUnits( 486051, unitMeasure::Millimeter2 );
-//   Float64 Ig    = ::ConvertToSysUnits( 126011e6, unitMeasure::Millimeter4 );
-//   Float64 Ybg   = ::ConvertToSysUnits( 608, unitMeasure::Millimeter );
-//   Float64 Ic    = ::ConvertToSysUnits( 283.7e9, unitMeasure::Millimeter4 );
-//   Float64 Ybc   = ::ConvertToSysUnits( 977, unitMeasure::Millimeter );
-//   Float64 e     = ::ConvertToSysUnits( 489, unitMeasure::Millimeter );
-//   Float64 Aps   = ::ConvertToSysUnits( 5133, unitMeasure::Millimeter2 );
-//   Float64 Mdlg  = ::ConvertToSysUnits( 1328, unitMeasure::KilonewtonMeter );
-//   Float64 Madlg = ::ConvertToSysUnits( 2900-1328, unitMeasure::KilonewtonMeter );
-//   Float64 Msidl = ::ConvertToSysUnits( 540+353, unitMeasure::KilonewtonMeter );
+//   Float64 Fpj   = WBFL::Units::ConvertToSysUnits( 0.80*1860, WBFL::Units::Measure::MPa );
+//   Float64 Ag    = WBFL::Units::ConvertToSysUnits( 486051, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Ig    = WBFL::Units::ConvertToSysUnits( 126011e6, WBFL::Units::Measure::Millimeter4 );
+//   Float64 Ybg   = WBFL::Units::ConvertToSysUnits( 608, WBFL::Units::Measure::Millimeter );
+//   Float64 Ic    = WBFL::Units::ConvertToSysUnits( 283.7e9, WBFL::Units::Measure::Millimeter4 );
+//   Float64 Ybc   = WBFL::Units::ConvertToSysUnits( 977, WBFL::Units::Measure::Millimeter );
+//   Float64 e     = WBFL::Units::ConvertToSysUnits( 489, WBFL::Units::Measure::Millimeter );
+//   Float64 Aps   = WBFL::Units::ConvertToSysUnits( 5133, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Mdlg  = WBFL::Units::ConvertToSysUnits( 1328, WBFL::Units::Measure::KilonewtonMeter );
+//   Float64 Madlg = WBFL::Units::ConvertToSysUnits( 2900-1328, WBFL::Units::Measure::KilonewtonMeter );
+//   Float64 Msidl = WBFL::Units::ConvertToSysUnits( 540+353, WBFL::Units::Measure::KilonewtonMeter );
 //   Float64 Rh    = 70.;
-//   Float64 Eci   = ::ConvertToSysUnits( 30360, unitMeasure::MPa );
-//   Float64 t     = ::ConvertToSysUnits( 4.0, unitMeasure::Day );
+//   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
+//   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //
 //   lrfdRefinedLossesTxDOT2013 loss( matPsStrand::Gr1860,
 //                      matPsStrand::LowRelaxation,
@@ -439,10 +439,10 @@ bool lrfdRefinedLossesTxDOT2013::TestMe(dbgLog& rlog)
 //
 //   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition );
 //   Float64 loss1 = loss.ImmediatelyAfterXferLosses();
-//   TRY_TEST (  IsEqual( ::ConvertFromSysUnits(loss1,unitMeasure::MPa),165.7,0.1) );
+//   TRY_TEST (  IsEqual( WBFL::Units::ConvertFromSysUnits(loss1,WBFL::Units::Measure::MPa),165.7,0.1) );
 //
 //   Float64 loss2 = loss.FinalLosses();
-//   TRY_TEST (  IsEqual(::ConvertFromSysUnits(loss2,unitMeasure::MPa),394.2,0.1) );
+//   TRY_TEST (  IsEqual(WBFL::Units::ConvertFromSysUnits(loss2,WBFL::Units::Measure::MPa),394.2,0.1) );
 //
 //   loss.SetFpj(1);
 //   bool bDidCatch = false;

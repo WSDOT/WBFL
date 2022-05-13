@@ -40,11 +40,11 @@
 #include <Units\Units.h>
 
 #define VALUE(_x_) (IsZero(_x_)  ? 0 : _x_)
-#define LENGTH(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::Inch))
-#define AREA(_x_)   (::ConvertFromSysUnits(_x_, unitMeasure::Inch2))
-#define STRESS(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::KSI))
-#define FORCE(_x_)  (::ConvertFromSysUnits(_x_, unitMeasure::Kip))
-#define MOMENT(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::KipFeet))
+#define LENGTH(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch))
+#define AREA(_x_)   (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch2))
+#define STRESS(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::KSI))
+#define FORCE(_x_)  (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Kip))
+#define MOMENT(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::KipFeet))
 #endif // _DEBUG_LOGGING
 
 #ifdef _DEBUG

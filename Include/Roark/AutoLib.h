@@ -35,6 +35,6 @@
 #pragma message("Linking with " ROARK_AUTOLIBNAME )
 #endif
 
-#endif // BUILDUNITMGTLIB
+#endif // BUILDROARK
 
- #endif // INCLUDED_ROARK_AUTOLIB_H_
+#endif // INCLUDED_ROARK_AUTOLIB_H_

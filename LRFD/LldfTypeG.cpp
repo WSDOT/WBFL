@@ -128,7 +128,7 @@ bool lrfdLldfTypeG::TestRangeOfApplicability(Location loc) const
    ExteriorMomentEquationRule(bSISpec, true);
 
    // This is not an out of range of applicability case... skew adjustment simply isn't applied in this case
-   //Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
+   //Float64 skew_delta_max = WBFL::Units::ConvertToSysUnits( 10.0, WBFL::Units::Measure::Degree );
    //if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
    //   THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
 
@@ -138,19 +138,19 @@ bool lrfdLldfTypeG::TestRangeOfApplicability(Location loc) const
       // only check this if we have skew
       Float64 Lmin = bSISpec ?  6000 :  20;
       Float64 Lmax = bSISpec ? 37000 : 120;
-      Float64 L = ::ConvertFromSysUnits(m_L,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
       if ( L < Lmin || Lmax < L )
          THROW_DF(lrfdXRangeOfApplicability, SpanLength, _T("Span Length (L) is out of range. See Table 4.6.2.2.3c-1"));
 
       Float64 dMin = bSISpec ?  430 : 17;
       Float64 dMax = bSISpec ? 1500 : 60;
-      Float64 d = ::ConvertFromSysUnits(m_d,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+      Float64 d = WBFL::Units::ConvertFromSysUnits(m_d,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
       if ( d < dMin || dMax < d )
          THROW_DF(lrfdXRangeOfApplicability, GirderDepth, _T("Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1"));
 
       Float64 bMin = bSISpec ?  900 : 35;
       Float64 bMax = bSISpec ? 1500 : 60;
-      Float64 b = ::ConvertFromSysUnits(m_b,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+      Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
       if ( b < bMin || bMax < b )
          THROW_DF(lrfdXRangeOfApplicability, BeamWidth, _T("Width (b), of beam is out of range. See Table 4.6.2.2.3c-1"));
    }
@@ -166,7 +166,7 @@ bool lrfdLldfTypeG::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
    if ( GetNb() < 4 )
       THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. Must be >=4, see 4.6.2.2.1"));
 
-   Float64 skew_max = ::ConvertToSysUnits( 45.0, unitMeasure::Degree );
+   Float64 skew_max = WBFL::Units::ConvertToSysUnits( 45.0, WBFL::Units::Measure::Degree );
    if ( m_bSkewMoment && (!IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max)) )
       THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2b-1"));
 
@@ -178,7 +178,7 @@ bool lrfdLldfTypeG::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const
    if (!InteriorMomentEquationRule(bSISpec, doThrow))
       return false;
 
-   Float64 de_max = bSISpec ? ::ConvertToSysUnits(600.,unitMeasure::Millimeter) : ::ConvertToSysUnits(2.0,unitMeasure::Feet);
+   Float64 de_max = bSISpec ? WBFL::Units::ConvertToSysUnits(600.,WBFL::Units::Measure::Millimeter) : WBFL::Units::ConvertToSysUnits(2.0,WBFL::Units::Measure::Feet);
    Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
 
    if ( de_max+1.0e-06 < de_raw )
@@ -191,7 +191,7 @@ bool lrfdLldfTypeG::InteriorShearEquationRule(bool bSISpec) const
 {
    Float64 bMin = bSISpec ?  900 : 35;
    Float64 bMax = bSISpec ? 1500 : 60;
-   Float64 b = ::ConvertFromSysUnits(m_b,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+   Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
    if ( b < bMin || bMax < b )
    {
       return false;
@@ -199,7 +199,7 @@ bool lrfdLldfTypeG::InteriorShearEquationRule(bool bSISpec) const
 
    Float64 Lmin = bSISpec ?  6000 :  20;
    Float64 Lmax = bSISpec ? 37000 : 120;
-   Float64 L = ::ConvertFromSysUnits(m_L,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+   Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
    if ( L < Lmin || Lmax < L )
    {
       return false;
@@ -219,7 +219,7 @@ bool lrfdLldfTypeG::ExteriorShearEquationRule(bool bSISpec) const
    if ( !InteriorShearEquationRule(bSISpec) )
       return false;
 
-   Float64 de_max = bSISpec ? ::ConvertToSysUnits(600.,unitMeasure::Millimeter) : ::ConvertToSysUnits(2.0,unitMeasure::Feet);
+   Float64 de_max = bSISpec ? WBFL::Units::ConvertToSysUnits(600.,WBFL::Units::Measure::Millimeter) : WBFL::Units::ConvertToSysUnits(2.0,WBFL::Units::Measure::Feet);
    Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
 
    if ( de_max < de_raw )
@@ -232,13 +232,13 @@ bool lrfdLldfTypeG::IandJOutOfRangeRule(bool bSISpec) const
 {
    Float64 Jmin = bSISpec ? 1.0e10 : 25000;
    Float64 Jmax = bSISpec ? 2.5e11 : 610000;
-   Float64 J = ::ConvertFromSysUnits(m_J,bSISpec?unitMeasure::Millimeter4:unitMeasure::Inch4);
+   Float64 J = WBFL::Units::ConvertFromSysUnits(m_J,bSISpec?WBFL::Units::Measure::Millimeter4:WBFL::Units::Measure::Inch4);
    if ( J < Jmin || Jmax < J )
       return true;
 
    Float64 Imin = bSISpec ? 1.7e10 : 40000;
    Float64 Imax = bSISpec ? 2.5e11 : 610000;
-   Float64 I = ::ConvertFromSysUnits(m_I,bSISpec?unitMeasure::Millimeter4:unitMeasure::Inch4);
+   Float64 I = WBFL::Units::ConvertFromSysUnits(m_I,bSISpec?WBFL::Units::Measure::Millimeter4:WBFL::Units::Measure::Inch4);
    if ( I < Imin || Imax < I )
       return true;
 
@@ -258,20 +258,20 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Int_1_Stren
       Float64 f;
       if ( bSISpec )
       {
-         J = ::ConvertFromSysUnits(m_J,unitMeasure::Millimeter4);
-         I = ::ConvertFromSysUnits(m_I,unitMeasure::Millimeter4);
-         W = ::ConvertFromSysUnits(m_W,unitMeasure::Millimeter);
-         S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Millimeter);
-         L = ::ConvertFromSysUnits(m_L,unitMeasure::Millimeter);
+         J = WBFL::Units::ConvertFromSysUnits(m_J,WBFL::Units::Measure::Millimeter4);
+         I = WBFL::Units::ConvertFromSysUnits(m_I,WBFL::Units::Measure::Millimeter4);
+         W = WBFL::Units::ConvertFromSysUnits(m_W,WBFL::Units::Measure::Millimeter);
+         S = WBFL::Units::ConvertFromSysUnits(m_Savg,WBFL::Units::Measure::Millimeter);
+         L = WBFL::Units::ConvertFromSysUnits(m_L,WBFL::Units::Measure::Millimeter);
          f = 300;
       }
       else
       {
-         J = ::ConvertFromSysUnits(m_J,unitMeasure::Inch4);
-         I = ::ConvertFromSysUnits(m_I,unitMeasure::Inch4);
-         W = ::ConvertFromSysUnits(m_W,unitMeasure::Feet);
-         S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-         L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
+         J = WBFL::Units::ConvertFromSysUnits(m_J,WBFL::Units::Measure::Inch4);
+         I = WBFL::Units::ConvertFromSysUnits(m_I,WBFL::Units::Measure::Inch4);
+         W = WBFL::Units::ConvertFromSysUnits(m_W,WBFL::Units::Measure::Feet);
+         S = WBFL::Units::ConvertFromSysUnits(m_Savg,WBFL::Units::Measure::Feet);
+         L = WBFL::Units::ConvertFromSysUnits(m_L,WBFL::Units::Measure::Feet);
          f = 1;
       }
 
@@ -293,7 +293,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Int_1_Stren
       g.ControllingMethod = SPEC_EQN | S_OVER_D_METHOD;
       g.EqnData.bWasUsed = true;
       g.EqnData.e = 1.0;
-      g.EqnData.D = ::ConvertToSysUnits(D, bSISpec? unitMeasure::Millimeter : unitMeasure::Feet);
+      g.EqnData.D = WBFL::Units::ConvertToSysUnits(D, bSISpec? WBFL::Units::Measure::Millimeter : WBFL::Units::Measure::Feet);
       g.EqnData.C = C;
       g.EqnData.K = K;
       g.EqnData.mg = S/D;
@@ -337,7 +337,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_1_Stren
 
       Float64 A = (bSISpec ? 9100 : 30);
       Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-      Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+      Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
 
       Float64 e = 1.125 + de/A;
       if ( e < 1.0 )
@@ -382,7 +382,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_2_Stren
       Float64 A = (bSISpec ? 7600 : 25);
 
       Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-      Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+      Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
 
       Float64 e = 1.04 + de/A;
       if ( e < 1.0 )
@@ -425,10 +425,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Int_1_Streng
          g.ControllingMethod = SPEC_EQN;
          g.EqnData.bWasUsed = true;
 
-         Float64 b = ::ConvertFromSysUnits(m_b,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
-         Float64 L = ::ConvertFromSysUnits(m_L,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
-         Float64 I = ::ConvertFromSysUnits(m_I,bSISpec?unitMeasure::Millimeter4:unitMeasure::Inch4);
-         Float64 J = ::ConvertFromSysUnits(m_J,bSISpec?unitMeasure::Millimeter4:unitMeasure::Inch4);
+         Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
+         Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
+         Float64 I = WBFL::Units::ConvertFromSysUnits(m_I,bSISpec?WBFL::Units::Measure::Millimeter4:WBFL::Units::Measure::Inch4);
+         Float64 J = WBFL::Units::ConvertFromSysUnits(m_J,bSISpec?WBFL::Units::Measure::Millimeter4:WBFL::Units::Measure::Inch4);
 
          Float64 K1 = (bSISpec ? 0.7 : 1.0);
          Float64 K2 = (bSISpec ? 1.0 : 130);
@@ -483,10 +483,10 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeG::GetShearDF_Int_2_Stren
          g.ControllingMethod = SPEC_EQN;
          g.EqnData.bWasUsed = true;
 
-         Float64 b = ::ConvertFromSysUnits(m_b,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
-         Float64 L = ::ConvertFromSysUnits(m_L,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
-         Float64 I = ::ConvertFromSysUnits(m_I,bSISpec?unitMeasure::Millimeter4:unitMeasure::Inch4);
-         Float64 J = ::ConvertFromSysUnits(m_J,bSISpec?unitMeasure::Millimeter4:unitMeasure::Inch4);
+         Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
+         Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
+         Float64 I = WBFL::Units::ConvertFromSysUnits(m_I,bSISpec?WBFL::Units::Measure::Millimeter4:WBFL::Units::Measure::Inch4);
+         Float64 J = WBFL::Units::ConvertFromSysUnits(m_J,bSISpec?WBFL::Units::Measure::Millimeter4:WBFL::Units::Measure::Inch4);
 
          Float64 K1 = (bSISpec ? 4000 : 156);
          Float64 K2 = (bSISpec ? 1.0 : 12);
@@ -548,7 +548,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_1_Streng
          // only apply e factor to equation method
          bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
          Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-         Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+         Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
          Float64 K = (bSISpec ? 6100 : 20);
 
          Float64 e = 1.25 + de/K;
@@ -599,9 +599,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Streng
          bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
 
          Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-         Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+         Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
 
-         Float64 b  = ::ConvertFromSysUnits(m_b, bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+         Float64 b  = WBFL::Units::ConvertFromSysUnits(m_b, bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
 
          Float64 K1 = (bSISpec ?  1200 : 48);
          Float64 K2 = (bSISpec ?     1 : 12);
@@ -662,7 +662,7 @@ Float64 lrfdLldfTypeG::MomentSkewCorrectionFactor() const
    }
 
    // 4.6.2.2.2e - don't reduce moment if difference in skew is > 10 degree
-   Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
+   Float64 skew_delta_max = WBFL::Units::ConvertToSysUnits( 10.0, WBFL::Units::Measure::Degree );
    if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
       return 1.0;
 
@@ -671,11 +671,11 @@ Float64 lrfdLldfTypeG::MomentSkewCorrectionFactor() const
    if ( IsZero(avg_skew_angle) )
       return 1.0;
 
-   if ( ::ConvertToSysUnits(60.,unitMeasure::Degree) < avg_skew_angle)
-      avg_skew_angle = ::ConvertToSysUnits(60.,unitMeasure::Degree);
+   if ( WBFL::Units::ConvertToSysUnits(60.,WBFL::Units::Measure::Degree) < avg_skew_angle)
+      avg_skew_angle = WBFL::Units::ConvertToSysUnits(60.,WBFL::Units::Measure::Degree);
 
 
-   Float64 skew = 1.05 - 0.25*tan(::ConvertFromSysUnits(avg_skew_angle,unitMeasure::Radian));
+   Float64 skew = 1.05 - 0.25*tan(WBFL::Units::ConvertFromSysUnits(avg_skew_angle,WBFL::Units::Measure::Radian));
 
    return skew;
 }
@@ -693,7 +693,7 @@ Float64 lrfdLldfTypeG::ShearSkewCorrectionFactor() const
       return 1.0;
 
 
-   Float64 skew = 1.0 + (m_L/(90*m_d))*(sqrt(tan(::ConvertFromSysUnits(avg_skew_angle,unitMeasure::Radian))));
+   Float64 skew = 1.0 + (m_L/(90*m_d))*(sqrt(tan(WBFL::Units::ConvertFromSysUnits(avg_skew_angle,WBFL::Units::Measure::Radian))));
 
    return skew;
 }
@@ -734,18 +734,18 @@ bool lrfdLldfTypeG::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
-   Float64 S = ::ConvertToSysUnits( 6, unitMeasure::Feet );
+   Float64 S = WBFL::Units::ConvertToSysUnits( 6, WBFL::Units::Measure::Feet );
    std::vector<Float64> spacings;
    spacings.assign(Nb-1,S);
-   Float64 L = ::ConvertToSysUnits( 120.25, unitMeasure::Feet );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 120.25, WBFL::Units::Measure::Feet );
    Float64 W = S*Nb;
-   Float64 I = ::ConvertToSysUnits(559367.214,unitMeasure::Inch4);
-   Float64 J = ::ConvertToSysUnits( 33064.695,unitMeasure::Inch4);
-   Float64 wLane = ::ConvertToSysUnits( 12.0, unitMeasure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/::ConvertToSysUnits(10., unitMeasure::Feet) );
+   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
+   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
+   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
+   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
    Float64 b = S;
-   Float64 d = ::ConvertToSysUnits(18.0,unitMeasure::Inch);
-   Float64 de = ::ConvertToSysUnits( -10.5, unitMeasure::Inch );
+   Float64 d = WBFL::Units::ConvertToSysUnits(18.0,WBFL::Units::Measure::Inch);
+   Float64 de = WBFL::Units::ConvertToSysUnits( -10.5, WBFL::Units::Measure::Inch );
 
    lrfdLldfTypeG df(1,S,spacings,de,de,
                     Nl,wLane,
@@ -849,10 +849,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_1_Stren
 
    if ( m_RangeOfApplicabilityAction==roaIgnore || InteriorMomentEquationRule(bSISpec,false) )
    {
-      Float64 b = ::ConvertFromSysUnits(m_b,bSISpec ? unitMeasure::Millimeter  : unitMeasure::Inch);
-      Float64 L = ::ConvertFromSysUnits(m_L,bSISpec ? unitMeasure::Millimeter  : unitMeasure::Feet);
-      Float64 I = ::ConvertFromSysUnits(m_I,bSISpec ? unitMeasure::Millimeter4 : unitMeasure::Inch4);
-      Float64 J = ::ConvertFromSysUnits(m_J,bSISpec ? unitMeasure::Millimeter4 : unitMeasure::Inch4);
+      Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec ? WBFL::Units::Measure::Millimeter  : WBFL::Units::Measure::Inch);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec ? WBFL::Units::Measure::Millimeter  : WBFL::Units::Measure::Feet);
+      Float64 I = WBFL::Units::ConvertFromSysUnits(m_I,bSISpec ? WBFL::Units::Measure::Millimeter4 : WBFL::Units::Measure::Inch4);
+      Float64 J = WBFL::Units::ConvertFromSysUnits(m_J,bSISpec ? WBFL::Units::Measure::Millimeter4 : WBFL::Units::Measure::Inch4);
 
       Float64 K = (bSISpec ? 2.8 : 33.3);
 
@@ -897,10 +897,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_2_Stren
 
    if ( m_RangeOfApplicabilityAction==roaIgnore || InteriorMomentEquationRule(bSISpec,false) )
    {
-      Float64 b = ::ConvertFromSysUnits(m_b,bSISpec ? unitMeasure::Millimeter  : unitMeasure::Inch);
-      Float64 L = ::ConvertFromSysUnits(m_L,bSISpec ? unitMeasure::Millimeter  : unitMeasure::Feet);
-      Float64 I = ::ConvertFromSysUnits(m_I,bSISpec ? unitMeasure::Millimeter4 : unitMeasure::Inch4);
-      Float64 J = ::ConvertFromSysUnits(m_J,bSISpec ? unitMeasure::Millimeter4 : unitMeasure::Inch4);
+      Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec ? WBFL::Units::Measure::Millimeter  : WBFL::Units::Measure::Inch);
+      Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec ? WBFL::Units::Measure::Millimeter  : WBFL::Units::Measure::Feet);
+      Float64 I = WBFL::Units::ConvertFromSysUnits(m_I,bSISpec ? WBFL::Units::Measure::Millimeter4 : WBFL::Units::Measure::Inch4);
+      Float64 J = WBFL::Units::ConvertFromSysUnits(m_J,bSISpec ? WBFL::Units::Measure::Millimeter4 : WBFL::Units::Measure::Inch4);
 
       Float64 K1 = (bSISpec ? 7600 : 305);
       Float64 K2 = (bSISpec ?    1 :  12);
@@ -952,18 +952,18 @@ bool lrfdLldfTypeF::TestRangeOfApplicability(Location loc) const
    // if we have skew
    if ( (m_bSkewMoment || m_bSkewShear) && (!IsZero(m_SkewAngle1) || !IsZero(m_SkewAngle2)) )
    {
-      Float64 skew_max = ::ConvertToSysUnits( 60.0, unitMeasure::Degree );
+      Float64 skew_max = WBFL::Units::ConvertToSysUnits( 60.0, WBFL::Units::Measure::Degree );
       if ( !IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max) )
          THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.3c-1"));
 
-      Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
+      Float64 skew_delta_max = WBFL::Units::ConvertToSysUnits( 10.0, WBFL::Units::Measure::Degree );
       if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
          THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, _T("Excessive difference in skew angles. See Article 4.6.2.2.2e"));
 
       // the depth range is only appicable if Table 4.6.2.2.3c-1 is used
       Float64 dMin = bSISpec ?  430 : 17;
       Float64 dMax = bSISpec ? 1500 : 60;
-      Float64 d = ::ConvertFromSysUnits(m_d,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+      Float64 d = WBFL::Units::ConvertFromSysUnits(m_d,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
       if ( d < dMin || dMax < d )
          THROW_DF(lrfdXRangeOfApplicability, GirderDepth, _T("Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1"));
    }
@@ -975,13 +975,13 @@ bool lrfdLldfTypeF::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 {
    Float64 bMin = bSISpec ?  900 : 35;
    Float64 bMax = bSISpec ? 1500 : 60;
-   Float64 b = ::ConvertFromSysUnits(m_b,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+   Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
    if ( b < bMin || bMax < b )
       THROW_DF(lrfdXRangeOfApplicability, BeamWidth, _T("Width (b), of beam is out of range. See Table 4.6.2.2.3a-1"));
 
    Float64 Lmin = bSISpec ?  6000 :  20;
    Float64 Lmax = bSISpec ? 37000 : 120;
-   Float64 L = ::ConvertFromSysUnits(m_L,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+   Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
    if ( L < Lmin || Lmax < L )
       THROW_DF(lrfdXRangeOfApplicability, SpanLength, _T("Span Length (L) is out of range. See Table 4.6.2.2.3a-1"));
 
@@ -1015,18 +1015,18 @@ bool lrfdLldfTypeF::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
-   Float64 S = ::ConvertToSysUnits( 4, unitMeasure::Feet );
+   Float64 S = WBFL::Units::ConvertToSysUnits( 4, WBFL::Units::Measure::Feet );
    std::vector<Float64> spacings;
    spacings.assign(Nb-1,S);
-   Float64 L = ::ConvertToSysUnits( 115, unitMeasure::Feet );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 115, WBFL::Units::Measure::Feet );
    Float64 W = S*Nb;
-   Float64 I = ::ConvertToSysUnits(559367.214,unitMeasure::Inch4);
-   Float64 J = ::ConvertToSysUnits( 33064.695,unitMeasure::Inch4);
-   Float64 wLane = ::ConvertToSysUnits( 12.0, unitMeasure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/::ConvertToSysUnits(10., unitMeasure::Feet) );
+   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
+   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
+   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
+   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
    Float64 b = S;
-   Float64 d = ::ConvertToSysUnits(18.0,unitMeasure::Inch);
-   Float64 de = ::ConvertToSysUnits( -10.5, unitMeasure::Inch );
+   Float64 d = WBFL::Units::ConvertToSysUnits(18.0,WBFL::Units::Measure::Inch);
+   Float64 de = WBFL::Units::ConvertToSysUnits( -10.5, WBFL::Units::Measure::Inch );
 
    lrfdLldfTypeF df(1,S,spacings,de,de,Nl,wLane,
                     L,W,I,J,b,d,
@@ -1292,18 +1292,18 @@ bool lrfdTxdotVoidedSlab::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
-   Float64 S = ::ConvertToSysUnits( 4, unitMeasure::Feet );
+   Float64 S = WBFL::Units::ConvertToSysUnits( 4, WBFL::Units::Measure::Feet );
    std::vector<Float64> spacings;
    spacings.assign(Nb-1,S);
-   Float64 L = ::ConvertToSysUnits( 115., unitMeasure::Feet );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 115., WBFL::Units::Measure::Feet );
    Float64 W = S*Nb;
-   Float64 I = ::ConvertToSysUnits(559367.214,unitMeasure::Inch4);
-   Float64 J = ::ConvertToSysUnits( 33064.695,unitMeasure::Inch4);
-   Float64 wLane = ::ConvertToSysUnits( 12.0, unitMeasure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/::ConvertToSysUnits(10., unitMeasure::Feet) );
+   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
+   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
+   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
+   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
    Float64 b = S;
-   Float64 de = ::ConvertToSysUnits( -10.5, unitMeasure::Inch );
-   Float64 d = ::ConvertToSysUnits(18.0,unitMeasure::Inch);
+   Float64 de = WBFL::Units::ConvertToSysUnits( -10.5, WBFL::Units::Measure::Inch );
+   Float64 d = WBFL::Units::ConvertToSysUnits(18.0,WBFL::Units::Measure::Inch);
 
    lrfdTxdotVoidedSlab df(1,S,spacings,de,de,Nl,wLane,
                           L,W,I,J,b,d,
@@ -1445,7 +1445,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
             // only apply e factor to equation method
             bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
             Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-            Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+            Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
             Float64 K = (bSISpec ? 6100 : 20);
 
             Float64 e = 1.25 + de/K;
@@ -1541,9 +1541,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
             bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
 
             Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-            Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+            Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
 
-            Float64 b  = ::ConvertFromSysUnits(m_b, bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+            Float64 b  = WBFL::Units::ConvertFromSysUnits(m_b, bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
 
             Float64 K1 = (bSISpec ?  1200 : 48);
             Float64 K2 = (bSISpec ?     1 : 12);
@@ -1676,18 +1676,18 @@ bool lrfdTxdotLldfAdjacentBox::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
-   Float64 S = ::ConvertToSysUnits( 4, unitMeasure::Feet );
+   Float64 S = WBFL::Units::ConvertToSysUnits( 4, WBFL::Units::Measure::Feet );
    std::vector<Float64> spacings;
    spacings.assign(Nb-1,S);
-   Float64 L = ::ConvertToSysUnits( 115., unitMeasure::Feet );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 115., WBFL::Units::Measure::Feet );
    Float64 W = S*Nb;
-   Float64 I = ::ConvertToSysUnits(559367.214,unitMeasure::Inch4);
-   Float64 J = ::ConvertToSysUnits( 33064.695,unitMeasure::Inch4);
-   Float64 wLane = ::ConvertToSysUnits( 12.0, unitMeasure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/::ConvertToSysUnits(10., unitMeasure::Feet) );
+   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
+   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
+   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
+   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
    Float64 b = S;
-   Float64 de = ::ConvertToSysUnits( -10.5, unitMeasure::Inch );
-   Float64 d = ::ConvertToSysUnits(18.0,unitMeasure::Inch);
+   Float64 de = WBFL::Units::ConvertToSysUnits( -10.5, WBFL::Units::Measure::Inch );
+   Float64 d = WBFL::Units::ConvertToSysUnits(18.0,WBFL::Units::Measure::Inch);
 
    lrfdTxdotLldfAdjacentBox df(1,S,spacings,de,de,Nl,wLane,
                                L,W,I,J,b,d,

@@ -35,10 +35,10 @@ static char THIS_FILE[] = __FILE__;
 
 void matACI209Concrete::GetModelParameters(matConcreteBase::CureMethod cure,matACI209Concrete::CementType cement,Float64* pA,Float64* pB)
 {
-   Float64 a[2][2] = { {::ConvertToSysUnits(4.0,unitMeasure::Day),    // Moist, Type I
-                        ::ConvertToSysUnits(2.3,unitMeasure::Day)} ,  // Moist, Type III
-                       {::ConvertToSysUnits(1.0,unitMeasure::Day),    // Steam, Type I
-                        ::ConvertToSysUnits(0.7,unitMeasure::Day)} }; // Steam, Type III
+   Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
+                        WBFL::Units::ConvertToSysUnits(2.3,WBFL::Units::Measure::Day)} ,  // Moist, Type III
+                       {WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day),    // Steam, Type I
+                        WBFL::Units::ConvertToSysUnits(0.7,WBFL::Units::Measure::Day)} }; // Steam, Type III
    Float64 b[2][2] = { {0.85,  // Moist, Type I
                         0.92}, // Moist, Type III
                         {0.95, // Steam, Type I
@@ -50,7 +50,7 @@ void matACI209Concrete::GetModelParameters(matConcreteBase::CureMethod cure,matA
 
 matACI209Concrete::matACI209Concrete(LPCTSTR name) :
 matConcreteBase(name),
-m_A(::ConvertToSysUnits(1.0,unitMeasure::Day)),
+m_A(WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day)),
 m_Beta(0.95),
 m_Fc28(0),
 m_Ec28(0),
@@ -116,14 +116,14 @@ void matACI209Concrete::SetFc28(Float64 fc)
 Float64 matACI209Concrete::ComputeFc28(Float64 fc,Float64 age,Float64 a,Float64 b)
 {
    // solving ACI209 equation 2-1 for (f'c)28
-   Float64 fc28 = (::ConvertFromSysUnits(a,unitMeasure::Day) + b*age)*fc/age;
+   Float64 fc28 = (WBFL::Units::ConvertFromSysUnits(a,WBFL::Units::Measure::Day) + b*age)*fc/age;
    return fc28;
 }
 
 Float64 matACI209Concrete::ComputeEc28(Float64 Ec,Float64 age,Float64 a,Float64 b)
 {
    // solving ACI209 equation 2-2 for (Ec)28
-   Float64 Ec28 = sqrt((::ConvertFromSysUnits(a,unitMeasure::Day) + b*age)/age)*Ec;
+   Float64 Ec28 = sqrt((WBFL::Units::ConvertFromSysUnits(a,WBFL::Units::Measure::Day) + b*age)/age)*Ec;
    return Ec28;
 }
 
@@ -411,7 +411,7 @@ void matACI209Concrete::Validate() const
       return;
    }
 
-   m_Alpha = ::ConvertFromSysUnits(m_A,unitMeasure::Day);
+   m_Alpha = WBFL::Units::ConvertFromSysUnits(m_A,WBFL::Units::Measure::Day);
 
    if ( m_bUserEc )
    {
@@ -488,7 +488,7 @@ void matACI209Concrete::ValidateCorrectionFactors() const
 
    // V/S ratio correction factor (2.5.5b)
    ATLASSERT(0 < m_VS); // did you forget to set V/S ratio?
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    m_VSC = (2.0/3.0)*(1.0 + 1.13*exp(-0.54*vs)); // creep (2-21)
    m_VSS = 1.2*exp(-0.12*vs);                    // shrinkage (2-22)
 
@@ -509,13 +509,13 @@ Float64 matACI209Concrete::GetFr(Float64 t) const
    Float64 fc = GetFc(t);
 
    // Convert input to required units
-   Float64 Fc      = ::ConvertFromSysUnits( fc,      unitMeasure::PSI         );
-   Float64 Density = ::ConvertFromSysUnits( m_StrengthDensity, unitMeasure::LbmPerFeet3 );
+   Float64 Fc      = WBFL::Units::ConvertFromSysUnits( fc,      WBFL::Units::Measure::PSI         );
+   Float64 Density = WBFL::Units::ConvertFromSysUnits( m_StrengthDensity, WBFL::Units::Measure::LbmPerFeet3 );
 
    // Eqn 2-3
    Float64 gr = 0.6;
    Float64 fr = gr*sqrt(Density*Fc);
-   fr = ::ConvertToSysUnits( fr, unitMeasure::PSI );
+   fr = WBFL::Units::ConvertToSysUnits( fr, WBFL::Units::Measure::PSI );
    return fr;
 }
 
@@ -532,14 +532,14 @@ Float64 matACI209Concrete::ModE(Float64 fc,Float64 density) const
    Float64 e;           // modulus of elasticity in System Units
 
    // Convert input to required units
-   Fc      = ::ConvertFromSysUnits( fc,      unitMeasure::PSI         );
-   Density = ::ConvertFromSysUnits( density, unitMeasure::LbmPerFeet3 );
+   Fc      = WBFL::Units::ConvertFromSysUnits( fc,      WBFL::Units::Measure::PSI         );
+   Density = WBFL::Units::ConvertFromSysUnits( density, WBFL::Units::Measure::LbmPerFeet3 );
 
 
    E = 33.0 * pow( Density, 1.5 ) * sqrt( Fc );
 
    // Convert output to system units.
-   e = ::ConvertToSysUnits( E, unitMeasure::PSI );
+   e = WBFL::Units::ConvertToSysUnits( E, WBFL::Units::Measure::PSI );
 
    return e;
 }

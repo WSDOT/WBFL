@@ -32,7 +32,7 @@
 #include <string>
 #include <algorithm>
 #include <System\Tokenizer.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -176,7 +176,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
 
       angle *=rlfactor;
 
-      m_Angle = ::Convert(angle,unitMeasure::Degree,unitMeasure::Radian);
+      m_Angle = WBFL::Units::Convert(angle,WBFL::Units::Measure::Degree,WBFL::Units::Measure::Radian);
    }
    else if ( nParts == 2 )
    {
@@ -201,7 +201,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
       else 
          return BadAngleString();
 
-      m_Angle = ::Convert(angle,unitMeasure::Degree,unitMeasure::Radian);
+      m_Angle = WBFL::Units::Convert(angle,WBFL::Units::Measure::Degree,WBFL::Units::Measure::Radian);
    }
    else if ( nParts == 3 || nParts == 4)
    {

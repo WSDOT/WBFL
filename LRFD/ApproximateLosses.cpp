@@ -221,17 +221,17 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
       ASSERT( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FifthEdition2010 );
 
       Float64 losses;
-      const unitStress* p_unit;
+      const WBFL::Units::Stress* p_unit;
 
       bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
 
       if ( is_si )
       {
-         p_unit = &unitMeasure::MPa;
+         p_unit = &WBFL::Units::Measure::MPa;
       }
       else
       {
-         p_unit = &unitMeasure::KSI;
+         p_unit = &WBFL::Units::Measure::KSI;
       }
 
       Float64 lowRelaxReduction = 0.0;
@@ -243,7 +243,7 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
 
          lowRelaxReduction = is_si ? 41. : 6.;
 
-         Float64 fc = ::ConvertFromSysUnits( m_Fc, *p_unit );
+         Float64 fc = WBFL::Units::ConvertFromSysUnits( m_Fc, *p_unit );
 
          losses = A*(1.0 - 0.15*(fc - B)/B) + B*m_PPR;
       }
@@ -273,7 +273,7 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
 
          lowRelaxReduction = is_si ? 55. : 8.;
 
-         Float64 fc = ::ConvertFromSysUnits( m_Fc, *p_unit );
+         Float64 fc = WBFL::Units::ConvertFromSysUnits( m_Fc, *p_unit );
 
          losses = A*(1.0 - 0.15*(fc - B)/B) + B*m_PPR;
       }
@@ -286,10 +286,10 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
 
       if ( m_ConcreteType != matConcrete::Normal )
       {
-         losses += (is_si ? ::ConvertToSysUnits(35.,unitMeasure::MPa) : ::ConvertToSysUnits(5.0,unitMeasure::KSI));
+         losses += (is_si ? WBFL::Units::ConvertToSysUnits(35.,WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(5.0,WBFL::Units::Measure::KSI));
       }
 
-      m_dfpLT = ::ConvertToSysUnits( losses, *p_unit );
+      m_dfpLT = WBFL::Units::ConvertToSysUnits( losses, *p_unit );
    }
 
    Float64 D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
@@ -310,7 +310,7 @@ void lrfdApproximateLosses::UpdateHaulingLosses() const
 //======================== INQUERY    =======================================
 
 #if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
+#include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
 bool lrfdApproximateLosses::TestMe(dbgLog& rlog)
 {
@@ -318,16 +318,16 @@ bool lrfdApproximateLosses::TestMe(dbgLog& rlog)
 
 //   lrfdAutoVersion av;
 //
-//   Float64 Fpj   = ::ConvertToSysUnits( 0.80*1860, unitMeasure::MPa );
-//   Float64 Ag    = ::ConvertToSysUnits( 486051, unitMeasure::Millimeter2 );
-//   Float64 Ig    = ::ConvertToSysUnits( 126011e6, unitMeasure::Millimeter4 );
-//   Float64 Ybg   = ::ConvertToSysUnits( 608, unitMeasure::Millimeter );
-//   Float64 e     = ::ConvertToSysUnits( 489, unitMeasure::Millimeter );
-//   Float64 Aps   = ::ConvertToSysUnits( 5133, unitMeasure::Millimeter2 );
-//   Float64 Mdlg  = ::ConvertToSysUnits( 1328, unitMeasure::KilonewtonMeter );
-//   Float64 Eci   = ::ConvertToSysUnits( 30360, unitMeasure::MPa );
-//   Float64 Fc    = ::ConvertToSysUnits( 48, unitMeasure::MPa );
-//   Float64 t     = ::ConvertToSysUnits( 4.0, unitMeasure::Day );
+//   Float64 Fpj   = WBFL::Units::ConvertToSysUnits( 0.80*1860, WBFL::Units::Measure::MPa );
+//   Float64 Ag    = WBFL::Units::ConvertToSysUnits( 486051, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Ig    = WBFL::Units::ConvertToSysUnits( 126011e6, WBFL::Units::Measure::Millimeter4 );
+//   Float64 Ybg   = WBFL::Units::ConvertToSysUnits( 608, WBFL::Units::Measure::Millimeter );
+//   Float64 e     = WBFL::Units::ConvertToSysUnits( 489, WBFL::Units::Measure::Millimeter );
+//   Float64 Aps   = WBFL::Units::ConvertToSysUnits( 5133, WBFL::Units::Measure::Millimeter2 );
+//   Float64 Mdlg  = WBFL::Units::ConvertToSysUnits( 1328, WBFL::Units::Measure::KilonewtonMeter );
+//   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
+//   Float64 Fc    = WBFL::Units::ConvertToSysUnits( 48, WBFL::Units::Measure::MPa );
+//   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //   Float64 PPR   = 1.0;
 //
 //   lrfdApproximateLosses loss( matPsStrand::Gr1860,
@@ -339,10 +339,10 @@ bool lrfdApproximateLosses::TestMe(dbgLog& rlog)
 //
 //   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition );
 //   Float64 loss1 = loss.ImmediatelyAfterXferLosses();
-//   TRY_TEST (  IsEqual( ::ConvertFromSysUnits(loss1,unitMeasure::MPa),165.7,0.1) );
+//   TRY_TEST (  IsEqual( WBFL::Units::ConvertFromSysUnits(loss1,WBFL::Units::Measure::MPa),165.7,0.1) );
 //
 //   Float64 loss2 = loss.FinalLosses();
-//   TRY_TEST (  IsEqual(::ConvertFromSysUnits(loss2,unitMeasure::MPa),339.8,0.1) );
+//   TRY_TEST (  IsEqual(WBFL::Units::ConvertFromSysUnits(loss2,WBFL::Units::Measure::MPa),339.8,0.1) );
 //
 //   loss.SetFpj(1);
 //   bool bDidCatch = false;

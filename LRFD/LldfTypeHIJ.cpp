@@ -138,7 +138,7 @@ bool lrfdLldfTypeHIJ::TestRangeOfApplicability(Location loc) const
    }
 
    // This is not an out of range of applicability case... skew adjustment simply isn't applied in this case
-   //Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
+   //Float64 skew_delta_max = WBFL::Units::ConvertToSysUnits( 10.0, WBFL::Units::Measure::Degree );
    //if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
    //   THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
 
@@ -150,7 +150,7 @@ bool lrfdLldfTypeHIJ::InteriorMomentEquationRule(bool bSISpec, bool doThrow) con
    if ( 6 < m_Nl )
       THROW_DF( lrfdXRangeOfApplicability, NumLanes, _T("Excessive number of lanes. See Table 4.6.2.2.2b-1"));
 
-   Float64 skew_max = ::ConvertToSysUnits( 45.0, unitMeasure::Degree );
+   Float64 skew_max = WBFL::Units::ConvertToSysUnits( 45.0, WBFL::Units::Measure::Degree );
    if ( !IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max) )
       THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2b-1"));
 
@@ -173,20 +173,20 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Int_1_Str
       bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
       if ( bSI )
       {
-         J = ::ConvertFromSysUnits(m_J,unitMeasure::Millimeter4);
-         I = ::ConvertFromSysUnits(m_I,unitMeasure::Millimeter4);
-         W = ::ConvertFromSysUnits(m_W,unitMeasure::Millimeter);
-         S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Millimeter);
-         L = ::ConvertFromSysUnits(m_L,unitMeasure::Millimeter);
+         J = WBFL::Units::ConvertFromSysUnits(m_J,WBFL::Units::Measure::Millimeter4);
+         I = WBFL::Units::ConvertFromSysUnits(m_I,WBFL::Units::Measure::Millimeter4);
+         W = WBFL::Units::ConvertFromSysUnits(m_W,WBFL::Units::Measure::Millimeter);
+         S = WBFL::Units::ConvertFromSysUnits(m_Savg,WBFL::Units::Measure::Millimeter);
+         L = WBFL::Units::ConvertFromSysUnits(m_L,WBFL::Units::Measure::Millimeter);
          f = 300;
       }
       else
       {
-         J = ::ConvertFromSysUnits(m_J,unitMeasure::Inch4);
-         I = ::ConvertFromSysUnits(m_I,unitMeasure::Inch4);
-         W = ::ConvertFromSysUnits(m_W,unitMeasure::Feet);
-         S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-         L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
+         J = WBFL::Units::ConvertFromSysUnits(m_J,WBFL::Units::Measure::Inch4);
+         I = WBFL::Units::ConvertFromSysUnits(m_I,WBFL::Units::Measure::Inch4);
+         W = WBFL::Units::ConvertFromSysUnits(m_W,WBFL::Units::Measure::Feet);
+         S = WBFL::Units::ConvertFromSysUnits(m_Savg,WBFL::Units::Measure::Feet);
+         L = WBFL::Units::ConvertFromSysUnits(m_L,WBFL::Units::Measure::Feet);
          f = 1;
       }
 
@@ -207,7 +207,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Int_1_Str
 
       g.ControllingMethod = SPEC_EQN | S_OVER_D_METHOD;
       g.EqnData.bWasUsed = true;
-      g.EqnData.D = ::ConvertToSysUnits(D,bSI? unitMeasure::Millimeter : unitMeasure::Feet);;
+      g.EqnData.D = WBFL::Units::ConvertToSysUnits(D,bSI? WBFL::Units::Measure::Millimeter : WBFL::Units::Measure::Feet);;
       g.EqnData.C = C;
       g.EqnData.K = K;
       g.EqnData.e = 1.0;
@@ -368,7 +368,7 @@ Float64 lrfdLldfTypeHIJ::MomentSkewCorrectionFactor() const
       // LRFD 7th Edition 2014 added skew correction for moment for type h,i,j sections
       
       // 4.6.2.2.2e - don't reduce moment if difference in skew is > 10 degree
-      Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
+      Float64 skew_delta_max = WBFL::Units::ConvertToSysUnits( 10.0, WBFL::Units::Measure::Degree );
       if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
       {
          return 1.0;
@@ -376,7 +376,7 @@ Float64 lrfdLldfTypeHIJ::MomentSkewCorrectionFactor() const
 
       Float64 avg_skew_angle = fabs(m_SkewAngle1 + m_SkewAngle2)/2.;
 
-      Float64 deg60 = ::ConvertToSysUnits(60.,unitMeasure::Degree);
+      Float64 deg60 = WBFL::Units::ConvertToSysUnits(60.,WBFL::Units::Measure::Degree);
       if ( deg60 < avg_skew_angle )
       {
          avg_skew_angle = deg60;
@@ -431,15 +431,15 @@ bool lrfdLldfTypeHIJ::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
-   Float64 S = ::ConvertToSysUnits( 6, unitMeasure::Feet );
+   Float64 S = WBFL::Units::ConvertToSysUnits( 6, WBFL::Units::Measure::Feet );
    std::vector<Float64> spacings;
    spacings.assign(Nb-1,S);
-   Float64 L = ::ConvertToSysUnits( 120.25, unitMeasure::Feet );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 120.25, WBFL::Units::Measure::Feet );
    Float64 W = S*Nb;
-   Float64 I = ::ConvertToSysUnits(559367.214,unitMeasure::Inch4);
-   Float64 J = ::ConvertToSysUnits( 33064.695,unitMeasure::Inch4);
-   Float64 wLane = ::ConvertToSysUnits( 12.0, unitMeasure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/::ConvertToSysUnits(10., unitMeasure::Feet) );
+   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
+   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
+   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
+   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
    Float64 de = S/2.0;
 
    lrfdLldfTypeHIJ df(1,S,spacings,de,de,Nl,wLane,

@@ -45,7 +45,7 @@ std::_tstring rptFormattedLengthUnitValue::AsString() const
    // English formatted output  ft'-inn/d"
 
    // get value in feet
-   Float64 value = ::ConvertFromSysUnits( GetValue(), unitMeasure::Feet );
+   Float64 value = WBFL::Units::ConvertFromSysUnits( GetValue(), WBFL::Units::Measure::Feet );
    if ( IsZero( value, GetZeroTolerance() ) )
       value = 0.;
 

@@ -23,7 +23,7 @@
 
 #include <Material\MatLib.h>
 #include <Material\PsStrandCurve.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -57,7 +57,7 @@ void get_constants( matPsStrand::Grade grade, Float64 *pA, Float64* pB, Float64*
 }
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
-static const Float64 g_28500_KSI = ::ConvertToSysUnits( 28500., unitMeasure::KSI );
+static const Float64 g_28500_KSI = WBFL::Units::ConvertToSysUnits( 28500., WBFL::Units::Measure::KSI );
 
 //======================== LIFECYCLE  =======================================
 matPsStrandCurve::matPsStrandCurve(const matPsStrand& strand) :
@@ -74,7 +74,7 @@ matYieldStressStrainCurve( strand.GetName(), 1,1,-1,1,1,-1,-1,1,1,-1,-1 )
    case matPsStrand::Gr2070: fpu = 299.; break;
    default: ATLASSERT(false); // is there a new strand grade?
    }
-   Float64 fu  = ::ConvertToSysUnits( fpu, unitMeasure::KSI );
+   Float64 fu  = WBFL::Units::ConvertToSysUnits( fpu, WBFL::Units::Measure::KSI );
    Float64 fy = strand.GetYieldStrength();
 
    Float64 a,b,c;
@@ -169,7 +169,7 @@ matStressStrainCurve::StrainState matPsStrandCurve::GetStress(Float64 strain,Flo
       Float64 a, b, c;
       get_constants( m_StrandGrade, &a, &b, &c );
       Float64 fps = a - b/(strain - c); // KSI
-      fps = ::ConvertToSysUnits( fps, unitMeasure::KSI );
+      fps = WBFL::Units::ConvertToSysUnits( fps, WBFL::Units::Measure::KSI );
 
       *pStress = fps;
       state = matStressStrainCurve::TensPlastic;
@@ -272,27 +272,27 @@ bool matPsStrandCurve::TestMe(dbgLog& rlog)
                      matPsStrand::LowRelaxation,
                      matPsStrand::None,
                      matPsStrand::D1270,
-                     ::ConvertToSysUnits(250.,unitMeasure::KSI),
-                     ::ConvertToSysUnits(0.90*250.,unitMeasure::KSI),
-                     ::ConvertToSysUnits(28500., unitMeasure::KSI),
-                     ::ConvertToSysUnits(0.50,unitMeasure::Inch),
-                     ::ConvertToSysUnits(0.144,unitMeasure::Inch2));
+                     WBFL::Units::ConvertToSysUnits(250.,WBFL::Units::Measure::KSI),
+                     WBFL::Units::ConvertToSysUnits(0.90*250.,WBFL::Units::Measure::KSI),
+                     WBFL::Units::ConvertToSysUnits(28500., WBFL::Units::Measure::KSI),
+                     WBFL::Units::ConvertToSysUnits(0.50,WBFL::Units::Measure::Inch),
+                     WBFL::Units::ConvertToSysUnits(0.144,WBFL::Units::Measure::Inch2));
    matPsStrandCurve Gr1725_curve( Gr1725 );
 
    state = Gr1725_curve.GetStress( s2, &stress );
-   target_stress = ::ConvertToSysUnits(248.30508474576271, unitMeasure::KSI );
+   target_stress = WBFL::Units::ConvertToSysUnits(248.30508474576271, WBFL::Units::Measure::KSI );
    TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1725_curve.GetStress( 0.0076, &stress );
-   target_stress = ::ConvertToSysUnits( 216.6, unitMeasure::KSI );
+   target_stress = WBFL::Units::ConvertToSysUnits( 216.6, WBFL::Units::Measure::KSI );
    TRY_TESTME ( state == matStressStrainCurve::Elastic && IsEqual( stress, target_stress ) );
 
    state = Gr1725_curve.GetStress( s6, &stress );
-   target_stress = ::ConvertToSysUnits( 85.5, unitMeasure::KSI );
+   target_stress = WBFL::Units::ConvertToSysUnits( 85.5, WBFL::Units::Measure::KSI );
    TRY_TESTME ( state == matStressStrainCurve::Elastic && IsEqual( stress, target_stress ) );
 
    state = Gr1725_curve.GetStress( s8, &stress );
-   target_stress = ::ConvertToSysUnits(245.34883720930233, unitMeasure::KSI );
+   target_stress = WBFL::Units::ConvertToSysUnits(245.34883720930233, WBFL::Units::Measure::KSI );
    TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1725_curve.GetStress( s10, &stress );
@@ -306,27 +306,27 @@ bool matPsStrandCurve::TestMe(dbgLog& rlog)
                      matPsStrand::LowRelaxation,
                      matPsStrand::None,
                      matPsStrand::D1270,
-                     ::ConvertToSysUnits(250.,unitMeasure::KSI),
-                     ::ConvertToSysUnits(0.90*250.,unitMeasure::KSI),
-                     ::ConvertToSysUnits(28500., unitMeasure::KSI),
-                     ::ConvertToSysUnits(0.50,unitMeasure::Inch),
-                     ::ConvertToSysUnits(0.144,unitMeasure::Inch2));
+                     WBFL::Units::ConvertToSysUnits(250.,WBFL::Units::Measure::KSI),
+                     WBFL::Units::ConvertToSysUnits(0.90*250.,WBFL::Units::Measure::KSI),
+                     WBFL::Units::ConvertToSysUnits(28500., WBFL::Units::Measure::KSI),
+                     WBFL::Units::ConvertToSysUnits(0.50,WBFL::Units::Measure::Inch),
+                     WBFL::Units::ConvertToSysUnits(0.144,WBFL::Units::Measure::Inch2));
    matPsStrandCurve Gr1860_curve( Gr1860 );
 
    state = Gr1860_curve.GetStress( s2, &stress );
-   target_stress = ::ConvertToSysUnits(268.26086956521738, unitMeasure::KSI );
+   target_stress = WBFL::Units::ConvertToSysUnits(268.26086956521738, WBFL::Units::Measure::KSI );
    TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1860_curve.GetStress( 0.0086, &stress );
-   target_stress = ::ConvertToSysUnits( 245.0, unitMeasure::KSI );
+   target_stress = WBFL::Units::ConvertToSysUnits( 245.0, WBFL::Units::Measure::KSI );
    TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1860_curve.GetStress( s6, &stress );
-   target_stress = ::ConvertToSysUnits( 85.5, unitMeasure::KSI );
+   target_stress = WBFL::Units::ConvertToSysUnits( 85.5, WBFL::Units::Measure::KSI );
    TRY_TESTME ( state == matStressStrainCurve::Elastic && IsEqual( stress, target_stress ) );
 
    state = Gr1860_curve.GetStress( s8, &stress );
-   target_stress = ::ConvertToSysUnits( 265., unitMeasure::KSI );
+   target_stress = WBFL::Units::ConvertToSysUnits( 265., WBFL::Units::Measure::KSI );
    TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1860_curve.GetStress( s10, &stress );

@@ -24,7 +24,7 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/HaulingTensionStressLimit.h>
 #include <Stability/HaulingCheckArtifact.h>
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -81,7 +81,7 @@ Float64 CCHaulingTensionStressLimit::GetRequiredFcTension(HaulingSlope slope, co
    return Min(GetRequiredFcTensionWithoutRebar(slope,pArtifact), GetRequiredFcTensionWithRebar(slope,pArtifact));
 }
 
-void CCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptSqrtPressureValue, tension_coeff, pDisplayUnits->SqrtPressure, false);
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
@@ -116,7 +116,7 @@ void CCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptPara
    }
 }
 
-void CCHaulingTensionStressLimit::ReportRequiredConcreteStrength(HaulingSlope slope,const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCHaulingTensionStressLimit::ReportRequiredConcreteStrength(HaulingSlope slope,const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
@@ -197,13 +197,13 @@ Float64 UHPCHaulingTensionStressLimit::GetTensionLimit(HaulingSlope slope, const
 #endif
 
 
-void UHPCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
    *pPara << _T("Tension stress limit = (2/3)") << RPT_STRESS(_T("fc")) << _T(" = ") << stress.SetValue(AllowableTension[slope]) << rptNewLine;
 }
 
-void UHPCHaulingTensionStressLimit::ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCHaulingTensionStressLimit::ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    // Do nothing - tension stress limit is not a function of concrete strength
 }

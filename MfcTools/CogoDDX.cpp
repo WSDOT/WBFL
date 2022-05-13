@@ -24,7 +24,7 @@
 #include "StdAfx.h"
 #include "Resource.h"
 #include <MfcTools\CogoDDX.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 #include <algorithm>
 #include <cctype>
 
@@ -128,10 +128,10 @@ void DDX_Angle(CDataExchange* pDX,int nIDC,IAngle* pAngle,IDisplayUnitFormatter*
    delete[] lpszBuffer;
 }
 
-void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit )
+void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitModeSI, const WBFL::Units::Length& usDisplayUnit, const WBFL::Units::Length& siDisplayUnit )
 {
 #pragma Reminder("UPDATE: does this need to take station equation zone index into account")
-   const unitLength& displayUnit = ( bUnitModeSI ? siDisplayUnit : usDisplayUnit );
+   const WBFL::Units::Length& displayUnit = ( bUnitModeSI ? siDisplayUnit : usDisplayUnit );
 
    HWND hWndCtrl = pDX->PrepareEditCtrl( nIDC );
 
@@ -159,11 +159,11 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitMode
       }
 
       objStation->get_Value(&station);
-      station = ::ConvertToSysUnits( station, displayUnit );
+      station = WBFL::Units::ConvertToSysUnits( station, displayUnit );
     }
 	else
 	{
-      station = ::ConvertFromSysUnits( station, displayUnit );
+      station = WBFL::Units::ConvertFromSysUnits( station, displayUnit );
       objStation->put_Value(station);
       CComBSTR bstrStation;
       hr = objStation->AsString(bUnitModeSI ? umSI : umUS,VARIANT_FALSE,&bstrStation);
@@ -184,11 +184,11 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitMode
    delete[] lpszBuffer;
 }
 
-void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStationFormat& unitStation )
+void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const WBFL::Units::StationFormat& unitStation )
 {
 #pragma Reminder("UPDATE: does this need to take station equation zone index into account")
-   UnitModeType unitMode = unitStation.GetUnitOfMeasure() == unitStationFormat::Feet ? umUS : umSI;
-   const unitLength& displayUnit = (unitMode == umUS ? unitMeasure::Feet : unitMeasure::Meter);
+   UnitModeType unitMode = unitStation.GetUnitOfMeasure() == WBFL::Units::StationFormat::UnitOfMeasure::Feet ? umUS : umSI;
+   const WBFL::Units::Length& displayUnit = (unitMode == umUS ? WBFL::Units::Measure::Feet : WBFL::Units::Measure::Meter);
 
    HWND hWndCtrl = pDX->PrepareEditCtrl( nIDC );
 
@@ -224,11 +224,11 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStat
       }
 
       objStation->get_Value(&station);
-      station = ::ConvertToSysUnits( station, displayUnit );
+      station = WBFL::Units::ConvertToSysUnits( station, displayUnit );
    }
 	else
 	{  
-      station = ::ConvertFromSysUnits( station, displayUnit );
+      station = WBFL::Units::ConvertFromSysUnits( station, displayUnit );
       objStation->put_Value(station);
       CComBSTR bstrStation;
       hr = objStation->AsString(unitMode,VARIANT_FALSE,&bstrStation);
@@ -250,11 +250,11 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStat
    delete[] lpszBuffer;
 }
 
-void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit )
+void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI, const WBFL::Units::Length& usDisplayUnit, const WBFL::Units::Length& siDisplayUnit )
 {
 #pragma Reminder("UPDATE: does this need to take station equation zone index into account")
 
-   const unitLength& displayUnit = ( bUnitsModeSI ? siDisplayUnit : usDisplayUnit );
+   const WBFL::Units::Length& displayUnit = ( bUnitsModeSI ? siDisplayUnit : usDisplayUnit );
 	if (!pDX->m_bSaveAndValidate)
 	{
 		TRACE0("Warning: initial dialog data is out of range.\n");
@@ -268,7 +268,7 @@ void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 statio
       ATLASSERT( SUCCEEDED(hr) );
 
       CString msg;
-      stationLimit = ::ConvertFromSysUnits( stationLimit, displayUnit );
+      stationLimit = WBFL::Units::ConvertFromSysUnits( stationLimit, displayUnit );
       objStation->put_Value(stationLimit);
 
       CComBSTR bstrStationLimit;

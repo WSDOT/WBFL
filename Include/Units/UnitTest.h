@@ -21,82 +21,18 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_UNITS_UNITTEST_H_
-#define INCLUDED_UNITS_UNITTEST_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Units\UnitsExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   unitUnitTest
-
-   Unit Testing class for the unitmgt package
-
-
-DESCRIPTION
-
-LOG
-   rdp : 05.27.1998 : Created file
-*****************************************************************************/
-
-class UNITSCLASS unitUnitTest
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
-
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   static bool TestMe(dbgLog& rlog);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   unitUnitTest(const unitUnitTest&) = delete;
-   unitUnitTest& operator=(const unitUnitTest&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
+   namespace Units
+   {
+      class UNITSCLASS UnitTest
+      {
+      public:
+         static bool TestMe(dbgLog& rlog);
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-
-#endif // INCLUDED_System_UNITTEST_H_

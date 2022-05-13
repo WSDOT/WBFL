@@ -383,7 +383,7 @@ void lrfdLumpSumLosses::UpdateHaulingLosses() const
 //======================== INQUERY    =======================================
 
 #if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
+#include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
 bool lrfdLumpSumLosses::TestMe(dbgLog& rlog)
 {

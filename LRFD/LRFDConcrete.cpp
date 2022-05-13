@@ -405,7 +405,7 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
    Float64 ks = 1.0;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Millimeter);
+      Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Millimeter);
       Float64 k1 = shrinkage_time/(26.0*exp(0.36*vs) + shrinkage_time);
       Float64 k2 = shrinkage_time/(45.0 + shrinkage_time);
       Float64 k3 = (1064 - 94*vs)/923;
@@ -413,7 +413,7 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
    }
    else
    {
-      Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+      Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
       Float64 k1 = shrinkage_time/(26.0*exp(0.0142*vs) + shrinkage_time);
       Float64 k2 = shrinkage_time/(45.0 + shrinkage_time);
       Float64 k3 = (1064 - 3.7*vs)/923;
@@ -464,12 +464,12 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khs = (2.0 - 0.014*m_RelativeHumidity);
    
-   Float64 fc = ::ConvertFromSysUnits(m_InitialConcrete.GetFc(),unitMeasure::KSI);
+   Float64 fc = WBFL::Units::ConvertFromSysUnits(m_InitialConcrete.GetFc(),WBFL::Units::Measure::KSI);
    Float64 kf = 5.0/(1.0 + fc);
 
    Float64 ktd = (shrinkage_time)/(61.0 - 4.0*fc + shrinkage_time);
@@ -504,12 +504,12 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khs = (2.0 - 0.014*m_RelativeHumidity);
    
-   Float64 fc = ::ConvertFromSysUnits(m_InitialConcrete.GetFc(),unitMeasure::KSI);
+   Float64 fc = WBFL::Units::ConvertFromSysUnits(m_InitialConcrete.GetFc(),WBFL::Units::Measure::KSI);
    Float64 kf = 5.0/(1.0 + fc);
 
    Float64 ktd = (shrinkage_time)/(12*(100.0 - 4.0*fc)/(fc + 20) + shrinkage_time);
@@ -543,13 +543,13 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
    Float64 vs, fc;
    if ( bSI )
    {
-      vs = ::ConvertFromSysUnits( m_VS, unitMeasure::Millimeter );
-      fc = ::ConvertFromSysUnits( m_FinalConcrete.GetFc(), unitMeasure::MPa);
+      vs = WBFL::Units::ConvertFromSysUnits( m_VS, WBFL::Units::Measure::Millimeter );
+      fc = WBFL::Units::ConvertFromSysUnits( m_FinalConcrete.GetFc(), WBFL::Units::Measure::MPa);
    }
    else
    {
-      vs = ::ConvertFromSysUnits( m_VS, unitMeasure::Inch );
-      fc = ::ConvertFromSysUnits( m_FinalConcrete.GetFc(), unitMeasure::KSI);
+      vs = WBFL::Units::ConvertFromSysUnits( m_VS, WBFL::Units::Measure::Inch );
+      fc = WBFL::Units::ConvertFromSysUnits( m_FinalConcrete.GetFc(), WBFL::Units::Measure::KSI);
    }
 
 
@@ -608,12 +608,12 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khc = (1.56 - 0.008*m_RelativeHumidity);
    
-   Float64 fc = ::ConvertFromSysUnits(m_InitialConcrete.GetFc(),unitMeasure::KSI);
+   Float64 fc = WBFL::Units::ConvertFromSysUnits(m_InitialConcrete.GetFc(),WBFL::Units::Measure::KSI);
    Float64 kf = 5.0/(1.0 + fc);
 
    Float64 ktd = (maturity)/(61.0 - 4.0*fc + maturity);
@@ -644,12 +644,12 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khc = (1.56 - 0.008*m_RelativeHumidity);
    
-   Float64 fc = ::ConvertFromSysUnits(m_InitialConcrete.GetFc(),unitMeasure::KSI);
+   Float64 fc = WBFL::Units::ConvertFromSysUnits(m_InitialConcrete.GetFc(),WBFL::Units::Measure::KSI);
    Float64 kf = 5.0/(1.0 + fc);
 
    Float64 ktd = (maturity)/(12*(100.0 - 4.0*fc)/(fc + 20) + maturity);

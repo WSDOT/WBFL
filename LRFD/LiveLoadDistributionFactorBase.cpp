@@ -35,13 +35,13 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-static const Float64 g_600_MM  = ::ConvertToSysUnits( 600.0, unitMeasure::Millimeter );
-static const Float64 g_1800_MM = ::ConvertToSysUnits( 1800.0, unitMeasure::Millimeter );
-static const Float64 g_3000_MM = ::ConvertToSysUnits( 3000.0, unitMeasure::Millimeter );
+static const Float64 g_600_MM  = WBFL::Units::ConvertToSysUnits( 600.0, WBFL::Units::Measure::Millimeter );
+static const Float64 g_1800_MM = WBFL::Units::ConvertToSysUnits( 1800.0, WBFL::Units::Measure::Millimeter );
+static const Float64 g_3000_MM = WBFL::Units::ConvertToSysUnits( 3000.0, WBFL::Units::Measure::Millimeter );
 
-static const Float64 g_2_FT  = ::ConvertToSysUnits(2.0, unitMeasure::Feet);
-static const Float64 g_6_FT  = ::ConvertToSysUnits(6.0, unitMeasure::Feet);
-static const Float64 g_10_FT = ::ConvertToSysUnits(10.0, unitMeasure::Feet);
+static const Float64 g_2_FT  = WBFL::Units::ConvertToSysUnits(2.0, WBFL::Units::Measure::Feet);
+static const Float64 g_6_FT  = WBFL::Units::ConvertToSysUnits(6.0, WBFL::Units::Measure::Feet);
+static const Float64 g_10_FT = WBFL::Units::ConvertToSysUnits(10.0, WBFL::Units::Measure::Feet);
 
 
 /****************************************************************************

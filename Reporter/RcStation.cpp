@@ -24,7 +24,7 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\RcStation.h>
 #include <Reporter\RcVisitor.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,7 +32,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-rptRcStation::rptRcStation(Float64 station,const unitStationFormat* pFormat) :
+rptRcStation::rptRcStation(Float64 station,const WBFL::Units::StationFormat* pFormat) :
 rptReportContent(),
 m_Station( station ),
 m_pFormat( pFormat )
@@ -78,11 +78,11 @@ rptReportContent& rptRcStation::SetStation(Float64 station)
 Float64 rptRcStation::GetStation(bool bConvert) const
 {
    Float64 value;
-   const unitLength& unit_of_measure = ( m_pFormat->GetUnitOfMeasure() == unitStationFormat::Meter ) ?
-                                         unitMeasure::Meter :
-                                         unitMeasure::Feet;
+   const WBFL::Units::Length& unit_of_measure = ( m_pFormat->GetUnitOfMeasure() == WBFL::Units::StationFormat::UnitOfMeasure::Meter) ?
+                                         WBFL::Units::Measure::Meter :
+                                         WBFL::Units::Measure::Feet;
 
-   value = bConvert ? ::ConvertFromSysUnits( m_Station, unit_of_measure ) : m_Station;
+   value = bConvert ? WBFL::Units::ConvertFromSysUnits( m_Station, unit_of_measure ) : m_Station;
    return value;
 }
 

@@ -62,9 +62,9 @@ void CMomentCapacitySolverTest::Test()
    
    // base units of kip and ksi
    hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
-   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
-   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
-   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
+   WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+   WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+   WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
 
    // Get a general section
    CComPtr<IGeneralSection> section;

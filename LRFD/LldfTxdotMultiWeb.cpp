@@ -131,16 +131,16 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfMultiWeb::GetMomentDF_Int
    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
    if ( bSI )
    {
-      W = ::ConvertFromSysUnits(m_W,unitMeasure::Millimeter);
-      S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Millimeter);
-      L = ::ConvertFromSysUnits(m_L,unitMeasure::Millimeter);
+      W = WBFL::Units::ConvertFromSysUnits(m_W,WBFL::Units::Measure::Millimeter);
+      S = WBFL::Units::ConvertFromSysUnits(m_Savg,WBFL::Units::Measure::Millimeter);
+      L = WBFL::Units::ConvertFromSysUnits(m_L,WBFL::Units::Measure::Millimeter);
       f = 300;
    }
    else
    {
-      W = ::ConvertFromSysUnits(m_W,unitMeasure::Feet);
-      S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);
-      L = ::ConvertFromSysUnits(m_L,unitMeasure::Feet);
+      W = WBFL::Units::ConvertFromSysUnits(m_W,WBFL::Units::Measure::Feet);
+      S = WBFL::Units::ConvertFromSysUnits(m_Savg,WBFL::Units::Measure::Feet);
+      L = WBFL::Units::ConvertFromSysUnits(m_L,WBFL::Units::Measure::Feet);
       f = 1;
    }
 
@@ -155,7 +155,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfMultiWeb::GetMomentDF_Int
    lrfdILiveLoadDistributionFactor::DFResult g;
    Float64 mg = S/D;
 
-   S = ::ConvertFromSysUnits(m_Savg,unitMeasure::Feet);  // us or si, doesn't matter to TxDOT
+   S = WBFL::Units::ConvertFromSysUnits(m_Savg,WBFL::Units::Measure::Feet);  // us or si, doesn't matter to TxDOT
 
    if (mg> S/10.0)
    {
@@ -167,7 +167,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfMultiWeb::GetMomentDF_Int
    {
       g.ControllingMethod = SPEC_EQN | S_OVER_D_METHOD;
       g.EqnData.bWasUsed = true;
-      g.EqnData.D = ::ConvertToSysUnits(D,bSI? unitMeasure::Millimeter : unitMeasure::Feet);
+      g.EqnData.D = WBFL::Units::ConvertToSysUnits(D,bSI? WBFL::Units::Measure::Millimeter : WBFL::Units::Measure::Feet);
       g.EqnData.C = C;
       g.EqnData.K = m_Kfactor;
       g.EqnData.mg = mg;
@@ -265,11 +265,11 @@ bool lrfdTxdotLldfMultiWeb::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
-   Float64 Savg = ::ConvertToSysUnits( 6, unitMeasure::Feet );
+   Float64 Savg = WBFL::Units::ConvertToSysUnits( 6, WBFL::Units::Measure::Feet );
    std::vector<Float64> spacings;
    spacings.assign(Nb-1, Savg);
-   Float64 wL = ::ConvertToSysUnits( 6, unitMeasure::Feet );
-   Float64 L = ::ConvertToSysUnits( 120.25, unitMeasure::Feet );
+   Float64 wL = WBFL::Units::ConvertToSysUnits( 6, WBFL::Units::Measure::Feet );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 120.25, WBFL::Units::Measure::Feet );
    Int16 Nl = 3;
    Float64 ohang = Savg/2.0;
    Float64 W = (Nb)*Savg;

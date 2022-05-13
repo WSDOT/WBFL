@@ -303,7 +303,7 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> matCEBFIPConcrete::GetFreeShrin
 
    // Time development factor CEB-FIP Eqn. 2.1-79
    Float64 h = GetH();
-   h = ::ConvertFromSysUnits(h,unitMeasure::Millimeter); // need h in millimeter
+   h = WBFL::Units::ConvertFromSysUnits(h,WBFL::Units::Measure::Millimeter); // need h in millimeter
    Float64 ho = 100; // 100 millimieter
    Float64 betaS = sqrt( shrinkage_time/(350*pow(h/ho,2) + shrinkage_time) );
 
@@ -411,7 +411,7 @@ Float64 matCEBFIPConcrete::GetBetaRH() const
 
 Float64 matCEBFIPConcrete::GetEpsilonS() const
 {
-   Float64 fc28 = ::ConvertFromSysUnits(m_Fc28,unitMeasure::MPa); // must be in MPa for CEB-FIP equations
+   Float64 fc28 = WBFL::Units::ConvertFromSysUnits(m_Fc28,WBFL::Units::Measure::MPa); // must be in MPa for CEB-FIP equations
    Float64 es_fcm = (160 + 10*m_BetaSc*(9 - fc28/10))*1E-6; // CEB-FIP Eqn 2.1-76
    return es_fcm;
 }
@@ -427,7 +427,7 @@ Float64 matCEBFIPConcrete::GetNotionalShrinkageCoefficient() const
 Float64 matCEBFIPConcrete::GetPhiRH() const
 {
    Float64 h = GetH();
-   h = ::ConvertFromSysUnits(h,unitMeasure::Millimeter); // need h in millimeter
+   h = WBFL::Units::ConvertFromSysUnits(h,WBFL::Units::Measure::Millimeter); // need h in millimeter
    Float64 ho = 100; // 100 millimieter
 
    Float64 phiRH = 1 + (1-m_RelativeHumidity/100)/(0.46*(pow(h/ho,1./3.))); // CEB-FIP Eqn. 2.1-66
@@ -436,7 +436,7 @@ Float64 matCEBFIPConcrete::GetPhiRH() const
 
 Float64 matCEBFIPConcrete::GetBetaFcm() const
 {
-   Float64 fc28 = ::ConvertFromSysUnits(m_Fc28,unitMeasure::MPa); // must be in MPa for CEB-FIP equations
+   Float64 fc28 = WBFL::Units::ConvertFromSysUnits(m_Fc28,WBFL::Units::Measure::MPa); // must be in MPa for CEB-FIP equations
    Float64 beta_fcm = 5.3/sqrt(fc28/10); // CEB-FIP Eqn. 2.1-67
    return beta_fcm;
 }
@@ -444,7 +444,7 @@ Float64 matCEBFIPConcrete::GetBetaFcm() const
 Float64 matCEBFIPConcrete::GetBetaH() const
 {
    Float64 h = GetH();
-   h = ::ConvertFromSysUnits(h,unitMeasure::Millimeter); // need h in millimeter
+   h = WBFL::Units::ConvertFromSysUnits(h,WBFL::Units::Measure::Millimeter); // need h in millimeter
    Float64 ho = 100; // 100 millimieter
 
    Float64 beta_H = 150*(1 + pow(1.2*m_RelativeHumidity/100,18))*(h/ho) + 250; // CEB-FIP Eqn. 2.1-71
@@ -494,13 +494,13 @@ Float64 matCEBFIPConcrete::GetFr(Float64 t) const
    Float64 fc = GetFc(t);
 
    // Convert input to required units
-   Float64 Fc      = ::ConvertFromSysUnits( fc,      unitMeasure::PSI         );
-   Float64 Density = ::ConvertFromSysUnits( m_StrengthDensity, unitMeasure::LbmPerFeet3 );
+   Float64 Fc      = WBFL::Units::ConvertFromSysUnits( fc,      WBFL::Units::Measure::PSI         );
+   Float64 Density = WBFL::Units::ConvertFromSysUnits( m_StrengthDensity, WBFL::Units::Measure::LbmPerFeet3 );
 
    // Eqn 2-3
    Float64 gr = 0.6;
    Float64 fr = gr*sqrt(Density*Fc);
-   fr = ::ConvertToSysUnits( fr, unitMeasure::PSI );
+   fr = WBFL::Units::ConvertToSysUnits( fr, WBFL::Units::Measure::PSI );
    return fr;
 }
 
@@ -517,14 +517,14 @@ Float64 matCEBFIPConcrete::ModE(Float64 fc,Float64 density) const
    Float64 e;           // modulus of elasticity in System Units
 
    // Convert input to required units
-   Fc      = ::ConvertFromSysUnits( fc,      unitMeasure::PSI         );
-   Density = ::ConvertFromSysUnits( density, unitMeasure::LbmPerFeet3 );
+   Fc      = WBFL::Units::ConvertFromSysUnits( fc,      WBFL::Units::Measure::PSI         );
+   Density = WBFL::Units::ConvertFromSysUnits( density, WBFL::Units::Measure::LbmPerFeet3 );
 
 
    E = 33.0 * pow( Density, 1.5 ) * sqrt( Fc );
 
    // Convert output to system units.
-   e = ::ConvertToSysUnits( E, unitMeasure::PSI );
+   e = WBFL::Units::ConvertToSysUnits( E, WBFL::Units::Measure::PSI );
 
    return e;
 }

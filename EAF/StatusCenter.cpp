@@ -23,6 +23,7 @@
 
 #include "stdafx.h"
 #include <EAF\StatusCenter.h>
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

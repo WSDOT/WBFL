@@ -43,5 +43,5 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
 // call unit test routines for all packages belonging to this dll.
 bool WINAPI UnitTest(dbgLog& rlog)
 {
-   return unitUnitTest::TestMe(rlog);
+   return WBFL::Units::UnitTest::TestMe(rlog);
 }

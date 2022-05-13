@@ -69,9 +69,9 @@ CString FormatAngle(IAngle* pAngle)
    return str;
 }
 
-CString FormatOffset(Float64 offset,const unitmgtLengthData& indirectMeasure,bool bIncludeUnitTag)
+CString FormatOffset(Float64 offset,const WBFL::Units::LengthData& indirectMeasure,bool bIncludeUnitTag)
 {
-   offset = ::ConvertFromSysUnits( IsZero(offset,indirectMeasure.Tol) ? 0.00 : offset, indirectMeasure.UnitOfMeasure );
+   offset = WBFL::Units::ConvertFromSysUnits( IsZero(offset,indirectMeasure.Tol) ? 0.00 : offset, indirectMeasure.UnitOfMeasure );
    sysNumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
    std::_tstring str = format_tool.AsString( offset );
    CString strOffset;
@@ -92,7 +92,7 @@ CString FormatOffset(Float64 offset,const unitmgtLengthData& indirectMeasure,boo
    return strOffset;
 }
 
-CString FormatScalar(Float64 value,const unitmgtScalar& indirectMeasure)
+CString FormatScalar(Float64 value,const WBFL::Units::ScalarData& indirectMeasure)
 {
    sysNumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
    std::_tstring str = format_tool.AsString( value );
@@ -116,7 +116,7 @@ CString FormatPercentage(Float64 value,bool bIncludeUnitTag)
    return strPercentage;
 }
 
-CString FormatStation(const unitStationFormat& format,Float64 value)
+CString FormatStation(const WBFL::Units::StationFormat& format,Float64 value)
 {
    return format.AsString(value).c_str();
 }

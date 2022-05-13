@@ -380,11 +380,11 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
       {
          // 180 degree hooks will loop back on themselves to reduce
          // the angle a little bit so there is something to display
-         angle -= ::ConvertToSysUnits(15,unitMeasure::Degree);
+         angle -= WBFL::Units::ConvertToSysUnits(15,WBFL::Units::Measure::Degree);
       }
       else if (m_HookType[qcbLeft] == ht90)
       {
-         angle += ::ConvertToSysUnits(15, unitMeasure::Degree);
+         angle += WBFL::Units::ConvertToSysUnits(15, WBFL::Units::Measure::Degree);
       }
 
       if ( m_Datum == xbBottom )
@@ -416,11 +416,11 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
       {
          // 180 degree hooks will loop back on themselves to reduce
          // the angle a little bit so there is something to display
-         angle -= ::ConvertToSysUnits(15,unitMeasure::Degree);
+         angle -= WBFL::Units::ConvertToSysUnits(15,WBFL::Units::Measure::Degree);
       }
       else if (m_HookType[qcbRight] == ht90)
       {
-         angle += ::ConvertToSysUnits(15, unitMeasure::Degree);
+         angle += WBFL::Units::ConvertToSysUnits(15, WBFL::Units::Measure::Degree);
       }
 
       if ( m_Datum != xbBottom )

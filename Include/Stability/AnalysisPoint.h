@@ -41,7 +41,7 @@ namespace WBFL
 
          /// Returns a reporting string for the analysis point.
          virtual std::_tstring  AsString(
-            const unitmgtLengthData& lengthUnit, ///< Indirect unit measure information
+            const WBFL::Units::LengthData& lengthUnit, ///< Indirect unit measure information
             Float64 offset, ///< an offset to be applied to the point location so the analysis point can appear to be relative to a different datum then the left end of the girder.
             bool bShowUnit ///< If true, the unit of measure is included in the resulting string
          ) const = 0;

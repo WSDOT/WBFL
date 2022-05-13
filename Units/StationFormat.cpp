@@ -23,7 +23,7 @@
 
 #include <Units\UnitsLib.h>
 #include <Units\StationFormat.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 #include <Units\Measure.h>
 #include <Units\XUnit.h>
 #include <MathEx.h>
@@ -35,59 +35,31 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+using namespace WBFL::Units;
+
 bool contains_alpha(const std::_tstring& s);
 bool parse_station(const std::_tstring& station,Int16 nSepDigits,Float64* pX,Float64* pY,Float64* pZ);
 
-/****************************************************************************
-CLASS
-   unitStationFormat
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-unitStationFormat::unitStationFormat()
-{
-   m_UnitOfMeasure = Meter;
-}
-
-unitStationFormat::unitStationFormat(UnitOfMeasure unitOfMeasure)
+StationFormat::StationFormat(UnitOfMeasure unitOfMeasure)
 {
    m_UnitOfMeasure = unitOfMeasure;
 }
 
-unitStationFormat::unitStationFormat(const unitStationFormat& rOther)
-{
-   MakeCopy(rOther);
-}
-
-unitStationFormat::~unitStationFormat()
+StationFormat::~StationFormat()
 {
 }
 
-//======================== OPERATORS  =======================================
-unitStationFormat& unitStationFormat::operator= (const unitStationFormat& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-Float64 unitStationFormat::FromString(const std::_tstring& station) const
+Float64 StationFormat::FromString(const std::_tstring& station) const
 {
    Float64 x,y,z;
-   Int16 nSepDigits = (m_UnitOfMeasure == Meter) ? 3 : 2;
+   Int16 nSepDigits = (m_UnitOfMeasure == UnitOfMeasure::Meter) ? 3 : 2;
    if ( !parse_station(station,nSepDigits,&x,&y,&z) )
-      THROW(unitXUnit,BadStationFormat);
+      THROW(XUnit,Reason::BadStationFormat);
 
-   return (x * (m_UnitOfMeasure==Meter?1000.:100.)) + y + z;
+   return (x * (m_UnitOfMeasure == UnitOfMeasure::Meter?1000.:100.)) + y + z;
 }
 
-std::_tstring unitStationFormat::AsString(Float64 station) const
+std::_tstring StationFormat::AsString(Float64 station) const
 {
    int sign = BinarySign(station);
    station = fabs(station);
@@ -98,17 +70,17 @@ std::_tstring unitStationFormat::AsString(Float64 station) const
    // Convert station from system units to meters or feet
    // Setup the station formatting parameters.
 
-   if ( m_UnitOfMeasure == Meter )
+   if ( m_UnitOfMeasure == UnitOfMeasure::Meter )
    {
       plus_seperator     = 3;
       num_decimal_places = 3;
-      value = ::ConvertFromSysUnits( station, unitMeasure::Meter );
+      value = WBFL::Units::ConvertFromSysUnits( station, Measure::Meter );
    }
    else
    {
       plus_seperator     = 2;
       num_decimal_places = 2;
-      value = ::ConvertFromSysUnits( station, unitMeasure::Feet );
+      value = WBFL::Units::ConvertFromSysUnits( station, Measure::Feet );
    }
 
    TCHAR buffer[65];
@@ -134,102 +106,43 @@ std::_tstring unitStationFormat::AsString(Float64 station) const
    return buffer;
 }
 
-//======================== ACCESS     =======================================
-void unitStationFormat::SetUnitOfMeasure(UnitOfMeasure unitOfMeasure)
+void StationFormat::SetUnitOfMeasure(UnitOfMeasure unitOfMeasure)
 {
    m_UnitOfMeasure = unitOfMeasure;
 }
 
-unitStationFormat::UnitOfMeasure unitStationFormat::GetUnitOfMeasure() const
+StationFormat::UnitOfMeasure StationFormat::GetUnitOfMeasure() const
 {
    return m_UnitOfMeasure;
 }
 
-//======================== INQUIRY    =======================================
-bool unitStationFormat::IsValidString(const std::_tstring& station) const
+bool StationFormat::IsValidString(const std::_tstring& station) const
 {
    Float64 x,y,z;
-   Int16 nSepDigits = (m_UnitOfMeasure == Meter) ? 3 : 2;
+   Int16 nSepDigits = (m_UnitOfMeasure == UnitOfMeasure::Meter) ? 3 : 2;
    return parse_station( station, nSepDigits, &x, &y, &z );
 }
 
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool unitStationFormat::AssertValid() const
+bool StationFormat::AssertValid() const
 {
    return true;
 }
 
-void unitStationFormat::Dump(dbgDumpContext& os) const
+void StationFormat::Dump(dbgDumpContext& os) const
 {
-   os << _T("Dump for unitStationFormat") << endl;
-   os << _T("Unit of Measure = ") << ((m_UnitOfMeasure == Meter) ? _T("meter") : _T("feet")) 
+   os << _T("Dump for StationFormat") << endl;
+   os << _T("Unit of Measure = ") << ((m_UnitOfMeasure == UnitOfMeasure::Meter) ? _T("meter") : _T("feet"))
       << endl;
 }
 #endif // _DEBUG
 
-////////////////////////// PROTECTED  ///////////////////////////////////////
+const StationFormat StationFormats::SI(StationFormat::UnitOfMeasure::Meter);
+const StationFormat StationFormats::US(StationFormat::UnitOfMeasure::Feet);
 
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void unitStationFormat::MakeCopy(const unitStationFormat& rOther)
-{
-   m_UnitOfMeasure = rOther.m_UnitOfMeasure;
-}
-
-void unitStationFormat::MakeAssignment(const unitStationFormat& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-/****************************************************************************
-CLASS
-   unitStationFormats
-****************************************************************************/
-
-const unitStationFormat unitStationFormats::SI(unitStationFormat::Meter);
-const unitStationFormat unitStationFormats::US(unitStationFormat::Feet);
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-unitStationFormats::~unitStationFormats()
+StationFormats::~StationFormats()
 {
 }
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 
 bool contains_alpha(const std::_tstring& s)
 {

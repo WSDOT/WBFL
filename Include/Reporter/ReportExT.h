@@ -27,7 +27,7 @@
 
 #include <Reporter\ReporterExp.h>
 #include <Reporter\Report.h>
-#include <UnitMgt\IndirectMeasure.h>
+#include <Units\IndirectMeasure.h>
 
 
 #define RPT_STATIONFORMAT(rpt) &(rpt)->GetUnitsOfMeasure().StationFormat
@@ -134,8 +134,8 @@ private:
    T m_UnitsOfMeasure;
 };
 
-REPORTERTPL rptReportExT<unitmgtIndirectMeasure>;
-typedef rptReportExT<unitmgtIndirectMeasure> rptReportEx;
+REPORTERTPL rptReportExT<WBFL::Units::IndirectMeasure>;
+typedef rptReportExT<WBFL::Units::IndirectMeasure> rptReportEx;
 
 
 #endif // INCLUDED_REPORTER_REPORTEXT_H_

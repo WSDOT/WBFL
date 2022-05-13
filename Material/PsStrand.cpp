@@ -23,7 +23,7 @@
 
 #include <Material\MatLib.h>
 #include <Material\PsStrand.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,10 +37,10 @@ CLASS
 ****************************************************************************/
 
 // precomputed conversions
-static const Float64 g_12p70_MM   = ::ConvertToSysUnits( 12.70, unitMeasure::Millimeter );
-static const Float64 g_98p71_MM2  = ::ConvertToSysUnits( 98.71, unitMeasure::Millimeter2 );
-static const Float64 g_1725_MPA   =  ::ConvertToSysUnits( 1725., unitMeasure::MPa );
-static const Float64 g_197000_MPA = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
+static const Float64 g_12p70_MM   = WBFL::Units::ConvertToSysUnits( 12.70, WBFL::Units::Measure::Millimeter );
+static const Float64 g_98p71_MM2  = WBFL::Units::ConvertToSysUnits( 98.71, WBFL::Units::Measure::Millimeter2 );
+static const Float64 g_1725_MPA   =  WBFL::Units::ConvertToSysUnits( 1725., WBFL::Units::Measure::MPa );
+static const Float64 g_197000_MPA = WBFL::Units::ConvertToSysUnits( 197000., WBFL::Units::Measure::MPa );
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 

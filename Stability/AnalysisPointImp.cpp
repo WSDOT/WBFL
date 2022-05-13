@@ -23,7 +23,7 @@
 
 #include <Stability/StabilityLib.h>
 #include <Stability/AnalysisPointImp.h>
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -61,9 +61,9 @@ namespace WBFL
          return m_X;
       }
 
-      std::_tstring AnalysisPoint::AsString(const unitmgtLengthData& lengthUnit, Float64 offset, bool bShowUnit) const
+      std::_tstring AnalysisPoint::AsString(const WBFL::Units::LengthData& lengthUnit, Float64 offset, bool bShowUnit) const
       {
-         LengthTool formatTool(lengthUnit);
+         WBFL::Units::LengthTool formatTool(lengthUnit);
          std::_tstring str = formatTool.AsString(formatTool.Convert(m_X - offset));
          if (bShowUnit)
          {

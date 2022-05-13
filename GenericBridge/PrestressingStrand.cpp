@@ -260,7 +260,7 @@ STDMETHODIMP CPrestressingStrand::get_Density(StageIndexType stageIdx,Float64* w
    }
    else
    {
-      *w = ::ConvertToSysUnits(490.0, unitMeasure::LbfPerFeet3);
+      *w = WBFL::Units::ConvertToSysUnits(490.0, WBFL::Units::Measure::LbfPerFeet3);
    }
 
    return S_OK;

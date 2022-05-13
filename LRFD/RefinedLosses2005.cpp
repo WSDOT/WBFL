@@ -39,20 +39,20 @@ CLASS
    lrfdRefinedLosses2005
 ****************************************************************************/
 
-static const Float64 g_747p7_IN3   = ::ConvertToSysUnits(747.7,unitMeasure::Inch3);
-static const Float64 g_258p747_IN2 = ::ConvertToSysUnits(258.747,unitMeasure::Inch2);
-static const Float64 g_600_IN2     = ::ConvertToSysUnits(600.,unitMeasure::Inch2);
-static const Float64 g_m25p865_IN  = ::ConvertToSysUnits(-25.865,unitMeasure::Inch);
+static const Float64 g_747p7_IN3   = WBFL::Units::ConvertToSysUnits(747.7,WBFL::Units::Measure::Inch3);
+static const Float64 g_258p747_IN2 = WBFL::Units::ConvertToSysUnits(258.747,WBFL::Units::Measure::Inch2);
+static const Float64 g_600_IN2     = WBFL::Units::ConvertToSysUnits(600.,WBFL::Units::Measure::Inch2);
+static const Float64 g_m25p865_IN  = WBFL::Units::ConvertToSysUnits(-25.865,WBFL::Units::Measure::Inch);
 
-static const Float64 g_10_DAY = ::ConvertToSysUnits(10.0,unitMeasure::Day); 
-static const Float64 g_90_DAY = ::ConvertToSysUnits(90.0,unitMeasure::Day); 
-static const Float64 g_120_DAY = ::ConvertToSysUnits(120.0,unitMeasure::Day); 
+static const Float64 g_10_DAY = WBFL::Units::ConvertToSysUnits(10.0,WBFL::Units::Measure::Day); 
+static const Float64 g_90_DAY = WBFL::Units::ConvertToSysUnits(90.0,WBFL::Units::Measure::Day); 
+static const Float64 g_120_DAY = WBFL::Units::ConvertToSysUnits(120.0,WBFL::Units::Measure::Day); 
 
-static const Float64 g_27p95_MPA     = ::ConvertToSysUnits(27.95,unitMeasure::MPa);
-static const Float64 g_105p05_MPA    = ::ConvertToSysUnits(105.05,unitMeasure::MPa);
+static const Float64 g_27p95_MPA     = WBFL::Units::ConvertToSysUnits(27.95,WBFL::Units::Measure::MPa);
+static const Float64 g_105p05_MPA    = WBFL::Units::ConvertToSysUnits(105.05,WBFL::Units::Measure::MPa);
 
-static const Float64 g_3p95_KSI  = ::ConvertToSysUnits( 3.95, unitMeasure::KSI );
-static const Float64 g_15p05_KSI = ::ConvertToSysUnits( 15.05, unitMeasure::KSI );
+static const Float64 g_3p95_KSI  = WBFL::Units::ConvertToSysUnits( 3.95, WBFL::Units::Measure::KSI );
+static const Float64 g_15p05_KSI = WBFL::Units::ConvertToSysUnits( 15.05, WBFL::Units::Measure::KSI );
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -68,7 +68,7 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005()
    m_Ad                    = g_600_IN2;
    m_ed                    = g_m25p865_IN;
    m_Ksh                   = 1.0;
-   //m_CuringMethodTimeAdjustmentFactor = ::ConvertToSysUnits(7,unitMeasure::Day);
+   //m_CuringMethodTimeAdjustmentFactor = WBFL::Units::ConvertToSysUnits(7,WBFL::Units::Measure::Day);
    m_RelaxationMethod = Simplified;
 }
 
@@ -582,7 +582,7 @@ Float64 lrfdRefinedLosses2005::GetMaturityDeckPlacementToFinal() const
 
 Float64 lrfdRefinedLosses2005::GetDeckInitialAge() const
 {
-    return ::ConvertToSysUnits(1.0, unitMeasure::Day);
+    return WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Day);
 }
 
 Float64 lrfdRefinedLosses2005::GetDeckMaturityAtFinal() const
@@ -678,8 +678,8 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    // Relaxation of Prestressing Strands [5.9.5.4.2c]
    // do we have to consider effect of PT if used???
    Float64 fpt = m_FpjPerm - m_dfpR0[PERMANENT_STRAND] - m_dfpES[PERMANENT_STRAND];
-   Float64 td  = ::ConvertFromSysUnits(m_td,unitMeasure::Day);
-   Float64 ti  = ::ConvertFromSysUnits(m_ti,unitMeasure::Day);
+   Float64 td  = WBFL::Units::ConvertFromSysUnits(m_td,WBFL::Units::Measure::Day);
+   Float64 ti  = WBFL::Units::ConvertFromSysUnits(m_ti,WBFL::Units::Measure::Day);
 
    switch( m_RelaxationMethod )
    {
@@ -699,7 +699,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
       {
          THROW(lrfdXPsLosses,StrandType);
       }
-      m_dfpR1 = IsZero(fpt) ? 0 : ::ConvertToSysUnits(1.2,unitMeasure::KSI);
+      m_dfpR1 = IsZero(fpt) ? 0 : WBFL::Units::ConvertToSysUnits(1.2,WBFL::Units::Measure::KSI);
       break;
 
    default:
@@ -948,8 +948,8 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
 
    // Relaxation of Prestressing Strands [5.9.5.4.2c]
    // consider m_dfpp???
-   th = ::ConvertFromSysUnits(m_th, unitMeasure::Day);
-   Float64 ti = ::ConvertFromSysUnits(m_ti,unitMeasure::Day); // need ti in days for creep calculations
+   th = WBFL::Units::ConvertFromSysUnits(m_th, WBFL::Units::Measure::Day);
+   Float64 ti = WBFL::Units::ConvertFromSysUnits(m_ti,WBFL::Units::Measure::Day); // need ti in days for creep calculations
 
    Float64 fpj = IsZero(m_ApsTemp) ? 0 : m_FpjTemp;
    Float64 fpt = fpj - m_dfpR0[TEMPORARY_STRAND];
@@ -971,7 +971,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       break;
    
    case LumpSum:
-      m_dfpR1H[TEMPORARY_STRAND] = ::ConvertToSysUnits(1.2,unitMeasure::KSI);
+      m_dfpR1H[TEMPORARY_STRAND] = WBFL::Units::ConvertToSysUnits(1.2,WBFL::Units::Measure::KSI);
       break;
 
    default:
@@ -1007,7 +1007,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       break;
    
    case LumpSum:
-      m_dfpR1H[PERMANENT_STRAND] = ::ConvertToSysUnits(1.2,unitMeasure::KSI);
+      m_dfpR1H[PERMANENT_STRAND] = WBFL::Units::ConvertToSysUnits(1.2,WBFL::Units::Measure::KSI);
       break;
 
    default:
@@ -1039,14 +1039,14 @@ bool lrfdRefinedLosses2005::AdjustShrinkageStrain() const
 {
    //if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
    //{
-      //if ( GetAdjustedInitialAge() < ::ConvertToSysUnits(5.0,unitMeasure::Day) )
+      //if ( GetAdjustedInitialAge() < WBFL::Units::ConvertToSysUnits(5.0,WBFL::Units::Measure::Day) )
       //   return true;
    //}
    //else
    //{
    //   // In LRFD 4th Edition, 2007 the 1 day of steam curing = 7 days normal curing
    //   // was removed.
-   //   if ( GetInitialAge() < ::ConvertToSysUnits(5.0,unitMeasure::Day) )
+   //   if ( GetInitialAge() < WBFL::Units::ConvertToSysUnits(5.0,WBFL::Units::Measure::Day) )
    //      return true;
    //}
 
@@ -1063,7 +1063,7 @@ bool lrfdRefinedLosses2005::AdjustShrinkageStrain() const
 
 
 #if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
+#include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
 bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
 {
@@ -1073,7 +1073,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
 
    std::shared_ptr<lrfdCreepCoefficient2005> pGirderCreep = std::make_shared<lrfdCreepCoefficient2005>();
    pGirderCreep->SetCuringMethod(lrfdCreepCoefficient2005::Accelerated);
-   pGirderCreep->SetCuringMethodTimeAdjustmentFactor(::ConvertToSysUnits(7, unitMeasure::Day));
+   pGirderCreep->SetCuringMethodTimeAdjustmentFactor(WBFL::Units::ConvertToSysUnits(7, WBFL::Units::Measure::Day));
    pGirderCreep->SetFci(35852736.609413415);
    pGirderCreep->SetRelHumidity(75);
    pGirderCreep->SetSurfaceArea(6.9711699425657105);
@@ -1083,7 +1083,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
  
    std::shared_ptr<lrfdCreepCoefficient2005> pDeckCreep = std::make_shared<lrfdCreepCoefficient2005>();
    pDeckCreep->SetCuringMethod(lrfdCreepCoefficient2005::Normal);
-   pDeckCreep->SetCuringMethodTimeAdjustmentFactor(::ConvertToSysUnits(7, unitMeasure::Day));
+   pDeckCreep->SetCuringMethodTimeAdjustmentFactor(WBFL::Units::ConvertToSysUnits(7, WBFL::Units::Measure::Day));
    pDeckCreep->SetFci(0.8 * 27579029.172680002); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
    pDeckCreep->SetRelHumidity(75);
    pDeckCreep->SetSurfaceArea(1.8288000000760127);

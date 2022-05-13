@@ -52,7 +52,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
    *pChapter << pPara;
 
    CEAFApp* pApp = EAFGetApp();
-   const unitmgtIndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
+   const WBFL::Units::IndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
 
    INIT_SCALAR_PROTOTYPE(rptRcScalar, scalar, pDisplayUnits->Scalar);
    INIT_UV_PROTOTYPE( rptStressUnitValue,   stress,       pDisplayUnits->Stress, true);
@@ -611,7 +611,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
 void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingResults* pResults,rptChapter* pChapter, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
 {
    CEAFApp* pApp = EAFGetApp();
-   const unitmgtIndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
+   const WBFL::Units::IndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
 
    CComPtr<ISegment> segment;
    pGirder->GetSegment(&segment);

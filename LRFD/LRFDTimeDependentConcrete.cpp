@@ -37,10 +37,10 @@ static char THIS_FILE[] = __FILE__;
 
 void lrfdLRFDTimeDependentConcrete::GetModelParameters(matConcreteBase::CureMethod cure,lrfdLRFDTimeDependentConcrete::CementType cement,Float64* pA,Float64* pB)
 {
-   Float64 a[2][2] = { {::ConvertToSysUnits(4.0,unitMeasure::Day),    // Moist, Type I
-                        ::ConvertToSysUnits(2.3,unitMeasure::Day)} ,  // Moist, Type III
-                       {::ConvertToSysUnits(1.0,unitMeasure::Day),    // Steam, Type I
-                        ::ConvertToSysUnits(0.7,unitMeasure::Day)} }; // Steam, Type III
+   Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
+                        WBFL::Units::ConvertToSysUnits(2.3,WBFL::Units::Measure::Day)} ,  // Moist, Type III
+                       {WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day),    // Steam, Type I
+                        WBFL::Units::ConvertToSysUnits(0.7,WBFL::Units::Measure::Day)} }; // Steam, Type III
    Float64 b[2][2] = { {0.85,  // Moist, Type I
                         0.92}, // Moist, Type III
                         {0.95, // Steam, Type I
@@ -52,7 +52,7 @@ void lrfdLRFDTimeDependentConcrete::GetModelParameters(matConcreteBase::CureMeth
 
 lrfdLRFDTimeDependentConcrete::lrfdLRFDTimeDependentConcrete(LPCTSTR name) :
 matConcreteBase(name),
-m_A(::ConvertToSysUnits(1.0,unitMeasure::Day)),
+m_A(WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day)),
 m_Beta(0.95),
 m_Fc28(0),
 m_Ec28(0),
@@ -60,8 +60,8 @@ m_bUserEc(false),
 m_bIsValid(false),
 m_Eshu(-0.48E-3),
 m_Cu(1.9),
-m_ShearFrCoefficient(::ConvertToSysUnits(0.24,unitMeasure::SqrtKSI)),
-m_FlexureFrCoefficient(::ConvertToSysUnits(0.24,unitMeasure::SqrtKSI)),
+m_ShearFrCoefficient(WBFL::Units::ConvertToSysUnits(0.24,WBFL::Units::Measure::SqrtKSI)),
+m_FlexureFrCoefficient(WBFL::Units::ConvertToSysUnits(0.24,WBFL::Units::Measure::SqrtKSI)),
 m_EcK1(1.0),
 m_EcK2(1.0),
 m_CreepK1(1.0),
@@ -142,14 +142,14 @@ void lrfdLRFDTimeDependentConcrete::SetFc28(Float64 fc)
 Float64 lrfdLRFDTimeDependentConcrete::ComputeFc28(Float64 fc,Float64 age,Float64 a,Float64 b)
 {
    // solving ACI209 equation 2-1 for (f'c)28
-   Float64 fc28 = (::ConvertFromSysUnits(a,unitMeasure::Day) + b*age)*fc/age;
+   Float64 fc28 = (WBFL::Units::ConvertFromSysUnits(a,WBFL::Units::Measure::Day) + b*age)*fc/age;
    return fc28;
 }
 
 Float64 lrfdLRFDTimeDependentConcrete::ComputeEc28(Float64 Ec,Float64 age,Float64 a,Float64 b)
 {
    // solving ACI209 equation 2-2 for (Ec)28
-   Float64 Ec28 = sqrt((::ConvertFromSysUnits(a,unitMeasure::Day) + b*age)/age)*Ec;
+   Float64 Ec28 = sqrt((WBFL::Units::ConvertFromSysUnits(a,WBFL::Units::Measure::Day) + b*age)/age)*Ec;
    return Ec28;
 }
 
@@ -440,13 +440,13 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorCreep(Float64 t,Float64 tla)
       {
          x1 = 0.0142;
          x2 = -0.0213;
-         vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Millimeter);
+         vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Millimeter);
       }
       else
       {
          x1 = 0.36;
          x2 = -0.54;
-         vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+         vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
       }
 
       a = maturity/(26.0*exp(x1*vs)+maturity);
@@ -476,7 +476,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
       Float64 maturity = t - (m_CureTime + m_TimeAtCasting);
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
       {
-         Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+         Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
          Float64 k1 = maturity/(26.0*exp(0.36*vs) + maturity);
          Float64 k2 = maturity/(45.0 + maturity);
          Float64 k3 = (1064 - 94*vs)/923;
@@ -484,7 +484,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
       }
       else
       {
-         Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Millimeter);
+         Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Millimeter);
          Float64 k1 = maturity/(26.0*exp(0.0142*vs) + maturity);
          Float64 k2 = maturity/(45.0 + maturity);
          Float64 k3 = (1064 - 3.7*vs)/923;
@@ -495,12 +495,12 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
    {
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
-         Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Millimeter);
+         Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Millimeter);
          ks = 1.45 - 0.0051*vs; // LRFD 5.4.2.3.2-2
       }
       else
       {
-         Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+         Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
          ks = 1.45 - 0.13*vs; // LRFD 5.4.2.3.2-2
       }
 
@@ -567,7 +567,7 @@ void lrfdLRFDTimeDependentConcrete::Validate() const
       return;
    }
 
-   m_Alpha = ::ConvertFromSysUnits(m_A,unitMeasure::Day);
+   m_Alpha = WBFL::Units::ConvertFromSysUnits(m_A,WBFL::Units::Measure::Day);
 
    if ( m_bUserEc )
    {
@@ -611,12 +611,12 @@ void lrfdLRFDTimeDependentConcrete::Validate() const
       Float64 fc = GetFc(m_TimeAtCasting + 28);
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
-         fc = ::ConvertFromSysUnits(fc, unitMeasure::MPa);
+         fc = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::MPa);
          m_kf = 62.0/(42 + fc);
       }
       else
       {
-         fc = ::ConvertFromSysUnits(fc, unitMeasure::KSI);
+         fc = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::KSI);
          m_kf = 1/(0.67 + (fc/9.0));
       }
    }
@@ -637,24 +637,24 @@ Float64 lrfdLRFDTimeDependentConcrete::ModE(Float64 fc,Float64 density) const
    // Convert input to required units
    if ( lrfdVersionMgr::SeventhEditionWith2015Interims <= lrfdVersionMgr::GetVersion() )
    {
-      Fc      = ::ConvertFromSysUnits( fc,      unitMeasure::KSI         );
-      Density = ::ConvertFromSysUnits( density, unitMeasure::KipPerFeet3 );
+      Fc      = WBFL::Units::ConvertFromSysUnits( fc,      WBFL::Units::Measure::KSI         );
+      Density = WBFL::Units::ConvertFromSysUnits( density, WBFL::Units::Measure::KipPerFeet3 );
 
       E = 120000.0 * Density*Density * pow( Fc, 0.33 );
 
       // Convert output to system units.
-      e = ::ConvertToSysUnits( E, unitMeasure::KSI );
+      e = WBFL::Units::ConvertToSysUnits( E, WBFL::Units::Measure::KSI );
    }
    else
    {
-      Fc      = ::ConvertFromSysUnits( fc,      unitMeasure::PSI         );
-      Density = ::ConvertFromSysUnits( density, unitMeasure::LbmPerFeet3 );
+      Fc      = WBFL::Units::ConvertFromSysUnits( fc,      WBFL::Units::Measure::PSI         );
+      Density = WBFL::Units::ConvertFromSysUnits( density, WBFL::Units::Measure::LbmPerFeet3 );
 
       // This is the same in LRFD and ACI 209
       E = 33.0 * pow( Density, 1.5 ) * sqrt( Fc );
 
       // Convert output to system units.
-      e = ::ConvertToSysUnits( E, unitMeasure::PSI );
+      e = WBFL::Units::ConvertToSysUnits( E, WBFL::Units::Measure::PSI );
    }
 
    return e;
@@ -663,7 +663,7 @@ Float64 lrfdLRFDTimeDependentConcrete::ModE(Float64 fc,Float64 density) const
 Float64 lrfdLRFDTimeDependentConcrete::ComputeConcreteStrengthFactor() const
 {
    Float64 fci = GetFc(m_TimeAtCasting + m_CureTime);
-   fci = ::ConvertFromSysUnits(fci, unitMeasure::KSI);
+   fci = WBFL::Units::ConvertFromSysUnits(fci, WBFL::Units::Measure::KSI);
    Float64 kf = 5.0 / (1.0 + fci);
    return kf;
 }
@@ -735,12 +735,12 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
    Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      fci = ::ConvertFromSysUnits(fci,unitMeasure::MPa);
+      fci = WBFL::Units::ConvertFromSysUnits(fci,WBFL::Units::Measure::MPa);
       ktd = (shrinkage_time)/(61.0 - 0.58*fci + shrinkage_time);
    }
    else
    {
-      fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
+      fci = WBFL::Units::ConvertFromSysUnits(fci,WBFL::Units::Measure::KSI);
       ktd = (shrinkage_time)/(61.0 - 4.0*fci + shrinkage_time);
    }
 
@@ -776,7 +776,7 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khs = (2.0 - 0.014*m_RelativeHumidity);
@@ -785,7 +785,7 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
    Float64 kf = ComputeConcreteStrengthFactor();
 
    Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
-   fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
+   fci = WBFL::Units::ConvertFromSysUnits(fci,WBFL::Units::Measure::KSI);
    Float64 ktd = (shrinkage_time)/(12*(100.0 - 4.0*fci)/(fci + 20) + shrinkage_time);
 
    Float64 esh = -m_ShrinkageK1*m_ShrinkageK2*ks*khs*kf*ktd*0.48E-3;
@@ -854,12 +854,12 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
    Float64 ktd;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      fci = ::ConvertFromSysUnits(fci, unitMeasure::MPa);
+      fci = WBFL::Units::ConvertFromSysUnits(fci, WBFL::Units::Measure::MPa);
       ktd = (maturity)/(61.0 - 0.58*fci + maturity);
    }
    else
    {
-      fci = ::ConvertFromSysUnits(fci, unitMeasure::KSI);
+      fci = WBFL::Units::ConvertFromSysUnits(fci, WBFL::Units::Measure::KSI);
       ktd = (maturity)/(61.0 - 4.0*fci + maturity);
    }
 
@@ -890,7 +890,7 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khc = (1.56 - 0.008*m_RelativeHumidity);
@@ -901,7 +901,7 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
    //Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
    Float64 fci = GetFc(m_TimeAtCasting + m_CureTime);
    pDetails->fci = fci;
-   fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
+   fci = WBFL::Units::ConvertFromSysUnits(fci,WBFL::Units::Measure::KSI);
 
    Float64 ktd = (maturity)/(12*(100.0 - 4.0*fci)/(fci + 20) + maturity);
 

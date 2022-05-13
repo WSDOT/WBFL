@@ -35,7 +35,7 @@ class REPORTERCLASS rptRcStation : public rptReportContent
 public:
    rptRcStation(
       Float64 station, ///< Station value
-      const unitStationFormat* pFormat ///< Object used for unit conversion and formatting the value into a station string (e.g. 125+34.33)
+      const WBFL::Units::StationFormat* pFormat ///< Object used for unit conversion and formatting the value into a station string (e.g. 125+34.33)
    );
 
    rptRcStation(const rptRcStation& rOther);
@@ -71,7 +71,7 @@ protected:
 private:
    rptRcStation() = delete;
    Float64 m_Station;
-   const unitStationFormat* m_pFormat;
+   const WBFL::Units::StationFormat* m_pFormat;
 };
 
 #endif // INCLUDED_REPORTER_RCSTATION_H_

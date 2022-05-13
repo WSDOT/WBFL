@@ -54,7 +54,6 @@
 #include <Math\Math.h>
 #include <ReinforcedConcrete\ReinforcedConcrete.h>
 #include <Reporter\Reporter.h>
-#include <UnitMgt\UnitMgt.h>
 #include <Units\Units.h>
 
 #endif // INCLUDED_WBFL_H_

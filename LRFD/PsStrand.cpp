@@ -40,14 +40,14 @@ CLASS
 ****************************************************************************/
 
 // preconvert for performance
-static const Float64 g_197000_MPA = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
-static const Float64 g_1725_MPA   = ::ConvertToSysUnits( 1725, unitMeasure::MPa );
-static const Float64 g_1860_MPA   = ::ConvertToSysUnits( 1860, unitMeasure::MPa );
-static const Float64 g_2070_MPA   = ::ConvertToSysUnits( 2070, unitMeasure::MPa);
-static const Float64 g_28500_KSI  = ::ConvertToSysUnits( 28500., unitMeasure::KSI );
-static const Float64 g_250_KSI    = ::ConvertToSysUnits(  250, unitMeasure::KSI );
-static const Float64 g_270_KSI = ::ConvertToSysUnits(270, unitMeasure::KSI);
-static const Float64 g_300_KSI = ::ConvertToSysUnits(300, unitMeasure::KSI);
+static const Float64 g_197000_MPA = WBFL::Units::ConvertToSysUnits( 197000., WBFL::Units::Measure::MPa );
+static const Float64 g_1725_MPA   = WBFL::Units::ConvertToSysUnits( 1725, WBFL::Units::Measure::MPa );
+static const Float64 g_1860_MPA   = WBFL::Units::ConvertToSysUnits( 1860, WBFL::Units::Measure::MPa );
+static const Float64 g_2070_MPA   = WBFL::Units::ConvertToSysUnits( 2070, WBFL::Units::Measure::MPa);
+static const Float64 g_28500_KSI  = WBFL::Units::ConvertToSysUnits( 28500., WBFL::Units::Measure::KSI );
+static const Float64 g_250_KSI    = WBFL::Units::ConvertToSysUnits(  250, WBFL::Units::Measure::KSI );
+static const Float64 g_270_KSI = WBFL::Units::ConvertToSysUnits(270, WBFL::Units::Measure::KSI);
+static const Float64 g_300_KSI = WBFL::Units::ConvertToSysUnits(300, WBFL::Units::Measure::KSI);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -191,16 +191,16 @@ Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float6
 
       Float64 fbt; // stress before transfer
       fbt = coeff * strand.GetUltimateStrength();
-      fbt = ::ConvertFromSysUnits( fbt, unitMeasure::MPa );
+      fbt = WBFL::Units::ConvertFromSysUnits( fbt, WBFL::Units::Measure::MPa );
 
       Float64 fpy = strand.GetYieldStrength();
-      fpy = ::ConvertFromSysUnits( fpy, unitMeasure::MPa );
+      fpy = WBFL::Units::ConvertFromSysUnits( fpy, WBFL::Units::Measure::MPa );
       
       Float64 k; // Coefficient in denominator of equation 5.9.5.4.4b
       k = ( strand.GetType() == matPsStrand::LowRelaxation ? 40.0 : 10.0 );
 
       Float64 t; // time in days
-      t = ::ConvertFromSysUnits( timeToXfer, unitMeasure::Day );
+      t = WBFL::Units::ConvertFromSysUnits( timeToXfer, WBFL::Units::Measure::Day );
 
       Float64 K; // log(24t)/k from eqn 5.9.5.4.4b
       if ( t*24. < 1 )
@@ -221,7 +221,7 @@ Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float6
 
       fpj = fpj2;
 
-      fpj = ::ConvertToSysUnits( fpj, unitMeasure::MPa );
+      fpj = WBFL::Units::ConvertToSysUnits( fpj, WBFL::Units::Measure::MPa );
    }
 
    return fpj;
@@ -249,12 +249,12 @@ Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
    Float64 d_limit;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-       d = ::ConvertFromSysUnits(mbrDepth,unitMeasure::Millimeter);
+       d = WBFL::Units::ConvertFromSysUnits(mbrDepth,WBFL::Units::Measure::Millimeter);
        d_limit = 600;
    }
    else
    {
-       d = ::ConvertFromSysUnits(mbrDepth,unitMeasure::Inch);
+       d = WBFL::Units::ConvertFromSysUnits(mbrDepth,WBFL::Units::Measure::Inch);
        d_limit = 24;
    }
 
@@ -287,19 +287,19 @@ Float64 lrfdPsStrand::GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64
    Float64 k = GetDevLengthFactor(mbrDepth,bDebonded);
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      db  = ::ConvertFromSysUnits(db,unitMeasure::Millimeter);
-      fps = ::ConvertFromSysUnits(fps,unitMeasure::MPa);
-      fpe = ::ConvertFromSysUnits(fpe,unitMeasure::MPa);
+      db  = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Millimeter);
+      fps = WBFL::Units::ConvertFromSysUnits(fps,WBFL::Units::Measure::MPa);
+      fpe = WBFL::Units::ConvertFromSysUnits(fpe,WBFL::Units::Measure::MPa);
       ld = k*db*(0.15*fps - 0.097*fpe);
-      ld = ::ConvertToSysUnits(ld,unitMeasure::Millimeter);
+      ld = WBFL::Units::ConvertToSysUnits(ld,WBFL::Units::Measure::Millimeter);
    }
    else
    {
-      db  = ::ConvertFromSysUnits(db,unitMeasure::Inch);
-      fps = ::ConvertFromSysUnits(fps,unitMeasure::KSI);
-      fpe = ::ConvertFromSysUnits(fpe,unitMeasure::KSI);
+      db  = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Inch);
+      fps = WBFL::Units::ConvertFromSysUnits(fps,WBFL::Units::Measure::KSI);
+      fpe = WBFL::Units::ConvertFromSysUnits(fpe,WBFL::Units::Measure::KSI);
       ld = k*db*(fps - 2.*fpe/3.);
-      ld = ::ConvertToSysUnits(ld,unitMeasure::Inch);
+      ld = WBFL::Units::ConvertToSysUnits(ld,WBFL::Units::Measure::Inch);
    }
 
    return ld;
@@ -345,7 +345,7 @@ bool lrfdPsStrand::TestMe(dbgLog& rlog)
 
    Uint16 nStrands = 10;
    Float64 Pjack;
-   Float64 xferTime = ::ConvertToSysUnits( 24.0, unitMeasure::Hour );
+   Float64 xferTime = WBFL::Units::ConvertToSysUnits( 24.0, WBFL::Units::Measure::Hour );
    const matPsStrand* pStrand = 0;
    lrfdStrandPool* pPool = lrfdStrandPool::GetInstance();
 
@@ -357,25 +357,25 @@ bool lrfdPsStrand::TestMe(dbgLog& rlog)
    // Grade 1725 SR
    pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
+   Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1153.82, 0.01 ) );
 
    // Grade 1725 LR
    pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
+   Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1249.97, 0.01 ) );
 
    // Grade 1860 SR
    pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
+   Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1321.92, 0.01 ) );
 
    // Grade 1860 LR
    pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
+   Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1432.08, 0.01 ) );
 
 
@@ -386,25 +386,25 @@ bool lrfdPsStrand::TestMe(dbgLog& rlog)
    // Grade 1725 SR
    pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
+   Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1171.98, 0.01 ) );
 
    // Grade 1725 LR
    pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
+   Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1214.12, 0.01 ) );
 
    // Grade 1860 SR
    pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
+   Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1342.72, 0.01 ) );
 
    // Grade 1860 LR
    pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
+   Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1391.01, 0.01 ) );
 
    TESTME_EPILOG("lrfdPsStrand");

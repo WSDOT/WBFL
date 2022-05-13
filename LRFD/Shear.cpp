@@ -346,21 +346,21 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    Float64 Vci     = 0;
    Float64 Vcw     = 0;
 
-   const unitForce* p_force_unit;
+   const WBFL::Units::Force* p_force_unit;
 
    Float64 K1, K2, Kfct;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      fc   = ::ConvertFromSysUnits(fc,   unitMeasure::MPa);
-      fct  = ::ConvertFromSysUnits(fct,  unitMeasure::MPa);
-      fpc  = ::ConvertFromSysUnits(fpc,  unitMeasure::MPa);
-      dv   = ::ConvertFromSysUnits(dv,   unitMeasure::Millimeter);
-      bv   = ::ConvertFromSysUnits(bv,   unitMeasure::Millimeter);
-      Vp   = ::ConvertFromSysUnits(Vp,   unitMeasure::Kilonewton);
-      Vd   = ::ConvertFromSysUnits(Vd,   unitMeasure::Kilonewton);
-      Vi   = ::ConvertFromSysUnits(Vi,   unitMeasure::Kilonewton);
-      Mmax = ::ConvertFromSysUnits(Mmax, unitMeasure::NewtonMillimeter);
-      Mcre = ::ConvertFromSysUnits(Mcre, unitMeasure::NewtonMillimeter);
+      fc   = WBFL::Units::ConvertFromSysUnits(fc,   WBFL::Units::Measure::MPa);
+      fct  = WBFL::Units::ConvertFromSysUnits(fct,  WBFL::Units::Measure::MPa);
+      fpc  = WBFL::Units::ConvertFromSysUnits(fpc,  WBFL::Units::Measure::MPa);
+      dv   = WBFL::Units::ConvertFromSysUnits(dv,   WBFL::Units::Measure::Millimeter);
+      bv   = WBFL::Units::ConvertFromSysUnits(bv,   WBFL::Units::Measure::Millimeter);
+      Vp   = WBFL::Units::ConvertFromSysUnits(Vp,   WBFL::Units::Measure::Kilonewton);
+      Vd   = WBFL::Units::ConvertFromSysUnits(Vd,   WBFL::Units::Measure::Kilonewton);
+      Vi   = WBFL::Units::ConvertFromSysUnits(Vi,   WBFL::Units::Measure::Kilonewton);
+      Mmax = WBFL::Units::ConvertFromSysUnits(Mmax, WBFL::Units::Measure::NewtonMillimeter);
+      Mcre = WBFL::Units::ConvertFromSysUnits(Mcre, WBFL::Units::Measure::NewtonMillimeter);
 
       Kfct = 1.8;
 
@@ -368,27 +368,27 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       K2 = 0.16;
 
 
-      p_force_unit = &unitMeasure::Kilonewton;
+      p_force_unit = &WBFL::Units::Measure::Kilonewton;
    }
    else
    {
-      fc   = ::ConvertFromSysUnits(fc,   unitMeasure::KSI);
-      fct  = ::ConvertFromSysUnits(fct,  unitMeasure::KSI);
-      fpc  = ::ConvertFromSysUnits(fpc,  unitMeasure::KSI);
-      dv   = ::ConvertFromSysUnits(dv,   unitMeasure::Inch);
-      bv   = ::ConvertFromSysUnits(bv,   unitMeasure::Inch);
-      Vp   = ::ConvertFromSysUnits(Vp,   unitMeasure::Kip);
-      Vd   = ::ConvertFromSysUnits(Vd,   unitMeasure::Kip);
-      Vi   = ::ConvertFromSysUnits(Vi,   unitMeasure::Kip);
-      Mmax = ::ConvertFromSysUnits(Mmax, unitMeasure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
-      Mcre = ::ConvertFromSysUnits(Mcre, unitMeasure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
+      fc   = WBFL::Units::ConvertFromSysUnits(fc,   WBFL::Units::Measure::KSI);
+      fct  = WBFL::Units::ConvertFromSysUnits(fct,  WBFL::Units::Measure::KSI);
+      fpc  = WBFL::Units::ConvertFromSysUnits(fpc,  WBFL::Units::Measure::KSI);
+      dv   = WBFL::Units::ConvertFromSysUnits(dv,   WBFL::Units::Measure::Inch);
+      bv   = WBFL::Units::ConvertFromSysUnits(bv,   WBFL::Units::Measure::Inch);
+      Vp   = WBFL::Units::ConvertFromSysUnits(Vp,   WBFL::Units::Measure::Kip);
+      Vd   = WBFL::Units::ConvertFromSysUnits(Vd,   WBFL::Units::Measure::Kip);
+      Vi   = WBFL::Units::ConvertFromSysUnits(Vi,   WBFL::Units::Measure::Kip);
+      Mmax = WBFL::Units::ConvertFromSysUnits(Mmax, WBFL::Units::Measure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
+      Mcre = WBFL::Units::ConvertFromSysUnits(Mcre, WBFL::Units::Measure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
 
       Kfct = 4.7;
 
       K1 = 0.02;
       K2 = 0.06;
 
-      p_force_unit = &unitMeasure::Kip;
+      p_force_unit = &WBFL::Units::Measure::Kip;
    }
 
    Float64 sqrt_fc;
@@ -431,10 +431,10 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    Vci = Max(VciCalc,VciMin);
    Vcw = (K2*sqrt_fc + 0.30*fpc)*bv*dv + Vp; // 5.8.3.4.3-2
 
-   pData->VciMin  = ::ConvertToSysUnits(VciMin,  *p_force_unit);
-   pData->VciCalc = ::ConvertToSysUnits(VciCalc, *p_force_unit);
-   pData->Vci     = ::ConvertToSysUnits(Vci,     *p_force_unit);
-   pData->Vcw     = ::ConvertToSysUnits(Vcw,     *p_force_unit);
+   pData->VciMin  = WBFL::Units::ConvertToSysUnits(VciMin,  *p_force_unit);
+   pData->VciCalc = WBFL::Units::ConvertToSysUnits(VciCalc, *p_force_unit);
+   pData->Vci     = WBFL::Units::ConvertToSysUnits(Vci,     *p_force_unit);
+   pData->Vcw     = WBFL::Units::ConvertToSysUnits(Vcw,     *p_force_unit);
 }
 
 Float64  lrfdShear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 bv, Float64 dv)
@@ -650,7 +650,7 @@ void compute_theta_and_beta1(lrfdShearData* pData)
    // Compute beta
    Float64 beta = get_beta( vfc,ex );
 
-   pData->Theta = ::ConvertToSysUnits( theta, unitMeasure::Degree );
+   pData->Theta = WBFL::Units::ConvertToSysUnits( theta, WBFL::Units::Measure::Degree );
    pData->Beta  = beta;
    pData->ex    = ex;
 }
@@ -779,7 +779,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    // Compute beta
    Float64 beta = get_beta( vfc, ex );
 
-   pData->Theta = ::ConvertToSysUnits( theta, unitMeasure::Degree );
+   pData->Theta = WBFL::Units::ConvertToSysUnits( theta, WBFL::Units::Measure::Degree );
    pData->Beta  = beta;
    pData->ex    = ex;
 
@@ -812,13 +812,13 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
    Float64 minSteel;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
+      minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
    }
    else
    {
-      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
+      minSteel = 0.0316*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Inch)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Inch); // (in^2/in)
    }
 
    if ( Avs < minSteel && !pData->bIgnoreMiniumStirrupRequirementForBeta)
@@ -901,7 +901,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
 //      if ( bWSDOT && bt.Theta < 25 )
 //         bt.Theta = 25;
 
-      Float64 angle = ::Convert(bt.Theta,unitMeasure::Degree,unitMeasure::Radian);
+      Float64 angle = WBFL::Units::Convert(bt.Theta,WBFL::Units::Measure::Degree,WBFL::Units::Measure::Radian);
       Float64 cot = 1.0/tan(angle);
 
       if ( eqn == 1 )
@@ -1022,7 +1022,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    pData->vufc_tbl = get_vfc(row);
    pData->ex_tbl = get_ex(col);
    pData->Beta = bt.Beta;
-   pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
+   pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
    pData->Fe = -1; // Not appicable
 }
 
@@ -1059,12 +1059,12 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
 
    // Setup problem
    // 5.8.3.4.2-5
-   Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
+   Float64 sxe = WBFL::Units::ConvertFromSysUnits(sx,WBFL::Units::Measure::Inch) * 1.38/(WBFL::Units::ConvertFromSysUnits(ag,WBFL::Units::Measure::Inch)+0.63);
 
    // Bound sxe
    sxe = ForceIntoRange(5.0, sxe, 80.0); // Note: any spec changes to table range would affect this
 
-   pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+   pData->sxe   =  WBFL::Units::ConvertToSysUnits(sxe,WBFL::Units::Measure::Inch);
 
    // Find out which rows we are spanning
    Int16 row1, row2;
@@ -1088,7 +1088,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
 //      if ( bWSDOT && bt.Theta < 25 )
 //         bt.Theta = 25;
 
-      Float64 angle = ::Convert(bt.Theta,unitMeasure::Degree,unitMeasure::Radian);
+      Float64 angle = WBFL::Units::Convert(bt.Theta,WBFL::Units::Measure::Degree,WBFL::Units::Measure::Radian);
       Float64 cot = 1.0/tan(angle);
 
       if ( eqn == 1 )
@@ -1206,10 +1206,10 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
 //      bt.Theta = 25;
 
    pData->BetaTheta_tbl = 2; 
-   pData->sxe_tbl = ::ConvertToSysUnits(get_sxe_mtr(row), unitMeasure::Inch);
+   pData->sxe_tbl = WBFL::Units::ConvertToSysUnits(get_sxe_mtr(row), WBFL::Units::Measure::Inch);
    pData->ex_tbl = get_ex_mtr(col);
    pData->Beta = bt.Beta;
-   pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
+   pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
    pData->Fe = -1; // Not appicable
 }
 
@@ -1250,13 +1250,13 @@ void compute_theta_and_beta4(lrfdShearData* pData)
 
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
+      minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
    }
    else
    {
-      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
+      minSteel = 0.0316*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Inch)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Inch); // (in^2/in)
    }
 
    if ( Avs < minSteel )
@@ -1372,17 +1372,17 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       pData->ex = ex_calc;
       pData->vufc_tbl = get_vfc(row);
       pData->Beta = bt.Beta;
-      pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
+      pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
       pData->Fe = -1; // Not appicable
    }
    else
    {
-      Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
+      Float64 sxe = WBFL::Units::ConvertFromSysUnits(sx,WBFL::Units::Measure::Inch) * 1.38/(WBFL::Units::ConvertFromSysUnits(ag,WBFL::Units::Measure::Inch)+0.63);
 
       // Bound sxe
       sxe = ForceIntoRange(5.0, sxe, 80.0); // Note: any spec changes to table range would affect this
 
-      pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+      pData->sxe   =  WBFL::Units::ConvertToSysUnits(sxe,WBFL::Units::Measure::Inch);
 
       // Find out which rows we are spanning
       Int16 row1, row2;
@@ -1435,10 +1435,10 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       BT bt = get_beta_theta_mtr(row,col);
 
       pData->BetaTheta_tbl = 2; 
-      pData->sxe_tbl = ::ConvertToSysUnits(get_sxe_mtr(row), unitMeasure::Inch);
+      pData->sxe_tbl = WBFL::Units::ConvertToSysUnits(get_sxe_mtr(row), WBFL::Units::Measure::Inch);
       pData->ex_tbl = get_ex_mtr(col);
       pData->Beta = bt.Beta;
-      pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
+      pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
       pData->Fe = -1; // Not appicable
    }
 }
@@ -1508,13 +1508,13 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    Float64 minSteel;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
+      minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
    }
    else
    {
-      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
+      minSteel = 0.0316*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Inch)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Inch); // (in^2/in)
    }
 
    if ( Avs < minSteel && !pData->bIgnoreMiniumStirrupRequirementForBeta)
@@ -1522,10 +1522,10 @@ void compute_theta_and_beta5(lrfdShearData* pData)
       pData->BetaEqn = 2; // Use LRFD Eqn 5.8.3.4.2-2
 
       // 5.8.3.4.2-5
-      Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
+      Float64 sxe = WBFL::Units::ConvertFromSysUnits(sx,WBFL::Units::Measure::Inch) * 1.38/(WBFL::Units::ConvertFromSysUnits(ag,WBFL::Units::Measure::Inch)+0.63);
       sxe = ForceIntoRange(12.0, sxe, 80.0);
 
-      pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+      pData->sxe   =  WBFL::Units::ConvertToSysUnits(sxe,WBFL::Units::Measure::Inch);
       pData->Beta  = (4.8/(1 + 750*ex_calc)) * (51/(39 + sxe));
    }
    else
@@ -1540,7 +1540,7 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    pData->vu = v;
    pData->vufc = v/fc;
    pData->vufc_tbl = -1; // Not applicable
-   pData->Theta = ::ConvertToSysUnits(29+3500*ex_calc,unitMeasure::Degree);
+   pData->Theta = WBFL::Units::ConvertToSysUnits(29+3500*ex_calc,WBFL::Units::Measure::Degree);
    pData->Fe = -1; // Not appicable
 }
 
@@ -1571,7 +1571,7 @@ Float64 compute_strain(lrfdShearData* pData,Float64 theta)
 
    Float64 ex;
 
-   theta = ::Convert(theta, unitMeasure::Degree, unitMeasure::Radian);
+   theta = WBFL::Units::Convert(theta, WBFL::Units::Measure::Degree, WBFL::Units::Measure::Radian);
    if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
    {
       ex = 0;

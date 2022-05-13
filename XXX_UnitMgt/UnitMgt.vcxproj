@@ -130,7 +130,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDUNITMGTLIB;NDEBUG;_WINDOWS;WIN32;WBFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDUNITMGTLIB;NDEBUG;_WINDOWS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>

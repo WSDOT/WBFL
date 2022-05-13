@@ -203,7 +203,7 @@ matStressStrainCurve::StrainState matLinearStressStrainCurve::GetStress(Float64 
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
 #if defined _DEBUG
-#include <Units\SysUnitsMgr.h>
+#include <Units\System.h>
 
 bool matLinearStressStrainCurve::AssertValid() const
 {
@@ -244,24 +244,21 @@ void matLinearStressStrainCurve::MakeAssignment(const matLinearStressStrainCurve
 //======================== INQUERY    =======================================
 
 #if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
+#include <Units\AutoSystem.h>
+#include <Units\System.h>
 
 bool matLinearStressStrainCurve::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("matLinearStressStrainCurve");
 
-   unitMass sys_mass        = unitSysUnitsMgr::GetMassUnit();
-   unitLength sys_length    = unitSysUnitsMgr::GetLengthUnit();
-   unitTime sys_time        = unitSysUnitsMgr::GetTimeUnit();
-   unitTemperature sys_temp = unitSysUnitsMgr::GetTemperatureUnit();
-   unitAngle sys_angle      = unitSysUnitsMgr::GetAngleUnit();
+   WBFL::Units::AutoSystem au; // automatically rolls back changes
 
    // We want to work in slug, inch, second, C, rad
-   unitSysUnitsMgr::SetMassUnit( unitMeasure::Slug );
-   unitSysUnitsMgr::SetLengthUnit( unitMeasure::Feet );
-   unitSysUnitsMgr::SetTimeUnit( unitMeasure::Second );
-   unitSysUnitsMgr::SetTemperatureUnit( unitMeasure::Celcius );
-   unitSysUnitsMgr::SetAngleUnit( unitMeasure::Radian );
+   WBFL::Units::System::SetMassUnit( WBFL::Units::Measure::Slug );
+   WBFL::Units::System::SetLengthUnit( WBFL::Units::Measure::Feet );
+   WBFL::Units::System::SetTimeUnit( WBFL::Units::Measure::Second );
+   WBFL::Units::System::SetTemperatureUnit( WBFL::Units::Measure::Celcius );
+   WBFL::Units::System::SetAngleUnit( WBFL::Units::Measure::Radian );
 
    matLinearStressStrainCurve curve(_T(""),50000000.,60000.,0.003,65000.,0.006,62000.);
    Float64 s1 = -0.006;
@@ -326,13 +323,6 @@ bool matLinearStressStrainCurve::TestMe(dbgLog& rlog)
    state = curve.GetStress( s12, &stress );
    TRY_TESTME ( state == matStressStrainCurve::Fractured );
    
-   // Put the unit system back the way we found it
-   unitSysUnitsMgr::SetMassUnit( sys_mass );
-   unitSysUnitsMgr::SetLengthUnit( sys_length );
-   unitSysUnitsMgr::SetTimeUnit( sys_time );
-   unitSysUnitsMgr::SetTemperatureUnit( sys_temp );
-   unitSysUnitsMgr::SetAngleUnit( sys_angle );
-
    TESTME_EPILOG("matLinearStressStrainCurve");
 }
 #endif // _UNITTEST

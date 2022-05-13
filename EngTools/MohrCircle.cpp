@@ -23,7 +23,7 @@
 
 #include <EngTools\EngToolsLib.h>
 #include <EngTools\MohrCircle.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -60,7 +60,7 @@ void MohrCircle::ComputeState(Float64* pSii,Float64* pSjj, Float64* pSij,Float64
 
    Float64 angle2;
    if ( bSysUnits )
-      angle2 = ::ConvertFromSysUnits( angle, unitMeasure::Radian );
+      angle2 = WBFL::Units::ConvertFromSysUnits( angle, WBFL::Units::Measure::Radian );
    else
       angle2 = angle;
 
@@ -125,7 +125,7 @@ Float64 MohrCircle::GetPrincDirection(bool bSysUnits) const
    if ( bSysUnits )
    {
       // Convert from radians to system units
-      angle = ::ConvertToSysUnits( angle, unitMeasure::Radian );
+      angle = WBFL::Units::ConvertToSysUnits( angle, WBFL::Units::Measure::Radian );
    }
 
     return angle;

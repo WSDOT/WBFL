@@ -28,7 +28,7 @@
 #include <Lrfd\XRangeOfApplicability.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\Utility.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
 
 #ifdef _DEBUG
@@ -250,15 +250,15 @@ bool lrfdLldfTypeAEK::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeAEK");
 
-   Float64 S = ::ConvertToSysUnits( 8., unitMeasure::Feet );
-   Float64 de = ::ConvertToSysUnits( 2., unitMeasure::Feet );
-   Float64 wLane = ::ConvertToSysUnits( 12., unitMeasure::Feet );
-   Float64 L = ::ConvertToSysUnits( 151., unitMeasure::Feet );
-   Float64 ts = ::ConvertToSysUnits( 7.5, unitMeasure::Inch );
+   Float64 S = WBFL::Units::ConvertToSysUnits( 8., WBFL::Units::Measure::Feet );
+   Float64 de = WBFL::Units::ConvertToSysUnits( 2., WBFL::Units::Measure::Feet );
+   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12., WBFL::Units::Measure::Feet );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 151., WBFL::Units::Measure::Feet );
+   Float64 ts = WBFL::Units::ConvertToSysUnits( 7.5, WBFL::Units::Measure::Inch );
    Float64 n = 1.54;
-   Float64 I = ::ConvertToSysUnits( 960951.2, unitMeasure::Inch4 );
-   Float64 A = ::ConvertToSysUnits( 977.359, unitMeasure::Inch2 );
-   Float64 eg = ::ConvertToSysUnits( 46.587, unitMeasure::Inch );
+   Float64 I = WBFL::Units::ConvertToSysUnits( 960951.2, WBFL::Units::Measure::Inch4 );
+   Float64 A = WBFL::Units::ConvertToSysUnits( 977.359, WBFL::Units::Measure::Inch2 );
+   Float64 eg = WBFL::Units::ConvertToSysUnits( 46.587, WBFL::Units::Measure::Inch );
    Int16 Nb = 5;
    Int16 Nl = 3;
    std::vector<Float64> spacings;
@@ -581,16 +581,16 @@ bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
    lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
-   Float64 S = ::ConvertToSysUnits( 2000., unitMeasure::Millimeter );
-   Float64 de = ::ConvertToSysUnits( 910., unitMeasure::Millimeter );
-   Float64 overhang = ::ConvertToSysUnits(950, unitMeasure::Millimeter);
-   Float64 wLane = ::ConvertToSysUnits( 3600., unitMeasure::Millimeter );
-   Float64 L = ::ConvertToSysUnits( 20000., unitMeasure::Millimeter );
-   Float64 ts = ::ConvertToSysUnits( 240., unitMeasure::Millimeter );
+   Float64 S = WBFL::Units::ConvertToSysUnits( 2000., WBFL::Units::Measure::Millimeter );
+   Float64 de = WBFL::Units::ConvertToSysUnits( 910., WBFL::Units::Measure::Millimeter );
+   Float64 overhang = WBFL::Units::ConvertToSysUnits(950, WBFL::Units::Measure::Millimeter);
+   Float64 wLane = WBFL::Units::ConvertToSysUnits( 3600., WBFL::Units::Measure::Millimeter );
+   Float64 L = WBFL::Units::ConvertToSysUnits( 20000., WBFL::Units::Measure::Millimeter );
+   Float64 ts = WBFL::Units::ConvertToSysUnits( 240., WBFL::Units::Measure::Millimeter );
    Float64 n = 1.32;
-   Float64 I = ::ConvertToSysUnits( 216.9e9, unitMeasure::Millimeter4 );
-   Float64 A = ::ConvertToSysUnits( 653587., unitMeasure::Millimeter2 );
-   Float64 eg = ::ConvertToSysUnits( 908., unitMeasure::Millimeter );
+   Float64 I = WBFL::Units::ConvertToSysUnits( 216.9e9, WBFL::Units::Measure::Millimeter4 );
+   Float64 A = WBFL::Units::ConvertToSysUnits( 653587., WBFL::Units::Measure::Millimeter2 );
+   Float64 eg = WBFL::Units::ConvertToSysUnits( 908., WBFL::Units::Measure::Millimeter );
    Int16 Nb = 5;
    Int16 Nl = 3;
    std::vector<Float64> spacings;
@@ -621,7 +621,7 @@ bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.519, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.705, 0.001) );
 
-   overhang = ::ConvertToSysUnits(1100, unitMeasure::Millimeter);
+   overhang = WBFL::Units::ConvertToSysUnits(1100, WBFL::Units::Measure::Millimeter);
    lrfdWsdotLldfTypeAEK df2(1,S,spacings,de,de,
                             Nl,wLane,L,ts,n,I,A,eg,
                             overhang,overhang,

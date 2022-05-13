@@ -34,35 +34,35 @@
 static char THIS_FILE[] = __FILE__;
 #endif
  
-static const Float64 g_p7_MPA    = ::ConvertToSysUnits(0.7,unitMeasure::MPa);
-static const Float64 g_p52_MPA   = ::ConvertToSysUnits(0.52,unitMeasure::MPa);
-static const Float64 g_1p9_MPA   = ::ConvertToSysUnits(1.9,unitMeasure::MPa);
-static const Float64 g_5p5_MPA   = ::ConvertToSysUnits(5.5,unitMeasure::MPa);
-static const Float64 g_9p0_MPA   = ::ConvertToSysUnits(9.0,unitMeasure::MPa);
-static const Float64 g_12p4_MPA  = ::ConvertToSysUnits(12.4,unitMeasure::MPa);
-static const Float64 g_14p0_MPA  = ::ConvertToSysUnits(14.0,unitMeasure::MPa);
+static const Float64 g_p7_MPA    = WBFL::Units::ConvertToSysUnits(0.7,WBFL::Units::Measure::MPa);
+static const Float64 g_p52_MPA   = WBFL::Units::ConvertToSysUnits(0.52,WBFL::Units::Measure::MPa);
+static const Float64 g_1p9_MPA   = WBFL::Units::ConvertToSysUnits(1.9,WBFL::Units::Measure::MPa);
+static const Float64 g_5p5_MPA   = WBFL::Units::ConvertToSysUnits(5.5,WBFL::Units::Measure::MPa);
+static const Float64 g_9p0_MPA   = WBFL::Units::ConvertToSysUnits(9.0,WBFL::Units::Measure::MPa);
+static const Float64 g_12p4_MPA  = WBFL::Units::ConvertToSysUnits(12.4,WBFL::Units::Measure::MPa);
+static const Float64 g_14p0_MPA  = WBFL::Units::ConvertToSysUnits(14.0,WBFL::Units::Measure::MPa);
 
-static const Float64 g_p1_KSI    = ::ConvertToSysUnits(0.100,unitMeasure::KSI);
-static const Float64 g_p2_KSI = ::ConvertToSysUnits(0.200, unitMeasure::KSI);
-static const Float64 g_p5_KSI = ::ConvertToSysUnits(0.500, unitMeasure::KSI);
-static const Float64 g_p210_KSI  = ::ConvertToSysUnits(0.210,unitMeasure::KSI);
-static const Float64 g_p240_KSI = ::ConvertToSysUnits(0.240, unitMeasure::KSI);
-static const Float64 g_p280_KSI  = ::ConvertToSysUnits(0.280,unitMeasure::KSI);
-static const Float64 g_p025_KSI = ::ConvertToSysUnits(0.025, unitMeasure::KSI);
-static const Float64 g_p075_KSI = ::ConvertToSysUnits(0.075, unitMeasure::KSI);
-static const Float64 g_p8_KSI    = ::ConvertToSysUnits(0.8,unitMeasure::KSI);
-static const Float64 g_1p3_KSI = ::ConvertToSysUnits(1.3, unitMeasure::KSI);
-static const Float64 g_1p5_KSI = ::ConvertToSysUnits(1.5, unitMeasure::KSI);
-static const Float64 g_1p8_KSI   = ::ConvertToSysUnits(1.8,unitMeasure::KSI);
-static const Float64 g_3p6_KSI = ::ConvertToSysUnits(3.6, unitMeasure::KSI);
-static const Float64 g_60_KSI    = ::ConvertToSysUnits(60.0,unitMeasure::KSI);
+static const Float64 g_p1_KSI    = WBFL::Units::ConvertToSysUnits(0.100,WBFL::Units::Measure::KSI);
+static const Float64 g_p2_KSI = WBFL::Units::ConvertToSysUnits(0.200, WBFL::Units::Measure::KSI);
+static const Float64 g_p5_KSI = WBFL::Units::ConvertToSysUnits(0.500, WBFL::Units::Measure::KSI);
+static const Float64 g_p210_KSI  = WBFL::Units::ConvertToSysUnits(0.210,WBFL::Units::Measure::KSI);
+static const Float64 g_p240_KSI = WBFL::Units::ConvertToSysUnits(0.240, WBFL::Units::Measure::KSI);
+static const Float64 g_p280_KSI  = WBFL::Units::ConvertToSysUnits(0.280,WBFL::Units::Measure::KSI);
+static const Float64 g_p025_KSI = WBFL::Units::ConvertToSysUnits(0.025, WBFL::Units::Measure::KSI);
+static const Float64 g_p075_KSI = WBFL::Units::ConvertToSysUnits(0.075, WBFL::Units::Measure::KSI);
+static const Float64 g_p8_KSI    = WBFL::Units::ConvertToSysUnits(0.8,WBFL::Units::Measure::KSI);
+static const Float64 g_1p3_KSI = WBFL::Units::ConvertToSysUnits(1.3, WBFL::Units::Measure::KSI);
+static const Float64 g_1p5_KSI = WBFL::Units::ConvertToSysUnits(1.5, WBFL::Units::Measure::KSI);
+static const Float64 g_1p8_KSI   = WBFL::Units::ConvertToSysUnits(1.8,WBFL::Units::Measure::KSI);
+static const Float64 g_3p6_KSI = WBFL::Units::ConvertToSysUnits(3.6, WBFL::Units::Measure::KSI);
+static const Float64 g_60_KSI    = WBFL::Units::ConvertToSysUnits(60.0,WBFL::Units::Measure::KSI);
 
-static const Float64 g_0p6_M = ::ConvertToSysUnits(0.6, unitMeasure::Meter);
-static const Float64 g_0p9_M = ::ConvertToSysUnits(0.9, unitMeasure::Meter);
+static const Float64 g_0p6_M = WBFL::Units::ConvertToSysUnits(0.6, WBFL::Units::Measure::Meter);
+static const Float64 g_0p9_M = WBFL::Units::ConvertToSysUnits(0.9, WBFL::Units::Measure::Meter);
 
-static const Float64 g_48_IN = ::ConvertToSysUnits(48.0, unitMeasure::Inch);
-static const Float64 g_36_IN = ::ConvertToSysUnits(36.0, unitMeasure::Inch);
-static const Float64 g_24_IN = ::ConvertToSysUnits(24.0, unitMeasure::Inch);
+static const Float64 g_48_IN = WBFL::Units::ConvertToSysUnits(48.0, WBFL::Units::Measure::Inch);
+static const Float64 g_36_IN = WBFL::Units::ConvertToSysUnits(36.0, WBFL::Units::Measure::Inch);
+static const Float64 g_24_IN = WBFL::Units::ConvertToSysUnits(24.0, WBFL::Units::Measure::Inch);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -78,11 +78,11 @@ Float64 lrfdConcreteUtil::GetNWCDensityLimit()
    Float64 limit;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
    {
-      limit = ::ConvertToSysUnits(135.0,unitMeasure::LbfPerFeet3);
+      limit = WBFL::Units::ConvertToSysUnits(135.0,WBFL::Units::Measure::LbfPerFeet3);
    }
    else
    {
-      limit = ::ConvertToSysUnits(2150.0,unitMeasure::KgPerMeter3);
+      limit = WBFL::Units::ConvertToSysUnits(2150.0,WBFL::Units::Measure::KgPerMeter3);
    }
 
    return limit;
@@ -95,11 +95,11 @@ Float64 lrfdConcreteUtil::GetLWCDensityLimit()
    {
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
       {
-         limit = ::ConvertToSysUnits(120.0,unitMeasure::LbfPerFeet3);
+         limit = WBFL::Units::ConvertToSysUnits(120.0,WBFL::Units::Measure::LbfPerFeet3);
       }
       else
       {
-         limit = ::ConvertToSysUnits(1925.0,unitMeasure::KgPerMeter3);
+         limit = WBFL::Units::ConvertToSysUnits(1925.0,WBFL::Units::Measure::KgPerMeter3);
       }
    }
    else
@@ -115,21 +115,21 @@ void lrfdConcreteUtil::GetPCIUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax)
    // See "Compression Response of a Rapid-Strengthening Ultra-High Performance Concrete Formulation"
    // FHWA Publication FHWA-HRT-12-964
    // Graybeal
-   //*pFcMin = ::ConvertToSysUnits(14.0, unitMeasure::KSI);
-   //*pFcMax = ::ConvertToSysUnits(26.0, unitMeasure::KSI);
+   //*pFcMin = WBFL::Units::ConvertToSysUnits(14.0, WBFL::Units::Measure::KSI);
+   //*pFcMax = WBFL::Units::ConvertToSysUnits(26.0, WBFL::Units::Measure::KSI);
 
    // PCI-UHPC Structural Guidance, min f'c = 17.4 ksi, no max provided so use a really high value that wont be exceeded
-   *pFcMin = ::ConvertToSysUnits(17.4, unitMeasure::KSI);
-   *pFcMax = ::ConvertToSysUnits(99999.0, unitMeasure::KSI);
+   *pFcMin = WBFL::Units::ConvertToSysUnits(17.4, WBFL::Units::Measure::KSI);
+   *pFcMax = WBFL::Units::ConvertToSysUnits(99999.0, WBFL::Units::Measure::KSI);
 }
 
 void lrfdConcreteUtil::GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, Float64* pfpeak, Float64* pfrr)
 {
    Float64 fcMax;
    GetPCIUHPCStrengthRange(pfcMin, &fcMax);
-   *pffc = ::ConvertToSysUnits(1.5, unitMeasure::KSI);
-   *pfpeak = ::ConvertToSysUnits(2.0, unitMeasure::KSI);
-   *pfrr = ::ConvertToSysUnits(0.75, unitMeasure::KSI);
+   *pffc = WBFL::Units::ConvertToSysUnits(1.5, WBFL::Units::Measure::KSI);
+   *pfpeak = WBFL::Units::ConvertToSysUnits(2.0, WBFL::Units::Measure::KSI);
+   *pfrr = WBFL::Units::ConvertToSysUnits(0.75, WBFL::Units::Measure::KSI);
 }
 
 Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density,bool bCheckRange)
@@ -137,9 +137,9 @@ Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density
    Float64 e;  // modulus of elasticity in System Units
    if (type == matConcrete::PCI_UHPC)
    {
-      Float64 Fc = ::ConvertFromSysUnits(fc, unitMeasure::KSI);
+      Float64 Fc = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::KSI);
       Float64 Ec = 2500 * pow(Fc,0.33); // Fc in KSI, Ec in KSI (This is LRFD Equation C5.4.2.4-1)
-      e = ::ConvertToSysUnits(Ec, unitMeasure::KSI);
+      e = WBFL::Units::ConvertToSysUnits(Ec, WBFL::Units::Measure::KSI);
    }
    else
    {
@@ -151,15 +151,15 @@ Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density
       Float64 max_density; // maximum density in System Units
 
       // Input units
-      const unitStress*  p_fc_unit;
-      const unitDensity* p_density_unit;
-      const unitStress*  p_E_unit;
+      const WBFL::Units::Stress*  p_fc_unit;
+      const WBFL::Units::Density* p_density_unit;
+      const WBFL::Units::Stress*  p_E_unit;
 
       if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI)
       {
-         p_fc_unit = &unitMeasure::MPa;
-         p_density_unit = &unitMeasure::KgPerMeter3;
-         p_E_unit = &unitMeasure::MPa;
+         p_fc_unit = &WBFL::Units::Measure::MPa;
+         p_density_unit = &WBFL::Units::Measure::KgPerMeter3;
+         p_E_unit = &WBFL::Units::Measure::MPa;
 
          k = 0.043;
 
@@ -169,9 +169,9 @@ Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density
       else
       {
          // :NOTE: 1 lbm = 1 lbf
-         p_fc_unit = &unitMeasure::KSI;
-         p_density_unit = &unitMeasure::KipPerFeet3;
-         p_E_unit = &unitMeasure::KSI;
+         p_fc_unit = &WBFL::Units::Measure::KSI;
+         p_density_unit = &WBFL::Units::Measure::KipPerFeet3;
+         p_E_unit = &WBFL::Units::Measure::KSI;
 
          if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
          {
@@ -187,15 +187,15 @@ Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density
       }
 
       // Convert input to required units
-      Fc = ::ConvertFromSysUnits(fc, *p_fc_unit);
-      Density = ::ConvertFromSysUnits(density, *p_density_unit);
+      Fc = WBFL::Units::ConvertFromSysUnits(fc, *p_fc_unit);
+      Density = WBFL::Units::ConvertFromSysUnits(density, *p_density_unit);
 
 
       // Make sure the density range hasn't been violated.
       if (bCheckRange)
       {
-         min_density = ::ConvertToSysUnits(min_density, *p_density_unit);
-         max_density = ::ConvertToSysUnits(max_density, *p_density_unit);
+         min_density = WBFL::Units::ConvertToSysUnits(min_density, *p_density_unit);
+         max_density = WBFL::Units::ConvertToSysUnits(max_density, *p_density_unit);
          if (!InRange(min_density, density, max_density))
          {
             THROW(sysXProgrammingError, ValueOutOfRange);
@@ -212,7 +212,7 @@ Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density
       }
 
       // Convert output to system units.
-      e = ::ConvertToSysUnits(E, *p_E_unit);
+      e = WBFL::Units::ConvertToSysUnits(E, *p_E_unit);
    }
 
    return e;
@@ -224,9 +224,9 @@ Float64 lrfdConcreteUtil::FcFromEc(matConcrete::Type type, Float64 ec,Float64 de
 
    if (type == matConcrete::PCI_UHPC)
    {
-      Float64 Ec = ::ConvertFromSysUnits(ec, unitMeasure::KSI);
+      Float64 Ec = WBFL::Units::ConvertFromSysUnits(ec, WBFL::Units::Measure::KSI);
       Float64 Fc = pow(Ec / 2500., 2);
-      fc = ::ConvertToSysUnits(Fc, unitMeasure::KSI);
+      fc = WBFL::Units::ConvertToSysUnits(Fc, WBFL::Units::Measure::KSI);
    }
    else
    {
@@ -236,24 +236,24 @@ Float64 lrfdConcreteUtil::FcFromEc(matConcrete::Type type, Float64 ec,Float64 de
       Float64 k;           // coefficient in equation
 
       // Input units
-      const unitStress*  p_fc_unit;
-      const unitDensity* p_density_unit;
-      const unitStress*  p_E_unit;
+      const WBFL::Units::Stress*  p_fc_unit;
+      const WBFL::Units::Density* p_density_unit;
+      const WBFL::Units::Stress*  p_E_unit;
 
       if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI)
       {
-         p_fc_unit = &unitMeasure::MPa;
-         p_density_unit = &unitMeasure::KgPerMeter3;
-         p_E_unit = &unitMeasure::MPa;
+         p_fc_unit = &WBFL::Units::Measure::MPa;
+         p_density_unit = &WBFL::Units::Measure::KgPerMeter3;
+         p_E_unit = &WBFL::Units::Measure::MPa;
 
          k = 0.043;
       }
       else
       {
          // :NOTE: 1 lbm = 1 lbf
-         p_fc_unit = &unitMeasure::KSI;
-         p_density_unit = &unitMeasure::KipPerFeet3;
-         p_E_unit = &unitMeasure::KSI;
+         p_fc_unit = &WBFL::Units::Measure::KSI;
+         p_density_unit = &WBFL::Units::Measure::KipPerFeet3;
+         p_E_unit = &WBFL::Units::Measure::KSI;
 
          if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
          {
@@ -266,8 +266,8 @@ Float64 lrfdConcreteUtil::FcFromEc(matConcrete::Type type, Float64 ec,Float64 de
       }
 
       // Convert input to required units
-      Ec = ::ConvertFromSysUnits(ec, *p_E_unit);
-      Density = ::ConvertFromSysUnits(density, *p_density_unit);
+      Ec = WBFL::Units::ConvertFromSysUnits(ec, *p_E_unit);
+      Density = WBFL::Units::ConvertFromSysUnits(density, *p_density_unit);
 
       if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
       {
@@ -279,7 +279,7 @@ Float64 lrfdConcreteUtil::FcFromEc(matConcrete::Type type, Float64 ec,Float64 de
       }
 
       // Convert output to system units.
-      fc = ::ConvertToSysUnits(Fc, *p_fc_unit);
+      fc = WBFL::Units::ConvertToSysUnits(Fc, *p_fc_unit);
    }
 
    return fc;
@@ -297,23 +297,23 @@ Float64 lrfdConcreteUtil::ModRupture(Float64 fc, matConcrete::Type concType)
 
 Float64 lrfdConcreteUtil::ModRupture(Float64 fc, matConcrete::Type concType,Float64 k)
 {
-   const unitStress* p_fc_unit;
-   const unitStress* p_fr_unit;
-   const unitSqrtPressure* p_coefficient_unit;
+   const WBFL::Units::Stress* p_fc_unit;
+   const WBFL::Units::Stress* p_fr_unit;
+   const WBFL::Units::SqrtPressure* p_coefficient_unit;
 
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
 
    if ( is_si )
    {
-      p_fc_unit = &unitMeasure::MPa;
-      p_fr_unit = &unitMeasure::MPa;
-      p_coefficient_unit = &unitMeasure::SqrtMPa;
+      p_fc_unit = &WBFL::Units::Measure::MPa;
+      p_fr_unit = &WBFL::Units::Measure::MPa;
+      p_coefficient_unit = &WBFL::Units::Measure::SqrtMPa;
    }
    else
    {
-      p_fc_unit = &unitMeasure::KSI;
-      p_fr_unit = &unitMeasure::KSI;
-      p_coefficient_unit = &unitMeasure::SqrtKSI;
+      p_fc_unit = &WBFL::Units::Measure::KSI;
+      p_fr_unit = &WBFL::Units::Measure::KSI;
+      p_coefficient_unit = &WBFL::Units::Measure::SqrtKSI;
    }
       
 
@@ -347,41 +347,41 @@ Float64 lrfdConcreteUtil::ModRupture(Float64 fc, matConcrete::Type concType,Floa
    }
    else
    {
-      k = ::ConvertFromSysUnits(k,*p_coefficient_unit);
+      k = WBFL::Units::ConvertFromSysUnits(k,*p_coefficient_unit);
    }
 
    // Convert fc to the proper units
-   fc = ::ConvertFromSysUnits( fc, *p_fc_unit );
+   fc = WBFL::Units::ConvertFromSysUnits( fc, *p_fc_unit );
 
    Float64 fr = k * sqrt( fc );
 
    // Convert fr to system units
-   fr = ::ConvertToSysUnits( fr, *p_fr_unit );
+   fr = WBFL::Units::ConvertToSysUnits( fr, *p_fr_unit );
 
    return fr;
 }
 
 Float64 lrfdConcreteUtil::Beta1(Float64 fc)
 {
-   const unitStress* p_fc_unit;
+   const WBFL::Units::Stress* p_fc_unit;
    Float64 fc_limit;
    Float64 fc_step;
 
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      p_fc_unit = &unitMeasure::MPa;
+      p_fc_unit = &WBFL::Units::Measure::MPa;
       fc_limit = 28.; // MPa
       fc_step  =  7.; // MPa
    }
    else
    {
-      p_fc_unit = &unitMeasure::PSI;
+      p_fc_unit = &WBFL::Units::Measure::PSI;
       fc_limit = 4000.; // psi
       fc_step  = 1000.; // psi
    }
 
    // Convert fc to the required units
-   fc = ::ConvertFromSysUnits( fc, *p_fc_unit );
+   fc = WBFL::Units::ConvertFromSysUnits( fc, *p_fc_unit );
 
    Float64 beta1;
    if ( fc < fc_limit )
@@ -614,8 +614,8 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
    // All spec versions evalulate 5.8.4.4-1
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      Float64 bv_used = ::ConvertFromSysUnits(bv, unitMeasure::Millimeter);
-      Float64 fy_used = ::ConvertFromSysUnits(fy, unitMeasure::MPa);
+      Float64 bv_used = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Millimeter);
+      Float64 fy_used = WBFL::Units::ConvertFromSysUnits(fy, WBFL::Units::Measure::MPa);
       if (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994)
       {
          bv_used = min(bv_used, 900.0);
@@ -623,15 +623,15 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
 
       Float64 avf = 0.35 * bv_used / fy_used;
 
-      Float64 avf_min = ::ConvertToSysUnits(avf, unitMeasure::Millimeter);
+      Float64 avf_min = WBFL::Units::ConvertToSysUnits(avf, WBFL::Units::Measure::Millimeter);
 
       hsAvfOverSMin.res5_7_4_2_1 = avf_min;
       hsAvfOverSMin.AvfOverSMin  = avf_min;
    }
    else
    {
-      Float64 bv_used = ::ConvertFromSysUnits(bv, unitMeasure::Inch);
-      Float64 fy_used = ::ConvertFromSysUnits(fy, unitMeasure::KSI);
+      Float64 bv_used = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Inch);
+      Float64 fy_used = WBFL::Units::ConvertFromSysUnits(fy, WBFL::Units::Measure::KSI);
       if (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994)
       {
          bv_used = min(bv_used, 36.0);
@@ -639,7 +639,7 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
 
       Float64 avf = 0.05 * bv_used / fy_used;
 
-      Float64 avf_min = ::ConvertToSysUnits(avf, unitMeasure::Inch);
+      Float64 avf_min = WBFL::Units::ConvertToSysUnits(avf, WBFL::Units::Measure::Inch);
 
       hsAvfOverSMin.res5_7_4_2_1 = avf_min;
       hsAvfOverSMin.AvfOverSMin  = avf_min;
@@ -729,14 +729,14 @@ Float64 lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(matConcrete::
    Float64 lambda;
    if ( bHasFct )
    {
-      fct = ::ConvertFromSysUnits(fct,unitMeasure::KSI);
-      fc  = ::ConvertFromSysUnits(fc,unitMeasure::KSI);
+      fct = WBFL::Units::ConvertFromSysUnits(fct,WBFL::Units::Measure::KSI);
+      fc  = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI);
       lambda = 4.7*fct/sqrt(fc);
       lambda = ::ForceIntoRange(0.0,lambda,1.0);
    }
    else
    {
-      density = ::ConvertFromSysUnits(density,unitMeasure::KipPerFeet3);
+      density = WBFL::Units::ConvertFromSysUnits(density,WBFL::Units::Measure::KipPerFeet3);
       lambda = 7.5*density;
       lambda = ::ForceIntoRange(0.75,lambda,1.0);
    }
@@ -850,23 +850,23 @@ matConcrete::Type lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strName)
 //======================== INQUERY    =======================================
 #if defined _UNITTEST
 #include <Lrfd\AutoVersion.h>
-#include <Units\AutoSysUnits.h>
+#include <Units\AutoSystem.h>
 bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdConcreteUtil");
 
    // Before we do any testing, get the current code version and units
    lrfdAutoVersion av;
-   unitAutoSysUnits au;
+   WBFL::Units::AutoSystem au;
 
    lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
 
    // We want to work in kg,m,s,C,rad
-   unitSysUnitsMgr::SetMassUnit( unitMeasure::Kilogram );
-   unitSysUnitsMgr::SetLengthUnit( unitMeasure::Meter );
-   unitSysUnitsMgr::SetTimeUnit( unitMeasure::Second );
-   unitSysUnitsMgr::SetTemperatureUnit( unitMeasure::Celcius );
-   unitSysUnitsMgr::SetAngleUnit( unitMeasure::Radian );
+   WBFL::Units::System::SetMassUnit( WBFL::Units::Measure::Kilogram );
+   WBFL::Units::System::SetLengthUnit( WBFL::Units::Measure::Meter );
+   WBFL::Units::System::SetTimeUnit( WBFL::Units::Measure::Second );
+   WBFL::Units::System::SetTemperatureUnit( WBFL::Units::Measure::Celcius );
+   WBFL::Units::System::SetAngleUnit( WBFL::Units::Measure::Radian );
 
    //
    // Test Beta1

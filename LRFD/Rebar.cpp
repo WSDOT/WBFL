@@ -36,17 +36,17 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // precompute conversions
-static const Float64 g_140p0_MPA  = ::ConvertToSysUnits(140.0,unitMeasure::MPa);
+static const Float64 g_140p0_MPA  = WBFL::Units::ConvertToSysUnits(140.0,WBFL::Units::Measure::MPa);
 
-static const Float64 g_20p0_KSI   = ::ConvertToSysUnits(20.0,unitMeasure::KSI);
+static const Float64 g_20p0_KSI   = WBFL::Units::ConvertToSysUnits(20.0,WBFL::Units::Measure::KSI);
 
-static const Float64 g_150_MM = ::ConvertToSysUnits( 150, unitMeasure::Millimeter );
-static const Float64 g_300_MM = ::ConvertToSysUnits( 300, unitMeasure::Millimeter );
-static const Float64 g_600_MM = ::ConvertToSysUnits( 600, unitMeasure::Millimeter );
+static const Float64 g_150_MM = WBFL::Units::ConvertToSysUnits( 150, WBFL::Units::Measure::Millimeter );
+static const Float64 g_300_MM = WBFL::Units::ConvertToSysUnits( 300, WBFL::Units::Measure::Millimeter );
+static const Float64 g_600_MM = WBFL::Units::ConvertToSysUnits( 600, WBFL::Units::Measure::Millimeter );
 
-static const Float64 g_6_IN =  ::ConvertToSysUnits( 6, unitMeasure::Inch );
-static const Float64 g_12_IN = ::ConvertToSysUnits(12, unitMeasure::Inch );
-static const Float64 g_24_IN = ::ConvertToSysUnits(24, unitMeasure::Inch );
+static const Float64 g_6_IN =  WBFL::Units::ConvertToSysUnits( 6, WBFL::Units::Measure::Inch );
+static const Float64 g_12_IN = WBFL::Units::ConvertToSysUnits(12, WBFL::Units::Measure::Inch );
+static const Float64 g_24_IN = WBFL::Units::ConvertToSysUnits(24, WBFL::Units::Measure::Inch );
 
 
 /****************************************************************************
@@ -120,19 +120,19 @@ Float64 lrfdRebar::GetAvOverSMin(Float64 fc, Float64 bv, Float64 fy)
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
    if (is_si)
    {
-      Float64 bv_u = ::ConvertFromSysUnits(bv, unitMeasure::Millimeter);
-      Float64 fy_u = ::ConvertFromSysUnits(fy, unitMeasure::MPa);
-      Float64 fc_u = ::ConvertFromSysUnits(fc, unitMeasure::MPa);
+      Float64 bv_u = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Millimeter);
+      Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy, WBFL::Units::Measure::MPa);
+      Float64 fc_u = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::MPa);
       Float64 avs_u = 0.083*sqrt(fc_u)*bv_u/fy_u;
-      avs = ConvertToSysUnits(avs_u, unitMeasure::Millimeter2PerMillimeter);
+      avs = ConvertToSysUnits(avs_u, WBFL::Units::Measure::Millimeter2PerMillimeter);
    }
    else
    {
-      Float64 bv_u = ::ConvertFromSysUnits(bv, unitMeasure::Inch);
-      Float64 fy_u = ::ConvertFromSysUnits(fy, unitMeasure::KSI);
-      Float64 fc_u = ::ConvertFromSysUnits(fc, unitMeasure::KSI);
+      Float64 bv_u = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Inch);
+      Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy, WBFL::Units::Measure::KSI);
+      Float64 fc_u = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::KSI);
       Float64 avs_u = 0.0316*sqrt(fc_u)*bv_u/fy_u;
-      avs = ConvertToSysUnits(avs_u, unitMeasure::Inch2PerInch);
+      avs = ConvertToSysUnits(avs_u, WBFL::Units::Measure::Inch2PerInch);
    }
 
    return avs;
@@ -171,10 +171,10 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
    if (is_si)
    {
-      Float64 ab_u = ::ConvertFromSysUnits(ab,unitMeasure::Millimeter2);
-      Float64 db_u = ::ConvertFromSysUnits(db,unitMeasure::Millimeter);
-      Float64 fy_u = ::ConvertFromSysUnits(fy,unitMeasure::MPa);
-      Float64 fc_u = ::ConvertFromSysUnits(fc,unitMeasure::MPa);
+      Float64 ab_u = WBFL::Units::ConvertFromSysUnits(ab,WBFL::Units::Measure::Millimeter2);
+      Float64 db_u = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Millimeter);
+      Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
+      Float64 fc_u = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa);
       ATLASSERT(0 < fc_u);
 
       Float64 dl_u = 0;
@@ -200,14 +200,14 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
 
       dl_u = max(dl_u, 305);
 
-      dl = ConvertToSysUnits(dl_u,unitMeasure::Millimeter);
+      dl = ConvertToSysUnits(dl_u,WBFL::Units::Measure::Millimeter);
    }
    else
    {
-      Float64 ab_u = ::ConvertFromSysUnits(ab,unitMeasure::Inch2);
-      Float64 db_u = ::ConvertFromSysUnits(db,unitMeasure::Inch);
-      Float64 fy_u = ::ConvertFromSysUnits(fy,unitMeasure::KSI);
-      Float64 fc_u = ::ConvertFromSysUnits(fc,unitMeasure::KSI);
+      Float64 ab_u = WBFL::Units::ConvertFromSysUnits(ab,WBFL::Units::Measure::Inch2);
+      Float64 db_u = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Inch);
+      Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
+      Float64 fc_u = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI);
       ATLASSERT(0 < fc_u);
 
       Float64 dl_u = 0;
@@ -233,7 +233,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
 
       dl_u = max(dl_u, 12.0);
 
-      dl = ConvertToSysUnits(dl_u,unitMeasure::Inch);
+      dl = ConvertToSysUnits(dl_u,WBFL::Units::Measure::Inch);
    }
 
    return dl;
@@ -249,7 +249,7 @@ Float64 lrfdRebar::GetHookExtension(matRebar::Size size,Float64 db,Usage usage,H
       }
       else if ( hook == hook180 )
       {
-         return Max(::ConvertToSysUnits(2.5,unitMeasure::Inch),4*db);
+         return Max(WBFL::Units::ConvertToSysUnits(2.5,WBFL::Units::Measure::Inch),4*db);
       }
    }
    else if ( usage == Transverse )
@@ -278,7 +278,7 @@ Float64 lrfdRebar::GetHookExtension(matRebar::Size size,Float64 db,Usage usage,H
       ATLASSERT(usage == Seismic);
       if ( hook == hook135 )
       {
-         return Max(::ConvertToSysUnits(3.0,unitMeasure::Inch),6*db);
+         return Max(WBFL::Units::ConvertToSysUnits(3.0,WBFL::Units::Measure::Inch),6*db);
       }
    }
 
@@ -399,24 +399,24 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
    // LRFD 5.11.2.1
    if ( lrfdVersionMgr::SeventhEditionWith2015Interims <= lrfdVersionMgr::GetVersion())
    {
-      Float64 Ab = ::ConvertFromSysUnits(details.Ab,unitMeasure::Inch2);
-      Float64 db = ::ConvertFromSysUnits(details.db,unitMeasure::Inch);
-      Float64 fc = ::ConvertFromSysUnits(details.fc,unitMeasure::KSI);
-      Float64 fy = ::ConvertFromSysUnits(details.fy,unitMeasure::KSI);
+      Float64 Ab = WBFL::Units::ConvertFromSysUnits(details.Ab,WBFL::Units::Measure::Inch2);
+      Float64 db = WBFL::Units::ConvertFromSysUnits(details.db,WBFL::Units::Measure::Inch);
+      Float64 fc = WBFL::Units::ConvertFromSysUnits(details.fc,WBFL::Units::Measure::KSI);
+      Float64 fy = WBFL::Units::ConvertFromSysUnits(details.fy,WBFL::Units::Measure::KSI);
    
       if (type == matConcrete::PCI_UHPC)
       {
          details.ldb1 = 8.0 * db * fy / 60.0;
-         details.ldb1 = ::ConvertToSysUnits(details.ldb1, unitMeasure::Inch);
+         details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1, WBFL::Units::Measure::Inch);
       }
       else
       {
          details.ldb1 = 2.4 * db * fy / sqrt(fc);
-         details.ldb1 = ::ConvertToSysUnits(details.ldb1, unitMeasure::Inch);
+         details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1, WBFL::Units::Measure::Inch);
       }
       details.ldb2 = 0.0;
 
-      Float64 ldb_min = ::ConvertToSysUnits(12.0,unitMeasure::Inch);
+      Float64 ldb_min = WBFL::Units::ConvertToSysUnits(12.0,WBFL::Units::Measure::Inch);
 
       details.ldb = Max(details.ldb1,details.ldb2,ldb_min);
    
@@ -462,69 +462,69 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
    {
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
       {
-         Float64 Ab = ::ConvertFromSysUnits(details.Ab,unitMeasure::Inch2);
-         Float64 db = ::ConvertFromSysUnits(details.db,unitMeasure::Inch);
-         Float64 fc = ::ConvertFromSysUnits(details.fc,unitMeasure::KSI);
-         Float64 fy = ::ConvertFromSysUnits(details.fy,unitMeasure::KSI);
+         Float64 Ab = WBFL::Units::ConvertFromSysUnits(details.Ab,WBFL::Units::Measure::Inch2);
+         Float64 db = WBFL::Units::ConvertFromSysUnits(details.db,WBFL::Units::Measure::Inch);
+         Float64 fc = WBFL::Units::ConvertFromSysUnits(details.fc,WBFL::Units::Measure::KSI);
+         Float64 fy = WBFL::Units::ConvertFromSysUnits(details.fy,WBFL::Units::Measure::KSI);
 
          if (size == matRebar::bs14)
          {
             details.ldb1 = 2.70*fy/sqrt(fc);
-            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Inch);
+            details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Inch);
          
             details.ldb2 = 0.0;
          }
          else if (size == matRebar::bs18)
          {
             details.ldb1 = 3.5*fy/sqrt(fc);
-            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Inch);
+            details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Inch);
          
             details.ldb2 = 0.0;
          }
          else
          {
             details.ldb1 = 1.25*Ab*fy/sqrt(fc);
-            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Inch);
+            details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Inch);
 
             details.ldb2 = 0.4*db*fy;
-            details.ldb2 = ::ConvertToSysUnits(details.ldb2,unitMeasure::Inch);
+            details.ldb2 = WBFL::Units::ConvertToSysUnits(details.ldb2,WBFL::Units::Measure::Inch);
          }
 
-         Float64 ldb_min = ::ConvertToSysUnits(12.0,unitMeasure::Inch);
+         Float64 ldb_min = WBFL::Units::ConvertToSysUnits(12.0,WBFL::Units::Measure::Inch);
 
          details.ldb = Max(details.ldb1,details.ldb2,ldb_min);
       }
       else
       {
-         Float64 Ab = ::ConvertFromSysUnits(details.Ab,unitMeasure::Millimeter2);
-         Float64 db = ::ConvertFromSysUnits(details.db,unitMeasure::Millimeter);
-         Float64 fc = ::ConvertFromSysUnits(details.fc,unitMeasure::MPa);
-         Float64 fy = ::ConvertFromSysUnits(details.fy,unitMeasure::MPa);
+         Float64 Ab = WBFL::Units::ConvertFromSysUnits(details.Ab,WBFL::Units::Measure::Millimeter2);
+         Float64 db = WBFL::Units::ConvertFromSysUnits(details.db,WBFL::Units::Measure::Millimeter);
+         Float64 fc = WBFL::Units::ConvertFromSysUnits(details.fc,WBFL::Units::Measure::MPa);
+         Float64 fy = WBFL::Units::ConvertFromSysUnits(details.fy,WBFL::Units::Measure::MPa);
       
          if (size == matRebar::bs14)
          {
             details.ldb1 = 25*fy/sqrt(fc);
-            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Millimeter);
+            details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Millimeter);
          
             details.ldb2 = 0.0;
          }
          else if (size == matRebar::bs18)
          {
             details.ldb1 = 34*fy/sqrt(fc);
-            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Millimeter);
+            details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Millimeter);
          
             details.ldb2 = 0.0;
          }
          else
          {
             details.ldb1 = 0.02*Ab*fy/sqrt(fc);
-            details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Millimeter);
+            details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Millimeter);
          
             details.ldb2 = 0.06*db*fy;
-            details.ldb2 = ::ConvertToSysUnits(details.ldb2,unitMeasure::Millimeter);
+            details.ldb2 = WBFL::Units::ConvertToSysUnits(details.ldb2,WBFL::Units::Measure::Millimeter);
          }
 
-         Float64 ldb_min = ::ConvertToSysUnits(12.0,unitMeasure::Millimeter);
+         Float64 ldb_min = WBFL::Units::ConvertToSysUnits(12.0,WBFL::Units::Measure::Millimeter);
 
          details.ldb = Max(details.ldb1,details.ldb2,ldb_min);
       }
@@ -539,8 +539,8 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
          if (isFct)
          {
             // compute factor
-            Float64 fck  = ::ConvertFromSysUnits(fc,unitMeasure::KSI);
-            Float64 fctk = ::ConvertFromSysUnits(Fct,unitMeasure::KSI);
+            Float64 fck  = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI);
+            Float64 fctk = WBFL::Units::ConvertFromSysUnits(Fct,WBFL::Units::Measure::KSI);
 
             details.factor = 0.22 * sqrt(fck) / fctk;
             details.factor = Min(details.factor, 1.0);

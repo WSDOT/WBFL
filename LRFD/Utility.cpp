@@ -33,13 +33,13 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // precomputed conversions
-static const Float64 g_3600_MM = ::ConvertToSysUnits( 3600., unitMeasure::Millimeter );
-static const Float64 g_6000_MM = ::ConvertToSysUnits( 6000., unitMeasure::Millimeter );
-static const Float64 g_7200_MM = ::ConvertToSysUnits( 7200., unitMeasure::Millimeter );
+static const Float64 g_3600_MM = WBFL::Units::ConvertToSysUnits( 3600., WBFL::Units::Measure::Millimeter );
+static const Float64 g_6000_MM = WBFL::Units::ConvertToSysUnits( 6000., WBFL::Units::Measure::Millimeter );
+static const Float64 g_7200_MM = WBFL::Units::ConvertToSysUnits( 7200., WBFL::Units::Measure::Millimeter );
 
-static const Float64 g_12_FT = ::ConvertToSysUnits( 12., unitMeasure::Feet );
-static const Float64 g_20_FT = ::ConvertToSysUnits( 20., unitMeasure::Feet );
-static const Float64 g_24_FT = ::ConvertToSysUnits( 24., unitMeasure::Feet );
+static const Float64 g_12_FT = WBFL::Units::ConvertToSysUnits( 12., WBFL::Units::Measure::Feet );
+static const Float64 g_20_FT = WBFL::Units::ConvertToSysUnits( 20., WBFL::Units::Measure::Feet );
+static const Float64 g_24_FT = WBFL::Units::ConvertToSysUnits( 24., WBFL::Units::Measure::Feet );
 
 
 /****************************************************************************
@@ -270,18 +270,18 @@ bool Test_GetDesignLaneWidth(dbgLog& rlog)
    lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
 
    lrfdVersionMgr::SetUnits( lrfdVersionMgr::US );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(10.,unitMeasure::Feet) ), ::ConvertToSysUnits( 10., unitMeasure::Feet ) ) );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(18.,unitMeasure::Feet) ), ::ConvertToSysUnits( 12., unitMeasure::Feet ) ) );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(22.,unitMeasure::Feet) ), ::ConvertToSysUnits( 11., unitMeasure::Feet ) ) );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(28.,unitMeasure::Feet) ), ::ConvertToSysUnits( 12., unitMeasure::Feet ) ) );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(37.,unitMeasure::Feet) ), ::ConvertToSysUnits( 12., unitMeasure::Feet ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(10.,WBFL::Units::Measure::Feet) ), WBFL::Units::ConvertToSysUnits( 10., WBFL::Units::Measure::Feet ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(18.,WBFL::Units::Measure::Feet) ), WBFL::Units::ConvertToSysUnits( 12., WBFL::Units::Measure::Feet ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(22.,WBFL::Units::Measure::Feet) ), WBFL::Units::ConvertToSysUnits( 11., WBFL::Units::Measure::Feet ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(28.,WBFL::Units::Measure::Feet) ), WBFL::Units::ConvertToSysUnits( 12., WBFL::Units::Measure::Feet ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(37.,WBFL::Units::Measure::Feet) ), WBFL::Units::ConvertToSysUnits( 12., WBFL::Units::Measure::Feet ) ) );
 
    lrfdVersionMgr::SetUnits( lrfdVersionMgr::SI );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(3200., unitMeasure::Millimeter) ), ::ConvertToSysUnits( 3200., unitMeasure::Millimeter ) ) );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(5000., unitMeasure::Millimeter) ), ::ConvertToSysUnits( 3600., unitMeasure::Millimeter ) ) );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(6500.,unitMeasure::Millimeter) ), ::ConvertToSysUnits( 3250., unitMeasure::Millimeter ) ) );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(7500.,unitMeasure::Millimeter) ), ::ConvertToSysUnits( 3600., unitMeasure::Millimeter ) ) );
-   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(11000.,unitMeasure::Millimeter) ), ::ConvertToSysUnits( 3600., unitMeasure::Millimeter ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(3200., WBFL::Units::Measure::Millimeter) ), WBFL::Units::ConvertToSysUnits( 3200., WBFL::Units::Measure::Millimeter ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(5000., WBFL::Units::Measure::Millimeter) ), WBFL::Units::ConvertToSysUnits( 3600., WBFL::Units::Measure::Millimeter ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(6500.,WBFL::Units::Measure::Millimeter) ), WBFL::Units::ConvertToSysUnits( 3250., WBFL::Units::Measure::Millimeter ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(7500.,WBFL::Units::Measure::Millimeter) ), WBFL::Units::ConvertToSysUnits( 3600., WBFL::Units::Measure::Millimeter ) ) );
+   TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(11000.,WBFL::Units::Measure::Millimeter) ), WBFL::Units::ConvertToSysUnits( 3600., WBFL::Units::Measure::Millimeter ) ) );
 
    TESTME_EPILOG("lrfdUtility - Test_GetDesignLaneWidth");
 }
@@ -295,18 +295,18 @@ bool Test_GetNumDesignLanes(dbgLog& rlog)
    lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
 
    lrfdVersionMgr::SetUnits( lrfdVersionMgr::US );
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(10.,unitMeasure::Feet) ) == 1 );
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(18.,unitMeasure::Feet) ) == 1 );
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(22.,unitMeasure::Feet) ) == 2 );
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(28.,unitMeasure::Feet) ) == 2 );
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(37.,unitMeasure::Feet) ) == 3 );
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(10.,WBFL::Units::Measure::Feet) ) == 1 );
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(18.,WBFL::Units::Measure::Feet) ) == 1 );
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(22.,WBFL::Units::Measure::Feet) ) == 2 );
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(28.,WBFL::Units::Measure::Feet) ) == 2 );
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(37.,WBFL::Units::Measure::Feet) ) == 3 );
 
    lrfdVersionMgr::SetUnits( lrfdVersionMgr::SI );
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(3200., unitMeasure::Millimeter) ) == 1);
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(5000., unitMeasure::Millimeter) ) == 1);
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(6500.,unitMeasure::Millimeter) )  == 2);
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(7500.,unitMeasure::Millimeter) )  == 2);
-   TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(11000.,unitMeasure::Millimeter) ) == 3);
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(3200., WBFL::Units::Measure::Millimeter) ) == 1);
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(5000., WBFL::Units::Measure::Millimeter) ) == 1);
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(6500.,WBFL::Units::Measure::Millimeter) )  == 2);
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(7500.,WBFL::Units::Measure::Millimeter) )  == 2);
+   TRY_TESTME( lrfdUtility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(11000.,WBFL::Units::Measure::Millimeter) ) == 3);
 
    TESTME_EPILOG("lrfdUtility - Test_GetNumDesignLanes");
 }

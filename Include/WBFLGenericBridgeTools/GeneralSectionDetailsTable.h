@@ -28,8 +28,8 @@
 #include <WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h>
 #include <WBFLRCCapacity.h>
 #include <Reporter\RcTable.h>
-#include <UnitMgt\IndirectMeasure.h>
+#include <Units\IndirectMeasure.h>
 #include <EAF\EAFDisplayUnits.h>
 
-WBFLGENERICBRIDGETOOLSFUNC rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat,const unitmgtIndirectMeasure* pDisplayUnits);
+WBFLGENERICBRIDGETOOLSFUNC rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat,const WBFL::Units::IndirectMeasure* pDisplayUnits);
 WBFLGENERICBRIDGETOOLSFUNC rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat, IEAFDisplayUnits* pDisplayUnits);

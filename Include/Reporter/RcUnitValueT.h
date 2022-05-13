@@ -29,7 +29,7 @@
 #include <Reporter\ReporterExp.h>
 #include <Reporter\RcUnitValue.h>
 #include <Units\PhysicalT.h>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 #include <MathEx.h>
 
 /// Template class the implements the rptUnitValue abstract interface.
@@ -100,7 +100,7 @@ public:
 
    virtual Float64 GetValue(bool bConvert = false) const
    {
-      Float64 value = bConvert ? ::ConvertFromSysUnits( m_Value, *m_pUnitOfMeasure ) : m_Value;
+      Float64 value = bConvert ? WBFL::Units::ConvertFromSysUnits( m_Value, *m_pUnitOfMeasure ) : m_Value;
 
       if ( IsZero( value, m_ZeroTolerance ) )
          value = 0.;
@@ -160,25 +160,25 @@ private:
    REPORTERTPL rptRcUnitValueT<u>; \
    typedef rptRcUnitValueT<u> t;
 
-DECLARE_RC_UNIT_VALUE( unitMass,           rptMassUnitValue           );
-DECLARE_RC_UNIT_VALUE( unitMassPerLength,  rptMassPerLengthUnitValue  );
-DECLARE_RC_UNIT_VALUE( unitLength,         rptLengthUnitValue         );
-DECLARE_RC_UNIT_VALUE( unitTime,           rptTimeUnitValue           );
-DECLARE_RC_UNIT_VALUE( unitTemperature,    rptTemperatureUnitValue    );
-DECLARE_RC_UNIT_VALUE( unitAngle,          rptAngleUnitValue          );
-DECLARE_RC_UNIT_VALUE( unitLength2,        rptLength2UnitValue        );
-DECLARE_RC_UNIT_VALUE( unitLength3,        rptLength3UnitValue        );
-DECLARE_RC_UNIT_VALUE( unitLength4,        rptLength4UnitValue        );
-DECLARE_RC_UNIT_VALUE( unitPressure,       rptPressureUnitValue       );
-DECLARE_RC_UNIT_VALUE( unitDensity,        rptDensityUnitValue        );
-DECLARE_RC_UNIT_VALUE( unitUnitWeight,     rptUnitWeightUnitValue     );
-DECLARE_RC_UNIT_VALUE( unitForce,          rptForceUnitValue          );
-DECLARE_RC_UNIT_VALUE( unitForcePerLength, rptForcePerLengthUnitValue );
-DECLARE_RC_UNIT_VALUE( unitMomentPerAngle, rptMomentPerAngleUnitValue );
-DECLARE_RC_UNIT_VALUE( unitMoment,         rptMomentUnitValue         );
-DECLARE_RC_UNIT_VALUE( unitPerLength,      rptPerLengthUnitValue      );
-DECLARE_RC_UNIT_VALUE( unitForceLength2,   rptForceLength2UnitValue   );
-DECLARE_RC_UNIT_VALUE( unitVelocity,       rptVelocityUnitValue       );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Mass,           rptMassUnitValue           );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::MassPerLength,  rptMassPerLengthUnitValue  );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Length,         rptLengthUnitValue         );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Time,           rptTimeUnitValue           );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Temperature,    rptTemperatureUnitValue    );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Angle,          rptAngleUnitValue          );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Length2,        rptLength2UnitValue        );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Length3,        rptLength3UnitValue        );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Length4,        rptLength4UnitValue        );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Pressure,       rptPressureUnitValue       );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Density,        rptDensityUnitValue        );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::UnitWeight,     rptUnitWeightUnitValue     );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Force,          rptForceUnitValue          );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::ForcePerLength, rptForcePerLengthUnitValue );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::MomentPerAngle, rptMomentPerAngleUnitValue );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Moment,         rptMomentUnitValue         );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::PerLength,      rptPerLengthUnitValue      );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::ForceLength2,   rptForceLength2UnitValue   );
+DECLARE_RC_UNIT_VALUE( WBFL::Units::Velocity,       rptVelocityUnitValue       );
 
 typedef rptPressureUnitValue rptStressUnitValue;
 typedef rptLength2UnitValue  rptAreaUnitValue;

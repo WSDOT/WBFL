@@ -45,9 +45,9 @@ static char THIS_FILE[] = __FILE__;
 #include <Units\Units.h>
 
 #define VALUE(_x_) (IsZero(_x_)  ? 0 : _x_)
-#define LENGTH(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::Inch))
-#define AREA(_x_)   (::ConvertFromSysUnits(_x_, unitMeasure::Inch2))
-#define STRESS(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::KSI))
+#define LENGTH(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch))
+#define AREA(_x_)   (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch2))
+#define STRESS(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::KSI))
 #endif // _DEBUG_LOGGING
 
 /////////////////////////////////////////////////////////////////////////////

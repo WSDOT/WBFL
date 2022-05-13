@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="AutoSysUnits.cpp">
+    <ClCompile Include="AutoSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -13,13 +13,10 @@
     <ClCompile Include="StationFormat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SysUnits.cpp">
+    <ClCompile Include="Convert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SysUnitsMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SysUnitsMgrListener.cpp">
+    <ClCompile Include="System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UnitTest.cpp">
@@ -28,12 +25,21 @@
     <ClCompile Include="XUnit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IndirectMeasure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Library.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitValueNumericalFormatTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Units\AutoLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Units\AutoSysUnits.h">
+    <ClInclude Include="..\Include\Units\AutoSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Units\Convert.h">
@@ -48,13 +54,7 @@
     <ClInclude Include="..\Include\Units\StationFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Units\SysUnits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Units\SysUnitsMgr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Units\SysUnitsMgrListener.h">
+    <ClInclude Include="..\Include\Units\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Units\Units.h">
@@ -71,6 +71,21 @@
     </ClInclude>
     <ClInclude Include="..\Include\Units\XUnit.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Units\IndirectMeasure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Units\Library.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Units\LibraryT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Units\UnitValueNumericalFormatTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -51,10 +51,10 @@ namespace WBFL
          virtual Float64 GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const = 0;
 
          /// Reports the tension stress limit
-         virtual void ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const = 0;
+         virtual void ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const = 0;
 
          /// Reports the required concrete strength to satisfy the tension stress limit
-         virtual void ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const = 0;
+         virtual void ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const = 0;
       };
 
       /// Conventional concrete tension stress limit
@@ -71,8 +71,8 @@ namespace WBFL
          virtual Float64 GetRequiredFcTension(const LiftingCheckArtifact* pArtifact) const override;
          virtual Float64 GetRequiredFcTensionWithoutRebar(const LiftingCheckArtifact* pArtifact) const override;
          virtual Float64 GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const override;
-         virtual void ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const override;
-         virtual void ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
 
          Float64 Lambda; ///< concrete density modification factor (see LRFD 5.4.2.8)
 
@@ -102,8 +102,8 @@ namespace WBFL
          virtual Float64 GetRequiredFcTensionWithoutRebar(const LiftingCheckArtifact* pArtifact) const override;
          virtual Float64 GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const override;
 
-         virtual void ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const override;
-         virtual void ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
 
          Float64 ffc; // First crack tension strength
          Float64 fc28; // 28-day compressive strength
