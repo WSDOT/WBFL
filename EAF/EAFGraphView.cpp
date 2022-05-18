@@ -275,7 +275,7 @@ void CEAFGraphView::UpdateViewTitle()
    if ( pGraphBuilder )
    {
       CString strTitle;
-      strTitle.Format(_T("Graph View - %s"),pGraphBuilder->GetName());
+      strTitle.Format(_T("Graph View - %s"),pGraphBuilder->GetName().c_str());
       SetWindowText(strTitle);
    }
    else

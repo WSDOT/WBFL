@@ -38,9 +38,10 @@ public:
 	CGraphBuilder();
    CGraphBuilder(const CGraphBuilder& other);
 	virtual ~CGraphBuilder();
+   bool operator==(const CGraphBuilder& other);
 
    virtual void SetName(LPCTSTR strName);
-   virtual LPCTSTR GetName() const;
+   virtual const std::_tstring& GetName() const;
 
    void InitDocumentation(LPCTSTR lpszDocSetName,UINT nHID);
    void SetDocumentationSetName(LPCTSTR lpszDocSetName);
@@ -75,7 +76,7 @@ public:
    virtual bool HandleDoubleClick(UINT nFlags,CPoint point);
 
 protected:
-   CString m_strName;
+   std::_tstring m_strName;
    const CBitmap* m_pBitmap;
 
    CString m_strDocSetName;

@@ -84,6 +84,11 @@ STDMETHODIMP CGraphManagerAgent::GetClassID(CLSID* pCLSID)
 ///////////////////////////////////////////////////////////////////
 // IGraphManager
 ///////////////////////////////////////////////////////////////////
+void CGraphManagerAgent::SortByName(bool bSort)
+{
+   return m_GraphManager.SortByName(bSort);
+}
+
 bool CGraphManagerAgent::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
 {
    return m_GraphManager.AddGraphBuilder(pGraphBuilder);
@@ -94,7 +99,7 @@ bool CGraphManagerAgent::AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphB
    return m_GraphManager.AddGraphBuilder(pGraphBuilder);
 }
 
-CollectionIndexType CGraphManagerAgent::GetGraphBuilderCount() const
+IndexType CGraphManagerAgent::GetGraphBuilderCount() const
 {
    return m_GraphManager.GetGraphBuilderCount();
 }
@@ -104,7 +109,7 @@ std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(LPCTSTR strGr
    return m_GraphManager.GetGraphBuilder(strGraphName);
 }
 
-std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(CollectionIndexType index)
+std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(IndexType index)
 {
    return m_GraphManager.GetGraphBuilder(index);
 }
