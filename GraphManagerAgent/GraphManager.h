@@ -70,14 +70,14 @@ public:
 // IGraphManager
 public:
    virtual void SortByName(bool bSort) override;
-   virtual bool AddGraphBuilder(CGraphBuilder* pGraphBuilder) override;
-   virtual bool AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder) override;
+   virtual bool AddGraphBuilder(const WBFL::Graphing::GraphBuilder& graphBuilder) override;
+   virtual bool AddGraphBuilder(std::unique_ptr<WBFL::Graphing::GraphBuilder>&& pGraphBuilder) override;
    virtual IndexType GetGraphBuilderCount() const override;
-   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(IndexType index) override;
-   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName) override;
-   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName) override;
-   virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) override;
-   virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) override;
+   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(IndexType index) override;
+   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(LPCTSTR strGraphName) override;
+   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(const std::_tstring& strGraphName) override;
+   virtual bool RemoveGraphBuilder(LPCTSTR strGraphName) override;
+   virtual bool RemoveGraphBuilder(const std::_tstring& strGraphName) override;
    virtual std::vector<std::_tstring> GetGraphNames() const override;
    virtual const CBitmap* GetMenuBitmap(LPCTSTR strGraphName) override;
    virtual const CBitmap* GetMenuBitmap(const std::_tstring& strGraphName) override;

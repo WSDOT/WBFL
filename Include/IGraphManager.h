@@ -32,14 +32,14 @@ DEFINE_GUID(IID_IGraphManager,
 interface IGraphManager : IUnknown
 {
    virtual void SortByName(bool bSort) = 0;
-   virtual bool AddGraphBuilder(CGraphBuilder* pRptBuilder) = 0;
-   virtual bool AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder) = 0;
+   virtual bool AddGraphBuilder(const WBFL::Graphing::GraphBuilder& pRptBuilder) = 0;
+   virtual bool AddGraphBuilder(std::unique_ptr<WBFL::Graphing::GraphBuilder>&& pGraphBuilder) = 0;
    virtual IndexType GetGraphBuilderCount() const = 0;
-   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(IndexType index) = 0;
-   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName) = 0;
-   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName) = 0;
-   virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) = 0;
-   virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) = 0;
+   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(IndexType index) = 0;
+   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(LPCTSTR strGraphName) = 0;
+   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(const std::_tstring& strGraphName) = 0;
+   virtual bool RemoveGraphBuilder(LPCTSTR strGraphName) = 0;
+   virtual bool RemoveGraphBuilder(const std::_tstring& strGraphName) = 0;
    virtual std::vector<std::_tstring> GetGraphNames() const = 0;
    virtual const CBitmap* GetMenuBitmap(LPCTSTR strGraphName) = 0;
    virtual const CBitmap* GetMenuBitmap(const std::_tstring& strGraphName) = 0;

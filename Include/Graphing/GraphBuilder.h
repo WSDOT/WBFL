@@ -50,7 +50,7 @@ public:
    void SetName(LPCTSTR strName);
 
    /// Returns the name of the graph builder
-   virtual LPCTSTR GetName() const;
+   virtual const std::_tstring& GetName() const;
 
    /// Initializes the associated end-user documentation
    void InitDocumentation(LPCTSTR lpszDocSetName, ///< Name of the documentation set

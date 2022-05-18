@@ -47,14 +47,20 @@ public:
    GraphManager(bool bShortByName = true);
 	virtual ~GraphManager();
 
+   /// Causes the list of graphs names to be sorted
+   void SortByName(bool bSort);
+
+   /// Returns true if graph names are sorted
+   bool SortByName() const;
+
    /// Adds a graph builder to the manager. Makes a clone of the graph builder
-   bool AddGraphBuilder(GraphBuilder& graphBuilder);
+   bool AddGraphBuilder(const GraphBuilder& graphBuilder);
 
    /// Adds a graph builder to the manager.
    bool AddGraphBuilder(std::unique_ptr<GraphBuilder>&& pGraphBuilder);
 
    /// Returns the number of builders
-   CollectionIndexType GetGraphBuilderCount() const;
+   IndexType GetGraphBuilderCount() const;
 
    /// Returns a graph builder by index
    std::unique_ptr<GraphBuilder>& GetGraphBuilder(IndexType index);
@@ -87,8 +93,9 @@ public:
    const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
 
 private:
-   std::vector<std::unique_ptr<CGraphBuilder>> m_GraphBuilders;
+   std::vector<std::unique_ptr<GraphBuilder>> m_GraphBuilders;
    bool m_bSort{true};
+   std::unique_ptr<GraphBuilder> m_Nullptr;
    
    void Sort();
 };

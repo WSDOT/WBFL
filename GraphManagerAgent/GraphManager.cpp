@@ -32,7 +32,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CGraphManagerAgent
 
@@ -89,7 +88,7 @@ void CGraphManagerAgent::SortByName(bool bSort)
    return m_GraphManager.SortByName(bSort);
 }
 
-bool CGraphManagerAgent::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
+bool CGraphManagerAgent::AddGraphBuilder(const WBFL::Graphing::GraphBuilder& graphBuilder)
 {
    return m_GraphManager.AddGraphBuilder(graphBuilder);
 }

@@ -50,22 +50,18 @@ GraphBuilder::~GraphBuilder()
 {
 }
 
-void GraphBuilder::SetName(LPCTSTR strName)
-{
-}
-
-bool CGraphBuilder::operator==(const CGraphBuilder& other)
+bool GraphBuilder::operator==(const GraphBuilder& other) const
 {
    // equivalence is based on name only for sorting purposes
    return m_strName == other.m_strName;
 }
 
-void CGraphBuilder::SetName(LPCTSTR strName)
+void GraphBuilder::SetName(LPCTSTR strName)
 {
    m_strName = strName;
 }
 
-const std::_tstring& CGraphBuilder::GetName() const
+const std::_tstring& GraphBuilder::GetName() const
 {
    return m_strName;
 }

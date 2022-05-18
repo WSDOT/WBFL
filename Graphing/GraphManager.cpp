@@ -40,7 +40,7 @@ using namespace WBFL::Graphing;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CGraphManager::CGraphManager(bool bSortByName) : m_bSort(bSortByName)
+GraphManager::GraphManager(bool bSortByName) : m_bSort(bSortByName)
 {
 }
 
@@ -48,7 +48,7 @@ GraphManager::~GraphManager()
 {
 }
 
-void CGraphManager::SortByName(bool bSort)
+void GraphManager::SortByName(bool bSort)
 {
    if (bSort != m_bSort)
    {
@@ -57,23 +57,23 @@ void CGraphManager::SortByName(bool bSort)
    }
 }
 
-bool CGraphManager::SortByName() const
+bool GraphManager::SortByName() const
 {
    return m_bSort;
 }
 
-void CGraphManager::ClearAll()
+void GraphManager::ClearAll()
 {
    m_GraphBuilders.clear();
 }
 
-bool GraphManager::AddGraphBuilder(GraphBuilder& graphBuilder)
+bool GraphManager::AddGraphBuilder(const GraphBuilder& graphBuilder)
 {
-   std::_tstring strName = pGraphBuilder->GetName();
+   std::_tstring strName = graphBuilder.GetName();
    auto& builder = GetGraphBuilder(strName);
    if (builder != nullptr) return false;
 
-   m_GraphBuilders.emplace_back(pGraphBuilder);
+   m_GraphBuilders.emplace_back(std::move(graphBuilder.Clone()));
 
    if (m_bSort) Sort();
 
@@ -105,7 +105,7 @@ std::unique_ptr<GraphBuilder>& GraphManager::GetGraphBuilder(LPCTSTR strGraphNam
 
 std::unique_ptr<GraphBuilder>& GraphManager::GetGraphBuilder(IndexType index)
 {
-   if (m_GraphBuilders.size() <= index) return nullptr;
+   if (m_GraphBuilders.size() <= index) return m_Nullptr;
    return m_GraphBuilders[index];
 }
 
@@ -165,7 +165,7 @@ const CBitmap* GraphManager::GetMenuBitmap(const std::_tstring& strGraphName)
    return pGraphBuilder->GetMenuBitmap();
 }
 
-void CGraphManager::Sort()
+void GraphManager::Sort()
 {
    std::sort(m_GraphBuilders.begin(), m_GraphBuilders.end(), [](auto& a, auto& b) {return a->GetName() < b->GetName(); });
 }
