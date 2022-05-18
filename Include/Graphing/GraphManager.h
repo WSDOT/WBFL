@@ -72,13 +72,13 @@ public:
    std::unique_ptr<GraphBuilder>& GetGraphBuilder(const std::_tstring& strGraphName);
 
    /// Removes a graph builder by index
-   bool RemoveGraphBuilder(IndexType index);
+   std::unique_ptr<GraphBuilder> RemoveGraphBuilder(IndexType index);
 
    /// Removes a graph builder by name
-   bool RemoveGraphBuilder(LPCTSTR strGraphName);
+   std::unique_ptr<GraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName);
 
    /// Removes a graph builder by name
-   bool RemoveGraphBuilder(const std::_tstring& strGraphName);
+   std::unique_ptr<GraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName);
 
    /// Clears all graph builders
    virtual void ClearAll();

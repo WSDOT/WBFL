@@ -118,27 +118,29 @@ std::unique_ptr<GraphBuilder>& GraphManager::GetGraphBuilder(const std::_tstring
       return m_Nullptr;
 }
 
-bool GraphManager::RemoveGraphBuilder(IndexType index)
+std::unique_ptr<GraphBuilder> GraphManager::RemoveGraphBuilder(IndexType index)
 {
    if (m_GraphBuilders.size() <= index) return false;
+   auto graphBuilder = std::move(m_GraphBuilders[index]); // move the graph builder from the unique_ptr inside the container to a unique_ptr outside the container
    m_GraphBuilders.erase(m_GraphBuilders.begin() + index);
-   return true;
+   return graphBuilder;
 }
 
-bool GraphManager::RemoveGraphBuilder(LPCTSTR strGraphName)
+std::unique_ptr<GraphBuilder> GraphManager::RemoveGraphBuilder(LPCTSTR strGraphName)
 {
    return RemoveGraphBuilder(std::_tstring(strGraphName));
 }
 
-bool GraphManager::RemoveGraphBuilder(const std::_tstring& strGraphName)
+std::unique_ptr<GraphBuilder> GraphManager::RemoveGraphBuilder(const std::_tstring& strGraphName)
 {
    auto found = std::find_if(m_GraphBuilders.begin(), m_GraphBuilders.end(), [strGraphName](auto& builder) {return builder->GetName() == strGraphName; });
    if (found == m_GraphBuilders.end())
-      return false;
+      return std::unique_ptr<GraphBuilder>();
 
+   auto graphBuilder = std::move(*found); // move the graph builder from the unique_ptr inside the container to a unique_ptr outside the container
    m_GraphBuilders.erase(found);
 
-   return true;
+   return graphBuilder;
 }
 
 std::vector<std::_tstring> GraphManager::GetGraphNames() const

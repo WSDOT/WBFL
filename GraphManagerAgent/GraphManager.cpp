@@ -118,12 +118,12 @@ std::unique_ptr<WBFL::Graphing::GraphBuilder>& CGraphManagerAgent::GetGraphBuild
    return m_GraphManager.GetGraphBuilder(strGraphName);
 }
 
-bool CGraphManagerAgent::RemoveGraphBuilder(LPCTSTR strGraphName)
+std::unique_ptr<WBFL::Graphing::GraphBuilder> CGraphManagerAgent::RemoveGraphBuilder(LPCTSTR strGraphName)
 {
    return m_GraphManager.RemoveGraphBuilder(strGraphName);
 }
 
-bool CGraphManagerAgent::RemoveGraphBuilder(const std::_tstring& strGraphName)
+std::unique_ptr<WBFL::Graphing::GraphBuilder> CGraphManagerAgent::RemoveGraphBuilder(const std::_tstring& strGraphName)
 {
    return m_GraphManager.RemoveGraphBuilder(strGraphName);
 }

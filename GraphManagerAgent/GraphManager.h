@@ -76,8 +76,8 @@ public:
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(IndexType index) override;
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(LPCTSTR strGraphName) override;
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(const std::_tstring& strGraphName) override;
-   virtual bool RemoveGraphBuilder(LPCTSTR strGraphName) override;
-   virtual bool RemoveGraphBuilder(const std::_tstring& strGraphName) override;
+   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) override;
+   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) override;
    virtual std::vector<std::_tstring> GetGraphNames() const override;
    virtual const CBitmap* GetMenuBitmap(LPCTSTR strGraphName) override;
    virtual const CBitmap* GetMenuBitmap(const std::_tstring& strGraphName) override;
