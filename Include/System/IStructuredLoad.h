@@ -21,166 +21,91 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_ISTRUCTUREDLOAD_H_
-#define INCLUDED_SYSTEM_ISTRUCTUREDLOAD_H_
 #pragma once
 
 #include <System\SysExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysIStructuredLoad
-
-   Pure interface class for loading structured data from a data source.
-
-
-DESCRIPTION
-   Pure interface class for loading structured data from a data source.
-   This class was based on an article by Neil Hunt of Rational Corp.
-   call Unit Testing. The class is certainly useful for more than
-   unit testing.
-
-LOG
-   rdp : 07.10.1998 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysIStructuredLoad
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace System
+   {
+      /// Pure interface class for loading structured data from a data source.
+      /// This class was based on an article by Neil Hunt of Rational Corp.
+      /// call Unit Testing. The class is certainly useful for more than unit testing.
+      /// 
+      /// Property read routines. All of these calls try to read a property at the
+      /// current file pointer location. If the function returns true, the property
+      /// was read and the file pointer advances. If the function returns false,
+      /// the property was not at the current locaton and the file pointer does not
+      /// advance.
+      class SYSCLASS IStructuredLoad
+      {
+      public:
+         virtual ~IStructuredLoad() = default;
 
-   //------------------------------------------------------------------------
-   virtual ~sysIStructuredLoad() {}
+         /// Check for the Beginning of a named structured data unit. If true is 
+         /// returned, the beginning of the unit was found and the file pointer is
+         /// advanced. If false is returned, the file pointer does not advance.
+         /// After a unit has been entered, GetVersion may be called to get its
+         /// version
+         virtual bool BeginUnit(LPCTSTR name) = 0;
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+         /// Check for the end of a structured data chunk that was started by a call to BeginUnit.
+         virtual bool EndUnit() = 0;
 
-   //------------------------------------------------------------------------
-   // Check for the Beginning of a named structured data unit. If true is 
-   // returned, the beginning of the unit was found and the file pointer is
-   // advanced. If false is returned, the file pointer does not advance.
-   // After a unit has been entered, GetVersion may be called to get its
-   // version
-   virtual bool BeginUnit(LPCTSTR name) = 0;
-
-   //------------------------------------------------------------------------
-   // Check for the end of a structured data chunk that was started by a call to 
-   // BeginUnit.
-   virtual bool EndUnit() = 0;
-
-   //------------------------------------------------------------------------
-   // Get the version number of the current unit
-   virtual Float64 GetVersion() = 0;
+         /// Get the version number of the current unit
+         virtual Float64 GetVersion() = 0;
    
-   //------------------------------------------------------------------------
-   // Get the version number of the unit that is the parent to this unit
-   virtual Float64 GetParentVersion() = 0;
+         /// Get the version number of the unit that is the parent to this unit
+         virtual Float64 GetParentVersion() = 0;
 
-   virtual std::_tstring GetParentUnit() = 0;
+         /// Get the name of the unit that is the parent to this unit
+         virtual std::_tstring GetParentUnit() = 0;
 
-   //------------------------------------------------------------------------
-   // Get the version number of the top-most unit
-   virtual Float64 GetTopVersion() = 0;
+         /// Get the version number of the top-most unit
+         virtual Float64 GetTopVersion() = 0;
 
-   //------------------------------------------------------------------------
-   // Property read routines. All of these calls try to read a property at the
-   // current file pointer location. If the function returns true, the property
-   // was read and the file pointer advances. If the function returns false,
-   // the property was not at the current locaton and the file pointer does not
-   // advance.
-   // Read a string property
-   virtual bool Property(LPCTSTR name, std::_tstring* pvalue) = 0;
+         /// Read a string property
+         virtual bool Property(LPCTSTR name, std::_tstring* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read a real number property
-   virtual bool Property(LPCTSTR name, Float64* pvalue) = 0;
+         /// Read a real number property
+         virtual bool Property(LPCTSTR name, Float64* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read an integral property
-   virtual bool Property(LPCTSTR name, Int16* pvalue) = 0;
+         /// Read an Integer property
+         virtual bool Property(LPCTSTR name, Int16* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint16* pvalue) = 0;
+         /// Read an unsigned Integer property
+         virtual bool Property(LPCTSTR name, Uint16* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read an integral property
-   virtual bool Property(LPCTSTR name, Int32* pvalue) = 0;
+         /// Read an Integer property
+         virtual bool Property(LPCTSTR name, Int32* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint32* pvalue) = 0;
+         /// Read an unsigned Integer property
+         virtual bool Property(LPCTSTR name, Uint32* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read an integral property
-   virtual bool Property(LPCTSTR name, Int64* pvalue) = 0;
+         /// Read an Integer property
+         virtual bool Property(LPCTSTR name, Int64* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint64* pvalue) = 0;
+         /// Read an unsigned Integer property
+         virtual bool Property(LPCTSTR name, Uint64* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read an integral property
-   virtual bool Property(LPCTSTR name, LONG* pvalue) = 0;
+         /// Read an Integer property
+         virtual bool Property(LPCTSTR name, LONG* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, ULONG* pvalue) = 0;
+         /// Read an unsigned Integer property
+         virtual bool Property(LPCTSTR name, ULONG* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Read a bool property
-   virtual bool Property(LPCTSTR name, bool* pvalue) = 0;
+         /// Read a bool property
+         virtual bool Property(LPCTSTR name, bool* pvalue) = 0;
 
-   //------------------------------------------------------------------------
-   // Am I at the end of the "File"?
-   virtual bool Eof()const  = 0;
+         /// Am I at the end of the "File"?
+         virtual bool Eof()const  = 0;
 
-   //------------------------------------------------------------------------
-   // Dump state as a text string into os. This is primarily to be used for
-   // error handling.
-   virtual std::_tstring GetStateDump() const  = 0;
+         /// Dump state as a text string into os. This is primarily to be used for error handling.
+         virtual std::_tstring GetStateDump() const = 0;
 
-   //------------------------------------------------------------------------
-   // Returns the current unit as a text string
-   virtual std::_tstring GetUnit() const = 0;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
+         /// Returns the current unit as a text string
+         virtual std::_tstring GetUnit() const = 0;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_ISTRUCTUREDSAVE_H_

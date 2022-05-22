@@ -197,12 +197,12 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 
 #endif // _DEBUG
 
 #if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 protected:
@@ -279,12 +279,12 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const override;
+   virtual void Dump(WBFL::Debug::LogContext& os) const override;
 
 #endif // _DEBUG
 
 #if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 protected:

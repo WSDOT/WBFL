@@ -321,13 +321,13 @@ IndexType PrecastBeam::GetTopFlangeCount() const
 
 Float64 PrecastBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("PrecastBeam::GetTopFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("PrecastBeam::GetTopFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 PrecastBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("PrecastBeam::GetTopFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("PrecastBeam::GetTopFlangeWidth - invalid flange index"));
    return GetTopWidth();
 }
 
@@ -338,13 +338,13 @@ IndexType PrecastBeam::GetBottomFlangeCount() const
 
 Float64 PrecastBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("PrecastBeam::GetBottomFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("PrecastBeam::GetBottomFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 PrecastBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("PrecastBeam::GetBottomFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("PrecastBeam::GetBottomFlangeWidth - invalid flange index"));
    return GetBottomWidth();
 }
 
@@ -365,13 +365,13 @@ MatingSurfaceIndexType PrecastBeam::GetMatingSurfaceCount() const
 
 Float64 PrecastBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("PrecastBeam::GetMatingSurfaceWidth - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("PrecastBeam::GetMatingSurfaceWidth - index out of range"));
    return GetTopWidth();
 }
 
 Float64 PrecastBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("PrecastBeam::GetMatingSurfaceLocation - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("PrecastBeam::GetMatingSurfaceLocation - index out of range"));
    return 0;
 }
 
@@ -382,7 +382,7 @@ IndexType PrecastBeam::GetWebCount() const
 
 Plane3d PrecastBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("PrecastBeam::GetWebPlane - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("PrecastBeam::GetWebPlane - index out of range"));
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 
@@ -426,26 +426,26 @@ bool PrecastBeam::AssertValid() const
    return __super::AssertValid();
 }
 
-void PrecastBeam::Dump(dbgDumpContext& os) const
+void PrecastBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for PrecastBeam ***")<<endl;
+   os << _T("*** Dump for PrecastBeam ***")<< WBFL::Debug::endl;
    __super::Dump( os );
-   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<<endl;
-   os << _T("  Rotation        =  ")<<m_Rotation<<endl;
-   os << _T("  D1              =  ")<<m_D1 <<endl;
-   os << _T("  D2              =  ")<<m_D2 <<endl;
-   os << _T("  D3              =  ")<<m_D3 <<endl;
-   os << _T("  D4              =  ")<<m_D4 <<endl;
-   os << _T("  D5              =  ")<<m_D5 <<endl;
-   os << _T("  D6              =  ")<<m_D6 <<endl;
-   os << _T("  H               =  ")<<m_H <<endl;
-   os << _T("  W1              =  ")<<m_W1 <<endl;
-   os << _T("  W2              =  ")<<m_W2 <<endl;
-   os << _T("  W3              =  ")<<m_W3 <<endl;
-   os << _T("  W4              =  ")<<m_W4 <<endl;
-   os << _T("  T1              =  ")<<m_T1 <<endl;
-   os << _T("  T2              =  ")<<m_T2 <<endl;
-   os << _T("Polygon rep of beam") << endl;
+   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Rotation        =  ")<<m_Rotation<< WBFL::Debug::endl;
+   os << _T("  D1              =  ")<<m_D1 << WBFL::Debug::endl;
+   os << _T("  D2              =  ")<<m_D2 << WBFL::Debug::endl;
+   os << _T("  D3              =  ")<<m_D3 << WBFL::Debug::endl;
+   os << _T("  D4              =  ")<<m_D4 << WBFL::Debug::endl;
+   os << _T("  D5              =  ")<<m_D5 << WBFL::Debug::endl;
+   os << _T("  D6              =  ")<<m_D6 << WBFL::Debug::endl;
+   os << _T("  H               =  ")<<m_H << WBFL::Debug::endl;
+   os << _T("  W1              =  ")<<m_W1 << WBFL::Debug::endl;
+   os << _T("  W2              =  ")<<m_W2 << WBFL::Debug::endl;
+   os << _T("  W3              =  ")<<m_W3 << WBFL::Debug::endl;
+   os << _T("  W4              =  ")<<m_W4 << WBFL::Debug::endl;
+   os << _T("  T1              =  ")<<m_T1 << WBFL::Debug::endl;
+   os << _T("  T2              =  ")<<m_T2 << WBFL::Debug::endl;
+   os << _T("Polygon rep of beam") << WBFL::Debug::endl;
    
    GetPolygon()->Dump(os);
 }
@@ -534,7 +534,7 @@ void PrecastBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool PrecastBeam::TestMe(dbgLog& rlog)
+bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("PrecastBeam");
 

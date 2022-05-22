@@ -445,7 +445,7 @@ bool CompositeBeam::AssertValid() const
    return m_Section.AssertValid();
 }
 
-void CompositeBeam::Dump(dbgDumpContext& os) const
+void CompositeBeam::Dump(WBFL::Debug::LogContext& os) const
 {
    m_Section.Dump(os);
 }
@@ -455,7 +455,7 @@ void CompositeBeam::Dump(dbgDumpContext& os) const
 #if defined _UNITTEST
 #include <GeomModel/PlateGirder.h>
 #include <MathEx.h>
-bool CompositeBeam::TestMe(dbgLog& rlog)
+bool CompositeBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("CompositeBeam");
 

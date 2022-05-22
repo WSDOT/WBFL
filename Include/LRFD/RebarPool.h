@@ -110,12 +110,12 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
    //------------------------------------------------------------------------
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 
@@ -133,7 +133,7 @@ private:
    typedef std::map<Int32, std::shared_ptr<matRebar> > RebarPool;
    static RebarPool ms_Rebar;
 
-   typedef sysSingletonKillerT<lrfdRebarPool> Killer;
+   typedef WBFL::System::SingletonKiller<lrfdRebarPool> Killer;
    friend Killer;
    static Killer ms_Killer;
 
@@ -250,12 +250,12 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
    //------------------------------------------------------------------------
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 

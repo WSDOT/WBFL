@@ -838,7 +838,7 @@ bool lrfdLldfTypeAEKIJ::AssertValid() const
    return lrfdLiveLoadDistributionFactorBase::AssertValid();
 }
 
-void lrfdLldfTypeAEKIJ::Dump(dbgDumpContext& os) const
+void lrfdLldfTypeAEKIJ::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLiveLoadDistributionFactorBase::Dump( os );
 }
@@ -846,7 +846,7 @@ void lrfdLldfTypeAEKIJ::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdLldfTypeAEKIJ::TestMe(dbgLog& rlog)
+bool lrfdLldfTypeAEKIJ::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeAEKIJ");
 

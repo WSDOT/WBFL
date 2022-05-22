@@ -136,7 +136,7 @@ void Polygon::RemovePoint(IndexType idx)
    }
    else
    {
-      throw std::invalid_argument("Polygon::RemovePoint - invalid index");
+      THROW_GEOMETRY(_T("Polygon::RemovePoint - invalid index"));
    }
 }
 
@@ -154,7 +154,7 @@ Point2d Polygon::GetPoint(IndexType idx) const
    }
    else
    {
-      throw std::invalid_argument("Polygon::GetPoint - invalid index");
+      THROW_GEOMETRY(_T("Polygon::GetPoint - invalid index"));
    }
 }
 
@@ -175,7 +175,7 @@ void Polygon::ReplacePoint(IndexType idx, Float64 x, Float64 y)
    }
    else
    {
-      throw std::invalid_argument("Polygon::ReplacePoint - invalid index");
+      THROW_GEOMETRY(_T("Polygon::ReplacePoint - invalid index"));
    }
 }
 
@@ -444,9 +444,9 @@ bool Polygon::AssertValid() const
    return ShapeImpl::AssertValid();
 }
 
-void Polygon::Dump(dbgDumpContext& os) const
+void Polygon::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for Polygon") << endl;
+   os << _T("Dump for Polygon") << WBFL::Debug::endl;
    ShapeImpl::Dump( os );
 }
 
@@ -995,7 +995,7 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, L
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool Polygon::TestMe(dbgLog& rlog)
+bool Polygon::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Polygon");
 
@@ -1102,7 +1102,7 @@ bool Polygon::TestMe(dbgLog& rlog)
 
 
 #if defined _DEBUG
-   prtri->Dump(rlog.GetDumpCtx());
+   prtri->Dump(rlog.GetLogContext());
 #endif
 
    // Test hook point behavior

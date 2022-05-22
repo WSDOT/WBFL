@@ -66,8 +66,8 @@ public:
    /// Axis scale type
    enum class AxisScale { Linear, Logarithmic, Integral };
 
-   AxisXY(AxisOrientation orientation, sysNumericFormatTool& rFormat);
-   AxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue, sysNumericFormatTool& rFormat);
+   AxisXY(AxisOrientation orientation, WBFL::System::NumericFormatTool& rFormat);
+   AxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue, WBFL::System::NumericFormatTool& rFormat);
    AxisXY(const AxisXY& rOther) = default;
 
    ~AxisXY();
@@ -123,10 +123,10 @@ public:
    LONG GetValueAngle() const;
 
    /// Sets the numeric formatting
-   void SetValueFormat(sysNumericFormatTool& format);
+   void SetValueFormat(WBFL::System::NumericFormatTool& format);
 
    /// Returns the numeric formatting
-   const sysNumericFormatTool* GetValueFormat() const;
+   const WBFL::System::NumericFormatTool* GetValueFormat() const;
 
    /// Set the location of the tic marks along the axis
    void SetTicLocation(AxisXY::TicLocation location);
@@ -214,7 +214,7 @@ private:
    LONG   m_AxisTitleSize;
    LONG   m_AxisSubtitleSize;
    LONG   m_AxisValueSize;
-   sysNumericFormatTool* m_pValueFormat;
+   WBFL::System::NumericFormatTool* m_pValueFormat;
 
    // struct to hold private axis metrics
 
@@ -242,11 +242,11 @@ private:
 
 #if defined _DEBUG
    bool AssertValid() const;
-   void Dump(dbgDumpContext& os) const;
+   void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 };
 

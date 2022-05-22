@@ -261,13 +261,13 @@ IndexType NUBeam::GetTopFlangeCount() const
 
 Float64 NUBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("NUBeam::GetTopFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUBeam::GetTopFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 NUBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("NUBeam::GetTopFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUBeam::GetTopFlangeWidth - invalid flange index"));
    return m_W1;
 }
 
@@ -278,13 +278,13 @@ IndexType NUBeam::GetBottomFlangeCount() const
 
 Float64 NUBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("NUBeam::GetBottomFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUBeam::GetBottomFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 NUBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("NUBeam::GetBottomFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUBeam::GetBottomFlangeWidth - invalid flange index"));
    return GetBottomWidth();
 }
 
@@ -305,13 +305,13 @@ MatingSurfaceIndexType NUBeam::GetMatingSurfaceCount() const
 
 Float64 NUBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("NUBeam::GetMatingSurfaceWidth - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("NUBeam::GetMatingSurfaceWidth - index out of range"));
    return GetTopWidth();
 }
 
 Float64 NUBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("NUBeam::GetMatingSurfaceLocation - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("NUBeam::GetMatingSurfaceLocation - index out of range"));
    return 0;
 }
 
@@ -322,7 +322,7 @@ IndexType NUBeam::GetWebCount() const
 
 Plane3d NUBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("NUBeam::GetWebPlane - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("NUBeam::GetWebPlane - index out of range"));
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 
@@ -379,26 +379,26 @@ bool NUBeam::AssertValid() const
    return ShapeImpl::AssertValid();
 }
 
-void NUBeam::Dump(dbgDumpContext& os) const
+void NUBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for NUBeam ***") <<endl;
+   os << _T("*** Dump for NUBeam ***") << WBFL::Debug::endl;
 //   gmShapeImp::Dump( os );
-//   os << "  Hook Point      = ("<<GetHookPoint()->X()<<", "<<GetHookPoint()->Y()<<")"<<endl;
-//   os << "  Rotation        =  "<<m_Rotation<<endl;
-//   os << "  D1              =  "<<m_D1 <<endl;
-//   os << "  D2              =  "<<m_D2 <<endl;
-//   os << "  D3              =  "<<m_D3 <<endl;
-//   os << "  D4              =  "<<m_D4 <<endl;
-//   os << "  D5              =  "<<m_D5 <<endl;
-//   os << "  D6              =  "<<m_D6 <<endl;
-//   os << "  D7              =  "<<m_D7 <<endl;
-//   os << "  W1              =  "<<m_W1 <<endl;
-//   os << "  W2              =  "<<m_W2 <<endl;
-//   os << "  W3              =  "<<m_W3 <<endl;
-//   os << "  W4              =  "<<m_W4 <<endl;
-//   os << "  T1              =  "<<m_T1 <<endl;
-//   os << "  T2              =  "<<m_T2 <<endl;
-//   os << "Polygon rep of beam" << endl;
+//   os << "  Hook Point      = ("<<GetHookPoint()->X()<<", "<<GetHookPoint()->Y()<<")"<< WBFL::Debug::endl;
+//   os << "  Rotation        =  "<<m_Rotation<< WBFL::Debug::endl;
+//   os << "  D1              =  "<<m_D1 << WBFL::Debug::endl;
+//   os << "  D2              =  "<<m_D2 << WBFL::Debug::endl;
+//   os << "  D3              =  "<<m_D3 << WBFL::Debug::endl;
+//   os << "  D4              =  "<<m_D4 << WBFL::Debug::endl;
+//   os << "  D5              =  "<<m_D5 << WBFL::Debug::endl;
+//   os << "  D6              =  "<<m_D6 << WBFL::Debug::endl;
+//   os << "  D7              =  "<<m_D7 << WBFL::Debug::endl;
+//   os << "  W1              =  "<<m_W1 << WBFL::Debug::endl;
+//   os << "  W2              =  "<<m_W2 << WBFL::Debug::endl;
+//   os << "  W3              =  "<<m_W3 << WBFL::Debug::endl;
+//   os << "  W4              =  "<<m_W4 << WBFL::Debug::endl;
+//   os << "  T1              =  "<<m_T1 << WBFL::Debug::endl;
+//   os << "  T2              =  "<<m_T2 << WBFL::Debug::endl;
+//   os << "Polygon rep of beam" << WBFL::Debug::endl;
 //   m_PolyImp.Dump( os );
 }
 #endif // _DEBUG
@@ -516,7 +516,7 @@ void NUBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool NUBeam::TestMe(dbgLog& rlog)
+bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("NUBeam");
 
@@ -561,7 +561,7 @@ bool NUBeam::TestMe(dbgLog& rlog)
    TRY_TESTME ( IsEqual(nu4200.GetR4(), 50.)) ;
 
 #ifdef _DEBUG
-   nu4200.Dump(rlog.GetDumpCtx());
+   nu4200.Dump(rlog.GetLogContext());
 #endif 
 
    NUBeam beam;

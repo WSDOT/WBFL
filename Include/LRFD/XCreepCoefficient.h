@@ -60,7 +60,7 @@ LOG
    rab : 03.16.1999 : Created file
 *****************************************************************************/
 
-class LRFDCLASS lrfdXCreepCoefficient : public sysXBase
+class LRFDCLASS lrfdXCreepCoefficient : public WBFL::System::XBase
 {
 public:
    // GROUP: ENUMERATION
@@ -76,7 +76,7 @@ public:
 
    //------------------------------------------------------------------------
    // Copy constructor
-   lrfdXCreepCoefficient(const lrfdXCreepCoefficient& rOther);
+   lrfdXCreepCoefficient(const lrfdXCreepCoefficient& rOther) = default;
 
    //------------------------------------------------------------------------
    // Destructor
@@ -85,12 +85,12 @@ public:
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Assignment operator
-   lrfdXCreepCoefficient& operator = (const lrfdXCreepCoefficient& rOther);
+   lrfdXCreepCoefficient& operator = (const lrfdXCreepCoefficient& rOther) = default;
 
    // GROUP: OPERATIONS
    virtual void Throw() const override;
-   virtual Int32 GetReason() const override;
-   Reason GetReasonCode() const;
+   virtual Int32 GetReason() const noexcept override;
+   Reason GetReasonCode() const noexcept;
 
    // GROUP: ACCESS
 
@@ -104,22 +104,9 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdXCreepCoefficient& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdXCreepCoefficient& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS

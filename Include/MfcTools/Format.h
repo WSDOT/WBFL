@@ -37,7 +37,7 @@ inline CString FormatDimension(Float64 value,const T& indirectMeasure,bool bIncl
    {
       value = 0.0;
    }
-   sysNumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
+   WBFL::System::NumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
    std::_tstring str = format_tool.AsString( value );
    CString strDimension;
    if ( bIncludeUnitTag )

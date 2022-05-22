@@ -84,16 +84,16 @@ bool IndirectMeasure::AssertValid() const
 
 // Template helper function for Dump
 template <class T>
-void dump_it(dbgDumpContext& os,LPCTSTR label,const T& unit)
+void dump_it(WBFL::Debug::LogContext& os,LPCTSTR label,const T& unit)
 {
-   os << label << endl;
-   os << _T('\t') << _T("Unit of Measure : ") << unit.UnitOfMeasure.UnitTag() << endl;
-   os << _T('\t') << _T("Zeroness        : ") << unit.Tol            << endl;
+   os << label << WBFL::Debug::endl;
+   os << _T('\t') << _T("Unit of Measure : ") << unit.UnitOfMeasure.UnitTag() << WBFL::Debug::endl;
+   os << _T('\t') << _T("Zeroness        : ") << unit.Tol            << WBFL::Debug::endl;
 }
 
-void IndirectMeasure::Dump(dbgDumpContext& os) const
+void IndirectMeasure::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Name = ") << Name << endl;
+   os << _T("Name = ") << Name << WBFL::Debug::endl;
    dump_it(os,_T("ComponentDim"),    ComponentDim );
    dump_it(os,_T("XSectionDim"),     XSectionDim  );
    dump_it(os,_T("SpanLength"),      SpanLength   );

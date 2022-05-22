@@ -209,8 +209,8 @@ public:
    void AddUnitModeListener(iUnitModeListener* pListener);
    void RemoveUnitModeListener(iUnitModeListener* pListener);
 
-   sysDate GetInstallDate();
-   sysDate GetLastRunDate();
+   WBFL::System::Date GetInstallDate();
+   WBFL::System::Date GetLastRunDate();
    BOOL IsFirstRun();
 
    BOOL IsCommandLineMode() { return m_bCommandLineMode; }
@@ -270,7 +270,7 @@ private:
 
    BOOL m_bCommandLineMode; // set to TRUE if the application is running in command line mode
 
-   sysDate m_LastRunDate;
+   WBFL::System::Date m_LastRunDate;
 
    // Manages legal notice at application start up
 	AcceptanceType ShowLegalNotice(VARIANT_BOOL bGiveChoice = VARIANT_FALSE);

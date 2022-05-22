@@ -87,7 +87,7 @@ bool libLibraryManager::IsDepreciated(CollectionIndexType idx) const
    return pLib->IsDepreciated();
 }
 
-sysTime libLibraryManager::GetTimeStamp() const
+const WBFL::System::Time& libLibraryManager::GetTimeStamp() const
 {
    return m_LastSavedTime;
 }
@@ -243,12 +243,12 @@ std::vector<libEntryUsageRecord> libLibraryManager::GetInUseLibraryEntries() con
    return records;
 }
 
-bool libLibraryManager::SaveMe(sysIStructuredSave* pSave)
+bool libLibraryManager::SaveMe(WBFL::System::IStructuredSave* pSave)
 {
    // not much data for a library manager 
    pSave->BeginUnit(_T("LIBRARY_MANAGER"), 2.0);
 
-   sysTime time; // now
+   WBFL::System::Time time; // now
    pSave->Property(_T("TimeStamp"),time.Seconds());
    for (LibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
@@ -269,7 +269,7 @@ bool libLibraryManager::SaveMe(sysIStructuredSave* pSave)
    return true;
 }
 
-bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
+bool libLibraryManager::LoadMe(WBFL::System::IStructuredLoad* pLoad)
 {
    // load library and its entries
    if (pLoad->BeginUnit(_T("LIBRARY_MANAGER")))
@@ -281,13 +281,13 @@ bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
          if ( 2.0 <= version )
          {
             // beginning with version 2, a time stamp was added
-            ClockTy time;
+            WBFL::System::ClockTy time;
             pLoad->Property(_T("TimeStamp"),&time);
-            m_LastSavedTime = sysTime((ClockTy)time);
+            m_LastSavedTime = WBFL::System::Time((WBFL::System::ClockTy)time);
          }
          else
          {
-            m_LastSavedTime = sysTime(); // now
+            m_LastSavedTime = WBFL::System::Time(); // now
          }
 
          for (LibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
@@ -406,11 +406,11 @@ bool libLibraryManager::AssertValid() const
    return true;
 }
 
-void libLibraryManager::Dump(dbgDumpContext& os) const
+void libLibraryManager::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for libLibraryManager") << endl;
-   os << _T("  Name = ") << m_Name << endl;
-   os << _T("  Dumping ") <<m_Libraries.size()<<_T(" libraries:")<<endl;
+   os << _T("Dump for libLibraryManager") << WBFL::Debug::endl;
+   os << _T("  Name = ") << m_Name << WBFL::Debug::endl;
+   os << _T("  Dumping ") <<m_Libraries.size()<<_T(" libraries:")<< WBFL::Debug::endl;
    for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       (*it)->Dump(os);
@@ -419,7 +419,7 @@ void libLibraryManager::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool libLibraryManager::TestMe(dbgLog& rlog)
+bool libLibraryManager::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("libLibraryManager");
 

@@ -96,8 +96,8 @@ public:
    virtual void GetRotations(Float64* pra,Float64* prb) const override;
    virtual void GetDeflections(Float64* pYa,Float64* pYb) const override;
 
-   virtual sysSectionValue ComputeShear(Float64 x) const override;
-   virtual sysSectionValue ComputeMoment(Float64 x) const override;
+   virtual WBFL::System::SectionValue ComputeShear(Float64 x) const override;
+   virtual WBFL::System::SectionValue ComputeMoment(Float64 x) const override;
    virtual Float64 ComputeRotation(Float64 x) const override;
    virtual Float64 ComputeDeflection(Float64 x) const override;
 
@@ -143,14 +143,14 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
 
    #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Runs a self-diagnostic test.  Returns true if the test passed,
    // otherwise false.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 };
 

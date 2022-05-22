@@ -41,31 +41,10 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 lrfdXRangeOfApplicability::lrfdXRangeOfApplicability(Reason reason,LPCTSTR msg,LPCTSTR file, long line) :
-sysXBase( file, line ),
+   WBFL::System::XBase( file, line ),
 m_Reason( reason ),
 m_Message( msg )
 {
-}
-
-lrfdXRangeOfApplicability::lrfdXRangeOfApplicability(const lrfdXRangeOfApplicability& rOther) :
-sysXBase(rOther)
-{
-   MakeCopy(rOther);
-}
-
-lrfdXRangeOfApplicability::~lrfdXRangeOfApplicability()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdXRangeOfApplicability& lrfdXRangeOfApplicability::operator= (const lrfdXRangeOfApplicability& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
 }
 
 //======================== OPERATIONS =======================================
@@ -73,35 +52,4 @@ void lrfdXRangeOfApplicability::GetErrorMessage(std::_tstring* pMsg) const
 {
    *pMsg = m_Message;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXRangeOfApplicability::MakeCopy(const lrfdXRangeOfApplicability& rOther)
-{
-   m_Reason = rOther.m_Reason;
-   m_Message = rOther.m_Message;
-}
-
-void lrfdXRangeOfApplicability::MakeAssignment(const lrfdXRangeOfApplicability& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 

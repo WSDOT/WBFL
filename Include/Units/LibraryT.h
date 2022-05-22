@@ -34,11 +34,11 @@ namespace WBFL
    {
       /// Template class for an XEntryNotFound exception.
       template <class K, class V>
-      class XEntryNotFoundT : public sysXBase
+      class XEntryNotFoundT : public WBFL::System::XBase
       {
       public:
          XEntryNotFoundT(const K& key,LPCTSTR file, Int16 line) :
-             sysXBase(file,line),
+             WBFL::System::XBase(file,line),
              m_Key( key )
              {
              }
@@ -50,7 +50,7 @@ namespace WBFL
          virtual void Throw() const override
          { throw *static_cast<const XEntryNotFoundT*>(this); }
 
-         virtual Int32 GetReason() const override
+         virtual Int32 GetReason() const noexcept override
          {
             return 0;
          };

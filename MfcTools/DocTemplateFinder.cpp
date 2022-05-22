@@ -305,7 +305,7 @@ void mfcDocTemplateFinder::BuildTabList(TabList& tab_list)
 //======================== DEBUG      =======================================
 
 #if defined _UNITTEST
-bool mfcDocTemplateFinder::TestMe(dbgLog& rlog)
+bool mfcDocTemplateFinder::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mfcDocTemplateFinder");
    // due to lack of a gui testing tool, this one must be tested by hand

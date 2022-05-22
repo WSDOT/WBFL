@@ -38,7 +38,7 @@ rptRcSectionScalar::rptRcSectionScalar()
    Init();
 }
 
-rptRcSectionScalar::rptRcSectionScalar(const sysSectionValue& scalar) :
+rptRcSectionScalar::rptRcSectionScalar(const WBFL::System::SectionValue& scalar) :
 rptReportContent(),
 m_Value( scalar )
 {
@@ -83,17 +83,17 @@ bool rptRcSectionScalar::IsDualValued() const
 
 std::_tstring rptRcSectionScalar::AsString(int idx) const
 {
-   sysNumericFormatTool fmt( m_Format, m_Width, m_Precision );
+   WBFL::System::NumericFormatTool fmt( m_Format, m_Width, m_Precision );
    return fmt.AsString( idx == 0 ? GetLeftValue() : GetRightValue() );
 }
 
-rptReportContent& rptRcSectionScalar::SetValue( const sysSectionValue& value )
+rptReportContent& rptRcSectionScalar::SetValue( const WBFL::System::SectionValue& value )
 {
    m_Value = value;
    return *this;
 }
 
-const sysSectionValue& rptRcSectionScalar::GetValue() const
+const WBFL::System::SectionValue& rptRcSectionScalar::GetValue() const
 {
    return m_Value;
 }
@@ -108,12 +108,12 @@ Float64 rptRcSectionScalar::GetRightValue() const
    return m_Value.Right();
 }
 
-void rptRcSectionScalar::SetFormat(sysNumericFormatTool::Format format)
+void rptRcSectionScalar::SetFormat(WBFL::System::NumericFormatTool::Format format)
 {
    m_Format = format;
 }
 
-sysNumericFormatTool::Format rptRcSectionScalar::GetFormat() const
+WBFL::System::NumericFormatTool::Format rptRcSectionScalar::GetFormat() const
 {
    return m_Format;
 }
@@ -154,7 +154,7 @@ void rptRcSectionScalar::MakeAssignment(const rptRcSectionScalar& rOther)
 
 void rptRcSectionScalar::Init()
 {
-   m_Format    = sysNumericFormatTool::Automatic;
+   m_Format    = WBFL::System::NumericFormatTool::Format::Automatic;
    m_Precision = 0;
    m_Width     = 0;
 }

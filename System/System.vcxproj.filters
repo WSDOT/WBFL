@@ -13,7 +13,7 @@
     <ClCompile Include="Date.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DumpContext.cpp">
+    <ClCompile Include="LogContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EngNotation.cpp">
@@ -22,40 +22,22 @@
     <ClCompile Include="Exception.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FileDumpContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LineParseXml.cpp">
+    <ClCompile Include="FileLogContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MacroTxn.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NextAvailableId.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NumericFormatTool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SectionAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SectionValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StructuredLoadXml.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StructuredLoadXmlPrs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StructuredSaveXml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StructuredSaveXmlPrs.cpp">
@@ -65,15 +47,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tokenizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Transaction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TxnManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TxnTestClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UnitTest.cpp">
@@ -86,6 +59,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XStructuredSave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugWindowLogContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,16 +81,13 @@
     <ClInclude Include="..\Include\System\Date.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\System\DbgBuild.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\System\Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\dllTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\System\DumpContext.h">
+    <ClInclude Include="..\Include\System\LogContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\EngNotation.h">
@@ -123,7 +96,7 @@
     <ClInclude Include="..\Include\System\Exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\System\FileDumpContext.h">
+    <ClInclude Include="..\Include\System\FileLogContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\filestream.h">
@@ -132,34 +105,16 @@
     <ClInclude Include="..\Include\System\Flags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\System\INumericFormatToolBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\System\IPersist.h">
+    <ClInclude Include="..\Include\System\INumericFormatTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\IStructuredLoad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\System\LineParseXml.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\System\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\System\MacroTxn.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\MathEx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\System\NextAvailableId.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\System\NumericFormatTool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\System\SectionAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\SectionValue.h">
@@ -172,12 +127,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\StructuredSaveXml.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\System\StructuredLoadXmlPrs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\System\StructuredSaveXmlPrs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\SubjectT.h">
@@ -196,15 +145,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\tokenizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\System\Transaction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\System\TxnManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TxnTestClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\UnitTest.h">
@@ -235,6 +175,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\System\AutoVariable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\System\DebugWindowLogContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

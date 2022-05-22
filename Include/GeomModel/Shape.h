@@ -130,7 +130,7 @@ public:
    virtual bool AssertValid() const  = 0;
 
    /// Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const  = 0;
+   virtual void Dump(WBFL::Debug::LogContext& os) const  = 0;
 #endif // _DEBUG
 
 //protected:

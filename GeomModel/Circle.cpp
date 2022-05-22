@@ -113,8 +113,7 @@ void Circle::GetParameters(std::shared_ptr<Point2d>* pCenter, Float64* radius) c
 void Circle::ThroughTwoPoints(const Point2d& p1, const Point2d& p2)
 {
    Float64 diameter = p1.Distance(p2);
-   if (IsZero(diameter))
-      throw std::invalid_argument("Circle::ThroughtTwoPoints - points are coincident");
+   if (IsZero(diameter)) THROW_GEOMETRY(_T("Circle::ThroughtTwoPoints - points are coincident"));
 
    m_Radius = diameter / 2;
    SetHookPoint((p1+p2)/2);
@@ -129,8 +128,7 @@ void Circle::ThroughThreePoints(const Point2d& p1, const Point2d& p2, const Poin
    Line2d line2(p2, p3);
 
    // Determine if the lines are colinear
-   if (line1.IsColinear(line2))
-      throw std::invalid_argument("Circle::ThroughThreePoints - lines are colinear.");
+   if (line1.IsColinear(line2)) THROW_GEOMETRY(_T("Circle::ThroughThreePoints - lines are colinear."));
 
    // Create lines that are normal to line1 and line2, passing through the midpoint
    Float64 x1, y1; p1.GetLocation(&x1, &y1);
@@ -301,12 +299,12 @@ bool Circle::AssertValid() const
    return __super::AssertValid();
 }
 
-void Circle::Dump(dbgDumpContext& os) const
+void Circle::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for Circle ***")<<endl;
+   os << _T("*** Dump for Circle ***")<< WBFL::Debug::endl;
    ShapeImpl::Dump( os );
-   os << _T("  Hook Point      = (")<< GetHookPoint()->X()<<_T(", ")<< GetHookPoint()->Y()<<_T(")")<<endl;
-   os << _T("  Radius          =  ")<<m_Radius  <<endl;
+   os << _T("  Hook Point      = (")<< GetHookPoint()->X()<<_T(", ")<< GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Radius          =  ")<<m_Radius  << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -336,7 +334,7 @@ void Circle::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool Circle::TestMe(dbgLog& rlog)
+bool Circle::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Circle");
 
@@ -375,7 +373,7 @@ bool Circle::TestMe(dbgLog& rlog)
    TRY_TESTME (IsEqual(aprops.GetArea(), 5026.55,.1)) 
 
 #if defined _DEBUG
-   rt.Dump(rlog.GetDumpCtx());
+   rt.Dump(rlog.GetLogContext());
 #endif
 
 

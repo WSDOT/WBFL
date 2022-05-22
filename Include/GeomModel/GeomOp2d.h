@@ -207,7 +207,7 @@ namespace WBFL
 
       #if defined _UNITTEST
          /// A self-test function - returns true if passed.
-         static bool TestMe(dbgLog& rlog);
+         static bool TestMe(WBFL::Debug::Log& rlog);
       #endif // _UNITTEST
 
       #if defined _DEBUG
@@ -215,7 +215,7 @@ namespace WBFL
          bool AssertValid() const;
 
          /// Dumps the contents of the class to the given stream.
-         void Dump(dbgDumpContext& dc) const;
+         void Dump(WBFL::Debug::LogContext& dc) const;
       #endif // _DEBUG
       };
    }; // Geometry

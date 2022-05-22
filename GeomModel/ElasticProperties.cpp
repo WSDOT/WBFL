@@ -308,18 +308,18 @@ bool ElasticProperties::AssertValid() const
    return true;
 }
 
-void ElasticProperties::Dump(dbgDumpContext& os) const
+void ElasticProperties::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for ElasticProperties") << endl;
-   os << _T("Start Dump of implementation m_Properties:")<<endl;
+   os << _T("Dump for ElasticProperties") << WBFL::Debug::endl;
+   os << _T("Start Dump of implementation m_Properties:")<< WBFL::Debug::endl;
    m_Properties.Dump(os);
-   os << _T("End Dump of implementation m_Properties:")<<endl;
+   os << _T("End Dump of implementation m_Properties:")<< WBFL::Debug::endl;
 }
 
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool ElasticProperties::TestMe(dbgLog& rlog)
+bool ElasticProperties::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("ElasticProperties"); 
 
@@ -442,7 +442,7 @@ bool ElasticProperties::TestMe(dbgLog& rlog)
 
    // take a dump
 #if defined _DEBUG
-      gsr.Dump(rlog.GetDumpCtx());
+      gsr.Dump(rlog.GetLogContext());
 #endif
 
    TESTME_EPILOG("ElasticProperties");

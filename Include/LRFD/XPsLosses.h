@@ -59,7 +59,7 @@ LOG
    rab : 10.31.1998 : Created file
 *****************************************************************************/
 
-class LRFDCLASS lrfdXPsLosses : public sysXBase
+class LRFDCLASS lrfdXPsLosses : public WBFL::System::XBase
 {
 public:
    // GROUP: ENUMERATION
@@ -82,16 +82,16 @@ public:
 
    //------------------------------------------------------------------------
    // Copy constructor
-   lrfdXPsLosses(const lrfdXPsLosses& rOther);
+   lrfdXPsLosses(const lrfdXPsLosses& rOther) = default;
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXPsLosses() override;
+   virtual ~lrfdXPsLosses() = default;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Assignment operator
-   lrfdXPsLosses& operator = (const lrfdXPsLosses& rOther);
+   lrfdXPsLosses& operator = (const lrfdXPsLosses& rOther) = default;
 
    // GROUP: OPERATIONS
 
@@ -99,10 +99,10 @@ public:
    virtual void Throw() const override;
 
    //------------------------------------------------------------------------
-   virtual Int32 GetReason() const override;
+   virtual Int32 GetReason() const noexcept override;
 
    //------------------------------------------------------------------------
-   Reason GetReasonCode() const;
+   Reason GetReasonCode() const noexcept;
 
    // GROUP: ACCESS
 
@@ -116,22 +116,8 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdXPsLosses& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdXPsLosses& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS

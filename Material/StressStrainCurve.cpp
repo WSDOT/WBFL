@@ -41,14 +41,14 @@ CLASS
 matXStressStrainEvalError::matXStressStrainEvalError(Reason reason,
                                                      LPCTSTR file,
                                                      Int16 line) :
-sysXBase( file, line ),
+   WBFL::System::XBase( file, line ),
 m_Reason( reason )
 {
 }
 
 
 matXStressStrainEvalError::matXStressStrainEvalError(const matXStressStrainEvalError& rOther) :
-sysXBase( rOther )
+   WBFL::System::XBase( rOther )
 {
    m_Reason = rOther.m_Reason;
 }
@@ -62,7 +62,7 @@ matXStressStrainEvalError& matXStressStrainEvalError::operator= (const matXStres
 {
    if( this != &rOther )
    {
-      sysXBase::operator=(rOther);
+      WBFL::System::XBase::operator=(rOther);
       m_Reason          = rOther.m_Reason;
    }
 
@@ -76,12 +76,12 @@ void matXStressStrainEvalError::Throw() const
    throw *static_cast<const matXStressStrainEvalError*>(this);
 }
 
-Int32 matXStressStrainEvalError::GetReason() const
+Int32 matXStressStrainEvalError::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-matXStressStrainEvalError::Reason matXStressStrainEvalError::GetReasonCode() const
+matXStressStrainEvalError::Reason matXStressStrainEvalError::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
@@ -204,20 +204,20 @@ bool matStressStrainCurve::AssertValid() const
    return true;
 }
 
-void matStressStrainCurve::Dump(dbgDumpContext& os) const
+void matStressStrainCurve::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for matStressStrainCurve" << endl;
-   os << "=============================" << endl;
-   os << "Name            : " << m_Name.c_str() << endl;
-   os << "Crushing Strain : " << m_CrushingStrain << endl;
-   os << "Crushing Stress : " << m_CrushingStress << endl;
-   os << "Fracture Strain : " << m_FractureStrain << endl;
-   os << "Fracture Stress : " << m_FractureStress << endl;
+   os << "Dump for matStressStrainCurve" << WBFL::Debug::endl;
+   os << "=============================" << WBFL::Debug::endl;
+   os << "Name            : " << m_Name.c_str() << WBFL::Debug::endl;
+   os << "Crushing Strain : " << m_CrushingStrain << WBFL::Debug::endl;
+   os << "Crushing Stress : " << m_CrushingStress << WBFL::Debug::endl;
+   os << "Fracture Strain : " << m_FractureStrain << WBFL::Debug::endl;
+   os << "Fracture Stress : " << m_FractureStress << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool matStressStrainCurve::TestMe(dbgLog& rlog)
+bool matStressStrainCurve::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matStressStrainCurve");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matStressStrainCurve");

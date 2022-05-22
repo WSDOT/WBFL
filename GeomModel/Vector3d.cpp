@@ -98,7 +98,7 @@ Float64 Vector3d::AngleBetween(const Vector3d& other) const
    Float64 mag2 = other.GetMagnitude();
 
    if (::IsZero(mag1) || ::IsZero(mag2))
-      throw std::invalid_argument("Vector3d::AngleBetween - cannot compute angle between with a zero magnitude vector");
+      THROW_GEOMETRY(_T("Vector3d::AngleBetween - cannot compute angle between with a zero magnitude vector"));
 
    Float64 x = Dot(other) / (mag1 * mag2);
 
@@ -114,7 +114,7 @@ Float64 Vector3d::AngleBetween(const Vector3d& other) const
 Float64 Vector3d::Projection(const Vector3d& other) const
 {
    if (::IsZero(GetMagnitude()) || ::IsZero(other.GetMagnitude()))
-      throw std::invalid_argument("Vector3d::Projection - cannot project onto a zero magnitude vector");
+      THROW_GEOMETRY(_T("Vector3d::Projection - cannot project onto a zero magnitude vector"));
 
    return Dot(other) / other.GetMagnitude();
 }
@@ -166,7 +166,7 @@ Vector3d& Vector3d::Normalize()
 {
    Float64 mag = GetMagnitude();
    if (::IsZero(mag))
-      throw std::invalid_argument("Vector3d::Normalize - cannot normalize a zero length vector");
+      THROW_GEOMETRY(_T("Vector3d::Normalize - cannot normalize a zero length vector"));
 
    m_X /= mag;
    m_Y /= mag;
@@ -213,7 +213,7 @@ Vector3d& Vector3d::SetSize(const Size3d& size)
 Vector3d& Vector3d::SetMagnitude(Float64 magnitude)
 {
    if (magnitude < 0)
-      throw std::invalid_argument("Vector3d::SetMagnitude - invalid magnitude");
+      THROW_GEOMETRY(_T("Vector3d::SetMagnitude - invalid magnitude"));
 
    Normalize();
    m_X *= magnitude;
@@ -315,10 +315,10 @@ bool Vector3d::AssertValid() const
    return true;
 }
 
-void Vector3d::Dump(dbgDumpContext& os) const
+void Vector3d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for Vector3d" << endl;
-   os << "  m_X = "<<m_X<<", m_Y = "<<m_Y << ", m_Z = " << m_Z <<endl;
+   os << "Dump for Vector3d" << WBFL::Debug::endl;
+   os << "  m_X = "<<m_X<<", m_Y = "<<m_Y << ", m_Z = " << m_Z << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -333,7 +333,7 @@ Vector3d WBFL::Geometry::operator-(const Vector3d& lhs, const Vector3d& rhs)
 }
 
 #if defined _UNITTEST
-bool Vector3d::TestMe(dbgLog& rlog)
+bool Vector3d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Vector3d");
 

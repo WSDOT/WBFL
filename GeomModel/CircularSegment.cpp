@@ -87,8 +87,7 @@ Point2d CircularSegment::GetCenter() const
 
 void CircularSegment::SetRadius(Float64 r)
 {
-   if (r < 0)
-      throw std::invalid_argument("CircularSegment::SetRadius - invalid radius");
+   if (r < 0) THROW_GEOMETRY(_T("CircularSegment::SetRadius - invalid radius"));
 
    Point2d center = GetCenter();
 
@@ -110,8 +109,7 @@ Float64 CircularSegment::GetRadius() const
 
 void CircularSegment::SetMidOrdinate(Float64 mo)
 {
-   if (!InRange(0.0, mo, 2*m_Radius))
-      throw std::invalid_argument("CircularSegment::SetMidOrdinate - midordinte cannot be greater than twice the radius");
+   if (!InRange(0.0, mo, 2*m_Radius)) THROW_GEOMETRY(_T("CircularSegment::SetMidOrdinate - midordinte cannot be greater than twice the radius"));
 
    Point2d center = GetCenter();
 
@@ -573,14 +571,14 @@ bool CircularSegment::AssertValid() const
    return ShapeImpl::AssertValid();
 }
 
-void CircularSegment::Dump(dbgDumpContext& os) const
+void CircularSegment::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for CircularSegment ***")<<endl;
+   os << _T("*** Dump for CircularSegment ***")<< WBFL::Debug::endl;
    ShapeImpl::Dump( os );
-   os << _T("  Hook Point      = (") << GetHookPoint()->X()<<_T(", ")<< GetHookPoint()->Y()<<_T(")")<<endl;
-   os << _T("  Center Point    = (") << GetCenter().X() << _T(", ") << GetCenter().Y() <<_T(")") << endl;
-   os << _T("  Radius          = ") << m_Radius      << endl;
-   os << _T("  Mid-ordinate    = ") << m_MidOrdinate << endl;
+   os << _T("  Hook Point      = (") << GetHookPoint()->X()<<_T(", ")<< GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Center Point    = (") << GetCenter().X() << _T(", ") << GetCenter().Y() <<_T(")") << WBFL::Debug::endl;
+   os << _T("  Radius          = ") << m_Radius      << WBFL::Debug::endl;
+   os << _T("  Mid-ordinate    = ") << m_MidOrdinate << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -641,7 +639,7 @@ void CircularSegment::Copy(const CircularSegment& other)
 #if defined _UNITTEST
 #include <GeomModel/Polygon.h>
 #include <GeomModel/UnitTest.h>
-bool CircularSegment::TestMe(dbgLog& rlog)
+bool CircularSegment::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("CircularSegment");
 

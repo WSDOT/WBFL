@@ -97,8 +97,8 @@ Float64 Vector2d::AngleBetween(const Vector2d& other) const
    Float64 mag1 = GetMagnitude();
    Float64 mag2 = other.GetMagnitude();
 
-   if (::IsZero(mag1) || ::IsZero(mag2))
-      throw std::invalid_argument("Vector2d::AngleBetween - cannot compute angle between with a zero magnitude vector");
+   if (::IsZero(mag1) || ::IsZero(mag2)) 
+      THROW_GEOMETRY(_T("Vector2d::AngleBetween - cannot compute angle between with a zero magnitude vector"));
 
    Float64 x = Dot(other)/(mag1*mag2);
    if ( ::IsZero(x-1.0) )
@@ -112,7 +112,7 @@ Float64 Vector2d::AngleBetween(const Vector2d& other) const
 Float64 Vector2d::Projection(const Vector2d& other) const
 {
    if (::IsZero(GetMagnitude()) || ::IsZero(other.GetMagnitude()))
-      throw std::invalid_argument("Vector2d::Projection - cannot project onto a zero magnitude vector");
+      THROW_GEOMETRY(_T("Vector2d::Projection - cannot project onto a zero magnitude vector"));
 
    return Dot(other) / other.GetMagnitude();
 }
@@ -159,7 +159,7 @@ Vector2d& Vector2d::Normalize()
 {
    Float64 mag = GetMagnitude();
    if (::IsZero(mag))
-      throw std::invalid_argument("Vector2d::Normalize - cannot normalize a zero length vector");
+      THROW_GEOMETRY(_T("Vector2d::Normalize - cannot normalize a zero length vector"));
 
    m_X /= mag;
    m_Y /= mag;
@@ -247,7 +247,7 @@ Vector2d& Vector2d::SetSize(Float64 x,Float64 y)
 Vector2d& Vector2d::SetMagnitude(Float64 magnitude)
 {
    if (magnitude < 0)
-      throw std::invalid_argument("Vector2d::SetMagnitude - invalid magnitude");
+      THROW_GEOMETRY(_T("Vector2d::SetMagnitude - invalid magnitude"));
 
    Normalize();
    m_X *= magnitude;
@@ -337,10 +337,10 @@ bool Vector2d::AssertValid() const
    return true;
 }
 
-void Vector2d::Dump(dbgDumpContext& os) const
+void Vector2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for Vector2d") << endl;
-   os << _T("  m_X = ")<<m_X<<_T(", m_Y = ")<<m_Y<<endl;
+   os << _T("Dump for Vector2d") << WBFL::Debug::endl;
+   os << _T("  m_X = ")<<m_X<<_T(", m_Y = ")<<m_Y<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -355,7 +355,7 @@ Vector2d WBFL::Geometry::operator-(const Vector2d& lhs, const Vector2d& rhs)
 }
 
 #if defined _UNITTEST
-bool Vector2d::TestMe(dbgLog& rlog)
+bool Vector2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Vector2d");
 
@@ -735,7 +735,7 @@ bool Vector2d::TestMe(dbgLog& rlog)
 
 
 #if defined _DEBUG
-   testvec1.Dump(rlog.GetDumpCtx());
+   testvec1.Dump(rlog.GetLogContext());
 #endif
    TESTME_EPILOG("Vector2d");
 }

@@ -43,30 +43,9 @@ CLASS
 lrfdXCodeVersion::lrfdXCodeVersion(Reason reason,
                                    LPCTSTR file,
                                    Int16 line) :
-sysXBase(file,line),
+   WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
-}
-
-lrfdXCodeVersion::lrfdXCodeVersion(const lrfdXCodeVersion& rOther) :
-sysXBase(rOther)
-{
-   MakeCopy(rOther);
-}
-
-lrfdXCodeVersion::~lrfdXCodeVersion()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdXCodeVersion& lrfdXCodeVersion::operator= (const lrfdXCodeVersion& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
 }
 
 //======================== OPERATIONS =======================================
@@ -75,12 +54,12 @@ void lrfdXCodeVersion::Throw() const
    throw *static_cast<const lrfdXCodeVersion*>(this);
 }
 
-Int32 lrfdXCodeVersion::GetReason() const
+Int32 lrfdXCodeVersion::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-lrfdXCodeVersion::Reason lrfdXCodeVersion::GetReasonCode() const
+lrfdXCodeVersion::Reason lrfdXCodeVersion::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
@@ -94,36 +73,7 @@ bool lrfdXCodeVersion::AssertValid() const
    return true;
 }
 
-void lrfdXCodeVersion::Dump(dbgDumpContext& os) const
+void lrfdXCodeVersion::Dump(WBFL::Debug::LogContext& os) const
 {
 }
 #endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXCodeVersion::MakeCopy(const lrfdXCodeVersion& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void lrfdXCodeVersion::MakeAssignment(const lrfdXCodeVersion& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

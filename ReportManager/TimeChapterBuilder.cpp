@@ -73,7 +73,7 @@ rptChapter* CTimeChapterBuilder::Build(CReportSpecification* pRptSpec,Uint16 lev
    return pChapter;
 }
 
-rptChapter* CTimeChapterBuilder::Build(sysTime& start,sysTime& end) const
+rptChapter* CTimeChapterBuilder::Build(WBFL::System::Time& start, WBFL::System::Time& end) const
 {
    Uint32 elapsedTime = end.Seconds() - start.Seconds();
    rptChapter* pChapter = new rptChapter(GetName());

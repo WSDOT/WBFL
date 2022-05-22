@@ -85,14 +85,14 @@ void rkPPIntermediateCouple::GetDeflections(Float64* pYa,Float64* pYb) const
    *pYb = ComputeDeflection(L);
 }
 
-sysSectionValue rkPPIntermediateCouple::ComputeShear(Float64 /*x*/) const
+WBFL::System::SectionValue rkPPIntermediateCouple::ComputeShear(Float64 /*x*/) const
 {
    return M/L;
 }
 
-sysSectionValue rkPPIntermediateCouple::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue rkPPIntermediateCouple::ComputeMoment(Float64 x) const
 {
-   sysSectionValue m;
+   WBFL::System::SectionValue m;
 
    // Compute moments left and right of a
    Float64 left  = M*x/L;
@@ -167,18 +167,18 @@ bool rkPPIntermediateCouple::AssertValid() const
    return rkRoarkBeam::AssertValid();
 }
 
-void rkPPIntermediateCouple::Dump(dbgDumpContext& os) const
+void rkPPIntermediateCouple::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkPPIntermediateCouple" << endl;
-   os << " a = " << a << endl;
-   os << " M = " << M << endl;
+   os << "Dump for rkPPIntermediateCouple" << WBFL::Debug::endl;
+   os << " a = " << a << WBFL::Debug::endl;
+   os << " M = " << M << WBFL::Debug::endl;
    rkRoarkBeam::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include "Private.h"
-bool rkPPIntermediateCouple::TestMe(dbgLog& rlog)
+bool rkPPIntermediateCouple::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("rkPPIntermediateCouple");
 

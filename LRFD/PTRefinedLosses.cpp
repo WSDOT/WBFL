@@ -374,7 +374,7 @@ Float64 pt_relaxation_after_transfer(matPsStrand::Type type,Float64 fr,Float64 e
 #if defined _UNITTEST
 #include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
-bool lrfdPTRefinedLosses::TestMe(dbgLog& rlog)
+bool lrfdPTRefinedLosses::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdPTRefinedLosses");
 //

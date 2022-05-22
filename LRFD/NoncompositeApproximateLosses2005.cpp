@@ -406,7 +406,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
 #if defined _UNITTEST
 #include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
-bool lrfdNoncompositeApproximateLosses2005::TestMe(dbgLog& rlog)
+bool lrfdNoncompositeApproximateLosses2005::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdNoncompositeApproximateLosses2005");
 

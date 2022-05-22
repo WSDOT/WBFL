@@ -22,12 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysDate
-****************************************************************************/
-
 #include <System\Date.h>
 #include <time.h>
 #include <string>
@@ -38,6 +32,8 @@ CLASS
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+using namespace WBFL::System;
 
 /****************************************************************
  *                                                              *
@@ -65,16 +61,10 @@ static LPCTSTR UCWeekDayNames[7] =
 static size_t 
 FindMatch( LPCTSTR str, LPCTSTR* candidates, size_t icand );
 
-/***************************************************************************/
-
-//      constructors
-
-/***************************************************************************/
-
 //
-// Construct a sysDate for today's date.
+// Construct a Date for today's date.
 //
-sysDate::sysDate()
+Date::Date()
 {
     time_t clk = time(0);
     struct tm now;
@@ -83,12 +73,12 @@ sysDate::sysDate()
 }
 
 //
-// Construct a sysDate with a given day of the year and a given year.  The
+// Construct a Date with a given day of the year and a given year.  The
 // base date for this computation is Dec. 31 of the previous year.  If
-// year == 0, Construct a sysDate with Jan. 1, 1901 as the "day zero".
-// i.e., sysDate(-1) = Dec. 31, 1900 and sysDate(1) = Jan. 2, 1901.
+// year == 0, Construct a Date with Jan. 1, 1901 as the "day zero".
+// i.e., Date(-1) = Dec. 31, 1900 and Date(1) = Jan. 2, 1901.
 //
-sysDate::sysDate(DayTy day, YearTy year)
+Date::Date(DayTy day, YearTy year)
 {
    if( year )
       Julnum = Jday( 12, 31, year-1 ) + (JulTy)day;
@@ -97,17 +87,17 @@ sysDate::sysDate(DayTy day, YearTy year)
 }
 
 //
-//   Construct a sysDate for the given day, monthName, and year.
+//   Construct a Date for the given day, monthName, and year.
 //
-sysDate::sysDate( DayTy day, LPCTSTR monthName, YearTy year )
+Date::Date( DayTy day, LPCTSTR monthName, YearTy year )
 {
    Julnum = Jday( IndexOfMonth(monthName), day, year );
 }
 
 //
-//   Construct a sysDate for the given day, month, and year.
+//   Construct a Date for the given day, month, and year.
 //
-sysDate::sysDate( DayTy day, MonthTy month, YearTy year )
+Date::Date( DayTy day, MonthTy month, YearTy year )
 {
    Julnum = Jday( month, day, year );
 }
@@ -123,7 +113,7 @@ sysDate::sysDate( DayTy day, MonthTy month, YearTy year )
 // Monday == 1, ... , Sunday == 7
 // Return 0 for weekday number out of range
 //
-LPCTSTR sysDate::DayName( DayTy weekDayNumber )
+LPCTSTR Date::DayName( DayTy weekDayNumber )
 {
     return AssertWeekDayNumber(weekDayNumber) ? WeekDayNames[weekDayNumber-1] : 0;
 }
@@ -132,7 +122,7 @@ LPCTSTR sysDate::DayName( DayTy weekDayNumber )
 // Return the number, 1-7, of the day of the week named nameOfDay.
 // Return 0 if name doesn't match.
 //
-DayTy sysDate::DayOfWeek( LPCTSTR nameOfDay )
+DayTy Date::DayOfWeek( LPCTSTR nameOfDay )
 {
     return (DayTy)(FindMatch( nameOfDay, UCWeekDayNames, 7 )+1);
 }
@@ -140,7 +130,7 @@ DayTy sysDate::DayOfWeek( LPCTSTR nameOfDay )
 //
 // Is a day (1-31) within a given month?
 //
-Int16 sysDate::DayWithinMonth( MonthTy month, DayTy day, YearTy year )
+Int16 Date::DayWithinMonth( MonthTy month, DayTy day, YearTy year )
 {
    if( day <= 0 || !AssertIndexOfMonth(month) ) 
         return 0;
@@ -153,7 +143,7 @@ Int16 sysDate::DayWithinMonth( MonthTy month, DayTy day, YearTy year )
 //
 // How many days are in the given YearTy year?
 //
-DayTy sysDate::DaysInYear( YearTy year )
+DayTy Date::DaysInYear( YearTy year )
 {
    return IsLeapYear(year) ? 366 : 365;
 }
@@ -162,7 +152,7 @@ DayTy sysDate::DaysInYear( YearTy year )
 // Returns the number, 1-12, of the month named nameOfMonth.
 // Return 0 for no match.
 //
-MonthTy sysDate::IndexOfMonth( LPCTSTR nameOfMonth )
+MonthTy Date::IndexOfMonth( LPCTSTR nameOfMonth )
 {
     return (MonthTy)(FindMatch( nameOfMonth, UCMonthNames, 12 )+1);
 }
@@ -174,7 +164,7 @@ MonthTy sysDate::IndexOfMonth( LPCTSTR nameOfMonth )
 // This function not valid before that.
 // Returns 0 if the date is invalid.
 //
-JulTy sysDate::Jday( MonthTy m, DayTy d, YearTy y )
+JulTy Date::Jday( MonthTy m, DayTy d, YearTy y )
 {
    Uint32 c, ya;
 
@@ -206,7 +196,7 @@ JulTy sysDate::Jday( MonthTy m, DayTy d, YearTy y )
 // confirm it.  The rule is, century years divisible by 900 will
 // be leap years only if the remainder is 200 or 600. This
 // information comes from http://www.sprinc.com/marktime.htm
-bool sysDate::IsLeapYear( YearTy year )
+bool Date::IsLeapYear( YearTy year )
 {
    return (year&3) == 0 && year%100 != 0 || year % 400 == 0;
 }
@@ -215,7 +205,7 @@ bool sysDate::IsLeapYear( YearTy year )
 // Returns a string name for the month number.
 // Return 0 if invalid month number.
 //
-LPCTSTR sysDate::MonthName( MonthTy monthNumber )
+LPCTSTR Date::MonthName( MonthTy monthNumber )
 {
     return AssertIndexOfMonth(monthNumber) ? MonthNames[monthNumber-1] : 0;
 }
@@ -244,7 +234,7 @@ static size_t FindMatch( LPCTSTR str, LPCTSTR* candidates, size_t icand )
 //
 // Compare function:
 //
-Int16 sysDate::CompareTo( const sysDate  &d ) const
+Int16 Date::CompareTo( const Date  &d ) const
 {
     if( Julnum < d.Julnum )
         return -1;
@@ -257,15 +247,15 @@ Int16 sysDate::CompareTo( const sysDate  &d ) const
 //
 //
 //
-DayTy sysDate::Day() const
+DayTy Date::Day() const
 {
     return DayTy(Julnum - Jday( 12, 31, Year()-1 ));
 }
 
 //
-// Returns the day of the month of this sysDate.
+// Returns the day of the month of this Date.
 //
-DayTy sysDate::DayOfMonth() const
+DayTy Date::DayOfMonth() const
 {
     MonthTy m; DayTy d; YearTy y;
     Mdy( m, d, y );
@@ -276,7 +266,7 @@ DayTy sysDate::DayOfMonth() const
 // Return the number of the first day of a given month
 // Return 0 if "month" is outside of the range 1 through 12, inclusive.
 //
-DayTy sysDate::FirstDayOfMonth( MonthTy month ) const
+DayTy Date::FirstDayOfMonth( MonthTy month ) const
 {
     if ( !AssertIndexOfMonth(month) )
         return 0;
@@ -286,7 +276,7 @@ DayTy sysDate::FirstDayOfMonth( MonthTy month ) const
     return firstDay;
 }
 
-Uint32 sysDate::Hash() const
+Uint32 Date::Hash() const
 {
     return (Uint32)Julnum;
 }
@@ -297,7 +287,7 @@ Uint32 sysDate::Hash() const
 // (Aug. 1963), p. 444.  Gregorian calendar started on Sep. 14, 1752.
 // This function not valid before that.  
 //
-void  sysDate::Mdy( MonthTy  & m, DayTy  & D, YearTy  & y ) const
+void  Date::Mdy( MonthTy  & m, DayTy  & D, YearTy  & y ) const
 {
     Uint32 d;
     JulTy j = Julnum - 1721119L;
@@ -325,7 +315,7 @@ void  sysDate::Mdy( MonthTy  & m, DayTy  & D, YearTy  & y ) const
 //
 //
 //
-sysDate sysDate::Max( const sysDate  & dt ) const
+Date Date::Max( const Date  & dt ) const
 {
     return dt.Julnum > Julnum ? dt : *this;
 }
@@ -333,15 +323,15 @@ sysDate sysDate::Max( const sysDate  & dt ) const
 //
 //
 //
-sysDate sysDate::Min( const sysDate  & dt ) const 
+Date Date::Min( const Date  & dt ) const 
 {
     return dt.Julnum < Julnum ? dt : *this;
 }
 
 //
-// Returns the month of this sysDate.
+// Returns the month of this Date.
 //
-MonthTy sysDate::Month() const
+MonthTy Date::Month() const
 {
     MonthTy m; DayTy d; YearTy y;
     Mdy(m, d, y);
@@ -351,7 +341,7 @@ MonthTy sysDate::Month() const
 //
 //
 //
-sysDate sysDate::Previous( LPCTSTR dayName) const
+Date Date::Previous( LPCTSTR dayName) const
 {
     return Previous( DayOfWeek(dayName) );
 }
@@ -359,7 +349,7 @@ sysDate sysDate::Previous( LPCTSTR dayName) const
 //
 //
 //
-sysDate sysDate::Previous( DayTy desiredDayOfWeek ) const
+Date Date::Previous( DayTy desiredDayOfWeek ) const
 {
     //    Renumber the desired and current day of week to start at 0 (Monday)
     //    and end at 6 (Sunday).
@@ -377,18 +367,18 @@ sysDate sysDate::Previous( DayTy desiredDayOfWeek ) const
     else
         thisDayOfWeek -= desiredDayOfWeek;
     j -= thisDayOfWeek; // Adjust j to set it at the desired day of week.
-    return  sysDate(j);
+    return  Date(j);
 }
 
-DayTy sysDate::WeekDay() const
+DayTy Date::WeekDay() const
 {
     return DayTy(((((Julnum+1)%7)+6)%7)+1);
 }
 
 //
-// Returns the year of this sysDate.
+// Returns the year of this Date.
 //
-YearTy sysDate::Year() const
+YearTy Date::Year() const
 {
     MonthTy m; DayTy d; YearTy y;
     Mdy(m, d, y);
@@ -398,12 +388,12 @@ YearTy sysDate::Year() const
 
 //
 //
-sysDate::HowToPrint sysDate::PrintOption = sysDate::Normal;
+Date::PrintFormat Date::DatePrintFormat = Date::PrintFormat::Normal;
 
 //
 //
 //
-std::_tstring sysDate::AsString() const
+std::_tstring Date::AsString() const
 {
    std::_tostringstream os;
    os << (*this) << std::ends;
@@ -413,11 +403,15 @@ std::_tstring sysDate::AsString() const
 //
 //
 //
-sysDate::HowToPrint sysDate::SetPrintOption( HowToPrint h )
+Date::PrintFormat Date::SetPrintFormat( Date::PrintFormat h )
 {
-    HowToPrint oldoption = PrintOption;
-    PrintOption = h;
-    return oldoption;
+   std::swap(Date::DatePrintFormat, h);
+   return h;
+}
+
+Date::PrintFormat Date::GetPrintFormat()
+{
+   return Date::DatePrintFormat;
 }
 
 //
@@ -465,7 +459,7 @@ static LPCTSTR  ParseMonth( std::_tistream  & s )
 //        e.g.: 10-MAR-86,  3/10/86, or March 10, 1986.  
 //  Any non-alphanumeric character may be used as a delimiter.
 //
-void sysDate::ParseFrom( std::_tistream  & s )
+void Date::ParseFrom( std::_tistream  & s )
 {
     Uint16 d(0),m(0),y(0);
     Julnum = 0;                 // Assume failure
@@ -506,18 +500,18 @@ void sysDate::ParseFrom( std::_tistream  & s )
 //
 //
 //
-SYSCLASS std::_tostream  &  operator << ( std::_tostream  & s, const sysDate  & d )
+SYSCLASS std::_tostream&  WBFL::System::operator<<( std::_tostream  & s, const Date  & d )
 {
     std::_tostringstream out;
   
-    switch ( sysDate::PrintOption )
+    switch ( Date::GetPrintFormat() )
         {
-        case sysDate::Normal:
+    case Date::PrintFormat::Normal:
             out << d.NameOfMonth() << _T(" ") 
                 << d.DayOfMonth()  << _T(", ")
                 << d.Year() << std::ends;
             break;
-        case sysDate::Terse:
+        case Date::PrintFormat::Terse:
            {
               TCHAR buf[50];
             _stprintf_s(buf,_T("%2u-%.3s-%.2u"),
@@ -528,17 +522,17 @@ SYSCLASS std::_tostream  &  operator << ( std::_tostream  & s, const sysDate  & 
             out << buf;
            }
             break;
-        case sysDate::Numbers:
+        case Date::PrintFormat::Numbers:
             out << d.Month() << _T("/")
                 << d.DayOfMonth() << _T("/")
                 << (d.Year() % 100) << std::ends;
             break;
-        case sysDate::EuropeanNumbers:
+        case Date::PrintFormat::EuropeanNumbers:
             out << d.DayOfMonth()   << _T("/")
                 << d.Month() << _T("/")
                 << (d.Year() % 100) << std::ends;
             break;
-        case sysDate::European:
+        case Date::PrintFormat::European:
             out << d.DayOfMonth() << _T(" ")
                 << d.NameOfMonth() << _T(" ")
                 << d.Year() << std::ends;
@@ -555,33 +549,33 @@ SYSCLASS std::_tostream  &  operator << ( std::_tostream  & s, const sysDate  & 
 
 #if defined _UNITTEST
 #include <iostream>
-bool sysDate::TestMe(dbgLog& rlog)
+bool Date::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("sysDate");
+   TESTME_PROLOGUE("Date");
 
    // Check date integrity
-   sysDate d1(01,01,2000);
+   Date d1(01,01,2000);
    TRY_TESTME_EX ( std::_tstring( d1.NameOfDay() ) == _T("Saturday"),_T("Test day name") );
 
-   sysDate d2(02,01,2000);
+   Date d2(02,01,2000);
    TRY_TESTME ( std::_tstring( d2.NameOfDay() ) == _T("Sunday") );
 
-   sysDate d3(29,02,2000);
+   Date d3(29,02,2000);
    TRY_TESTME ( std::_tstring( d3.NameOfDay() ) == _T("Tuesday") );
 
-   sysDate d4(01,03,2000);
+   Date d4(01,03,2000);
    TRY_TESTME ( std::_tstring( d4.NameOfDay() ) == _T("Wednesday") );
 
    // Check date roll over
-   sysDate d5(31,12,1998);
+   Date d5(31,12,1998);
    ++d5;
    TRY_TESTME ( d5.DayOfMonth() == 1 && d5.Month() == 1 && d5.Year() == 1999 );
 
-   sysDate d6(31,12,1999);
+   Date d6(31,12,1999);
    ++d6;
    TRY_TESTME ( d6.DayOfMonth() == 1 && d6.Month() == 1 && d6.Year() == 2000 )
 
-   sysDate d7(28,02,2000);
+   Date d7(28,02,2000);
    ++d7;
    TRY_TESTME ( d7.DayOfMonth() == 29 && d7.Month() == 2 && d7.Year() == 2000 )
 
@@ -589,10 +583,10 @@ bool sysDate::TestMe(dbgLog& rlog)
    TRY_TESTME ( d7.DayOfMonth() == 1 && d7.Month() == 3 && d7.Year() == 2000 )
 
    // Test Leap Years
-   sysDate d8(31,12,2000);
+   Date d8(31,12,2000);
    TRY_TESTME ( d8.IsLeapYear() )
 
-   sysDate d9(31,12,1900);
+   Date d9(31,12,1900);
    TRY_TESTME ( !d9.IsLeapYear() )
 
    // Test Day of Year
@@ -600,7 +594,7 @@ bool sysDate::TestMe(dbgLog& rlog)
 
    TRY_TESTME ( d9.Day() == 365 )
 
-   TESTME_EPILOG("sysDate");
+   TESTME_EPILOG("Date");
 }
 #endif // _UNITTEST
 

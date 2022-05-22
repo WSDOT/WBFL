@@ -43,31 +43,16 @@ CLASS
 lrfdXCreepCoefficient::lrfdXCreepCoefficient(Reason reason,
                                              LPCTSTR file,
                                              Int16 line) :
-sysXBase(file,line),
+   WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-lrfdXCreepCoefficient::lrfdXCreepCoefficient(const lrfdXCreepCoefficient& rOther) :
-sysXBase(rOther)
-{
-   MakeCopy(rOther);
-}
 
 lrfdXCreepCoefficient::~lrfdXCreepCoefficient()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdXCreepCoefficient& lrfdXCreepCoefficient::operator= (const lrfdXCreepCoefficient& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
 
 //======================== OPERATIONS =======================================
 void lrfdXCreepCoefficient::Throw() const
@@ -75,12 +60,12 @@ void lrfdXCreepCoefficient::Throw() const
    throw *static_cast<const lrfdXCreepCoefficient*>(this);
 }
 
-Int32 lrfdXCreepCoefficient::GetReason() const
+Int32 lrfdXCreepCoefficient::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-lrfdXCreepCoefficient::Reason lrfdXCreepCoefficient::GetReasonCode() const
+lrfdXCreepCoefficient::Reason lrfdXCreepCoefficient::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
@@ -94,36 +79,8 @@ bool lrfdXCreepCoefficient::AssertValid() const
    return true;
 }
 
-void lrfdXCreepCoefficient::Dump(dbgDumpContext& os) const
+void lrfdXCreepCoefficient::Dump(WBFL::Debug::LogContext& os) const
 {
 }
 #endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXCreepCoefficient::MakeCopy(const lrfdXCreepCoefficient& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void lrfdXCreepCoefficient::MakeAssignment(const lrfdXCreepCoefficient& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
 

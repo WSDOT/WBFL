@@ -26,6 +26,6 @@
 #define INCLUDED_PRIVATE_H_
 #pragma once
 
-bool Test_Numerical(dbgLog& rlog,const rkRoarkBeam& beam);
+bool Test_Numerical(WBFL::Debug::Log& rlog,const rkRoarkBeam& beam);
 
 #endif // INCLUDED_PRIVATE_H_

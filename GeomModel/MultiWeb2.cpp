@@ -207,8 +207,7 @@ Float64 MultiWeb2::GetC2() const
 void MultiWeb2::SetWebCount(WebIndexType nWebs)
 {
    // minimum of 2 webs required
-   if (nWebs < 2)
-      throw std::invalid_argument("MultiWeb2::SetWebCount - number of webs must at least 2");
+   if (nWebs < 2) THROW_GEOMETRY(_T("MultiWeb2::SetWebCount - number of webs must at least 2"));
 
    m_WebCount = nWebs;
    SetDirtyFlag();
@@ -243,8 +242,7 @@ bool MultiWeb2::GetRightBlockout() const
 
 Float64 MultiWeb2::GetWebLocation(WebIndexType webIdx)
 {
-   if (m_WebCount <= webIdx)
-      throw std::invalid_argument("MultiWeb2::GetWebLocation - invalid web index");
+   if (m_WebCount <= webIdx) THROW_GEOMETRY(_T("MultiWeb2::GetWebLocation - invalid web index"));
 
    Float64 W = GetTopFlangeWidth();
 
@@ -292,8 +290,7 @@ Float64 MultiWeb2::GetTopFlangeWidth() const
 
 Float64 MultiWeb2::GetAvgWebWidth(WebIndexType webIdx) const
 {
-   if (m_WebCount <= webIdx)
-      throw std::invalid_argument("MultiWeb2::GetWebLocation - invalid web index");
+   if (m_WebCount <= webIdx) THROW_GEOMETRY(_T("MultiWeb2::GetWebLocation - invalid web index"));
 
    if (webIdx == 0 || webIdx == m_WebCount - 1)
    {
@@ -334,9 +331,9 @@ bool MultiWeb2::AssertValid() const
    return __super::AssertValid();
 }
 
-void MultiWeb2::Dump(dbgDumpContext& os) const
+void MultiWeb2::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for MultiWeb2 ***")<<endl;
+   os << _T("*** Dump for MultiWeb2 ***")<< WBFL::Debug::endl;
    __super::Dump( os );
 }
 #endif // _DEBUG
@@ -568,7 +565,7 @@ void MultiWeb2::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool MultiWeb2::TestMe(dbgLog& rlog)
+bool MultiWeb2::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("MultiWeb2");
 

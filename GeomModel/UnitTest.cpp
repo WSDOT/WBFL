@@ -74,7 +74,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Geometry;
 
-bool UnitTest::TestMe(dbgLog& log)
+bool UnitTest::TestMe(WBFL::Debug::Log& log)
 {
    bool tst = true;
 

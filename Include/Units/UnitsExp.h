@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_UNITS_UNITSEXP_H_
-#define INCLUDED_UNITS_UNITSEXP_H_
 #pragma once
 
 // Define BUILDUNITSLIB when building this library
@@ -46,5 +44,3 @@
 
 #include <WbflAll.h>
 #include <Units\AutoLib.h>
-
-#endif // INCLUDED_UNITS_UNITSEXP_H_

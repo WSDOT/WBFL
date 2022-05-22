@@ -75,14 +75,14 @@ bool mathPwLinearFunction2d::AssertValid() const
    return mathFunction2d::AssertValid();
 }
 
-void mathPwLinearFunction2d::Dump(dbgDumpContext& os) const
+void mathPwLinearFunction2d::Dump(WBFL::Debug::LogContext& os) const
 {
    mathFunction2d::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathPwLinearFunction2d::TestMe(dbgLog& rlog)
+bool mathPwLinearFunction2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathPwLinearFunction2d");
 

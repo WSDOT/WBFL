@@ -126,7 +126,7 @@ private:
 public:
 #if defined _DEBUG
    virtual bool AssertValid() const;
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 };
 

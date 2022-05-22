@@ -30,7 +30,7 @@
 // StrSave.h : header file
 //
 
-#include <System\StructuredSaveXMLPrs.h>
+#include <System\StructuredSaveXML.h>
 #include <System\FileStream.h>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -69,11 +69,11 @@ public:
    STDMETHOD(SaveRawUnit)(/*[in]*/LPCTSTR unitXML) override;
 
 private:
-   sysStructuredSaveXmlPrs m_StrSave;
-   FileStream m_File;
+   WBFL::System::StructuredSaveXml m_StrSave;
+   WBFL::System::FileStream m_File;
 
-   HRESULT HandleException( sysXStructuredSave& e );
-   HRESULT HandleException2(sysXStructuredSave& e);
+   HRESULT HandleException( WBFL::System::XStructuredSave& e );
+   HRESULT HandleException2(WBFL::System::XStructuredSave& e);
 
  //  HRESULT Open(/*[in]*/ LPCTSTR bstrFileName);
 	//HRESULT BeginUnit(/*[in]*/ LPCTSTR bstrUnit,/*[in]*/ Float64 ver);

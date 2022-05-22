@@ -63,7 +63,7 @@ lrfdRebarPool* lrfdRebarPool::GetInstance()
    if ( !ms_pInstance )
    {
       ms_pInstance = new lrfdRebarPool;
-      ms_Killer.SetDoomed( ms_pInstance );
+      ms_Killer.SetSingleton( ms_pInstance );
    }
 
    return ms_pInstance;
@@ -283,9 +283,9 @@ bool lrfdRebarPool::AssertValid() const
    return true;
 }
 
-void lrfdRebarPool::Dump(dbgDumpContext& os) const
+void lrfdRebarPool::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for lrfdRebarPool") << endl;
+   os << _T("Dump for lrfdRebarPool") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -579,9 +579,9 @@ bool lrfdRebarIter::AssertValid() const
    return true;
 }
 
-void lrfdRebarIter::Dump(dbgDumpContext& os) const
+void lrfdRebarIter::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdRebarIter" << endl;
+   os << "Dump for lrfdRebarIter" << WBFL::Debug::endl;
 }
 
 #endif // _DEBUG
@@ -621,7 +621,7 @@ void lrfdRebarIter::MakeCopy(const lrfdRebarIter& rOther)
 
 #if defined _UNITTEST
 
-bool lrfdRebarPool::TestMe(dbgLog& rlog)
+bool lrfdRebarPool::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdRebarPool");
 
@@ -646,7 +646,7 @@ bool lrfdRebarPool::TestMe(dbgLog& rlog)
    TESTME_EPILOG("lrfdRebarPool");
 }
 
-bool lrfdRebarIter::TestMe(dbgLog& rlog)
+bool lrfdRebarIter::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdRebarIter");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for lrfdRebarIter");

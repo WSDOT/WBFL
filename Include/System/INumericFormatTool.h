@@ -21,22 +21,26 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_DBGBUILD_H_
-#define INCLUDED_SYSTEM_DBGBUILD_H_
 #pragma once
 
-#if defined (BUILDSYSLIB) && !defined(SYSLIB)
-#define SYSCLASS __declspec(dllexport)
-#define SYSFUNC  __declspec(dllexport)
-#define SYSTPL   template class SYSCLASS
-#elif defined(SYSLIB)
-#define SYSCLASS
-#define SYSFUNC
-#define SYSTPL
-#else
-#define SYSCLASS __declspec(dllimport)
-#define SYSFUNC  __declspec(dllimport)
-#define SYSTPL   extern template class SYSCLASS
-#endif
+#include <System\SysExp.h>
+#include <string>
 
-#endif // INCLUDED_SYSTEM_DBGBUILD_H_
+
+namespace WBFL
+{
+   namespace System
+   {
+      /// Interface that defines a numeric format tool.
+      /// A numeric format tool is an object that accepts a floating point number
+      /// and returns it as a formatted string.
+      class SYSCLASS INumericFormatTool
+      {  
+      public:
+         virtual ~INumericFormatTool() = default;
+
+         /// Convert a floating point number to a formatted string.
+         virtual std::_tstring AsString(Float64 value) const = 0;
+      };
+   };
+};

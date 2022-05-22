@@ -187,7 +187,7 @@ CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
       pDC->MoveTo(m_DateLoc);
       pDC->TextOut(0,0,_T("Date: "));
 
-      sysTime now;
+      WBFL::System::Time now;
       now.PrintDate( true );
       CString time(now.AsString().c_str());
       time.TrimRight();

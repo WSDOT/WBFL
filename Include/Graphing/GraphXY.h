@@ -26,7 +26,7 @@
 #include <Graphing/GraphingExp.h>
 #include <Graphing/PointMapper.h>
 #include <Graphing/AxisXY.h>
-#include <system\INumericFormatToolBase.h>
+#include <System\INumericFormatTool.h>
 #include <map>
 
 namespace WBFL
@@ -45,7 +45,7 @@ public:
    };
 
    GraphXY() = delete;
-   GraphXY(sysNumericFormatTool& rXAxisFormat, sysNumericFormatTool& rYAxisFormat);
+   GraphXY(WBFL::System::NumericFormatTool& rXAxisFormat, WBFL::System::NumericFormatTool& rYAxisFormat);
 
    virtual ~GraphXY();
 
@@ -169,10 +169,10 @@ public:
    LPCTSTR GetXAxisSubtitle() const;
 
    /// Sets the numeric formatting for x axis
-   void SetXAxisValueFormat(sysNumericFormatTool& format);
+   void SetXAxisValueFormat(WBFL::System::NumericFormatTool& format);
 
    /// Returns the numeric formatting for x axis
-   const sysNumericFormatTool* GetXAxisValueFormat() const;
+   const WBFL::System::NumericFormatTool* GetXAxisValueFormat() const;
 
    /// Sets the x axis scale
    void SetXAxisScale(AxisXY::AxisScale scale);
@@ -187,10 +187,10 @@ public:
    AxisXY::AxisScale GetYAxisScale() const;
 
    /// Sets the numeric formatting for y axis
-   void SetYAxisValueFormat(sysNumericFormatTool& format);
+   void SetYAxisValueFormat(WBFL::System::NumericFormatTool& format);
 
    /// Gets the numeric formatting for y axis
-   const sysNumericFormatTool* GetYAxisValueFormat() const;
+   const WBFL::System::NumericFormatTool* GetYAxisValueFormat() const;
 
    /// Sets the title for the Y axis
    void SetYAxisTitle(LPCTSTR strTitle);
@@ -421,11 +421,11 @@ private:
 public:
 #if defined _DEBUG
    virtual bool AssertValid() const;
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 };

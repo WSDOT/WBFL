@@ -56,14 +56,14 @@ bool AutoSystem::AssertValid() const
    return true;
 }
 
-void AutoSystem::Dump(dbgDumpContext& os) const
+void AutoSystem::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for AutoSystem" << endl;
+   os << "Dump for AutoSystem" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool AutoSystem::TestMe(dbgLog& rlog)
+bool AutoSystem::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("AutoSystem");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for AutoSystem");

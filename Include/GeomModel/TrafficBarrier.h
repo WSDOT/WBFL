@@ -124,11 +124,11 @@ private:
 public:
    #if defined _DEBUG
    virtual bool AssertValid() const override;
-   virtual void Dump(dbgDumpContext& os) const override;
+   virtual void Dump(WBFL::Debug::LogContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 };
 

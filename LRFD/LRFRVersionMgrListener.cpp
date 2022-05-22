@@ -74,8 +74,8 @@ bool lrfrVersionMgrListener::AssertValid() const
    return true;
 }
 
-void lrfrVersionMgrListener::Dump(dbgDumpContext& os) const
+void lrfrVersionMgrListener::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfrVersionMgrListener" << endl;
+   os << "Dump for lrfrVersionMgrListener" << WBFL::Debug::endl;
 }
 #endif // _DEBUG

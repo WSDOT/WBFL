@@ -207,13 +207,13 @@ bool libLibraryEntry::AssertValid() const
    return true;
 }
 
-void libLibraryEntry::Dump(dbgDumpContext& os) const
+void libLibraryEntry::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T(" Dump for libLibraryEntry") << endl;
-   os << _T("  m_Name             : ") << m_Name << endl;
-   //os << _T("  m_pLibrary         : ") << m_pLibrary << endl;
-   os << _T("  m_RefCnt           : ") << m_RefCnt << endl;
-   os << _T("  m_IsEditingEnabled : ") << m_IsEditingEnabled << endl;
+   os << _T(" Dump for libLibraryEntry") << WBFL::Debug::endl;
+   os << _T("  m_Name             : ") << m_Name << WBFL::Debug::endl;
+   //os << _T("  m_pLibrary         : ") << m_pLibrary << WBFL::Debug::endl;
+   os << _T("  m_RefCnt           : ") << m_RefCnt << WBFL::Debug::endl;
+   os << _T("  m_IsEditingEnabled : ") << m_IsEditingEnabled << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 

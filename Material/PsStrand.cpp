@@ -236,14 +236,14 @@ bool matPsStrand::AssertValid() const
    return true;
 }
 
-void matPsStrand::Dump(dbgDumpContext& os) const
+void matPsStrand::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for matPsStrand") << endl;
+   os << _T("Dump for matPsStrand") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool matPsStrand::TestMe(dbgLog& rlog)
+bool matPsStrand::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matPsStrand");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matPsStrand");

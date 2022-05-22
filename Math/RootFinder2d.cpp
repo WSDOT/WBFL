@@ -40,13 +40,13 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 mathXRootFinder2dFailed::mathXRootFinder2dFailed(Reason reason,LPCTSTR file,Int16 line) :
-sysXBase(file,line)
+   WBFL::System::XBase(file,line)
 {
    m_Reason = reason;
 }
 
 mathXRootFinder2dFailed::mathXRootFinder2dFailed(const mathXRootFinder2dFailed& rOther) :
-sysXBase( rOther )
+   WBFL::System::XBase( rOther )
 {
    m_Reason = rOther.m_Reason;
 }
@@ -61,7 +61,7 @@ mathXRootFinder2dFailed& mathXRootFinder2dFailed::operator=(const mathXRootFinde
 {
    if ( this != &rOther )
    {
-      sysXBase::operator=( rOther);
+      WBFL::System::XBase::operator=( rOther);
       m_Reason = rOther.m_Reason;
    }
 
@@ -74,12 +74,12 @@ void mathXRootFinder2dFailed::Throw() const
    throw *static_cast<const mathXRootFinder2dFailed*>(this);
 }
 
-Int32 mathXRootFinder2dFailed::GetReason() const
+Int32 mathXRootFinder2dFailed::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-mathXRootFinder2dFailed::Reason mathXRootFinder2dFailed::GetReasonCode() const
+mathXRootFinder2dFailed::Reason mathXRootFinder2dFailed::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
@@ -233,14 +233,14 @@ bool mathRootFinder2d::AssertValid() const
    return true;
 }
 
-void mathRootFinder2d::Dump(dbgDumpContext& os) const
+void mathRootFinder2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for mathRootFinder2d - Not Implemented" << endl;
+   os << "Dump for mathRootFinder2d - Not Implemented" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathRootFinder2d::TestMe(dbgLog& rlog)
+bool mathRootFinder2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathRootFinder2d");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for mathRootFinder2d");

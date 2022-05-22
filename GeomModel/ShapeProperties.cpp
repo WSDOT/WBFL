@@ -340,21 +340,21 @@ bool ShapeProperties::AssertValid() const
    return true;
 }
 
-void ShapeProperties::Dump(dbgDumpContext& os) const
+void ShapeProperties::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for ShapeProperties") << endl;
-   os << _T("   m_Area         = ")<< m_Area <<endl;
-   os << _T("   m_Centroid     = (")<< m_Centroid.X()<<_T(", ")<<m_Centroid.Y()<<_T(")")<<endl;
-   os << _T("   m_Ixx          = ")<< m_Ixx <<endl;         
-   os << _T("   m_Iyy          = ")<< m_Iyy <<endl;          
-   os << _T("   m_Ixy          = ")<< m_Ixy <<endl;         
-   os << _T("   m_CoordType    = ")<< (int)m_CoordType <<endl;   
-   os << _T("   m_Origin       = (")<<m_Origin.X()<<_T(", ")<<m_Origin.Y()<<_T(")") <<endl;
-   os << _T("   m_Orientation  = ")<< m_Orientation <<endl;
-   os << _T("   m_CurrCentroid = (")<< m_CurrCentroid.X()<<_T(", ")<<m_CurrCentroid.Y()<<_T(")")<<endl;
-   os << _T("   m_CurrIxx      = ")<< m_CurrIxx <<endl;
-   os << _T("   m_CurrIyy      = ")<< m_CurrIyy <<endl;
-   os << _T("   m_CurrIxy      = ")<< m_CurrIxy <<endl;
+   os << _T("Dump for ShapeProperties") << WBFL::Debug::endl;
+   os << _T("   m_Area         = ")<< m_Area << WBFL::Debug::endl;
+   os << _T("   m_Centroid     = (")<< m_Centroid.X()<<_T(", ")<<m_Centroid.Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("   m_Ixx          = ")<< m_Ixx << WBFL::Debug::endl;         
+   os << _T("   m_Iyy          = ")<< m_Iyy << WBFL::Debug::endl;          
+   os << _T("   m_Ixy          = ")<< m_Ixy << WBFL::Debug::endl;         
+   os << _T("   m_CoordType    = ")<< (int)m_CoordType << WBFL::Debug::endl;   
+   os << _T("   m_Origin       = (")<<m_Origin.X()<<_T(", ")<<m_Origin.Y()<<_T(")") << WBFL::Debug::endl;
+   os << _T("   m_Orientation  = ")<< m_Orientation << WBFL::Debug::endl;
+   os << _T("   m_CurrCentroid = (")<< m_CurrCentroid.X()<<_T(", ")<<m_CurrCentroid.Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("   m_CurrIxx      = ")<< m_CurrIxx << WBFL::Debug::endl;
+   os << _T("   m_CurrIyy      = ")<< m_CurrIyy << WBFL::Debug::endl;
+   os << _T("   m_CurrIxy      = ")<< m_CurrIxy << WBFL::Debug::endl;
 }
 
 #endif // _DEBUG
@@ -466,7 +466,7 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
 }
 
 #if defined _UNITTEST
-bool Test_AddOperator1(dbgLog& rlog)
+bool Test_AddOperator1(WBFL::Debug::Log& rlog)
 {
    // Test the addition of properties when both properties objects are in
    // centroidal coordinates
@@ -490,7 +490,7 @@ bool Test_AddOperator1(dbgLog& rlog)
    TESTME_EPILOG( "ShapeProperties - Test_AddOperator1" );
 }
 
-bool Test_AddOperator2(dbgLog& rlog)
+bool Test_AddOperator2(WBFL::Debug::Log& rlog)
 {
    // Test the addition of properties when one property object is in centroidal
    // coordinates and one is in global coordaintes
@@ -525,7 +525,7 @@ bool Test_AddOperator2(dbgLog& rlog)
    TESTME_EPILOG( "ShapeProperties - Test_AddOperator2" );
 }
 
-bool Test_Assignment1(dbgLog& rlog)
+bool Test_Assignment1(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE( "ShapeProperties - Test_Assignment1" );
 
@@ -570,7 +570,7 @@ bool Test_Assignment1(dbgLog& rlog)
    TESTME_EPILOG( "ShapeProperties - Test_Assignment1" );
 }
 
-bool Test_Assignment2(dbgLog& rlog)
+bool Test_Assignment2(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE( "ShapeProperties - Test_Assignment2" );
 
@@ -609,7 +609,7 @@ bool Test_Assignment2(dbgLog& rlog)
    TESTME_EPILOG( "ShapeProperties - Test_Assignment2" );
 }
 
-bool ShapeProperties::TestMe(dbgLog& rlog)
+bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("ShapeProperties");
    // try a point area
@@ -732,7 +732,7 @@ bool ShapeProperties::TestMe(dbgLog& rlog)
 
    // take a dump
 #if defined _DEBUG
-   gsr.Dump(rlog.GetDumpCtx());
+   gsr.Dump(rlog.GetLogContext());
 #endif
 
    TRY_TESTME( Test_AddOperator1(rlog) );

@@ -246,7 +246,7 @@ void lrfdPCIUHPCLosses::UpdateAutogenousShrinkageLoss() const
 
 #if defined _UNITTEST
 #include <Lrfd\AutoVersion.h>
-bool lrfdPCIUHPCLosses::TestMe(dbgLog& rlog)
+bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdPCIUHPCLosses");
 

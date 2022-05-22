@@ -579,9 +579,9 @@ bool lrfdRebar::AssertValid() const
    return true;
 }
 
-void lrfdRebar::Dump(dbgDumpContext& os) const
+void lrfdRebar::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdRebar" << endl;
+   os << "Dump for lrfdRebar" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -589,7 +589,7 @@ void lrfdRebar::Dump(dbgDumpContext& os) const
 #include <Lrfd\AutoVersion.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\StrandPool.h>
-bool lrfdRebar::TestMe(dbgLog& rlog)
+bool lrfdRebar::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdRebar");
    TESTME_EPILOG("lrfdRebar");

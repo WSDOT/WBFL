@@ -251,14 +251,14 @@ bool lrfdTxdotLldfMultiWeb::AssertValid() const
    return lrfdLiveLoadDistributionFactorBase::AssertValid();
 }
 
-void lrfdTxdotLldfMultiWeb::Dump(dbgDumpContext& os) const
+void lrfdTxdotLldfMultiWeb::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLiveLoadDistributionFactorBase::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool lrfdTxdotLldfMultiWeb::TestMe(dbgLog& rlog)
+bool lrfdTxdotLldfMultiWeb::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdTxdotLldfMultiWeb");
 

@@ -59,7 +59,7 @@ LOG
    rab : 02.04.1998 : Created file
 *****************************************************************************/
 
-class LRFDCLASS lrfdXShear : public sysXBase
+class LRFDCLASS lrfdXShear : public WBFL::System::XBase
 {
 public:
    // GROUP: ENUMERATION
@@ -82,21 +82,21 @@ public:
 
    //------------------------------------------------------------------------
    // Copy constructor
-   lrfdXShear(const lrfdXShear& rOther);
+   lrfdXShear(const lrfdXShear& rOther) = default;
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXShear() override;
+   virtual ~lrfdXShear() = default;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Assignment operator
-   lrfdXShear& operator = (const lrfdXShear& rOther);
+   lrfdXShear& operator = (const lrfdXShear& rOther) = default;
 
    // GROUP: OPERATIONS
    virtual void Throw() const override;
-   virtual Int32 GetReason() const override;
-   Reason GetReasonCode() const;
+   virtual Int32 GetReason() const noexcept override;
+   Reason GetReasonCode() const noexcept;
 
    // GROUP: ACCESS
 
@@ -110,22 +110,8 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdXShear& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdXShear& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS

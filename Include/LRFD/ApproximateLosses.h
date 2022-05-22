@@ -174,7 +174,7 @@ public:
 
    // GROUP: DEBUG
    #if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 
 

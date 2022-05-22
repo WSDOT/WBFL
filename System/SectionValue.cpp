@@ -22,12 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysSectionValue
-****************************************************************************/
-
 #include <System\SectionValue.h>
 #include <MathEx.h>
 
@@ -37,91 +31,69 @@ CLASS
 static char THIS_FILE[] = __FILE__;
 #endif
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::System;
 
-//======================== LIFECYCLE  =======================================
-sysSectionValue::sysSectionValue(Float64 val) :
+SectionValue::SectionValue(Float64 val) :
 m_Left(val), m_Right(val)
 {
 }
 
-sysSectionValue::sysSectionValue(Float64 left,Float64 right) :
+SectionValue::SectionValue(Float64 left,Float64 right) :
 m_Left(left), m_Right(right)
 {
 }
 
-sysSectionValue::sysSectionValue(const sysSectionValue& rOther)
-{
-   MakeCopy(rOther);
-}
-
-sysSectionValue::~sysSectionValue()
-{
-}
-
-//======================== OPERATORS  =======================================
-sysSectionValue& sysSectionValue::operator= (const sysSectionValue& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-sysSectionValue& sysSectionValue::operator=(Float64 val)
+SectionValue& SectionValue::operator=(Float64 val)
 {
    m_Left = val; m_Right = val; return* this;
 }
 
-sysSectionValue& sysSectionValue::operator+=(const sysSectionValue& rOther)
+SectionValue& SectionValue::operator+=(const SectionValue& rOther)
 {
    m_Left += rOther.m_Left; m_Right += rOther.m_Right; return *this; 
 }
 
-sysSectionValue& sysSectionValue::operator-=(const sysSectionValue& rOther)
+SectionValue& SectionValue::operator-=(const SectionValue& rOther)
 {
    m_Left -= rOther.m_Left; m_Right -= rOther.m_Right; return *this; 
 }
 
-sysSectionValue& sysSectionValue::operator*=(const sysSectionValue& rOther)
+SectionValue& SectionValue::operator*=(const SectionValue& rOther)
 {
    m_Left *= rOther.m_Left; m_Right *= rOther.m_Right; return *this; 
 }
 
-sysSectionValue& sysSectionValue::operator/=(const sysSectionValue& rOther)
+SectionValue& SectionValue::operator/=(const SectionValue& rOther)
 {
    m_Left /= rOther.m_Left; m_Right /= rOther.m_Right; return *this; 
 }
 
-sysSectionValue sysSectionValue::operator-()
+SectionValue SectionValue::operator-()
 {
-   return sysSectionValue( -m_Left, -m_Right ); 
+   return SectionValue( -m_Left, -m_Right ); 
 }
 
-sysSectionValue& sysSectionValue::operator+=(Float64 val)
+SectionValue& SectionValue::operator+=(Float64 val)
 {
    m_Left += val; m_Right += val; return *this; 
 }
 
-sysSectionValue& sysSectionValue::operator-=(Float64 val)
+SectionValue& SectionValue::operator-=(Float64 val)
 {
    m_Left -= val; m_Right -= val; return *this; 
 }
 
-sysSectionValue& sysSectionValue::operator*=(Float64 val)
+SectionValue& SectionValue::operator*=(Float64 val)
 {
    m_Left *= val; m_Right *= val; return *this; 
 }
 
-sysSectionValue& sysSectionValue::operator/=(Float64 val)
+SectionValue& SectionValue::operator/=(Float64 val)
 {
    m_Left /= val; m_Right /= val; return *this; 
 }
 
-//======================== OPERATIONS =======================================
-std::_tstring sysSectionValue::AsString() const
+std::_tstring SectionValue::AsString() const
 {
    std::_tostringstream os;
    if ( !IsEqual( Left(), Right() ) )
@@ -132,101 +104,71 @@ std::_tstring sysSectionValue::AsString() const
    return os.str();
 }
 
-//======================== ACCESS     =======================================
-const Float64& sysSectionValue::Left() const
+const Float64& SectionValue::Left() const
 {
    return m_Left;
 }
 
-Float64& sysSectionValue::Left()
+Float64& SectionValue::Left()
 {
    return m_Left;
 }
 
-const Float64& sysSectionValue::Right() const
+const Float64& SectionValue::Right() const
 {
    return m_Right;
 }
 
-Float64& sysSectionValue::Right()
+Float64& SectionValue::Right()
 {
    return m_Right;
 }
 
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void sysSectionValue::MakeCopy(const sysSectionValue& rOther)
+SYSFUNC WBFL::System::SectionValue operator+(const WBFL::System::SectionValue& a,const WBFL::System::SectionValue& b)
 {
-   m_Left  = rOther.m_Left;
-   m_Right = rOther.m_Right;
-}
-
-void sysSectionValue::MakeAssignment(const sysSectionValue& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-SYSFUNC sysSectionValue operator+(const sysSectionValue& a,const sysSectionValue& b)
-{
-   return sysSectionValue( a.Left()  + b.Left(),
+   return WBFL::System::SectionValue( a.Left()  + b.Left(),
                           a.Right() + b.Right() );
 }
 
-SYSFUNC sysSectionValue operator-(const sysSectionValue& a,const sysSectionValue& b)
+SYSFUNC WBFL::System::SectionValue operator-(const WBFL::System::SectionValue& a,const WBFL::System::SectionValue& b)
 {
-   return sysSectionValue( a.Left()  - b.Left(),
+   return WBFL::System::SectionValue( a.Left()  - b.Left(),
                           a.Right() - b.Right() );
 }
 
-SYSFUNC sysSectionValue operator*(const sysSectionValue& a,const sysSectionValue& b)
+SYSFUNC WBFL::System::SectionValue operator*(const WBFL::System::SectionValue& a,const WBFL::System::SectionValue& b)
 {
-   return sysSectionValue( a.Left()  * b.Left(), 
+   return WBFL::System::SectionValue( a.Left()  * b.Left(), 
                           a.Right() * b.Right() );
 }
 
-SYSFUNC sysSectionValue operator*(const sysSectionValue& a,Float64 k)
+SYSFUNC WBFL::System::SectionValue operator*(const WBFL::System::SectionValue& a,Float64 k)
 {
-   return sysSectionValue(a.Left()*k,a.Right()*k);
+   return WBFL::System::SectionValue(a.Left()*k,a.Right()*k);
 }
 
-SYSFUNC sysSectionValue operator*(Float64 k,const sysSectionValue& a)
+SYSFUNC WBFL::System::SectionValue operator*(Float64 k,const WBFL::System::SectionValue& a)
 {
-   return sysSectionValue(a.Left()*k,a.Right()*k);
+   return WBFL::System::SectionValue(a.Left()*k,a.Right()*k);
 }
 
-SYSFUNC sysSectionValue operator/(const sysSectionValue& a,const sysSectionValue& b)
+SYSFUNC WBFL::System::SectionValue operator/(const WBFL::System::SectionValue& a,const WBFL::System::SectionValue& b)
 {
-   return sysSectionValue( a.Left()  / b.Left(),
+   return WBFL::System::SectionValue( a.Left()  / b.Left(),
                           a.Right() / b.Right() );
 }
 
-SYSFUNC sysSectionValue operator/(const sysSectionValue& a,Float64 k)
+SYSFUNC WBFL::System::SectionValue operator/(const WBFL::System::SectionValue& a,Float64 k)
 {
-   return sysSectionValue(a.Left()/k,a.Right()/k);
+   return WBFL::System::SectionValue(a.Left()/k,a.Right()/k);
 }
 
-SYSFUNC sysSectionValue operator/(Float64 k,const sysSectionValue& a)
+SYSFUNC WBFL::System::SectionValue operator/(Float64 k,const WBFL::System::SectionValue& a)
 {
-   return sysSectionValue(a.Left()/k,a.Right()/k);
+   return WBFL::System::SectionValue(a.Left()/k,a.Right()/k);
 }
 
-SYSFUNC std::_tostream& operator<<(std::_tostream& os,const sysSectionValue& a)
+SYSFUNC std::_tostream& operator<<(std::_tostream& os,const WBFL::System::SectionValue& a)
 {
    if ( !IsEqual( a.Left(), a.Right() ) )
       os << a.Left() << _T("\\") << a.Right();

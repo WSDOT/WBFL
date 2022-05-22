@@ -133,14 +133,14 @@ bool mathBisectionRootFinder2d::AssertValid() const
    return mathRootFinder2d::AssertValid();
 }
 
-void mathBisectionRootFinder2d::Dump(dbgDumpContext& os) const
+void mathBisectionRootFinder2d::Dump(WBFL::Debug::LogContext& os) const
 {
    mathRootFinder2d::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathBisectionRootFinder2d::TestMe(dbgLog& rlog)
+bool mathBisectionRootFinder2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathBisectionRootFinder2d");
    // Unit Tests implemented on package level

@@ -246,6 +246,7 @@
     <ClCompile Include="EAFHelpWindowThread.cpp" />
     <ClCompile Include="EAFInterfaceCache.cpp" />
     <ClCompile Include="EAFLicensePlateChildFrame.cpp" />
+    <ClCompile Include="EAFMacroTxn.cpp" />
     <ClCompile Include="EAFMainFrame.cpp" />
     <ClCompile Include="EAFMDISnapper.cpp" />
     <ClCompile Include="EAFMenu.cpp" />
@@ -261,6 +262,8 @@
     <ClCompile Include="EAFStatusItem.cpp" />
     <ClCompile Include="EAFTemplateGroup.cpp" />
     <ClCompile Include="EAFToolBar.cpp" />
+    <ClCompile Include="EAFTransaction.cpp" />
+    <ClCompile Include="EAFTxnManager.cpp" />
     <ClCompile Include="EAFUnits.cpp" />
     <ClCompile Include="EAFUtilities.cpp" />
     <ClCompile Include="EAFView.cpp" />
@@ -281,6 +284,7 @@
     </ClCompile>
     <ClCompile Include="TipDlg.cpp" />
     <ClCompile Include="ToolBarDlg.cpp" />
+    <ClCompile Include="TxnTestClass.cpp" />
     <ClCompile Include="UIHintsDlg.cpp" />
     <ClCompile Include="UnitsDlg.cpp" />
     <ClCompile Include="webbrowser.cpp" />
@@ -324,6 +328,7 @@
     <ClInclude Include="..\Include\EAF\EAFDocTemplate.h" />
     <ClInclude Include="..\Include\EAF\EAFDocTemplateRegistrar.h" />
     <ClInclude Include="..\Include\EAF\EAFDocument.h" />
+    <ClInclude Include="..\Include\EAF\EAFMacroTxn.h" />
     <ClInclude Include="..\Include\EAF\EAFPluginDocumentationIntegration.h" />
     <ClInclude Include="..\Include\EAF\EAFDocumentPlugin.h" />
     <ClInclude Include="..\Include\EAF\EAFExp.h" />
@@ -355,7 +360,9 @@
     <ClInclude Include="..\Include\EAF\EAFStatusItem.h" />
     <ClInclude Include="..\Include\EAF\EAFTemplateGroup.h" />
     <ClInclude Include="..\Include\EAF\EAFToolBar.h" />
+    <ClInclude Include="..\Include\EAF\EAFTransaction.h" />
     <ClInclude Include="..\Include\EAF\EAFTransactions.h" />
+    <ClInclude Include="..\Include\EAF\EAFTxnManager.h" />
     <ClInclude Include="..\Include\EAF\EAFTypes.h" />
     <ClInclude Include="..\Include\EAF\EAFUIIntegration.h" />
     <ClInclude Include="..\Include\EAF\EAFUnits.h" />
@@ -390,6 +397,7 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="TipDlg.h" />
     <ClInclude Include="ToolBarDlg.h" />
+    <ClInclude Include="TxnTestClass.h" />
     <ClInclude Include="UIHintsDlg.h" />
     <ClInclude Include="UnitsDlg.h" />
     <ClInclude Include="WBCmdGroup.h" />
@@ -404,9 +412,6 @@
     <Image Include="res\lpframe.bmp" />
     <Image Include="res\SmallIconView.ico" />
     <Image Include="res\Toolbar.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

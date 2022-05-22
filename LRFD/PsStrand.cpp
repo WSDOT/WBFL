@@ -328,9 +328,9 @@ bool lrfdPsStrand::AssertValid() const
    return true;
 }
 
-void lrfdPsStrand::Dump(dbgDumpContext& os) const
+void lrfdPsStrand::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdPsStrand" << endl;
+   os << "Dump for lrfdPsStrand" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -338,7 +338,7 @@ void lrfdPsStrand::Dump(dbgDumpContext& os) const
 #include <Lrfd\AutoVersion.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\StrandPool.h>
-bool lrfdPsStrand::TestMe(dbgLog& rlog)
+bool lrfdPsStrand::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdPsStrand");
    lrfdAutoVersion auto_ver;

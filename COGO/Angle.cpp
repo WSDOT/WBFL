@@ -143,10 +143,10 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
 
    // parse into space-delimited tokens
    LPCTSTR delims[] = {_T(" "),_T("\t"), 0};
-   sysTokenizer tokizer(delims);
+   WBFL::System::Tokenizer tokizer(delims);
    tokizer.push_back(str);
 
-   sysTokenizer::size_type nParts = tokizer.size();
+   WBFL::System::Tokenizer::size_type nParts = tokizer.size();
    if (nParts < 1 || 4 < nParts)
       return BadAngleString();  // string is empty or has too many parts
 
@@ -171,7 +171,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
       }
 
       Float64 angle;
-      if (!sysTokenizer::ParseDouble(stmp.c_str(),&angle))
+      if (!WBFL::System::Tokenizer::ParseDouble(stmp.c_str(),&angle))
          return BadAngleString();
 
       angle *=rlfactor;
@@ -185,7 +185,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
       std::_tstring stmp = tokizer[0];
 
       Float64 angle;
-      if (!sysTokenizer::ParseDouble(stmp.c_str(),&angle))
+      if (!WBFL::System::Tokenizer::ParseDouble(stmp.c_str(),&angle))
          return BadAngleString();
 
       std::_tstring rl = tokizer[1];
@@ -237,7 +237,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
          lpszDeg++;
       }
 
-      if (!sysTokenizer::ParseLong(lpszDeg,&deg))
+      if (!WBFL::System::Tokenizer::ParseLong(lpszDeg,&deg))
          return BadAngleString();
 
       deg = abs(deg); // make sure deg is unsigned because we will be multiplying it by "sign" below
@@ -245,7 +245,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
       // mm
 	   long min;
       stmp = tokizer[1];
-      if (!sysTokenizer::ParseLong(stmp.c_str(),&min))
+      if (!WBFL::System::Tokenizer::ParseLong(stmp.c_str(),&min))
          return BadAngleString();
 
       // sss.s
@@ -254,7 +254,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
       if (rlfactor==0 || nParts==4)
       {
          stmp = tokizer[2];
-         if (!sysTokenizer::ParseDouble(stmp.c_str(),&sec))
+         if (!WBFL::System::Tokenizer::ParseDouble(stmp.c_str(),&sec))
             return BadAngleString();
       }
 

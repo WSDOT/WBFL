@@ -253,18 +253,18 @@ bool mathCubicSolver::AssertValid() const
    return true;
 }
 
-void mathCubicSolver::Dump(dbgDumpContext& os) const
+void mathCubicSolver::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for mathCubicSolver" << endl;
-   os << "m_A = " << m_A << endl;
-   os << "m_B = " << m_B << endl;
-   os << "m_C = " << m_C << endl;
-   os << "m_D = " << m_D << endl;
+   os << "Dump for mathCubicSolver" << WBFL::Debug::endl;
+   os << "m_A = " << m_A << WBFL::Debug::endl;
+   os << "m_B = " << m_B << WBFL::Debug::endl;
+   os << "m_C = " << m_C << WBFL::Debug::endl;
+   os << "m_D = " << m_D << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathCubicSolver::TestMe(dbgLog& rlog)
+bool mathCubicSolver::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathCubicSolver");
 

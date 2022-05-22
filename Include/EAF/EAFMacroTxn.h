@@ -20,44 +20,57 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+
 #pragma once
 
-#include <System\Transaction.h>
+#include <EAF\EAFExp.h>
+#include <EAF\EAFTransaction.h>
+#include <memory>
 
-class testUndoableTxn : public txnTransaction
+/// A macro transaction is a collection of other transactions.
+class EAFCLASS CEAFMacroTxn : public CEAFTransaction
 {
 public:
-   testUndoableTxn();
+   CEAFMacroTxn() = default;
+   virtual ~CEAFMacroTxn() = default; 
+
+   CEAFMacroTxn(const CEAFMacroTxn&) = delete;
+   CEAFMacroTxn& operator=(const CEAFMacroTxn&) = delete;
+
    virtual bool Execute() override;
    virtual void Undo() override;
-   virtual txnTransaction* CreateClone() const override;
-   virtual void Log(std::_tostream& os) const override;
    virtual std::_tstring Name() const override;
-   virtual bool IsUndoable() override;
-   virtual bool IsRepeatable() override;
-};
+   virtual std::unique_ptr<CEAFTransaction> CreateClone() const override;
+   virtual void Log(std::_tostream& os) const override;
+   virtual bool IsUndoable() const override;
+   virtual bool IsRepeatable() const override;
+   
+   /// Sets the transactions name
+   void Name(const std::_tstring& name);
+   
+   /// Adds a transaction to this macro. The transcation will be cloned.
+   void AddTransaction(CEAFTransaction& rTxn);
 
-class testNotUndoableTxn : public txnTransaction
-{
-public:
-   testNotUndoableTxn();
-   virtual bool Execute() override;
-   virtual txnTransaction* CreateClone() const override;
-   virtual void Log(std::_tostream& os) const override;
-   virtual std::_tstring Name() const override;
-   virtual bool IsUndoable() override;
-   virtual bool IsRepeatable() override;
-};
+   /// Adds a transaction to this macro.
+   void AddTransaction(std::unique_ptr<CEAFTransaction>&& pTxn);
 
-class testNotRepeatableTxn : public txnTransaction
-{
+   /// Returns the number of transactions in this macro.
+   IndexType GetTxnCount() const;
+
+protected:
+   #pragma warning(disable:4251)
+   std::_tstring m_Name{ _T("Macro") };
+   typedef std::vector<std::unique_ptr<CEAFTransaction>> TxnContainer;
+   TxnContainer m_Transactions;
+
+#if defined _DEBUG
 public:
-   testNotRepeatableTxn();
-   virtual bool Execute() override;
-   virtual void Undo() override;
-   virtual txnTransaction* CreateClone() const override;
-   virtual void Log(std::_tostream& os) const override;
-   virtual std::_tstring Name() const override;
-   virtual bool IsUndoable() override;
-   virtual bool IsRepeatable() override;
+   bool AssertValid() const;
+   void Dump(WBFL::Debug::LogContext& os) const;
+#endif // _DEBUG
+
+#if defined _UNITTEST
+public:
+   static bool TestMe(WBFL::Debug::Log& rlog);
+#endif // _UNITTEST
 };

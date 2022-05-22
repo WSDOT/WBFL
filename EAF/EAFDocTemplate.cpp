@@ -147,7 +147,7 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMR
          return nullptr;
       }
    }
-   catch(sysXStructuredLoad& e)
+   catch(WBFL::System::XStructuredLoad& e)
    {
       std::_tstring msg;
       e.GetErrorMessage(&msg);

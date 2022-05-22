@@ -122,7 +122,7 @@ Float64 System::GetGravitationalAcceleration()
 }
 
 #if defined _UNITTEST
-bool System::TestMe(dbgLog& rlog)
+bool System::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("System");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for System");

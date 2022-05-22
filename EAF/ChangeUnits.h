@@ -26,21 +26,22 @@
 
 #include <EAF\EAFTypes.h>
 #include <WBFLCore.h>
-#include <System\Transaction.h>
+#include <EAF\EAFTransaction.h>
+#include <array>
 
-class txnChangeUnits : public txnTransaction
+class CEAFChangeUnits : public CEAFTransaction
 {
 public:
-   txnChangeUnits(IBroker* pBroker,eafTypes::UnitMode oldUnits,eafTypes::UnitMode newUnits);
+   CEAFChangeUnits(IBroker* pBroker,eafTypes::UnitMode oldUnits,eafTypes::UnitMode newUnits);
    virtual std::_tstring Name() const override;
-   virtual txnTransaction* CreateClone() const override;
+   virtual std::unique_ptr<CEAFTransaction> CreateClone() const override;
    virtual bool Execute() override;
    virtual void Undo() override;
-   virtual bool IsUndoable() override;
-   virtual bool IsRepeatable() override;
+   virtual bool IsUndoable() const override;
+   virtual bool IsRepeatable() const override;
 
 private:
    bool DoExecute(int i);
    IBroker* m_pBroker;
-   eafTypes::UnitMode m_UnitMode[2];
+   std::array<eafTypes::UnitMode, 2> m_UnitMode;
 };

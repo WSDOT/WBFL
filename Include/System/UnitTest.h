@@ -21,77 +21,24 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_System_UNITTEST_H_
-#define INCLUDED_System_UNITTEST_H_
 #pragma once
 
 #include <System\SysExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysUnitTest
-
-   Unit Testing class for the System package
-
-
-DESCRIPTION
-
-LOG
-   rdp : 05.27.1998 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysUnitTest
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace System
+   {
+      /// Unit Testing class for the System services library
+      class SYSCLASS UnitTest
+      {
+      public:
+         UnitTest() = delete;
+         UnitTest(const UnitTest&) = delete;
+         UnitTest& operator=(const UnitTest&) = delete;
+         ~UnitTest() = delete;
 
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   static bool TestMe(dbgLog& rlog);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   sysUnitTest(const sysUnitTest&) = delete;
-   sysUnitTest& operator=(const sysUnitTest&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
+         static bool TestMe(WBFL::Debug::Log& rlog);
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-
-#endif // INCLUDED_System_UNITTEST_H_

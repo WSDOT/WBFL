@@ -52,7 +52,7 @@ rptFontStyleLibrary* rptFontStyleLibrary::Instance()
    if ( ms_pInstance == 0 )
    {
       ms_pInstance=new rptFontStyleLibrary();
-	  ms_Killer.SetDoomed( ms_pInstance );
+	  ms_Killer.SetSingleton( ms_pInstance );
    }
    return ms_pInstance;
 }

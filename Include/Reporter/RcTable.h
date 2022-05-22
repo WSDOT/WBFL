@@ -157,7 +157,7 @@ public:
 
    /// Fills a columne with section values by using the given rptRcSectionValue object as a prototype.
    /// This function will append the data to any other data that exists in the column.
-   void FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype, const std::vector<sysSectionValue>& vValues);
+   void FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype, const std::vector<WBFL::System::SectionValue>& vValues);
 
    /// Fills a column with integer values by using the given rptRcInt object as a prototype.
    /// This function will append the data to any other data that exists in the column.

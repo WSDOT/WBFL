@@ -211,7 +211,7 @@
     <ClCompile Include="LegalWizStep1.cpp" />
     <ClCompile Include="LegalWizStep2.cpp" />
     <ClCompile Include="LngArray.cpp" />
-    <ClCompile Include="LogDumpContext.cpp" />
+    <ClCompile Include="LogContext.cpp" />
     <ClCompile Include="LogFile.cpp" />
     <ClCompile Include="MohrCircle.cpp" />
     <ClCompile Include="ProgressMonitorDlg.cpp" />
@@ -272,7 +272,7 @@ copy %(FullPath) $(ProjectDir)htmlhelp\%(Filename).hh
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)htmlhelp\%(Filename).hh;%(Outputs)</Outputs>
     </CustomBuild>
-    <ClInclude Include="..\Include\WBFLTools\LogDumpContext.h" />
+    <ClInclude Include="..\Include\WBFLTools\LogContext.h" />
     <ClInclude Include="..\Include\WBFLTools\WBFLToolsExp.h" />
     <ClInclude Include="ARPNotice.h" />
     <ClInclude Include="BstrArray.h" />

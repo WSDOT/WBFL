@@ -46,7 +46,7 @@ CLASS
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-bool UnitTest::TestMe(dbgLog& rlog)
+bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool bResult = true;
 #if defined _UNITTEST
@@ -66,7 +66,7 @@ bool UnitTest::TestMe(dbgLog& rlog)
    return bResult;
 }
 
-bool UnitTest::PCILiftingExamples(dbgLog& rlog)
+bool UnitTest::PCILiftingExamples(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("PCILiftingExamples");
 
@@ -220,7 +220,7 @@ bool UnitTest::PCILiftingExamples(dbgLog& rlog)
    TESTME_EPILOG("PCILiftingExamples");
 }
 
-bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
+bool UnitTest::PCIHaulingExamples(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("PCIHaulingExamples");
 
@@ -349,7 +349,7 @@ bool UnitTest::PCIHaulingExamples(dbgLog& rlog)
    TESTME_EPILOG("PCIHaulingExamples");
 }
 
-bool UnitTest::OneEndSeated(dbgLog& rlog)
+bool UnitTest::OneEndSeated(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("OneEndSeated");
    Girder girder;

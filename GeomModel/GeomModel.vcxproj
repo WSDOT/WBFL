@@ -229,6 +229,7 @@
     <ClCompile Include="Vector3d.cpp" />
     <ClCompile Include="VoidedSlab.cpp" />
     <ClCompile Include="VoidedSlab2.cpp" />
+    <ClCompile Include="XGeometry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GeomModel.def" />
@@ -286,6 +287,7 @@
     <ClInclude Include="..\Include\GeomModel\Vector3d.h" />
     <ClInclude Include="..\Include\GeomModel\VoidedSlab.h" />
     <ClInclude Include="..\Include\GeomModel\VoidedSlab2.h" />
+    <ClInclude Include="..\Include\GeomModel\XGeometry.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="MohrCircle.h" />
     <ClInclude Include="resource.h" />

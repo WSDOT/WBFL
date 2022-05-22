@@ -205,16 +205,16 @@ bool LineSegment3d::AssertValid() const
    return true;
 }
 
-void LineSegment3d::Dump(dbgDumpContext& os) const
+void LineSegment3d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for LineSegment3d") << endl;
-   os << _T("  m_pStart = (")<< m_pStart->X()<<_T(", ")<< m_pStart->Y() <<_T(", ") << m_pStart->Z() << _T(")") << endl;
-   os << _T("  m_End = (")<< m_pEnd->X()<<_T(", ")<< m_pEnd->Y() << _T(", ") << m_pEnd->Z() << _T(")") << endl;
+   os << _T("Dump for LineSegment3d") << WBFL::Debug::endl;
+   os << _T("  m_pStart = (")<< m_pStart->X()<<_T(", ")<< m_pStart->Y() <<_T(", ") << m_pStart->Z() << _T(")") << WBFL::Debug::endl;
+   os << _T("  m_End = (")<< m_pEnd->X()<<_T(", ")<< m_pEnd->Y() << _T(", ") << m_pEnd->Z() << _T(")") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool LineSegment3d::TestMe(dbgLog& rlog)
+bool LineSegment3d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("LineSegment3d");
 

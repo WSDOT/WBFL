@@ -36,15 +36,15 @@ namespace WBFL
       public:
          /// Runs the unit tests and logs testing information
          /// \return true if successful, otherwise false.
-         static bool TestMe(dbgLog& rlog);
+         static bool TestMe(WBFL::Debug::Log& rlog);
 
       private:
          UnitTest(const UnitTest&) = delete;
          UnitTest& operator=(const UnitTest&) = delete;
 
-         static bool PCILiftingExamples(dbgLog& rlog);
-         static bool PCIHaulingExamples(dbgLog& rlog);
-         static bool OneEndSeated(dbgLog& rlog);
+         static bool PCILiftingExamples(WBFL::Debug::Log& rlog);
+         static bool PCIHaulingExamples(WBFL::Debug::Log& rlog);
+         static bool OneEndSeated(WBFL::Debug::Log& rlog);
       };
    }
 }

@@ -221,7 +221,7 @@ bool matPsStrandCurve::AssertValid() const
           IsZero( GetTensYieldStrain() -  eps, 0.0001 );
 }
 
-void matPsStrandCurve::Dump(dbgDumpContext& os) const
+void matPsStrandCurve::Dump(WBFL::Debug::LogContext& os) const
 {
    matYieldStressStrainCurve::Dump( os );
 }
@@ -254,7 +254,7 @@ void matPsStrandCurve::MakeAssignment(const matPsStrandCurve& rOther)
 //======================== ACCESS     =======================================
 //======================== INQUERY    =======================================
 #if defined _UNITTEST
-bool matPsStrandCurve::TestMe(dbgLog& rlog)
+bool matPsStrandCurve::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matPsStrandCurve");
    Float64 s2 =  0.030;

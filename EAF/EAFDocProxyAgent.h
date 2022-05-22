@@ -55,7 +55,7 @@ public:
 
       //if ( pT->m_bHoldingEvents )
       //{
-      //   sysFlags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
+      //   WBFL::System::Flags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
       //   return S_OK;
       //}
 
@@ -80,7 +80,7 @@ public:
 
       //if ( pT->m_bHoldingEvents )
       //{
-      //   sysFlags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
+      //   WBFL::System::Flags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
       //   return S_OK;
       //}
 
@@ -268,19 +268,19 @@ public:
 
 // IEAFTransactions
 public:
-   virtual void Execute(txnTransaction& rTxn) override;
-   virtual void Execute(txnTransaction* pTxn) override;
+   virtual void Execute(CEAFTransaction& rTxn) override;
+   virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn) override;
    virtual void Undo() override;
    virtual void Redo() override;
    virtual void Repeat() override;
-   virtual bool CanUndo() override;
-   virtual bool CanRedo() override;
-   virtual bool CanRepeat() override;
-   virtual std::_tstring UndoName() override;
-   virtual std::_tstring RedoName() override;
-   virtual std::_tstring RepeatName() override;
-   virtual CollectionIndexType GetTxnCount() override;
-   virtual CollectionIndexType GetUndoCount() override;
+   virtual bool CanUndo() const override;
+   virtual bool CanRedo() const override;
+   virtual bool CanRepeat() const override;
+   virtual std::_tstring UndoName() const override;
+   virtual std::_tstring RedoName() const override;
+   virtual std::_tstring RepeatName() const override;
+   virtual IndexType GetTxnCount() const override;
+   virtual IndexType GetUndoCount() const override;
 
 // IEAFProjectLog
 public:

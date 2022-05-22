@@ -163,13 +163,13 @@ void ConcLdBeam::ComputeDeflections()
 void ConcLdBeam::ComputeAxialReactions()
 {
    // can't have axial releases at both ends
-   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
-   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   ATLASSERT(!(WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
       m_Fxl = 0;
       m_Fxr = -m_Q;
    }
-   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   else if ( WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
       m_Fxl = -m_Q;
       m_Fxr = 0;
@@ -189,8 +189,8 @@ void ConcLdBeam::ComputeAxialReactions()
 
 void ConcLdBeam::ComputeBendingReactions()
 {
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -229,8 +229,8 @@ void ConcLdBeam::ComputeAxialDeflections()
 
 void ConcLdBeam::ComputeBendingDeflections()
 {
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -258,15 +258,15 @@ void ConcLdBeam::ComputeBendingDeflections()
 
 void ConcLdBeam::ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
-   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   ATLASSERT(!(WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
       if ( x < m_a )
          fx = 0;
       else
          fx = -m_Q;
    }
-   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   else if ( WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
       if ( x < m_a )
          fx = -m_Fxl;
@@ -291,8 +291,8 @@ void ConcLdBeam::ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &m
 
 void ConcLdBeam::ComputeBendingForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -320,8 +320,8 @@ void ConcLdBeam::ComputeBendingForces(Float64 x,Float64 &fx,Float64 &fy,Float64 
 
 void ConcLdBeam::ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
-   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   ATLASSERT(!(WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
       if ( x < m_a )
       {
@@ -332,7 +332,7 @@ void ConcLdBeam::ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy,Float6
          dx = m_Q*m_b*(m_L-x)/(m_EA*m_b);
       }
    }
-   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   else if ( WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
       if ( x < m_a )
       {
@@ -361,8 +361,8 @@ void ConcLdBeam::ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy,Float6
 
 void ConcLdBeam::ComputeBendingDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -1257,16 +1257,16 @@ void TrapezoidalLdBeam::ComputeDeflections()
 void TrapezoidalLdBeam::ComputeAxialReactions()
 {
    // can't have axial releases at both ends
-   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   ATLASSERT(!(WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
 
    Float64 W = 0.5*(m_wb+m_wa)*(m_Lb-m_La); // force resultant
 
-   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   if ( WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
       m_Fxl = 0;
       m_Fxr = -W;
    }
-   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   else if ( WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
       m_Fxl = -W;
       m_Fxr = 0;
@@ -1295,8 +1295,8 @@ void TrapezoidalLdBeam::ComputeAxialReactions()
 
 void TrapezoidalLdBeam::ComputeBendingReactions()
 {
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -1335,8 +1335,8 @@ void TrapezoidalLdBeam::ComputeAxialDeflections()
 
 void TrapezoidalLdBeam::ComputeBendingDeflections()
 {
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -1364,13 +1364,13 @@ void TrapezoidalLdBeam::ComputeBendingDeflections()
 
 void TrapezoidalLdBeam::ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   ATLASSERT(!(WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
 
    Float64 a = m_La;
    Float64 b = m_Lb;
    Float64 W = 0.5*(m_wa + m_wb)*(b-a); // force resultant
 
-   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   if ( WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
       if ( x <= a )
       {
@@ -1389,7 +1389,7 @@ void TrapezoidalLdBeam::ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Flo
          fx = -W;
       }
    }
-   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   else if ( WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
       if ( x <= a )
       {
@@ -1435,8 +1435,8 @@ void TrapezoidalLdBeam::ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Flo
 
 void TrapezoidalLdBeam::ComputeBendingForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -1464,11 +1464,11 @@ void TrapezoidalLdBeam::ComputeBendingForces(Float64 x,Float64 &fx,Float64 &fy,F
 
 void TrapezoidalLdBeam::ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   ATLASSERT(!(WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
 
    Float64 W = (m_wb+m_wa)/2. *(m_Lb-m_La); // force resultant
 
-   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   if ( WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
       // for this case, the beam is fixed on the right end and free on the left
       // our code is for fixed left and free right... just turn the variables around
@@ -1493,7 +1493,7 @@ void TrapezoidalLdBeam::ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy
          dx = -m_Fxr/m_EA*(m_L-x);
       }
    }
-   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   else if ( WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
       if ( x <= m_La )
       {
@@ -1534,8 +1534,8 @@ void TrapezoidalLdBeam::ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy
 
 void TrapezoidalLdBeam::ComputeBendingDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -2856,13 +2856,13 @@ void MemberStrainBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &
 void MemberStrainBeam::ComputeReactions()
 {
    // can't have axial releases at both ends
-   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
-   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   ATLASSERT(!(WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
       m_Fxl = 0;
       m_Fxr = 0;
    }
-   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   else if ( WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
       m_Fxl = 0;
       m_Fxr = 0;
@@ -2873,8 +2873,8 @@ void MemberStrainBeam::ComputeReactions()
       m_Fxr = -m_Fxl;
    }
 
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 
@@ -2902,13 +2902,13 @@ void MemberStrainBeam::ComputeReactions()
 
 void MemberStrainBeam::ComputeDeflections()
 {
-   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
-   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   ATLASSERT(!(WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( WBFL::System::Flags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
    {
       m_Dxl = m_Qx*(m_L - m_A);
       m_Dxr = 0;
    }
-   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   else if ( WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
    {
       m_Dxl = 0;
       m_Dxr = m_Qx*m_A;
@@ -2919,8 +2919,8 @@ void MemberStrainBeam::ComputeDeflections()
       m_Dxr = 0.0;
    }
 
-   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
-   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedLeft  = WBFL::System::Flags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = WBFL::System::Flags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
    bool bFixedLeft  = !bPinnedLeft;
    bool bFixedRight = !bPinnedRight;
 

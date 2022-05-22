@@ -463,9 +463,9 @@ bool lrfdShear::AssertValid() const
    return true;
 }
 
-void lrfdShear::Dump(dbgDumpContext& os) const
+void lrfdShear::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdShear" << endl;
+   os << "Dump for lrfdShear" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -518,9 +518,9 @@ bool lrfdWsdotShear::AssertValid() const
    return true;
 }
 
-void lrfdWsdotShear::Dump(dbgDumpContext& os) const
+void lrfdWsdotShear::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdWsdotShear" << endl;
+   os << "Dump for lrfdWsdotShear" << WBFL::Debug::endl;
    lrfdShear::Dump(os);
 }
 #endif // _DEBUG
@@ -1889,7 +1889,7 @@ void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2)
 
 
 #if defined _UNITTEST
-bool lrfdShear::TestMe(dbgLog& rlog)
+bool lrfdShear::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdShear");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for lrfdShear");

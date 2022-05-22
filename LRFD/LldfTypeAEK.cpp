@@ -239,14 +239,14 @@ bool lrfdLldfTypeAEK::AssertValid() const
    return lrfdLldfTypeAEKIJ::AssertValid();
 }
 
-void lrfdLldfTypeAEK::Dump(dbgDumpContext& os) const
+void lrfdLldfTypeAEK::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLldfTypeAEKIJ::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool lrfdLldfTypeAEK::TestMe(dbgLog& rlog)
+bool lrfdLldfTypeAEK::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeAEK");
 
@@ -565,7 +565,7 @@ bool lrfdWsdotLldfTypeAEK::AssertValid() const
    return lrfdLldfTypeAEKIJ::AssertValid();
 }
 
-void lrfdWsdotLldfTypeAEK::Dump(dbgDumpContext& os) const
+void lrfdWsdotLldfTypeAEK::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLldfTypeAEKIJ::Dump( os );
 }
@@ -573,7 +573,7 @@ void lrfdWsdotLldfTypeAEK::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
+bool lrfdWsdotLldfTypeAEK::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdWsdotLldfTypeAEK");
 

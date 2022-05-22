@@ -563,14 +563,14 @@ bool lrfdTxdotLldfSpreadSlab::AssertValid() const
    return lrfdLiveLoadDistributionFactorBase::AssertValid();
 }
 
-void lrfdTxdotLldfSpreadSlab::Dump(dbgDumpContext& os) const
+void lrfdTxdotLldfSpreadSlab::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLiveLoadDistributionFactorBase::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool lrfdTxdotLldfSpreadSlab::TestMe(dbgLog& rlog)
+bool lrfdTxdotLldfSpreadSlab::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdTxdotLldfSpreadSlab");
 

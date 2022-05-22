@@ -30,14 +30,14 @@
 #include <System\SectionValue.h>
 #include <System\NumericFormatTool.h>
 
-class sysSectionValue;
+class WBFL::System::SectionValue;
 
 /// Report content for scalar section values.
 class REPORTERCLASS rptRcSectionScalar : public rptReportContent
 {
 public:
    rptRcSectionScalar();
-   rptRcSectionScalar(const sysSectionValue& scalar);
+   rptRcSectionScalar(const WBFL::System::SectionValue& scalar);
    rptRcSectionScalar(const rptRcSectionScalar& rOther);
    virtual ~rptRcSectionScalar();
 
@@ -59,10 +59,10 @@ public:
    ) const;
 
    /// Assigns a section value and returns a reference to this
-   rptReportContent& SetValue(const sysSectionValue& value);
+   rptReportContent& SetValue(const WBFL::System::SectionValue& value);
 
    /// Returns the section value
-   const sysSectionValue& GetValue() const;
+   const WBFL::System::SectionValue& GetValue() const;
 
    /// Returns the left section value
    Float64 GetLeftValue() const;
@@ -71,10 +71,10 @@ public:
    Float64 GetRightValue() const;
 
    /// Sets the output format
-   void SetFormat(sysNumericFormatTool::Format format);
+   void SetFormat(WBFL::System::NumericFormatTool::Format format);
 
    /// Returns the output format
-   sysNumericFormatTool::Format GetFormat() const;
+   WBFL::System::NumericFormatTool::Format GetFormat() const;
 
    /// Sets the output precision
    void SetPrecision(Uint16 precision);
@@ -96,8 +96,8 @@ protected:
    void MakeAssignment(const rptRcSectionScalar& rOther);
 
 private:
-   sysSectionValue m_Value;
-   sysNumericFormatTool::Format m_Format;
+   WBFL::System::SectionValue m_Value;
+   WBFL::System::NumericFormatTool::Format m_Format;
    Uint16 m_Precision;
    Uint16 m_Width;
 

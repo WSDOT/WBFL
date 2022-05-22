@@ -32,7 +32,7 @@ namespace WBFL
       class UNITSCLASS UnitTest
       {
       public:
-         static bool TestMe(dbgLog& rlog);
+         static bool TestMe(WBFL::Debug::Log& rlog);
       };
    };
 };

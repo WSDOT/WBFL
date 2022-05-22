@@ -152,7 +152,7 @@ const SectionComponent& Section::GetComponent(IndexType idx) const
    }
    else
    {
-      throw std::invalid_argument("Section::GetComponent - invalid index");
+      THROW_GEOMETRY(_T("Section::GetComponent - invalid index"));
    }
 }
 
@@ -164,7 +164,7 @@ SectionComponent& Section::GetComponent(IndexType idx)
    }
    else
    {
-      throw std::invalid_argument("Section::GetComponent - invalid index");
+      THROW_GEOMETRY(_T("Section::GetComponent - invalid index"));
    }
 }
 
@@ -176,7 +176,7 @@ void Section::RemoveComponent(IndexType idx)
    }
    else
    {
-      throw std::invalid_argument("Section::GetComponent - invalid index");
+      THROW_GEOMETRY(_T("Section::GetComponent - invalid index"));
    }
 }
 
@@ -275,10 +275,10 @@ bool Section::AssertValid() const
    return true;
 }
 
-void Section::Dump(dbgDumpContext& os) const
+void Section::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for Section" << endl;
-   os << "  Component Container has "<< m_Components.size()<<endl;
+   os << "Dump for Section" << WBFL::Debug::endl;
+   os << "  Component Container has "<< m_Components.size()<< WBFL::Debug::endl;
    std::for_each(std::cbegin(m_Components), std::cend(m_Components), [&](const auto& component) {component.Dump(os); });
 }
 #endif // _DEBUG
@@ -286,7 +286,7 @@ void Section::Dump(dbgDumpContext& os) const
 #if defined _UNITTEST
 #include <GeomModel/Rectangle.h>
 #include <MathEx.h>
-bool Section::TestMe(dbgLog& rlog)
+bool Section::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Section");
 

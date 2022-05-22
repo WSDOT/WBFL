@@ -215,7 +215,7 @@ std::shared_ptr<Shape> BoxBeam::GetBoxShape() const
 std::shared_ptr<Shape> BoxBeam::GetVoidShape(IndexType voidIdx) const
 {
    if (m_nVoids <= voidIdx)
-      throw std::invalid_argument("BoxBeam::GetVoidShape - invalid index");
+      THROW_GEOMETRY(_T("BoxBeam::GetVoidShape - invalid index"));
 
    return GetComposite()->GetShape(voidIdx + 1);
 }
@@ -226,9 +226,9 @@ bool BoxBeam::AssertValid() const
    return __super::AssertValid();
 }
 
-void BoxBeam::Dump(dbgDumpContext& os) const
+void BoxBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for BoxBeam ***")<<endl;
+   os << _T("*** Dump for BoxBeam ***")<< WBFL::Debug::endl;
    __super::Dump( os );
 }
 #endif // _DEBUG
@@ -391,7 +391,7 @@ void BoxBeam::OnUpdateComposite(std::unique_ptr<CompositeShape>& composite) cons
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool BoxBeam::TestMe(dbgLog& rlog)
+bool BoxBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("BoxBeam");
 
@@ -759,7 +759,7 @@ bool BoxBeam::TestMe(dbgLog& rlog)
    TRY_TESTME(i == points.size());
 
 //#if defined _DEBUG
-//   rt.Dump(rlog.GetDumpCtx());
+//   rt.Dump(rlog.GetLogContext());
 //#endif
 
    TESTME_EPILOG("VoidedSlab");

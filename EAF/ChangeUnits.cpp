@@ -33,44 +33,44 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-txnChangeUnits::txnChangeUnits(IBroker* pBroker,eafTypes::UnitMode oldUnits,eafTypes::UnitMode newUnits)
+CEAFChangeUnits::CEAFChangeUnits(IBroker* pBroker,eafTypes::UnitMode oldUnits,eafTypes::UnitMode newUnits)
 {
    m_pBroker     = pBroker;
    m_UnitMode[0] = oldUnits;
    m_UnitMode[1] = newUnits;
 }
 
-std::_tstring txnChangeUnits::Name() const
+std::_tstring CEAFChangeUnits::Name() const
 {
    return _T("Change Units");
 }
 
-txnTransaction* txnChangeUnits::CreateClone() const
+std::unique_ptr<CEAFTransaction> CEAFChangeUnits::CreateClone() const
 {
-   return new txnChangeUnits(m_pBroker,m_UnitMode[0],m_UnitMode[1]);
+   return std::make_unique<CEAFChangeUnits>(m_pBroker,m_UnitMode[0],m_UnitMode[1]);
 }
 
-bool txnChangeUnits::IsUndoable()
+bool CEAFChangeUnits::IsUndoable() const
 {
    return true;
 }
 
-bool txnChangeUnits::IsRepeatable()
+bool CEAFChangeUnits::IsRepeatable() const
 {
    return false;
 }
 
-bool txnChangeUnits::Execute()
+bool CEAFChangeUnits::Execute()
 {
    return DoExecute(1);
 }
 
-void txnChangeUnits::Undo()
+void CEAFChangeUnits::Undo()
 {
    DoExecute(0);
 }
 
-bool txnChangeUnits::DoExecute(int i)
+bool CEAFChangeUnits::DoExecute(int i)
 {
    GET_IFACE(IEAFDisplayUnits,pDisplayUnits);
    //GET_IFACE(IEvents,pEvents);

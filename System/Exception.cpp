@@ -22,14 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysXBase
-****************************************************************************/
-
 #include <System\Exception.h>
-#include <sstream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,28 +30,19 @@ CLASS
 static char THIS_FILE[] = __FILE__;
 #endif
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::System;
 
-//======================== LIFECYCLE  =======================================
-sysXBase::sysXBase(LPCTSTR file, Int32 line ) :
+XBase::XBase(LPCTSTR file, Int32 line ) :
 m_File( file ),
 m_Line( line )
 {
 }
 
-sysXBase::sysXBase(const sysXBase& rOther)
-{
-   MakeCopy(rOther);
-}
-
-sysXBase::~sysXBase()
+XBase::~XBase()
 {
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-void sysXBase::GetErrorMessage(std::_tstring* pMsg) const
+void XBase::GetErrorMessage(std::_tstring* pMsg) const
 {
    const type_info& ti = typeid(*this);
    std::_tostringstream os;
@@ -67,54 +51,12 @@ void sysXBase::GetErrorMessage(std::_tstring* pMsg) const
    *pMsg = os.str();
 }
 
-LPCTSTR sysXBase::GetFile() const
+LPCTSTR XBase::GetFile() const noexcept
 {
    return m_File.c_str();
 }
 
-Int32 sysXBase::GetLine() const
+Int32 XBase::GetLine() const noexcept
 {
    return m_Line;
 }
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-sysXBase& sysXBase::operator= (const sysXBase& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void sysXBase::MakeCopy(const sysXBase& rOther)
-{
-   m_File = rOther.m_File;
-   m_Line = rOther.m_Line;
-}
-
-void sysXBase::MakeAssignment(const sysXBase& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

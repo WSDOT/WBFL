@@ -2,5 +2,4 @@
 
 LIBRARY      "WBFLEAF.dll"
 
-EXPORTS
-    ; Explicit exports can go here
+EXPORTS  UnitTest @1

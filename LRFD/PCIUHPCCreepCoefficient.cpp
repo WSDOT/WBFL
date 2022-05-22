@@ -70,7 +70,7 @@ Float64 lrfdPCIUHPCCreepCoefficient::ComputeKtd(Float64 t) const
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdPCIUHPCCreepCoefficient::TestMe(dbgLog& rlog)
+bool lrfdPCIUHPCCreepCoefficient::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdPCIUHPCCreepCoefficient");
 

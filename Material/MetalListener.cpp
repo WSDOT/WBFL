@@ -70,13 +70,13 @@ bool matMetalListener::AssertValid() const
    return true;
 }
 
-void matMetalListener::Dump(dbgDumpContext& os) const
+void matMetalListener::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for matMetalListener" << endl;
+   os << "Dump for matMetalListener" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 #if defined _UNITTEST
-bool matMetalListener::TestMe(dbgLog& rlog)
+bool matMetalListener::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matMetalListener");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matMetalListener");

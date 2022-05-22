@@ -65,7 +65,7 @@ lrfdStrandPool* lrfdStrandPool::GetInstance()
    if ( !ms_pInstance )
    {
       ms_pInstance = new lrfdStrandPool;
-      ms_Killer.SetDoomed( ms_pInstance );
+      ms_Killer.SetSingleton( ms_pInstance );
    }
 
    return ms_pInstance;
@@ -126,9 +126,9 @@ bool lrfdStrandPool::AssertValid() const
    return true;
 }
 
-void lrfdStrandPool::Dump(dbgDumpContext& os) const
+void lrfdStrandPool::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for lrfdStrandPool") << endl;
+   os << _T("Dump for lrfdStrandPool") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -424,9 +424,9 @@ bool lrfdStrandIter::AssertValid() const
    return true;
 }
 
-void lrfdStrandIter::Dump(dbgDumpContext& os) const
+void lrfdStrandIter::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for lrfdStrandIter") << endl;
+   os << _T("Dump for lrfdStrandIter") << WBFL::Debug::endl;
 }
 
 #endif // _DEBUG
@@ -464,7 +464,7 @@ void lrfdStrandIter::MakeCopy(const lrfdStrandIter& rOther)
 
 
 #if defined _UNITTEST
-bool lrfdStrandPool::TestMe(dbgLog& rlog)
+bool lrfdStrandPool::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdStrandPool");
 
@@ -506,7 +506,7 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
             matPsStrand::Coating coating = (cCoating == 0 ? matPsStrand::None : matPsStrand::GritEpoxy);
             for ( cSize = nSize; cSize < sizeof(size)/sizeof(matPsStrand::Size); cSize++ )
             {
-               rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Coating = ") << coating << _T(" Size = ") << size[cSize] << endl;
+               rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Coating = ") << coating << _T(" Size = ") << size[cSize] << WBFL::Debug::endl;
                hashval = hash( grade, type, coating, size[cSize] );
                pStrand = pPool->GetStrand( hashval );
                if (pStrand)
@@ -519,7 +519,7 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
                }
                else
                {
-                  rlog << _T("Strand not defined in strand pool") << endl;
+                  rlog << _T("Strand not defined in strand pool") << WBFL::Debug::endl;
                }
             }
          }
@@ -532,7 +532,7 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
    TESTME_EPILOG("lrfdStrandPool");
 }
 
-bool lrfdStrandIter::TestMe(dbgLog& rlog)
+bool lrfdStrandIter::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdStrandIter");
 
@@ -559,8 +559,8 @@ bool lrfdStrandIter::TestMe(dbgLog& rlog)
             const matPsStrand* pStrand = iter.GetCurrentStrand();
             TRY_TESTME( pStrand != 0 );
 
-            rlog << pStrand->GetName() << endl;
-            rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Size = ") << pStrand->GetSize() << endl;
+            rlog << pStrand->GetName() << WBFL::Debug::endl;
+            rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Size = ") << pStrand->GetSize() << WBFL::Debug::endl;
 
             TRY_TESTME( pStrand->GetGrade() == grade );
             TRY_TESTME( pStrand->GetType()  == type );

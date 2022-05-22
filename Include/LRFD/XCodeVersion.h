@@ -59,7 +59,7 @@ LOG
    rab : 11.14.1997 : Created file
 *****************************************************************************/
 
-class LRFDCLASS lrfdXCodeVersion : public sysXBase
+class LRFDCLASS lrfdXCodeVersion : public WBFL::System::XBase
 {
 public:
    // GROUP: ENUMERATION
@@ -75,21 +75,21 @@ public:
 
    //------------------------------------------------------------------------
    // Copy constructor
-   lrfdXCodeVersion(const lrfdXCodeVersion& rOther);
+   lrfdXCodeVersion(const lrfdXCodeVersion& rOther) = default;
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXCodeVersion() override;
+   virtual ~lrfdXCodeVersion() = default;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Assignment operator
-   lrfdXCodeVersion& operator = (const lrfdXCodeVersion& rOther);
+   lrfdXCodeVersion& operator = (const lrfdXCodeVersion& rOther) = default;
 
    // GROUP: OPERATIONS
    virtual void Throw() const override;
-   virtual Int32 GetReason() const override;
-   Reason GetReasonCode() const;
+   virtual Int32 GetReason() const noexcept override;
+   Reason GetReasonCode() const noexcept;
 
    // GROUP: ACCESS
 
@@ -103,22 +103,8 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdXCodeVersion& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdXCodeVersion& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS

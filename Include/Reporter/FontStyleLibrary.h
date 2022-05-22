@@ -76,7 +76,7 @@ private:
    // singleton instance
    static rptFontStyleLibrary* ms_pInstance;
 
-   typedef sysSingletonKillerT<rptFontStyleLibrary> Killer;
+   typedef WBFL::System::SingletonKiller<rptFontStyleLibrary> Killer;
    friend Killer;
    static Killer ms_Killer;
 

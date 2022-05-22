@@ -171,17 +171,17 @@ bool mathQuadraticSolver::AssertValid() const
    return true;
 }
 
-void mathQuadraticSolver::Dump(dbgDumpContext& os) const
+void mathQuadraticSolver::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for mathQuadraticSolver" << endl;
-   os << "m_A = " << m_A << endl;
-   os << "m_B = " << m_B << endl;
-   os << "m_C = " << m_C << endl;
+   os << "Dump for mathQuadraticSolver" << WBFL::Debug::endl;
+   os << "m_A = " << m_A << WBFL::Debug::endl;
+   os << "m_B = " << m_B << WBFL::Debug::endl;
+   os << "m_C = " << m_C << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathQuadraticSolver::TestMe(dbgLog& rlog)
+bool mathQuadraticSolver::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathQuadraticSolver");
 

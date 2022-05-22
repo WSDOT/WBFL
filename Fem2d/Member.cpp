@@ -1466,11 +1466,11 @@ bool CMember::IsReleased(Fem2dMbrEndType end,Fem2dMbrReleaseType releaseType)
    
 	if (end == metStart)
    {
-      bIsReleased = ((m_StartReleases == 0 && flag == 0) || sysFlags<long>::IsSet(m_StartReleases,flag) ? true : false);
+      bIsReleased = ((m_StartReleases == 0 && flag == 0) || WBFL::System::Flags<long>::IsSet(m_StartReleases,flag) ? true : false);
    }
    else
    {
-      bIsReleased = ((m_EndReleases == 0 && flag == 0) || sysFlags<long>::IsSet(m_EndReleases,flag) ? true : false);
+      bIsReleased = ((m_EndReleases == 0 && flag == 0) || WBFL::System::Flags<long>::IsSet(m_EndReleases,flag) ? true : false);
    }
 
    return bIsReleased;

@@ -246,21 +246,21 @@ bool lrfdLoadModifier::AssertValid() const
    return true;
 }
 
-void lrfdLoadModifier::Dump(dbgDumpContext& os) const
+void lrfdLoadModifier::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdLoadModifier" << endl;
-   os << "m_Ductility  = " << m_Ductility << endl;
-   os << "m_Redundancy = " << m_Redundancy << endl;
-   os << "m_Importance = " << m_Importance << endl;
-   os << "m_DuctilityLevel  = " << m_DuctilityLevel << endl;
-   os << "m_ImportanceLevel = " << m_ImportanceLevel << endl;
-   os << "m_RedundancyLevel = " << m_RedundancyLevel << endl;
+   os << "Dump for lrfdLoadModifier" << WBFL::Debug::endl;
+   os << "m_Ductility  = " << m_Ductility << WBFL::Debug::endl;
+   os << "m_Redundancy = " << m_Redundancy << WBFL::Debug::endl;
+   os << "m_Importance = " << m_Importance << WBFL::Debug::endl;
+   os << "m_DuctilityLevel  = " << m_DuctilityLevel << WBFL::Debug::endl;
+   os << "m_ImportanceLevel = " << m_ImportanceLevel << WBFL::Debug::endl;
+   os << "m_RedundancyLevel = " << m_RedundancyLevel << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include <Lrfd\AutoVersion.h>
-bool lrfdLoadModifier::TestMe(dbgLog& rlog)
+bool lrfdLoadModifier::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLoadModifier");
 

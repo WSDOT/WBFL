@@ -166,19 +166,19 @@ public:
       Float64 GetMultiplePresenceFactor() const
       {
          Float64 m;
-         if (sysFlags<Int16>::IsSet(ControllingMethod, SPEC_EQN))
+         if (WBFL::System::Flags<Int16>::IsSet(ControllingMethod, SPEC_EQN))
          {
             m = EqnData.m;
          }
-         else if (sysFlags<Int16>::IsSet(ControllingMethod, LEVER_RULE))
+         else if (WBFL::System::Flags<Int16>::IsSet(ControllingMethod, LEVER_RULE))
          {
             m = LeverRuleData.m;
          }
-         else if (sysFlags<Int16>::IsSet(ControllingMethod, RIGID_METHOD))
+         else if (WBFL::System::Flags<Int16>::IsSet(ControllingMethod, RIGID_METHOD))
          {
             m = RigidData.m;
          }
-         else if (sysFlags<Int16>::IsSet(ControllingMethod, LANES_DIV_BEAMS))
+         else if (WBFL::System::Flags<Int16>::IsSet(ControllingMethod, LANES_DIV_BEAMS))
          {
             m = LanesBeamsData.m;
          }

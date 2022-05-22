@@ -22,12 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysXStructuredLoad
-****************************************************************************/
-
 #include <System\XStructuredLoad.h>
 
 #ifdef _DEBUG
@@ -39,123 +33,66 @@ CLASS
 static char THIS_FILE[] = __FILE__;
 #endif
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::System;
 
-//======================== LIFECYCLE  =======================================
-sysXStructuredLoad::sysXStructuredLoad(sysXStructuredLoad::Reason reason,
-                                       LPCTSTR file, Int16 line) :
-sysXBase(file,line),
+XStructuredLoad::XStructuredLoad(XStructuredLoad::Reason reason, LPCTSTR file, Int16 line) :
+XBase(file,line),
 m_Reason(reason)
 {
 }
 
-sysXStructuredLoad::sysXStructuredLoad(const sysXStructuredLoad& rOther) :
-sysXBase(rOther)
-{
-   MakeCopy(rOther);
-}
-
-sysXStructuredLoad::~sysXStructuredLoad()
-{
-}
-
-//======================== OPERATORS  =======================================
-sysXStructuredLoad& sysXStructuredLoad::operator= (const sysXStructuredLoad& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void sysXStructuredLoad::Throw() const
+void XStructuredLoad::Throw() const
 {
    throw *this; //*static_cast<const sysXStructuredLoad*>(this);
 }
 
-Int32 sysXStructuredLoad::GetReason() const
+Int32 XStructuredLoad::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-sysXStructuredLoad::Reason sysXStructuredLoad::GetExplicitReason() const
+XStructuredLoad::Reason XStructuredLoad::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
 
-void sysXStructuredLoad::GetErrorMessage(std::_tstring* pMsg) const
+void XStructuredLoad::SetExtendedMessage(LPCTSTR msg)
 {
-#if defined _DEBUG
-   sysXBase::GetErrorMessage(pMsg);
-#endif
+   m_ExtendedMessage = std::_tstring(msg);
+}
 
+void XStructuredLoad::GetErrorMessage(std::_tstring* pMsg) const
+{
+   __super::GetErrorMessage(pMsg);
    switch (m_Reason)
    {
-   case (sysXStructuredLoad::InvalidFileFormat):
+   case InvalidFileFormat:
       *pMsg += _T("File format was invalid\n\n");
       break;
-   case (sysXStructuredLoad::EndOfFile):
+   case EndOfFile:
       *pMsg += _T("Unexpected end of file\n\n");
       break;
-   case (sysXStructuredLoad::BadRead):
+   case BadRead:
       *pMsg += _T("Unexpected error trying to read file\n\n");
       break;
-   case (sysXStructuredLoad::BadVersion):
+   case BadVersion:
       *pMsg += _T("Unexpected version number reading structured data\n\n");
       break;
-   case (sysXStructuredLoad::MemoryError):
+   case MemoryError:
       *pMsg += _T("Memory allocation error during structured read\n\n");
       break;
-   case (sysXStructuredLoad::CantInitializeTheParser):
+   case CantInitializeTheParser:
       *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed\n\n");
       break;
-   case (sysXStructuredLoad::UserDefined):
+   case UserDefined:
+      *pMsg += _T("User Defined error reading structured data\n\n");
+      break;
+   case Unspecified:
+      *pMsg += _T("Unspecified error reading structured data\n\n");
       break;
    default:
       *pMsg += _T("Unknown error reading structured data\n\n");
       break;
    }
-   *pMsg +=m_ExtendedMessage;
+   *pMsg += m_ExtendedMessage;
 }
-
-void sysXStructuredLoad::SetExtendedMessage(LPCTSTR msg)
-{
-   m_ExtendedMessage = std::_tstring(msg);
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void sysXStructuredLoad::MakeCopy(const sysXStructuredLoad& rOther)
-{
-   m_Reason          = rOther.m_Reason;
-   m_ExtendedMessage = rOther.m_ExtendedMessage;
-}
-
-void sysXStructuredLoad::MakeAssignment(const sysXStructuredLoad& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-

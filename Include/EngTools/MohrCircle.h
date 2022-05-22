@@ -64,7 +64,7 @@ public:
 
 #if defined _DEBUG
    bool AssertValid() const;
-   void Dump(dbgDumpContext& os) const;
+   void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST

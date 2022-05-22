@@ -108,13 +108,13 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   static void Dump(dbgDumpContext& os);
+   static void Dump(WBFL::Debug::LogContext& os);
 #endif // _DEBUG
 #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
    // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 protected:

@@ -210,7 +210,7 @@ bool matLinearStressStrainCurve::AssertValid() const
    return matYieldStressStrainCurve::AssertValid();
 }
 
-void matLinearStressStrainCurve::Dump(dbgDumpContext& os) const
+void matLinearStressStrainCurve::Dump(WBFL::Debug::LogContext& os) const
 {
    matYieldStressStrainCurve::Dump( os );
 }
@@ -247,7 +247,7 @@ void matLinearStressStrainCurve::MakeAssignment(const matLinearStressStrainCurve
 #include <Units\AutoSystem.h>
 #include <Units\System.h>
 
-bool matLinearStressStrainCurve::TestMe(dbgLog& rlog)
+bool matLinearStressStrainCurve::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matLinearStressStrainCurve");
 

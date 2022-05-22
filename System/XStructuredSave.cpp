@@ -22,12 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysXStructuredSave
-****************************************************************************/
-
 #include <System\XStructuredSave.h>
 
 #ifdef _DEBUG
@@ -36,102 +30,47 @@ CLASS
 static char THIS_FILE[] = __FILE__;
 #endif
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::System;
 
-//======================== LIFECYCLE  =======================================
-sysXStructuredSave::sysXStructuredSave(sysXStructuredSave::Reason reason,
-                                       LPCTSTR file, Int16 line) :
-sysXBase(file,line),
+XStructuredSave::XStructuredSave(XStructuredSave::Reason reason, LPCTSTR file, Int16 line) :
+XBase(file,line),
 m_Reason(reason)
 {
 }
 
-sysXStructuredSave::sysXStructuredSave(const sysXStructuredSave& rOther) :
-sysXBase(rOther)
+void XStructuredSave::Throw() const
 {
-   MakeCopy(rOther);
+   throw* this; //*static_cast<const sysXStructuredSave*>(this);
 }
 
-sysXStructuredSave::~sysXStructuredSave()
-{
-}
-
-//======================== OPERATORS  =======================================
-sysXStructuredSave& sysXStructuredSave::operator= (const sysXStructuredSave& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void sysXStructuredSave::Throw() const
-{
-   throw *this; //*static_cast<const sysXStructuredSave*>(this);
-}
-
-Int32 sysXStructuredSave::GetReason() const
+Int32 XStructuredSave::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-sysXStructuredSave::Reason sysXStructuredSave::GetExplicitReason() const
+XStructuredSave::Reason XStructuredSave::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
 
-void sysXStructuredSave::GetErrorMessage(std::_tstring* pMsg) const
+void XStructuredSave::GetErrorMessage(std::_tstring* pMsg) const
 {
-   sysXBase::GetErrorMessage(pMsg);
+   __super::GetErrorMessage(pMsg);
 
    switch (m_Reason)
    {
-   case (BadWrite):
-      *pMsg += _T("A unknown error occured writing to the file\n");
+   case BadWrite:
+      *pMsg += _T("A unknown error occured writing to the file");
       break;
-   case (sysXStructuredSave::CantInitializeTheParser):
-      *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed\n");
+   case CantInitializeTheParser:
+      *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed");
+      break;
+   case Unspecified:
+      *pMsg += _T("Unspecified error writing structured data");
       break;
    default:
-      *pMsg += _T("Unknown error saving structured data\n");
+      *pMsg += _T("Unknown error writing structured data");
       break;
    }
-   *pMsg += _T("\n");
-   *pMsg +=m_ExtendedMessage;
+   *pMsg += _T("\n\n");
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void sysXStructuredSave::MakeCopy(const sysXStructuredSave& rOther)
-{
-   m_Reason          = rOther.m_Reason;
-}
-
-void sysXStructuredSave::MakeAssignment(const sysXStructuredSave& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-

@@ -21,156 +21,59 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_NUMERICFORMATTOOL_H_
-#define INCLUDED_SYSTEM_NUMERICFORMATTOOL_H_
 #pragma once
 
-#include <string>
 #include <System\SysExp.h>
-#include <System\INumericFormatToolBase.h>
+#include <System\INumericFormatTool.h>
+#include <string>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-class sysSectionValue;
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysNumericFormatTool
-
-   Formats numeric values and returns them as strings.  Extends the standard
-   iostream capabilities by adding engineering notation.
-
-
-DESCRIPTION
-   Formats numeric values and returns them as strings.  Extends the standard
-   iostream capabilities by adding engineering notation.
-
-LOG
-   rab : 11.03.1997 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysNumericFormatTool : public sysINumericFormatToolBase
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATIONS
-   enum Format { Automatic = 1,   // Like fixed, except adjusts precision downwards
-                                  // to eliminate trailing zeros
-                 Fixed = 2,       // Fixed format
-                 Scientific = 3,  // Exponential format
-                 Engineering = 4  // Exponential format where the exponent is a
-                                  // multiple of three
+   namespace System
+   {
+      class SectionValue;
+
+      /// Formats numeric values and returns them as strings.  Extends the standard iostream capabilities by adding engineering notation.
+      ///
+      /// Engineering notation is an exponential format where the exponent is a multiple of three. e.g. 1x10^3, 1x10^6, 1X10^9, etc.
+      class SYSCLASS NumericFormatTool : public INumericFormatTool
+      {
+      public:
+         enum class Format { Automatic,   //< Like fixed, except adjusts precision downwards to eliminate trailing zeros
+                             Fixed,       //< Fixed format
+                             Scientific,  //< Scientific notation exponential format
+                             Engineering  //< Exponential format where the exponent is a multiple of three
+         };
+
+         NumericFormatTool(
+            Format format = Format::Automatic, ///< Format of the output string
+            Uint16 width = 0, ///< Overall width of the string (same as width specifier for std::cout)
+            Uint16 precision = 0 ///< Numeric precision represented in the output string (same as the precision specifier for std::cout)
+         );
+         NumericFormatTool(const NumericFormatTool&) = default;
+         virtual ~NumericFormatTool() = default;
+
+         NumericFormatTool& operator=(const NumericFormatTool&) = default;
+
+         /// Returns the value as formatted string
+         virtual std::_tstring AsString(Float64 value) const override;
+
+         /// Returns the value as formatted string
+         virtual std::_tstring AsString(const WBFL::System::SectionValue& value) const;
+
+         void SetFormat(Format f) { m_Format = f; }
+         Format GetFormat() const { return m_Format; }
+
+         void SetWidth(Uint16 w) { m_Width = w; }
+         Uint16 GetWidth() const { return m_Width; }
+
+         void SetPrecision(Uint16 p) { m_Precision = p; }
+         Uint16 GetPrecision() const { return m_Precision; }
+
+      protected:
+         Format m_Format{ Format::Automatic };
+         Uint16 m_Width{ 0 };
+         Uint16 m_Precision{ 0 };
+      };
    };
-
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor.
-   sysNumericFormatTool(Format format = Automatic, Uint16 width = 0, Uint16 precision = 0);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   sysNumericFormatTool(const sysNumericFormatTool& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~sysNumericFormatTool();
-
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   sysNumericFormatTool& operator = (const sysNumericFormatTool& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   virtual std::_tstring AsString(Float64 value) const override;
-   virtual std::_tstring AsString(const sysSectionValue& value) const;
-
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   void SetFormat(Format f);
-   Format GetFormat() const;
-
-   //------------------------------------------------------------------------
-   void SetWidth(Uint16 w);
-   Uint16 GetWidth() const;
-
-   //------------------------------------------------------------------------
-   void SetPrecision(Uint16 p);
-   Uint16 GetPrecision() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const sysNumericFormatTool& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const sysNumericFormatTool& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   Format m_Format;
-   Uint16 m_Width;
-   Uint16 m_Precision;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-inline void sysNumericFormatTool::SetFormat(Format f)
-{
-   m_Format = f;
-}
-
-inline sysNumericFormatTool::Format sysNumericFormatTool::GetFormat() const
-{
-   return m_Format;
-}
-
-inline void sysNumericFormatTool::SetWidth(Uint16 w)
-{
-   m_Width = w;
-}
-
-inline Uint16 sysNumericFormatTool::GetWidth() const
-{
-   return m_Width;
-}
-
-inline void sysNumericFormatTool::SetPrecision(Uint16 p)
-{
-   m_Precision = p;
-}
-
-inline Uint16 sysNumericFormatTool::GetPrecision() const
-{
-   return m_Precision;
-}
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_NUMERICFORMATTOOL_H_

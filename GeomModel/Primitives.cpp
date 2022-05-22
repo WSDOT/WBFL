@@ -171,10 +171,10 @@ void Size2d::GetDimensions(Float64* dx, Float64* dy) const
 }
 
 #if defined _DEBUG
-void Size2d::Dump(dbgDumpContext& os) const
+void Size2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os <<_T( "Dump for Size2d") << endl;
-   os << _T("  (m_Dx, m_Dy) = (")<< m_Dx<<_T(", ")<< m_Dy<<_T(")")<<endl;
+   os <<_T( "Dump for Size2d") << WBFL::Debug::endl;
+   os << _T("  (m_Dx, m_Dy) = (")<< m_Dx<<_T(", ")<< m_Dy<<_T(")")<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -337,10 +337,10 @@ void Point2d::GetLocation(Float64* x, Float64* y) const
 }
 
 #if defined _DEBUG
-void Point2d::Dump(dbgDumpContext& os) const
+void Point2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for Point2d") << endl;
-   os << _T("  (m_X, m_Y) = (")<< m_X<<_T(", ")<< m_Y<<_T(")")<<endl;
+   os << _T("Dump for Point2d") << WBFL::Debug::endl;
+   os << _T("  (m_X, m_Y) = (")<< m_X<<_T(", ")<< m_Y<<_T(")")<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -597,11 +597,9 @@ Rect2d Rect2d::OffsetBy(const Size2d& delta) const
 
 Rect2d& Rect2d::Union(const Rect2d& rOther)
 {
-   if (!IsNormalized())
-      throw std::invalid_argument("Rect2d::Union - the target rectangle must be normalized");
+   if (!IsNormalized()) THROW_GEOMETRY(_T("Rect2d::Union - the target rectangle must be normalized"));
    
-   if(!rOther.IsNormalized())
-      throw std::invalid_argument("Rect2d::Union - the source rectangle must be normalized");
+   if(!rOther.IsNormalized()) THROW_GEOMETRY(_T("Rect2d::Union - the source rectangle must be normalized"));
 
    m_Left   = Min(rOther.m_Left,   m_Left);
    m_Bottom = Min(rOther.m_Bottom, m_Bottom);
@@ -612,11 +610,9 @@ Rect2d& Rect2d::Union(const Rect2d& rOther)
 
 Rect2d Rect2d::UnionBy(const Rect2d& rOther) const
 {
-   if (!IsNormalized())
-      throw std::invalid_argument("Rect2d::Union - the target rectangle must be normalized");
+   if (!IsNormalized()) THROW_GEOMETRY(_T("Rect2d::Union - the target rectangle must be normalized"));
 
-   if (!rOther.IsNormalized())
-      throw std::invalid_argument("Rect2d::Union - the source rectangle must be normalized");
+   if (!rOther.IsNormalized()) THROW_GEOMETRY(_T("Rect2d::Union - the source rectangle must be normalized"));
 
    return Rect2d( Min(rOther.m_Left,   m_Left),
                     Min(rOther.m_Bottom, m_Bottom),
@@ -626,11 +622,9 @@ Rect2d Rect2d::UnionBy(const Rect2d& rOther) const
 
 Rect2d& Rect2d::Intersection(const Rect2d& rOther)
 {
-   if (!IsNormalized())
-      throw std::invalid_argument("Rect2d::Intersection - the target rectangle must be normalized");
+   if (!IsNormalized()) THROW_GEOMETRY(_T("Rect2d::Intersection - the target rectangle must be normalized"));
 
-   if (!rOther.IsNormalized())
-      throw std::invalid_argument("Rect2d::Intersection - the source rectangle must be normalized");
+   if (!rOther.IsNormalized()) THROW_GEOMETRY(_T("Rect2d::Intersection - the source rectangle must be normalized"));
 
    if (Touches(rOther))
    {
@@ -652,11 +646,9 @@ Rect2d& Rect2d::Intersection(const Rect2d& rOther)
 
 Rect2d Rect2d::IntersectionBy(const Rect2d& rOther) const
 {
-   if (!IsNormalized())
-      throw std::invalid_argument("Rect2d::Intersection - the target rectangle must be normalized");
+   if (!IsNormalized()) THROW_GEOMETRY(_T("Rect2d::Intersection - the target rectangle must be normalized"));
 
-   if (!rOther.IsNormalized())
-      throw std::invalid_argument("Rect2d::Intersection - the source rectangle must be normalized");
+   if (!rOther.IsNormalized()) THROW_GEOMETRY(_T("Rect2d::Intersection - the source rectangle must be normalized"));
 
    if (Touches(rOther))
    {
@@ -671,8 +663,7 @@ Rect2d Rect2d::IntersectionBy(const Rect2d& rOther) const
 
 Rect2d& Rect2d::BoundPoint(Float64 x, Float64 y)
 {
-   if (!IsNormalized())
-      throw std::invalid_argument("Rect2d::BoundPoint - rectangle must be normalized");
+   if (!IsNormalized()) THROW_GEOMETRY(_T("Rect2d::BoundPoint - rectangle must be normalized"));
 
    m_Left = Min(x, m_Left);
    m_Bottom = Min(y, m_Bottom);
@@ -689,8 +680,7 @@ Rect2d& Rect2d::BoundPoint(const Point2d& point)
 
 Rect2d Rect2d::BoundPointBy(Float64 x,Float64 y) const
 {
-   if (!IsNormalized())
-      throw std::invalid_argument("Rect2d::BoundPointBy - rectangle must be normalized");
+   if (!IsNormalized()) THROW_GEOMETRY(_T("Rect2d::BoundPointBy - rectangle must be normalized"));
 
    Rect2d rect(*this);
    rect.BoundPoint(x,y);
@@ -801,16 +791,16 @@ Rect2d::RelPosition Rect2d::GetPosition(const Rect2d& other) const
 }
 
 #if defined _DEBUG
-void Rect2d::Dump(dbgDumpContext& os) const
+void Rect2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for Rect2d") << endl;
+   os << _T("Dump for Rect2d") << WBFL::Debug::endl;
    os << _T("  (Bottom,Left,Right,Top) = (")<< m_Bottom<<_T(", ")<< m_Left
-      <<_T(", ")<< m_Right<<_T(", ")<< m_Top<<_T(")")<<endl;
+      <<_T(", ")<< m_Right<<_T(", ")<< m_Top<<_T(")")<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool Size2d::TestMe(dbgLog& rlog)
+bool Size2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Size2d");
 
@@ -839,13 +829,13 @@ bool Size2d::TestMe(dbgLog& rlog)
    TRY_TESTME (s0_3.Magnitude() == 3);
 
 #if defined _DEBUG
-   s1_4.Dump(rlog.GetDumpCtx());
+   s1_4.Dump(rlog.GetLogContext());
 #endif
 
    TESTME_EPILOG("Size2d");
 }
 
-bool Point2d::TestMe(dbgLog& rlog)
+bool Point2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Point2d");
 
@@ -895,13 +885,13 @@ bool Point2d::TestMe(dbgLog& rlog)
    TRY_TESTME (pt1 == Point2d(3,6));
    
 #if defined _DEBUG
-   p1_4.Dump(rlog.GetDumpCtx());
+   p1_4.Dump(rlog.GetLogContext());
 #endif
 
    TESTME_EPILOG("Point2d");
 }
 
-bool Rect2d::TestMe(dbgLog& rlog)
+bool Rect2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Rect2d");
 
@@ -1369,7 +1359,7 @@ bool Rect2d::TestMe(dbgLog& rlog)
    }
 
 #if defined _DEBUG
-   r1.Dump(rlog.GetDumpCtx());
+   r1.Dump(rlog.GetLogContext());
 #endif
 
    TESTME_EPILOG("Rect2d");

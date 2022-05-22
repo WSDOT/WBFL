@@ -41,14 +41,14 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 mathXFixedPointIterationFailed::mathXFixedPointIterationFailed(Reason reason,Float64 last,LPCTSTR file,Int16 line) :
-sysXBase(file,line)
+   WBFL::System::XBase(file,line)
 {
    m_Reason = reason;
    m_Last = last;
 }
 
 mathXFixedPointIterationFailed::mathXFixedPointIterationFailed(const mathXFixedPointIterationFailed& rOther) :
-sysXBase( rOther )
+   WBFL::System::XBase( rOther )
 {
    m_Reason = rOther.m_Reason;
    m_Last = rOther.m_Last;
@@ -64,7 +64,7 @@ mathXFixedPointIterationFailed& mathXFixedPointIterationFailed::operator=(const 
 {
    if ( this != &rOther )
    {
-      sysXBase::operator=( rOther);
+      WBFL::System::XBase::operator=( rOther);
       m_Reason = rOther.m_Reason;
       m_Last = rOther.m_Last;
    }
@@ -83,12 +83,12 @@ Float64 mathXFixedPointIterationFailed::GetLast() const
    return m_Last;
 }
 
-Int32 mathXFixedPointIterationFailed::GetReason() const
+Int32 mathXFixedPointIterationFailed::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-mathXFixedPointIterationFailed::Reason mathXFixedPointIterationFailed::GetReasonCode() const
+mathXFixedPointIterationFailed::Reason mathXFixedPointIterationFailed::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
@@ -157,13 +157,13 @@ bool mathFixedPointIteration::AssertValid() const
    return true;
 }
 
-void mathFixedPointIteration::Dump(dbgDumpContext& os) const
+void mathFixedPointIteration::Dump(WBFL::Debug::LogContext& os) const
 {
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathFixedPointIteration::TestMe(dbgLog& rlog)
+bool mathFixedPointIteration::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathFixedPointIteration");
    // Unit Tests implemented on package level

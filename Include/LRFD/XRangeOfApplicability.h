@@ -58,7 +58,7 @@ LOG
    rab : 08.25.1997 : Created file
 *****************************************************************************/
 
-class LRFDCLASS lrfdXRangeOfApplicability : public sysXBase
+class LRFDCLASS lrfdXRangeOfApplicability : public WBFL::System::XBase
 {
 public:
    // GROUP: DATA MEMBERS
@@ -90,38 +90,28 @@ public:
 
    //------------------------------------------------------------------------
    // Copy constructor
-   lrfdXRangeOfApplicability(const lrfdXRangeOfApplicability& rOther);
+   lrfdXRangeOfApplicability(const lrfdXRangeOfApplicability& rOther) = default;
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXRangeOfApplicability() override;
+   virtual ~lrfdXRangeOfApplicability() = default;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Assignment operator
    //
    // Returns reference to itself
-   lrfdXRangeOfApplicability& operator = (const lrfdXRangeOfApplicability& rOther);
+   lrfdXRangeOfApplicability& operator = (const lrfdXRangeOfApplicability& rOther) = default;
 
    // GROUP: OPERATIONS
-   void Throw() const { throw *static_cast<const lrfdXRangeOfApplicability*>(this); }
-   Int32 GetReason() const { return (Int32)m_Reason; }
-   lrfdXRangeOfApplicability::Reason GetReasonCode() const { return m_Reason; }
+   virtual void Throw() const override { throw *static_cast<const lrfdXRangeOfApplicability*>(this); }
+   virtual Int32 GetReason() const noexcept override { return (Int32)m_Reason; }
+   lrfdXRangeOfApplicability::Reason GetReasonCode() const noexcept { return m_Reason; }
    virtual void GetErrorMessage(std::_tstring* pMsg) const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void MakeCopy(const lrfdXRangeOfApplicability& rOther);
-   void MakeAssignment(const lrfdXRangeOfApplicability& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS

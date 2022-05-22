@@ -380,14 +380,14 @@ bool matRebar::AssertValid() const
    return true;
 }
 
-void matRebar::Dump(dbgDumpContext& os) const
+void matRebar::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for matRebar" << endl;
+   os << "Dump for matRebar" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool matRebar::TestMe(dbgLog& rlog)
+bool matRebar::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matRebar");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matRebar");

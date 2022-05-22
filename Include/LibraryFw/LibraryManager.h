@@ -157,12 +157,12 @@ public:
 
    //------------------------------------------------------------------------
    // Save to structured storage
-   virtual bool SaveMe(sysIStructuredSave* pSave);
+   virtual bool SaveMe(WBFL::System::IStructuredSave* pSave);
 
    //------------------------------------------------------------------------
    // Load from structured storage. This function will load the library. It
    // should only be called once during the lifetime of this class.
-   virtual bool LoadMe(sysIStructuredLoad* pLoad);
+   virtual bool LoadMe(WBFL::System::IStructuredLoad* pLoad);
 
    // GROUP: INQUIRY
    //------------------------------------------------------------------------
@@ -171,7 +171,7 @@ public:
 
    bool IsDepreciated(CollectionIndexType idx) const;
 
-   sysTime GetTimeStamp() const;
+   const WBFL::System::Time& GetTimeStamp() const;
 
    std::vector<libEntryUsageRecord> GetInUseLibraryEntries() const;
 
@@ -184,7 +184,7 @@ protected:
    //------------------------------------------------------------------------
    LibraryContainerType m_Libraries;
 
-   sysTime m_LastSavedTime;
+   WBFL::System::Time m_LastSavedTime;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
@@ -220,14 +220,14 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
 
    #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Runs a self-diagnostic test.  Returns true if the test passed,
    // otherwise false.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 };
 

@@ -111,15 +111,15 @@ bool CoordinateXform2d::AssertValid() const
    return true;
 }
 
-void CoordinateXform2d::Dump(dbgDumpContext& os) const
+void CoordinateXform2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for CoordinateXform2d" << endl;
+   os << "Dump for CoordinateXform2d" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include <MathEx.h>
-bool CoordinateXform2d::TestMe(dbgLog& rlog)
+bool CoordinateXform2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("CoordinateXform2d");
 

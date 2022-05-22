@@ -238,15 +238,15 @@ bool lrfdCreepCoefficient2005::AssertValid() const
    return true;
 }
 
-void lrfdCreepCoefficient2005::Dump(dbgDumpContext& os) const
+void lrfdCreepCoefficient2005::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdCreepCoefficient2005" << endl;
+   os << "Dump for lrfdCreepCoefficient2005" << WBFL::Debug::endl;
                                                                                                                              }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdCreepCoefficient2005::TestMe(dbgLog& rlog)
+bool lrfdCreepCoefficient2005::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdCreepCoefficient2005");
 

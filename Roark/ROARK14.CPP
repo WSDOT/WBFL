@@ -97,7 +97,7 @@ void rkPPPartUniformLoad::GetDeflections(Float64* pYa,Float64* pYb) const
    *pYb = ComputeDeflection(L);
 }
 
-sysSectionValue rkPPPartUniformLoad::ComputeShear(Float64 x) const
+WBFL::System::SectionValue rkPPPartUniformLoad::ComputeShear(Float64 x) const
 {
    Float64 V;
    Float64 Ra,Rb;
@@ -114,10 +114,10 @@ sysSectionValue rkPPPartUniformLoad::ComputeShear(Float64 x) const
    else
       V = Ra + W;
 
-   return sysSectionValue( IsZero(x) ? 0.0 : V, IsEqual(x,L) ? 0.0 : V);
+   return WBFL::System::SectionValue( IsZero(x) ? 0.0 : V, IsEqual(x,L) ? 0.0 : V);
 }
 
-sysSectionValue rkPPPartUniformLoad::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue rkPPPartUniformLoad::ComputeMoment(Float64 x) const
 {
    Float64 M;
    Float64 Ra, Rb;
@@ -225,14 +225,14 @@ bool rkPPPartUniformLoad::AssertValid() const
    return rkRoarkBeam::AssertValid();
 }
 
-void rkPPPartUniformLoad::Dump(dbgDumpContext& os) const
+void rkPPPartUniformLoad::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkPPPartUniformLoad" << endl;
-   os << " a = " << a << endl;
-   os << " b = " << b << endl;
-   os << " c = " << c << endl;
-   os << " d = " << d << endl;
-   os << " W = " << W << endl;
+   os << "Dump for rkPPPartUniformLoad" << WBFL::Debug::endl;
+   os << " a = " << a << WBFL::Debug::endl;
+   os << " b = " << b << WBFL::Debug::endl;
+   os << " c = " << c << WBFL::Debug::endl;
+   os << " d = " << d << WBFL::Debug::endl;
+   os << " W = " << W << WBFL::Debug::endl;
    rkRoarkBeam::Dump( os );
 }
 #endif // _DEBUG
@@ -241,7 +241,7 @@ void rkPPPartUniformLoad::Dump(dbgDumpContext& os) const
 #include "Private.h"
 
 // When a symmetrically loaded beam is used, the results must be symmetrical
-bool Test_Symmetry(dbgLog& rlog,Float64 fra)
+bool Test_Symmetry(WBFL::Debug::Log& rlog,Float64 fra)
 {
    TESTME_PROLOGUE("rkPPPartUniformLoad - Test_Symmetry");
 
@@ -257,8 +257,8 @@ bool Test_Symmetry(dbgLog& rlog,Float64 fra)
    rkPPPartUniformLoad beam(La,Lb,w,L,E,I);
    for ( i = 0; i < nPoints/2; i++ )
    {
-      sysSectionValue lShear, rShear;
-      sysSectionValue lMoment, rMoment;
+      WBFL::System::SectionValue lShear, rShear;
+      WBFL::System::SectionValue lMoment, rMoment;
 
       Float64 xl = i * L / nPoints;
       Float64 xr = L - i * L / nPoints;
@@ -280,7 +280,7 @@ bool Test_Symmetry(dbgLog& rlog,Float64 fra)
    TESTME_EPILOG("rkPPPartUniformLoad - Test_Symmetry");
 }
 
-bool rkPPPartUniformLoad::TestMe(dbgLog& rlog)
+bool rkPPPartUniformLoad::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("rkPPPartUniformLoad");
    Float64 La = 0;
@@ -296,16 +296,16 @@ bool rkPPPartUniformLoad::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(Ra,5.0) );
    TRY_TESTME( IsEqual(Rb ,5.0) );
 
-   sysSectionValue Mcl = beam.ComputeMoment(5);
+   WBFL::System::SectionValue Mcl = beam.ComputeMoment(5);
    TRY_TESTME( IsEqual(Mcl.Left(),12.5) && IsEqual(Mcl.Right(),12.5) );
 
-   sysSectionValue Vcl = beam.ComputeShear(5);
+   WBFL::System::SectionValue Vcl = beam.ComputeShear(5);
    TRY_TESTME( IsEqual(Vcl.Left(),0.0) && IsEqual(Vcl.Right(),0.0) );
 
-   sysSectionValue V25 = beam.ComputeShear( 0.25*l );
+   WBFL::System::SectionValue V25 = beam.ComputeShear( 0.25*l );
    TRY_TESTME( IsEqual(V25.Left(),V25.Right()) && IsEqual(V25.Left(),2.5) );
 
-   sysSectionValue V75 = beam.ComputeShear( 0.75*l );
+   WBFL::System::SectionValue V75 = beam.ComputeShear( 0.75*l );
    TRY_TESTME( IsEqual(V75.Left(),V75.Right()) && IsEqual(V75.Left(),-2.5) );
 
    // Check deflections

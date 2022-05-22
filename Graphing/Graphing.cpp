@@ -41,7 +41,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 }
 
 // call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(dbgLog& rlog)
+bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
 {
 	return WBFL::Graphing::UnitTest::TestMe(rlog);
 }

@@ -74,7 +74,7 @@ bool rptRcSectionValue::IsDualValued() const
 
 std::_tstring rptRcSectionValue::AsString(int idx) const
 {
-   sysNumericFormatTool fmt;
+   WBFL::System::NumericFormatTool fmt;
    fmt.SetFormat( m_Format );
    fmt.SetWidth( m_Width );
    fmt.SetPrecision( m_Precision );
@@ -86,12 +86,12 @@ std::_tstring rptRcSectionValue::AsString(int idx) const
    return str;   
 }
 
-void rptRcSectionValue::SetFormat(sysNumericFormatTool::Format format)
+void rptRcSectionValue::SetFormat(WBFL::System::NumericFormatTool::Format format)
 {
    m_Format = format;
 }
 
-sysNumericFormatTool::Format rptRcSectionValue::GetFormat() const
+WBFL::System::NumericFormatTool::Format rptRcSectionValue::GetFormat() const
 {
    return m_Format;
 }
@@ -142,7 +142,7 @@ void rptRcSectionValue::MakeAssignment(const rptRcSectionValue& rOther)
 
 void rptRcSectionValue::Init()
 {
-   m_Format    = sysNumericFormatTool::Automatic;
+   m_Format    = WBFL::System::NumericFormatTool::Format::Automatic;
    m_Precision = 0;
    m_Width     = 0;
 }

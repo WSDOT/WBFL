@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// System - WBFL low level system services
+// EAF - Extensible Application Framework
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,14 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <System\SysLib.h>
-
-//////////////////X////////////////////X/////////////////////////////////////
-// NAME:          txnTxnManager           
-// SYNOPSIS:      
-//////////////////X////////////////////X/////////////////////////////////////
-
-#include <System\TxnManager.h>                // class implementation
+#include "StdAfx.h"
+#include <EAF\EAFTxnManager.h>
 #include <algorithm>
 
 #if defined _UNITTEST
@@ -41,367 +35,277 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-txnTxnManagerFactory* txnTxnManager::ms_pFactory = nullptr;
-txnTxnManager* txnTxnManager::ms_pInstance = nullptr;
-sysSingletonKillerT<txnTxnManager> txnTxnManager::ms_Killer;
+std::unique_ptr<CEAFTxnManagerFactory> CEAFTxnManager::ms_pFactory;
+std::unique_ptr<CEAFTxnManager> CEAFTxnManager::ms_pInstance;
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void txnTxnManager::Execute(txnTransaction& rTxn)
+void CEAFTxnManager::Execute(CEAFTransaction& txn)
 {
-   txnTransaction* pTxn = rTxn.CreateClone();
-   Execute(pTxn);
-} // Execute
+   Execute(std::move(txn.CreateClone()));
+}
 
-void txnTxnManager::Execute(txnTransaction* pTxn)
+void CEAFTxnManager::Execute(std::unique_ptr<CEAFTransaction>&& txn)
 {
-   if (pTxn->Execute())
+   if (txn->Execute())
    {
-      m_TxnHistory.emplace_back(pTxn);
-      m_Mode = RepeatMode;
+      m_TxnHistory.emplace_back(std::move(txn));
+      m_Mode = Mode::Repeat;
    }
-} // Execute
+}
 
-void txnTxnManager::Undo()
+void CEAFTxnManager::Undo()
 {
-   TxnItem pTxn = FindFirstUndoableTxn(true);
+   TxnContainer::iterator iter = FindFirstUndoableTxn();
+   CHECK(iter != m_TxnHistory.end()); // You've called this out of sequence if there is not an undoable CEAF.
 
-   // You've called this out of sequence if there is not an undoable txn.
-   CHECK( pTxn != 0 );
-
-   // In release builds, simply don't undo.  This will keep the program from
-   // a fatal crash.
-   if (pTxn == 0)
+   // In release builds, simply don't undo.  This will keep the program from a fatal crash.
+   if (iter == m_TxnHistory.end())
       return;
 
-   // Undo the txn
-   pTxn->Undo();
-   m_UndoHistory.push_back( pTxn );
-   m_Mode = RedoMode;
-} // Undo
+   // move the unique pointer of of m_TxnHistory so it isn't deleted when remove the transaction from the container
+   // this method know owns the transaction.
+   std::unique_ptr<CEAFTransaction> CEAF(std::move(*iter));
+   m_TxnHistory.erase(iter);
 
-void txnTxnManager::Redo()
+   // undo the transaction
+   CEAF->Undo();
+
+   // put the trasaction into the undo history
+   // m_UndoHistory now owns the transaction
+   m_UndoHistory.emplace_back( std::move(CEAF) );
+   m_Mode = Mode::Redo;
+}
+
+void CEAFTxnManager::Redo()
 {
-   PRECONDITION(m_Mode == RedoMode);
+   PRECONDITION(m_Mode == Mode::Redo);
 
-   if ( m_UndoHistory.empty() )
-   {
-      return;
-   }
-
-   TxnItem apTxn = m_UndoHistory.back();
+   if (m_UndoHistory.empty()) return;
+   
+   // Move the unique_ptr so the CEAF isn't deleted when pop_back is called.
+   // The transation is now owned in the local scope of this method
+   auto txn = std::move(m_UndoHistory.back());
    m_UndoHistory.pop_back();
 
-   if (apTxn->Execute())
+   if (txn->Execute())
    {
-      m_TxnHistory.push_back( apTxn );
+      m_TxnHistory.emplace_back(std::move(txn));
    }
+}
 
-   // The real transaction pointer is deleted.
-} // Redo
-
-void txnTxnManager::Repeat()
+void CEAFTxnManager::Repeat()
 {
-   PRECONDITION(m_Mode == RepeatMode);
+   PRECONDITION(m_Mode == Mode::Repeat);
 
-   if ( m_TxnHistory.empty() )
-   {
-      return;
-   }
+   if (m_TxnHistory.empty()) return;
 
-   TxnItem apTxn = m_TxnHistory.back();
+   auto& txn = m_TxnHistory.back();
    
-   CHECK( apTxn->IsRepeatable() );
+   CHECK(txn->IsRepeatable() );
 
-   Execute(*apTxn);  // call the reference version!!! We want a Clone.
+   Execute(*txn);  // call the reference version!!! We want a Clone.
 } // Repeat
 
-bool txnTxnManager::CanUndo() const
+bool CEAFTxnManager::CanUndo() const
 {
-   if (m_TxnHistory.empty())
-      return false;
+   if (m_TxnHistory.empty()) return false;
 
-   TxnItem pTxn = FindFirstUndoableTxn();
+   auto iter = FindFirstUndoableTxn();
+   return (iter == m_TxnHistory.end() ? false : true);
+}
 
-   return ( pTxn == 0 ? false : true );
-} // CanUndo
-
-bool txnTxnManager::CanRedo() const
+bool CEAFTxnManager::CanRedo() const
 {
    bool retval = false;
 
    switch(m_Mode)
    {
-   case RepeatMode:
+   case Mode::Repeat:
         retval = false;
         break;
 
-   case RedoMode:
+   case Mode::Redo:
         retval = m_UndoHistory.empty() ? false : true;
         break;
    }
 
    return retval;
-} // CanRedo
+}
 
-bool txnTxnManager::CanRepeat() const
+bool CEAFTxnManager::CanRepeat() const
 {
-   TxnItem apTxn;
    bool retval = false;
 
    switch(m_Mode)
    {
-   case RepeatMode:
+   case Mode::Repeat:
         if (m_TxnHistory.empty())
         {
            retval = false;
         }
         else
         {
-           apTxn = m_TxnHistory.back();
-           retval = apTxn->IsRepeatable() ? true : false;
+           auto& txn = m_TxnHistory.back();
+           retval = txn->IsRepeatable() ? true : false;
         }
         break;
 
-   case RedoMode:
+   case Mode::Redo:
         retval = false;
         break;
    }
 
    return retval;
-} // CanRedo
+}
 
-std::_tstring txnTxnManager::UndoName() const
+std::_tstring CEAFTxnManager::UndoName() const
 {
    std::_tstring name(_T(""));
 
-   if (m_TxnHistory.empty())
-      return name;
-
-   TxnItem pTxn = FindFirstUndoableTxn();
-   if (pTxn != 0)
-      name = pTxn->Name();
+   if (!m_TxnHistory.empty())
+   {
+      auto iter = FindFirstUndoableTxn();
+      if (iter != m_TxnHistory.end() ) name = (*iter)->Name();
+   }
 
    return name;
-
 }
 
-std::_tstring txnTxnManager::RedoName() const
+std::_tstring CEAFTxnManager::RedoName() const
 {
    std::_tstring name(_T(""));
 
    if ( !m_UndoHistory.empty() )
    {
-      TxnItem apTxn = m_UndoHistory.back();
-      name = apTxn->Name();
+      auto& txn = m_UndoHistory.back();
+      if(txn) name = txn->Name();
    }
 
    return name;
 }
 
-std::_tstring txnTxnManager::RepeatName() const
+std::_tstring CEAFTxnManager::RepeatName() const
 {
    std::_tstring name(_T(""));
 
    if ( !m_TxnHistory.empty() )
    {
-      TxnItem apTxn = m_TxnHistory.back();
-      name = apTxn->Name();
+      auto& txn = m_TxnHistory.back();
+      if(txn) name = txn->Name();
    }
 
    return name;
 }
 
-CollectionIndexType txnTxnManager::GetTxnCount() const
+IndexType CEAFTxnManager::GetTxnCount() const
 {
    return m_TxnHistory.size();
 }
 
-CollectionIndexType txnTxnManager::GetUndoCount() const
+IndexType CEAFTxnManager::GetUndoCount() const
 {
    return m_UndoHistory.size();
 }
 
-void txnTxnManager::WriteTransactionLog(std::_tostream& os) const
+void CEAFTxnManager::WriteTransactionLog(std::_tostream& os) const
 {
-   TxnConstIterator begin = m_TxnHistory.begin();
-   TxnConstIterator end   = m_TxnHistory.end();
-
    WriteLogIntroduction(os);
-
-   while ( begin != end )
-   {
-      TxnItem apTxn = *begin++;
-      apTxn->Log( os );
-      os << std::endl;
-   }
-
+   std::for_each(std::begin(m_TxnHistory), std::end(m_TxnHistory), [&os](auto& CEAF) {CEAF->Log(os); os << std::endl; });
    WriteLogConclusion(os);
 }
 
-void txnTxnManager::ClearTxnHistory()
+void CEAFTxnManager::ClearTxnHistory()
 {
    m_TxnHistory.clear();
 }
 
-void txnTxnManager::ClearUndoHistory()
+void CEAFTxnManager::ClearUndoHistory()
 {
    m_UndoHistory.clear();
 }
 
-void txnTxnManager::Clear()
+void CEAFTxnManager::Clear()
 {
    ClearTxnHistory();
    ClearUndoHistory();
-   m_Mode = RepeatMode;
+   m_Mode = Mode::Repeat;
 }
 
-//======================== ACCESS     =======================================
-void txnTxnManager::SetTransactionManagerFactory(txnTxnManagerFactory* pFactory)
+void CEAFTxnManager::SetTransactionManagerFactory(std::unique_ptr<CEAFTxnManagerFactory>&& pFactory)
 {
-   ms_pFactory = pFactory;
+   ms_pFactory = std::move(pFactory);
 }
 
-txnTxnManager* txnTxnManager::GetInstance()
+std::unique_ptr<CEAFTxnManager>& CEAFTxnManager::GetInstance()
 {
    if ( ms_pInstance == nullptr )
    {
+      // we don't have an instace of the transaction manager, create one
       if (ms_pFactory == nullptr)
       {
-         ms_pInstance = new txnTxnManager;
+         // we don't have a transcation manager factory so just create the default CEAF mgr.
+         ms_pInstance = std::make_unique<CEAFTxnManager>();
       }
       else
       {
+         // we have a factory, so let it create the CEAF mgr.
          ms_pInstance = ms_pFactory->CreateTransactionManager();
       }
-      ms_Killer.SetDoomed( ms_pInstance );
    }
 
    return ms_pInstance;
-} // GetInstance
+}
 
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
-txnTxnManager::txnTxnManager()
-{
-   m_Mode = RepeatMode;
-} // txnTxnManager
-
-txnTxnManager::~txnTxnManager()
-{
-   Clear();
-} // ~txnTxnManager
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void txnTxnManager::WriteLogIntroduction(std::_tostream& /*os*/) const
+void CEAFTxnManager::WriteLogIntroduction(std::_tostream& /*os*/) const
 {
    // Do nothing
 }
 
-void txnTxnManager::WriteLogConclusion(std::_tostream& /*os*/) const
+void CEAFTxnManager::WriteLogConclusion(std::_tostream& /*os*/) const
 {
    // Do nothing
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-txnTxnManager::TxnItem txnTxnManager::FindFirstUndoableTxn() const
+CEAFTxnManager::TxnContainer::iterator CEAFTxnManager::FindFirstUndoableTxn()
 {
-   TxnConstReverseIterator iter = m_TxnHistory.rbegin();
-   TxnConstReverseIterator end   = m_TxnHistory.rend();
+   // want the first unduable transcation from the end of the list so we need to search backward using reverse iterators
+   auto result = std::find_if(std::rbegin(m_TxnHistory), std::rend(m_TxnHistory), [](auto& CEAF) {return CEAF->IsUndoable(); });
 
-   while ( iter != end )
-   {
-      TxnItem apTxn = *iter++;
-      if ( apTxn->IsUndoable() )
-      {
-         return apTxn;
-      }
-   }
-
-   return txnTxnManager::TxnItem();
+   // we need to return a forward iterator, if nothing was found, return the end iterator, otherwise
+   // get the base of the reverse iterator using result.base(). this is a forward iterator point to one
+   // location ahead of the found element (this is just how reverse iterators work). use the prefix form of the decrement
+   // operator to move the result iterator back one spot then get the base iterator
+   return result == std::rend(m_TxnHistory) ? std::end(m_TxnHistory) : --result.base();
 }
 
-txnTxnManager::TxnItem txnTxnManager::FindFirstUndoableTxn(bool bRemoveFromHistory)
+CEAFTxnManager::TxnContainer::const_iterator CEAFTxnManager::FindFirstUndoableTxn() const
 {
-   // to do a removal, we need a forward iterator
-   m_TxnHistory.reverse(); // reverse the container
+   auto result = std::find_if(std::rbegin(m_TxnHistory), std::rend(m_TxnHistory), [](const auto& CEAF) {return CEAF->IsUndoable(); });
+   return result == std::rend(m_TxnHistory) ? std::end(m_TxnHistory) : --result.base();
+}
 
-   TxnIterator iter = m_TxnHistory.begin();
-   TxnIterator end  = m_TxnHistory.end();
-
-   TxnItem apTxn;
-   while ( iter != end )
-   {
-      apTxn = *iter;
-      if ( apTxn->IsUndoable() )
-      {
-         if ( bRemoveFromHistory )
-            m_TxnHistory.erase(iter);
-
-         break;
-      }
-
-      iter++;
-   }
-
-   // put the history back in the correct order
-   m_TxnHistory.reverse();
-
-   return apTxn;
-} // FindFirstUndoableTxn
-
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
-
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool txnTxnManager::AssertValid() const
+bool CEAFTxnManager::AssertValid() const
 {
    return true;
 }
 
-void txnTxnManager::Dump(dbgDumpContext& os) const
+void CEAFTxnManager::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for txnTxnManager" << endl;
-
-   TxnConstIterator begin = m_TxnHistory.begin();
-   TxnConstIterator end   = m_TxnHistory.end();
-
-   while ( begin != end )
-   {
-      TxnItem apTxn = *begin++;
-      apTxn->Dump( os );
-      os << endl;
-   }
+   os << "Dump for CEAFTxnManager" << WBFL::Debug::endl;
+   std::for_each(std::begin(m_TxnHistory), std::end(m_TxnHistory), [&os](auto& CEAF) {CEAF->Dump(os); os << WBFL::Debug::endl; });
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool txnTxnManager::TestMe(dbgLog& rlog)
+bool CEAFTxnManager::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("txnTxnManger");
+   TESTME_PROLOGUE("CEAFTxnManger");
 
    testUndoableTxn txn1;
    testNotRepeatableTxn txn2;
    testNotUndoableTxn txn3;
 
-   txnTxnManager* pMgr = txnTxnManager::GetInstance();
+   std::unique_ptr<CEAFTxnManager>& pMgr = CEAFTxnManager::GetInstance();
 
    // Test the start up state
    TRY_TESTME( pMgr->CanUndo()      == false );
@@ -415,18 +319,18 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    // Add a couple of non-repeatable transactions
    pMgr->Execute( txn2 );
    pMgr->Execute( txn2 );
-   TRY_TESTME( pMgr->CanRepeat()    == false ); // there are no repeatable txn's
+   TRY_TESTME( pMgr->CanRepeat()    == false ); // there are no repeatable CEAF's
    TRY_TESTME( pMgr->IsRedoMode()   == false );
    TRY_TESTME( pMgr->IsRepeatMode() == true );
 
-   // Add a repeatable txn
-   pMgr->Execute( txn1 );
-   TRY_TESTME( pMgr->CanRepeat()    == true ); // now there is one repeatable txn
+   // Add a repeatable CEAF
+   pMgr->Execute(txn1 );
+   TRY_TESTME( pMgr->CanRepeat()    == true ); // now there is one repeatable CEAF
    TRY_TESTME( pMgr->RepeatName()   == std::_tstring(_T("Undoable Txn")) );
    TRY_TESTME( pMgr->IsRedoMode()   == false );
    TRY_TESTME( pMgr->IsRepeatMode() == true );
 
-   // Repeat the last txn
+   // Repeat the last CEAF
    pMgr->Repeat();
    TRY_TESTME( pMgr->CanRepeat()    == true );
    TRY_TESTME( pMgr->RepeatName()   == std::_tstring(_T("Undoable Txn")) );
@@ -466,8 +370,8 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    TRY_TESTME( pMgr->IsRepeatMode() == false );
 
    // Add a non-undoable txn followed by an undoable txn
-   pMgr->Execute( txn3 );
-   pMgr->Execute( txn1 );
+   pMgr->Execute(txn3 );
+   pMgr->Execute(txn1 );
    TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
    TRY_TESTME( pMgr->CanUndo()      == true );
    TRY_TESTME( pMgr->CanRedo()      == false );
@@ -512,9 +416,9 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    TRY_TESTME( pMgr->IsRepeatMode() == false );
 
    // Add a few txns back
-   pMgr->Execute( txn1 );
-   pMgr->Execute( txn1 );
-   pMgr->Execute( txn1 );
+   pMgr->Execute(txn1 );
+   pMgr->Execute(txn1 );
+   pMgr->Execute(txn1 );
    TRY_TESTME( pMgr->CanUndo()      == true );
    TRY_TESTME( pMgr->CanRedo()      == false );
    TRY_TESTME( pMgr->CanRepeat()    == true );
@@ -534,7 +438,7 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    TRY_TESTME( pMgr->IsRedoMode()   == false );
    TRY_TESTME( pMgr->IsRepeatMode() == true );
 
-   // Undo one txn just so there is something in m_UndoHistory
+   // Undo one CEAF just so there is something in m_UndoHistory
    pMgr->Undo();
    TRY_TESTME( pMgr->CanUndo()      == true );
    TRY_TESTME( pMgr->CanRedo()      == true );
@@ -555,6 +459,6 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    TRY_TESTME( pMgr->IsRedoMode()   == false );
    TRY_TESTME( pMgr->IsRepeatMode() == true );
 
-   TESTME_EPILOG("txnTxnManger");
+   TESTME_EPILOG("CEAFTxnManger");
 }
 #endif // _UNITTEST

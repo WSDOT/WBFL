@@ -64,7 +64,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 
 
 // call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(dbgLog& rlog)
+bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
 {
-   return sysUnitTest::TestMe(rlog);
+   return WBFL::System::UnitTest::TestMe(rlog);
 }

@@ -131,9 +131,9 @@ void rkComposite::GetDeflections(Float64* pYa,Float64* pYb) const
    }
 }
 
-sysSectionValue rkComposite::ComputeShear(Float64 x) const
+WBFL::System::SectionValue rkComposite::ComputeShear(Float64 x) const
 {
-   sysSectionValue V(0);
+   WBFL::System::SectionValue V(0);
    BeamContainer::const_iterator i;
    for ( i = m_Beams.begin(); i < m_Beams.end(); i++ )
    {
@@ -143,9 +143,9 @@ sysSectionValue rkComposite::ComputeShear(Float64 x) const
    return V;
 }
 
-sysSectionValue rkComposite::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue rkComposite::ComputeMoment(Float64 x) const
 {
-   sysSectionValue M(0);
+   WBFL::System::SectionValue M(0);
    BeamContainer::const_iterator i;
    for ( i = m_Beams.begin(); i < m_Beams.end(); i++ )
    {
@@ -193,20 +193,20 @@ bool rkComposite::AssertValid() const
    return true;
 }
 
-void rkComposite::Dump(dbgDumpContext& os) const
+void rkComposite::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkComposite" << endl;
+   os << "Dump for rkComposite" << WBFL::Debug::endl;
    BeamContainer::const_iterator i;
    for ( i = m_Beams.begin(); i < m_Beams.end(); i++ )
    {
       (*i)->Dump(os);
-      os << endl;
+      os << WBFL::Debug::endl;
    }
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool rkComposite::TestMe(dbgLog& rlog)
+bool rkComposite::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("rkComposite");
 

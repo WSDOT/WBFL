@@ -67,16 +67,16 @@ bool rkRoarkBeam::AssertValid() const
    return true;
 }
 
-void rkRoarkBeam::Dump(dbgDumpContext& os) const
+void rkRoarkBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkRoarkBeam" << endl;
-   os << "L  = " << L << endl;
-   os << "EI = " << EI << endl;
+   os << "Dump for rkRoarkBeam" << WBFL::Debug::endl;
+   os << "L  = " << L << WBFL::Debug::endl;
+   os << "EI = " << EI << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool rkRoarkBeam::TestMe(dbgLog& rlog)
+bool rkRoarkBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("rkRoarkBeam");
 

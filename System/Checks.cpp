@@ -28,15 +28,12 @@
 #endif
 
 #include <System\SysLib.h>
-
 #include <System\Checks.h>
 #include <System\XProgrammingError.h>
 #include <strstream>
 
-/*#if !defined _DEBUG
-#include <stdexcept>
-#endif
-  */ 
+using namespace WBFL::Debug;
+
 DIAG_DEFINE_GROUP(Def,1,0);
 
 #ifdef _DEBUG
@@ -45,21 +42,21 @@ DIAG_DEFINE_GROUP(Def,1,0);
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bool dbgDiagBase::bWarnPopup = true;
+bool Diagnostics::bWarnPopup = true;
 
-void dbgDiagBase::Watch( LPCTSTR group, LPCTSTR msg,
+void Diagnostics::Watch( LPCTSTR group, LPCTSTR msg,
                          LPCTSTR fname, Uint32 line )
 {
-   dbgDiagBase::Message( _T("Watch"), group, msg, fname, line, false );
+   Diagnostics::Message( _T("Watch"), group, msg, fname, line, false );
 }
 
-void dbgDiagBase::Warn( LPCTSTR group, LPCTSTR msg,
+void Diagnostics::Warn( LPCTSTR group, LPCTSTR msg,
                         LPCTSTR fname, Uint32 line )
 {
-   dbgDiagBase::Message( _T("Warn"), group, msg, fname, line, bWarnPopup );
+   Diagnostics::Message( _T("Warn"), group, msg, fname, line, bWarnPopup );
 }
 
-void dbgDiagBase::Message( LPCTSTR type,
+void Diagnostics::Message( LPCTSTR type,
                            LPCTSTR group, LPCTSTR msg,
                            LPCTSTR fname, Uint32 line, bool bPopup)
 {
@@ -74,22 +71,22 @@ void dbgDiagBase::Message( LPCTSTR type,
       ::MessageBox(0, message.c_str(), _T("Warning"), MB_OK | MB_ICONWARNING );
 }
 
-void dbgDiagBase::Output( LPCTSTR msg )
+void Diagnostics::Output( LPCTSTR msg )
 {
     ::OutputDebugString(msg);
 }
 
-void dbgDiagBase::EnableWarnPopup(bool bEnable)
+void Diagnostics::EnableWarnPopup(bool bEnable)
 {
    bWarnPopup = bEnable;
 }
 
-bool dbgDiagBase::IsWarnPopupEnabled()
+bool Diagnostics::IsWarnPopupEnabled()
 {
    return bWarnPopup;
 }
 
-void dbgMessage::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
+void Message::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
 #if defined _UNICODE
@@ -99,11 +96,11 @@ void dbgMessage::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
 #endif
        _CrtDbgBreak();
 #else
-    throw sysXProgrammingError(sysXProgrammingError::InvalidValue,file,line);
+    throw WBFL::System::XProgrammingError(sysXProgrammingError::InvalidValue,file,line);
 #endif
 }
 
-void dbgMessage::Check(LPCTSTR s,LPCTSTR file, Int32 line)
+void Message::Check(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
 #if defined _UNICODE
@@ -113,11 +110,11 @@ void dbgMessage::Check(LPCTSTR s,LPCTSTR file, Int32 line)
 #endif
        _CrtDbgBreak();
 #else
-    throw sysXProgrammingError(sysXProgrammingError::CodeFault,file,line);
+    throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::CodeFault,file,line);
 #endif
 }
 
-void dbgMessage::AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line)
+void Message::AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
     if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Assert Valid Failed] %s\n"),s) == 1 )
@@ -127,6 +124,6 @@ void dbgMessage::AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line)
 #endif
        _CrtDbgBreak();
 #else
-    throw sysXProgrammingError(sysXProgrammingError::AssertValidFailed,file,line);
+    throw WBFL::System::XProgrammingError(sysXProgrammingError::AssertValidFailed,file,line);
 #endif
 }

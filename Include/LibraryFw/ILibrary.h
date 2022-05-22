@@ -167,11 +167,11 @@ public:
 
    //------------------------------------------------------------------------
    // Save to structured storage
-   virtual bool SaveMe(sysIStructuredSave* pSave) = 0;
+   virtual bool SaveMe(WBFL::System::IStructuredSave* pSave) = 0;
 
    //------------------------------------------------------------------------
    // Load from structured storage
-   virtual bool LoadMe(sysIStructuredLoad* pLoad) = 0;
+   virtual bool LoadMe(WBFL::System::IStructuredLoad* pLoad) = 0;
 
    //------------------------------------------------------------------------
    // Change the display name of the library.
@@ -227,7 +227,7 @@ public:
 #if defined _DEBUG
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const = 0;
+   virtual void Dump(WBFL::Debug::LogContext& os) const = 0;
 #endif // _DEBUG
 
 protected:

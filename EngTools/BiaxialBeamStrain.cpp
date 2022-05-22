@@ -186,14 +186,14 @@ bool BiaxialBeamStrain::AssertValid() const
    return true;
 }
 
-void BiaxialBeamStrain::Dump(dbgDumpContext& os) const
+void BiaxialBeamStrain::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for BiaxialBeamStrain" << endl;
-   os << " m_A  = "<< m_A<<endl;  
-   os << " m_B  = "<< m_B<<endl;  
-   os << " m_C  = "<< m_C<<endl;  
-   os << " m_D  = "<< m_D<<endl;
-   os << " m_IsConstantStrain = "<< m_bIsConstantStrain<<endl;
+   os << "Dump for BiaxialBeamStrain" << WBFL::Debug::endl;
+   os << " m_A  = "<< m_A<< WBFL::Debug::endl;  
+   os << " m_B  = "<< m_B<< WBFL::Debug::endl;  
+   os << " m_C  = "<< m_C<< WBFL::Debug::endl;  
+   os << " m_D  = "<< m_D<< WBFL::Debug::endl;
+   os << " m_IsConstantStrain = "<< m_bIsConstantStrain<< WBFL::Debug::endl;
 }
 
 #endif // _DEBUG

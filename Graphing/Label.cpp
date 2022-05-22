@@ -250,9 +250,9 @@ bool Label::AssertValid() const
    return true;
 }
 
-void Label::Dump(dbgDumpContext& os) const
+void Label::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for Label" << endl;
+   os << "Dump for Label" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 

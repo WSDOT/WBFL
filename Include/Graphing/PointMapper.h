@@ -197,7 +197,7 @@ public:
    //------------------------------------------------------------------------
    // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
    // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 protected:

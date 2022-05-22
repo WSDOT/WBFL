@@ -266,7 +266,7 @@ Float64 UBeam::GetT() const
 
 Float64 UBeam::GetSlope(WebIndexType webIdx) const
 {
-   if (1 < webIdx) throw std::invalid_argument("UBeam::GetSlope - invalid web index");
+   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam::GetSlope - invalid web index"));
 
    GetPolygon(); // causes the slope to be updated
    return (webIdx == 0 ? -1.0 : 1.0) * m_Slope;
@@ -279,7 +279,7 @@ Float64 UBeam::GetHeight() const
 
 Float64 UBeam::GetWebLocation(WebIndexType webIdx) const
 {
-   if (1 < webIdx)  throw std::invalid_argument("UBeam::GetWebLocation - invalid web index");
+   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam::GetWebLocation - invalid web index"));
 
    GetPolygon(); // causes the slope to be updated
    Float64 sign = (webIdx == 0) ? -1 : 1;
@@ -313,14 +313,16 @@ IndexType UBeam::GetTopFlangeCount() const
 
 Float64 UBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (1 < flangeIdx) throw std::invalid_argument("UBeam::GetTopFlangeLocation - invalid flange index");
+   if (1 < flangeIdx) THROW_GEOMETRY(_T("UBeam::GetTopFlangeLocation - invalid flange index"));
+
    Float64 sign = (flangeIdx == 0) ? -1 : 1;
    return sign * (GetTopWidth() - GetTopFlangeWidth(flangeIdx)) / 2;
 }
 
 Float64 UBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (1 < flangeIdx) throw std::invalid_argument("UBeam::GetTopFlangeWidth - invalid flange index");
+   if (1 < flangeIdx) THROW_GEOMETRY(_T("UBeam::GetTopFlangeWidth - invalid flange index"));
+
    GetPolygon(); // causes m_Slope to be updated
    Float64 t = m_T*sqrt(m_Slope * m_Slope + 1)/ m_Slope;
    return (m_W4 + (m_D6 + m_D7) / m_Slope) + (m_W5 - (m_D4 + m_D5) / m_Slope) + t;
@@ -333,13 +335,13 @@ IndexType UBeam::GetBottomFlangeCount() const
 
 Float64 UBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("UBeam::GetBottomFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("UBeam::GetBottomFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 UBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("UBeam::GetBottomFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("UBeam::GetBottomFlangeLocation - invalid flange index"));
    return GetBottomWidth();
 }
 
@@ -360,13 +362,13 @@ MatingSurfaceIndexType UBeam::GetMatingSurfaceCount() const
 
 Float64 UBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (1 < webIdx) throw std::invalid_argument("UBeam::GetMatingSurfaceWidth - invalid web index");
+   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam::GetMatingSurfaceWidth - invalid web index"));
    return GetTopFlangeWidth(webIdx)/2;
 }
 
 Float64 UBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (1 < webIdx) throw std::invalid_argument("UBeam::GetMatingSurfaceLocation - invalid web index");
+   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam::GetMatingSurfaceLocation - invalid web index"));
    return GetTopFlangeLocation(webIdx);
 }
 
@@ -377,7 +379,7 @@ IndexType UBeam::GetWebCount() const
 
 Plane3d UBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (1 < webIdx)  throw std::invalid_argument("UBeam::GetWebPlane - invalid web index");
+   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam::GetWebPlane - invalid web index"));
 
    Float64 slope = GetSlope(webIdx);
 
@@ -445,26 +447,26 @@ bool UBeam::AssertValid() const
    return __super::AssertValid();
 }
 
-void UBeam::Dump(dbgDumpContext& os) const
+void UBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for UBeam ***") <<endl;
+   os << _T("*** Dump for UBeam ***") << WBFL::Debug::endl;
    ShapeImpl::Dump( os );
-   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<<endl;
-   os << _T("  Rotation        =  ")<<m_Rotation<<endl;
-   os << _T("  D1              =  ")<<m_D1 <<endl;
-   os << _T("  D2              =  ")<<m_D2 <<endl;
-   os << _T("  D3              =  ")<<m_D3 <<endl;
-   os << _T("  D4              =  ")<<m_D4 <<endl;
-   os << _T("  D5              =  ")<<m_D5 <<endl;
-   os << _T("  D6              =  ")<<m_D6 <<endl;
-   os << _T("  D7              =  ")<<m_D7 <<endl;
-   os << _T("  W1              =  ")<<m_W1 <<endl;
-   os << _T("  W2              =  ")<<m_W2 <<endl;
-   os << _T("  W3              =  ")<<m_W3 <<endl;
-   os << _T("  W4              =  ")<<m_W4 <<endl;
-   os << _T("  W5              =  ")<<m_W5 <<endl;
-   os << _T("  T               =  ")<<m_T  <<endl;
-   os << _T("Polygon rep of beam") << endl;
+   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Rotation        =  ")<<m_Rotation<< WBFL::Debug::endl;
+   os << _T("  D1              =  ")<<m_D1 << WBFL::Debug::endl;
+   os << _T("  D2              =  ")<<m_D2 << WBFL::Debug::endl;
+   os << _T("  D3              =  ")<<m_D3 << WBFL::Debug::endl;
+   os << _T("  D4              =  ")<<m_D4 << WBFL::Debug::endl;
+   os << _T("  D5              =  ")<<m_D5 << WBFL::Debug::endl;
+   os << _T("  D6              =  ")<<m_D6 << WBFL::Debug::endl;
+   os << _T("  D7              =  ")<<m_D7 << WBFL::Debug::endl;
+   os << _T("  W1              =  ")<<m_W1 << WBFL::Debug::endl;
+   os << _T("  W2              =  ")<<m_W2 << WBFL::Debug::endl;
+   os << _T("  W3              =  ")<<m_W3 << WBFL::Debug::endl;
+   os << _T("  W4              =  ")<<m_W4 << WBFL::Debug::endl;
+   os << _T("  W5              =  ")<<m_W5 << WBFL::Debug::endl;
+   os << _T("  T               =  ")<<m_T  << WBFL::Debug::endl;
+   os << _T("Polygon rep of beam") << WBFL::Debug::endl;
    GetPolygon()->Dump(os);
 }
 #endif // _DEBUG
@@ -598,7 +600,7 @@ void UBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool UBeam::TestMe(dbgLog& rlog)
+bool UBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("UBeam");
 
@@ -691,7 +693,7 @@ bool UBeam::TestMe(dbgLog& rlog)
    TRY_TESTME ( IsEqual(UF48G4.GetT(),  t ));
 
 #ifdef _DEBUG
-   U48G4.Dump(rlog.GetDumpCtx());
+   U48G4.Dump(rlog.GetLogContext());
 #endif 
 
    // Test hook point behavior

@@ -407,8 +407,7 @@ Int16 GeometricOperations::Intersect(const Circle& c1, const Circle& c2, Point2d
 
 Point2d GeometricOperations::PointOnLine(const Point2d& p1, const Point2d& p2, Float64 distFromStart)
 {
-   if (p1 == p2)
-      throw std::invalid_argument("GeometricOperations::ProjectPointAlongLine - p1 and p2 cannot be coincident");
+   if (p1 == p2) THROW_GEOMETRY(_T("GeometricOperations::ProjectPointAlongLine - p1 and p2 cannot be coincident"));
 
    if (IsZero(distFromStart))
       return p1;
@@ -489,8 +488,7 @@ void GeometricOperations::GenerateCircle(const Point2d& center,
                                 Float64 deltaAngle,
                                 std::vector<Point2d>* vPoints)
 {
-   if (radius < 0)
-      throw std::invalid_argument("GeometricOperations::GenerateCircle - invalid radius");
+   if (radius < 0) THROW_GEOMETRY(_T("GeometricOperations::GenerateCircle - invalid radius"));
 
    // Design note: lots of points can be used to general a circle - to avoid copying a large container on return
    // a container is provided by the caller that is filled up. We intentionally do not clear the container because
@@ -522,7 +520,7 @@ Float64 GeometricOperations::Angle(const Point2d& start, const Point2d& center, 
    dy2 = ey - cy;
 
    if (IsZero(dx1) && IsZero(dy1) || IsZero(dx2) && IsZero(dy2))
-      throw std::invalid_argument("GeometricOperations::Angle - start, center, and end cannot be coincident points");
+      THROW_GEOMETRY(_T("GeometricOperations::Angle - start, center, and end cannot be coincident points"));
 
    Float64 angle1 = atan2(dy1, dx1);
    if (IsZero(angle1))
@@ -588,7 +586,7 @@ Point3d GeometricOperations::GlobalToLocal(const Point3d& origin,
    Float64 nDot;
 
    if (!IsEqual(unitVector.GetMagnitude(), 1.0))
-      throw std::invalid_argument("GeometricOperations::GlobalToLocal - invalid unit vector");
+      THROW_GEOMETRY(_T("GeometricOperations::GlobalToLocal - invalid unit vector"));
 
    vKnownSubvOrigin = vKnown - vOrigin;
    nDot = vKnownSubvOrigin.Dot(unitVector);
@@ -616,7 +614,7 @@ Point3d GeometricOperations::LocalToGlobal(const Point3d& origin,
    Vector3d vKnown(point);
 
    if (!IsEqual(unitVector.GetMagnitude(), 1.0))
-      throw std::invalid_argument("GeometricOperations::GlobalToLocal - invalid unit vector");
+      THROW_GEOMETRY(_T("GeometricOperations::GlobalToLocal - invalid unit vector"));
 
    KnownDotUnit = vKnown.Dot(unitVector);
    KnownCrossUnit = vKnown.Cross(unitVector);
@@ -738,7 +736,7 @@ bool GeometricOperations::IsPointInTriangle(const Point2d& p, const Point2d& A, 
    Float64 denom = dot00 * dot11 - dot01 * dot01;
    if (IsZero(denom))
    {
-      throw std::invalid_argument("GeometricOperations::InPointInTriangle - invalid points");
+      THROW_GEOMETRY(_T("GeometricOperations::InPointInTriangle - invalid points"));
    }
 
    Float64 u = (dot11 * dot02 - dot01 * dot12) / denom;
@@ -753,14 +751,14 @@ bool GeometricOperations::AssertValid() const
    return true;
 }
 
-void GeometricOperations::Dump(dbgDumpContext& os) const
+void GeometricOperations::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for GeometricOperations" << endl;
+   os << "Dump for GeometricOperations" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool GeometricOperations::TestMe(dbgLog& rlog)
+bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("GeometricOperations");
 

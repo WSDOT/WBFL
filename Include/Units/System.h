@@ -77,7 +77,7 @@ namespace WBFL
          static Float64 GetGravitationalAcceleration();
 
       #if defined _UNITTEST
-         static bool TestMe(dbgLog& rlog);
+         static bool TestMe(WBFL::Debug::Log& rlog);
       #endif // _UNITTEST
 
       private:

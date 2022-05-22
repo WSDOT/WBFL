@@ -29,7 +29,7 @@
 #include <Reporter\ReportContent.h>
 #include <System\NumericFormatTool.h>
 
-class sysSectionValue;
+class WBFL::System::SectionValue;
 
 /// Abstract base class for reporting section values with units of measure
 ///
@@ -57,10 +57,10 @@ public:
    ) const;
 
    /// Assigns a section value and returns a reference to this
-   virtual rptReportContent& SetValue(const sysSectionValue& value) = 0;
+   virtual rptReportContent& SetValue(const WBFL::System::SectionValue& value) = 0;
 
    /// Returns the section value.
-   virtual sysSectionValue GetValue(
+   virtual WBFL::System::SectionValue GetValue(
       bool bConvert = false ///< If true, the returned value is converted into the specifed unit of measure
    ) const = 0;
 
@@ -78,10 +78,10 @@ public:
    virtual const std::_tstring& GetUnitTag() const = 0;
 
    /// Sets the output format
-   void SetFormat(sysNumericFormatTool::Format format);
+   void SetFormat(WBFL::System::NumericFormatTool::Format format);
 
    /// Returns the output format
-   sysNumericFormatTool::Format GetFormat() const;
+   WBFL::System::NumericFormatTool::Format GetFormat() const;
 
    /// Sets the output precision
    void SetPrecision(Uint16 precision);
@@ -112,7 +112,7 @@ protected:
 
 private:
    bool m_bShowUnitTag;
-   sysNumericFormatTool::Format m_Format;
+   WBFL::System::NumericFormatTool::Format m_Format;
    Int16 m_Width;
    Int16 m_Precision;
 

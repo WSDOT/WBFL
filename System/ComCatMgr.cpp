@@ -22,12 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysComCatMgr
-****************************************************************************/
-
 #include <System\ComCatMgr.h>
 
 #ifdef _DEBUG
@@ -36,12 +30,9 @@ CLASS
 static char THIS_FILE[] = __FILE__;
 #endif
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::System;
 
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-HRESULT sysComCatMgr::CreateCategory(OLECHAR* lpszDesc,const CATID& catid)
+HRESULT ComCatMgr::CreateCategory(OLECHAR* lpszDesc,const CATID& catid)
 {
    // Create the standard COM Category Manager
    ICatRegister* pICatReg = nullptr;
@@ -71,7 +62,7 @@ HRESULT sysComCatMgr::CreateCategory(OLECHAR* lpszDesc,const CATID& catid)
    return hr;
 }
 
-HRESULT sysComCatMgr::RemoveCategory(const CATID& catid,bool bLeaveIfUsed)
+HRESULT ComCatMgr::RemoveCategory(const CATID& catid,bool bLeaveIfUsed)
 {
    // Create the standard COM Category Manager
    ICatRegister* pICatReg = nullptr;
@@ -111,7 +102,7 @@ HRESULT sysComCatMgr::RemoveCategory(const CATID& catid,bool bLeaveIfUsed)
    return S_OK;
 }
 
-HRESULT sysComCatMgr::RegWithCategory(const CLSID& clsid,const CATID& catid,bool bReg)
+HRESULT ComCatMgr::RegWithCategory(const CLSID& clsid,const CATID& catid,bool bReg)
 {
    HRESULT hr = S_OK;
    ICatRegister* pICatReg = nullptr;
@@ -146,22 +137,3 @@ HRESULT sysComCatMgr::RegWithCategory(const CLSID& clsid,const CATID& catid,bool
 
    return S_OK;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================

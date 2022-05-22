@@ -22,13 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   dbgDumpContext
-****************************************************************************/
-
-#include <System\DumpContext.h>
+#include <System\DebugWindowLogContext.h>
 #include <System\SectionValue.h>
 
 #ifdef _DEBUG
@@ -37,43 +31,31 @@ CLASS
 static char THIS_FILE[] = __FILE__;
 #endif
 
+using namespace WBFL::Debug;
+
 #define BUFSIZE 256
 
-dbgDumpContext& operator<<(dbgDumpContext& dc,dbgDumpContext& (*pf)(dbgDumpContext&))
-{
-   return (*pf)(dc);
-}
-
-dbgDumpContext& endl(dbgDumpContext& dmpCtx)
-{
-   return dmpCtx.EndLine();
-}
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-dbgDumpContext::dbgDumpContext()
+DebugWindowLogContext::DebugWindowLogContext()
 {
 }
 
-dbgDumpContext::~dbgDumpContext()
+DebugWindowLogContext::~DebugWindowLogContext()
 {
 }
 
-//======================== OPERATORS  =======================================
-dbgDumpContext& dbgDumpContext::operator<<(const std::_tstring& s)
+LogContext& DebugWindowLogContext::operator<<(const std::_tstring& s)
 {
    OutputDebugString( s.c_str() );
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(LPCTSTR s)
+LogContext& DebugWindowLogContext::operator<<(LPCTSTR s)
 {
    OutputDebugString( s );
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(TCHAR ch)
+LogContext& DebugWindowLogContext::operator<<(TCHAR ch)
 {
    TCHAR buffer[BUFSIZE];
    buffer[0] = '\0';
@@ -82,7 +64,7 @@ dbgDumpContext& dbgDumpContext::operator<<(TCHAR ch)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(DWORD n)
+LogContext& DebugWindowLogContext::operator<<(DWORD n)
 {
    TCHAR buffer[BUFSIZE];
    buffer[0] = '\0';
@@ -91,13 +73,13 @@ dbgDumpContext& dbgDumpContext::operator<<(DWORD n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(bool n)
+LogContext& DebugWindowLogContext::operator<<(bool n)
 {
    OutputDebugString( n ? TEXT("True") : TEXT("False") );
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Int16 n)
+LogContext& DebugWindowLogContext::operator<<(Int16 n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%d"), n );
@@ -105,7 +87,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Int16 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Uint16 n)
+LogContext& DebugWindowLogContext::operator<<(Uint16 n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%u"), n );
@@ -113,7 +95,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Uint16 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Int32 n)
+LogContext& DebugWindowLogContext::operator<<(Int32 n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%I32d"), n );
@@ -121,7 +103,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Int32 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Uint32 n)
+LogContext& DebugWindowLogContext::operator<<(Uint32 n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%I32u"), n );
@@ -129,7 +111,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Uint32 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Int64 n)
+LogContext& DebugWindowLogContext::operator<<(Int64 n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%I64d"), n );
@@ -137,7 +119,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Int64 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Uint64 n)
+LogContext& DebugWindowLogContext::operator<<(Uint64 n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%I64u"), n );
@@ -145,7 +127,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Uint64 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Float32 n)    
+LogContext& DebugWindowLogContext::operator<<(Float32 n)    
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%f"), n );
@@ -153,7 +135,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Float32 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Float64 n)
+LogContext& DebugWindowLogContext::operator<<(Float64 n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%f"), n );
@@ -161,7 +143,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Float64 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(Float80 n)
+LogContext& DebugWindowLogContext::operator<<(Float80 n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%lf"), n );
@@ -169,7 +151,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Float80 n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(void * n)
+LogContext& DebugWindowLogContext::operator<<(void * n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%p"), n );
@@ -177,7 +159,7 @@ dbgDumpContext& dbgDumpContext::operator<<(void * n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(const sysSectionValue& n)
+LogContext& DebugWindowLogContext::operator<<(const WBFL::System::SectionValue& n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%s"), n.AsString().c_str() );
@@ -185,31 +167,10 @@ dbgDumpContext& dbgDumpContext::operator<<(const sysSectionValue& n)
    return *this;
 }
 
-//======================== OPERATIONS =======================================
-dbgDumpContext& dbgDumpContext::EndLine()
+LogContext& DebugWindowLogContext::EndLine()
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, BUFSIZE, TEXT("%s"), TEXT("\n") );
    OutputDebugString( buffer );
    return *this;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-//======================== DEBUG      =======================================

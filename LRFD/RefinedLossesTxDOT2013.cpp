@@ -409,7 +409,7 @@ Float64 creep_losses(Float64 H, Float64 fci, Float64 Eci, Float64 Ep, Float64 fc
 #if defined _UNITTEST
 #include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
-bool lrfdRefinedLossesTxDOT2013::TestMe(dbgLog& rlog)
+bool lrfdRefinedLossesTxDOT2013::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdRefinedLossesTxDOT2013");
 //

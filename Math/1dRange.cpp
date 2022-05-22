@@ -311,18 +311,18 @@ bool math1dRange::AssertValid() const
    return true;
 }
 
-void math1dRange::Dump(dbgDumpContext& os) const
+void math1dRange::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for math1dRange" << endl;
-   os << "m_LeftLocation:  " << m_LeftLocation << endl;
-   os << "m_LeftBound:     " <<m_LeftBound << endl;
-   os << "m_RightLocation: " <<m_RightLocation << endl;
-   os << "m_RightBound:    " <<m_RightBound << endl;
+   os << "Dump for math1dRange" << WBFL::Debug::endl;
+   os << "m_LeftLocation:  " << m_LeftLocation << WBFL::Debug::endl;
+   os << "m_LeftBound:     " <<m_LeftBound << WBFL::Debug::endl;
+   os << "m_RightLocation: " <<m_RightLocation << WBFL::Debug::endl;
+   os << "m_RightBound:    " <<m_RightBound << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool math1dRange::TestMe(dbgLog& rlog)
+bool math1dRange::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("math1dRange");
    math1dRange r1;

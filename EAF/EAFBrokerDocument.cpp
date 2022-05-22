@@ -1196,12 +1196,12 @@ void CEAFBrokerDocument::OnChangedFavoriteReports(BOOL bIsFavorites, BOOL bFromM
    {
       Uint32 mask = EAF_UIHINT_FAVORITES_MENU;
       Uint32 hintSettings = GetUIHintSettings();
-      if ( sysFlags<Uint32>::IsClear(hintSettings,mask) )
+      if ( WBFL::System::Flags<Uint32>::IsClear(hintSettings,mask) )
       {
          CString strText(_T("This menu item allows you to display only your favorite reports in the Reports menus, or display all available reports. The change will occur the next time you open a Report menu."));
          if ( EAFShowUIHints(strText) )
          {
-            sysFlags<Uint32>::Set(&hintSettings,mask);
+            WBFL::System::Flags<Uint32>::Set(&hintSettings,mask);
             SetUIHintSettings(hintSettings);
          }
       }

@@ -100,7 +100,7 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
 {
    pDX->PrepareEditCtrl(nIDC);
 
-   sysTokenizer tokenizer(_T("|"));
+   WBFL::System::Tokenizer tokenizer(_T("|"));
    tokenizer.push_back(lpszKeywords);
    if ( pDX->m_bSaveAndValidate )
    {
@@ -109,8 +109,8 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
       strText.Trim();
       int keywordCount = 1;
       bool bTokenFound = false;
-      sysTokenizer::iterator iter = tokenizer.begin();
-      sysTokenizer::iterator end = tokenizer.end();
+      WBFL::System::Tokenizer::iterator iter = tokenizer.begin();
+      WBFL::System::Tokenizer::iterator end = tokenizer.end();
       for (; iter != end; iter++, keywordCount++)
       {
          CString strToken(iter->c_str());

@@ -43,30 +43,9 @@ CLASS
 lrfdXShear::lrfdXShear(Reason reason,
                        LPCTSTR file,
                        Int16 line) :
-sysXBase(file,line),
+   WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
-}
-
-lrfdXShear::lrfdXShear(const lrfdXShear& rOther) :
-sysXBase(rOther)
-{
-   MakeCopy(rOther);
-}
-
-lrfdXShear::~lrfdXShear()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdXShear& lrfdXShear::operator= (const lrfdXShear& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
 }
 
 //======================== OPERATIONS =======================================
@@ -75,12 +54,12 @@ void lrfdXShear::Throw() const
    throw *static_cast<const lrfdXShear*>(this);
 }
 
-Int32 lrfdXShear::GetReason() const
+Int32 lrfdXShear::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-lrfdXShear::Reason lrfdXShear::GetReasonCode() const
+lrfdXShear::Reason lrfdXShear::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
@@ -94,36 +73,7 @@ bool lrfdXShear::AssertValid() const
    return true;
 }
 
-void lrfdXShear::Dump(dbgDumpContext& os) const
+void lrfdXShear::Dump(WBFL::Debug::LogContext& os) const
 {
 }
 #endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXShear::MakeCopy(const lrfdXShear& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void lrfdXShear::MakeAssignment(const lrfdXShear& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

@@ -25,10 +25,10 @@
 
 /****************************************************************************
 CLASS
-   dbgLogDumpContext
+   LogContext
 ****************************************************************************/
 
-#include <WBFLTools\LogDumpContext.h>
+#include <WBFLTools\LogContext.h>
 #include <System\SectionValue.h>
 #include <TCHAR.h>
 
@@ -43,8 +43,8 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-dbgLogDumpContext::dbgLogDumpContext(ILogFile* pLog,DWORD dwCookie):
-dbgDumpContext(),
+LogContext::LogContext(ILogFile* pLog,DWORD dwCookie):
+WBFL::Debug::LogContext(),
 m_LogFile(pLog),
 m_dwCookie(dwCookie)
 {
@@ -54,12 +54,12 @@ m_dwCookie(dwCookie)
    }
 }
 
-dbgLogDumpContext::~dbgLogDumpContext()
+LogContext::~LogContext()
 {
 }
 
 //======================== OPERATORS  =======================================
-dbgDumpContext& dbgLogDumpContext::operator<<(const std::_tstring& s)
+WBFL::Debug::LogContext& LogContext::operator<<(const std::_tstring& s)
 {
    if (m_LogFile)
       m_LogFile->LogMessage(m_dwCookie,s.c_str());
@@ -67,7 +67,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(const std::_tstring& s)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(LPCTSTR s)
+WBFL::Debug::LogContext& LogContext::operator<<(LPCTSTR s)
 {
    if (m_LogFile)
       m_LogFile->LogMessage(m_dwCookie,s);
@@ -75,7 +75,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(LPCTSTR s)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(TCHAR c)
+WBFL::Debug::LogContext& LogContext::operator<<(TCHAR c)
 {
    if (m_LogFile)
    {
@@ -87,7 +87,19 @@ dbgDumpContext& dbgLogDumpContext::operator<<(TCHAR c)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(bool n)
+WBFL::Debug::LogContext& LogContext::operator<<(DWORD n)
+{
+   if (m_LogFile)
+   {
+      TCHAR buffer[BUFSIZE];
+      _stprintf_s(buffer, TEXT("%d"), n);
+      m_LogFile->LogMessage(m_dwCookie, buffer);
+   }
+
+   return *this;
+}
+
+WBFL::Debug::LogContext& LogContext::operator<<(bool n)
 {
    if (m_LogFile)
       m_LogFile->LogMessage(m_dwCookie,(n ? TEXT("True") : TEXT("False") ));
@@ -95,7 +107,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(bool n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Int16 n)
+WBFL::Debug::LogContext& LogContext::operator<<(Int16 n)
 {
    if (m_LogFile)
    {
@@ -107,7 +119,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Int16 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Uint16 n)
+WBFL::Debug::LogContext& LogContext::operator<<(Uint16 n)
 {
    if (m_LogFile)
    {
@@ -119,7 +131,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Uint16 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Int32 n)
+WBFL::Debug::LogContext& LogContext::operator<<(Int32 n)
 {
    if (m_LogFile)
    {
@@ -131,7 +143,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Int32 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Uint32 n)
+WBFL::Debug::LogContext& LogContext::operator<<(Uint32 n)
 {
    if (m_LogFile)
    {
@@ -143,7 +155,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Uint32 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Int64 n)
+WBFL::Debug::LogContext& LogContext::operator<<(Int64 n)
 {
    if (m_LogFile)
    {
@@ -155,7 +167,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Int64 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Uint64 n)
+WBFL::Debug::LogContext& LogContext::operator<<(Uint64 n)
 {
    if (m_LogFile)
    {
@@ -167,7 +179,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Uint64 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Float32 n)    
+WBFL::Debug::LogContext& LogContext::operator<<(Float32 n)    
 {
    if (m_LogFile)
    {
@@ -179,7 +191,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Float32 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Float64 n)
+WBFL::Debug::LogContext& LogContext::operator<<(Float64 n)
 {
    if (m_LogFile)
    {
@@ -191,7 +203,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Float64 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(Float80 n)
+WBFL::Debug::LogContext& LogContext::operator<<(Float80 n)
 {
    if (m_LogFile)
    {
@@ -203,7 +215,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(Float80 n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(void * n)
+WBFL::Debug::LogContext& LogContext::operator<<(void * n)
 {
    if (m_LogFile)
    {
@@ -215,7 +227,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(void * n)
    return *this;
 }
 
-dbgDumpContext& dbgLogDumpContext::operator<<(const sysSectionValue& n)
+WBFL::Debug::LogContext& LogContext::operator<<(const WBFL::System::SectionValue& n)
 {
    if (m_LogFile)
    {
@@ -228,7 +240,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(const sysSectionValue& n)
 }
 
 //======================== OPERATIONS =======================================
-void dbgLogDumpContext::SetLog(ILogFile* pLog,DWORD dwCookie)
+void LogContext::SetLog(ILogFile* pLog,DWORD dwCookie)
 {
    m_LogFile = pLog;
 
@@ -240,13 +252,13 @@ void dbgLogDumpContext::SetLog(ILogFile* pLog,DWORD dwCookie)
    m_dwCookie = dwCookie;
 }
 
-void dbgLogDumpContext::GetLog(ILogFile** ppLog,DWORD* pdwCookie)
+void LogContext::GetLog(ILogFile** ppLog,DWORD* pdwCookie)
 {
    m_LogFile.CopyTo(ppLog);
    *pdwCookie = m_dwCookie;
 }
 
-dbgDumpContext& dbgLogDumpContext::EndLine()
+WBFL::Debug::LogContext& LogContext::EndLine()
 {
    if (m_LogFile)
       m_LogFile->LogMessage(m_dwCookie,_T("\n"));

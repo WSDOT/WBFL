@@ -176,7 +176,7 @@ const Velocity Measure::FeetPerSecond(   0.3048,             _T("ft/s"));
 
 #define TEST(a,ua,b,ub) ( IsEqual( ::Convert((a),(ua), (ub)), (b) ) )
 
-bool Measure::TestMe(dbgLog& rlog)
+bool Measure::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Measure");
 

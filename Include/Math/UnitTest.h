@@ -63,7 +63,7 @@ public:
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
@@ -85,7 +85,7 @@ private:
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   static bool TestEx(dbgLog& rlog);
+   static bool TestEx(WBFL::Debug::Log& rlog);
    // GROUP: ACCESS
    // GROUP: INQUIRY
 

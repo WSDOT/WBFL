@@ -460,7 +460,7 @@ void lrfdApproximateLosses2005::UpdateHaulingLosses() const
 #if defined _UNITTEST
 #include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
-bool lrfdApproximateLosses2005::TestMe(dbgLog& rlog)
+bool lrfdApproximateLosses2005::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdApproximateLosses2005");
 //

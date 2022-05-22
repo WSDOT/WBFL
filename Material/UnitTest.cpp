@@ -53,7 +53,7 @@ CLASS
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-bool matUnitTest::TestMe(dbgLog& rlog)
+bool matUnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool tst = true;
 

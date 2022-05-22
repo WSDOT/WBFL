@@ -385,7 +385,7 @@ void lrfdLumpSumLosses::UpdateHaulingLosses() const
 #if defined _UNITTEST
 #include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
-bool lrfdLumpSumLosses::TestMe(dbgLog& rlog)
+bool lrfdLumpSumLosses::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLumpSumLosses");
 

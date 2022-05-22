@@ -298,8 +298,7 @@ void Line2d::Reverse()
 
 void Line2d::SetImplicit(Float64 c, const Vector2d& n)
 {
-   if (n.IsZero())
-      throw std::invalid_argument("Line2d::SetImplicit - normal vector has zero magnitude");
+   if (n.IsZero()) THROW_GEOMETRY(_T("Line2d::SetImplicit - normal vector has zero magnitude"));
 
    m_c = c;
    m_N = n;
@@ -316,8 +315,7 @@ void Line2d::GetImplicit(Float64* c, Vector2d* n) const
 
 void Line2d::SetExplicit(const Point2d& u, const Vector2d& v)
 {
-   if(v.IsZero())
-      throw std::invalid_argument("Line2d::SetExplicit - direction vector has zero magnitude");
+   if(v.IsZero()) THROW_GEOMETRY(_T("Line2d::SetExplicit - direction vector has zero magnitude"));
 
    ExplicitToImplicit(u, v, &m_c, &m_N);
 
@@ -333,8 +331,7 @@ void Line2d::GetExplicit(Point2d* u, Vector2d* v) const
 
 void Line2d::ThroughPoints(const Point2d& p1,const Point2d& p2)
 {
-   if(p1 == p2)
-      throw std::invalid_argument("Line2d::ThroughPoints - points are coincident");
+   if(p1 == p2) THROW_GEOMETRY(_T("Line2d::ThroughPoints - points are coincident"));
 
    PointToImplicit(p1,p2,&m_c,&m_N);
 
@@ -348,17 +345,17 @@ bool Line2d::AssertValid() const
    return IsEqual( m_N.GetRelMagnitude(), 1. );
 }
 
-void Line2d::Dump(dbgDumpContext& os) const
+void Line2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for Line2d") << endl;
-   os << _T("  m_c =") << m_c <<endl;
+   os << _T("Dump for Line2d") << WBFL::Debug::endl;
+   os << _T("  m_c =") << m_c << WBFL::Debug::endl;
    os << _T("m_N = ");
    m_N.Dump(os);
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool Line2d::TestMe(dbgLog& rlog)
+bool Line2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Line2d");
 
@@ -540,7 +537,7 @@ bool Line2d::TestMe(dbgLog& rlog)
 
 
 #if defined _DEBUG
-   at45.Dump(rlog.GetDumpCtx());
+   at45.Dump(rlog.GetLogContext());
 #endif
 
    TESTME_EPILOG("Line2d");
@@ -583,7 +580,7 @@ void PointToImplicit(const Point2d& p1, const Point2d& p2, Float64* c, Vector2d*
       // Not using IsZero() or p1 == p2 (becauses it uses IsZero/IsEqual)... 
       // we need to be forgiving about creating a line... the two points must
       // be exactly equal to throw this exception, not just close enough
-      throw std::invalid_argument("Line2d - points are coincident");
+      THROW_GEOMETRY(_T("Line2d - points are coincident"));
    }
    else
    {

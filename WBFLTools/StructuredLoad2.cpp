@@ -78,7 +78,7 @@ HRESULT CStructuredLoad2::Open( BSTR strFile)
          THROW_MSG(msg,STRLOAD_E_FILENOTFOUND,IDH_STRLOAD_E_FILENOTFOUND);
       }
 
-      FileStream* pstrm = new FileStream;
+      WBFL::System::FileStream* pstrm = new WBFL::System::FileStream;
       if (pstrm==0)
       {
          CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_CANTOPEN, strFile);

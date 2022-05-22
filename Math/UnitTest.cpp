@@ -48,13 +48,13 @@ CLASS
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
-bool test_rootfinders(dbgLog& rlog);
+bool test_rootfinders(WBFL::Debug::Log& rlog);
 
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-bool mathUnitTest::TestMe(dbgLog& rlog)
+bool mathUnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool tst = true;
 
@@ -83,7 +83,7 @@ bool mathUnitTest::TestMe(dbgLog& rlog)
 }
 
 
-bool mathUnitTest::TestEx(dbgLog& rlog)
+bool mathUnitTest::TestEx(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathEx");
 
@@ -103,8 +103,25 @@ bool mathUnitTest::TestEx(dbgLog& rlog)
    TRY_TESTME( IsEqual( CeilOff(-3.12,0.15), -3.0));
    TRY_TESTME( IsEqual( CeilOff(-3.01,0.15), -3.0));
 
+   Float64 x;
+   x = 6.2343;
+   x = RoundOff(x, 0.001);
+   TRY_TESTME(x == 6.234);
+
+   x = 6.2347;
+   x = RoundOff(x, 0.001);
+   TRY_TESTME(x == 6.235);
+
+   x = -6.2343;
+   x = RoundOff(x, 0.001);
+   TRY_TESTME(x == -6.234);
+
+   x = -6.2347;
+   x = RoundOff(x, 0.001);
+   TRY_TESTME(x == -6.235);
    TESTME_EPILOG("mathEx")
 }
+
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
 
@@ -126,7 +143,7 @@ bool mathUnitTest::TestEx(dbgLog& rlog)
 
 //======================== DEBUG      =======================================
 
-bool test_rootfinders(dbgLog& rlog)
+bool test_rootfinders(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Root Finder Tests");
 

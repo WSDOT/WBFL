@@ -157,14 +157,14 @@ bool mathCoordMapper1d::AssertValid() const
    return true;
 }
 
-void mathCoordMapper1d::Dump(dbgDumpContext& os) const
+void mathCoordMapper1d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for mathCoordMapper1d not implemented") << endl;
+   os << _T("Dump for mathCoordMapper1d not implemented") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathCoordMapper1d::TestMe(dbgLog& rlog)
+bool mathCoordMapper1d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathCoordMapper1d");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for mathCoordMapper1d");

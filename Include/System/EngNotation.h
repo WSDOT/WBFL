@@ -21,21 +21,24 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_ENGNOTATION_H_
-#define INCLUDED_SYSTEM_ENGNOTATION_H_
 #pragma once
 
 #include <iostream>
 #include <iomanip>
 
-class sysEngNotationData
+namespace WBFL
 {
-public:
-   Float64 value;
-   int nDigits;
-   int sigDigits; // if 0, treat nDigits as the number of decimal points
-                    // otherwise, treat nDigits as the number of significant
-                    // digits
+   namespace System
+   {
+      /// Format specification for engineering notation
+      class EngNotationFormatSpecification
+      {
+      public:
+         Float64 value; ///< Value to be represented in engineering notation
+         int nDigits; ///< Number of digits to display
+         int sigDigits; ///< Number of significant dignits. If 0, treat nDigits as the number of decimal points otherwise, treat nDigits as the number of significant digits
+      };
+   };
 };
 
 // Can't use standard import/export macros becuase _Smanip is a struct
@@ -49,9 +52,8 @@ public:
 #endif
 
 #pragma warning ( disable : 4231 )
-SYSSTRUCTTPL std::_Smanip<sysEngNotationData>;
-typedef std::_Smanip<sysEngNotationData> eng_notation_manip;
+SYSSTRUCTTPL std::_Smanip<WBFL::System::EngNotationFormatSpecification>; // causes the compiler to create an instance of the _Smanip template
+typedef std::_Smanip<WBFL::System::EngNotationFormatSpecification> eng_notation_manip; ///< std stream manipulator for engineering notation
 
+/// Returns a custom stream manipulator for engineering notation
 SYSFUNC eng_notation_manip eng_notation(Float64 value,int nDigits,int sigDigits = 0);
-
-#endif

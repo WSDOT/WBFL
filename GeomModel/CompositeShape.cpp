@@ -226,7 +226,7 @@ void CompositeShape::AddShape(const Shape& shape,CompositeShape::ShapeType shape
 void CompositeShape::AddShape(std::unique_ptr<Shape>&& shape, CompositeShape::ShapeType shapeType)
 {
    if (m_Shapes.empty() && shapeType == ShapeType::Void)
-      throw std::invalid_argument("CompositeShape::AddShape - first shape must be solid");
+      THROW_GEOMETRY(_T("CompositeShape::AddShape - first shape must be solid"));
 
    m_Shapes.emplace_back(std::move(shape), shapeType);
    SetDirtyFlag();
@@ -241,7 +241,7 @@ void CompositeShape::RemoveShape(IndexType idx)
    }
    else
    {
-      throw std::invalid_argument("CompositeShape::RemoveShape - invalid index");
+      THROW_GEOMETRY(_T("CompositeShape::RemoveShape - invalid index"));
    }
 }
 
@@ -259,7 +259,7 @@ std::shared_ptr<Shape>& CompositeShape::GetShape(IndexType idx)
    }
    else
    {
-      throw std::invalid_argument("CompositeShape::GetShape - invalid index");
+      THROW_GEOMETRY(_T("CompositeShape::GetShape - invalid index"));
    }
 }
 
@@ -271,7 +271,7 @@ const std::shared_ptr<Shape>& CompositeShape::GetShape(IndexType idx) const
    }
    else
    {
-      throw std::invalid_argument("CompositeShape::GetShape - invalid index");
+      THROW_GEOMETRY(_T("CompositeShape::GetShape - invalid index"));
    }
 }
 
@@ -283,7 +283,7 @@ CompositeShape::ShapeType CompositeShape::GetShapeType(IndexType idx) const
    }
    else
    {
-      throw std::invalid_argument("CompositeShape::GetShapeType - invalid index");
+      THROW_GEOMETRY(_T("CompositeShape::GetShapeType - invalid index"));
    }
 }
 
@@ -355,11 +355,11 @@ bool CompositeShape::AssertValid() const
    return true;
 }
 
-void CompositeShape::Dump(dbgDumpContext& os) const
+void CompositeShape::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for CompositeShape") << endl;
-   os << _T("Contained shapes in CompositeShape") << endl;
-   os << _T("   # of Shapes = ")<<m_Shapes.size()<<endl;
+   os << _T("Dump for CompositeShape") << WBFL::Debug::endl;
+   os << _T("Contained shapes in CompositeShape") << WBFL::Debug::endl;
+   os << _T("   # of Shapes = ")<<m_Shapes.size()<< WBFL::Debug::endl;
 }
 
 #endif // _DEBUG
@@ -391,7 +391,7 @@ private:
    std::vector<Point2d> m_DummyPoints;
 };
 
-bool CompositeShape::TestMe(dbgLog& rlog)
+bool CompositeShape::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("CompositeShape");
 
@@ -414,7 +414,7 @@ bool CompositeShape::TestMe(dbgLog& rlog)
 
    // take a dump
 #if defined _DEBUG
-   anglec.Dump(rlog.GetDumpCtx());
+   anglec.Dump(rlog.GetLogContext());
 #endif
 
    // delete inner rectangle
@@ -423,7 +423,7 @@ bool CompositeShape::TestMe(dbgLog& rlog)
    {
       anglec.RemoveShape(100);
    }
-   catch (std::exception& e)
+   catch (WBFL::Geometry::XGeometry& e)
    {
       UNREFERENCED_PARAMETER(e);
       TRY_TESTME(true); // an exception should be thrown
@@ -433,7 +433,7 @@ bool CompositeShape::TestMe(dbgLog& rlog)
    {
       anglec.RemoveShape(1);
    }
-   catch (std::exception& e)
+   catch (WBFL::Geometry::XGeometry& e)
    {
       UNREFERENCED_PARAMETER(e);
       TRY_TESTME(false); // should not throw

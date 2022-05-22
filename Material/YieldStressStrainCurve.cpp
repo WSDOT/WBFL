@@ -192,24 +192,24 @@ bool matYieldStressStrainCurve::AssertValid() const
    return true;
 }
 
-void matYieldStressStrainCurve::Dump(dbgDumpContext& os) const
+void matYieldStressStrainCurve::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for matYieldStressStrainCurve" << endl;
-   os << "==================================" << endl;
+   os << "Dump for matYieldStressStrainCurve" << WBFL::Debug::endl;
+   os << "==================================" << WBFL::Debug::endl;
    matStressStrainCurve::Dump( os );
-   os << "==================================" << endl;
-   os << "Mod E           : " << m_ModE            << endl;
-   os << "CompYieldStress : " << m_CompYieldStress << endl;
-   os << "CompUltStrain   : " << m_CompUltStrain   << endl;
-   os << "CompUltStress   : " << m_CompUltStress   << endl;
-   os << "TensYieldStress : " << m_TensYieldStress << endl;
-   os << "TensUltStrain   : " << m_TensUltStrain   << endl;
-   os << "TensUltStress   : " << m_TensUltStress   << endl;
+   os << "==================================" << WBFL::Debug::endl;
+   os << "Mod E           : " << m_ModE            << WBFL::Debug::endl;
+   os << "CompYieldStress : " << m_CompYieldStress << WBFL::Debug::endl;
+   os << "CompUltStrain   : " << m_CompUltStrain   << WBFL::Debug::endl;
+   os << "CompUltStress   : " << m_CompUltStress   << WBFL::Debug::endl;
+   os << "TensYieldStress : " << m_TensYieldStress << WBFL::Debug::endl;
+   os << "TensUltStrain   : " << m_TensUltStrain   << WBFL::Debug::endl;
+   os << "TensUltStress   : " << m_TensUltStress   << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool matYieldStressStrainCurve::TestMe(dbgLog& rlog)
+bool matYieldStressStrainCurve::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matYieldStressStrainCurve");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matYieldStressStrainCurve");

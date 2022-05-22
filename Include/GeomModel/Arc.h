@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_ARC_H_
-#define INCLUDED_GEOMETRY_ARC_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -89,12 +87,12 @@ public:
    bool AssertValid() const;
 
    /// Dumps the contents of the class to the given stream.
-   void Dump(dbgDumpContext& os) const;
+   void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
    /// A self-test function - returns true if passed.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 private:
    Point2d m_Start;
@@ -104,5 +102,3 @@ private:
 
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMETRY_ARC_H_

@@ -718,7 +718,7 @@ bool lrfdLldfTypeG::AssertValid() const
    return lrfdLiveLoadDistributionFactorBase::AssertValid();
 }
 
-void lrfdLldfTypeG::Dump(dbgDumpContext& os) const
+void lrfdLldfTypeG::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLiveLoadDistributionFactorBase::Dump( os );
 }
@@ -726,7 +726,7 @@ void lrfdLldfTypeG::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdLldfTypeG::TestMe(dbgLog& rlog)
+bool lrfdLldfTypeG::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeG");
 
@@ -999,7 +999,7 @@ bool lrfdLldfTypeF::AssertValid() const
    return lrfdLldfTypeG::AssertValid();
 }
 
-void lrfdLldfTypeF::Dump(dbgDumpContext& os) const
+void lrfdLldfTypeF::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLldfTypeG::Dump( os );
 }
@@ -1007,7 +1007,7 @@ void lrfdLldfTypeF::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdLldfTypeF::TestMe(dbgLog& rlog)
+bool lrfdLldfTypeF::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeF");
 
@@ -1276,7 +1276,7 @@ bool lrfdTxdotVoidedSlab::AssertValid() const
    return lrfdLldfTypeG::AssertValid();
 }
 
-void lrfdTxdotVoidedSlab::Dump(dbgDumpContext& os) const
+void lrfdTxdotVoidedSlab::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLldfTypeG::Dump( os );
 }
@@ -1284,7 +1284,7 @@ void lrfdTxdotVoidedSlab::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdTxdotVoidedSlab::TestMe(dbgLog& rlog)
+bool lrfdTxdotVoidedSlab::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdTxdotVoidedSlab");
  
@@ -1662,14 +1662,14 @@ bool lrfdTxdotLldfAdjacentBox::AssertValid() const
    return lrfdLldfTypeG::AssertValid();
 }
 
-void lrfdTxdotLldfAdjacentBox::Dump(dbgDumpContext& os) const
+void lrfdTxdotLldfAdjacentBox::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLldfTypeG::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool lrfdTxdotLldfAdjacentBox::TestMe(dbgLog& rlog)
+bool lrfdTxdotLldfAdjacentBox::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdTxdotLldfAdjacentBox");
 

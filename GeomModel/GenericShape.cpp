@@ -441,29 +441,29 @@ bool GenericShape::AssertValid() const
    return true;
 }
 
-void GenericShape::Dump(dbgDumpContext& os) const
+void GenericShape::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for GenericShape") << endl;
-   //os << _T("   m_Area         = ")<< m_Area <<endl;
-   //os << _T("   m_Centroid     = (")<< m_Centroid.X()<<_T(", ")<<m_Centroid.Y()<<_T(")")<<endl;
-   //os << _T("   m_Ixx          = ")<< m_Ixx <<endl;         
-   //os << _T("   m_Iyy          = ")<< m_Iyy <<endl;          
-   //os << _T("   m_Ixy          = ")<< m_Ixy <<endl;         
-   //os << _T("   m_Edges.Top    = ") << m_Edges.Top() << endl;
-   //os << _T("   m_Edges.Bottom = ") << m_Edges.Bottom() << endl;
-   //os << _T("   m_Edges.Left   = ") << m_Edges.Left() << endl;
-   //os << _T("   m_Edges.Right  = ") << m_Edges.Right() << endl;
-   //os << _T("   m_BoundingBox.Top    = ")<< m_BoundingBox.Top() <<endl;
-   //os << _T("   m_BoundingBox.Bottom = ")<< m_BoundingBox.Bottom() <<endl;
-   //os << _T("   m_BoundingBox.Left   = ")<< m_BoundingBox.Left() <<endl;
-   //os << _T("   m_BoundingBox.Right  = ")<< m_BoundingBox.Right() <<endl;
-   //os << _T("   m_CoordType    = ")<< (int)m_CoordType <<endl;   
-   //os << _T("   m_Origin       = (")<<m_Origin.X()<<_T(", ")<<m_Origin.Y()<<_T(")") <<endl;
-   //os << _T("   m_Orientation  = ")<< m_Orientation <<endl;
-   //os << _T("   m_CurrCentroid = (")<< m_CurrCentroid.X()<<_T(", ")<<m_CurrCentroid.Y()<<_T(")")<<endl;
-   //os << _T("   m_CurrIxx      = ")<< m_CurrIxx <<endl;
-   //os << _T("   m_CurrIyy      = ")<< m_CurrIyy <<endl;
-   //os << _T("   m_CurrIxy      = ")<< m_CurrIxy <<endl;
+   os << _T("Dump for GenericShape") << WBFL::Debug::endl;
+   //os << _T("   m_Area         = ")<< m_Area << WBFL::Debug::endl;
+   //os << _T("   m_Centroid     = (")<< m_Centroid.X()<<_T(", ")<<m_Centroid.Y()<<_T(")")<< WBFL::Debug::endl;
+   //os << _T("   m_Ixx          = ")<< m_Ixx << WBFL::Debug::endl;         
+   //os << _T("   m_Iyy          = ")<< m_Iyy << WBFL::Debug::endl;          
+   //os << _T("   m_Ixy          = ")<< m_Ixy << WBFL::Debug::endl;         
+   //os << _T("   m_Edges.Top    = ") << m_Edges.Top() << WBFL::Debug::endl;
+   //os << _T("   m_Edges.Bottom = ") << m_Edges.Bottom() << WBFL::Debug::endl;
+   //os << _T("   m_Edges.Left   = ") << m_Edges.Left() << WBFL::Debug::endl;
+   //os << _T("   m_Edges.Right  = ") << m_Edges.Right() << WBFL::Debug::endl;
+   //os << _T("   m_BoundingBox.Top    = ")<< m_BoundingBox.Top() << WBFL::Debug::endl;
+   //os << _T("   m_BoundingBox.Bottom = ")<< m_BoundingBox.Bottom() << WBFL::Debug::endl;
+   //os << _T("   m_BoundingBox.Left   = ")<< m_BoundingBox.Left() << WBFL::Debug::endl;
+   //os << _T("   m_BoundingBox.Right  = ")<< m_BoundingBox.Right() << WBFL::Debug::endl;
+   //os << _T("   m_CoordType    = ")<< (int)m_CoordType << WBFL::Debug::endl;   
+   //os << _T("   m_Origin       = (")<<m_Origin.X()<<_T(", ")<<m_Origin.Y()<<_T(")") << WBFL::Debug::endl;
+   //os << _T("   m_Orientation  = ")<< m_Orientation << WBFL::Debug::endl;
+   //os << _T("   m_CurrCentroid = (")<< m_CurrCentroid.X()<<_T(", ")<<m_CurrCentroid.Y()<<_T(")")<< WBFL::Debug::endl;
+   //os << _T("   m_CurrIxx      = ")<< m_CurrIxx << WBFL::Debug::endl;
+   //os << _T("   m_CurrIyy      = ")<< m_CurrIyy << WBFL::Debug::endl;
+   //os << _T("   m_CurrIxy      = ")<< m_CurrIxy << WBFL::Debug::endl;
 }
 
 #endif // _DEBUG
@@ -472,7 +472,7 @@ void GenericShape::Dump(dbgDumpContext& os) const
 #if defined _UNITTEST
 #include <MathEx.h>
 #include <GeomModel/UnitTest.h>
-bool GenericShape::TestMe(dbgLog& rlog)
+bool GenericShape::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("GenericShape");
 

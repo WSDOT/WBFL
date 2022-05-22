@@ -136,17 +136,17 @@ bool ShapeOnAlternativePolygonImpl::AssertValid() const
    return __super::AssertValid();
 }
 
-void ShapeOnAlternativePolygonImpl::Dump(dbgDumpContext& os) const
+void ShapeOnAlternativePolygonImpl::Dump(WBFL::Debug::LogContext& os) const
 {
    ASSERTVALID;
-   os << _T("Dump for ShapeOnAlternativePolygonImpl") << endl;
+   os << _T("Dump for ShapeOnAlternativePolygonImpl") << WBFL::Debug::endl;
    __super::Dump(os);
 }
 #endif // _DEBUG
 
 
 #if defined _UNITTEST
-bool ShapeOnAlternativePolygonImpl::TestMe(dbgLog& rlog)
+bool ShapeOnAlternativePolygonImpl::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("ShapeOnAlternativePolygonImpl");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented");

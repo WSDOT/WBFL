@@ -96,3 +96,15 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	}
 	return 1;   // ok
 }
+
+#include <System/dllTest.h>
+#include <EAF\EAFTxnManager.h>
+#include <EAF\EAFMacroTxn.h>
+bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
+{
+	bool tst = true;
+	tst &= CEAFTxnManager::TestMe(rlog);
+	tst &= CEAFTransaction::TestMe(rlog);
+	tst &= CEAFMacroTxn::TestMe(rlog);
+	return tst;
+}

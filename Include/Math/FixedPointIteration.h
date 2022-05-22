@@ -38,7 +38,7 @@
 
 // MISCELLANEOUS
 //
-class MATHCLASS mathXFixedPointIterationFailed : public sysXBase
+class MATHCLASS mathXFixedPointIterationFailed : public WBFL::System::XBase
 {
 public:
    // GROUP: ENUMERATIONS
@@ -70,13 +70,13 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void Throw() const;
+   virtual void Throw() const override;
    //------------------------------------------------------------------------
    Float64 GetLast() const;
    //------------------------------------------------------------------------
-   Int32 GetReason() const;
+   virtual Int32 GetReason() const noexcept override;
    //------------------------------------------------------------------------
-   Reason GetReasonCode() const;
+   Reason GetReasonCode() const noexcept;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -149,14 +149,14 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
    // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 

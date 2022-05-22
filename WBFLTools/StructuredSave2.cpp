@@ -74,7 +74,7 @@ HRESULT CStructuredSave2::Open(/*[in]*/ BSTR strFileName)
       if (m_bOpen)
          THROW_IDS(IDS_STRSAVE_E_CANTOPEN,STRSAVE_E_CANTOPEN,IDH_STRSAVE_E_CANTOPEN);
 
-      FileStream* pstrm = new(FileStream);
+      WBFL::System::FileStream* pstrm = new(WBFL::System::FileStream);
       if (pstrm==0)
          THROW_IDS(IDS_STRSAVE_E_CANTOPEN,STRSAVE_E_CANTOPEN,IDH_STRSAVE_E_CANTOPEN);
 

@@ -35,8 +35,15 @@
 // FORWARD DECLARATIONS
 //
 class libILibrary;
-class sysIStructuredSave;
-class sysIStructuredLoad;
+
+namespace WBFL
+{
+   namespace System
+   {
+      class IStructuredSave;
+      class IStructuredLoad;
+   };
+};
 
 // MISCELLANEOUS
 //
@@ -129,11 +136,11 @@ public:
 
    //------------------------------------------------------------------------
    // Save to structured storage
-   virtual bool SaveMe(sysIStructuredSave* pSave) = 0;
+   virtual bool SaveMe(WBFL::System::IStructuredSave* pSave) = 0;
 
    //------------------------------------------------------------------------
    // Load from structured storage
-   virtual bool LoadMe(sysIStructuredLoad* pLoad) = 0;
+   virtual bool LoadMe(WBFL::System::IStructuredLoad* pLoad) = 0;
 
    // ACCESS
    
@@ -180,7 +187,7 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
 
 };

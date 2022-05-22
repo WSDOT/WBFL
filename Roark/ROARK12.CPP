@@ -92,9 +92,9 @@ void rkPPIntermediateLoad::GetDeflections(Float64* pYa,Float64* pYb) const
    *pYb = ComputeDeflection(L);
 }
 
-sysSectionValue rkPPIntermediateLoad::ComputeShear(Float64 x) const
+WBFL::System::SectionValue rkPPIntermediateLoad::ComputeShear(Float64 x) const
 {
-   sysSectionValue V;
+   WBFL::System::SectionValue V;
 
    // Compute shear left and right of W
    Float64 Ra, Rb;
@@ -145,7 +145,7 @@ sysSectionValue rkPPIntermediateLoad::ComputeShear(Float64 x) const
    return V;
 }
 
-sysSectionValue rkPPIntermediateLoad::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue rkPPIntermediateLoad::ComputeMoment(Float64 x) const
 {
    Float64 M;
 
@@ -205,19 +205,19 @@ bool rkPPIntermediateLoad::AssertValid() const
    return rkRoarkBeam::AssertValid();
 }
 
-void rkPPIntermediateLoad::Dump(dbgDumpContext& os) const
+void rkPPIntermediateLoad::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkPPIntermediateLoad" << endl;
-   os << " a = " << a << endl;
-   os << " b = " << b << endl;
-   os << " W = " << W << endl;
+   os << "Dump for rkPPIntermediateLoad" << WBFL::Debug::endl;
+   os << " a = " << a << WBFL::Debug::endl;
+   os << " b = " << b << WBFL::Debug::endl;
+   os << " W = " << W << WBFL::Debug::endl;
    rkRoarkBeam::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include "Private.h"
-bool rkPPIntermediateLoad::TestMe(dbgLog& rlog)
+bool rkPPIntermediateLoad::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("rkPPIntermediateLoad");
    // Intermediate load at mid-span
@@ -233,16 +233,16 @@ bool rkPPIntermediateLoad::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(Ra,5.0) );
    TRY_TESTME( IsEqual(Rb,5.0) );
 
-   sysSectionValue Mcl = beam.ComputeMoment(5);
+   WBFL::System::SectionValue Mcl = beam.ComputeMoment(5);
    TRY_TESTME( IsEqual(Mcl.Left(),25.0) && IsEqual(Mcl.Right(),25.0) );
 
-   sysSectionValue Vcl = beam.ComputeShear(5);
+   WBFL::System::SectionValue Vcl = beam.ComputeShear(5);
    TRY_TESTME( IsEqual(Vcl.Left(),5.0) && IsEqual(Vcl.Right(),-5.0) );
 
-   sysSectionValue Va = beam.ComputeShear(0);
+   WBFL::System::SectionValue Va = beam.ComputeShear(0);
    TRY_TESTME( IsEqual(Va.Left(),0.0) && IsEqual(Va.Right(),5.0) );
 
-   sysSectionValue Vb = beam.ComputeShear(l);
+   WBFL::System::SectionValue Vb = beam.ComputeShear(l);
    TRY_TESTME( IsEqual(Vb.Left(),-5.0) && IsEqual(Vb.Right(),0.0) );
 
    TRY_TESTME( IsZero( beam.ComputeDeflection(0) ) );
@@ -261,8 +261,8 @@ bool rkPPIntermediateLoad::TestMe(dbgLog& rlog)
    Uint16 j;
    for ( j = 0; j < nPoints/2; j++ )
    {
-      sysSectionValue lShear, rShear;
-      sysSectionValue lMoment, rMoment;
+      WBFL::System::SectionValue lShear, rShear;
+      WBFL::System::SectionValue lMoment, rMoment;
 
       Float64 xl = j * l / nPoints;
       Float64 xr = l - j * l / nPoints;

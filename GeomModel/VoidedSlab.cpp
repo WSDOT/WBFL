@@ -131,7 +131,7 @@ std::shared_ptr<Shape> VoidedSlab::GetSlabShape() const
 std::shared_ptr<Shape> VoidedSlab::GetVoidShape(IndexType voidIdx) const
 {
    if (m_nVoids <= voidIdx)
-      throw std::invalid_argument("VoidedSlab::GetVoidShape - invalid index");
+      THROW_GEOMETRY(_T("VoidedSlab::GetVoidShape - invalid index"));
 
    return GetComposite()->GetShape(voidIdx + 1);
 }
@@ -142,9 +142,9 @@ bool VoidedSlab::AssertValid() const
    return __super::AssertValid();
 }
 
-void VoidedSlab::Dump(dbgDumpContext& os) const
+void VoidedSlab::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for VoidedSlab ***")<<endl;
+   os << _T("*** Dump for VoidedSlab ***")<< WBFL::Debug::endl;
    __super::Dump( os );
 }
 #endif // _DEBUG
@@ -180,7 +180,7 @@ void VoidedSlab::OnUpdateComposite(std::unique_ptr<CompositeShape>& composite) c
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool VoidedSlab::TestMe(dbgLog& rlog)
+bool VoidedSlab::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("VoidedSlab");
 

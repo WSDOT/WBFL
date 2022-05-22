@@ -449,7 +449,7 @@ anchorType GetAnchorInfo(long i, MSHTML::IHTMLElementCollectionPtr& pcoll, long*
 
    // parse id
    CString nid = cid.Right(cid.GetLength()-1);
-   sysTokenizer::ParseLong(nid, pid);
+   WBFL::System::Tokenizer::ParseLong(nid, pid);
    if (*pid < rptHtmlHelper::ParaStart)
       return atChapter;
    else

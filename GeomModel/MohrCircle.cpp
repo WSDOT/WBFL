@@ -130,9 +130,9 @@ bool MohrCircle::AssertValid() const
    return true;
 }
 
-void MohrCircle::Dump(dbgDumpContext& os) const
+void MohrCircle::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for MohrCircle" << endl;
+   os << "Dump for MohrCircle" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -173,7 +173,7 @@ void MohrCircle::Init()
 //======================== INQUERY    =======================================
 
 #if defined _UNITTEST
-bool MohrCircle::TestMe(dbgLog& rlog)
+bool MohrCircle::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("MohrCircle");
 

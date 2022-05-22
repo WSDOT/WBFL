@@ -1065,7 +1065,7 @@ bool lrfdRefinedLosses2005::AdjustShrinkageStrain() const
 #if defined _UNITTEST
 #include <Units\System.h>
 #include <Lrfd\AutoVersion.h>
-bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
+bool lrfdRefinedLosses2005::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdRefinedLosses2005");
 

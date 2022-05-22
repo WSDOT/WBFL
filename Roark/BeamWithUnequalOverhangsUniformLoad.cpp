@@ -133,7 +133,7 @@ void rkBeamWithUnequalOverhangsUniformLoad::GetDeflections(Float64* pYa,Float64*
    *pYb = 0;
 }
 
-sysSectionValue rkBeamWithUnequalOverhangsUniformLoad::ComputeShear(Float64 x) const
+WBFL::System::SectionValue rkBeamWithUnequalOverhangsUniformLoad::ComputeShear(Float64 x) const
 {
 
    PRECONDITION(x>=0.0 && x<=m_L);
@@ -145,7 +145,7 @@ sysSectionValue rkBeamWithUnequalOverhangsUniformLoad::ComputeShear(Float64 x) c
    Float64 Rl, Rr;
    GetReactions(&Rl,&Rr);
 
-   sysSectionValue v;
+   WBFL::System::SectionValue v;
    if ( x < c )
    {
       x = c - x; // measure X positive left of the left support
@@ -174,7 +174,7 @@ sysSectionValue rkBeamWithUnequalOverhangsUniformLoad::ComputeShear(Float64 x) c
    return v;
 }
 
-sysSectionValue rkBeamWithUnequalOverhangsUniformLoad::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue rkBeamWithUnequalOverhangsUniformLoad::ComputeMoment(Float64 x) const
 {
    PRECONDITION(x>=0.0 && x<=m_L);
    Float64 c = m_LeftOverhang;
@@ -282,16 +282,16 @@ bool rkBeamWithUnequalOverhangsUniformLoad::AssertValid() const
    return true;
 }
 
-void rkBeamWithUnequalOverhangsUniformLoad::Dump(dbgDumpContext& os) const
+void rkBeamWithUnequalOverhangsUniformLoad::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkBeamWithUnequalOverhangsUniformLoad" << endl;
+   os << "Dump for rkBeamWithUnequalOverhangsUniformLoad" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 
 
-bool rkBeamWithUnequalOverhangsUniformLoad::TestMe(dbgLog& rlog)
+bool rkBeamWithUnequalOverhangsUniformLoad::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("rkBeamWithUnequalOverhangsUniformLoad");
 

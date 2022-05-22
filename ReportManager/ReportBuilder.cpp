@@ -211,7 +211,7 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpec
 
 std::shared_ptr<rptReport> CReportBuilder::CreateReport(std::shared_ptr<CReportSpecification>& pRptSpec)
 {
-   sysTime start;
+   WBFL::System::Time start;
 
    std::shared_ptr<rptReport> pReport( std::make_shared<rptReport>(pRptSpec->GetReportName()) );
    std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
@@ -236,7 +236,7 @@ std::shared_ptr<rptReport> CReportBuilder::CreateReport(std::shared_ptr<CReportS
       pReport->InsertChapterAt(0, pTitlePage);
    }
 
-   sysTime end;
+   WBFL::System::Time end;
    if ( m_bIncludeTimingChapter )
    {
       CTimeChapterBuilder timeChapterBuilder;

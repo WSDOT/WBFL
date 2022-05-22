@@ -512,23 +512,23 @@ bool mathPwLinearFunction2dUsingPoints::AssertValid() const
    return true;
 }
 
-void mathPwLinearFunction2dUsingPoints::Dump(dbgDumpContext& os) const
+void mathPwLinearFunction2dUsingPoints::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Start Dump for mathPwLinearFunction2dUsingPoints") <<endl;
+   os << _T("Start Dump for mathPwLinearFunction2dUsingPoints") << WBFL::Debug::endl;
    mathPwLinearFunction2d::Dump( os );
    CollectionIndexType siz = GetNumPoints();
-   os << _T("Number of Points = ") <<siz<<endl;
+   os << _T("Number of Points = ") <<siz<< WBFL::Debug::endl;
    for (CollectionIndexType i = 0; i<siz; i++)
    {
-      os <<i<<_T("  (")<< m_Points[i].X()<<_T(", ")<<m_Points[i].Y()<<_T(")")<<endl;
+      os <<i<<_T("  (")<< m_Points[i].X()<<_T(", ")<<m_Points[i].Y()<<_T(")")<< WBFL::Debug::endl;
    }
-   os << _T("m_LastSegment = ")<< m_LastSegment <<endl;
-   os << _T("End Dump for mathPwLinearFunction2dUsingPoints")<<endl;
+   os << _T("m_LastSegment = ")<< m_LastSegment << WBFL::Debug::endl;
+   os << _T("End Dump for mathPwLinearFunction2dUsingPoints")<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
+bool mathPwLinearFunction2dUsingPoints::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathPwLinearFunction2dUsingPoints");
 
@@ -633,7 +633,7 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
  
 
 #ifdef _DEBUG
-   fun2.Dump(rlog.GetDumpCtx());
+   fun2.Dump(rlog.GetLogContext());
 #endif
 
 

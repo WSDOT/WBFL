@@ -170,7 +170,7 @@ bool Arc::IsPointOnArc(const Point2d& p) const
 std::vector<Point2d> Arc::Divide(IndexType nSpaces) const
 {
    if (nSpaces < 1 || nSpaces == INVALID_INDEX)
-      throw std::invalid_argument("Arc::Divide - invalid number of spaces");
+      THROW_GEOMETRY(_T("Arc::Divide - invalid number of spaces"));
 
    std::vector<Point2d> vPoints;
 
@@ -214,9 +214,9 @@ bool Arc::AssertValid() const
    return true;
 }
 
-void Arc::Dump(dbgDumpContext& os) const
+void Arc::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for Arc" << endl;
+   os << "Dump for Arc" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -231,7 +231,7 @@ bool Arc::operator!=(const Arc& other) const
 }
 
 #if defined _UNITTEST
-bool Arc::TestMe(dbgLog& rlog)
+bool Arc::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Arc");
 

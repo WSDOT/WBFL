@@ -38,5 +38,8 @@
 #include <EAF\EAFDocTemplate.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFChildFrame.h>
+#include <EAF\EAFMacroTxn.h>
+#include <EAF\EAFTransaction.h>
+#include <EAF\EAFTxnManager.h>
 
 #endif //  INCLUDED_EAF_EAF_H_

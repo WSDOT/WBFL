@@ -63,6 +63,6 @@ rptReportContent* rptRcPercentage::CreateClone() const
 
 std::_tstring rptRcPercentage::AsString() const
 {
-   sysNumericFormatTool fmt(m_Format,m_Width,m_Precision);
+   WBFL::System::NumericFormatTool fmt(m_Format,m_Width,m_Precision);
    return fmt.AsString( GetValue()*100 ) + _T(" %");
 }

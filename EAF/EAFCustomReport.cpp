@@ -67,11 +67,11 @@ void CEAFCustomReports::LoadFromRegistry(CWinApp* theApp)
          report.m_ReportName = reportName;
 
          // Report data is tab separated
-         sysTokenizer tokenizer(_T("\t"));
+         WBFL::System::Tokenizer tokenizer(_T("\t"));
          tokenizer.push_back(reportString);
          if (tokenizer.size() > 0)
          {
-            sysTokenizer::iterator it = tokenizer.begin();
+            WBFL::System::Tokenizer::iterator it = tokenizer.begin();
             // name of parent report is first in list
             report.m_ParentReportName = *it++;
 
@@ -187,9 +187,9 @@ void CEAFCustomReportMixin::LoadCustomReportInformation()
    // Favorite report names are stored as Tab separated values
    CString ReportList = pApp->GetProfileString(_T("Options"),_T("FavoriteReportsList"),_T(""));
    m_FavoriteReports.clear();
-   sysTokenizer tokenizer(_T("\t"));
+   WBFL::System::Tokenizer tokenizer(_T("\t"));
    tokenizer.push_back(ReportList);
-   sysTokenizer::iterator it = tokenizer.begin();
+   WBFL::System::Tokenizer::iterator it = tokenizer.begin();
    while( it != tokenizer.end() )
    {
       m_FavoriteReports.push_back( *it );

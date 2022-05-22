@@ -412,20 +412,20 @@ bool matConcrete::AssertValid() const
    return true;
 }
 
-void matConcrete::Dump(dbgDumpContext& os) const
+void matConcrete::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for matConcrete")         << endl;
-   os << _T("====================")         << endl;
-   os << _T("Name    : ") << m_Name.c_str() << endl;
-   os << _T("Fc      : ") << m_Fc           << endl;
-   os << _T("Density : ") << m_Density      << endl;
-   os << _T("Mod E   : ") << m_ModE         << endl;
-   os << _T("Max Aggr: ") << m_MaxAggregateSize<<endl;
+   os << _T("Dump for matConcrete")         << WBFL::Debug::endl;
+   os << _T("====================")         << WBFL::Debug::endl;
+   os << _T("Name    : ") << m_Name.c_str() << WBFL::Debug::endl;
+   os << _T("Fc      : ") << m_Fc           << WBFL::Debug::endl;
+   os << _T("Density : ") << m_Density      << WBFL::Debug::endl;
+   os << _T("Mod E   : ") << m_ModE         << WBFL::Debug::endl;
+   os << _T("Max Aggr: ") << m_MaxAggregateSize<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool matConcrete::TestMe(dbgLog& rlog)
+bool matConcrete::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matConcrete");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matConcrete");

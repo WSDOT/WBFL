@@ -162,14 +162,14 @@ bool mathBrentsRootFinder2d::AssertValid() const
    return mathRootFinder2d::AssertValid();
 }
 
-void mathBrentsRootFinder2d::Dump(dbgDumpContext& os) const
+void mathBrentsRootFinder2d::Dump(WBFL::Debug::LogContext& os) const
 {
    mathRootFinder2d::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathBrentsRootFinder2d::TestMe(dbgLog& rlog)
+bool mathBrentsRootFinder2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathBrentsRootFinder2d");
    // Unit Tests implemented on package level

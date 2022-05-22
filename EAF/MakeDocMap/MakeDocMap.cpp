@@ -98,10 +98,10 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
          ifHH.getline(buffer,256);
          LPCTSTR delims[] = {_T(" "),_T("\t"), 0};
-         sysTokenizer tokenizer(delims);
+         WBFL::System::Tokenizer tokenizer(delims);
          tokenizer.push_back(buffer);
-         sysTokenizer::iterator iter(tokenizer.begin());
-         sysTokenizer::iterator end(tokenizer.end());
+         WBFL::System::Tokenizer::iterator iter(tokenizer.begin());
+         WBFL::System::Tokenizer::iterator end(tokenizer.end());
 
          while( iter != end )
          {
@@ -119,7 +119,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
             }
             else
             {
-               sysTokenizer::ParseULong(iter->c_str(),(unsigned long*)&nID);
+               WBFL::System::Tokenizer::ParseULong(iter->c_str(),(unsigned long*)&nID);
 
                m_HIDMap.insert(std::make_pair(strIDH,nID));
             }

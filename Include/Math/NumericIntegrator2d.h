@@ -58,7 +58,7 @@ LOG
    rab : 06.24.2008 : Created file
 *****************************************************************************/
 
-class MATHCLASS mathXNumericIntegrator2dFailed : public sysXBase
+class MATHCLASS mathXNumericIntegrator2dFailed : public WBFL::System::XBase
 {
 public:
    // GROUP: ENUMERATIONS
@@ -89,11 +89,11 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void Throw() const;
+   virtual void Throw() const override;
    //------------------------------------------------------------------------
-   Int32 GetReason() const;
+   virtual Int32 GetReason() const noexcept override;
    //------------------------------------------------------------------------
-   Reason GetReasonCode() const;
+   Reason GetReasonCode() const noexcept;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG

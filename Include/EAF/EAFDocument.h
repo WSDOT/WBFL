@@ -36,7 +36,7 @@ class CEAFMainFrame;
 class CEAFPluginCommandManager;
 class CStatusCenterDlg;
 class IEAFStatusCenterEventSink;
-class txnTransaction;
+class CEAFTransaction;
 class CMyStatusCenterEventSink;
 
 /////////////////////////////////////////////////////////////
@@ -74,19 +74,19 @@ public:
    virtual void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode);
 
    // Transactions
-   virtual void Execute(txnTransaction& rTxn);
-   virtual void Execute(txnTransaction* pTxn);
+   virtual void Execute(CEAFTransaction& rTxn);
+   virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn);
    virtual void Undo();
    virtual void Redo();
    virtual void Repeat();
-   virtual bool CanUndo();
-   virtual bool CanRedo();
-   virtual bool CanRepeat();
-   virtual std::_tstring UndoName();
-   virtual std::_tstring RedoName();
-   virtual std::_tstring RepeatName();
-   virtual CollectionIndexType GetTxnCount();
-   virtual CollectionIndexType GetUndoCount();
+   virtual bool CanUndo() const;
+   virtual bool CanRedo() const;
+   virtual bool CanRepeat() const;
+   virtual std::_tstring UndoName() const;
+   virtual std::_tstring RedoName() const;
+   virtual std::_tstring RepeatName() const;
+   virtual IndexType GetTxnCount() const;
+   virtual IndexType GetUndoCount() const;
 
    virtual void SetModifiedFlag(BOOL bModified = TRUE);
 

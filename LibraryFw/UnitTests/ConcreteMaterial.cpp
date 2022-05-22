@@ -75,7 +75,7 @@ libConcreteMaterial& libConcreteMaterial::operator= (const libConcreteMaterial& 
 }
 
 //======================== OPERATIONS =======================================
-bool libConcreteMaterial::SaveMe(sysIStructuredSave* pSave)
+bool libConcreteMaterial::SaveMe(WBFL::System::IStructuredSave* pSave)
 {
    pSave->BeginUnit(_T("ConcreteMaterialEntry"), 1.0);
 
@@ -90,7 +90,7 @@ bool libConcreteMaterial::SaveMe(sysIStructuredSave* pSave)
    return false;
 }
 
-bool libConcreteMaterial::LoadMe(sysIStructuredLoad* pLoad)
+bool libConcreteMaterial::LoadMe(WBFL::System::IStructuredLoad* pLoad)
 {
    if( pLoad->BeginUnit(_T("ConcreteMaterialEntry")) )
    {
@@ -208,14 +208,14 @@ bool libConcreteMaterial::AssertValid() const
    return libLibraryEntry::AssertValid();
 }
 
-void libConcreteMaterial::Dump(dbgDumpContext& os) const
+void libConcreteMaterial::Dump(WBFL::Debug::LogContext& os) const
 {
    libLibraryEntry::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool libConcreteMaterial::TestMe(dbgLog& rlog)
+bool libConcreteMaterial::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("libConcreteMaterial");
 

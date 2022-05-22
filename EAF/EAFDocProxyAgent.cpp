@@ -608,14 +608,14 @@ CollectionIndexType CEAFDocProxyAgent::Count()
 
 ///////////////////////////////////////////////////////////////////////////////////
 // IEAFTransactions
-void CEAFDocProxyAgent::Execute(txnTransaction& rTxn)
+void CEAFDocProxyAgent::Execute(CEAFTransaction& rTxn)
 {
    m_pDoc->Execute(rTxn);
 }
 
-void CEAFDocProxyAgent::Execute(txnTransaction* pTxn)
+void CEAFDocProxyAgent::Execute(std::unique_ptr<CEAFTransaction>&& pTxn)
 {
-   m_pDoc->Execute(pTxn);
+   m_pDoc->Execute(std::move(pTxn));
 }
 
 void CEAFDocProxyAgent::Undo()
@@ -633,42 +633,42 @@ void CEAFDocProxyAgent::Repeat()
   m_pDoc->Repeat();
 }
 
-bool CEAFDocProxyAgent::CanUndo()
+bool CEAFDocProxyAgent::CanUndo() const
 {
    return m_pDoc->CanUndo();
 }
 
-bool CEAFDocProxyAgent::CanRedo()
+bool CEAFDocProxyAgent::CanRedo() const
 {
    return m_pDoc->CanRedo();
 }
 
-bool CEAFDocProxyAgent::CanRepeat()
+bool CEAFDocProxyAgent::CanRepeat() const
 {
    return m_pDoc->CanRepeat();
 }
 
-std::_tstring CEAFDocProxyAgent::UndoName()
+std::_tstring CEAFDocProxyAgent::UndoName() const
 {
    return m_pDoc->UndoName();
 }
 
-std::_tstring CEAFDocProxyAgent::RedoName()
+std::_tstring CEAFDocProxyAgent::RedoName() const
 {
    return m_pDoc->RedoName();
 }
 
-std::_tstring CEAFDocProxyAgent::RepeatName()
+std::_tstring CEAFDocProxyAgent::RepeatName() const
 {
    return m_pDoc->RepeatName();
 }
 
-CollectionIndexType CEAFDocProxyAgent::GetTxnCount()
+IndexType CEAFDocProxyAgent::GetTxnCount() const
 {
    return m_pDoc->GetTxnCount();
 }
 
-CollectionIndexType CEAFDocProxyAgent::GetUndoCount()
+IndexType CEAFDocProxyAgent::GetUndoCount() const
 {
    return m_pDoc->GetUndoCount();
 }

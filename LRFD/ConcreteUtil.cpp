@@ -198,7 +198,7 @@ Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density
          max_density = WBFL::Units::ConvertToSysUnits(max_density, *p_density_unit);
          if (!InRange(min_density, density, max_density))
          {
-            THROW(sysXProgrammingError, ValueOutOfRange);
+            THROW(WBFL::System::XProgrammingError, ValueOutOfRange);
          }
       }
 
@@ -605,7 +605,7 @@ Uint16 lrfdConcreteUtil::MinLegsForBv(Float64 bv)
    }
 }
 
-lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc)
+lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const WBFL::System::SectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc)
 {
    CHECK(fy>0.0);
 
@@ -692,7 +692,7 @@ Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz(Float64 Hg)
    }
 }
 
-Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
+Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const WBFL::System::SectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
                                               Float64 c, Float64 u, Float64 K1, Float64 K2,
                                               Float64 bv, Float64 Acv, Float64 Avf, Float64 Pc, 
                                               Float64 fc, Float64 fy)
@@ -851,7 +851,7 @@ matConcrete::Type lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strName)
 #if defined _UNITTEST
 #include <Lrfd\AutoVersion.h>
 #include <Units\AutoSystem.h>
-bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
+bool lrfdConcreteUtil::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdConcreteUtil");
 
@@ -909,10 +909,10 @@ bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
       ModE(matConcrete::Normal, fc,density);
       ; // We shouldn't hit this code
    }
-   catch(const sysXProgrammingError& e)
+   catch(const WBFL::System::XProgrammingError& e)
    {
       // Do nothing
-      TRY_TESTME(e.GetReasonCode() == sysXProgrammingError::ValueOutOfRange);
+      TRY_TESTME(e.GetReasonCode() == WBFL::System::XProgrammingError::ValueOutOfRange);
    }
    
    TESTME_EPILOG("lrfdConcreteUtil");

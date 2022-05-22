@@ -43,7 +43,7 @@ namespace WBFL
       class IndirectMeasureDataT
       {
       public:
-         IndirectMeasureDataT(const T& um,Float64 t = 0.001,Int16 w = 6,Int16 p = 3, sysNumericFormatTool::Format f=sysNumericFormatTool::Automatic) :
+         IndirectMeasureDataT(const T& um,Float64 t = 0.001,Int16 w = 6,Int16 p = 3, WBFL::System::NumericFormatTool::Format f=WBFL::System::NumericFormatTool::Format::Automatic) :
             UnitOfMeasure(um), Tol(t), Width(w), Precision(p), Format( f )
             {
             }
@@ -51,7 +51,7 @@ namespace WBFL
          IndirectMeasureDataT(const IndirectMeasureDataT&) = default;
          IndirectMeasureDataT& operator=(const IndirectMeasureDataT& rOther) = default;
 
-         void Update(const T& um,Float64 t,Int16 w,Int16 p,sysNumericFormatTool::Format f)
+         void Update(const T& um,Float64 t,Int16 w,Int16 p,WBFL::System::NumericFormatTool::Format f)
          {
             UnitOfMeasure = um;
             Tol           = t;
@@ -64,7 +64,7 @@ namespace WBFL
          Float64 Tol;
          Uint16 Width;
          Uint16 Precision;
-         sysNumericFormatTool::Format Format;
+         WBFL::System::NumericFormatTool::Format Format;
       };
 
       /// Formatting data for scalar values
@@ -72,7 +72,7 @@ namespace WBFL
       {
          Uint16 Width{ 8 };
          Uint16 Precision{ 4 };
-         sysNumericFormatTool::Format Format{ sysNumericFormatTool::Automatic };
+         WBFL::System::NumericFormatTool::Format Format{ WBFL::System::NumericFormatTool::Format::Automatic };
       };
 
       // These templates must be pre-instantiated so that they 
@@ -118,15 +118,15 @@ namespace WBFL
 
 #if defined _DEBUG
          virtual bool AssertValid() const;
-         virtual void Dump(dbgDumpContext & os) const;
+         virtual void Dump(WBFL::Debug::LogContext & os) const;
 #endif // _DEBUG
 
          std::_tstring               Name{ _T("Default") };
 
          StationFormat         StationFormat; 
 
-         ScalarData             Scalar{ 8,3, sysNumericFormatTool::Fixed };
-         ScalarData             Percentage{ 6,2, sysNumericFormatTool::Fixed };
+         ScalarData             Scalar{ 8,3, WBFL::System::NumericFormatTool::Format::Fixed };
+         ScalarData             Percentage{ 6,2, WBFL::System::NumericFormatTool::Format::Fixed };
 
          LengthData         ComponentDim{ Measure::Millimeter };
          LengthData         XSectionDim{ Measure::Millimeter };

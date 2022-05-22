@@ -20,53 +20,44 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-#ifndef INCLUDED_SYSTEM_IPERSIST_H_
-#define INCLUDED_SYSTEM_IPERSIST_H_
 #pragma once
 
-#include <System\IStructuredLoad.h>
-#include <System\IStructuredSave.h>
+#include <EAF\EAFTransaction.h>
 
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysIPersist
-
-   Pure interface class for persistance.
-
-
-DESCRIPTION
-   Pure interface class for persistance.  Derive from this class if you wish
-   to support persistance.  You will probably want to use the structured
-   storage macros to assist with persistance implementation.
-
-LOG
-   rab : 12.18.1998 : Created file
-*****************************************************************************/
-
-class sysIPersist
+class testUndoableTxn : public CEAFTransaction
 {
 public:
-   bool Load(sysIStructuredLoad* pLoad);
-   bool Save(sysIStructuredSave* pSave) const;
+   testUndoableTxn();
+   virtual bool Execute() override;
+   virtual void Undo() override;
+   virtual std::unique_ptr<CEAFTransaction> CreateClone() const override;
+   virtual void Log(std::_tostream& os) const override;
+   virtual std::_tstring Name() const override;
+   virtual bool IsUndoable() const override;
+   virtual bool IsRepeatable() const override;
 };
 
-// INLINE METHODS
-//
+class testNotUndoableTxn : public CEAFTransaction
+{
+public:
+   testNotUndoableTxn();
+   virtual bool Execute() override;
+   virtual std::unique_ptr<CEAFTransaction> CreateClone() const override;
+   virtual void Log(std::_tostream& os) const override;
+   virtual std::_tstring Name() const override;
+   virtual bool IsUndoable() const override;
+   virtual bool IsRepeatable() const override;
+};
 
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_IPERSIST_H_
+class testNotRepeatableTxn : public CEAFTransaction
+{
+public:
+   testNotRepeatableTxn();
+   virtual bool Execute() override;
+   virtual void Undo() override;
+   virtual std::unique_ptr<CEAFTransaction> CreateClone() const override;
+   virtual void Log(std::_tostream& os) const override;
+   virtual std::_tstring Name() const override;
+   virtual bool IsUndoable() const override;
+   virtual bool IsRepeatable() const override;
+};

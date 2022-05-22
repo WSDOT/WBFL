@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace WBFL::Units;
 
 XUnit::XUnit(Reason reason,LPCTSTR file,Int16 line) :
-sysXBase(file,line),
+WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
@@ -47,12 +47,12 @@ void XUnit::Throw() const
    throw *static_cast<const XUnit*>(this);
 }
 
-Int32 XUnit::GetReason() const
+Int32 XUnit::GetReason() const noexcept
 {
    return std::underlying_type<XUnit::Reason>::type(m_Reason);
 }
 
-XUnit::Reason XUnit::GetReasonCode() const
+XUnit::Reason XUnit::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
@@ -60,6 +60,6 @@ XUnit::Reason XUnit::GetReasonCode() const
 #if defined _DEBUG
 bool XUnit::AssertValid() const
 {
-   return true; //sysXBase::AssertValid();
+   return true; // __super::AssertValid();
 }
 #endif // _DEBUG

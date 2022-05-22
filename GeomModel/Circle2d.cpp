@@ -171,14 +171,14 @@ bool Circle2d::AssertValid() const
    return true;
 }
 
-void Circle2d::Dump(dbgDumpContext& os) const
+void Circle2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for Circle2d") << endl;
+   os << _T("Dump for Circle2d") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool Circle2d::TestMe(dbgLog& rlog)
+bool Circle2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Circle2d");
 

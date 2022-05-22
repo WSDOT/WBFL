@@ -40,77 +40,26 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 mathXEvalError::mathXEvalError(Reason reason,LPCTSTR file, Int16 line) :
-sysXBase(file,line)
+   WBFL::System::XBase(file,line)
 {
    m_Reason = reason;
 }
 
-
-mathXEvalError::mathXEvalError(const mathXEvalError& rOther) :
-sysXBase( rOther )
-{
-   MakeCopy( rOther );
-}
-
-mathXEvalError::~mathXEvalError()
-{
-}
-
-//======================== OPERATORS  =======================================
-mathXEvalError& mathXEvalError::operator=(const mathXEvalError& rOther)
-{
-   if ( this != &rOther )
-      MakeAssignment( rOther );
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
 void mathXEvalError::Throw() const
 {
    throw *static_cast<const mathXEvalError*>(this);
 }
 
-Int32 mathXEvalError::GetReason() const
+Int32 mathXEvalError::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-mathXEvalError::Reason mathXEvalError::GetReasonCode() const
+mathXEvalError::Reason mathXEvalError::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
 
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void mathXEvalError::MakeCopy( const mathXEvalError& rOther )
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void mathXEvalError::MakeAssignment( const mathXEvalError& rOther )
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 
 
 /****************************************************************************
@@ -140,9 +89,9 @@ bool mathFunction2d::AssertValid() const
    return true;
 }
 
-void mathFunction2d::Dump(dbgDumpContext& os) const
+void mathFunction2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for mathFunction2d") << endl;
+   os << _T("Dump for mathFunction2d") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 

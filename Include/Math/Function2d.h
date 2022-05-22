@@ -58,7 +58,7 @@ LOG
    rab : 11.17.1997 : Created file
 *****************************************************************************/
 
-class MATHCLASS mathXEvalError : public sysXBase
+class MATHCLASS mathXEvalError : public WBFL::System::XBase
 {
 public:
    // GROUP: ENUMERATIONS
@@ -73,6 +73,7 @@ public:
    };
 
    // GROUP: LIFECYCLE
+   mathXEvalError() = default;
 
 
    //------------------------------------------------------------------------
@@ -80,47 +81,30 @@ public:
 
    //------------------------------------------------------------------------
    // Copy constructor
-   mathXEvalError(const mathXEvalError& rOther);
+   mathXEvalError(const mathXEvalError& rOther) = default;
 
    //------------------------------------------------------------------------
    // Destructor
-   ~mathXEvalError();
+   ~mathXEvalError() = default;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Assignment operator
-   mathXEvalError& operator=(const mathXEvalError& rOther);
+   mathXEvalError& operator=(const mathXEvalError& rOther) = default;
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS
 
-   void Throw() const;
-   Int32 GetReason() const;
+   virtual void Throw() const override;
+   virtual Int32 GetReason() const noexcept override;
    //------------------------------------------------------------------------
    // Returns the reason for the evaluation error.
-   Reason GetReasonCode() const;
+   Reason GetReasonCode() const noexcept;
 
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const mathXEvalError& rOther );
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const mathXEvalError& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS
-   Reason  m_Reason;
+   Reason  m_Reason{ Unknown };
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
@@ -179,7 +163,7 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 protected:

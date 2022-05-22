@@ -59,7 +59,7 @@ bool PointSorter::operator()(const Point& p1,const Point& p2) const
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-GraphXY::GraphXY(sysNumericFormatTool& rXAxisFormat, sysNumericFormatTool& rYAxisFormat) :
+GraphXY::GraphXY(WBFL::System::NumericFormatTool& rXAxisFormat, WBFL::System::NumericFormatTool& rYAxisFormat) :
 m_WorldRect( DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX ),
 m_XAxis(AxisXY::AxisOrientation::X, rXAxisFormat),
 m_YAxis(AxisXY::AxisOrientation::Y, rYAxisFormat),
@@ -467,12 +467,12 @@ void GraphXY::SetYAxisNumberOfMinorTics(LONG num)
    m_YAxis.SetNumberOfMinorTics(num);
 }
 
-void GraphXY::SetXAxisValueFormat(sysNumericFormatTool& format)
+void GraphXY::SetXAxisValueFormat(WBFL::System::NumericFormatTool& format)
 {
    m_XAxis.SetValueFormat(format);
 }
 
-const sysNumericFormatTool* GraphXY::GetXAxisValueFormat() const
+const WBFL::System::NumericFormatTool* GraphXY::GetXAxisValueFormat() const
 {
    return  m_XAxis.GetValueFormat();
 }
@@ -505,12 +505,12 @@ AxisXY::AxisScale GraphXY::GetYAxisScale() const
    return m_YAxis.GetScale();
 }
 
-void GraphXY::SetYAxisValueFormat(sysNumericFormatTool& format)
+void GraphXY::SetYAxisValueFormat(WBFL::System::NumericFormatTool& format)
 {
    m_YAxis.SetValueFormat(format);
 }
 
-const sysNumericFormatTool* GraphXY::GetYAxisValueFormat() const
+const WBFL::System::NumericFormatTool* GraphXY::GetYAxisValueFormat() const
 {
    return  m_YAxis.GetValueFormat();
 }
@@ -1302,14 +1302,14 @@ bool GraphXY::AssertValid() const
    return true;
 }
 
-void GraphXY::Dump(dbgDumpContext& os) const
+void GraphXY::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for GraphXY" << endl;
+   os << "Dump for GraphXY" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool GraphXY::TestMe(dbgLog& rlog)
+bool GraphXY::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("GraphXY");
 

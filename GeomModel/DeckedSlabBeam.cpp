@@ -76,7 +76,8 @@ Float64 DeckedSlabBeam::GetF() const { return m_F; }
 
 void DeckedSlabBeam::SetVoidCount(IndexType nVoids)
 {
-   if (1 < nVoids) throw std::invalid_argument("DeckedSlabBeam::SetVoidCount - number of voids can only be 0 or 1");
+   if (1 < nVoids) THROW_GEOMETRY(_T("DeckedSlabBeam::SetVoidCount - number of voids can only be 0 or 1"));
+
    m_nVoids = nVoids;
    SetDirtyFlag();
 }
@@ -119,8 +120,7 @@ std::shared_ptr<Shape> DeckedSlabBeam::GetSlabShape() const
 
 std::shared_ptr<Shape> DeckedSlabBeam::GetVoidShape(IndexType voidIdx) const
 {
-   if (m_nVoids <= voidIdx)
-      throw std::invalid_argument("DeckedSlabBeam::GetVoidShape - invalid index");
+   if (m_nVoids <= voidIdx) THROW_GEOMETRY(_T("DeckedSlabBeam::GetVoidShape - invalid index"));
 
    return GetComposite()->GetShape(voidIdx + 1);
 }
@@ -130,9 +130,9 @@ bool DeckedSlabBeam::AssertValid() const
    return __super::AssertValid();
 }
 
-void DeckedSlabBeam::Dump(dbgDumpContext& os) const
+void DeckedSlabBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for DeckedSlabBeam ***")<<endl;
+   os << _T("*** Dump for DeckedSlabBeam ***")<< WBFL::Debug::endl;
    __super::Dump( os );
 }
 #endif // _DEBUG
@@ -205,7 +205,7 @@ void DeckedSlabBeam::OnUpdateComposite(std::unique_ptr<CompositeShape>& composit
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool DeckedSlabBeam::TestMe(dbgLog& rlog)
+bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("DeckedSlabBeam");
 

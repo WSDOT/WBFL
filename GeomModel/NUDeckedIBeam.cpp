@@ -269,13 +269,13 @@ IndexType NUDeckedIBeam::GetTopFlangeCount() const
 
 Float64 NUDeckedIBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("NUDeckedIBeam::GetTopFlangeLocation - invalid index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetTopFlangeLocation - invalid index"));
    return 0.0;
 }
 
 Float64 NUDeckedIBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("NUDeckedIBeam::GetTopFlangeWidth - invalid index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetTopFlangeWidth - invalid index"));
    return GetTopWidth();
 }
 
@@ -286,13 +286,13 @@ IndexType NUDeckedIBeam::GetBottomFlangeCount() const
 
 Float64 NUDeckedIBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("NUDeckedIBeam::GetBottomFlangeLocation - invalid index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetBottomFlangeLocation - invalid index"));
    return 0.0;
 }
 
 Float64 NUDeckedIBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("NUDeckedIBeam::GetBottomFlangeWidth - invalid index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetBottomFlangeWidth - invalid index"));
    return GetBottomWidth();
 }
 
@@ -338,13 +338,13 @@ MatingSurfaceIndexType NUDeckedIBeam::GetMatingSurfaceCount() const
 
 Float64 NUDeckedIBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType idx) const
 {
-   if (0 < idx) throw std::invalid_argument("NUDeckedIBeam::GetMatingSurfaceWidth - index out of range");
+   if (0 < idx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetMatingSurfaceWidth - index out of range"));
    return GetTopWidth();
 }
 
 Float64 NUDeckedIBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType idx) const
 {
-   if (0 < idx) throw std::invalid_argument("NUDeckedIBeam::GetMatingSurfaceLocation - index out of range");
+   if (0 < idx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetMatingSurfaceLocation - index out of range"));
    return 0;
 }
 
@@ -355,7 +355,7 @@ IndexType NUDeckedIBeam::GetWebCount() const
 
 Plane3d NUDeckedIBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("NUDeckedIBeam::GetWebPlane - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetWebPlane - index out of range"));
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 
@@ -383,9 +383,9 @@ bool NUDeckedIBeam::AssertValid() const
    return __super::AssertValid();
 }
 
-void NUDeckedIBeam::Dump(dbgDumpContext& os) const
+void NUDeckedIBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for NUDeckedIBeam ***")<<endl;
+   os << _T("*** Dump for NUDeckedIBeam ***")<< WBFL::Debug::endl;
    __super::Dump( os );
 }
 #endif // _DEBUG
@@ -464,7 +464,7 @@ void NUDeckedIBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool NUDeckedIBeam::TestMe(dbgLog& rlog)
+bool NUDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("NUDeckedIBeam");
 

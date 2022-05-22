@@ -86,12 +86,12 @@ rptReportContent* rptRcScalar::CreateClone() const
    return new rptRcScalar( *this );
 }
 
-void rptRcScalar::SetFormat(sysNumericFormatTool::Format format)
+void rptRcScalar::SetFormat(WBFL::System::NumericFormatTool::Format format)
 {
    m_Format = format;
 }
 
-sysNumericFormatTool::Format rptRcScalar::GetFormat() const
+WBFL::System::NumericFormatTool::Format rptRcScalar::GetFormat() const
 {
    return m_Format;
 }
@@ -143,13 +143,13 @@ rptReportContent& rptRcScalar::SetValue(Float64 value)
 
 std::_tstring rptRcScalar::AsString() const
 {
-   sysNumericFormatTool fmt(m_Format,m_Width,m_Precision);
+   WBFL::System::NumericFormatTool fmt(m_Format,m_Width,m_Precision);
    return fmt.AsString( GetValue() );
 }
 
 void rptRcScalar::Init()
 {
-   m_Format    = sysNumericFormatTool::Automatic;
+   m_Format    = WBFL::System::NumericFormatTool::Format::Automatic;
    m_Precision = 0;
    m_Width     = 0;
    m_Tolerance = 0.0;

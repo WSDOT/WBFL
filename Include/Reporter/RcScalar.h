@@ -48,10 +48,10 @@ public:
    virtual rptReportContent* CreateClone() const override;
  
    /// Sets the output format
-   void SetFormat(sysNumericFormatTool::Format format);
+   void SetFormat(WBFL::System::NumericFormatTool::Format format);
 
    /// Returns the output format
-   sysNumericFormatTool::Format GetFormat() const;
+   WBFL::System::NumericFormatTool::Format GetFormat() const;
 
    /// Sets the output precision
    void SetPrecision(Uint16 precision);
@@ -86,7 +86,7 @@ protected:
 
 protected:
    Float64 m_Value;
-   sysNumericFormatTool::Format m_Format; 
+   WBFL::System::NumericFormatTool::Format m_Format; 
    Uint16 m_Precision; ///< Output precision
    Uint16 m_Width; ///< Width of the output field
    Float64 m_Tolerance; ///< Absolute values less than this are taken as zero

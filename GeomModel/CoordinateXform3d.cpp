@@ -51,8 +51,7 @@ CoordinateXform3d::~CoordinateXform3d()
 
 void CoordinateXform3d::SetRotationVector(const Vector3d& vector)
 {
-   if (vector.IsZero())
-      throw std::invalid_argument("CoordinateXfor3d::SetRotationVector - invalid vector");
+   if (vector.IsZero()) THROW_GEOMETRY(_T("CoordinateXfor3d::SetRotationVector - invalid vector"));
 
    m_RotationVector = vector;
 }
@@ -129,15 +128,15 @@ bool CoordinateXform3d::AssertValid() const
    return true;
 }
 
-void CoordinateXform3d::Dump(dbgDumpContext& os) const
+void CoordinateXform3d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for CoordinateXform3d" << endl;
+   os << "Dump for CoordinateXform3d" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include <MathEx.h>
-bool CoordinateXform3d::TestMe(dbgLog& rlog)
+bool CoordinateXform3d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("CoordinateXform3d");
 

@@ -113,7 +113,7 @@ bool mathLinFunc2d::AssertValid() const
    return mathFunction2d::AssertValid();
 }
 
-void mathLinFunc2d::Dump(dbgDumpContext& os) const
+void mathLinFunc2d::Dump(WBFL::Debug::LogContext& os) const
 {
    mathFunction2d::Dump( os );
 }

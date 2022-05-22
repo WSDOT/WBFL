@@ -96,14 +96,14 @@ bool lrfdAutoVersion::AssertValid() const
    return true;
 }
 
-void lrfdAutoVersion::Dump(dbgDumpContext& os) const
+void lrfdAutoVersion::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdAutoVersion" << endl;
+   os << "Dump for lrfdAutoVersion" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool lrfdAutoVersion::TestMe(dbgLog& rlog)
+bool lrfdAutoVersion::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdAutoVersion");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for lrfdAutoVersion");

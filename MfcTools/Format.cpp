@@ -72,7 +72,7 @@ CString FormatAngle(IAngle* pAngle)
 CString FormatOffset(Float64 offset,const WBFL::Units::LengthData& indirectMeasure,bool bIncludeUnitTag)
 {
    offset = WBFL::Units::ConvertFromSysUnits( IsZero(offset,indirectMeasure.Tol) ? 0.00 : offset, indirectMeasure.UnitOfMeasure );
-   sysNumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
+   WBFL::System::NumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
    std::_tstring str = format_tool.AsString( offset );
    CString strOffset;
    if ( offset < 0 )
@@ -94,7 +94,7 @@ CString FormatOffset(Float64 offset,const WBFL::Units::LengthData& indirectMeasu
 
 CString FormatScalar(Float64 value,const WBFL::Units::ScalarData& indirectMeasure)
 {
-   sysNumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
+   WBFL::System::NumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
    std::_tstring str = format_tool.AsString( value );
    CString strScalar;
    strScalar.Format(_T("%s"),str.c_str());
@@ -104,7 +104,7 @@ CString FormatScalar(Float64 value,const WBFL::Units::ScalarData& indirectMeasur
 
 CString FormatPercentage(Float64 value,bool bIncludeUnitTag)
 {
-   sysNumericFormatTool format_tool(sysNumericFormatTool::Automatic, 9, 4);
+   WBFL::System::NumericFormatTool format_tool(WBFL::System::NumericFormatTool::Format::Automatic, 9, 4);
    std::_tstring str = format_tool.AsString( value*100.0 );
    CString strPercentage;
    if ( bIncludeUnitTag )

@@ -253,7 +253,7 @@ bool TrafficBarrier::AssertValid() const
    return ShapeImpl::AssertValid();
 }
 
-void TrafficBarrier::Dump(dbgDumpContext& os) const
+void TrafficBarrier::Dump(WBFL::Debug::LogContext& os) const
 {
    ShapeImpl::Dump( os );
 }
@@ -261,7 +261,7 @@ void TrafficBarrier::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool TrafficBarrier::TestMe(dbgLog& rlog)
+bool TrafficBarrier::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("TrafficBarrier");
 

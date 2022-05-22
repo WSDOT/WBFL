@@ -43,30 +43,9 @@ CLASS
 lrfdXPsLosses::lrfdXPsLosses(Reason reason,
                              LPCTSTR file,
                              Int16 line) :
-sysXBase(file,line),
+   WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
-}
-
-lrfdXPsLosses::lrfdXPsLosses(const lrfdXPsLosses& rOther) :
-sysXBase(rOther)
-{
-   MakeCopy(rOther);
-}
-
-lrfdXPsLosses::~lrfdXPsLosses()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdXPsLosses& lrfdXPsLosses::operator= (const lrfdXPsLosses& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
 }
 
 //======================== OPERATIONS =======================================
@@ -75,12 +54,12 @@ void lrfdXPsLosses::Throw() const
    throw *static_cast<const lrfdXPsLosses*>(this);
 }
 
-Int32 lrfdXPsLosses::GetReason() const
+Int32 lrfdXPsLosses::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-lrfdXPsLosses::Reason lrfdXPsLosses::GetReasonCode() const
+lrfdXPsLosses::Reason lrfdXPsLosses::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
@@ -94,36 +73,7 @@ bool lrfdXPsLosses::AssertValid() const
    return true;
 }
 
-void lrfdXPsLosses::Dump(dbgDumpContext& os) const
+void lrfdXPsLosses::Dump(WBFL::Debug::LogContext& os) const
 {
 }
 #endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXPsLosses::MakeCopy(const lrfdXPsLosses& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void lrfdXPsLosses::MakeAssignment(const lrfdXPsLosses& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

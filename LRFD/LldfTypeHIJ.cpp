@@ -415,7 +415,7 @@ bool lrfdLldfTypeHIJ::AssertValid() const
    return lrfdLiveLoadDistributionFactorBase::AssertValid();
 }
 
-void lrfdLldfTypeHIJ::Dump(dbgDumpContext& os) const
+void lrfdLldfTypeHIJ::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLiveLoadDistributionFactorBase::Dump( os );
 }
@@ -423,7 +423,7 @@ void lrfdLldfTypeHIJ::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdLldfTypeHIJ::TestMe(dbgLog& rlog)
+bool lrfdLldfTypeHIJ::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeHIJ");
 

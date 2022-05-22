@@ -84,16 +84,16 @@ bool MassProperties::AssertValid() const
    return true;
 }
 
-void MassProperties::Dump(dbgDumpContext& os) const
+void MassProperties::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for MassProperties" << endl;
-   os << " m_Mpl   = "<< m_Mpl << endl;
+   os << "Dump for MassProperties" << WBFL::Debug::endl;
+   os << " m_Mpl   = "<< m_Mpl << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include <MathEx.h>
-bool MassProperties::TestMe(dbgLog& rlog)
+bool MassProperties::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("MassProperties");
 

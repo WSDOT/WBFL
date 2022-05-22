@@ -129,11 +129,11 @@ bool StationFormat::AssertValid() const
    return true;
 }
 
-void StationFormat::Dump(dbgDumpContext& os) const
+void StationFormat::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for StationFormat") << endl;
+   os << _T("Dump for StationFormat") << WBFL::Debug::endl;
    os << _T("Unit of Measure = ") << ((m_UnitOfMeasure == UnitOfMeasure::Meter) ? _T("meter") : _T("feet"))
-      << endl;
+      << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 

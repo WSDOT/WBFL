@@ -216,7 +216,7 @@ Uint16 lrfdUtility::GetNumDesignLanes(Float64 wCurbToCurb)
 #include <Lrfd\AutoVersion.h>
 #include <Lrfd\VersionMgr.h>
 
-bool Test_IbeamEffFlangeWidth(dbgLog& rlog)
+bool Test_IbeamEffFlangeWidth(WBFL::Debug::Log& rlog)
 {
    // Reference: WBFL\UnitTest\Supporting Documents\Effective Flange Width.mcd
 
@@ -262,7 +262,7 @@ bool Test_IbeamEffFlangeWidth(dbgLog& rlog)
 }
 
 
-bool Test_GetDesignLaneWidth(dbgLog& rlog)
+bool Test_GetDesignLaneWidth(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdUtility - Test_GetDesignLaneWidth");
    lrfdAutoVersion av;
@@ -287,7 +287,7 @@ bool Test_GetDesignLaneWidth(dbgLog& rlog)
 }
 
 
-bool Test_GetNumDesignLanes(dbgLog& rlog)
+bool Test_GetNumDesignLanes(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdUtility - Test_GetNumDesignLanes");
    lrfdAutoVersion av;
@@ -311,7 +311,7 @@ bool Test_GetNumDesignLanes(dbgLog& rlog)
    TESTME_EPILOG("lrfdUtility - Test_GetNumDesignLanes");
 }
 
-bool lrfdUtility::TestMe(dbgLog& rlog)
+bool lrfdUtility::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdUtility");
 

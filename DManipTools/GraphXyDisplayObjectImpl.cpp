@@ -562,7 +562,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
       // Value Labels
       if (m_DoDisplayAxisValues==VARIANT_TRUE)
       {
-         sysNumericFormatTool formatter;
+         WBFL::System::NumericFormatTool formatter;
 
          // draw values along horizontal axis
          UINT locator = TA_CENTER | TA_TOP;

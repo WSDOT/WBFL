@@ -335,13 +335,13 @@ IndexType PCIDeckedIBeam::GetTopFlangeCount() const
 
 Float64 PCIDeckedIBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("PCIDeckedIBeam::GetTopFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetTopFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 PCIDeckedIBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("PCIDeckedIBeam::GetTopFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetTopFlangeWidth - invalid flange index"));
    return GetTopWidth();
 }
 
@@ -352,13 +352,13 @@ IndexType PCIDeckedIBeam::GetBottomFlangeCount() const
 
 Float64 PCIDeckedIBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("PCIDeckedIBeam::GetBottomFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetBottomFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 PCIDeckedIBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("PCIDeckedIBeam::GetBottomFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetBottomFlangeWidth - invalid flange index"));
    return GetBottomWidth();
 }
 
@@ -404,13 +404,13 @@ MatingSurfaceIndexType PCIDeckedIBeam::GetMatingSurfaceCount() const
 
 Float64 PCIDeckedIBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType idx) const
 {
-   if (0 < idx) throw std::invalid_argument("PCIDeckedIBeam::GetMatingSurfaceWidth - index out of range");
+   if (0 < idx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetMatingSurfaceWidth - index out of range"));
    return GetTopWidth();
 }
 
 Float64 PCIDeckedIBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType idx) const
 {
-   if (0 < idx) throw std::invalid_argument("PCIDeckedIBeam::GetMatingSurfaceLocation - index out of range");
+   if (0 < idx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetMatingSurfaceLocation - index out of range"));
    return 0;
 }
 
@@ -421,7 +421,7 @@ IndexType PCIDeckedIBeam::GetWebCount() const
 
 Plane3d PCIDeckedIBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("PCIDeckedIBeam::GetWebPlane - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetWebPlane - index out of range"));
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 
@@ -449,9 +449,9 @@ bool PCIDeckedIBeam::AssertValid() const
    return __super::AssertValid();
 }
 
-void PCIDeckedIBeam::Dump(dbgDumpContext& os) const
+void PCIDeckedIBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for PCIDeckedIBeam ***")<<endl;
+   os << _T("*** Dump for PCIDeckedIBeam ***")<< WBFL::Debug::endl;
    __super::Dump( os );
 }
 #endif // _DEBUG
@@ -543,7 +543,7 @@ void PCIDeckedIBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool PCIDeckedIBeam::TestMe(dbgLog& rlog)
+bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("PCIDeckedIBeam");
 

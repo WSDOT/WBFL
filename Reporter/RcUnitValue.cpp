@@ -66,7 +66,7 @@ void rptRcUnitValue::Accept( rptRcVisitor& rVisitor )
 
 std::_tstring rptRcUnitValue::AsString() const
 {
-   sysNumericFormatTool fmt;
+   WBFL::System::NumericFormatTool fmt;
    fmt.SetFormat( m_Format );
    fmt.SetWidth( m_Width );
    fmt.SetPrecision( m_Precision );
@@ -78,12 +78,12 @@ std::_tstring rptRcUnitValue::AsString() const
    return str;   
 }
 
-void rptRcUnitValue::SetFormat(sysNumericFormatTool::Format format)
+void rptRcUnitValue::SetFormat(WBFL::System::NumericFormatTool::Format format)
 {
    m_Format = format;
 }
 
-sysNumericFormatTool::Format rptRcUnitValue::GetFormat() const
+WBFL::System::NumericFormatTool::Format rptRcUnitValue::GetFormat() const
 {
    return m_Format;
 }
@@ -134,7 +134,7 @@ void rptRcUnitValue::MakeAssignment(const rptRcUnitValue& rOther)
 
 void rptRcUnitValue::Init()
 {
-   m_Format    = sysNumericFormatTool::Automatic;
+   m_Format    = WBFL::System::NumericFormatTool::Format::Automatic;
    m_Precision = 0;
    m_Width     = 0;
 }

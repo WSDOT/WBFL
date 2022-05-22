@@ -172,9 +172,9 @@ bool PlateGirder::AssertValid() const
    return __super::AssertValid();
 }
 
-void PlateGirder::Dump(dbgDumpContext& os) const
+void PlateGirder::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for PlateGirder ***")<<endl;
+   os << _T("*** Dump for PlateGirder ***")<< WBFL::Debug::endl;
    __super::Dump(os);
 }
 #endif // _DEBUG
@@ -219,7 +219,7 @@ void PlateGirder::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool PlateGirder::TestMe(dbgLog& rlog)
+bool PlateGirder::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("PlateGirder");
 
@@ -249,7 +249,7 @@ bool PlateGirder::TestMe(dbgLog& rlog)
 //   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
 //
 //#if defined _DEBUG
-//   rt.Dump(rlog.GetDumpCtx());
+//   rt.Dump(rlog.GetLogContext());
 //#endif
 
    // Test hook point behavior

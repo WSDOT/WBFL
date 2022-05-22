@@ -207,16 +207,16 @@ bool ShapeImpl::AssertValid() const
    return true;
 }
 
-void ShapeImpl::Dump(dbgDumpContext& os) const
+void ShapeImpl::Dump(WBFL::Debug::LogContext& os) const
 {
    ASSERTVALID;
-   os << _T("Dump for ShapeImpl") << endl;
+   os << _T("Dump for ShapeImpl") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 
 #if defined _UNITTEST
-bool ShapeImpl::TestMe(dbgLog& rlog)
+bool ShapeImpl::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("ShapeImpl");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented");

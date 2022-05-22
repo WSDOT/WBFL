@@ -592,7 +592,7 @@ void rptHtmlRcVisitor::VisitRcDateTime(rptRcDateTime* my_d)
    // check to see if date and/or time were requested and stream them out
    if (my_d->IsPrintDateEnabled())
    {
-      sysDate md = my_d->GetDate();
+      WBFL::System::Date md = my_d->GetDate();
       *m_pOstream << md;
    }
    // if both are requested stream out a space
@@ -601,7 +601,7 @@ void rptHtmlRcVisitor::VisitRcDateTime(rptRcDateTime* my_d)
 
    if (my_d->IsPrintTimeEnabled())
    {
-      sysTime mt = my_d->GetTime();
+      WBFL::System::Time mt = my_d->GetTime();
       *m_pOstream << mt;
    }
 

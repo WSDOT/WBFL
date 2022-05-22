@@ -21,69 +21,50 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_SUBJECTT_H_
-#define INCLUDED_SYSTEM_SUBJECTT_H_
 #pragma once
 
 #include <WbflTypes.h>
 #include <set>
-//
-/*****************************************************************************
-CLASS 
-   sysSubjectT
 
-   A helper template class to aid in building subject-observer relationships.
-
-
-DESCRIPTION
-   This class allows you to marry any subject to any observer class which 
-   has a Notify(Subject *) member function. Simply create the Observer class
-   and then derive the subject class from this template class.
-
-   About the only tricky thing here is that the TSubject parameter is the type
-   of the subject class. This may seem strange when you think about it at first
-   (conjures up thoughts of chickens and eggs...), but it works.
-
-LOG
-   rdp : 10.06.1998 : Created file
-*****************************************************************************/
-
-template <class TObserver, class TSubject> class sysSubjectT
+namespace WBFL
 {
-public:
-
-   //------------------------------------------------------------------------
-   // Description: Attaches an observer.
-   // Return:      None
-   virtual void Attach(TObserver* pObserver) const
+   namespace System
    {
-      m_ObserverList.insert(pObserver);
-   }
-
-   //------------------------------------------------------------------------
-   // Description: Detaches an observer.
-   // Return:      None   
-   virtual void Detach(TObserver* pObserver) const
-   {
-      m_ObserverList.erase(pObserver);
-   }
-
-   //------------------------------------------------------------------------
-   // Notify all observers that we changed.
-   virtual void Notify(Int32 hint=0)
-   {
-      TSubject* pts = dynamic_cast<TSubject*>(this);
-      CHECK(pts);
-
-      for (SetIterator it=m_ObserverList.begin(); it!=m_ObserverList.end(); it++)
+      /// A template class to aid in building subject-observer relationships.
+      ///
+      /// This class allows you to marry any subject to any observer class which 
+      /// has an Update(Subject&, Int32 hint) member function. Simply create the Observer class
+      /// and then derive the subject class from this template class.
+      template <class TObserver, class TSubject> 
+      class SubjectT
       {
-         (*it)->Update(pts, hint);
-      }
-   }
+      public:
+         /// Attaches an observer to the subject. The observer will be notified
+         // when the subject changes. Returns true if successful.
+         virtual bool Attach(TObserver& observer) const
+         {
+            m_Observers.emplace_back(observer);
+            return true;
+         }
 
-private:
-   mutable std::set<TObserver*> m_ObserverList;
-   typedef typename std::set<TObserver*>::iterator SetIterator;
+         /// Detaches an observer from the subject. The observer will no longer be notified. Returns true if successful.
+         virtual bool Detach(TObserver& observer) const
+         {
+            auto result = std::find_if(std::begin(m_Observers), std::end(m_Observers), [&observer](TObserver& a) { return &a == &observer; });
+            return result == m_Observers.end() ? false : true;
+         }
+
+         /// Notify all observers that the subjected changed.
+         virtual void Notify(Int32 hint = 0)
+         {
+            TSubject* pts = dynamic_cast<TSubject*>(this);
+            CHECK(pts);
+
+            std::for_each(std::begin(m_Observers), std::end(m_Observers), [&](TObserver& observer) {observer.Update(*pts, hint); });
+         }
+
+      private:
+         mutable std::vector<std::reference_wrapper<TObserver>> m_Observers;
+      };
+   };
 };
-
-#endif // INCLUDED_SYSTEM_SUBJECTT_H_

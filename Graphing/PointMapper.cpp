@@ -527,7 +527,7 @@ Float64 PointMapper::GetBestFitScale(Float64 refScale)
 
 
 #if defined _UNITTEST
-bool PointMapper::TestMe(dbgLog& rlog)
+bool PointMapper::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("PointMapper");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for PointMapper");

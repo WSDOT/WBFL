@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Graphing;
 
-bool UnitTest::TestMe(dbgLog& rlog)
+bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool tst = true;
 #if defined _UNITTEST

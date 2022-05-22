@@ -39,7 +39,6 @@
 #include <LRFD\RebarPool.h>
 #include <LRFD\Utility.h>
 #include <LRFD\LoadModifier.h>
-#include <LRFD\LimitStateCalculator.h>
 #include <LRFD\LldfTypeAEKIJ.h>
 #include <LRFD\LldfTypeAEK.h>
 #include <LRFD\LldfTypeBC.h>
@@ -69,7 +68,7 @@ CLASS
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-bool lrfdUnitTest::TestMe(dbgLog& rlog)
+bool lrfdUnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool tst = true;
 
@@ -91,7 +90,6 @@ bool lrfdUnitTest::TestMe(dbgLog& rlog)
    tst &= lrfdRebarIter::TestMe(rlog);
    tst &= lrfdUtility::TestMe(rlog);
    tst &= lrfdLoadModifier::TestMe(rlog);
-   tst &= lrfdLimitStateCalculator::TestMe(rlog);
    tst &= lrfdCreepCoefficient::TestMe(rlog);
    tst &= lrfdCreepCoefficient2005::TestMe(rlog);
    tst &= lrfdPCIUHPCCreepCoefficient::TestMe(rlog);

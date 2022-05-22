@@ -23,30 +23,43 @@
 
 #pragma once
 
-/*****************************************************************************
-CLASS 
-   sysAutoVariableT
-
-   A helper template class to aid in automatically restoring variables
-*****************************************************************************/
-
-template <class T> class sysAutoVariable
+namespace WBFL
 {
-public:
-   sysAutoVariable(T* pValue, const T& newValue)
+   namespace System
    {
-      m_pValue = pValue; // hang onto the pointer so we set the value back to the old value in the destructor
-      m_OldValue = *m_pValue; // save the current value so we can restore it
-      *m_pValue = newValue; // set the new value
-   }
+      /// This template class can be used to automatically restore a variable
+      /// to it's previous value when this object goes out of scope.
+      /// 
+      /// Example
+      /// \code
+      /// void Function()
+      /// {
+      ///    AutoVariable a(&m_MyVariable,500); // assigns 500 to m_MyVariable
+      ///    ... do some stuff with m_MyVariable
+      ///    if(bad) throw; // m_MyVariable returns to it's original value
+      /// 
+      ///    ... do some more stuff
+      /// } // m_MyVariable returns to it's original value
+      /// \endcode
+      template <class T> class AutoVariable
+      {
+      public:
+         AutoVariable(T* pValue, const T& newValue)
+         {
+            m_pValue = pValue; // hang onto the pointer so we set the value back to the old value in the destructor
+            m_OldValue = *m_pValue; // save the current value so we can restore it
+            *m_pValue = newValue; // set the new value
+         }
 
-   ~sysAutoVariable()
-   {
-      // we are goign out of scope, restor the original value
-      *m_pValue = m_OldValue;
-   }
+         ~AutoVariable()
+         {
+            // we are goign out of scope, restor the original value
+            *m_pValue = m_OldValue;
+         }
 
-protected:
-   T* m_pValue;
-   T m_OldValue;
+      private:
+         T* m_pValue;
+         T m_OldValue;
+      };
+   };
 };

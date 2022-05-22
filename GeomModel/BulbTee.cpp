@@ -139,13 +139,13 @@ IndexType BulbTee::GetTopFlangeCount() const
 
 Float64 BulbTee::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("BulbTee::GetTopFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("BulbTee::GetTopFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 BulbTee::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("BulbTee::GetTopFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("BulbTee::GetTopFlangeWidth - invalid flange index"));
    return GetTopWidth();
 }
 
@@ -156,13 +156,13 @@ IndexType BulbTee::GetBottomFlangeCount() const
 
 Float64 BulbTee::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("BulbTee::GetBottomFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("BulbTee::GetBottomFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 BulbTee::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("BulbTee::GetBottomFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("BulbTee::GetBottomFlangeWidth - invalid flange index"));
    return GetBottomWidth();
 }
 
@@ -325,14 +325,14 @@ MatingSurfaceIndexType BulbTee::GetMatingSurfaceCount() const
 
 Float64 BulbTee::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("BulbTee::GetMatingSurfaceWidth - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("BulbTee::GetMatingSurfaceWidth - index out of range"));
 
    return GetTopWidth();
 }
 
 Float64 BulbTee::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("BulbTee::GetMatingSurfaceWidth - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("BulbTee::GetMatingSurfaceWidth - index out of range"));
    
    return 0.0;
 }
@@ -344,7 +344,7 @@ IndexType BulbTee::GetWebCount() const
 
 Plane3d BulbTee::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) throw std::invalid_argument("BulbTee::GetMatingSurfaceWidth - index out of range");
+   if (0 < webIdx) THROW_GEOMETRY(_T("BulbTee::GetMatingSurfaceWidth - index out of range"));
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 
@@ -359,9 +359,9 @@ bool BulbTee::AssertValid() const
    return __super::AssertValid();
 }
 
-void BulbTee::Dump(dbgDumpContext& os) const
+void BulbTee::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for BulbTee ***") <<endl;
+   os << _T("*** Dump for BulbTee ***") << WBFL::Debug::endl;
    __super::Dump( os );
    GetPolygon()->Dump(os);
 }
@@ -501,7 +501,7 @@ void BulbTee::GetHeight(Float64* Hl, Float64* Hc, Float64* Hr) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool BulbTee::TestMe(dbgLog& rlog)
+bool BulbTee::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("BulbTee");
 

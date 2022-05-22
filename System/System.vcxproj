@@ -187,30 +187,22 @@
     <ClCompile Include="ColorConverter.cpp" />
     <ClCompile Include="ComCatMgr.cpp" />
     <ClCompile Include="Date.cpp" />
-    <ClCompile Include="DumpContext.cpp" />
+    <ClCompile Include="DebugWindowLogContext.cpp" />
+    <ClCompile Include="LogContext.cpp" />
     <ClCompile Include="EngNotation.cpp" />
     <ClCompile Include="Exception.cpp" />
-    <ClCompile Include="FileDumpContext.cpp" />
-    <ClCompile Include="LineParseXml.cpp" />
+    <ClCompile Include="FileLogContext.cpp" />
     <ClCompile Include="Log.cpp" />
-    <ClCompile Include="MacroTxn.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="NextAvailableId.cpp" />
     <ClCompile Include="NumericFormatTool.cpp" />
-    <ClCompile Include="SectionAction.cpp" />
     <ClCompile Include="SectionValue.cpp" />
     <ClCompile Include="StructuredLoadXml.cpp" />
-    <ClCompile Include="StructuredLoadXmlPrs.cpp" />
-    <ClCompile Include="StructuredSaveXml.cpp" />
     <ClCompile Include="StructuredSaveXmlPrs.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
-    <ClCompile Include="Transaction.cpp" />
-    <ClCompile Include="TxnManager.cpp" />
-    <ClCompile Include="TxnTestClass.cpp" />
     <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="XProgrammingError.cpp" />
     <ClCompile Include="XStructuredLoad.cpp" />
@@ -223,7 +215,6 @@
     <ResourceCompile Include="System.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\MathEx.h" />
     <ClInclude Include="..\Include\Private\WbflPackage.h" />
     <ClInclude Include="..\Include\System\AutoLib.h" />
     <ClInclude Include="..\Include\System\AutoVariable.h" />
@@ -231,39 +222,30 @@
     <ClInclude Include="..\Include\System\ColorConverter.h" />
     <ClInclude Include="..\Include\System\ComCatMgr.h" />
     <ClInclude Include="..\Include\System\Date.h" />
-    <ClInclude Include="..\Include\System\DbgBuild.h" />
     <ClInclude Include="..\Include\System\Debug.h" />
+    <ClInclude Include="..\Include\System\DebugWindowLogContext.h" />
     <ClInclude Include="..\Include\System\dllTest.h" />
-    <ClInclude Include="..\Include\System\DumpContext.h" />
+    <ClInclude Include="..\Include\System\LogContext.h" />
     <ClInclude Include="..\Include\System\EngNotation.h" />
     <ClInclude Include="..\Include\System\Exception.h" />
-    <ClInclude Include="..\Include\System\FileDumpContext.h" />
+    <ClInclude Include="..\Include\System\FileLogContext.h" />
     <ClInclude Include="..\Include\System\filestream.h" />
     <ClInclude Include="..\Include\System\Flags.h" />
-    <ClInclude Include="..\Include\System\INumericFormatToolBase.h" />
-    <ClInclude Include="..\Include\System\IPersist.h" />
+    <ClInclude Include="..\Include\System\INumericFormatTool.h" />
     <ClInclude Include="..\Include\System\IStructuredLoad.h" />
     <ClInclude Include="..\Include\System\IStructuredSave.h" />
-    <ClInclude Include="..\Include\System\LineParseXml.h" />
     <ClInclude Include="..\Include\System\Log.h" />
-    <ClInclude Include="..\Include\System\MacroTxn.h" />
-    <ClInclude Include="..\Include\System\NextAvailableId.h" />
     <ClInclude Include="..\Include\System\NumericFormatTool.h" />
-    <ClInclude Include="..\Include\System\SectionAction.h" />
     <ClInclude Include="..\Include\System\SectionValue.h" />
     <ClInclude Include="..\Include\System\SingletonKiller.h" />
     <ClInclude Include="..\Include\System\StructuredLoadXml.h" />
-    <ClInclude Include="..\Include\System\StructuredLoadXmlPrs.h" />
     <ClInclude Include="..\Include\System\StructuredSaveXml.h" />
-    <ClInclude Include="..\Include\System\StructuredSaveXmlPrs.h" />
     <ClInclude Include="..\Include\System\SubjectT.h" />
     <ClInclude Include="..\Include\System\SysExp.h" />
     <ClInclude Include="..\Include\System\SysLib.h" />
     <ClInclude Include="..\Include\System\System.h" />
     <ClInclude Include="..\Include\System\Time.h" />
     <ClInclude Include="..\Include\System\tokenizer.h" />
-    <ClInclude Include="..\Include\System\Transaction.h" />
-    <ClInclude Include="..\Include\System\TxnManager.h" />
     <ClInclude Include="..\Include\System\UnitTest.h" />
     <ClInclude Include="..\Include\System\XProgrammingError.h" />
     <ClInclude Include="..\Include\System\XStructuredLoad.h" />
@@ -271,7 +253,6 @@
     <ClInclude Include="..\Include\Wbfl.h" />
     <ClInclude Include="..\Include\WbflAll.h" />
     <ClInclude Include="..\Include\WbflTypes.h" />
-    <ClInclude Include="TxnTestClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WBFLTypes\WBFLTypes.vcxproj">

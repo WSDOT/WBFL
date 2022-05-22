@@ -265,8 +265,7 @@ Float64 UBeam2::GetT() const
 
 Float64 UBeam2::GetWebLocation(WebIndexType webIdx) const
 {
-   if (2 <= webIdx)
-      throw std::invalid_argument("UBeam2::GetWebLocation - invalid web index");
+   if (2 <= webIdx) THROW_GEOMETRY(_T("UBeam2::GetWebLocation - invalid web index"));
 
    GetPolygon(); // causes the shape to be updated, including m_Slope and m_T
 
@@ -283,8 +282,7 @@ Float64 UBeam2::GetWebSpacing() const
 
 Float64 UBeam2::GetSlope(WebIndexType webIdx) const
 {
-   if (2 <= webIdx)
-      throw std::invalid_argument("UBeam2::GetMatingSurfaceLocation - invalid web index");
+   if (2 <= webIdx) THROW_GEOMETRY(_T("UBeam2::GetMatingSurfaceLocation - invalid web index"));
 
    GetPolygon(); // causes the slope to be updated
    return (webIdx == 0 ? -1.0 : 1.0) * m_Slope;
@@ -315,7 +313,7 @@ IndexType UBeam2::GetTopFlangeCount() const
 
 Float64 UBeam2::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (1 < flangeIdx) throw std::invalid_argument("UBeam2::GetTopFlangeLocation - invalid flange index");
+   if (1 < flangeIdx) THROW_GEOMETRY(_T("UBeam2::GetTopFlangeLocation - invalid flange index"));
 
    Float64 sign = (flangeIdx == 0 ? -1 : 1);
    if (m_bUseOutlineOnly) 
@@ -350,13 +348,13 @@ IndexType UBeam2::GetBottomFlangeCount() const
 
 Float64 UBeam2::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("UBeam2::GetBottomFlangeLocation - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("UBeam2::GetBottomFlangeLocation - invalid flange index"));
    return 0.0;
 }
 
 Float64 UBeam2::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) throw std::invalid_argument("UBeam2::GetBottomFlangeWidth - invalid flange index");
+   if (0 < flangeIdx) THROW_GEOMETRY(_T("UBeam2::GetBottomFlangeWidth - invalid flange index"));
    return GetBottomWidth();
 }
 
@@ -377,13 +375,13 @@ MatingSurfaceIndexType UBeam2::GetMatingSurfaceCount() const
 
 Float64 UBeam2::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (1 < webIdx) throw std::invalid_argument("UBeam2::GetMatingSurfaceWidth - invalid web index");
+   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam2::GetMatingSurfaceWidth - invalid web index"));
    return GetTopFlangeWidth(webIdx);
 }
 
 Float64 UBeam2::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (1 < webIdx) throw std::invalid_argument("UBeam2::GetMatingSurfaceLocation - invalid web index");
+   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam2::GetMatingSurfaceLocation - invalid web index"));
    return GetTopFlangeLocation(webIdx);
 }
 
@@ -394,7 +392,7 @@ IndexType UBeam2::GetWebCount() const
 
 Plane3d UBeam2::GetWebPlane(WebIndexType webIdx) const
 {
-   if (1 < webIdx)  throw std::invalid_argument("UBeam2::GetWebPlane - invalid web index");
+   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam2::GetWebPlane - invalid web index"));
 
    GetPolygon(); // causes the shape to be updated, including m_Slope and m_T
 
@@ -465,25 +463,25 @@ bool UBeam2::AssertValid() const
    return __super::AssertValid();
 }
 
-void UBeam2::Dump(dbgDumpContext& os) const
+void UBeam2::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for UBeam2 ***") <<endl;
+   os << _T("*** Dump for UBeam2 ***") << WBFL::Debug::endl;
    ShapeImpl::Dump( os );
-   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<<endl;
-   os << _T("  Rotation        =  ")<<m_Rotation<<endl;
-   os << _T("  D1              =  ")<<m_D1 <<endl;
-   os << _T("  D2              =  ")<<m_D2 <<endl;
-   os << _T("  D3              =  ")<<m_D3 <<endl;
-   os << _T("  D4              =  ")<<m_D4 <<endl;
-   os << _T("  D5              =  ")<<m_D5 <<endl;
-   os << _T("  D6              =  ")<<m_D6 <<endl;
-   os << _T("  W1              =  ")<<m_W1 <<endl;
-   os << _T("  W2              =  ")<<m_W2 <<endl;
-   os << _T("  W3              =  ")<<m_W3 <<endl;
-   os << _T("  W4              =  ")<<m_W4 <<endl;
-   os << _T("  W5              =  ")<<m_W5 <<endl;
-   os << _T("  T               =  ")<<m_T  <<endl;
-   os << _T("Polygon rep of beam") << endl;
+   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Rotation        =  ")<<m_Rotation<< WBFL::Debug::endl;
+   os << _T("  D1              =  ")<<m_D1 << WBFL::Debug::endl;
+   os << _T("  D2              =  ")<<m_D2 << WBFL::Debug::endl;
+   os << _T("  D3              =  ")<<m_D3 << WBFL::Debug::endl;
+   os << _T("  D4              =  ")<<m_D4 << WBFL::Debug::endl;
+   os << _T("  D5              =  ")<<m_D5 << WBFL::Debug::endl;
+   os << _T("  D6              =  ")<<m_D6 << WBFL::Debug::endl;
+   os << _T("  W1              =  ")<<m_W1 << WBFL::Debug::endl;
+   os << _T("  W2              =  ")<<m_W2 << WBFL::Debug::endl;
+   os << _T("  W3              =  ")<<m_W3 << WBFL::Debug::endl;
+   os << _T("  W4              =  ")<<m_W4 << WBFL::Debug::endl;
+   os << _T("  W5              =  ")<<m_W5 << WBFL::Debug::endl;
+   os << _T("  T               =  ")<<m_T  << WBFL::Debug::endl;
+   os << _T("Polygon rep of beam") << WBFL::Debug::endl;
    GetPolygon()->Dump(os);
 }
 #endif // _DEBUG
@@ -657,7 +655,7 @@ void UBeam2::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool UBeam2::TestMe(dbgLog& rlog)
+bool UBeam2::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("UBeam2");
 

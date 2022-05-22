@@ -357,7 +357,7 @@ void rptRcTable::FillColumn(ColumnIndexType ColNo, rptRcUnitValue& ProtoReal, co
    }
 }
 
-void rptRcTable::FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype,const std::vector<sysSectionValue>& vValues)
+void rptRcTable::FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype,const std::vector<WBFL::System::SectionValue>& vValues)
 {
    CHECK( colNo < m_NumColumns );
 
@@ -369,7 +369,7 @@ void rptRcTable::FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype,
    // check if header row entry has been allocated.
    CHECK( m_TableData[colNo].size() > 0 );
 
-   std::vector<sysSectionValue>::const_iterator i;
+   std::vector<WBFL::System::SectionValue>::const_iterator i;
    RowIndexType row = 0;
    for ( i = vValues.begin(); i != vValues.end(); i++ )
    {

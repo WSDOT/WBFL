@@ -173,15 +173,15 @@ void Size3d::GetDimensions(Float64* dx, Float64* dy, Float64* dz) const
 }
 
 #if defined _DEBUG
-void Size3d::Dump(dbgDumpContext& os) const
+void Size3d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for Size3d" << endl;
-   os << "  (m_Dx, m_Dy, m_Dz) = (" << m_Dx << ", " << m_Dy << ", " << m_Dz << ")" << endl;
+   os << "Dump for Size3d" << WBFL::Debug::endl;
+   os << "  (m_Dx, m_Dy, m_Dz) = (" << m_Dx << ", " << m_Dy << ", " << m_Dz << ")" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool Size3d::TestMe(dbgLog& rlog)
+bool Size3d::TestMe(WBFL::Debug::Log& rlog)
 {
    return true;
 }
@@ -345,15 +345,15 @@ void Point3d::GetLocation(Float64* pX, Float64* pY, Float64* pZ) const
 }
 
 #if defined _DEBUG
-void Point3d::Dump(dbgDumpContext& os) const
+void Point3d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for Point3d" << endl;
-   os << "  (m_X, m_Y, m_Z) = ("<< m_X<<", "<< m_Y<<", "<< m_Z<<")"<<endl;
+   os << "Dump for Point3d" << WBFL::Debug::endl;
+   os << "  (m_X, m_Y, m_Z) = ("<< m_X<<", "<< m_Y<<", "<< m_Z<<")"<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool Point3d::TestMe(dbgLog& rlog)
+bool Point3d::TestMe(WBFL::Debug::Log& rlog)
 {
    return true;
 }

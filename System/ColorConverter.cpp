@@ -32,15 +32,16 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+using namespace WBFL::System;
 
-void sysColorConverter::HLStoRGB(Float64 hue,Float64 lightness,Float64 saturation,BYTE* pRed,BYTE* pGreen,BYTE* pBlue)
+void ColorConverter::HLStoRGB(Float64 hue,Float64 lightness,Float64 saturation,BYTE* pRed,BYTE* pGreen,BYTE* pBlue)
 {
    Float64 red,green,blue;
    Float64 m1,m2;
 
-   ATLASSERT(hue <= 360.);
-   ATLASSERT(0. <= lightness && lightness <= 1.);
-   ATLASSERT(0. <= saturation && saturation <= 1.);
+   ASSERT(hue <= 360.);
+   ASSERT(0. <= lightness && lightness <= 1.);
+   ASSERT(0. <= saturation && saturation <= 1.);
 
    if (lightness <= 0.5)
    {
@@ -66,7 +67,7 @@ void sysColorConverter::HLStoRGB(Float64 hue,Float64 lightness,Float64 saturatio
       {
          // Major error... Throw an exception
          // if hue is undefined, saturation must be zero...
-         THROW(sysXProgrammingError,InvalidValue);
+         THROW(XProgrammingError,InvalidValue);
       }
    }
    else
@@ -89,23 +90,23 @@ void sysColorConverter::HLStoRGB(Float64 hue,Float64 lightness,Float64 saturatio
    *pBlue  = BYTE(blue *255. + 0.001);
 }
 
-void sysColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pLightness,Float64* pSaturation)
+void ColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pLightness,Float64* pSaturation)
 {
    Float64 maxColor, minColor;
    Float64 delta;
    Float64 red, green, blue;
 
-   ATLASSERT(0 <= r && r <= 255);
-   ATLASSERT(0 <= b && b <= 255);
-   ATLASSERT(0 <= g && g <= 255);
+   ASSERT(0 <= r && r <= 255);
+   ASSERT(0 <= b && b <= 255);
+   ASSERT(0 <= g && g <= 255);
 
    // convert r,g,b to [0,1]
    red   = r/255.;
    green = g/255.;
    blue  = b/255.;
 
-   maxColor = max(max(red,green),blue);
-   minColor = min(min(red,green),blue);
+   maxColor = Max(red,green,blue);
+   minColor = Min(red,green,blue);
 
    // Compute lightness
    *pLightness = (maxColor + minColor)/2;
@@ -156,15 +157,15 @@ void sysColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pLi
    }
 }
 
-void sysColorConverter::HSVtoRGB(Float64 hue,Float64 saturation,Float64 value,BYTE* pRed,BYTE* pGreen,BYTE* pBlue)
+void ColorConverter::HSVtoRGB(Float64 hue,Float64 saturation,Float64 value,BYTE* pRed,BYTE* pGreen,BYTE* pBlue)
 {
    Float64 red(0),green(0),blue(0);
    Float64 f,p,q,t;
    int i;
 
-   ATLASSERT(hue <= 360.);
-   ATLASSERT(0. <= saturation && saturation <= 1.);
-   ATLASSERT(saturation <= value && value <= 1.);
+   ASSERT(hue <= 360.);
+   ASSERT(0. <= saturation && saturation <= 1.);
+   ASSERT(saturation <= value && value <= 1.);
 
    if (IsZero(saturation))
    {
@@ -180,7 +181,7 @@ void sysColorConverter::HSVtoRGB(Float64 hue,Float64 saturation,Float64 value,BY
       {
          // Major error... Throw an exception
          // if hue is undefined, saturation must be zero...
-         THROW(sysXProgrammingError,InvalidValue);
+         THROW(XProgrammingError,InvalidValue);
       }
    }
    else
@@ -244,23 +245,23 @@ void sysColorConverter::HSVtoRGB(Float64 hue,Float64 saturation,Float64 value,BY
    *pBlue  = BYTE(blue *255. + 0.001);
 }
 
-void sysColorConverter::RGBtoHSV(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pSaturation,Float64* pValue)
+void ColorConverter::RGBtoHSV(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pSaturation,Float64* pValue)
 {
    Float64 red,green,blue;
    Float64 maxColor, minColor;
    Float64 delta;
 
-   ATLASSERT(0 <= r && r <= 255);
-   ATLASSERT(0 <= b && b <= 255);
-   ATLASSERT(0 <= g && g <= 255);
+   ASSERT(0 <= r && r <= 255);
+   ASSERT(0 <= b && b <= 255);
+   ASSERT(0 <= g && g <= 255);
 
    // Convert from Windows color numbers to normalized values [0,1]
    red   = r/255.;
    green = g/255.;
    blue  = b/255.;
 
-   maxColor = max(max(red,green),blue);
-   minColor = min(min(red,green),blue);
+   maxColor = Max(red,green,blue);
+   minColor = Min(red,green,blue);
 
    *pValue = maxColor; // This is the value (Brightness)
 
@@ -306,7 +307,7 @@ void sysColorConverter::RGBtoHSV(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pSa
    }
 }
 
-Float64 sysColorConverter::ComputeValue(Float64 n1,Float64 n2,Float64 hue)
+Float64 ColorConverter::ComputeValue(Float64 n1,Float64 n2,Float64 hue)
 {
    Float64 value;
 

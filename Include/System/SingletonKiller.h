@@ -21,62 +21,45 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_SINGLETONKILLER_H_
-#define INCLUDED_SYSTEM_SINGLETONKILLER_H_
 #pragma once
 
-#include <memory>
 #include <System\SysExp.h>
+#include <memory>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysSingletonKillerT
-
-   Template class for singleton killers.
-
-
-DESCRIPTION
-   Template class for singleton killers.  Deletes a singleton after it goes
-   out of scope.
-
-   See: http://www.sigs.com/publications/docs/cppr/9606/cppr9606.c.vlissides.html
-
-LOG
-   rab : 11.03.1997 : Created file
-*****************************************************************************/
-template <class DOOMED>
-class sysSingletonKillerT
+namespace WBFL
 {
-public:
-   sysSingletonKillerT(DOOMED* pDoomed = 0):
-   m_pDoomed(pDoomed)
+   namespace System
    {
-   }
+      /// Template class for singleton killers.  Deletes a singleton after it goes out of scope.
+      ///
+      /// See: http://www.sigs.com/publications/docs/cppr/9606/cppr9606.c.vlissides.html
+      template <class T>
+      class SingletonKiller
+      {
+      public:
+         SingletonKiller(T* pSingleton = nullptr):
+         m_pSingleton(pSingleton)
+         {
+         }
 
-   ~sysSingletonKillerT()
-   {
-	   delete m_pDoomed;
-   }
+         SingletonKiller(const SingletonKiller&) = delete;
+         SingletonKiller& operator=(const SingletonKiller&) = delete;
 
-   void SetDoomed(DOOMED* pDoomed)
-   {
-      m_pDoomed = pDoomed;
-   }
+         ~SingletonKiller()
+         {
+	         delete m_pSingleton;
+         }
 
-private:
-   DOOMED* m_pDoomed;
-   sysSingletonKillerT(const sysSingletonKillerT&);
-   sysSingletonKillerT& operator=(const sysSingletonKillerT&);
+         /// Replaces the pointer to the singleton, returning the pointer to the previous singleton
+         T* SetSingleton(T* pSingleton)
+         {
+            T* pOldSingleton = m_pSingleton;
+            m_pSingleton = pSingleton;
+            return pOldSingleton;
+         }
+
+      private:
+         T* m_pSingleton;
+      };
+   };
 };
-
-#endif // INCLUDED_SYSTEM_SINGLETONKILLER_H_

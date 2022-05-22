@@ -41,14 +41,14 @@ using namespace WBFL::Graphing;
 
 
 //======================== LifECYCLE  =======================================
-AxisXY::AxisXY(AxisOrientation orientation, sysNumericFormatTool& rFormat):
+AxisXY::AxisXY(AxisOrientation orientation, WBFL::System::NumericFormatTool& rFormat):
 m_pValueFormat(&rFormat)
 {
    Init();
    SetOrientation(orientation, 0, 1, 0);
 }
 
-AxisXY::AxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue,sysNumericFormatTool& rFormat):
+AxisXY::AxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue,WBFL::System::NumericFormatTool& rFormat):
 m_pValueFormat(&rFormat)
 {
    CHECK(AxMin<AxMax);
@@ -250,12 +250,12 @@ void AxisXY::Draw(HDC hDC)
             // draw value text
             if (m_DoShowText)
             {
-               sysNumericFormatTool::Format format = m_pValueFormat->GetFormat();
+               WBFL::System::NumericFormatTool::Format format = m_pValueFormat->GetFormat();
                int p = m_pValueFormat->GetPrecision();
                if ( m_Scale == AxisScale::Logarithmic && tic_value < 1.0 && p < 1 )
                {
                   m_pValueFormat->SetPrecision(1);
-                  m_pValueFormat->SetFormat(sysNumericFormatTool::Fixed);
+                  m_pValueFormat->SetFormat(WBFL::System::NumericFormatTool::Format::Fixed);
                }
 
                std::_tstring value_text = m_pValueFormat->AsString(tic_value);
@@ -469,12 +469,12 @@ LONG AxisXY::GetValueAngle() const
    return m_ValueAngle;
 }
 
-void AxisXY::SetValueFormat(sysNumericFormatTool& format)
+void AxisXY::SetValueFormat(WBFL::System::NumericFormatTool& format)
 {
    m_pValueFormat = &format;
 }
 
-const sysNumericFormatTool* AxisXY::GetValueFormat() const
+const WBFL::System::NumericFormatTool* AxisXY::GetValueFormat() const
 {
    return m_pValueFormat;
 }
@@ -841,14 +841,14 @@ bool AxisXY::AssertValid() const
    return true;
 }
 
-void AxisXY::Dump(dbgDumpContext& os) const
+void AxisXY::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for AxisXY" << endl;
+   os << "Dump for AxisXY" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool AxisXY::TestMe(dbgLog& rlog)
+bool AxisXY::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("AxisXY");
 

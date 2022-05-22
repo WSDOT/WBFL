@@ -70,14 +70,14 @@ bool matConcreteListener::AssertValid() const
    return true;
 }
 
-void matConcreteListener::Dump(dbgDumpContext& os) const
+void matConcreteListener::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for matConcreteListener" << endl;
+   os << "Dump for matConcreteListener" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool matConcreteListener::TestMe(dbgLog& rlog)
+bool matConcreteListener::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matConcreteListener");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matConcreteListener");

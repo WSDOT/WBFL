@@ -27,6 +27,7 @@
 #include <iostream>
 #include <System\StructuredSaveXml.h>
 #include <System\StructuredLoadXml.h>
+#include <System/filestream.h>
 
 #include <LibraryFw\Library.h>
 #include <LibraryFw\LibraryManager.h>
@@ -43,7 +44,7 @@ CLASS
    libUnitTest
 ****************************************************************************/
 
-bool TestLib(dbgLog& rlog);
+bool TestLib(WBFL::Debug::Log& rlog);
 
 
 
@@ -52,14 +53,14 @@ bool TestLib(dbgLog& rlog);
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-bool libUnitTest::TestMe(dbgLog& rlog)
+bool libUnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
 
    return TestLib(rlog);
 }
 
 
-bool TestLib(dbgLog& rlog)
+bool TestLib(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Library Persistence");
    // create some libaries, fill them with data to save
@@ -120,8 +121,9 @@ bool TestLib(dbgLog& rlog)
 
    // save manager and libraries and close stream
    {
-      std::_tofstream os(_T("TestLib.xml"));
-      sysStructuredSaveXml save;
+      WBFL::System::FileStream os;
+      if (!os.open(_T("TestLib.xml"), true)) exit(1);
+      WBFL::System::StructuredSaveXml save;
       save.BeginSave(&os);
       saveman.SaveMe(&save);
       save.EndSave();
@@ -137,13 +139,16 @@ bool TestLib(dbgLog& rlog)
    // load it up
    try
    {
-      std::_tifstream is(_T("TestLib.xml"));
-      sysStructuredLoadXml load;
+      // test loading
+      WBFL::System::FileStream is;
+
+      if (!is.open(_T("TestLib.xml"), true)) exit(1);
+      WBFL::System::StructuredLoadXml load;
       load.BeginLoad(&is);
       loadman.LoadMe(&load);
       load.EndLoad();
    }
-   catch(const sysXStructuredLoad& rex)
+   catch(const WBFL::System::XStructuredLoad& rex)
    {
       std::_tstring msg;
       rex.GetErrorMessage(&msg);
@@ -152,7 +157,7 @@ bool TestLib(dbgLog& rlog)
 
    // dump loaded one
 #if defined _DEBUG
-   loadman.Dump(rlog.GetDumpCtx());
+   loadman.Dump(rlog.GetLogContext());
 #endif
 
    TESTME_EPILOG("Library Persistence");

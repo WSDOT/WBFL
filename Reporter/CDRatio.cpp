@@ -31,7 +31,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 rptRcSymbol rptCDRatio::m_RcSymbolInfinity(rptRcSymbol::infinity);
-sysNumericFormatTool rptCDRatio::m_FormatTool(sysNumericFormatTool::Fixed,0,2);
+WBFL::System::NumericFormatTool rptCDRatio::m_FormatTool(WBFL::System::NumericFormatTool::Format::Fixed,0,2);
 
 rptCDRatio::rptCDRatio():
 rptRcString(_T("Undef"))

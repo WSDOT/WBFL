@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// System - WBFL low level system services
+// EAF - Extensible Application Framework
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,7 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <System\SysLib.h>
+#include "StdAfx.h"
 #include "TxnTestClass.h"
 
 #ifdef _DEBUG
@@ -34,26 +34,26 @@ static char THIS_FILE[] = __FILE__;
 testUndoableTxn::testUndoableTxn() {}
 bool testUndoableTxn::Execute() { WATCH(_T("testUndoableTxn::Execute()")); return true; }
 void testUndoableTxn::Undo() { WATCH(_T("Undoing testUndoableTxn")); }
-txnTransaction* testUndoableTxn::CreateClone() const { return new testUndoableTxn; }
+std::unique_ptr<CEAFTransaction> testUndoableTxn::CreateClone() const { return std::make_unique<testUndoableTxn>(); }
 void testUndoableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testUndoableTxn::Name() const { return _T("Undoable Txn"); }
-bool testUndoableTxn::IsUndoable() { return true; }
-bool testUndoableTxn::IsRepeatable() { return true; }
+bool testUndoableTxn::IsUndoable() const { return true; }
+bool testUndoableTxn::IsRepeatable() const { return true; }
 
 
-testNotUndoableTxn::testNotUndoableTxn() : txnTransaction() {}
+testNotUndoableTxn::testNotUndoableTxn() : CEAFTransaction() {}
 bool testNotUndoableTxn::Execute() { WATCH(_T("testNotUndoableTxn::Execute()")); return true;}
-txnTransaction* testNotUndoableTxn::CreateClone() const { return new testNotUndoableTxn; }
+std::unique_ptr<CEAFTransaction> testNotUndoableTxn::CreateClone() const { return std::make_unique<testNotUndoableTxn>(); }
 void testNotUndoableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testNotUndoableTxn::Name() const { return _T("Not Undoable Txn"); }
-bool testNotUndoableTxn::IsUndoable() { return false; }
-bool testNotUndoableTxn::IsRepeatable() { return true; }
+bool testNotUndoableTxn::IsUndoable() const { return false; }
+bool testNotUndoableTxn::IsRepeatable() const { return true; }
 
-testNotRepeatableTxn::testNotRepeatableTxn() : txnTransaction() {}
+testNotRepeatableTxn::testNotRepeatableTxn() : CEAFTransaction() {}
 bool testNotRepeatableTxn::Execute() { WATCH(_T("testNotRepeatableTxn::Execute()")); return true; }
 void testNotRepeatableTxn::Undo() { WATCH(_T("Undoing testNotRepeatableTxn")); }
-txnTransaction* testNotRepeatableTxn::CreateClone() const { return new testNotRepeatableTxn; }
+std::unique_ptr<CEAFTransaction> testNotRepeatableTxn::CreateClone() const { return std::make_unique<testNotRepeatableTxn>(); }
 void testNotRepeatableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testNotRepeatableTxn::Name() const { return _T("Not Repeatable Txn"); }
-bool testNotRepeatableTxn::IsUndoable() { return true; }
-bool testNotRepeatableTxn::IsRepeatable() { return false; }
+bool testNotRepeatableTxn::IsUndoable() const { return true; }
+bool testNotRepeatableTxn::IsRepeatable() const { return false; }

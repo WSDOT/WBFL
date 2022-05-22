@@ -27,7 +27,7 @@
 
 #include <string>
 #include <System\Checks.h>
-#include <System\DumpContext.h>
+#include <System\LogContext.h>
 #include <MathEx.h>
 
 namespace WBFL
@@ -105,17 +105,17 @@ namespace WBFL
          return true;
       }
 
-      virtual void Dump(dbgDumpContext& os) const
+      virtual void Dump(WBFL::Debug::LogContext& os) const
       {
-         os << m_UnitTag.c_str() << endl;
+         os << m_UnitTag.c_str() << WBFL::Debug::endl;
          os << '\t' << "Dimensionality : (";
          os << MassDim() << ",";
          os << LengthDim() << ",";
          os << TimeDim() << ",";
          os << TemperatureDim() << ",";
          os << AngleDim();
-         os << ")" << endl;
-         os << '\t' << "Conv Factor : " << m_ConvFactor << endl;
+         os << ")" << WBFL::Debug::endl;
+         os << '\t' << "Conv Factor : " << m_ConvFactor << WBFL::Debug::endl;
       }
    #endif // _DEBUG
 
@@ -146,11 +146,11 @@ namespace WBFL
       Float64 GetPostTerm() const { return m_PostTerm; }
 
 #if defined _DEBUG
-      virtual void Dump(dbgDumpContext& os) const
+      virtual void Dump(WBFL::Debug::LogContext& os) const
       {
          __super::Dump(os);
-         os << '\t' << "Pre Term    : " << m_PreTerm << endl;
-         os << '\t' << "Post Term   : " << m_PostTerm << endl;
+         os << '\t' << "Pre Term    : " << m_PreTerm << WBFL::Debug::endl;
+         os << '\t' << "Post Term   : " << m_PostTerm << WBFL::Debug::endl;
       }
 #endif // _DEBUG
 

@@ -130,13 +130,13 @@ bool Rectangle::AssertValid() const
    return __super::AssertValid();
 }
 
-void Rectangle::Dump(dbgDumpContext& os) const
+void Rectangle::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for Rectangle ***")<<endl;
+   os << _T("*** Dump for Rectangle ***")<< WBFL::Debug::endl;
    __super::Dump( os );
-   os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<<endl;
-   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<<endl;
-   os << _T("  Rotation        =  ")<<m_Rotation<<endl;
+   os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Rotation        =  ")<<m_Rotation<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -175,7 +175,7 @@ void Rectangle::Copy(const Rectangle& other)
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool Rectangle::TestMe(dbgLog& rlog)
+bool Rectangle::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Rectangle");
 
@@ -214,7 +214,7 @@ bool Rectangle::TestMe(dbgLog& rlog)
    TRY_TESTME ( ptriang->GetBoundingBox() == Rect2d(0,0,40,25)) ;
 
 #if defined _DEBUG
-   rt.Dump(rlog.GetDumpCtx());
+   rt.Dump(rlog.GetLogContext());
 #endif
 
    // Test hook point behavior

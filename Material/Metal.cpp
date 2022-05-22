@@ -325,23 +325,23 @@ bool matMetal::AssertValid() const
    return true;
 }
 
-void matMetal::Dump(dbgDumpContext& os) const
+void matMetal::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for matMetal" << endl;
-   os << "=================" << endl;
-   os << "Name           : " << m_Name.c_str() << endl;
-   os << "Density        : " << m_Density << endl;
-   os << "Mod E          : " << m_ModE << endl;
-   os << "Yield Stess    : " << m_YieldStress << endl;
-   os << "Ult Strain     : " << m_UltStrain << endl;
-   os << "Ult Stress     : " << m_UltStress << endl;
-   os << "Rupture Strain : " << m_RuptureStrain << endl;
-   os << "Rupture Stress : " << m_RuptureStress << endl;
+   os << "Dump for matMetal" << WBFL::Debug::endl;
+   os << "=================" << WBFL::Debug::endl;
+   os << "Name           : " << m_Name.c_str() << WBFL::Debug::endl;
+   os << "Density        : " << m_Density << WBFL::Debug::endl;
+   os << "Mod E          : " << m_ModE << WBFL::Debug::endl;
+   os << "Yield Stess    : " << m_YieldStress << WBFL::Debug::endl;
+   os << "Ult Strain     : " << m_UltStrain << WBFL::Debug::endl;
+   os << "Ult Stress     : " << m_UltStress << WBFL::Debug::endl;
+   os << "Rupture Strain : " << m_RuptureStrain << WBFL::Debug::endl;
+   os << "Rupture Stress : " << m_RuptureStress << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool matMetal::TestMe(dbgLog& rlog)
+bool matMetal::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matMetal");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matMetal");

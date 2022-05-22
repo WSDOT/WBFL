@@ -24,6 +24,6 @@
 
 #include <System\Log.h>
 
-extern "C" bool WINAPI UnitTest(dbgLog& rlog);
+extern "C" bool WINAPI UnitTest(WBFL::Debug::Log& rlog);
 
-typedef bool (WINAPI *pUnitTest)  (dbgLog& rlog);
+typedef bool (WINAPI *pUnitTest)  (WBFL::Debug::Log& rlog);

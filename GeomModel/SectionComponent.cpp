@@ -166,16 +166,16 @@ bool SectionComponent::AssertValid() const
    return true;
 }
 
-void SectionComponent::Dump(dbgDumpContext& os) const
+void SectionComponent::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Begin Dump for SectionComponent" << endl;
+   os << "Begin Dump for SectionComponent" << WBFL::Debug::endl;
    m_Shape->Dump(os);
-   os << "end Dump for SectionComponent" << endl;
+   os << "end Dump for SectionComponent" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool SectionComponent::TestMe(dbgLog& rlog)
+bool SectionComponent::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("SectionComponent");
    TESTME_EPILOG("SectionComponent");

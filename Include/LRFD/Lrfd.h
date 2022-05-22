@@ -36,7 +36,6 @@
 #include <LRFD\Details.h>
 #include <LRFD\ConcreteUtil.h>
 #include <LRFD\ILiveLoadDistributionFactor.h>
-#include <LRFD\LimitStateCalculator.h>
 #include <LRFD\LiveLoadDistributionFactorBase.h>
 #include <LRFD\LldfTypeAEK.h>
 #include <LRFD\LldfTypeAEKIJ.h>

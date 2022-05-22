@@ -34,11 +34,11 @@ namespace WBFL
    namespace Units
    {
       /// Base class for indirect conversion of physical units of measure
-      class UNITSCLASS PhysicalConverter: public sysNumericFormatTool
+      class UNITSCLASS PhysicalConverter: public WBFL::System::NumericFormatTool
       {
       public:
-         PhysicalConverter(Format format = Automatic, Uint16 width = 0, Uint16 precision = 0) :
-            sysNumericFormatTool(format,width,precision)
+         PhysicalConverter(Format format = Format::Automatic, Uint16 width = 0, Uint16 precision = 0) :
+            WBFL::System::NumericFormatTool(format,width,precision)
             {
             }
 

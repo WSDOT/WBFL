@@ -25,50 +25,60 @@
 
 #include <System\SysExp.h>
 
-/*****************************************************************************
-CLASS 
-   sysColorConverter
-
-   Utility class for converting between color models
-
-
-DESCRIPTION
-   Utility class for converting between color models
-*****************************************************************************/
-
-class SYSCLASS sysColorConverter
+namespace WBFL
 {
-public:
-   // Hue-Lightness-Saturation
-   //
-   // Reference : "Computer Graphics - Principles and Practice"
-   // Foley, van Dam, Feiner, Hughes, 1990 Addison-Wesly,
-   // ISBN 0-201-12110-7 pg 592 -596
-   //
-   // Note:
-   // Due to floating point to integer round off, a call to HLStoRGB followed by
-   // a call to RGBtoHLS will not yield the original HLS values.
-   //
-   // A call to RGBtoHLS followed by a call to HLStoRGB will yield the original
-   // RGB values.
-   static void HLStoRGB(Float64 hue,Float64 lightness,Float64 saturation,BYTE* pRed,BYTE* pGreen,BYTE* pBlue);
-   static void RGBtoHLS(BYTE red,BYTE green,BYTE blue,Float64* pHue,Float64* pLightness,Float64* pSaturation);
+   namespace System
+   {
 
-   // Hue-Saturation-Value(Brightness)
-   //
-   // Reference : "Computer Graphics - Principles and Practice"
-   // Foley, van Dam, Feiner, Hughes, 1990 Addison-Wesly,
-   // ISBN 0-201-12110-7 pg 590 -593
-   //
-   // Note:
-   // Due to floating point to integer round off, a call to HSVtoRGB followed by
-   // a call to RGBtoHSV will not yield the original HSV values.
-   //
-   // A call to RGBtoHSV followed by a call to HSVtoRGB will yield the original
-   // RGB values.
-   static void HSVtoRGB(Float64 hue,Float64 saturation,Float64 value,BYTE* pRed,BYTE* pGreen,BYTE* pBlue);
-   static void RGBtoHSV(BYTE red,BYTE green,BYTE blue,Float64* pHue,Float64* pSaturation,Float64* pValue);
+      /// Utility class for converting between color models
+      ///
+      /// Hue-Lightness-Saturation
+      ///
+      /// Reference : "Computer Graphics - Principles and Practice"
+      /// Foley, van Dam, Feiner, Hughes, 1990 Addison-Wesly,
+      /// ISBN 0-201-12110-7 pg 592 -596
+      ///
+      /// Hue-Saturation-Value(Brightness)
+      ///
+      /// Reference : "Computer Graphics - Principles and Practice"
+      /// Foley, van Dam, Feiner, Hughes, 1990 Addison-Wesly,
+      /// ISBN 0-201-12110-7 pg 590 -593
+      class SYSCLASS ColorConverter
+      {
+      public:
+         ColorConverter() = delete;
+         ColorConverter(const ColorConverter&) = delete;
+         ~ColorConverter() = delete;
+         ColorConverter& operator=(const ColorConverter&) = delete;
 
-private:
-   static Float64 ComputeValue(Float64 n1,Float64 n2,Float64 hue);
+         // Note:
+         // Due to floating point to integer round off, a call to HLStoRGB followed by
+         // a call to RGBtoHLS will not yield the original HLS values.
+         //
+         // A call to RGBtoHLS followed by a call to HLStoRGB will yield the original
+         // RGB values.
+
+         /// Converts color from HLS to RGB model
+         static void HLStoRGB(Float64 hue, Float64 lightness, Float64 saturation, BYTE* pRed, BYTE* pGreen, BYTE* pBlue);
+
+         ///  Converts color from RGB to HLS model
+         static void RGBtoHLS(BYTE red, BYTE green, BYTE blue, Float64* pHue, Float64* pLightness, Float64* pSaturation);
+
+         // Note:
+         // Due to floating point to integer round off, a call to HSVtoRGB followed by
+         // a call to RGBtoHSV will not yield the original HSV values.
+         //
+         // A call to RGBtoHSV followed by a call to HSVtoRGB will yield the original
+         // RGB values.
+
+         /// Converts color from HSV to RGB model
+         static void HSVtoRGB(Float64 hue,Float64 saturation,Float64 value,BYTE* pRed,BYTE* pGreen,BYTE* pBlue);
+
+         /// Converts color from RGB to HSV model
+         static void RGBtoHSV(BYTE red,BYTE green,BYTE blue,Float64* pHue,Float64* pSaturation,Float64* pValue);
+
+      private:
+         static Float64 ComputeValue(Float64 n1,Float64 n2,Float64 hue);
+      };
+   };
 };

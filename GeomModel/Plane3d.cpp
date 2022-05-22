@@ -96,8 +96,8 @@ void Plane3d::ThroughLine(const Line2d& line, const Point3d& point)
    if (IsZero(z)) // Point is in XY plane
    {
       Point2d pnt2d(point.X(), point.Y());
-      if(line.ContainsPoint(pnt2d))
-         throw std::invalid_argument("Plane3d::Init - point cannot be on the line");
+      
+      if(line.ContainsPoint(pnt2d)) THROW_GEOMETRY(_T("Plane3d::Init - point cannot be on the line"));
    }
 
    // get two points on the line
@@ -122,7 +122,7 @@ void Plane3d::ThroughLine(const Line2d& line, const Point3d& point)
 void Plane3d::ThroughPoints(const Point3d& p1, const Point3d& p2, const Point3d& p3)
 {
    if (p1 == p2 || p2 == p3 || p1 == p3 || IsZero(LineSegment3d(p1,p2).DistanceToPoint(p3)))
-      throw std::invalid_argument("Plane3d::ThroughPoints - points cannot be coincident or colinear");
+      THROW_GEOMETRY(_T("Plane3d::ThroughPoints - points cannot be coincident or colinear"));
 
    // if they are, throw an exception
    const int x = 0;
@@ -193,13 +193,13 @@ Float64 Plane3d::GetX(Float64 y, Float64 z) const
    if (IsZero(m_A) && IsZero(m_B) && IsZero(m_C))
    {
       if (IsEqual(m_D, z) || IsZero(m_A))
-         throw std::logic_error("Plane3d::GetX - there are an infinite number of solutions");
+         THROW_GEOMETRY(_T("Plane3d::GetX - there are an infinite number of solutions"));
       else
-         throw std::logic_error("Plane3d::GetX - there are no solutions");
+         THROW_GEOMETRY(_T("Plane3d::GetX - there are no solutions"));
    }
    else if (IsZero(m_A))
    {
-      throw std::logic_error("Plane3d::GetX - there are no solutions");
+      THROW_GEOMETRY(_T("Plane3d::GetX - there are no solutions"));
    }
    else
    {
@@ -215,13 +215,13 @@ Float64 Plane3d::GetY(Float64 x, Float64 z) const
    if (IsZero(m_A) && IsZero(m_B) && IsZero(m_C))
    {
       if (IsEqual(m_D, z) || IsZero(m_B))
-         throw std::logic_error("Plane3d::GetY - there are an infinite number of solutions");
+         THROW_GEOMETRY(_T("Plane3d::GetY - there are an infinite number of solutions"));
       else
-         throw std::logic_error("Plane3d::GetY - there are no solutions");
+         THROW_GEOMETRY(_T("Plane3d::GetY - there are no solutions"));
    }
    else if (IsZero(m_B))
    {
-      throw std::logic_error("Plane3d::GetY - there are no solutions");
+      THROW_GEOMETRY(_T("Plane3d::GetY - there are no solutions"));
    }
    else
    {
@@ -239,7 +239,7 @@ Float64 Plane3d::GetZ(Float64 x, Float64 y) const
    }
    else if (IsZero(m_C))
    {
-      throw std::logic_error("Plane3d::GetZ - there are no solutions");
+      THROW_GEOMETRY(_T("Plane3d::GetZ - there are no solutions"));
    }
    else
    {
@@ -265,15 +265,15 @@ Point3d Plane3d::LineSegmentIntersect(const LineSegment3d& lineSegment) const
    Float64 R = m_A * Dx + m_B * Dy + m_C * Dz;
 
    if (IsZero(R)) // Line is parallel to plane
-      throw std::logic_error("Plane3d::LineSegmentIntersect - line segment is parallel to the plane, there are no solutions");
+      THROW_GEOMETRY(_T("Plane3d::LineSegmentIntersect - line segment is parallel to the plane, there are no solutions"));
 
    if (IsZero(Q) && IsZero(R)) // Line is on plane
-      throw std::logic_error("Plane3d::LineSegmentIntersect - line segment is in the plane - there are infinite solutions");
+      THROW_GEOMETRY(_T("Plane3d::LineSegmentIntersect - line segment is in the plane - there are infinite solutions"));
 
    Float64 t = Q / R;
 
    if (t < 0 || 1 < t)
-      throw std::logic_error("Plane3d::LineSegmentIntersect - the line segment does not intersects the plane, however projected line segment intersects the plane");
+      THROW_GEOMETRY(_T("Plane3d::LineSegmentIntersect - the line segment does not intersects the plane, however projected line segment intersects the plane"));
 
    Float64 x = start->X() + t * Dx;
    Float64 y = start->Y() + t * Dy;
@@ -288,7 +288,7 @@ Float64 Plane3d::ShortestDistance(const Point3d& point) const
    Float64 K = m_A * m_A + m_B * m_B + m_C * m_C;
    if (IsZero(K))
    {
-      throw std::logic_error("Plane3d::ShortestDistance - Invalid plane");
+      THROW_GEOMETRY(_T("Plane3d::ShortestDistance - Invalid plane"));
    }
 
    Float64 x, y, z;
@@ -308,7 +308,7 @@ Point3d Plane3d::PointOnPlaneNearest(const Point3d& point) const
    Float64 K = m_A * m_A + m_B * m_B + m_C * m_C;
    if (IsZero(K))
    {
-      throw std::logic_error("Plane3d::ShortestDistance - Invalid plane");
+      THROW_GEOMETRY(_T("Plane3d::ShortestDistance - Invalid plane"));
    }
 
    Float64 d = m_D - m_A * point.X() - m_B * point.Y() - m_C * point.Z();
@@ -327,14 +327,14 @@ bool Plane3d::AssertValid() const
    return true;
 }
 
-void Plane3d::Dump(dbgDumpContext& os) const
+void Plane3d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for Plane3d") << endl;
+   os << _T("Dump for Plane3d") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool Plane3d::TestMe(dbgLog& rlog)
+bool Plane3d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Plane3d");
 

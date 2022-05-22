@@ -21,12 +21,12 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_WBFLTOOLS_LOGDUMPCONTEXT_H_
-#define INCLUDED_WBFLTOOLS_LOGDUMPCONTEXT_H_
+#ifndef INCLUDED_WBFLTOOLS_LogContext_H_
+#define INCLUDED_WBFLTOOLS_LogContext_H_
 #pragma once
 
 #include <WBFLTools\WBFLToolsExp.h>
-#include <System\DumpContext.h>
+#include <System\LogContext.h>
 #include <atlbase.h>
 #include <atlcom.h>
 
@@ -44,34 +44,37 @@ interface ILogFile;
 ///
 /// This impelmentation provides an easy C++-style interface to a COM ILogFile object.
 /// Stream insertion operators are provided for common data types.
-class WBFLTOOLSCLASS dbgLogDumpContext : public dbgDumpContext
+class WBFLTOOLSCLASS LogContext : public WBFL::Debug::LogContext
 {
 public:
-   dbgLogDumpContext(
+   LogContext(
       ILogFile* pLog = nullptr, ///< pointer to the ILogFile implementation to wrap
       DWORD dwCookie = 0 ///< A cookie defining the log stream
    );
 
-   virtual ~dbgLogDumpContext();
+   LogContext(const LogContext&) = delete;
+   LogContext& operator=(const LogContext&) = delete;
 
-   virtual dbgDumpContext& operator<<(const std::_tstring& s) override;
-   virtual dbgDumpContext& operator<<(LPCTSTR s) override;
-   dbgDumpContext& operator<<(TCHAR c);    
-   dbgDumpContext& operator<<(bool n);
-   dbgDumpContext& operator<<(Int16 n);
-   dbgDumpContext& operator<<(Uint16 n);
-   dbgDumpContext& operator<<(Int32 n);
-   dbgDumpContext& operator<<(Uint32 n);
-   dbgDumpContext& operator<<(Int64 n);
-   dbgDumpContext& operator<<(Uint64 n);
-   dbgDumpContext& operator<<(Float32 n);    
-   dbgDumpContext& operator<<(Float64 n);
-   dbgDumpContext& operator<<(Float80 n);
-   dbgDumpContext& operator<<(void * n);
-   dbgDumpContext& operator<<(const sysSectionValue& n);
+   virtual ~LogContext();
 
-   /// Inserts a \\n into the log stream
-   dbgDumpContext& EndLine();
+   virtual WBFL::Debug::LogContext& operator<<(const std::_tstring& s) override;
+   virtual WBFL::Debug::LogContext& operator<<(LPCTSTR s) override;
+   virtual WBFL::Debug::LogContext& operator<<(TCHAR c) override;    
+   virtual WBFL::Debug::LogContext& operator<<(DWORD n) override;
+   virtual WBFL::Debug::LogContext& operator<<(bool n) override;
+   virtual WBFL::Debug::LogContext& operator<<(Int16 n) override;
+   virtual WBFL::Debug::LogContext& operator<<(Uint16 n) override;
+   virtual WBFL::Debug::LogContext& operator<<(Int32 n) override;
+   virtual WBFL::Debug::LogContext& operator<<(Uint32 n) override;
+   virtual WBFL::Debug::LogContext& operator<<(Int64 n) override;
+   virtual WBFL::Debug::LogContext& operator<<(Uint64 n) override;
+   virtual WBFL::Debug::LogContext& operator<<(Float32 n) override;    
+   virtual WBFL::Debug::LogContext& operator<<(Float64 n) override;
+   virtual WBFL::Debug::LogContext& operator<<(Float80 n) override;
+   virtual WBFL::Debug::LogContext& operator<<(void * n) override;
+   virtual WBFL::Debug::LogContext& operator<<(const WBFL::System::SectionValue& n) override;
+
+   virtual WBFL::Debug::LogContext& EndLine() override;
 
    /// Set the log file object and cookie if no set in the constructor
    void SetLog(ILogFile* pLog,DWORD dwCookie);
@@ -82,10 +85,6 @@ public:
 private:
    CComPtr<ILogFile> m_LogFile;
    DWORD m_dwCookie;
-
-   // Prevent accidental copying and assignment
-   dbgLogDumpContext(const dbgLogDumpContext&) = delete;
-   dbgLogDumpContext& operator=(const dbgLogDumpContext&) = delete;
 };
 
-#endif // INCLUDED_WBFLTOOLS_LOGDUMPCONTEXT_H_
+#endif // INCLUDED_WBFLTOOLS_LogContext_H_

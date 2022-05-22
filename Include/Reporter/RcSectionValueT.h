@@ -47,7 +47,7 @@ template <class T>
 class rptRcSectionValueT : public rptRcSectionValue
 {
 public:
-   rptRcSectionValueT(const sysSectionValue& value,  ///< unit value in system units
+   rptRcSectionValueT(const WBFL::System::SectionValue& value,  ///< unit value in system units
                       const T* pUnitOfMeasure,       ///< pointer to unit of measure
                       Float64 zeroTolerance = 0.,    ///< tolerance for zeroness
                       bool bShowUnitTag = true) :    ///< indicates if the unit tag is to be included in with the output string
@@ -94,7 +94,7 @@ public:
 
 
    /// Assings a new section value and returns a reference to this
-   virtual rptReportContent& SetValue(const sysSectionValue& value) override
+   virtual rptReportContent& SetValue(const WBFL::System::SectionValue& value) override
    {
       m_Value = value;
       return *this;
@@ -103,9 +103,9 @@ public:
    /// Returns the section value.
    ///
    /// \param bConvert If true, the returned value is converted into the specifed unit of measure
-   virtual sysSectionValue GetValue(bool bConvert = false) const override
+   virtual WBFL::System::SectionValue GetValue(bool bConvert = false) const override
    {
-      return sysSectionValue( GetLeftValue(bConvert), GetRightValue(bConvert) );
+      return WBFL::System::SectionValue( GetLeftValue(bConvert), GetRightValue(bConvert) );
    }
 
    /// Returns the left section value.
@@ -147,7 +147,7 @@ protected:
    }
 
 private:
-   sysSectionValue m_Value;
+   WBFL::System::SectionValue m_Value;
    const T* m_pUnitOfMeasure;
    Float64 m_ZeroTolerance;
 

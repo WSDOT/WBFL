@@ -248,7 +248,7 @@ LineSegment2d LineSegment2d::RotateBy(const Point2d& centerPoint, Float64 angle)
 std::vector<Point2d> LineSegment2d::Divide(IndexType nSpaces) const
 {
    if (nSpaces == 0 || nSpaces == INVALID_INDEX)
-      throw std::invalid_argument("LineSegment2d::Divide - invalid number of spaces");
+      THROW_GEOMETRY(_T("LineSegment2d::Divide - invalid number of spaces"));
 
    std::vector<Point2d> points;
    Size2d size = *m_pEnd - *m_pStart;
@@ -268,16 +268,16 @@ bool LineSegment2d::AssertValid() const
    return true;
 }
 
-void LineSegment2d::Dump(dbgDumpContext& os) const
+void LineSegment2d::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for LineSegment2d") << endl;
-   os << _T("  m_pStart = (")<< m_pStart->X()<<_T(", ")<< m_pStart->Y()<<_T(")")<<endl;
-   os << _T("  m_pEnd = (")<< m_pEnd->X()<<_T(", ")<< m_pEnd->Y()<<_T(")")<<endl;
+   os << _T("Dump for LineSegment2d") << WBFL::Debug::endl;
+   os << _T("  m_pStart = (")<< m_pStart->X()<<_T(", ")<< m_pStart->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  m_pEnd = (")<< m_pEnd->X()<<_T(", ")<< m_pEnd->Y()<<_T(")")<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool LineSegment2d::TestMe(dbgLog& rlog)
+bool LineSegment2d::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("LineSegment2d");
 
@@ -345,7 +345,7 @@ bool LineSegment2d::TestMe(dbgLog& rlog)
    TRY_TESTME (ltemp1.ContainsPoint(Point2d(-5,-2)));
    
 #if defined _DEBUG
-   at45.Dump(rlog.GetDumpCtx());
+   at45.Dump(rlog.GetLogContext());
 #endif
 
    // divide

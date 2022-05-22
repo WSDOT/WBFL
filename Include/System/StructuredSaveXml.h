@@ -21,185 +21,108 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_STRUCTUREDSAVEXML_H_
-#define INCLUDED_SYSTEM_STRUCTUREDSAVEXML_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <list>
 #include <System\SysExp.h>
 #include <System\IStructuredSave.h>
+#include <System\XStructuredSave.h>
+#include <memory>
 
-// FORWARD DECLARATIONS
-//
+struct IStream;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysStructuredSaveXml
-
-   This class implements the IStructuredSave interface for xml files.
-
-
-DESCRIPTION
-   Write to xml files using the IStructuredSave interface.
-
-LOG
-   rdp : 07.15.1998 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysStructuredSaveXml : public sysIStructuredSave
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace System
+   {
+      class StructuredSaveXml_Impl;
 
-   //------------------------------------------------------------------------
-   // Constructor
-   sysStructuredSaveXml();
+      /// This class implements the IStructuredSave interface for xml files.
+      /// Write to xml files using the IStructuredSave interface.
+      class SYSCLASS StructuredSaveXml : public IStructuredSave
+      {
+      public:
+         StructuredSaveXml();
+         StructuredSaveXml(const StructuredSaveXml&) = delete;
+         virtual ~StructuredSaveXml();
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~sysStructuredSaveXml();
+         StructuredSaveXml& operator=(const StructuredSaveXml&) = delete;
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Initializes the structured save object before writing a stream.
-   // Call this method before calling any other method of this class.
-   void BeginSave(std::_tostream* pos);
+         /// Initializes the structured save object before writing a stream.
+         /// Call this method before calling any other method of this class.
+         void BeginSave(IStream* pis);
 
-   //------------------------------------------------------------------------
-   // Call this method after you are done with your structured load
-   void EndSave();
+         /// Call this method after you are done with your structured save
+         void EndSave();
 
-   //------------------------------------------------------------------------
-   // Mark the Beginning of a structured data chunk. This call must be always
-   // balanced by a corresponding call to EndUnit. An optional version number
-   // may be used to tag major units.
-   // Version 0.0 means no version was attached.
-   virtual void BeginUnit(LPCTSTR name, Float64 version=0.0) override;
+         /// Mark the Beginning of a structured data chunk. This call must be always
+         /// balanced by a corresponding call to EndUnit. An optional version number
+         /// may be used to tag major units.
+         /// Version 0.0 means no version was attached.
+         virtual void BeginUnit(LPCTSTR name, Float64 version=0.0) override;
 
-   //------------------------------------------------------------------------
-   // Mark the end of a structured data chunk that was started by a call to 
-   // BeginUnit.
-   virtual void EndUnit() override;
+         /// Mark the end of a structured data chunk that was started by a call to 
+         /// BeginUnit.
+         virtual void EndUnit() override;
 
-   //------------------------------------------------------------------------
-   // Get the version number of the current unit
-   virtual Float64 GetVersion() override;
+         /// Get the version number of the current unit
+         virtual Float64 GetVersion() override;
 
-   //------------------------------------------------------------------------
-   // Get the version number of the unit that is the parent to this unit
-   virtual Float64 GetParentVersion();
+         /// Get the version number of the unit that is the parent to this unit
+         virtual Float64 GetParentVersion();
 
-   //------------------------------------------------------------------------
-   // Get the version number of the top-most unit
-   virtual Float64 GetTopVersion() override;
+         /// Get the name of the unit that is the parent to this unit
+         virtual std::_tstring GetParentUnit();
 
-   //------------------------------------------------------------------------
-   // Write a string property
-   virtual void Property(LPCTSTR name, LPCTSTR value) override;
+         /// Get the version number of the top-most unit
+         virtual Float64 GetTopVersion() override;
 
-   //------------------------------------------------------------------------
-   // Write a real number property
-   virtual void Property(LPCTSTR name, Float64 value) override;
+         /// Write a string property
+         virtual void Property(LPCTSTR name, LPCTSTR value) override;
 
-   //------------------------------------------------------------------------
-   // Write an integral property
-   virtual void Property(LPCTSTR name, Int16 value) override;
+         /// Write a real number property
+         virtual void Property(LPCTSTR name, Float64 value) override;
 
-   //------------------------------------------------------------------------
-   // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint16 value) override;
+         /// Write an integral property
+         virtual void Property(LPCTSTR name, Int16 value) override;
 
-   //------------------------------------------------------------------------
-   // Write an integral property
-   virtual void Property(LPCTSTR name, Int32 value) override;
+         /// Write an unsigned integral property
+         virtual void Property(LPCTSTR name, Uint16 value) override;
 
-   //------------------------------------------------------------------------
-   // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint32 value) override;
+         /// Write an integral property
+         virtual void Property(LPCTSTR name, Int32 value) override;
 
-   //------------------------------------------------------------------------
-   // Write an integral property
-   virtual void Property(LPCTSTR name, Int64 value) override;
+         /// Write an unsigned integral property
+         virtual void Property(LPCTSTR name, Uint32 value) override;
 
-   //------------------------------------------------------------------------
-   // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint64 value) override;
+         /// Write an integral property
+         virtual void Property(LPCTSTR name, Int64 value) override;
 
-   //------------------------------------------------------------------------
-   // Write an integral property
-   virtual void Property(LPCTSTR name, LONG value) override;
+         /// Write an unsigned integral property
+         virtual void Property(LPCTSTR name, Uint64 value) override;
 
-   //------------------------------------------------------------------------
-   // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, ULONG value) override;
+         /// Write an unsigned integral property
+         virtual void Property(LPCTSTR name, LONG value) override;
 
-   //------------------------------------------------------------------------
-   // Write a bool property
-   virtual void Property(LPCTSTR name, bool value) override;
+         /// Write an unsigned integral property
+         virtual void Property(LPCTSTR name, ULONG value) override;
 
+         /// Write a bool property
+         virtual void Property(LPCTSTR name, bool value) override;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         virtual void PutUnit(LPCTSTR xml);
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      private:
+         std::unique_ptr<StructuredSaveXml_Impl> m_pImp;
 
-private:
-   // GROUP: DATA MEMBERS
-   std::_tostream* m_pOStream;
-   std::ios_base::iostate m_IoState;
-   long          m_Level; // unit nesting level
-   typedef std::pair<std::_tstring, Float64> ListItem;
-   typedef std::list<ListItem> UnitList;
-   typedef UnitList::const_iterator UnitListConstIterator;
-   UnitList   m_UnitList; // stack of information about current units.
+      public:
+      #if defined _DEBUG
+         virtual bool AssertValid() const;
+         virtual void Dump(WBFL::Debug::LogContext& os) const;
+      #endif // _DEBUG
 
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   sysStructuredSaveXml(const sysStructuredSaveXml&);
-   sysStructuredSaveXml& operator=(const sysStructuredSaveXml&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
+      #if defined _UNITTEST
+         static bool TestMe(WBFL::Debug::Log& rlog);
+      #endif // _UNITTEST
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_STRUCTUREDSAVEXML_H_

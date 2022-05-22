@@ -76,8 +76,8 @@ public:
    virtual void GetRotations(Float64* pra,Float64* prb) const = 0;
    virtual void GetDeflections(Float64* pYa,Float64* pYb) const = 0;
 
-   virtual sysSectionValue ComputeShear(Float64 x) const = 0;
-   virtual sysSectionValue ComputeMoment(Float64 x) const = 0;
+   virtual WBFL::System::SectionValue ComputeShear(Float64 x) const = 0;
+   virtual WBFL::System::SectionValue ComputeMoment(Float64 x) const = 0;
    virtual Float64 ComputeRotation(Float64 x) const = 0;
    virtual Float64 ComputeDeflection(Float64 x) const = 0;
 
@@ -90,14 +90,14 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
 
    #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Runs a self-diagnostic test.  Returns true if the test passed,
    // otherwise false.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 };
 
@@ -128,8 +128,8 @@ public:
    virtual void GetRotations(Float64* pra,Float64* prb) const;
    virtual void GetDeflections(Float64* pYa,Float64* pYb) const;
 
-   virtual sysSectionValue ComputeShear(Float64 x) const;
-   virtual sysSectionValue ComputeMoment(Float64 x) const;
+   virtual WBFL::System::SectionValue ComputeShear(Float64 x) const;
+   virtual WBFL::System::SectionValue ComputeMoment(Float64 x) const;
    virtual Float64 ComputeRotation(Float64 x) const;
    virtual Float64 ComputeDeflection(Float64 x) const;
 
@@ -142,14 +142,14 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
 
    #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Runs a self-diagnostic test.  Returns true if the test passed,
    // otherwise false.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 };
 
@@ -178,8 +178,8 @@ public:
    void GetRotations(Float64* pra,Float64* prb) const;
    void GetDeflections(Float64* pYa,Float64* pYb) const;
 
-   sysSectionValue ComputeShear(Float64 x) const;
-   sysSectionValue ComputeMoment(Float64 x) const;
+   WBFL::System::SectionValue ComputeShear(Float64 x) const;
+   WBFL::System::SectionValue ComputeMoment(Float64 x) const;
    Float64 ComputeRotation(Float64 x) const;
    Float64 ComputeDeflection(Float64 x) const;
 
@@ -193,14 +193,14 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
 
    #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Runs a self-diagnostic test.  Returns true if the test passed,
    // otherwise false.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 };
 
@@ -228,8 +228,8 @@ public:
    void GetRotations(Float64* pra,Float64* prb) const;
    void GetDeflections(Float64* pYa,Float64* pYb) const;
 
-   sysSectionValue ComputeShear(Float64 x) const;
-   sysSectionValue ComputeMoment(Float64 x) const;
+   WBFL::System::SectionValue ComputeShear(Float64 x) const;
+   WBFL::System::SectionValue ComputeMoment(Float64 x) const;
    Float64 ComputeRotation(Float64 x) const;
    Float64 ComputeDeflection(Float64 x) const;
 
@@ -243,14 +243,14 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
 
    #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Runs a self-diagnostic test.  Returns true if the test passed,
    // otherwise false.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 };
 
@@ -278,8 +278,8 @@ public:
    void GetRotations(Float64* pra,Float64* prb) const;
    void GetDeflections(Float64* pYa,Float64* pYb) const;
 
-   sysSectionValue ComputeShear(Float64 x) const;
-   sysSectionValue ComputeMoment(Float64 x) const;
+   WBFL::System::SectionValue ComputeShear(Float64 x) const;
+   WBFL::System::SectionValue ComputeMoment(Float64 x) const;
    Float64 ComputeRotation(Float64 x) const;
    Float64 ComputeDeflection(Float64 x) const;
 
@@ -293,14 +293,14 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
 
    #if defined _UNITTEST
    //------------------------------------------------------------------------
    // Runs a self-diagnostic test.  Returns true if the test passed,
    // otherwise false.
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
    #endif // _UNITTEST
 };
 

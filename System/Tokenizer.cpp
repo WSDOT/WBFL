@@ -31,6 +31,9 @@
    Definition of a string tokenizing class.
 
    */
+// rdp : adopted this class from :
+// http://www.tu-chemnitz.de/~marme/programs/tokenizer/index.html
+// on 6 / 24 / 99.
 
 #include <System\tokenizer.h>
 #include <algorithm>
@@ -43,17 +46,15 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-sysTokenizer::sysTokenizer():
-    Vector_Rep(), Token_Rep(), Delims()
-{}
+using namespace WBFL::System;
 
-sysTokenizer::sysTokenizer(LPCTSTR OneDel):
+Tokenizer::Tokenizer(LPCTSTR OneDel):
     Vector_Rep(), Token_Rep()
 {
     if(OneDel) Delims.push_back(CS_to_TS(OneDel));
 }
 
-sysTokenizer::sysTokenizer(LPCTSTR *Token_Del):
+Tokenizer::Tokenizer(LPCTSTR *Token_Del):
     Vector_Rep(), Token_Rep()
 {
     if(Token_Del && Token_Del[0]){
@@ -63,51 +64,51 @@ sysTokenizer::sysTokenizer(LPCTSTR *Token_Del):
     }
 }
 
-sysTokenizer::~sysTokenizer()
+Tokenizer::~Tokenizer()
 {
 }
 
-sysTokenizer::iterator sysTokenizer::begin()
-{
-    return Token_Rep.begin();
-}
-
-sysTokenizer::const_iterator sysTokenizer::begin() const
+Tokenizer::iterator Tokenizer::begin()
 {
     return Token_Rep.begin();
 }
 
-sysTokenizer::iterator sysTokenizer::end()
+Tokenizer::const_iterator Tokenizer::begin() const
+{
+    return Token_Rep.begin();
+}
+
+Tokenizer::iterator Tokenizer::end()
 {
     return Token_Rep.end();
 }
 
-sysTokenizer::const_iterator sysTokenizer::end() const
+Tokenizer::const_iterator Tokenizer::end() const
 {
     return Token_Rep.end();
 }
 
-sysTokenizer::reverse_iterator sysTokenizer::rbegin()
+Tokenizer::reverse_iterator Tokenizer::rbegin()
 {
     return Token_Rep.rbegin();
 }
 
-sysTokenizer::const_reverse_iterator sysTokenizer::rbegin() const
+Tokenizer::const_reverse_iterator Tokenizer::rbegin() const
 {
     return Token_Rep.rbegin();
 }
 
-sysTokenizer::reverse_iterator sysTokenizer::rend()
+Tokenizer::reverse_iterator Tokenizer::rend()
 {
     return Token_Rep.rend();
 }
 
-sysTokenizer::const_reverse_iterator sysTokenizer::rend() const
+Tokenizer::const_reverse_iterator Tokenizer::rend() const
 {
     return Token_Rep.rend();
 }
 
-sysTokenizer &sysTokenizer::operator = (const sysTokenizer &T)
+Tokenizer &Tokenizer::operator=(const Tokenizer &T)
 {
     if(&T == this) return *this;
 
@@ -118,50 +119,50 @@ sysTokenizer &sysTokenizer::operator = (const sysTokenizer &T)
     return *this;
 }
 
-bool sysTokenizer::operator == (const sysTokenizer &T) const
+bool Tokenizer::operator==(const Tokenizer &T) const
 {
     if(&T == this) return true;
     return Token_Rep == T.Token_Rep;
 }
 
-bool sysTokenizer::operator != (const sysTokenizer &T) const
+bool Tokenizer::operator!=(const Tokenizer &T) const
 {
     return !operator == (T);
 }
 
-bool sysTokenizer::operator < (const sysTokenizer &T) const
+bool Tokenizer::operator<(const Tokenizer &T) const
 {
     return Token_Rep < T.Token_Rep;
 }
 
 
-sysTokenizer::reference sysTokenizer::operator [] (sysTokenizer::size_type n)
+Tokenizer::reference Tokenizer::operator[](Tokenizer::size_type n)
 {
     return *(begin() + n);
 }
 
 
-sysTokenizer::const_reference sysTokenizer::operator [] (sysTokenizer::size_type n) const
+Tokenizer::const_reference Tokenizer::operator[](Tokenizer::size_type n) const
 {
     return *(begin() + n);
 }
 
-sysTokenizer::size_type sysTokenizer::size() const
+Tokenizer::size_type Tokenizer::size() const
 {
     return Token_Rep.size();
 }
 
-sysTokenizer::size_type sysTokenizer::max_size() const
+Tokenizer::size_type Tokenizer::max_size() const
 {
     return Token_Rep.max_size();
 }
 
-bool sysTokenizer::empty() const
+bool Tokenizer::empty() const
 {
     return Token_Rep.empty();
 }
 
-void sysTokenizer::push_back(LPCTSTR cstr)
+void Tokenizer::push_back(LPCTSTR cstr)
 {
     if(cstr){
 
@@ -181,47 +182,49 @@ void sysTokenizer::push_back(LPCTSTR cstr)
     }
 }
 
-void sysTokenizer::push_back(const std::_tstring& VC)
+void Tokenizer::push_back(const std::_tstring& VC)
 {
     Token_Rep.erase(Token_Rep.begin(),Token_Rep.end());
     Vector_Rep = VC;
 
     // Tokenize now.
     Token TRes;
-    for(TIter I = Vector_Rep.begin(); 
-        I != Vector_Rep.end(); ){
+    for(TIter I = Vector_Rep.begin(); I != Vector_Rep.end(); )
+    {
         TRes = find_next_token(Vector_Rep,I);
         if (!TRes.empty())
-           if(TRes != Token()) 
-              Token_Rep.push_back(TRes);
+        {
+           if (TRes != Token()) Token_Rep.push_back(TRes);
+        }
     }
 }
 
-TString sysTokenizer::CS_to_TS(LPCTSTR CS)
+TString Tokenizer::CS_to_TS(LPCTSTR CS)
 {
     TString TS(CS);
     
     return TS;
 }
 
-LPTSTR sysTokenizer::TS_to_CS(TString &TS)
+LPTSTR Tokenizer::TS_to_CS(TString &TS)
 {
     LPTSTR CS = 0;
     
-    if(TS.size()){
-        CS = new TCHAR[TS.size() + 1];
-		for(std::_tstring::size_type i = 0; i < TS.size(); i++) 
-		{
-			CS[i] = TS[i];
-		}
+    if(TS.size())
+    {
+       CS = new TCHAR[TS.size() + 1];
+		 for(std::_tstring::size_type i = 0; i < TS.size(); i++) 
+		 {
+		    CS[i] = TS[i];
+		 }
 
-        CS[TS.size()] = 0;
+       CS[TS.size()] = 0;
     }
     
     return CS;
 }
 
-Token sysTokenizer::find_next_token(TString &TS, TIter &Ti)
+Token Tokenizer::find_next_token(TString &TS, TIter &Ti)
 {
     // An iterator which points to the end of TS ...
     TIter End_Token = TS.end();
@@ -263,7 +266,7 @@ Token sysTokenizer::find_next_token(TString &TS, TIter &Ti)
 }
 
 
-bool sysTokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
+bool Tokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
 {
 	CHECK(lpszText != 0);
 	while (*lpszText == _T(' ') || *lpszText == _T('\t'))
@@ -293,7 +296,7 @@ bool sysTokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
 	return true;
 }
 
-bool sysTokenizer::ParseLong(LPCTSTR lpszText, long* l)
+bool Tokenizer::ParseLong(LPCTSTR lpszText, long* l)
 {
 	CHECK(lpszText != 0);
 	while (*lpszText == _T(' ') || *lpszText == _T('\t'))
@@ -320,7 +323,7 @@ bool sysTokenizer::ParseLong(LPCTSTR lpszText, long* l)
 	return true;
 }
 
-bool sysTokenizer::ParseULong(LPCTSTR lpszText, unsigned long* l)
+bool Tokenizer::ParseULong(LPCTSTR lpszText, unsigned long* l)
 {
 	CHECK(lpszText != 0);
 	while (*lpszText == _T(' ') || *lpszText == _T('\t'))
@@ -366,7 +369,3 @@ inline std::_tostream &operator<<(std::_tostream &os, const std::vector<Token> &
     os<<_T("]");
     return os;
 }
-
-
-
-

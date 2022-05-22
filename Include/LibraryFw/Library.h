@@ -46,7 +46,7 @@
 #include <System\XStructuredLoad.h>
 
 #if defined _DEBUG
-#include <WBFLTools\LogDumpContext.h>
+#include <WBFLTools\LogContext.h>
 #endif
 
 // FORWARD DECLARATIONS
@@ -398,7 +398,7 @@ public:
 
    //------------------------------------------------------------------------
    // Save to structured storage
-   bool SaveMe(sysIStructuredSave* pSave)
+   bool SaveMe(WBFL::System::IStructuredSave* pSave)
    {
       // not much data for a library
       pSave->BeginUnit(_T("LIBRARY"), 1.0);
@@ -419,7 +419,7 @@ public:
 
    //------------------------------------------------------------------------
    // Load from structured storage
-   bool LoadMe(sysIStructuredLoad* pLoad)
+   bool LoadMe(WBFL::System::IStructuredLoad* pLoad)
    {
       // load library and its entries
       if (pLoad->BeginUnit(_T("LIBRARY")))
@@ -821,16 +821,16 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const
+   virtual void Dump(WBFL::Debug::LogContext& os) const
    {
-      os << _T("Dump for libLibrary: ") << m_IdName << endl;
-      os << _T("  Display Name      = ") << m_DisplayName<<endl;
-      os << _T("  m_pLibraryManager = ") << m_pLibraryManager << endl;
-      os << _T("  Library Entries: ") << m_EntryList.size() << endl;
+      os << _T("Dump for libLibrary: ") << m_IdName << WBFL::Debug::endl;
+      os << _T("  Display Name      = ") << m_DisplayName<< WBFL::Debug::endl;
+      os << _T("  m_pLibraryManager = ") << m_pLibraryManager << WBFL::Debug::endl;
+      os << _T("  Library Entries: ") << m_EntryList.size() << WBFL::Debug::endl;
 
       for (EntryListConstIterator it = m_EntryList.begin(); it!=m_EntryList.end(); it++)
       {
-         os << _T("Dump for Entry: ") << (*it).first << endl;
+         os << _T("Dump for Entry: ") << (*it).first << WBFL::Debug::endl;
          (*it).second->Dump(os);
       }
 

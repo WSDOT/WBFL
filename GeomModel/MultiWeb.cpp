@@ -128,8 +128,7 @@ WebIndexType MultiWeb::GetWebCount() const
 
 Float64 MultiWeb::GetWebLocation(WebIndexType webIdx)
 {
-   if (m_WebCount <= webIdx)
-      throw std::invalid_argument("MultiWeb::GetWebLocation - invalid web index");
+   if (m_WebCount <= webIdx) THROW_GEOMETRY(_T("MultiWeb::GetWebLocation - invalid web index"));
 
    Float64 W = GetTopFlangeWidth();
 
@@ -179,9 +178,9 @@ bool MultiWeb::AssertValid() const
    return __super::AssertValid();
 }
 
-void MultiWeb::Dump(dbgDumpContext& os) const
+void MultiWeb::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for MultiWeb ***")<<endl;
+   os << _T("*** Dump for MultiWeb ***")<< WBFL::Debug::endl;
    __super::Dump( os );
 }
 #endif // _DEBUG
@@ -241,7 +240,7 @@ void MultiWeb::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool MultiWeb::TestMe(dbgLog& rlog)
+bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("MultiWeb");
 

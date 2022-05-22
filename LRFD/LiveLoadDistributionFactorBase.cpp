@@ -1158,14 +1158,14 @@ bool lrfdLiveLoadDistributionFactorBase::AssertValid() const
    return true;
 }
 
-void lrfdLiveLoadDistributionFactorBase::Dump(dbgDumpContext& os) const
+void lrfdLiveLoadDistributionFactorBase::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdLiveLoadDistributionFactorBase" << endl;
+   os << "Dump for lrfdLiveLoadDistributionFactorBase" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool lrfdLiveLoadDistributionFactorBase::TestMe(dbgLog& rlog)
+bool lrfdLiveLoadDistributionFactorBase::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLiveLoadDistributionFactorBase");
 

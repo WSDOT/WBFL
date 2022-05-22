@@ -30,7 +30,7 @@
 // StrLoad.h : header file
 //
 
-#include <System\StructuredLoadXMLPrs.h>
+#include <System\StructuredLoadXML.h>
 #include <System\FileStream.h>
 #include <iostream>
 #include <fstream>
@@ -75,12 +75,12 @@ public:
    STDMETHOD(LoadRawUnit)(/*[out]*/ BSTR* pbstrUnit) override;
 
 private:
-   sysStructuredLoadXmlPrs m_StrLoad;
-   FileStream m_File;
+   WBFL::System::StructuredLoadXml m_StrLoad;
+   WBFL::System::FileStream m_File;
    BOOL m_bOpen;
 
-   HRESULT HandleException( sysXStructuredLoad& e );
-   HRESULT HandleException2( sysXStructuredLoad& e );
+   HRESULT HandleException( WBFL::System::XStructuredLoad& e );
+   HRESULT HandleException2(WBFL::System::XStructuredLoad& e );
 
    //HRESULT Open(/*[in]*/ LPCTSTR bstrFile);
    //HRESULT BeginUnit(/*[in]*/ LPCTSTR bstrUnit);

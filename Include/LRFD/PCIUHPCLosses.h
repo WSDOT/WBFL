@@ -150,7 +150,7 @@ public:
    virtual Float64 PermanentStrand_AfterDeckPlacement() const override;
 
 #if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 protected:

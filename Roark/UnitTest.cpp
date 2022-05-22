@@ -44,7 +44,7 @@ CLASS
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-bool rkUnitTest::TestMe(dbgLog& rlog)
+bool rkUnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool bPassed = true;
 
@@ -64,7 +64,7 @@ bool rkUnitTest::TestMe(dbgLog& rlog)
 #include <MathEx.h>
 
 // Use numerical integration to test the beam equations
-bool Test_Numerical(dbgLog& rlog,const rkRoarkBeam& beam)
+bool Test_Numerical(WBFL::Debug::Log& rlog,const rkRoarkBeam& beam)
 {
    TESTME_PROLOGUE( "Test_Numerical" );
 
@@ -93,12 +93,12 @@ bool Test_Numerical(dbgLog& rlog,const rkRoarkBeam& beam)
       Float64 x = i * dx;
       Float64 x_dx = x + dx;
 
-      sysSectionValue V    = beam.ComputeShear( x );
-      sysSectionValue V_dV = beam.ComputeShear( x_dx );
+      WBFL::System::SectionValue V    = beam.ComputeShear( x );
+      WBFL::System::SectionValue V_dV = beam.ComputeShear( x_dx );
       sumShear += (V.Right() + V_dV.Left()) * dx / 2;
 
-      sysSectionValue M    = beam.ComputeMoment( x );
-      sysSectionValue M_dM = beam.ComputeMoment( x_dx );
+      WBFL::System::SectionValue M    = beam.ComputeMoment( x );
+      WBFL::System::SectionValue M_dM = beam.ComputeMoment( x_dx );
       sumMoment += (M.Right() + M_dM.Left()) * dx / 2;
 
       Float64 r    = beam.ComputeRotation( x );
@@ -107,7 +107,7 @@ bool Test_Numerical(dbgLog& rlog,const rkRoarkBeam& beam)
 
       if ( i % nCheckPnts == 0 )
       {
-         sysSectionValue tstM = beam.ComputeMoment( x_dx );
+         WBFL::System::SectionValue tstM = beam.ComputeMoment( x_dx );
          TRY_TESTME( IsEqual( tstM.Left(), sumShear + Ma, 0.1) );
 
          Float64 tstR = beam.ComputeRotation( x_dx );

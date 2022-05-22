@@ -106,7 +106,7 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const override;
+   virtual void Dump(WBFL::Debug::LogContext& os) const override;
 #endif // _DEBUG
 
 protected:

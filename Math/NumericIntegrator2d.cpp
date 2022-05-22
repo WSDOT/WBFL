@@ -39,13 +39,13 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 mathXNumericIntegrator2dFailed::mathXNumericIntegrator2dFailed(Reason reason,LPCTSTR file,Int16 line) :
-sysXBase(file,line)
+   WBFL::System::XBase(file,line)
 {
    m_Reason = reason;
 }
 
 mathXNumericIntegrator2dFailed::mathXNumericIntegrator2dFailed(const mathXNumericIntegrator2dFailed& rOther) :
-sysXBase( rOther )
+   WBFL::System::XBase( rOther )
 {
    m_Reason = rOther.m_Reason;
 }
@@ -60,7 +60,7 @@ mathXNumericIntegrator2dFailed& mathXNumericIntegrator2dFailed::operator=(const 
 {
    if ( this != &rOther )
    {
-      sysXBase::operator=( rOther);
+      WBFL::System::XBase::operator=( rOther);
       m_Reason = rOther.m_Reason;
    }
 
@@ -73,12 +73,12 @@ void mathXNumericIntegrator2dFailed::Throw() const
    throw *static_cast<const mathXNumericIntegrator2dFailed*>(this);
 }
 
-Int32 mathXNumericIntegrator2dFailed::GetReason() const
+Int32 mathXNumericIntegrator2dFailed::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-mathXNumericIntegrator2dFailed::Reason mathXNumericIntegrator2dFailed::GetReasonCode() const
+mathXNumericIntegrator2dFailed::Reason mathXNumericIntegrator2dFailed::GetReasonCode() const noexcept
 {
    return m_Reason;
 }

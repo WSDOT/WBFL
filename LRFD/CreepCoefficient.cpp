@@ -256,14 +256,14 @@ bool lrfdCreepCoefficient::AssertValid() const
    return true;
 }
 
-void lrfdCreepCoefficient::Dump(dbgDumpContext& os) const
+void lrfdCreepCoefficient::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for lrfdCreepCoefficient" << endl;
+   os << "Dump for lrfdCreepCoefficient" << WBFL::Debug::endl;
                                                                                                                              }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool lrfdCreepCoefficient::TestMe(dbgLog& rlog)
+bool lrfdCreepCoefficient::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdCreepCoefficient");
 

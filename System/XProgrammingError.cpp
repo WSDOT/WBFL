@@ -22,12 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysXProgrammingError
-****************************************************************************/
-
 #include <System\XProgrammingError.h>
 
 #ifdef _DEBUG
@@ -36,81 +30,25 @@ CLASS
 static char THIS_FILE[] = __FILE__;
 #endif
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::System;
 
-//======================== LIFECYCLE  =======================================
-sysXProgrammingError::sysXProgrammingError(Reason reason, LPCTSTR file, Int32 line) :
-sysXBase(file,line),
+XProgrammingError::XProgrammingError(Reason reason, LPCTSTR file, Int32 line) :
+XBase(file,line),
 m_Reason( reason )
 {
 }
 
-sysXProgrammingError::sysXProgrammingError(const sysXProgrammingError& rOther) :
-sysXBase(rOther)
+void XProgrammingError::Throw() const
 {
-   MakeCopy(rOther);
+   throw *static_cast<const XProgrammingError*>(this);
 }
 
-sysXProgrammingError::~sysXProgrammingError()
-{
-}
-
-//======================== OPERATORS  =======================================
-sysXProgrammingError& sysXProgrammingError::operator= (const sysXProgrammingError& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void sysXProgrammingError::Throw() const
-{
-   throw *static_cast<const sysXProgrammingError*>(this);
-}
-
-//======================== ACCESS     =======================================
-Int32 sysXProgrammingError::GetReason() const
+Int32 XProgrammingError::GetReason() const noexcept
 {
    return m_Reason;
 }
 
-sysXProgrammingError::Reason sysXProgrammingError::GetReasonCode() const
+XProgrammingError::Reason XProgrammingError::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void sysXProgrammingError::MakeCopy(const sysXProgrammingError& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void sysXProgrammingError::MakeAssignment(const sysXProgrammingError& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

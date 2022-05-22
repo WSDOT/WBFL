@@ -153,13 +153,13 @@ bool matConcreteEx::AssertValid() const
    return matConcrete::AssertValid();
 }
 
-void matConcreteEx::Dump(dbgDumpContext& os) const
+void matConcreteEx::Dump(WBFL::Debug::LogContext& os) const
 {
    matConcrete::Dump( os );
 }
 #endif // _DEBUG
 #if defined _UNITTEST
-bool matConcreteEx::TestMe(dbgLog& rlog)
+bool matConcreteEx::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("matConcreteEx");
    TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for matConcreteEx");

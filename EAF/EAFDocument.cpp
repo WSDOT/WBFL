@@ -42,7 +42,7 @@
 #include <System\Time.h>
 #include <MFCTools\VersionInfo.h>
 
-#include <System\TxnManager.h>
+#include <EAF\EAFTxnManager.h>
 
 #include <EAF\EAFPluginCommandManager.h>
 
@@ -519,7 +519,7 @@ void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
    strLogFile.Format(_T("%s\\%s.log"),pApp->GetAppLocation(),pApp->m_pszExeName);
 
    std::vector<CString> strings;
-   sysTime now;
+   WBFL::System::Time now;
    now.PrintDate(true);
    CString strTime;
    strTime.Format(_T("Log Opened %s"),now.AsString().c_str());
@@ -1371,74 +1371,74 @@ void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
    OnUpdateAllViews(nullptr,EAF_HINT_UNITS_CHANGED,0);
 }
 
-void CEAFDocument::Execute(txnTransaction& rTxn)
+void CEAFDocument::Execute(CEAFTransaction& rTxn)
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Execute(rTxn);
+   CEAFTxnManager::GetInstance()->Execute(rTxn);
 }
 
-void CEAFDocument::Execute(txnTransaction* pTxn)
+void CEAFDocument::Execute(std::unique_ptr<CEAFTransaction>&& pTxn)
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Execute(pTxn);
+   CEAFTxnManager::GetInstance()->Execute(std::move(pTxn));
 }
 
 void CEAFDocument::Undo()
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Undo();
+   CEAFTxnManager::GetInstance()->Undo();
 }
 
 void CEAFDocument::Redo()
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Redo();
+   CEAFTxnManager::GetInstance()->Redo();
 }
 
 void CEAFDocument::Repeat()
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Repeat();
+   CEAFTxnManager::GetInstance()->Repeat();
 }
 
-bool CEAFDocument::CanUndo()
+bool CEAFDocument::CanUndo() const
 {
-   return txnTxnManager::GetInstance()->CanUndo();
+   return CEAFTxnManager::GetInstance()->CanUndo();
 }
 
-bool CEAFDocument::CanRedo()
+bool CEAFDocument::CanRedo() const
 {
-   return txnTxnManager::GetInstance()->CanRedo();
+   return CEAFTxnManager::GetInstance()->CanRedo();
 }
 
-bool CEAFDocument::CanRepeat()
+bool CEAFDocument::CanRepeat() const
 {
-   return txnTxnManager::GetInstance()->CanRepeat();
+   return CEAFTxnManager::GetInstance()->CanRepeat();
 }
 
-std::_tstring CEAFDocument::UndoName()
+std::_tstring CEAFDocument::UndoName() const
 {
-   return txnTxnManager::GetInstance()->UndoName();
+   return CEAFTxnManager::GetInstance()->UndoName();
 }
 
-std::_tstring CEAFDocument::RedoName()
+std::_tstring CEAFDocument::RedoName() const
 {
-   return txnTxnManager::GetInstance()->RedoName();
+   return CEAFTxnManager::GetInstance()->RedoName();
 }
 
-std::_tstring CEAFDocument::RepeatName()
+std::_tstring CEAFDocument::RepeatName() const
 {
-   return txnTxnManager::GetInstance()->RepeatName();
+   return CEAFTxnManager::GetInstance()->RepeatName();
 }
 
-CollectionIndexType CEAFDocument::GetTxnCount()
+IndexType CEAFDocument::GetTxnCount() const
 {
-   return txnTxnManager::GetInstance()->GetTxnCount();
+   return CEAFTxnManager::GetInstance()->GetTxnCount();
 }
 
-CollectionIndexType CEAFDocument::GetUndoCount()
+IndexType CEAFDocument::GetUndoCount() const
 {
-   return txnTxnManager::GetInstance()->GetUndoCount();
+   return CEAFTxnManager::GetInstance()->GetUndoCount();
 }
 
 void CEAFDocument::OnUndo() 

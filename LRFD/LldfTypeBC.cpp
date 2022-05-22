@@ -696,7 +696,7 @@ bool lrfdLldfTypeBC::AssertValid() const
    return lrfdLiveLoadDistributionFactorBase::AssertValid();
 }
 
-void lrfdLldfTypeBC::Dump(dbgDumpContext& os) const
+void lrfdLldfTypeBC::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLiveLoadDistributionFactorBase::Dump( os );
 }
@@ -704,7 +704,7 @@ void lrfdLldfTypeBC::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <Lrfd\AutoVersion.h>
-bool lrfdLldfTypeBC::TestMe(dbgLog& rlog)
+bool lrfdLldfTypeBC::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeBC");
 
@@ -971,7 +971,7 @@ bool lrfdWsdotLldfTypeBC::AssertValid() const
    return lrfdLldfTypeBC::AssertValid();
 }
 
-void lrfdWsdotLldfTypeBC::Dump(dbgDumpContext& os) const
+void lrfdWsdotLldfTypeBC::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLldfTypeBC::Dump( os );
 }
@@ -979,7 +979,7 @@ void lrfdWsdotLldfTypeBC::Dump(dbgDumpContext& os) const
 
 #if defined _UNITTEST
 #include <LRFD\AutoVersion.h>
-bool lrfdWsdotLldfTypeBC::TestMe(dbgLog& rlog)
+bool lrfdWsdotLldfTypeBC::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdWsdotLldfTypeBC");
 
@@ -1403,14 +1403,14 @@ bool lrfdTxDotLldfTypeBC::AssertValid() const
    return lrfdLldfTypeBC::AssertValid();
 }
 
-void lrfdTxDotLldfTypeBC::Dump(dbgDumpContext& os) const
+void lrfdTxDotLldfTypeBC::Dump(WBFL::Debug::LogContext& os) const
 {
    lrfdLldfTypeBC::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool lrfdTxDotLldfTypeBC::TestMe(dbgLog& rlog)
+bool lrfdTxDotLldfTypeBC::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("lrfdTxDotLldfTypeBC");
 

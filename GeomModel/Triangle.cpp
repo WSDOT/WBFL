@@ -138,14 +138,14 @@ bool Triangle::AssertValid() const
    return __super::AssertValid();
 }
 
-void Triangle::Dump(dbgDumpContext& os) const
+void Triangle::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("*** Dump for Triangle ***")<<endl;
+   os << _T("*** Dump for Triangle ***")<< WBFL::Debug::endl;
    __super::Dump(os);
-   os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<<endl;
-   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<<endl;
-   os << _T("  Offset          =  ")<<m_Offset<<endl;
-   os << _T("  Rotation        =  ")<<m_Rotation<<endl;
+   os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  Offset          =  ")<<m_Offset<< WBFL::Debug::endl;
+   os << _T("  Rotation        =  ")<<m_Rotation<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -178,7 +178,7 @@ void Triangle::Copy(const Triangle& other)
 
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
-bool Triangle::TestMe(dbgLog& rlog)
+bool Triangle::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Triangle");
 
@@ -208,7 +208,7 @@ bool Triangle::TestMe(dbgLog& rlog)
    TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
 
 #if defined _DEBUG
-   rt.Dump(rlog.GetDumpCtx());
+   rt.Dump(rlog.GetLogContext());
 #endif
 
 

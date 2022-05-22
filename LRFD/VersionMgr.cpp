@@ -361,13 +361,13 @@ bool lrfdVersionMgr::AssertValid()
    return true;
 }
 
-void lrfdVersionMgr::Dump(dbgDumpContext& os)
+void lrfdVersionMgr::Dump(WBFL::Debug::LogContext& os)
 {
-   os << GetVersionString(false) << endl;
+   os << GetVersionString(false) << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 #if defined _UNITTEST
-bool lrfdVersionMgr::TestMe(dbgLog& rlog)
+bool lrfdVersionMgr::TestMe(WBFL::Debug::Log& rlog)
 {
    return true;
 }

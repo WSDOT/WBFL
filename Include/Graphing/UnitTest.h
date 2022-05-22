@@ -37,7 +37,7 @@ public:
    UnitTest(const UnitTest&) = delete;
    UnitTest& operator=(const UnitTest&) = delete;
 
-   static bool TestMe(dbgLog& rlog);
+   static bool TestMe(WBFL::Debug::Log& rlog);
 };
    }; // Graphing
 }; // WBFL

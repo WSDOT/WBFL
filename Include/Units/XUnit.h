@@ -31,7 +31,7 @@ namespace WBFL
    namespace Units
    {
       /// Unit system exception.
-      class UNITSCLASS XUnit : public sysXBase
+      class UNITSCLASS XUnit : public WBFL::System::XBase
       {
       public:
          enum class Reason { BadStationFormat };
@@ -41,8 +41,8 @@ namespace WBFL
          virtual ~XUnit();
 
          virtual void Throw() const override;
-         virtual Int32 GetReason() const override;
-         Reason GetReasonCode() const;
+         virtual Int32 GetReason() const noexcept override;
+         Reason GetReasonCode() const noexcept;
 
       #if defined _DEBUG
          virtual bool AssertValid() const;
