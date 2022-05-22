@@ -96,7 +96,7 @@ void Message::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
 #endif
        _CrtDbgBreak();
 #else
-    throw WBFL::System::XProgrammingError(sysXProgrammingError::InvalidValue,file,line);
+    throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::InvalidValue,file,line);
 #endif
 }
 
@@ -124,6 +124,6 @@ void Message::AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line)
 #endif
        _CrtDbgBreak();
 #else
-    throw WBFL::System::XProgrammingError(sysXProgrammingError::AssertValidFailed,file,line);
+    throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::AssertValidFailed,file,line);
 #endif
 }
