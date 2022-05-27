@@ -26,7 +26,9 @@
 #pragma once
 
 #include <Math\Polynomial2d.h>
+#include <Math\LinFunc2d.h>
 #include <Math\Function2d.h>
+#include <MathEx.h>
 
 
 /* //////////// Parabolas ////////////////////////
@@ -107,6 +109,28 @@ inline void GenerateReverseParabolas(Float64 x1,Float64 y1,Float64 x2,Float64 x3
    *pLeftParabola  = GenerateParabola1(x1,y1,x2,y2,0.0);
    *pRightParabola = GenerateParabola2(x2,y2,x3,y3,0.0);
 }
+
+/* //////////// Line ////////////////////////
+* 
+     Return a line from two points at (X1, Y1), (X2, Y2)
+
+     NOTE: This will throw a mathXEvalError::Undefined if X1==X2 !!!
+
+*/
+inline mathLinFunc2d GenerateLineFunc2dFromPoints(Float64 X1,Float64 Y1,Float64 X2,Float64 Y2)
+{
+   if (IsEqual(X1,X2))
+   {
+      ATLASSERT(0);
+      throw mathXEvalError::Undefined;
+   }
+
+   Float64 slope = (Y2 - Y1) / (X2 - X1);
+   Float64 intercept = Y1 - slope * X1;
+
+   return mathLinFunc2d(slope,intercept);
+}
+
 
 // Math function class that just returns zero
 class ZeroFunction : public mathFunction2d
