@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,6 +40,5 @@ DESCRIPTION
 #include <atlbase.h> // for using ATL CComPtr<>, etc
 #include <WBFLTypes.h>
 #include <WBFLTools.h>
-#include <WBFLGeometry.h>
 
 #endif // INCLUDED_GRAPHICSLIB_GRAPHICSLIBLIB_H_

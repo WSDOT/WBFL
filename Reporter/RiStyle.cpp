@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,16 +29,6 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-/****************************************************************************
-CLASS
-   rptRiStyle           
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 
 rptRiStyle::rptRiStyle()
 {
@@ -74,29 +64,24 @@ rptRiStyle::rptRiStyle(FontType fontType,
    m_IsHeading = isHeading;
 }
 
-
 rptRiStyle::rptRiStyle(const rptRiStyle& rOther)
 {
    Init();
    MakeCopy( rOther );
-} // rptRiStyle
+}
 
 rptRiStyle::~rptRiStyle()
 {
-} // ~rptRiStyle
+}
 
-//======================== OPERATORS  =======================================
-
-rptRiStyle& rptRiStyle::operator = (const rptRiStyle& rOther)
+rptRiStyle& rptRiStyle::operator=(const rptRiStyle& rOther)
 {
    if ( this != &rOther )
       MakeAssignment(rOther);
 
    return *this;
-} // operator =
+}
 
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
 void rptRiStyle::SetFontType( FontType fontType )
 {
    m_Font = fontType;
@@ -175,7 +160,6 @@ void rptRiStyle::SetIsHeading(bool isHead)
    m_IsHeading = isHead;
 }
 
-//======================== INQUIRY    =======================================
 rptRiStyle::FontType rptRiStyle::GetFontType() const
 {
    return m_Font;
@@ -246,19 +230,6 @@ rptRiStyle::MediaType rptRiStyle::GetMediaType() const
    return m_MediaType;
 }
 
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
 void rptRiStyle::Init()
 {
    //
@@ -280,7 +251,6 @@ void rptRiStyle::Init()
 
    m_IsHeading = false;
 }
-//======================== OPERATIONS =======================================
 
 void rptRiStyle::MakeCopy(const rptRiStyle& rIStyle)
 {
@@ -295,20 +265,13 @@ void rptRiStyle::MakeCopy(const rptRiStyle& rIStyle)
    m_MediaType     = rIStyle.m_MediaType;
    m_IsHeading     = rIStyle.m_IsHeading;
 
-   for (int i = 0; i<NUMBORDERS; i++)
-   {
-      m_BorderStyles[i] = rIStyle.m_BorderStyles[i];
-   }
+   m_BorderStyles = rIStyle.m_BorderStyles;
 }
-
 
 void rptRiStyle::MakeAssignment(const rptRiStyle& rOther)
 {
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
 
 std::_tstring rptRiStyle::GetColorCode(FontColor color)
 {

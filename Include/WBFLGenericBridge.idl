@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -2372,6 +2372,32 @@ library WBFLGenericBridge
 	};
 	 
 
+	[
+		object,
+		uuid(B793F8C5-FEDA-4EB8-9121-2D5947570134),
+		oleautomation,
+		helpstring("INUDeckedBulbTeeSection Interface"),
+		pointer_default(unique)
+	]
+	interface INUDeckedBulbTeeSection : IJointedSection
+	{
+		[propput, helpstring("property Beam")] HRESULT Beam([in]INUDeckedIBeam* beam);
+		[propget, helpstring("property Beam")] HRESULT Beam([out, retval]INUDeckedIBeam** beam);
+	};
+
+	[
+		object,
+		uuid(A7784045-8F24-4BF1-8B86-5FE5449610DF),
+		oleautomation,
+		helpstring("IPCIDeckedBulbTeeSection Interface"),
+		pointer_default(unique)
+	]
+	interface IPCIDeckedBulbTeeSection : IJointedSection
+	{
+		[propput, helpstring("property Beam")] HRESULT Beam([in]IPCIDeckedIBeam* beam);
+		[propget, helpstring("property Beam")] HRESULT Beam([out, retval]IPCIDeckedIBeam** beam);
+	};
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -3020,4 +3046,30 @@ library WBFLGenericBridge
 	   [default] interface IPrestressingStrand;
 	};
 
+
+	[
+		uuid(597871DD-6755-4A26-ADB9-A2A346F8D85A),
+		helpstring("NUDeckedBulbTeeSection Class")
+	]
+	coclass NUDeckedBulbTeeSection
+	{
+		[default] interface INUDeckedBulbTeeSection;
+		interface IGirderSection;
+		interface IPrestressedGirderSection;
+		interface IJointedSection;
+		interface IShape;
+	};
+
+	[
+		uuid(66ADFC75-BC7E-4738-9AE6-0BAE5352C0C0),
+		helpstring("PCIDeckedBulbTeeSection Class")
+	]
+	coclass PCIDeckedBulbTeeSection
+	{
+		[default] interface IPCIDeckedBulbTeeSection;
+		interface IGirderSection;
+		interface IPrestressedGirderSection;
+		interface IJointedSection;
+		interface IShape;
+	};
 };

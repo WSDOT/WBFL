@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -77,10 +77,10 @@ public:
    static lrfdStrandPool* GetInstance();
 
    //------------------------------------------------------------------------
-   const matPsStrand* GetStrand(Int32 key,lrfdVersionMgr::Units units);
+   const matPsStrand* GetStrand(Int64 key,lrfdVersionMgr::Units units);
 
    //------------------------------------------------------------------------
-   const matPsStrand* GetStrand(Int32 key);
+   const matPsStrand* GetStrand(Int64 key);
 
    //------------------------------------------------------------------------
    const matPsStrand* GetStrand(matPsStrand::Grade grade,
@@ -91,7 +91,9 @@ public:
    //------------------------------------------------------------------------
    // Returns the lookup key for pStrand.  If pStrand is not a member of
    // the strand pool, returns -1
-   Int32 GetStrandKey(const matPsStrand* pStrand);
+   Int64 GetStrandKey(const matPsStrand* pStrand);
+
+   bool CompareStrands(const matPsStrand* pStrandA, const matPsStrand* pStrandB, bool bCompareGrade = true, bool bCompareType = true, bool bCompareCoating = false, bool bCompareSize = false);
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -123,8 +125,8 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    static lrfdStrandPool* ms_pInstance;
-   static std::map<Int32, std::shared_ptr<matPsStrand> > ms_USStrand;
-   static std::map<Int32, std::shared_ptr<matPsStrand> > ms_SIStrand;
+   static std::map<Int64, std::shared_ptr<matPsStrand> > ms_USStrand;
+   static std::map<Int64, std::shared_ptr<matPsStrand> > ms_SIStrand;
 
    typedef sysSingletonKillerT<lrfdStrandPool> Killer;
    friend Killer;
@@ -200,10 +202,10 @@ public:
    virtual void Next();
 
    //------------------------------------------------------------------------
-   virtual void Move(Int32 pos);
+   virtual void Move(Int64 pos);
 
    //------------------------------------------------------------------------
-   virtual void MoveBy(Int32 dPos);
+   virtual void MoveBy(Int64 dPos);
 
    //------------------------------------------------------------------------
    operator void*() const;

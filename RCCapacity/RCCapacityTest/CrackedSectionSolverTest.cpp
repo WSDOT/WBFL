@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity Test - Test driver for RCCapacity library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -152,12 +152,11 @@ void CCrackedSectionSolverTest::TestRectangularBeam()
    CComQIPtr<IStressStrain> material1(concrete);
    CComQIPtr<IStressStrain> material2(rebar);
 
-   section->AddShape(shape1,material1,nullptr,0, 1.0); // beam
-   section->AddShape(shape2,material2,nullptr,0, 1.0); // bar 1
-   section->AddShape(shape3,material2,nullptr,0, 1.0); // bar 2
-   section->AddShape(shape4,material2,nullptr,0, 1.0); // bar 3
-   section->AddShape(shape5,material2,nullptr,0, 1.0); // bar 4
-
+   section->AddShape(CComBSTR("Beam"),  shape1, material1, nullptr, nullptr, 1.0, VARIANT_TRUE); // beam
+   section->AddShape(CComBSTR("Bar 1"), shape2, material2, nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 1
+   section->AddShape(CComBSTR("Bar 2"), shape3, material2, nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 2
+   section->AddShape(CComBSTR("Bar 3"), shape4, material2, nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 3
+   section->AddShape(CComBSTR("Bar 4"), shape5, material2, nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 4
 
    CComPtr<ICrackedSectionSolver> solver;
    TRY_TEST(solver.CoCreateInstance(CLSID_CrackedSectionSolver),S_OK);
@@ -269,9 +268,9 @@ void CCrackedSectionSolverTest::TestTeeBeam1()
    CComQIPtr<IStressStrain> material2(beam_concrete);
    CComQIPtr<IStressStrain> material3(rebar);
 
-   section->AddShape(shape1,material1,nullptr,0, 1.0); // slab
-   section->AddShape(shape2,material2,nullptr,0, 1.0); // beam
-   section->AddShape(shape3,material3,nullptr,0, 1.0); // rebar
+   section->AddShape(CComBSTR("Slab"), shape1, material1, nullptr, nullptr, 1.0, VARIANT_FALSE); // slab
+   section->AddShape(CComBSTR("Beam"), shape2, material2, nullptr, nullptr, 1.0, VARIANT_TRUE); // beam
+   section->AddShape(CComBSTR("Rebar"),shape3, material3, nullptr, nullptr, 1.0, VARIANT_FALSE); // rebar
 
    CComPtr<ICrackedSectionSolver> solver;
    TRY_TEST(solver.CoCreateInstance(CLSID_CrackedSectionSolver),S_OK);
@@ -383,9 +382,9 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
    CComQIPtr<IStressStrain> material2(beam_concrete);
    CComQIPtr<IStressStrain> material3(rebar);
 
-   section->AddShape(shape1,material1,nullptr,0, 1.0); // slab
-   section->AddShape(shape2,material2,nullptr,0, 1.0); // beam
-   section->AddShape(shape3,material3,nullptr,0, 1.0); // rebar
+   section->AddShape(CComBSTR("Slab"), shape1, material1, nullptr, nullptr, 1.0, VARIANT_FALSE); // slab
+   section->AddShape(CComBSTR("Beam"), shape2, material2, nullptr, nullptr, 1.0, VARIANT_TRUE); // beam
+   section->AddShape(CComBSTR("Rebar"),shape3, material3, nullptr, nullptr, 1.0, VARIANT_FALSE); // rebar
 
    CComPtr<ICrackedSectionSolver> solver;
    TRY_TEST(solver.CoCreateInstance(CLSID_CrackedSectionSolver),S_OK);
@@ -502,9 +501,9 @@ void CCrackedSectionSolverTest::TestTeeBeam3()
    CComQIPtr<IStressStrain> material2(beam_concrete);
    CComQIPtr<IStressStrain> material3(rebar);
 
-   section->AddShape(shape1,material1,nullptr,0, 1.0); // slab
-   section->AddShape(shape2,material2,nullptr,0, 1.0); // beam
-   section->AddShape(shape3,material3,nullptr,0, 1.0); // rebar
+   section->AddShape(CComBSTR("Slab"),  shape1, material1, nullptr, nullptr, 1.0, VARIANT_FALSE); // slab
+   section->AddShape(CComBSTR("Beam"),  shape2, material2, nullptr, nullptr, 1.0, VARIANT_TRUE); // beam
+   section->AddShape(CComBSTR("Rebar"), shape3, material3, nullptr, nullptr, 1.0, VARIANT_FALSE); // rebar
 
    CComPtr<ICrackedSectionSolver> solver;
    TRY_TEST(solver.CoCreateInstance(CLSID_CrackedSectionSolver),S_OK);

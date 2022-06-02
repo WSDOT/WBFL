@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,15 +30,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptStyleHolder
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptStyleHolder::rptStyleHolder() :
 rptReportItem()
 {
@@ -59,7 +50,6 @@ rptStyleHolder::~rptStyleHolder()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptStyleHolder& rptStyleHolder::operator= (const rptStyleHolder& rOther)
 {
    if( this != &rOther )
@@ -70,15 +60,6 @@ rptStyleHolder& rptStyleHolder::operator= (const rptStyleHolder& rOther)
    return *this;
 }
 
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptStyleHolder::MakeCopy(const rptStyleHolder& rOther)
 {
    // Add copy code here...
@@ -89,15 +70,3 @@ void rptStyleHolder::MakeAssignment(const rptStyleHolder& rOther)
    rptReportItem::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

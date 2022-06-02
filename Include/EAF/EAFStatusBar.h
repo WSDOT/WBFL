@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,6 +52,8 @@ public:
    virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
    virtual void OnStatusChanged();
 
+   void AutoSaveEnabled(BOOL bEnable);
+
    virtual void Reset();
 
 #ifdef _DEBUG
@@ -75,18 +77,22 @@ protected:
    // set the module state to for your resources.
    virtual BOOL SetStatusIndicators(const UINT* lpIDArray, int nIDCount);
 
-
    // Returns the pane index for the "Modified" flag
    int GetPaneCount();
    int GetModifiedPaneIndex();
    int GetStatusPaneIndex();
+   int GetAutoSavePaneIndex();
 
    CEAFDocument* GetDocument();
+
+protected:
+   int GetPaneIndex(UINT nIDPane);
 
 private:
    int m_nIndicators;
    int m_ModifiedPaneIdx;
    int m_StatusPaneIdx;
+   int m_AutoSavePaneIdx;
 
 
 public:

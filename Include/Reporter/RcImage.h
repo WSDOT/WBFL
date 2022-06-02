@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,40 +25,17 @@
 #define INCLUDED_REPORTER_RCIMAGE_H_
 #pragma once
 
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
+#include <string>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcImage
-
-   Report content for an image (.gif's and .jpeg's). This type of report content
-   allows a static image file to be placed into a report. In the htlm world, this
-   is would be implemented as a <img src="FileName", alt="PictureDescription>.
-   It is likely that an rtf file writer would have to implement the image in the 
-   form of an ole embedded object.
-
-DESCRIPTION
-   Report content for an image.
-
-LOG
-   rab : 11.12.1997 : Created file
-*****************************************************************************/
-
+/// Report content for an image.
+///
+/// This type of report content allows a static image file to be placed into a report.
 class REPORTERCLASS rptRcImage : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Image alignment type
    enum Align
    {
       Baseline,
@@ -71,6 +48,7 @@ public:
       Bottom
    };
 
+   /// Image float type
    enum Float
    {
       Left,
@@ -78,97 +56,56 @@ public:
       None
    };
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   // File name is "Unspecified"
+   /// Creates an image content with an unspecified image file
    rptRcImage();
 
-   //------------------------------------------------------------------------
-   // Constructor
-   rptRcImage(const std::_tstring& fileName,Align align=Baseline,Float flt=None);
+   rptRcImage(
+      const std::_tstring& fileName, ///< Path to image file
+      Align align=Baseline, ///< image alignment
+      Float flt=None ///< image float
+   );
 
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcImage(const rptRcImage& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcImage();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rptRcImage& operator = (const rptRcImage& rOther);
+   rptRcImage& operator=(const rptRcImage& rOther);
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accepts a visitor and calls VisitRcImage(this)
    virtual void Accept( rptRcVisitor& rVisitor ) override;
 
-   //------------------------------------------------------------------------
-   // Make a virtual copy
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const override;
 
-   // GROUP: ACCESS
+   /// Returns the name of the image file
+   const std::_tstring& GetFileName() const;
 
-   //------------------------------------------------------------------------
-   std::_tstring GetFileName() const;
-
-   //------------------------------------------------------------------------
+   /// Sets the name of the image file
    void SetFileName(const std::_tstring& fileName);
 
-   //------------------------------------------------------------------------
-   std::_tstring GetPictureDescription() const;
+   /// Returns the image description text
+   const std::_tstring& GetPictureDescription() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the image description text
    void SetPictureDescription(const std::_tstring& PictureDescription);
 
+   /// Sets the image alignment
    void SetImageAlignment(Align a);
+
+   /// Returns the image aligment
    Align GetImageAlignment() const;
 
+   /// Sets the image float
    void SetImageFloat(Float flt);
+
+   /// Returns the image float
    Float GetImageFloat() const;
 
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
    std::_tstring m_FileName;
    std::_tstring m_PictureDescription;
    Align m_Align;
    Float m_Float;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RcImage_H_

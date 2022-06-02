@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -62,29 +62,10 @@ class LRFDCLASS lrfdCreepCoefficient
 public:
    enum CuringMethod { Normal, Accelerated };
 
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    lrfdCreepCoefficient();
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdCreepCoefficient(const lrfdCreepCoefficient& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~lrfdCreepCoefficient();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdCreepCoefficient& operator = (const lrfdCreepCoefficient& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   Float64 GetCreepCoefficient() const;
+   virtual Float64 GetCreepCoefficient(Float64 t, Float64 ti) const;
 
    // GROUP: ACCESS
 
@@ -98,15 +79,10 @@ public:
    void SetSurfaceArea(Float64 S);
    Float64 GetSurfaceArea() const;
 
-   void SetFc(Float64 fc);
-   Float64 GetFc() const;
+   void SetFci(Float64 fci);
+   Float64 GetFci() const;
 
-   void SetMaturity(Float64 t);
-   Float64 GetMaturity() const;
-
-   void SetInitialAge(Float64 ti);
-   Float64 GetInitialAge() const;
-   Float64 GetAdjustedInitialAge() const;
+   virtual Float64 GetAdjustedInitialAge(Float64 ti) const;
 
    void SetCuringMethod(CuringMethod method);
    CuringMethod GetCuringMethod() const;
@@ -114,52 +90,28 @@ public:
    void SetCuringMethodTimeAdjustmentFactor(Float64 f);
    Float64 GetCuringMethodTimeAdjustmentFactor() const;
 
-   Float64 GetKc() const;
    Float64 GetKf() const;
+   virtual Float64 GetKtd(Float64 t) const;
 
    // GROUP: INQUIRY
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdCreepCoefficient& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdCreepCoefficient& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
    Float64 m_H;
-   Float64 m_Fc;
+   Float64 m_Fci;
    Float64 m_V;
    Float64 m_S;
-   Float64 m_t;
-   Float64 m_ti;
    CuringMethod m_CuringMethod;
    Float64 m_CuringMethodTimeAdjustmentFactor;
 
-   mutable Float64 m_tiAdjusted; // adjusted for curing method
-   mutable Float64 m_Ct; // Creep factor
    mutable Float64 m_kc;
    mutable Float64 m_kf;
    mutable bool m_bUpdate; // True if a parameter has been changed and an update is required
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Update() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   virtual void Update() const;
+   virtual Float64 ComputeKf() const;
+   virtual Float64 ComputeKtd(Float64 t) const;
 
 public:
-   // GROUP: DEBUG
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
@@ -177,11 +129,5 @@ public:
    static bool TestMe(dbgLog& rlog);
    #endif // _UNITTEST
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_CREEPCOEFFICIENT_H_

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -116,9 +116,9 @@ public:
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -147,21 +147,7 @@ public:
                          bool bValidateParameters
                          );
 
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdApproximateLosses2005(const lrfdApproximateLosses2005& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    ~lrfdApproximateLosses2005();
-
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdApproximateLosses2005& operator=(const lrfdApproximateLosses2005& rOther);
-
-   // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
    Float64 TemporaryStrand_RelaxationLossesAtXfer() const;
@@ -205,49 +191,13 @@ public:
    #endif // _UNITTEST
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdApproximateLosses2005& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
    mutable Float64 m_dfpTH; // time dependent losses at shipping/hauling
    mutable Float64 m_dfpLT;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
    Float64 RelaxationLossesAtXfer(bool bPerm) const;
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdApproximateLosses2005& rOther );
-
-   //------------------------------------------------------------------------
    virtual void ValidateParameters() const override;
-
-   //------------------------------------------------------------------------
    virtual void UpdateLongTermLosses() const override;
-   
-   //------------------------------------------------------------------------
    virtual void UpdateHaulingLosses() const override;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_APPROXIMATELOSSES2005_H_

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,7 +55,7 @@ HRESULT CAppUnitSystem::FinalConstruct()
    pDUM->Init(m_pUnitServer);
    m_pDispUnitMgr = pDUM;
 
-   m_dwUnitServerCookie = AdviseSink(m_pUnitServer,IID_IUnitServerEventSink);
+   m_dwUnitServerCookie = AdviseSink(m_pUnitServer,IID_IUnitServerEvents);
    m_dwDispUnitMgrCookie = AdviseSink(m_pDispUnitMgr,IID_IDisplayUnitMgrEvents);
 
    return S_OK;
@@ -63,7 +63,7 @@ HRESULT CAppUnitSystem::FinalConstruct()
 
 void CAppUnitSystem::FinalRelease()
 {
-   UnadviseSink(m_pUnitServer,IID_IUnitServerEventSink,m_dwUnitServerCookie);
+   UnadviseSink(m_pUnitServer,IID_IUnitServerEvents,m_dwUnitServerCookie);
    UnadviseSink(m_pDispUnitMgr,IID_IDisplayUnitMgrEvents,m_dwDispUnitMgrCookie);
 }
 

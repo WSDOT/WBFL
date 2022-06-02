@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -169,6 +169,13 @@ public:
    Float64 GetSizeFactorShrinkage(Float64 t) const;
    Float64 GetConcreteStrengthFactor() const;
 
+   // PCI UHPC parameters
+   void SetFirstCrackStrength(Float64 ffc);
+   Float64 GetFirstCrackStrength() const;
+   void SetPostCrackingTensileStrength(Float64 frr);
+   Float64 GetPostCrackingTensileStrength() const;
+   void SetAutogenousShrinkage(Float64 as);
+   Float64 GetAutogenousShrinkage() const;
 
 protected:
    // prevent copying and assignment (use CreateClone instead)
@@ -201,12 +208,19 @@ private:
 
    mutable Float64 m_khs; // relative humidity factor for shrinkage
    mutable Float64 m_khc; // relative humidity factor for creep
-   mutable Float64 m_kf;  // concrete strength factor
+   mutable Float64 m_kf;  // concrete strength factor (only valid for pre-2005 LRFD)
+
+   // PCI UHPC parameters
+   Float64 m_ffc; // first crack tensile strength
+   Float64 m_frr; // post-crack residual tensile strength
+   Float64 m_AutogenousShrinkage;
 
    mutable bool m_bIsValid;
    void Validate() const;
 
    Float64 ModE(Float64 fc,Float64 density) const;
+
+   Float64 ComputeConcreteStrengthFactor() const;
 
    void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails>& pDetails) const;
    std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;

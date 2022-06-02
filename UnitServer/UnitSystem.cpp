@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -73,7 +73,7 @@ HRESULT CUnitSystem::FinalConstruct()
    // Setup Connection Points
    m_dwUMCCookie = AdviseSink(m_pUnitModeController,IID_IUnitModeControllerEvents);
    m_dwDUMCookie = AdviseSink(m_pDisplayUnitMgr,    IID_IDisplayUnitMgrEvents);
-   m_dwUSCookie  = AdviseSink(m_pUnitServer,        IID_IUnitServerEventSink);
+   m_dwUSCookie  = AdviseSink(m_pUnitServer,        IID_IUnitServerEvents);
 
    return S_OK;
 }
@@ -83,7 +83,7 @@ void CUnitSystem::FinalRelease()
    // Disconnect from connection points
    UnadviseSink(m_pUnitModeController,IID_IUnitModeControllerEvents, m_dwUMCCookie);
    UnadviseSink(m_pDisplayUnitMgr,    IID_IDisplayUnitMgrEvents,     m_dwDUMCookie);
-   UnadviseSink(m_pUnitServer,        IID_IUnitServerEventSink,      m_dwUSCookie);
+   UnadviseSink(m_pUnitServer,        IID_IUnitServerEvents,      m_dwUSCookie);
 }
 
 DWORD CUnitSystem::AdviseSink(IUnknown* pUnk,REFIID riid)

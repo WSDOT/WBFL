@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity Test - Test driver for RCCapacity library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -77,8 +77,8 @@ void CUnconfinedConcreteTest::Test()
    TRY_TEST( ss->ComputeStress(0.00764,nullptr), E_POINTER);
    TRY_TEST( ss->ComputeStress(0.00764,&val), S_OK );
    TRY_TEST( IsEqual(val,0.00), true );
-   TRY_TEST( ss->ComputeStress(-0.00764,&val), S_OK );
-   TRY_TEST( IsEqual(val,-4423.4135491321513), true );
+   TRY_TEST( ss->ComputeStress(-0.00764,&val), S_FALSE ); // exceeds concrete crushing strai -0.003
+   TRY_TEST( IsEqual(val, -78333650.161053866), true );
    TRY_TEST( ss->ComputeStress(-0.00245,&val), S_OK );
    TRY_TEST( IsEqual(val,-86277115.080388337), true );
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,7 +28,6 @@
 // SYSTEM INCLUDES
 //
 #include <System\System.h>
-#include <GeometricPrimitives\GeometricPrimitives.h>
 
 // PROJECT INCLUDES
 //
@@ -73,7 +72,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~WsdotCalculationSheet();
+   ~WsdotCalculationSheet();
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -121,8 +120,8 @@ public:
 
    // Rect defining size of margins (top,left,bottom,right) in Millimeters!
    // defaults to left=20mm, top=right=bottom=10mm
-   void SetMargins( const gpRect2d margins);
-   gpRect2d GetMargins() const;
+   void SetMargins(Float64 top, Float64 left, Float64 bottom, Float64 right);
+   void GetMargins(Float64* top, Float64* left, Float64* bottom, Float64* right) const;
 
    // GROUP: INQUIRY
 
@@ -152,7 +151,8 @@ private:
    CString m_FileName;
 
    Uint32      m_MaxSheetNo;
-   gpRect2d    m_Margins; // inches
+
+   Float64 m_Top{ 20 }, m_Left{ 10 }, m_Right{ 10 }, m_Bottom{ 10 }; // margin, millimeters
 
    // internals
    // fonts

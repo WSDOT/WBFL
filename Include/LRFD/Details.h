@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,4 +40,5 @@ struct LRFDCLASS REBARDEVLENGTHDETAILS
    Float64 ldb1;
    Float64 ldb2;
    Float64 ldb; // controlling value
+   Float64 ld; // factor*ldb
 };

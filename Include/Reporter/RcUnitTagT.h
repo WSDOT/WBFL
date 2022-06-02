@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,11 +25,6 @@
 #define INCLUDED_REPORTER_RCUNITTAGT_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 #include <Reporter\RcUnitTag.h>
 #include <Units\PhysicalT.h>
@@ -42,63 +37,30 @@ static char THIS_FILE[] = __FILE__;
 #endif
 #endif // BUILDREPORTERLIB
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcUnitTagT
-
-   Report content for a unit tag.
-
-
-DESCRIPTION
-   Report content for a unit tag.  This type of report content is useful in
-   table headers where a single unit tag is written for an entire row or
-   column of data.
-
-LOG
-   rab : 11.12.1997 : Created file
-*****************************************************************************/
-
+/// Report content for a unit tag.
+///
+/// This type of report content is useful in table headers where a single unit tag is written for an entire row or column of data.
 template <class T>
 class rptRcUnitTagT : public rptRcUnitTag
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRcUnitTagT(const T* pUnitOfMeasure) :
       rptRcUnitTag(),
       m_pUnitOfMeasure( pUnitOfMeasure )
    {
    }
 
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcUnitTagT(const rptRcUnitTagT& rOther) :
       rptRcUnitTag(),
       m_pUnitOfMeasure( rOther.m_pUnitOfMeasure )
    {
    }
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcUnitTagT()
    {
    }
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rptRcUnitTagT& operator = (const rptRcUnitTagT& rOther)
+   rptRcUnitTagT& operator=(const rptRcUnitTagT& rOther)
    {
       if ( this != &rOther )
          m_pUnitOfMeasure = rOther.m_pUnitOfMeasure;
@@ -106,72 +68,26 @@ public:
       return *this;
    }
 
-   // GROUP: OPERATIONS
-
-
-   //------------------------------------------------------------------------
-   // Make a virtual copy
-   virtual rptReportContent* CreateClone() const
+   /// Creates a clone
+   virtual rptReportContent* CreateClone() const override
    {
       return new rptRcUnitTagT<T>(*this);
    }
 
-   //------------------------------------------------------------------------
-   virtual std::_tstring AsString() const
+   /// Returns the unit tag string
+   virtual const std::_tstring& AsString() const override
    {
       return m_pUnitOfMeasure->UnitTag();
    }
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const
-   {
-      return rptRcUnitTag::AssertValid() && m_pUnitOfMeasure != 0;
-   }
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const
-   {
-      rptRcUnitTag::Dump( os );
-   }
-#endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
    const T* m_pUnitOfMeasure;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #define DECLARE_RC_UNIT_TAG(u,t) \
    REPORTERTPL rptRcUnitTagT<u>; \
    typedef rptRcUnitTagT<u> t;
 
-//#pragma warning( disable : 4231 ) 
 DECLARE_RC_UNIT_TAG( unitMass,           rptMassUnitTag           );
 DECLARE_RC_UNIT_TAG( unitMassPerLength,  rptMassPerLengthUnitTag  );
 DECLARE_RC_UNIT_TAG( unitLength,         rptLengthUnitTag         );

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,6 +34,8 @@
 #include <WBFLTools_i.c>
 #include <WBFLUnitServer_i.c>
 
+#include "TestCircularCurve.h"
+#include "TestTransitionCurve.h"
 #include "TestAngle.h"
 #include "TestDirection.h"
 #include "TestPoint.h"
@@ -51,8 +53,8 @@
 #include "TestCogoModelEvents.h"
 #include "TestVertCurve.h"
 #include "TestVertCurveCollection.h"
-#include "TestHorzCurve.h"
-#include "TestHorzCurveCollection.h"
+#include "TestCompoundCurve.h"
+#include "TestCompoundCurveCollection.h"
 #include "TestProfileElement.h"
 #include "TestProfile.h"
 #include "TestPathElement.h"
@@ -82,6 +84,10 @@ int main(int argc, TCHAR* argv[])
 
    ::CoInitialize(nullptr);
 
+   CTestCircularCurve::Test();
+
+   CTestTransitionCurve::Test();
+
    CTestSuperelevation::Test();
 
    CTestAngle::Test();
@@ -93,8 +99,8 @@ int main(int argc, TCHAR* argv[])
    CTestProfilePointCollection::Test();
    CTestVertCurve::Test();
    CTestVertCurveCollection::Test();
-   CTestHorzCurve::Test();
-   CTestHorzCurveCollection::Test();
+   CTestCompoundCurve::Test();
+   CTestCompoundCurveCollection::Test();
    CTestCubicSpline::Test();
 
    CTestWidening::Test();

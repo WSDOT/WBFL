@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity Test - Test driver for RCCapacity library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -78,7 +78,7 @@ void CRebarModelTest::Test()
    TRY_TEST( IsEqual(val,29.0), true );
    TRY_TEST( ss->ComputeStress(-0.001,&val), S_OK );
    TRY_TEST( IsEqual(val,-29.0), true );
-   TRY_TEST( ss->ComputeStress(0.1,&val), S_OK );
+   TRY_TEST( ss->ComputeStress(0.1,&val), S_FALSE ); // strain exceeds tensile fracture strain
    TRY_TEST( IsEqual(val,60.0), true );
    TRY_TEST( ss->ComputeStress(-0.1,&val), S_OK );
    TRY_TEST( IsEqual(val,-60.0), true );

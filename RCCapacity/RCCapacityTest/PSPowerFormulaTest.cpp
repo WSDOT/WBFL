@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity Test - Test driver for RCCapacity library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -67,10 +67,12 @@ void CPSPowerFormulaTest::Test()
    TRY_TEST( IsEqual(val,1446556950.5987,0.0001), true );
    TRY_TEST( ss->ComputeStress(-0.00764,&val), S_OK );
    TRY_TEST( IsEqual(val,-1446556950.5987,0.0001), true );
-   TRY_TEST( ss->ComputeStress(0.1,&val), S_OK );
+   TRY_TEST( ss->ComputeStress(0.1,&val), S_FALSE ); // strain exceeds tension fracture strain
    TRY_TEST( IsEqual(val,1861584469.1559,0.0001), true );
    TRY_TEST( ss->ComputeStress(-0.1,&val), S_OK );
    TRY_TEST( IsEqual(val,-1861584469.1559,0.0001), true );
+
+   TRY_TEST(ss->ComputeStress(0.035, &val), S_OK);
 
    CComQIPtr<ISupportErrorInfo> eInfo(ss);
    TRY_TEST( eInfo != nullptr, true);

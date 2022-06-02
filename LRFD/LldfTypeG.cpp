@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,8 +28,6 @@
 #include <Lrfd\XRangeOfApplicability.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\Utility.h>
-#include <Units\SysUnits.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -307,7 +305,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Int_1_Stren
       // lever rule
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane,true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -354,7 +352,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_1_Stren
       // lever rule
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane,true);
       g.mg = g.LeverRuleData.mg;
 
       g.EqnData.e = 1.0;
@@ -399,7 +397,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_2_Stren
       // lever rule
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes,true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
@@ -457,7 +455,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Int_1_Streng
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -520,7 +518,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeG::GetShearDF_Int_2_Stren
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -570,7 +568,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_1_Streng
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -641,7 +639,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Streng
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -876,7 +874,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_1_Stren
       // lever rule
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -925,7 +923,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_2_Stren
       // lever rule
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -1144,7 +1142,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetMomentDF_Ext_1
       // lever rule
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
@@ -1488,7 +1486,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -1604,7 +1602,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,34 +30,10 @@
 #include <Reporter\ReportLayoutItem.h>
 #include <Reporter\ChapterVisitor.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptChapter
-
-   Defines a chapter in a report
-
-DESCRIPTION
-   This class acts as a container for paragraphs. Chapters can also be used to
-   define the page layout of a group of report paragraphs
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-*****************************************************************************/
-
+/// Defines a chapter in a report
+///
+/// This class acts as a container for paragraphs. Chapters can also be used to
+/// define the page layout of a group of report paragraphs
 class REPORTERCLASS rptChapter : public rptReportLayoutItem
 {
 public:
@@ -66,132 +42,84 @@ public:
    typedef ParagraphVec::iterator ChapterParagraphIterator;
    typedef ParagraphVec::const_iterator ConstChapterParagraphIterator;
 
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // chapter with sytle and page layout to be defined by report or to
-   // be defined later.
-   //
+   /// Constructs default chapter with name, style and page layout inherited from the report or to be defined later
    rptChapter();
 
-   //------------------------------------------------------------------------
-   rptChapter(const std::_tstring& name);
+   /// Constructs default chapter with style and page layout inherited from the report or to be defined later
+   rptChapter(
+      const std::_tstring& name ///< chapter name
+   );
 
-   //------------------------------------------------------------------------
-   // chapter with fully defined style and page layout.
-   //
-   rptChapter(const std::_tstring& name, const rptStyleName& rStyleName, 
-              const rptPageLayout& rLayout);
+   rptChapter(const std::_tstring& name,  ///< chapter name
+              const rptStyleName& rStyleName,  ///< chapter style
+              const rptPageLayout& rLayout ///< page layout for the chapter
+   );
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptChapter();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   //
-   // stream a rptParagraph object
-   //
-   virtual rptChapter& operator << (const rptParagraph& rParagraph );
+   /// Insertion operator for paragraphs.
+   ///
+   /// A clone of the paragraph is inserted into the chapter
+   virtual rptChapter& operator<<(const rptParagraph& rParagraph );
 
-   //------------------------------------------------------------------------
-   // stream a pointer to a rptParagraph object. NOTE that the Chapter
-   // now becomes responsible for deleting this object
-   //
-   virtual rptChapter& operator << (rptParagraph* pParagraph );
+   /// Inseration operator for paragraphs.
+   ///
+   /// The chapter takes ownership of the paragraph
+   virtual rptChapter& operator<<(rptParagraph* pParagraph );
 
+   /// Inserts a clone of a paragraph into the chapter
    void Insert(const rptParagraph& rPara);
+
+   /// Inserts a paragraph into the chapter and takes ownership
    void Insert(rptParagraph* pPara);
 
-   // GROUP: OPERATIONS
-   
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accept a chapter visitor and calls VisitChapter(this)
    virtual void Accept( rptChapterVisitor& MyVisitor );
 
 
-   // GROUP: ACCESS
-   // Set or get whether a new page will be ejected before this chapter.
-   // No page break is created by default
+   /// Returns status of page break
    bool GetEjectPageBreakBefore() const;
-   void SetEjectPageBreakBefore(bool doBreak);
 
-   //------------------------------------------------------------------------
-   // Return STL iterator to const Paragraph contained inside of Chapter
-   // pointing to beginning.
-   //
+   /// Sets status of page break
+   void SetEjectPageBreakBefore(
+      bool bBreak///< if true, new page will be ejected before this chapter
+   );
+
+   /// Return STL iterator to const Paragraph contained inside of Chapter pointing to beginning.
    ConstChapterParagraphIterator ConstBegin();
-   //------------------------------------------------------------------------
-   // Return STL iterator to const Paragraph contained inside of Chapter
-   // pointing to end.
-   //
+
+   /// Return STL iterator to const Paragraph contained inside of Chapter pointing to end.
    ConstChapterParagraphIterator ConstEnd();
-   //------------------------------------------------------------------------
-   // Return STL iterator to Paragraph contained inside of Chapter
-   // pointing to beginning.
-   //
+
+   /// Return STL iterator to Paragraph contained inside of Chapter pointing to beginning.
    ChapterParagraphIterator Begin();
-   //------------------------------------------------------------------------
-   // Return STL iterator to ReportContent contained inside of Paragraph
-   // pointing to end.
-   //
+
+   /// Return STL iterator to ReportContent contained inside of Paragraph pointing to end.
    ChapterParagraphIterator End();
 
-   //------------------------------------------------------------------------
+   /// Returns the chapter name
    LPCTSTR GetName() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the chapter name
    void SetName(LPCTSTR name);
 
 
    // GROUP: INQUIRY
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Copy constructor is protected
+   /// Copy constructure for derived classes
    rptChapter(const rptChapter& rOther);
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-
-   //------------------------------------------------------------------------
    // Vector of paragraphs within the chapter.
    // This vector is responsible for deleting what the
    // rptParagraph pointers point to.
    ParagraphVec     m_ParagraphVec;
 
-   //------------------------------------------------------------------------
-   // Name of the chapter
    std::_tstring m_Name;
+   bool m_bEjectPageBefore;
 
-   //------------------------------------------------------------------------
-   // page ejection
-   bool m_DoEjectPageBefore;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator is private
-   rptChapter& operator = (const rptChapter& rOther);
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   rptChapter& operator = (const rptChapter& rOther) = delete;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_CHAPTER_H_

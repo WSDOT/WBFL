@@ -56,13 +56,13 @@
 #define IDH_IUnitType_Units                     357
 #define IDH_IUnitType_UnitServer                358
 
-#define IDH_IUnitServerEventSink                      440
-#define IDH_IUnitServerEventSink_OnUnitAdded          441
-#define IDH_IUnitServerEventSink_OnUnitRemoved        442
-#define IDH_IUnitServerEventSink_OnUnitsCleared       443
-#define IDH_IUnitServerEventSink_OnUnitTypeAdded      444
-#define IDH_IUnitServerEventSink_OnUnitTypeRemoved    445
-#define IDH_IUnitServerEventSink_OnUnitTypesCleared   446
+#define IDH_IUnitServerEvents                      440
+#define IDH_IUnitServerEvents_OnUnitAdded          441
+#define IDH_IUnitServerEvents_OnUnitRemoved        442
+#define IDH_IUnitServerEvents_OnUnitsCleared       443
+#define IDH_IUnitServerEvents_OnUnitTypeAdded      444
+#define IDH_IUnitServerEvents_OnUnitTypeRemoved    445
+#define IDH_IUnitServerEvents_OnUnitTypesCleared   446
 
 #define IDH_IUnits                              500
 #define IDH_IUnits_Add                          501
@@ -130,23 +130,23 @@
 #define IDH_IDisplayUnitEvents                  660
 #define IDH_IDisplayUnitEvents_OnFormatChanged  661
        
-#define IDH_IUnitsEventSink                      700
-#define IDH_IUnitsEventSink_OnUnitAdded          701
-#define IDH_IUnitsEventSink_OnUnitRemoved        702
-#define IDH_IUnitsEventSink_OnUnitCleared        703
+#define IDH_IUnitsEvents                      700
+#define IDH_IUnitsEvents_OnUnitAdded          701
+#define IDH_IUnitsEvents_OnUnitRemoved        702
+#define IDH_IUnitsEvents_OnUnitCleared        703
 
-#define IDH_IUnitTypeEventSink                   710
-#define IDH_IUnitTypeEventSink_OnUnitAdded       711
-#define IDH_IUnitTypeEventSink_OnUnitRemoved     712
-#define IDH_IUnitTypeEventSink_OnUnitsCleared    713
+#define IDH_IUnitTypeEvents                   710
+#define IDH_IUnitTypeEvents_OnUnitAdded       711
+#define IDH_IUnitTypeEvents_OnUnitRemoved     712
+#define IDH_IUnitTypeEvents_OnUnitsCleared    713
 
-#define IDH_IUnitTypesEventSink                      720
-#define IDH_IUnitTypesEventSink_OnUnitAdded          721
-#define IDH_IUnitTypesEventSink_OnUnitRemoved        722
-#define IDH_IUnitTypesEventSink_OnUnitsCleared       723
-#define IDH_IUnitTypesEventSink_OnUnitTypeAdded      724
-#define IDH_IUnitTypesEventSink_OnUnitTypeRemoved    725
-#define IDH_IUnitTypesEventSink_OnUnitTypesCleared   726
+#define IDH_IUnitTypesEvents                      720
+#define IDH_IUnitTypesEvents_OnUnitAdded          721
+#define IDH_IUnitTypesEvents_OnUnitRemoved        722
+#define IDH_IUnitTypesEvents_OnUnitsCleared       723
+#define IDH_IUnitTypesEvents_OnUnitTypeAdded      724
+#define IDH_IUnitTypesEvents_OnUnitTypeRemoved    725
+#define IDH_IUnitTypesEvents_OnUnitTypesCleared   726
 
 #define IDH_IDisplayUnitFormatter                    750
 #define IDH_IDisplayUnitFormatter_FormatSpecifiers   751

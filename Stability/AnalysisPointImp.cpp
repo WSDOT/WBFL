@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\AnalysisPointImp.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/AnalysisPointImp.h>
 #include <UnitMgt\UnitMgt.h>
 
 #ifdef _DEBUG
@@ -31,44 +31,51 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-stbAnalysisPoint::stbAnalysisPoint() :
-m_X(0.0)
+namespace WBFL
 {
-}
-
-stbAnalysisPoint::stbAnalysisPoint(Float64 X) :
-m_X(X)
-{
-}
-
-stbAnalysisPoint::stbAnalysisPoint(const stbAnalysisPoint& other) :
-m_X(other.m_X)
-{
-}
-
-void stbAnalysisPoint::SetLocation(Float64 X)
-{
-   m_X = X;
-}
-
-Float64 stbAnalysisPoint::GetLocation() const
-{
-   return m_X;
-}
-
-std::_tstring stbAnalysisPoint::AsString(const unitmgtLengthData& lengthUnit,Float64 offset,bool bShowUnit) const
-{
-   LengthTool formatTool(lengthUnit);
-   std::_tstring str = formatTool.AsString(formatTool.Convert(m_X-offset));
-   if ( bShowUnit )
+   namespace Stability
    {
-      str += _T(" ") + lengthUnit.UnitOfMeasure.UnitTag();
+
+      AnalysisPoint::AnalysisPoint() :
+         m_X(0.0)
+      {
+      }
+
+      AnalysisPoint::AnalysisPoint(Float64 X) :
+         m_X(X)
+      {
+      }
+
+      AnalysisPoint::AnalysisPoint(const AnalysisPoint& other) :
+         m_X(other.m_X)
+      {
+      }
+
+      void AnalysisPoint::SetLocation(Float64 X)
+      {
+         m_X = X;
+      }
+
+      Float64 AnalysisPoint::GetLocation() const
+      {
+         return m_X;
+      }
+
+      std::_tstring AnalysisPoint::AsString(const unitmgtLengthData& lengthUnit, Float64 offset, bool bShowUnit) const
+      {
+         LengthTool formatTool(lengthUnit);
+         std::_tstring str = formatTool.AsString(formatTool.Convert(m_X - offset));
+         if (bShowUnit)
+         {
+            str += _T(" ") + lengthUnit.UnitOfMeasure.UnitTag();
+         }
+
+         return str;
+      }
+
+      std::unique_ptr<IAnalysisPoint> AnalysisPoint::Clone() const
+      {
+         return std::make_unique<AnalysisPoint>(*this);
+      }
    }
-
-   return str;   
-}
-
-stbIAnalysisPoint* stbAnalysisPoint::Clone() const
-{
-   return new stbAnalysisPoint(*this);
 }

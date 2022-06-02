@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -842,23 +842,66 @@ STDMETHODIMP CVertCurve::get_A(Float64* a)
    return S_OK;
 }
 
-STDMETHODIMP CVertCurve::get_K(Float64* k)
+STDMETHODIMP CVertCurve::get_K1(Float64* k)
 {
    CHECK_RETVAL(k);
-   Float64 L;
-   get_Length(&L);
+   Float64 L1, L2;
+   get_L1(&L1);
+   get_L2(&L2);
 
-   if ( L == 0 )
+   if (IsZero(L2) || IsEqual(L1, L2))
    {
-      *k = DBL_MAX;
-      return S_OK;
+      // curve is symmetric
+      Float64 a;
+      get_A(&a);
+
+      Float64 L = L1 + L2;
+      *k = IsZero(L) ? DBL_MAX : a / L;
+   }
+   else
+   {
+      // curve is unsymmetric
+      CComPtr<IStation> station;
+      Float64 elev;
+      Float64 grade;
+      TransitionPoint(&station, &elev, &grade);
+
+      Float64 entry_grade;
+      get_EntryGrade(&entry_grade);
+
+      Float64 a = grade - entry_grade;
+      *k = a / L1;
    }
 
-   Float64 a;
-   get_A(&a);
+   return S_OK;
+}
 
+STDMETHODIMP CVertCurve::get_K2(Float64* k)
+{
+   CHECK_RETVAL(k);
+   Float64 L1, L2;
+   get_L1(&L1);
+   get_L2(&L2);
 
-   *k = a/(2*L);
+   if (IsZero(L2) || IsEqual(L1, L2))
+   {
+      // curve is symmetric
+      return get_K1(k);
+   }
+   else
+   {
+      CComPtr<IStation> station;
+      Float64 elev;
+      Float64 grade;
+      TransitionPoint(&station, &elev, &grade);
+
+      Float64 exit_grade;
+      get_ExitGrade(&exit_grade);
+
+      Float64 a = exit_grade - grade;
+      *k = a / L1;
+   }
+
    return S_OK;
 }
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,6 +27,8 @@
 
 #include <WBFLTools\WBFLToolsExp.h>
 #include <System\DumpContext.h>
+#include <atlbase.h>
+#include <atlcom.h>
 
 // LOCAL INCLUDES
 //
@@ -38,37 +40,20 @@ interface ILogFile;
 // MISCELLANEOUS
 //
 
-/*****************************************************************************
-CLASS 
-   dbgLogDumpContext
-
-   Class used in Dump member functions to dump class data.
-
-
-DESCRIPTION
-   Class used in Dump member functions to dump class data.
-   This implemententation dumps the data to an ILogFile object.
-
-LOG
-   rdp : 06.01.1998 : Created file
-*****************************************************************************/
-
+/// Wrapper class for ILogFile objects
+///
+/// This impelmentation provides an easy C++-style interface to a COM ILogFile object.
+/// Stream insertion operators are provided for common data types.
 class WBFLTOOLSCLASS dbgLogDumpContext : public dbgDumpContext
 {
 public:
-   // GROUP: LIFECYCLE
+   dbgLogDumpContext(
+      ILogFile* pLog = nullptr, ///< pointer to the ILogFile implementation to wrap
+      DWORD dwCookie = 0 ///< A cookie defining the log stream
+   );
 
-   //------------------------------------------------------------------------
-   dbgLogDumpContext(ILogFile* pLog = 0,DWORD dwCookie = 0);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~dbgLogDumpContext();
 
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Inserters for various built-ins
    virtual dbgDumpContext& operator<<(const std::_tstring& s) override;
    virtual dbgDumpContext& operator<<(LPCTSTR s) override;
    dbgDumpContext& operator<<(TCHAR c);    
@@ -85,50 +70,22 @@ public:
    dbgDumpContext& operator<<(void * n);
    dbgDumpContext& operator<<(const sysSectionValue& n);
 
-   // GROUP: OPERATIONS
-
+   /// Inserts a \\n into the log stream
    dbgDumpContext& EndLine();
 
+   /// Set the log file object and cookie if no set in the constructor
    void SetLog(ILogFile* pLog,DWORD dwCookie);
-   void GetLog(ILogFile** ppLog,DWORD* pdwCookie);
-   
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Get the log file object and cookie
+   void GetLog(ILogFile** ppLog,DWORD* pdwCookie);
 
 private:
-   // GROUP: DATA MEMBERS
-   ILogFile* m_pLog;
+   CComPtr<ILogFile> m_LogFile;
    DWORD m_dwCookie;
 
-   // GROUP: LIFECYCLE
-
    // Prevent accidental copying and assignment
-   dbgLogDumpContext(const dbgLogDumpContext&);
+   dbgLogDumpContext(const dbgLogDumpContext&) = delete;
    dbgLogDumpContext& operator=(const dbgLogDumpContext&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-
 
 #endif // INCLUDED_WBFLTOOLS_LOGDUMPCONTEXT_H_

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,101 +29,28 @@
 #include <Reporter\ReporterExp.h>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptHyperLinkDefinition
-
-   This class defines a hyperlink definition
-
-
-DESCRIPTION
-   This class may be attached to a piece of report content to define the
-   content as a hyperlink.
-
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rdp : 05.07.1997 : Created file
-*****************************************************************************/
-
+/// This class defines a hyperlink definition
+///
+/// This class may be attached to a piece of report content to define the content as a hyperlink.
 class REPORTERCLASS rptHyperLinkDefinition
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Constructor
+   rptHyperLinkDefinition(
+      const std::_tstring& HyperTarget ///< name of the link target
+   );
 
-   //------------------------------------------------------------------------
-   // Constructor - Must define hyper target.
-   rptHyperLinkDefinition(const std::_tstring& HyperTarget);
+   /// Returns the link target name
+   const std::_tstring& GetTargetName() const;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   rptHyperLinkDefinition(const rptHyperLinkDefinition& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~rptHyperLinkDefinition();
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   //
-   // Returns reference to itself
-   rptHyperLinkDefinition& operator = (const rptHyperLinkDefinition& rOther);
-
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   //
-   // Return the target location
-   std::_tstring GetTargetName() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void MakeCopy(const rptHyperLinkDefinition& rOther);
-   void MakeAssignment(const rptHyperLinkDefinition& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Sets the link target name
+   void SetTargetName(const std::_tstring& target);
 
 private:
-   // GROUP: DATA MEMBERS
    // the target that we are linking to
    std::_tstring m_TargetName;
 
-   // GROUP: LIFECYCLE
-   // Default constructor - hidden
-   rptHyperLinkDefinition();
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   rptHyperLinkDefinition() = delete;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_HYPERLINKDEFINITION_H_

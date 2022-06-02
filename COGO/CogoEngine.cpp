@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -873,13 +873,15 @@ STDMETHODIMP CCogoEngine::PointOnLineSegment(/*[in]*/ IPoint2d* from,/*[in]*/ IL
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::PointOnCurve(/*[in]*/ IPoint2d* pnt, /*[in]*/ IHorzCurve* curve,/*[out,retval]*/ IPoint2d** point)
+STDMETHODIMP CCogoEngine::PointOnCurve(/*[in]*/ IPoint2d* pnt, /*[in]*/ ICompoundCurve* curve,/*[out,retval]*/ IPoint2d** point)
 {
    CHECK_IN(pnt);
    CHECK_IN(curve);
    CHECK_RETOBJ(point);
 
-   return curve->ProjectPoint(pnt,point);
+   Float64 dist_from_start;
+   VARIANT_BOOL vbOnProjection;
+   return curve->ProjectPoint(pnt,point,&dist_from_start,&vbOnProjection);
 }
 
 STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
@@ -958,7 +960,7 @@ STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ Coll
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::HorzCurve(/*[in]*/ IHorzCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::CompoundCurve(/*[in]*/ ICompoundCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(curve);
    CHECK_RETOBJ(points);
@@ -1077,7 +1079,7 @@ STDMETHODIMP CCogoEngine::External(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 
    Float64 theta = acos(JG_JH);
 
    if ( sign == tsCCW )
-      theta *= -1;
+      theta *= 1;
 
    Float64 Gx, Gy;
    Float64 Hx, Hy;
@@ -1144,13 +1146,13 @@ STDMETHODIMP CCogoEngine::Cross(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 rad
    Float64 sG,sH;
    if ( sign == tsCCW )
    {
-      sG = -1;
-      sH =  1;
+      sG =  1;
+      sH = -1;
    }
    else
    {
-      sG =  1;
-      sH = -1;
+      sG = -1;
+      sH =  1;
    }
 
    Float64 Gx, Gy;
@@ -1211,16 +1213,17 @@ STDMETHODIMP CCogoEngine::Point(/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radi
    Float64 x = radius/d;
    if ( IsZero(x-1.0) )
       x = 1.0;
+
    Float64 theta = acos(x);
 
    Float64 sG;
    if ( sign == tsCCW )
    {
-      sG = -1;
+      sG =  1;
    }
    else
    {
-      sG =  1;
+      sG = -1;
    }
 
    Float64 Gx, Gy;

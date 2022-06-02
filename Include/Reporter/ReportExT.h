@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,24 +25,10 @@
 #define INCLUDED_REPORTER_REPORTEXT_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 #include <Reporter\Report.h>
 #include <UnitMgt\IndirectMeasure.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
 
 #define RPT_STATIONFORMAT(rpt) &(rpt)->GetUnitsOfMeasure().StationFormat
 
@@ -89,67 +75,41 @@
 #define RPT_REGSTRESSTOL(rpt)   (rpt)->GetUnitsOfMeasure().RegStressTol
 #define RPT_BIGSTRESSTOL(rpt)   (rpt)->GetUnitsOfMeasure().BigStressTol
 
-/*****************************************************************************
-CLASS 
-   rptReportExT
-
-   This is a template class that provides a storage area, of type T, for
-   indirect units of measure.
-
-
-DESCRIPTION
-   Derived from rptReport, this is an extended report class.  This is a
-   template class that provides a storage area, of type T, for indirect units
-   of measure.
-
-LOG
-   rab : 11.13.1997 : Created file
-*****************************************************************************/
-
+/// This template class that provides a storage area for indirect units of measure objects of type T.
 template <class T>
 class rptReportExT : public rptReport
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Report with fully defined style and page layout.
+   /// Report with default style and page layout
    rptReportExT(const std::_tstring& rReportName = _T("")) :
       rptReport(rReportName)
       {
       }
 
-   //------------------------------------------------------------------------
-   rptReportExT(const std::_tstring& rReportName,
-                const rptStyleName& rStyleName,
-                const rptPageLayout& rLayout) :
-   rptReport( rReportName, rStyleName, rLayout )
+   /// Report with fully defined style and page layout.
+   rptReportExT(const std::_tstring& rReportName,///< Report name
+                const rptStyleName& rStyleName, ///< Report style
+                const rptPageLayout& rLayout) ///< Page layout information
+   : rptReport( rReportName, rStyleName, rLayout )
    {
    }
 
-   //------------------------------------------------------------------------
    rptReportExT(const rptReportExT& rOther) :
       rptReport(),
       m_UnitsOfMeasure( rOther.m_UnitsOfMeasure )
    {
    }
 
-   //------------------------------------------------------------------------
    rptReportExT(const T& unitsOfMeasure) :
       rptReport(),
       m_UnitsOfMeasure( unitsOfMeasure )
       {
       }
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptReportExT()
    {
    }
 
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
    rptReportExT& operator=(const rptReportExT& rOther)
    {
       if ( this != &rOther )
@@ -158,68 +118,22 @@ public:
       return *this;
    }
 
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Sets the units of measure for this report.
+   /// Sets the units of measure for this report.
    void SetUnitsOfMeasure(const T& unitsOfMeasure)
    {
       m_UnitsOfMeasure = unitsOfMeasure;
    }
 
-   //------------------------------------------------------------------------
-   // Returns the units of measure for this report.
+   /// Returns the units of measure for this report.
    const T& GetUnitsOfMeasure() const
    {
       return m_UnitsOfMeasure;
    }
 
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const
-   {
-      return true;
-   }
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const
-   {
-   }
-#endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
    T m_UnitsOfMeasure;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-//#pragma warning( disable : 4231 ) 
 REPORTERTPL rptReportExT<unitmgtIndirectMeasure>;
 typedef rptReportExT<unitmgtIndirectMeasure> rptReportEx;
 

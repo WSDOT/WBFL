@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -688,7 +688,7 @@ void CSurface::ValidateRidgeLines()
          ATLASSERT(::IsEqual(offset1,offset2)); // we can't handle a surface that is getting wider yet
 
          CComPtr<IPath> path;
-         alignment->CreateParallelPath(offset1,&path);
+         alignment->CreateOffsetPath(offset1,&path);
          vRidgeLines.push_back(path);
       }
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1343,7 +1343,7 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
 
             ATLASSERT(debond_length < gl2); // should be blocked in UI
 
-            if ( !IsZero(debond_length) && ::IsLE(Xs,debond_length) )
+            if ( !IsZero(debond_length) && ::IsLT(Xs,debond_length) )
             {
                array->Add(gp.StrandPositionIndex[0]);
 
@@ -1375,7 +1375,7 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
 
             ATLASSERT(debond_length < gl2); // should be blocked in UI
 
-            if (!IsZero(debond_length) &&  ::IsLE(Xe,debond_length) )
+            if (!IsZero(debond_length) &&  ::IsLT(Xe,debond_length) )
             {
                array->Add(gp.StrandPositionIndex[0]);
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,21 +32,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcStation
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptRcStation::rptRcStation(Float64 station,const unitStationFormat* pFormat) :
 rptReportContent(),
 m_Station( station ),
 m_pFormat( pFormat )
 {
-   ASSERTVALID;
 }
 
 rptRcStation::rptRcStation(const rptRcStation& rOther) :
@@ -59,7 +49,6 @@ rptRcStation::~rptRcStation()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptRcStation& rptRcStation::operator= (const rptRcStation& rOther)
 {
    if( this != &rOther )
@@ -70,8 +59,6 @@ rptRcStation& rptRcStation::operator= (const rptRcStation& rOther)
    return *this;
 }
 
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
 void rptRcStation::Accept( rptRcVisitor& rVisitor )
 {
    rVisitor.VisitRcStation( this );
@@ -95,11 +82,7 @@ Float64 rptRcStation::GetStation(bool bConvert) const
                                          unitMeasure::Meter :
                                          unitMeasure::Feet;
 
-   if ( bConvert )
-      value = ::ConvertFromSysUnits( m_Station, unit_of_measure ); 
-   else
-      value = m_Station;
-
+   value = bConvert ? ::ConvertFromSysUnits( m_Station, unit_of_measure ) : m_Station;
    return value;
 }
 
@@ -108,30 +91,10 @@ std::_tstring rptRcStation::AsString() const
    return m_pFormat->AsString( m_Station ); 
 }
 
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rptRcStation::AssertValid() const
-{
-   return (m_pFormat != 0) /*&& rptReportContent::AssertValid()*/;
-}
-
-void rptRcStation::Dump(dbgDumpContext& os) const
-{
-   //rptReportContent::Dump( os );
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcStation::MakeCopy(const rptRcStation& rOther)
 {
    m_Station = rOther.m_Station;
    m_pFormat = rOther.m_pFormat;
-   ASSERTVALID;
 }
 
 void rptRcStation::MakeAssignment(const rptRcStation& rOther)
@@ -139,16 +102,3 @@ void rptRcStation::MakeAssignment(const rptRcStation& rOther)
    rptReportContent::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

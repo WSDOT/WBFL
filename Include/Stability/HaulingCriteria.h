@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,39 +23,33 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/HaulingTensionStressLimit.h>
+#include <array>
 
-/*****************************************************************************
-CLASS 
-   stbCriteria
-
-DESCRIPTION
-   Encapsulates the criteria for analysis
-*****************************************************************************/
-
-class STABILITYCLASS stbHaulingCriteria
+namespace WBFL
 {
-public:
-   stbHaulingCriteria();
+   namespace Stability
+   {
+      /// Criteria for hauling analysis
+      class STABILITYCLASS HaulingCriteria
+      {
+      public:
+         HaulingCriteria();
 
-   Float64 Lambda;
+         Float64 MinFScr; ///< Minimum factor of safety against cracking
+         Float64 MinFSf;  ///< Minimum factor of safety against failure
 
-   Float64 CompressionCoefficient_GlobalStress;
-   Float64 CompressionCoefficient_PeakStress;
-   Float64 TensionCoefficient[2];
-   bool bMaxTension[2];
-   Float64 MaxTension[2];
-   Float64 TensionCoefficientWithRebar[2];
+         Float64 AllowableCompression_GlobalStress; ///< Compression stress limit for global stress
+         Float64 AllowableCompression_PeakStress; ///< Compression stress limit for peak stress
+         Float64 CompressionCoefficient_GlobalStress; ///< Compression stress limit coefficienent for global stress
+         Float64 CompressionCoefficient_PeakStress; ///< Compression stress limit coefficient for peak stress
 
-   Float64 MinFScr; // minimum factor of safety against cracking
-   Float64 MinFSf;  // minimum factor of safety against failure
+         std::shared_ptr<IHaulingTensionStressLimit> TensionStressLimit;
 
-   Float64 AllowableCompression_GlobalStress; // allowable compression stress
-   Float64 AllowableCompression_PeakStress; // allowable compression stress
-   Float64 AllowableTension[2]; // allowable tension stress (array index is stbTypes::HaulingSlope)
-   Float64 AllowableTensionWithRebar[2]; // allowable tension stress if there is adequate rebar (array index is stbTypes::HaulingSlope)
-
-   Float64 MaxClearSpan;
-   Float64 MaxLeadingOverhang;
-   Float64 MaxGirderWeight;
-};
+         Float64 MaxClearSpan; ///< Maximum clear span between supports
+         Float64 MaxLeadingOverhang; ///< Maximum leading overhang (overhang nearest tractor)
+         Float64 MaxGirderWeight; ///< Maximum girder weight
+      };
+   }
+}

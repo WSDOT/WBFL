@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,89 +29,25 @@
 #include <Reporter\ReportItem.h>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptStyleHolder
-
-   This class creates a "do nothing" concrete version of ReportItem that may
-   be used as a holder for styles.
-
-
-DESCRIPTION
-   A StyleHolder can be used as a link in the style chain of responsibility
-   so that styles can be created for abstract collections of report items. An
-   example of this is a holder for the style for all of the cells in a table
-   column.
-
-LOG
-   rdp : 04.30.1997 : Created file
-*****************************************************************************/
-
+/// A style holder can be used as a link in the style chain of responsibility
+/// so that styles can be created for abstract collections of report items. An
+/// example of this is a holder for the style for all of the cells in a table column.
 class REPORTERCLASS rptStyleHolder : public rptReportItem
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptStyleHolder();
-
-   //------------------------------------------------------------------------
-   // Constructor with style
    rptStyleHolder(const rptStyleName& MyStyleName);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptStyleHolder(const rptStyleHolder& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptStyleHolder();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   //
-   // Returns reference to itself
-   rptStyleHolder& operator = (const rptStyleHolder& rOther);
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   rptStyleHolder& operator=(const rptStyleHolder& rOther);
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptStyleHolder& rOther);
+
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptStyleHolder& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_STYLEHOLDER_H_

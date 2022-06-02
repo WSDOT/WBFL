@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -104,8 +104,7 @@ private:
    std::vector<std::_tstring> m_MessageStack;
    std::_tstring m_LastMessage; // most recent message
 
-   BOOL m_bEndLines;
-   std::vector<std::shared_ptr<std::_tofstream> > m_LogFiles;
+   CComPtr<ILogFile> m_LogFile;
 };
 
 OBJECT_ENTRY_AUTO(CLSID_SysAgent,CSysAgent)

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -383,7 +383,7 @@ bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
 
 //======================== DEBUG      =======================================
 #if defined _DEBUG
-#include <TypeInfo>
+#include <typeinfo>
 bool libLibraryManager::AssertValid() const
 {
    for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)

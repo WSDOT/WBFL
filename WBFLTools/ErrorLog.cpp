@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,8 +34,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bool is_valid_cookie( DWORD dwCookie, CollectionIndexType size );
-int idx_from_cookie( DWORD dwCookie );
+static bool is_valid_cookie( DWORD dwCookie, CollectionIndexType size );
+static int idx_from_cookie( DWORD dwCookie );
 
 /////////////////////////////////////////////////////////////////////////////
 // CErrorLog
@@ -140,12 +140,12 @@ STDMETHODIMP CErrorLog::Close(DWORD dwCookie)
    return S_OK;
 }
 
-bool is_valid_cookie( DWORD dwCookie, CollectionIndexType size )
+static bool is_valid_cookie( DWORD dwCookie, CollectionIndexType size )
 {
    return ( dwCookie > (DWORD)size ) ? false : true;
 }
 
-int idx_from_cookie( DWORD dwCookie )
+static int idx_from_cookie( DWORD dwCookie )
 {
    return dwCookie - 1;
 }

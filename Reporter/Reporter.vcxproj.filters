@@ -204,9 +204,6 @@
     <ClInclude Include="HtmlUnitTagFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HtmlUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\Reporter\HyperLinkDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>

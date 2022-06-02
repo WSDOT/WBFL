@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,29 +27,26 @@
 #include <Reporter\RcUnitValueT.h>
 
 
-/*****************************************************************************
-CLASS 
-   rptRcFormattedLengthUnitValue
-
-   Unit value formating class that reports length values as feet, inches and fractions
-   e.g. 125.27083333 ft = 125'-3 1/4".
-
-LOG
-   rab : 06.09.2009 : Created file
-*****************************************************************************/
-
+/// Unit value formating class that reports length values as feet, inches and fractions e.g. 125.27083333 ft = 125'-3 1/4".
 class REPORTERCLASS rptFormattedLengthUnitValue : public rptLengthUnitValue
 {
 public:
-   enum Rounding{RoundOff,RoundUp,RoundDown};
-   rptFormattedLengthUnitValue(Float64 value,               // unit value in system units
-                                 const unitLength* pUnitOfMeasure,
-                                 Float64 zeroTolerance,  // tolerance for zeroness
-                                 bool bShowUnitTag,// Show the unit tag?
-                                 bool bEnglish,               // true if this is an english unit (if not, just use base class formatting)
-                                 Uint16 fraPrecision,         // precision of fraction (denominator for fraction of an inch)
-                                 bool bFractionOnly,
-                                 Rounding rounding
+   /// Specifies how values are rounded
+   enum Rounding
+   {
+      RoundOff, ///< rounds to the nearest value
+      RoundUp,  ///< rounds up
+      RoundDown ///< rounds down
+   };
+
+   rptFormattedLengthUnitValue(Float64 value,               ///< unit value in system units
+                                 const unitLength* pUnitOfMeasure, ///< Unit of measure
+                                 Float64 zeroTolerance,  ///< tolerance for zeroness
+                                 bool bShowUnitTag, ///< Indicates if the unit tag is shown
+                                 bool bEnglish,               ///< true if this is an english unit (if not, just use base class formatting)
+                                 Uint16 fraPrecision,         ///< precision of fraction (denominator for fraction of an inch, e.g. use 8 for a precision of 1/8")
+                                 bool bFractionOnly, ///< if true, reports the number as a fraction only
+                                 Rounding rounding ///< indicates how the value is to be rounded to the specified precision
                                  ) :  
    rptLengthUnitValue( value, pUnitOfMeasure, zeroTolerance, bShowUnitTag )
    {
@@ -59,13 +56,13 @@ public:
       m_Rounding = rounding;
    }
 
-   rptFormattedLengthUnitValue(  const unitLength* pUnitOfMeasure,
-                                 Float64 zeroTolerance,  // tolerance for zeroness
-                                 bool bShowUnitTag, // Show the unit tag?
-                                 bool bEnglish,
-                                 Uint16 fraPrecision,
-                                 bool bFractionOnly,
-                                 Rounding rounding
+   rptFormattedLengthUnitValue(  const unitLength* pUnitOfMeasure, ///< Unit of measure
+                                 Float64 zeroTolerance,  ///< tolerance for zeroness
+                                 bool bShowUnitTag, ///< Indicates if the unit tag is shown
+                                 bool bEnglish,///< true if this is an english unit (if not, just use base class formatting)
+                                 Uint16 fraPrecision,  ///< precision of fraction (denominator for fraction of an inch, e.g. use 8 for a precision of 1/8")
+                                 bool bFractionOnly,///< if true, reports the number as a fraction only
+                                 Rounding rounding///< indicates how the value is to be rounded to the specified precision
                                ) :  
    rptLengthUnitValue( pUnitOfMeasure, zeroTolerance, bShowUnitTag )
    {
@@ -75,23 +72,16 @@ public:
       m_Rounding = rounding;
    }
 
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptFormattedLengthUnitValue(const rptFormattedLengthUnitValue& rOther) :
    rptLengthUnitValue( rOther )
    {
       MakeCopy( rOther );
    }
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptFormattedLengthUnitValue()
    {
    }
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
    rptFormattedLengthUnitValue& operator = (const rptFormattedLengthUnitValue& rOther)
    {
       if ( this != &rOther )
@@ -100,11 +90,10 @@ public:
       return *this;
    }
 
-   //------------------------------------------------------------------------
-   // virtual way to make a copy.
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const override;
 
-   //------------------------------------------------------------------------
+   /// Copies object data from rOther
    void MakeCopy(const rptFormattedLengthUnitValue& rOther)
    {
       m_bEnglish    = rOther.m_bEnglish;
@@ -113,15 +102,14 @@ public:
       m_Rounding = rOther.m_Rounding;
    }
 
-   //------------------------------------------------------------------------
+   /// Assigns object data from rOther to this object
    virtual void MakeAssignment(const rptFormattedLengthUnitValue& rOther)
    {
       rptLengthUnitValue::MakeAssignment( rOther );
       MakeCopy( rOther );
    }
 
-   //------------------------------------------------------------------------
-   // Override base class method
+   /// Returns the value as a formatted string
    virtual std::_tstring AsString() const override;
 
 private:

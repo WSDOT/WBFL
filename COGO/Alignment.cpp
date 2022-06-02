@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -467,7 +467,7 @@ STDMETHODIMP CAlignment::Clone(IAlignment* *clone)
    return S_OK;
 }
 
-STDMETHODIMP CAlignment::CreateParallelAlignment(Float64 offset,IAlignment** ppAlignment)
+STDMETHODIMP CAlignment::CreateOffsetAlignment(Float64 offset,IAlignment** ppAlignment)
 {
    CHECK_RETOBJ(ppAlignment);
 
@@ -480,7 +480,7 @@ STDMETHODIMP CAlignment::CreateParallelAlignment(Float64 offset,IAlignment** ppA
    pClone->put_RefStation(CComVariant(m_RefStation));
 
    CComPtr<IPath> clone_path;
-   m_Path->CreateParallelPath(offset,&clone_path);
+   m_Path->CreateOffsetPath(offset,&clone_path);
    pClone->PutPath(clone_path);
 
    CComPtr<IProfile> cloneProfile;
@@ -554,9 +554,9 @@ STDMETHODIMP CAlignment::CreateConnectedAlignment(IAlignment** ppAlignment)
    return S_OK;
 }
 
-STDMETHODIMP CAlignment::CreateParallelPath(Float64 offset,IPath** path)
+STDMETHODIMP CAlignment::CreateOffsetPath(Float64 offset,IPath** path)
 {
-   return m_Path->CreateParallelPath(offset,path);
+   return m_Path->CreateOffsetPath(offset,path);
 }
 
 STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation,VARIANT varEndStation,IPath** path)

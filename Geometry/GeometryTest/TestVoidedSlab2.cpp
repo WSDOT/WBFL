@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -445,11 +445,11 @@ void CTestVoidedSlab2::TestIShape()
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 5 );
+   TRY_TEST( cPoints, 6 );
 
    coll->get__Enum(&Enum);
    Enum->Next(9,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, 6 );
 
    points[0]->get_X(&x);
    points[0]->get_Y(&y);
@@ -459,22 +459,27 @@ void CTestVoidedSlab2::TestIShape()
    points[1]->get_X(&x);
    points[1]->get_Y(&y);
    TRY_TEST( IsEqual(x,130.00), true );
-   TRY_TEST( IsEqual(y,  0.50), true );
+   TRY_TEST( IsEqual(y,  0.00), true );
 
    points[2]->get_X(&x);
    points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-130.00), true );
-   TRY_TEST( IsEqual(y,   0.50), true );
+   TRY_TEST( IsEqual(x,130.00), true );
+   TRY_TEST( IsEqual(y,  0.50), true );
 
    points[3]->get_X(&x);
    points[3]->get_Y(&y);
    TRY_TEST( IsEqual(x,-130.00), true );
-   TRY_TEST( IsEqual(y,   0.00), true );
+   TRY_TEST( IsEqual(y,   0.50), true );
 
    points[4]->get_X(&x);
    points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,130.00), true );
-   TRY_TEST( IsEqual(y,  0.00), true );
+   TRY_TEST(IsEqual(x,-130.00), true);
+   TRY_TEST(IsEqual(y, 0.00), true);
+
+   points[5]->get_X(&x);
+   points[5]->get_Y(&y);
+   TRY_TEST(IsEqual(x, 130.00), true);
+   TRY_TEST(IsEqual(y, 0.00), true);
 
    // clip in other direction
    p1->Move( 50, 0.50);

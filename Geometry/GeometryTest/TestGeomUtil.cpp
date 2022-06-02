@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1173,21 +1173,21 @@ void CTestGeomUtil::Test2d()
    TRY_TEST( intersect1 == 0, true );
 
    //
-   // ShortestDistanceToPoint
+   // ShortestOffsetToPoint
    //
    p1->Move(10,10);
    p2->Move(20,20);
    l1->ThroughPoints(p1,p2);
 
    p3->Move(10,20);
-   TRY_TEST( util2d->ShortestDistanceToPoint(nullptr,p3,&dist), E_INVALIDARG );
-   TRY_TEST( util2d->ShortestDistanceToPoint(l1,nullptr,&dist), E_INVALIDARG );
-   TRY_TEST( util2d->ShortestDistanceToPoint(l1,p3,nullptr),    E_POINTER );
-   TRY_TEST( util2d->ShortestDistanceToPoint(l1,p3,&dist), S_OK );
+   TRY_TEST( util2d->ShortestOffsetToPoint(nullptr,p3,&dist), E_INVALIDARG );
+   TRY_TEST( util2d->ShortestOffsetToPoint(l1,nullptr,&dist), E_INVALIDARG );
+   TRY_TEST( util2d->ShortestOffsetToPoint(l1,p3,nullptr),    E_POINTER );
+   TRY_TEST( util2d->ShortestOffsetToPoint(l1,p3,&dist), S_OK );
    TRY_TEST( IsEqual(dist,-7.071,0.001), true ); // Point on left side (-)
 
    p3->Move(20,10);
-   TRY_TEST( util2d->ShortestDistanceToPoint(l1,p3,&dist), S_OK );
+   TRY_TEST( util2d->ShortestOffsetToPoint(l1,p3,&dist), S_OK );
    TRY_TEST( IsEqual(dist,7.071,0.001), true ); // Point on right side (+)
 
    //

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,18 +31,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcComposite           
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
-// constructors
-// non-hyperlink versions
 rptRcComposite::rptRcComposite()
 {
 }
@@ -57,6 +45,17 @@ rptRcComposite::rptRcComposite(int count, ...)
       AddContent(pRptContent);
    }
    va_end(args);
+}
+
+rptRcComposite::rptRcComposite(const rptRcComposite& rRcComposite) :
+   rptReportContent(rRcComposite)
+{
+   MakeCopy(rRcComposite);
+
+}
+
+rptRcComposite::~rptRcComposite()
+{
 }
 
 rptRcComposite::ConstContentIterator rptRcComposite::ConstBegin() const
@@ -79,23 +78,7 @@ rptRcComposite::ContentIterator rptRcComposite::End()
    return m_ContentVec.end();
 }
 
-// copy constructor
-rptRcComposite::rptRcComposite(const rptRcComposite& rRcComposite):
-rptReportContent(rRcComposite)
-{
-   MakeCopy( rRcComposite );
-
-} // rptRcComposite
-
-
-// destructor
-rptRcComposite::~rptRcComposite()
-{
-} // ~rptRcComposite
-
-//======================== OPERATORS  =======================================
-
-rptRcComposite& rptRcComposite::operator = (const rptRcComposite& rRcComposite)
+rptRcComposite& rptRcComposite::operator=(const rptRcComposite& rRcComposite)
 {
    if (this != &rRcComposite)
       MakeAssignment(rRcComposite);
@@ -103,7 +86,6 @@ rptRcComposite& rptRcComposite::operator = (const rptRcComposite& rRcComposite)
 } // operator =
 
 
-//======================== OPERATIONS =======================================
 rptReportContent* rptRcComposite::CreateClone() const 
 { 
    return new rptRcComposite(*this); 
@@ -116,14 +98,12 @@ void rptRcComposite::Accept( rptRcVisitor& MyVisitor )
 
 void rptRcComposite::AddContent(const rptReportContent & rContent)
 {
-   std::shared_ptr<rptReportContent> rcp( rContent.CreateClone() );
-   m_ContentVec.push_back(rcp);
+   m_ContentVec.emplace_back(rContent.CreateClone());
 }
 
-void rptRcComposite::AddContent(rptReportContent * PContent)
+void rptRcComposite::AddContent(rptReportContent * pContent)
 {
-   std::shared_ptr<rptReportContent> rcp( PContent );
-   m_ContentVec.push_back(rcp);
+   m_ContentVec.emplace_back(pContent);
 }
 
 bool rptRcComposite::Empty()
@@ -141,47 +121,22 @@ void rptRcComposite::ClearContents()
    m_ContentVec.clear();
 }
 
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
 void rptRcComposite::MakeCopy(const rptRcComposite& rRcComposite)
 {
    // deep copy
    m_ContentVec.clear();
 
    ConstContentIterator it = rRcComposite.ConstBegin();
-   while (it != rRcComposite.ConstEnd())
+   auto end = rRcComposite.ConstEnd();
+   while (it != end)
    {
-      this->AddContent(**it);
-
+      AddContent(**it);
       it++;
    }
-
-
 }
-
 
 void rptRcComposite::MakeAssignment(const rptRcComposite& rOther)
 {
    rptReportContent::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
-

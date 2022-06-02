@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,36 +23,28 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/LiftingTensionStressLimit.h>
 
-/*****************************************************************************
-CLASS 
-   stbLiftingCriteria
-
-DESCRIPTION
-   Encapsulates the criteria for analysis
-*****************************************************************************/
-
-class STABILITYCLASS stbLiftingCriteria
+namespace WBFL
 {
-public:
-   stbLiftingCriteria();
+   namespace Stability
+   {
+      /// Criteria for lifting analysis
+      class STABILITYCLASS LiftingCriteria
+      {
+      public:
+         LiftingCriteria();
 
-   Float64 Lambda;
+         Float64 MinFScr; ///< minimum factor of safety against cracking
+         Float64 MinFSf;  ///< minimum factor of safety against failure
 
-   Float64 CompressionCoefficient_GlobalStress;
-   Float64 CompressionCoefficient_PeakStress;
+         Float64 AllowableCompression_GlobalStress; ///< compression stress limit
+         Float64 AllowableCompression_PeakStress; ///< compression stress limit
+         Float64 CompressionCoefficient_GlobalStress; ///< Global compression compression limit coefficient (x*f'c)
+         Float64 CompressionCoefficient_PeakStress; ///< Peak compression compression limit coefficient (x*f'c)
 
-   Float64 TensionCoefficient;
-   bool bMaxTension;
-   Float64 MaxTension;
-   Float64 TensionCoefficientWithRebar;
-
-   Float64 MinFScr; // minimum factor of safety against cracking
-   Float64 MinFSf;  // minimum factor of safety against failure
-
-   Float64 AllowableCompression_GlobalStress; // allowable compression stress
-   Float64 AllowableCompression_PeakStress;
-   Float64 AllowableTension; // allowable tension stress
-   Float64 AllowableTensionWithRebar; // allowable tension stress if there is adequate rebar
-};
+         std::shared_ptr<ILiftingTensionStressLimit> TensionStressLimit; ///< Model for tension stress limit. 
+      };
+   }
+}

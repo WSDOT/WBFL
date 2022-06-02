@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -92,11 +92,12 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the coefficient k used to compute the prestress development length. 5.11.4.2
-   static Float64 GetDevLengthFactor(Float64 mbrDepth,bool bDebonded,bool bUHPC);
+   static Float64 GetDevLengthFactor(Float64 mbrDepth,bool bDebonded);
 
    //------------------------------------------------------------------------
    // Computes the prestress development length. 5.11.4.2
-   static Float64 GetDevLength(const matPsStrand& strand,Float64 fps,Float64 fpe,Float64 mbrDepth,bool bDebonded=false, bool bUHPC=false);
+   static Float64 GetDevLength(const matPsStrand& strand, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded = false);
+   static Float64 GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded = false);
 
    //------------------------------------------------------------------------
    // Computes the maximum jacking stress for post-tensioning

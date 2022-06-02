@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 2008  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,7 +40,7 @@ class CSplineSegment;
 // CCubicSpline
 class ATL_NO_VTABLE CCubicSpline : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CCubicSpline, &CLSID_Direction>,
+	public CComCoClass<CCubicSpline, &CLSID_CubicSpline>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCubicSpline,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IConnectionPointContainerImpl<CCubicSpline>,
@@ -102,8 +102,7 @@ public:
 	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
    STDMETHOD(NormalAtPoint)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IDirection** pDir) override;
 	STDMETHOD(PointOnSpline)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal) override;
-   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *pNewPoint) override;
-   STDMETHOD(DistanceFromStart)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ Float64* dist) override;
+   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point, /*[out]*/ IPoint2d* *newPoint, /*[out]*/ Float64* distFromStart, /*[out]*/ VARIANT_BOOL* pvbOnProjection) override;
    STDMETHOD(DistanceFromStartAtPoint)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ Float64* dist) override;
 	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/IPoint2dCollection** points) override;
    STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength) override;
@@ -129,8 +128,6 @@ private:
    CSplineSegment* FindSplineSegment(Float64 distance,Float64* pDistFromStartOfSegment);
    
    void CreatePoint(IPoint2d** ppPoint);
-
-   HRESULT ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoint2d* *pNewPoint);
 
    HRESULT CheckValid();
    void ValidateSpline();

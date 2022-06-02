@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,7 +43,7 @@
 #endif
 
 #include <WbflAll.h>
-#include <Stability\AutoLib.h>
+#include <Stability/AutoLib.h>
 
 #define SHOW_FULL_CRACKING_TABLE
-#define REBAR_FOR_DIRECT_TENSION
+#define REBAR_FOR_DIRECT_TENSION // adequacy of reinforcement to use the higher tension stress limit is based on direct tension (plumb section only) when this is defined, otherwise it is based on total tension (plumb + tilt)

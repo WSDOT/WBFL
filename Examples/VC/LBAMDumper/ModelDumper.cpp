@@ -127,8 +127,11 @@ static std::_tstring LltToString (LiveLoadModelType type)
    case lltPermitRoutineRating:
       str=_T("PermitRoutineRating");
       break;
+   case lltLegalEmergencyRating:
+      str=_T("LegalEmergencyRating");
+      break;
    case lltPermitSpecialRating:
-      str=_T("PermitSpecialRating");
+      str = _T("PermitSpecialRating");
       break;
    default:
       ATLASSERT(0);

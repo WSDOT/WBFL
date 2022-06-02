@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,10 +53,11 @@ public:
    lrfdLiveLoadDistributionFactorMixin();
 
    //------------------------------------------------------------------------
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl) const;
+   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl, bool applyMpf) const;
    //------------------------------------------------------------------------
    // Statical method only works for exterior beams
-   virtual lrfdILiveLoadDistributionFactor::RigidMethod DistributeByStaticalMethod(lrfdILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane, IndexType firstLoadedLane,IndexType lastLoadedLane) const;
+   virtual lrfdILiveLoadDistributionFactor::RigidMethod DistributeByStaticalMethod(lrfdILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,
+                                                                                   Float64 wLane, IndexType firstLoadedLane,IndexType lastLoadedLane, bool applyMpf) const;
    //------------------------------------------------------------------------
    virtual Float64 GetShyDistance() const;
    //------------------------------------------------------------------------
@@ -64,7 +65,7 @@ public:
    //------------------------------------------------------------------------
    virtual Float64 GetTruckWidth() const;
 
-   virtual lrfdILiveLoadDistributionFactor::DFResult GetLanesBeamsMethod(IndexType Nl,GirderIndexType Nb) const;
+   virtual lrfdILiveLoadDistributionFactor::DFResult GetLanesBeamsMethod(IndexType Nl,GirderIndexType Nb, bool applyMpf) const;
 
    // Local data to ignore MPF for lever rule when a single truck controls on exterior beams
    void IgnoreMpfLeverRule(bool doIgnore);
@@ -79,7 +80,7 @@ public:
 
 private:
    //------------------------------------------------------------------------
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang, Float64 wLane,IndexType Nl) const;
+   lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang, Float64 wLane,IndexType Nl, bool applyMpf) const;
    //------------------------------------------------------------------------
    Float64 GetDistanceToAxle(Float64 S,Float64 roadOverhang,Float64 wLane,GirderIndexType nbeam,AxleIndexType naxle,bool bAlignLeft) const;
 
@@ -148,11 +149,11 @@ public:
    virtual Float64 ShearSkewCorrectionFactor() const = 0;
 
    //------------------------------------------------------------------------
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes) const override;
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes) const override;
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes) const override;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
 
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes) const;
+   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes, bool applyMpf) const;
 
    // GROUP: ACCESS
    void SetRangeOfApplicabilityAction(LldfRangeOfApplicabilityAction check);

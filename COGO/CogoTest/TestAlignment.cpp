@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -82,12 +82,12 @@ void CTestAlignment::Test()
 
    // add it to the Alignment
    TRY_TEST(alignment->AddEx(nullptr),E_INVALIDARG);
-   //TRY_TEST(alignment->AddEx(alignment),COGO_E_PATHELEMENTTYPE); // alignment/paths are now valid path element types
+   TRY_TEST(alignment->AddEx(alignment),COGO_E_PATHELEMENTTYPE);
    TRY_TEST(alignment->AddEx(point), S_OK);
 
    // create a horz curve
-   CComPtr<IHorzCurve> hc;
-   hc.CoCreateInstance(CLSID_HorzCurve);
+   CComPtr<ICompoundCurve> hc;
+   hc.CoCreateInstance(CLSID_CompoundCurve);
    point.Release();
    hc->get_PBT(&point);
    point->Move(100,100);
@@ -142,7 +142,7 @@ void CTestAlignment::Test()
    element.Release();
    TRY_TEST(alignment->get_Item(2,&element),S_OK);
    element->get_Type(&type);
-   TRY_TEST(type,petHorzCurve);
+   TRY_TEST(type,petCompoundCurve);
    dispVal.Release();
    element->get_Value(&dispVal);
    hc.Release();
@@ -161,7 +161,7 @@ void CTestAlignment::Test()
    element.Release();
    TRY_TEST(alignment->get_Item(1,&element),S_OK);
    element->get_Type(&type);
-   TRY_TEST(type,petHorzCurve);
+   TRY_TEST(type,petCompoundCurve);
 
    //
    // Test Insert and InsertEx
@@ -261,7 +261,7 @@ void CTestAlignment::Test()
 
    // Create a new "clean" horizontal curve
    hc.Release();
-   hc.CoCreateInstance(CLSID_HorzCurve);
+   hc.CoCreateInstance(CLSID_CompoundCurve);
 
    pTestAlignment->InitEventTest();
    alignment->Clear();

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,7 +51,6 @@ CSysAgent::~CSysAgent()
 HRESULT CSysAgent::FinalConstruct()
 {
    m_pBroker = 0;
-   m_bEndLines = TRUE;
    m_cProgressRef = 0;
    m_pThread = nullptr;
    return S_OK;
@@ -295,125 +294,30 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
 //
 STDMETHODIMP CSysAgent::Open(LPCTSTR name,DWORD* pdwCookie)
 {
-   // User passed us a bad pointer
-   if ( pdwCookie == 0 )
-      return E_POINTER;
-
-   // Try to create a stream... Could fail in one of two ways.  Failed allocation could throw
-   // and bad_alloc exception or return nullptr.
-   std::shared_ptr<std::_tofstream> pofile;
-   try
+   if (m_LogFile == nullptr)
    {
-      pofile = std::make_shared<std::_tofstream>(name);
-   }
-   catch ( ... )
-   {
-      return E_OUTOFMEMORY;
-   }
-   if ( pofile.get() == nullptr )
-   {
-      return E_OUTOFMEMORY;
+      m_LogFile.CoCreateInstance(CLSID_LogFile);
    }
 
-   // Do we have a good stream?
-   if ( !(*pofile) )
-      return LOGFILE_E_CANTOPEN;
-
-   // Turn exceptions on for the stream
-   pofile->exceptions( std::ios_base::badbit | std::ios_base::failbit | std::ios_base::eofbit );
-
-   // Set buffering off for stream so we get all of our data
-   pofile->setf(std::ios_base::unitbuf);
-
-   // Save the stream for future reference
-   m_LogFiles.push_back( pofile );
-
-   // Get a cookie
-   // This have to come after push_back. Cookie must be > 0.
-   *pdwCookie = (DWORD)m_LogFiles.size();
-
-   // Write a little preamble
-   sysTime now;
-   now.PrintDate( true );
-   try
-   {
-      *pofile << _T("Log opened ") << now << std::endl;
-      *pofile << std::endl;
-   }
-   catch (...)
-   {
-      return LOGFILE_E_BADWRITE;
-   }
-
-   return S_OK;
-}
-
-bool is_valid_cookie( DWORD dwCookie, size_t size )
-{
-   return ( dwCookie > (DWORD)size ) ? false : true;
-}
-
-int idx_from_cookie( DWORD dwCookie )
-{
-   return dwCookie - 1;
+   return m_LogFile->Open(name, pdwCookie);
 }
 
 STDMETHODIMP CSysAgent::put_EndLines(BOOL bEndLines)
 {
-   m_bEndLines = bEndLines;
-   return S_OK;
+   return m_LogFile->put_EndLines(bEndLines);
 }
 
 STDMETHODIMP CSysAgent::get_EndLines(BOOL* pbEndLines)
 {
-   *pbEndLines = m_bEndLines;
-   return S_OK;
+   return m_LogFile->get_EndLines(pbEndLines);
 }
 
 STDMETHODIMP CSysAgent::LogMessage(DWORD dwCookie,LPCTSTR msg)
 {
-   // Is the cookie valid?
-   if ( !is_valid_cookie( dwCookie, m_LogFiles.size() ) )
-      return LOGFILE_E_NOLOGFILE;
-
-   std::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
-
-   try
-   {
-      *pofile << msg;
-      if ( m_bEndLines )
-         *pofile << std::endl;
-   }
-   catch(...)
-   {
-      return LOGFILE_E_BADWRITE;
-   }
-
-   return S_OK;
+   return m_LogFile->LogMessage(dwCookie, msg);
 }
 
 STDMETHODIMP CSysAgent::Close(DWORD dwCookie)
 {
-   // Is the cookie valid?
-   if ( !is_valid_cookie( dwCookie, m_LogFiles.size() ) )
-      return LOGFILE_E_NOLOGFILE;
-
-   std::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
-
-   // Write a little postscript
-   sysTime now;
-   now.PrintDate( true );
-   try
-   {
-      *pofile << std::endl;
-      *pofile << _T("Log closed ") << now << std::endl;
-   }
-   catch(...)
-   {
-      return LOGFILE_E_BADWRITE;
-   }
-
-   pofile->close();
-
-   return S_OK;
+   return m_LogFile->Close(dwCookie);
 }

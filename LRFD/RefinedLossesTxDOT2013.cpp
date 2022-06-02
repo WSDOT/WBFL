@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,9 +27,7 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XPsLosses.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -87,9 +85,9 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -127,27 +125,10 @@ lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeT
    m_FcgpMethod = method;
 }
 
-lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(const lrfdRefinedLossesTxDOT2013& rOther)
-{
-   MakeCopy( rOther );
-}
-
 lrfdRefinedLossesTxDOT2013::~lrfdRefinedLossesTxDOT2013()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdRefinedLossesTxDOT2013& lrfdRefinedLossesTxDOT2013::operator=(const lrfdRefinedLossesTxDOT2013& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
 Float64 lrfdRefinedLossesTxDOT2013::TemporaryStrand_TimeDependentLossesAtShipping() const
 {
    return PermanentStrand_TimeDependentLossesAtShipping();
@@ -278,11 +259,13 @@ void lrfdRefinedLossesTxDOT2013::UpdateLongTermLosses() const
    {
       m_dfpSR = shrinkage_losses( m_H, m_Fci, m_Ep );
 
-      m_Msd = m_Madlg + m_Msidl1 + m_Msidl2;
+      m_Msd = m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] + m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] + m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION];
+      Float64 msd = m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] + m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] + m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION];
 
-      m_DeltaFcd1 = -1 * m_Msd * m_epermFinal.Y()/m_Ixx;
+      m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = -1 * m_Msd * m_epermFinal.Y() / m_Ixx;
+      m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = -1 * msd * m_epermFinal.Y() / m_Ixx;
 
-      m_dfpCR = creep_losses( m_H, m_Fci, m_Eci, m_Ep, m_ElasticShortening.PermanentStrand_Fcgp(), m_DeltaFcd1 );
+      m_dfpCR = creep_losses( m_H, m_Fci, m_Eci, m_Ep, m_ElasticShortening.PermanentStrand_Fcgp(), m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION]);
 
       if (lrfdElasticShortening::fcgp07Fpu == m_ElasticShortening.GetFcgpComputationMethod())
       {
@@ -371,45 +354,6 @@ Float64 lrfdRefinedLossesTxDOT2013::GetSdMoment() const
     }
 
     return m_Msd;
-}
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdRefinedLossesTxDOT2013::MakeAssignment( const lrfdRefinedLossesTxDOT2013& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void lrfdRefinedLossesTxDOT2013::MakeCopy( const lrfdRefinedLossesTxDOT2013& rOther )
-{
-   lrfdLosses::MakeCopy(rOther);
-
-   m_dfpSR = rOther.m_dfpSR;
-   m_dfpCR = rOther.m_dfpCR;
-   m_dfpR2 = rOther.m_dfpR2;
-   m_dfpR1 = rOther.m_dfpR1;
-
-   m_KL     = rOther.m_KL;
-   m_fpt    = rOther.m_fpt;
-   m_Msd    = rOther.m_Msd;
-
-   m_Shipping = rOther.m_Shipping;
-   m_FcgpMethod = rOther.m_FcgpMethod;
 }
 
 void lrfdRefinedLossesTxDOT2013::Init() const

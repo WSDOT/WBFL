@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -82,6 +82,8 @@
 #include "DeckedSlabBeam.h"
 #include "GenericShape.h"
 #include "BeamShapeFactory.h"
+#include "NUDeckedIBeam.h"
+#include "PCIDeckedIBeam.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -135,6 +137,8 @@ OBJECT_ENTRY(CLSID_DeckedSlabBeam,CDeckedSlabBeam)
 OBJECT_ENTRY(CLSID_BoxBeam,CBoxBeam)
 OBJECT_ENTRY(CLSID_GenericShape, CGenericShape)
 OBJECT_ENTRY(CLSID_BeamShapeFactory, CBeamShapeFactory)
+OBJECT_ENTRY(CLSID_NUDeckedIBeam,CNUDeckedIBeam)
+OBJECT_ENTRY(CLSID_PCIDeckedIBeam,CPCIDeckedIBeam)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

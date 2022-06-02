@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -89,12 +89,6 @@ STDMETHODIMP CRebarModel::ComputeStress(Float64 strain,Float64* pVal)
 {
    CHECK_RETVAL(pVal);
 
-//   if ( strain < m_MinStrain || m_MaxStrain < strain )
-//   {
-//      *pVal = 0;
-//      return E_FAIL;
-//   }
-
    Float64 ey = m_Fy/m_Es;
 
    if ( InRange(-ey,strain,ey) )
@@ -102,7 +96,7 @@ STDMETHODIMP CRebarModel::ComputeStress(Float64 strain,Float64* pVal)
    else
       *pVal = (BinarySign(strain)*m_Fy);
 
-   return S_OK;
+   return IsLT(m_MaxStrain,strain) ? S_FALSE : S_OK;
 }
 
 STDMETHODIMP CRebarModel::StrainLimits(Float64* minStrain,Float64* maxStrain)

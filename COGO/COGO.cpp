@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,8 +52,8 @@
 #include "ProfilePointCollection.h"
 #include "VertCurve.h"
 #include "VertCurveCollection.h"
-#include "HorzCurve.h"
-#include "HorzCurveCollection.h"
+#include "CompoundCurve.h"
+#include "CompoundCurveCollection.h"
 #include "ProfileElement.h"
 #include "Profile.h"
 #include "PathElement.h"
@@ -64,7 +64,7 @@
 #include "AlignmentCollection.h"
 #include "VertCurveFactory.h"
 #include "ProfilePointFactory.h"
-#include "HorzCurveFactory.h"
+#include "CompoundCurveFactory.h"
 #include "AlignmentFactory.h"
 #include "AngleDisplayUnitFormatter.h"
 #include "DirectionDisplayUnitFormatter.h"
@@ -82,6 +82,8 @@
 #include "Surface.h"
 #include "SurfacePoint.h"
 #include "SurfaceProfile.h"
+#include "TransitionCurve.h"
+#include "CircularCurve.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -103,8 +105,8 @@ OBJECT_ENTRY(CLSID_ProfilePoint, CProfilePoint)
 OBJECT_ENTRY(CLSID_ProfilePointCollection, CProfilePointCollection)
 OBJECT_ENTRY(CLSID_VertCurve, CVertCurve)
 OBJECT_ENTRY(CLSID_VertCurveCollection, CVertCurveCollection)
-OBJECT_ENTRY(CLSID_HorzCurve, CHorzCurve)
-OBJECT_ENTRY(CLSID_HorzCurveCollection, CHorzCurveCollection)
+OBJECT_ENTRY(CLSID_CompoundCurve, CCompoundCurve)
+OBJECT_ENTRY(CLSID_CompoundCurveCollection, CCompoundCurveCollection)
 OBJECT_ENTRY(CLSID_ProfileElement, CProfileElement)
 OBJECT_ENTRY(CLSID_Profile, CProfile)
 OBJECT_ENTRY(CLSID_PathElement, CPathElement)
@@ -115,7 +117,7 @@ OBJECT_ENTRY(CLSID_Alignment, CAlignment)
 OBJECT_ENTRY(CLSID_AlignmentCollection, CAlignmentCollection)
 OBJECT_ENTRY(CLSID_VertCurveFactory, CVertCurveFactory)
 OBJECT_ENTRY(CLSID_ProfilePointFactory, CProfilePointFactory)
-OBJECT_ENTRY(CLSID_HorzCurveFactory, CHorzCurveFactory)
+OBJECT_ENTRY(CLSID_CompoundCurveFactory, CCompoundCurveFactory)
 OBJECT_ENTRY(CLSID_AlignmentFactory, CAlignmentFactory)
 OBJECT_ENTRY(CLSID_AngleDisplayUnitFormatter, CAngleDisplayUnitFormatter)
 OBJECT_ENTRY(CLSID_DirectionDisplayUnitFormatter, CDirectionDisplayUnitFormatter)
@@ -133,6 +135,8 @@ OBJECT_ENTRY(CLSID_SurfaceTemplateCollection, CSurfaceTemplateCollection)
 OBJECT_ENTRY(CLSID_Surface, CSurface)
 OBJECT_ENTRY(CLSID_SurfacePoint, CSurfacePoint)
 OBJECT_ENTRY(CLSID_SurfaceProfile, CSurfaceProfile)
+OBJECT_ENTRY(CLSID_TransitionCurve, CTransitionCurve)
+OBJECT_ENTRY(CLSID_CircularCurve, CCircularCurve)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

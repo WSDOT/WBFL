@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,7 +25,6 @@
 #define INCLUDED_REPORTER_RCTABLE_H_
 #pragma once
 
-#include <vector>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Reporter\Paragraph.h>
@@ -33,311 +32,241 @@
 #include <Reporter\StyleHolder.h>
 #include <Reporter\RcInt.h>
 #include <System\SectionValue.h>
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
+#include <vector>
 
 #define SKIP_CELL INVALID_INDEX
 
 class rptRcTable;
 
-// local class to store table-related paragraph data
-class rptTableCellParagraph : public rptParagraph
+/// Paragraph that is specialized for use in a table
+class REPORTERCLASS rptTableCellParagraph : public rptParagraph
 {
-   friend rptRcTable;
 public:
    rptTableCellParagraph(): rptParagraph(), m_ColSpan(1), m_RowSpan(1), m_FillBackGroundColor(rptRiStyle::Default)
    {
    }
 
+   /// Sets the table cell background fill color
    void SetFillBackGroundColor(rptRiStyle::FontColor color)
    {
       m_FillBackGroundColor = color;
    }
 
+   /// Returns the table cell background fill color
    rptRiStyle::FontColor GetFillBackGroundColor() const
    {
       return m_FillBackGroundColor;
    }
 
 private:
+   friend rptRcTable;
    rptRiStyle::FontColor m_FillBackGroundColor;
    ColumnIndexType m_ColSpan;
    RowIndexType m_RowSpan;
 };
 
-/*****************************************************************************
-CLASS 
-   rptRcTable
-
-   Data Table class
-
-
-DESCRIPTION
-   This class defines a two-dimensional table of report content. Each cell in
-   the table may be treated as a separate paragraph.
-
-LOG
-   rdp : 04.21.1997 : Created file
-*****************************************************************************/
-
+/// Tabular report content
+///
+/// This class defines a table. Each cell in the table may be treated as a separate paragraph.
 class REPORTERCLASS rptRcTable : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
+   rptRcTable(
+      ColumnIndexType NumColumns, ///< Number of columns
+      Float64 InitWidth ///< Initial total width of the table
+   );
 
-   //------------------------------------------------------------------------
-   // constructor
-   // build an empty table with NumColumns Columns of equal width.
-   // InitWidth is the inital total width and will change as column widths are modified.
-   rptRcTable(ColumnIndexType NumColumns, Float64 InitWidth);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcTable(const rptRcTable& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcTable();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
-   rptRcTable& operator = (const rptRcTable& rOther);
+   rptRcTable& operator=(const rptRcTable& rOther);
 
-   //------------------------------------------------------------------------
-   // Get an individual cell paragraph
-   // Note that cells in column zero are column header cells.
+   /// Returns an individual table cell paragraph
+   ///
+   ///    table(5,5) << 15.235;
+   ///
+   /// The cells in column zero are column header cells.
    rptTableCellParagraph& operator()(RowIndexType RowNo, ColumnIndexType ColNo);
 
-   //------------------------------------------------------------------------
-   // constant version of get cell paragraph
+   /// Returns an individual table cell paragraph
+   ///
+   /// The cells in column zero are column header cells.
    const rptTableCellParagraph& operator()(RowIndexType RowNo, ColumnIndexType ColNo) const;
 
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accepts a visitor and calls VisitRcTable(this)
    void Accept( rptRcVisitor& MyVisitor );
 
-   //------------------------------------------------------------------------
-   // Create a Clone
-   rptReportContent* CreateClone() const;
+   /// Creates a clone
+   virtual rptReportContent* CreateClone() const override;
 
-   //------------------------------------------------------------------------
-   // Get the table Label paragraph
+   /// Returns the table Label paragraph
+   ///
+   /// The table label is placed below the caption and above the table.
    rptParagraph& TableLabel() {return m_Label;}
 
-   //------------------------------------------------------------------------
-   // Get the table Caption
+   /// Returns the table Caption paragram
+   ///
+   /// The table caption is placed above the table.
    rptParagraph& TableCaption() {return m_Caption;}
 
-   //------------------------------------------------------------------------
-   // Get Number of rows in table - including the header row
+   /// Returns number of rows in the table, including the heading row
    RowIndexType GetNumberOfRows();
 
-   //------------------------------------------------------------------------
-   // Set Distance between left edge of table and left margin
+   /// Sets the horizontal alignment of table on the page
    void SetAlignment(rptRiStyle::AlignmentType Align);
 
-   //------------------------------------------------------------------------
-   // Get Distance between left edge of table and left margin
+   /// Returns the horizontal alignment of table on the page
    rptRiStyle::AlignmentType GetAlignment();
 
-   //------------------------------------------------------------------------
-   // Get Number of columns in table
+   /// Returns the number of columns
    ColumnIndexType GetNumberOfColumns() {return m_NumColumns;}
 
+   /// Sets the number of columns
    void SetNumberOfColumns(ColumnIndexType nColumns);
 
-   //------------------------------------------------------------------------
-   // Set the width (in inches) of a given column
+   /// Sets the width (in inches) of a given column
    void SetColumnWidth(ColumnIndexType ColNo, Float64 MyWidth);
 
-   //------------------------------------------------------------------------
-   // Set the style of a given column
+   /// Sets the style of a given column
    void SetColumnStyle(ColumnIndexType ColNo, const rptStyleName& MyStyleName);
 
-   //------------------------------------------------------------------------
-   // Set the stripe row style of a given column
+   /// Set the stripe row style of a given column
    void SetStripeRowColumnStyle(ColumnIndexType ColNo, const rptStyleName& MyStyleName);
 
-   //------------------------------------------------------------------------
-   // Clear the style of a given column to allow column to inherit style back
-   // from the table chain of responsibility.
+   /// Clear the style of a given column to allow column to inherit style from the table chain of responsibility.
    void ClearColumnStyle(ColumnIndexType ColNo);
 
-   //------------------------------------------------------------------------
-   // 
-   // Get the width (in inches) of the table
+   /// Returns the width (in inches) of the table
    Float64 GetTableWidth() const;
 
-   //------------------------------------------------------------------------
-   // Get the width (in inches) of a given column
+   /// Returns the width (in inches) of a given column
    Float64 GetColumnWidth(ColumnIndexType ColNo) const;
 
-   //------------------------------------------------------------------------
-   // Set the cell padding. Distance between cell content and cell border
+   /// Sets the cell padding, distance between cell content and cell border (in inches)
    void SetCellPad(Float64 MyCellPad);
 
-   //------------------------------------------------------------------------
-   // Get the cell padding. Distance between cell content and cell border
+   /// Returns the cell padding.
    Float64 GetCellPad() const;
 
-   //------------------------------------------------------------------------
-   // Put a Float64 column by using the given rptRcReal object as a prototype.
-   // Only the values are put into the column - not the unit strings.
-   // This function will append the data to any other data that exists in 
-   // the column.
-   void PutFloat64Column(ColumnIndexType ColNo, rptRcUnitValue& ProtoReal, 
-                        const std::vector<Float64>&);
+   /// Fills a column with Float64 values by using the given rptRcUnitValue object as a prototype.
+   /// Only the values are put into the column, not the unit strings.
+   /// This function will append the data to any other data that exists in the column.
+   void FillColumn(ColumnIndexType ColNo, rptRcUnitValue& ProtoReal, const std::vector<Float64>& vValues);
 
-   //------------------------------------------------------------------------
-   // Put a section value column by using the given rptRcSectionValue object
-   // as a prototype.
-   void PutSectionValueColumn(ColumnIndexType colNo,
-                              rptRcSectionValue& rPrototype,
-                              const std::vector<sysSectionValue>& vValues);
+   /// Fills a columne with section values by using the given rptRcSectionValue object as a prototype.
+   /// This function will append the data to any other data that exists in the column.
+   void FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype, const std::vector<sysSectionValue>& vValues);
 
-   //------------------------------------------------------------------------
-   // Put an integer column by using the given rptRcInt object as a prototype
-   // This function will append the data to any other data that exists in 
-   // the column.
-   void PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt, 
-      const std::vector<Int32>&);
+   /// Fills a column with integer values by using the given rptRcInt object as a prototype.
+   /// This function will append the data to any other data that exists in the column.
+   void FillColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt, const std::vector<Int64>& vValues);
 
-   //------------------------------------------------------------------------
-   // Put a string column
-   // This function will append the data to any other data that exists in 
-   // the column.
-   void PutStringColumn(ColumnIndexType ColNo,
-      const std::vector<std::_tstring>&);
+   /// Fills a column with text strings.
+   /// This function will append the data to any other data that exists in the column.
+   void FillColumn(ColumnIndexType ColNo,const std::vector<std::_tstring>& vStrings);
 
-   //------------------------------------------------------------------------
-   // Set the border style of all inside borders in the table
+   /// Sets the border style of all inside borders in the table
    void SetInsideBorderStyle(rptRiStyle::BorderStyle MyStyle);
 
-   //------------------------------------------------------------------------
-   // Get the border style of all inside borders in the table
+   /// Returns the border style of all inside borders in the table
    rptRiStyle::BorderStyle GetInsideBorderStyle() const;
 
-   //------------------------------------------------------------------------
-   // Set the border style of the table perimeter
+   /// Sets the border style of the table perimeter
    void SetOutsideBorderStyle(rptRiStyle::BorderStyle MyStyle);
 
-   //------------------------------------------------------------------------
-   // Get the border style of the table perimeter
+   /// Returns the border style of the table perimeter
    rptRiStyle::BorderStyle GetOutsideBorderStyle() const;
 
-   //------------------------------------------------------------------------
-   // set the border style of the line below the header row
+   /// Sets the border style of the line below the header row
    void SetHeaderBottomBorderStyle(rptRiStyle::BorderStyle MyStyle);
 
-   //------------------------------------------------------------------------
-   // get the border style of the line below the header row
+   /// Returns the border style of the line below the header row
    rptRiStyle::BorderStyle GetHeaderBottomBorderStyle() const;
 
-   //------------------------------------------------------------------------
-   // set style of table header text - note that the table header style will have
-   // that of overall table style if this is not used. Note that this call will 
-   // override individual cell style settings.
+   /// Sets style of table header text
+   ///
+   /// The table header style will have that of overall table style if this is not used. 
+   /// This setting will override individual cell style settings.
    void SetTableHeaderStyle( const rptStyleName& MyStyleName);
 
-   //------------------------------------------------------------------------
-   // Set number of Columns to right that a given cell will span
-   // span==1 is the default
-   // span==0 will case it to span all following columns
-   // span==SKIP_CELL will cause the cell at this location not to be generated
-   // if bSkipSpannedCells is true, all columns from ColNo+1 to ColNo+span-1 are filled with SKIP_CELL
+   /// Sets number of columns to right that a given cell will span
+   ///
+   /// span==1 is the default
+   /// span==0 will cause it to span all following columns
+   /// span==SKIP_CELL will cause the cell at this location not to be generated
+   /// if bSkipSpannedCells is true, all columns from ColNo+1 to ColNo+span-1 are filled with SKIP_CELL
    void SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, ColumnIndexType span, bool bSkipSpannedCells=true);
 
-   //------------------------------------------------------------------------
-   // Set number of Columns to right that a given cell will span 
-   // span==1 is the default
-   // span==0 will case it to span all following rows
-   // span == SKIP_CELL will cause the cell at this location not to be generated
-   // if bSkipSpannedCells is true, all rows from RolNo+1 to RolNo+span-1 are filled with SKIP_CELL
+   /// Sets number of rows below that a given cell will span 
+   /// span==1 is the default
+   /// span==0 will case it to span all following rows
+   /// span == SKIP_CELL will cause the cell at this location not to be generated
+   /// if bSkipSpannedCells is true, all rows from RolNo+1 to RolNo+span-1 are filled with SKIP_CELL
    void SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType span, bool bSkipSpannedCells=true);
 
-   // Use this to span rows and columns together
+   /// Spans rows and columns together
    void SetRowColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType rowSpan, ColumnIndexType colSpan, bool bSkipSpannedCells = true);
-   //------------------------------------------------------------------------
-   // Set column and row spans for a given cell
+
+   /// Returns row and column spanning information for a given cell
    void GetCellSpans(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType* pRowSpan, ColumnIndexType* pColSpan);
 
-   // Set/Get number of rows in header
+   /// Sets the number of header rows
    void SetNumberOfHeaderRows(RowIndexType nrows);
+
+   /// Returns the number of header rows
    RowIndexType GetNumberOfHeaderRows() const;
 
-   void EnableRowStriping(bool bEnable);
+   /// Sets the row striping option.
+   void EnableRowStriping(
+      bool bEnable ///< If true, every number of striped rows is styled with the striped row style
+   );
+
+   /// Returns the row striping setting
    bool EnableRowStriping() const;
 
+   /// Sets the number of rows to be striped together
    void SetNumberOfStripedRows(RowIndexType nrows);
+
+   /// Returns the number of rows that are striped together
    RowIndexType GetNumberOfStripedRows();
 
+   /// Returns true if the specified row uses the row striping style
    bool IsStripedRow(RowIndexType row) const;
 
-   //
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcTable& rOther);
+
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcTable& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
+   rptRcTable() = delete;
 
-   //------------------------------------------------------------------------
-   // number of columns in the table
    ColumnIndexType m_NumColumns;
    RowIndexType m_NumberOfHeaderRows;
    RowIndexType m_NumberOfStripedRows;
    bool m_bStripeRows;
-
-   //------------------------------------------------------------------------
-   // table lable
    rptParagraph m_Label;
-
-   //------------------------------------------------------------------------
-   // table caption
    rptParagraph m_Caption;
 
-   //------------------------------------------------------------------------
    // 2D array of paragraphs - the table data
    // Column Headers are held in row zero
    typedef std::vector<rptTableCellParagraph>  ColumnVector;
    typedef std::vector<ColumnVector> TableData;
    TableData m_TableData;
 
-   //------------------------------------------------------------------------
    // width of table column widths in inches
    std::vector<Float64> m_ColumnWidths;
 
-   //------------------------------------------------------------------------
    // Distance between cell content and cell border
    Float64 m_CellPad;
 
-   //------------------------------------------------------------------------
    // Table alignment wrt margins
    rptRiStyle::AlignmentType m_Alignment;
 
-   //------------------------------------------------------------------------
    // array of styles for table columns. These styles are pertinent only to
    // the table rows below the table header. Could not use an stl container
    // to hold these guys because the table cells refer to there addresses
@@ -345,30 +274,14 @@ private:
    rptStyleHolder* m_pColumnStyles;
    rptStyleHolder* m_pStripeRowColumnStyles;
 
-   //------------------------------------------------------------------------
    // default border style for table perimeter
    rptRiStyle::BorderStyle m_OutsideBorderStyle;
 
-   //------------------------------------------------------------------------
    // default border style for table interior
    rptRiStyle::BorderStyle m_InsideBorderStyle;
 
-   //------------------------------------------------------------------------
    // default border style for line below header
    rptRiStyle::BorderStyle m_HeaderBottomBorderStyle;
-
-   // GROUP: LIFECYCLE
-   rptRcTable();
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif
+#endif // INCLUDED_REPORTER_RCTABLE_H_

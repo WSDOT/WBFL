@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,8 +27,7 @@
 #include <Lrfd\XRangeOfApplicability.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\Utility.h>
-#include <Units\SysUnits.h>
-#include <MathEx.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -278,7 +277,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Int_1_Stre
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -336,7 +335,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Int_2_Stre
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -357,7 +356,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Ext_1_Stre
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
    g.mg = g.LeverRuleData.mg;
 
    Float64 skew = MomentSkewCorrectionFactor();
@@ -408,7 +407,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Ext_2_Stre
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
@@ -462,7 +461,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetShearDF_Int_1_Stren
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -516,7 +515,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeBC::GetShearDF_Int_2_Stre
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -536,7 +535,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetShearDF_Ext_1_Stren
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
    g.mg = g.LeverRuleData.mg;
 
    Float64 skew = ShearSkewCorrectionFactor();
@@ -588,7 +587,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetShearDF_Ext_2_Stren
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -826,7 +825,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetMomentDF_Ext_1
       // apply lever rule with mpf=1
       lrfdILiveLoadDistributionFactor::DFResult gext;
       gext.ControllingMethod = LEVER_RULE;
-      gext.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      gext.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       gext.mg = gext.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
@@ -892,7 +891,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetShearDF_Ext_1_
       // apply lever rule with mpf=1
       lrfdILiveLoadDistributionFactor::DFResult gext;
       gext.ControllingMethod = LEVER_RULE;
-      gext.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      gext.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       gext.mg = gext.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -1088,9 +1087,9 @@ lrfdTxDotLldfTypeBC& lrfdTxDotLldfTypeBC::operator= (const lrfdTxDotLldfTypeBC& 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdTxDotLldfTypeBC::DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl) const
+lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdTxDotLldfTypeBC::DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl, bool applyMpf) const
 {
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod lrData(lrfdLldfTypeBC::DistributeByLeverRule(beamNum,Spacings,leftOverhang,rightOverhang,wLane,Nl));
+   lrfdILiveLoadDistributionFactor::LeverRuleMethod lrData(lrfdLldfTypeBC::DistributeByLeverRule(beamNum,Spacings,leftOverhang,rightOverhang,wLane,Nl,applyMpf));
 
    if (beamNum==0 || beamNum==Spacings.size() )
    {
@@ -1126,14 +1125,14 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_1
    if (this->m_Nb < 3)
    {
       g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
       g.mg = g.LanesBeamsData.mg;
    }
    else
    {
       g.ControllingMethod = LEVER_RULE;
       // txdot 0.9 factor applied within and use mpf=1.0
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
@@ -1170,7 +1169,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_2
    if (this->m_Nb < 3)
    {
       g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
       g.mg = g.LanesBeamsData.mg;
    }
    else
@@ -1189,7 +1188,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_2
       else
       {
          g.ControllingMethod = LEVER_RULE;
-         g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+         g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
          g.mg = g.LeverRuleData.mg;
 
          Float64 skew = MomentSkewCorrectionFactor();
@@ -1238,14 +1237,14 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_1_
    if (this->m_Nb < 3)
    {
       g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
       g.mg = g.LanesBeamsData.mg;
    }
    else
    {
       g.ControllingMethod = LEVER_RULE;
       // txdot mpf=1.0 and 0.9 factor applied within:
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -1282,7 +1281,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_2_
    if (this->m_Nb < 3)
    {
       g.ControllingMethod = LANES_DIV_BEAMS;
-      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb);
+      g = this->GetLanesBeamsMethod(this->m_Nl, this->m_Nb, true);
       g.mg = g.LanesBeamsData.mg;
    }
    else

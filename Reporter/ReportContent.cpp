@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,37 +31,25 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptReportContent           
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
 rptReportContent::rptReportContent()
 {
    // Report Content is not a hyperlink by default
-   m_pHyperLink = 0;
-} // rptReportContent
+   m_pHyperLink = nullptr;
+}
 
 rptReportContent::rptReportContent(const rptReportContent& rReportContent)
 {
    m_pHyperLink = 0;
    MakeCopy(rReportContent);
 
-} // rptReportContent
+}
 
 rptReportContent::~rptReportContent()
 {
    delete m_pHyperLink;
-} // ~rptReportContent
+}
 
-//======================== OPERATORS  =======================================
-
-rptReportContent& rptReportContent::operator= (const rptReportContent& rOther)
+rptReportContent& rptReportContent::operator=(const rptReportContent& rOther)
 {
    if( this != &rOther )
    {
@@ -71,71 +59,37 @@ rptReportContent& rptReportContent::operator= (const rptReportContent& rOther)
    return *this;
 }
 
-
-//======================== OPERATIONS =======================================
-
-
-//------------------------------------------------------------------------
-// Is report content a hyperlink
 inline bool rptReportContent::IsHyperLink() const
 {
    return (m_pHyperLink==0) ? false : true;
 }
 
-//------------------------------------------------------------------------
-// If content is a hyperlink - return target string
-std::_tstring rptReportContent::GetHyperTarget() const
+const std::_tstring& rptReportContent::GetHyperTarget() const
 {
    CHECK(m_pHyperLink);
    return m_pHyperLink->GetTargetName();
 }
 
-//------------------------------------------------------------------------
-// Make report content a hyperlink and point it to HyperTarget
 void rptReportContent::SetHyperLink(const std::_tstring& HyperTarget)
 {
    if (m_pHyperLink)
-      delete m_pHyperLink;
-
-   m_pHyperLink = new rptHyperLinkDefinition(HyperTarget);
+      m_pHyperLink->SetTargetName(HyperTarget);
+   else
+      m_pHyperLink = new rptHyperLinkDefinition(HyperTarget);
 }
 
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//
 void rptReportContent::MakeAssignment(const rptReportContent& rOther)
 {
    rptReportItem::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
 
-
 void rptReportContent::MakeCopy(const rptReportContent& rContent)
 {
    // copy hyperlink data if it exists
    delete m_pHyperLink;
+   m_pHyperLink = nullptr;
 
-   if (rContent.m_pHyperLink!=0)
+   if (rContent.m_pHyperLink)
       m_pHyperLink = new rptHyperLinkDefinition( *(rContent.m_pHyperLink) );
-   else
-      m_pHyperLink = 0;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
-

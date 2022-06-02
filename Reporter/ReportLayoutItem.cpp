@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,21 +31,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptReportLayoutItem
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptReportLayoutItem::rptReportLayoutItem() :
 rptReportItem()
 {
-   m_pPageLayout = 0;
+   m_pPageLayout = nullptr;
 }
-
 
 rptReportLayoutItem::rptReportLayoutItem(const rptStyleName& rStyleName, 
                                          const rptPageLayout& rLayout) :
@@ -58,17 +48,15 @@ rptReportItem(rStyleName)
 rptReportLayoutItem::rptReportLayoutItem(const rptReportLayoutItem& rOther):
 rptReportItem(rOther)
 {
-   m_pPageLayout = 0;
+   m_pPageLayout = nullptr;
    MakeCopy(rOther);
 }
-
 
 rptReportLayoutItem::~rptReportLayoutItem()
 {
    delete m_pPageLayout;
 }
 
-//======================== OPERATORS  =======================================
 rptReportLayoutItem& rptReportLayoutItem::operator=(const rptReportLayoutItem& rOther)
 {
    if ( this != &rOther )
@@ -77,16 +65,13 @@ rptReportLayoutItem& rptReportLayoutItem::operator=(const rptReportLayoutItem& r
    return *this;
 }
 
-//======================== OPERATIONS =======================================
-
 void rptReportLayoutItem::SetPageLayout( const rptPageLayout& rPageLayout)
 {
    delete m_pPageLayout;
    m_pPageLayout = new rptPageLayout( rPageLayout );
 }
 
-
-rptPageLayout* rptReportLayoutItem::GetpPageLayout()
+rptPageLayout* rptReportLayoutItem::GetPageLayout()
 {
    if ( m_pPageLayout )
    {
@@ -99,45 +84,20 @@ rptPageLayout* rptReportLayoutItem::GetpPageLayout()
       rptReportLayoutItem* myp = dynamic_cast<rptReportLayoutItem*>(GetpParent());
       CHECKX(myp,_T("Child must have parent of type ReportLayoutItem to get PageLayout"));
 
-      return  myp->GetpPageLayout();
+      return  myp->GetPageLayout();
    }
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
 void rptReportLayoutItem::MakeCopy(const rptReportLayoutItem& rOther)
 {
    delete m_pPageLayout;
+   m_pPageLayout = nullptr;
 
-   if ( rOther.m_pPageLayout )
-      m_pPageLayout = new rptPageLayout( *rOther.m_pPageLayout );
-   else
-      m_pPageLayout = 0;
+   if ( rOther.m_pPageLayout ) m_pPageLayout = new rptPageLayout( *rOther.m_pPageLayout );
 }
-
 
 void rptReportLayoutItem::MakeAssignment(const rptReportLayoutItem& rOther)
 {
    rptReportItem::MakeAssignment(rOther);
    MakeCopy( rOther );
 }
-
-
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

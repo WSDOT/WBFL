@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -107,14 +107,14 @@ void CTestTangent::TestExternal()
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,20.0),true);
-   TRY_TEST(IsEqual(y,-7.3205),true);
+   TRY_TEST(IsEqual(y,27.3205),true);
 
    B.Release();
    TRY_TEST(points->get_Item(6,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,42.5),true);
-   TRY_TEST(IsEqual(y,5.66987),true);
+   TRY_TEST(IsEqual(y, 14.33013),true);
 
    // define the small circle first
    TRY_TEST(tangent->External(7,2,5.0,8,1,20.0,tsCW),S_OK);
@@ -140,14 +140,14 @@ void CTestTangent::TestExternal()
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,42.5),true);
-   TRY_TEST(IsEqual(y,5.66987),true);
+   TRY_TEST(IsEqual(y, 14.33013),true);
 
    B.Release();
    TRY_TEST(points->get_Item(10,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,20.0),true);
-   TRY_TEST(IsEqual(y,-7.3205),true);
+   TRY_TEST(IsEqual(y,27.3205),true);
 
    // rotate both circles 180deg around (0,0)
    // (make x = -x)
@@ -185,14 +185,14 @@ void CTestTangent::TestExternal()
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-20.0),true);
-   TRY_TEST(IsEqual(y,27.3205),true);
+   TRY_TEST(IsEqual(y,-7.3205),true);
 
    B.Release();
    TRY_TEST(points->get_Item(14,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-42.5),true);
-   TRY_TEST(IsEqual(y,14.33013),true);
+   TRY_TEST(IsEqual(y,5.66987),true);
 
    // small circle first
    TRY_TEST(tangent->External(15,2,5.0,16,1,20.0,tsCW),S_OK);
@@ -218,14 +218,14 @@ void CTestTangent::TestExternal()
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-42.5),true);
-   TRY_TEST(IsEqual(y,14.33013),true);
+   TRY_TEST(IsEqual(y,5.66987),true);
 
    B.Release();
    TRY_TEST(points->get_Item(18,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-20.0),true);
-   TRY_TEST(IsEqual(y,27.3205),true);
+   TRY_TEST(IsEqual(y,-7.3205),true);
 
    // rotate both (original) circles 90deg around (0,0)
    // (make Y = x, X = -Y)
@@ -262,14 +262,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(points->get_Item(21,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
-   TRY_TEST(IsEqual(x,7.3205),true);
+   TRY_TEST(IsEqual(x,-27.3205),true);
    TRY_TEST(IsEqual(y,20.0),true);
 
    B.Release();
    TRY_TEST(points->get_Item(22,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
-   TRY_TEST(IsEqual(x,-5.66987),true);
+   TRY_TEST(IsEqual(x,-14.33013),true);
    TRY_TEST(IsEqual(y,42.5),true);
 
    // small circle first
@@ -295,14 +295,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(points->get_Item(25,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
-   TRY_TEST(IsEqual(x,-5.66987),true);
+   TRY_TEST(IsEqual(x,-14.33013),true);
    TRY_TEST(IsEqual(y, 42.5),true);
 
    B.Release();
    TRY_TEST(points->get_Item(26,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
-   TRY_TEST(IsEqual(x,7.3205),true);
+   TRY_TEST(IsEqual(x,-27.3205),true);
    TRY_TEST(IsEqual(y,20.0),true);
 
    /////////////////////////////////////////////////////////////////////////////////////////
@@ -349,15 +349,15 @@ void CTestTangent::TestExternal()
    TRY_TEST(points->get_Item(29,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
-   TRY_TEST(IsEqual(x, 3.5355,0.001),true);
-   TRY_TEST(IsEqual(y,-3.5355,0.001),true);
+   TRY_TEST(IsEqual(x,-3.5355,0.001),true);
+   TRY_TEST(IsEqual(y, 3.5355,0.001),true);
 
    B.Release();
    TRY_TEST(points->get_Item(30,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
-   TRY_TEST(IsEqual(x,13.5355,0.001),true);
-   TRY_TEST(IsEqual(y,6.46447,0.001),true);
+   TRY_TEST(IsEqual(x,6.46447,0.001),true);
+   TRY_TEST(IsEqual(y,13.5355,0.001), true);
 
    // 2 Equal radius circles, one centered at the origin, one at 45deg in quadrant 2
    A.Release();
@@ -391,15 +391,15 @@ void CTestTangent::TestExternal()
    TRY_TEST(points->get_Item(33,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
-   TRY_TEST(IsEqual(x, 3.5355,0.001),true);
-   TRY_TEST(IsEqual(y, 3.5355,0.001),true);
+   TRY_TEST(IsEqual(x,-3.5355,0.001),true);
+   TRY_TEST(IsEqual(y,-3.5355,0.001),true);
 
    B.Release();
    TRY_TEST(points->get_Item(34,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
-   TRY_TEST(IsEqual(x,-6.46447,0.001),true);
-   TRY_TEST(IsEqual(y, 13.5355,0.001),true);
+   TRY_TEST(IsEqual(x,-13.5355,0.001),true);
+   TRY_TEST(IsEqual(y, 6.46447,0.001),true);
 
    // 2 Equal radius circles, one centered at the origin, one at 45deg in quadrant 3
    A.Release();
@@ -433,15 +433,15 @@ void CTestTangent::TestExternal()
    TRY_TEST(points->get_Item(37,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
-   TRY_TEST(IsEqual(x,-3.5355,0.001),true);
-   TRY_TEST(IsEqual(y, 3.5355,0.001),true);
+   TRY_TEST(IsEqual(x, 3.5355,0.001),true);
+   TRY_TEST(IsEqual(y,-3.5355,0.001),true);
 
    B.Release();
    TRY_TEST(points->get_Item(38,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
-   TRY_TEST(IsEqual(x,-13.5355,0.001),true);
-   TRY_TEST(IsEqual(y,-6.46447,0.001),true);
+   TRY_TEST(IsEqual(x,-6.46447,0.001),true);
+   TRY_TEST(IsEqual(y,-13.5355,0.001),true);
 
    // 2 Equal radius circles, one centered at the origin, one at 45deg in quadrant 4
    A.Release();
@@ -475,15 +475,15 @@ void CTestTangent::TestExternal()
    TRY_TEST(points->get_Item(41,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
-   TRY_TEST(IsEqual(x,-3.5355,0.001),true);
-   TRY_TEST(IsEqual(y,-3.5355,0.001),true);
+   TRY_TEST(IsEqual(x, 3.5355,0.001),true);
+   TRY_TEST(IsEqual(y, 3.5355,0.001),true);
 
    B.Release();
    TRY_TEST(points->get_Item(42,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
-   TRY_TEST(IsEqual(x, 6.46447,0.001),true);
-   TRY_TEST(IsEqual(y,-13.5355,0.001),true);
+   TRY_TEST(IsEqual(x, 13.5355,0.001),true);
+   TRY_TEST(IsEqual(y,-6.46447,0.001),true);
 }
 
 void CTestTangent::TestCross()
@@ -520,14 +520,14 @@ void CTestTangent::TestCross()
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,26.66666),true);
-   TRY_TEST(IsEqual(y,21.05541),true);
+   TRY_TEST(IsEqual(y,-1.05541),true);
 
    B.Release();
    TRY_TEST(points->get_Item(4,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,44.16667),true);
-   TRY_TEST(IsEqual(y, 7.23615),true);
+   TRY_TEST(IsEqual(y,12.76385),true);
 
    TRY_TEST(tangent->Cross(5,1,20.0,6,2,5.0,tsCCW),S_OK);
 
@@ -536,14 +536,14 @@ void CTestTangent::TestCross()
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,26.66666),true);
-   TRY_TEST(IsEqual(y,-1.055415),true);
+   TRY_TEST(IsEqual(y,21.055415),true);
 
    B.Release();
    TRY_TEST(points->get_Item(6,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,44.16667),true);
-   TRY_TEST(IsEqual(y,12.76385),true);
+   TRY_TEST(IsEqual(y, 7.23615),true);
 }
 
 void CTestTangent::TestPoint()
@@ -582,7 +582,7 @@ void CTestTangent::TestPoint()
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,24.14214),true);
-   TRY_TEST(IsEqual(y,24.14214),true);
+   TRY_TEST(IsEqual(y,-4.14214),true);
 
    TRY_TEST(tangent->Point(5,1,radius,2,tsCCW),S_OK);
 
@@ -591,7 +591,7 @@ void CTestTangent::TestPoint()
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,24.14214),true);
-   TRY_TEST(IsEqual(y,-4.14214),true);
+   TRY_TEST(IsEqual(y,24.14214),true);
 
    TRY_TEST(tangent->Point(6,1,radius,3,tsCW),S_OK);
 
@@ -599,8 +599,8 @@ void CTestTangent::TestPoint()
    TRY_TEST(points->get_Item(6,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
-   TRY_TEST(IsEqual(x, 10.),true);
-   TRY_TEST(IsEqual(y, 30.),true);
+   TRY_TEST(IsEqual(x, 30.),true);
+   TRY_TEST(IsEqual(y, 10.),true);
 
    TRY_TEST(tangent->Point(7,1,radius,3,tsCCW),S_OK);
 
@@ -608,6 +608,6 @@ void CTestTangent::TestPoint()
    TRY_TEST(points->get_Item(7,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
-   TRY_TEST(IsEqual(x, 30.),true);
-   TRY_TEST(IsEqual(y, 10.),true);
+   TRY_TEST(IsEqual(x, 10.),true);
+   TRY_TEST(IsEqual(y, 30.),true);
 }

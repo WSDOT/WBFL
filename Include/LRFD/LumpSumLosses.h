@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -83,21 +83,8 @@ public:
                      Float64 afterSIDL,
                      Float64 final);
 
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdLumpSumLosses(const lrfdLumpSumLosses& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    ~lrfdLumpSumLosses();
 
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdLumpSumLosses& operator=(const lrfdLumpSumLosses& rOther);
-
-   // GROUP: OPERATIONS
 
    // override these virtual functions
    virtual Float64 PermanentStrand_BeforeTransfer() const override;
@@ -172,39 +159,9 @@ protected:
    Float64 m_AfterSIDL;
    Float64 m_Final;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdLumpSumLosses& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdLumpSumLosses& rOther );
-
    virtual void ValidateParameters() const override;
    virtual void UpdateLongTermLosses() const override;
    virtual void UpdateHaulingLosses() const override;
-
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_LUMPSUMLOSSES_H_

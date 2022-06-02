@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -144,17 +144,17 @@ STDMETHODIMP CCoordinateXform2d::OldToNew(IPoint2d* point)
 
 STDMETHODIMP CCoordinateXform2d::NewToOld(IPoint2d* point)
 {
-   Float64 x,y;
-   GetCoordinates(point,&x,&y);
+   Float64 x1,y1;
+   GetCoordinates(point,&x1,&y1);
 
    Float64 xo,yo;
    GetCoordinates(m_Origin,&xo,&yo);
 
-   Float64 x1,y1;
-   x1 = x*m_CosAngle - y*m_SinAngle + xo;
-   y1 = x*m_SinAngle + y*m_CosAngle + yo;
+   Float64 x,y;
+   x = x1*m_CosAngle - y1*m_SinAngle + xo;
+   y = x1*m_SinAngle + y1*m_CosAngle + yo;
 
-   point->Move(x1,y1);
+   point->Move(x,y);
 
    return S_OK;
 }

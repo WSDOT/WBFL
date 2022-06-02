@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -73,7 +73,11 @@ std::_tstring CReportSpecification::GetReportName() const
 
 std::_tstring CReportSpecification::GetReportTitle() const
 {
-   return GetReportName() + _T(" for ") + GetReportContextString();
+   auto context = GetReportContextString();
+   if(context.empty())
+      return GetReportName();
+   else
+      return GetReportName() + _T(" for ") + context;
 }
 
 std::_tstring CReportSpecification::GetReportContextString() const

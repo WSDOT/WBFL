@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,47 +32,49 @@
    #error It is for external users only
 #endif
 
-#include <Lrfd\AutoVersion.h>
-#include <Lrfd\Details.h>
-#include <Lrfd\ConcreteUtil.h>
-#include <Lrfd\ILiveLoadDistributionFactor.h>
-#include <Lrfd\LimitStateCalculator.h>
-#include <Lrfd\LiveLoadDistributionFactorBase.h>
-#include <Lrfd\LldfTypeAEK.h>
-#include <Lrfd\LldfTypeAEKIJ.h>
-#include <Lrfd\LldfTypeBC.h>
-#include <Lrfd\LldfTypeHIJ.h>
-#include <Lrfd\LldfTypeG.h>
-#include <Lrfd\LldfTxdotMultiWeb.h>
-#include <Lrfd\LldfTxdotSpreadSlab.h>
-#include <Lrfd\LoadModifier.h>
-#include <Lrfd\RefinedLosses.h>
-#include <Lrfd\RefinedLosses2005.h>
-#include <Lrfd\LumpSumLosses.h>
-#include <Lrfd\PTRefinedLosses.h>
-#include <Lrfd\ApproximateLosses.h>
-#include <Lrfd\ApproximateLosses2005.h>
-#include <Lrfd\NoncompositeApproximateLosses2005.h>
-#include <Lrfd\RefinedLossesTxDOT2013.h> 
-#include <Lrfd\ElasticShortening.h>
-#include <Lrfd\PsStrand.h>
-#include <Lrfd\RebarPool.h>
-#include <Lrfd\Rebar.h>
-#include <Lrfd\Shear.h>
-#include <Lrfd\StrandPool.h>
-#include <Lrfd\Utility.h>
-#include <Lrfd\VersionMgr.h>
-#include <Lrfd\VersionMgrListener.h>
-#include <Lrfd\LRFRVersionMgr.h>
-#include <Lrfd\LRFRVersionMgrListener.h>
-#include <Lrfd\CreepCoefficient.h>
-#include <Lrfd\CreepCoefficient2005.h>
-#include <Lrfd\XCreepCoefficient.h>
-#include <Lrfd\XCodeVersion.h>
-#include <Lrfd\XPsLosses.h>
-#include <Lrfd\XRangeOfApplicability.h>
-#include <Lrfd\XShear.h>
-#include <Lrfd\LRFDConcrete.h>
-#include <Lrfd\LRFDTimeDependentConcrete.h>
+#include <LRFD\AutoVersion.h>
+#include <LRFD\Details.h>
+#include <LRFD\ConcreteUtil.h>
+#include <LRFD\ILiveLoadDistributionFactor.h>
+#include <LRFD\LimitStateCalculator.h>
+#include <LRFD\LiveLoadDistributionFactorBase.h>
+#include <LRFD\LldfTypeAEK.h>
+#include <LRFD\LldfTypeAEKIJ.h>
+#include <LRFD\LldfTypeBC.h>
+#include <LRFD\LldfTypeHIJ.h>
+#include <LRFD\LldfTypeG.h>
+#include <LRFD\LldfTxdotMultiWeb.h>
+#include <LRFD\LldfTxdotSpreadSlab.h>
+#include <LRFD\LoadModifier.h>
+#include <LRFD\RefinedLosses.h>
+#include <LRFD\RefinedLosses2005.h>
+#include <LRFD\PCIUHPCLosses.h>
+#include <LRFD\LumpSumLosses.h>
+#include <LRFD\PTRefinedLosses.h>
+#include <LRFD\ApproximateLosses.h>
+#include <LRFD\ApproximateLosses2005.h>
+#include <LRFD\NoncompositeApproximateLosses2005.h>
+#include <LRFD\RefinedLossesTxDOT2013.h> 
+#include <LRFD\ElasticShortening.h>
+#include <LRFD\PsStrand.h>
+#include <LRFD\RebarPool.h>
+#include <LRFD\Rebar.h>
+#include <LRFD\Shear.h>
+#include <LRFD\StrandPool.h>
+#include <LRFD\Utility.h>
+#include <LRFD\VersionMgr.h>
+#include <LRFD\VersionMgrListener.h>
+#include <LRFD\LRFRVersionMgr.h>
+#include <LRFD\LRFRVersionMgrListener.h>
+#include <LRFD\CreepCoefficient.h>
+#include <LRFD\CreepCoefficient2005.h>
+#include <LRFD\PCIUHPCCreepCoefficient.h>
+#include <LRFD\XCreepCoefficient.h>
+#include <LRFD\XCodeVersion.h>
+#include <LRFD\XPsLosses.h>
+#include <LRFD\XRangeOfApplicability.h>
+#include <LRFD\XShear.h>
+#include <LRFD\LRFDConcrete.h>
+#include <LRFD\LRFDTimeDependentConcrete.h>
 
 #endif // INCLUDED_LRFD_LRFD_H_

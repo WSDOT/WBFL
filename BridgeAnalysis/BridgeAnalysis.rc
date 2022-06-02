@@ -49,7 +49,7 @@ BEGIN
             VALUE "FileDescription", "Bridge Analysis Model\0"
             VALUE "FileVersion", "3.8.0.9\0"
             VALUE "InternalName", "BAM\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved\0"
+            VALUE "LegalCopyright", "Copyright © 1999-2020, Washington State Department of Transportation, All Rights Reserved\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "BAM30.DLL\0"
             VALUE "PrivateBuild", "\0"

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,89 +27,21 @@
 
 #include <Reporter\ReporterExp.h>
 
-//
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class REPORTERCLASS rptParagraph;
 
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptParagraphVisitor
-
-   Abstract class to visit all objects in a paragraph. 
-
-DESCRIPTION
-   Visits all report content in a paragraph for a purpose.
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-KEYWORDS
-   Reporter
-*****************************************************************************/
-
+/// Abstract class for visiting a paragraph in a report
 class REPORTERCLASS rptParagraphVisitor
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptParagraphVisitor();
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptParagraphVisitor();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Visit a paragraph
-   virtual void VisitParagraph(rptParagraph*) = 0;
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Visit a paragraph
+   virtual void VisitParagraph(rptParagraph* pParagraph) = 0;
 
 private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accentidal copying and assignment
-   //------------------------------------------------------------------------
-   // Cant make copies
-   rptParagraphVisitor(const rptParagraphVisitor&);
-   //------------------------------------------------------------------------
-   // Assignment is private
-   rptParagraphVisitor& operator=(const rptParagraphVisitor&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   rptParagraphVisitor(const rptParagraphVisitor&) = delete;
+   rptParagraphVisitor& operator=(const rptParagraphVisitor&) = delete;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_PARAGRAPHVISITOR_H_

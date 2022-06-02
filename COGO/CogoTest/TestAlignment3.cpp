@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,7 +51,7 @@ void CTestAlignment3::Test()
    Test2();
    Test3();
    Test4();
-//   Test5();
+   Test5();
 }
 
 void CTestAlignment3::Test1()
@@ -373,8 +373,8 @@ void CTestAlignment3::Test3()
    pi->Move(1000,0);
    pft->Move(5000,5000);
 
-   CComPtr<IHorzCurve> hc;
-   hc.CoCreateInstance(CLSID_HorzCurve);
+   CComPtr<ICompoundCurve> hc;
+   hc.CoCreateInstance(CLSID_CompoundCurve);
    hc->putref_PBT(pbt);
    hc->putref_PI(pi);
    hc->putref_PFT(pft);
@@ -418,11 +418,11 @@ void CTestAlignment3::Test3()
    element.Release();
    subAlignment->get_Item(1,&element);
    element->get_Type(&type);
-   TRY_TEST(type,petHorzCurve);
+   TRY_TEST(type,petCompoundCurve);
 
    punk.Release();
    element->get_Value(&punk);
-   CComQIPtr<IHorzCurve> objHC(punk);
+   CComQIPtr<ICompoundCurve> objHC(punk);
 
    Float64 value;
    objHC->get_Radius(&value);
@@ -576,70 +576,70 @@ void CTestAlignment3::Test4()
    alignment->CreateSubAlignment(CComVariant(startStation),CComVariant(endStation),&subAlignment);
    CompareAlignments(alignment,subAlignment,startStation,endStation,10);
 }
-//
-//void CTestAlignment3::Test5()
-//{
-//   // Alignment consisting of a two line segments
-//   CComPtr<IAlignment> alignment;
-//   alignment.CoCreateInstance(CLSID_Alignment);
-//
-//   alignment->put_RefStation(CComVariant(100.00));
-//
-//   CComPtr<IPoint2d> p1, p2, p3, p4;
-//   p1.CoCreateInstance(CLSID_Point2d);
-//   p2.CoCreateInstance(CLSID_Point2d);
-//   p3.CoCreateInstance(CLSID_Point2d);
-//   p4.CoCreateInstance(CLSID_Point2d);
-//
-//   p1->Move(0,0);
-//   p2->Move(10,0);
-//   p3->Move(10,10);
-//   p4->Move(20,10);
-//
-//   CComPtr<ILineSegment2d> ls1, ls2;
-//   ls1.CoCreateInstance(CLSID_LineSegment2d);
-//   ls2.CoCreateInstance(CLSID_LineSegment2d);
-//
-//   ls1->putref_StartPoint(p1);
-//   ls1->putref_EndPoint(p2);
-//   ls2->putref_StartPoint(p3);
-//   ls2->putref_EndPoint(p4);
-//
-//   alignment->AddEx(ls1);
-//   alignment->AddEx(ls2);
-//
-//   //////////////
-//   // Bearing,Normal,LocatePoint, Station, and Offset
-//   CComPtr<IDirection> dir;
-//   Float64 dirVal;
-//   CComPtr<IPoint2d> pnt;
-//   Float64 x,y;
-//   CComPtr<IStation> station;
-//   Float64 stationVal, offset;
-//
-//   // Sta 1+15
-//   TRY_TEST(alignment->Bearing(CComVariant(115.00),&dir),S_OK);
-//   dir->get_Value(&dirVal);
-//   TRY_TEST(IsEqual(dirVal,PI_OVER_2),true);
-//
-//   dir.Release();
-//   TRY_TEST(alignment->Normal(CComVariant(115.00),&dir),S_OK);
-//   dir->get_Value(&dirVal);
-//   TRY_TEST(IsEqual(dirVal,0.0),true);
-//   pnt.Release();
-//
-//   TRY_TEST(alignment->LocatePoint(CComVariant(115),omtAlongDirection, 3,CComVariant(dirVal),&pnt),S_OK);
-//   pnt->get_X(&x);
-//   pnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x, 13.0),true);
-//   TRY_TEST(IsEqual(y,  5.0),true);
-//
-//   station.Release();
-//   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-//   TRY_TEST(IsEqual(offset,3.0),true);
-//   station->get_Value(&stationVal);
-//   TRY_TEST(IsEqual(stationVal,115.00),true);
-//}
+
+void CTestAlignment3::Test5()
+{
+   // Alignment consisting of a two line segments
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
+   alignment->put_RefStation(CComVariant(100.00));
+
+   CComPtr<IPoint2d> p1, p2, p3, p4;
+   p1.CoCreateInstance(CLSID_Point2d);
+   p2.CoCreateInstance(CLSID_Point2d);
+   p3.CoCreateInstance(CLSID_Point2d);
+   p4.CoCreateInstance(CLSID_Point2d);
+
+   p1->Move(0,0);
+   p2->Move(10,0);
+   p3->Move(10,10);
+   p4->Move(20,10);
+
+   CComPtr<ILineSegment2d> ls1, ls2;
+   ls1.CoCreateInstance(CLSID_LineSegment2d);
+   ls2.CoCreateInstance(CLSID_LineSegment2d);
+
+   ls1->putref_StartPoint(p1);
+   ls1->putref_EndPoint(p2);
+   ls2->putref_StartPoint(p3);
+   ls2->putref_EndPoint(p4);
+
+   alignment->AddEx(ls1);
+   alignment->AddEx(ls2);
+
+   //////////////
+   // Bearing,Normal,LocatePoint, Station, and Offset
+   CComPtr<IDirection> dir;
+   Float64 dirVal;
+   CComPtr<IPoint2d> pnt;
+   Float64 x,y;
+   CComPtr<IStation> station;
+   Float64 stationVal, offset;
+
+   // Sta 1+15
+   TRY_TEST(alignment->Bearing(CComVariant(115.00),&dir),S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal,PI_OVER_2),true);
+
+   dir.Release();
+   TRY_TEST(alignment->Normal(CComVariant(115.00),&dir),S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal,0.0),true);
+   pnt.Release();
+
+   TRY_TEST(alignment->LocatePoint(CComVariant(115),omtAlongDirection, 3,CComVariant(dirVal),&pnt),S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, 13.0),true);
+   TRY_TEST(IsEqual(y,  5.0),true);
+
+   station.Release();
+   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(IsEqual(offset,3.0),true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal,115.00),true);
+}
 
 void CTestAlignment3::CompareAlignments(IAlignment* pAlignment1,IAlignment* pAlignment2,Float64 start,Float64 end,long nPoints)
 {

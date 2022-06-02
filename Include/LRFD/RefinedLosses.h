@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -120,9 +120,9 @@ public:
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -152,21 +152,10 @@ public:
                          bool bValidateParameters
                          );
 
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdRefinedLosses(const lrfdRefinedLosses& rOther);
 
    //------------------------------------------------------------------------
    // Destructor
    ~lrfdRefinedLosses();
-
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdRefinedLosses& operator=(const lrfdRefinedLosses& rOther);
-
-   // GROUP: OPERATIONS
 
 
    // GROUP: ACCESS
@@ -208,31 +197,7 @@ protected:
    mutable Float64 m_dfpR2;
 
    Float64 m_Shipping;
-
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdRefinedLosses& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdRefinedLosses& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_REFINEDLOSSES_H_

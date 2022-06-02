@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,115 +25,47 @@
 #define INCLUDED_REPORTER_RCHYPERTARGET_H_
 #pragma once
 
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Reporter\RcVisitor.h>
+#include <string>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcHyperTarget
-
-   Report content that defines a target to a hyperlink
-
-DESCRIPTION
-   This class defines a target, or anchor to a hyperlink. 
-*****************************************************************************/
-
+/// Report content that defines a target to a hyperlink
 class REPORTERCLASS rptRcHyperTarget : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
+   rptRcHyperTarget
+   (
+      const std::_tstring& YourTarget ///< The target name
+   );
 
-   //------------------------------------------------------------------------
-   // constructor
-   rptRcHyperTarget(const std::_tstring YourTarget)
-   {
-      m_TheTarget = YourTarget;
-   }
+   rptRcHyperTarget(const rptRcHyperTarget& rRcHyperTarget);
 
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   rptRcHyperTarget(const rptRcHyperTarget& /*rRcHyperTarget*/);               // Remove to prevent copy
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcHyperTarget();
 
-   // GROUP: OPERATORS
+   rptRcHyperTarget& operator=(const rptRcHyperTarget& rRcHyperTarget);
 
-   //------------------------------------------------------------------------
-   // Assignment operator
-   //
-   // Returns reference to itself
-   rptRcHyperTarget& operator = (const rptRcHyperTarget& /*rRcHyperTarget*/);  // Remove to prevent assignment
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Clone thyself
+   /// Creates a clone
    rptReportContent* CreateClone() const;
 
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accepts a visitor and calls VisitRcHyperTarget(this)
    void Accept( rptRcVisitor& MyVisitor );
 
-   // GROUP: ACCESS
-   //
-   //------------------------------------------------------------------------
-   // get the target name
-   std::_tstring GetTargetName() const {return std::_tstring(m_TheTarget); }
-   // GROUP: INQUIRY
+   /// Returns the hyperlink target name
+   const std::_tstring& GetTargetName() const {return m_TheTarget; }
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Copies the content from rOther to this object
+   void MakeCopy(const rptRcHyperTarget& rOther);
+
+   /// Assigns the content from oOther to this object
+   void MakeAssignment(const rptRcHyperTarget& rOther);
 
 private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // The target name
    std::_tstring m_TheTarget;
 
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // hide the default constructor
-   rptRcHyperTarget();
-
-   // GROUP: OPERATORS
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Function to aid in copying
-   void MakeCopy(const rptRcHyperTarget& rRcHyperTarget);
-   //------------------------------------------------------------------------
-   // Function to aid in assignment
-   void MakeAssignment(const rptRcHyperTarget& rOther);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   rptRcHyperTarget() = delete;
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif
+#endif // INCLUDED_REPORTER_RCHYPERTARGET_H_

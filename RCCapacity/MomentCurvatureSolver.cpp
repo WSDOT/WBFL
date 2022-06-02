@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -182,7 +182,7 @@ HRESULT CMomentCurvatureSolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 
    HRESULT hr;
 
    CComPtr<IMomentCapacitySolution> capacity_solution;
-   hr = m_CapacitySolver->Solve(Fz,angle,k,smFixedCurvature,&capacity_solution);
+   hr = m_CapacitySolver->Solve(Fz,angle,k,0.0,smFixedCurvature,&capacity_solution);
    if ( FAILED(hr) )
       return hr;
 

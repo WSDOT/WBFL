@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -99,6 +99,7 @@ public:
 	{
       int ID = pCtrlCont->m_pWnd->GetDlgCtrlID();
 		CCustomControlSite *pSite = new CCustomControlSite(pCtrlCont);
+      pSite->HasEditCommand(FALSE);
       if ( ID == IDC_HELP_WEB_BROWSER )
       {
          pSite->HasEditCommand(FALSE);
@@ -110,10 +111,6 @@ public:
          {
             CEAFReportView* pReportView = (CEAFReportView*)pParent;
             pSite->HasEditCommand(pReportView->CanEditReport());
-         }
-         else
-         {
-            pSite->HasEditCommand(FALSE);
          }
       }
 

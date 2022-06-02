@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,45 +30,17 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-/****************************************************************************
-CLASS
-   rptOutputRcVisitor
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptOutputRcVisitor::rptOutputRcVisitor(std::_tostream* pMyOstream)
 {
    m_pOstream = pMyOstream;
 }
 
-
 rptOutputRcVisitor::~rptOutputRcVisitor()
 {
 }
 
-//======================== OPERATORS  =======================================
-
-
-
-
-//======================== OPERATIONS =======================================
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
 Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
 {
-
    Uint8 symlet='0';
 
    switch (sym)
@@ -114,6 +86,12 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
       break;
    case rptRcSymbol::GAMMA:
       symlet='G';
+      break;
+   case rptRcSymbol::zeta:
+      symlet = 'z';
+      break;
+   case rptRcSymbol::ZETA:
+      symlet = 'Z';
       break;
    case rptRcSymbol::kappa:
       symlet=107;
@@ -317,15 +295,3 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
 
    return symlet;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

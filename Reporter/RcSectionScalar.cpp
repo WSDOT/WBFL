@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,16 +33,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcSectionScalar
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptRcSectionScalar::rptRcSectionScalar()
 {
    Init();
@@ -66,7 +56,6 @@ rptRcSectionScalar::~rptRcSectionScalar()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptRcSectionScalar& rptRcSectionScalar::operator= (const rptRcSectionScalar& rOther)
 {
    if( this != &rOther )
@@ -77,7 +66,6 @@ rptRcSectionScalar& rptRcSectionScalar::operator= (const rptRcSectionScalar& rOt
    return *this;
 }
 
-//======================== OPERATIONS =======================================
 rptReportContent* rptRcSectionScalar::CreateClone() const
 {
    return new rptRcSectionScalar( *this );
@@ -99,14 +87,13 @@ std::_tstring rptRcSectionScalar::AsString(int idx) const
    return fmt.AsString( idx == 0 ? GetLeftValue() : GetRightValue() );
 }
 
-//======================== ACCESS     =======================================
 rptReportContent& rptRcSectionScalar::SetValue( const sysSectionValue& value )
 {
    m_Value = value;
    return *this;
 }
 
-sysSectionValue rptRcSectionScalar::GetValue() const
+const sysSectionValue& rptRcSectionScalar::GetValue() const
 {
    return m_Value;
 }
@@ -151,26 +138,6 @@ Uint16 rptRcSectionScalar::GetWidth() const
    return m_Width;
 }
 
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rptRcSectionScalar::AssertValid() const
-{
-   return true; // rptReportContent::AssertValid();
-}
-
-void rptRcSectionScalar::Dump(dbgDumpContext& os) const
-{
-   //rptReportContent::Dump( os );
-   os << AsString(0).c_str() << " " << AsString(1).c_str() << endl;
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcSectionScalar::MakeCopy(const rptRcSectionScalar& rOther)
 {
    m_Value        = rOther.m_Value;
@@ -185,22 +152,9 @@ void rptRcSectionScalar::MakeAssignment(const rptRcSectionScalar& rOther)
    MakeCopy( rOther );
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcSectionScalar::Init()
 {
    m_Format    = sysNumericFormatTool::Automatic;
    m_Precision = 0;
    m_Width     = 0;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,22 +33,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptHtmlReportVisitor
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptHtmlReportVisitor::~rptHtmlReportVisitor()
 {
 }
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 
 void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
 {
@@ -73,7 +60,7 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
    // Use MEDIA attribute of STYLE tag to handle differences between
    // printing and viewing.
    //
-   const rptPageLayout* pl = pReport->GetpPageLayout();
+   const rptPageLayout* pl = pReport->GetPageLayout();
 //   *m_pOstream << "<STYLE MEDIA=\"PRINT\">" << std::endl;
 //   *m_pOstream << "   BODY {margin:0,0,0,0}" << std::endl;
 //   *m_pOstream << "</STYLE>" << std::endl;

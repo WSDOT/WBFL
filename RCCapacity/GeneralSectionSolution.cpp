@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -159,4 +159,28 @@ STDMETHODIMP CGeneralSectionSolution::get_Slice(CollectionIndexType sliceIdx,IGe
    m_Slices->get_Item(sliceIdx,&punk);
    punk.QueryInterface(pSlice);
    return S_OK;
+}
+
+STDMETHODIMP CGeneralSectionSolution::FindSlices(IndexType shapeIdx, IUnkArray** ppSlices)
+{
+   CHECK_RETOBJ(ppSlices);
+   CComPtr<IUnkArray> slices;
+   slices.CoCreateInstance(CLSID_UnkArray);
+
+   CollectionIndexType nSlices;
+   m_Slices->get_Count(&nSlices);
+   for (IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++)
+   {
+      CComPtr<IUnknown> punk;
+      m_Slices->get_Item(sliceIdx, &punk);
+      CComQIPtr<IGeneralSectionSlice> slice(punk);
+      IndexType thisShapeIdx;
+      slice->get_ShapeIndex(&thisShapeIdx);
+      if (thisShapeIdx == shapeIdx)
+      {
+         slices->Add(punk);
+      }
+   }
+
+   return slices.CopyTo(ppSlices);
 }

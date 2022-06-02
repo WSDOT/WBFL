@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.CompoundCurve.1 = s 'CompoundCurve Class'
+	{
+		CLSID = s '{61454EB9-8040-4B74-9429-B09D1FF1E0BB}'
+	}
+	WBFLCogo.CompoundCurve = s 'CompoundCurve Class'
+	{
+		CLSID = s '{61454EB9-8040-4B74-9429-B09D1FF1E0BB}'
+		CurVer = s 'WBFLCogo.CompoundCurve.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {61454EB9-8040-4B74-9429-B09D1FF1E0BB} = s 'CompoundCurve Class'
+		{
+			ProgID = s 'WBFLCogo.CompoundCurve.1'
+			VersionIndependentProgID = s 'WBFLCogo.CompoundCurve'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,154 +23,141 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\Results.h>
-#include <WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/Results.h>
+#include <WBFLGenericBridgeTools/AlternativeTensileStressCalculator.h>
+#include <array>
 
-/*****************************************************************************
-CLASS 
-   stbHaulingSectionResults
-
-DESCRIPTION
-   Encapsulates the hauling analysis results at a section
-*****************************************************************************/
-
-class STABILITYCLASS stbHaulingSectionResult
+namespace WBFL
 {
-public:
-   stbHaulingSectionResult();
+   namespace Stability
+   {
 
-   IndexType AnalysisPointIndex; // index of the analysis point for these results
+      /// Hauling analysis results at a section
+      class STABILITYCLASS HaulingSectionResult
+      {
+      public:
+         HaulingSectionResult();
 
-   Float64 Mg;  // moment due to girder weight
-   Float64 Mw;  // transverse moment due to wind
-   Float64 Mcf; // transverse moment due to CF
+         IndexType AnalysisPointIndex; ///< index of the analysis point for these results
 
-   Float64 fps[4];   // corner stresses due to prestressing
-   Float64 fg[4];    // corner stresses due to girder weight without impact
-   Float64 fw[4];    // corner stresses due to wind towards the left
-   Float64 fcf[4];   // corner stresses due to CF towards the left
+         Float64 Mg;  ///< moment due to girder weight
+         Float64 Mw;  ///< transverse moment due to wind
+         Float64 Mcf; ///< transverse moment due to CF
 
-   // Array indicies are [HaulingSlope enum][ImpactDirection enum][Corner enum]
-   Float64 fDirect[2][3][4]; // stress due to direct loads (girder self weight and ps)
-                                
-   // Array indicies are [HaulingSlope enum][ImpactDirection enum][Direction enum (Wind)][Corner enum]
-   Float64 fTilt[2][3][2][4];   // stress due to equilibrium rotation of girder caused by girder self weight
-   Float64 f[2][3][2][4];       // stress at a corner (fDirect + fTilt + fWind + fCF)
+         std::array<Float64, 4> fps;   ///< corner stresses due to prestressing (array indcies are [Corner])
+         std::array<Float64, 4> fg;    ///< corner stresses due to girder weight without impact (array indcies are [Corner])
+         std::array<Float64, 4> fw;    ///< corner stresses due to wind towards the left (array indcies are [Corner])
+         std::array<Float64, 4> fcf;   ///< corner stresses due to centrifugal towards the left (array indcies are [Corner])
 
-   // Array indicies are [HaulingSlope enum][Face enum]
-   Float64 fMinDirect[2][2];    // min direct stress
-   stbTypes::ImpactDirection MinDirectStressImpactDirection[2][2];    // impact direction associated with the minimum girder stress
-   stbTypes::Corner MinDirectStressCorner[2][2];             // corner where the minimum girder stress occurs
+         Float64 fDirect[2][3][4]; ///< stress due to direct loads (girder self weight and ps). Array indicies are [HaulingSlope][ImpactDirection][Corner]
 
-   Float64 fMaxDirect[2][2];    // max direction stress
-   stbTypes::ImpactDirection MaxDirectStressImpactDirection[2][2];    // impact direction associated with the maximum girder stress
-   stbTypes::Corner MaxDirectStressCorner[2][2];             // corner where the maximum girder stress occurs
+         Float64 fTilt[2][3][2][4];   ///< stress due to equilibrium rotation of girder caused by girder self weight. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
+         Float64 f[2][3][2][4];       ///< stress at a corner (fDirect + fTilt + fWind + fCF). Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
 
-   Float64 fMin[2][2];    // min stress
-   stbTypes::ImpactDirection MinStressImpactDirection[2][2];    // impact direction associated with the minimum girder stress
-   stbTypes::WindDirection MinStressWindDirection[2][2];      // wind direction associated with the minimum girder stress
-   stbTypes::Corner MinStressCorner[2][2];             // corner where the minimum girder stress occurs
+         Float64 fMinDirect[2][2];    ///< min direct stress. Array indicies are [HaulingSlope][GirderFace]
+         ImpactDirection MinDirectStressImpactDirection[2][2];    ///< impact direction associated with the minimum girder stress. Array indicies are [HaulingSlope][GirderFace]
+         Corner MinDirectStressCorner[2][2];             ///< corner where the minimum girder stress occurs. Array indicies are [HaulingSlope][GirderFace]
 
-   Float64 fMax[2][2];    // max stress
-   stbTypes::ImpactDirection MaxStressImpactDirection[2][2];    // impact direction associated with the maximum girder stress
-   stbTypes::WindDirection MaxStressWindDirection[2][2];      // wind direction associated with the maximum girder stress
-   stbTypes::Corner MaxStressCorner[2][2];             // corner where the maximum girder stress occurs
+         Float64 fMaxDirect[2][2];    ///< max direction stress. Array indicies are [HaulingSlope][GirderFace]
+         ImpactDirection MaxDirectStressImpactDirection[2][2];    ///< impact direction associated with the maximum girder stress. Array indicies are [HaulingSlope][GirderFace]
+         Corner MaxDirectStressCorner[2][2];             ///< corner where the maximum girder stress occurs. Array indicies are [HaulingSlope][GirderFace]
 
-   // Array indicies are [HaulingSlope enum][ImpactDirection enum][Direction enum (Wind)][Corner enum]
-   Float64 Mcr[2][3][2][4];        // cracking moment
-   Float64 ThetaCrack[2][3][2][4]; // rotation angle causing cracking
-   Float64 FScr[2][3][2][4]; // factor of safety against cracking
-   // Array indicies are [HaulingSlope enum]
-   Float64 FScrMin[2]; // controlling FScr... least of all FScr[][][][]
-   stbTypes::ImpactDirection FScrImpactDirection[2]; // impact direction for FScrMin
-   stbTypes::WindDirection FScrWindDirection[2]; // wind direction for FScrMin
-   stbTypes::Corner FScrCorner[2]; // corner for FScrMin
+         Float64 fMin[2][2];    ///< min stress. Array indicies are [HaulingSlope][GirderFace]
+         ImpactDirection MinStressImpactDirection[2][2];    ///< impact direction associated with the minimum girder stress. Array indicies are [HaulingSlope][GirderFace]
+         WindDirection MinStressWindDirection[2][2];      ///< wind direction associated with the minimum girder stress. Array indicies are [HaulingSlope][GirderFace]
+         Corner MinStressCorner[2][2];             ///< corner where the minimum girder stress occurs. Array indicies are [HaulingSlope][GirderFace]
 
-   // Array indicies are [HaulingSlope enum][Impact][Wind Direction]
+         Float64 fMax[2][2];    ///< max stress. Array indicies are [HaulingSlope][GirderFace]
+         ImpactDirection MaxStressImpactDirection[2][2];    ///< impact direction associated with the maximum girder stress. Array indicies are [HaulingSlope][GirderFace]
+         WindDirection MaxStressWindDirection[2][2];      ///< wind direction associated with the maximum girder stress. Array indicies are [HaulingSlope][GirderFace]
+         Corner MaxStressCorner[2][2];             ///< corner where the maximum girder stress occurs. Array indicies are [HaulingSlope][GirderFace]
+
+         Float64 Mcr[2][3][2][4];        ///< cracking moment. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
+         Float64 ThetaCrack[2][3][2][4]; ///< rotation angle causing cracking. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
+         Float64 FScr[2][3][2][4]; ///< factor of safety against cracking. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
+
+         std::array<Float64, 2> FScrMin; ///< controlling FScr. The least of all FScr[HaulingSlope][ImpactDirection][WindDirection][Corner]. Array indicies are [HaulingSlope]
+         std::array<ImpactDirection, 2> FScrImpactDirection; ///< impact direction for FScrMin. Array indicies are [HaulingSlope]
+         std::array<WindDirection, 2> FScrWindDirection; ///< wind direction for FScrMin. Array indicies are [HaulingSlope]
+         std::array<Corner, 2> FScrCorner; ///< corner for FScrMin. Array indicies are [HaulingSlope]
+
 #if defined REBAR_FOR_DIRECT_TENSION
-   gbtAlternativeTensileStressRequirements altTensionRequirements[2][3];
+         gbtAlternativeTensileStressRequirements altTensionRequirements[2][3]; ///< details of the auxiliary tension reinforcement requirements. Array indicies are [HaulingSlope][ImpactDirection] 
 #else
-   gbtAlternativeTensileStressRequirements altTensionRequirements[2][3][2]; // use if lateral loads are considered
+   // use if lateral loads are considered
+         gbtAlternativeTensileStressRequirements altTensionRequirements[2][3][2]; ///< details of the auxiliary tension reinforcement requirements. Array indicies are [HaulingSlope][ImpactDirection][WindDirection]
 #endif
-};
+      };
 
 
-/*****************************************************************************
-CLASS 
-   stbHaulingResults
+      /// Analysis results for hauling stability analysis
+      class STABILITYCLASS HaulingResults : public Results
+      {
+      public:
+         HaulingResults();
 
-DESCRIPTION
-   Encapsulates the analysis results for hauling stability analysis
-*****************************************************************************/
+         GirderSide AssumedTiltDirection; ///< Direction in which girder is assumed to tilt
 
-class STABILITYCLASS stbHaulingResults : public stbResults
-{
-public:
-   stbHaulingResults();
+         bool bRotationalStability[2][3][2]; ///< if true, the girder is not stable for hauling... it will just roll over (Ktheta is too small so ThetaEq is too big). Array indicies are [HaulingSlope][ImpactDirection][WindDirection]
 
-   stbTypes::GirderSide AssumedTiltDirection;
+         bool HasRotationalStablity() const; ///< returns true if girder has rotational stability
+         bool HasRolloverStability() const; ///< returns true if girder has rollover stability
+         bool IsStable() const; ///< returns true only if all cases are stable, otherwise false
 
-   bool bRotationalStability[2][3][2]; // if true, the girder is not stable for hauling... it will just roll over (Ktheta is too small so ThetaEq is too big). 
+         Float64 MotWind; ///< lateral overturning moment due to wind
 
-   bool HasRotationalStablity() const;
-   bool HasRolloverStability() const;
-   bool IsStable() const; // returns true only if all cases are stable, otherwise false
+         Float64 Wcf;   ///< total centrifugal force (applied at Dra)
+         Float64 MotCF; ///< lateral overturning moment due to centrifugal force
 
-   Float64 MotWind; // lateral overturning moment due to wind
+         Float64 ZoCF;   ///< lateral deflection of center of gravity for for centrifugal force applied laterally
 
-   Float64 Wcf;   // total centrifugal force (applied at Dra)
-   Float64 MotCF; // lateral overturning moment due to centrifugal force
+         std::vector<HaulingSectionResult> vSectionResults; ///< analysis results for each analysis point in the stability problem object.
 
-   Float64 ZoCF;   // lateral deflection of center of gravity for for centrifugal force applied laterally
+         Float64 ThetaEq[2][3][2]; ///< roll angle at equilibrium. Array indicies are [HaulingSlope][ImpactDirection][WindDirection].
 
-   std::vector<stbHaulingSectionResult> vSectionResults; // analysis results for each analysis point in the stability problem object
+         std::array<Float64, 2> MaxDirectStress;                     ///< maximum stress in plumb girder (most tensile value). Array indicies are [HaulingSlope].
+         std::array<IndexType, 2> MaxDirectStressAnalysisPointIndex; ///< analysis poiint index associated with the maximum girder stress. Array indicies are [HaulingSlope].
+         std::array<ImpactDirection, 2> MaxDirectStressImpactDirection;    ///< impact direction associated with the maximum girder stress. Array indicies are [HaulingSlope].
+         std::array<Corner, 2> MaxDirectStressCorner;             ///< corner where the maximum girder stress occurs. Array indicies are [HaulingSlope].
 
-   // Array indicies are [HaulingSlope enum][Impact][Wind]
-   Float64 ThetaEq[2][3][2];    // roll angle at equilibrium (slope, impact, wind]
+         std::array<Float64, 2> MinDirectStress;                     ///< minimum stress in plumb girder (most compressive value). Array indicies are [HaulingSlope].
+         std::array<IndexType, 2> MinDirectStressAnalysisPointIndex; ///< analysis poiint index associated with the minimum girder stress. Array indicies are [HaulingSlope].
+         std::array<ImpactDirection, 2> MinDirectStressImpactDirection;    ///< impact direction associated with the minimum girder stress. Array indicies are [HaulingSlope].
+         std::array<Corner, 2> MinDirectStressCorner;             ///< corner where the minimum girder stress occurs. Array indicies are [HaulingSlope].
 
-   // Array indicies are [HaulingSlope enum]
-   Float64 MaxDirectStress[2];                     // maximum stress in plumb girder(most tensile value)
-   IndexType MaxDirectStressAnalysisPointIndex[2]; // analysis poiint index associated with the maximum girder stress
-   stbTypes::ImpactDirection MaxDirectStressImpactDirection[2];    // impact direction associated with the maximum girder stress
-   stbTypes::Corner MaxDirectStressCorner[2];             // corner where the maximum girder stress occurs
+         std::array<Float64, 2> MaxStress; ///< maximum stress (most tensile value). Array indicies are [HaulingSlope].
+         std::array<IndexType, 2> MaxStressAnalysisPointIndex; ///< analysis poiint index associated with the maximum girder stress. Array indicies are [HaulingSlope].
+         std::array<ImpactDirection, 2> MaxStressImpactDirection;    ///< impact direction associated with the maximum girder stress. Array indicies are [HaulingSlope].
+         std::array<WindDirection, 2> MaxStressWindDirection;      ///< wind direction associated with the maximum girder stress. Array indicies are [HaulingSlope].
+         std::array<Corner, 2> MaxStressCorner;             ///< corner where the maximum girder stress occurs. Array indicies are [HaulingSlope].
 
-   Float64 MinDirectStress[2];                     // minimum stress in plumb girder (most compressive value)
-   IndexType MinDirectStressAnalysisPointIndex[2]; // analysis poiint index associated with the minimum girder stress
-   stbTypes::ImpactDirection MinDirectStressImpactDirection[2];    // impact direction associated with the minimum girder stress
-   stbTypes::Corner MinDirectStressCorner[2];             // corner where the minimum girder stress occurs
+         std::array<Float64, 2> MinStress;                     ///< minimum stress (most compressive value). Array indicies are [HaulingSlope].
+         std::array<IndexType, 2> MinStressAnalysisPointIndex; ///< analysis poiint index associated with the minimum girder stress. Array indicies are [HaulingSlope].
+         std::array<ImpactDirection, 2> MinStressImpactDirection;    ///< impact direction associated with the minimum girder stress. Array indicies are [HaulingSlope].
+         std::array<WindDirection, 2> MinStressWindDirection;      ///< wind direction associated with the minimum girder stress. Array indicies are [HaulingSlope].
+         std::array<Corner, 2> MinStressCorner;             ///< corner where the minimum girder stress occurs. Array indicies are [HaulingSlope].
 
-   Float64 MaxStress[2];                     // maximum stress (most tensile value)
-   IndexType MaxStressAnalysisPointIndex[2]; // analysis poiint index associated with the maximum girder stress
-   stbTypes::ImpactDirection MaxStressImpactDirection[2];    // impact direction associated with the maximum girder stress
-   stbTypes::WindDirection MaxStressWindDirection[2];      // wind direction associated with the maximum girder stress
-   stbTypes::Corner MaxStressCorner[2];             // corner where the maximum girder stress occurs
+         std::array<Float64, 2> MinFScr; ///< minimum factor of safety against cracking. Array indicies are [HaulingSlope].
+         std::array<IndexType, 2> FScrAnalysisPointIndex;  ///< analysis point index associated with the minimum factor of safety against cracking. Array indicies are [HaulingSlope].
+         std::array<ImpactDirection, 2> FScrImpactDirection; ///< impact direction associated with the minimum factor of safety against cracking. Array indicies are [HaulingSlope].
+         std::array<WindDirection, 2> FScrWindDirection;   ///< wind direction associated with the minimum factor of safety against cracking. Array indicies are [HaulingSlope].
+         std::array<Corner, 2> FScrCorner; ///< corner associated with the minimum factor of safety against cracking. Array indicies are [HaulingSlope].
 
-   Float64 MinStress[2];                     // minimum stress (most compressive value)
-   IndexType MinStressAnalysisPointIndex[2]; // analysis poiint index associated with the minimum girder stress
-   stbTypes::ImpactDirection MinStressImpactDirection[2];    // impact direction associated with the minimum girder stress
-   stbTypes::WindDirection MinStressWindDirection[2];      // wind direction associated with the minimum girder stress
-   stbTypes::Corner MinStressCorner[2];             // corner where the minimum girder stress occurs
+         Float64 ThetaMax[2][3][2];    ///< maximum tilt angle of the cracked section. Array indicies are [HaulingSlope][ImpactDirection][WindDirection].
+         Float64 FsFailure[2][3][2];   ///< factor of safety against failure. Array indicies are [HaulingSlope][ImpactDirection][WindDirection].
+         Float64 AdjFsFailure[2][3][2]; ///< adjusted FS against failure (if FSfailure < FScr then FSfailure = FScr). Array indicies are [HaulingSlope][ImpactDirection][WindDirection].
+         std::array<ImpactDirection, 2> FSfImpactDirection; ///< impact direction associated with the minimum factor of safety against failure. Array indicies are [HaulingSlope].
+         std::array<WindDirection, 2> FSfWindDirection;   ///< wind direction associated with the minimum factor of safety against failure. Array indicies are [HaulingSlope].
+         std::array<Float64, 2> MinFsFailure; ///< minimum factor of safety against failure. Array indicies are [HaulingSlope].
+         std::array<Float64, 2> MinAdjFsFailure; ///< corrosponding adjusted minimum factor of safety against failure. Array indicies are [HaulingSlope].
 
-   Float64 MinFScr[2];               // minimum factor of safety against cracking
-   IndexType FScrAnalysisPointIndex[2];  // analysis point index associated with the minimum factor of safety against cracking
-   stbTypes::ImpactDirection FScrImpactDirection[2]; // impact direction associated with the minimum factor of safety against cracking
-   stbTypes::WindDirection FScrWindDirection[2];   // wind direction associated with the minimum factor of safety against cracking
-   stbTypes::Corner FScrCorner[2]; // corner associated with the minimum factor of safety against cracking
-
-   // Array indicies [HaulingSlope enum][ImpactDirection enum][Side Enum (wind)]
-   Float64 ThetaMax[2][3][2];    // maximum tilt angle of the cracked section
-   Float64 FsFailure[2][3][2];   // factor of safety against failure
-   Float64 AdjFsFailure[2][3][2];// adjusted FS against failure (if FSfailure < FScr then FSfailure = FScr)
-   stbTypes::ImpactDirection FSfImpactDirection[2]; // impact direction associated with the minimum factor of safety against failure
-   stbTypes::WindDirection FSfWindDirection[2];   // wind direction associated with the minimum factor of safety against failure
-   Float64 MinFsFailure[2];         // minimum factor of safety against failure
-   Float64 MinAdjFsFailure[2];      // corrosponding adjusted minimum factor of safety against failure
-
-   bool bRolloverStability[2][3][2]; // there is a rollover instability
-   Float64 ThetaRollover[2][3][2]; // minimum tilt angle that causes roll over (> 0 girder tilts CCW, < 0 girder tilts CW
-   Float64 FsRollover[2][3][2];    // factor of safety against roll over
-   stbTypes::ImpactDirection FSroImpactDirection[2];  // impact direction direction associated with the minimum factor of safety against rollover
-   stbTypes::WindDirection FSroWindDirection[2];    // wind direction direction associated with the minimum factor of safety against rollover
-   Float64 MinFsRollover[2];          // minimum factor of safety agains roll over
-};
+         bool bRolloverStability[2][3][2]; ///< there is a rollover instability. Array indicies are [HaulingSlope][ImpactDirection][WindDirection].
+         Float64 ThetaRollover[2][3][2]; ///< minimum tilt angle that causes roll over (> 0 girder tilts CCW, < 0 girder tilts CW. Array indicies are [HaulingSlope][ImpactDirection][WindDirection].
+         Float64 FsRollover[2][3][2];    ///< factor of safety against roll over. Array indicies are [HaulingSlope][ImpactDirection][WindDirection].
+         std::array<ImpactDirection, 2> FSroImpactDirection;  ///< impact direction direction associated with the minimum factor of safety against rollover. Array indicies are [HaulingSlope].
+         std::array<WindDirection, 2> FSroWindDirection;    ///< wind direction direction associated with the minimum factor of safety against rollover. Array indicies are [HaulingSlope].
+         std::array<Float64, 2> MinFsRollover;          ///< minimum factor of safety agains roll over. Array indicies are [HaulingSlope].
+      };
+   }
+}

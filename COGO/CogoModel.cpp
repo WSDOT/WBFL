@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -81,12 +81,12 @@ HRESULT CCogoModel::FinalConstruct()
    hr = CrAdvise(m_VertCurves,this,IID_IVertCurveCollectionEvents,&m_dwVertCurvesCookie);
    ATLASSERT(SUCCEEDED(hr));
 
-   // HorzCurves collection
-   hr = m_HorzCurves.CoCreateInstance(CLSID_HorzCurveCollection);
+   // CompoundCurves collection
+   hr = m_CompoundCurves.CoCreateInstance(CLSID_CompoundCurveCollection);
    if ( FAILED(hr) )
       return hr;
 
-   hr = CrAdvise(m_HorzCurves,this,IID_IHorzCurveCollectionEvents,&m_dwHorzCurvesCookie);
+   hr = CrAdvise(m_CompoundCurves,this,IID_ICompoundCurveCollectionEvents,&m_dwCompoundCurvesCookie);
    ATLASSERT(SUCCEEDED(hr));
 
    // Alignments collection
@@ -123,7 +123,7 @@ void CCogoModel::FinalRelease()
    CrUnadvise(m_Lines,         this, IID_ILineSegmentCollectionEvents,  m_dwLinesCookie);
    CrUnadvise(m_ProfilePoints, this, IID_IProfilePointCollectionEvents, m_dwProfilePointsCookie);
    CrUnadvise(m_VertCurves,    this, IID_IVertCurveCollectionEvents,    m_dwVertCurvesCookie);
-   CrUnadvise(m_HorzCurves,    this, IID_IHorzCurveCollectionEvents,    m_dwHorzCurvesCookie);
+   CrUnadvise(m_CompoundCurves,    this, IID_ICompoundCurveCollectionEvents,    m_dwCompoundCurvesCookie);
    CrUnadvise(m_Alignments,    this, IID_IAlignmentCollectionEvents,    m_dwAlignmentCookie);
    CrUnadvise(m_Paths,         this, IID_IPathCollectionEvents,         m_dwPathCookie);
 }
@@ -138,9 +138,9 @@ HRESULT CCogoModel::PutRef_Paths(IPathCollection* paths)
    return CrAssignPointer(m_Paths,paths,this,IID_IPathCollectionEvents,&m_dwPathCookie);
 }
 
-HRESULT CCogoModel::PutRef_HorzCurves(IHorzCurveCollection* horzCurves)
+HRESULT CCogoModel::PutRef_CompoundCurves(ICompoundCurveCollection* CompoundCurves)
 {
-   return CrAssignPointer(m_HorzCurves,horzCurves,this,IID_IHorzCurveCollectionEvents,&m_dwHorzCurvesCookie);
+   return CrAssignPointer(m_CompoundCurves,CompoundCurves,this,IID_ICompoundCurveCollectionEvents,&m_dwCompoundCurvesCookie);
 }
 
 HRESULT CCogoModel::PutRef_Lines(ILineSegmentCollection* lines)
@@ -220,10 +220,10 @@ STDMETHODIMP CCogoModel::get_VertCurves(IVertCurveCollection* *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::get_HorzCurves(IHorzCurveCollection* *pVal)
+STDMETHODIMP CCogoModel::get_CompoundCurves(ICompoundCurveCollection* *pVal)
 {
    CHECK_RETOBJ(pVal);
-   *pVal = m_HorzCurves;
+   *pVal = m_CompoundCurves;
    (*pVal)->AddRef();
 
    return S_OK;
@@ -253,7 +253,7 @@ STDMETHODIMP CCogoModel::Clear()
    m_Points->Clear();
    m_ProfilePoints->Clear();
    m_VertCurves->Clear();
-   m_HorzCurves->Clear();
+   m_CompoundCurves->Clear();
    m_Alignments->Clear();
 
    return S_OK;
@@ -337,14 +337,14 @@ STDMETHODIMP CCogoModel::get_VertCurveFactory(IVertCurveFactory** factory)
    return m_VertCurves->get_Factory(factory);
 }
 
-STDMETHODIMP CCogoModel::putref_HorzCurveFactory(IHorzCurveFactory* factory)
+STDMETHODIMP CCogoModel::putref_CompoundCurveFactory(ICompoundCurveFactory* factory)
 {
-   return m_HorzCurves->putref_Factory(factory);
+   return m_CompoundCurves->putref_Factory(factory);
 }
 
-STDMETHODIMP CCogoModel::get_HorzCurveFactory(IHorzCurveFactory** factory)
+STDMETHODIMP CCogoModel::get_CompoundCurveFactory(ICompoundCurveFactory** factory)
 {
-   return m_HorzCurves->get_Factory(factory);
+   return m_CompoundCurves->get_Factory(factory);
 }
 
 STDMETHODIMP CCogoModel::putref_AlignmentFactory(IAlignmentFactory* factory)
@@ -391,9 +391,9 @@ STDMETHODIMP CCogoModel::Clone(ICogoModel* *clone)
    m_Paths->Clone(&clonePaths);
    pClone->PutRef_Paths(clonePaths);
 
-   CComPtr<IHorzCurveCollection> cloneHorzCurves;
-   m_HorzCurves->Clone(&cloneHorzCurves);
-   pClone->PutRef_HorzCurves(cloneHorzCurves);
+   CComPtr<ICompoundCurveCollection> cloneCompoundCurves;
+   m_CompoundCurves->Clone(&cloneCompoundCurves);
+   pClone->PutRef_CompoundCurves(cloneCompoundCurves);
 
    CComPtr<ILineSegmentCollection> cloneLines;
    m_Lines->Clone(&cloneLines);
@@ -1204,8 +1204,8 @@ STDMETHODIMP CCogoModel::PointOnCurve(CogoObjectID newID, CogoObjectID fromID, C
    if ( FAILED(hr) )
       return hr;
 
-   CComPtr<IHorzCurve> curve;
-   hr = m_HorzCurves->get_Item(curveID,&curve);
+   CComPtr<ICompoundCurve> curve;
+   hr = m_CompoundCurves->get_Item(curveID,&curve);
    if ( FAILED(hr) )
       return hr;
 
@@ -1403,7 +1403,7 @@ STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, C
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::HorzCurve(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID curveID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::CompoundCurve(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID curveID, CollectionIndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX)
       return E_INVALIDARG;
@@ -1424,15 +1424,15 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoObjectID firstID, CogoObjectID idInc, Cog
    }
 
    // Get the curve
-   CComPtr<IHorzCurve> hc;
-   hr = m_HorzCurves->get_Item(curveID,&hc);
+   CComPtr<ICompoundCurve> hc;
+   hr = m_CompoundCurves->get_Item(curveID,&hc);
    if ( FAILED(hr) )
       return hr;
 
    // Divide the curve
    CComPtr<IPoint2dCollection> points;
    CComQIPtr<IDivide2> divide(m_Engine);
-   hr = divide->HorzCurve(hc,nParts,&points);
+   hr = divide->CompoundCurve(hc,nParts,&points);
    if ( FAILED(hr) )
       return hr;
 
@@ -1687,8 +1687,8 @@ STDMETHODIMP CCogoModel::Save(IStructuredSave2* pSave)
    CComQIPtr<IStructuredStorage2> ssLines(m_Lines);
    ssLines->Save(pSave);
 
-   CComQIPtr<IStructuredStorage2> ssHorzCurves(m_HorzCurves);
-   ssHorzCurves->Save(pSave);
+   CComQIPtr<IStructuredStorage2> ssCompoundCurves(m_CompoundCurves);
+   ssCompoundCurves->Save(pSave);
 
    CComQIPtr<IStructuredStorage2> ssProfilePoints(m_ProfilePoints);
    ssProfilePoints->Save(pSave);
@@ -1727,8 +1727,8 @@ STDMETHODIMP CCogoModel::Load(IStructuredLoad2* pLoad)
    CComQIPtr<IStructuredStorage2> ssLines(m_Lines);
    ssLines->Load(pLoad);
 
-   CComQIPtr<IStructuredStorage2> ssHorzCurves(m_HorzCurves);
-   ssHorzCurves->Load(pLoad);
+   CComQIPtr<IStructuredStorage2> ssCompoundCurves(m_CompoundCurves);
+   ssCompoundCurves->Load(pLoad);
 
    CComQIPtr<IStructuredStorage2> ssProfilePoints(m_ProfilePoints);
    ssProfilePoints->Load(pLoad);
@@ -1853,28 +1853,28 @@ STDMETHODIMP CCogoModel::OnVertCurvesCleared()
 }
 
 ////////////////////////////////////////////////////////
-// IHorzCurveCollectionEvents
-STDMETHODIMP CCogoModel::OnHorzCurveChanged(CogoObjectID id,IHorzCurve* hc)
+// ICompoundCurveCollectionEvents
+STDMETHODIMP CCogoModel::OnCompoundCurveChanged(CogoObjectID id,ICompoundCurve* hc)
 {
-   Fire_OnHorzCurveChanged(this,id,hc);
+   Fire_OnCompoundCurveChanged(this,id,hc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnHorzCurveAdded(CogoObjectID id,IHorzCurve* hc)
+STDMETHODIMP CCogoModel::OnCompoundCurveAdded(CogoObjectID id,ICompoundCurve* hc)
 {
-   Fire_OnHorzCurveAdded(this,id,hc);
+   Fire_OnCompoundCurveAdded(this,id,hc);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnHorzCurveRemoved(CogoObjectID id)
+STDMETHODIMP CCogoModel::OnCompoundCurveRemoved(CogoObjectID id)
 {
-   Fire_OnHorzCurveRemoved(this,id);
+   Fire_OnCompoundCurveRemoved(this,id);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::OnHorzCurvesCleared()
+STDMETHODIMP CCogoModel::OnCompoundCurvesCleared()
 {
-   Fire_OnHorzCurvesCleared(this);
+   Fire_OnCompoundCurvesCleared(this);
    return S_OK;
 }
 

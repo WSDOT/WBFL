@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,9 +98,13 @@ protected:
 protected:
 	//{{AFX_MSG(CEAFGraphView)
 	afx_msg void OnUpdateFilePrint(CCmdUI* pCmdUI);
+	afx_msg void OnLButtonDblClk(UINT nFlags,CPoint point);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
    CRect m_PrintRect;
    bool m_bIsPrinting;
+	BOOL m_bUpdateError;   // true if an error occured while updating the report contents
+	std::_tstring m_ErrorMsg;
+
 };

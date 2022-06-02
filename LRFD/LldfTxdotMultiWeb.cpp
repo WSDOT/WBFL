@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,8 +27,7 @@
 #include <Lrfd\XRangeOfApplicability.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\Utility.h>
-#include <Units\SysUnits.h>
-#include <MathEx.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

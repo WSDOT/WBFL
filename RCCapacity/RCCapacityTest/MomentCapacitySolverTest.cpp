@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity Test - Test driver for RCCapacity library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,6 +31,7 @@
 #include "MomentCapacitySolverTest.h"
 #include "GeneralTests.h"
 #include <WBFLUnitServer.h>
+#include <Units\Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -61,6 +62,9 @@ void CMomentCapacitySolverTest::Test()
    
    // base units of kip and ksi
    hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
+   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
+   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
 
    // Get a general section
    CComPtr<IGeneralSection> section;
@@ -95,33 +99,35 @@ void CMomentCapacitySolverTest::Test()
    beam->put_Width(W);
 
    // #10 rebar
-   Float64 radius = sqrt(1.27/M_PI);
-   CComPtr<ICircle> bar1;
-   bar1.CoCreateInstance(CLSID_Circle);
-   bar1->put_Radius(radius);
+   Float64 Ab = 1.27;
    CComPtr<IPoint2d> center;
-   bar1->get_Center(&center);
+
+   CComPtr<IGenericShape> bar1;
+   bar1.CoCreateInstance(CLSID_GenericShape);
+   bar1->put_Area(Ab);
+   center.Release();
+   bar1->get_Centroid(&center);
    center->Move(W/2-2,H/2-2);
 
-   CComPtr<ICircle> bar2;
-   bar2.CoCreateInstance(CLSID_Circle);
-   bar2->put_Radius(radius);
+   CComPtr<IGenericShape> bar2;
+   bar2.CoCreateInstance(CLSID_GenericShape);
+   bar2->put_Area(Ab);
    center.Release();
-   bar2->get_Center(&center);
+   bar2->get_Centroid(&center);
    center->Move(-(W/2-2),H/2-2);
 
-   CComPtr<ICircle> bar3;
-   bar3.CoCreateInstance(CLSID_Circle);
-   bar3->put_Radius(radius);
+   CComPtr<IGenericShape> bar3;
+   bar3.CoCreateInstance(CLSID_GenericShape);
+   bar3->put_Area(Ab);
    center.Release();
-   bar3->get_Center(&center);
+   bar3->get_Centroid(&center);
    center->Move(-(W/2-2),-(H/2-2));
 
-   CComPtr<ICircle> bar4;
-   bar4.CoCreateInstance(CLSID_Circle);
-   bar4->put_Radius(radius);
+   CComPtr<IGenericShape> bar4;
+   bar4.CoCreateInstance(CLSID_GenericShape);
+   bar4->put_Area(Ab);
    center.Release();
-   bar4->get_Center(&center);
+   bar4->get_Centroid(&center);
    center->Move(W/2-2,-(H/2-2));
 
    CComQIPtr<IShape> shape1(beam);
@@ -133,11 +139,11 @@ void CMomentCapacitySolverTest::Test()
    CComQIPtr<IStressStrain> material1(concrete);
    CComQIPtr<IStressStrain> material2(rebar);
 
-   section->AddShape(shape1,material1,nullptr,0, 1.0); // beam
-   section->AddShape(shape2,material2,nullptr,0, 1.0); // bar 1
-   section->AddShape(shape3,material2,nullptr,0, 1.0); // bar 2
-   section->AddShape(shape4,material2,nullptr,0, 1.0); // bar 3
-   section->AddShape(shape5,material2,nullptr,0, 1.0); // bar 4
+   section->AddShape(CComBSTR("Beam"),shape1, material1, nullptr, nullptr, 1.0, VARIANT_TRUE); // beam
+   section->AddShape(CComBSTR("Bar 1"), shape2,material2,nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 1
+   section->AddShape(CComBSTR("Bar 2"), shape3,material2,nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 2
+   section->AddShape(CComBSTR("Bar 3"), shape4,material2,nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 3
+   section->AddShape(CComBSTR("Bar 4"), shape5,material2,nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 4
 
 
    CComPtr<IMomentCapacitySolver> solver;
@@ -149,25 +155,27 @@ void CMomentCapacitySolverTest::Test()
    solver->putref_Section(section);
 
    CComPtr<IMomentCapacitySolution> solution;
-   Float64 Fz,Mx,My;
-   CComPtr<IPlane3d> strainPlane;
-   TRY_TEST( SUCCEEDED(solver->Solve(0.00,0.00,-0.003,smFixedCompressiveStrain,&solution)), true);
+   TRY_TEST( SUCCEEDED(solver->Solve(0.00,0.00,-0.003,0.0,smFixedCompressionStrain,&solution)), true); // compression top, use angle = 0
 
+   Float64 Fz, Mx, My;
    solution->get_Fz(&Fz);
    solution->get_Mx(&Mx);
    solution->get_My(&My);
-   solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST( IsZero(Fz,0.001), true );
-   TRY_TEST( IsEqual(Mx,-6898.02750), true );
+   TRY_TEST( IsEqual(Mx,-6888.22525), true );
    TRY_TEST( IsZero(My), true);
+
+   CComPtr<IPlane3d> strainPlane;
+   solution->get_StrainPlane(&strainPlane);
 
    Float64 ec;
    strainPlane->GetZ(0.00,H/2,&ec);
    TRY_TEST(IsEqual(ec,-0.003),true);
 
    solution.Release();
-   TRY_TEST( SUCCEEDED(solver->Solve(0.00,M_PI,-0.003,smFixedCompressiveStrain,&solution)), true);
+
+   TRY_TEST( SUCCEEDED(solver->Solve(0.00,M_PI,-0.003, 0.0,smFixedCompressionStrain,&solution)), true); //compression bottom, use angle = M_PI
 
    solution->get_Fz(&Fz);
    solution->get_Mx(&Mx);
@@ -177,7 +185,7 @@ void CMomentCapacitySolverTest::Test()
 
 
    TRY_TEST( IsZero(Fz,0.001), true );
-   TRY_TEST( IsEqual(Mx, 6898.02750), true );
+   TRY_TEST( IsEqual(Mx, 6888.22525), true );
    TRY_TEST( IsZero(My), true);
 
    strainPlane->GetZ(0.00,-H/2,&ec);
@@ -190,7 +198,7 @@ void CMomentCapacitySolverTest::Test()
    section->put_ElongationLength(3, Le);
    section->put_ElongationLength(4, Le);
    solution.Release();
-   TRY_TEST(SUCCEEDED(solver->Solve(0.00, M_PI, -0.003, smFixedCompressiveStrain, &solution)), true);
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, M_PI, -0.003, 0.0, smFixedCompressionStrain, &solution)), true); // compression bottom, use angle = M_PI
 
    solution->get_Fz(&Fz);
    solution->get_Mx(&Mx);
@@ -200,29 +208,9 @@ void CMomentCapacitySolverTest::Test()
 
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, 6884.3201, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, 6884.16504, 0.0001), true);
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, -H / 2, &ec);
    TRY_TEST(IsEqual(ec, -0.003), true);
-
-   //   TestISupportUnitServer(concrete);
-//
-//   CComQIPtr<IStressStrain> ss(concrete);
-//   TRY_TEST( ss != nullptr, true );
-//
-//   TRY_TEST( ss->ComputeStress(0.00764,nullptr), E_POINTER);
-//   TRY_TEST( ss->ComputeStress(0.00764,&val), S_OK );
-//   TRY_TEST( IsEqual(val,0.00), true );
-//   TRY_TEST( ss->ComputeStress(-0.00764,&val), S_OK );
-//   TRY_TEST( IsEqual(val,0.00), true );
-//   TRY_TEST( ss->ComputeStress(-0.00245,&val), S_OK );
-//   TRY_TEST( IsEqual(val,-86277115.), true );
-//
-//   CComQIPtr<ISupportErrorInfo> eInfo(ss);
-//   TRY_TEST( eInfo != nullptr, true);
-//   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IUnconfinedConcrete), S_OK);
-//   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);
-//   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);
-//   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_ISupportErrorInfo),   S_FALSE);
 }

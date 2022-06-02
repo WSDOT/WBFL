@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,6 +25,7 @@
 
 #include <GenericBridge\GenericBridgeExp.h>
 #include <WBFLGenericBridge.h>
+#include <Math\CompositeFunction2d.h>
 
 // defines the segment profile transition between control points. for parabolas, left and right are defined based
 // on a parabola symmetric about the Y-axis
@@ -71,6 +72,4 @@ void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(INUBeam* pBeam, Float64 Hg, Fl
 Float64 WBFLGENERICBRIDGEFUNC ComputeTopFlangeThickening(Float64 Xs, Float64 Ls, ThickeningType thickeningType, Float64 tft);
 Float64 WBFLGENERICBRIDGEFUNC ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber);
 
-#include <memory>
-#include <Math\CompositeFunction2d.h>
-mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);
+ WBFLGENERICBRIDGEFUNC mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphManager - Manages graph definitions
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,9 +38,10 @@ public:
 	CGraphBuilder();
    CGraphBuilder(const CGraphBuilder& other);
 	virtual ~CGraphBuilder();
+   bool operator==(const CGraphBuilder& other);
 
    virtual void SetName(LPCTSTR strName);
-   virtual LPCTSTR GetName() const;
+   virtual const std::_tstring& GetName() const;
 
    void InitDocumentation(LPCTSTR lpszDocSetName,UINT nHID);
    void SetDocumentationSetName(LPCTSTR lpszDocSetName);
@@ -71,8 +72,11 @@ public:
    // Called by the framework to determine if printing commands can be enabled
    virtual BOOL CanPrint();
 
+   //
+   virtual bool HandleDoubleClick(UINT nFlags,CPoint point);
+
 protected:
-   CString m_strName;
+   std::_tstring m_strName;
    const CBitmap* m_pBitmap;
 
    CString m_strDocSetName;

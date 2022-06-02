@@ -54,8 +54,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6,1,0,0
- PRODUCTVERSION 6,1,0,0
+ FILEVERSION 7,0,0,7
+ PRODUCTVERSION 7,0,0,7
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -73,15 +73,15 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "RCCapacity Module\0"
-            VALUE "FileVersion", "6.1.0.0\0"
+            VALUE "FileVersion", "7.0.0.7\0"
             VALUE "InternalName", "RCCapacity\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2021, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OLESelfRegister", "\0"
             VALUE "OriginalFilename", "RCCapacity.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "6.1.0.0\0"
+            VALUE "ProductVersion", "7.0.0.7\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -108,6 +108,7 @@ IDR_PCISOLVER           REGISTRY DISCARDABLE    "PCISolver.rgs"
 IDR_NLSOLVER            REGISTRY DISCARDABLE    "NLSolver.rgs"
 IDR_RCBEAM2             REGISTRY DISCARDABLE    "RCBeam2.rgs"
 IDR_UNCONFINEDCONCRETE  REGISTRY DISCARDABLE    "UnconfinedConcrete.rgs"
+IDR_UHPCONCRETE  REGISTRY DISCARDABLE    "UHPConcrete.rgs"
 IDR_PSPOWERFORMULA      REGISTRY DISCARDABLE    "PSPowerFormula.rgs"
 IDR_REBARMODEL          REGISTRY DISCARDABLE    "RebarModel.rgs"
 IDR_PCISOLUTION         REGISTRY DISCARDABLE    "PCISolution.rgs"
@@ -140,6 +141,8 @@ IDR_CRACKEDSECTIONSLICE REGISTRY DISCARDABLE    "CrackedSectionSlice.rgs"
 IDR_LRFDPRESTRESSFORMULA REGISTRY "LRFDPrestressFormula.rgs"
 IDR_LRFDSOLUTION REGISTRY "LRFDSolution.rgs"
 IDR_LRFDSOLUTIONEX REGISTRY "LRFDSolutionEx.rgs"
+IDR_RAMBERGOSGOODMODEL REGISTRY "RambergOsgoodModel.rgs"
+IDR_PCIUHPCONCRETE REGISTRY "PCIUHPConcrete.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //

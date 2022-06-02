@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -139,30 +139,15 @@ public:
    static void CreateStation(IAlignment* pAlignment,Float64 normalizedStation,IStation** pSta);
    static void CreateStation(IStationEquationCollection* pEquations,Float64 normalizedStation,IStation** pSta);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   static HRESULT CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 offset, ILine2dFactory* pLineFactory, ILine2d** line);
+   static HRESULT IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offset1, IPoint2d* p2, VARIANT varDir2, Float64 offset2, IPoint2dFactory* pPointFactory, IPoint2d** point);
+   static HRESULT IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64 offset, IPoint2d* pntCenter, Float64 radius, IPoint2d* pntNearest, IPoint2dFactory* pPointFactory, IPoint2d** point);
+   static HRESULT IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float64 r2, IPoint2d* nearest, IPoint2dFactory* pPointFactory, IPoint2d** point);
 
 private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   cogoUtil();
-   cogoUtil(const cogoUtil& rOther);
-   cogoUtil& operator = (const cogoUtil& rOther);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   cogoUtil() = delete;
+   cogoUtil(const cogoUtil& rOther) = delete;
+   cogoUtil& operator=(const cogoUtil& rOther) = delete;
 };
 
 //cogoAngle ToAngle(IAngle* pAngle);

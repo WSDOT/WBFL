@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,9 +45,9 @@ class ATL_NO_VTABLE CUnitTypes :
    public IConnectionPointContainerImpl<CUnitTypes>,
 	public ISupportErrorInfoImpl<&IID_IUnitTypes>,
    public IObjectSafetyImpl<CUnitTypes,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IUnitTypeEventSink,
+   public IUnitTypeEvents,
 	public IUnitTypeCollection,
-	public CProxyDUnitTypesEventSink< CUnitTypes >
+	public CProxyDUnitTypesEvents< CUnitTypes >
 {
 public:
 	CUnitTypes()
@@ -110,11 +110,11 @@ BEGIN_COM_MAP(CUnitTypes)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 
-   COM_INTERFACE_ENTRY(IUnitTypeEventSink)
+   COM_INTERFACE_ENTRY(IUnitTypeEvents)
 END_COM_MAP()
 
 BEGIN_CONNECTION_POINT_MAP(CUnitTypes)
-CONNECTION_POINT_ENTRY(IID_IUnitTypesEventSink)
+CONNECTION_POINT_ENTRY(IID_IUnitTypesEvents)
 END_CONNECTION_POINT_MAP()
 
 // IUnitTypes
@@ -127,7 +127,7 @@ public:
 	STDMETHOD(Remove)(VARIANT Index) override;
    STDMETHOD(get__EnumUnitTypes)(/*[out,retval]*/ IEnumUnitTypes** enumUnitTypes) override;
 
-// IUnitTypeEventSink
+// IUnitTypeEvents
 public:
    STDMETHOD(OnUnitAdded)(IUnitType* unitType,IUnit* unit) override
    {

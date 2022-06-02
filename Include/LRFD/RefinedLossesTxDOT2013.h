@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -120,9 +120,9 @@ public:
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -153,24 +153,9 @@ public:
                          bool bValidateParameters
                          );
 
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdRefinedLossesTxDOT2013(const lrfdRefinedLossesTxDOT2013& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    ~lrfdRefinedLossesTxDOT2013();
 
-   // GROUP: OPERATORS
 
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdRefinedLossesTxDOT2013& operator=(const lrfdRefinedLossesTxDOT2013& rOther);
-
-   // GROUP: OPERATIONS
-
-
-   // GROUP: ACCESS
    Float64 ShrinkageLosses() const;
    Float64 CreepLosses() const;
    Float64 RelaxationLossBeforeDeckPlacement() const;
@@ -200,11 +185,6 @@ public:
    #endif // _UNITTEST
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
    virtual void ValidateParameters() const override;
    virtual void UpdateLongTermLosses() const override;
    virtual void UpdateHaulingLosses() const override;
@@ -224,32 +204,8 @@ protected:
 
    lrfdElasticShortening::FcgpComputationMethod m_FcgpMethod;
 
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdRefinedLossesTxDOT2013& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
    void Init() const;
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdRefinedLossesTxDOT2013& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_REFINEDTXDOT2013LOSSES_H_

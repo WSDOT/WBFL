@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -137,7 +137,7 @@ HRESULT CUnitServerImp::FinalConstruct()
    }
 
    // Hookup to the connection point
-   hr = m_pUnitTypes.Advise( GetUnknown(), IID_IUnitTypesEventSink, &m_Cookie );
+   hr = m_pUnitTypes.Advise( GetUnknown(), IID_IUnitTypesEvents, &m_Cookie );
    ATLASSERT( SUCCEEDED(hr) );
    // This just created a circular reference. decrement ref count to break it
    InternalRelease(); 
@@ -189,7 +189,7 @@ void CUnitServerImp::FinalRelease()
    // Find the connection point and disconnection
    CComQIPtr<IConnectionPointContainer> pCPC( m_pUnitTypes );
    CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_IUnitTypesEventSink, &pCP );
+   pCPC->FindConnectionPoint( IID_IUnitTypesEvents, &pCP );
    pCP->Unadvise( m_Cookie );
 
    m_pUnitTypes.Release();

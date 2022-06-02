@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,8 +27,7 @@
 #include <Lrfd\XPsLosses.h>
 #include <Lrfd\VersionMgr.h>
 #include <Units\SysUnits.h>
-#include <System\XProgrammingError.h>
-#include <MathEx.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -79,9 +78,9 @@ lrfdLosses::lrfdLosses(Float64 x,
    Float64 Ecd,  // Modulus of elasticity of deck
 
    Float64 Mdlg,  // Dead load moment of girder only
-   Float64 Madlg,  // Additional dead load on girder section
-   Float64 Msidl1, // Superimposed dead loads
-   Float64 Msidl2, // Superimposed dead loads
+   const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section
+   const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads
+   const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads
 
    Float64 Ag,   // area of girder
    Float64 Ixx,   // moment of inertia of girder
@@ -152,9 +151,9 @@ lrfdLosses::lrfdLosses(Float64 x,
    m_FpyTemp = lrfdPsStrand::GetYieldStrength(m_GradeTemp, m_TypeTemp);
 
    m_Mdlg = Mdlg;
-   m_Madlg = Madlg;
-   m_Msidl1 = Msidl1;
-   m_Msidl2 = Msidl2;
+   m_InputMadlg = Madlg;
+   m_InputMsidl1 = Msidl1;
+   m_InputMsidl2 = Msidl2;
 
    m_bIgnoreInitialRelaxation = bIgnoreInitialRelaxation;
 
@@ -232,9 +231,9 @@ lrfdLosses::lrfdLosses()
    m_FpyTemp               = lrfdPsStrand::GetYieldStrength( m_GradeTemp, m_TypeTemp );
 
    m_Mdlg                  = 0;
-   m_Madlg                 = 0;
-   m_Msidl1 = 0;
-   m_Msidl2 = 0;
+   //m_Madlg                 = 0;
+   //m_Msidl1 = 0;
+   //m_Msidl2 = 0;
 
    m_bIgnoreInitialRelaxation = true;
 
@@ -268,12 +267,6 @@ lrfdLosses::lrfdLosses()
    m_IsDirty               = true;
 }
 
-
-lrfdLosses::lrfdLosses(const lrfdLosses& rOther)
-{
-   MakeCopy( rOther );
-}
-
 void lrfdLosses::Init()
 {
    m_bValidateParameters = true;
@@ -281,8 +274,10 @@ void lrfdLosses::Init()
    m_dfpR0[PERMANENT_STRAND] = 0;
    m_dfpES[TEMPORARY_STRAND] = 0;
    m_dfpES[PERMANENT_STRAND] = 0;
-   m_dfpED = 0;
-   m_dfpSIDL = 0;
+   m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+   m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+   m_dfpSIDL[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+   m_dfpSIDL[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
    m_dfpSS = 0;
    m_dfpp = 0;
    m_fpL = 0;
@@ -301,23 +296,15 @@ void lrfdLosses::Init()
    m_fptr = 0;
    m_dfptr = 0;
    m_Ptr = 0;
-   m_DeltaFcd1 = 0;
-   m_DeltaFcd2 = 0;
+   m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+   m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+   m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+   m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
    m_dfpF = 0;
    m_dfpFT = 0;
    m_dfpA = 0;
    m_dfpAT = 0;
    m_La = 0;
-}
-
-lrfdLosses& lrfdLosses::operator=(const lrfdLosses& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
 }
 
 void lrfdLosses::OnUpdate()
@@ -852,24 +839,24 @@ Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
    return m_dfpES[TEMPORARY_STRAND];
 }
 
-Float64 lrfdLosses::ElasticGainDueToDeckPlacement() const
+Float64 lrfdLosses::ElasticGainDueToDeckPlacement(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty ) 
    {
       UpdateLosses();
    }
 
-   return m_dfpED;
+   return bApplyElasticGainReduction ? m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] : m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
-Float64 lrfdLosses::ElasticGainDueToSIDL() const
+Float64 lrfdLosses::ElasticGainDueToSIDL(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty ) 
    {
       UpdateLosses();
    }
 
-   return m_dfpSIDL;
+   return bApplyElasticGainReduction ? m_dfpSIDL[WITH_ELASTIC_GAIN_REDUCTION] : m_dfpSIDL[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
 Float64 lrfdLosses::ElasticGainDueToDeckShrinkage() const
@@ -1085,24 +1072,24 @@ Float64 lrfdLosses::GetDeltaFpp() const
    return m_dfpp;
 }
 
-Float64 lrfdLosses::GetDeltaFcd1() const
+Float64 lrfdLosses::GetDeltaFcd1(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty )
    {
       UpdateLosses();
    }
 
-   return m_DeltaFcd1;
+   return bApplyElasticGainReduction ? m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] : m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
-Float64 lrfdLosses::GetDeltaFcd2() const
+Float64 lrfdLosses::GetDeltaFcd2(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty )
    {
       UpdateLosses();
    }
 
-   return m_DeltaFcd2;
+   return bApplyElasticGainReduction ? m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION] : m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
 Float64 lrfdLosses::GetDeltaFcdLL(Float64 Mllim) const
@@ -1117,6 +1104,31 @@ void lrfdLosses::UpdateLosses() const
    if ( !bUpdating )
    {
       bUpdating = true;
+
+      m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+      m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+      for (const auto& moment : m_InputMadlg)
+      {
+         m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second; // moment*factor
+         m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first; // moment
+      }
+
+      m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+      m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+      for (const auto& moment : m_InputMsidl1)
+      {
+         m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second;
+         m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first;
+      }
+
+      m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] = 0;
+      m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
+      for (const auto& moment : m_InputMsidl2)
+      {
+         m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second;
+         m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first;
+      }
+
       try
       {
          if ( m_bValidateParameters )
@@ -1446,123 +1458,4 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
    {
       m_dfptr = 0.0; // no permanent strands, so the effect is zero
    }
-}
-
-void lrfdLosses::MakeAssignment( const lrfdLosses& rOther )
-{
-   MakeCopy( rOther );
-}
-
-void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
-{
-   m_bValidateParameters = rOther.m_bValidateParameters;
-
-   m_TypePerm              = rOther.m_TypePerm;
-   m_GradePerm             = rOther.m_GradePerm;
-   m_CoatingPerm           = rOther.m_CoatingPerm;
-   m_TypeTemp              = rOther.m_TypeTemp;
-   m_GradeTemp             = rOther.m_GradeTemp;
-   m_CoatingTemp           = rOther.m_CoatingTemp;
-   m_epermRelease          = rOther.m_epermRelease;
-   m_epermFinal            = rOther.m_epermFinal;
-   m_etemp                 = rOther.m_etemp;
-   m_ApsPerm               = rOther.m_ApsPerm;
-   m_ApsTemp               = rOther.m_ApsTemp;
-   m_aps                   = rOther.m_aps;
-   m_Eci                   = rOther.m_Eci;
-   m_Ec                    = rOther.m_Ec;
-   m_Ecd                   = rOther.m_Ecd;
-   m_Ep                    = rOther.m_Ep;
-   m_FpuPerm               = rOther.m_FpuPerm;
-   m_FpuTemp               = rOther.m_FpuTemp;
-   m_FpjPerm               = rOther.m_FpjPerm;
-   m_FpjTemp               = rOther.m_FpjTemp;
-   m_FpyPerm               = rOther.m_FpyPerm;
-   m_FpyTemp               = rOther.m_FpyTemp;
-   m_TempStrandUsage       = rOther.m_TempStrandUsage;
-   m_Fc                    = rOther.m_Fc;
-   m_Fci                   = rOther.m_Fci;
-   m_FcSlab                = rOther.m_FcSlab;
-   m_X                     = rOther.m_X;
-   m_Lg                    = rOther.m_Lg;
-   m_Mdlg                  = rOther.m_Mdlg;
-   m_Madlg                 = rOther.m_Madlg;
-   m_Msidl1 = rOther.m_Msidl1;
-   m_Msidl2 = rOther.m_Msidl2;
-
-   m_ti                    = rOther.m_ti;
-   
-   m_SectionProperties     = rOther.m_SectionProperties;
-
-   m_Ag                    = rOther.m_Ag;
-   m_Ixx = rOther.m_Ixx;
-   m_Iyy = rOther.m_Iyy;
-   m_Ixy = rOther.m_Ixy;
-   m_Ybg                   = rOther.m_Ybg;
-   m_Ac1 = rOther.m_Ac1;
-   m_Ic1 = rOther.m_Ic1;
-   m_Ybc1 = rOther.m_Ybc1;
-   m_Ac2 = rOther.m_Ac2;
-   m_Ic2 = rOther.m_Ic2;
-   m_Ybc2 = rOther.m_Ybc2;
-
-   m_An                    = rOther.m_An;
-   m_Ixxn = rOther.m_Ixxn;
-   m_Iyyn = rOther.m_Iyyn;
-   m_Ixyn = rOther.m_Ixyn;
-   m_Ybn                   = rOther.m_Ybn;
-   m_Acn                   = rOther.m_Acn;
-   m_Icn                   = rOther.m_Icn;
-   m_Ybcn                  = rOther.m_Ybcn;
-
-   m_H                     = rOther.m_H;
-
-   m_bIgnoreInitialRelaxation = rOther.m_bIgnoreInitialRelaxation;
-
-   m_dfpR0[TEMPORARY_STRAND]  = rOther.m_dfpR0[TEMPORARY_STRAND];
-   m_dfpES[TEMPORARY_STRAND]  = rOther.m_dfpES[TEMPORARY_STRAND];
-
-   m_dfpR0[PERMANENT_STRAND]  = rOther.m_dfpR0[PERMANENT_STRAND];
-   m_dfpES[PERMANENT_STRAND]  = rOther.m_dfpES[PERMANENT_STRAND];
-
-   m_dfpED                 = rOther.m_dfpED;
-   m_dfpSIDL               = rOther.m_dfpSIDL;
-   m_dfpSS                 = rOther.m_dfpSS;
-
-   m_dfpF                  = rOther.m_dfpF;
-   m_dfpFT                 = rOther.m_dfpFT;
-   m_dfpA                  = rOther.m_dfpA;
-   m_dfpAT                 = rOther.m_dfpAT;
-   m_dfpt                  = rOther.m_dfpt;
-
-   m_La                    = rOther.m_La;
-   m_AnchorSet             = rOther.m_AnchorSet;
-   m_WobbleCoefficient     = rOther.m_WobbleCoefficient;
-   m_FrictionCoefficient   = rOther.m_FrictionCoefficient;
-   m_AngleChange           = rOther.m_AngleChange;
-
-   m_fptMax                = rOther.m_fptMax;
-   m_fptMin                = rOther.m_fptMin;
-   m_fptAvg                = rOther.m_fptAvg;
-
-   m_PptMax                = rOther.m_PptMax;
-   m_PptMin                = rOther.m_PptMin;
-   m_PptAvg                = rOther.m_PptAvg;
-
-   m_dfptAvg               = rOther.m_dfptAvg;
-   m_Fcgpt                 = rOther.m_Fcgpt;
-
-   m_Fcgpp                 = rOther.m_Fcgpp;
-   m_dfpp                  = rOther.m_dfpp;
-
-   m_fptr                  = rOther.m_fptr;
-   m_dfptr                 = rOther.m_dfptr;
-   m_Ptr                   = rOther.m_Ptr;
-
-   m_DeltaFcd1             = rOther.m_DeltaFcd1;
-   m_DeltaFcd2             = rOther.m_DeltaFcd2;
-
-   m_ElasticShortening     = rOther.m_ElasticShortening;
-
-   m_IsDirty               = rOther.m_IsDirty;
 }

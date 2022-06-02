@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -894,7 +894,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
       pntOnThisSegment->DistanceEx(pntOnLeftSegment, &spacing);
 
       CComPtr<IPoint2d> pntAtStartOfLeftGirderLine;
-      leftGirderLine->get_EndPoint(etStart, &pntAtStartOfLeftGirderLine);
+      leftGirderLine->get_PierPoint(etStart, &pntAtStartOfLeftGirderLine);
 
       Float64 distAlongLeftGirderLine;
       pntAtStartOfLeftGirderLine->DistanceEx(pntOnLeftSegment, &distAlongLeftGirderLine);
@@ -1017,7 +1017,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
       pntOnThisSegment->DistanceEx(pntOnRightSegment, &spacing);
 
       CComPtr<IPoint2d> pntAtStartOfRightGirderLine;
-      rightGirderLine->get_EndPoint(etStart, &pntAtStartOfRightGirderLine);
+      rightGirderLine->get_PierPoint(etStart, &pntAtStartOfRightGirderLine);
 
       Float64 distAlongRightGirderLine;
       pntAtStartOfRightGirderLine->DistanceEx(pntOnRightSegment, &distAlongRightGirderLine);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -46,10 +46,10 @@ static const Float64 DEFAULT_ZOOM=1.0e-06;
 class PointSorter
 {
 public:
-   bool operator()(const gpPoint2d& p1, const gpPoint2d& p2) const;
+   bool operator()(const GraphPoint& p1, const GraphPoint& p2) const;
 };
 
-bool PointSorter::operator()(const gpPoint2d& p1,const gpPoint2d& p2) const
+bool PointSorter::operator()(const GraphPoint& p1,const GraphPoint& p2) const
 {
    return p1.X() < p2.X();
 }
@@ -74,6 +74,7 @@ m_XAxisNiceRange(true),
 m_YAxisNiceRange(true),
 m_PinYAxisAtZero(true),
 m_bIsotropicAxes(false),
+m_bHorizontalControlLine(true),
 m_MinZoomHeight(DEFAULT_ZOOM),
 m_MinZoomWidth(DEFAULT_ZOOM),
 m_Xmin(0),
@@ -94,21 +95,14 @@ m_Ymax(1)
    m_GridPenData.Style = PS_SOLID;
    m_GridPenData.Color = RGB(0,0,0);
    m_GridPenData.Width = 1;
+
+   m_HorzControlLinePenData.Style = PS_SOLID;
+   m_HorzControlLinePenData.Color = RGB(0, 0, 0);
+   m_HorzControlLinePenData.Width = 2;
 }
 
 grGraphXY::~grGraphXY()
 {
-}
-
-//======================== OPERATORS  =======================================
-grGraphXY& grGraphXY::operator= (const grGraphXY& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
 }
 
 //======================== OPERATIONS =======================================
@@ -143,7 +137,51 @@ IndexType grGraphXY::FindDataSeries(LPCTSTR lpszLabel)
    return INVALID_INDEX;
 }
 
-void grGraphXY::AddPoint(IndexType cookie,const gpPoint2d& rPoint)
+std::vector<IndexType> grGraphXY::GetCookies() const
+{
+    std::vector<IndexType> cookies;
+    for (const auto& index : m_GraphDataMap)
+    {
+       // only return cookies for series that contain data
+       if (index.second.Series.size() > 0)
+       {
+          cookies.push_back(index.first);
+       }
+    }
+
+    return cookies;
+}
+
+void grGraphXY::GetDataSeriesData(IndexType cookie, std::_tstring* pLabel, int* pPenStyle, int* pWidth, COLORREF* pColor) const
+{
+   GraphDataMap::const_iterator found = m_GraphDataMap.find(cookie);
+   if (found != m_GraphDataMap.end())
+   {
+      *pLabel = found->second.Label;
+      *pPenStyle = found->second.Pen.Style;
+      *pWidth = found->second.Pen.Width;
+      *pColor = found->second.Pen.Color;
+   }
+   else
+   {
+      ATLASSERT(0);
+   }
+}
+
+void grGraphXY::GetDataSeriesPoints(IndexType cookie, std::vector<GraphPoint>* pvPoints) const
+{
+   GraphDataMap::const_iterator found = m_GraphDataMap.find(cookie);
+   if (found != m_GraphDataMap.end())
+   {
+      *pvPoints = found->second.Series;
+   }
+   else
+   {
+      ATLASSERT(0);
+   }
+}
+
+void grGraphXY::AddPoint(IndexType cookie,const GraphPoint& rPoint)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -154,7 +192,7 @@ void grGraphXY::AddPoint(IndexType cookie,const gpPoint2d& rPoint)
    }
 }
 
-void grGraphXY::AddPoints(IndexType cookie,const std::vector<gpPoint2d>& vPoints)
+void grGraphXY::AddPoints(IndexType cookie,const std::vector<GraphPoint>& vPoints)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -483,6 +521,13 @@ void grGraphXY::SetGridPenStyle(int nPenStyle, int nWidth, COLORREF crColor)
    m_GridPenData.Width = nWidth;
 }
 
+void grGraphXY::SetHorizontalControlLinePenStyle(int nPenStyle, int nWidth, COLORREF crColor)
+{
+   m_HorzControlLinePenData.Style = nPenStyle;
+   m_HorzControlLinePenData.Color = crColor;
+   m_HorzControlLinePenData.Width = nWidth;
+}
+
 void grGraphXY::SetDataLabel(IndexType cookie,LPCTSTR lpszLabel)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
@@ -545,54 +590,6 @@ const grlibPointMapper& grGraphXY::GetClientAreaPointMapper(HDC hDC)
 }
 
 
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void grGraphXY::MakeCopy(const grGraphXY& rOther)
-{
-   m_GraphDataMap  = rOther.m_GraphDataMap;
-   m_WorldRect     = rOther.m_WorldRect;
-   m_OutputRect    = rOther.m_OutputRect;
-
-   m_PointMapper = rOther.m_PointMapper;
-   m_IsBroken    = rOther.m_IsBroken;
-   m_DoDrawAxis  = rOther.m_DoDrawAxis;
-   m_DoDrawGrid  = rOther.m_DoDrawGrid;
-   m_bDrawLegend = rOther.m_bDrawLegend;
-
-   m_GraphTitle         = rOther.m_GraphTitle;
-   m_GraphTitleSize     = rOther.m_GraphTitleSize;
-   m_GraphSubtitle      = rOther.m_GraphSubtitle;
-   m_GraphSubtitleSize  = rOther.m_GraphSubtitleSize;
-
-   m_XAxis = rOther.m_XAxis;
-   m_YAxis = rOther.m_YAxis;
-   m_XAxisRangeForced = rOther.m_XAxisRangeForced;
-   m_XAxisNiceRange = rOther.m_XAxisNiceRange;
-   m_YAxisNiceRange = rOther.m_YAxisNiceRange;
-   m_GridPenData    = rOther.m_GridPenData;
-
-   m_ClientAreaColor = rOther.m_ClientAreaColor;
-
-   m_MinZoomHeight = rOther.m_MinZoomHeight;
-   m_MinZoomWidth  = rOther.m_MinZoomWidth;
-
-   m_Xmin = rOther.m_Xmin;
-   m_Xmax = rOther.m_Xmax;
-   m_Ymin = rOther.m_Ymin;
-   m_Ymax = rOther.m_Ymax;
-}
-
-void grGraphXY::MakeAssignment(const grGraphXY& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
 ////////////////////////// PRIVATE    ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
@@ -615,7 +612,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       DataSeries::iterator dataSeriesIterEnd(graphData.Series.end());
       for ( ; dataSeriesIter != dataSeriesIterEnd; dataSeriesIter++ )
       {
-         gpPoint2d& p = *dataSeriesIter;
+         GraphPoint& p = *dataSeriesIter;
          m_WorldRect.Left()   = min( p.X(), m_WorldRect.Left()  );
          m_WorldRect.Right()  = max( p.X(), m_WorldRect.Right() );
          m_WorldRect.Top()    = max( p.Y(), m_WorldRect.Top() );
@@ -638,7 +635,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    // make sure zero is in Y range if requested
    if (m_PinYAxisAtZero && m_YAxis.GetScale() == grAxisXY::LINEAR)
    {
-      gpPoint2d pnt((m_WorldRect.Left()+m_WorldRect.Right())/2., 0.0);
+      GraphPoint pnt((m_WorldRect.Left()+m_WorldRect.Right())/2., 0.0);
       m_WorldRect.BoundPoint(pnt);
    }
 
@@ -681,7 +678,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    {
       Float64 width = m_WorldRect.Width();
       Float64 height = m_WorldRect.Height();
-      gpPoint2d center = m_WorldRect.Center();
+      GraphPoint center = m_WorldRect.Center();
       if ( width < height )
       {
          m_WorldRect.Left()  = center.X() - height/2;
@@ -781,7 +778,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       client_bottom = log10(client_bottom);
    }
 
-   gpRect2d world_client_rect(client_left, client_bottom, client_right, client_top);
+   GraphRect world_client_rect(client_left, client_bottom, client_right, client_top);
 
    // set up for title and subtitle
 
@@ -919,7 +916,7 @@ void grGraphXY::DrawCurve(HDC hDC)
       DataSeries::iterator ds_iter;
       for ( ds_iter = gd.Series.begin(); ds_iter != gd.Series.end(); ds_iter++ )
       {
-         gpPoint2d p = *ds_iter;
+         GraphPoint p = *ds_iter;
          if ( scaleX == grAxisXY::INTEGRAL )
          {
             p.X() = count+1;
@@ -1037,19 +1034,25 @@ void grGraphXY::DrawAxes(HDC hDC)
          }
       }
    }
-   else
+
+   if(m_bHorizontalControlLine || !m_DoDrawGrid)
    {
       // don't draw grid, but do draw a horizontal line along Y=0
-      if ( (0 < top_val && bot_val < 0) || (top_val < 0 && 0 < bot_val))
+      if ( (0 <= top_val && bot_val <= 0) || (top_val <= 0 && 0 <= bot_val))
       {
          LONG   ldx, ldy, rdx, rdy;
 
          m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? left_val  : log10(left_val),  0., &ldx, &ldy);
          m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? right_val : log10(right_val), 0., &rdx, &rdy);
 
+         HPEN controlLinePen = CreatePen(m_HorzControlLinePenData.Style, m_HorzControlLinePenData.Width, m_HorzControlLinePenData.Color);
+         HPEN lastPen = (HPEN)::SelectObject(hDC, controlLinePen);
+
          POINT pnt;
          ::MoveToEx(hDC,ldx,ldy,&pnt);
          ::LineTo(hDC,rdx,rdy);
+
+         ::SelectObject(hDC, lastPen);
       }
    }
    ::SelectObject(hDC, old_hpen);
@@ -1222,6 +1225,16 @@ void grGraphXY::SetIsotropicAxes(bool bIsotropic)
 bool grGraphXY::GetIsotropicAxes() const
 {
    return m_bIsotropicAxes;
+}
+
+void grGraphXY::SetHorizontalControlLine(bool set)
+{
+   m_bHorizontalControlLine = set;
+}
+
+bool grGraphXY::GetHorizontalControlLine() const
+{
+   return m_bHorizontalControlLine;
 }
 
 int grGraphXY::UpdateLegendMetrics(HDC hDC)

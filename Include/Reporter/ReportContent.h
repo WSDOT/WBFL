@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,131 +23,51 @@
 
 #if !defined INCLUDED_REPORTER_REPORTCONTENT_H_
 #define INCLUDED_REPORTER_REPORTCONTENT_H_
+
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportItem.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class REPORTERCLASS rptRcVisitor;
 class REPORTERCLASS rptHyperLinkDefinition;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptReportContent
-
-   This abstract class represents the 'content' of a report. 
-
-
-DESCRIPTION
-   This class is an abstract base class representing the low-level 'matter' that
-   makes up a report (e.g., strings, paragraphs, font control, numbers...)
-*****************************************************************************/
-
+/// This abstract class represents the content of a report. 
+///
+/// This class is an abstract base class representing the low-level content that makes up a report (e.g., strings, paragraphs, font control, numbers...)
 class REPORTERCLASS rptReportContent : public rptReportItem
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptReportContent();
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptReportContent(const rptReportContent& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptReportContent();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
-   virtual rptReportContent& operator = (const rptReportContent& rOther);
+   virtual rptReportContent& operator=(const rptReportContent& rOther);
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Is report content a hyperlink
+   /// Returns true if this report content a hyperlink
    bool IsHyperLink() const;
 
-   //------------------------------------------------------------------------
-   // If content is a hyperlink - return target string
-   std::_tstring GetHyperTarget() const;
+   /// Returns the hyperlink target
+   const std::_tstring& GetHyperTarget() const;
 
-   //------------------------------------------------------------------------
-   // Make report content a hyperlink and point it to HyperTarget
+   /// Makes this report content a hyperlink and point it to HyperTarget
    void SetHyperLink(const std::_tstring& HyperTarget);
 
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accepts a visitor and calls VisitReportContent(this)
    virtual void Accept( rptRcVisitor& MyVisitor ) = 0;
 
-   //------------------------------------------------------------------------
-   // virtual way to make a copy.
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const = 0;
-
-
-   //
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
  
 protected:
-   // GROUP: DATA MEMBERS
-
-   //------------------------------------------------------------------------
-   // pointer to hypertext link information. Pointer is non-null if this 
-   // piece of report content is a hyperlink
+   /// pointer to hypertext link information. Pointer is non-null if this piece of report content is a hyperlink
    rptHyperLinkDefinition* m_pHyperLink;
 
-   //
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // copy internal data
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptReportContent& rContent);
 
+   /// Assigns the content from oOther to this object
    virtual void MakeAssignment(const rptReportContent& rOther);
-
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   //
-   // pointer to parent for chain of responsibility
-   //
-   //
-   // The current paragraph style.
-   //
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif
+#endif // INCLUDED_REPORTER_REPORTCONTENT_H_

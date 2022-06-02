@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,9 +25,8 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\ConcreteUtil.h>
 #include <Lrfd\VersionMgr.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,12 +43,18 @@ static const Float64 g_12p4_MPA  = ::ConvertToSysUnits(12.4,unitMeasure::MPa);
 static const Float64 g_14p0_MPA  = ::ConvertToSysUnits(14.0,unitMeasure::MPa);
 
 static const Float64 g_p1_KSI    = ::ConvertToSysUnits(0.100,unitMeasure::KSI);
+static const Float64 g_p2_KSI = ::ConvertToSysUnits(0.200, unitMeasure::KSI);
+static const Float64 g_p5_KSI = ::ConvertToSysUnits(0.500, unitMeasure::KSI);
 static const Float64 g_p210_KSI  = ::ConvertToSysUnits(0.210,unitMeasure::KSI);
+static const Float64 g_p240_KSI = ::ConvertToSysUnits(0.240, unitMeasure::KSI);
 static const Float64 g_p280_KSI  = ::ConvertToSysUnits(0.280,unitMeasure::KSI);
-static const Float64 g_p075_KSI  = ::ConvertToSysUnits(0.075,unitMeasure::KSI);
+static const Float64 g_p025_KSI = ::ConvertToSysUnits(0.025, unitMeasure::KSI);
+static const Float64 g_p075_KSI = ::ConvertToSysUnits(0.075, unitMeasure::KSI);
 static const Float64 g_p8_KSI    = ::ConvertToSysUnits(0.8,unitMeasure::KSI);
-static const Float64 g_1p3_KSI   = ::ConvertToSysUnits(1.3,unitMeasure::KSI);
+static const Float64 g_1p3_KSI = ::ConvertToSysUnits(1.3, unitMeasure::KSI);
+static const Float64 g_1p5_KSI = ::ConvertToSysUnits(1.5, unitMeasure::KSI);
 static const Float64 g_1p8_KSI   = ::ConvertToSysUnits(1.8,unitMeasure::KSI);
+static const Float64 g_3p6_KSI = ::ConvertToSysUnits(3.6, unitMeasure::KSI);
 static const Float64 g_60_KSI    = ::ConvertToSysUnits(60.0,unitMeasure::KSI);
 
 static const Float64 g_0p6_M = ::ConvertToSysUnits(0.6, unitMeasure::Meter);
@@ -105,25 +110,35 @@ Float64 lrfdConcreteUtil::GetLWCDensityLimit()
    return limit;
 }
 
-void lrfdConcreteUtil::GetUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax)
+void lrfdConcreteUtil::GetPCIUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax)
 {
    // See "Compression Response of a Rapid-Strengthening Ultra-High Performance Concrete Formulation"
    // FHWA Publication FHWA-HRT-12-964
    // Graybeal
+   //*pFcMin = ::ConvertToSysUnits(14.0, unitMeasure::KSI);
+   //*pFcMax = ::ConvertToSysUnits(26.0, unitMeasure::KSI);
 
-   *pFcMin = ::ConvertToSysUnits(14.0, unitMeasure::KSI);
-   *pFcMax = ::ConvertToSysUnits(26.0, unitMeasure::KSI);
+   // PCI-UHPC Structural Guidance, min f'c = 17.4 ksi, no max provided so use a really high value that wont be exceeded
+   *pFcMin = ::ConvertToSysUnits(17.4, unitMeasure::KSI);
+   *pFcMax = ::ConvertToSysUnits(99999.0, unitMeasure::KSI);
+}
+
+void lrfdConcreteUtil::GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, Float64* pfpeak, Float64* pfrr)
+{
+   Float64 fcMax;
+   GetPCIUHPCStrengthRange(pfcMin, &fcMax);
+   *pffc = ::ConvertToSysUnits(1.5, unitMeasure::KSI);
+   *pfpeak = ::ConvertToSysUnits(2.0, unitMeasure::KSI);
+   *pfrr = ::ConvertToSysUnits(0.75, unitMeasure::KSI);
 }
 
 Float64 lrfdConcreteUtil::ModE(matConcrete::Type type,Float64 fc,Float64 density,bool bCheckRange)
 {
    Float64 e;  // modulus of elasticity in System Units
-   if (type == matConcrete::UHPC)
+   if (type == matConcrete::PCI_UHPC)
    {
       Float64 Fc = ::ConvertFromSysUnits(fc, unitMeasure::KSI);
-      // Ec (PSI) = 49000sqrt(Fc in PSI)
-      // Ec (KSI) = (49000/1000)*sqrt(FcKSI*1000) = (49000/1000)*sqrt(1000)*sqrt(Fc in KSI) = 1550sqrt(Fc ksi)
-      Float64 Ec = 1550 * sqrt(Fc);
+      Float64 Ec = 2500 * pow(Fc,0.33); // Fc in KSI, Ec in KSI (This is LRFD Equation C5.4.2.4-1)
       e = ::ConvertToSysUnits(Ec, unitMeasure::KSI);
    }
    else
@@ -207,10 +222,10 @@ Float64 lrfdConcreteUtil::FcFromEc(matConcrete::Type type, Float64 ec,Float64 de
 {
    Float64 fc;          // fc in system units
 
-   if (type == matConcrete::UHPC)
+   if (type == matConcrete::PCI_UHPC)
    {
       Float64 Ec = ::ConvertFromSysUnits(ec, unitMeasure::KSI);
-      Float64 Fc = pow(Ec / 1550., 2);
+      Float64 Fc = pow(Ec / 2500., 2);
       fc = ::ConvertToSysUnits(Fc, unitMeasure::KSI);
    }
    else
@@ -272,15 +287,15 @@ Float64 lrfdConcreteUtil::FcFromEc(matConcrete::Type type, Float64 ec,Float64 de
 
 Float64 lrfdConcreteUtil::ModRupture(Float64 fc, Float64 k)
 {
-   return lrfdConcreteUtil::ModRupture(fc,NormalDensity,k);
+   return lrfdConcreteUtil::ModRupture(fc,matConcrete::Normal,k);
 }
 
-Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType)
+Float64 lrfdConcreteUtil::ModRupture(Float64 fc, matConcrete::Type concType)
 {
-   return lrfdConcreteUtil::ModRupture(fc,densityType,-1);
+   return lrfdConcreteUtil::ModRupture(fc,concType,-1);
 }
 
-Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType,Float64 k)
+Float64 lrfdConcreteUtil::ModRupture(Float64 fc, matConcrete::Type concType,Float64 k)
 {
    const unitStress* p_fc_unit;
    const unitStress* p_fr_unit;
@@ -305,9 +320,9 @@ Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType,Float64
    bool bAfter2004 = (lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion());
    if ( k <= 0 )
    {
-      switch( densityType )
+      switch( concType )
       {
-      case NormalDensity:
+      case matConcrete::Normal:
          if ( bAfter2004 )
          {
             k = (is_si) ? 0.97 : 0.37;
@@ -318,11 +333,11 @@ Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType,Float64
          }
          break;
 
-      case SandLowDensity:
+      case matConcrete::SandLightweight:
          k = (is_si) ? 0.52 : 0.20;
          break;
 
-      case AllLowDensity:
+      case matConcrete::Type::AllLightweight:
          k = (is_si) ? 0.45 : 0.17;
          break;
 
@@ -382,142 +397,118 @@ Float64 lrfdConcreteUtil::Beta1(Float64 fc)
    return beta1;
 }
 
-Float64 lrfdConcreteUtil::ShearFrictionFactor(bool isRoughened)
+void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, matConcrete::Type girderConcType, matConcrete::Type deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2)
 {
-   // friction factor, MU
-   if (isRoughened)
+   if (girderConcType == matConcrete::PCI_UHPC)
    {
-      return 1.0; // from 5.8.4.3 - first bullet
+      if (deckConcType == matConcrete::PCI_UHPC)
+      {
+         // UHPC deck on UHPC girder, PCI SDG Table 7.4.3-1 Case 8 and 9
+         *pC = (isRoughened ? g_p5_KSI : g_p2_KSI);
+         *pU = (isRoughened ? 1.4 : 0.6);
+         *pK1 = (isRoughened ? 0.3 : 0.2);
+         *pK2 = (isRoughened ? g_3p6_KSI : g_3p6_KSI);
+      }
+      else
+      {
+         // conventional deck concrete on UHPC girder, PCI SDG Table 7.4.3-1 Case 4 and 6
+         *pC = (isRoughened ? g_p240_KSI : g_p025_KSI);
+         *pU = (isRoughened ? 1.0 : 0.7);
+         *pK1 = (isRoughened ? 0.25 : 0.20);
+         *pK2 = (isRoughened ? g_1p5_KSI : g_p8_KSI);
+      }
    }
    else
    {
-      return 0.6; // from 5.8.4.3 - 5th bullet
-   }
-}
+      // conventional concrete girder
 
-Float64 lrfdConcreteUtil::ShearCohesionFactor(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType)
-{
-   // LRFD 5.8.4.2
-   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::ThirdEditionWith2006Interims )
-   {
-      Float64 Lamda[3] = { 1.0, 0.85, 0.75 };
-      Float64 lamda = min(Lamda[girderDensityType],Lamda[slabDensityType]);
-
-      Float64 c;
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      // C
+      if (lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::ThirdEditionWith2006Interims)
       {
-         if (isRoughened)
+         if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI)
          {
-            c = g_p7_MPA;
+            *pC = (isRoughened ? g_p7_MPA : g_p52_MPA);
          }
          else
          {
-            c =g_p52_MPA;
+            *pC = (isRoughened ? g_p1_KSI : g_p075_KSI);
          }
       }
       else
       {
-         if (isRoughened)
+         // LRFD 2007 or later
+         if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US)
          {
-            c = g_p1_KSI;
+            *pC = (isRoughened ? g_p280_KSI : g_p075_KSI);
          }
          else
          {
-            c = g_p075_KSI;
+            *pC = (isRoughened ? g_1p9_MPA : g_p52_MPA);
          }
       }
 
-      return c*lamda;
-   }
-   else
-   {
-      // LRFD 2007 or later
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+      // MU
+      if (isRoughened)
       {
-         if (isRoughened)
-         {
-            return g_p280_KSI;
-         }
-         else
-         {
-            return g_p075_KSI;
-         }
+         *pU = 1.0; // concrete placed against clean, hardened concrete with surface intentionally roughened
       }
       else
       {
-         if (isRoughened)
+         *pU = 0.6; // concrete placed against clean, hardened concrete with surface NOT intentionally roughened
+      }
+
+      if (lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::ThirdEditionWith2006Interims)
+      {
+         std::array<Float64, 4> Lamda{ 1.0, 0.85, 0.75, 1.0 };
+         Float64 lambda = min(Lamda[girderConcType], Lamda[deckConcType]);
+         *pU *= lambda;
+      }
+
+      // K1
+      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007)
+      {
+         *pK1 = 0.2;
+      }
+      else
+      {
+         *pK1 = (isRoughened ? 0.3 : 0.2);
+      }
+
+      // K2
+      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007)
+      {
+         *pK2 = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? g_5p5_MPA : g_p8_KSI;
+      }
+      else
+      {
+         bool bIsNWC = (girderConcType == matConcrete::Normal && deckConcType == matConcrete::Normal);
+         if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US)
          {
-            return g_1p9_MPA;
+            if (isRoughened)
+            {
+               *pK2 = (bIsNWC ? g_1p8_KSI : g_1p3_KSI);
+            }
+            else
+            {
+               *pK2 = g_p8_KSI;
+            }
          }
          else
          {
-            return g_p52_MPA;
+            if (isRoughened)
+            {
+               *pK2 = (bIsNWC ? g_12p4_MPA : g_9p0_MPA);
+            }
+            else
+            {
+               *pK2 = g_5p5_MPA;
+            }
          }
       }
    }
 }
 
-Float64 lrfdConcreteUtil::HorizShearK1(bool isRoughened)
-{
-   Float64 K1;
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
-   {
-      K1 = 0.2;
-   }
-   else
-   {
-      if ( isRoughened )
-      {
-         K1 = 0.3;
-      }
-      else
-      {
-         K1 = 0.2;
-      }
-   }
-
-   return K1;
-}
-
-Float64 lrfdConcreteUtil::HorizShearK2(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType)
-{
-   Float64 K2;
-
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
-   {
-      K2 = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? g_5p5_MPA : g_p8_KSI;
-   }
-   else
-   {
-      bool bIsNWC = ( girderDensityType == lrfdConcreteUtil::NormalDensity && slabDensityType == lrfdConcreteUtil::NormalDensity );
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
-      {
-         if ( isRoughened )
-         {
-            K2 = (bIsNWC ? g_1p8_KSI : g_1p3_KSI );
-         }
-         else
-         {
-            K2 = g_p8_KSI;
-         }
-      }
-      else
-      {
-         if ( isRoughened )
-         {
-            K2 = (bIsNWC ? g_12p4_MPA : g_9p0_MPA );
-         }
-         else
-         {
-            K2 = g_5p5_MPA;
-         }
-      }
-   }
-
-   return K2;
-}
-
-void lrfdConcreteUtil::HorizontalShearResistances(Float64 c, Float64 u, Float64 K1, Float64 K2,
+void lrfdConcreteUtil::InterfaceShearResistances(Float64 c, Float64 u, Float64 K1, Float64 K2,
                                                   Float64 Acv, Float64 Avf, Float64 Pc,
                                                   Float64 fc, Float64 fy,
                                                   Float64* penqn1, Float64* penqn2, Float64* penqn3)
@@ -710,7 +701,7 @@ Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float6
 
    // Use existing function to get non-rebar related resistance values
    Float64 VnEnqn1, VnEnqn2, VnEnqn3; // Note that equation numbers have changed in most recent spec version 2009
-   HorizontalShearResistances(c, u, K1, K2, Acv, Avf, Pc, fc, fy, &VnEnqn1, &VnEnqn2, &VnEnqn3);
+   InterfaceShearResistances(c, u, K1, K2, Acv, Avf, Pc, fc, fy, &VnEnqn1, &VnEnqn2, &VnEnqn3);
 
    Float64 VnMax = min(VnEnqn2, VnEnqn3);
 
@@ -730,7 +721,7 @@ Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float6
 
 Float64 lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc)
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims || type == matConcrete::Normal || type == matConcrete::UHPC)
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims || type == matConcrete::Normal || type == matConcrete::PCI_UHPC)
    {
       return 1.0;
    }
@@ -794,8 +785,8 @@ std::_tstring lrfdConcreteUtil::GetTypeName(matConcrete::Type type,bool bFull)
          return _T("SandLightweight");
       }
 
-   case matConcrete::UHPC:
-      return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
+   case matConcrete::PCI_UHPC:
+      return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
    default:
       ATLASSERT(false); // is there a new type?
@@ -818,9 +809,9 @@ matConcrete::Type lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strName)
    {
       type = matConcrete::SandLightweight;
    }
-   else if (std::_tstring(strName) == _T("UHPC"))
+   else if (std::_tstring(strName) == _T("PCI-UHPC"))
    {
-      type = matConcrete::UHPC;
+      type = matConcrete::PCI_UHPC;
    }
    else
    {
@@ -893,9 +884,9 @@ bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
    //
    Float64 fc = 50e6; // 50 MPa
    lrfdVersionMgr::SetUnits( lrfdVersionMgr::SI );
-   TRY_TESTME (  IsEqual(ModRupture( fc, NormalDensity ), 4.45477272148e6, 0.1 ) );
-   TRY_TESTME (  IsEqual(ModRupture( fc, SandLowDensity ), 3.67695526217e6, 0.1 ) );
-   TRY_TESTME (  IsEqual(ModRupture( fc, AllLowDensity ), 3.18198051534e6, 0.1 ) );
+   TRY_TESTME (  IsEqual(ModRupture( fc, matConcrete::Normal ), 4.45477272148e6, 0.1 ) );
+   TRY_TESTME (  IsEqual(ModRupture( fc, matConcrete::SandLightweight ), 3.67695526217e6, 0.1 ) );
+   TRY_TESTME (  IsEqual(ModRupture( fc, matConcrete::AllLightweight ), 3.18198051534e6, 0.1 ) );
 
    //
    // Test ModE

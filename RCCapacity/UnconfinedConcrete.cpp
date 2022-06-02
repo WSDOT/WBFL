@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,8 +45,10 @@ HRESULT CUnconfinedConcrete::FinalConstruct()
       return hr;
 
    m_Fc = 4.00; // ksi
-   m_MinStrain = -0.0035;
-   m_MaxStrain = 10.0;
+   m_MinStrain = -0.003;
+   m_MaxStrain = 1.0;
+
+   UpdateParameters();
 
    return S_OK;
 }
@@ -95,6 +97,7 @@ STDMETHODIMP CUnconfinedConcrete::put_fc(Float64 newVal)
    convert->ConvertFromBaseUnits(newVal,CComBSTR("ksi"),&newVal);
 
    m_Fc = newVal;
+   UpdateParameters();
 
 	return S_OK;
 }
@@ -121,21 +124,27 @@ STDMETHODIMP CUnconfinedConcrete::ComputeStress(Float64 strain,Float64 *pVal)
    if ( 0 < strain )
       return S_OK;
 
-   strain *= -1.0;
+   Float64 e = strain;
 
-   Float64 n = 0.80 + m_Fc/2.500;
-   Float64 k = 0.67 + m_Fc/9.000;
-   Float64 Ec = GetEc();
-   Float64 ec = m_Fc*n/(Ec*(n-1));
+   if (e < m_MinStrain) e = m_MinStrain;
 
-   Float64 e = strain/ec;
-   if ( e < 1.0 )
+   e *= -1.0;
+
+   // use local variables to make the equations a little cleaner to read
+   // these parameters are updated when f'c is changed
+   Float64 n = m_n;
+   Float64 k = m_k;
+   Float64 Ec = m_Ec;
+   Float64 ec = m_ec;
+
+   Float64 e_ratio = e/ec;
+   if ( e_ratio < 1.0 )
       k = 1.00;
 
    if ( k < 1.00 )
       k = 1.00;
 
-   Float64 f = m_Fc*(n*(e)/((n-1) + pow(e,n*k)));
+   Float64 f = m_Fc*(n*(e_ratio)/((n-1) + pow(e_ratio,n*k)));
 
    // The stress is in KSI, convert it to base units because that is what the caller expects
    CComPtr<IUnitConvert> convert;
@@ -144,7 +153,7 @@ STDMETHODIMP CUnconfinedConcrete::ComputeStress(Float64 strain,Float64 *pVal)
 
    *pVal = -f;
 
-   return S_OK;
+   return (strain < m_MinStrain) ? S_FALSE : S_OK;
 }
 
 STDMETHODIMP CUnconfinedConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)
@@ -206,6 +215,14 @@ STDMETHODIMP CUnconfinedConcrete::putref_UnitServer(IUnitServer* pNewVal )
 
    m_UnitServer = pNewVal;
    return S_OK;
+}
+
+void CUnconfinedConcrete::UpdateParameters()
+{
+   m_n = 0.80 + m_Fc / 2.500;
+   m_k = 0.67 + m_Fc / 9.000;
+   m_Ec = GetEc();
+   m_ec = m_Fc * m_n / (m_Ec * (m_n - 1));
 }
 
 Float64 CUnconfinedConcrete::GetEc()

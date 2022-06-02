@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,7 +41,7 @@ CLASS
 class MATCLASS matConcreteBase
 {
 public:
-   enum Type { Normal, AllLightweight, SandLightweight, UHPC };
+   enum Type { Normal, AllLightweight, SandLightweight, PCI_UHPC };
    enum CureMethod { Moist, Steam };
 
    matConcreteBase(LPCTSTR name = _T("Unknown"));
@@ -69,6 +69,10 @@ public:
    // Set/Get the maximum aggregate size
    void SetMaxAggregateSize(Float64 size);
    Float64 GetMaxAggregateSize() const;
+
+   // Set/Get the fiber length for fiber reinforced materials
+   void SetFiberLength(Float64 length);
+   Float64 GetFiberLength() const;
 
    // Set/Get the density of the concrete used for computing secant modulus
    void SetStrengthDensity(Float64 d);
@@ -152,6 +156,7 @@ protected:
    bool        m_bHasFct; // has aggregate splitting strength
    Float64     m_Fct;     // aggregate splitting strength
    Float64     m_MaxAggregateSize;
+   Float64     m_FiberLength;
    Float64     m_StrengthDensity;
    Float64     m_WeightDensity;
    Float64     m_RelativeHumidity;

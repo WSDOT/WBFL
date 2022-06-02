@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,7 +26,7 @@
 // Used by DManipTools.rc
 //
 #define IDR_POLYLINEDISPLAYOBJECT	2002
-#define IDR_HORZCURVEDISPLAYOBJECT	2003
+#define IDR_CompoundCurveDISPLAYOBJECT	2003
 #define IDR_GRAPHXYDISPLAYOBJECT	2004
 #define IDR_DATASET2D			2005
 #define IDR_LEGENDDISPLAYOBJECT		2006

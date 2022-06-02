@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.RambergOsgoodModel.1 = s 'RambergOsgoodModel Class'
+	{
+		CLSID = s '{FD96764F-8857-4346-AB8A-144636A54A87}'
+	}
+	WBFLRCCapacity.RambergOsgoodModel = s 'RambergOsgoodModel Class'
+	{
+		CLSID = s '{FD96764F-8857-4346-AB8A-144636A54A87}'
+		CurVer = s 'WBFLRCCapacity.RambergOsgoodModel.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FD96764F-8857-4346-AB8A-144636A54A87} = s 'RambergOsgoodModel Class'
+		{
+			ProgID = s 'WBFLRCCapacity.RambergOsgoodModel.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.RambergOsgoodModel'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

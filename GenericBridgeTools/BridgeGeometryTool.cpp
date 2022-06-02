@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -240,7 +240,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,Girder
    // of the girder path, offset will be > 0. This means the girder path is
    // offset to the left of the alignment so the offset that we want has the opposite
    // sign.
-   geom_util->ShortestDistanceToPoint(line,point_on_alignment,offset);
+   geom_util->ShortestOffsetToPoint(line,point_on_alignment,offset);
    (*offset) *= -1;
 
    return S_OK;

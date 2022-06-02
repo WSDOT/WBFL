@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -62,8 +62,11 @@ public:
    // GROUP: ENUMERATIONS
 
    //------------------------------------------------------------------------
-   enum Grade { Gr1725 = 0x0001, 
-                Gr1860 = 0x0002 };
+   enum Grade {
+      Gr1725 = 0x0001, // Grade 250
+                Gr1860 = 0x0002, // Grade 270
+                Gr2070 = 0x00080000 // Grade 300
+   };
 
    //------------------------------------------------------------------------
    enum Type { LowRelaxation  = 0x0004, 

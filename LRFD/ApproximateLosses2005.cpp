@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,9 +27,7 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XPsLosses.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -94,9 +92,9 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -128,27 +126,10 @@ lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeT
 {
 }
 
-lrfdApproximateLosses2005::lrfdApproximateLosses2005(const lrfdApproximateLosses2005& rOther)
-{
-   MakeCopy( rOther );
-}
-
 lrfdApproximateLosses2005::~lrfdApproximateLosses2005()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdApproximateLosses2005& lrfdApproximateLosses2005::operator=(const lrfdApproximateLosses2005& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
 Float64 lrfdApproximateLosses2005::TemporaryStrand_RelaxationLossesAtXfer() const
 {
    if ( IsZero(m_ApsTemp) || IsZero(m_FpjTemp) )
@@ -377,36 +358,6 @@ Float64 lrfdApproximateLosses2005::GetStrengthFactor() const
    }
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdApproximateLosses2005::MakeAssignment( const lrfdApproximateLosses2005& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdApproximateLosses2005::MakeCopy( const lrfdApproximateLosses2005& rOther )
-{
-   lrfdLosses::MakeCopy(rOther);
-
-   m_dfpTH = rOther.m_dfpTH;
-   m_dfpLT = rOther.m_dfpLT;
-}
-
 void lrfdApproximateLosses2005::ValidateParameters() const
 {
    // need to make sure spec version is ok
@@ -442,7 +393,8 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
       // If the strands aren't jacked, then there can't be losses.
       m_dfpLT = 0.0;
       m_dfpTH = 0.0;
-      m_dfpED = 0.0;
+      m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] = 0.0;
+      m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0.0;
    }
    else
    {
@@ -481,15 +433,19 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
       }
 
       // Elastic gain due to deck placement
-      Float64 mx = m_Madlg;
-      Float64 my = 0;
       Float64 D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
-      m_DeltaFcd1 = (mx*m_Ixx + my*m_Ixy)*m_epermFinal.X() / D + (mx*m_Iyy + my*m_Ixy)*m_epermFinal.Y() / D; // biaxial on non-composite section
-      m_dfpED = (m_Ep/m_Ec)*m_DeltaFcd1;
+      m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = (m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] *m_Ixx/* + my*m_Ixy*/)*m_epermFinal.X() / D + (m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] *m_Iyy/* + my*m_Ixy*/)*m_epermFinal.Y() / D; // biaxial on non-composite section
+      m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] = (m_Ep/m_Ec)*m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION];
+
+      m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = (m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] * m_Ixx/* + my*m_Ixy*/) * m_epermFinal.X() / D + (m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] * m_Iyy/* + my*m_Ixy*/) * m_epermFinal.Y() / D; // biaxial on non-composite section
+      m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION] = (m_Ep / m_Ec) * m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION];
 
       // Elastic gain due to superimposed dead loads
-      m_DeltaFcd2 = m_Msidl1*(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2*( m_Ybc2 - m_Ybg + m_epermFinal.Y() )/m_Ic2; // uniaxial on composite section
-      m_dfpSIDL = (m_Ep/m_Ec)*m_DeltaFcd2;
+      m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION] = m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] *(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] *( m_Ybc2 - m_Ybg + m_epermFinal.Y() )/m_Ic2; // uniaxial on composite section
+      m_dfpSIDL[WITH_ELASTIC_GAIN_REDUCTION] = (m_Ep/m_Ec)*m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION];
+
+      m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION] = m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] * (m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] * (m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2; // uniaxial on composite section
+      m_dfpSIDL[WITHOUT_ELASTIC_GAIN_REDUCTION] = (m_Ep / m_Ec) * m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION];
    }
 }
 

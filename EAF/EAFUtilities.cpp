@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -105,28 +105,35 @@ CEAFMainFrame* EAFGetMainFrame()
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFMainFrame* pFrame = (CEAFMainFrame*)AfxGetMainWnd();
-   ASSERT_KINDOF(CEAFMainFrame,pFrame);
+#if defined _DEBUG
+   if (pFrame)
+   {
+       ASSERT_KINDOF(CEAFMainFrame, pFrame);
+   }
+#endif
    return pFrame;
 }
 
 CEAFDocument* EAFGetDocument()
 {
    CEAFMainFrame* pFrame = EAFGetMainFrame();
-   return pFrame->GetDocument();
+   return pFrame ? pFrame->GetDocument() : nullptr;
 }
 
 CView* EAFGetActiveView()
 {
    CEAFMainFrame* pFrame = EAFGetMainFrame();
-   CView* pView = pFrame->GetActiveView();
-   if ( pView )
-      return pView;
-
-   if ( pFrame->IsKindOf(RUNTIME_CLASS(CFrameWnd)) )
+   if (pFrame)
    {
-      CMDIChildWnd* pChild = (CMDIChildWnd*)pFrame->GetActiveFrame();
-      pView = pChild->GetActiveView();
-      return pView;
+       CView* pView = pFrame->GetActiveView();
+       if (pView) return pView;
+
+       if (pFrame->IsKindOf(RUNTIME_CLASS(CFrameWnd)))
+       {
+           CMDIChildWnd* pChild = (CMDIChildWnd*)pFrame->GetActiveFrame();
+           pView = pChild->GetActiveView();
+           return pView;
+       }
    }
 
    return nullptr;

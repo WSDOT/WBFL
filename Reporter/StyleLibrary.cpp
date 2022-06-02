@@ -25,20 +25,11 @@ std::_tstring rptStyleLibrary::ms_TableColumnHeadingStyle    = _T("TableColumnHe
 std::_tstring rptStyleLibrary::ms_TableDataStyleLeftJustify  = _T("TableDataStyle-LJ");
 std::_tstring rptStyleLibrary::ms_TableDataStyleRightJustify = _T("TableDataStyle-RJ");
 std::_tstring rptStyleLibrary::ms_FootnoteStyle              = _T("Footnote");
-std::_tstring rptStyleLibrary::ms_TableCellStyle[6]          = {   _T("NB-LJ"),   _T("TB-LJ"),   _T("NB-RJ"),   _T("TB-RJ"),   _T("NB-CJ"),   _T("TB-CJ")};
+std::array<std::_tstring, 6> rptStyleLibrary::ms_TableCellStyle = {   _T("NB-LJ"),   _T("TB-LJ"),   _T("NB-RJ"),   _T("TB-RJ"),   _T("NB-CJ"),   _T("TB-CJ")};
 
 std::_tstring rptStyleLibrary::ms_ImagePath= _T("");
 
 Float64 rptStyleLibrary::ms_MaxTableWidth = 7.5; // 7.5" wide tables
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
 
 void rptStyleLibrary::InitStyles(const std::_tstring& imagePath)
 {
@@ -182,7 +173,6 @@ void rptStyleLibrary::InitStyles(const std::_tstring& imagePath)
    flag = psl->AddNamedStyle( ms_FootnoteStyle, footnote );
 }
 
-
 const std::_tstring& rptStyleLibrary::GetReportTitleStyle()
 {
 return ms_ReportTitleStyle;
@@ -318,24 +308,3 @@ const std::_tstring& rptStyleLibrary::GetImagePath()
 {
    return ms_ImagePath;
 }
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

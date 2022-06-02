@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,62 +30,46 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptReportItem           
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
 rptReportItem::rptReportItem()
 {
-   m_pParent = 0;
-   m_pStyleName  = 0;
+   m_pParent = nullptr;
+   m_pStyleName  = nullptr;
 
-} // rptReportItem
-
-
-rptReportItem::rptReportItem(const rptStyleName& rStyleName)
-{
-   m_pParent = 0;
-   m_pStyleName = new rptStyleName( rStyleName );
-
-} // rptReportItem
-
+}
 
 rptReportItem::rptReportItem(const rptReportItem& rOther)
 {
-   m_pParent = 0;
-   m_pStyleName  = 0;
+   m_pParent = nullptr;
+   m_pStyleName  = nullptr;
    MakeCopy( rOther );
-} // rptReportItem
+}
+
+rptReportItem::rptReportItem(const rptStyleName& rStyleName)
+{
+   m_pParent = nullptr;
+   m_pStyleName = new rptStyleName(rStyleName);
+
+}
 
 rptReportItem::~rptReportItem()
 {
    ClearStyle();
-} // ~rptReportItem
+}
 
-//======================== OPERATORS  =======================================
-
-rptReportItem& rptReportItem::operator = (const rptReportItem& rOther)
+rptReportItem& rptReportItem::operator=(const rptReportItem& rOther)
 {
    if ( &rOther != this )
       MakeAssignment( rOther );
 
    return *this;
-} // operator =
+}
 
-//======================== OPERATIONS =======================================
 void rptReportItem::SetParent( rptReportItem* pParent)
 {
-   CHECKX(m_pParent==0,_T("Bad style to set parent while another exists"));
+   CHECKX(m_pParent==nullptr,_T("Bad style to set parent while another exists"));
    CHECKX(pParent,_T("Don't set parent to null pointer - use Clear instead"));
    m_pParent = pParent;
 }
-
 
 void rptReportItem::SetStyleName( const rptStyleName& rStyleName)
 {
@@ -99,7 +83,7 @@ void rptReportItem::ClearStyle()
    if(m_pStyleName)
       delete m_pStyleName;
    
-   m_pStyleName = 0;
+   m_pStyleName = nullptr;
 }
 
 rptStyleName rptReportItem::GetStyleName() const
@@ -119,43 +103,17 @@ rptStyleName rptReportItem::GetStyleName() const
    }
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptReportItem::MakeCopy(const rptReportItem& rItem)
 {
    // copy parents' pointer
    m_pParent = rItem.m_pParent;
 
-   //
    // styles get copied
-
    ClearStyle();
-   if( rItem.m_pStyleName != nullptr)
-      m_pStyleName = new rptStyleName( *rItem.m_pStyleName );
-   else
-      m_pStyleName = 0;
+   if( rItem.m_pStyleName != nullptr)  m_pStyleName = new rptStyleName( *rItem.m_pStyleName );
 }
-
 
 void rptReportItem::MakeAssignment(const rptReportItem& rOther)
 {
-   MakeCopy( rOther );
+   MakeCopy(rOther);
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
-

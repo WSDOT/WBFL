@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphManager - Manages graph definitions
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,14 +38,17 @@
 class GRAPHMANAGERCLASS CGraphManager
 {
 public:
-	CGraphManager();
+	CGraphManager(bool bSortByName = true);
 	virtual ~CGraphManager();
    virtual void ClearAll();  // deletes all graph builders
 
+   void SortByName(bool bSort);
+   bool SortByName() const;
+   
    bool AddGraphBuilder(CGraphBuilder* pBuilder);
    bool AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder);
-   CollectionIndexType GetGraphBuilderCount() const;
-   std::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index);
+   IndexType GetGraphBuilderCount() const;
+   std::shared_ptr<CGraphBuilder> GetGraphBuilder(IndexType index);
    std::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName);
    std::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName);
    std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName);
@@ -55,7 +58,8 @@ public:
    const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
 
 private:
-   typedef std::pair<std::_tstring, std::shared_ptr<CGraphBuilder>> GraphBuilderEntry;
-   typedef std::map<std::_tstring, std::shared_ptr<CGraphBuilder>> GraphBuilderContainer;
-   GraphBuilderContainer m_GraphBuilders;
+   std::vector<std::shared_ptr<CGraphBuilder>> m_GraphBuilders;
+   bool m_bSort{true};
+   
+   void Sort();
 };

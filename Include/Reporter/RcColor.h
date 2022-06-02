@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,113 +31,49 @@
 #include <Reporter\RcVisitor.h>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-// :WARNING: This doesn't look safe
+/// Creates a new foreground color object
 #define color(a)  new rptRcColor(rptRiStyle::a)
 
-/*****************************************************************************
-CLASS 
-   rptRcColor
-
-   A class to change the color of the report content stream.
-
-
-DESCRIPTION
-   This class is derived from ReportContent and is to be used for
-   manipulating the color of the current report content stream.
-
-LOG
-   rdp : 04.11.1997 : Created file
-*****************************************************************************/
-
+/// A class to change the color of the report content stream.
+///
+/// This class is derived from ReportContent and is to be used for manipulating the foreground color of the current report content stream.
 class REPORTERCLASS rptRcColor : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
+   rptRcColor(
+      rptRiStyle::FontColor MyColor ///< The color specification
+   );
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   rptRcColor(rptRiStyle::FontColor MyColor);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcColor(const rptRcColor& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcColor();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   //
-   // Returns reference to itself
-   rptRcColor& operator = (const rptRcColor& rOther);
+   rptRcColor& operator=(const rptRcColor& rOther);
 
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Clone thyself
+   /// Creates a clone
    rptReportContent* CreateClone() const;
 
-   //------------------------------------------------------------------------
-   // accept a visitor
-   //
+   /// Accepts a visitor and calls VisitRcColor(this)
    void Accept( rptRcVisitor& MyVisitor );
 
-   // GROUP: ACCESS
-   //
-   //------------------------------------------------------------------------
-   // Get the color
-   rptRiStyle::FontColor GetFontColor();
+   /// Get the color
+   rptRiStyle::FontColor GetFontColor() const;
 
-   //------------------------------------------------------------------------
-   // Set the color
+   /// Set the color
    void SetFontColor(rptRiStyle::FontColor MyColor);
-   //
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Function to aid in copying
+   /// Copies the data from rOther to this object
    void MakeCopy(const rptRcColor& rOther);
 
-   //------------------------------------------------------------------------
-   // Function to aid in assignment
+   /// Assigns the data from rOther to this object
    void MakeAssignment(const rptRcColor& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // The current color
    rptRiStyle::FontColor m_Color;
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+
+   rptRcColor() = delete;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCCOLOR_H_

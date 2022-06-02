@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -289,9 +289,9 @@ HRESULT CUBeam::UpdateShape()
       CComPtr<IGeomUtil2d> geomUtil;
       geomUtil.CoCreateInstance(CLSID_GeomUtil);
       Float64 tw;
-      geomUtil->ShortestDistanceToPoint(outerwebline, p8, &tw);
+      geomUtil->ShortestOffsetToPoint(outerwebline, p8, &tw);
       ATLASSERT(IsEqual(tw, m_T));
-      geomUtil->ShortestDistanceToPoint(outerwebline, p9, &tw);
+      geomUtil->ShortestOffsetToPoint(outerwebline, p9, &tw);
       ATLASSERT(IsEqual(tw, m_T));
 
       //CComPtr<IPoint2dCollection> points;

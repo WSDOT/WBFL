@@ -37,13 +37,13 @@
     <ClCompile Include="DirectionDisplayUnitFormatter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HorzCurve.cpp">
+    <ClCompile Include="CompoundCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HorzCurveCollection.cpp">
+    <ClCompile Include="CompoundCurveCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HorzCurveFactory.cpp">
+    <ClCompile Include="CompoundCurveFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LineSegmentCollection.cpp">
@@ -142,6 +142,12 @@
     <ClCompile Include="WideningCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CircularCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TransitionCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alignment.h">
@@ -192,13 +198,13 @@
     <ClInclude Include="DirectionDisplayUnitFormatter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HorzCurve.h">
+    <ClInclude Include="CompoundCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HorzCurveCollection.h">
+    <ClInclude Include="CompoundCurveCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HorzCurveFactory.h">
+    <ClInclude Include="CompoundCurveFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LineSegmentCollection.h">
@@ -300,6 +306,12 @@
     <ClInclude Include="WideningCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CircularCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TransitionCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLCogo.idl" />
@@ -339,13 +351,13 @@
     <None Include="DirectionDisplayUnitFormatter.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="HorzCurve.rgs">
+    <None Include="CompoundCurve.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="HorzCurveCollection.rgs">
+    <None Include="CompoundCurveCollection.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="HorzCurveFactory.rgs">
+    <None Include="CompoundCurveFactory.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="LineSegmentCollection.rgs">
@@ -436,6 +448,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="WideningCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CircularCurve.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TransitionCurve.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

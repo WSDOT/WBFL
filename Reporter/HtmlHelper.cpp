@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,13 +35,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptHtmlHelper
-****************************************************************************/
-
-
-
 
 // a mapping list for fonts for html
 // Note: This list is dependent of the order of the enum FontType in 
@@ -54,23 +47,12 @@ static LPCTSTR  HtmlFontList[] = { _T("Times"),      // - default (pot luck)
 
 
 
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-//======================== LIFECYCLE  =======================================
-
 rptHtmlHelper::rptHtmlHelper()
 {
    // no visits have happened yet
    m_DidVisit=false;
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-//------------------------------------------------------------------------
-//
-// Get stylistic information to put into HTML style block.
 std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
 {
    std::_tostringstream ms;
@@ -145,9 +127,7 @@ std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
 
    return std::_tstring(ms.str());
 }
-//------------------------------------------------------------------------
-//
-// Get page layout information to put into HTML style block.
+
 std::_tstring rptHtmlHelper::GetPageLayoutString(const rptPageLayout& MyLayout)
 {
    std::_tostringstream ms;
@@ -159,8 +139,6 @@ std::_tstring rptHtmlHelper::GetPageLayoutString(const rptPageLayout& MyLayout)
 
    return std::_tstring(ms.str());
 }
-
-// a list of useable html elements.
 
 void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
 {
@@ -265,25 +243,3 @@ std::_tstring rptHtmlHelper::GetElementName(const rptStyleName& rstyleName) cons
       return _T("BODY");
    }
 }
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,15 +34,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcSectionValue
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptRcSectionValue::rptRcSectionValue(bool bShowUnitTag) :
 rptReportContent(),
 m_bShowUnitTag( bShowUnitTag )
@@ -61,7 +52,6 @@ rptRcSectionValue::~rptRcSectionValue()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptRcSectionValue& rptRcSectionValue::operator= (const rptRcSectionValue& rOther)
 {
    if( this != &rOther )
@@ -71,8 +61,6 @@ rptRcSectionValue& rptRcSectionValue::operator= (const rptRcSectionValue& rOther
 
    return *this;
 }
-
-//======================== OPERATIONS =======================================
 
 void rptRcSectionValue::Accept( rptRcVisitor& rVisitor )
 {
@@ -97,8 +85,6 @@ std::_tstring rptRcSectionValue::AsString(int idx) const
 
    return str;   
 }
-
-//======================== ACCESS     =======================================
 
 void rptRcSectionValue::SetFormat(sysNumericFormatTool::Format format)
 {
@@ -130,7 +116,6 @@ Uint16 rptRcSectionValue::GetWidth() const
    return m_Width;
 }
 
-//======================== INQUIRY    =======================================
 bool rptRcSectionValue::ShowUnitTag() const
 {
    return m_bShowUnitTag;
@@ -141,25 +126,6 @@ void rptRcSectionValue::ShowUnitTag(bool bShowUnitTag)
    m_bShowUnitTag = bShowUnitTag;
 }
 
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rptRcSectionValue::AssertValid() const
-{
-   return true; // rptReportContent::AssertValid();
-}
-
-void rptRcSectionValue::Dump(dbgDumpContext& os) const
-{
-   //rptReportContent::Dump( os );
-   os << AsString(0).c_str() << " "  << AsString(1).c_str() << endl;
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcSectionValue::MakeCopy(const rptRcSectionValue& rOther)
 {
    m_bShowUnitTag = rOther.m_bShowUnitTag;
@@ -174,22 +140,11 @@ void rptRcSectionValue::MakeAssignment(const rptRcSectionValue& rOther)
    MakeCopy( rOther );
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcSectionValue::Init()
 {
    m_Format    = sysNumericFormatTool::Automatic;
    m_Precision = 0;
    m_Width     = 0;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 
 

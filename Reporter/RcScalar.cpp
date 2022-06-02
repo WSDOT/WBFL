@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,16 +33,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcScalar
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptRcScalar::rptRcScalar() :
 rptReportContent(),
 m_Value( 0.0 )
@@ -72,7 +62,6 @@ rptRcScalar::~rptRcScalar()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptRcScalar& rptRcScalar::operator= (const rptRcScalar& rOther)
 {
    if( this != &rOther )
@@ -87,7 +76,6 @@ rptRcScalar& rptRcScalar::operator= (const rptRcScalar& rOther)
    return *this;
 }
 
-//======================== OPERATIONS =======================================
 void rptRcScalar::Accept( rptRcVisitor& rVisitor )
 {
    rVisitor.VisitRcScalar( this );
@@ -98,7 +86,6 @@ rptReportContent* rptRcScalar::CreateClone() const
    return new rptRcScalar( *this );
 }
 
-//======================== ACCESS     =======================================
 void rptRcScalar::SetFormat(sysNumericFormatTool::Format format)
 {
    m_Format = format;
@@ -160,35 +147,6 @@ std::_tstring rptRcScalar::AsString() const
    return fmt.AsString( GetValue() );
 }
 
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rptRcScalar::AssertValid() const
-{
-   //return rptReportContent::AssertValid();
-   return true;
-}
-
-void rptRcScalar::Dump(dbgDumpContext& os) const
-{
-   //rptReportContent::Dump( os );
-   os << "rptRcScalar : Value = " << m_Value << endl;
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcScalar::Init()
 {
    m_Format    = sysNumericFormatTool::Automatic;
@@ -196,8 +154,4 @@ void rptRcScalar::Init()
    m_Width     = 0;
    m_Tolerance = 0.0;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
 

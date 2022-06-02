@@ -120,7 +120,7 @@ public:
       GirderIndexType Nb; // number of beams (girders)
       bool  bWasExterior; // true if an exterior beam was analyzed
 
-      LeverRuleMethod(): mg(-1.0), Sleft(0.0), Sright(0.0), m(-1), de(0.0), nLanesUsed(-1), Nb(0)
+      LeverRuleMethod(): mg(-1.0), Sleft(0.0), Sright(0.0), m(-1), de(0.0), nLanesUsed(-1), Nb(0), bWasExterior(false)
       {;}
    };
 
@@ -213,9 +213,9 @@ public:
    virtual DFResult ReactionDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const=0;
 
    // ------- use these when overridding equations to get lever rule results with correct skew factors
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes) const=0;
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes) const=0;
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes) const=0;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes,bool applyMpf) const=0;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const=0;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const=0;
 
 
    // GROUP: ACCESS

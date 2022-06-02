@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,56 +25,29 @@
 #define INCLUDED_REPORTER_RISTYLE_H_
 #pragma once
 
-// COCOON: rab 03.05.97 : Cocoon limitations
-// FILE:   RiStyle.h
-//
-// All preprocessor stuff must go up here because of limitations in
-// Cocoon.
-
-// SYSTEM INCLUDES
-//
-#include <bitset>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportingUtils.h>
+#include <bitset>
+#include <array>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRiStyle
-
-   Report Item Style
-
-DESCRIPTION
-   This class encapsulates report item styles. this includes fonts, font
-   modifiers (bold, italic...), and color.
-*****************************************************************************/
-
+/// This class encapsulates report item styles such as fonts, font modifiers (bold, italic...), and color.
 class REPORTERCLASS rptRiStyle
 {
 public:
-   //------------------------------------------------------------------------
-   // Font Types
-   // Do not change the ordering of this list unless you plan to change the mappings in the
-   // visitors that use it.
-   enum FontType {NIL,     // - default (pot luck)
-                  ROMAN,   // - typically times new roman
-                  SWISS,   // - arial
-                  MODERN,  // - fixed pitch - courier
-                  TECH};   // - symbol font (not portable)
+   /// Font Types
+   ///
+   /// Do not change the ordering of this list unless you plan to change the mappings in the visitors that use it.
+   enum FontType {
+      NIL,     ///< default (pot luck)
+      ROMAN,   ///< typically times new roman
+      SWISS,   ///< arial
+      MODERN,  ///< fixed pitch - courier
+      TECH     ///< symbol font (not portable)
+   };
 
-   //------------------------------------------------------------------------
-   // Font colors
+   /// Font colors
    enum FontColor {
-      // Default - means do not change
-      Default,
+      Default, ///< Default means do not modify font color
 
       // Red colors
       IndianRed,
@@ -236,43 +209,42 @@ public:
       DarkSlateGray,
       Black
    };
+
+   /// Returns the hex color code equivalent
    static std::_tstring GetColorCode(FontColor color);
 
 
-   //------------------------------------------------------------------------
-   // types for changing font characteristics
-   enum FontModifier  { BOLD, ITALIC, UNDERLINE, OVERLINE, LINETHROUGH, SUBSCRIPT, SUPERSCRIPT,
-                        FMSIZE}; // FMSIZE is used for sizing info only
+   /// Font characteristic modifiers
+   enum FontModifier  
+   { 
+      BOLD, 
+      ITALIC, 
+      UNDERLINE, 
+      OVERLINE, 
+      LINETHROUGH, 
+      SUBSCRIPT, 
+      SUPERSCRIPT,
+      FMSIZE ///< Used for sizing info only
+   }; 
 
-   //------------------------------------------------------------------------
-   // paragraph alignments
+   /// Horizontal paragraph alignment types
    enum AlignmentType { LEFT, RIGHT, CENTER, FULL };
 
-   //------------------------------------------------------------------------
-   // vertical paragraph alignments
+   /// Vertical paragraph alignments types
    enum VerticalAlignmentType { BASELINE, BOTTOM, MIDDLE, TOP };
 
-   //------------------------------------------------------------------------
-   // bullets
-   enum BulletType    { NOBULLET, DASH, ROUND };
+   /// Bullet types
+   enum BulletType { NOBULLET, DASH, ROUND };
 
-   //------------------------------------------------------------------------
-   // border styles
-   enum BorderStyle   { NOBORDER, HAIR_THICK, SINGLE_THICK, DOUBLE_THICK,
-   DOUBLE_LINE, DASHED, DOTTED, BRDRSIZE}; // BRDSIZE to be used as sizing info only.
+   /// Border styles
+   enum BorderStyle { NOBORDER, HAIR_THICK, SINGLE_THICK, DOUBLE_THICK,
+   DOUBLE_LINE, DASHED, DOTTED, BRDRSIZE /**! Used as sizing info only.**/ };
 
-   //------------------------------------------------------------------------
-   // media type
+   /// Media type
    enum MediaType { Screen = 0, Print = 1, Both = 2 };
 
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRiStyle();
 
-   //------------------------------------------------------------------------
-   // Construct with more options
    rptRiStyle(FontType fontType, 
               Uint16 fontSize,
               bool bBold              = false, 
@@ -285,248 +257,158 @@ public:
               VerticalAlignmentType valignType = BASELINE,
               bool isHeading=false);
 
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRiStyle(const rptRiStyle& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRiStyle(); 
 
-   // GROUP: OPERATORS
+   rptRiStyle& operator=(const rptRiStyle& rOther);
 
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
-   rptRiStyle& operator = (const rptRiStyle& rOther);
-
-   // GROUP: OPERATIONS
-
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // set the font type 
+   /// Set the font type 
    void SetFontType( FontType fontType );
 
-   //------------------------------------------------------------------------
-   // Set the font size in points
+   /// Set the font size in points
    void SetFontSize( Uint16 fontSize );
 
-   //------------------------------------------------------------------------
-   // Set the horizontal text alignment
+   /// Set the horizontal text alignment
    void SetAlignment( AlignmentType alignType );
 
-   //------------------------------------------------------------------------
-   // Set the vertical text alignment
+   /// Set the vertical text alignment
    void SetVerticalAlignment( VerticalAlignmentType valignType );
 
-   //------------------------------------------------------------------------
-   // Set the underlined attribute
+   /// Set the underlined attribute
    void SetUnderlined( bool bUnderline = true);
 
-   //------------------------------------------------------------------------
-   // Set the overline attribute
+   /// Set the overline attribute
    void SetOverlined( bool bOverline = true);
 
-   //------------------------------------------------------------------------
-   // Set the line-through attribute
+   /// Set the line-through attribute
    void SetLineThrough( bool bLineThrough = true);
 
-   //------------------------------------------------------------------------
-   // Set the Bold attribute
+   /// Set the Bold attribute
    void SetBold ( bool bBold = true);
 
-   //------------------------------------------------------------------------
-   // Set the Italic attribue
+   /// Set the Italic attribue
    void SetItalic( bool bItalic = true);
 
-   //------------------------------------------------------------------------
-   // Set the bullet type
+   /// Set the bullet type
    void SetBullet( BulletType bulletType );
 
-   //------------------------------------------------------------------------
-   // Set the color
+   /// Set the foreground color
    void SetColor ( FontColor fontColor );
+
+   /// Set the background color
    void SetBGColor( FontColor fontColor );
 
-   //------------------------------------------------------------------------
-   // Get the font face
+   /// Returns the font face
    FontType GetFontType() const;
 
-   //------------------------------------------------------------------------
-   // Get the font size in points
+   /// Returns the font size in points
    Uint16 GetFontSize() const;
 
-   //------------------------------------------------------------------------
-   // Get the text alignment
+   /// Relturns the text alignment
    AlignmentType GetAlignment() const;
 
-   //------------------------------------------------------------------------
-   // Get the text alignment
+   /// Returns the text alignment
    VerticalAlignmentType GetVerticalAlignment() const;
 
-   //------------------------------------------------------------------------
-   // Determine if report item is underlined
+   /// Returns the underlined attriute
    bool GetUnderlined() const;
 
-   //------------------------------------------------------------------------
-   // Determine if report item is overlined
+   /// Returns the overlined attribute
    bool GetOverlined() const;
 
-   //------------------------------------------------------------------------
-   // Determine if report item is line-through
+   /// Returns the line-through attribute
    bool GetLineThrough() const;
 
-   //------------------------------------------------------------------------
-   // Determine if report item is bold
-   bool GetBold () const;
+   /// Returns the bold attribute
+   bool GetBold() const;
 
-   //------------------------------------------------------------------------
-   // Determine if report item is in italics
+   /// Returns the italics attribute
    bool GetItalic() const;
 
-   //------------------------------------------------------------------------
-   // Get the bullet type
+   /// Returns the bullet type
    BulletType GetBullet() const;
 
-   //------------------------------------------------------------------------
-   // Get the color of the item
-   FontColor  GetColor() const;
+   /// Returns the foreground color
+   FontColor GetColor() const;
+
+   /// Returns the background color
    FontColor GetBGColor() const;
 
-   //------------------------------------------------------------------------
-   // Is this a heading style? If so, we want to put a margin at top
+   /// Sets the heading attribute.
+   ///
+   /// If this is a heading style a margin will be put before it
    void SetIsHeading(bool isHead);
+
+   /// Returns the headding attribute
    bool IsHeading() const;
 
-   // Border Properties
-   //------------------------------------------------------------------------
-   // Is there a border around the paragraph?
-   //
+   /// Returns true if the styled item has a border
    bool IsBorder() const;
 
-   //------------------------------------------------------------------------
-   // Get style of top border
+   /// Returns top border style
    BorderStyle GetTopBorder() const
    {return m_BorderStyles[BTOP];}
 
-   //------------------------------------------------------------------------
-   // Set style of top border
+   /// Sets top border style
    void SetTopBorder(BorderStyle borderStyle)
    { m_BorderStyles[BTOP] = borderStyle; }
 
-   //------------------------------------------------------------------------
-   // Get style of Bottom border
+   /// Returns bottom border style
    BorderStyle GetBottomBorder() const
    {return m_BorderStyles[BBOTTOM];}
 
-   //------------------------------------------------------------------------
-   // Set style of Bottom border
+   /// Sets the bottom border style
    void SetBottomBorder(BorderStyle borderStyle)
    { m_BorderStyles[BBOTTOM] = borderStyle; }
 
-   //------------------------------------------------------------------------
-   // Get style of Left border
+   /// Returns the left border style
    BorderStyle GetLeftBorder() const
    {return m_BorderStyles[BLEFT];}
 
-   //------------------------------------------------------------------------
-   // Set style of Left border
+   /// Sets the left border style
    void SetLeftBorder(BorderStyle borderStyle)
    { m_BorderStyles[BLEFT] = borderStyle; }
 
-   //------------------------------------------------------------------------
-   // Get style of Right border
+   /// Returns the right border style
    BorderStyle GetRightBorder() const
    {return m_BorderStyles[BRIGHT];}
 
-   //------------------------------------------------------------------------
-   // Set style of Right border
+   /// Sets the right border style
    void SetRightBorder(BorderStyle borderStyle)
    { m_BorderStyles[BRIGHT] = borderStyle; }
 
+   /// Sets the media type
    void SetMediaType(MediaType mt);
+
+   /// Returns the media type
    MediaType GetMediaType() const;
 
-   // GROUP: INQUIRY
-
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Copies the content from rOther to this object
+   void MakeCopy(const rptRiStyle& rOther);
+
+   /// Assigns the content from oOther to this object
+   void MakeAssignment(const rptRiStyle& rOther);
 
 private:
 	typedef std::bitset<FMSIZE> FmSetType;
    enum BorderLoc {BTOP, BBOTTOM, BLEFT, BRIGHT};
 
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // The current font type
    FontType      m_Font;
-
-   //------------------------------------------------------------------------
-   // The current font size
    unsigned      m_FontSize;
-
-   //------------------------------------------------------------------------
-   // The current color
    FontColor     m_Color;
    FontColor     m_BgColor;
-
-   //------------------------------------------------------------------------
-   // State of the font modifiers: bold, italic, underline
    FmSetType     m_FontModifiers;
-
-   //------------------------------------------------------------------------
-   // Current alignment
    AlignmentType m_Alignment;
    VerticalAlignmentType m_VAlignment;
-
-   //------------------------------------------------------------------------
-   // Current bullet type
    BulletType    m_BulletType;
-
    MediaType m_MediaType;
-
-   //------------------------------------------------------------------------
-   // Is this a heading
    bool m_IsHeading;
 
+   std::array<BorderStyle, 4> m_BorderStyles;
 
-   //------------------------------------------------------------------------
-   // border styles for all four sides of paragraph
-   // styles are stored in the order given in BorderLoc
-   // refer to the enum BorderStyle for available styles
-   #define NUMBORDERS 4
-   BorderStyle   m_BorderStyles[NUMBORDERS];
-
-
-   // GROUP: LIFECYCLE
-
-   // GROUP: OPERATORS
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Initialize all data members
-   //
-   void Init();
-
-   void MakeCopy(const rptRiStyle& rOther);
-   void MakeAssignment(const rptRiStyle& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   void Init(); ///< Common initialization
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RISTYLE_H_

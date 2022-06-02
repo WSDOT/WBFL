@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,118 +60,79 @@
 #define JUSTIFY_MASK 0x0070
 #define VALIGN_MASK 0x0F00
 
-/*****************************************************************************
-CLASS 
-   rptStyleManager
-
-   A convenient place to hold common text styles for the Pgsuper application
-
-
-DESCRIPTION
-   A purely static class used for maintaining consistent text style
-   information
-
-LOG
-   rdp : 09.26.1997 : Created file
-*****************************************************************************/
-
+/// Manages reporting style information
 class REPORTERCLASS rptStyleManager
 {
 public:
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Initialize the styles in the style library
+   /// Initialize the styles in the style library. Call this once before using the styles
    static void InitStyles();
 
-   //------------------------------------------------------------------------
-   // Return the Style for the Report Title.
+   /// Returns the Style for the Report Title.
    static LPCTSTR GetReportTitleStyle();
 
-   //------------------------------------------------------------------------
-   // Return the Style for the Report Subtitle.
+   /// Returns the Style for the Report Subtitle.
    static LPCTSTR GetReportSubtitleStyle();
 
-   //------------------------------------------------------------------------
-   // Return the Style for the Chapter Titles.
+   /// Returns the Style for the Chapter Titles.
    static LPCTSTR GetChapterTitleStyle();
 
-   //------------------------------------------------------------------------
-   // Return the style for Headings
+   /// Returns the style for Headings
    static LPCTSTR GetHeadingStyle();
 
-   //------------------------------------------------------------------------
-   // Return the style for Subheadings
+   /// Returns the style for Subheadings
    static LPCTSTR GetSubheadingStyle(); 
 
-   //------------------------------------------------------------------------
-   // Return the style for table column headings
+   /// Returns the style for table column headings
    static LPCTSTR GetTableColumnHeadingStyle();
 
-   //------------------------------------------------------------------------
-   // Returns the style for table cells.  Use the CS_XXXX and CJ_XXXX constants
+   /// Returns the style for table cells.  Use the CS_XXXX and CJ_XXXX constants
    // to specify a style.
    static LPCTSTR GetTableCellStyle(Uint32 style);
 
-   //------------------------------------------------------------------------
-   // Returns the style for table cells.  Use the CS_XXXX and CJ_XXXX constants
+   /// Returns the style for table cells.  Use the CS_XXXX and CJ_XXXX constants
    // to specify a style.
    static LPCTSTR GetTableStripeRowCellStyle(Uint32 style);
 
-   //------------------------------------------------------------------------
+   /// Returns the style for footnotes
    static LPCTSTR GetFootnoteStyle();
 
-   //------------------------------------------------------------------------
+   /// Returns the style for copyright notices
    static LPCTSTR GetCopyrightStyle();
 
-   //------------------------------------------------------------------------
-   // Returns the maximum table width to be used in any given chapter
+   /// Returns the maximum table width to be used in any given chapter
    static Float64 GetMaxTableWidth();
 
-   //------------------------------------------------------------------------ 
-   // Returns a pointer to a dynamically allocated defaultly configured table 
-   // with 0.75" wide columns
+   /// Returns a pointer to a dynamically allocated defaultly configured table with 0.75" wide columns
    static rptRcTable* CreateDefaultTable(ColumnIndexType numColumns, LPCTSTR lpszLabel=nullptr);
+
+   /// Returns a pointer to a dynamically allocated defaultly configured table with 0.75" wide columns
    static rptRcTable* CreateDefaultTable(ColumnIndexType numColumns, const std::_tstring& strLabel);
 
-   //------------------------------------------------------------------------ 
-   // Returns a pointer to a dynamically allocated defaultly configured table 
-   // with 0.75" wide columns
-   // This table does not have a heading row.
+   /// Returns a pointer to a dynamically allocated defaultly configured table with 0.75" wide columns. This table does not have a heading row.
    static rptRcTable* CreateTableNoHeading(ColumnIndexType numColumns, LPCTSTR lpszLabel=nullptr);
+
+   /// Returns a pointer to a dynamically allocated defaultly configured table with 0.75" wide columns. This table does not have a heading row.
    static rptRcTable* CreateTableNoHeading(ColumnIndexType numColumns, const std::_tstring& strLabel);
 
-   //------------------------------------------------------------------------ 
-   // Returns a pointer to a dynamically allocated table configured to act as
-   // a layout table. This table does not have visable borders and is intended
-   // to be used to layout multi-column output (such as side by side tables)
+   /// Returns a pointer to a dynamically allocated table configured to act as a layout table. This table does not have visable borders and is intended to be used to layout multi-column output (such as side by side tables)
    static rptRcTable* CreateLayoutTable(ColumnIndexType nColumns,const std::_tstring& strLabel);
+
+   /// Returns a pointer to a dynamically allocated table configured to act as a layout table. This table does not have visable borders and is intended to be used to layout multi-column output (such as side by side tables)
    static rptRcTable* CreateLayoutTable(ColumnIndexType nColumns,LPCTSTR lpszLabel = nullptr);
 
+   /// Configures a previously created table
    static void ConfigureTable(rptRcTable* pTable);
 
-   //------------------------------------------------------------------------ 
-   // Returns the path to where the images are stored.
+   /// Returns the path to where the images are stored. Images are assumed to be stored in a folder titled "Images" that is a subfolder to where the executable application is installed.
    static LPCTSTR GetImagePath();
 
+   /// Sets the name of the report cover page image file
    static void SetReportCoverImage(LPCTSTR strImagePath);
+
+   /// Returns the name of the report cover page image file
    static LPCTSTR GetReportCoverImage();
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
    static std::_tstring ms_ReportTitleStyle;
    static std::_tstring ms_ReportSubtitleStyle;
    static std::_tstring ms_ChapterTitleStyle;
@@ -180,32 +141,16 @@ private:
    static std::_tstring ms_TableColumnHeadingStyle;
    static std::_tstring ms_FootnoteStyle;
    static std::_tstring ms_CopyrightStyle;
-   static std::_tstring ms_TableCellStyle[6];
-   static std::_tstring ms_TableStripeRowCellStyle[6];
+   static std::array<std::_tstring, 6> ms_TableCellStyle;
+   static std::array<std::_tstring, 6> ms_TableStripeRowCellStyle;
    static std::unique_ptr<std::_tstring> ms_pImagePath;
    static Float64 ms_MaxTableWidth;
    static std::_tstring ms_ReportCoverImage;
 
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   rptStyleManager();
-   // Prevent accidental copying and assignment
-   rptStyleManager(const rptStyleManager&);
+   rptStyleManager() = delete;
+   rptStyleManager(const rptStyleManager&) = delete;
    rptStyleManager& operator=(const rptStyleManager&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTSTYLEHOLDER_H_
 

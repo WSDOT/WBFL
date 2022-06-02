@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -347,9 +347,11 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
                   // menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_BACK, "&Back" );
 
                   POINT cpt = *pptPosition;
-                  HWND htop = ::GetActiveWindow();
-                  CWnd* pwmain = ::AfxGetMainWnd();
-                  menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cpt.x, cpt.y, pwmain );
+
+                  CWnd* pwtop = CWnd::GetActiveWindow(); // cannot call AfxGetMainWnd() here. It will bust menus when in CDialogs
+                  CWnd* pwcommand = pwtop;
+
+                  menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cpt.x, cpt.y, pwcommand );
 
                   return S_OK; // We've shown our own context menu. MSHTML.DLL will no longer try to show its own.
                }

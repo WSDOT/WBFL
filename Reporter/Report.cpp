@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,23 +31,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptReport
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
-
 rptReport::rptReport(const std::_tstring& rReportName):
 rptReportLayoutItem(_T("Default"), rptPageLayout())
 {
    m_ReportName = rReportName;
 }
-
 
 rptReport::rptReport(const std::_tstring& rReportName,
                      const rptStyleName& rStyleName,
@@ -57,15 +45,11 @@ rptReportLayoutItem(rStyleName, rLayout)
    m_ReportName = rReportName;
 }
 
-
 rptReport::~rptReport()
 {
 }
 
-
-//======================== OPERATORS  =======================================
-
-rptReport& rptReport::operator << (rptChapter* pChapter )
+rptReport& rptReport::operator<<(rptChapter* pChapter)
 {
    std::shared_ptr<rptChapter> pc ( pChapter );
    pc->SetParent( this );
@@ -73,14 +57,13 @@ rptReport& rptReport::operator << (rptChapter* pChapter )
    return *this;
 }
 
-bool rptReport::InsertChapterAt(ChapterListSizeType location, rptChapter* pChapter )
+bool rptReport::InsertChapterAt(IndexType location, rptChapter* pChapter)
 {
    if ( m_ChapterVec.size() == 0 )
    {
       ATLASSERT(location == 0);
-      std::shared_ptr<rptChapter> pc ( pChapter );
-      pc->SetParent( this );
-      m_ChapterVec.push_back(pc );
+      m_ChapterVec.emplace_back(pChapter);
+      m_ChapterVec.back()->SetParent(this);
       return true;
    }
    else
@@ -102,23 +85,15 @@ bool rptReport::InsertChapterAt(ChapterListSizeType location, rptChapter* pChapt
    }
 }
 
-rptReport::ChapterListSizeType rptReport::GetChapterCount() const
+IndexType rptReport::GetChapterCount() const
 {
    return m_ChapterVec.size();
 }
-
-
-//======================== OPERATIONS =======================================
-
 
 void rptReport::Accept( rptReportVisitor& MyVisitor )
 {
    MyVisitor.VisitReport(this);
 }
-
-
-
-//======================== ACCESS     =======================================
 
 rptReport::ConstChapterListIterator rptReport::ConstBegin()
 {
@@ -139,22 +114,3 @@ rptReport::ChapterListIterator rptReport::End()
 {
    return m_ChapterVec.end();
 }
-
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

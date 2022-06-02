@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -87,6 +87,8 @@ public:
    virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName) override;
    virtual void ReplaceDocumentFile(LPCTSTR lpszFileName);
 	//}}AFX_VIRTUAL
+
+   virtual CDataRecoveryHandler *GetDataRecoveryHandler();
 
    CRecentFileList* GetRecentFileList();
    CEAFDocTemplateRegistrar* GetDocTemplateRegistrar();
@@ -184,13 +186,15 @@ protected:
 	afx_msg void OnAppLegal();
    afx_msg void OnHelpSource();
    afx_msg void OnUpdateHelpSource(CCmdUI* pCmdUI);
-	afx_msg void OnFileNew();
+   afx_msg void OnHelpViewer();
+   afx_msg void OnFileNew();
    afx_msg void OnFileOpen();
 	afx_msg void OnEditUnits();
    afx_msg void OnSIUnits();
    afx_msg void OnUpdateSIUnits(CCmdUI* pCmdUI);
    afx_msg void OnUSUnits();
    afx_msg void OnUpdateUSUnits(CCmdUI* pCmdUI);
+   afx_msg void OnAutoSave();
 	//}}AFX_MSG
    afx_msg void OnReplaceFile();
    CString m_ReplacementFileName;
@@ -208,6 +212,14 @@ public:
    sysDate GetInstallDate();
    sysDate GetLastRunDate();
    BOOL IsFirstRun();
+
+   BOOL IsCommandLineMode() { return m_bCommandLineMode; }
+
+   virtual void EnableAutoSave(BOOL bEnable, int interval);
+   BOOL IsAutoSaveEnabled();
+   int GetAutoSaveInterval();
+   virtual void GetAutoSaveInfo(BOOL* pbAutosave, int* pAutosaveInterval);
+   virtual void SaveAutoSaveInfo(BOOL bAutosave, int AutosaveInterval);
 
    CEAFMDISnapper& GetMDIWndSnapper();
 
@@ -234,6 +246,10 @@ protected:
    virtual CString GetDocumentationMapFile();
    virtual void LoadDocumentationMap();
 
+   BOOL m_bUseHelpWindow; // went TRUE, the built-in EAF Help Browser Window is used to display help content, otherwise the help documents are opened with the default shell action.
+   // this setting cannot be changed while the application is running. If you add a UI element to toggle this setting, the application must restart.
+   // this is because I could never get the viewer thread to start properly after InitInstance was called.
+
 private:
    CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
 
@@ -249,6 +265,10 @@ private:
 
    std::vector<CString> m_TipFiles;
    bool m_bTipsEnabled;
+
+   BOOL m_bAutoSaveEnabled; // TRUE If AutoSave mode is enabled
+
+   BOOL m_bCommandLineMode; // set to TRUE if the application is running in command line mode
 
    sysDate m_LastRunDate;
 

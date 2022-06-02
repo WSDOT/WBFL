@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -115,46 +115,3 @@ std::_tstring rptHtmlUnitTagFormat::Format(const std::_tstring& tag)
 
    return stm.str();
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rptHtmlUnitTagFormat::AssertValid() const
-{
-   return true;
-}
-
-void rptHtmlUnitTagFormat::Dump(dbgDumpContext& os) const
-{
-   os << _T("Dump for rptHtmlUnitTagFormat") << endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool rptHtmlUnitTagFormat::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("rptHtmlUnitTagFormat");
-
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for rptHtmlUnitTagFormat");
-
-   TESTME_EPILOG("HtmlUnitTagFormat");
-}
-#endif // _UNITTEST

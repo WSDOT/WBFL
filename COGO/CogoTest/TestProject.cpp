@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -136,10 +136,10 @@ void CTestProject::Test()
 
    /////////////////////////////
    // PointOnCurve
-   CComPtr<IHorzCurveCollection> hcurves;
-   model->get_HorzCurves(&hcurves);
-   CComPtr<IHorzCurve> hc;
-   hc.CoCreateInstance(CLSID_HorzCurve);
+   CComPtr<ICompoundCurveCollection> hcurves;
+   model->get_CompoundCurves(&hcurves);
+   CComPtr<ICompoundCurve> hc;
+   hc.CoCreateInstance(CLSID_CompoundCurve);
    CComPtr<IPoint2d> pbt, pi, pft;
    hc->get_PBT(&pbt);
    hc->get_PI(&pi);
@@ -161,7 +161,7 @@ void CTestProject::Test()
 
    TRY_TEST(project->PointOnCurve(1,2,1),COGO_E_POINTALREADYDEFINED);
    TRY_TEST(project->PointOnCurve(5,-1,1),COGO_E_POINTNOTFOUND);
-   TRY_TEST(project->PointOnCurve(5,2,-1),COGO_E_HORZCURVENOTFOUND);
+   TRY_TEST(project->PointOnCurve(5,2,-1),COGO_E_COMPOUNDCURVENOTFOUND);
    TRY_TEST(project->PointOnCurve(5,2,1),S_OK);
    pnt.Release();
    TRY_TEST(points->get_Item(5,&pnt),S_OK);

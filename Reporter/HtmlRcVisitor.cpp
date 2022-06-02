@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -68,7 +68,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 
-rptHtmlRcVisitor::rptHtmlRcVisitor(std::_tostream* pMyOstream, const rptPageLayout* MypPageLayout, const rptHtmlHelper&   rmyHelper, Uint32 logPixelsX, Uint32 logPixelsY):
+rptHtmlRcVisitor::rptHtmlRcVisitor(std::_tostream* pMyOstream, const rptPageLayout* MypPageLayout, const rptHtmlHelper& rmyHelper, Uint32 logPixelsX, Uint32 logPixelsY) :
    rptOutputRcVisitor(pMyOstream),
    m_Helper(rmyHelper),
    m_LogPixelsX(logPixelsX),
@@ -96,19 +96,24 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
    // "strings that look like " if we don't replace < and > with their HTML equivalent
 
    std::_tstring::size_type pos;
-   while( (pos = str.find( _T("<") )) != std::_tstring::npos )
+   while ((pos = str.find(_T("<"))) != std::_tstring::npos)
    {
-      str.replace(pos,1,_T("&lt;"));
+      str.replace(pos, 1, _T("&lt;"));
    }
 
-   while( (pos = str.find(_T(">"))) != std::_tstring::npos )
+   while ((pos = str.find(_T(">"))) != std::_tstring::npos)
    {
-      str.replace(pos,1,_T("&gt;"));
+      str.replace(pos, 1, _T("&gt;"));
    }
 
-   while( (pos = str.find(_T("—"))) != std::_tstring::npos )
+   while ((pos = str.find(_T("—"))) != std::_tstring::npos)
    {
-      str.replace(pos,1,_T("&mdash;"));
+      str.replace(pos, 1, _T("&mdash;"));
+   }
+
+   while ((pos = str.find(L'–')) != std::_tstring::npos)
+   {
+      str.replace(pos, 1, _T("&ndash;"));
    }
 
    if ( 0 < str.size() )
@@ -155,8 +160,6 @@ void rptHtmlRcVisitor::VisitRcStringLiteral(rptRcStringLiteral* pString)
 
    HyperEnd(pString);
 }
-
-// Visit a Table (Big Job)
 
 void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
 {
@@ -354,7 +357,7 @@ void rptHtmlRcVisitor::VisitRcFlowModifier(rptRcFlowModifier* pMyFlow)
    // loop over number of times and issue either a page break or
    // a new line
 
-   Uint16 nt = pMyFlow->GetNumberOfTimes();
+   Uint16 nt = pMyFlow->GetRepeatCount();
    for (Uint16 i = 0; i<nt; i++)
    {
       if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_LINE)
@@ -623,7 +626,7 @@ void rptHtmlRcVisitor::VisitRcInt(rptRcInt* pInt)
       my_stm.fill( _T('0') );
    }
 
-   my_stm << _T("<span style=\"white-space: nowrap\">") << pInt->GetVal() << _T("</span>");
+   my_stm << _T("<span style=\"white-space: nowrap\">") << pInt->GetValue() << _T("</span>");
 
    // send the finished string up the pipe
 
@@ -651,7 +654,7 @@ void rptHtmlRcVisitor::VisitRcUnsigned(rptRcUnsigned* pUs)
       my_stm.fill(_T('0'));
    }
 
-   my_stm << pUs->GetVal();
+   my_stm << pUs->GetValue();
 
    // send the finished string up the pipe
 

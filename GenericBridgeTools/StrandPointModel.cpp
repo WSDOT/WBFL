@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -655,7 +655,7 @@ STDMETHODIMP CStrandPointModel::GetStraightStrandsDebondedByPositionIndex(Float6
    StrandIndexType idx = 0;
    for (const auto& strandRecord : m_Strands[Straight])
    {
-      if ( Xs < strandRecord.Debond[etStart] || strandRecord.Debond[etEnd] < Xs)
+      if ( ::IsLE(Xs,strandRecord.Debond[etStart]) || ::IsLE(strandRecord.Debond[etEnd],Xs))
       {
          // Xs is in the ends of the girder where this strand is not bonded
          // save the index
@@ -943,7 +943,7 @@ void CStrandPointModel::RemoveDebondedStrandPositions(StrandType strandType,Floa
    for (IndexType strandIdx = nPoints - 1; 0 <= strandIdx && strandIdx != INVALID_INDEX; strandIdx--)
    {
       const auto& strandRecord(m_Strands[strandType][strandIdx]);
-      if (Xs < strandRecord.Debond[etStart] || strandRecord.Debond[etEnd] < Xs)
+      if (::IsLE(Xs, strandRecord.Debond[etStart]) || ::IsLE(strandRecord.Debond[etEnd], Xs))
       {
          // Xs is in the debonded region, remove this strand from the point collection
          pPoints->Remove(strandIdx);

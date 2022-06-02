@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.CircularCurve.1 = s 'CircularCurve Class'
+	{
+		CLSID = s '{5A7E89C4-C238-4FE2-9300-0848F4F5AC42}'
+	}
+	WBFLCogo.CircularCurve = s 'CircularCurve Class'
+	{
+		CLSID = s '{5A7E89C4-C238-4FE2-9300-0848F4F5AC42}'
+		CurVer = s 'WBFLCogo.CircularCurve.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {5A7E89C4-C238-4FE2-9300-0848F4F5AC42} = s 'CircularCurve Class'
+		{
+			ProgID = s 'WBFLCogo.CircularCurve.1'
+			VersionIndependentProgID = s 'WBFLCogo.CircularCurve'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,8 +27,7 @@
 #include <Lrfd\XRangeOfApplicability.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\Utility.h>
-#include <Units\SysUnits.h>
-#include <MathEx.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -199,7 +198,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_S
    if ( SpGreaterThan16_Rule(bSISpec) )
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane,true);
       g.mg = g.LeverRuleData.mg;
    }
    else if( m_RangeOfApplicabilityAction==roaIgnore || InteriorMomentEquationRule(bSISpec, false) )
@@ -238,7 +237,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_S
       GirderIndexType nb = GetNb();
       if ( lrfdVersionMgr::FirstEditionWith1997Interims <= lrfdVersionMgr::GetVersion() && nb == 3 )
       {
-         g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+         g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
          // controlling g is minimum of equation and lever rule
          if (g.LeverRuleData.mg < g.EqnData.mg)
          {
@@ -251,7 +250,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_S
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -275,7 +274,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_2_S
    if ( SpGreaterThan16_Rule(bSISpec) )
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
       g.mg = g.LeverRuleData.mg;
    }
    else if( m_RangeOfApplicabilityAction==roaIgnore || InteriorMomentEquationRule(bSISpec, false) )
@@ -319,7 +318,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_2_S
       GirderIndexType nb = GetNb();
       if ( lrfdVersionMgr::FirstEditionWith1997Interims <= lrfdVersionMgr::GetVersion() && nb == 3 )
       {
-         g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+         g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
 
          if (g.LeverRuleData.mg < g.EqnData.mg)
          {
@@ -332,7 +331,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_2_S
    {
       assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes,true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -353,7 +352,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Ext_1_S
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane,true);
    g.mg = g.LeverRuleData.mg;
 
    skew = MomentSkewCorrectionFactor();
@@ -425,7 +424,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_S
 
       if (GetNb() <= 3)
       {
-         g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+         g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes,true);
 
          Float64 skew = MomentSkewCorrectionFactor();
 
@@ -445,7 +444,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_S
    {
       // lever rule was used for interior - override using exterior lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes,true);
 
       Float64 skew = MomentSkewCorrectionFactor();
       if ( m_bSkewMoment )
@@ -490,7 +489,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Int_1_St
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane,true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -538,7 +537,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeAEKIJ::GetShearDF_Int_2_S
    else
    {
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
+      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes,true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -559,7 +558,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Ext_1_St
    lrfdILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LEVER_RULE;
-   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+   g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane,true);
    g.mg = g.LeverRuleData.mg;
 
    skew = ShearSkewCorrectionFactor();
@@ -605,7 +604,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Ext_2_St
    }
    else
    {
-      g = DistributeShearByLeverRule(ExtGirder, TwoOrMoreLoadedLanes);
+      g = DistributeShearByLeverRule(ExtGirder, TwoOrMoreLoadedLanes,true);
    }
 
    return g;

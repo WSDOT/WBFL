@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -76,6 +76,8 @@ END_COM_MAP()
    ProductionMethodType m_ProductionMethod;
    StrandGradeType m_StrandGrade;
 
+   Float64 m_ReductionFactor;
+
    Float64 m_Fpu;
    Float64 m_Eps;
 
@@ -98,6 +100,9 @@ public:
 	STDMETHOD(put_Grade)(/*[in]*/StrandGradeType grade) override;
    STDMETHOD(get_ProductionMethod)(/*[out,retval]*/ProductionMethodType* type) override;
 	STDMETHOD(put_ProductionMethod)(/*[in]*/ProductionMethodType type) override;
+   STDMETHOD(put_ReductionFactor)(/*[in]*/Float64 factor) override;
+   STDMETHOD(get_ReductionFactor)(/*[out, retval]*/Float64* factor) override;
+   STDMETHOD(SetStrainLimits)(/*[in]*/Float64 eMin, /*[in]*/Float64 eMax) override;
 
 // IStressStrain
 public:

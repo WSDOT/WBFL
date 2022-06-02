@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\LiftingResults.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/LiftingResults.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,135 +30,137 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-stbLiftingSectionResult::stbLiftingSectionResult()
+using namespace WBFL::Stability;
+
+LiftingSectionResult::LiftingSectionResult()
 {
    AnalysisPointIndex = INVALID_INDEX;
 
    Mg = 0;
    Mw = 0;
 
-   memset((void*)fps, 0, sizeof(fps));
-   memset((void*)fcable, 0, sizeof(fcable));
-   memset((void*)fg, 0, sizeof(fg));
-   memset((void*)fw, 0, sizeof(fw));
+   fps.fill(0);
+   fcable.fill(0);
+   fg.fill(0);
+   fw.fill(0);
 
    memset((void*)fDirect, 0, sizeof(fDirect));
    memset((void*)fTilt, 0, sizeof(fTilt));
    memset((void*)f, 0, sizeof(f));
 
-   memset((void*)fMinDirect, 0, sizeof(fMinDirect));
-   memset((void*)MinDirectStressImpactDirection, 0, sizeof(MinDirectStressImpactDirection));
-   memset((void*)MinDirectStressCorner, 0, sizeof(MinDirectStressCorner));
+   fMinDirect.fill(0);
+   MinDirectStressImpactDirection.fill(NoImpact);
+   MinDirectStressCorner.fill(TopLeft);
 
-   memset((void*)fMaxDirect, 0, sizeof(fMaxDirect));
-   memset((void*)MaxDirectStressImpactDirection, 0, sizeof(MaxDirectStressImpactDirection));
-   memset((void*)MaxDirectStressCorner, 0, sizeof(MaxDirectStressCorner));
+   fMaxDirect.fill(0);
+   MaxDirectStressImpactDirection.fill(NoImpact);
+   MaxDirectStressCorner.fill(TopLeft);
 
-   memset((void*)fMin, 0, sizeof(fMin));
-   MinStressImpactDirection[stbTypes::Top]    = stbTypes::NoImpact;
-   MinStressWindDirection[stbTypes::Top]      = stbTypes::Left;
-   MinStressCorner[stbTypes::Top]             = stbTypes::TopLeft;
-   MinStressImpactDirection[stbTypes::Bottom] = stbTypes::NoImpact;
-   MinStressWindDirection[stbTypes::Bottom]   = stbTypes::Left;
-   MinStressCorner[stbTypes::Bottom]          = stbTypes::BottomRight;
+   fMin.fill(0);
+   MinStressImpactDirection[Top]    = NoImpact;
+   MinStressWindDirection[Top]      = Left;
+   MinStressCorner[Top]             = TopLeft;
+   MinStressImpactDirection[Bottom] = NoImpact;
+   MinStressWindDirection[Bottom]   = Left;
+   MinStressCorner[Bottom]          = BottomRight;
 
-   memset((void*)fMax, 0, sizeof(fMax));
-   MaxStressImpactDirection[stbTypes::Top]    = stbTypes::NoImpact;
-   MaxStressWindDirection[stbTypes::Top]      = stbTypes::Left;
-   MaxStressCorner[stbTypes::Top]             = stbTypes::TopLeft;
-   MaxStressImpactDirection[stbTypes::Bottom] = stbTypes::NoImpact;
-   MaxStressWindDirection[stbTypes::Bottom]   = stbTypes::Left;
-   MaxStressCorner[stbTypes::Bottom]          = stbTypes::BottomRight;
+   fMax.fill(0);
+   MaxStressImpactDirection[Top]    = NoImpact;
+   MaxStressWindDirection[Top]      = Left;
+   MaxStressCorner[Top]             = TopLeft;
+   MaxStressImpactDirection[Bottom] = NoImpact;
+   MaxStressWindDirection[Bottom]   = Left;
+   MaxStressCorner[Bottom]          = BottomRight;
 
    memset((void*)Mcr, 0, sizeof(Mcr));
    memset((void*)ThetaCrack, 0, sizeof(ThetaCrack));
 
       for (int i = 0; i < 3; i++)
    {
-      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      ImpactDirection impact = (ImpactDirection)i;
       for (int w = 0; w < 2; w++)
       {
-         stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+         WindDirection wind = (WindDirection)w;
 
          MinFScr[impact][wind] = Float64_Max;
-         MinFScrCorner[impact][wind] = stbTypes::TopLeft;
+         MinFScrCorner[impact][wind] = TopLeft;
 
          for (int c = 0; c < 4; c++)
          {
-            stbTypes::Corner corner = (stbTypes::Corner)c;
+            Corner corner = (Corner)c;
             FScr[impact][wind][corner] = Float64_Max;
          }
       }
    }
 
    FScrMin = Float64_Max;
-   FScrMinImpactDirection = stbTypes::NoImpact;
-   FScrMinWindDirection = stbTypes::Left;
-   FScrMinCorner = stbTypes::TopLeft;
+   FScrMinImpactDirection = NoImpact;
+   FScrMinWindDirection = Left;
+   FScrMinCorner = TopLeft;
 
    Float64 OffsetFactor = 0;
    memset((void*)eh, 0, sizeof(eh));
    memset((void*)Mh, 0, sizeof(Mh));
 
-   fMin[stbTypes::Top] = Float64_Max;
-   fMin[stbTypes::Bottom] = Float64_Max;
-   fMax[stbTypes::Top] = -Float64_Max;
-   fMax[stbTypes::Bottom] = -Float64_Max;
+   fMin[Top] = Float64_Max;
+   fMin[Bottom] = Float64_Max;
+   fMax[Top] = -Float64_Max;
+   fMax[Bottom] = -Float64_Max;
 
-   fMinDirect[stbTypes::Top] = Float64_Max;
-   fMinDirect[stbTypes::Bottom] = Float64_Max;
-   fMaxDirect[stbTypes::Top] = -Float64_Max;
-   fMaxDirect[stbTypes::Bottom] = -Float64_Max;
+   fMinDirect[Top] = Float64_Max;
+   fMinDirect[Bottom] = Float64_Max;
+   fMaxDirect[Top] = -Float64_Max;
+   fMaxDirect[Bottom] = -Float64_Max;
 }
 
 /////////////////////////////////////
 
-stbLiftingResults::stbLiftingResults()
+LiftingResults::LiftingResults()
 {
    Pcrit = 0;
    Plift = 0;
-   memset((void*)emag,0,sizeof(emag));
+   emag.fill(0);
    //dLift = 0;
-
-   memset((void*)ThetaEq, 0, sizeof(ThetaEq));
 
    MaxDirectStress = -Float64_Max;
    MaxDirectStressAnalysisPointIndex = 0;
-   MaxDirectStressImpactDirection    = stbTypes::NoImpact;
-   MaxDirectStressCorner             = stbTypes::TopLeft;
+   MaxDirectStressImpactDirection    = NoImpact;
+   MaxDirectStressCorner             = TopLeft;
 
    MinDirectStress = Float64_Max;
    MinDirectStressAnalysisPointIndex = 0;
-   MinDirectStressImpactDirection    = stbTypes::NoImpact;
-   MinDirectStressCorner             = stbTypes::TopLeft;
+   MinDirectStressImpactDirection    = NoImpact;
+   MinDirectStressCorner             = TopLeft;
 
    MaxStress = -Float64_Max;
    MaxStressAnalysisPointIndex = 0;
-   MaxStressImpactDirection    = stbTypes::NoImpact;
-   MaxStressWindDirection      = stbTypes::Left;
-   MaxStressCorner             = stbTypes::TopLeft;
+   MaxStressImpactDirection    = NoImpact;
+   MaxStressWindDirection      = Left;
+   MaxStressCorner             = TopLeft;
 
    MinStress = Float64_Max;
    MinStressAnalysisPointIndex = 0;
-   MinStressImpactDirection    = stbTypes::NoImpact;
-   MinStressWindDirection      = stbTypes::Left;
-   MinStressCorner             = stbTypes::TopLeft;
-
-   memset((void*)FScrAnalysisPointIndex, 0, sizeof(FScrAnalysisPointIndex));
-   memset((void*)FScrCorner, 0, sizeof(FScrCorner));
+   MinStressImpactDirection    = NoImpact;
+   MinStressWindDirection      = Left;
+   MinStressCorner             = TopLeft;
 
    FScrMin = Float64_Max;
    FScrMinAnalysisPointIndex = 0;
-   FScrMinImpactDirection    = stbTypes::NoImpact;
-   FScrMinWindDirection      = stbTypes::Left;
-   FScrMinCorner = stbTypes::TopLeft;
+   FScrMinImpactDirection    = NoImpact;
+   FScrMinWindDirection      = Left;
+   FScrMinCorner = TopLeft;
 
    for (int i = 0; i < 3; i++)
    {
-      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      ImpactDirection impact = (ImpactDirection)i;
       for (int w = 0; w < 2; w++)
       {
-         stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+         WindDirection wind = (WindDirection)w;
+         ThetaEq[impact][wind] = 0.0;
+         ThetaMax[impact][wind] = 0.0;
+         FScrAnalysisPointIndex[impact][wind] = 0;
+         FScrCorner[impact][wind] = (Corner)0;
+
          MinFScr[impact][wind] = Float64_Max;
          FsFailure[impact][wind] = Float64_Max;
          AdjFsFailure[impact][wind] = Float64_Max;
@@ -167,13 +169,10 @@ stbLiftingResults::stbLiftingResults()
       }
    }
 
-
-   memset((void*)(ThetaMax),0,sizeof(ThetaMax));
-
    MinFsFailure = Float64_Max;
    MinAdjFsFailure = Float64_Max;
-   FSfImpactDirection = stbTypes::NoImpact;
-   FSfWindDirection   = stbTypes::Left;
+   FSfImpactDirection = NoImpact;
+   FSfWindDirection   = Left;
 
-   AssumedTiltDirection = stbTypes::Left;
+   AssumedTiltDirection = Left;
 }

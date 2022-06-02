@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,6 +98,8 @@
 #define IDR_REBARROWFACEPATTERN         177
 #define IDR_CASTING_REGION              178
 #define IDR_CASTING_REGIONS             179
+#define IDR_NUDECKEDBULBTEESECTION      180
+#define IDR_PCIDECKEDBULBTEESECTION     181
 
 #define IDS_STAGENAME                   201
 #define IDS_STAGEDESCRIPTION            203

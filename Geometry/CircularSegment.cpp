@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -514,7 +514,7 @@ STDMETHODIMP CCircularSegment::get_PolyPoints(IPoint2dCollection * * ppPolyPoint
 STDMETHODIMP CCircularSegment::PointInShape(IPoint2d * pPoint, VARIANT_BOOL * pbResult)
 {
    // Point must be in the circle and to the right of the line
-   // Use GeomUtil2d::ShortestDistanceToPoint to determine side of line
+   // Use GeomUtil2d::ShortestOffsetToPoint to determine side of line
    // If distance is >= 0 then the point is in the shape
    CHECK_IN(pPoint);
    CHECK_RETVAL(pbResult);
@@ -539,12 +539,12 @@ STDMETHODIMP CCircularSegment::PointInShape(IPoint2d * pPoint, VARIANT_BOOL * pb
 
    CComPtr<IGeomUtil2d> util;
    CreateGeomUtil(&util);
-   Float64 dist;
-   util->ShortestDistanceToPoint(line,pPoint,&dist);
+   Float64 offset;
+   util->ShortestOffsetToPoint(line,pPoint,&offset);
    // if dist is positive, point is on right side of line.
    // this means it is in the circle
 
-   *pbResult = ( 0 <= dist ) ? VARIANT_TRUE : VARIANT_FALSE;
+   *pbResult = ( 0 <= offset) ? VARIANT_TRUE : VARIANT_FALSE;
 		
 	return S_OK;
 }
@@ -627,18 +627,18 @@ STDMETHODIMP CCircularSegment::ClipWithLine(ILine2d * pLine, IShape * * pShape)
    CComPtr<ILine2d> edge;
    BoundaryLine(&edge);
 
-   if ( nIntersect >= 1 )
+   if ( 1 <= nIntersect )
    {
-      Float64 dist1;
-      pGeomUtil->ShortestDistanceToPoint(edge,p1,&dist1);
-      bPoint1InShape = ( dist1 < 0 ) ? false : true;
+      Float64 offset1;
+      pGeomUtil->ShortestOffsetToPoint(edge,p1,&offset1);
+      bPoint1InShape = (offset1 < 0 ) ? false : true;
    }
 
    if ( nIntersect == 2 )
    {
-      Float64 dist2;
-      pGeomUtil->ShortestDistanceToPoint(edge,p2,&dist2);
-      bPoint2InShape = ( dist2 < 0 ) ? false : true;
+      Float64 offset2;
+      pGeomUtil->ShortestOffsetToPoint(edge,p2,&offset2);
+      bPoint2InShape = (offset2 < 0 ) ? false : true;
    }
 
    if ( nIntersect == 0 || bPoint1InShape == false && bPoint2InShape == false )
@@ -749,9 +749,9 @@ STDMETHODIMP CCircularSegment::ClipWithLine(ILine2d * pLine, IShape * * pShape)
             Float64 rotation = atan2(-ny,-nx);
             result->put_Rotation(rotation);
 
-            Float64 dist;
-            pGeomUtil->ShortestDistanceToPoint(pLine,m_Center,&dist);
-            result->put_MidOrdinate(m_Radius + dist);
+            Float64 offset;
+            pGeomUtil->ShortestOffsetToPoint(pLine,m_Center,&offset);
+            result->put_MidOrdinate(m_Radius + offset);
             return S_OK;
          }
          ATLASSERT(false); // should never get here
@@ -892,8 +892,8 @@ STDMETHODIMP CCircularSegment::FurthestDistance(ILine2d * line, Float64 * pVal)
       CComPtr<IPoint2d> p1;
       CComPtr<IPoint2d> p2;
       EdgePoints(&p1,&p2);
-      util->ShortestDistanceToPoint(line,p1,&d1);
-      util->ShortestDistanceToPoint(line,p2,&d2);
+      util->ShortestOffsetToPoint(line,p1,&d1);
+      util->ShortestOffsetToPoint(line,p2,&d2);
       *pVal = Max(d1,d2);
    }
    else
@@ -903,7 +903,7 @@ STDMETHODIMP CCircularSegment::FurthestDistance(ILine2d * line, Float64 * pVal)
       // the radius
       Float64 distToCenter; // Shortest distance from line to center of circle
                            // if < 0, circle is to the left of the line
-      util->ShortestDistanceToPoint(line,m_Center,&distToCenter);
+      util->ShortestOffsetToPoint(line,m_Center,&distToCenter);
  
       *pVal = m_Radius + distToCenter;
   }

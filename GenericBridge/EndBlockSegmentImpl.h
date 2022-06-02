@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2021, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,7 +33,7 @@
 #include <array>
 #include "WBFLGenericBridge.h"
 #include "ItemDataManager.h"
-#include "SuperstructureMemberSegmentImpl.h"
+#include <GenericBridge\SuperstructureMemberSegmentImpl.h>
 
 
 template<class T_IBeam>

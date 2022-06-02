@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,7 +31,6 @@
 // PROJECT INCLUDES
 //
 #include <GraphicsLib\GraphicsLibExp.h>
-#include <GeometricPrimitives\Primitives.h>
 #include <GraphicsLib\PointMapper.h>
 
 // LOCAL INCLUDES
@@ -76,7 +75,7 @@ public:
    //------------------------------------------------------------------------
    // Constructor - sets hook point and label
    // Center-Middle by default.
-   grLabel(const gpPoint2d& point, const std::_tstring& label);
+   grLabel(const GraphPoint& point, const std::_tstring& label);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -121,15 +120,15 @@ public:
 
    //------------------------------------------------------------------------
    // Set hook point
-   void SetHookPoint(const gpPoint2d& point);
+   void SetHookPoint(const GraphPoint& point);
 
    //------------------------------------------------------------------------
    // Get hook point.
-   gpPoint2d GetHookPoint() const;
+   GraphPoint GetHookPoint() const;
 
    //------------------------------------------------------------------------
    // SetLocation - sets hook point and orientation all at once
-   void SetLocation(const gpPoint2d& point, HorizPosition hpos, VertPosition pos);
+   void SetLocation(const GraphPoint& point, HorizPosition hpos, VertPosition pos);
 
    //------------------------------------------------------------------------
    //  Set the label to be placed on the dimension. std::endl's (\n's) in the string
@@ -151,11 +150,11 @@ public:
    // GROUP: INQUIRY
    //------------------------------------------------------------------------
    // Get bounding box for dimension to be drawn
-   virtual gpRect2d GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const;
+   virtual GraphRect GetBoundingBox(HDC hDC, const grlibPointMapper& mapper) const;
 
    //------------------------------------------------------------------------
    // Get size for dimension to be drawn
-   virtual gpSize2d GetSize(HDC hDC, const grlibPointMapper& mapper) const;
+   virtual GraphSize GetSize(HDC hDC, const grlibPointMapper& mapper) const;
 
    //------------------------------------------------------------------------
    // Get # of lines in label
@@ -186,7 +185,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   gpPoint2d                m_HookPoint;
+   GraphPoint m_HookPoint;
    std::vector<std::_tstring> m_Labels;
    HorizPosition            m_HorizPos;
    VertPosition             m_VertPos;

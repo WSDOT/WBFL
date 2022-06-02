@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity Test - Test driver for RCCapacity library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,6 +41,7 @@
 #include "PSPowerFormulaTest.h"
 #include "RebarModelTest.h"
 #include "UnconfinedConcreteTest.h"
+#include "UHPConcreteTest.h"
 #include "SolverTest.h"
 #include "RoundColumnTest.h"
 //#include "GeneralSectionTest.h"
@@ -49,6 +50,7 @@
 #include "MomentCurvatureSolverTest.h"
 #include "MomentCapacitySolverTest.h"
 #include "CrackedSectionSolverTest.h"
+#include "UHPCMomentCapacityTest.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -76,7 +78,9 @@ int main(int argc, TCHAR* argv[])
    CMomentCapacitySolverTest::Test();
    CCrackedSectionSolverTest::Test();
    
-   
+   CUHPConcreteTest::Test();
+   CUHPCMomentCapacityTest::Test();
+
    ::CoUninitialize();
 
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -70,6 +70,9 @@
 #define IDR_LRFDPRESTRESSFORMULA       140
 #define IDR_LRFDSOLUTION               141
 #define IDR_LRFDSOLUTIONEX             142
+#define IDR_UHPCONCRETE                143
+#define IDR_RAMBERGOSGOODMODEL         144
+#define IDR_PCIUHPCONCRETE            145
 
 #define IDS_E_INITCONCRETE              512
 #define IDS_E_SOLUTIONNOTFOUND          513

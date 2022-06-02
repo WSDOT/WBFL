@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -113,7 +113,7 @@ public:
                          Float64 friction,
                          Float64 angleChange,
 
-                         lrfdConcreteUtil::DensityType concreteType,
+                         matConcrete::Type concreteType,
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -122,9 +122,9 @@ public:
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -153,21 +153,8 @@ public:
                          bool bValidateParameters
                          );
 
-   //------------------------------------------------------------------------
-   // Copy c'tor
-   lrfdApproximateLosses(const lrfdApproximateLosses& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    ~lrfdApproximateLosses();
 
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdApproximateLosses& operator=(const lrfdApproximateLosses& rOther);
-
-   // GROUP: OPERATIONS
    virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const override;
    virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const override;
    virtual Float64 TimeDependentLossesBeforeDeck() const override;
@@ -193,50 +180,21 @@ public:
 
 protected:
    // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdApproximateLosses& rOther );
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   lrfdConcreteUtil::DensityType m_ConcreteType;
+   matConcrete::Type m_ConcreteType;
    BeamType m_BeamType;
    Float64 m_PPR;
    Float64 m_Shipping;
 
    mutable Float64 m_dfpLT;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   void MakeCopy( const lrfdApproximateLosses& rOther );
-
    virtual void ValidateParameters() const override;
    virtual void UpdateLongTermLosses() const override;
    virtual void UpdateHaulingLosses() const override;
-
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
 
 inline void lrfdApproximateLosses::SetBeamType(lrfdApproximateLosses::BeamType beamType) { m_BeamType = beamType; m_IsDirty = true; }
 inline lrfdApproximateLosses::BeamType lrfdApproximateLosses::GetBeamType() const { return m_BeamType; }
 inline void lrfdApproximateLosses::SetPPR(Float64 ppr) { m_PPR = ppr; m_IsDirty = true; }
 inline Float64 lrfdApproximateLosses::GetPPR() const { return m_PPR; }
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_LRFD_APPROXIMATELOSSES_H_

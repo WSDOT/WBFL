@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -126,7 +126,7 @@ STDMETHODIMP CStrainHardenedRebarModel::ComputeStress(Float64 strain,Float64* pV
 
    (*pVal) *= sign;
 
-   return S_OK;
+   return (m_efr < sign* strain) ? S_FALSE : S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::StrainLimits(Float64* minStrain,Float64* maxStrain)

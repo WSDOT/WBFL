@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -44,12 +44,12 @@ CLASS
 
 rptChapter::rptChapter() :
 m_Name( _T("") ),
-m_DoEjectPageBefore(false)
+m_bEjectPageBefore(false)
 {}
 
 rptChapter::rptChapter(const std::_tstring& name) :
 m_Name( name ),
-m_DoEjectPageBefore(false)
+m_bEjectPageBefore(false)
 {}
 
 
@@ -57,17 +57,13 @@ rptChapter::rptChapter(const std::_tstring& name,const rptStyleName& rStyleName,
                        const rptPageLayout& rLayout):
 rptReportLayoutItem(rStyleName, rLayout),
 m_Name( name ),
-m_DoEjectPageBefore(false)
+m_bEjectPageBefore(false)
 {
 }
-
 
 rptChapter::~rptChapter()
 {
 }
-
-
-//======================== OPERATORS  =======================================
 
 rptChapter& rptChapter::operator << (const rptParagraph& rParagraph )
 {
@@ -94,24 +90,20 @@ void rptChapter::Insert(rptParagraph* pPara)
    m_ParagraphVec.push_back( pp );
 }
 
-//======================== OPERATIONS =======================================
-
 void rptChapter::Accept( rptChapterVisitor& MyVisitor )
 {
 
    MyVisitor.VisitChapter(this);
 }
 
-//======================== ACCESS     =======================================
-
 bool rptChapter::GetEjectPageBreakBefore() const
 {
-   return m_DoEjectPageBefore;
+   return m_bEjectPageBefore;
 }
 
 void rptChapter::SetEjectPageBreakBefore(bool doBreak)
 {
-   m_DoEjectPageBefore = doBreak;
+   m_bEjectPageBefore = doBreak;
 }
 
 rptChapter::ConstChapterParagraphIterator rptChapter::ConstBegin()
@@ -147,39 +139,18 @@ void rptChapter::SetName(LPCTSTR name)
    m_Name.assign( name ? name : _T("") );
 }
 
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptChapter::rptChapter(const rptChapter& rOther):
 rptReportLayoutItem(rOther)
 {
    m_ParagraphVec.clear();
 
-   ConstChapterParagraphIterator i;
-   for ( i  = rOther.m_ParagraphVec.begin();
-         i != rOther.m_ParagraphVec.end();
-         i++ )
+   for(const auto para : rOther.m_ParagraphVec)
    {
-      const std::shared_ptr<rptParagraph>& p_para = *i;
-      Insert( *p_para );
+      Insert( *para );
       // Using the reference version of Insert because we want a clone
       // to be made.  We can't own the same paragraph as rOther
    }
 
    m_Name.assign( rOther.GetName() );
 }
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 

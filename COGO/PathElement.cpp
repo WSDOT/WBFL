@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -91,11 +91,13 @@ STDMETHODIMP CPathElement::putref_Value(IUnknown* newVal)
    CHECK_IN(newVal);
    
    CComQIPtr<IPoint2d> point(newVal);
-   CComQIPtr<IHorzCurve> hc(newVal);
+   CComQIPtr<ICircularCurve> arc(newVal);
+   CComQIPtr<ITransitionCurve> transition(newVal);
+   CComQIPtr<ICompoundCurve> hc(newVal);
    CComQIPtr<ILineSegment2d> ls(newVal);
    CComQIPtr<ICubicSpline> spline(newVal);
 
-   if( point == nullptr && hc == nullptr && ls == nullptr && spline == nullptr)
+   if( point == nullptr && arc == nullptr && transition == nullptr && hc == nullptr && ls == nullptr && spline == nullptr)
    {
       return E_INVALIDARG;
    }
@@ -106,9 +108,17 @@ STDMETHODIMP CPathElement::putref_Value(IUnknown* newVal)
    {
       m_Type = petPoint;
    }
+   else if (arc)
+   {
+      m_Type = petCircularCurve;
+   }
+   else if (transition)
+   {
+      m_Type = petTransitionCurve;
+   }
    else if ( hc )
    {
-      m_Type = petHorzCurve;
+      m_Type = petCompoundCurve;
    }
    else if ( ls )
    {
@@ -157,16 +167,38 @@ STDMETHODIMP CPathElement::Clone(IPathElement* *clone)
       }
       break;
 
-   case petHorzCurve:
+   case petCircularCurve:
       {
-         CComQIPtr<IHorzCurve> hc(m_Value);
-         CComPtr<IHorzCurve> cloneHC;
+         CComQIPtr<ICircularCurve> hc(m_Value);
+         CComPtr<ICircularCurve> cloneHC;
          hc->Clone(&cloneHC);
 
          CComQIPtr<IUnknown,&IID_IUnknown> disp(cloneHC);
          (*clone)->putref_Value(disp);
       }
       break;
+
+   case petTransitionCurve:
+   {
+      CComQIPtr<ITransitionCurve> hc(m_Value);
+      CComPtr<ITransitionCurve> cloneHC;
+      hc->Clone(&cloneHC);
+
+      CComQIPtr<IUnknown, &IID_IUnknown> disp(cloneHC);
+      (*clone)->putref_Value(disp);
+   }
+   break;
+
+   case petCompoundCurve:
+   {
+      CComQIPtr<ICompoundCurve> hc(m_Value);
+      CComPtr<ICompoundCurve> cloneHC;
+      hc->Clone(&cloneHC);
+
+      CComQIPtr<IUnknown, &IID_IUnknown> disp(cloneHC);
+      (*clone)->putref_Value(disp);
+   }
+   break;
 
    case petLineSegment:
       {
@@ -209,12 +241,26 @@ STDMETHODIMP CPathElement::Offset(Float64 dx,Float64 dy)
       }
       break;
 
-   case petHorzCurve:
+   case petCircularCurve:
       {
-         CComQIPtr<IHorzCurve> hc(m_Value);
+         CComQIPtr<ICircularCurve> hc(m_Value);
          hc->Offset(dx,dy);
       }
       break;
+
+   case petTransitionCurve:
+   {
+      CComQIPtr<ITransitionCurve> hc(m_Value);
+      hc->Offset(dx, dy);
+   }
+   break;
+
+   case petCompoundCurve:
+   {
+      CComQIPtr<ICompoundCurve> hc(m_Value);
+      hc->Offset(dx, dy);
+   }
+   break;
 
    case petLineSegment:
       {
@@ -222,6 +268,16 @@ STDMETHODIMP CPathElement::Offset(Float64 dx,Float64 dy)
          ls->Offset(dx,dy);
       }
       break;
+
+   //case petCubicSpline:
+   //{
+   //   CComQIPtr<ICubicSpline> spline(m_Value);
+   //   spline->Offset(dx, dy);
+   //}
+   //break;
+
+   default:
+      ATLASSERT(false); // is there a new type?
    }
 
    return S_OK;
@@ -244,9 +300,23 @@ STDMETHODIMP CPathElement::Move(Float64 dist,IDirection* direction)
       }
       break;
 
-   case petHorzCurve:
+   case petCircularCurve:
+   {
+      CComQIPtr<ICircularCurve> hc(m_Value);
+      hc->Offset(dx, dy);
+   }
+   break;
+
+   case petTransitionCurve:
+   {
+      CComQIPtr<ITransitionCurve> hc(m_Value);
+      hc->Offset(dx, dy);
+   }
+   break;
+
+   case petCompoundCurve:
       {
-         CComQIPtr<IHorzCurve> hc(m_Value);
+         CComQIPtr<ICompoundCurve> hc(m_Value);
          hc->Offset(dx,dy);
       }
       break;
@@ -257,6 +327,16 @@ STDMETHODIMP CPathElement::Move(Float64 dist,IDirection* direction)
          ls->Offset(dx,dy);
       }
       break;
+
+   //case petCubicSpline:
+   //   {
+   //      CComQIPtr<ICubicSpline> spline(m_Value);
+   //      spline->Offset(dx,dy);
+   //   }
+   //   break;
+
+   default:
+      ATLASSERT(false); // is there a new path element type?
    }
 
    return S_OK;
@@ -294,6 +374,82 @@ STDMETHODIMP CPathElement::Load(IStructuredLoad2* pLoad)
    return S_OK;
 }
 
+void CPathElement::GetControlPoints(std::vector<CComPtr<IPoint2d>>& points)
+{
+   switch (m_Type)
+   {
+   case petPoint:
+   {
+      CComQIPtr<IPoint2d> point(m_Value);
+      points.push_back(point);
+   }
+   break;
+
+   case petCircularCurve:
+   {
+      CComQIPtr<ICircularCurve> hc(m_Value);
+      CComPtr<IPoint2d> pbt, pi, pft;
+      hc->get_PBT(&pbt);
+      hc->get_PI(&pi);
+      hc->get_PFT(&pft);
+      points.push_back(pbt);
+      points.push_back(pi);
+      points.push_back(pft);
+   }
+   break;
+
+   case petTransitionCurve:
+   {
+      CComQIPtr<ITransitionCurve> tc(m_Value);
+      CComPtr<IPoint2d> pntStart;
+      tc->get_Start(&pntStart);
+      points.push_back(pntStart);
+   }
+   break;
+
+   case petCompoundCurve:
+   {
+      CComQIPtr<ICompoundCurve> cc(m_Value);
+      CComPtr<IPoint2d> pbt, pi, pft;
+      cc->get_PBT(&pbt);
+      cc->get_PI(&pi);
+      cc->get_PFT(&pft);
+      points.push_back(pbt);
+      points.push_back(pi);
+      points.push_back(pft);   
+   }
+   break;
+
+   case petLineSegment:
+   {
+      CComQIPtr<ILineSegment2d> ls(m_Value);
+      CComPtr<IPoint2d> pntStart, pntEnd;
+      ls->get_StartPoint(&pntStart);
+      ls->get_EndPoint(&pntEnd);
+      points.push_back(pntStart);
+      points.push_back(pntEnd);
+   }
+   break;
+
+   case petCubicSpline:
+   {
+      CComQIPtr<ICubicSpline> spline(m_Value);
+      IndexType nPoints;
+      spline->get_PointCount(&nPoints);
+      for (IndexType i = 0; i < nPoints; i++)
+      {
+         CComPtr<IPoint2d> p;
+         spline->get_Point(i, &p);
+         points.push_back(p);
+      }
+   }
+   break;
+
+   default:
+      ATLASSERT(false); // is there a new path element type?
+   }
+}
+
 //////////////////////////////////////////////////
 // Helper methods
 void CPathElement::Advise()
@@ -307,9 +463,17 @@ void CPathElement::Advise()
    {
       hr = m_Value.Advise(GetUnknown(), IID_ILineSegment2dEvents, &m_dwCookie );
    }
-   else if ( m_Type == petHorzCurve )
+   else if (m_Type == petCircularCurve)
    {
-      hr = m_Value.Advise(GetUnknown(), IID_IHorzCurveEvents, &m_dwCookie );
+      hr = m_Value.Advise(GetUnknown(), IID_ICircularCurveEvents, &m_dwCookie);
+   }
+   else if (m_Type == petTransitionCurve)
+   {
+      hr = m_Value.Advise(GetUnknown(), IID_ITransitionCurveEvents, &m_dwCookie);
+   }
+   else if ( m_Type == petCompoundCurve )
+   {
+      hr = m_Value.Advise(GetUnknown(), IID_ICompoundCurveEvents, &m_dwCookie );
    }
    else if ( m_Type == petCubicSpline )
    {
@@ -355,9 +519,17 @@ void CPathElement::Unadvise()
    {
       pCPC->FindConnectionPoint( IID_ILineSegment2dEvents, &pCP );
    }
-   else if ( m_Type == petHorzCurve )
+   else if (m_Type == petCircularCurve)
    {
-      pCPC->FindConnectionPoint( IID_IHorzCurveEvents, &pCP );
+      pCPC->FindConnectionPoint(IID_ICircularCurveEvents, &pCP);
+   }
+   else if (m_Type == petTransitionCurve)
+   {
+      pCPC->FindConnectionPoint(IID_ITransitionCurveEvents, &pCP);
+   }
+   else if ( m_Type == petCompoundCurve )
+   {
+      pCPC->FindConnectionPoint( IID_ICompoundCurveEvents, &pCP );
    }
    else if ( m_Type == petCubicSpline )
    {

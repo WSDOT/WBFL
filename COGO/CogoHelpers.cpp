@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,6 +25,7 @@
 #include "StdAfx.h"
 #include "WBFLCOGO.h"
 #include <WBFLCogo\CogoHelpers.h>
+#include <WBFLGeometry\GeomHelpers.h>
 #include "Angle.h"
 #include "Direction.h"
 #include "Station.h"
@@ -448,7 +449,16 @@ HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir
    x += offset * sindir;
    y -= offset * cosdir;
 
-   pFactory->CreatePoint(ppoint);
+   if (pFactory)
+   {
+      pFactory->CreatePoint(ppoint);
+   }
+   else
+   {
+      CComPtr<IPoint2d> p;
+      p.CoCreateInstance(CLSID_Point2d);
+      p.CopyTo(ppoint);
+   }
 
    (*ppoint)->Move(x,y);
 
@@ -812,4 +822,202 @@ void cogoUtil::CreateStation(IStationEquationCollection* pEquations,Float64 norm
       (*pSta)->AddRef();
       (*pSta)->SetStation(INVALID_INDEX,normalizedStation);
    }
+}
+
+HRESULT cogoUtil::CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 offset, ILine2dFactory* pLineFactory, ILine2d** line)
+{
+   // Save the direction of the line before it is altered.
+   Float64 dir;
+   objDir->get_Value(&dir);
+
+   // Get the offset point for line
+   CComPtr<IPoint2d> pntLine;
+   CComPtr<IDirection> objClone;
+   objDir->Clone(&objClone);
+   objClone->IncrementBy(CComVariant(-PI_OVER_2));
+
+   HRESULT hr = cogoUtil::LocateByDistDir(pnt, offset, objClone, 0.0, nullptr, &pntLine);
+   ATLASSERT(SUCCEEDED(hr));
+
+   // Create a vector in the direction of line
+   CComPtr<IVector2d> vec;
+   vec.CoCreateInstance(CLSID_Vector2d);
+   vec->put_X(cos(dir));
+   vec->put_Y(sin(dir));
+
+   // Create line
+   CComPtr<ILine2d> newLine;
+   if (pLineFactory)
+      pLineFactory->CreateLine(&newLine);
+   else
+      newLine.CoCreateInstance(CLSID_Line2d);
+
+   newLine->SetExplicit(pntLine, vec);
+
+   *line = newLine;
+   (*line)->AddRef();
+
+   return S_OK;
+}
+
+HRESULT cogoUtil::IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offset1, IPoint2d* p2, VARIANT varDir2, Float64 offset2, IPoint2dFactory* pPointFactory, IPoint2d** point)
+{
+   CHECK_IN(p1);
+   CHECK_IN(p2);
+   CHECK_RETOBJ(point);
+
+   HRESULT hr;
+
+   // Get the input data and validate
+   CComPtr<IPoint2d> pnt[2];
+   pnt[0] = p1;
+   pnt[1] = p2;
+
+   CComPtr<IDirection> dir[2];
+   hr = cogoUtil::DirectionFromVariant(varDir1, &dir[0]);
+   if (FAILED(hr))
+      return hr;
+
+   hr = cogoUtil::DirectionFromVariant(varDir2, &dir[1]);
+   if (FAILED(hr))
+      return hr;
+
+   Float64 offset[2];
+   offset[0] = offset1;
+   offset[1] = offset2;
+
+   CComPtr<ILine2d> line[2];
+   for (long i = 0; i < 2; i++)
+   {
+      cogoUtil::CreateParallelLine(pnt[i], dir[i], offset[i], nullptr/*line factory*/, &line[i]);
+   }
+
+   // Intersect the lines
+   CComPtr<IPoint2d> p;
+   hr = geomUtil::LineLineIntersect(line[0], line[1], pPointFactory, &p);
+   if (FAILED(hr))
+      return hr;
+
+   if (p != nullptr)
+   {
+      p->QueryInterface(point);
+   }
+   else
+   {
+      *point = nullptr;
+   }
+
+   return S_OK;
+}
+
+HRESULT cogoUtil::IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64 offset, IPoint2d* pntCenter, Float64 radius, IPoint2d* pntNearest, IPoint2dFactory* pPointFactory, IPoint2d** point)
+{
+   CHECK_IN(pnt1);
+   CHECK_IN(pntCenter);
+   CHECK_IN(pntNearest);
+   CHECK_RETOBJ(point);
+
+   if (radius <= 0.0) return COGO_E_RADIUS;
+
+   // Get the input data and validate
+   HRESULT hr;
+
+
+   CComPtr<IDirection> dir;
+   hr = cogoUtil::DirectionFromVariant(varDir, &dir);
+   if (FAILED(hr))
+      return hr;
+
+   CComPtr<ILine2d> line;
+   cogoUtil::CreateParallelLine(pnt1, dir, offset, nullptr, &line);
+
+   CComPtr<ICircle> circle;
+   circle.CoCreateInstance(CLSID_Circle);
+   circle->putref_Center(pntCenter);
+   circle->put_Radius(radius);
+
+   CComPtr<IPoint2d> p1, p2;
+   short nIntersect;
+   geomUtil::LineCircleIntersect(line, circle, pPointFactory, &p1, &p2, &nIntersect);
+
+   if (nIntersect == 0)
+   {
+      (*point) = 0;
+   }
+   else if (nIntersect == 1)
+   {
+      p1.QueryInterface(point);
+   }
+   else
+   {
+      ATLASSERT(nIntersect == 2);
+
+      Float64 d1, d2;
+      p1->DistanceEx(pntNearest, &d1);
+      p2->DistanceEx(pntNearest, &d2);
+
+      if (d2 < d1)
+      {
+         p2.QueryInterface(point);
+      }
+      else
+      {
+         p1.QueryInterface(point);
+      }
+   }
+
+   return S_OK;
+}
+
+HRESULT cogoUtil::IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float64 r2, IPoint2d* nearest, IPoint2dFactory* pPointFactory, IPoint2d** point)
+{
+   CHECK_IN(c1);
+   CHECK_IN(c2);
+   CHECK_IN(nearest);
+   CHECK_RETOBJ(point);
+
+   if (r1 <= 0.0 || r2 <= 0.0) return COGO_E_RADIUS;
+
+
+   CComPtr<ICircle> circle1;
+   circle1.CoCreateInstance(CLSID_Circle);
+   circle1->putref_Center(c1);
+   circle1->put_Radius(r1);
+
+   CComPtr<ICircle> circle2;
+   circle2.CoCreateInstance(CLSID_Circle);
+   circle2->putref_Center(c2);
+   circle2->put_Radius(r2);
+
+   CComPtr<IPoint2d> p1, p2;
+   short nIntersect;
+   geomUtil::CircleCircleIntersect(circle1, circle2, pPointFactory, &p1, &p2, &nIntersect);
+
+   if (nIntersect == 0)
+   {
+      (*point) = 0;
+   }
+   else if (nIntersect == 1)
+   {
+      p1.QueryInterface(point);
+   }
+   else
+   {
+      ATLASSERT(nIntersect == 2);
+
+      Float64 d1, d2;
+      p1->DistanceEx(nearest, &d1);
+      p2->DistanceEx(nearest, &d2);
+
+      if (d2 < d1)
+      {
+         p2.QueryInterface(point);
+      }
+      else
+      {
+         p1.QueryInterface(point);
+      }
+   }
+
+   return S_OK;
 }

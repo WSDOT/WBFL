@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries

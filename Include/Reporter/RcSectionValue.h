@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,180 +25,98 @@
 #define INCLUDED_REPORTER_RCSECTIONVALUE_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <System\NumericFormatTool.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
 class sysSectionValue;
 
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcSectionValue
-
-   Abstract base class for reporting united section values.
-
-
-DESCRIPTION
-   Abstract base class for reporting united section values.
-
-LOG
-   rab : 11.12.1997 : Created file
-*****************************************************************************/
-
+/// Abstract base class for reporting section values with units of measure
+///
+/// Derived classes supply the unit of measure
 class REPORTERCLASS rptRcSectionValue : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRcSectionValue(bool bShowUnitTag = true);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcSectionValue(const rptRcSectionValue& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcSectionValue();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rptRcSectionValue& operator = (const rptRcSectionValue& rOther);
+   rptRcSectionValue& operator=(const rptRcSectionValue& rOther);
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accepts a visitor and calls VisitRcSectionValue(this)
    virtual void Accept( rptRcVisitor& rVisitor );
 
-   // returns true if dual valued
-   bool IsDualValued() const; 
+   /// Returns if the section value has two different values
+   bool IsDualValued() const;
 
-   //------------------------------------------------------------------------
-   // Returns the report content as a string.  The value is converted to the
-   // correct unit of measure and the unit tag is appedned to the string if 
-   // required. idx = 0 for first value, idx = 1 for second value
-   virtual std::_tstring AsString(int idx) const;
+   /// Returns the report content as a string.
+   ///
+   /// The value is converted to the correct unit of measure and the unit tag is appended to the string if required.
+   virtual std::_tstring AsString(
+      int idx  ///< Section value index (use 0 for the left value and 1 for the right value)
+   ) const;
 
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Assings a new section value to this object
+   /// Assigns a section value and returns a reference to this
    virtual rptReportContent& SetValue(const sysSectionValue& value) = 0;
 
-   //------------------------------------------------------------------------
-   // Returns the section value.
-   // If bConvert is <b>true</b>,  the value is converted to output units,
-   // otherwise it is in system units.
-   virtual sysSectionValue GetValue(bool bConvert = false ) const = 0;
+   /// Returns the section value.
+   virtual sysSectionValue GetValue(
+      bool bConvert = false ///< If true, the returned value is converted into the specifed unit of measure
+   ) const = 0;
 
-   //------------------------------------------------------------------------
-   // Returns the left section value for this piece of report content.  
-   // If bConvert is <b>true</b>,  the value is converted to output units,
-   // otherwise it is in system units.
-   virtual Float64 GetLeftValue(bool bConvert = false) const = 0;
+   /// Returns the left section value.
+   virtual Float64 GetLeftValue(
+      bool bConvert = false ///< If true, the returned value is converted into the specifed unit of measure
+   ) const = 0;
 
-   //------------------------------------------------------------------------
-   // Returns the right section value for this piece of report content.  
-   // If bConvert is <b>true</b>,  the value is converted to output units,
-   // otherwise it is in system units.
-   virtual Float64 GetRightValue(bool bConvert = false) const = 0;
+   /// Returns the right section value.
+   virtual Float64 GetRightValue(
+      bool bConvert = false ///< If true, the returned value is converted into the specifed unit of measure
+   ) const = 0;
 
-   //------------------------------------------------------------------------
-   // Returns the unit tag for the output unit of measure.
-   virtual std::_tstring GetUnitTag() const = 0;
+   /// Returns the unit tag for the output unit of measure.
+   virtual const std::_tstring& GetUnitTag() const = 0;
 
-   //------------------------------------------------------------------------
-   // Sets the output format
+   /// Sets the output format
    void SetFormat(sysNumericFormatTool::Format format);
 
-   //------------------------------------------------------------------------
-   // Returns the output format
+   /// Returns the output format
    sysNumericFormatTool::Format GetFormat() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the output precision
    void SetPrecision(Uint16 precision);
 
-   //------------------------------------------------------------------------
+   /// Returns the output precision
    Uint16 GetPrecision() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the width of the output
    void SetWidth(Uint16 width);
 
-   //------------------------------------------------------------------------
+   /// Returns the width of the output
    Uint16 GetWidth() const;
 
-   // GROUP: INQUIRY
-
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the unit tag is to be displayed.
+   /// Returns true if the unit tag is to be included with the output string.
    bool ShowUnitTag() const;
 
-   //------------------------------------------------------------------------
-   // If <i>bShowUnitTag</i> is <b>true</b>,  the unit tag is to be displayed.
-   void ShowUnitTag(bool bShowUnitTag);
-
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
+   /// Set the unit tag display objection
+   void ShowUnitTag(
+      bool bShowUnitTag ///< true if the unit tag is to be included with the output string.
+   );
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcSectionValue& rOther);
 
-   //------------------------------------------------------------------------
+   /// Assigns the content from oOther to this object
    virtual void MakeAssignment(const rptRcSectionValue& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
    bool m_bShowUnitTag;
    sysNumericFormatTool::Format m_Format;
    Int16 m_Width;
    Int16 m_Precision;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   void Init(); ///< common initialization call by all constructors
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCSECTIONVALUE_H_

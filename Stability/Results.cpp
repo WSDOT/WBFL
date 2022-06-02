@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\Results.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/Results.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,7 +30,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-stbResults::stbResults()
+using namespace WBFL::Stability;
+
+Results::Results()
 {
-   memset((void*)this,0,sizeof(stbResults));
+   memset((void*)this,0,sizeof(Results));
 }

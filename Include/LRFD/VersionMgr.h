@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -220,10 +220,10 @@ private:
 //
 // Function to support the 8th Edition, 2017 reorganization of chapter 5 of the Specifications
 // The mapping document for this endeavor by AASHTO T10 was called "Crosswalk", hence the function name
-inline LPCTSTR LrfdCw8th(LPCTSTR oldStr, LPCTSTR newStr)
+inline LPCTSTR LrfdCw8th(LPCTSTR oldStr, LPCTSTR newStr,lrfdVersionMgr::Version version=lrfdVersionMgr::GetVersion())
 {
    // Map to the current version of the spec
-   if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::EighthEdition2017)
+   if (version < lrfdVersionMgr::EighthEdition2017)
    {
       return oldStr;
    }

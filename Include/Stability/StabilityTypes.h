@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,90 +25,107 @@
 
 #include <Stability\StabilityExp.h>
 
-typedef struct stbTypes
+namespace WBFL
 {
-   typedef enum GirderFace
+   namespace Stability
    {
-      Top,
-      Bottom
-   } GirderFace;
 
-   typedef enum GirderSide
-   {
-      Left,
-      Right
-   } GirderSide;
+      /// Constant indicating the face of a girder
+      typedef enum GirderFace
+      {
+         Top, ///< Top face
+         Bottom ///< Bottom face
+      } GirderFace;
 
-   typedef enum ImpactDirection
-   {
-      NoImpact,
-      ImpactUp,
-      ImpactDown
-   } ImpactDirection;
+      /// Constant indicating the side of a girder
+      typedef enum GirderSide
+      {
+         Left, ///< Left side
+         Right ///< Right side
+      } GirderSide;
 
-   typedef enum HaulingImpact
-   {
-      NormalCrown, // impact applied only to the normal crown condition
-      MaxSuper,    // impact applied only to the max superelevation condition   
-      Both         // impact applied to both conditions
-   } HaulingImpact;
+      /// Constant indicate the direction of impact
+      typedef enum ImpactDirection
+      {
+         NoImpact, ///< No impact
+         ImpactUp, ///< Impact up
+         ImpactDown ///< Impact down
+      } ImpactDirection;
 
-   typedef GirderSide WindDirection;
+      /// Constant indicating when impact is considered in hauling stability analysis
+      typedef enum HaulingImpact
+      {
+         NormalCrown, ///< impact applied only to the normal crown condition
+         MaxSuper,    ///< impact applied only to the max superelevation condition   
+         Both         ///< impact applied to both conditions
+      } HaulingImpact;
 
-   typedef enum WindType
-   {
-      Speed,
-      Pressure
-   } WindType;
+      /// Constant indicating the direction of wind
+      typedef GirderSide WindDirection;
 
-   typedef enum Corner
-   {
-      TopLeft,
-      TopRight,
-      BottomLeft,
-      BottomRight
-   } Corner;
+      /// Constant indicating how wind load is defined
+      typedef enum WindType
+      {
+         Speed, ///< defined by a wind speed and wind pressure is to be computed
+         Pressure ///< wind pressure is input
+      } WindType;
 
-   typedef enum HarpPointLocation
-   {
-      StartHP,
-      LeftHP,
-      RightHP,
-      EndHP
-   } HarpPointLocation;
+      /// Constant indicating a nominal corner of the girder
+      typedef enum Corner
+      {
+         TopLeft,
+         TopRight,
+         BottomLeft,
+         BottomRight
+      } Corner;
 
-   typedef enum Section
-   {
-      Start,
-      End
-   } Section;
+      /// Constant indicate the location of a harp point
+      typedef enum HarpPointLocation
+      {
+         StartHP, ///< Point near start of the girder where strands are deflected (typcially the left end of the girder)
+         LeftHP, ///< Point where strands are deflected, left of mid-span
+         RightHP, ///< Point where strands are deflected, right of mid-span
+         EndHP ///< Point near end of the girder where strands are deflected (typcially the right end of the girder)
+      } HarpPointLocation;
 
-   typedef enum CFType
-   {
-      Adverse, // CF is towards the left (increases lateral deflection and roll over)
-      Favorable // CF is towards the right
-   } CFType;
+      /// Constant indicating the face of prismatic section of the girder
+      typedef enum Section
+      {
+         Start, ///< Start of the section
+         End ///< End of the section
+      } Section;
 
-   typedef enum CalculationMethod
-   {
-      Exact,
-      Approximate
-   } CalculationMethod;
+      /// Constant indicating the type of centrifugal force occuring in the analysis
+      typedef enum CFType
+      {
+         Adverse, ///< CF is towards the left (increases lateral deflection and roll over)
+         Favorable ///< CF is towards the right
+      } CFType;
 
-   typedef enum HaulingSlope
-   {
-      CrownSlope,
-      Superelevation
-   } HaulingSlope;
+      /// Constant indicating the method for compute the lateral offset of the center of mass /f$ z_o /f$
+      typedef enum CalculationMethod
+      {
+         Exact, ///< A closed form, exact method 
+         Approximate ///< An approximate numerical method
+      } CalculationMethod;
 
-} stbTypes;
+      /// Constant indicating one of the hauling analysis crown slope types
+      typedef enum HaulingSlope
+      {
+         CrownSlope, ///< The normal roadway crown slope
+         Superelevation ///< Slope at maximum superelevation
+      } HaulingSlope;
 
-inline stbTypes::GirderFace GetFace(stbTypes::Corner corner)
-{
-   return (corner == stbTypes::TopLeft || corner == stbTypes::TopRight ? stbTypes::Top : stbTypes::Bottom);
-}
+      /// Returns the GirderFace corresponding to a Corner
+      inline GirderFace GetFace(Corner corner)
+      {
+         return (corner == TopLeft || corner == TopRight ? Top : Bottom);
+      }
 
-inline stbTypes::GirderSide GetSide(stbTypes::Corner corner)
-{
-   return (corner == stbTypes::TopLeft || corner == stbTypes::BottomLeft? stbTypes::Left : stbTypes::Right);
+      /// Returns the GirderSide corresponding to a Corner
+      inline GirderSide GetSide(Corner corner)
+      {
+         return (corner == TopLeft || corner == BottomLeft ? Left : Right);
+      }
+   }
 }

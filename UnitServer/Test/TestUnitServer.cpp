@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Unit Test - Test driver for WBFLUnits library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -61,7 +61,7 @@ void CTestUnitServer::Test()
    TRY_TEST( unitServer.CoCreateInstance( CLSID_UnitServer ), S_OK );
 
    DWORD dwCookie;
-   TRY_TEST(AtlAdvise(unitServer,punk,IID_IUnitServerEventSink,&dwCookie),S_OK);
+   TRY_TEST(AtlAdvise(unitServer,punk,IID_IUnitServerEvents,&dwCookie),S_OK);
 
    TRY_TEST(unitServer->SetBaseUnits(nullptr,CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
    TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),nullptr,CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
@@ -266,7 +266,7 @@ void CTestUnitServer::Test()
 
    ///////////////////////////////////////////////////////////////
    // Disconnection from Connection point
-   TRY_TEST(AtlUnadvise(unitServer,IID_IUnitServerEventSink,dwCookie),S_OK);
+   TRY_TEST(AtlUnadvise(unitServer,IID_IUnitServerEvents,dwCookie),S_OK);
 
 
    // Non-default internal base units

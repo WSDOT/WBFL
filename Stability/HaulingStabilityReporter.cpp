@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,9 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\HaulingStabilityReporter.h>
-#include <Stability\ReportingConstants.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/HaulingStabilityReporter.h>
+#include <Stability/ReportingConstants.h>
 #include <EAF\EAFApp.h>
 #include <array>
 
@@ -35,13 +35,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+using namespace WBFL::Stability;
 
 
-stbHaulingStabilityReporter::stbHaulingStabilityReporter()
+HaulingStabilityReporter::HaulingStabilityReporter()
 {
 }
 
-void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel,Float64 offset)
+void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel,Float64 offset)
 {
    rptParagraph* pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
    *pChapter << pPara;
@@ -59,8 +60,8 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
    INIT_UV_PROTOTYPE( rptSqrtPressureValue, tension_coeff, pDisplayUnits->SqrtPressure, false);
    INIT_UV_PROTOTYPE( rptForceUnitValue, force, pDisplayUnits->GeneralForce, false);
 
-   const stbHaulingResults& results = pArtifact->GetHaulingResults();
-   const stbHaulingCriteria& criteria = pArtifact->GetCriteria();
+   const HaulingResults& results = pArtifact->GetHaulingResults();
+   const HaulingCriteria& criteria = pArtifact->GetCriteria();
 
    CComPtr<ISegment> segment;
    pGirder->GetSegment(&segment);
@@ -70,56 +71,55 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
    LPCTSTR strCorner[] = {_T("Top Left"),_T("Top Right"),_T("Bottom Left"),_T("Bottom Right")};
    LPCTSTR strFace[] = { _T("Top"), _T("Bottom") };
 
-   stbTypes::WindType windLoadType;
+   WindType windLoadType;
    Float64 windLoad;
    pStabilityProblem->GetWindLoading(&windLoadType,&windLoad);
    IndexType nWindCases = IsZero(windLoad) ? 0 : 1;
    IndexType nCFCases   = IsZero(pStabilityProblem->GetVelocity()) ? 0 : 1;
    LPCTSTR strWindDir[] = { _T("Left"), _T("Right") };
-   LPCTSTR strCF = (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? _T("Adverse") : _T("Favorable"));
+   LPCTSTR strCF = (pStabilityProblem->GetCentrifugalForceType() == Adverse ? _T("Adverse") : _T("Favorable"));
 
    bool bLabelWind   = (0 < nWindCases   ? true : false);
    bool bIsCF        = (0 < nCFCases     ? true : false);
 
-   bool bLambda = (lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() ? true : false);
-
-   stbTypes::HaulingImpact impactUsage = pStabilityProblem->GetImpactUsage();
+   HaulingImpact impactUsage = pStabilityProblem->GetImpactUsage();
 
    for ( int s = 0; s < 2; s++ )
    {
-      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      HaulingSlope slope = (HaulingSlope)s;
 
-      bool bImpactForThisSlope = (impactUsage == stbTypes::Both || (impactUsage == stbTypes::NormalCrown && slope == stbTypes::CrownSlope) || (impactUsage == stbTypes::MaxSuper && slope == stbTypes::Superelevation) ? true : false);
+      bool bImpactForThisSlope = (impactUsage == Both || (impactUsage == NormalCrown && slope == CrownSlope) || (impactUsage == MaxSuper && slope == Superelevation) ? true : false);
 
-      LPCTSTR strImpact[3];
-      stbTypes::ImpactDirection impactDir[3];
-      Float64 impactFactor[3];
-      IndexType impactIndex[3];
+      std::array<LPCTSTR, 3> strImpact;
+      std::array<ImpactDirection, 3> impactDir;
+      std::array<Float64, 3> impactFactor;
+      std::array<IndexType, 3> impactIndex;
 
-      Float64 ImpactUp, ImpactDown;
-      pStabilityProblem->GetImpact(&ImpactUp,&ImpactDown);
+
+      Float64 impactUp, impactDown;
+      pStabilityProblem->GetImpact(&impactUp,&impactDown);
       IndexType nImpactCases = 0;
       strImpact[nImpactCases] = _T("No impact");
-      impactDir[nImpactCases] = stbTypes::NoImpact;
+      impactDir[nImpactCases] = NoImpact;
       impactFactor[nImpactCases] = 1.0;
-      impactIndex[stbTypes::NoImpact] = nImpactCases;
+      impactIndex[NoImpact] = nImpactCases;
 
-      if (!IsZero(ImpactUp) && bImpactForThisSlope)
+      if (!IsZero(impactUp) && bImpactForThisSlope)
       {
          nImpactCases++;
          strImpact[nImpactCases] = _T("Impact Up");
-         impactDir[nImpactCases] = stbTypes::ImpactUp;
-         impactFactor[nImpactCases] = 1.0 - ImpactUp;
-         impactIndex[stbTypes::ImpactUp] = nImpactCases;
+         impactDir[nImpactCases] = ImpactUp;
+         impactFactor[nImpactCases] = 1.0 - impactUp;
+         impactIndex[ImpactUp] = nImpactCases;
       }
 
-      if (!IsZero(ImpactDown) && bImpactForThisSlope)
+      if (!IsZero(impactDown) && bImpactForThisSlope)
       {
          nImpactCases++;
          strImpact[nImpactCases] = _T("Impact Down");
-         impactDir[nImpactCases] = stbTypes::ImpactDown;
-         impactFactor[nImpactCases] = 1.0 + ImpactDown;
-         impactIndex[stbTypes::ImpactDown] = nImpactCases;
+         impactDir[nImpactCases] = ImpactDown;
+         impactFactor[nImpactCases] = 1.0 + impactDown;
+         impactIndex[ImpactDown] = nImpactCases;
       }
 
       bool bLabelImpact = (0 < nImpactCases ? true : false);
@@ -128,7 +128,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
 
       pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
       *pChapter << pPara;
-      if ( slope == stbTypes::CrownSlope )
+      if ( slope == CrownSlope )
       {
          *pPara << _T("Stresses and Factor of Safety against Cracking for Hauling at Normal Crown Slope") << rptNewLine;
       }
@@ -136,7 +136,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       {
          *pPara << _T("Stresses and Factor of Safety against Cracking for Hauling at Maximum Superelevation") << rptNewLine;
 
-         if (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable && !IsZero(pStabilityProblem->GetVelocity()))
+         if (pStabilityProblem->GetCentrifugalForceType() == Favorable && !IsZero(pStabilityProblem->GetVelocity()))
          {
             // From PCI....
             // Typically, centrifugal force is ignored in the analysis of transporting rigs on curves, simulating a stopped vehicle on a 
@@ -155,7 +155,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       {
          if (IsZero(results.Wwind))
          {
-            if (!results.bRotationalStability[slope][impactDir[impactCase]][stbTypes::Left])
+            if (!results.bRotationalStability[slope][impactDir[impactCase]][Left])
             {
                bRotationalInstability = true;
                if (0 < nImpactCases)
@@ -168,7 +168,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
                }
             }
 
-            if (!results.bRolloverStability[slope][impactDir[impactCase]][stbTypes::Left])
+            if (!results.bRolloverStability[slope][impactDir[impactCase]][Left])
             {
                bRolloverInstability = true;
                if (0 < nImpactCases)
@@ -185,7 +185,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
          {
             for (int w = 0; w < 2; w++)
             {
-               stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+               WindDirection wind = (WindDirection)w;
                if (!results.bRotationalStability[slope][impactDir[impactCase]][wind])
                {
                   bRotationalInstability = true;
@@ -224,32 +224,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       *pPara << _T("Compression stress limit (general) = -") << criteria.CompressionCoefficient_GlobalStress << RPT_FC << _T(" = ") << stress.SetValue(criteria.AllowableCompression_GlobalStress) << rptNewLine;
       *pPara << _T("Compression stress limit (with lateral bending) = -") << criteria.CompressionCoefficient_PeakStress << RPT_FC << _T(" = ") << stress.SetValue(criteria.AllowableCompression_PeakStress) << rptNewLine;
 
-      *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(criteria.TensionCoefficient[slope]);
-      if ( bLambda )
-      {
-         *pPara << symbol(lambda);
-      }
-      *pPara << symbol(ROOT) << RPT_FC;
-      if ( criteria.bMaxTension[slope] )
-      {
-         *pPara << _T(" but not more than ") << stress.SetValue(criteria.MaxTension[slope]);
-      }
-      *pPara << _T(" = " ) << stress.SetValue(criteria.AllowableTension[slope]) << rptNewLine;
-
-      if ( segment )
-      {
-         *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(criteria.TensionCoefficientWithRebar[slope]);
-         if ( bLambda )
-         {
-            *pPara << symbol(lambda);
-         }
-         *pPara << symbol(ROOT) << RPT_FC;
-         *pPara << _T(" if bonded reinforcement sufficient to resist the tensile force in the concrete is provided = ") << stress.SetValue(criteria.AllowableTensionWithRebar[slope]) << rptNewLine;
-      }
-      else
-      {
-         *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated because reinforcement is not modeled.") << rptNewLine;
-      }
+      criteria.TensionStressLimit->ReportTensionLimit(slope, pPara, pDisplayUnits);
 
       *pPara << _T("Minimum factor of safety against cracking = ") << scalar.SetValue(criteria.MinFScr) << rptNewLine;
       
@@ -264,32 +239,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
          *pPara << symbol(infinity) << rptNewLine;
       }
 
-      fcReqd = pArtifact->RequiredFcTension(slope);
-      *pPara << RPT_FC << _T(" required for tensile stress = ");
-      if ( fcReqd < 0 )
-      {
-         ATLASSERT(fcReqd == -99999);
-         *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
-      }
-      else
-      {
-         *pPara << stress.SetValue(fcReqd) << rptNewLine;
-      }
-
-      if ( segment )
-      {
-         fcReqd = pArtifact->RequiredFcTensionWithRebar(slope);
-         *pPara << RPT_FC << _T(" required for tensile stress with bonded reinforcement sufficient to resist the tensile force in the concrete = ");
-         if ( fcReqd < 0 )
-         {
-            ATLASSERT(fcReqd == -99999);
-            *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
-         }
-         else
-         {
-            *pPara << stress.SetValue(fcReqd) << rptNewLine;
-         }
-      }
+      criteria.TensionStressLimit->ReportRequiredConcreteStrength(slope, pArtifact, pPara, pDisplayUnits);
 
       *pPara << _T("The tensile stress case with the minimum C/D ratio governs") << rptNewLine;
 
@@ -387,12 +337,12 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       {
          col = 0;
 
-         const stbIAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+         const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
          (*pStressTable)(row,col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength,offset,false));
 
-         stbTypes::ImpactDirection impact;
-         stbTypes::WindDirection wind;
-         stbTypes::Corner corner;
+         ImpactDirection impact;
+         WindDirection wind;
+         Corner corner;
          Float64 fAllow;
          bool bPassed;
          Float64 cd;
@@ -658,7 +608,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
    }
 }
 
-void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingResults* pResults,rptChapter* pChapter, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
+void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingResults* pResults,rptChapter* pChapter, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
 {
    CEAFApp* pApp = EAFGetApp();
    const unitmgtIndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
@@ -671,44 +621,44 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    std::array<std::_tstring, 2> strTiltDirection = { _T("left"), _T("right") };
 
    std::array<LPCTSTR, 3> strImpact;
-   std::array<stbTypes::ImpactDirection, 3> impactDir;
+   std::array<ImpactDirection, 3> impactDir;
    std::array<Float64, 3> impactFactor = { -1,-1,-1 };
    std::array<IndexType, 3> impactIndex = { INVALID_INDEX,INVALID_INDEX,INVALID_INDEX };
 
-   Float64 ImpactUp, ImpactDown;
-   pStabilityProblem->GetImpact(&ImpactUp,&ImpactDown);
+   Float64 impactUp, impactDown;
+   pStabilityProblem->GetImpact(&impactUp,&impactDown);
    IndexType nImpactCases = 0;
    strImpact[nImpactCases] = _T("No impact");
-   impactDir[nImpactCases] = stbTypes::NoImpact;
+   impactDir[nImpactCases] = NoImpact;
    impactFactor[nImpactCases] = 1.0;
-   impactIndex[stbTypes::NoImpact] = nImpactCases;
+   impactIndex[NoImpact] = nImpactCases;
 
-   if (!IsZero(ImpactUp))
+   if (!IsZero(impactUp))
    {
       nImpactCases++;
       strImpact[nImpactCases] = _T("Impact Up");
-      impactDir[nImpactCases] = stbTypes::ImpactUp;
-      impactFactor[nImpactCases] = 1.0 - ImpactUp;
-      impactIndex[stbTypes::ImpactUp] = nImpactCases;
+      impactDir[nImpactCases] = ImpactUp;
+      impactFactor[nImpactCases] = 1.0 - impactUp;
+      impactIndex[ImpactUp] = nImpactCases;
    }
 
-   if (!IsZero(ImpactDown))
+   if (!IsZero(impactDown))
    {
       nImpactCases++;
       strImpact[nImpactCases] = _T("Impact Down");
-      impactDir[nImpactCases] = stbTypes::ImpactDown;
-      impactFactor[nImpactCases] = 1.0 + ImpactDown;
-      impactIndex[stbTypes::ImpactDown] = nImpactCases;
+      impactDir[nImpactCases] = ImpactDown;
+      impactFactor[nImpactCases] = 1.0 + impactDown;
+      impactIndex[ImpactDown] = nImpactCases;
    }
 
-   stbTypes::WindType windLoadType;
+   WindType windLoadType;
    Float64 windLoad;
    pStabilityProblem->GetWindLoading(&windLoadType,&windLoad);
    IndexType nWindCases = IsZero(windLoad) ? 0 : 1;
    IndexType nCFCases   = IsZero(pStabilityProblem->GetVelocity()) ? 0 : 1;
    std::array<LPCTSTR, 2> strWindDir = {_T("Left"), _T("Right")};
    std::array<LPCTSTR, 2> strWindDirEx = { _T("Increases Rotation"), _T("Decreases Rotation") }; // note that this is opposite lifting
-   LPCTSTR strCF = (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? _T("Adverse (towards left)") : _T("Favorable (towards right)"));
+   LPCTSTR strCF = (pStabilityProblem->GetCentrifugalForceType() == Adverse ? _T("Adverse (towards left)") : _T("Favorable (towards right)"));
 
    bool bLabelImpact = (0 < nImpactCases ? true : false);
    bool bLabelWind   = (0 < nWindCases   ? true : false);
@@ -724,7 +674,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    bool bSimpleFormatTest1 = (!pStabilityProblem->IncludeLateralRollAxisOffset() || (pStabilityProblem->IncludeLateralRollAxisOffset() && IsZero(pStabilityProblem->GetLateralCamber())));
 
    Float64 Ag, Ixx, Iyy, Ixy, Xcg, Ycg, Hg, Wtop, Wbot;
-   pGirder->GetSectionProperties(0, stbTypes::Start, &Ag, &Ixx, &Iyy, &Ixy, &Xcg, &Ycg, &Hg, &Wtop, &Wbot);
+   pGirder->GetSectionProperties(0, Start, &Ag, &Ixx, &Iyy, &Ixy, &Xcg, &Ycg, &Hg, &Wtop, &Wbot);
    if (bSimpleFormatTest1)
    {
       // we might be able to use simple formatting... check the section properties
@@ -737,6 +687,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
    INIT_SCALAR_PROTOTYPE(rptRcScalar, scalar, pDisplayUnits->Scalar);
    INIT_UV_PROTOTYPE( rptForceUnitValue,   force,       pDisplayUnits->GeneralForce, true);
+   INIT_UV_PROTOTYPE(rptForcePerLengthUnitValue, force_per_length, pDisplayUnits->ForcePerLength, true);
    INIT_UV_PROTOTYPE( rptLengthUnitValue,  longLength,  pDisplayUnits->SpanLength,   true);
    INIT_UV_PROTOTYPE( rptLengthUnitValue,  shortLength, pDisplayUnits->ComponentDim, true);
    INIT_UV_PROTOTYPE(rptMomentUnitValue, moment, pDisplayUnits->Moment, false);
@@ -764,8 +715,26 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    pPara = new rptParagraph;
    *pChapter << pPara;
 
-   *pPara << _T("Girder Length, ") << Sub2(_T("L"),_T("g")) << _T(" = ") << longLength.SetValue(pGirder->GetGirderLength()) << rptNewLine;
-   *pPara << _T("Girder Weight, ") << Sub2(_T("W"),_T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
+   Float64 eb, Wb;
+   pStabilityProblem->GetAppurtenanceLoading(&eb, &Wb);
+   *pPara << _T("Girder Length, ") << Sub2(_T("L"), _T("g")) << _T(" = ") << longLength.SetValue(pGirder->GetGirderLength()) << rptNewLine;
+
+   if (!IsZero(eb) || !IsZero(Wb))
+   {
+      *pPara << _T("Girder Weight, ") << Sub2(_T("W"), _T("girder")) << _T(" = ") << force.SetValue(pResults->Wg - Wb* pGirder->GetGirderLength()) << rptNewLine;
+      *pPara << _T("Overhang Bracket Weight, ") << Sub2(_T("W"), _T("b")) << _T(" = ") << force_per_length.SetValue(Wb) << rptNewLine;
+      *pPara << _T("Girder Weight with Overhang Brackets, ") << Sub2(_T("W"), _T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
+      *pPara << _T("Overhang Bracket Eccentricity, ") << Sub2(_T("e"), _T("b")) << _T(" = ") << shortLength.SetValue(eb) << rptNewLine;
+      *pPara << _T("Lateral eccentricty of girder weight with overhang brackets, ") << Sub2(_T("e"), _T("a")) << _T(" = ") Sub2(_T("W"), _T("b")) << _T("*") << Sub2(_T("e"), _T("b")) << _T("/(") << Sub2(_T("W"), _T("girder")) << _T("+") << Sub2(_T("W"), _T("b")) << _T(") = ") << shortLength.SetValue(pResults->ea) << rptNewLine;
+      *pPara << _T("Trailing end reaction due to girder weight and overhang brackets, ") << force.SetValue(pResults->Rl) << rptNewLine;
+      *pPara << _T("Leading end reaction due to girder weight and overhang brackets, ") << force.SetValue(pResults->Rr) << rptNewLine;
+   }
+   else
+   {
+      *pPara << _T("Girder Weight, ") << Sub2(_T("W"), _T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
+      *pPara << _T("Trailing end reaction due to girder weight, ") << force.SetValue(pResults->Rl) << rptNewLine;
+      *pPara << _T("Leading end reaction due to girder weight, ") << force.SetValue(pResults->Rr) << rptNewLine;
+   }
 
    Float64 Ll,Lr;
    pStabilityProblem->GetSupportLocations(&Ll,&Lr);
@@ -773,31 +742,30 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Leading support overhang, ")  << Sub2(_T("L"),_T("l")) << _T(" = ") << longLength.SetValue(Lr) << rptNewLine;
    *pPara << _T("Clear span between bunk points, ") << Sub2(_T("L"),_T("s")) << _T(" = ") << longLength.SetValue(pResults->Ls) << rptNewLine;
 
-   *pPara << _T("Height of roll axis above roadway, ") << H_RC << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetHeightOfRollAxisAboveRoadway()) << rptNewLine;
+   *pPara << _T("Height of roll axis above roadway, ") << H_RC << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetHeightOfRollAxis()) << rptNewLine;
    *pPara << _T("Location of Roll Axis below top of girder, ") << Sub2(_T("y"),_T("rc")) << _T(" = ") << shortLength.SetValue(-pStabilityProblem->GetYRollAxis()) << rptNewLine;
-   *pPara << _T("Truck Rotational Stiffness, ") << K_THETA << _T(" = ") << rotational_stiffness.SetValue(pStabilityProblem->GetTruckRotationalStiffness()) << rptNewLine;
-   *pPara << _T("Wheel line spacing (C-C distance between tires), ") << Sub2(_T("W"),_T("cc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetWheelLineSpacing()) << rptNewLine;
+   *pPara << _T("Truck Rotational Stiffness, ") << K_THETA << _T(" = ") << rotational_stiffness.SetValue(pStabilityProblem->GetRotationalStiffness()) << rptNewLine;
+   *pPara << _T("Wheel line spacing (C-C distance between tires), ") << Sub2(_T("W"), _T("cc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetSupportWidth()) << rptNewLine;
 
    CString slope_unit(pApp->GetUnitsMode() == eafTypes::umSI ? _T("m/m") : _T("ft/ft"));
 
-   *pPara << _T("Normal Crown Slope, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetCrownSlope() << _T(" ") << slope_unit << rptNewLine;
+   *pPara << _T("Normal Crown Slope, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSupportSlope() << _T(" ") << slope_unit << rptNewLine;
    *pPara << _T("Maximum Superelevation, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSuperelevation() << _T(" ") << slope_unit << rptNewLine;
 
-   Float64 impactUp, impactDown;
    pStabilityProblem->GetImpact(&impactUp,&impactDown);
    *pPara << _T("Upward Impact = ") << 100*impactUp << _T("%") << rptNewLine;
    *pPara << _T("Downward Impact = ") << 100*impactDown << _T("%") << rptNewLine;
 
-   stbTypes::HaulingImpact impactUsage = pStabilityProblem->GetImpactUsage();
+   HaulingImpact impactUsage = pStabilityProblem->GetImpactUsage();
    switch(impactUsage)
    {
-   case stbTypes::NormalCrown:
+   case NormalCrown:
       *pPara << _T("Impact applied only to crown slope analysis") << rptNewLine;
       break;
-   case stbTypes::MaxSuper:
+   case MaxSuper:
       *pPara << _T("Impact applied only to superelevation analysis") << rptNewLine;
       break;
-   case stbTypes::Both:
+   case Both:
       *pPara << _T("Impact applied to crown slope and superelevation analysis") << rptNewLine;
       break;
    default:
@@ -833,9 +801,9 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    if ( nSections == 1 )
    {
       Float64 Ag1,Ixx1,Iyy1,Ixy1,Xcg1,Ycg1,Hg1,Wtop1,Wbot1;
-      pGirder->GetSectionProperties(0,stbTypes::Start,&Ag1,&Ixx1,&Iyy1,&Ixy1,&Xcg1,&Ycg1,&Hg1,&Wtop1,&Wbot1);
+      pGirder->GetSectionProperties(0,Start,&Ag1,&Ixx1,&Iyy1,&Ixy1,&Xcg1,&Ycg1,&Hg1,&Wtop1,&Wbot1);
       Float64 Ag2,Ixx2,Iyy2,Ixy2,Xcg2,Ycg2,Hg2,Wtop2,Wbot2;
-      pGirder->GetSectionProperties(0,stbTypes::End,&Ag2,&Ixx2,&Iyy2,&Ixy2,&Xcg2,&Ycg2,&Hg2,&Wtop2,&Wbot2);
+      pGirder->GetSectionProperties(0,End,&Ag2,&Ixx2,&Iyy2,&Ixy2,&Xcg2,&Ycg2,&Hg2,&Wtop2,&Wbot2);
       if ( IsEqual(Ag1,Ag2) && IsEqual(Ixx1,Ixx2) && IsEqual(Iyy1,Iyy2) && IsEqual(Ixy1,Ixy2) && IsEqual(Xcg1,Xcg2) && IsEqual(Ycg1,Ycg2) && IsEqual(Hg1,Hg2) && IsEqual(Wtop1,Wtop2) && IsEqual(Wbot1,Wbot2) )
       {
          bPrismaticBeam = true;
@@ -872,7 +840,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pChapter << pPara;
 
             gpPoint2d pntTL, pntTR, pntBL, pntBR;
-            pGirder->GetStressPoints(0, stbTypes::Start, &pntTL, &pntTR, &pntBL, &pntBR);
+            pGirder->GetStressPoints(0, Start, &pntTL, &pntTR, &pntBL, &pntBR);
             *pPara << _T("Top Left") << rptNewLine;
             *pPara << _T("X = ") << shortLength.SetValue(pntTL.X()) << rptNewLine;
             *pPara << _T("Y = ") << shortLength.SetValue(pntTL.Y()) << rptNewLine << rptNewLine;
@@ -1010,7 +978,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          (*pSectPropTable)(row, col++) << longLength.SetValue(L);
 
          Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
-         pGirder->GetSectionProperties(sectIdx, stbTypes::Start, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+         pGirder->GetSectionProperties(sectIdx, Start, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
          (*pSectPropTable)(row, col++) << area.SetValue(Ag);
          (*pSectPropTable)(row, col++) << inertia.SetValue(Ixx);
          (*pSectPropTable)(row, col++) << inertia.SetValue(Iyy);
@@ -1024,7 +992,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          (*pSectPropTable)(row, col++) << shortLength.SetValue(Wtop);
          (*pSectPropTable)(row, col++) << shortLength.SetValue(Wbot);
 
-         pGirder->GetSectionProperties(sectIdx, stbTypes::End, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+         pGirder->GetSectionProperties(sectIdx, End, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
          (*pSectPropTable)(row, col++) << area.SetValue(Ag);
          (*pSectPropTable)(row, col++) << inertia.SetValue(Ixx);
          (*pSectPropTable)(row, col++) << inertia.SetValue(Iyy);
@@ -1045,7 +1013,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             (*pStressPointTable)(row, col++) << longLength.SetValue(L);
 
             gpPoint2d pntTL, pntTR, pntBL, pntBR;
-            pGirder->GetStressPoints(sectIdx, stbTypes::Start, &pntTL, &pntTR, &pntBL, &pntBR);
+            pGirder->GetStressPoints(sectIdx, Start, &pntTL, &pntTR, &pntBL, &pntBR);
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.X());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.Y());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTR.X());
@@ -1055,7 +1023,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBR.X());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBR.Y());
 
-            pGirder->GetStressPoints(sectIdx, stbTypes::End, &pntTL, &pntTR, &pntBL, &pntBR);
+            pGirder->GetStressPoints(sectIdx, End, &pntTL, &pntTR, &pntBL, &pntBR);
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.X());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.Y());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTR.X());
@@ -1083,14 +1051,22 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    pPara = new rptParagraph;
    *pChapter << pPara;
 
-   *pPara << _T("Offset Factor, ") << FO << _T(" = [(") << Sub2(_T("L"),_T("g")) << _T(" - ") << Sub2(_T("L"),_T("t")) << _T(" - ") << Sub2(_T("L"),_T("l")) << _T(")") << _T("/") << Sub2(_T("L"),_T("g")) << _T("]") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+   if (IsEqual(Ll, Lr))
+   {
+      *pPara << _T("Offset Factor, ") << FO << _T(" = [(") << Sub2(_T("L"), _T("g")) << _T(" - ") << Sub2(_T("L"), _T("t")) << _T(" - ") << Sub2(_T("L"), _T("l")) << _T(")") << _T("/") << Sub2(_T("L"), _T("g")) << _T("]") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+   }
+   else
+   {
+      *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("a")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T("[1 - 2(b - a)/") << Sub2(_T("L"), _T("a")) << _T("]") << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+      *pPara << _T("where a = Min(Lt,Ll), b = Max(Lt,Ll), and ") << Sub2(_T("L"), _T("a")) << _T(" = ") << Sub2(_T("L"), _T("g")) << _T(" - 2a") << rptNewLine;
+   }
 
    Float64 camber = pStabilityProblem->GetCamber();
    Float64 precamber = pGirder->GetPrecamber();
    *pPara << _T("Camber Multipler, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
    *pPara << _T("Camber, ") << Sub2(symbol(DELTA), _T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
    *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
-   *pPara << _T("Location of center of gravity above roll axis, ") << YR << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("top")) << _T(" + ") << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(") = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
+   *pPara << _T("Location of center of gravity above roll axis, ") << YR << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("top")) << _T(" + ") << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(") = ") << shortLength.SetValue(pResults->Dra[NoImpact]) << rptNewLine;
 
    *pPara << rptNewLine;
 
@@ -1103,10 +1079,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    if (pStabilityProblem->IncludeLateralRollAxisOffset())
    {
       *pPara << _T("Lateral camber, ") << Sub2(symbol(DELTA), _T("lc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetLateralCamber()) << rptNewLine;
-      if (pResults->XcgMethod == stbTypes::Exact)
+      if (pResults->XcgMethod == Exact)
       {
          Float64 Ag1, Ixx1, Iyy1, Ixy1, Xcg1, Ycg1, Hg1, Wtop1, Wbot1;
-         pGirder->GetSectionProperties(0, stbTypes::Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
+         pGirder->GetSectionProperties(0, Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
          if (Wbot1 < Wtop1)
          {
             *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << _T("|") << Sub2(_T("X"), _T("left")) << _T(" - ") << Sub2(_T("W"), _T("top")) << _T("/2| = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
@@ -1131,32 +1107,70 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Initial lateral eccentricity of center of gravity of girder due to lateral sweep and eccentricity of bunking devices from centerline of girder, ") << rptNewLine;
    if (pStabilityProblem->IncludeLateralRollAxisOffset())
    {
-      *pPara << EI << _T(" = ") << FO << _T("(") << D_SWEEP << _T(" + ") << Sub2(symbol(DELTA),_T("lc")) << _T(")") << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
+      if (!IsZero(eb) || !IsZero(Wb))
+      {
+         *pPara << EI << _T(" = ") << FO << _T("(") << D_SWEEP << _T(" + ") << Sub2(symbol(DELTA), _T("lc")) << _T(")") << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" + ") << Sub2(_T("e"), _T("a")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      }
+      else
+      {
+         *pPara << EI << _T(" = ") << FO << _T("(") << D_SWEEP << _T(" + ") << Sub2(symbol(DELTA), _T("lc")) << _T(")") << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      }
    }
    else
    {
-      *pPara << EI << _T(" = ") << FO << D_SWEEP << _T(" + ") << E_BUNK << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
+      if (!IsZero(eb) || !IsZero(Wb))
+      {
+         *pPara << EI << _T(" = ") << FO << D_SWEEP << _T(" + ") << E_BUNK << _T(" + ") << Sub2(_T("e"),_T("a")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      }
+      else
+      {
+         *pPara << EI << _T(" = ") << FO << D_SWEEP << _T(" + ") << E_BUNK << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[NoImpact]) << rptNewLine;
+      }
    }
    *pPara << rptNewLine;
 
    *pPara << _T("Lateral Deflection of center of gravity due to total girder weight applied to weak axis, ") << ZO << rptNewLine;
-   if ( pResults->ZoMethod == stbTypes::Exact )
+   if (pResults->ZoMethod == Exact)
    {
       if (bSimpleFormat)
       {
-         *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
-            << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
-            << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
-            << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
-            << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         if (IsEqual(Ll, Lr))
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
+               << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
+               << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
+               << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         }
+         else
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/24E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << _T("l") << Super(_T("5")) << _T("/5") << _T(" - (")
+               << Super2(_T("a"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("2")) << _T(")") << Super2(_T("l"), _T("3")) << _T(" + 2(")
+               << Super2(_T("a"), _T("4")) << _T(" + ") << Super2(_T("a"), _T("2")) << Super2(_T("b"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("4")) << _T(")") << _T("l") << _T(" + ")
+               << _T("6(") << Super2(_T("a"), _T("5")) << _T(" + ") << Super2(_T("b"), _T("5")) << _T(")/5") << _T(")") << rptNewLine;
+            *pPara << _T("where a = Min(Ll,Lt), b = Max(Ll,Lt), l = ") << Sub2(_T("L"), _T("g")) << _T(" - a - b") << rptNewLine;
+         }
       }
       else
       {
-         *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
-            << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
-            << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
-            << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
-            << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         if (IsEqual(Ll, Lr))
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
+               << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
+               << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
+               << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+         }
+         else
+         {
+            *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/24E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+               << _T("l") << Super(_T("5")) << _T("/5") << _T(" - (")
+               << Super2(_T("a"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("2")) << _T(")") << Super2(_T("l"), _T("3")) << _T(" + 2(")
+               << Super2(_T("a"), _T("4")) << _T(" + ") << Super2(_T("a"), _T("2")) << Super2(_T("b"), _T("2")) << _T(" + ") << Super2(_T("b"), _T("4")) << _T(")") << _T("l") << _T(" + ")
+               << _T("6(") << Super2(_T("a"), _T("5")) << _T(" + ") << Super2(_T("b"), _T("5")) << _T(")/5") << _T(")") << rptNewLine;
+            *pPara << _T("where a = Min(Ll,Lt), b = Max(Ll,Lt), l = ") << Sub2(_T("L"), _T("g")) << _T(" - a - b") << rptNewLine;
+         }
       }
    }
 
@@ -1176,7 +1190,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Wind Load Parameters") << rptNewLine;
    pPara = new rptParagraph;
    *pChapter << pPara;
-   if ( windLoadType == stbTypes::Speed )
+   if ( windLoadType == Speed )
    {
       *pPara << _T("Wind Speed, V = ") << velocity.SetValue(windLoad) << rptNewLine;
       *pPara << _T("Pressure exposure and elevation coefficient, ") << Sub2(_T("K"),_T("z")) << _T(" = 1.0 for Service I (LRFD 3.8.1.2)") << rptNewLine;
@@ -1190,7 +1204,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    }
    *pPara << _T("Total Wind Load, ") << W_WIND << _T(" = ") << force.SetValue(pResults->Wwind) << rptNewLine;
    *pPara << _T("Location of resultant wind force above roll axis, ") << W_WIND << rptNewLine;
-   *pPara << Y_WIND << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
+   *pPara << Y_WIND << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[NoImpact]) << rptNewLine;
 
    *pPara << rptNewLine;
 
@@ -1219,7 +1233,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Velocity, V = ") << velocity.SetValue(pStabilityProblem->GetVelocity()) << rptNewLine;
    *pPara << _T("Centrigual Force, ") << W_CF << _T(" = (") << Sub2(_T("W"),_T("g")) << Super2(_T("V"),_T("2")) << _T(")/(gR) = ") << force.SetValue(pResults->Wcf) << rptNewLine;
    *pPara << _T("Centrigural force is ") << strCF << rptNewLine;
-   *pPara << _T("Location of resultant centrifugal force above roll axis, ") << Y_CF << _T(" = ") << YR << _T(" = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
+   *pPara << _T("Location of resultant centrifugal force above roll axis, ") << Y_CF << _T(" = ") << YR << _T(" = ") << shortLength.SetValue(pResults->Dra[NoImpact]) << rptNewLine;
    *pPara << _T("Lateral Deflection due to centrifugal force, ") << Sub2(_T("z"),_T("cf")) << _T(" = ") << W_CF << ZO << _T("/") << Sub2(_T("W"),_T("g")) << _T(" = ") << shortLength.SetValue(pResults->ZoCF) << rptNewLine;
    *pPara << _T("Overturning moment due to centrigural force, ") << Sub2(_T("M"), _T("otcf")) << _T(" = ") << W_CF << Y_CF << _T(" = ") << ot_moment.SetValue(pResults->MotCF) << rptNewLine;
    *pPara << rptNewLine;
@@ -1291,7 +1305,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    {
       col = 0;
 
-      const stbIAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+      const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
 
       (*pPrestressTable)(row, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
 
@@ -1312,17 +1326,17 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fps[stbTypes::TopLeft], sectionResult.fps[stbTypes::TopRight],0.001));
-         ATLASSERT(IsEqual(sectionResult.fps[stbTypes::BottomLeft], sectionResult.fps[stbTypes::BottomRight], 0.001));
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::TopLeft]);
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::BottomLeft]);
+         ATLASSERT(IsEqual(sectionResult.fps[TopLeft], sectionResult.fps[TopRight],0.001));
+         ATLASSERT(IsEqual(sectionResult.fps[BottomLeft], sectionResult.fps[BottomRight], 0.001));
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[TopLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[BottomLeft]);
       }
       else
       {
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::TopLeft]);
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::TopRight]);
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::BottomLeft]);
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::BottomRight]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[TopLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[TopRight]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[BottomLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[BottomRight]);
       }
 
       row++;
@@ -1415,7 +1429,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    {
       col = 0;
 
-      const stbIAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+      const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
 
       (*pStressTable)(row, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
 
@@ -1423,32 +1437,32 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fg[stbTypes::TopLeft], sectionResult.fg[stbTypes::TopRight]));
-         ATLASSERT(IsEqual(sectionResult.fg[stbTypes::BottomLeft], sectionResult.fg[stbTypes::BottomRight]));
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::TopLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::BottomLeft]);
+         ATLASSERT(IsEqual(sectionResult.fg[TopLeft], sectionResult.fg[TopRight]));
+         ATLASSERT(IsEqual(sectionResult.fg[BottomLeft], sectionResult.fg[BottomRight]));
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[TopLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[BottomLeft]);
       }
       else
       {
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::TopLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::TopRight]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::BottomLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::BottomRight]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[TopLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[TopRight]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[BottomLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[BottomRight]);
       }
 
       (*pStressTable)(row, col++) << moment.SetValue(sectionResult.Mw);
 
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[stbTypes::TopLeft]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[stbTypes::TopRight]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[stbTypes::BottomLeft]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[stbTypes::BottomRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[TopLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[TopRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[BottomLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[BottomRight]);
 
       (*pStressTable)(row, col++) << moment.SetValue(sectionResult.Mcf);
 
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[stbTypes::TopLeft]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[stbTypes::TopRight]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[stbTypes::BottomLeft]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[stbTypes::BottomRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[TopLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[TopRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[BottomLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[BottomRight]);
 
       row++;
    }
@@ -1502,51 +1516,51 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    std::array<LPCTSTR, 2> strSlope = { _T("Normal Crown Slope"),_T("Maximum Superelevation") };
    for (int s = 0; s < 2; s++)
    {
-      stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
+      HaulingSlope slope = (HaulingSlope)s;
 
       // redo impact labeling because now it is based on the analysis slope type
-      bool bImpactForThisSlope = (impactUsage == stbTypes::Both || (impactUsage == stbTypes::NormalCrown && slope == stbTypes::CrownSlope) || (impactUsage == stbTypes::MaxSuper && slope == stbTypes::Superelevation) ? true : false);
+      bool bImpactForThisSlope = (impactUsage == Both || (impactUsage == NormalCrown && slope == CrownSlope) || (impactUsage == MaxSuper && slope == Superelevation) ? true : false);
 
       std::array<LPCTSTR, 3> strImpact;
-      std::array<stbTypes::ImpactDirection, 3> impactDir;
+      std::array<ImpactDirection, 3> impactDir;
       std::array<Float64, 3> impactFactor = { -1,-1,-1 };
       std::array<IndexType, 3> impactIndex = { INVALID_INDEX,INVALID_INDEX < INVALID_INDEX };
 
-      Float64 ImpactUp, ImpactDown;
-      pStabilityProblem->GetImpact(&ImpactUp, &ImpactDown);
+      Float64 impactUp, impactDown;
+      pStabilityProblem->GetImpact(&impactUp, &impactDown);
       IndexType nImpactCases = 0;
 
       strImpact[nImpactCases] = _T("No impact");
-      impactDir[nImpactCases] = stbTypes::NoImpact;
+      impactDir[nImpactCases] = NoImpact;
       impactFactor[nImpactCases] = 1.0;
-      impactIndex[stbTypes::NoImpact] = nImpactCases;
+      impactIndex[NoImpact] = nImpactCases;
 
-      if (!IsZero(ImpactUp) && bImpactForThisSlope)
+      if (!IsZero(impactUp) && bImpactForThisSlope)
       {
          nImpactCases++;
          strImpact[nImpactCases] = _T("Impact Up");
-         impactDir[nImpactCases] = stbTypes::ImpactUp;
-         impactFactor[nImpactCases] = 1.0 - ImpactUp;
-         impactIndex[stbTypes::ImpactUp] = nImpactCases;
+         impactDir[nImpactCases] = ImpactUp;
+         impactFactor[nImpactCases] = 1.0 - impactUp;
+         impactIndex[ImpactUp] = nImpactCases;
       }
 
-      if (!IsZero(ImpactDown) && bImpactForThisSlope)
+      if (!IsZero(impactDown) && bImpactForThisSlope)
       {
          nImpactCases++;
          strImpact[nImpactCases] = _T("Impact Down");
-         impactDir[nImpactCases] = stbTypes::ImpactDown;
-         impactFactor[nImpactCases] = 1.0 + ImpactDown;
-         impactIndex[stbTypes::ImpactDown] = nImpactCases;
+         impactDir[nImpactCases] = ImpactDown;
+         impactFactor[nImpactCases] = 1.0 + impactDown;
+         impactIndex[ImpactDown] = nImpactCases;
       }
 
       bool bLabelImpact = (0 < nImpactCases ? true : false);
 
       for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
       {
-         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)impactCase;
+         ImpactDirection impact = (ImpactDirection)impactCase;
          for (IndexType windCase = 0; windCase <= nWindCases; windCase++)
          {
-            stbTypes::WindDirection wind = (stbTypes::WindDirection)windCase;
+            WindDirection wind = (WindDirection)windCase;
 
             CString strTitle;
 
@@ -1582,19 +1596,19 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << rptNewLine;
 
 
-            std::_tstring strWindSign(wind == stbTypes::Left ? _T("+") : _T("-"));
-            std::_tstring strOppWindSign(wind == stbTypes::Left ? _T("-") : _T("+"));
-            std::_tstring strCFSign(pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable ? _T("-") : _T("+"));
-            std::_tstring strOppCFSign(pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable ? _T("+") : _T("-"));
+            std::_tstring strWindSign(wind == Left ? _T("+") : _T("-"));
+            std::_tstring strOppWindSign(wind == Left ? _T("-") : _T("+"));
+            std::_tstring strCFSign(pStabilityProblem->GetCentrifugalForceType() == Favorable ? _T("-") : _T("+"));
+            std::_tstring strOppCFSign(pStabilityProblem->GetCentrifugalForceType() == Favorable ? _T("+") : _T("-"));
 
             // Overturning Moment
             *pPara << _T("Overturning Moment") << rptNewLine;
-            Float64 Mot = (wind == stbTypes::Left ? 1 : -1)*pResults->MotWind;
+            Float64 Mot = (wind == Left ? 1 : -1)*pResults->MotWind;
             *pPara << M_OT << _T(" = ");
-            if (slope == stbTypes::Superelevation)
+            if (slope == Superelevation)
             {
-               Mot += (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Favorable ? -1 : 1)*pResults->MotCF;
-               if (wind == stbTypes::Right)
+               Mot += (pStabilityProblem->GetCentrifugalForceType() == Favorable ? -1 : 1)*pResults->MotCF;
+               if (wind == Right)
                {
                   *pPara << _T("-");
                }
@@ -1602,7 +1616,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
             else
             {
-               if (wind == stbTypes::Right)
+               if (wind == Right)
                {
                   *pPara << _T("-");
                }
@@ -1616,7 +1630,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T("Equilibrium Tilt Angle") << rptNewLine;
 
             *pPara << THETA_EQ << _T(" = ((IM)") << Sub2(_T("W"), _T("g")) << _T("(") << EI << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND;
-            if (slope == stbTypes::Superelevation)
+            if (slope == Superelevation)
             {
                *pPara << _T(" ") << strCFSign.c_str() << _T(" ") << Z_CF;
             }
@@ -1647,7 +1661,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             (*pPara) << _T("Bottom Left ") << RPT_STRESS(_T("tilt")) << _T(" = (IM)") << Sub2(_T("M"), _T("girder")) << THETA_EQ << Sub2(_T("W"), _T("bot")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
             (*pPara) << _T("Bottom Right ") << RPT_STRESS(_T("tilt")) << _T(" = -(IM)") << Sub2(_T("M"), _T("girder")) << THETA_EQ << Sub2(_T("W"), _T("bot")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
             (*pPara) << RPT_STRESS(_T("total")) << _T(" = ") << RPT_STRESS(_T("direct")) << _T(" + ") << RPT_STRESS(_T("tilt")) << _T(" ") << strWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w"));
-            if (slope == stbTypes::Superelevation)
+            if (slope == Superelevation)
             {
                (*pPara) << _T(" ") << strOppCFSign.c_str() << _T(" ") << RPT_STRESS(_T("cf"));
             }
@@ -1702,28 +1716,28 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                std::_tstring strLeftSign(pResults->ThetaEq[impactDir[impactCase]][wind] < 0 ? _T("") : _T("-"));
                std::_tstring strRightSign(pResults->ThetaEq[impactDir[impactCase]][wind] < 0 ? _T("-") : _T(""));
                (*pPara) << _T("Top Left ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w"));
-               if (slope == stbTypes::Superelevation)
+               if (slope == Superelevation)
                {
                   (*pPara) << _T(" ") << strOppCFSign.c_str() << _T(" ") << RPT_STRESS(_T("cf"));
                }
                (*pPara) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("top")) << rptNewLine;
 
                (*pPara) << _T("Top Right ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strRightSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w"));
-               if (slope == stbTypes::Superelevation)
+               if (slope == Superelevation)
                {
                   (*pPara) << _T(" ") << strOppCFSign.c_str() << _T(" ") << RPT_STRESS(_T("cf"));
                }
                (*pPara) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("top")) << rptNewLine;
 
                (*pPara) << _T("Bottom Left ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w"));
-               if (slope == stbTypes::Superelevation)
+               if (slope == Superelevation)
                {
                   (*pPara) << _T(" ") << strOppCFSign.c_str() << _T(" ") << RPT_STRESS(_T("cf"));
                }
                (*pPara) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("bot")) << rptNewLine;
 
                (*pPara) << _T("Bottom Right ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strRightSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w"));
-               if (slope == stbTypes::Superelevation)
+               if (slope == Superelevation)
                {
                   (*pPara) << _T(" ") << strOppCFSign.c_str() << _T(" ") << RPT_STRESS(_T("cf"));
                }
@@ -1732,7 +1746,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             else
             {
                (*pPara) << M_CR << _T(" = ") << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w"));
-               if (slope == stbTypes::Superelevation)
+               if (slope == Superelevation)
                {
                   (*pPara) << _T(" ") << strOppCFSign.c_str() << _T(" ") << RPT_STRESS(_T("cf"));
                }
@@ -1750,7 +1764,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             (*pPara) << FS_CR << _T(" = [") << K_THETA << _T("(") << THETA_CRACK << _T(" - ") << symbol(alpha) << _T(")]");
             (*pPara) << _T(" / {");
             (*pPara) << Sub2(_T("(IM)W"), _T("g")) << _T("[(") << YR << _T(" + (IM)") << ZO << _T(")") << THETA_CRACK << _T(" + ") << EI << _T(" + ");
-            if (slope == stbTypes::Superelevation)
+            if (slope == Superelevation)
             {
                (*pPara) << _T("(") << Z_WIND << _T(" ") << strCFSign.c_str() << _T(" ") << Z_CF << _T(")");
             }
@@ -1924,23 +1938,23 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             {
                col = 0;
 
-               const stbIAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+               const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
                (*pTotalStressTable)(srow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
 
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][stbTypes::TopLeft]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][stbTypes::TopRight]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][stbTypes::BottomLeft]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][stbTypes::BottomRight]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][TopLeft]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][TopRight]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][BottomLeft]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fDirect[slope][impactDir[impactCase]][BottomRight]);
 
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fTilt[slope][impactDir[impactCase]][wind][stbTypes::TopLeft]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fTilt[slope][impactDir[impactCase]][wind][stbTypes::TopRight]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fTilt[slope][impactDir[impactCase]][wind][stbTypes::BottomLeft]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fTilt[slope][impactDir[impactCase]][wind][stbTypes::BottomRight]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fTilt[slope][impactDir[impactCase]][wind][TopLeft]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fTilt[slope][impactDir[impactCase]][wind][TopRight]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fTilt[slope][impactDir[impactCase]][wind][BottomLeft]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.fTilt[slope][impactDir[impactCase]][wind][BottomRight]);
 
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.f[slope][impactDir[impactCase]][wind][stbTypes::TopLeft]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.f[slope][impactDir[impactCase]][wind][stbTypes::TopRight]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.f[slope][impactDir[impactCase]][wind][stbTypes::BottomLeft]);
-               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.f[slope][impactDir[impactCase]][wind][stbTypes::BottomRight]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.f[slope][impactDir[impactCase]][wind][TopLeft]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.f[slope][impactDir[impactCase]][wind][TopRight]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.f[slope][impactDir[impactCase]][wind][BottomLeft]);
+               (*pTotalStressTable)(srow, col++) << stress.SetValue(sectionResult.f[slope][impactDir[impactCase]][wind][BottomRight]);
 
                srow++;
 
@@ -1949,7 +1963,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                (*pFullCrackingTable)(fcrow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
                for (int c = 0; c < 4; c++)
                {
-                  stbTypes::Corner corner = (stbTypes::Corner)c;
+                  Corner corner = (Corner)c;
                   (*pFullCrackingTable)(fcrow, col++) << moment.SetValue(sectionResult.Mcr[slope][impactDir[impactCase]][wind][corner]);
                   (*pFullCrackingTable)(fcrow, col++) << crackAngle.SetValue(sectionResult.ThetaCrack[slope][impactDir[impactCase]][wind][corner]);
                   if (sectionResult.FScr[slope][impactDir[impactCase]][wind][corner] == Float64_Max)
@@ -1967,10 +1981,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
                col = 0;
                (*pCrackingTable)(crow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
-               stbTypes::Corner corner = (stbTypes::Corner)MinIndex(sectionResult.FScr[slope][impactDir[impactCase]][wind][stbTypes::TopLeft],
-                  sectionResult.FScr[slope][impactDir[impactCase]][wind][stbTypes::TopRight],
-                  sectionResult.FScr[slope][impactDir[impactCase]][wind][stbTypes::BottomLeft],
-                  sectionResult.FScr[slope][impactDir[impactCase]][wind][stbTypes::BottomRight]);
+               Corner corner = (Corner)MinIndex(sectionResult.FScr[slope][impactDir[impactCase]][wind][TopLeft],
+                  sectionResult.FScr[slope][impactDir[impactCase]][wind][TopRight],
+                  sectionResult.FScr[slope][impactDir[impactCase]][wind][BottomLeft],
+                  sectionResult.FScr[slope][impactDir[impactCase]][wind][BottomRight]);
                (*pCrackingTable)(crow, col++) << moment.SetValue(sectionResult.Mcr[slope][impactDir[impactCase]][wind][corner]);
                (*pCrackingTable)(crow, col++) << strFlange[corner];
                (*pCrackingTable)(crow, col++) << crackAngle.SetValue(sectionResult.ThetaCrack[slope][impactDir[impactCase]][wind][corner]);
@@ -2051,7 +2065,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             // Failure
             ///////////////////////////////////////////////////////////////////////
 
-            Float64 alpha = (slope == stbTypes::Superelevation ? pStabilityProblem->GetSuperelevation() : pStabilityProblem->GetCrownSlope());
+            Float64 alpha = (slope == Superelevation ? pStabilityProblem->GetSuperelevation() : pStabilityProblem->GetSupportSlope());
 
             pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
             *pChapter << pPara;
@@ -2078,10 +2092,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                *pPara << _T(" + ");
             }
             *pPara << _T("[");
-            if (slope == stbTypes::Superelevation)
+            if (slope == Superelevation)
             {
                *pPara << _T("(");
-               if (wind == stbTypes::Right)
+               if (wind == Right)
                {
                   *pPara << _T(" - ");
                }
@@ -2089,7 +2103,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
             else
             {
-               if (wind == stbTypes::Right)
+               if (wind == Right)
                {
                   *pPara << _T(" - ");
                }
@@ -2105,10 +2119,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                *pPara << _T(" + ");
             }
             *pPara << _T("2.5");
-            if (slope == stbTypes::Superelevation)
+            if (slope == Superelevation)
             {
                *pPara << _T("(");
-               if (wind == stbTypes::Right)
+               if (wind == Right)
                {
                   *pPara << _T(" - ");
                }
@@ -2116,7 +2130,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
             else
             {
-               if (wind == stbTypes::Right)
+               if (wind == Right)
                {
                   *pPara << _T(" - ");
                }
@@ -2138,10 +2152,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
             *pPara << Sub2(_T("FS"), _T("f")) << _T(" = Factor of Safety Against Failure = [") << K_THETA << _T("(") << THETA_FAILURE << _T(" - ") << symbol(alpha) << _T(")]");
             *pPara << _T("/{(IM)") << Sub2(_T("W"), _T("g")) << _T("[((IM)") << ZO << THETA_FAILURE << _T(" + ");
-            if (slope == stbTypes::Superelevation)
+            if (slope == Superelevation)
             {
                *pPara << _T("(");
-               if (wind == stbTypes::Right)
+               if (wind == Right)
                {
                   *pPara << _T("-");
                }
@@ -2149,7 +2163,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
             else
             {
-               if (wind == stbTypes::Right)
+               if (wind == Right)
                {
                   *pPara << _T("-");
                }
@@ -2208,11 +2222,11 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pChapter << pPara;
 
             shortLength.ShowUnitTag(true);
-            *pPara << Z_MAX << _T(" = ") << Sub2(_T("W"), _T("cc")) << _T("/2 = ") << shortLength.SetValue(pStabilityProblem->GetWheelLineSpacing() / 2) << rptNewLine;
+            *pPara << Z_MAX << _T(" = ") << Sub2(_T("W"), _T("cc")) << _T("/2 = ") << shortLength.SetValue(pStabilityProblem->GetSupportWidth() / 2) << rptNewLine;
             shortLength.ShowUnitTag(false);
             *pPara << THETA_ROLLOVER << _T(" = tilt angle at roll over") << rptNewLine;
-            if ((slope == stbTypes::NormalCrown && !IsZero(pResults->Wwind)) ||
-               (slope == stbTypes::Superelevation && !IsZero(pResults->Wwind + pResults->Wcf))
+            if ((slope == NormalCrown && !IsZero(pResults->Wwind)) ||
+               (slope == Superelevation && !IsZero(pResults->Wwind + pResults->Wcf))
                )
             {
                if (pResults->bRolloverStability[slope][impactDir[impactCase]][wind])
@@ -2241,7 +2255,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                      *pPara << _T(" + ");
                   }
                   *pPara << Z_MAX << symbol(alpha) << _T(")");
-                  if (slope == stbTypes::Superelevation)
+                  if (slope == Superelevation)
                   {
                      *pPara << _T(" ") << strOppCFSign.c_str() << _T(" ") << W_CF << _T("(") << H_RC;
                      if (pResults->ThetaEq[slope][impactDir[impactCase]][wind] < 0)
@@ -2271,7 +2285,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                {
                   *pPara << THETA_ROLLOVER << _T(" = [");
                   *pPara << Sub2(_T("(IM)W"), _T("g")) << _T("(") << Z_MAX << _T(" - ") << H_RC << symbol(alpha) << _T(") ") << strOppWindSign.c_str() << _T(" ") << W_WIND << _T("(") << H_RC << _T(" + ") << Z_MAX << symbol(alpha) << _T(")");
-                  if (slope == stbTypes::Superelevation)
+                  if (slope == Superelevation)
                   {
                      *pPara << _T(" ") << strOppCFSign.c_str() << _T(" ") << W_CF << _T("(") << H_RC << _T(" + ") << Z_MAX << symbol(alpha) << _T(")");
                   }
@@ -2293,10 +2307,10 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                *pPara << _T("/{");
                *pPara << Sub2(_T("(IM)W"), _T("g")) << _T("[((IM)") << ZO << THETA_ROLLOVER << _T(" + ");
 
-               if (slope == stbTypes::Superelevation)
+               if (slope == Superelevation)
                {
                   *pPara << _T("(");
-                  if (wind == stbTypes::Right)
+                  if (wind == Right)
                   {
                      *pPara << _T("-");
                   }
@@ -2304,7 +2318,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                }
                else
                {
-                  if (wind == stbTypes::Right)
+                  if (wind == Right)
                   {
                      *pPara << _T("-");
                   }
@@ -2458,7 +2472,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             for (const auto& sectionResult : pResults->vSectionResults)
             {
                col = 0;
-               const stbIAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+               const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
                (*pRebarTable)(rrow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
                (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[slope][impactDir[impactCase]].Yna);
                if (bSimpleFormat)

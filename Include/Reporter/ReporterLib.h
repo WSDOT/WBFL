@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -24,16 +24,6 @@
 #ifndef INCLUDED_REPORTER_REPORTERLIB_H_
 #define INCLUDED_REPORTER_REPORTERLIB_H_
 #pragma once
-
-/*****************************************************************************
-LIBRARY
-   Reporter
-
-   Example library implemented with a dll.
-
-DESCRIPTION
-   Cocoon uses the LIBRARY block to provide high level documentation of a dll.
-*****************************************************************************/
 
 #include <Private\WBFLPackage.h>
 

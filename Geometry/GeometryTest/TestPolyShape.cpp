@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -124,7 +124,7 @@ void CTestPolyShape::TestIPolyShape()
 
    TRY_TEST( polyShape->Clear(), S_OK );
    coll->get_Count(&nPoints);
-   TRY_TEST( nPoints, 0 );
+   TRY_TEST( nPoints, 4 );
 
    coll.Release();
    coll.CoCreateInstance( CLSID_Point2dCollection );

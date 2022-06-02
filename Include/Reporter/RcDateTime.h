@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,143 +31,59 @@
 #include <System\Time.h>
 #include <System\Date.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcDateTime
-
-   Date and time report content
-
-
-DESCRIPTION
-   This class may be used to put a date and/or time into a report stream. The
-   default constructor freezes the time at report build.
-
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rdp : 05.06.1997 : Created file
-*****************************************************************************/
-
+/// Date and time report content
+///
+/// This class may be used to put a date and/or time into a report stream. The default constructor freezes the time at report build.
 class REPORTERCLASS rptRcDateTime : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   // set time and date to time of construction. by default, the print routines
-   // print both the date and the time.
+   /// set time and date to time of construction. by default, the print routines
+   /// print both the date and the time.
    rptRcDateTime();
 
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcDateTime(const rptRcDateTime& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcDateTime();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
-   rptRcDateTime& operator = (const rptRcDateTime& rOther);
+   rptRcDateTime& operator=(const rptRcDateTime& rOther);
 
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Clone thyself
+   /// Creates a clone
    rptReportContent* CreateClone() const;
 
-   //------------------------------------------------------------------------
-   // accept a visitor
+   /// Accept a visitor and calls VisitRcDateTime(this)
    void Accept( rptRcVisitor& MyVisitor );
 
-   //------------------------------------------------------------------------
-   // Tell object wheter or not to print the date
-   void EnablePrintDate(bool DoIt) {m_PrintDate=DoIt;}
+   /// Enables printing of the date.
+   void EnablePrintDate(bool bPrint) {m_bPrintDate= bPrint;}
 
-   //------------------------------------------------------------------------
-   // ask object wheter or not to print the date
-   bool IsPrintDateEnabled() {return m_PrintDate;}
+   /// Returns the status of date printing
+   bool IsPrintDateEnabled() {return m_bPrintDate;}
 
-   //------------------------------------------------------------------------
-   // Tell object wheter or not to print the time
-   void EnablePrintTime(bool DoIt) {m_PrintTime=DoIt;}
+   /// Enables printing of the time.
+   void EnablePrintTime(bool bPrint) {m_bPrintTime= bPrint;}
 
-   //------------------------------------------------------------------------
-   // Ask object wheter or not to print the time
-   bool IsPrintTimeEnabled() {return m_PrintTime;}
+   /// Returns the status of time printing
+   bool IsPrintTimeEnabled() {return m_bPrintTime;}
 
-   // GROUP: ACCESS
-   //------------------------------------------------------------------------
-   // Get the date
+   /// Returns the date
    sysDate GetDate() {return m_Date;}
 
-   //------------------------------------------------------------------------
-   // Get the time
+   /// Returns the time
    sysTime GetTime() {return m_Time;}
 
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Function to aid in copying
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcDateTime& rOther);
 
-   //------------------------------------------------------------------------
-   // Function to aid in assignment
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcDateTime& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // Date at constuction time.
    sysDate m_Date;
-   //------------------------------------------------------------------------
-   // Time at constuction time.
    sysTime m_Time;
 
-   //------------------------------------------------------------------------
-   // Flag to tell whether to print date
-   bool   m_PrintDate;
-   //------------------------------------------------------------------------
-   // Flag to tell whether to time
-   bool   m_PrintTime;
-
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   bool   m_bPrintDate;
+   bool   m_bPrintTime;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCDATETIME_H_

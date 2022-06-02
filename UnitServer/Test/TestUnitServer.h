@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Unit Test - Test driver for WBFLUnits library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,7 +36,7 @@
 
 class ATL_NO_VTABLE CTestUnitServer : 
    public CComObjectRootEx<CComSingleThreadModel>,
-   public IUnitServerEventSink
+   public IUnitServerEvents
 {
 public:
    void InitEventTest() { m_bTestState = false; }
@@ -48,10 +48,10 @@ public:
 
 
 BEGIN_COM_MAP(CTestUnitServer)
-   COM_INTERFACE_ENTRY(IUnitServerEventSink)
+   COM_INTERFACE_ENTRY(IUnitServerEvents)
 END_COM_MAP()
 
-// IUnitServerEventSink
+// IUnitServerEvents
 public:
    STDMETHOD(OnUnitAdded)(/*[in]*/IUnitType* unitType,/*[in]*/IUnit* unit);
 	STDMETHOD(OnUnitRemoved)(/*[in]*/IUnitType* unitType,/*[in]*/BSTR unit);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,16 +30,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-/****************************************************************************
-CLASS
-   rptRcBgColor
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptRcBgColor::rptRcBgColor(rptRiStyle::FontColor MyColor) :
 rptReportContent()
 {
@@ -58,7 +48,6 @@ rptRcBgColor::~rptRcBgColor()
 {
 }
 
-//======================== OPERATORS  =======================================
 rptRcBgColor& rptRcBgColor::operator= (const rptRcBgColor& rOther)
 {
    if( this != &rOther )
@@ -69,9 +58,7 @@ rptRcBgColor& rptRcBgColor::operator= (const rptRcBgColor& rOther)
    return *this;
 }
 
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-rptRiStyle::FontColor rptRcBgColor::GetColor()
+rptRiStyle::FontColor rptRcBgColor::GetColor() const
 {
    return m_Color;
 }
@@ -81,13 +68,7 @@ void rptRcBgColor::SetColor(rptRiStyle::FontColor MyColor)
 {
    m_Color = MyColor;
 }
-//======================== INQUIRY    =======================================
 
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcBgColor::MakeCopy(const rptRcBgColor& rOther)
 {
    m_Color = rOther.m_Color;
@@ -104,25 +85,7 @@ rptReportContent* rptRcBgColor::CreateClone() const
    return new rptRcBgColor(*this); 
 }
 
-
-//
-// accept a visitor
-//
 void rptRcBgColor::Accept( rptRcVisitor& MyVisitor )
 {
    MyVisitor.VisitRcBgColor(this);
 }
-
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

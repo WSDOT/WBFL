@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,11 +37,23 @@ CLASS
    matPsStrandCurve
 ****************************************************************************/
 
-void get_constants( bool bGr1725, Float64 *pA, Float64* pB, Float64* pC)
+// Stress-strain curve taken from PCI BDM Figure 2.11-1
+// If you plug the numbers into the PCI equations there is a discontinuity at the yield strain.
+// This is because of rounding in the published equations.
+// We get around the discontinuity by computing the yield strain and using that as the limit between the linear and curved portions of the equation
+//
+// Constants for Grade 2070 (Grade 300) are published. We assumed A to be 300 ksi, B = 0.04 to match 250 and 270. C is computed from
+// 0.9fu = fu - 0.04/(0.9fu/E - C), note that fy = 0.9fu
+// C = ((0.1fu)(0.9fu/E) - 0.04)/(0.1fu) = ((0.1*300)(0.9*300/28500) - 0.04)/(0.1*300) = 0.0081
+void get_constants( matPsStrand::Grade grade, Float64 *pA, Float64* pB, Float64* pC)
 {
-   *pA = ( bGr1725 ? 250.   : 270.  );
-   *pB = ( bGr1725 ? 0.04   : 0.04  );
-   *pC = ( bGr1725 ? 0.0064 : 0.007 ); 
+   switch (grade)
+   {
+   case matPsStrand::Gr1725: *pA = 250; *pB = 0.04; *pC = 0.0064; break;
+   case matPsStrand::Gr1860: *pA = 270; *pB = 0.04; *pC = 0.0070; break;
+   case matPsStrand::Gr2070: *pA = 300; *pB = 0.04; *pC = 0.0081; break;
+   default: ATLASSERT(false); // is there a new strand grade
+   }
 }
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
@@ -51,15 +63,22 @@ static const Float64 g_28500_KSI = ::ConvertToSysUnits( 28500., unitMeasure::KSI
 matPsStrandCurve::matPsStrandCurve(const matPsStrand& strand) :
 matYieldStressStrainCurve( strand.GetName(), 1,1,-1,1,1,-1,-1,1,1,-1,-1 )
 {
-   m_bIsGr1725 = ( strand.GetGrade() ==  matPsStrand::Gr1725 );
+   m_StrandGrade = strand.GetGrade();
 
    Float64 E   = g_28500_KSI;
-   Float64 fpu = ( m_bIsGr1725 ? 249. : 269. );
+   Float64 fpu;
+   switch (m_StrandGrade)
+   {
+   case matPsStrand::Gr1725: fpu = 249.; break;
+   case matPsStrand::Gr1860: fpu = 269.; break;
+   case matPsStrand::Gr2070: fpu = 299.; break;
+   default: ATLASSERT(false); // is there a new strand grade?
+   }
    Float64 fu  = ::ConvertToSysUnits( fpu, unitMeasure::KSI );
-   Float64 fy  = E * ( m_bIsGr1725 ? 0.00764091 : 0.00859219);
+   Float64 fy = strand.GetYieldStrength();
 
    Float64 a,b,c;
-   get_constants( m_bIsGr1725, &a, &b, &c );
+   get_constants( m_StrandGrade, &a, &b, &c );
    Float64 eu = b + c;  // This is the strain that will cause the equation to
                         // be equal to fu.
 
@@ -148,7 +167,7 @@ matStressStrainCurve::StrainState matPsStrandCurve::GetStress(Float64 strain,Flo
    {
       // Strain is between yield and ultimate
       Float64 a, b, c;
-      get_constants( m_bIsGr1725, &a, &b, &c );
+      get_constants( m_StrandGrade, &a, &b, &c );
       Float64 fps = a - b/(strain - c); // KSI
       fps = ::ConvertToSysUnits( fps, unitMeasure::KSI );
 
@@ -172,15 +191,15 @@ matStressStrainCurve::StrainState matPsStrandCurve::GetStrain(Float64 stress,Flo
    }
 
    Float64 a, b, c;
-   get_constants( m_bIsGr1725, &a, &b, &c );
+   get_constants(m_StrandGrade, &a, &b, &c );
 
    *pStrain = (b/(a-stress) + c);
 
-   Float64 eps = (m_bIsGr1725 ? 0.0076 : 0.0086 );
+   Float64 eps = GetTensYieldStrain();
 
    if ( *pStrain <= eps )
    {
-      // The above equation is only for strains that are more than +/-0.008
+      // The above equation is only for strains that are more than +/-eps
       *pStrain = stress/GetE();
    }
 
@@ -194,10 +213,9 @@ matStressStrainCurve::StrainState matPsStrandCurve::GetStrain(Float64 stress,Flo
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
 #if defined _DEBUG
-#include <iostream>
 bool matPsStrandCurve::AssertValid() const
 {
-   Float64 eps = (m_bIsGr1725 ? 0.0076 : 0.0086 );
+   Float64 eps = GetTensYieldStrain();
    return matYieldStressStrainCurve::AssertValid() &&
           IsZero( GetCompYieldStrain() )   &&
           IsZero( GetTensYieldStrain() -  eps, 0.0001 );
@@ -216,7 +234,7 @@ void matPsStrandCurve::Dump(dbgDumpContext& os) const
 //======================== OPERATIONS =======================================
 void matPsStrandCurve::MakeCopy(const matPsStrandCurve& rOther)
 {
-   m_bIsGr1725 = rOther.m_bIsGr1725;
+   m_StrandGrade = rOther.m_StrandGrade;
 }
 
 void matPsStrandCurve::MakeAssignment(const matPsStrandCurve& rOther)
@@ -262,20 +280,20 @@ bool matPsStrandCurve::TestMe(dbgLog& rlog)
    matPsStrandCurve Gr1725_curve( Gr1725 );
 
    state = Gr1725_curve.GetStress( s2, &stress );
-   target_stress = ::ConvertToSysUnits( 245, unitMeasure::KSI );
-   TRY_TESTME ( state == matStressStrainCurve::TensPlastic || IsEqual( stress, target_stress ) );
+   target_stress = ::ConvertToSysUnits(248.30508474576271, unitMeasure::KSI );
+   TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1725_curve.GetStress( 0.0076, &stress );
    target_stress = ::ConvertToSysUnits( 216.6, unitMeasure::KSI );
-   TRY_TESTME ( state == matStressStrainCurve::Elastic || IsEqual( stress, target_stress ) );
+   TRY_TESTME ( state == matStressStrainCurve::Elastic && IsEqual( stress, target_stress ) );
 
    state = Gr1725_curve.GetStress( s6, &stress );
-   target_stress = ::ConvertToSysUnits( 84., unitMeasure::KSI );
-   TRY_TESTME ( state == matStressStrainCurve::Elastic || IsEqual( stress, target_stress ) );
+   target_stress = ::ConvertToSysUnits( 85.5, unitMeasure::KSI );
+   TRY_TESTME ( state == matStressStrainCurve::Elastic && IsEqual( stress, target_stress ) );
 
    state = Gr1725_curve.GetStress( s8, &stress );
-   target_stress = ::ConvertToSysUnits( 241.5555555555, unitMeasure::KSI );
-   TRY_TESTME ( state == matStressStrainCurve::TensPlastic || IsEqual( stress, target_stress ) );
+   target_stress = ::ConvertToSysUnits(245.34883720930233, unitMeasure::KSI );
+   TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1725_curve.GetStress( s10, &stress );
    TRY_TESTME ( state == matStressStrainCurve::Fractured );
@@ -296,20 +314,20 @@ bool matPsStrandCurve::TestMe(dbgLog& rlog)
    matPsStrandCurve Gr1860_curve( Gr1860 );
 
    state = Gr1860_curve.GetStress( s2, &stress );
-   target_stress = ::ConvertToSysUnits( 264.6, unitMeasure::KSI );
-   TRY_TESTME ( state == matStressStrainCurve::TensPlastic || IsEqual( stress, target_stress ) );
+   target_stress = ::ConvertToSysUnits(268.26086956521738, unitMeasure::KSI );
+   TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1860_curve.GetStress( 0.0086, &stress );
    target_stress = ::ConvertToSysUnits( 245.0, unitMeasure::KSI );
-   TRY_TESTME ( state == matStressStrainCurve::Elastic || IsEqual( stress, target_stress ) );
+   TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1860_curve.GetStress( s6, &stress );
-   target_stress = ::ConvertToSysUnits( 84., unitMeasure::KSI );
-   TRY_TESTME ( state == matStressStrainCurve::Elastic || IsEqual( stress, target_stress ) );
+   target_stress = ::ConvertToSysUnits( 85.5, unitMeasure::KSI );
+   TRY_TESTME ( state == matStressStrainCurve::Elastic && IsEqual( stress, target_stress ) );
 
    state = Gr1860_curve.GetStress( s8, &stress );
-   target_stress = ::ConvertToSysUnits( 259.176470588, unitMeasure::KSI );
-   TRY_TESTME ( state == matStressStrainCurve::TensPlastic || IsEqual( stress, target_stress ) );
+   target_stress = ::ConvertToSysUnits( 265., unitMeasure::KSI );
+   TRY_TESTME ( state == matStressStrainCurve::TensPlastic && IsEqual( stress, target_stress ) );
 
    state = Gr1860_curve.GetStress( s10, &stress );
    TRY_TESTME ( state == matStressStrainCurve::Fractured );

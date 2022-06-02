@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2022  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -53,7 +53,7 @@ DESCRIPTION
 
 
 COPYRIGHT
-   Copyright © 1997-1998
+   Copyright © 1999-2022
    Washington State Department Of Transportation
    All Rights Reserved
 

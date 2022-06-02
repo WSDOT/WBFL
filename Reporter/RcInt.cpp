@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,28 +30,17 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcInt
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-rptRcInt::rptRcInt(Int64 MyInt) :
+rptRcInt::rptRcInt(Int64 MyInt, Int32 MyWidth) :
 rptReportContent()
 {
-   m_TheInt = MyInt;
-   m_Width  = 0;
+   m_Value = MyInt;
+   m_Width  = MyWidth;
 }
-
 
 rptRcInt::rptRcInt(Int64 MyInt, const std::_tstring& HyperTarget) :
 rptReportContent()
 {
-   m_TheInt = MyInt;
+   m_Value = MyInt;
    m_Width  = 0;
 
    SetHyperLink(HyperTarget);
@@ -84,42 +73,27 @@ rptReportContent* rptRcInt::CreateClone() const
    return new rptRcInt(*this); 
 }
 
-   //
-   // accept a visitor
-   //
-
 void rptRcInt::Accept( rptRcVisitor& MyVisitor )
 {
    MyVisitor.VisitRcInt(this);
 }
 
-
-//
-// stream to the paragraph stream
-//
 rptRcInt* rptRcInt::Sv(Int64 MyInt)
 {
-   std::unique_ptr<rptRcInt> tmp( std::make_unique<rptRcInt>(MyInt) );
-   tmp->m_Width= m_Width;
+   std::unique_ptr<rptRcInt> tmp( std::make_unique<rptRcInt>(MyInt,m_Width) );
    return tmp.release();
 }
-//
-// set and get the integer value
-//
-Int64 rptRcInt::GetVal()
+
+Int64 rptRcInt::GetValue() const
 {
-   return m_TheInt;
+   return m_Value;
 }
 
-void rptRcInt::SetVal(Int64 MyInt)
+void rptRcInt::SetValue(Int64 MyInt)
 {
-   m_TheInt = MyInt;
+   m_Value = MyInt;
 }
-//
-// set/get the number of characters that the Int32 is to fit in. The purpose
-// of the width option is to allow values to be printed like: 007 (i.e., the
-// Int32 value is left-padded with zeros to fit into the width.
-//
+
 Int32 rptRcInt::GetWidth()
 {
    return m_Width;
@@ -130,22 +104,9 @@ void rptRcInt::SetWidth(Int32 MyWidth)
    m_Width = MyWidth;
 }
 
-// GROUP: ACCESS
-// GROUP: INQUIRY
-
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptRcInt::MakeCopy(const rptRcInt& rOther)
 {
-   m_TheInt = rOther.m_TheInt;
+   m_Value = rOther.m_Value;
    m_Width  = rOther.m_Width ;
 }
 
@@ -154,15 +115,3 @@ void rptRcInt::MakeAssignment(const rptRcInt& rOther)
    rptReportContent::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

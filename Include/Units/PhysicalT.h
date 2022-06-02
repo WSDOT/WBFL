@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -168,13 +168,13 @@ public:
    virtual void Dump(dbgDumpContext& os) const
    {
       os << m_UnitTag.c_str() << endl;
-      os << '\t' << "Dimensionality : (" 
-         << MassDim()        << ","
-         << LengthDim()      << ","
-         << TimeDim()        << ","
-         << TemperatureDim() << ","
-         << AngleDim()
-         << ")" << endl;
+      os << '\t' << "Dimensionality : (";
+      os << MassDim() << ",";
+      os << LengthDim() << ",";
+      os << TimeDim() << ",";
+      os << TemperatureDim() << ",";
+      os << AngleDim();
+      os << ")" << endl;
       os << '\t' << "Pre Term    : " << m_PreTerm << endl;
       os << '\t' << "Conv Factor : " << m_ConvFactor << endl;
       os << '\t' << "Post Term   : " << m_PostTerm << endl;

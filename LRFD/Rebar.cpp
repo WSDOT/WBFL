@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,7 +27,6 @@
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XCodeVersion.h>
 #include <Lrfd\RebarPool.h>
-#include <Units\SysUnits.h>
 #include <Lrfd\ConcreteUtil.h>
 
 #ifdef _DEBUG
@@ -405,8 +404,16 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       Float64 fc = ::ConvertFromSysUnits(details.fc,unitMeasure::KSI);
       Float64 fy = ::ConvertFromSysUnits(details.fy,unitMeasure::KSI);
    
-      details.ldb1 = 2.4*db*fy/sqrt(fc);
-      details.ldb1 = ::ConvertToSysUnits(details.ldb1,unitMeasure::Inch);
+      if (type == matConcrete::PCI_UHPC)
+      {
+         details.ldb1 = 8.0 * db * fy / 60.0;
+         details.ldb1 = ::ConvertToSysUnits(details.ldb1, unitMeasure::Inch);
+      }
+      else
+      {
+         details.ldb1 = 2.4 * db * fy / sqrt(fc);
+         details.ldb1 = ::ConvertToSysUnits(details.ldb1, unitMeasure::Inch);
+      }
       details.ldb2 = 0.0;
 
       Float64 ldb_min = ::ConvertToSysUnits(12.0,unitMeasure::Inch);
@@ -433,7 +440,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       }
       else
       {
-         if (type==matConcrete::Normal || type == matConcrete::UHPC)
+         if (type==matConcrete::Normal || type == matConcrete::PCI_UHPC)
          {
             details.lambdaLw = 1.0;
          }
@@ -523,7 +530,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       }
 
       // Compute and apply factor for LWC
-      if (type==matConcrete::Normal || type == matConcrete::UHPC)
+      if (type==matConcrete::Normal || type == matConcrete::PCI_UHPC)
       {
          details.factor = 1.0;
       }
@@ -558,7 +565,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       }
    }
 
-   details.ldb *= details.factor;
+   details.ld = details.ldb * details.factor;
 
    return details;
 }

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,9 +27,7 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\XPsLosses.h>
-#include <Units\SysUnits.h>
 #include <System\XProgrammingError.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -76,7 +74,7 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 friction,
                          Float64 angleChange,
 
-                         lrfdConcreteUtil::DensityType concreteType,
+                         matConcrete::Type concreteType,
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -85,9 +83,9 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 Ecd,  // Modulus of elasticity of deck
 
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl1, // Superimposed dead loads
-                         Float64 Msidl2,
+                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 Ag,    // Area of girder
                          Float64 Ixx,    // Moment of inertia of girder
@@ -124,27 +122,10 @@ lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeT
    m_BeamType = beamType;
 }
 
-lrfdApproximateLosses::lrfdApproximateLosses(const lrfdApproximateLosses& rOther)
-{
-   MakeCopy( rOther );
-}
-
 lrfdApproximateLosses::~lrfdApproximateLosses()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdApproximateLosses& lrfdApproximateLosses::operator=(const lrfdApproximateLosses& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
 Float64 lrfdApproximateLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
 {
    return PermanentStrand_TimeDependentLossesAtShipping();
@@ -221,39 +202,6 @@ Float64 lrfdApproximateLosses::PermanentStrand_AfterTemporaryStrandRemoval() con
 
    Float64 loss = PermanentStrand_BeforeTemporaryStrandRemoval();
    return loss;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdApproximateLosses::MakeAssignment( const lrfdApproximateLosses& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void lrfdApproximateLosses::MakeCopy( const lrfdApproximateLosses& rOther )
-{
-   lrfdLosses::MakeCopy(rOther);
-   m_BeamType = rOther.m_BeamType;
-   m_PPR      = rOther.m_PPR;
-   m_dfpLT    = rOther.m_dfpLT;
-   m_Shipping = rOther.m_Shipping;
-   m_ConcreteType = rOther.m_ConcreteType;
 }
 
 void lrfdApproximateLosses::ValidateParameters() const
@@ -336,7 +284,7 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
          losses -= lowRelaxReduction;
       }
 
-      if ( m_ConcreteType != lrfdConcreteUtil::NormalDensity )
+      if ( m_ConcreteType != matConcrete::Normal )
       {
          losses += (is_si ? ::ConvertToSysUnits(35.,unitMeasure::MPa) : ::ConvertToSysUnits(5.0,unitMeasure::KSI));
       }
@@ -344,12 +292,14 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
       m_dfpLT = ::ConvertToSysUnits( losses, *p_unit );
    }
 
-   Float64 mx = m_Madlg;
-   Float64 my = 0;
    Float64 D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
-   Float64 deltaFcd_nc = (mx*m_Ixx + my*m_Ixy)*m_epermFinal.X() / D + (mx*m_Iyy + my*m_Ixy)*m_epermFinal.Y() / D; // biaxial on non-composite section
-   Float64 deltaFcd_c = m_Msidl1*(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2*(m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2; // uniaxial on composite section
-   m_DeltaFcd1 = -1*(deltaFcd_nc + deltaFcd_c);
+   Float64 deltaFcd_nc = (m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] *m_Ixx/* + my*m_Ixy*/)*m_epermFinal.X() / D + (m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] *m_Iyy/* + my*m_Ixy*/)*m_epermFinal.Y() / D; // biaxial on non-composite section
+   Float64 deltaFcd_c = m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] *(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] *(m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2; // uniaxial on composite section
+   m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] = -1*(deltaFcd_nc + deltaFcd_c);
+
+   deltaFcd_nc = (m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] * m_Ixx/* + my*m_Ixy*/) * m_epermFinal.X() / D + (m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] * m_Iyy/* + my*m_Ixy*/) * m_epermFinal.Y() / D; // biaxial on non-composite section
+   deltaFcd_c = m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] * (m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] * (m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2; // uniaxial on composite section
+   m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = -1 * (deltaFcd_nc + deltaFcd_c);
 }
 
 void lrfdApproximateLosses::UpdateHaulingLosses() const

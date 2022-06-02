@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -63,18 +63,20 @@ END_COM_MAP()
 private:
    struct SectionItem
    {
+      CComBSTR bstrName;
       CComPtr<IShape> shape;
       CComPtr<IStressStrain> fgMaterial;
       CComPtr<IStressStrain> bgMaterial;
-      Float64 ei; // initial strain
+      CComPtr<IPlane3d> initialStrain;
       Float64 Le; // elongation length
-      SectionItem() : ei(0), Le(1.0)
+      SectionItem() : Le(1.0)
       {}
-      SectionItem(IShape* pShape,IStressStrain* pFG,IStressStrain* pBG,Float64 ei,Float64 le) : shape(pShape), fgMaterial(pFG), bgMaterial(pBG), ei(ei), Le(le)
+      SectionItem(CComBSTR bstrName,IShape* pShape,IStressStrain* pFG,IStressStrain* pBG,IPlane3d* initialStrain,Float64 le) : bstrName(bstrName), shape(pShape), fgMaterial(pFG), bgMaterial(pBG), initialStrain(initialStrain), Le(le)
       {}
    };
 
    std::vector<SectionItem> m_SectionItems;
+   IndexType m_PrimaryShapeIdx;
 
 // ISupportsErrorInfo
 public:
@@ -82,16 +84,20 @@ public:
 
 // IGeneralSection
 public:
-   STDMETHOD(AddShape)(/*[in]*/IShape* pShape,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial,/*[in]*/Float64 ei,/*[in]*/Float64 Le) override;
+   STDMETHOD(AddShape)(/*[in]*/BSTR bstrName,/*[in]*/IShape* pShape,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial,/*[in]*/IPlane3d* initialStrain,/*[in]*/Float64 Le,/*[in]*/VARIANT_BOOL vbPrimaryShape) override;
    STDMETHOD(get_ShapeCount)(/*[out,retval]*/CollectionIndexType* nShapes) override;
+   STDMETHOD(put_PrimaryShape)(/*[in]*/IndexType shapeIdx) override;
+   STDMETHOD(get_PrimaryShape)(/*[out, retval]*/IndexType* pShapeIdx) override;
+   STDMETHOD(put_Name)(/*[in]*/CollectionIndexType shapeIdx, /*[in]*/BSTR bstrName) override;
+   STDMETHOD(get_Name)(/*[in]*/CollectionIndexType shapeIdx, /*[out, retval]*/BSTR* pbstrName) override;
    STDMETHOD(get_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IShape** pShape) override;
    STDMETHOD(putref_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IShape* pShape) override;
    STDMETHOD(get_ForegroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IStressStrain** pMaterial) override;
    STDMETHOD(putref_ForegroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IStressStrain* pMaterial) override;
    STDMETHOD(get_BackgroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IStressStrain** pMaterial) override;
    STDMETHOD(putref_BackgroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IStressStrain* pMaterial) override;
-   STDMETHOD(get_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/Float64* ei) override;
-   STDMETHOD(put_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/Float64 ei) override;
+   STDMETHOD(get_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IPlane3d** pStrainPlane) override;
+   STDMETHOD(putref_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IPlane3d* strandPlane) override;
    STDMETHOD(get_ElongationLength)(/*[in]*/CollectionIndexType shapeIdx, /*[out, retval]*/Float64* Le);
    STDMETHOD(put_ElongationLength)(/*[in]*/CollectionIndexType shapeIdx, /*[in]*/Float64 Le);
 

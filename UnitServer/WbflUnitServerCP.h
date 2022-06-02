@@ -292,7 +292,7 @@ public:
 };
 
 template <class T>
-class CProxyDUnitsEventSink : public IConnectionPointImpl<T, &IID_IUnitsEventSink, CComDynamicUnkArray>
+class CProxyDUnitsEvents : public IConnectionPointImpl<T, &IID_IUnitsEvents, CComDynamicUnkArray>
 {
 	//Warning this class may be recreated by the wizard.
 public:
@@ -307,7 +307,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitsEventSink> events(sp);
+         CComQIPtr<IUnitsEvents> events(sp);
          if ( events )
             events->OnUnitAdded(Unit);
 		}
@@ -323,7 +323,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitsEventSink> events(sp);
+         CComQIPtr<IUnitsEvents> events(sp);
          if ( events )
             events->OnUnitRemoved(Unit);
 		}
@@ -339,7 +339,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitsEventSink> events(sp);
+         CComQIPtr<IUnitsEvents> events(sp);
          if ( events )
             events->OnUnitsCleared();
 		}
@@ -347,7 +347,7 @@ public:
 };
 
 template <class T>
-class CProxyDUnitServerEventSink : public IConnectionPointImpl<T, &IID_IUnitServerEventSink, CComDynamicUnkArray>
+class CProxyDUnitServerEvents : public IConnectionPointImpl<T, &IID_IUnitServerEvents, CComDynamicUnkArray>
 {
 	//Warning this class may be recreated by the wizard.
 public:
@@ -362,7 +362,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitServerEventSink> events(sp);
+         CComQIPtr<IUnitServerEvents> events(sp);
          if ( events )
             events->OnUnitAdded(UnitType,Unit);
 		}
@@ -378,7 +378,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitServerEventSink> events(sp);
+         CComQIPtr<IUnitServerEvents> events(sp);
          if ( events )
             events->OnUnitRemoved(UnitType,Unit);
 		}
@@ -394,7 +394,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitServerEventSink> events(sp);
+         CComQIPtr<IUnitServerEvents> events(sp);
          if ( events )
             events->OnUnitsCleared(UnitType);
 		}
@@ -410,7 +410,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitServerEventSink> events(sp);
+         CComQIPtr<IUnitServerEvents> events(sp);
          if ( events )
             events->OnUnitTypeAdded(UnitType);
 		}
@@ -426,7 +426,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitServerEventSink> events(sp);
+         CComQIPtr<IUnitServerEvents> events(sp);
          if ( events )
             events->OnUnitTypeRemoved(UnitType);
 		}
@@ -442,7 +442,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitServerEventSink> events(sp);
+         CComQIPtr<IUnitServerEvents> events(sp);
          if ( events )
             events->OnUnitTypesCleared();
 		}
@@ -450,7 +450,7 @@ public:
 };
 
 template <class T>
-class CProxyDUnitTypeEventSink : public IConnectionPointImpl<T, &IID_IUnitTypeEventSink, CComDynamicUnkArray>
+class CProxyDUnitTypeEvents : public IConnectionPointImpl<T, &IID_IUnitTypeEvents, CComDynamicUnkArray>
 {
 	//Warning this class may be recreated by the wizard.
 public:
@@ -465,7 +465,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypeEventSink> events(sp);
+         CComQIPtr<IUnitTypeEvents> events(sp);
          if ( events )
             events->OnUnitAdded(UnitType,Unit);
 		}
@@ -481,7 +481,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypeEventSink> events(sp);
+         CComQIPtr<IUnitTypeEvents> events(sp);
          if ( events )
             events->OnUnitRemoved(UnitType,Unit);
 		}
@@ -497,7 +497,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypeEventSink> events(sp);
+         CComQIPtr<IUnitTypeEvents> events(sp);
          if ( events )
             events->OnUnitsCleared(UnitType);
 		}
@@ -505,7 +505,7 @@ public:
 };
 
 template <class T>
-class CProxyDUnitTypesEventSink : public IConnectionPointImpl<T, &IID_IUnitTypesEventSink, CComDynamicUnkArray>
+class CProxyDUnitTypesEvents : public IConnectionPointImpl<T, &IID_IUnitTypesEvents, CComDynamicUnkArray>
 {
 	//Warning this class may be recreated by the wizard.
 public:
@@ -520,7 +520,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypesEventSink> events(sp);
+         CComQIPtr<IUnitTypesEvents> events(sp);
          if ( events )
             events->OnUnitAdded(UnitType,Unit);
 		}
@@ -536,7 +536,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypesEventSink> events(sp);
+         CComQIPtr<IUnitTypesEvents> events(sp);
          if ( events )
             events->OnUnitRemoved(UnitType,Unit);
 		}
@@ -552,7 +552,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypesEventSink> events(sp);
+         CComQIPtr<IUnitTypesEvents> events(sp);
          if ( events )
             events->OnUnitsCleared(UnitType);
 		}
@@ -568,7 +568,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypesEventSink> events(sp);
+         CComQIPtr<IUnitTypesEvents> events(sp);
          if ( events )
             events->OnUnitTypeAdded(UnitType);
 		}
@@ -584,7 +584,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypesEventSink> events(sp);
+         CComQIPtr<IUnitTypesEvents> events(sp);
          if ( events )
             events->OnUnitTypeRemoved(UnitType);
 		}
@@ -600,7 +600,7 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IUnitTypesEventSink> events(sp);
+         CComQIPtr<IUnitTypesEvents> events(sp);
          if ( events )
             events->OnUnitTypesCleared();
 		}

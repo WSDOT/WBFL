@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,91 +31,27 @@
 #include <Reporter\RcVisitor.h>
 #include <Reporter\RcSymbol.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptOutputRcVisitor
-
-   An abstract ReportVisitor specialized to send report content to an ostream
-
-
-DESCRIPTION
-   This abstract class helps set up needed data to send report content to a class 
-   derived from ostream.
-
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rdp : 03.25.1997 : Created file
-*****************************************************************************/
-
+/// An abstract report content visitor specialized to render content to an output stream
 class REPORTERCLASS rptOutputRcVisitor : public rptRcVisitor
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Constructor
+   rptOutputRcVisitor(
+      std::_tostream* pMyOstream ///< output stream to receive the paragraph data
+   );
 
-   //------------------------------------------------------------------------
-   // constructor
-   rptOutputRcVisitor(std::_tostream* pMyOstream);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptOutputRcVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   std::_tostream* m_pOstream;
+   std::_tostream* m_pOstream; ///< The output stream
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // get a roman sybol equivalent for a greek symbol
+   /// get a roman symbol equivalent for a greek symbol
    virtual Uint8 GetRomanForGreek(rptRcSymbol::SymbolType sym);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   rptOutputRcVisitor();
-   rptOutputRcVisitor(const rptOutputRcVisitor&);
+   rptOutputRcVisitor() = delete;
+   rptOutputRcVisitor(const rptOutputRcVisitor&) = delete;
    rptOutputRcVisitor& operator=(const rptOutputRcVisitor&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_OUTPUTRCVISITOR_H_

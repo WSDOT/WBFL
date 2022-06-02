@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -184,7 +184,12 @@ BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,
 		if (!bMakeVisible)
 			pDocument->m_bEmbedded = TRUE;
 
-      CString strTemplateFile = m_pTemplateItem->GetTemplateFilePath();
+      CString strTemplateFile;
+      if (m_pTemplateItem)
+      {
+         strTemplateFile = m_pTemplateItem->GetTemplateFilePath();
+      }
+
       if ( strTemplateFile.IsEmpty() )
       {
 		   if (!pDocument->OnNewDocument())

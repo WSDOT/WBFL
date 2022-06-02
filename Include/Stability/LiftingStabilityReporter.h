@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,25 +23,42 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\StabilityProblem.h>
-#include <Stability\LiftingResults.h>
-#include <Stability\LiftingCheckArtifact.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/StabilityProblem.h>
+#include <Stability/LiftingResults.h>
+#include <Stability/LiftingCheckArtifact.h>
 #include <Reporter\Chapter.h>
 
-/*****************************************************************************
-CLASS 
-   stbLiftingStabilityReporter
-
-DESCRIPTION
-   Generates reports for lifting stability analysis
-*****************************************************************************/
-
-class STABILITYCLASS stbLiftingStabilityReporter
+namespace WBFL
 {
-public:
-   stbLiftingStabilityReporter();
+   namespace Stability
+   {
+      ///  Generates reports for lifting stability analysis
+      class STABILITYCLASS LiftingStabilityReporter
+      {
+      public:
+         LiftingStabilityReporter();
 
-   void BuildSpecCheckChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0);
-   void BuildDetailsChapter(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem,const stbLiftingResults* pResults,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0,bool bReportTensileForceDetails = true);
-};
+         /// Builds the specification check chapter
+         void BuildSpecCheckChapter(
+            const IGirder* pGirder, ///< The girder that was analyzed
+            const ILiftingStabilityProblem* pStabilityProblem, ///< The stability problem parameters
+            const LiftingCheckArtifact* pArtifact, ///< The specification checking artifact
+            rptChapter* pChapter, ///< The report chapter to populate
+            LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
+            Float64 offset = 0 ///< Offset to be applied to analysis point locations
+         );
+
+         /// Builds the analysis details chapter
+         void BuildDetailsChapter(
+            const IGirder* pGirder, ///< The girder that was analyzed
+            const ILiftingStabilityProblem* pStabilityProblem, ///< The stability problem parameters
+            const LiftingResults* pResults, ///< The results of the stability analysis
+            rptChapter* pChapter,  ///< The report chapter to populate
+            LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
+            Float64 offset = 0, ///< Offset to be applied to analysis point locations
+            bool bReportTensileForceDetails = true ///< If true, the details for computing the tension force required to be carried by auxilary reinforcement are reported
+         );
+      };
+   }
+}

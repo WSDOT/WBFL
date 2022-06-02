@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\LiftingCriteria.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/LiftingCriteria.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,21 +30,16 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-stbLiftingCriteria::stbLiftingCriteria()
-{
-   Lambda = 0.0;
+using namespace WBFL::Stability;
 
+LiftingCriteria::LiftingCriteria()
+{
    CompressionCoefficient_GlobalStress = 0;
    CompressionCoefficient_PeakStress = 0;
-   TensionCoefficient = 0;
-   bMaxTension = false;
-   MaxTension = 0;
 
    MinFScr = Float64_Max;
    MinFSf  = Float64_Max;
 
    AllowableCompression_GlobalStress = 0;
    AllowableCompression_PeakStress = 0;
-   AllowableTension          = 0;
-   AllowableTensionWithRebar = 0;
 }

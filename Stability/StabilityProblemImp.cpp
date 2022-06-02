@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,8 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Stability\StabilityLib.h>
-#include <Stability\StabilityProblemImp.h>
+#include <Stability/StabilityLib.h>
+#include <Stability/StabilityProblemImp.h>
+#include <WBFLGenericBridge.h> // for ISegment
 #include <UnitMgt\UnitMgt.h>
 #include <algorithm>
 
@@ -32,24 +33,17 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bool operator<(const stbFpe& a,const stbFpe& b) { return a.X < b.X; }
+using namespace WBFL::Stability;
 
-stbGirder::stbGirder()
-{
-   m_pSegment = nullptr;
-
-   m_Precamber = 0.0;
-
-   m_DragCoefficient = 2.2; // default for I-Beams
-
-   m_bLengthNeedsUpdate = true;
-}
-
-stbGirder::~stbGirder()
+Girder::Girder()
 {
 }
 
-bool stbGirder::operator==(const stbGirder& other) const
+Girder::~Girder()
+{
+}
+
+bool Girder::operator==(const Girder& other) const
 {
    if ( m_pSegment && other.m_pSegment && m_pSegment != other.m_pSegment )
       return false;
@@ -66,20 +60,26 @@ bool stbGirder::operator==(const stbGirder& other) const
    if (!IsEqual(m_Precamber, other.m_Precamber))
       return false;
 
+   if (!IsEqual(m_exb, other.m_exb))
+      return false;
+
+   if (!IsEqual(m_Wb, other.m_Wb))
+      return false;
+
    return true;
 }
 
-bool stbGirder::operator!=(const stbGirder& other) const
+bool Girder::operator!=(const Girder& other) const
 {
    return !(*this == other);
 }
 
-void stbGirder::SetSegment(ISegment* pSegment)
+void Girder::SetSegment(ISegment* pSegment)
 {
    m_pSegment = pSegment;
 }
 
-void stbGirder::GetSegment(ISegment** ppSegment) const
+void Girder::GetSegment(ISegment** ppSegment) const
 {
    (*ppSegment) = m_pSegment;
    if ( m_pSegment )
@@ -88,45 +88,45 @@ void stbGirder::GetSegment(ISegment** ppSegment) const
    }
 }
 
-void stbGirder::ClearSections()
+void Girder::ClearSections()
 {
    m_vSectionProperties.clear();
 }
 
-IndexType stbGirder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf)
+IndexType Girder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf)
 {
    return AddSection(Length, Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtf, Wbf, Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtf, Wbf);
 }
 
-IndexType stbGirder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf, Float64 Ag2, Float64 Ixx2, Float64 Iyy2, Float64 Ixy2, Float64 Xcg2, Float64 Ycg2, Float64 Hg2, Float64 Wtf2, Float64 Wbf2)
+IndexType Girder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf, Float64 Ag2, Float64 Ixx2, Float64 Iyy2, Float64 Ixy2, Float64 Xcg2, Float64 Ycg2, Float64 Hg2, Float64 Wtf2, Float64 Wbf2)
 {
-   stbSectionProperties props;
-   props.Ag[stbTypes::Start] = Ag;
-   props.Ag[stbTypes::End] = Ag2;
+   SectionProperties props;
+   props.Ag[Start] = Ag;
+   props.Ag[End] = Ag2;
 
-   props.Ixx[stbTypes::Start] = Ixx;
-   props.Ixx[stbTypes::End] = Ixx2;
+   props.Ixx[Start] = Ixx;
+   props.Ixx[End] = Ixx2;
 
-   props.Iyy[stbTypes::Start] = Iyy;
-   props.Iyy[stbTypes::End] = Iyy2;
+   props.Iyy[Start] = Iyy;
+   props.Iyy[End] = Iyy2;
 
-   props.Ixy[stbTypes::Start] = Ixy;
-   props.Ixy[stbTypes::End] = Ixy2;
+   props.Ixy[Start] = Ixy;
+   props.Ixy[End] = Ixy2;
 
-   props.Xleft[stbTypes::Start] = Xleft;
-   props.Xleft[stbTypes::End] = Xcg2;
+   props.Xleft[Start] = Xleft;
+   props.Xleft[End] = Xcg2;
 
-   props.Ytop[stbTypes::Start] = Ytop;
-   props.Ytop[stbTypes::End] = Ycg2;
+   props.Ytop[Start] = Ytop;
+   props.Ytop[End] = Ycg2;
 
-   props.Hg[stbTypes::Start] = Hg;
-   props.Hg[stbTypes::End] = Hg2;
+   props.Hg[Start] = Hg;
+   props.Hg[End] = Hg2;
 
-   props.Wtf[stbTypes::Start] = Wtf;
-   props.Wtf[stbTypes::End] = Wtf2;
+   props.Wtf[Start] = Wtf;
+   props.Wtf[End] = Wtf2;
 
-   props.Wbf[stbTypes::Start] = Wbf;
-   props.Wbf[stbTypes::End] = Wbf2;
+   props.Wbf[Start] = Wbf;
+   props.Wbf[End] = Wbf2;
 
    props.L = Length;
 
@@ -138,92 +138,92 @@ IndexType stbGirder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64
    return index;
 }
 
-void stbGirder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy,Float64 Xleft,Float64 Ytop,Float64 Hg,Float64 Wtf,Float64 Wbf)
+void Girder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy,Float64 Xleft,Float64 Ytop,Float64 Hg,Float64 Wtf,Float64 Wbf)
 {
    SetSectionProperties(sectIdx,Length,Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf,Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf);
 }
 
-void stbGirder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy,Float64 Xleft,Float64 Ytop,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ixx2,Float64 Iyy2,Float64 Ixy2,Float64 Xcg2,Float64 Ycg2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2)
+void Girder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy,Float64 Xleft,Float64 Ytop,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ixx2,Float64 Iyy2,Float64 Ixy2,Float64 Xcg2,Float64 Ycg2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2)
 {
-   stbSectionProperties& props = m_vSectionProperties[sectIdx];
+   SectionProperties& props = m_vSectionProperties[sectIdx];
    props.L = Length;
-   props.Ag[stbTypes::Start] = Ag;
-   props.Ixx[stbTypes::Start] = Ixx;
-   props.Iyy[stbTypes::Start] = Iyy;
-   props.Ixy[stbTypes::Start] = Ixy;
-   props.Xleft[stbTypes::Start] = Xleft;
-   props.Ytop[stbTypes::Start] = Ytop;
-   props.Hg[stbTypes::Start] = Hg;
-   props.Wtf[stbTypes::Start] = Wtf;
-   props.Wbf[stbTypes::Start] = Wbf;
+   props.Ag[Start] = Ag;
+   props.Ixx[Start] = Ixx;
+   props.Iyy[Start] = Iyy;
+   props.Ixy[Start] = Ixy;
+   props.Xleft[Start] = Xleft;
+   props.Ytop[Start] = Ytop;
+   props.Hg[Start] = Hg;
+   props.Wtf[Start] = Wtf;
+   props.Wbf[Start] = Wbf;
 
-   props.Ag[stbTypes::End] = Ag2;
-   props.Ixx[stbTypes::End] = Ixx2;
-   props.Iyy[stbTypes::End] = Iyy2;
-   props.Ixy[stbTypes::End] = Ixy2;
-   props.Xleft[stbTypes::End] = Xcg2;
-   props.Ytop[stbTypes::End] = Ycg2;
-   props.Hg[stbTypes::End] = Hg2;
-   props.Wtf[stbTypes::End] = Wtf2;
-   props.Wbf[stbTypes::End] = Wbf2;
+   props.Ag[End] = Ag2;
+   props.Ixx[End] = Ixx2;
+   props.Iyy[End] = Iyy2;
+   props.Ixy[End] = Ixy2;
+   props.Xleft[End] = Xcg2;
+   props.Ytop[End] = Ycg2;
+   props.Hg[End] = Hg2;
+   props.Wtf[End] = Wtf2;
+   props.Wbf[End] = Wbf2;
 
    m_bLengthNeedsUpdate = true;
 }
 
 // Assigns stress point values to a section. 
-void stbGirder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR)
+void Girder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR)
 {
    SetStressPoints(sectIdx, pntTL, pntTR, pntBL, pntBR, pntTL, pntTR, pntBL, pntBR);
 }
 
-void stbGirder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2)
+void Girder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2)
 {
-   stbSectionProperties& props = m_vSectionProperties[sectIdx];
+   SectionProperties& props = m_vSectionProperties[sectIdx];
    if (props.m_pStressPoints == nullptr)
    {
       // stress points have not yet been assigned
-      props.m_pStressPoints = std::make_shared<stbStressPoints>();
+      props.m_pStressPoints = std::make_shared<StressPoints>();
    }
-   props.m_pStressPoints->pntTL[stbTypes::Start] = pntTL;
-   props.m_pStressPoints->pntTR[stbTypes::Start] = pntTR;
-   props.m_pStressPoints->pntBL[stbTypes::Start] = pntBL;
-   props.m_pStressPoints->pntBR[stbTypes::Start] = pntBR;
+   props.m_pStressPoints->pntTL[Start] = pntTL;
+   props.m_pStressPoints->pntTR[Start] = pntTR;
+   props.m_pStressPoints->pntBL[Start] = pntBL;
+   props.m_pStressPoints->pntBR[Start] = pntBR;
 
-   props.m_pStressPoints->pntTL[stbTypes::End] = pntTL2;
-   props.m_pStressPoints->pntTR[stbTypes::End] = pntTR2;
-   props.m_pStressPoints->pntBL[stbTypes::End] = pntBL2;
-   props.m_pStressPoints->pntBR[stbTypes::End] = pntBR2;
+   props.m_pStressPoints->pntTL[End] = pntTL2;
+   props.m_pStressPoints->pntTR[End] = pntTR2;
+   props.m_pStressPoints->pntBL[End] = pntBL2;
+   props.m_pStressPoints->pntBR[End] = pntBR2;
 }
 
-void stbGirder::ClearPointLoads()
+void Girder::ClearPointLoads()
 {
    m_vPointLoads.clear();
 }
 
-void stbGirder::AddPointLoad(Float64 X,Float64 P)
+void Girder::AddPointLoad(Float64 X,Float64 P)
 {
    m_vPointLoads.emplace_back(X,P);
 }
 
-Float64 stbGirder::GetGirderLength() const
+Float64 Girder::GetGirderLength() const
 {
    UpdateLength();
    return m_L;
 }
 
-IndexType stbGirder::GetSectionCount() const
+IndexType Girder::GetSectionCount() const
 {
    return m_vSectionProperties.size();
 }
 
-Float64 stbGirder::GetSectionLength(IndexType sectIdx) const
+Float64 Girder::GetSectionLength(IndexType sectIdx) const
 {
    return m_vSectionProperties[sectIdx].L;
 }
 
-void stbGirder::GetSectionProperties(IndexType sectIdx,stbTypes::Section section,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
+void Girder::GetSectionProperties(IndexType sectIdx,Section section,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
 {
-   const stbSectionProperties& props = m_vSectionProperties[sectIdx];
+   const SectionProperties& props = m_vSectionProperties[sectIdx];
    *pAg = props.Ag[section];
    *pIxx = props.Ixx[section];
    *pIyy = props.Iyy[section];
@@ -235,22 +235,22 @@ void stbGirder::GetSectionProperties(IndexType sectIdx,stbTypes::Section section
    *pWbot = props.Wbf[section];
 }
 
-void stbGirder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
+void Girder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
 {
    ATLASSERT(m_vSectionProperties.size() != 0);
 
    if ( m_vSectionProperties.size() == 1 )
    {
-      const stbSectionProperties& props = m_vSectionProperties.front();
-      *pAg = ::LinInterp(X,props.Ag[stbTypes::Start],props.Ag[stbTypes::End],props.L);
-      *pIxx = ::LinInterp(X,props.Ixx[stbTypes::Start],props.Ixx[stbTypes::End],props.L);
-      *pIyy = ::LinInterp(X,props.Iyy[stbTypes::Start],props.Iyy[stbTypes::End],props.L);
-      *pIxy = ::LinInterp(X, props.Ixy[stbTypes::Start], props.Ixy[stbTypes::End], props.L);
-      *pXleft = ::LinInterp(X, props.Xleft[stbTypes::Start], props.Xleft[stbTypes::End], props.L);
-      *pYtop = ::LinInterp(X, props.Ytop[stbTypes::Start], props.Ytop[stbTypes::End], props.L);
-      *pHg = ::LinInterp(X,props.Hg[stbTypes::Start],props.Hg[stbTypes::End],props.L);
-      *pWtop = ::LinInterp(X,props.Wtf[stbTypes::Start],props.Wtf[stbTypes::End],props.L);
-      *pWbot = ::LinInterp(X,props.Wbf[stbTypes::Start],props.Wbf[stbTypes::End],props.L);
+      const SectionProperties& props = m_vSectionProperties.front();
+      *pAg = ::LinInterp(X,props.Ag[Start],props.Ag[End],props.L);
+      *pIxx = ::LinInterp(X,props.Ixx[Start],props.Ixx[End],props.L);
+      *pIyy = ::LinInterp(X,props.Iyy[Start],props.Iyy[End],props.L);
+      *pIxy = ::LinInterp(X, props.Ixy[Start], props.Ixy[End], props.L);
+      *pXleft = ::LinInterp(X, props.Xleft[Start], props.Xleft[End], props.L);
+      *pYtop = ::LinInterp(X, props.Ytop[Start], props.Ytop[End], props.L);
+      *pHg = ::LinInterp(X,props.Hg[Start],props.Hg[End],props.L);
+      *pWtop = ::LinInterp(X,props.Wtf[Start],props.Wtf[End],props.L);
+      *pWbot = ::LinInterp(X,props.Wbf[Start],props.Wbf[End],props.L);
       return;
    }
 
@@ -260,15 +260,15 @@ void stbGirder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float6
       Float64 Xend = Xstart + properties.L;
       if ( ::InRange(Xstart,X,Xend) )
       {
-         *pAg = ::LinInterp(X-Xstart,properties.Ag[stbTypes::Start],properties.Ag[stbTypes::End],properties.L);
-         *pIxx = ::LinInterp(X-Xstart,properties.Ixx[stbTypes::Start],properties.Ixx[stbTypes::End],properties.L);
-         *pIyy = ::LinInterp(X - Xstart, properties.Iyy[stbTypes::Start], properties.Iyy[stbTypes::End], properties.L);
-         *pIxy = ::LinInterp(X - Xstart, properties.Ixy[stbTypes::Start], properties.Ixy[stbTypes::End], properties.L);
-         *pXleft = ::LinInterp(X - Xstart, properties.Xleft[stbTypes::Start], properties.Xleft[stbTypes::End], properties.L);
-         *pYtop = ::LinInterp(X - Xstart, properties.Ytop[stbTypes::Start], properties.Ytop[stbTypes::End], properties.L);
-         *pHg = ::LinInterp(X-Xstart,properties.Hg[stbTypes::Start],properties.Hg[stbTypes::End],properties.L);
-         *pWtop = ::LinInterp(X-Xstart,properties.Wtf[stbTypes::Start],properties.Wtf[stbTypes::End],properties.L);
-         *pWbot = ::LinInterp(X-Xstart,properties.Wbf[stbTypes::Start],properties.Wbf[stbTypes::End],properties.L);
+         *pAg = ::LinInterp(X-Xstart,properties.Ag[Start],properties.Ag[End],properties.L);
+         *pIxx = ::LinInterp(X-Xstart,properties.Ixx[Start],properties.Ixx[End],properties.L);
+         *pIyy = ::LinInterp(X - Xstart, properties.Iyy[Start], properties.Iyy[End], properties.L);
+         *pIxy = ::LinInterp(X - Xstart, properties.Ixy[Start], properties.Ixy[End], properties.L);
+         *pXleft = ::LinInterp(X - Xstart, properties.Xleft[Start], properties.Xleft[End], properties.L);
+         *pYtop = ::LinInterp(X - Xstart, properties.Ytop[Start], properties.Ytop[End], properties.L);
+         *pHg = ::LinInterp(X-Xstart,properties.Hg[Start],properties.Hg[End],properties.L);
+         *pWtop = ::LinInterp(X-Xstart,properties.Wtf[Start],properties.Wtf[End],properties.L);
+         *pWbot = ::LinInterp(X-Xstart,properties.Wbf[Start],properties.Wbf[End],properties.L);
          return;
       }
       Xstart = Xend;
@@ -277,13 +277,13 @@ void stbGirder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float6
    ATLASSERT(false); // should never get here.... is X out of range?
 }
 
-void stbGirder::GetStressPoints(IndexType sectIdx, stbTypes::Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(IndexType sectIdx, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
 {
-   const stbSectionProperties& props = m_vSectionProperties[sectIdx];
+   const SectionProperties& props = m_vSectionProperties[sectIdx];
    GetStressPoints(props, section, pTL, pTR, pBL, pBR);
 }
 
-void stbGirder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
 {
    Float64 Xstart = 0;
    for (const auto& props : m_vSectionProperties)
@@ -292,10 +292,10 @@ void stbGirder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoi
       if (::InRange(Xstart, X, Xend))
       {
          gpPoint2d tl1, tr1, bl1, br1;
-         GetStressPoints(props, stbTypes::Start, &tl1, &tr1, &bl1, &br1);
+         GetStressPoints(props, Start, &tl1, &tr1, &bl1, &br1);
 
          gpPoint2d tl2, tr2, bl2, br2;
-         GetStressPoints(props, stbTypes::End, &tl2, &tr2, &bl2, &br2);
+         GetStressPoints(props, End, &tl2, &tr2, &bl2, &br2);
 
          pTL->X() = ::LinInterp(X - Xstart, tl1.X(), tl2.X(), props.L);
          pTL->Y() = ::LinInterp(X - Xstart, tl1.Y(), tl2.Y(), props.L);
@@ -316,46 +316,46 @@ void stbGirder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoi
    ATLASSERT(false); // should never get here... is X out of range?
 }
 
-void stbGirder::SetAdditionalLoads(const std::vector<std::pair<Float64,Float64>>& vLoads)
+void Girder::SetAdditionalLoads(const std::vector<std::pair<Float64,Float64>>& vLoads)
 {
    m_vPointLoads = vLoads;
 }
 
-std::vector<std::pair<Float64,Float64>> stbGirder::GetAdditionalLoads() const
+std::vector<std::pair<Float64,Float64>> Girder::GetAdditionalLoads() const
 {
    return m_vPointLoads;
 }
 
-Float64 stbGirder::GetDragCoefficient() const
+Float64 Girder::GetDragCoefficient() const
 {
    return m_DragCoefficient;
 }
 
-void stbGirder::SetDragCoefficient(Float64 Cd)
+void Girder::SetDragCoefficient(Float64 Cd)
 {
    m_DragCoefficient = Cd;
 }
 
-Float64 stbGirder::GetPrecamber() const
+Float64 Girder::GetPrecamber() const
 {
    return m_Precamber;
 }
 
-void stbGirder::SetPrecamber(Float64 precamber)
+void Girder::SetPrecamber(Float64 precamber)
 {
    m_Precamber = precamber;
 }
 
-void stbGirder::UpdateLength() const
+void Girder::UpdateLength() const
 {
    if ( m_bLengthNeedsUpdate )
    {
       Float64 L = 0;
-      std::vector<stbSectionProperties>::const_iterator iter(m_vSectionProperties.begin());
-      std::vector<stbSectionProperties>::const_iterator end(m_vSectionProperties.end());
+      std::vector<SectionProperties>::const_iterator iter(m_vSectionProperties.begin());
+      std::vector<SectionProperties>::const_iterator end(m_vSectionProperties.end());
       for ( ; iter != end; iter++ )
       {
-         const stbSectionProperties& sp(*iter);
+         const SectionProperties& sp(*iter);
          L += sp.L;
       }
       m_L = L;
@@ -364,56 +364,67 @@ void stbGirder::UpdateLength() const
 }
 
 /////////////////////////////////////////////////////
-stbStabilityProblemImp::stbStabilityProblemImp()
+StabilityProblemImp::StabilityProblemImp()
 {
-   m_fy = 0;
-
-   m_bAdjustForXferLength = false;
-   m_XferLength = 0;
-
-   m_Camber = 0;
-   m_CamberMultiplier = 1.0;
-
-   m_bIncludeRollAxisLateralOffset = false;
-   m_LateralCamber = 0.0;
-
-   m_Ll = 0;
-   m_Lr = 0;
-
-   m_SweepTolerance = 0;
-   m_SweepGrowth = 0.0;
-   m_SupportPlacementTolerance = 0;
-
-   m_Yra = 0;
-
-   m_ImpactUp = 0;
-   m_ImpactDown = 0;
-
-   m_WindLoadType = stbTypes::Speed;
-   m_WindLoad = 0.;
 }
 
-stbStabilityProblemImp::stbStabilityProblemImp(const stbStabilityProblemImp& other)
+StabilityProblemImp::StabilityProblemImp(const StabilityProblemImp& other)
 {
-   MakeCopy(other);
+   *this = other;
 }
 
-stbStabilityProblemImp::~stbStabilityProblemImp()
+StabilityProblemImp::~StabilityProblemImp()
 {
    ClearAnalysisPoints();
 }
 
-stbStabilityProblemImp& stbStabilityProblemImp::operator=(const stbStabilityProblemImp& other)
+StabilityProblemImp& StabilityProblemImp::operator=(const StabilityProblemImp& other)
 {
-   if( this != &other )
+   // because analysis points are unique points, we need to do a deep copy
+   m_vAnalysisPoints.clear();
+   for (auto& analysisPoint : other.m_vAnalysisPoints)
    {
-      MakeAssignment(other);
+      m_vAnalysisPoints.emplace_back(std::move(analysisPoint->Clone()));
    }
+
+   m_bAdjustForXferLength = other.m_bAdjustForXferLength;
+   m_XferLength = other.m_XferLength;
+   m_Lg = other.m_Lg;
+
+   m_vFpe = other.m_vFpe;
+
+   m_Camber = other.m_Camber;
+   m_CamberMultiplier = other.m_CamberMultiplier;
+
+   m_bIncludeRollAxisLateralOffset = other.m_bIncludeRollAxisLateralOffset;
+   m_LateralCamber = other.m_LateralCamber;
+
+   m_Concrete = other.m_Concrete;
+
+   m_fy = other.m_fy;
+
+   m_Ll = other.m_Ll;
+   m_Lr = other.m_Lr;
+
+   m_SweepTolerance = other.m_SweepTolerance;
+   m_SweepGrowth = other.m_SweepGrowth;
+   m_SupportPlacementTolerance = other.m_SupportPlacementTolerance;
+
+   m_Yra = other.m_Yra;
+
+   m_ImpactUp = other.m_ImpactUp;
+   m_ImpactDown = other.m_ImpactDown;
+
+   m_WindLoadType = other.m_WindLoadType;
+   m_WindLoad = other.m_WindLoad;
+
+   m_eb = other.m_eb;
+   m_Wb = other.m_Wb;
 
    return *this;
 }
 
-bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) const
+bool StabilityProblemImp::operator==(const StabilityProblemImp& other) const
 {
    if ( m_Concrete != other.m_Concrete )
       return false;
@@ -472,18 +483,24 @@ bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) con
    if ( m_WindLoadType != other.m_WindLoadType )
       return false;
 
-   if ( !IsEqual(m_WindLoad,other.m_WindLoad) )
+   if (!IsEqual(m_WindLoad, other.m_WindLoad))
+      return false;
+
+   if (!IsEqual(m_eb, other.m_eb))
+      return false;
+
+   if (!IsEqual(m_Wb, other.m_Wb))
       return false;
 
    return true;
 }
 
-bool stbStabilityProblemImp::operator!=(const stbStabilityProblemImp& other) const
+bool StabilityProblemImp::operator!=(const StabilityProblemImp& other) const
 {
    return !(*this == other);
 }
 
-IndexType stbStabilityProblemImp::FindFpe(LPCTSTR lpszName) const
+IndexType StabilityProblemImp::FindFpe(LPCTSTR lpszName) const
 {
    std::_tstring strName(lpszName);
    IndexType index = 0;
@@ -499,7 +516,7 @@ IndexType stbStabilityProblemImp::FindFpe(LPCTSTR lpszName) const
    return INVALID_INDEX;
 }
 
-std::vector<LPCTSTR> stbStabilityProblemImp::GetPrestressNames() const
+std::vector<LPCTSTR> StabilityProblemImp::GetPrestressNames() const
 {
    std::vector<LPCTSTR> vNames;
    vNames.reserve(m_vFpe.size());
@@ -507,7 +524,7 @@ std::vector<LPCTSTR> stbStabilityProblemImp::GetPrestressNames() const
    return vNames;
 }
 
-IndexType stbStabilityProblemImp::GetFpeCount(LPCTSTR strName) const
+IndexType StabilityProblemImp::GetFpeCount(LPCTSTR strName) const
 {
    IndexType idx = FindFpe(strName);
    if (idx == INVALID_INDEX)
@@ -516,14 +533,14 @@ IndexType stbStabilityProblemImp::GetFpeCount(LPCTSTR strName) const
    return m_vFpe[idx].second.size();
 }
 
-void stbStabilityProblemImp::ClearFpe()
+void StabilityProblemImp::ClearFpe()
 {
    m_vFpe.clear();
 }
 
-void stbStabilityProblemImp::AddFpe(LPCTSTR strName,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps)
+void StabilityProblemImp::AddFpe(LPCTSTR strName,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps)
 {
-   stbFpe fpe;
+   WBFL::Stability::Fpe fpe;
    fpe.X = X;
    fpe.fpe = Fpe;
    fpe.Xps = Xps;
@@ -532,7 +549,7 @@ void stbStabilityProblemImp::AddFpe(LPCTSTR strName,Float64 X,Float64 Fpe,Float6
    IndexType idx = FindFpe(strName);
    if (idx == INVALID_INDEX)
    {
-      std::set<stbFpe> sFpe;
+      std::set<WBFL::Stability::Fpe> sFpe;
       m_vFpe.push_back(std::make_pair(strName, sFpe));
       idx = (IndexType)m_vFpe.size() - 1;
    }
@@ -540,7 +557,7 @@ void stbStabilityProblemImp::AddFpe(LPCTSTR strName,Float64 X,Float64 Fpe,Float6
    m_vFpe[idx].second.insert(fpe);
 }
 
-bool stbStabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps)
+bool StabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Float64 Fpe,Float64 Xps,Float64 Yps)
 {
    IndexType idx = FindFpe(strName);
    if (idx == INVALID_INDEX)
@@ -559,9 +576,9 @@ bool stbStabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,F
    }
 
    // set values can't be modified because it could change the sort order... however
-   // we are only sorting on one element of stbFpe and it isn't being changed here
+   // we are only sorting on one element of Fpe and it isn't being changed here
    // cast away const so we can modify the relavent paramenters of fpe
-   stbFpe& fpe(const_cast<stbFpe&>(*iter));
+   WBFL::Stability::Fpe& fpe(const_cast<WBFL::Stability::Fpe&>(*iter));
 
    fpe.fpe = Fpe;
    fpe.Xps = Xps;
@@ -570,7 +587,7 @@ bool stbStabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,F
    return true;
 }
 
-bool stbStabilityProblemImp::GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Float64* pFpe,Float64* pXps,Float64* pYps) const
+bool StabilityProblemImp::GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Float64* pFpe,Float64* pXps,Float64* pYps) const
 {
    IndexType idx = FindFpe(strName);
    if (idx == INVALID_INDEX)
@@ -600,120 +617,120 @@ bool stbStabilityProblemImp::GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX
    return true;
 }
 
-bool stbStabilityProblemImp::AdjustForXferLength() const
+bool StabilityProblemImp::AdjustForXferLength() const
 {
    return m_bAdjustForXferLength;
 }
 
-void stbStabilityProblemImp::AdjustForXferLength(bool bAdjust)
+void StabilityProblemImp::AdjustForXferLength(bool bAdjust)
 {
    m_bAdjustForXferLength = bAdjust;
 }
 
-void stbStabilityProblemImp::SetXferLength(Float64 xferLength,Float64 Lg)
+void StabilityProblemImp::SetXferLength(Float64 xferLength,Float64 Lg)
 {
    m_XferLength = xferLength;
    m_Lg = Lg;
 }
 
-Float64 stbStabilityProblemImp::GetXferLength() const
+Float64 StabilityProblemImp::GetXferLength() const
 {
    return m_XferLength;
 }
 
-void stbStabilityProblemImp::SetCamber(Float64 camber)
+void StabilityProblemImp::SetCamber(Float64 camber)
 {
    m_Camber = camber;
 }
 
-void stbStabilityProblemImp::SetCamberMultiplier(Float64 m)
+void StabilityProblemImp::SetCamberMultiplier(Float64 m)
 {
    m_CamberMultiplier = m;
 }
 
-void stbStabilityProblemImp::SetLateralCamber(Float64 camber)
+void StabilityProblemImp::SetLateralCamber(Float64 camber)
 {
    m_LateralCamber = camber;
 }
 
-void stbStabilityProblemImp::IncludeLateralRollAxisOffset(bool bInclude)
+void StabilityProblemImp::IncludeLateralRollAxisOffset(bool bInclude)
 {
    m_bIncludeRollAxisLateralOffset = bInclude;
 }
 
-Float64 stbStabilityProblemImp::GetCamberMultiplier() const
+Float64 StabilityProblemImp::GetCamberMultiplier() const
 {
    return m_CamberMultiplier;
 }
 
-Float64 stbStabilityProblemImp::GetLateralCamber() const
+Float64 StabilityProblemImp::GetLateralCamber() const
 {
    return m_LateralCamber;
 }
 
-bool stbStabilityProblemImp::IncludeLateralRollAxisOffset() const
+bool StabilityProblemImp::IncludeLateralRollAxisOffset() const
 {
    return m_bIncludeRollAxisLateralOffset;
 }
 
-const matConcreteEx& stbStabilityProblemImp::GetConcrete() const
+const matConcreteEx& StabilityProblemImp::GetConcrete() const
 {
    return m_Concrete;
 }
 
-matConcreteEx& stbStabilityProblemImp::GetConcrete()
+matConcreteEx& StabilityProblemImp::GetConcrete()
 {
    return m_Concrete;
 }
 
-void stbStabilityProblemImp::SetConcrete(const matConcreteEx& concrete)
+void StabilityProblemImp::SetConcrete(const matConcreteEx& concrete)
 {
    m_Concrete = concrete;
 }
 
-Float64 stbStabilityProblemImp::GetRebarYieldStrength() const
+Float64 StabilityProblemImp::GetRebarYieldStrength() const
 {
    return m_fy;
 }
 
-void stbStabilityProblemImp::SetRebarYieldStrength(Float64 fy)
+void StabilityProblemImp::SetRebarYieldStrength(Float64 fy)
 {
    m_fy = fy;
 }
 
-void stbStabilityProblemImp::SetSupportLocations(Float64 Ll,Float64 Lr)
+void StabilityProblemImp::SetSupportLocations(Float64 Ll,Float64 Lr)
 {
    m_Ll = Ll;
    m_Lr = Lr;
 }
 
-void stbStabilityProblemImp::SetYRollAxis(Float64 Yra)
+void StabilityProblemImp::SetYRollAxis(Float64 Yra)
 {
    m_Yra = Yra;
 }
 
-void stbStabilityProblemImp::SetSweepTolerance(Float64 sweepTolerance)
+void StabilityProblemImp::SetSweepTolerance(Float64 sweepTolerance)
 {
    m_SweepTolerance = sweepTolerance;
 }
 
-void stbStabilityProblemImp::SetSweepGrowth(Float64 sweepGrowth)
+void StabilityProblemImp::SetSweepGrowth(Float64 sweepGrowth)
 {
    m_SweepGrowth = sweepGrowth;
 }
 
-void stbStabilityProblemImp::SetSupportPlacementTolerance(Float64 spt)
+void StabilityProblemImp::SetSupportPlacementTolerance(Float64 spt)
 {
    m_SupportPlacementTolerance = spt;
 }
 
-void stbStabilityProblemImp::SetImpact(Float64 up,Float64 down)
+void StabilityProblemImp::SetImpact(Float64 up,Float64 down)
 {
    m_ImpactUp = up;
    m_ImpactDown = down;
 }
 
-bool stbStabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const
+bool StabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const
 {
    IndexType idx = FindFpe(strName);
    if (idx == INVALID_INDEX)
@@ -770,10 +787,10 @@ bool stbStabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Floa
 
    // somewhere in the middle
    ATLASSERT(2 <= m_vFpe[idx].second.size());
-   std::set<stbFpe>::const_iterator iter1(m_vFpe[idx].second.begin());
-   std::set<stbFpe>::const_iterator iter2(iter1);
+   std::set<Fpe>::const_iterator iter1(m_vFpe[idx].second.begin());
+   std::set<Fpe>::const_iterator iter2(iter1);
    iter2++;
-   std::set<stbFpe>::const_iterator end(m_vFpe[idx].second.end());
+   std::set<Fpe>::const_iterator end(m_vFpe[idx].second.end());
    for ( ; iter2 != end; iter1++, iter2++ )
    {
       Float64 Xstart = iter1->X;
@@ -806,98 +823,106 @@ bool stbStabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Floa
    return false;
 }
 
-Float64 stbStabilityProblemImp::GetCamber() const
+Float64 StabilityProblemImp::GetCamber() const
 {
    return m_Camber;
 }
 
-void stbStabilityProblemImp::GetSupportLocations(Float64* pLeft,Float64* pRight) const
+void StabilityProblemImp::GetSupportLocations(Float64* pLeft,Float64* pRight) const
 {
    *pLeft = m_Ll;
    *pRight = m_Lr;
 }
 
-Float64 stbStabilityProblemImp::GetYRollAxis() const
+Float64 StabilityProblemImp::GetYRollAxis() const
 {
    return m_Yra;
 }
 
-Float64 stbStabilityProblemImp::GetSweepTolerance() const
+Float64 StabilityProblemImp::GetSweepTolerance() const
 {
    return m_SweepTolerance;
 }
 
-Float64 stbStabilityProblemImp::GetSweepGrowth() const
+Float64 StabilityProblemImp::GetSweepGrowth() const
 {
    return m_SweepGrowth;
 }
 
-Float64 stbStabilityProblemImp::GetSupportPlacementTolerance() const
+Float64 StabilityProblemImp::GetSupportPlacementTolerance() const
 {
    return m_SupportPlacementTolerance;
 }
 
-void stbStabilityProblemImp::GetImpact(Float64* pIMup,Float64* pIMdown) const
+void StabilityProblemImp::GetImpact(Float64* pIMup,Float64* pIMdown) const
 {
    *pIMup   = m_ImpactUp;
    *pIMdown = m_ImpactDown;
 }
 
-void stbStabilityProblemImp::GetWindLoading(stbTypes::WindType* pType,Float64* pLoad) const
+void StabilityProblemImp::GetWindLoading(WindType* pType,Float64* pLoad) const
 {
    *pType = m_WindLoadType;
    *pLoad = m_WindLoad;
 }
 
-void stbStabilityProblemImp::SetWindLoading(stbTypes::WindType type,Float64 load)
+void StabilityProblemImp::SetWindLoading(WindType type,Float64 load)
 {
    m_WindLoadType = type;
    m_WindLoad = load;
 }
 
-void stbStabilityProblemImp::ClearAnalysisPoints()
+void StabilityProblemImp::SetAppurtenanceLoading(Float64 ex, Float64 W)
 {
-   for( const auto& pAnalysisPoint : m_vAnalysisPoints)
-   {
-      delete pAnalysisPoint;
-   }
+   m_eb = ex;
+   m_Wb = W;
+}
+
+void StabilityProblemImp::GetAppurtenanceLoading(Float64* pex, Float64* pW) const
+{
+   *pex = m_eb;
+   *pW = m_Wb;
+}
+
+void StabilityProblemImp::ClearAnalysisPoints()
+{
    m_vAnalysisPoints.clear();
 }
 
-bool SortAnalysisPoints(stbIAnalysisPoint* pA,stbIAnalysisPoint* pB)
+bool SortAnalysisPoints(const std::unique_ptr<IAnalysisPoint>& pA,const std::unique_ptr<IAnalysisPoint>& pB)
 {
    return (pA->GetLocation() < pB->GetLocation());
 }
 
-void stbStabilityProblemImp::AddAnalysisPoint(stbIAnalysisPoint* pAnalysisPoint)
+void StabilityProblemImp::AddAnalysisPoint(std::unique_ptr<IAnalysisPoint>&& pAnalysisPoint)
 {
-   m_vAnalysisPoints.push_back(pAnalysisPoint);
+   m_vAnalysisPoints.emplace_back(std::move(pAnalysisPoint.release()));
    std::sort(m_vAnalysisPoints.begin(),m_vAnalysisPoints.end(),SortAnalysisPoints);
    //m_vAnalysisPoints.erase(std::unique(m_vAnalysisPoints.begin(),m_vAnalysisPoints.end(),IsEqual),m_vAnalysisPoints.end());
 }
 
-const std::vector<stbIAnalysisPoint*>& stbStabilityProblemImp::GetAnalysisPoints() const
+const std::vector<std::unique_ptr<IAnalysisPoint>>& StabilityProblemImp::GetAnalysisPoints() const
 {
    return m_vAnalysisPoints;
 }
 
-const stbIAnalysisPoint* stbStabilityProblemImp::GetAnalysisPoint(IndexType idx) const
+const std::unique_ptr<IAnalysisPoint>& StabilityProblemImp::GetAnalysisPoint(IndexType idx) const
 {
    return m_vAnalysisPoints[idx];
 }
 
-bool stbStabilityProblemImp::CompareAnalysisPoints(const stbStabilityProblemImp& other) const
+bool StabilityProblemImp::CompareAnalysisPoints(const StabilityProblemImp& other) const
 {
    if ( m_vAnalysisPoints.size() != other.m_vAnalysisPoints.size() )
       return false;
 
-   std::vector<stbIAnalysisPoint*>::const_iterator thisIter(m_vAnalysisPoints.begin());
-   std::vector<stbIAnalysisPoint*>::const_iterator thisIterEnd(m_vAnalysisPoints.end());
-   std::vector<stbIAnalysisPoint*>::const_iterator otherIter(other.m_vAnalysisPoints.begin());
+   auto thisIter(m_vAnalysisPoints.begin());
+   auto thisIterEnd(m_vAnalysisPoints.end());
+   auto otherIter(other.m_vAnalysisPoints.begin());
    for ( ; thisIter != thisIterEnd; thisIter++, otherIter++ )
    {
-      const stbIAnalysisPoint* pA(*thisIter);
-      const stbIAnalysisPoint* pB(*otherIter);
+      auto& pA(*thisIter);
+      auto& pB(*otherIter);
       if ( !::IsEqual(pA->GetLocation(),pB->GetLocation()) )
       {
          return false;
@@ -907,52 +932,7 @@ bool stbStabilityProblemImp::CompareAnalysisPoints(const stbStabilityProblemImp&
    return true;
 }
 
-void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
-{
-   ClearAnalysisPoints();
-   for( const auto& pAnalysisPoint : other.m_vAnalysisPoints)
-   {
-      AddAnalysisPoint(pAnalysisPoint->Clone());
-   }
-
-   m_bAdjustForXferLength = other.m_bAdjustForXferLength;;
-   m_XferLength = other.m_XferLength;
-   m_Lg = other.m_Lg;
-
-   m_vFpe = other.m_vFpe;
-   
-   m_Camber = other.m_Camber;
-   m_CamberMultiplier = other.m_CamberMultiplier;
-
-   m_bIncludeRollAxisLateralOffset = other.m_bIncludeRollAxisLateralOffset;
-   m_LateralCamber = other.m_LateralCamber;
-
-   m_Concrete = other.m_Concrete;
-
-   m_fy = other.m_fy;
-
-   m_Ll = other.m_Ll;
-   m_Lr = other.m_Lr;
-
-   m_SweepTolerance = other.m_SweepTolerance;
-   m_SweepGrowth = other.m_SweepGrowth;
-   m_SupportPlacementTolerance = other.m_SupportPlacementTolerance;
-
-   m_Yra = other.m_Yra;
-
-   m_ImpactUp = other.m_ImpactUp;
-   m_ImpactDown = other.m_ImpactDown;
-
-   m_WindLoadType = other.m_WindLoadType;
-   m_WindLoad = other.m_WindLoad;
-}
-
-void stbStabilityProblemImp::MakeAssignment(const stbStabilityProblemImp& other)
-{
-   MakeCopy(other);
-}
-
-void stbGirder::GetStressPoints(const stbSectionProperties& props, stbTypes::Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(const SectionProperties& props, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
 {
    if (props.m_pStressPoints)
    {
@@ -979,32 +959,15 @@ void stbGirder::GetStressPoints(const stbSectionProperties& props, stbTypes::Sec
 
 ////////////////////////////////
 
-
-stbLiftingStabilityProblem::stbLiftingStabilityProblem()
-{
-   m_LiftAngle = PI_OVER_2;
-}
-
-stbLiftingStabilityProblem::stbLiftingStabilityProblem(const stbLiftingStabilityProblem& other)
-{
-   MakeCopy(other);
-}
-
-stbLiftingStabilityProblem::~stbLiftingStabilityProblem()
+LiftingStabilityProblem::LiftingStabilityProblem()
 {
 }
 
-stbLiftingStabilityProblem& stbLiftingStabilityProblem::operator=(const stbLiftingStabilityProblem& other)
+LiftingStabilityProblem::~LiftingStabilityProblem()
 {
-   if( this != &other )
-   {
-      MakeAssignment(other);
-   }
-
-   return *this;
 }
 
-bool stbLiftingStabilityProblem::operator==(const stbLiftingStabilityProblem& other) const
+bool LiftingStabilityProblem::operator==(const LiftingStabilityProblem& other) const
 {
    if ( !IsEqual(m_LiftAngle,other.m_LiftAngle) )
       return false;
@@ -1015,68 +978,31 @@ bool stbLiftingStabilityProblem::operator==(const stbLiftingStabilityProblem& ot
    return true;
 }
 
-bool stbLiftingStabilityProblem::operator!=(const stbLiftingStabilityProblem& other) const
+bool LiftingStabilityProblem::operator!=(const LiftingStabilityProblem& other) const
 {
    return !(*this == other);
 }
 
-void stbLiftingStabilityProblem::SetLiftAngle(Float64 liftAngle)
+void LiftingStabilityProblem::SetLiftAngle(Float64 liftAngle)
 {
    m_LiftAngle = liftAngle;
 }
 
-Float64 stbLiftingStabilityProblem::GetLiftAngle() const
+Float64 LiftingStabilityProblem::GetLiftAngle() const
 {
    return m_LiftAngle;
 }
 
-void stbLiftingStabilityProblem::MakeCopy(const stbLiftingStabilityProblem& other)
-{
-   m_Imp = other.m_Imp;
-   m_LiftAngle = other.m_LiftAngle;
-}
-
-void stbLiftingStabilityProblem::MakeAssignment(const stbLiftingStabilityProblem& other)
-{
-   MakeCopy(other);
-}
-
 //////////////////////////////////
-stbHaulingStabilityProblem::stbHaulingStabilityProblem()
-{
-   m_ImpactUsage = stbTypes::Both;
-
-   m_Ktheta = 0;
-   m_Wcc = 0;
-   m_Hrc = 0;
-   m_Superelevation = 0;
-   m_CrownSlope = 0;
-   
-   m_Velocity = 0;
-   m_Radius = Float64_Max;
-   m_CFType = stbTypes::Favorable;
-}
-
-stbHaulingStabilityProblem::stbHaulingStabilityProblem(const stbHaulingStabilityProblem& other)
-{
-   MakeCopy(other);
-}
-
-stbHaulingStabilityProblem::~stbHaulingStabilityProblem()
+HaulingStabilityProblem::HaulingStabilityProblem()
 {
 }
 
-stbHaulingStabilityProblem& stbHaulingStabilityProblem::operator=(const stbHaulingStabilityProblem& other)
+HaulingStabilityProblem::~HaulingStabilityProblem()
 {
-   if( this != &other )
-   {
-      MakeAssignment(other);
-   }
-
-   return *this;
 }
 
-bool stbHaulingStabilityProblem::operator==(const stbHaulingStabilityProblem& other) const
+bool HaulingStabilityProblem::operator==(const HaulingStabilityProblem& other) const
 {
    if ( m_Imp != other.m_Imp )
       return false;
@@ -1111,119 +1037,217 @@ bool stbHaulingStabilityProblem::operator==(const stbHaulingStabilityProblem& ot
    return true;
 }
 
-bool stbHaulingStabilityProblem::operator!=(const stbHaulingStabilityProblem& other) const
+bool HaulingStabilityProblem::operator!=(const HaulingStabilityProblem& other) const
 {
    return !(*this == other);
 }
 
-void stbHaulingStabilityProblem::SetImpactUsage(stbTypes::HaulingImpact impactUsage)
+void HaulingStabilityProblem::SetImpactUsage(HaulingImpact impactUsage)
 {
    m_ImpactUsage = impactUsage;
 }
 
-stbTypes::HaulingImpact stbHaulingStabilityProblem::GetImpactUsage() const
+HaulingImpact HaulingStabilityProblem::GetImpactUsage() const
 {
    return m_ImpactUsage;
 }
 
-void stbHaulingStabilityProblem::SetTruckRotationalStiffness(Float64 Ktheta)
+void HaulingStabilityProblem::SetRotationalStiffness(Float64 Ktheta)
 {
    m_Ktheta = Ktheta;
 }
 
-Float64 stbHaulingStabilityProblem::GetTruckRotationalStiffness() const
+Float64 HaulingStabilityProblem::GetRotationalStiffness() const
 {
    return m_Ktheta;
 }
 
-void stbHaulingStabilityProblem::SetWheelLineSpacing(Float64 Wcc)
+void HaulingStabilityProblem::SetSupportWidth(Float64 Wcc)
 {
    m_Wcc = Wcc;
 }
 
-Float64 stbHaulingStabilityProblem::GetWheelLineSpacing() const
+Float64 HaulingStabilityProblem::GetSupportWidth() const
 {
    return m_Wcc;
 }
 
-void stbHaulingStabilityProblem::SetHeightOfRollAxisAboveRoadway(Float64 Hrs)
+void HaulingStabilityProblem::SetHeightOfRollAxis(Float64 Hrs)
 {
    m_Hrc = Hrs;
 }
 
-Float64 stbHaulingStabilityProblem::GetHeightOfRollAxisAboveRoadway() const
+Float64 HaulingStabilityProblem::GetHeightOfRollAxis() const
 {
    return m_Hrc;
 }
 
-void stbHaulingStabilityProblem::SetCrownSlope(Float64 crown)
+void HaulingStabilityProblem::SetSupportSlope(Float64 crown)
 {
    m_CrownSlope = crown;
 }
 
-Float64 stbHaulingStabilityProblem::GetCrownSlope() const
+Float64 HaulingStabilityProblem::GetSupportSlope() const
 {
    return m_CrownSlope;
 }
 
-void stbHaulingStabilityProblem::SetSuperelevation(Float64 alpha)
+void HaulingStabilityProblem::SetSuperelevation(Float64 alpha)
 {
    m_Superelevation = alpha;
 }
 
-Float64 stbHaulingStabilityProblem::GetSuperelevation() const
+Float64 HaulingStabilityProblem::GetSuperelevation() const
 {
    return m_Superelevation;
 }
 
-void stbHaulingStabilityProblem::SetVelocity(Float64 velocity)
+void HaulingStabilityProblem::SetVelocity(Float64 velocity)
 {
    m_Velocity = velocity;
 }
 
-Float64 stbHaulingStabilityProblem::GetVelocity() const
+Float64 HaulingStabilityProblem::GetVelocity() const
 {
    return m_Velocity;
 }
 
-void stbHaulingStabilityProblem::SetTurningRadius(Float64 r)
+void HaulingStabilityProblem::SetTurningRadius(Float64 r)
 {
    m_Radius = r;
 }
 
-Float64 stbHaulingStabilityProblem::GetTurningRadius() const
+Float64 HaulingStabilityProblem::GetTurningRadius() const
 {
    return m_Radius;
 }
 
-void stbHaulingStabilityProblem::SetCentrifugalForceType(stbTypes::CFType cfType)
+void HaulingStabilityProblem::SetCentrifugalForceType(CFType cfType)
 {
    m_CFType = cfType;
 }
 
-stbTypes::CFType stbHaulingStabilityProblem::GetCentrifugalForceType() const
+CFType HaulingStabilityProblem::GetCentrifugalForceType() const
 {
    return m_CFType;
 }
 
-void stbHaulingStabilityProblem::MakeCopy(const stbHaulingStabilityProblem& other)
+//////////////////////////////////
+OneEndSeatedStabilityProblem::OneEndSeatedStabilityProblem()
 {
-   m_Imp = other.m_Imp;
-
-   m_ImpactUsage = other.m_ImpactUsage;
-   m_Ktheta = other.m_Ktheta;
-   m_Wcc = other.m_Wcc;
-   m_Hrc = other.m_Hrc;
-   m_CrownSlope = other.m_CrownSlope;
-   m_Superelevation = other.m_Superelevation;
-   
-   m_Velocity = other.m_Velocity;
-   m_Radius = other.m_Radius;
-   m_CFType = other.m_CFType;
 }
 
-void stbHaulingStabilityProblem::MakeAssignment(const stbHaulingStabilityProblem& other)
+OneEndSeatedStabilityProblem::~OneEndSeatedStabilityProblem()
 {
-   MakeCopy(other);
 }
 
+bool OneEndSeatedStabilityProblem::operator==(const OneEndSeatedStabilityProblem& other) const
+{
+   if (m_Imp != other.m_Imp)
+      return false;
+
+   if (m_SeatedEnd != other.m_SeatedEnd)
+      return false;
+
+   if (!IsEqual(m_Ktheta, other.m_Ktheta))
+      return false;
+
+   if (!IsEqual(m_Wcc, other.m_Wcc))
+      return false;
+
+   if (!IsEqual(m_Hrc, other.m_Hrc))
+      return false;
+
+   if (!IsEqual(m_CrownSlope, other.m_CrownSlope))
+      return false;
+
+   if (!IsEqual(m_Kadjust, other.m_Kadjust))
+      return false;
+
+   return true;
+}
+
+bool OneEndSeatedStabilityProblem::operator!=(const OneEndSeatedStabilityProblem& other) const
+{
+   return !(*this == other);
+}
+
+void OneEndSeatedStabilityProblem::SetRotationalStiffness(Float64 Ktheta)
+{
+   m_Ktheta = Ktheta;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetRotationalStiffness() const
+{
+   return m_Ktheta;
+}
+
+void OneEndSeatedStabilityProblem::SetSupportWidth(Float64 Wcc)
+{
+   m_Wcc = Wcc;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetSupportWidth() const
+{
+   return m_Wcc;
+}
+
+void OneEndSeatedStabilityProblem::SetHeightOfRollAxis(Float64 Hrs)
+{
+   m_Hrc = Hrs;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetHeightOfRollAxis() const
+{
+   return m_Hrc;
+}
+
+void OneEndSeatedStabilityProblem::SetSupportSlope(Float64 crown)
+{
+   m_CrownSlope = crown;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetSupportSlope() const
+{
+   return m_CrownSlope;
+}
+
+void OneEndSeatedStabilityProblem::SetSeatedEnd(GirderSide end)
+{
+   m_SeatedEnd = end;
+}
+
+GirderSide OneEndSeatedStabilityProblem::GetSeatedEnd() const
+{
+   return m_SeatedEnd;
+}
+
+void OneEndSeatedStabilityProblem::SetYRollLiftEnd(Float64 Yroll)
+{
+   m_YrollLiftEnd = Yroll;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetYRollLiftEnd() const
+{
+   return m_YrollLiftEnd;
+}
+
+void OneEndSeatedStabilityProblem::SetLiftPlacementTolerance(Float64 elift)
+{
+   m_elift = elift;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetLiftPlacementTolerance() const
+{
+   return m_elift;
+}
+
+void OneEndSeatedStabilityProblem::SetRotationalStiffnessAdjustmentFactor(Float64 k)
+{
+   m_Kadjust = k;
+}
+
+Float64 OneEndSeatedStabilityProblem::GetRotationalStiffnessAdjustmentFactor() const
+{
+   return m_Kadjust;
+}

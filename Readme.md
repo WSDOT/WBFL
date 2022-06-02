@@ -18,7 +18,7 @@ The application services layer (ASL) provides libraries for building application
 * ReportManagerAgent - A wrapper on the ReportManager for use with the Agent/Broker architecture
 * System - Provides common services such as object persistence, string manipulations, debugging and diagnostics.
 * Units - Definition of units of measure
-* UnitMgt and UnitServer - Management of a system of units (SI/US) and indirect display units
+* UnitMgt and \subpage WBFL_UnitServer - Management of a system of units (SI/US) and indirect display units
 * Tools - Miscellaneous tools such as object persistence, progress monitors, and generic containers
 * Transactions - Support for transactional based actions (Undo, Redo support)
 * Types - System independent data type definitions
@@ -28,9 +28,10 @@ The engineering services layer (ESL) provides libraries for building engineering
 * COGO - Coordinate geometry modeling
 * EngTools - Engineering tools such as Mohr's circle and biaxial strain plane modeling
 * Fem2d - 2D, plane frame, finite element analysis
-* GenericBridge - Genertic bridge modeling
+* GenericBridge - Generic bridge modeling
 * GenericBridgeTools - Tools for manipulating and extracting data from a generic bridge model
 * GeometricPrimitives - Geometric primitives such as points, lines, and shapes
+* Geometry - Geometric primitives such as points, lines, and shapes
 * GeomModel - Modeling of geometric shapes such as girder cross sections
 * GraphicsLib - a library for graphing and plotting
 * LBAM - Longitudinal Bridge Analysis Model, high level modeling of plane frame bridges for dead and live load analysis.
@@ -57,9 +58,19 @@ You will need to download and install the following projects before you can buil
 
 Define BOOSTDIR and XSDDIR environment variables for the location where the boost and code synthesis libraries are installed.
 
-Clone the repository into **drive letter**:\ARP\ and create an environment variable ARPDIR to this folder.
+Clone the repository into **drive letter**:/ARP/ and create an environment variable ARPDIR to this folder.
 
-Create an enviroment variable called WBFLDIR that equates to the $ARPDIR$\WBFL folder.
+#### Objective Grid
+WBFL forms the basis of the BridgeLink application suite. If your intent is to build the BridgeLink suite, you will need the Stingray ObjectiveGrid library from Preforce software. If you do not have ObjectiveGrid,
+you can still build the BridgeLink suite by following these steps:
+
+1. Open WBFL\Include\WBFLGrid.h and uncomment the #define _NOGRID macro
+2. Create a C:\Program Files\Preforce\Stingray Stuido 2021.1\Src folder
+3. Copy the dummy props file WBFL\SS-X64-PropSheet16.props into that folder.
+
+This will permit you to build the code. The substitute grid code does not simulate grid functionality. Dialogs and windows that use ObjectiveGrid are likely to crash the application when using the substitute code.
+
+The no-grid option is not well maintained. If you find that some methods are missing, please stub them out and submit a pull request.
 
 ## Authors
 This project is jointly developed by the Washington State and Texas Departments of Transportation

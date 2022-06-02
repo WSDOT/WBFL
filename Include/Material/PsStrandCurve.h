@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -136,7 +136,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   bool m_bIsGr1725;
+   matPsStrand::Grade m_StrandGrade;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

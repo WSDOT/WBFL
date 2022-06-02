@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,17 +32,6 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-/****************************************************************************
-CLASS
-   rptRcPercentage
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptRcPercentage::rptRcPercentage() :
 rptRcScalar()
 {
@@ -62,7 +51,6 @@ rptRcPercentage::~rptRcPercentage()
 {
 }
 
-//======================== OPERATIONS =======================================
 void rptRcPercentage::Accept( rptRcVisitor& rVisitor )
 {
    rVisitor.VisitRcPercentage( this );
@@ -78,21 +66,3 @@ std::_tstring rptRcPercentage::AsString() const
    sysNumericFormatTool fmt(m_Format,m_Width,m_Precision);
    return fmt.AsString( GetValue()*100 ) + _T(" %");
 }
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rptRcPercentage::AssertValid() const
-{
-   //return rptReportContent::AssertValid();
-   return true;
-}
-
-void rptRcPercentage::Dump(dbgDumpContext& os) const
-{
-   //rptReportContent::Dump( os );
-   os << "rptRcPercentage : Value = " << m_Value << endl;
-}
-#endif // _DEBUG
-
-

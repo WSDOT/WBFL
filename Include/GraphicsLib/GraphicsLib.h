@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,6 +31,7 @@
    #error It is for external users only
 #endif
 
+#include <GraphicsLib\GraphicsLibTypes.h>
 #include <GraphicsLib\PointMapper.h>
 #include <GraphicsLib\AxisXY.h>
 #include <GraphicsLib\GraphXY.h>

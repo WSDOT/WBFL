@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -411,11 +411,11 @@ void CTestRectangle::TestIShape()
 
    TRY_TEST( clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,4 );
+   TRY_TEST( cPoints,3 );
    
    coll->get__Enum(&Enum);
    Enum->Next(4,&points[0],&fetched);
-   TRY_TEST( fetched, 4 );
+   TRY_TEST( fetched, 3 );
 
    points[0]->get_X(&x);
    points[0]->get_Y(&y);
@@ -432,10 +432,6 @@ void CTestRectangle::TestIShape()
    TRY_TEST( IsEqual(x,15.0), true );
    TRY_TEST( IsEqual(y,15.0), true );
 
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,5.0), true );
-   TRY_TEST( IsEqual(y,5.0), true );
 
    //
    // ClipIn

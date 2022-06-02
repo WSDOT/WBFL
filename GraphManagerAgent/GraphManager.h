@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphManagerAgent - Provides Graph manager as an Agent
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -69,10 +69,11 @@ public:
 
 // IGraphManager
 public:
+   virtual void SortByName(bool bSort) override;
    virtual bool AddGraphBuilder(CGraphBuilder* pGraphBuilder) override;
    virtual bool AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder) override;
-   virtual CollectionIndexType GetGraphBuilderCount() const override;
-   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index) override;
+   virtual IndexType GetGraphBuilderCount() const override;
+   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(IndexType index) override;
    virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName) override;
    virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName) override;
    virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) override;

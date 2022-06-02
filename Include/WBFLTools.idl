@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -122,62 +122,121 @@ library WBFLTools
 	importlib("stdole32.tlb");
 	importlib("stdole2.tlb");
 
+   /// Constant defining the license agreement type
    typedef [public,helpstring("enum LicenseType"),helpcontext(IDH_LicenseType),uuid(AB6DF408-C7B1-11D3-8A1D-006097C68A9C)] 
    enum 
    {
-      ltAROSL = 1,
-      ltARLOSL = 2
+      ltAROSL = 1, ///< Alternate Route Open Source License
+      ltARLOSL = 2 ///< Alternate Route Library Open Source License
    } LicenseType;
 
+   /// Constant indicating the user's acceptance of the license agreement
    typedef [public,helpstring("enum AcceptanceType"),helpcontext(IDH_AcceptanceType),uuid(AB6DF409-C7B1-11D3-8A1D-006097C68A9C)] 
    enum 
    {
-      atAccept = 1,
-      atReject = 2
+      atAccept = 1, ///< The user accepts the license agreement
+      atReject = 2  ///< The user rejects the license agreement
    } AcceptanceType;
 
+   /// Interface for loading data that was saved to file storage with IStructuredSave
    [
-
       uuid(0131A8C2-26EB-11D2-8EB0-006097DF3C68),
-
       helpstring("IStructuredLoad Interface"),
       pointer_default(unique)
    ]
    interface IStructuredLoad : IUnknown
    {
+      /// Opens the file storage for reading
       [helpstring("method Open")] HRESULT Open([in] LPCTSTR name);
+
+      /// Read the beginning of a storage unit
       [helpstring("method BeginUnit")] HRESULT BeginUnit([in] LPCTSTR name);
+
+      /// Read the end of a storage unit, advancing to the next storage unit
       [helpstring("method EndUnit")] HRESULT EndUnit();
+
+      /// Returns the version number of the current storage unit.
       [propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
+
+      /// Returns the version number of the current storage unit's parent storage unit
       [propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
+
+      /// Reads the version number of the top most storage unit
       [propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
+
+      /// Returns the name of the current storage unit's parent storage unit
       [propget, helpstring("property ParentUnit")] HRESULT ParentUnit([out, retval]BSTR* pParentUnit);
+
+      /// Reads a property from the current storage unit
+      ///
+      /// \note Before calling this method you must set the variant type for the property
+      /// \code
+      /// VARIANT var;
+      /// var.vt = VT_R8;
+      /// pLoad->get_Property(_T("MyProperty"),&var);
+      /// Float64 value = var.dblVal;
+      /// \endcode
       [propget, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [out, retval] VARIANT *pVal);
+
+      /// Returns S_OK if at the end of the structured storage, otherwise S_FALSE
       [helpstring("method EndOfStorage")] HRESULT EndOfStorage();
+
+      /// Closes the storage unit
       [helpstring("method Close")] HRESULT Close();
+
+      /// Retreives the XML string for an entire storage unit
       [helpstring("mehtod LoadRawUnit")] HRESULT LoadRawUnit([out] BSTR* pbstrUnit);
    };
+
+   /// Interface for saving data to a structured file storage object
    [
-
       uuid(0131A8C4-26EB-11D2-8EB0-006097DF3C68),
-
       helpstring("IStructuredSave Interface"),
       pointer_default(unique)
    ]
    interface IStructuredSave : IUnknown
    {
+      /// Open the structured storage
       [helpstring("method Open")] HRESULT Open([in] LPCTSTR name);
-      [helpstring("method BeginUnit")] HRESULT BeginUnit([in] LPCTSTR name, [in] Float64 ver);
+
+      /// Creates a storage unit
+      /// \note Even though the version is a floating point number, use integer values. International users use different formats to represent numbers (e.g. commas instead of decimal point, spaces, etc.) This causes problems with the version number assumptions in the implementation.
+      [helpstring("method BeginUnit")] HRESULT BeginUnit(
+         [in] LPCTSTR name, ///< name of storage unit. 
+         [in] Float64 ver ///< storage unit version.
+      );
+
+      /// Call this method to advance to the next storage unit
       [helpstring("method EndUnit")] HRESULT EndUnit();
+
+      /// Returns the version number of the current storage unit.
       [propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
+
+      /// Returns the version number of the current storage unit's parent storage unit
       [propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
+
+      /// Returns the name of the current storage unit's parent storage unit
       [propget, helpstring("property ParentUnit")] HRESULT ParentUnit([out, retval]BSTR* pParentUnit);
+
+      /// Reads the version number of the top most storage unit
       [propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
+
+      /// Writes a property to the current storage unit
+      ///
+      /// \note You must set the variant type before storing this property. This is done automatically if your use the CComVariant object
+      /// \code
+      /// pSave->put_Property(_T("MyProperty"),CComVariant(value));
+      /// \endcode
       [propput, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [in] VARIANT newVal);
+
+      /// Closes the storage unit
       [helpstring("method Close")] HRESULT Close();
+
+      /// Saves a raw XML string that represents a complete storage unit
       [helpstring("mehtod SaveRawUnit")] HRESULT SaveRawUnit([in]LPCTSTR unitXML);
    };
 
+   /// Objects that need structured storage services should implement this interface.
    [
       object,
       uuid(5693D0F4-AC55-11d4-8B4B-006097C68A9C),
@@ -186,12 +245,22 @@ library WBFLTools
    ]
    interface IStructuredStorage : IUnknown
    {
-      [helpstring("method Load")] HRESULT Load([in] IStructuredLoad* load);
-      [helpstring("method Save")] HRESULT Save([in] IStructuredSave* save);
+      /// Called when data is to be loaded
+      [helpstring("method Load")] HRESULT Load(
+         [in] IStructuredLoad* load ///< A StructuredLoad object providing structured storage services
+      );
+
+      /// Called when data is to be saved
+      [helpstring("method Save")] HRESULT Save(
+         [in] IStructuredSave* save ///< A StructuredSave object providing structured storage services
+      );
    };
 
+   /// Interface for loading data that was saved to file storage with IStructuredSave2.
+   ///
+   /// Objects implementing this interface must be OLE Automation compatible
 	[
-        object,	
+      object,	
 		uuid(88110BF6-AC46-11d4-8B4B-006097C68A9C),
 	   oleautomation,
 		helpstring("IStructuredLoad2 Interface"),
@@ -199,16 +268,36 @@ library WBFLTools
 	]
 	interface IStructuredLoad2 : IUnknown
 	{
-		[helpstring("method Open"), helpcontext(IDH_Load_Open)] HRESULT Open([in] BSTR bstrFile);
-		[helpstring("method BeginUnit"), helpcontext(IDH_Load_Begin_Unit)] HRESULT BeginUnit([in] BSTR bstrUnit);
-		[helpstring("method EndUnit"), helpcontext(IDH_Load_End_Unit)] HRESULT EndUnit([out,retval]VARIANT_BOOL* bEnd);
-		[propget,helpstring("property Version"), helpcontext(IDH_Load_Version)] HRESULT Version([out, retval] Float64 *pVal);
-		[propget,helpstring("property TopVersion"), helpcontext(IDH_Load_TopVersion)] HRESULT TopVersion([out, retval] Float64 *pVal);
-		[propget,helpstring("property Property"), helpcontext(IDH_Load_Property)] HRESULT Property([in] BSTR bstrPropName, [out, retval] VARIANT *pVal);
-		[helpstring("method EndOfStorage"), helpcontext(IDH_Load_End_Of_Storage2)] HRESULT EndOfStorage([out,retval]VARIANT_BOOL* bEnd);
-		[helpstring("method Close"), helpcontext(IDH_Load_Close)] HRESULT Close();
+      /// Opens the file storage for reading
+      [helpstring("method Open"), helpcontext(IDH_Load_Open)] HRESULT Open([in] BSTR bstrFile);
+
+      /// Read the beginning of a storage unit
+      [helpstring("method BeginUnit"), helpcontext(IDH_Load_Begin_Unit)] HRESULT BeginUnit([in] BSTR bstrUnit);
+
+      /// Read the end of a storage unit, advancing to the next storage unit
+      [helpstring("method EndUnit"), helpcontext(IDH_Load_End_Unit)] HRESULT EndUnit([out,retval]VARIANT_BOOL* bEnd);
+      
+      /// Returns the version number of the current storage unit.
+      [propget,helpstring("property Version"), helpcontext(IDH_Load_Version)] HRESULT Version([out, retval] Float64 *pVal);
+
+      /// Reads the version number of the top most storage unit
+      [propget,helpstring("property TopVersion"), helpcontext(IDH_Load_TopVersion)] HRESULT TopVersion([out, retval] Float64 *pVal);
+
+      /// Reads a property from the current storage unit
+      /// \note Unlike IStructuredLoad::Property, the variant type need not be set prior to retreiving the property
+      [propget,helpstring("property Property"), helpcontext(IDH_Load_Property)] HRESULT Property([in] BSTR bstrPropName, [out, retval] VARIANT *pVal);
+
+      /// Returns S_OK if at the end of the structured storage, otherwise S_FALSE
+      [helpstring("method EndOfStorage"), helpcontext(IDH_Load_End_Of_Storage2)] HRESULT EndOfStorage([out,retval]VARIANT_BOOL* bEnd);
+
+      /// Closes the storage unit
+      [helpstring("method Close"), helpcontext(IDH_Load_Close)] HRESULT Close();
 	};
-	[
+   
+   /// Interface for saving data to a structured file storage object
+   ///
+   /// Objects implementing this interface must be OLE Automation compatible
+   [
         object,	
 		uuid(88110BF7-AC46-11d4-8B4B-006097C68A9C),
 	   oleautomation,
@@ -217,15 +306,33 @@ library WBFLTools
 	]
 	interface IStructuredSave2 : IUnknown
 	{
-		[helpstring("method Open"), helpcontext(IDH_Save_Open)] HRESULT Open([in] BSTR bstrFileName);
-		[helpstring("method BeginUnit"), helpcontext(IDH_Save_Begin_Unit)] HRESULT BeginUnit([in] BSTR bstrUnit,[in] Float64 ver);
-		[helpstring("method EndUnit"), helpcontext(IDH_Save_End_Unit)] HRESULT EndUnit();
-		[propget, helpstring("property Version"), helpcontext(IDH_Save_Version)] HRESULT Version([out, retval] Float64 *pVal);
-		[propget, helpstring("property TopVersion"), helpcontext(IDH_Save_TopVersion)] HRESULT TopVersion([out, retval] Float64 *pVal);
-		[propput, helpstring("property Property"), helpcontext(IDH_Save_Property)] HRESULT Property([in] BSTR bstrPropName, [in] VARIANT newVal);
-		[helpstring("method Close"), helpcontext(IDH_Save_Close)] HRESULT Close();
+      /// Open the structured storage
+      [helpstring("method Open"), helpcontext(IDH_Save_Open)] HRESULT Open([in] BSTR bstrFileName);
+
+      /// Creates a storage unit
+      /// \note Even though the version is a floating point number, use integer values. International users use different formats to represent numbers (e.g. commas instead of decimal point, spaces, etc.) This causes problems with the version number assumptions in the implementation.
+      [helpstring("method BeginUnit"), helpcontext(IDH_Save_Begin_Unit)] HRESULT BeginUnit(
+         [in] BSTR bstrUnit, ///< name of storage unit
+         [in] Float64 ver ///< storage unit version
+      );
+
+      /// Call this method to advance to the next storage unit
+      [helpstring("method EndUnit"), helpcontext(IDH_Save_End_Unit)] HRESULT EndUnit();
+
+      /// Returns the version number of the current storage unit.
+      [propget, helpstring("property Version"), helpcontext(IDH_Save_Version)] HRESULT Version([out, retval] Float64 *pVal);
+
+      /// Reads the version number of the top most storage unit
+      [propget, helpstring("property TopVersion"), helpcontext(IDH_Save_TopVersion)] HRESULT TopVersion([out, retval] Float64 *pVal);
+      
+      /// Writes a property to the current storage unit
+      [propput, helpstring("property Property"), helpcontext(IDH_Save_Property)] HRESULT Property([in] BSTR bstrPropName, [in] VARIANT newVal);
+
+      /// Closes the storage unit
+      [helpstring("method Close"), helpcontext(IDH_Save_Close)] HRESULT Close();
 	};
 
+   /// OLE Automation compatible objects that need structured storage services should implement this interface.
    [
    object,
    oleautomation,
@@ -235,10 +342,18 @@ library WBFLTools
    ]
    interface IStructuredStorage2 : IUnknown
    {
-      [helpstring("method Load"), helpcontext(IDH_ISS2_Load)] HRESULT Load([in] IStructuredLoad2* load);
-      [helpstring("method Save"), helpcontext(IDH_ISS2_Save)] HRESULT Save([in] IStructuredSave2* save);
+      /// Called when data is to be loaded
+      [helpstring("method Load"), helpcontext(IDH_ISS2_Load)] HRESULT Load(
+         [in] IStructuredLoad2* load ///< A StructuredLoad2 object providing structured storage services
+      );
+
+      /// Called when data is to be saved
+      [helpstring("method Save"), helpcontext(IDH_ISS2_Save)] HRESULT Save(
+         [in] IStructuredSave2* save ///< A StructuredSave2 object providing structured storage services
+      );
    }; 
 
+   /// Interface defining the behavior of log file services.
    [
       uuid(0BC4B500-27FF-11d2-8EB2-006097DF3C68),
       helpstring("ILogFile Interface"),
@@ -246,13 +361,52 @@ library WBFLTools
    ]
    interface ILogFile : IUnknown
    {
-      [helpstring("method Open")] HRESULT Open([in] LPCTSTR name, [out] DWORD* pdwCookie);
+      /// Opens a log file
+      [helpstring("method Open")] HRESULT Open(
+         [in] LPCTSTR name,  ///< name of the log file
+         [out] DWORD* pdwCookie ///< cookie identifying the log file
+      );
+
+      /// Property indicating if the line endings are added to messages. If True, line ends are added to log messages, otherwise logging assumes messages passed to LogMessage contain line endings.
       [propput, helpstring("property EndLines")] HRESULT EndLines([in] BOOL bEndLines);
       [propget, helpstring("property EndLines")] HRESULT EndLines([out, retval] BOOL* pbEndLines);
-      [helpstring("method LogMessage")] HRESULT LogMessage([in] DWORD dwCookie, [in] LPCTSTR msg);
-      [helpstring("method Close")] HRESULT Close([in] DWORD dwCookie);
+
+      /// Logs a message
+      [helpstring("method LogMessage")] HRESULT LogMessage(
+         [in] DWORD dwCookie,  ///< a cookie that identifies a log file
+         [in] LPCTSTR msg ///< the message to log
+      );
+
+      /// Closes a log file
+      [helpstring("method Close")] HRESULT Close(
+         [in] DWORD dwCookie ///< a cookie that identifies a log file
+      );
    };
 
+   /// Mohr's circle computations
+   ///
+   /// Mohr's circle equations
+   /// \f[ Center = \left( \frac{\sigma_{ii} + \sigma_{jj}}{2} \right) \f]
+   /// \f[ Radius = \sqrt{ \left( \frac{\sigma_{ii} - \sigma_{jj}}{2} \right)^2 + \sigma_{ij}^2} \f]
+   /// \f[ \sigma_{Max/Min} = \left( \frac{\sigma_{ii} + \sigma_{jj}}{2} \right) \pm \sqrt{ \left( \frac{\sigma_{ii} - \sigma_{jj}}{2} \right)^2 + \sigma_{ij}^2} \f]
+   /// \f[ \tan{2\theta_p} = \frac{2\sigma_{ij}}{\sigma_{ii} - \sigma_{jj}} \f]
+   ///
+   /// Stress Transformations
+   /// \f[ \sigma_{xx} = \frac{\sigma_{ii} + \sigma_{jj}}{2} + \frac{\sigma_{ii} - \sigma_{jj}}{2}\cos{2\theta} + \sigma_{ij}\sin{2\theta} \f]
+   /// \f[ \sigma_{xy} = -\frac{\sigma_{ii} - \sigma_{jj}}{2}\sin{2\theta} + \sigma_{ij}\cos{2\theta} \f]
+   /// \f[ \sigma_{xx} + \sigma_{yy} = \sigma_{ii} + \sigma_{jj} \f]
+   ///
+   /// Strain Transformations
+   /// \f[ \epsilon_{xx} = \frac{\epsilon_{ii} + \epsilon_{jj}}{2} + \frac{\epsilon_{ii} - \epsilon_{jj}}{2}\cos{2\theta} + \frac{\epsilon_{ij}}{2}\sin{2\theta} \f]
+   /// \f[ \frac{\epsilon_{xy}}{2} = -\frac{\epsilon_{ii} - \epsilon_{jj}}{2}\sin{2\theta} + \frac{\epsilon_{ij}}{2}\cos{2\theta} \f]
+   /// \f[ \epsilon_{xx} + \epsilon_{yy} = \epsilon_{ii} + \epsilon_{jj} \f]
+   ///
+   /// Inertial Transformations
+   /// \f[ I_{xx} = \frac{I_{ii} + I_{jj}}{2} + \frac{I_{ii} - I_{jj}}{2}\cos{2\theta} + I_{ij}\sin{2\theta} \f]
+   /// \f[ I_{xy} = -\frac{I_{ii} - I_{jj}}{2}\sin{2\theta} + I_{ij}\cos{2\theta} \f]
+   /// \f[ I_{xx} + I_{yy} = I_{ii} + I_{jj} \f]
+   ///
+   /// \note For strains transformations, you must divide the shearing strain by 2.0 before using. Computing shear strains must be multipled by 2.0
    [
 		object,
 		uuid(E590D200-FF47-11D2-8CDF-F43C3928A334),
@@ -262,24 +416,58 @@ library WBFLTools
 	]
 	interface IMohrCircle : IUnknown
 	{
+      /// Stress in the "i" direction
 		[propget, helpcontext(IDH_MohrCircle_Sii),helpstring("property Sii")] HRESULT Sii([out, retval] Float64 *sii);
 		[propput, helpcontext(IDH_MohrCircle_Sii),helpstring("property Sii")] HRESULT Sii([in] Float64 sii);
+
+      /// Stress in the "j" direction
 		[propget, helpcontext(IDH_MohrCircle_Sjj),helpstring("property Sjj")] HRESULT Sjj([out, retval] Float64 *sjj);
 		[propput, helpcontext(IDH_MohrCircle_Sjj),helpstring("property Sjj")] HRESULT Sjj([in] Float64 sjj);
+
+      /// Shear stress
 		[propget, helpcontext(IDH_MohrCircle_Sij),helpstring("property Sij")] HRESULT Sij([out, retval] Float64 *sij);
 		[propput, helpcontext(IDH_MohrCircle_Sij),helpstring("property Sij")] HRESULT Sij([in] Float64 sij);
+
+      /// Normal stress the corresponds to the center of the circle
 		[propget, helpcontext(IDH_MohrCircle_Center),helpstring("property Center")] HRESULT Center([out, retval] Float64 *center);
+
+      /// Radius of the circle
 		[propget, helpcontext(IDH_MohrCircle_Radius),helpstring("property Radius")] HRESULT Radius([out, retval] Float64 *radius);
+
+      /// Direction of the principle axes. The direction is measured counter-clockwise from the positive i direction, in radians.
 		[propget, helpcontext(IDH_MohrCircle_PrincipleDirection),helpstring("property PrincipleDirection")] HRESULT PrincipleDirection([out, retval] Float64 *dir);
+
+      /// Maximum principle normal stress
 		[propget, helpcontext(IDH_MohrCircle_Smax),helpstring("property Smax")] HRESULT Smax([out, retval] Float64 *Smax);
-		[propget, helpcontext(IDH_MohrCircle_Smin),helpstring("property Smin")] HRESULT Smin([out, retval] Float64 *Smin);
-		[propget, helpcontext(IDH_MohrCircle_Tmax),helpstring("property Tmax")] HRESULT Tmax([out, retval] Float64 *Tmax);
-		[helpcontext(IDH_MohrCircle_ComputeState),helpstring("method ComputeState")] HRESULT ComputeState([in] Float64 angle,[out] Float64* S11,[out] Float64* S22, [out] Float64* S12);
+
+      /// Minimum principle normal stress
+      [propget, helpcontext(IDH_MohrCircle_Smin),helpstring("property Smin")] HRESULT Smin([out, retval] Float64 *Smin);
+
+      /// Maximum shear stress
+      [propget, helpcontext(IDH_MohrCircle_Tmax),helpstring("property Tmax")] HRESULT Tmax([out, retval] Float64 *Tmax);
+
+      /// Computes the state of stress at a given angle
+		[helpcontext(IDH_MohrCircle_ComputeState),helpstring("method ComputeState")] 
+      HRESULT ComputeState(
+         [in] Float64 angle, ///< angle of stress plane
+         [out] Float64* S11, ///< normal stress in direction 1
+         [out] Float64* S22, ///< normal stress in direction 2
+         [out] Float64* S12 ///< shear stress
+      );
+
+      /// Computes the normal stress in the X-direction for the specified orientation of the stress plane.
 		[helpcontext(IDH_MohrCircle_ComputeSxx),helpstring("method ComputeSxx")] HRESULT ComputeSxx([in] Float64 angle,[out,retval]Float64* sxx);
-		[helpcontext(IDH_MohrCircle_ComputeSxy),helpstring("method ComputeSxy")] HRESULT ComputeSxy([in] Float64 angle,[out,retval]Float64* sxy);
-		[helpcontext(IDH_MohrCircle_ComputeSyy),helpstring("method ComputeSyy")] HRESULT ComputeSyy([in] Float64 angle,[out,retval]Float64* syy);
+
+      /// Computes the shear stress for the specified orientation of the stress plane.
+      [helpcontext(IDH_MohrCircle_ComputeSxy),helpstring("method ComputeSxy")] HRESULT ComputeSxy([in] Float64 angle,[out,retval]Float64* sxy);
+
+      /// Computes the normal stress in the Y-direction for the specified orientation of the stress plane.
+      [helpcontext(IDH_MohrCircle_ComputeSyy),helpstring("method ComputeSyy")] HRESULT ComputeSyy([in] Float64 angle,[out,retval]Float64* syy);
 	};
 
+   /// Alternate Route Project license notification tool.
+   ///
+   /// This object is a Wizard that displays the Alternate Route Project license and disclaimers to the user of an Alternate Route Project application. If you develop an Alternate Route Project application, we ask that you use this object to display the license notice whenever the program starts.
    [
 		object,
 		uuid(27F9E27F-7102-11D3-89BB-006097C68A9C),
@@ -289,11 +477,24 @@ library WBFLTools
 	]
 	interface IARPNotice : IUnknown
 	{
-		[helpcontext(IDH_ArpNotice_Show),helpstring("method Show")] HRESULT Show([in] VARIANT_BOOL bGiveChoice,[in] LicenseType lt,[out,retval] AcceptanceType* lResult);
+      /// Displays the Alternate Route Project license notice.
+		[helpcontext(IDH_ArpNotice_Show),helpstring("method Show")] 
+      HRESULT Show(
+         [in] VARIANT_BOOL bGiveChoice, ///< Specifies if the notice should give the user a choice of accepting the license. If VARIANT_TRUE, the last step of the wizard will have an "I Accept" button and a "Cancel", otherwise it will have a "Finish" button.
+         [in] LicenseType lt, ///< Indicates which license to display
+         [out,retval] AcceptanceType* lResult ///< Result indicating the user's acceptance of the license agreement. If lResult is atAccept, the user has accepted the license (the "I Accept" or "Finish" button was pressed). If lResult is atReject, the user has not accepted the license (the "Cancel" button was pressed).
+      );
+
+      /// State of the "Don't show me this again" check box on the Disclaimer page
+      ///
+      /// It is your responsibility to save the state of the "Don't show me this again" check box between uses of this object. This includes saving the state between application runs. The system registry is a good place to save this information.
 		[propget, helpcontext(IDH_ArpNotice_ShowAgain),helpstring("property ShowAgain")] HRESULT ShowAgain([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpcontext(IDH_ArpNotice_ShowAgain),helpstring("property ShowAgain")] HRESULT ShowAgain([in] VARIANT_BOOL newVal);
 	};
 
+   /// Interface for objects that provide error logging services.
+   ///
+   /// Multiple log files can be created and managed
    [
       object,
       uuid(FF5644CF-0E91-4b71-9AD6-3B50162AEA01),
@@ -303,10 +504,77 @@ library WBFLTools
    ]
    interface IWBFLErrorLog : IUnknown
    {
-      [helpstring("method Open")] HRESULT Open([in] BSTR fileName,[out,retval] DWORD* dwCookie);
-      [helpstring("method LogMessage")] HRESULT LogMessage([in]DWORD dwCookie,[in] BSTR msg);
-      [helpstring("method Close")] HRESULT Close([in] DWORD dwCookie);
+      /// Opens a log
+      [helpstring("method Open")] HRESULT Open(
+         [in] BSTR fileName, ///< name of log file
+         [out,retval] DWORD* dwCookie ///< cookie to use for subsequent logging operations
+      );
+
+      /// Logs a message to the file
+      [helpstring("method LogMessage")] HRESULT LogMessage(
+         [in]DWORD dwCookie, ///< cookie identifying the logfile
+         [in] BSTR msg ///< the message to be logged
+      );
+
+      /// Closes a log
+      [helpstring("method Close")] HRESULT Close(
+         [in] DWORD dwCookie ///< cookie identifying the logfile
+      );
    };
+
+   /// Interface for a generalized progress monitor.
+   ///
+   /// The progress monitor does not have to be a graphical user interface element. It could be a file, the console window, or other.
+   /// Multiple objects can interact with the progress monitor. Each object is identified by a "cookie".
+   [
+      object,
+      uuid(B9CDE114-D5D8-4acc-A764-DF0C2863E028),
+      oleautomation,
+      helpstring("IProgressMonitor Interface"),
+      pointer_default(unique)
+   ]
+   interface IProgressMonitor : IUnknown
+   {
+      // Sets the gauge value
+      [propput, helpstring("Value of gauge from 0-100")]
+      HRESULT GaugeValue(
+         [in]long cookie, ///< identifies an object using the progress monitor
+         [in] long newVal ///< the new guage value
+      );
+
+      // Sets the current display message
+      [propput, helpstring("Message to be displayed")]
+      HRESULT Message(
+         [in]long cookie, ///< identifies an object using the progress monitor 
+         [in] BSTR newVal ///< the new progress message
+      );
+
+      /// Returns VARIANT_TRUE if a monitored process was cancelled, otherwise VARIANT_FALSE
+      [propget, helpstring("Check this value to see if process was cancelled")]
+      HRESULT WasCancelled([out, retval] VARIANT_BOOL *pVal);
+   };
+
+   /// Implement this interface on objects that need to indicate progress with a progress monitor.
+   [
+      object,
+      uuid(A6F2C304-53CF-4033-BC49-193B50077F3E),
+      oleautomation,
+      helpstring("ISupportProgressMonitor Interface"),
+      pointer_default(unique)
+   ]
+   interface ISupportProgressMonitor : IUnknown
+   {
+      /// Initializes the object with a progress monitor and an identifing "cookie".
+      ///
+      /// The object calls the methods on IProgressMonitor as it progresses through whatever lengthy process needs monitoring.
+      /// The monitored process must termining if IProgressMonitor::WasCancelled indicates an external event signaled cancellation (such as a button press in the UI)
+      [helpstring("Initialize the ProgressMonitor")] HRESULT InitializeProgressMonitor(
+         [in]IProgressMonitor* newVal,  ///< The progress monitor that will be providing progress feedback
+         [in]long cookie ///< the cookie that must be used when calling methods on the IProgressMonitor interface
+      );
+   };
+
+   /// Interface that defines the attributes of a progress window.
 	[
 		object,
 		uuid(0A64ECCB-ABA8-4F70-98CC-5C5D69A25505),
@@ -317,22 +585,38 @@ library WBFLTools
 	]
 	interface IProgressMonitorWindow : IUnknown
 	{
+      /// Property that indicates if the progress window has a Cancel button
 		[propget, helpcontext(IDH_ProgressMonitorWindow_HasCancel), helpstring("property HasCancel")] 
       HRESULT HasCancel([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpcontext(IDH_ProgressMonitorWindow_HasCancel), helpstring("property HasCancel")] 
       HRESULT HasCancel([in] VARIANT_BOOL newVal);
+
+      /// Property that indicates if the progress window has a guage
+      [propget, helpcontext(IDH_ProgressMonitorWindow_HasGauge), helpstring("property HasGauge")]
+      HRESULT HasGauge([out, retval] VARIANT_BOOL *pVal);
+      [propput, helpcontext(IDH_ProgressMonitorWindow_HasGauge), helpstring("property HasGauge")]
+      HRESULT HasGauge([in] VARIANT_BOOL newVal);
+
+      /// Shows the progress window
 		[helpcontext(IDH_ProgressMonitorWindow_Show), helpstring("method Show")] 
-      HRESULT Show([in]BSTR initialMessage,[in]HWND hParent);
+      HRESULT Show(
+         [in]BSTR initialMessage, ///< the first message to show in the progress window
+         [in]HWND hParent ///< a handle to the parent window of the progress window
+      );
+
+      /// Hides the progress window. The progress window can be shown again by calling Show.
 		[helpcontext(IDH_ProgressMonitorWindow_Hide), helpstring("method Hide")] 
       HRESULT Hide();
+
+      /// Close the progress window and causes puts the progress into a Cancelled state
 		[helpcontext(IDH_ProgressMonitorWindow_Close), helpstring("method Close")] 
       HRESULT Close();
-		[propget, helpcontext(IDH_ProgressMonitorWindow_HasGauge), helpstring("property HasGauge")] 
-      HRESULT HasGauge([out, retval] VARIANT_BOOL *pVal);
-		[propput, helpcontext(IDH_ProgressMonitorWindow_HasGauge), helpstring("property HasGauge")] 
-      HRESULT HasGauge([in] VARIANT_BOOL newVal);
 	};
 
+   /// Progress monitor objects can implement this interface to provide logging services.
+   ///
+   /// Objects using a progress monitor can query for this interface. If available, logging services
+   /// can be enabled by opening a log file.
 	[
 		object,
 		uuid(D530ADC7-94D0-43a6-901E-BDEEAD53AE79),
@@ -343,12 +627,16 @@ library WBFLTools
 	]
 	interface ILogProgressToFile : IUnknown
 	{
+      /// Opens a log file. Once open, progress monitor will write messages, gauge updates, and events to the log file
 		[helpcontext(IDH_ILogProgressToFile_OpenLogFile), helpstring("method OpenLogFile")] 
       HRESULT OpenLogFile(BSTR FileName);
+
+      /// Closes the log file. Closing the file stops all logging.
 		[ helpcontext(IDH_ILogProgressToFile_CloseLogFile),helpstring("method CloseLogFile")] 
       HRESULT CloseLogFile();
 	};
 
+   /// Interface used to enumerate values in a container
 	[
 	   object,
 	   uuid(79E6350B-7E91-475a-A54E-05D8AA65605B),
@@ -359,19 +647,31 @@ library WBFLTools
 	]
 	interface IEnumLongArray : IUnknown
 	{
+      /// Clone the enumerator
        [helpstring("Clone"),]
 	   HRESULT Clone([out] IEnumLongArray** ppenum);
 
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] LONG* rgelt, [in,out] ULONG* pceltFetched);
+      /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+      /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+      [helpstring("Next")]
+	   HRESULT Next(
+         [in] ULONG celt, ///< Number of elements being requested
+         [out] LONG* rgelt, ///< Array of size celt (or larger) of elements of interest
+         [in, out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+      );
 
-	   [helpstring("Reset")]
+      /// Resets the enumeration sequence to the beginning.
+      [helpstring("Reset")]
 	   HRESULT Reset();
 	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
+      /// Skips over the next specified number of elements in the enumeration sequence.
+      [helpstring("Skip")]
+      HRESULT Skip(
+         [in] ULONG celt ///< Number of elements to skip
+      );
+   };
 
+   /// Interface for sequence container of LONG
 	[
 		object,
 		uuid(B0BF1679-929A-466C-8F95-A7D6FA825307),
@@ -382,37 +682,70 @@ library WBFLTools
 	]
 	interface ILongArray : IUnknown
 	{
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
 		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] LONG *pVal);
+      HRESULT Item([in]CollectionIndexType index, [out, retval] LONG *item);
+      
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [in] LONG item);
 
-		[propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] LONG newVal);
-
-		[propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
+      /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+      [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
+
+      /// Returns an enumeration object for the items in the array
 		[propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")] 
 		HRESULT _EnumElements([out, retval] IEnumLongArray* *pVal);
+
+      /// Removes all elements from the array
 		[helpcontext(IDH_LongArray_Clear), helpstring("method Clear")] 
       HRESULT Clear();
+
+      /// Number of items in the array
 		[propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")] 
       HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      /// Clones the array
 		[helpcontext(IDH_LongArray_Clone), helpstring("method Clone")] 
       HRESULT Clone([out,retval]ILongArray* *clone);
+
+      // Redimensions the size of the array, filling new elements with the default item
 		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
       HRESULT ReDim([in]CollectionIndexType size);
+
+      /// Searches the array for the specified item and retrieves its index
+      ///
+      /// Returns S_OK if successful, otherwise E_FAIL
 		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
-      HRESULT Find([in]long value, [out,retval]CollectionIndexType* fndIndex);
+      HRESULT Find([in]LONG value, [out,retval]CollectionIndexType* fndIndex);
+
+      /// Adds an item to the array
 		[helpcontext(IDH_LongArray_Add), helpstring("method Add")] 
       HRESULT Add([in]LONG item);
+
+      /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
 		[helpcontext(IDH_LongArray_Remove), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType relPosition);
+      HRESULT Remove([in]CollectionIndexType index);
+
+      /// Inserts an item into the array at the specified index.
 		[helpcontext(IDH_LongArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]LONG item);
+      HRESULT Insert([in]CollectionIndexType index, [in]LONG item);
+
+      /// Reserves space for a specified number of items.
+      ///
+      /// Reserving space does not create new items in the array. It only allocates space for them.
+      /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
 		[helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")] 
       HRESULT Reserve([in]CollectionIndexType count);
 	};
 
-	[
+   /// Interface used to enumerate values in a container
+   [
 	   object,
 	   uuid(6189734A-45B5-4a71-8DC1-68B030035B52),
 	   helpstring("IEnumIDArray Interface"),
@@ -422,20 +755,32 @@ library WBFLTools
 	]
 	interface IEnumIDArray : IUnknown
 	{
-       [helpstring("Clone"),]
+      /// Clone the enumerator
+      [helpstring("Clone"),]
 	   HRESULT Clone([out] IEnumIDArray** ppenum);
 
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] IDType* rgelt, [in,out] ULONG* pceltFetched);
+      /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+      /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+      [helpstring("Next")]
+      HRESULT Next(
+         [in] ULONG celt, ///< Number of elements being requested
+         [out] IDType* rgelt, ///< Array of size celt (or larger) of elements of interest
+         [in, out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+      );
 
-	   [helpstring("Reset")]
-	   HRESULT Reset();
-	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
+      /// Resets the enumeration sequence to the beginning.
+      [helpstring("Reset")]
+      HRESULT Reset();
 
-	[
+      /// Skips over the next specified number of elements in the enumeration sequence.
+      [helpstring("Skip")]
+      HRESULT Skip(
+         [in] ULONG celt ///< Number of elements to skip
+      );
+   };
+
+   /// Interface for sequence container of IDType
+   [
 		object,
 		uuid(8F36811E-3E9D-406a-AF6E-99AE377796BD),
 		oleautomation,
@@ -445,36 +790,71 @@ library WBFLTools
 	]
 	interface IIDArray : IUnknown
 	{
-		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] IDType *pVal);
-		[propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] IDType newVal);
-		[propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")] 
-		HRESULT _EnumElements([out, retval] IEnumIDArray* *pVal);
-		[helpcontext(IDH_LongArray_Clear), helpstring("method Clear")] 
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [out, retval] IDType *item);
+
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [in] IDType item);
+
+      /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+      [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+      /// Returns an enumeration object for the items in the array
+      [propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")]
+      HRESULT _EnumElements([out, retval] IEnumIDArray* *pVal);
+
+      /// Removes all elements from the array
+      [helpcontext(IDH_LongArray_Clear), helpstring("method Clear")]
       HRESULT Clear();
-		[propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")] 
+
+      /// Number of items in the array
+      [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
       HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpcontext(IDH_LongArray_Clone), helpstring("method Clone")] 
-      HRESULT Clone([out,retval]IIDArray* *clone);
-		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
+
+      /// Clones the array
+      [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
+      HRESULT Clone([out, retval]IIDArray* *clone);
+
+      // Redimensions the size of the array, filling new elements with the default item
+      [helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")]
       HRESULT ReDim([in]CollectionIndexType size);
-		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
-      HRESULT Find([in]IDType value, [out,retval]CollectionIndexType* fndIndex);
-		[helpcontext(IDH_LongArray_Add), helpstring("method Add")] 
+
+      /// Searches the array for the specified item and retrieves its index
+      ///
+      /// Returns S_OK if successful, otherwise E_FAIL
+      [helpcontext(IDH_LongArray_Find), helpstring("method Find")]
+      HRESULT Find([in]IDType value, [out, retval]CollectionIndexType* fndIndex);
+
+      /// Adds an item to the array
+      [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
       HRESULT Add([in]IDType item);
-		[helpcontext(IDH_LongArray_Remove), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType relPosition);
-		[helpcontext(IDH_LongArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]IDType item);
-		[helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")] 
+
+      /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
+      [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
+      HRESULT Remove([in]CollectionIndexType index);
+
+      /// Inserts an item into the array at the specified index.
+      [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
+      HRESULT Insert([in]CollectionIndexType index, [in]IDType item);
+
+      /// Reserves space for a specified number of items.
+      ///
+      /// Reserving space does not create new items in the array. It only allocates space for them.
+      /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
+      [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
       HRESULT Reserve([in]CollectionIndexType count);
 	};
 
 
-	[
+   /// Interface used to enumerate values in a container
+   [
 	   object,
 	   uuid(E069B7E0-762D-4f4c-9A77-48A98AC82585),
 	   helpstring("IEnumIndexArray Interface"),
@@ -484,20 +864,32 @@ library WBFLTools
 	]
 	interface IEnumIndexArray : IUnknown
 	{
-       [helpstring("Clone"),]
+      /// Clone the enumerator
+      [helpstring("Clone"),]
 	   HRESULT Clone([out] IEnumIndexArray** ppenum);
 
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] CollectionIndexType* rgelt, [in,out] ULONG* pceltFetched);
+      /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+      /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+      [helpstring("Next")]
+      HRESULT Next(
+         [in] ULONG celt, ///< Number of elements being requested
+         [out] CollectionIndexType* rgelt, ///< Array of size celt (or larger) of elements of interest
+         [in, out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+      );
 
-	   [helpstring("Reset")]
-	   HRESULT Reset();
-	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
+      /// Resets the enumeration sequence to the beginning.
+      [helpstring("Reset")]
+      HRESULT Reset();
 
-	[
+      /// Skips over the next specified number of elements in the enumeration sequence.
+      [helpstring("Skip")]
+      HRESULT Skip(
+         [in] ULONG celt ///< Number of elements to skip
+      );
+   };
+
+   /// Interface for sequence container of IndexType
+   [
 		object,
 		uuid(C074A733-E1AB-419f-811F-56D192517490),
 		oleautomation,
@@ -507,36 +899,76 @@ library WBFLTools
 	]
 	interface IIndexArray : IUnknown
 	{
-		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] CollectionIndexType *pVal);
-		[propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] CollectionIndexType newVal);
-		[propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")] 
-		HRESULT _EnumElements([out, retval] IEnumIndexArray* *pVal);
-		[helpcontext(IDH_LongArray_Clear), helpstring("method Clear")] 
-      HRESULT Clear();
-		[propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpcontext(IDH_LongArray_Clone), helpstring("method Clone")] 
-      HRESULT Clone([out,retval]IIndexArray* *clone);
-		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
-      HRESULT ReDim([in]CollectionIndexType size);
-		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
-      HRESULT Find([in]CollectionIndexType value, [out,retval]CollectionIndexType* fndIndex);
-		[helpcontext(IDH_LongArray_Add), helpstring("method Add")] 
-      HRESULT Add([in]CollectionIndexType item);
-		[helpcontext(IDH_LongArray_Remove), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType relPosition);
-		[helpcontext(IDH_LongArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]CollectionIndexType item);
-		[helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")] 
-      HRESULT Reserve([in]CollectionIndexType count);
-		[helpcontext(IDH_LongArray_Assign), helpstring("method Assign")] 
-      HRESULT Assign([in]CollectionIndexType numElements, [in]CollectionIndexType value);
-	};
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [out, retval] IndexType *item);
 
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [in] IndexType item);
+
+      /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+      [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+      /// Returns an enumeration object for the items in the array
+      [propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")]
+      HRESULT _EnumElements([out, retval] IEnumIndexArray* *pVal);
+
+      /// Removes all elements from the array
+      [helpcontext(IDH_LongArray_Clear), helpstring("method Clear")]
+      HRESULT Clear();
+
+      /// Number of items in the array
+      [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      /// Clones the array
+      [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
+      HRESULT Clone([out, retval]IIndexArray* *clone);
+
+      // Redimensions the size of the array, filling new elements with the default item
+      [helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")]
+      HRESULT ReDim([in]CollectionIndexType size);
+
+      /// Searches the array for the specified item and retrieves its index
+      ///
+      /// Returns S_OK if successful, otherwise E_FAIL
+      [helpcontext(IDH_LongArray_Find), helpstring("method Find")]
+      HRESULT Find([in]IndexType value, [out, retval]CollectionIndexType* fndIndex);
+
+      /// Adds an item to the array
+      [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
+      HRESULT Add([in]IndexType item);
+
+      /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
+      [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
+      HRESULT Remove([in]CollectionIndexType index);
+
+      /// Inserts an item into the array at the specified index.
+      [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
+      HRESULT Insert([in]CollectionIndexType index, [in]IndexType item);
+
+      /// Reserves space for a specified number of items.
+      ///
+      /// Reserving space does not create new items in the array. It only allocates space for them.
+      /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
+      [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
+      HRESULT Reserve([in]CollectionIndexType count);
+
+      /// Clears the array and assigns a value to the first numElements in the array
+      [helpcontext(IDH_LongArray_Assign), helpstring("method Assign")]
+      HRESULT Assign(
+         [in]CollectionIndexType numElements,  ///< number of elements to assign value
+         [in]IndexType value ///< value to be assined to the first numElements in the array
+      );
+   };
+
+   /// Interface used to enumerate values in a container
    [
 	   object,
 	   uuid(EB880B96-ACFF-4d1c-BFFD-FC032A3E1D00),
@@ -547,21 +979,33 @@ library WBFLTools
 	]
 	interface IEnumDblArray : IUnknown
 	{
-       [helpstring("Clone"),]
+      /// Clone the enumerator
+      [helpstring("Clone"),]
 	   HRESULT Clone([out] IEnumDblArray** ppenum);
 
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] Float64* rgelt, [in,out] ULONG* pceltFetched);
+      /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+      /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+      [helpstring("Next")]
+      HRESULT Next(
+         [in] ULONG celt, ///< Number of elements being requested
+         [out] Float64* rgelt, ///< Array of size celt (or larger) of elements of interest
+         [in, out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+      );
 
-	   [helpstring("Reset")]
-	   HRESULT Reset();
-	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
+      /// Resets the enumeration sequence to the beginning.
+      [helpstring("Reset")]
+      HRESULT Reset();
+
+      /// Skips over the next specified number of elements in the enumeration sequence.
+      [helpstring("Skip")]
+      HRESULT Skip(
+         [in] ULONG celt ///< Number of elements to skip
+      );
+   };
 
 
-	[
+   /// Interface for sequence container of Float64 (double)
+   [
 		object,
 		uuid(CABA1F9A-CEE0-40E6-91CA-18D3F4FC0718),
 		oleautomation,
@@ -571,35 +1015,64 @@ library WBFLTools
 	]
 	interface IDblArray : IUnknown
 	{
-		[propget, helpcontext(IDH_DblArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] Float64 *pVal);
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [out, retval] Float64 *item);
 
-		[propput, helpcontext(IDH_DblArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] Float64 newVal);
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [in] Float64 item);
 
-		[propget, helpcontext(IDH_DblArray), helpstring("returns an standard COM enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpcontext(IDH_DblArray), helpstring("property _EnumElements")] 
-		HRESULT _EnumElements([out, retval] IEnumDblArray* *pVal);
-		[helpcontext(IDH_DblArray_Clear), helpstring("method Clear")] 
+      /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+      [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+      /// Returns an enumeration object for the items in the array
+      [propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")]
+      HRESULT _EnumElements([out, retval] IEnumDblArray* *pVal);
+
+      /// Removes all elements from the array
+      [helpcontext(IDH_LongArray_Clear), helpstring("method Clear")]
       HRESULT Clear();
-		[propget, helpcontext(IDH_DblArray_Count), helpstring("property Count")] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpcontext(IDH_DblArray_Clone), helpstring("method Clone")] 
-      HRESULT Clone([out,retval]IDblArray* *clone);
-		[helpcontext(IDH_DblArray_ReDim), helpstring("method ReDim")] 
-      HRESULT ReDim([in]CollectionIndexType size);
-		[helpcontext(IDH_DblArray_Add), helpstring("method Add")] 
-      HRESULT Add([in]Float64 item);
-		[helpcontext(IDH_DblArray_Remove), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType relPosition);
-		[helpcontext(IDH_DblArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]Float64 item);
-		[helpcontext(IDH_DblArray_Reserve), helpstring("method Reserve")] 
-      HRESULT Reserve([in]CollectionIndexType count);
-	};
 
-	[
+      /// Number of items in the array
+      [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      /// Clones the array
+      [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
+      HRESULT Clone([out, retval]IDblArray* *clone);
+
+      // Redimensions the size of the array, filling new elements with the default item
+      [helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")]
+      HRESULT ReDim([in]CollectionIndexType size);
+
+      /// Adds an item to the array
+      [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
+      HRESULT Add([in]Float64 item);
+
+      /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
+      [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
+      HRESULT Remove([in]CollectionIndexType index);
+
+      /// Inserts an item into the array at the specified index.
+      [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
+      HRESULT Insert([in]CollectionIndexType index, [in]Float64 item);
+
+      /// Reserves space for a specified number of items.
+      ///
+      /// Reserving space does not create new items in the array. It only allocates space for them.
+      /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
+      [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
+      HRESULT Reserve([in]CollectionIndexType count);
+   };
+
+   /// Interface used to enumerate values in a container
+   [
 	   object,
 	   uuid(68F75050-236A-4a73-B1D1-25A48221CFEF),
 	   helpstring("IEnumBstrArray Interface"),
@@ -609,20 +1082,32 @@ library WBFLTools
 	]
 	interface IEnumBstrArray : IUnknown
 	{
-       [helpstring("Clone"),]
+      /// Clone the enumerator
+      [helpstring("Clone"),]
 	   HRESULT Clone([out] IEnumBstrArray** ppenum);
 
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] BSTR* rgelt, [in,out] ULONG* pceltFetched);
+      /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+      /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+      [helpstring("Next")]
+      HRESULT Next(
+         [in] ULONG celt, ///< Number of elements being requested
+         [out] BSTR* rgelt, ///< Array of size celt (or larger) of elements of interest
+         [in, out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+      );
 
-	   [helpstring("Reset")]
-	   HRESULT Reset();
-	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
+      /// Resets the enumeration sequence to the beginning.
+      [helpstring("Reset")]
+      HRESULT Reset();
 
-	[
+      /// Skips over the next specified number of elements in the enumeration sequence.
+      [helpstring("Skip")]
+      HRESULT Skip(
+         [in] ULONG celt ///< Number of elements to skip
+      );
+   };
+
+   /// Interface for sequence container of BSTR
+   [
 		object,
 		uuid(505C846A-96F9-42FD-8202-C06170538E65),
 		oleautomation,
@@ -632,35 +1117,70 @@ library WBFLTools
 	]
 	interface IBstrArray : IUnknown
 	{
-		[propget, helpcontext(IDH_BStrArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] BSTR *pVal);
-		[propput, helpcontext(IDH_BStrArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] BSTR newVal);
-		[propget, helpcontext(IDH_BStrArray), helpstring("returns an standard COM enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpcontext(IDH_BStrArray),helpstring("property _EnumElements")] 
-		HRESULT _EnumElements([out, retval] IEnumBstrArray* *pVal);
-		[helpcontext(IDH_BStrArray_Clear), helpstring("method Clear")] 
-      HRESULT Clear();
-		[propget, helpcontext(IDH_BStrArray_Count), helpstring("property Count")] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpcontext(IDH_BStrArray_Clone), helpstring("method Clone")] 
-      HRESULT Clone([out,retval]IBstrArray* *clone);
-		[helpcontext(IDH_BStrArray_ReDim), helpstring("method ReDim")] 
-      HRESULT ReDim([in]CollectionIndexType size);
-		[helpcontext(IDH_BStrArray_Find), helpstring("method Find")] 
-      HRESULT Find([in]BSTR value, [out,retval]CollectionIndexType* fndIndex);
-		[helpcontext(IDH_BStrArray_Add), helpstring("method Add")] 
-      HRESULT Add([in]BSTR item);
-		[helpcontext(IDH_BStrArray_Remove), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType relPosition);
-		[helpcontext(IDH_BStrArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]BSTR item);
-		[helpcontext(IDH_BStrArray_Reserve), helpstring("method Reserve")] 
-      HRESULT Reserve([in]CollectionIndexType count);
-	};
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [out, retval] BSTR *item);
 
-	[
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [in] BSTR item);
+
+      /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+      [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+      /// Returns an enumeration object for the items in the array
+      [propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")]
+      HRESULT _EnumElements([out, retval] IEnumBstrArray* *pVal);
+
+      /// Removes all elements from the array
+      [helpcontext(IDH_LongArray_Clear), helpstring("method Clear")]
+      HRESULT Clear();
+
+      /// Number of items in the array
+      [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
+      HRESULT Count([out, retval] CollectionIndexType *pVal);
+
+      /// Clones the array
+      [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
+      HRESULT Clone([out, retval]IBstrArray* *clone);
+
+      // Redimensions the size of the array, filling new elements with the default item
+      [helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")]
+      HRESULT ReDim([in]CollectionIndexType size);
+
+      /// Searches the array for the specified item and retrieves its index
+      ///
+      /// Returns S_OK if successful, otherwise E_FAIL
+      [helpcontext(IDH_LongArray_Find), helpstring("method Find")]
+      HRESULT Find([in]BSTR value, [out, retval]CollectionIndexType* fndIndex);
+
+      /// Adds an item to the array
+      [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
+      HRESULT Add([in]BSTR item);
+
+      /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
+      [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
+      HRESULT Remove([in]CollectionIndexType index);
+
+      /// Inserts an item into the array at the specified index.
+      [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
+      HRESULT Insert([in]CollectionIndexType index, [in]BSTR item);
+
+      /// Reserves space for a specified number of items.
+      ///
+      /// Reserving space does not create new items in the array. It only allocates space for them.
+      /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
+      [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
+      HRESULT Reserve([in]CollectionIndexType count);
+   };
+
+   /// Interface used to enumerate values in a container
+   [
 	   object,
 	   uuid(ADD1A335-0A98-4ae5-9C7C-7DAEB7718DE3),
 	   helpstring("IEnumUnkArray Interface"),
@@ -670,21 +1190,33 @@ library WBFLTools
 	]
 	interface IEnumUnkArray : IUnknown
 	{
-       [helpstring("Clone"),]
+      /// Clone the enumerator
+      [helpstring("Clone"),]
 	   HRESULT Clone([out] IEnumUnkArray** ppenum);
 
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] IUnknown** rgelt, [in,out] ULONG* pceltFetched);
+      /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+      /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+      [helpstring("Next")]
+      HRESULT Next(
+         [in] ULONG celt, ///< Number of elements being requested
+         [out] IUnknown** rgelt, ///< Array of size celt (or larger) of elements of interest
+         [in, out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+      );
 
-	   [helpstring("Reset")]
-	   HRESULT Reset();
-	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
+      /// Resets the enumeration sequence to the beginning.
+      [helpstring("Reset")]
+      HRESULT Reset();
+
+      /// Skips over the next specified number of elements in the enumeration sequence.
+      [helpstring("Skip")]
+      HRESULT Skip(
+         [in] ULONG celt ///< Number of elements to skip
+      );
+   };
 
 
-	[
+   /// Interface for sequence container of objects
+   [
 		object,
 		uuid(F7E15329-3F3B-4161-9C9C-43ED3F9B689C),
 		oleautomation,
@@ -694,63 +1226,61 @@ library WBFLTools
 	]
 	interface IUnkArray : IUnknown
 	{
-		[propget, helpcontext(IDH_UnkArray), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] IUnknown* *pVal);
-		[propput, helpcontext(IDH_UnkArray), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] IUnknown* newVal);
-		[propget, helpcontext(IDH_UnkArray), helpstring("returns an standard COM enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpcontext(IDH_UnkArray), helpstring("property _EnumElements")] 
-		HRESULT _EnumElements([out, retval] IEnumUnkArray* *pVal);
-		[helpcontext(IDH_UnkArray), helpstring("method Clear")] 
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [out, retval] IUnknown* *item);
+
+      /// Item at the specified position in the array
+      /// \param index index of the item to retrieve
+      /// \param item the item
+      [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
+      HRESULT Item([in]CollectionIndexType index, [in] IUnknown* item);
+
+      /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+      [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
+      HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+      /// Returns an enumeration object for the items in the array
+      [propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")]
+      HRESULT _EnumElements([out, retval] IEnumUnkArray* *pVal);
+
+      /// Removes all elements from the array
+      [helpcontext(IDH_LongArray_Clear), helpstring("method Clear")]
       HRESULT Clear();
-		[propget, helpcontext(IDH_UnkArray), helpstring("property Count")] 
+
+      /// Number of items in the array
+      [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
       HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpcontext(IDH_UnkArray), helpstring("method Clone")] 
-      HRESULT Clone([out,retval]IUnkArray* *clone);
-		[helpcontext(IDH_UnkArray), helpstring("method Add")] 
+
+      /// Clones the array
+      [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
+      HRESULT Clone([out, retval]IUnkArray* *clone);
+
+      /// Adds an item to the array
+      [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
       HRESULT Add([in]IUnknown* item);
-		[helpcontext(IDH_UnkArray), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType relPosition);
-		[helpcontext(IDH_UnkArray), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]IUnknown* item);
-		[helpcontext(IDH_UnkArray), helpstring("method Reserve")] 
+
+      /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
+      [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
+      HRESULT Remove([in]CollectionIndexType index);
+
+      /// Inserts an item into the array at the specified index.
+      [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
+      HRESULT Insert([in]CollectionIndexType index, [in]IUnknown* item);
+
+      /// Reserves space for a specified number of items.
+      ///
+      /// Reserving space does not create new items in the array. It only allocates space for them.
+      /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
+      [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
       HRESULT Reserve([in]CollectionIndexType count);
-	};
+   };
 
 
-
-/////////////////////
-
-	[
-        object,	
-		uuid(B9CDE114-D5D8-4acc-A764-DF0C2863E028),
-	    oleautomation,
-		helpstring("IProgressMonitor Interface"),
-		pointer_default(unique)
-	]
-	interface IProgressMonitor : IUnknown
-	{
-		[propput, helpstring("Value of gauge from 0-100")] 
-      HRESULT GaugeValue([in]long cookie, [in] long newVal);
-		[propput, helpstring("Message to be displayed")] 
-      HRESULT Message([in]long cookie, [in] BSTR newVal);
-		[propget, helpstring("Check this value to see if process was cancelled")] 
-      HRESULT WasCancelled([out, retval] VARIANT_BOOL *pVal);
-	};
-
-	[
-        object,	
-		uuid(A6F2C304-53CF-4033-BC49-193B50077F3E),
-      oleautomation,
-		helpstring("ISupportProgressMonitor Interface"),
-		pointer_default(unique)
-	]
-	interface ISupportProgressMonitor : IUnknown
-	{
-		[helpstring("Initialize the ProgressMonitor")] HRESULT InitializeProgressMonitor([in]IProgressMonitor* newVal, [in]long cookie);
-	};
-
+   /// A Mohr's Circle object.
+   /// Implements the IMohrCircle interface
    [
 		uuid(E590D201-FF47-11D2-8CDF-F43C3928A334),
       helpcontext(IDH_MohrCircle),
@@ -760,7 +1290,12 @@ library WBFLTools
 	{
 		[default] interface IMohrCircle;
 	};
-	[
+
+   /// Alternate Route Project license notification tool.
+   ///
+   /// This object is a Wizard that displays the Alternate Route Project license and disclaimers to the user of an Alternate Route Project application. If you develop an Alternate Route Project application, we ask that you use this object to display the license notice whenever the program starts.
+   /// Implements the IARPNotice interface.
+   [
 		uuid(27F9E280-7102-11D3-89BB-006097C68A9C),
 		helpcontext(IDH_ArpNotice),
 		helpstring("ARPNotice Class")
@@ -770,6 +1305,9 @@ library WBFLTools
 		[default] interface IARPNotice;
 	};
 
+   /// Object that loads information from file storage that was previous saved with the IStructuredSave interface.
+   ///
+   /// Implements the IStrucutredLoad interface.
    [
       uuid(0131A8C3-26EB-11D2-8EB0-006097DF3C68),
       helpstring("StructuredLoad Class")
@@ -779,6 +1317,9 @@ library WBFLTools
       [default] interface IStructuredLoad;
    };
 
+   /// Object that saves information to file storage.
+   ///
+   /// Implements the IStrucutredSave interface.
    [
       uuid(0131A8C5-26EB-11D2-8EB0-006097DF3C68),
       helpstring("StructuredSave Class")
@@ -788,6 +1329,9 @@ library WBFLTools
       [default] interface IStructuredSave;
    };
    
+   /// Object that saves information to file storage.
+   ///
+   /// Implements the IStrucutredSave2 interface.
    [
 		uuid(043B36E6-64EE-11d5-B017-00105A9AF985),
 		helpstring("StructuredSave2 Class")
@@ -796,7 +1340,11 @@ library WBFLTools
 	{
 		[default] interface IStructuredSave2;
 	};
-	[
+
+   /// Object that loads information from file storage that was previous saved with the IStructuredSave2 interface.
+   ///
+   /// Implements the IStrucutredLoad2 interface.
+   [
 		uuid(043B36E7-64EE-11d5-B017-00105A9AF985),
 		helpstring("StructuredLoad2 Class")
 	]
@@ -804,6 +1352,10 @@ library WBFLTools
 	{
 		[default] interface IStructuredLoad2;
 	};
+
+   /// Object that provides concurrent error logging services to multiple log files.
+   ///
+   /// Implements the IWBFLErrorLog interface
    [
       uuid(49E8A61D-E83B-4b60-B0D7-96B0D1A96CC3),
       helpstring("ErrorLog Class")
@@ -812,15 +1364,11 @@ library WBFLTools
    {
       [default] interface IWBFLErrorLog;
    };
-	[
-		uuid(28706F21-DA7C-45C8-866C-3285BCAF3434),
-		helpstring("ProgressMonitor Class")
-	]
-	coclass ProgressMonitor
-	{
-		[default] interface IProgressMonitor;
-	};
-	[
+
+   /// Object that provides a progress monitor window
+   ///
+   /// Implements the IProgressMonitorWindow, IProgressMonitor, and ILogProgressToFile interfaces.
+   [
 		uuid(8C63C999-10B8-43B5-A7CC-72B6AC48283F),
 		helpstring("ProgressMonitorWindow Class")
 	]
@@ -830,6 +1378,10 @@ library WBFLTools
       interface IProgressMonitor;
       interface ILogProgressToFile;
 	};
+
+   /// Array of LONG values
+   ///
+   /// Implements the ILongArray interface
 	[
 		uuid(51EAE330-F430-492C-95A1-A755D76A8C4F),
 		helpstring("ILongArray Class")
@@ -838,7 +1390,11 @@ library WBFLTools
 	{
 		[default] interface ILongArray;
 	};
-	[
+
+   /// Array of IDType values
+   ///
+   /// Implements the IIDArray interface
+   [
 		uuid(78227B01-D41C-47e7-BE49-6A8CF2EB833A),
 		helpstring("IIDArray Class")
 	]
@@ -846,7 +1402,11 @@ library WBFLTools
 	{
 		[default] interface IIDArray;
 	};
-	[
+
+   /// Array of IndexType values
+   ///
+   /// Implements the IIndexArray interface
+   [
 		uuid(0AA0835E-C025-48c6-A9DD-CD33C0BBFB7B),
 		helpstring("IIndexArray Class")
 	]
@@ -854,7 +1414,11 @@ library WBFLTools
 	{
 		[default] interface IIndexArray;
 	};
-	[
+
+   /// Array of Float64 (double) values
+   ///
+   /// Implements the IDblArray interface
+   [
 		uuid(851D2378-0F8C-4040-8E84-B26C5E7F9528),
 		helpstring("DblArray Class")
 	]
@@ -862,7 +1426,11 @@ library WBFLTools
 	{
 		[default] interface IDblArray;
 	};
-	[
+
+   /// Array of BSTR values
+   ///
+   /// Implements the IBstrArray interface
+   [
 		uuid(FA223DB0-69C7-4FB6-90CC-0C20BE566982),
 		helpstring("BstrArray Class")
 	]
@@ -870,7 +1438,12 @@ library WBFLTools
 	{
 		[default] interface IBstrArray;
 	};
-	[
+
+   /// Array of objects
+   ///
+   /// Implements the IUnkArray interface.
+   /// \note Object can be of any type. They are stored in this container through their IUnknown interface.
+   [
 		uuid(88D26763-7BD5-4F92-A064-7497A72E7D81),
 		helpstring("UnkArray Class")
 	]
@@ -878,4 +1451,17 @@ library WBFLTools
 	{
 		[default] interface IUnkArray;
 	};
+
+
+   /// Provides general file logging services
+   ///
+   /// Implements the ILogFile interface.
+   [
+      uuid(E58AB440-3AC4-4BDC-AB7C-5D3BAA61F986),
+      helpstring("LogFile Class")
+   ]
+   coclass LogFile
+   {
+      [default] interface ILogFile;
+   };
 };

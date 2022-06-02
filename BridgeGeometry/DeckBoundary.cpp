@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BridgeGeometry
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -147,7 +147,9 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       m_pBridge->get_BridgeAlignment(&alignment);
 
       CComPtr<IPoint2d> pntOnAlignment;
-      alignment->ProjectPoint(pntEnd2,&pntOnAlignment);
+      Float64 distFromStart;
+      VARIANT_BOOL vbOnProjection;
+      alignment->ProjectPoint(pntEnd2,&pntOnAlignment, &distFromStart, &vbOnProjection);
 
       CComPtr<ILine2d> break_line;
       break_line.CoCreateInstance(CLSID_Line2d);
@@ -175,7 +177,9 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       m_pBridge->get_BridgeAlignment(&alignment);
 
       CComPtr<IPoint2d> pntOnAlignment;
-      alignment->ProjectPoint(pntEnd3,&pntOnAlignment);
+      Float64 distFromStart;
+      VARIANT_BOOL vbOnProjection;
+      alignment->ProjectPoint(pntEnd3,&pntOnAlignment, &distFromStart, &vbOnProjection);
 
       CComPtr<ILine2d> break_line;
       break_line.CoCreateInstance(CLSID_Line2d);
@@ -467,14 +471,14 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          }
          break;
 
-      case petHorzCurve:
+      case petCompoundCurve:
          {
-            CComQIPtr<IHorzCurve> horzCurve(pUnk);
+            CComQIPtr<ICompoundCurve> CompoundCurve(pUnk);
             CComPtr<IPoint2d> pntTS, pntSC, pntCS, pntST;
-            horzCurve->get_TS(&pntTS);
-            horzCurve->get_SC(&pntSC);
-            horzCurve->get_CS(&pntCS);
-            horzCurve->get_ST(&pntST);
+            CompoundCurve->get_TS(&pntTS);
+            CompoundCurve->get_SC(&pntSC);
+            CompoundCurve->get_CS(&pntCS);
+            CompoundCurve->get_ST(&pntST);
             points.push_back(pntTS);
             points.push_back(pntSC);
             points.push_back(pntCS);
@@ -595,14 +599,14 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          }
          break;
 
-      case petHorzCurve:
+      case petCompoundCurve:
          {
-            CComQIPtr<IHorzCurve> horzCurve(pUnk);
+            CComQIPtr<ICompoundCurve> CompoundCurve(pUnk);
             CComPtr<IPoint2d> pntTS, pntSC, pntCS, pntST;
-            horzCurve->get_TS(&pntTS);
-            horzCurve->get_SC(&pntSC);
-            horzCurve->get_CS(&pntCS);
-            horzCurve->get_ST(&pntST);
+            CompoundCurve->get_TS(&pntTS);
+            CompoundCurve->get_SC(&pntSC);
+            CompoundCurve->get_CS(&pntCS);
+            CompoundCurve->get_ST(&pntST);
             points.push_back(pntTS);
             points.push_back(pntSC);
             points.push_back(pntCS);

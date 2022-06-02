@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,7 +30,6 @@
 #include <map>
 #include <GraphicsLib\GraphicsLibExp.h>
 #include <GraphicsLib\PointMapper.h>
-#include <WBFLGeometry.h>
 #include <system\INumericFormatToolBase.h>
 #include <GraphicsLib\AxisXY.h>
 
@@ -67,15 +66,6 @@ public:
    // Destructor
    virtual ~grGraphXY();
 
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
-   grGraphXY& operator = (const grGraphXY& rOther);
-
-   // GROUP: OPERATIONS
-
    //------------------------------------------------------------------------
    // Creates a new data series in the graph.  Returns a cookie used to
    // reference this data series at a later time.
@@ -85,13 +75,18 @@ public:
    // Find an existing data series and return its cookie. Returns INVALID_INDEX if not found
    IndexType FindDataSeries(LPCTSTR lpszLabel);
 
+   std::vector<IndexType> GetCookies() const;
+
+   void GetDataSeriesData(IndexType cookie,std::_tstring* pLabel,int* pPenStyle,int* pWidth,COLORREF* pColor) const;
+   void GetDataSeriesPoints(IndexType cookie, std::vector<GraphPoint>* pvPoints) const;
+
    //------------------------------------------------------------------------
    // Adds an individual point to the graph.
-   void AddPoint(IndexType cookie,const gpPoint2d& rPoint);
+   void AddPoint(IndexType cookie,const GraphPoint& rPoint);
 
    //------------------------------------------------------------------------
    // Adds a collection of points to the graph.
-   void AddPoints(IndexType cookie,const std::vector<gpPoint2d>& vPoints);
+   void AddPoints(IndexType cookie,const std::vector<GraphPoint>& vPoints);
 
    //------------------------------------------------------------------------
    // Removes all the points from the graph
@@ -321,6 +316,9 @@ public:
    void SetIsotropicAxes(bool bIsotropic=true);
    bool GetIsotropicAxes() const;
 
+   void SetHorizontalControlLine(bool set = true);
+   bool GetHorizontalControlLine() const;
+
    //------------------------------------------------------------------------
    // Set whether to show the grid or not
    void SetDoDrawGrid(bool doDraw=true) {m_DoDrawGrid=doDraw;}
@@ -350,6 +348,9 @@ public:
    // nPenStyle, nWidth and crColor are defined the same as for the 
    // CreatePen Windows api call.
    void SetGridPenStyle(int nPenStyle, int nWidth, COLORREF crColor);
+
+   void SetHorizontalControlLinePenStyle(int nPenStyle, int nWidth, COLORREF crColor);
+
    // GROUP: INQUIRY
 
    //------------------------------------------------------------------------
@@ -383,15 +384,6 @@ public:
    void GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax) const;
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void MakeCopy(const grGraphXY& rOther);
-   void MakeAssignment(const grGraphXY& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS
@@ -402,7 +394,7 @@ private:
       COLORREF Color;
    };
 
-   typedef std::vector<gpPoint2d> DataSeries;
+   typedef std::vector<GraphPoint> DataSeries;
 
    struct GraphData
    {
@@ -414,7 +406,7 @@ private:
    typedef std::map<IndexType,GraphData> GraphDataMap;
    GraphDataMap m_GraphDataMap;
 
-   gpRect2d m_WorldRect;
+   GraphRect m_WorldRect;
 
    RECT m_OutputRect;
    RECT m_LegendRect;
@@ -431,6 +423,7 @@ private:
    bool m_YAxisNiceRange;
    bool m_PinYAxisAtZero;
    bool m_bIsotropicAxes;
+   bool m_bHorizontalControlLine;
 
    grlibPointMapper m_PointMapper;
    bool m_IsBroken;
@@ -440,6 +433,7 @@ private:
    bool m_bDrawLegend;
    LegendBoarderType m_LegendBoarderType;
    PenData m_GridPenData;
+   PenData m_HorzControlLinePenData;
 
    std::_tstring m_GraphTitle;
    std::_tstring m_GraphSubtitle;

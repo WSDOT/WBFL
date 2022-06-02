@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -269,6 +269,8 @@ STDMETHODIMP CGeomUtil::Angle(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,
 
    dx2 = ex - cx;
    dy2 = ey - cy;
+
+   *angle = 0.0;
 
    if ( IsZero(dx1) && IsZero(dy1) || IsZero(dx2) && IsZero(dy2) )
       return Error(IDS_E_SAMEPOINTS,IID_IGeomUtil2d,GEOMETRY_E_SAMEPOINTS);
@@ -661,11 +663,11 @@ STDMETHODIMP CGeomUtil::IntersectLineWithLineSegment(ILine2d* pLine,ILineSegment
    return S_OK;
 }
 
-STDMETHODIMP CGeomUtil::ShortestDistanceToPoint( ILine2d* pLine, IPoint2d* pPoint, Float64* pDist)
+STDMETHODIMP CGeomUtil::ShortestOffsetToPoint( ILine2d* pLine, IPoint2d* pPoint, Float64* pOffset)
 {
    CHECK_IN(pLine);
    CHECK_IN(pPoint);
-   CHECK_RETVAL(pDist);
+   CHECK_RETVAL(pOffset);
 
    // this implementation may not be optimal, but it's the best
    // I can come up with for now.
@@ -691,7 +693,7 @@ STDMETHODIMP CGeomUtil::ShortestDistanceToPoint( ILine2d* pLine, IPoint2d* pPoin
    if ( dot < 0 )
       distance *= -1.;
 
-   *pDist = distance;
+   *pOffset = distance;
 
    return S_OK;
 }

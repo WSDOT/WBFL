@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -104,7 +104,7 @@ public:
 
    //------------------------------------------------------------------------
    // Draw a rectangle
-   static void DrawRect(HDC hDC, const grlibPointMapper& mapper, const gpRect2d& rect, 
+   static void DrawRect(HDC hDC, const grlibPointMapper& mapper, const GraphRect& rect,
                         COLORREF borderColor=RGB(0,0,0), 
                         bool doFill=false, COLORREF fillColor=RGB(255,255,255));
    // GROUP: ACCESS

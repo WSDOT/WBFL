@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -74,17 +74,21 @@ private:
    long m_MaxIter;
    bool m_bFurthestPointUpdated;
    Float64 m_XFurthest, m_YFurthest;
+   Float64 m_Top, m_Bottom;
 
    bool m_bUpdateLimits;
    Float64 m_FzTensionLimit, m_MxTensionLimit, m_MyTensionLimit, m_eoTensionLimit;
    Float64 m_FzCompressionLimit, m_MxCompressionLimit, m_MyCompressionLimit, m_eoCompressionLimit;
    HRESULT UpdateLimits();
 
-   void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 eo,SolutionMethod solutionMethod);
-   void UpdateFurthestPoint(Float64 angle);
-   HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
-   HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod,IMomentCapacitySolution** solution);
+   void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 eo);
+   void UpdateFurthestPoint(Float64 angle, SolutionMethod solutionMethod);
+   HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
+   HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod, Float64 strainLocation,IMomentCapacitySolution** solution);
    HRESULT ZeroCapacitySolution(IMomentCapacitySolution** solution);
+
+   void UpdateStrainPlane2(Float64 naAngle, Float64 x, Float64 y, Float64 ec, Float64 k);
+   HRESULT AnalyzeSection2(Float64 Fz, Float64 naAngle, Float64 k_or_ec, SolutionMethod solutionMethod, Float64 strainLocation, IMomentCapacitySolution** solution);
 
 // ISupportsErrorInfo
 public:
@@ -102,7 +106,7 @@ public:
 	STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor) override;
    STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection) override;
 	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
-   STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/ Float64 angle,/*[in]*/ Float64 k_or_ec,/*[in]*/SolutionMethod solutionMethod,/*[out,retval]*/IMomentCapacitySolution** solution) override;
+   STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/ Float64 angle,/*[in]*/ Float64 k_or_ec,/*[in]*/Float64 strainLocation,/*[in]*/SolutionMethod solutionMethod,/*[out,retval]*/IMomentCapacitySolution** solution) override;
    STDMETHOD(CompressionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo) override;
    STDMETHOD(TensionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo) override;
    STDMETHOD(get_PlasticCentroid)(/*[out,retval]*/ IPoint2d** pcg) override;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,6 +51,7 @@
 #include "NLSolver.h"
 #include "RCBeam2.h"
 #include "UnconfinedConcrete.h"
+#include "UHPConcrete.h"
 #include "PSPowerFormula.h"
 #include "LRFDPrestressFormula.h"
 #include "RebarModel.h"
@@ -80,6 +81,8 @@
 #include "CrackedSectionSlice.h"
 #include "CrackedSectionSolver.h"
 #include "CrackedSectionSolution.h"
+#include "RambergOsgoodModel.h"
+#include "PCIUHPConcrete.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -100,6 +103,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_NLSolver, CNLSolver)
    OBJECT_ENTRY(CLSID_RCBeam2, CRCBeam2)
    OBJECT_ENTRY(CLSID_UnconfinedConcrete, CUnconfinedConcrete)
+   OBJECT_ENTRY(CLSID_UHPConcrete, CUHPConcrete)
    OBJECT_ENTRY(CLSID_PSPowerFormula, CPSPowerFormula)
    OBJECT_ENTRY(CLSID_LRFDPrestressFormula, CLRFDPrestressFormula)
    OBJECT_ENTRY(CLSID_RebarModel, CRebarModel)
@@ -129,6 +133,8 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_CrackedSectionSlice,CCrackedSectionSlice)
    OBJECT_ENTRY(CLSID_CrackedSectionSolver,CCrackedSectionSolver)
    OBJECT_ENTRY(CLSID_CrackedSectionSolution,CCrackedSectionSolution)
+   OBJECT_ENTRY(CLSID_RambergOsgoodModel, CRambergOsgoodModel)
+   OBJECT_ENTRY(CLSID_PCIUHPConcrete,CPCIUHPConcrete)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

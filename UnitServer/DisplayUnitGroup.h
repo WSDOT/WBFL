@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -67,7 +67,7 @@ public:
       // Otherwise, you would have to connect with the unit server and filter
       // out all the events that aren't related to this unit type (which is all
       // we care about)
-      m_pUnitType.Advise( GetUnknown(), IID_IUnitTypeEventSink, &m_Cookie );
+      m_pUnitType.Advise( GetUnknown(), IID_IUnitTypeEvents, &m_Cookie );
 
 	  // NOTE: This Advise fails!!!
    }

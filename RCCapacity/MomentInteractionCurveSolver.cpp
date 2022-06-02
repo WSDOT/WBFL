@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -134,7 +134,7 @@ STDMETHODIMP CMomentInteractionCurveSolver::Solve(Float64 Fz,Float64 startNA,Flo
    {
       CComPtr<IMomentCapacitySolution> mc;
 
-      m_Solver->Solve(Fz,angle,eo,smFixedCompressiveStrain,&mc);
+      m_Solver->Solve(Fz,angle,eo,0.0,smFixedCompressionStrain,&mc);
 
       (*solution)->AddSolutionPoint(mc);
 

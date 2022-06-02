@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -61,7 +61,7 @@ void CUnitTypes::UnadviseUnitType(IUnitType* pUnitType)
    // Find the connection point and disconnection
    CComQIPtr<IConnectionPointContainer> pCPC( pUnitType );
    CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint( IID_IUnitTypeEventSink, &pCP );
+   pCPC->FindConnectionPoint( IID_IUnitTypeEvents, &pCP );
    pCP->Unadvise( (*found).second );
 
    // Remove cookie from map
@@ -116,7 +116,7 @@ void CUnitTypes::SaveUnitType(IUnitType* pUnitType)
    pUnitType->get_Label(&bstrLabel);
    std::_tstring strLabel( OLE2T(bstrLabel) );
    CComPtr<IUnitType> pCPUnitType(pUnitType);
-   pCPUnitType.Advise( GetUnknown(), IID_IUnitTypeEventSink, &dwCookie );
+   pCPUnitType.Advise( GetUnknown(), IID_IUnitTypeEvents, &dwCookie );
    m_Cookies.insert( std::make_pair(strLabel,dwCookie) );
 
    InternalRelease(); // Break Circular Reference
@@ -415,7 +415,7 @@ STDMETHODIMP CUnitTypes::Add(BSTR label,Float64 m,Float64 l,Float64 t,Float64 k,
    // Hookup to the connection point
    DWORD dwCookie;
    std::_tstring strLabel( OLE2T(label) );
-   hr = unitType.Advise( GetUnknown(), IID_IUnitTypeEventSink, &dwCookie );
+   hr = unitType.Advise( GetUnknown(), IID_IUnitTypeEvents, &dwCookie );
    ATLASSERT(SUCCEEDED(hr));
    m_Cookies.insert( std::make_pair(strLabel,dwCookie) );
 

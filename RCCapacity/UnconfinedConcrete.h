@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -71,6 +71,13 @@ END_COM_MAP()
    CComPtr<IUnitServer> m_UnitServer;
    CComBSTR m_bstrName;
 
+   // cached values - updated when f'c changes
+   Float64 m_n;
+   Float64 m_k;
+   Float64 m_Ec;
+   Float64 m_ec;
+
+   void UpdateParameters();
    Float64 GetEc();
 
 // ISupportsErrorInfo

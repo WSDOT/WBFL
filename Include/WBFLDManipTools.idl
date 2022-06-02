@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,9 +53,9 @@ library WBFLDManipTools
 
    [
 		uuid(7DBA44AA-1542-4470-8719-21580A6822B5),
-		helpstring("HorzCurveDisplayObject Class")
+		helpstring("CompoundCurveDisplayObject Class")
 	]
-	coclass HorzCurveDisplayObject
+	coclass CompoundCurveDisplayObject
 	{
 		[default] interface IUnknown;
 	};

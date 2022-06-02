@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -270,7 +270,10 @@ public:
       for(auto& item : m_Plugins)
       {
          auto plugin = item.second;
-         if ( plugin->GetName().CompareNoCase(lpszName) == 0 )
+
+         CComQIPtr<IEAFAppCommandLine> appCmdLine(plugin);
+
+         if (appCmdLine && appCmdLine->GetCommandLineAppName().CompareNoCase(lpszName) == 0 )
          {
             plugin.CopyTo(ppPlugin);
             return true;

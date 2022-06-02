@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -312,8 +312,8 @@ void CTestAlignment2::Test4()
    pft.CoCreateInstance(CLSID_Point2d);
    pft->Move(1000,700);
 
-   CComPtr<IHorzCurve> hc;
-   hc.CoCreateInstance(CLSID_HorzCurve);
+   CComPtr<ICompoundCurve> hc;
+   hc.CoCreateInstance(CLSID_CompoundCurve);
    hc->putref_PBT(pbt);
    hc->putref_PI(pi);
    hc->putref_PFT(pft);

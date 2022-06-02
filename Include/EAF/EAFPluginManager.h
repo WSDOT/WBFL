@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,6 +26,7 @@
 #include <EAF\EAFExp.h>
 #include <EAF\EAFPluginManagerBase.h>
 #include <EAF\EAFPlugin.h>
+#include <EAF\EAFPluginDocumentationIntegration.h>
 
 class EAFCLASS CEAFPluginManager : public CEAFPluginManagerBase<IEAFPlugin,CEAFPluginApp>
 {
@@ -46,7 +47,11 @@ public:
       for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
       {
          CComPtr<IEAFPlugin> plugin = iter->second;
-         plugin->LoadDocumentationMap();
+         CComQIPtr<IEAFPluginDocumentationIntegration> documentation_integration(plugin);
+         if (documentation_integration)
+         {
+            documentation_integration->LoadDocumentationMap();
+         }
       }
    }
 
@@ -56,9 +61,10 @@ public:
       for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
       {
          CComPtr<IEAFPlugin> plugin = iter->second;
-         if ( plugin->GetDocumentationSetName() == CString(lpszDocSetName) )
+         CComQIPtr<IEAFPluginDocumentationIntegration> documentation_integration(plugin);
+         if(documentation_integration&& documentation_integration->GetDocumentationSetName() == CString(lpszDocSetName) )
          {
-            return plugin->GetDocumentLocation(lpszDocSetName,nHID,strURL);
+            return documentation_integration->GetDocumentLocation(lpszDocSetName,nHID,strURL);
          }
       }
 

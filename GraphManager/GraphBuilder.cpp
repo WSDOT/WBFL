@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphManager - Manages graph definitions
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -56,12 +56,18 @@ CGraphBuilder::~CGraphBuilder()
 {
 }
 
+bool CGraphBuilder::operator==(const CGraphBuilder& other)
+{
+   // equivalence is based on name only for sorting purposes
+   return m_strName == other.m_strName;
+}
+
 void CGraphBuilder::SetName(LPCTSTR strName)
 {
    m_strName = strName;
 }
 
-LPCTSTR CGraphBuilder::GetName() const
+const std::_tstring& CGraphBuilder::GetName() const
 {
    return m_strName;
 }
@@ -109,4 +115,10 @@ void CGraphBuilder::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 BOOL CGraphBuilder::CanPrint()
 {
    return TRUE;
+}
+
+bool CGraphBuilder::HandleDoubleClick(UINT nFlags,CPoint point)
+{
+   // do nothing by default
+    return false;
 }

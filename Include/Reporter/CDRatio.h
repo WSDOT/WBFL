@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,70 +27,51 @@
 #include <Reporter\RcSymbol.h>
 #include <System\NumericFormatTool.h>
 
-#define CDR_NA   -1  // reports "N/A"
-#define CDR_SKIP -2  // reports "-"
-#define CDR_INF  9999999 // reports infinity symbol
-#define CDR_LARGE 10 // anything larger than this value is reported as 10+
+#define CDR_NA   -1  ///< reports "N/A"
+#define CDR_SKIP -2  ///< reports "-"
+#define CDR_INF  9999999 ///< reports infinity symbol
+#define CDR_LARGE 10 ///< anything larger than this value is reported as 10+
 
-/*****************************************************************************
-CLASS 
-   rptCDRatio
-
-   Report content for Capacity/Demand ratios
-
-
-DESCRIPTION
-   Report content for Capacity/Demand ratios. A consistant format for C/D Reporting
-
-LOG
-   rdp : 12.18.2009 : Created file
-*****************************************************************************/
-
+/// Report content for Capacity/Demand ratios
 class REPORTERCLASS rptCDRatio : public rptRcString
 {
 public:
-   //------------------------------------------------------------------------
    rptCDRatio();
-
-   //------------------------------------------------------------------------
-   rptCDRatio(Float64 capacity, Float64 demand, bool passed);
-
-   //------------------------------------------------------------------------
    rptCDRatio(const rptCDRatio& rOther);
 
-   //------------------------------------------------------------------------
-   rptCDRatio& operator = (const rptCDRatio& rOther);
-
-   //------------------------------------------------------------------------
+   /// Creates a clone
    virtual rptReportContent* CreateClone() const override;
 
-   //------------------------------------------------------------------------
-   virtual rptReportContent& SetValue(Float64 cdr,bool passed);
-   virtual rptReportContent& SetValue(Float64 capacity, Float64 demand, bool passed);
+   /// Returns the report content objects
+   virtual rptReportContent& SetValue(
+      Float64 cdr, ///< the C/D ratio
+      bool passed ///< pass/fail state
+   );
 
-   //------------------------------------------------------------------------
-   virtual std::_tstring AsString() const;
-
+   /// Returns the report content
+   virtual rptReportContent& SetValue(
+      Float64 capacity,  ///< capacity
+      Float64 demand,  ///< demand
+      bool passed ///< pass/fail state
+   );
 
 protected:
-   void MakeCopy(const rptCDRatio& rOther);
-   void MakeAssignment(const rptCDRatio& rOther);
+   /// Returns the capacity demand ratio as a string
+   virtual std::_tstring AsString(Float64 capacity, Float64 demand, bool passed) const;
 
 private:
-   void Init();
-
-   Float64 m_Capacity;
-   Float64 m_Demand;
-   bool    m_Passed;
-
-   Float64 m_CDR;
-
-   sysNumericFormatTool m_FormatTool;
-   rptRcSymbol m_RcSymbolInfinity;
+   static sysNumericFormatTool m_FormatTool;
+   static rptRcSymbol m_RcSymbolInfinity;
 };
 
+/// Macro for reporting passing state of a rating factor
 #define RF_PASS(_cd_,_rf_) _cd_.SetValue(_rf_,1.0,true)
+
+/// Macro for reporting failed state of a rating factor
 #define RF_FAIL(_cd_,_rf_) color(Red) << _cd_.SetValue(_rf_ < 0 ? 0 : _rf_,0 < _rf_ ? 1 : 0,false) << color(Black)
 
+/// Macro for reporting passing state of a capacity/demand ratio
 #define CD_PASS(_cdr_,_cd_) RPT_PASS << rptNewLine << _T("(") << _cdr_.SetValue(_cd_ < 0 ? CDR_SKIP : _cd_,true) << _T(")")
+
+/// Macro for reporting failed state of a capacity/demand ratio
 #define CD_FAIL(_cdr_,_cd_) RPT_FAIL << rptNewLine << _T("(") << _cdr_.SetValue(_cd_ < 0 ? CDR_SKIP : _cd_,false) << _T(")")

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -208,7 +208,7 @@ HRESULT CNUBeam::UpdateShape()
          Float64 d = x2*m_D4/x1;
          cx = -m_EndBlock/2;
          cy = m_D5 + m_D4 - d;
-         AddPoint(points,cx,cy);
+         GenerateFillet(points, cx, cy, 0.0, startAngle, 0.0, nSpaces);
       }
       else
       {
@@ -239,7 +239,7 @@ HRESULT CNUBeam::UpdateShape()
          Float64 d = x2*m_D2/x1;
          cx = -m_EndBlock/2;
          cy = m_D5 + m_D4 + m_D3 + d;
-         AddPoint(points,cx,cy);
+         GenerateFillet(points, cx, cy, 0.0, startAngle, 0.0, nSpaces);
       }
       else
       {
@@ -301,6 +301,12 @@ HRESULT CNUBeam::UpdateShape()
       CComPtr<IPoint2d> origin;
       CreatePoint(0.00,0.00,nullptr,&origin);  // Hook Point at Bottom Center
       pPosition->MoveEx(origin,m_pHookPoint);
+
+#if defined _DEBUG
+      IndexType nPoints;
+      m_pShape->get_Count(&nPoints);
+      if (IsZero(m_C1)) ATLASSERT(nPoints == 172); else ATLASSERT(nPoints == 174);
+#endif
 
       m_Dirty = false;
    }
@@ -991,22 +997,11 @@ void CNUBeam::AddPoint(IPoint2dCollection* pPoints,Float64 x,Float64 y)
 
 void CNUBeam::GenerateFillet(IPoint2dCollection* pPoints,Float64 cx,Float64 cy,Float64 r,Float64 startAngle,Float64 delta,long nSpaces)
 {
-   if (!IsZero(r))
+   Float64 dAngle = delta/nSpaces;
+   for ( long i = 0; i <= nSpaces; i++ )
    {
-      Float64 dAngle = delta/nSpaces;
-      for ( long i = 0; i <= nSpaces; i++ )
-      {
-         Float64 x = cx + r*cos(startAngle + i*dAngle);
-         Float64 y = cy + r*sin(startAngle + i*dAngle);
-
-         AddPoint(pPoints,x,y);
-      }
-   }
-   else
-   {
-      // No radius 
-      Float64 x = cx;
-      Float64 y = cy;
+      Float64 x = cx + r*cos(startAngle + i*dAngle);
+      Float64 y = cy + r*sin(startAngle + i*dAngle);
       AddPoint(pPoints,x,y);
    }
 }

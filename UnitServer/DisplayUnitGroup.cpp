@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -137,7 +137,7 @@ void CDisplayUnitGroup::FinalRelease()
    {
 	  CComQIPtr<IConnectionPointContainer> pCPC( m_pUnitType );
 	  CComPtr<IConnectionPoint> pCP;
-	  pCPC->FindConnectionPoint( IID_IUnitTypeEventSink, &pCP );
+	  pCPC->FindConnectionPoint( IID_IUnitTypeEvents, &pCP );
 	  pCP->Unadvise( m_Cookie );
    }
 

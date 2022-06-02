@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -90,6 +90,13 @@ public:
    void SetLambda(Float64 lambda);
    Float64 GetLambda() const;
 
+   // PCI UHPC parameters
+   void SetFirstCrackStrength(Float64 ffc);
+   Float64 GetFirstCrackStrength() const;
+   void SetPostCrackingTensileStrength(Float64 frr);
+   Float64 GetPostCrackingTensileStrength() const;
+   void SetAutogenousShrinkage(Float64 as);
+   Float64 GetAutogenousShrinkage() const;
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.

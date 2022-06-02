@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,94 +30,30 @@
 #include <Reporter\ParagraphVisitor.h>
 #include <Reporter\Paragraph.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptOutputParagraphVisitor
-
-   A ReportVisitor specialized to send an ascii report to an ostream
-
-
-DESCRIPTION
-   This class sends a simple ascii representation of a report to a class deriv
-   ed from ostream.
-
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rdp : 03.25.1997 : Created file
-*****************************************************************************/
-
+/// A abstract paragraph visitor specialized to render content to an output stream
 class REPORTERCLASS rptOutputParagraphVisitor : public rptParagraphVisitor
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Constructor
-   rptOutputParagraphVisitor(std::_tostream* pMyOstream/*, 
-                           const rptUnitSnapShot* MypUnitSnapShot*/)
+   /// Constructor
+   rptOutputParagraphVisitor(
+      std::_tostream* pMyOstream ///< output stream to receive the paragraph data
+   )
    {
       m_pOstream = pMyOstream;
-      //m_pUnitSnapShot = MypUnitSnapShot;
    }
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptOutputParagraphVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   virtual void VisitParagraph(rptParagraph*) = 0;
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Visits a paragraph
+   virtual void VisitParagraph(rptParagraph* pParagraph) = 0;
 
 protected:
-   // GROUP: DATA MEMBERS
    std::_tostream* m_pOstream;
-   //const rptUnitSnapShot* m_pUnitSnapShot;
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 private:
-   // GROUP: DATA MEMBERS
-
-
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment 
-   // Default constructor
-   rptOutputParagraphVisitor();
-   rptOutputParagraphVisitor(const rptOutputParagraphVisitor&);
+   rptOutputParagraphVisitor() = delete;
+   rptOutputParagraphVisitor(const rptOutputParagraphVisitor&) = delete;
    rptOutputParagraphVisitor& operator=(const rptOutputParagraphVisitor&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_OUTPUTPARAGRAPHVISITOR_H_

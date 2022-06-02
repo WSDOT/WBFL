@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,6 +34,7 @@
 #include <EAF\EAFDocTemplateRegistrar.h>
 #include <EAF\EAFHints.h>
 #include <EAF\EAFView.h>
+#include <EAF\EAFDataRecoveryHandler.h>
 
 // Logging
 #include <iostream>
@@ -685,6 +686,18 @@ void CEAFDocument::OnViewStatusCenter()
    m_pStatusCenterDlg->ShowWindow(m_pStatusCenterDlg->IsWindowVisible() ? SW_HIDE : SW_SHOW);
 }
 
+BOOL CEAFDocument::SaveModified()
+{
+   // called when a document is closing. if autosave is enabled, we want to
+   // always save a modified document unless the document is new and has not yet saved (pathname is empty).
+   if (!m_strPathName.IsEmpty() && IsModified() && AfxGetApp() && AfxGetApp()->SupportsAutosaveAtInterval())
+   {
+      DoFileSave();
+   }
+
+   return __super::SaveModified();
+}
+
 BOOL CEAFDocument::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
@@ -857,9 +870,14 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
    SetModifiedFlag( FALSE );
    OnStatusChanged();
 
-   // update title frame
-   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   pMainFrame->UpdateFrameTitle(lpszPathName);
+   // update title frame if this is not an autosave document
+   CEAFApp* pApp = EAFGetApp();
+   CEAFDataRecoveryHandler* pHandler = (CEAFDataRecoveryHandler*)(pApp->GetDataRecoveryHandler());
+   if (!pHandler->IsAutosaving())
+   {
+      CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+      pMainFrame->UpdateFrameTitle(lpszPathName);
+   }
 
    return TRUE;
 }
@@ -1520,4 +1538,8 @@ void CEAFDocument::OnCreateFinalize()
       OnViewStatusCenter();
    }
    OnStatusChanged();
+
+   // Sets the AutoSave state on the status bar
+   CEAFStatusBar* pStatusBar = EAFGetMainFrame()->GetStatusBar();
+   pStatusBar->AutoSaveEnabled(EAFGetApp()->IsAutoSaveEnabled());
 }

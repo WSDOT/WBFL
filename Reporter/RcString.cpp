@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,7 +23,6 @@
 
 #include <Reporter\ReporterLib.h>
 #include <Reporter\RcString.h>
-#include <string.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,18 +30,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptRcString           
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
-// constructors
-// non-hyperlink versions
 rptRcString::rptRcString(LPCTSTR  YourStr,bool bNoWrap) :
 m_TheString( YourStr ),
 m_bNoWrap(bNoWrap)
@@ -55,7 +42,6 @@ m_bNoWrap(bNoWrap)
 {
 }
 
-// hyperlink versions
 rptRcString::rptRcString(LPCTSTR  YourStr, const std::_tstring& HyperTarget,bool bNoWrap) :
 m_TheString( YourStr ),
 m_bNoWrap(bNoWrap)
@@ -70,32 +56,23 @@ m_bNoWrap(bNoWrap)
    SetHyperLink(HyperTarget);
 }
 
-
-// copy constructor
 rptRcString::rptRcString(const rptRcString& rRcString):
 rptReportContent(rRcString)
 {
    MakeCopy( rRcString );
+}
 
-} // rptRcString
-
-
-// destructor
 rptRcString::~rptRcString()
 {
-} // ~rptRcString
+}
 
-//======================== OPERATORS  =======================================
-
-rptRcString& rptRcString::operator = (const rptRcString& rRcString)
+rptRcString& rptRcString::operator=(const rptRcString& rRcString)
 {
    if (this != &rRcString)
       MakeAssignment(rRcString);
    return *this;
-} // operator =
+}
 
-
-//======================== OPERATIONS =======================================
 rptReportContent* rptRcString::CreateClone() const 
 { 
    return new rptRcString(*this); 
@@ -122,37 +99,14 @@ rptReportContent&  rptRcString::SetValue(LPCTSTR str)
    return *this;
 }
 
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
 void rptRcString::MakeCopy(const rptRcString& rRcString)
 {
    m_TheString = rRcString.m_TheString;
    m_bNoWrap   = rRcString.m_bNoWrap;
 }
 
-
 void rptRcString::MakeAssignment(const rptRcString& rOther)
 {
    rptReportContent::MakeAssignment( rOther );
    MakeCopy( rOther );
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
-

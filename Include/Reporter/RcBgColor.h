@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,114 +30,48 @@
 #include <Reporter\ReportContent.h>
 #include <Reporter\RcVisitor.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-// :WARNING: This doesn't look safe
+/// Creates a new background color object
 #define bgcolor(a)  new rptRcBgColor(rptRiStyle::a)
 
-/*****************************************************************************
-CLASS 
-   rptRcBgColor
-
-   A class to change the background color of the report content stream.
-
-
-DESCRIPTION
-   This class is derived from ReportContent and is to be used for
-   manipulating the color of the current report content stream.
-
-LOG
-   rdp : 02.22.2020 : Created file
-*****************************************************************************/
-
+/// A class to change the background color of the report content stream.
+///
+/// This class is derived from ReportContent and is to be used for manipulating the background color of the current report content stream.
 class REPORTERCLASS rptRcBgColor : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
+   rptRcBgColor(
+      rptRiStyle::FontColor MyColor ///< Color specification
+   );
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   rptRcBgColor(rptRiStyle::FontColor MyColor);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcBgColor(const rptRcBgColor& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcBgColor();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   //
-   // Returns reference to itself
-   rptRcBgColor& operator = (const rptRcBgColor& rOther);
+   rptRcBgColor& operator=(const rptRcBgColor& rOther);
 
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Clone thyself
+   /// Creates a clone of this object
    rptReportContent* CreateClone() const;
 
-   //------------------------------------------------------------------------
-   // accept a visitor
-   //
+   /// Accepts a report content visitor and calls VisitRcBgColor(this)
    void Accept( rptRcVisitor& MyVisitor );
 
-   // GROUP: ACCESS
-   //
-   //------------------------------------------------------------------------
-   // Get the color
-   rptRiStyle::FontColor GetColor();
+   /// Get the color
+   rptRiStyle::FontColor GetColor() const;
 
-   //------------------------------------------------------------------------
-   // Set the color
+   /// Set the color
    void SetColor(rptRiStyle::FontColor MyColor);
-   //
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Function to aid in copying
+   /// Copies the data from rOther to this object
    void MakeCopy(const rptRcBgColor& rOther);
 
-   //------------------------------------------------------------------------
-   // Function to aid in assignment
+   /// Assigns the data from rOther to this object
    void MakeAssignment(const rptRcBgColor& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // The current color
    rptRiStyle::FontColor m_Color;
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+
+   rptRcBgColor() = delete;
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_rptRcBgColor_H_

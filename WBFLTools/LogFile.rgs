@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLTools.LogFile.1 = s 'LogFile Class'
+	{
+		CLSID = s '{E58AB440-3AC4-4BDC-AB7C-5D3BAA61F986}'
+	}
+	WBFLTools.LogFile = s 'LogFile Class'
+	{
+		CLSID = s '{E58AB440-3AC4-4BDC-AB7C-5D3BAA61F986}'
+		CurVer = s 'WBFLTools.LogFile.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E58AB440-3AC4-4BDC-AB7C-5D3BAA61F986} = s 'LogFile Class'
+		{
+			ProgID = s 'WBFLTools.LogFile.1'
+			VersionIndependentProgID = s 'WBFLTools.LogFile'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B9507D8C-7100-11D3-89BB-006097C68A9C}'
+		}
+	}
+}

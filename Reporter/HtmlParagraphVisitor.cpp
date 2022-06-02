@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,16 +34,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptHtmlParagraphVisitor
-****************************************************************************/
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
 rptHtmlParagraphVisitor::rptHtmlParagraphVisitor(std::_tostream* pMyOstream, 
                                                  const rptPageLayout*   MypPageLayout,
                                                  const rptHtmlHelper&   rmyHelper,
@@ -64,8 +54,6 @@ rptHtmlParagraphVisitor::~rptHtmlParagraphVisitor()
 {
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
 {
    bool lib_style = false;
@@ -152,22 +140,3 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
 
 
 }
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-

@@ -139,6 +139,15 @@
     <ClCompile Include="PrecastBeam2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeomHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NUDeckedIBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PCIDeckedIBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoxBeam.h">
@@ -288,6 +297,21 @@
     <ClInclude Include="PrecastBeam2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\WBFLGeometry\AutoLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGeometry\GeometryExp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLGeometry\GeomHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NUDeckedIBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PCIDeckedIBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLGeometry.idl" />
@@ -418,6 +442,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="PrecastBeam2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="NUDeckedIBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PCIDeckedIBeam.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -159,9 +159,9 @@ void CTestCogoModelEvents::Test()
    vcurves->Remove(1);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
-   // HorzCurve
-   CComPtr<IHorzCurveCollection> hcurves;
-   model->get_HorzCurves(&hcurves);
+   // CompoundCurve
+   CComPtr<ICompoundCurveCollection> hcurves;
+   model->get_CompoundCurves(&hcurves);
 
    CComPtr<IPoint2d> pbt, pi, pft;
    pbt.CoCreateInstance(CLSID_Point2d);
@@ -176,7 +176,7 @@ void CTestCogoModelEvents::Test()
    hcurves->Add(1,pbt,pi,pft,500,100,200,nullptr);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
-   CComPtr<IHorzCurve> hc;
+   CComPtr<ICompoundCurve> hc;
    hcurves->get_Item(1,&hc);
 
    pTestCogoModel->InitEventTest();
@@ -377,30 +377,30 @@ STDMETHODIMP CTestCogoModelEvents::OnVertCurvesCleared(ICogoModel* cm)
    return S_OK;
 }
 
-STDMETHODIMP CTestCogoModelEvents::OnHorzCurveChanged(ICogoModel* cm,CogoObjectID key,IHorzCurve* vc)
+STDMETHODIMP CTestCogoModelEvents::OnCompoundCurveChanged(ICogoModel* cm,CogoObjectID key,ICompoundCurve* vc)
 {
-//   ::MessageBox(nullptr,"OnHorzCurveChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnCompoundCurveChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
-STDMETHODIMP CTestCogoModelEvents::OnHorzCurveAdded(ICogoModel* cm,CogoObjectID key,IHorzCurve* vc)
+STDMETHODIMP CTestCogoModelEvents::OnCompoundCurveAdded(ICogoModel* cm,CogoObjectID key,ICompoundCurve* vc)
 {
-//   ::MessageBox(nullptr,"OnHorzCurveAdded","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnCompoundCurveAdded","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
-STDMETHODIMP CTestCogoModelEvents::OnHorzCurveRemoved(ICogoModel* cm,CogoObjectID key)
+STDMETHODIMP CTestCogoModelEvents::OnCompoundCurveRemoved(ICogoModel* cm,CogoObjectID key)
 {
-//   ::MessageBox(nullptr,"OnHorzCurveRemoved","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnCompoundCurveRemoved","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
-STDMETHODIMP CTestCogoModelEvents::OnHorzCurvesCleared(ICogoModel* cm)
+STDMETHODIMP CTestCogoModelEvents::OnCompoundCurvesCleared(ICogoModel* cm)
 {
-//   ::MessageBox(nullptr,"OnHorzCurvesCleared","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnCompoundCurvesCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,12 +32,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rptStyleManager
-****************************************************************************/
-
-
 std::_tstring rptStyleManager::ms_ReportTitleStyle           = _T("ReportTitle");
 std::_tstring rptStyleManager::ms_ReportSubtitleStyle        = _T("ReportSubtitle");
 std::_tstring rptStyleManager::ms_ChapterTitleStyle          = _T("ChapterTitle");
@@ -46,8 +40,8 @@ std::_tstring rptStyleManager::ms_SubheadingStyle            = _T("Subheading");
 std::_tstring rptStyleManager::ms_TableColumnHeadingStyle    = _T("ColumnHeading");
 std::_tstring rptStyleManager::ms_FootnoteStyle              = _T("Footnote");
 std::_tstring rptStyleManager::ms_CopyrightStyle             = _T("Copyright");
-std::_tstring rptStyleManager::ms_TableCellStyle[6]          = {   _T("NB-LJ"),   _T("TB-LJ"),   _T("NB-RJ"),   _T("TB-RJ"),   _T("NB-CJ"),   _T("TB-CJ")};
-std::_tstring rptStyleManager::ms_TableStripeRowCellStyle[6] = {_T("SR-NB-LJ"),_T("SR-TB-LJ"),_T("SR-NB-RJ"),_T("SR-TB-RJ"),_T("SR-NB-CJ"),_T("SR-TB-CJ")};
+std::array<std::_tstring, 6> rptStyleManager::ms_TableCellStyle = {   _T("NB-LJ"),   _T("TB-LJ"),   _T("NB-RJ"),   _T("TB-RJ"),   _T("NB-CJ"),   _T("TB-CJ")};
+std::array<std::_tstring, 6> rptStyleManager::ms_TableStripeRowCellStyle = {_T("SR-NB-LJ"),_T("SR-TB-LJ"),_T("SR-NB-RJ"),_T("SR-TB-RJ"),_T("SR-NB-CJ"),_T("SR-TB-CJ")};
 std::_tstring rptStyleManager::ms_ReportCoverImage           = _T("");
 
 std::unique_ptr<std::_tstring> rptStyleManager::ms_pImagePath;

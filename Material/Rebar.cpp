@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -56,6 +56,40 @@ static Float64 gs_Es80[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::Con
 static Float64 gs_Fy100[3] = { -1, -1, ::ConvertToSysUnits(100,unitMeasure::KSI) };
 static Float64 gs_Fu100[3] = { -1, -1, ::ConvertToSysUnits(150,unitMeasure::KSI) };
 static Float64 gs_Es100[3] = { -1, -1, ::ConvertToSysUnits(29000,unitMeasure::KSI) };
+
+static Float64 gs_Fy120[3] = { -1, -1, ::ConvertToSysUnits(120,unitMeasure::KSI) };
+static Float64 gs_Fu120[3] = { -1, -1, ::ConvertToSysUnits(150,unitMeasure::KSI) };
+static Float64 gs_Es120[3] = { -1, -1, ::ConvertToSysUnits(29000,unitMeasure::KSI) };
+
+static Float64 gs_Elongation_A615[6][11] = {
+   //#3   #4     #5    #6   #7     #8    #9    #10   #11   #14  #18
+   {0.11, 0.12, 0.12, 0.12, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 40  // -1.0 means not specified in the standard
+   {0.09, 0.09, 0.09, 0.09, 0.08, 0.08, 0.07, 0.07, 0.07, 0.07, 0.07}, // Grade 60
+   {0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.06, 0.06, 0.06, 0.06}, // Grade 75
+   {0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.06, 0.06, 0.06, 0.06}, // Grade 80
+   {0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.06, 0.06, 0.06, 0.06}, // Grade 100
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 120
+};
+
+static Float64 gs_Elongation_A706[6][11] = {
+   //#3   #4     #5    #6   #7     #8    #9    #10   #11   #14  #18
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 40
+   {0.14, 0.14, 0.14, 0.14, 0.12, 0.12, 0.12, 0.12, 0.12, 0.10, 0.10}, // Grade 60
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 75
+   {0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.10, 0.10}, // Grade 80
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 100
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 120
+};
+
+static Float64 gs_Elongation_A1035[6][11] = {
+   //#3   #4     #5    #6   #7     #8    #9    #10   #11   #14  #18
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 40
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 60
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 75
+   {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0}, // Grade 80
+   {0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.06, 0.06}, // Grade 100
+   {0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.06, 0.06} // Grade 120
+};
 
 static Float64 gs_Area[11] = {
    ::ConvertToSysUnits(0.11,unitMeasure::Inch2),  // #3 
@@ -115,6 +149,24 @@ int TypeIndex(matRebar::Type type)
    case matRebar::A615:  return 0;
    case matRebar::A706:  return 1;
    case matRebar::A1035: return 2;
+   default:
+      ASSERT(FALSE);
+      return 0;
+   }
+
+   return 0;
+}
+
+int GradeIndex(matRebar::Grade grade)
+{
+   switch (grade)
+   {
+   case matRebar::Grade40: return 0;
+   case matRebar::Grade60: return 1;
+   case matRebar::Grade75: return 2;
+   case matRebar::Grade80: return 3;
+   case matRebar::Grade100: return 4;
+   case matRebar::Grade120: return 5;
    default:
       ASSERT(FALSE);
       return 0;
@@ -200,6 +252,10 @@ Float64 matRebar::GetUltimateStrength(Type type,Grade grade)
       value = gs_Fu100[index];
       break;
 
+   case Grade120:
+      value = gs_Fu120[index];
+      break;
+
    default:
       ATLASSERT(false); // should not get here
    }
@@ -232,6 +288,10 @@ Float64 matRebar::GetYieldStrength(Type type,Grade grade)
 
    case Grade100:
       value = gs_Fy100[index];
+      break;
+
+   case Grade120:
+      value = gs_Fy120[index];
       break;
 
    default:
@@ -268,12 +328,33 @@ Float64 matRebar::GetE(Type type,Grade grade)
       value = gs_Es100[index];
       break;
 
+   case Grade120:
+      value = gs_Es120[index];
+      break;
+
    default:
       ATLASSERT(false); // should not get here
    }
 
    ATLASSERT(0 < value);
    return value;
+}
+
+Float64 matRebar::GetElongation(Type type, Grade grade, Size size)
+{
+   int gradeIdx = GradeIndex(grade);
+   int sizeIdx = SizeIndex(size);
+   Float64 e = -1.0;
+   switch (type)
+   {
+   case A615: e = gs_Elongation_A615[gradeIdx][sizeIdx]; break;
+   case A706: e = gs_Elongation_A706[gradeIdx][sizeIdx]; break;
+   case A1035: e = gs_Elongation_A1035[gradeIdx][sizeIdx]; break;
+   default: ATLASSERT(false);
+   }
+
+   ATLASSERT(e != -1.0);
+   return e;
 }
 
 //======================== OPERATIONS =======================================

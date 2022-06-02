@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -61,11 +61,11 @@ void CTestPathElement::Test()
    TRY_TEST(pPathElement->get_Type(&type),S_OK);
    TRY_TEST(type,petPoint);
 
-   CComPtr<IHorzCurve> hc;
-   hc.CoCreateInstance(CLSID_HorzCurve);
+   CComPtr<ICompoundCurve> hc;
+   hc.CoCreateInstance(CLSID_CompoundCurve);
    TRY_TEST(pPathElement->putref_Value(hc),S_OK );
    TRY_TEST(pPathElement->get_Type(&type),S_OK);
-   TRY_TEST(type,petHorzCurve);
+   TRY_TEST(type,petCompoundCurve);
 
    CComPtr<ILineSegment2d> ls;
    ls.CoCreateInstance(CLSID_LineSegment2d);

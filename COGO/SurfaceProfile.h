@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -93,12 +93,12 @@ public:
    STDMETHOD(get_Item)(CollectionIndexType idx,ISurfacePoint** point) override;
    STDMETHOD(get_Count)(CollectionIndexType* count) override;
    STDMETHOD(Clear)() override;
-   STDMETHOD(GetRidgePointElevationChange)(CollectionIndexType ridgePointIdx1,CollectionIndexType ridgePointIdx2,Float64* deltaElevation) override;
-   STDMETHOD(GetElevationChange)(CollectionIndexType ridgePointIdx,Float64 offset,Float64* deltaElevation) override;
-   STDMETHOD(GetSlope)(CollectionIndexType ridgePointIdx,Float64 offset,Float64* pSlope) override;
+   STDMETHOD(GetSurfacePointElevationChange)(CollectionIndexType surfacePointIdx1,CollectionIndexType surfacePointIdx2,Float64* deltaElevation) override;
+   STDMETHOD(GetElevationChange)(CollectionIndexType surfacePointIdx,Float64 offset,Float64* deltaElevation) override;
+   STDMETHOD(GetSlope)(CollectionIndexType surfacePointIdx,Float64 offset,Float64* pSlope) override;
    STDMETHOD(GetSegmentSlope)(CollectionIndexType segmentIdx,Float64* pSlope) override;
-   STDMETHOD(GetRidgePointOffset)(IndexType ridgePointIdx,Float64* pOffset) override;
-   STDMETHOD(GetRidgePointElevation)(IndexType ridgePointIdx,Float64* pOffset,Float64* pElev) override;
+   STDMETHOD(GetSurfacePointOffset)(IndexType surfacePointIdx,Float64* pOffset) override;
+   STDMETHOD(GetSurfacePointElevation)(IndexType surfacePointIdx,Float64* pOffset,Float64* pElev) override;
    STDMETHOD(Clone)(ISurfaceProfile* *clone) override;
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,35 +23,40 @@
 
 #pragma once
 
-#include <Stability\StabilityExp.h>
-#include <Stability\AnalysisPoint.h>
+#include <Stability/StabilityExp.h>
+#include <Stability/AnalysisPoint.h>
 
-/*****************************************************************************
-CLASS 
-   stbIAnalysispoint
-
-DESCRIPTION
-   Abstract interface for an analysis point
-*****************************************************************************/
-
-class STABILITYCLASS stbAnalysisPoint : public stbIAnalysisPoint
+namespace WBFL
 {
-public:
-   stbAnalysisPoint();
-   stbAnalysisPoint(Float64 X);
-   stbAnalysisPoint(const stbAnalysisPoint& other);
+   namespace Stability
+   {
 
-   void SetLocation(Float64 X);
+      /// An analysis point
+      class STABILITYCLASS AnalysisPoint : public IAnalysisPoint
+      {
+      public:
+         AnalysisPoint();
+         AnalysisPoint(Float64 X); ///< Creates an analysis point at the specified distance from the left end of girder.
+         AnalysisPoint(const AnalysisPoint& other); ///< Copy constructor
 
-   // Returns the location of the analysis point relative to the left end of the girder
-   virtual Float64 GetLocation() const;
+         /// Sets the location relative to the left end of the girder
+         void SetLocation(Float64 X);
 
-   // Returns a reporting string for the analysis point.
-   // if pLengthUnit is not nullptr, the string should contain the unit of measure
-   virtual std::_tstring AsString(const unitmgtLengthData& lengthUnit,Float64 offset,bool bShowUnit) const;
+         /// Returns the analysis point location
+         virtual Float64 GetLocation() const override;
 
-   virtual stbIAnalysisPoint* Clone() const;
+         /// Returns a reporting string for the analysis point.
+         virtual std::_tstring  AsString(
+            const unitmgtLengthData& lengthUnit, ///< Indirect unit measure information
+            Float64 offset, ///< an offset to be applied to the point location so the analysis point can appear to be relative to a different datum then the left end of the girder.
+            bool bShowUnit ///< If true, the unit of measure is included in the resulting string
+         ) const override;
 
-protected:
-   Float64 m_X;
-};
+         /// Creates a copy of the analysis point
+         virtual std::unique_ptr<IAnalysisPoint> Clone() const override;
+
+      private:
+         Float64 m_X;
+      };
+   }
+}

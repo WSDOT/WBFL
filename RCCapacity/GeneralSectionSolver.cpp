@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
-// Copyright © 2003  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -140,13 +140,13 @@ STDMETHODIMP CGeneralSectionSolver::get_SliceGrowthFactor(Float64* sliceGrowthFa
 #define COMPRESSION_CG(_p_,_f_,_slice_) {Float64 _Xcg,_Ycg; _slice_.pntCG->Location(&_Xcg,&_Ycg); _p_->Offset( COMPRESSION(_f_)*_Xcg, COMPRESSION(_f_)*_Ycg ); }
 #define TENSION_CG(_p_,_f_,_slice_)     {Float64 _Xcg,_Ycg; _slice_.pntCG->Location(&_Xcg,&_Ycg); _p_->Offset( TENSION(_f_)*_Xcg,     TENSION(_f_)*_Ycg ); }
 
-STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionSolution** solution)
+STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGeneralSectionSolution** solution)
 {
 #if defined _DEBUG_LOGGING
    USES_CONVERSION;
 #endif // _DEBUG_LOGGING
 
-   CHECK_IN(strainPlane);
+   CHECK_IN(incrementalStrainPlane);
 
    // don't use the regular CHECK_RETOBJ because it is ok if *solution is not nullptr
    // recycling solution objects will be faster than creating new ones each time
@@ -161,8 +161,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
    CComPtr<IUnkArray> slices;
    slices.CoCreateInstance(CLSID_UnkArray);
 
-   DecomposeSection(strainPlane);
-   UpdateNeutralAxis(strainPlane,m_NeutralAxis);
+   DecomposeSection(incrementalStrainPlane);
 
    Float64 C  = 0; // sum of compression forces
    Float64 T  = 0; // sum of tension forces
@@ -201,21 +200,24 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
    for(auto& slice : m_Slices)
    {
       Float64 P, Mx, My;
-      Float64 fg_stress, bg_stress, stress, strain;
+      Float64 fg_stress, bg_stress, stress, incremental_strain, total_strain;
+      bool bExceededStrainLimitsThisSlice;
       if ( (slice.Bottom < Yna) && (Yna < slice.Top) )
       {
          // this slice spans the neutral axis... 
          // need to clip again 
          Float64 angle = GetNeutralAxisAngle();
 
-         SHAPEINFO shape_info(slice.SliceShape,slice.FgMaterial,slice.BgMaterial,slice.ei,slice.Le);
+         CComPtr<IPlane3d> initial_strain;
+         m_Section->get_InitialStrain(slice.ShapeIdx, &initial_strain);
+         SHAPEINFO shape_info(slice.ShapeIdx,slice.SliceShape,slice.FgMaterial,slice.BgMaterial,initial_strain,slice.Le);
 
          SLICEINFO top_slice;
          CComPtr<IUnknown> pUnkTopSlice;
          hr = SliceShape(shape_info,angle,slice.Top,Yna,top_slice);
          if ( SUCCEEDED(hr) && hr != S_FALSE )
          {
-            hr = AnalyzeSlice(top_slice,strainPlane,P,Mx,My,fg_stress,bg_stress,stress,strain,bExceededStrainLimits);
+            hr = AnalyzeSlice(top_slice, incrementalStrainPlane,P,Mx,My,fg_stress,bg_stress,stress,incremental_strain,total_strain, bExceededStrainLimitsThisSlice);
             if (FAILED(hr))
             {
                return hr;
@@ -231,11 +233,13 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
             mx += Mx;
             my -= My;
 
+            bExceededStrainLimits |= bExceededStrainLimitsThisSlice;
+
             CComObject<CGeneralSectionSlice>* pSlice;
             CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
             Float64 Xcg, Ycg;
             top_slice.pntCG->Location(&Xcg, &Ycg);
-            pSlice->InitSlice(top_slice.SliceShape,top_slice.Area,Xcg,Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+            pSlice->InitSlice(top_slice.ShapeIdx,top_slice.SliceShape,top_slice.Area,Xcg,Ycg,top_slice.ei,incremental_strain,total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial, bExceededStrainLimitsThisSlice ? VARIANT_TRUE : VARIANT_FALSE);
             pSlice->QueryInterface(&pUnkTopSlice);
 
 #if defined _DEBUG_LOGGING
@@ -256,7 +260,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
          hr = SliceShape(shape_info,angle,Yna,slice.Bottom,bottom_slice);
          if ( SUCCEEDED(hr) && hr != S_FALSE )
          {
-            hr = AnalyzeSlice(bottom_slice,strainPlane,P,Mx,My,fg_stress,bg_stress,stress,strain,bExceededStrainLimits);
+            hr = AnalyzeSlice(bottom_slice, incrementalStrainPlane,P,Mx,My,fg_stress,bg_stress,stress,incremental_strain,total_strain, bExceededStrainLimitsThisSlice);
             if ( FAILED(hr) )
                return hr;
 
@@ -270,11 +274,13 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
             mx += Mx;
             my -= My;
 
+            bExceededStrainLimits |= bExceededStrainLimitsThisSlice;
+
             CComObject<CGeneralSectionSlice>* pSlice;
             CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
             Float64 Xcg, Ycg;
             bottom_slice.pntCG->Location(&Xcg, &Ycg);
-            pSlice->InitSlice(bottom_slice.SliceShape,bottom_slice.Area,Xcg,Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+            pSlice->InitSlice(bottom_slice.ShapeIdx,bottom_slice.SliceShape,bottom_slice.Area,Xcg,Ycg, bottom_slice.ei, incremental_strain, total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial, bExceededStrainLimitsThisSlice ? VARIANT_TRUE : VARIANT_FALSE);
             pSlice->QueryInterface(&pUnkBottomSlice);
 
 #if defined _DEBUG_LOGGING
@@ -290,20 +296,20 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
 #endif // _DEBUG_LOGGING
          }
 
-         if (PI_OVER_2 <= angle && angle < 3*PI_OVER_2)
-         {
-            if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
-            if (pUnkTopSlice) slices->Add(pUnkTopSlice);
+            if (PI_OVER_2 <= angle && angle < 3 * PI_OVER_2)
+            {
+               if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
+               if (pUnkTopSlice) slices->Add(pUnkTopSlice);
+            }
+            else
+            {
+	            if (pUnkTopSlice) slices->Add(pUnkTopSlice);
+	            if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
+	         }
          }
-         else
-         {
-            if (pUnkTopSlice) slices->Add(pUnkTopSlice);
-            if (pUnkBottomSlice) slices->Add(pUnkBottomSlice);
-         }
-      }
       else
       {
-         hr = AnalyzeSlice(slice,strainPlane,P,Mx,My,fg_stress,bg_stress,stress,strain,bExceededStrainLimits);
+         hr = AnalyzeSlice(slice, incrementalStrainPlane,P,Mx,My,fg_stress,bg_stress,stress,incremental_strain,total_strain, bExceededStrainLimitsThisSlice);
          if ( FAILED(hr) )
             return hr;
 
@@ -317,11 +323,13 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
          mx += Mx;
          my -= My;
 
+         bExceededStrainLimits |= bExceededStrainLimitsThisSlice;
+
          CComObject<CGeneralSectionSlice>* pSlice;
          CComObject<CGeneralSectionSlice>::CreateInstance(&pSlice);
          Float64 Xcg, Ycg;
          slice.pntCG->Location(&Xcg, &Ycg);
-         pSlice->InitSlice(slice.SliceShape,slice.Area,Xcg,Ycg,strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial);
+         pSlice->InitSlice(slice.ShapeIdx,slice.SliceShape,slice.Area,Xcg,Ycg, slice.ei, incremental_strain, total_strain,fg_stress,bg_stress,slice.FgMaterial,slice.BgMaterial, bExceededStrainLimitsThisSlice ? VARIANT_TRUE : VARIANT_FALSE);
          CComPtr<IUnknown> punk;
          pSlice->QueryInterface(&punk);
          slices->Add(punk);
@@ -349,12 +357,6 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
       (*solution) = pSolution;
       (*solution)->AddRef();
    }
-
-//   C  = IsZero(C)  ? 0 : C;
-//   T  = IsZero(T)  ? 0 : T;
-//   p  = IsZero(p)  ? 0 : p;
-//   mx = IsZero(mx) ? 0 : mx;
-//   my = IsZero(my) ? 0 : my;
 
    // locate centroid of resultant compression and tension forces
    // up to this point the cgC and cgT objects contain the sum of Force*CG
@@ -388,19 +390,19 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
    return (bExceededStrainLimits ? S_FALSE : S_OK);
 }
 
-void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
+void CGeneralSectionSolver::DecomposeSection(IPlane3d* incrementalStrainPlane)
 {
    HRESULT hr;
 
    // if neutral axis direction, determined from the strain plane, is different from the last time
    // we need to re-slice the section... slices must by parallel to the neutral axis
-   if (m_bDecomposed && IsNeutralAxisParallel(strainPlane))
+   if (m_bDecomposed && IsNeutralAxisParallel(incrementalStrainPlane))
    {
+      UpdateNeutralAxis(incrementalStrainPlane, m_NeutralAxis); // update the neutral axis for the current strain plain
       return; // section is decomposed and NA direction hasn't changed... analysis is good to go
    }
 
-   // Update the neutral axis direction
-   UpdateNeutralAxis(strainPlane,m_NeutralAxis);
+   UpdateNeutralAxis(incrementalStrainPlane, m_NeutralAxis);
 
    // Get neutral axis angle
    Float64 angle = GetNeutralAxisAngle();
@@ -424,8 +426,8 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
       m_Section->get_ForegroundMaterial(shapeIdx,&fgMaterial);
       m_Section->get_BackgroundMaterial(shapeIdx,&bgMaterial);
 
-      Float64 ei;
-      m_Section->get_InitialStrain(shapeIdx,&ei);
+      CComPtr<IPlane3d> initialStrain;
+      m_Section->get_InitialStrain(shapeIdx,&initialStrain);
 
       Float64 Le;
       m_Section->get_ElongationLength(shapeIdx, &Le);
@@ -450,7 +452,7 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
          bounding_box->Union(bndbox);
       }
 
-      shapes.emplace_back( shape, fgMaterial, bgMaterial, ei, Le);
+      shapes.emplace_back( shapeIdx, shape, fgMaterial, bgMaterial, initialStrain, Le);
    }
 
    //
@@ -551,18 +553,18 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
    m_bDecomposed = true;
 }
 
-bool CGeneralSectionSolver::IsNeutralAxisParallel(IPlane3d* strainPlane)
+bool CGeneralSectionSolver::IsNeutralAxisParallel(IPlane3d* incrementalStrainPlane)
 {
    CHRException hr;
 
-   UpdateNeutralAxis(strainPlane,m_TestLine);
+   UpdateNeutralAxis(incrementalStrainPlane,m_TestLine);
    VARIANT_BOOL bParallel;
    hr = m_GeomUtil->AreLinesParallel(m_NeutralAxis,m_TestLine,&bParallel);
 
    return bParallel == VARIANT_TRUE ? true : false;
 }
 
-void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* line)
+void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,ILine2d* line)
 {
    HRESULT hr; 
 
@@ -573,8 +575,8 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* lin
    Float64 z  = 0.00;
    Float64 y1,y2;
 
-   HRESULT hr1 = strainPlane->GetY(x1,z,&y1);
-   HRESULT hr2 = strainPlane->GetY(x2,z,&y2);
+   HRESULT hr1 = incrementalStrainPlane->GetY(x1,z,&y1);
+   HRESULT hr2 = incrementalStrainPlane->GetY(x2,z,&y2);
 
    HRESULT hr3 = S_OK;
    HRESULT hr4 = S_OK;
@@ -583,8 +585,8 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* lin
       y1 = -1000;
       y2 =  1000;
       
-      hr3 = strainPlane->GetX(y1,z,&x1);
-      hr4 = strainPlane->GetX(y2,z,&x2);
+      hr3 = incrementalStrainPlane->GetX(y1,z,&x1);
+      hr4 = incrementalStrainPlane->GetX(y2,z,&x2);
    }
 
    if ( FAILED(hr3) || FAILED(hr4) )
@@ -619,7 +621,7 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* lin
    Float64 X = x1 + Offset*dx;
    Float64 Y = y1 + Offset*dy;
    Float64 Z;
-   strainPlane->GetZ(X,Y,&Z);
+   incrementalStrainPlane->GetZ(X,Y,&Z);
    if (0 < Z)
    {
       // tension is on the left side, so reverse the direction the line
@@ -628,48 +630,38 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* lin
    }
 }
 
-HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& slice,IPlane3d* strainPlane,Float64& P,Float64& Mx,Float64& My,Float64& fg_stress,Float64& bg_stress,Float64& stress,Float64& strain,bool& bExceededStrainLimits)
+HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& slice,IPlane3d* incrementalStrainPlane,Float64& P,Float64& Mx,Float64& My,Float64& fg_stress,Float64& bg_stress,Float64& stress,Float64& incrementalStrain,Float64& totalStrain,bool& bExceededStrainLimits)
 {
    Float64 Xcg, Ycg;
    slice.pntCG->Location(&Xcg, &Ycg);
-   HRESULT hr = strainPlane->GetZ(Xcg,Ycg,&strain);
+   HRESULT hr = incrementalStrainPlane->GetZ(Xcg,Ycg,&incrementalStrain);
    ATLASSERT(SUCCEEDED(hr));
 
-   strain /= slice.Le;
+   incrementalStrain /= slice.Le;
 
-   strain += slice.ei;
+   totalStrain = incrementalStrain + slice.ei;
 
    fg_stress = 0;
    if ( slice.FgMaterial )
    {
-      hr = slice.FgMaterial->ComputeStress(strain,&fg_stress);
+      hr = slice.FgMaterial->ComputeStress(totalStrain,&fg_stress);
       if (FAILED(hr))
       {
          return Error(IDS_E_FGMATERIAL, IID_IGeneralSectionSolver, RC_E_FGMATERIAL);
       }
 
-      Float64 minStrain, maxStrain;
-      slice.FgMaterial->StrainLimits(&minStrain,&maxStrain);
-      if (!InRange(minStrain, strain, maxStrain))
-      {
-         bExceededStrainLimits = true;
-      }
+      bExceededStrainLimits = (hr == S_FALSE ? true : false);
    }
 
    bg_stress = 0;
    if ( slice.BgMaterial )
    {
-      hr = slice.BgMaterial->ComputeStress(strain,&bg_stress);
-      if (FAILED(hr))
-      {
-         return Error(IDS_E_BGMATERIAL, IID_IGeneralSectionSolver, RC_E_BGMATERIAL);
-      }
-
-// it doesn't matter if you exceed the strain limit of the back ground material because it doesn't really exist
-//      slice.BgMaterial->StrainLimits(&minStrain,&maxStrain);
-//
-//      if ( !InRange(minStrain,strain,maxStrain) )
-//         bExceededStrainLimits = true;
+      // it doesn't matter if you exceed the strain limit of the background material because it doesn't really exist
+      hr = slice.BgMaterial->ComputeStress(totalStrain,&bg_stress);
+      //if (FAILED(hr))
+      //{
+      //   return Error(IDS_E_BGMATERIAL, IID_IGeneralSectionSolver, RC_E_BGMATERIAL);
+      //}
    }
 
    stress = fg_stress - bg_stress;
@@ -685,6 +677,8 @@ HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& sl
 HRESULT CGeneralSectionSolver::SliceShape(const SHAPEINFO& shapeInfo,Float64 angle,Float64 sliceTop,Float64 sliceBottom,SLICEINFO& sliceInfo)
 {
    HRESULT hr;
+
+   sliceInfo.ShapeIdx = shapeInfo.ShapeIdx; // record the index of the shape this slice is taken from
 
    m_ClippingRect->put_Top(sliceTop);
    m_ClippingRect->put_Bottom(sliceBottom);
@@ -709,9 +703,15 @@ HRESULT CGeneralSectionSolver::SliceShape(const SHAPEINFO& shapeInfo,Float64 ang
    props->get_Centroid(&sliceInfo.pntCG);
    sliceInfo.pntCG->Rotate(0.00,0.00,angle);
 
+   // compute the initial strain at the CG of the slice using the shape's initial strain plane
+   Float64 cgX, cgY;
+   sliceInfo.pntCG->Location(&cgX, &cgY);
+   Float64 ei;
+   shapeInfo.InitialStrain->GetZ(cgX, cgY, &ei);
+
    sliceInfo.FgMaterial = shapeInfo.FgMaterial;
    sliceInfo.BgMaterial = shapeInfo.BgMaterial;
-   sliceInfo.ei         = shapeInfo.ei;
+   sliceInfo.ei         = ei;
    sliceInfo.Le         = shapeInfo.Le;
 
    return S_OK;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,155 +25,107 @@
 #define INCLUDED_REPORTER_RCFONTMODIFIER_H_
 #pragma once
 
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <Reporter\RcVisitor.h>
+#include <string>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-// :WARNING: This looks dangerous
-//
-// define some macros to aid in using these font modifiers
-// 
-#define bold(a)      new rptRcFontModifier(rptRiStyle::BOLD, rptRcFontModifier::a)
-#define italic(a)    new rptRcFontModifier(rptRiStyle::ITALIC, rptRcFontModifier::a)
-#define underline(a) new rptRcFontModifier(rptRiStyle::UNDERLINE, rptRcFontModifier::a)
-#define overline(a)  new rptRcFontModifier(rptRiStyle::OVERLINE, rptRcFontModifier::a)
-#define linethrough(a)  new rptRcFontModifier(rptRiStyle::LINETHROUGH, rptRcFontModifier::a)
-#define subscript(a) new rptRcFontModifier(rptRiStyle::SUBSCRIPT, rptRcFontModifier::a)
-#define superscript(a) new rptRcFontModifier(rptRiStyle::SUPERSCRIPT, rptRcFontModifier::a)
-
-
-/*****************************************************************************
-CLASS 
-   rptRcFontModifier
-
-   This class is used to modify font information of report content
-
-
-DESCRIPTION
-   This class is to be used as a stream manipulator to change the state of
-   the current font in the report content stream. Properties that may be
-   modified are Bold, Underline, Overline, Line-through, and Italics.
-
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rdp : 04.11.1997 : Created file
-*****************************************************************************/
-
+/// This class is used to modify font information of report content
+///
+/// This class is to be used as a stream manipulator to change the state of
+/// the current font in the report content stream. Properties that may be
+/// modified are Bold, Italics, Underline, Overline, Linethrough, Superscript and Subscript.
 class REPORTERCLASS rptRcFontModifier : public rptReportContent
 {
 public:
 
    // Flag for turning states on and off
    //
-   enum StateType     { ON, OFF };
+   /// Defines the state of the flow modifier
+   enum StateType     
+   { 
+      ON, ///< Turns the font modifier on
+      OFF  ///< Turns the font modifer off
+   };
 
-   // GROUP: LIFECYCLE
+   rptRcFontModifier(
+      rptRiStyle::FontModifier MyFm, ///< Font modifier type
+      StateType MyState ///< Font modifier state
+   );
 
-   //------------------------------------------------------------------------
-   // Constructor
-   rptRcFontModifier(rptRiStyle::FontModifier MyFm, StateType MyState);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcFontModifier(const rptRcFontModifier& rOther);
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcFontModifier();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   // Returns reference to itself
-   rptRcFontModifier& operator = (const rptRcFontModifier& rOther);
+   rptRcFontModifier& operator=(const rptRcFontModifier& rOther);
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Clone thyself
+   /// Creates a clone
    rptReportContent* CreateClone() const;
 
-   //------------------------------------------------------------------------
-   // accept a visitor
+   /// Accept a visitor and calls VisitRcFlowModifier(this)
    void Accept( rptRcVisitor& MyVisitor );
-   //
-   // GROUP: ACCESS
 
-   //------------------------------------------------------------------------
-   // Get the font modifier type
+   /// Returns the font modifier type
    rptRiStyle::FontModifier GetFontModifier();
 
-   //------------------------------------------------------------------------
-   // Set the font modifier type
+   /// Sets the font modifier type
    void SetFontModifier(rptRiStyle::FontModifier MyFont);
 
-   //------------------------------------------------------------------------
-   // Get the state flag
+   /// Returns the font modifier state
    StateType GetState();
 
-   //------------------------------------------------------------------------
-   // Set the state flag
+   /// Sets the font modifier state
    void SetState(StateType MyState);
 
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Function to aid in copying
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcFontModifier& rOther);
-
-   //------------------------------------------------------------------------
-   // Function to aid in assignment
+   
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcFontModifier& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // What type of font modifier are we?
    rptRiStyle::FontModifier m_FontModifier;
-
-   //------------------------------------------------------------------------
-   // State: OFF or ON
    StateType    m_State;
-   // GROUP: LIFECYCLE
-   //------------------------------------------------------------------------
-   // Default construction not allowed
-   rptRcFontModifier();
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+
+   rptRcFontModifier() = delete;
 };
 
-// INLINE METHODS
-//
 
-// EXTERNAL REFERENCES
-//
+/// Toggles bold text
+///
+///     *pPara << bold(ON) << _T("This is bold text") << bold(OFF) << rptNewLine;
+#define bold(a)      new rptRcFontModifier(rptRiStyle::BOLD, rptRcFontModifier::a)
+
+/// Toggles italic text
+///
+///     *pPara << italic(ON) << _T("This is italic text") << italic(OFF) << rptNewLine;
+#define italic(a)    new rptRcFontModifier(rptRiStyle::ITALIC, rptRcFontModifier::a)
+
+/// Toggles underline text
+///
+///     *pPara << underline(ON) << _T("This is underline text") << underline(OFF) << rptNewLine;
+#define underline(a) new rptRcFontModifier(rptRiStyle::UNDERLINE, rptRcFontModifier::a)
+
+/// Toggles overline text
+///
+///     *pPara << overline(ON) << _T("This is overline text") << overline(OFF) << rptNewLine;
+#define overline(a)  new rptRcFontModifier(rptRiStyle::OVERLINE, rptRcFontModifier::a)
+
+/// Toggles linethrough text
+///
+///     *pPara << linethrough(ON) << _T("This is linethrough text") << linethrough(OFF) << rptNewLine;
+#define linethrough(a)  new rptRcFontModifier(rptRiStyle::LINETHROUGH, rptRcFontModifier::a)
+
+/// Toggles subscripting
+///
+///    *pPara << _T("Y") << subscript(ON) << _T("2") << subscript(OFF) << rptNewLine;
+#define subscript(a) new rptRcFontModifier(rptRiStyle::SUBSCRIPT, rptRcFontModifier::a)
+
+/// Toggles superscripting
+///
+///     *pPara << _T("Y = X") << superscript(ON) << _T("2") << superscript(OFF) << rptNewLine;
+#define superscript(a) new rptRcFontModifier(rptRiStyle::SUPERSCRIPT, rptRcFontModifier::a)
 
 #endif // INCLUDED_REPORTER_RCFONTMODIFIER_H_

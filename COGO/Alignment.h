@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -116,8 +116,8 @@ public:
    STDMETHOD(Bearing)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir) override;
 	STDMETHOD(Normal)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir) override;
 	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ IStation* *station,/*[out]*/ Float64* offset) override;
-	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint) override
-   { return m_Path->ProjectPoint(point,newPoint); }
+   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point, /*[out]*/ IPoint2d* *newPoint, /*[out]*/ Float64* distFromStart, /*[out]*/ VARIANT_BOOL* pvbOnProjection) override
+   { return m_Path->ProjectPoint(point, newPoint, distFromStart, pvbOnProjection); }
    STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point) override
    { return m_Path->Intersect(line,pNearest,point); }
    STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point) override
@@ -132,10 +132,10 @@ public:
    { return m_Path->putref_PointFactory(factory); }
    STDMETHOD(get__EnumAlignmentElements)(/*[out, retval]*/ IEnumPathElements** pVal)  override { return m_Path->get__EnumPathElements(pVal); }
    STDMETHOD(Clone)(/*[out,retval]*/ IAlignment* *clone) override;
-   STDMETHOD(CreateParallelAlignment)(/*[in]*/ Float64 offset,/*[out,retval]*/IAlignment** alignment) override;
+   STDMETHOD(CreateOffsetAlignment)(/*[in]*/ Float64 offset,/*[out,retval]*/IAlignment** alignment) override;
    STDMETHOD(CreateSubAlignment)(/*[in]*/VARIANT varStartStation,/*[in]*/VARIANT varEndStation,/*[out,retval]*/IAlignment** alignment) override;
    STDMETHOD(CreateConnectedAlignment)(/*[out,retval]*/IAlignment** alignment) override;
-   STDMETHOD(CreateParallelPath)(Float64 offset,IPath** path) override;
+   STDMETHOD(CreateOffsetPath)(Float64 offset,IPath** path) override;
    STDMETHOD(CreateSubPath)(VARIANT varStartStation,VARIANT varEndStation,IPath** path) override;
    STDMETHOD(CreateConnectedPath)(IPath** path) override;
    STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction) override

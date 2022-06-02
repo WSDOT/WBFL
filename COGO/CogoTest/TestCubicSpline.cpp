@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -171,53 +171,39 @@ void CTestCubicSpline::Test()
    p->Move(4,0);
 
    CComPtr<IPoint2d> pntOnSpline;
-   TRY_TEST(spline->ProjectPoint(nullptr,&pntOnSpline),E_INVALIDARG);
-   TRY_TEST(spline->ProjectPoint(p,   nullptr        ),E_POINTER);
-   TRY_TEST(spline->ProjectPoint(p,&pntOnSpline),   S_OK);
+   Float64 distFromStart;
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(spline->ProjectPoint(nullptr,&pntOnSpline, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(spline->ProjectPoint(p,   nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(spline->ProjectPoint(p,&pntOnSpline, &distFromStart, &vbOnProjection),   S_OK);
    pntOnSpline->get_X(&x);
    pntOnSpline->get_Y(&y);
 
    TRY_TEST(IsEqual(x,2.9212265014648437),true);
    TRY_TEST(IsEqual(y,0.90555618284927675),true);
-
-   // get distance from start of spline to the point p, projected onto the spline
-   Float64 dist_from_start;
-   TRY_TEST(spline->DistanceFromStart(nullptr,&dist_from_start),E_INVALIDARG);
-   TRY_TEST(spline->DistanceFromStart(p,   nullptr),            E_POINTER);
-   TRY_TEST(spline->DistanceFromStart(p,&dist_from_start),S_OK);
-   TRY_TEST( IsEqual(dist_from_start,3.8186,0.001), true );
-
-   // get distance from start of spline to the actual projected point (should be the same as before)
-   spline->DistanceFromStart(pntOnSpline,&dist_from_start);
-   TRY_TEST( IsEqual(dist_from_start,3.8186,0.001), true );
+   TRY_TEST( IsEqual(distFromStart,3.8186,0.001), true );
 
    // project a point before start of spline
    p->Move(-10,0);
    pntOnSpline.Release();
-   TRY_TEST(spline->ProjectPoint(p,&pntOnSpline),S_OK);
+   TRY_TEST(spline->ProjectPoint(p,&pntOnSpline, &distFromStart, &vbOnProjection),S_OK);
    pntOnSpline->get_X(&x);
    pntOnSpline->get_Y(&y);
 
    TRY_TEST(IsEqual(x,-9.4230,0.001),true);
    TRY_TEST(IsEqual(y,2.8846,0.001),true);
-   spline->DistanceFromStart(p,&dist_from_start);
-   TRY_TEST( IsEqual(dist_from_start,-9.6096,0.001), true );
-   spline->DistanceFromStart(pntOnSpline,&dist_from_start);
-   TRY_TEST( IsEqual(dist_from_start,-9.6096,0.001), true );
+   TRY_TEST( IsEqual(distFromStart,-9.6096,0.001), true );
 
    // project a point after start of spline
    p->Move(10,0);
    pntOnSpline.Release();
-   TRY_TEST(spline->ProjectPoint(p,&pntOnSpline),S_OK);
+   TRY_TEST(spline->ProjectPoint(p,&pntOnSpline, &distFromStart, &vbOnProjection),S_OK);
    pntOnSpline->get_X(&x);
    pntOnSpline->get_Y(&y);
 
    TRY_TEST(IsEqual(x,6.89655,0.001),true);
    TRY_TEST(IsEqual(y,-1.24137,0.001),true);
-   spline->DistanceFromStart(p,&dist_from_start);
-   TRY_TEST( IsEqual(dist_from_start,10.292,0.001), true );
-   spline->DistanceFromStart(pntOnSpline,&dist_from_start);
-   TRY_TEST( IsEqual(dist_from_start,10.292,0.001), true );
+   TRY_TEST( IsEqual(distFromStart,10.292,0.001), true );
 
    // create a line and test intersections
    CComPtr<ILine2d> line;

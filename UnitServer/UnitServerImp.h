@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -47,11 +47,11 @@ class ATL_NO_VTABLE CUnitServerImp :
    public IConnectionPointContainerImpl<CUnitServerImp>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CUnitServerImp,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IUnitTypesEventSink,
+   public IUnitTypesEvents,
    public IUnitServer,
    public IUnitConvert,
    public IUnitConvert2,
-   public CProxyDUnitServerEventSink< CUnitServerImp >
+   public CProxyDUnitServerEvents< CUnitServerImp >
 {
 public:
    CUnitServerImp()
@@ -82,11 +82,11 @@ BEGIN_COM_MAP(CUnitServerImp)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 
-   COM_INTERFACE_ENTRY(IUnitTypesEventSink)
+   COM_INTERFACE_ENTRY(IUnitTypesEvents)
 END_COM_MAP()
 
 BEGIN_CONNECTION_POINT_MAP(CUnitServerImp)
-CONNECTION_POINT_ENTRY(IID_IUnitServerEventSink)
+CONNECTION_POINT_ENTRY(IID_IUnitServerEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
@@ -117,7 +117,7 @@ public:
 	STDMETHOD(ConvertToBaseUnits)(/*[in]*/ Float64 val,/*[in]*/ IUnit* pFromUnit, /*[out,retval]*/ Float64* pConvVal) override;
 	STDMETHOD(ConvertFromBaseUnits)(/*[in]*/ Float64 val, /*[in]*/ IUnit* pToUnit, /*[out,retval]*/ Float64* pConvVal) override;
 
-// IUnitTypesEventSink
+// IUnitTypesEvents
 public:
    STDMETHOD(OnUnitAdded)(/*[in]*/ IUnitType* unitType,/*[in]*/ IUnit* unit)
    {

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -415,7 +415,7 @@
 #define IDH_IGeomUtil2d_Distance                         2702
 #define IDH_IGeomUtil2d_Magnitude                        2703
 #define IDH_IGeomUtil2d_Angle                            2704
-#define IDH_IGeomUtil2d_ShortestDistanceToPoint          2705
+#define IDH_IGeomUtil2d_ShortestOffsetToPoint          2705
 #define IDH_IGeomUtil2d_PointOnLineNearest               2706
 #define IDH_IGeomUtil2d_CreateParallelLineThroughPoint   2707
 #define IDH_IGeomUtil2d_CreateParallelLine               2708

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,96 +29,30 @@
 #include <Reporter\ReporterExp.h>
 #include <Reporter\Chapter.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptOutputChapterVisitor
-
-   A ReportVisitor specialized to send an ascii report to an ostream
-
-
-DESCRIPTION
-   This class sends a simple ascii representation of a report to a class deriv
-   ed from ostream.
-
-
-   EXAMPLE
-      Place examples here.
-   END
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rdp : 03.25.1997 : Created file
-*****************************************************************************/
-
+/// Abstract chapter visitor class that sends information to an output string
 class REPORTERCLASS rptOutputChapterVisitor : public rptChapterVisitor
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // construct with an ostream and a pointer to a unitsnapshot. this class does
-   // not own, and will not delete, the unitsnapshot pointer
-   rptOutputChapterVisitor(std::_tostream* pMyOstream/*, const rptUnitSnapShot* MypUnitSnapShot*/)
+   /// Constructor
+   rptOutputChapterVisitor(
+      std::_tostream* pMyOstream ///< the output stream
+   )
    {
       m_pOstream = pMyOstream;
-      //m_pUnitSnapShot = MypUnitSnapShot;
    }
 
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptOutputChapterVisitor();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   virtual void VisitChapter(rptChapter*) = 0;
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   /// Visit a chapter
+   virtual void VisitChapter(rptChapter* pChapter) = 0;
 
 protected:
-   // GROUP: DATA MEMBERS
-   std::_tostream* m_pOstream;
-   //const rptUnitSnapShot* m_pUnitSnapShot;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   std::_tostream* m_pOstream; ///< the output stream object
 
 private:
-   // GROUP: DATA MEMBERS
-
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-
-   // Default constructor
-   rptOutputChapterVisitor();
-   rptOutputChapterVisitor(const rptOutputChapterVisitor&);
+   rptOutputChapterVisitor() = delete;
+   rptOutputChapterVisitor(const rptOutputChapterVisitor&) = delete;
    rptOutputChapterVisitor& operator=(const rptOutputChapterVisitor&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_OUTPUTCHAPTERVISITOR_H_

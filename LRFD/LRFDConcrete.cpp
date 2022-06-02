@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -24,7 +24,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LRFDConcrete.h>
 #include <Lrfd\VersionMgr.h>
-#include <Units\SysUnits.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -143,6 +143,42 @@ Float64 lrfdLRFDConcrete::GetLambda() const
 {
    ATLASSERT(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
    return m_Lambda;
+}
+
+void lrfdLRFDConcrete::SetFirstCrackStrength(Float64 ffc)
+{
+   m_InitialConcrete.SetFirstCrackStrength(ffc);
+   m_FinalConcrete.SetFirstCrackStrength(ffc);
+}
+
+Float64 lrfdLRFDConcrete::GetFirstCrackStrength() const
+{
+   ATLASSERT(IsEqual(m_InitialConcrete.GetFirstCrackStrength(), m_FinalConcrete.GetFirstCrackStrength()));
+   return m_FinalConcrete.GetFirstCrackStrength();
+}
+
+void lrfdLRFDConcrete::SetPostCrackingTensileStrength(Float64 frr)
+{
+   m_InitialConcrete.SetPostCrackingTensileStrength(frr);
+   m_FinalConcrete.SetPostCrackingTensileStrength(frr);
+}
+
+Float64 lrfdLRFDConcrete::GetPostCrackingTensileStrength() const
+{
+   ATLASSERT(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
+   return m_FinalConcrete.GetPostCrackingTensileStrength();
+}
+
+void lrfdLRFDConcrete::SetAutogenousShrinkage(Float64 as)
+{
+   m_InitialConcrete.SetAutogenousShrinkage(as);
+   m_FinalConcrete.SetAutogenousShrinkage(as);
+}
+
+Float64 lrfdLRFDConcrete::GetAutogenousShrinkage() const
+{
+   ATLASSERT(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
+   return m_FinalConcrete.GetAutogenousShrinkage();
 }
 
 void lrfdLRFDConcrete::SetStartTime(Float64 t)

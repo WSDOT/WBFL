@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,162 +25,79 @@
 #define INCLUDED_REPORTER_RCUNITVALUE_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <string>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ReportContent.h>
 #include <System\NumericFormatTool.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rptRcUnitValue
-
-   Abstract base class for united value report content.
-
-
-DESCRIPTION
-   Abstract base class for united value report content.
-
-LOG
-   rab : 11.12.1997 : Created file
-*****************************************************************************/
-
+/// Abstract base class for report content for values with a physical unit of measure
 class REPORTERCLASS rptRcUnitValue : public rptReportContent
 {
 public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
    rptRcUnitValue(bool bShowUnitTag = true);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
    rptRcUnitValue(const rptRcUnitValue& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
    virtual ~rptRcUnitValue();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
    rptRcUnitValue& operator=(const rptRcUnitValue& rOther);
 
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Accept a visitor
+   /// Accept a visitor and calls VisitRcUnitValue(this)
    virtual void Accept( rptRcVisitor& rVisitor ) override;
 
-   //------------------------------------------------------------------------
-   // Sets the value for this piece of report content. <i>value</i> is in
-   // system units.
+   /// Sets the value and returns a reference to this
    virtual rptReportContent& SetValue(Float64 value) = 0;
 
-   //------------------------------------------------------------------------
-   // Returns the value for this piece of report content.  If bConvert is
-   // <b>true</b>,  the value is converted to output units, otherwise it is in
-   // system units.
-   virtual Float64 GetValue(bool bConvert = false) const = 0;
+   /// Returns the value
+   virtual Float64 GetValue(
+      bool bConvert = false ///< If true, the returned value is converted into the specifed unit of measure
+   ) const = 0;
 
-   //------------------------------------------------------------------------
-   // Returns the unit tag for the output unit of measure.
-   virtual std::_tstring GetUnitTag() const = 0;
+   /// Returns the unit tag for the output unit of measure.
+   virtual const std::_tstring& GetUnitTag() const = 0;
 
-   //------------------------------------------------------------------------
-   // Returns the report content as a string.  The value is converted to the
-   // correct unit of measure and the unit tag is appedned to the string if 
-   // required.
+   /// Returns the value as a string. 
+   ///
+   /// The value is converted to the correct unit of measure and the unit tag is appedned to the string if required.
    virtual std::_tstring AsString() const;
 
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Sets the output format
+   /// Sets the output format
    void SetFormat(sysNumericFormatTool::Format format);
 
-   //------------------------------------------------------------------------
-   // Returns the output format
+   /// Returns the output format
    sysNumericFormatTool::Format GetFormat() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the output precision
    void SetPrecision(Uint16 precision);
 
-   //------------------------------------------------------------------------
+   /// Returns the output precision
    Uint16 GetPrecision() const;
 
-   //------------------------------------------------------------------------
+   /// Sets the width of the output
    void SetWidth(Uint16 width);
 
-   //------------------------------------------------------------------------
+   /// Returns the width of the output
    Uint16 GetWidth() const;
 
-   // GROUP: INQUIRY
-
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the unit tag is to be displayed.
+   /// Returns true if the unit tag is to be included with the output string.
    bool ShowUnitTag() const;
 
-   //------------------------------------------------------------------------
-   // If <i>bShowUnitTag</i> is <b>true</b>,  the unit tag is to be displayed.
-   void ShowUnitTag(bool bShowUnitTag);
-   
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
+   /// Set the unit tag display objection
+   void ShowUnitTag(
+      bool bShowUnitTag ///< true if the unit tag is to be included with the output string.
+   );
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
+   /// Copies the content from rOther to this object
    void MakeCopy(const rptRcUnitValue& rOther);
 
-   //------------------------------------------------------------------------
+   /// Assigns the content from oOther to this object
    void MakeAssignment(const rptRcUnitValue& rOther);
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 private:
-   // GROUP: DATA MEMBERS
    bool m_bShowUnitTag;
    sysNumericFormatTool::Format m_Format;
    Uint16 m_Precision;
    Uint16 m_Width;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   void Init(); ///< common initialization call by all constructors
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
 
 #endif // INCLUDED_REPORTER_RCUNITVALUE_H_

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,16 +30,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-/****************************************************************************
-CLASS
-   rptRcHyperTarget           
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
+rptRcHyperTarget::rptRcHyperTarget(const std::_tstring& YourTarget) :
+   rptReportContent()
+{
+}
 
 rptRcHyperTarget::rptRcHyperTarget(const rptRcHyperTarget& rRcHyperTarget):
 rptReportContent(rRcHyperTarget)
@@ -47,24 +41,21 @@ rptReportContent(rRcHyperTarget)
    if (this != &rRcHyperTarget)
       MakeCopy(rRcHyperTarget);
 
-} // rptRcHyperTarget
+}
 
 
 rptRcHyperTarget::~rptRcHyperTarget()
 {
-} // ~rptRcHyperTarget
+}
 
-//======================== OPERATORS  =======================================
-
-rptRcHyperTarget& rptRcHyperTarget::operator = (const rptRcHyperTarget& rRcHyperTarget)
+rptRcHyperTarget& rptRcHyperTarget::operator=(const rptRcHyperTarget& rRcHyperTarget)
 {
    if (this != &rRcHyperTarget)
       MakeAssignment(rRcHyperTarget);
    return *this;
-} // operator =
+}
 
 
-//======================== OPERATIONS =======================================
 rptReportContent* rptRcHyperTarget::CreateClone() const 
 { 
    return new rptRcHyperTarget(*this); 
@@ -74,20 +65,11 @@ void rptRcHyperTarget::Accept( rptRcVisitor& MyVisitor )
 {
    MyVisitor.VisitRcHyperTarget(this);
 }
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 
 void rptRcHyperTarget::MakeCopy(const rptRcHyperTarget& rRcHyperTarget)
 {
    m_TheTarget = rRcHyperTarget.m_TheTarget;
 }
-
 
 void rptRcHyperTarget::MakeAssignment(const rptRcHyperTarget& rOther)
 {

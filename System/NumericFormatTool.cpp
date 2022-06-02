@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -264,10 +264,12 @@ void apply_stream_manipulators( std::_tostream* pOS, sysNumericFormatTool::Forma
    }
 
    // Width
-   pOS->width( width );
+   if(0 < width)
+      pOS->width( width );
 
    // Precision
-   pOS->precision( precision );
+   if(0 < precision)
+      pOS->precision( precision );
 }
 //======================== ACCESS     =======================================
 //======================== INQUERY    =======================================

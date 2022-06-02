@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,8 +26,6 @@
 #include <Lrfd\CreepCoefficient.h>
 #include <Lrfd\XCreepCoefficient.h>
 #include <Lrfd\VersionMgr.h>
-#include <Units\SysUnits.h>
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -50,37 +48,77 @@ lrfdCreepCoefficient::lrfdCreepCoefficient()
    m_bUpdate = true;
 }
 
-lrfdCreepCoefficient::lrfdCreepCoefficient(const lrfdCreepCoefficient& rOther)
-{
-   MakeCopy(rOther);
-}
-
 lrfdCreepCoefficient::~lrfdCreepCoefficient()
 {
 }
 
-//======================== OPERATORS  =======================================
-lrfdCreepCoefficient& lrfdCreepCoefficient::operator= (const lrfdCreepCoefficient& rOther)
+Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
 {
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
+    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
 
-   return *this;
+    // Check volume to surface ratio
+    Float64 VS = m_V / m_S;
+    Float64 VSMax;
+    if (bSI)
+    {
+        VS = ::ConvertFromSysUnits(VS, unitMeasure::Millimeter);
+        VSMax = 150.0; // millimeters
+    }
+    else
+    {
+        VS = ::ConvertFromSysUnits(VS, unitMeasure::Inch);
+        VSMax = 6.0; // inches
+    }
+
+    // Compute Kc
+    Float64 a, b, c;
+    Float64 x1, x2;
+    Float64 e = pow(10., 1. / log(10.));
+    if (bSI)
+    {
+        x1 = 0.0142;
+        x2 = -0.0213;
+    }
+    else
+    {
+        x1 = 0.36;
+        x2 = -0.54;
+    }
+
+    t = ::ConvertFromSysUnits(t, unitMeasure::Day);
+
+    a = t / (26.0 * pow(e, x1 * VS) + t);
+    b = t / (45.0 + t);
+    c = 1.80 + 1.77 * pow(e, x2 * VS);
+
+    Float64 ktd = (a / b) * (c / 2.587);
+    return ktd; // this is really Kc
 }
 
-//======================== OPERATIONS =======================================
-Float64 lrfdCreepCoefficient::GetCreepCoefficient() const
+Float64 lrfdCreepCoefficient::GetCreepCoefficient(Float64 t, Float64 ti) const
 {
-   if ( m_bUpdate )
-   {
-      Update();
-   }
+    if (m_bUpdate)
+        Update();
 
-   return m_Ct;
+    Float64 tiAdjusted = GetAdjustedInitialAge(ti);
+    tiAdjusted = ::ConvertFromSysUnits(tiAdjusted, unitMeasure::Day);
+
+    Float64 kc = ComputeKtd(t);
+
+    t = ::ConvertFromSysUnits(t, unitMeasure::Day); // do after calling ComputeKtd because it expects t in system units
+
+    Float64 Ct;
+    if (t < tiAdjusted)
+    {
+        Ct = 0;
+    }
+    else
+    {
+        Ct = 3.5 * kc * m_kf * (1.58 - m_H / 120.) * pow(tiAdjusted, -0.118) * (pow(t - tiAdjusted, 0.6) / (10.0 + pow(t - tiAdjusted, 0.6)));
+    }
+
+    return Ct;
 }
-
 //======================== ACCESS     =======================================
 void lrfdCreepCoefficient::SetRelHumidity(Float64 H)
 {
@@ -93,15 +131,15 @@ Float64 lrfdCreepCoefficient::GetRelHumidity() const
    return m_H;
 }
 
-void lrfdCreepCoefficient::SetFc(Float64 fc)
+void lrfdCreepCoefficient::SetFci(Float64 fci)
 {
-   m_Fc = fc;
+   m_Fci = fci;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetFc() const
+Float64 lrfdCreepCoefficient::GetFci() const
 {
-   return m_Fc;
+   return m_Fci;
 }
 
 void lrfdCreepCoefficient::SetVolume(Float64 V)
@@ -126,36 +164,19 @@ Float64 lrfdCreepCoefficient::GetSurfaceArea() const
    return m_S;
 }
 
-void lrfdCreepCoefficient::SetMaturity(Float64 t)
+Float64 lrfdCreepCoefficient::GetAdjustedInitialAge(Float64 ti) const
 {
-   m_t = t;
-   m_bUpdate = true;
-}
+    Float64 tiAdjusted = ti;
+    if (m_CuringMethod == Accelerated && ti < ::ConvertToSysUnits(7.0,unitMeasure::Day))
+    {
+        // NCHRP 496...
+        // ti = age of concrete, in days, when load is initially applied
+        // for accelerated curing, or the age minus 6 days for moist (normal) curing
+        Float64 one_day = ::ConvertToSysUnits(1.0, unitMeasure::Day);
+        tiAdjusted += m_CuringMethodTimeAdjustmentFactor - one_day; // days
+    }
 
-Float64 lrfdCreepCoefficient::GetMaturity() const
-{
-   return m_t;
-}
-
-void lrfdCreepCoefficient::SetInitialAge(Float64 ti)
-{
-   m_ti = ti;
-   m_bUpdate = true;
-}
-
-Float64 lrfdCreepCoefficient::GetInitialAge() const
-{
-   return m_ti;
-}
-
-Float64 lrfdCreepCoefficient::GetAdjustedInitialAge() const
-{
-   if ( m_bUpdate )
-   {
-      Update();
-   }
-
-   return m_tiAdjusted;
+    return tiAdjusted;
 }
 
 void lrfdCreepCoefficient::SetCuringMethod(lrfdCreepCoefficient::CuringMethod method)
@@ -180,16 +201,6 @@ Float64 lrfdCreepCoefficient::GetCuringMethodTimeAdjustmentFactor() const
    return m_CuringMethodTimeAdjustmentFactor;
 }
 
-Float64 lrfdCreepCoefficient::GetKc() const
-{
-   if ( m_bUpdate )
-   {
-      Update();
-   }
-
-   return m_kc;
-}
-
 Float64 lrfdCreepCoefficient::GetKf() const
 {
    if ( m_bUpdate )
@@ -200,43 +211,28 @@ Float64 lrfdCreepCoefficient::GetKf() const
    return m_kf;
 }
 
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdCreepCoefficient::MakeCopy(const lrfdCreepCoefficient& rOther)
+Float64 lrfdCreepCoefficient::GetKtd(Float64 t) const
 {
-   m_H            = rOther.m_H;
-   m_Fc           = rOther.m_Fc;
-   m_V            = rOther.m_V;
-   m_S            = rOther.m_S;
-   m_t            = rOther.m_t;
-   m_ti           = rOther.m_ti;
-   m_tiAdjusted   = rOther.m_tiAdjusted;
-   m_CuringMethod = rOther.m_CuringMethod;
-   m_Ct           = rOther.m_Ct;
-   m_kc           = rOther.m_kc;
-   m_kf           = rOther.m_kf;
-   m_CuringMethodTimeAdjustmentFactor = rOther.m_CuringMethodTimeAdjustmentFactor;
-   m_bUpdate      = rOther.m_bUpdate;
+    // this is really Kc
+    return ComputeKtd(t);
 }
 
-void lrfdCreepCoefficient::MakeAssignment(const lrfdCreepCoefficient& rOther)
+Float64 lrfdCreepCoefficient::ComputeKf() const
 {
-   MakeCopy( rOther );
+    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+    Float64 kf;
+    if (bSI)
+    {
+        kf = 62.0 / (42.0 + ::ConvertFromSysUnits(m_Fci, unitMeasure::MPa));
+    }
+    else
+    {
+        kf = 1.0 / (0.67 + (::ConvertFromSysUnits(m_Fci, unitMeasure::KSI) / 9.0));
+    }
+
+    return kf;
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void lrfdCreepCoefficient::Update() const
 {
    // need to make sure spec version is ok
@@ -245,76 +241,7 @@ void lrfdCreepCoefficient::Update() const
       throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::Specification,_T(__FILE__),__LINE__);
    }
 
-   bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
-   
-   // Check volume to surface ratio
-   Float64 VS = m_V/m_S;
-   Float64 VSMax;
-   if ( bSI )
-   {
-      VS = ::ConvertFromSysUnits( VS, unitMeasure::Millimeter );
-      VSMax = 150.0; // millimeters
-   }
-   else
-   {
-      VS = ::ConvertFromSysUnits( VS, unitMeasure::Inch );
-      VSMax = 6.0; // inches
-   }
-
-//   if ( VS > VSMax )
-//      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::VSRatio,_T(__FILE__),__LINE__);
-
-   // Compute Kf
-   if ( bSI )
-   {
-      m_kf = 62.0 / ( 42.0 + ::ConvertFromSysUnits(m_Fc,unitMeasure::MPa) );
-   }
-   else
-   {
-      m_kf = 1.0 / ( 0.67 + (::ConvertFromSysUnits(m_Fc,unitMeasure::KSI)/9.0) );
-   }
-
-   // Compute Kc
-   Float64 a,b,c;
-   Float64 x1, x2;
-   Float64 e = pow(10.,1./log(10.));
-   if ( bSI )
-   {
-      x1 = 0.0142;
-      x2 = -0.0213;
-   }
-   else
-   {
-      x1 = 0.36;
-      x2 = -0.54;
-   }
-
-   m_tiAdjusted = m_ti;
-   if ( m_CuringMethod == Accelerated )
-   {
-      // NCHRP 496...
-      // ti = age of concrete, in days, when load is initially applied for accelerated curing, 
-      // or the age minus 6 days for moist (normal) curing (m_CuringMethodTimeAdjustmentFactor is typically 7 days)
-      Float64 one_day = ::ConvertToSysUnits(1.0, unitMeasure::Day);
-      m_tiAdjusted += m_CuringMethodTimeAdjustmentFactor - one_day; // days
-   }
-
-   Float64 t = ::ConvertFromSysUnits( m_t, unitMeasure::Day );
-
-   a = t/(26.0*pow(e,x1*VS)+t);
-   b = t/(45.0 + t);
-   c = 1.80 + 1.77*pow(e,x2*VS);
-
-   m_kc = (a/b)*(c/2.587);
-
-   if (t < m_tiAdjusted)
-   {
-      m_Ct = 0;
-   }
-   else
-   {
-      m_Ct = 3.5*m_kc*m_kf*(1.58 - m_H / 120.)*pow(m_tiAdjusted, -0.118) * (pow(t - m_tiAdjusted, 0.6) / (10.0 + pow(t - m_tiAdjusted, 0.6)));
-   }
+   m_kf = ComputeKf();
 
    m_bUpdate = false;
 }

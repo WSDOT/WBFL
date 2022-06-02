@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This program is free software; you can redistribute it and/or modify
@@ -128,9 +128,9 @@ BOOL CreateAlignment(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,Ope
          {
             ATLASSERT(false); // should never get here (not using this element type)
          }
-         else if ( pathElementType == petHorzCurve )
+         else if ( pathElementType == petCompoundCurve )
          {
-            CComPtr<IHorzCurve> hc;
+            CComPtr<ICompoundCurve> hc;
             punk->QueryInterface(&hc);
             hc->get_PI(&pntPBT);
          }
@@ -156,8 +156,8 @@ BOOL CreateAlignment(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,Ope
             pntEnd->Clone(&pntPFT);
          }
 
-         CComPtr<IHorzCurve> hc;
-         hc.CoCreateInstance(CLSID_HorzCurve);
+         CComPtr<ICompoundCurve> hc;
+         hc.CoCreateInstance(CLSID_CompoundCurve);
          hc->putref_PBT(pntPBT);
          hc->putref_PI(pntPI);
          hc->putref_PFT(pntPFT);

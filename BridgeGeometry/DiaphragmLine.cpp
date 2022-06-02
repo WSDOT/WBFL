@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BridgeGeometry
-// Copyright © 1999-2021  Washington State Department of Transportation
+// Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -160,7 +160,9 @@ HRESULT CDiaphragmLine::LocatePoints()
 
          // Find the point on the left girder line where the normal passes through (cx,cy)
          endPoints.pntLeft.Release();
-         leftPath->ProjectPoint(pntC,&endPoints.pntLeft); 
+         Float64 distFromStart;
+         VARIANT_BOOL vbOnProjection;
+         leftPath->ProjectPoint(pntC,&endPoints.pntLeft, &distFromStart, &vbOnProjection);
 
          // Create a line from this point through point (cx,cy)
          CComPtr<ILine2d> staggeredLine;
