@@ -22,8 +22,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Roark\RoarkLib.h>
-#include <Roark\Roark.h>
+#include <Roark/RoarkLib.h>
+#include <Roark/PPIntermediateLoad.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -32,69 +32,77 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-rkPPIntermediateLoad::rkPPIntermediateLoad(Float64 w,Float64 La,Float64 l,Float64 e,Float64 i) :
-rkRoarkBeam(l,e,i)
+using namespace WBFL::Beams;
+
+PPIntermediateLoad::PPIntermediateLoad(Float64 w,Float64 La,Float64 l,Float64 ei) :
+RoarkBeam(l,ei)
 {
    a = La;
-   b = L - a;
+   b = l - a;
    W = w;
 }
 
-rkPPIntermediateLoad::rkPPIntermediateLoad(const rkPPIntermediateLoad& rOther) :
-rkRoarkBeam( rOther )
+std::unique_ptr<RoarkBeam> PPIntermediateLoad::CreateClone() const
 {
-   a = rOther.a;
-   b = rOther.b;
-   W = rOther.W;
+   return std::make_unique<PPIntermediateLoad>(W,a,GetL(),GetEI());
 }
 
-rkRoarkBeam* rkPPIntermediateLoad::CreateClone() const
+void PPIntermediateLoad::SetLa(Float64 la)
 {
-   return new rkPPIntermediateLoad(*this);
+   a = la;
 }
 
-Float64 rkPPIntermediateLoad::GetLa() const
+Float64 PPIntermediateLoad::GetLa() const
 {
    return a;
 }
 
-Float64 rkPPIntermediateLoad::GetLb() const
+Float64 PPIntermediateLoad::GetLb() const
 {
    return b;
 }
 
-Float64 rkPPIntermediateLoad::GetW() const
+void PPIntermediateLoad::SetW(Float64 w)
+{
+   W = w;
+}
+
+Float64 PPIntermediateLoad::GetW() const
 {
    return W;
 }
 
-void rkPPIntermediateLoad::GetReactions(Float64* pRa,Float64* pRb) const
+void PPIntermediateLoad::GetReactions(Float64* pRa,Float64* pRb) const
 {
+   Float64 L = GetL();
    *pRa = -W*b/L;
    *pRb = -W*a/L;
 }
 
-void rkPPIntermediateLoad::GetMoments(Float64* pMa,Float64* pMb) const
+void PPIntermediateLoad::GetMoments(Float64* pMa,Float64* pMb) const
 {
    *pMa = 0;
    *pMb = 0;
 }
 
-void rkPPIntermediateLoad::GetRotations(Float64* pra,Float64* prb) const
+void PPIntermediateLoad::GetRotations(Float64* pra,Float64* prb) const
 {
+   Float64 L = GetL();
    *pra = ComputeRotation(0);
    *prb = ComputeRotation(L);
 }
 
-void rkPPIntermediateLoad::GetDeflections(Float64* pYa,Float64* pYb) const
+void PPIntermediateLoad::GetDeflections(Float64* pYa,Float64* pYb) const
 {
+   Float64 L = GetL();
    *pYa = ComputeDeflection(0);
    *pYb = ComputeDeflection(L);
 }
 
-WBFL::System::SectionValue rkPPIntermediateLoad::ComputeShear(Float64 x) const
+WBFL::System::SectionValue PPIntermediateLoad::ComputeShear(Float64 x) const
 {
    WBFL::System::SectionValue V;
+   Float64 L = GetL();
 
    // Compute shear left and right of W
    Float64 Ra, Rb;
@@ -145,9 +153,11 @@ WBFL::System::SectionValue rkPPIntermediateLoad::ComputeShear(Float64 x) const
    return V;
 }
 
-WBFL::System::SectionValue rkPPIntermediateLoad::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue PPIntermediateLoad::ComputeMoment(Float64 x) const
 {
-   Float64 M;
+   Float64 L = GetL();
+
+   Float64 M = 0;
 
    if (x < a)
       M = -W*b*x/L;
@@ -157,9 +167,12 @@ WBFL::System::SectionValue rkPPIntermediateLoad::ComputeMoment(Float64 x) const
    return M;
 }
 
-Float64 rkPPIntermediateLoad::ComputeRotation(Float64 x) const
+Float64 PPIntermediateLoad::ComputeRotation(Float64 x) const
 {
-   Float64 r;
+   Float64 r = 0;
+
+   Float64 L, EI;
+   GetProperties(&L,&EI);
 
    if ( x < a )
    {
@@ -173,9 +186,12 @@ Float64 rkPPIntermediateLoad::ComputeRotation(Float64 x) const
    return r;
 }
 
-Float64 rkPPIntermediateLoad::ComputeDeflection(Float64 x) const
+Float64 PPIntermediateLoad::ComputeDeflection(Float64 x) const
 {
-   Float64 y;
+   Float64 y = 0;
+
+   Float64 L, EI;
+   GetProperties(&L, &EI);
 
    if (x < a)
    {
@@ -191,8 +207,10 @@ Float64 rkPPIntermediateLoad::ComputeDeflection(Float64 x) const
 
 //======================== DEBUG      =======================================
 #if defined _DEBUG
-bool rkPPIntermediateLoad::AssertValid() const
+bool PPIntermediateLoad::AssertValid() const
 {
+   Float64 L = GetL();
+
    if ( !IsEqual(a+b,L) )
       return false;
 
@@ -202,31 +220,30 @@ bool rkPPIntermediateLoad::AssertValid() const
    if ( b < 0 || L < b )
       return false;
 
-   return rkRoarkBeam::AssertValid();
+   return __super::AssertValid();
 }
 
-void rkPPIntermediateLoad::Dump(WBFL::Debug::LogContext& os) const
+void PPIntermediateLoad::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkPPIntermediateLoad" << WBFL::Debug::endl;
+   os << "Dump for PPIntermediateLoad" << WBFL::Debug::endl;
    os << " a = " << a << WBFL::Debug::endl;
    os << " b = " << b << WBFL::Debug::endl;
    os << " W = " << W << WBFL::Debug::endl;
-   rkRoarkBeam::Dump( os );
+   __super::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include "Private.h"
-bool rkPPIntermediateLoad::TestMe(WBFL::Debug::Log& rlog)
+bool PPIntermediateLoad::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("rkPPIntermediateLoad");
+   TESTME_PROLOGUE("PPIntermediateLoad");
    // Intermediate load at mid-span
    Float64 w = -10;
    Float64 La = 5;
    Float64 l = 10;
-   Float64 e = 1;
-   Float64 i = 1;
-   rkPPIntermediateLoad beam(w,La,l,e,i);
+   Float64 ei = 1;
+   PPIntermediateLoad beam(w,La,l,ei);
 
    Float64 Ra, Rb;
    beam.GetReactions( &Ra, &Rb );
@@ -249,7 +266,7 @@ bool rkPPIntermediateLoad::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( IsZero( beam.ComputeDeflection(l) ) );
 
    Float64 D50 = beam.ComputeDeflection(5);
-   Float64 delta =  (w*l*l*l)/(48*e*i);
+   Float64 delta =  (w*l*l*l)/(48*ei);
    TRY_TESTME( IsEqual(D50,delta) );
 
    // Test signs of rotations
@@ -282,9 +299,9 @@ bool rkPPIntermediateLoad::TestMe(WBFL::Debug::Log& rlog)
    }
 
    TRY_TESTME( Test_Numerical(rlog, beam ) );
-   TRY_TESTME( Test_Numerical(rlog, rkPPIntermediateLoad(-5,3,10,1,1)) );
-   TRY_TESTME( Test_Numerical(rlog, rkPPIntermediateLoad(-5,7,10,1,1)) );
+   TRY_TESTME( Test_Numerical(rlog, PPIntermediateLoad(-5,3,10,1)) );
+   TRY_TESTME( Test_Numerical(rlog, PPIntermediateLoad(-5,7,10,1)) );
 
-   TESTME_EPILOG("rkPPIntermediateLoad");
+   TESTME_EPILOG("PPIntermediateLoad");
 }
 #endif // _UNITTEST

@@ -22,8 +22,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Roark\RoarkLib.h>
-#include <Roark\BeamWithEqualOverhangsUniformLoad.h>
+#include <Roark/RoarkLib.h>
+#include <Roark/BeamWithEqualOverhangsUniformLoad.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -32,117 +32,87 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   rkBeamWithEqualOverhangsUniformLoad
-****************************************************************************/
+using namespace WBFL::Beams;
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-rkBeamWithEqualOverhangsUniformLoad::  rkBeamWithEqualOverhangsUniformLoad(Float64 length,Float64 overhang, Float64 w,
-                                                                            Float64 e,Float64 i):
-m_EI(e*i),
-m_L(length),
+BeamWithEqualOverhangsUniformLoad::BeamWithEqualOverhangsUniformLoad(Float64 length,Float64 overhang, Float64 w,Float64 ei):
+RoarkBeam(length,ei),
 m_Overhang(overhang),
 m_W(w)
 {
-   PRECONDITION(m_EI>0.0);
-   PRECONDITION(m_L>0.0);
-   PRECONDITION(m_Overhang>=0.0);
-   PRECONDITION(m_W>0.0);
-   PRECONDITION(m_L>2*m_Overhang);
+   PRECONDITION(0.0 <= m_Overhang);
+   PRECONDITION(0.0 <= m_W);
+   PRECONDITION(2*m_Overhang < length);
 }
 
-rkBeamWithEqualOverhangsUniformLoad::rkBeamWithEqualOverhangsUniformLoad(const rkBeamWithEqualOverhangsUniformLoad& rOther)
-{
-   MakeCopy(rOther);
-}
-
-rkBeamWithEqualOverhangsUniformLoad::~rkBeamWithEqualOverhangsUniformLoad()
+BeamWithEqualOverhangsUniformLoad::~BeamWithEqualOverhangsUniformLoad()
 {
 }
 
-//======================== OPERATORS  =======================================
-rkBeamWithEqualOverhangsUniformLoad& rkBeamWithEqualOverhangsUniformLoad::operator= (const rkBeamWithEqualOverhangsUniformLoad& rOther)
+std::unique_ptr<RoarkBeam> BeamWithEqualOverhangsUniformLoad::CreateClone() const
 {
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
+   return std::make_unique<BeamWithEqualOverhangsUniformLoad>(GetL(), m_Overhang, m_W, GetEI());
 }
 
-//======================== OPERATIONS =======================================
-Float64 rkBeamWithEqualOverhangsUniformLoad::GetL() const
-{
-   return m_L;
-}
-
-Float64 rkBeamWithEqualOverhangsUniformLoad::GetEI() const
-{
-   return m_EI;
-}
-
-Float64 rkBeamWithEqualOverhangsUniformLoad::GetOverhang() const
+Float64 BeamWithEqualOverhangsUniformLoad::GetOverhang() const
 {
    return m_Overhang;
 }
 
-Float64 rkBeamWithEqualOverhangsUniformLoad::GetW() const
+Float64 BeamWithEqualOverhangsUniformLoad::GetW() const
 {
    return m_W;
 }
 
-void rkBeamWithEqualOverhangsUniformLoad::GetReactions(Float64 *pRa,Float64* pRb) const
+void BeamWithEqualOverhangsUniformLoad::GetReactions(Float64 *pRa,Float64* pRb) const
 {
-   *pRa = -m_W*m_L/2;
+   Float64 L = GetL();
+   *pRa = -m_W*L/2;
    *pRb = *pRa;
 }
 
-void rkBeamWithEqualOverhangsUniformLoad::GetMoments(Float64* pMa,Float64* pMb) const
+void BeamWithEqualOverhangsUniformLoad::GetMoments(Float64* pMa,Float64* pMb) const
 {
    *pMa = 0;
    *pMb = 0;
 }
 
-void rkBeamWithEqualOverhangsUniformLoad::GetRotations(Float64* pra,Float64* prb) const
+void BeamWithEqualOverhangsUniformLoad::GetRotations(Float64* pra,Float64* prb) const
 {
+   Float64 L = GetL();
    *pra=  ComputeRotation(m_Overhang);
-   *prb = ComputeRotation(m_L-m_Overhang);
+   *prb = ComputeRotation(L-m_Overhang);
 }
 
-void rkBeamWithEqualOverhangsUniformLoad::GetDeflections(Float64* pYa,Float64* pYb) const
+void BeamWithEqualOverhangsUniformLoad::GetDeflections(Float64* pYa,Float64* pYb) const
 {
    *pYa = 0;
    *pYb = 0;
 }
 
-WBFL::System::SectionValue rkBeamWithEqualOverhangsUniformLoad::ComputeShear(Float64 x) const
+WBFL::System::SectionValue BeamWithEqualOverhangsUniformLoad::ComputeShear(Float64 x) const
 {
-   PRECONDITION(x>=0.0 && x<=m_L);
+   Float64 L = GetL();
+   PRECONDITION(0.0 <= x && x <= L);
    Float64 a = m_Overhang;
-   Float64 L = m_L;
    Float64 w = m_W;
 
    WBFL::System::SectionValue v;
-   if (x<m_Overhang)
+   if (x < m_Overhang)
    {
       v =  w*x;
    }
-   else if (x==m_Overhang)  // right support
+   else if (x == m_Overhang)  // right support
    {
       v.Left() =  w*x;
       Float64 xn = x-a;
       v.Right() =  -w*(L-2*a)/2 + w*xn;
    }
-   else if (x>L-a)
+   else if ((L-a) < x)
    {
       Float64 xn = x - L + a;
       v = -w*a + w*xn;
    }
-   else if (x==L-a)  // left support
+   else if (x == (L-a))  // left support
    {
       Float64 xn = x-a;
       v.Left() =  -w*(L-2*a)/2 + w*xn;
@@ -157,19 +127,21 @@ WBFL::System::SectionValue rkBeamWithEqualOverhangsUniformLoad::ComputeShear(Flo
    return v;
 }
 
-WBFL::System::SectionValue rkBeamWithEqualOverhangsUniformLoad::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue BeamWithEqualOverhangsUniformLoad::ComputeMoment(Float64 x) const
 {
-   PRECONDITION(x>=0.0 && x<=m_L);
+   Float64 L = GetL();
+
+   PRECONDITION(0.0 <= x && x <= L);
+
    Float64 a = m_Overhang;
-   Float64 L = m_L;
    Float64 w = m_W;
 
    Float64 m;
-   if (x<m_Overhang)
+   if (x < m_Overhang)
    {
       m =  -w*x*x/2;
    }
-   else if (x>L-a)
+   else if ((L-a) < x)
    {
       m = -w*(L-x)*(L-x)/2.;
    }
@@ -181,11 +153,15 @@ WBFL::System::SectionValue rkBeamWithEqualOverhangsUniformLoad::ComputeMoment(Fl
    return m;
 }
 
-Float64 rkBeamWithEqualOverhangsUniformLoad::ComputeRotation(Float64 x) const
+Float64 BeamWithEqualOverhangsUniformLoad::ComputeRotation(Float64 x) const
 {
-   PRECONDITION(x>=0.0 && x<=m_L);
+   Float64 L, EI;
+   GetProperties(&L, &EI);
+
+   PRECONDITION(0.0 <= x && x <= L);
+
    Float64 a = m_Overhang;
-   Float64 L = m_L-2*a;
+   Float64 l = L - 2 * a;
    Float64 w = m_W;
 
    Float64 theta_ei;
@@ -193,120 +169,90 @@ Float64 rkBeamWithEqualOverhangsUniformLoad::ComputeRotation(Float64 x) const
    {
       theta_ei = -w*x*x*x/6.
                 + w*a*a*a/6.
-                + w*a*a*L/4.
-                - w*L*L*L/24.;
+                + w*a*a*l/4.
+                - w*l*l*l/24.;
    }
-   else if (x>L+a)
+   else if ((l+a) < x)
    {
-      Float64 xn = x - L - a;
+      Float64 xn = x - l - a;
       theta_ei =  -w*xn*xn*xn/6.
                  + w*a*xn*xn/2.
                  - w*a*a*xn/2.
-                 + w*L*L*L/24.
-                 - w*a*a*L/4.;
+                 + w*l*l*l/24.
+                 - w*a*a*l/4.;
    }
    else
    {
       Float64 xn = x-a;
       theta_ei =  -w*xn*xn*xn/6.
-                 + w*L*xn*xn/4.
+                 + w*l*xn*xn/4.
                  - w*a*a*xn/2.
-                 + w*a*a*L/4.
-                 - w*L*L*L/24;
+                 + w*a*a*l/4.
+                 - w*l*l*l/24;
    }
 
-   return theta_ei / m_EI;
+   return theta_ei / EI;
 }
 
-Float64 rkBeamWithEqualOverhangsUniformLoad::ComputeDeflection(Float64 x) const
+Float64 BeamWithEqualOverhangsUniformLoad::ComputeDeflection(Float64 x) const
 {
-   PRECONDITION(x>=0.0 && x<=m_L);
+   Float64 L, EI;
+   GetProperties(&L, &EI);
+
+   PRECONDITION(0.0 <= x && x <= L);
+
    Float64 a = m_Overhang;
-   Float64 L = m_L-2*a;
+   Float64 l = L-2*a;
    Float64 w = m_W;
 
    Float64 y_ei;
-   if (x<m_Overhang)
+   if (x < m_Overhang)
    {
       y_ei = -w*x*x*x*x/24.
-            +(w*a*a*L/4. - w*L*L*L/24.+ w*a*a*a/6. ) * x
+            +(w*a*a*l/4. - w*l*l*l/24.+ w*a*a*a/6. ) * x
             - w*a*a*a*a/8.
-            - w*a*a*a*L/4
-            + w*a*L*L*L/24;
+            - w*a*a*a*l/4
+            + w*a*l*l*l/24;
    }
-   else if (x>L+a)
+   else if ((l+a) < x)
    {
-      Float64 xn = x - L - a;
+      Float64 xn = x - l - a;
       y_ei = -w*xn*xn*xn*xn/24.
             + w*a*xn*xn*xn/6.
             - w*a*a*xn*xn/4.
-            +(w*L*L*L/24 - w*a*a*L/4)*xn;
+            +(w*l*l*l/24 - w*a*a*l/4)*xn;
    }
    else
    {
       Float64 xn = x-a;
       y_ei = -w*xn*xn*xn*xn/24.
-            + w*L*xn*xn*xn/12
+            + w*l*xn*xn*xn/12
             - w*a*a*xn*xn/4
-            +(w*a*a*L/4 - w*L*L*L/24)*xn;
+            +(w*a*a*l/4 - w*l*l*l/24)*xn;
    }
 
-   return y_ei / m_EI;}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void rkBeamWithEqualOverhangsUniformLoad::MakeCopy(const rkBeamWithEqualOverhangsUniformLoad& rOther)
-{
-   m_EI       = rOther.m_EI;
-   m_L        = rOther.m_L;
-   m_Overhang = rOther.m_Overhang;
-   m_W        = rOther.m_W;
+   return y_ei / EI;
 }
 
-void rkBeamWithEqualOverhangsUniformLoad::MakeAssignment(const rkBeamWithEqualOverhangsUniformLoad& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool rkBeamWithEqualOverhangsUniformLoad::AssertValid() const
+bool BeamWithEqualOverhangsUniformLoad::AssertValid() const
 {
    return true;
 }
 
-void rkBeamWithEqualOverhangsUniformLoad::Dump(WBFL::Debug::LogContext& os) const
+void BeamWithEqualOverhangsUniformLoad::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkBeamWithEqualOverhangsUniformLoad" << WBFL::Debug::endl;
+   os << "Dump for BeamWithEqualOverhangsUniformLoad" << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-
-
-bool rkBeamWithEqualOverhangsUniformLoad::TestMe(WBFL::Debug::Log& rlog)
+bool BeamWithEqualOverhangsUniformLoad::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("rkBeamWithEqualOverhangsUniformLoad");
+   TESTME_PROLOGUE("BeamWithEqualOverhangsUniformLoad");
 
    // answers calculated by MathCad sheet
-   rkBeamWithEqualOverhangsUniformLoad beam1(100,15,5,2,.5);
+   BeamWithEqualOverhangsUniformLoad beam1(100,15,5,1);
    Float64 t = 5;
    TRY_TESTME(-62.5==beam1.ComputeMoment(t).Right());
    TRY_TESTME(25==beam1.ComputeShear(t).Right());

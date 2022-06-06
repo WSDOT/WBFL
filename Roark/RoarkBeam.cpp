@@ -22,8 +22,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Roark\RoarkLib.h>
-#include <Roark\Roark.h>
+#include <Roark/RoarkLib.h>
+#include <Roark/RoarkBeam.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,54 +31,69 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-rkRoarkBeam::rkRoarkBeam(const rkRoarkBeam& rOther)
-{
-   L = rOther.L;
-   EI = rOther.EI;
-}
+using namespace WBFL::Beams;
 
-rkRoarkBeam::rkRoarkBeam(Float64 l,Float64 e,Float64 i)
+RoarkBeam::RoarkBeam(Float64 l,Float64 ei)
 {
+   PRECONDITION(0 < l);
+   PRECONDITION(0 < ei);
    L = l; // Length of beam
-   EI = e*i;
+   EI = ei;
 }
 
-Float64 rkRoarkBeam::GetL() const
+void RoarkBeam::SetL(Float64 l)
+{
+   PRECONDITION(0 < l);
+   L = l;
+}
+
+Float64 RoarkBeam::GetL() const
 {
    return L;
 }
 
-Float64 rkRoarkBeam::GetEI() const
+void RoarkBeam::SetEI(Float64 ei)
+{
+   PRECONDITION(0 < ei);
+   EI = ei;
+}
+
+Float64 RoarkBeam::GetEI() const
 {
    return EI;
 }
 
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rkRoarkBeam::AssertValid() const
+void RoarkBeam::GetProperties(Float64* pL, Float64* pEI) const
 {
-   if ( !(L > 0) ) // L must be > 0
+   *pL = L;
+   *pEI = EI;
+}
+
+
+#if defined _DEBUG
+bool RoarkBeam::AssertValid() const
+{
+   if ( !(0 < L) ) // L must be > 0
       return false;
 
-   if ( !(EI > 0) ) // EI must be > 0
+   if ( !(0 < EI) ) // EI must be > 0
       return false;
 
    return true;
 }
 
-void rkRoarkBeam::Dump(WBFL::Debug::LogContext& os) const
+void RoarkBeam::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkRoarkBeam" << WBFL::Debug::endl;
+   os << "Dump for RoarkBeam" << WBFL::Debug::endl;
    os << "L  = " << L << WBFL::Debug::endl;
    os << "EI = " << EI << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool rkRoarkBeam::TestMe(WBFL::Debug::Log& rlog)
+bool RoarkBeam::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("rkRoarkBeam");
+   TESTME_PROLOGUE("RoarkBeam");
 
    // Nothing to test here... 
    // All meaningful tests are conducted on derived classes.

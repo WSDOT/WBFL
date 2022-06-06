@@ -22,8 +22,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Roark\RoarkLib.h>
-#include <Roark\Roark.h>
+#include <Roark/RoarkLib.h>
+#include <Roark/PPIntermediateCouple.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -32,67 +32,78 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-rkPPIntermediateCouple::rkPPIntermediateCouple(Float64 Mo,Float64 La,Float64 l,Float64 e,Float64 i) :
-rkRoarkBeam(l,e,i)
+using namespace WBFL::Beams;
+
+PPIntermediateCouple::PPIntermediateCouple(Float64 Mo,Float64 La,Float64 l,Float64 ei) :
+RoarkBeam(l,ei)
 {
    M = Mo;
    a = La;
 }
 
-rkPPIntermediateCouple::rkPPIntermediateCouple(const rkPPIntermediateCouple& rOther) :
-rkRoarkBeam( rOther )
+std::unique_ptr<RoarkBeam> PPIntermediateCouple::CreateClone() const
 {
-   M = rOther.M;
-   a = rOther.a;
+   return std::make_unique<PPIntermediateCouple>(M,a,GetL(),GetEI());
 }
 
-rkRoarkBeam* rkPPIntermediateCouple::CreateClone() const
+void PPIntermediateCouple::SetLa(Float64 la)
 {
-   return new rkPPIntermediateCouple( *this );
+   a = la;
 }
 
-Float64 rkPPIntermediateCouple::GetLa() const
+Float64 PPIntermediateCouple::GetLa() const
 {
    return a;
 }
 
-Float64 rkPPIntermediateCouple::GetMo() const
+void PPIntermediateCouple::SetMo(Float64 mo)
+{
+   M = mo;
+}
+
+Float64 PPIntermediateCouple::GetMo() const
 {
    return M;
 }
 
-void rkPPIntermediateCouple::GetReactions(Float64 *pRa,Float64* pRb) const
+void PPIntermediateCouple::GetReactions(Float64 *pRa,Float64* pRb) const
 {
+   Float64 L = GetL();
    *pRa = M/L;
    *pRb = -M/L;
 }
 
-void rkPPIntermediateCouple::GetMoments(Float64* pMa,Float64* pMb) const
+void PPIntermediateCouple::GetMoments(Float64* pMa,Float64* pMb) const
 {
    *pMa = 0.0;
    *pMb = 0.0;
 }
 
-void rkPPIntermediateCouple::GetRotations(Float64* pra,Float64* prb) const
+void PPIntermediateCouple::GetRotations(Float64* pra,Float64* prb) const
 {
+   Float64 L = GetL();
    *pra = ComputeRotation(0.0);
    *prb = ComputeRotation(L);
 }
 
-void rkPPIntermediateCouple::GetDeflections(Float64* pYa,Float64* pYb) const
+void PPIntermediateCouple::GetDeflections(Float64* pYa,Float64* pYb) const
 {
+   Float64 L = GetL();
    *pYa = ComputeDeflection(0.0);
    *pYb = ComputeDeflection(L);
 }
 
-WBFL::System::SectionValue rkPPIntermediateCouple::ComputeShear(Float64 /*x*/) const
+WBFL::System::SectionValue PPIntermediateCouple::ComputeShear(Float64 /*x*/) const
 {
+   Float64 L = GetL();
    return M/L;
 }
 
-WBFL::System::SectionValue rkPPIntermediateCouple::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue PPIntermediateCouple::ComputeMoment(Float64 x) const
 {
    WBFL::System::SectionValue m;
+
+   Float64 L = GetL();
 
    // Compute moments left and right of a
    Float64 left  = M*x/L;
@@ -121,9 +132,12 @@ WBFL::System::SectionValue rkPPIntermediateCouple::ComputeMoment(Float64 x) cons
    return m;
 }
 
-Float64 rkPPIntermediateCouple::ComputeRotation(Float64 x) const
+Float64 PPIntermediateCouple::ComputeRotation(Float64 x) const
 {
-   Float64 r;
+   Float64 r = 0;
+
+   Float64 L, EI;
+   GetProperties(&L, &EI);
 
    if ( x < a )
    {
@@ -139,9 +153,12 @@ Float64 rkPPIntermediateCouple::ComputeRotation(Float64 x) const
    return r;
 }
 
-Float64 rkPPIntermediateCouple::ComputeDeflection(Float64 x) const
+Float64 PPIntermediateCouple::ComputeDeflection(Float64 x) const
 {
-   Float64 y;
+   Float64 y = 0;
+
+   Float64 L, EI;
+   GetProperties(&L, &EI);
 
    if ( x < a )
    {
@@ -159,35 +176,36 @@ Float64 rkPPIntermediateCouple::ComputeDeflection(Float64 x) const
 
 //======================== DEBUG      =======================================
 #if defined _DEBUG
-bool rkPPIntermediateCouple::AssertValid() const
+bool PPIntermediateCouple::AssertValid() const
 {
+   Float64 L = GetL();
    if ( a < 0 || L < a )  // a must be on the beam
       return false;
 
-   return rkRoarkBeam::AssertValid();
+   return __super::AssertValid();
 }
 
-void rkPPIntermediateCouple::Dump(WBFL::Debug::LogContext& os) const
+void PPIntermediateCouple::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkPPIntermediateCouple" << WBFL::Debug::endl;
+   os << "Dump for PPIntermediateCouple" << WBFL::Debug::endl;
    os << " a = " << a << WBFL::Debug::endl;
    os << " M = " << M << WBFL::Debug::endl;
-   rkRoarkBeam::Dump( os );
+   __super::Dump( os );
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
 #include "Private.h"
-bool rkPPIntermediateCouple::TestMe(WBFL::Debug::Log& rlog)
+bool PPIntermediateCouple::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("rkPPIntermediateCouple");
+   TESTME_PROLOGUE("PPIntermediateCouple");
 
 // Don't run this test with the concentrated moment anywhere but the ends of the girder.
 // The numerical integration routine can't handle the discontinuity in the moment diagram
 // caused by the concentrated load.
-//   TRY_TESTME( Test_Numerical(rlog,rkPPIntermediateCouple(10,5,10,1,1)) );
-   TRY_TESTME( Test_Numerical(rlog,rkPPIntermediateCouple(10,0,10,1,1)) );
-   TRY_TESTME( Test_Numerical(rlog,rkPPIntermediateCouple(10,10,10,1,1)) );
+//   TRY_TESTME( Test_Numerical(rlog,PPIntermediateCouple(10,5,10,1)) );
+   TRY_TESTME( Test_Numerical(rlog,PPIntermediateCouple(10,0,10,1)) );
+   TRY_TESTME( Test_Numerical(rlog,PPIntermediateCouple(10,10,10,1)) );
 
    TESTME_EPILOG("PPIntermediateCouple");
 }

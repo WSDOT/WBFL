@@ -184,22 +184,27 @@
   <ItemGroup>
     <ClCompile Include="BeamWithEqualOverhangsUniformLoad.cpp" />
     <ClCompile Include="BeamWithUnequalOverhangsUniformLoad.cpp" />
-    <ClCompile Include="Composite.cpp" />
+    <ClCompile Include="CompositeBeam.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PPIntermediateCouple.cpp" />
-    <ClCompile Include="ROARK.CPP" />
-    <ClCompile Include="ROARK12.CPP" />
-    <ClCompile Include="ROARK14.CPP" />
+    <ClCompile Include="RoarkBeam.cpp" />
+    <ClCompile Include="PPIntermediateLoad.cpp" />
+    <ClCompile Include="PPPartialUniformLoad.cpp" />
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Roark\AutoLib.h" />
     <ClInclude Include="..\Include\Roark\BeamWithEqualOverhangsUniformLoad.h" />
     <ClInclude Include="..\Include\Roark\BeamWithUnequalOverhangsUniformLoad.h" />
-    <ClInclude Include="..\Include\Roark\ROARK.H" />
+    <ClInclude Include="..\Include\Roark\CompositeBeam.h" />
+    <ClInclude Include="..\Include\Roark\PPIntermediateCouple.h" />
+    <ClInclude Include="..\Include\Roark\PPIntermediateLoad.h" />
+    <ClInclude Include="..\Include\Roark\PPPartialUniformLoad.h" />
+    <ClInclude Include="..\Include\Roark\Roark.h" />
+    <ClInclude Include="..\Include\Roark\RoarkBeam.h" />
     <ClInclude Include="..\Include\Roark\RoarkExp.h" />
     <ClInclude Include="..\Include\Roark\RoarkLib.h" />
     <ClInclude Include="..\Include\Roark\UnitTest.h" />

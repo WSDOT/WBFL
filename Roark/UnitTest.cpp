@@ -22,11 +22,14 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Roark\RoarkLib.h>
-#include <Roark\UnitTest.h>
-#include <Roark\Roark.h>
-#include <Roark\BeamWithEqualOverhangsUniformLoad.h>
-#include <Roark\BeamWithUnequalOverhangsUniformLoad.h>
+#include <Roark/RoarkLib.h>
+#include <Roark/UnitTest.h>
+#include <Roark/RoarkBeam.h>
+#include <Roark/PPIntermediateCouple.h>
+#include <Roark/PPIntermediateLoad.h>
+#include <Roark/PPPartialUniformLoad.h>
+#include <Roark/BeamWithEqualOverhangsUniformLoad.h>
+#include <Roark/BeamWithUnequalOverhangsUniformLoad.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,26 +37,18 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   bmfUnitTest
-****************************************************************************/
+using namespace WBFL::Beams;
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-bool rkUnitTest::TestMe(WBFL::Debug::Log& rlog)
+bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool bPassed = true;
 
 #if defined _UNITTEST
-   bPassed &= rkPPIntermediateLoad::TestMe(rlog);
-   bPassed &= rkPPPartUniformLoad::TestMe(rlog);
-   bPassed &= rkPPIntermediateCouple::TestMe(rlog);
-   bPassed &= rkBeamWithEqualOverhangsUniformLoad::TestMe(rlog);
-   bPassed &= rkBeamWithUnequalOverhangsUniformLoad::TestMe(rlog);
+   bPassed &= PPIntermediateLoad::TestMe(rlog);
+   bPassed &= PPPartialUniformLoad::TestMe(rlog);
+   bPassed &= PPIntermediateCouple::TestMe(rlog);
+   bPassed &= BeamWithEqualOverhangsUniformLoad::TestMe(rlog);
+   bPassed &= BeamWithUnequalOverhangsUniformLoad::TestMe(rlog);
 #endif
 
    return bPassed;
@@ -64,7 +59,7 @@ bool rkUnitTest::TestMe(WBFL::Debug::Log& rlog)
 #include <MathEx.h>
 
 // Use numerical integration to test the beam equations
-bool Test_Numerical(WBFL::Debug::Log& rlog,const rkRoarkBeam& beam)
+bool Test_Numerical(WBFL::Debug::Log& rlog,const WBFL::Beams::RoarkBeam& beam)
 {
    TESTME_PROLOGUE( "Test_Numerical" );
 

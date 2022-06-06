@@ -22,10 +22,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_PRIVATE_H_
-#define INCLUDED_PRIVATE_H_
 #pragma once
 
-bool Test_Numerical(WBFL::Debug::Log& rlog,const rkRoarkBeam& beam);
-
-#endif // INCLUDED_PRIVATE_H_
+bool Test_Numerical(WBFL::Debug::Log& rlog,const WBFL::Beams::RoarkBeam& beam);

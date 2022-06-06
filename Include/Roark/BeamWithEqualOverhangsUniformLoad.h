@@ -22,139 +22,60 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ROARK_BEAMWITHEQUALOVERHANGSUNIFORMLOAD_H_
-#define INCLUDED_ROARK_BEAMWITHEQUALOVERHANGSUNIFORMLOAD_H_
 #pragma once
 
-#include <Roark\RoarkExp.h>
-#include <System\SectionValue.h>
+#include <Roark/RoarkExp.h>
+#include <Roark/RoarkBeam.h>
+#include <System/SectionValue.h>
 
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rkBeamWithEqualOverhangsUniformLoad
-
-   Class to get deflections and forces for a beam with equal overhangs and a
-   uniform load applied along the entire length.
-
-    ===========================================================
-          ^                                             ^
-    <- a ->                                             <- a ->
-    <-------------------------- L ---------------------------->
-
-
-DESCRIPTION
-   Class to get deflections and forces for a beam with equal overhangs and a
-   uniform load applied along the entire length.
-
-LOG
-   rdp : 03.16.1999 : Created file
-*****************************************************************************/
-
-class ROARKCLASS rkBeamWithEqualOverhangsUniformLoad
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace Beams
+   {
+      /// Beam with equal overhangs and a uniform load applied along the entire length.
 
-   //------------------------------------------------------------------------
-   // Constructor
-   rkBeamWithEqualOverhangsUniformLoad(Float64 length,Float64 overhang, Float64 w,
-                                       Float64 e,Float64 i);
+      //  ===========================================================
+      //        ^                                             ^
+      //  <- a ->                                             <- a ->
+      //  <-------------------------- L ---------------------------->
+      class ROARKCLASS BeamWithEqualOverhangsUniformLoad : public RoarkBeam
+      {
+      public:
+         BeamWithEqualOverhangsUniformLoad(Float64 length,Float64 overhang, Float64 w, Float64 ei);
+         BeamWithEqualOverhangsUniformLoad(const BeamWithEqualOverhangsUniformLoad&) = delete;
+         virtual ~BeamWithEqualOverhangsUniformLoad();
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   rkBeamWithEqualOverhangsUniformLoad(const rkBeamWithEqualOverhangsUniformLoad& rOther);
+         BeamWithEqualOverhangsUniformLoad& operator=(const BeamWithEqualOverhangsUniformLoad&) = delete;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~rkBeamWithEqualOverhangsUniformLoad();
+         Float64 GetOverhang() const;
+         Float64 GetW() const; // load/length
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rkBeamWithEqualOverhangsUniformLoad& operator = (const rkBeamWithEqualOverhangsUniformLoad& rOther);
+         virtual std::unique_ptr<RoarkBeam> CreateClone() const override;
 
-   // GROUP: OPERATIONS
-   Float64 GetL() const;
-   Float64 GetEI() const;
-   Float64 GetOverhang() const;
-   Float64 GetW() const; // load/length
+         virtual void GetReactions(Float64 *pRa,Float64* pRb) const;
+         virtual void GetMoments(Float64* pMa,Float64* pMb) const;
+         virtual void GetRotations(Float64* pra,Float64* prb) const;
+         virtual void GetDeflections(Float64* pYa,Float64* pYb) const;
 
-   virtual void GetReactions(Float64 *pRa,Float64* pRb) const;
-   virtual void GetMoments(Float64* pMa,Float64* pMb) const;
-   virtual void GetRotations(Float64* pra,Float64* prb) const;
-   virtual void GetDeflections(Float64* pYa,Float64* pYb) const;
+         virtual WBFL::System::SectionValue ComputeShear(Float64 x) const;
+         virtual WBFL::System::SectionValue ComputeMoment(Float64 x) const;
+         virtual Float64 ComputeRotation(Float64 x) const;
+         virtual Float64 ComputeDeflection(Float64 x) const;
 
-   virtual WBFL::System::SectionValue ComputeShear(Float64 x) const;
-   virtual WBFL::System::SectionValue ComputeMoment(Float64 x) const;
-   virtual Float64 ComputeRotation(Float64 x) const;
-   virtual Float64 ComputeDeflection(Float64 x) const;
+      private:
+         Float64 m_Overhang;
+         Float64 m_W;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      public:
+         #if defined _DEBUG
+         virtual bool AssertValid() const;
+         virtual void Dump(WBFL::Debug::LogContext& os) const;
+         #endif // _DEBUG
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const rkBeamWithEqualOverhangsUniformLoad& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const rkBeamWithEqualOverhangsUniformLoad& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Float64 m_EI;
-   Float64 m_L;
-   Float64 m_Overhang;
-   Float64 m_W;
-
-   // GROUP: LIFECYCLE
-   // Default constructor
-   rkBeamWithEqualOverhangsUniformLoad();
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   #endif // _UNITTEST
+         #if defined _UNITTEST
+         static bool TestMe(WBFL::Debug::Log& rlog);
+         #endif // _UNITTEST
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_ROARK_BEAMWITHEQUALOVERHANGSUNIFORMLOAD_H_

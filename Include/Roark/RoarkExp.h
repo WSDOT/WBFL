@@ -22,8 +22,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ROARK_ROARKEXP_H_
-#define INCLUDED_ROARK_ROARKEXP_H_
 #pragma once
 
 // Define BUILDROARK when building this library
@@ -46,6 +44,4 @@
 #endif
 
 #include <WbflAll.h>
-#include <Roark\AutoLib.h>
-
-#endif // INCLUDED_ROARK_ROARKEXP_H_
+#include <Roark/AutoLib.h>

@@ -22,77 +22,22 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ROARK_UNITTEST_H_
-#define INCLUDED_ROARK_UNITTEST_H_
 #pragma once
 
-#include <Roark\RoarkExp.h>
+#include <Roark/RoarkExp.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   rkUnitTest
-
-   Unit Testing class for the Roark package.
-
-
-DESCRIPTION
-   Unit Testing class for the Roark package.
-
-LOG
-   rab : 10.21.1998 : Created file
-*****************************************************************************/
-
-class ROARKCLASS rkUnitTest
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
-
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   rkUnitTest(const rkUnitTest&);
-   rkUnitTest& operator=(const rkUnitTest&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
+   namespace Beams
+   {
+      /// Unit Testing class for the Roark package.
+      class ROARKCLASS UnitTest
+      {
+      public:
+         static bool TestMe(WBFL::Debug::Log& rlog);
+         UnitTest() = delete;
+         UnitTest(const UnitTest&) = delete;
+         UnitTest& operator=(const UnitTest&) = delete;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-
-#endif // INCLUDED_ROARK_UNITTEST_H_

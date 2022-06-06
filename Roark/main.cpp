@@ -22,9 +22,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Roark\RoarkLib.h>
+#include <Roark/RoarkLib.h>
 #include <System\dllTest.h>
-#include <Roark\UnitTest.h>
+#include <Roark/UnitTest.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,5 +45,5 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
 // call unit test routines for all packages belonging to this dll.
 bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
 {
-   return rkUnitTest::TestMe(rlog);
+   return WBFL::Beams::UnitTest::TestMe(rlog);
 }

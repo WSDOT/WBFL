@@ -26,49 +26,53 @@
 
 #include <Roark/RoarkExp.h>
 #include <Roark/RoarkBeam.h>
-#include <System/SectionValue.h>
 
 namespace WBFL
 {
    namespace Beams
    {
-     /// Beam with unequal overhangs and a uniform load applied along the entire length.
-
-     //  ===============================================================
-     //        ^                                             ^
-     //  <- a ->                                             <--- b --->
-     //  <-------------------------- L -------------------------------->
-
-      class ROARKCLASS BeamWithUnequalOverhangsUniformLoad : public RoarkBeam
+      /// A composition of RoarkBeam objects. The results of the individual beams are summed.
+      /// All beams must have the same length and flexural stiffness.
+      class ROARKCLASS CompositeBeam : public RoarkBeam
       {
       public:
-         BeamWithUnequalOverhangsUniformLoad(Float64 length,Float64 a,Float64 b, Float64 w, Float64 e);
-         BeamWithUnequalOverhangsUniformLoad(const BeamWithUnequalOverhangsUniformLoad&) = delete;
-         virtual ~BeamWithUnequalOverhangsUniformLoad();
+         CompositeBeam();
+         CompositeBeam(const CompositeBeam& other) = delete;
+         virtual ~CompositeBeam() {}
 
-         BeamWithUnequalOverhangsUniformLoad& operator=(const BeamWithUnequalOverhangsUniformLoad&) = delete;
+         CompositeBeam& operator=(const CompositeBeam& other) = delete;
 
-         Float64 GetLeftOverhang() const;
-         Float64 GetRightOverhang() const;
-         Float64 GetW() const; // load/length
+      public:
+         /// Adds a clone of beam to the composite. 
+         void AddBeam(const RoarkBeam& beam);
 
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const override;
+         /// Adds beam to the composite
+         void AddBeam(std::unique_ptr<RoarkBeam>&& beam);
 
-         virtual void GetReactions(Float64 *pRa,Float64* pRb) const override;
-         virtual void GetMoments(Float64* pMa,Float64* pMb) const override;
-         virtual void GetRotations(Float64* pra,Float64* prb) const override;
-         virtual void GetDeflections(Float64* pYa,Float64* pYb) const override;
+         /// Returns the number of beams in the composite
+         CollectionIndexType GetBeamCount() const;
 
-         virtual WBFL::System::SectionValue ComputeShear(Float64 x) const override;
-         virtual WBFL::System::SectionValue ComputeMoment(Float64 x) const override;
-         virtual Float64 ComputeRotation(Float64 x) const override;
-         virtual Float64 ComputeDeflection(Float64 x) const override;
+         /// Returns a beam
+         const std::unique_ptr<RoarkBeam>& GetBeam(CollectionIndexType index) const;
+
+         /// Removes all beams from the composite
+         void RemoveAllBeams();
+
+         virtual std::unique_ptr<RoarkBeam> CreateClone() const;
+
+         virtual void GetReactions(Float64 *pRa,Float64* pRb) const;
+         virtual void GetMoments(Float64* pMa,Float64* pMb) const;
+         virtual void GetRotations(Float64* pra,Float64* prb) const;
+         virtual void GetDeflections(Float64* pYa,Float64* pYb) const;
+
+         virtual WBFL::System::SectionValue ComputeShear(Float64 x) const;
+         virtual WBFL::System::SectionValue ComputeMoment(Float64 x) const;
+         virtual Float64 ComputeRotation(Float64 x) const;
+         virtual Float64 ComputeDeflection(Float64 x) const;
 
       private:
-         Float64 m_LeftOverhang;
-         Float64 m_RightOverhang;
-         Float64 m_W;
-
+         std::vector<std::unique_ptr<RoarkBeam>> m_Beams;
+         
       public:
          #if defined _DEBUG
          virtual bool AssertValid() const;

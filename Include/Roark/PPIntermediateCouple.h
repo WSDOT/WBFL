@@ -26,33 +26,40 @@
 
 #include <Roark/RoarkExp.h>
 #include <Roark/RoarkBeam.h>
-#include <System/SectionValue.h>
 
 namespace WBFL
 {
    namespace Beams
    {
-     /// Beam with unequal overhangs and a uniform load applied along the entire length.
-
-     //  ===============================================================
-     //        ^                                             ^
-     //  <- a ->                                             <--- b --->
-     //  <-------------------------- L -------------------------------->
-
-      class ROARKCLASS BeamWithUnequalOverhangsUniformLoad : public RoarkBeam
+      /// Pinned-Pinned beam with intermediate couple. Table III, reference# 20
+      class ROARKCLASS PPIntermediateCouple : public RoarkBeam
       {
       public:
-         BeamWithUnequalOverhangsUniformLoad(Float64 length,Float64 a,Float64 b, Float64 w, Float64 e);
-         BeamWithUnequalOverhangsUniformLoad(const BeamWithUnequalOverhangsUniformLoad&) = delete;
-         virtual ~BeamWithUnequalOverhangsUniformLoad();
+         PPIntermediateCouple(
+            Float64 Mo, ///< Intermediate couple
+            Float64 La, ///< Location of couple from left end of beam
+            Float64 l, ///< Beam Length
+            Float64 ei ///< Flexural stiffness
+         );
+         PPIntermediateCouple(const PPIntermediateCouple&) = delete;
+         virtual ~PPIntermediateCouple() {}
 
-         BeamWithUnequalOverhangsUniformLoad& operator=(const BeamWithUnequalOverhangsUniformLoad&) = delete;
+         PPIntermediateCouple& operator=(const PPIntermediateCouple&) = delete;
 
-         Float64 GetLeftOverhang() const;
-         Float64 GetRightOverhang() const;
-         Float64 GetW() const; // load/length
+      public:
+         virtual std::unique_ptr<RoarkBeam> CreateClone() const;
 
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const override;
+         /// Location of couple from left end of beam
+         void SetLa(Float64 la);
+
+         /// Location of couple from left end of beam
+         Float64 GetLa() const;
+
+         /// Intermediate couple
+         void SetMo(Float64 mo);
+
+         /// Intermediate couple
+         Float64 GetMo() const;
 
          virtual void GetReactions(Float64 *pRa,Float64* pRb) const override;
          virtual void GetMoments(Float64* pMa,Float64* pMb) const override;
@@ -65,9 +72,7 @@ namespace WBFL
          virtual Float64 ComputeDeflection(Float64 x) const override;
 
       private:
-         Float64 m_LeftOverhang;
-         Float64 m_RightOverhang;
-         Float64 m_W;
+         Float64 a, M;
 
       public:
          #if defined _DEBUG

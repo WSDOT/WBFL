@@ -22,8 +22,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Roark\RoarkLib.h>
-#include <Roark\Roark.h>
+#include <Roark/RoarkLib.h>
+#include <Roark/PPPartialUniformLoad.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -32,8 +32,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-rkPPPartUniformLoad::rkPPPartUniformLoad(Float64 La,Float64 Lb,Float64 w,Float64 l,Float64 e,Float64 i) :
-rkRoarkBeam(l,e,i)
+using namespace WBFL::Beams;
+
+PPPartialUniformLoad::PPPartialUniformLoad(Float64 La,Float64 Lb,Float64 w,Float64 l,Float64 ei) :
+RoarkBeam(l,ei)
 {
    a = La;
    b = Lb;
@@ -43,67 +45,79 @@ rkRoarkBeam(l,e,i)
    W = w*c;
 }
 
-rkPPPartUniformLoad::rkPPPartUniformLoad(const rkPPPartUniformLoad& rOther) :
-rkRoarkBeam(rOther)
+std::unique_ptr<RoarkBeam> PPPartialUniformLoad::CreateClone() const
 {
-   a = rOther.a;
-   b = rOther.b;
-   c = rOther.c;
-   d = rOther.d;
-   W = rOther.W;
+   return std::make_unique<PPPartialUniformLoad>( a, b, GetW(), GetL(), GetEI() );
 }
 
-rkRoarkBeam* rkPPPartUniformLoad::CreateClone() const
+void PPPartialUniformLoad::SetLa(Float64 la)
 {
-   return new rkPPPartUniformLoad( *this );
+   a = la;
+   c = b - a;
 }
 
-Float64 rkPPPartUniformLoad::GetLa() const
+Float64 PPPartialUniformLoad::GetLa() const
 {
    return a;
 }
 
-Float64 rkPPPartUniformLoad::GetLb() const
+void PPPartialUniformLoad::SetLb(Float64 lb)
+{
+   b = lb;
+   c = b - a;
+}
+
+Float64 PPPartialUniformLoad::GetLb() const
 {
    return b;
 }
 
-Float64 rkPPPartUniformLoad::GetW() const
+void PPPartialUniformLoad::SetW(Float64 w)
+{
+   W = w * c;
+}
+
+Float64 PPPartialUniformLoad::GetW() const
 {
    return W/c;
 }
 
-void rkPPPartUniformLoad::GetReactions(Float64* pRa,Float64* pRb) const
+void PPPartialUniformLoad::GetReactions(Float64* pRa,Float64* pRb) const
 {
+   Float64 L = GetL();
    *pRa = -W*d/L;
    *pRb = -W*(a + 0.5*c)/L;
 }
 
-void rkPPPartUniformLoad::GetMoments(Float64* pMa,Float64* pMb) const
+void PPPartialUniformLoad::GetMoments(Float64* pMa,Float64* pMb) const
 {
    *pMa = 0.;
    *pMb = 0.;
 }
 
-void rkPPPartUniformLoad::GetRotations(Float64* pra,Float64* prb) const
+void PPPartialUniformLoad::GetRotations(Float64* pra,Float64* prb) const
 {
+   Float64 L = GetL();
    *pra = ComputeRotation(0);
    *prb = ComputeRotation(L);
 }
 
-void rkPPPartUniformLoad::GetDeflections(Float64* pYa,Float64* pYb) const
+void PPPartialUniformLoad::GetDeflections(Float64* pYa,Float64* pYb) const
 {
+   Float64 L = GetL();
    *pYa = ComputeDeflection(0);
    *pYb = ComputeDeflection(L);
 }
 
-WBFL::System::SectionValue rkPPPartUniformLoad::ComputeShear(Float64 x) const
+WBFL::System::SectionValue PPPartialUniformLoad::ComputeShear(Float64 x) const
 {
    Float64 V;
    Float64 Ra,Rb;
 
    if ( IsZero(W) )
       return 0;
+
+   Float64 L = GetL();
 
    GetReactions(&Ra,&Rb);
 
@@ -117,7 +131,7 @@ WBFL::System::SectionValue rkPPPartUniformLoad::ComputeShear(Float64 x) const
    return WBFL::System::SectionValue( IsZero(x) ? 0.0 : V, IsEqual(x,L) ? 0.0 : V);
 }
 
-WBFL::System::SectionValue rkPPPartUniformLoad::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue PPPartialUniformLoad::ComputeMoment(Float64 x) const
 {
    Float64 M;
    Float64 Ra, Rb;
@@ -137,7 +151,7 @@ WBFL::System::SectionValue rkPPPartUniformLoad::ComputeMoment(Float64 x) const
    return M;
 }
 
-Float64 rkPPPartUniformLoad::ComputeRotation(Float64 x) const
+Float64 PPPartialUniformLoad::ComputeRotation(Float64 x) const
 {
    Float64 r;
 
@@ -145,6 +159,9 @@ Float64 rkPPPartUniformLoad::ComputeRotation(Float64 x) const
 
    if ( IsZero(W) )
       return 0;
+
+   Float64 L, EI;
+   GetProperties(&L, &EI);
 
    GetReactions(&Ra,&Rb);
 
@@ -173,7 +190,7 @@ Float64 rkPPPartUniformLoad::ComputeRotation(Float64 x) const
    return r;
 }
 
-Float64 rkPPPartUniformLoad::ComputeDeflection(Float64 x) const
+Float64 PPPartialUniformLoad::ComputeDeflection(Float64 x) const
 {
    Float64 y;
 
@@ -181,6 +198,9 @@ Float64 rkPPPartUniformLoad::ComputeDeflection(Float64 x) const
 
    if ( IsZero(W) )
       return 0;
+
+   Float64 L, EI;
+   GetProperties(&L, &EI);
 
    GetReactions(&Ra,&Rb);
 
@@ -209,10 +229,11 @@ Float64 rkPPPartUniformLoad::ComputeDeflection(Float64 x) const
    return y;
 }
 
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool rkPPPartUniformLoad::AssertValid() const
+bool PPPartialUniformLoad::AssertValid() const
 {
+   Float64 L = GetL();
+
    if ( a < 0 || L < a )
       return false;
 
@@ -222,18 +243,18 @@ bool rkPPPartUniformLoad::AssertValid() const
    if ( b < a )
       return false;
 
-   return rkRoarkBeam::AssertValid();
+   return __super::AssertValid();
 }
 
-void rkPPPartUniformLoad::Dump(WBFL::Debug::LogContext& os) const
+void PPPartialUniformLoad::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for rkPPPartUniformLoad" << WBFL::Debug::endl;
+   os << "Dump for PPPartUniformLoad" << WBFL::Debug::endl;
    os << " a = " << a << WBFL::Debug::endl;
    os << " b = " << b << WBFL::Debug::endl;
    os << " c = " << c << WBFL::Debug::endl;
    os << " d = " << d << WBFL::Debug::endl;
    os << " W = " << W << WBFL::Debug::endl;
-   rkRoarkBeam::Dump( os );
+   __super::Dump( os );
 }
 #endif // _DEBUG
 
@@ -243,18 +264,17 @@ void rkPPPartUniformLoad::Dump(WBFL::Debug::LogContext& os) const
 // When a symmetrically loaded beam is used, the results must be symmetrical
 bool Test_Symmetry(WBFL::Debug::Log& rlog,Float64 fra)
 {
-   TESTME_PROLOGUE("rkPPPartUniformLoad - Test_Symmetry");
+   TESTME_PROLOGUE("PPPartialUniformLoad - Test_Symmetry");
 
    Float64 L = 10;
    Float64 La = fra*L;
    Float64 Lb = (1.0 - fra)*L;
-   Float64 E = 1;
-   Float64 I = 1;
+   Float64 EI = 1;
    Float64 w = -10;
    Uint16 nPoints = 10;
    Uint16 i;
 
-   rkPPPartUniformLoad beam(La,Lb,w,L,E,I);
+   PPPartialUniformLoad beam(La,Lb,w,L,EI);
    for ( i = 0; i < nPoints/2; i++ )
    {
       WBFL::System::SectionValue lShear, rShear;
@@ -277,20 +297,19 @@ bool Test_Symmetry(WBFL::Debug::Log& rlog,Float64 fra)
       TRY_TESTME( IsEqual( beam.ComputeDeflection(xl), beam.ComputeDeflection(xr) ) );
    }
 
-   TESTME_EPILOG("rkPPPartUniformLoad - Test_Symmetry");
+   TESTME_EPILOG("PPPartialUniformLoad - Test_Symmetry");
 }
 
-bool rkPPPartUniformLoad::TestMe(WBFL::Debug::Log& rlog)
+bool PPPartialUniformLoad::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("rkPPPartUniformLoad");
+   TESTME_PROLOGUE("PPPartialUniformLoad");
    Float64 La = 0;
    Float64 Lb = 10;
    Float64 w = -1;
    Float64 l = 10;
-   Float64 e = 1;
-   Float64 i = 1;
+   Float64 ei = 1;
 
-   rkPPPartUniformLoad beam(La,Lb,w,l,e,i);
+   PPPartialUniformLoad beam(La,Lb,w,l,ei);
    Float64 Ra, Rb;
    beam.GetReactions(&Ra,&Rb);
    TRY_TESTME( IsEqual(Ra,5.0) );
@@ -313,7 +332,7 @@ bool rkPPPartUniformLoad::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( IsZero(beam.ComputeDeflection(l)) );
 
    Float64 D50 = beam.ComputeDeflection(5);
-   Float64 delta =  (5*w*l*l*l*l)/(384*e*i);
+   Float64 delta =  (5*w*l*l*l*l)/(384*ei);
    TRY_TESTME( IsEqual(D50,delta) );
 
    // Test signs of rotations
@@ -325,11 +344,11 @@ bool rkPPPartUniformLoad::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( Test_Symmetry(rlog,0.50) );
 
    TRY_TESTME( Test_Numerical(rlog, beam ) );
-   TRY_TESTME( Test_Numerical(rlog, rkPPPartUniformLoad(2,5,-10,10,1,1) ) );
-   TRY_TESTME( Test_Numerical(rlog, rkPPPartUniformLoad(4,9,-10,10,1,1) ) );
-   TRY_TESTME( Test_Numerical(rlog, rkPPPartUniformLoad(9,10,-10,10,1,1) ) );
+   TRY_TESTME( Test_Numerical(rlog, PPPartialUniformLoad(2,5,-10,10,1) ) );
+   TRY_TESTME( Test_Numerical(rlog, PPPartialUniformLoad(4,9,-10,10,1) ) );
+   TRY_TESTME( Test_Numerical(rlog, PPPartialUniformLoad(9,10,-10,10,1) ) );
 
 
-   TESTME_EPILOG("rkPPPartUniformLoad");
+   TESTME_EPILOG("PPPartialUniformLoad");
 }
 #endif // _UNITTEST

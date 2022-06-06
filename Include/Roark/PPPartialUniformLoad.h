@@ -24,35 +24,52 @@
 
 #pragma once
 
-#include <Roark/RoarkExp.h>
-#include <Roark/RoarkBeam.h>
-#include <System/SectionValue.h>
+#include <Roark\RoarkExp.h>
+#include <Roark\RoarkBeam.h>
+
+#include <memory>
 
 namespace WBFL
 {
    namespace Beams
    {
-     /// Beam with unequal overhangs and a uniform load applied along the entire length.
 
-     //  ===============================================================
-     //        ^                                             ^
-     //  <- a ->                                             <--- b --->
-     //  <-------------------------- L -------------------------------->
-
-      class ROARKCLASS BeamWithUnequalOverhangsUniformLoad : public RoarkBeam
+      /// Pinned-Pinned beam with uniform load over portion of span. Table III, reference# 14
+      class ROARKCLASS PPPartialUniformLoad : public RoarkBeam
       {
       public:
-         BeamWithUnequalOverhangsUniformLoad(Float64 length,Float64 a,Float64 b, Float64 w, Float64 e);
-         BeamWithUnequalOverhangsUniformLoad(const BeamWithUnequalOverhangsUniformLoad&) = delete;
-         virtual ~BeamWithUnequalOverhangsUniformLoad();
+         PPPartialUniformLoad(
+            Float64 La, ///< Start location of load from left end of beam
+            Float64 Lb, ///< End location of load from left end of beam
+            Float64 w, ///< Uniform load per unit length
+            Float64 l, ///< Beam Length
+            Float64 ei ///< Flexural Stiffness
+         );
+         PPPartialUniformLoad(const PPPartialUniformLoad&) = delete;
+         virtual ~PPPartialUniformLoad() {}
 
-         BeamWithUnequalOverhangsUniformLoad& operator=(const BeamWithUnequalOverhangsUniformLoad&) = delete;
+         PPPartialUniformLoad& operator=(const PPPartialUniformLoad&) = delete;
 
-         Float64 GetLeftOverhang() const;
-         Float64 GetRightOverhang() const;
-         Float64 GetW() const; // load/length
+      public:
+         virtual std::unique_ptr<RoarkBeam> CreateClone() const;
 
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const override;
+         /// Start location of load from left end of beam
+         void SetLa(Float64 la);
+
+         /// Start location of load from left end of beam
+         Float64 GetLa() const;
+
+         /// End location of load from left end of beam
+         void SetLb(Float64 lb);
+
+         /// End location of load from left end of beam
+         Float64 GetLb() const;
+
+         /// Uniform load per unit length
+         void SetW(Float64 w);
+
+         /// Uniform load per unit length
+         Float64 GetW() const;
 
          virtual void GetReactions(Float64 *pRa,Float64* pRb) const override;
          virtual void GetMoments(Float64* pMa,Float64* pMb) const override;
@@ -65,9 +82,7 @@ namespace WBFL
          virtual Float64 ComputeDeflection(Float64 x) const override;
 
       private:
-         Float64 m_LeftOverhang;
-         Float64 m_RightOverhang;
-         Float64 m_W;
+         Float64 a, b, c, d, W;
 
       public:
          #if defined _DEBUG

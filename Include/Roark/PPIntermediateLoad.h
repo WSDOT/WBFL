@@ -32,27 +32,38 @@ namespace WBFL
 {
    namespace Beams
    {
-     /// Beam with unequal overhangs and a uniform load applied along the entire length.
-
-     //  ===============================================================
-     //        ^                                             ^
-     //  <- a ->                                             <--- b --->
-     //  <-------------------------- L -------------------------------->
-
-      class ROARKCLASS BeamWithUnequalOverhangsUniformLoad : public RoarkBeam
+      /// Pinned-Pinned beam with intermediate point load. Table III, reference# 12
+      class ROARKCLASS PPIntermediateLoad : public RoarkBeam
       {
       public:
-         BeamWithUnequalOverhangsUniformLoad(Float64 length,Float64 a,Float64 b, Float64 w, Float64 e);
-         BeamWithUnequalOverhangsUniformLoad(const BeamWithUnequalOverhangsUniformLoad&) = delete;
-         virtual ~BeamWithUnequalOverhangsUniformLoad();
+         PPIntermediateLoad(
+            Float64 w, ///< The point load
+            Float64 La, ///< Location of load from left end of beam
+            Float64 l, ///< Beam length
+            Float64 ei ///< Flexural stiffness
+         );
+         PPIntermediateLoad(const PPIntermediateLoad&) = delete;
+         virtual ~PPIntermediateLoad() {}
 
-         BeamWithUnequalOverhangsUniformLoad& operator=(const BeamWithUnequalOverhangsUniformLoad&) = delete;
+         PPIntermediateLoad& operator=(const PPIntermediateLoad&) = delete;
 
-         Float64 GetLeftOverhang() const;
-         Float64 GetRightOverhang() const;
-         Float64 GetW() const; // load/length
+      public:
+         std::unique_ptr<RoarkBeam> CreateClone() const;
 
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const override;
+         /// Location of load from left end of beam
+         void SetLa(Float64 la);
+
+         /// Location of load from left end of beam
+         Float64 GetLa() const;
+
+         /// Location of load from right end of beam
+         Float64 GetLb() const;
+
+         /// Intermediate point load
+         void SetW(Float64 w);
+
+         /// Intermediate point load
+         Float64 GetW() const;
 
          virtual void GetReactions(Float64 *pRa,Float64* pRb) const override;
          virtual void GetMoments(Float64* pMa,Float64* pMb) const override;
@@ -65,9 +76,7 @@ namespace WBFL
          virtual Float64 ComputeDeflection(Float64 x) const override;
 
       private:
-         Float64 m_LeftOverhang;
-         Float64 m_RightOverhang;
-         Float64 m_W;
+         Float64 a, b, W;
 
       public:
          #if defined _DEBUG
