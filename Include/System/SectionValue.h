@@ -42,6 +42,8 @@ namespace WBFL
 
          SectionValue& operator=(const SectionValue&) = default;
 
+         bool operator==(const SectionValue& rOther);
+
          SectionValue& operator=(Float64 val);
          SectionValue& operator+=(const SectionValue& rOther);
          SectionValue& operator-=(const SectionValue& rOther);

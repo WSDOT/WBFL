@@ -43,6 +43,11 @@ m_Left(left), m_Right(right)
 {
 }
 
+bool SectionValue::operator==(const SectionValue& rOther)
+{
+   return IsEqual(Left(),rOther.Left()) && IsEqual(Right(),rOther.Right());
+}
+
 SectionValue& SectionValue::operator=(Float64 val)
 {
    m_Left = val; m_Right = val; return* this;
