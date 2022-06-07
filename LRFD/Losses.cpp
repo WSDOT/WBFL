@@ -1184,7 +1184,7 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
 
       if ( m_TempStrandUsage == tsPretensioned )
       {
-         if ( t_days*24. < 1 )
+         if ( t_days*24. < 1 || IsZero(m_FpjTemp))
          {
             m_dfpR0[TEMPORARY_STRAND] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
          }
@@ -1199,7 +1199,7 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
       }
 
 
-      if ( t_days*24. < 1 )
+      if ( t_days*24. < 1 || IsZero(m_FpjPerm))
       {
          m_dfpR0[PERMANENT_STRAND] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
       }
