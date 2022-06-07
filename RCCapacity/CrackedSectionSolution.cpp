@@ -123,12 +123,12 @@ STDMETHODIMP CCrackedSectionSolution::get_ElasticProperties(IElasticProperties**
       if ( !IsZero(Efg) )
       {
          // only add slices that aren't cracked
-         composite_section->AddSection(shape,Efg,1,0.0,0.0,VARIANT_TRUE);
+         composite_section->AddSection(shape,Efg,0.0,0.0,0.0,VARIANT_TRUE);
 
          if ( !IsZero(Ebg) )
          {
             // add the void
-            composite_section->AddSection(shape,0.0,0.0,Ebg,1,VARIANT_TRUE);
+            composite_section->AddSection(shape,0.0,Ebg,0.0,0.0,VARIANT_TRUE);
          }
       }
    }

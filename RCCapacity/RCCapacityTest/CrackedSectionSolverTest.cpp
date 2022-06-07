@@ -175,6 +175,13 @@ void CCrackedSectionSolverTest::TestRectangularBeam()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,81.755394),true);
+
+   CComPtr<IElasticProperties> props;
+   solution->get_ElasticProperties(&props);
+   pntCG.Release();
+   props->get_Centroid(&pntCG);
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y, 81.755394), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam1()
@@ -289,6 +296,13 @@ void CCrackedSectionSolverTest::TestTeeBeam1()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,101.425427),true);
+
+   CComPtr<IElasticProperties> props;
+   solution->get_ElasticProperties(&props);
+   pntCG.Release();
+   props->get_Centroid(&pntCG);
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y, 101.425427), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam2()
@@ -403,6 +417,13 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,52.15599),true);
+
+   CComPtr<IElasticProperties> props;
+   solution->get_ElasticProperties(&props);
+   pntCG.Release();
+   props->get_Centroid(&pntCG);
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y, 52.15599), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam3()
@@ -522,4 +543,11 @@ void CCrackedSectionSolverTest::TestTeeBeam3()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,-11.781458),true);
+
+   CComPtr<IElasticProperties> props;
+   solution->get_ElasticProperties(&props);
+   pntCG.Release();
+   props->get_Centroid(&pntCG);
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y, -11.781458), true);
 }
