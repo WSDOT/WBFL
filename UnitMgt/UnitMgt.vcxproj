@@ -14,7 +14,7 @@
     <ProjectName>WBFLUnitMgt</ProjectName>
     <ProjectGuid>{D6C0C0F7-A1F1-403A-BE8F-F30CAE1E85CF}</ProjectGuid>
     <RootNamespace>UnitMgt</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">

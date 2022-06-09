@@ -14,7 +14,7 @@
     <ProjectName>WBFLGeomModel</ProjectName>
     <ProjectGuid>{0727C73E-E23D-4B55-800C-0C17CA862844}</ProjectGuid>
     <RootNamespace>GeomModel</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">

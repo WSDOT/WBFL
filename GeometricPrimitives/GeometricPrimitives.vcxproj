@@ -14,7 +14,7 @@
     <ProjectName>WBFLGeometricPrimitives</ProjectName>
     <ProjectGuid>{E82A689C-BC85-44B8-8D89-670E7DC03E79}</ProjectGuid>
     <RootNamespace>GeometricPrimitives</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
