@@ -15,7 +15,7 @@
     <ProjectGuid>{36C4B12A-2FFC-4536-ABFD-8E72286B98BA}</ProjectGuid>
     <RootNamespace>LBAMAnalysisUtility</RootNamespace>
     <Keyword>AtlProj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">

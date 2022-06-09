@@ -14,7 +14,7 @@
     <ProjectName>ToolsTest</ProjectName>
     <ProjectGuid>{484F0FE0-15D9-4478-97EA-421B3C1DD9DC}</ProjectGuid>
     <RootNamespace>WBFLToolsTest</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

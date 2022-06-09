@@ -14,7 +14,7 @@
     <ProjectName>WBFLRoark</ProjectName>
     <ProjectGuid>{74EA85B6-5198-4419-98D4-8D051174126E}</ProjectGuid>
     <RootNamespace>Roark</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
