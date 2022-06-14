@@ -68,6 +68,8 @@ public:
    // Appends report content. Takes ownership of the content and will delete it when it is no longer used.
    virtual void AddContent(rptReportContent* PContent);
 
+   virtual void AddContent(std::shared_ptr<rptReportContent>& pContent);
+
    /// Returns true if the composite is empty
    bool Empty();
 

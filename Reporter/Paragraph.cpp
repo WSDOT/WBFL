@@ -85,6 +85,12 @@ rptParagraph& rptParagraph::operator << (rptReportContent* pContent )
    return *this;
 }
 
+rptParagraph& rptParagraph::operator << (std::shared_ptr<rptReportContent>& pContent)
+{
+   m_ContentVec.emplace_back(pContent);
+   return *this;
+}
+
 rptParagraph& rptParagraph::operator << (const std::_tstring& str)
 {
    std::shared_ptr<rptReportContent> rcp( std::make_shared<rptRcString>(str) );

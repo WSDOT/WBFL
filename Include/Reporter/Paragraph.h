@@ -68,6 +68,8 @@ public:
    /// Insertion operator for report content. The paragraph takes ownership of the content and will delete it when it is no longer used.
    virtual rptParagraph& operator << (rptReportContent* pContent );
    
+   virtual rptParagraph& operator << (std::shared_ptr<rptReportContent>& pContent);
+
    rptParagraph& operator << (const std::_tstring& str);
    rptParagraph& operator << (LPCTSTR str);
    rptParagraph& operator << (Int8 value);

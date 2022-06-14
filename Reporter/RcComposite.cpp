@@ -106,6 +106,11 @@ void rptRcComposite::AddContent(rptReportContent * pContent)
    m_ContentVec.emplace_back(pContent);
 }
 
+void rptRcComposite::AddContent(std::shared_ptr<rptReportContent>& pContent)
+{
+   m_ContentVec.emplace_back(pContent);
+}
+
 bool rptRcComposite::Empty()
 {
    return m_ContentVec.empty();

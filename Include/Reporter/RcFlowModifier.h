@@ -92,7 +92,11 @@ class REPORTERCLASS rptLineBreakFactory
 {
 public:
    /// Creates the rptRcFlowModifier
-   operator rptReportContent*();
+   operator std::shared_ptr<rptReportContent>&();
+   static std::shared_ptr<rptReportContent>& GetLineBreak() { return rptLineBreakFactory::ms_NewLine; }
+
+private:
+   static std::shared_ptr<rptReportContent> ms_NewLine;
 };
 
 /// Adds a line break to a report
