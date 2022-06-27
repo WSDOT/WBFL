@@ -275,7 +275,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
                else
                {
                   Float64 fnBars = rebarSectionWidth / spacing;
-                  nBars = ::Round(fnBars); // round to nearest integer
+                  nBars = (IndexType)::Round(fnBars); // round to nearest integer
                }
                X = -1.0*nBars*spacing/2.0;
             }
