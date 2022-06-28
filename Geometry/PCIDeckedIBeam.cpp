@@ -770,7 +770,7 @@ STDMETHODIMP CPCIDeckedIBeam::GetTopFlangeThickness(Float64* pHl, Float64* pHc, 
     return S_OK;
 }
 
-STDMETHODIMP CPCIDeckedIBeam::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
+STDMETHODIMP CPCIDeckedIBeam::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCL, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
 {
     CHECK_RETOBJ(ppLeftTop);
     CHECK_RETOBJ(ppLeftBottom);
@@ -795,6 +795,8 @@ STDMETHODIMP CPCIDeckedIBeam::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d*
 
     pntTopCentral->Move((xl + xr) / 2, (yl + yr) / 2);
     pntTopCentral.CopyTo(ppTopCentral);
+
+    pntTopCentral->Clone(ppTopCL);
 
     return S_OK;
 }

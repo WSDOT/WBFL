@@ -1930,7 +1930,7 @@ library WBFLGenericBridge
    interface IFlangePoints : IUnknown
    {
       [helpstring("property GetTopFlangePoints")]
-      HRESULT GetTopFlangePoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppTopCentral, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
+      HRESULT GetTopFlangePoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppTopCL, [out]IPoint2d** ppTopCentral, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
 
       [helpstring("property GetBottomFlangePoints")]
       HRESULT GetBottomFlangePoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);

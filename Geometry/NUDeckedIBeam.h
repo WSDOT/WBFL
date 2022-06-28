@@ -109,7 +109,7 @@ public:
 	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 	STDMETHOD(GetBottomFlangePoints)(/*[out]*/IPoint2d** ppLeftTop, /*[out]*/IPoint2d** ppLeftBottom, /*[out]*/IPoint2d** ppRightTop, /*[out]*/IPoint2d** ppRightBottom);
-	STDMETHOD(GetTopFlangePoints)(/*[out]*/IPoint2d** ppLeftTop, /*[out]*/IPoint2d** ppLeftBottom, /*[out]*/IPoint2d** ppTopCentral,/*[out]*/IPoint2d** ppRightTop, /*[out]*/IPoint2d** ppRightBottom);
+	STDMETHOD(GetTopFlangePoints)(/*[out]*/IPoint2d** ppLeftTop, /*[out]*/IPoint2d** ppLeftBottom, /*[out]*/IPoint2d** ppTopCL, /*[out]*/IPoint2d** ppTopCentral,/*[out]*/IPoint2d** ppRightTop, /*[out]*/IPoint2d** ppRightBottom);
 	STDMETHOD(GetTopFlangeThickness)(/*[out]*/Float64* pHl, /*[out]*/Float64* pHc, /*[out]*/Float64* pHr);
 	STDMETHOD(get_TopFlangeWidth)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_BottomFlangeWidth)(/*[out, retval]*/ Float64 *pVal) override;

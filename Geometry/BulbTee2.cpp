@@ -784,13 +784,15 @@ STDMETHODIMP CBulbTee2::GetTopFlangeThickness(Float64* pHl, Float64* pHc, Float6
    return S_OK;
 }
 
-STDMETHODIMP CBulbTee2::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
+STDMETHODIMP CBulbTee2::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCL,IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
 {
    CHECK_RETOBJ(ppLeftTop);
    CHECK_RETOBJ(ppLeftBottom);
    CHECK_RETOBJ(ppTopCentral);
    CHECK_RETOBJ(ppRightTop);
    CHECK_RETOBJ(ppRightBottom);
+
+   UpdateShape();
 
    IndexType leftTopIdx(11), leftBottomIdx(12), topCentralIdx(10), rightTopIdx(9), rightBottomIdx(8); // index into the polygon points
    if (IsZero(m_C1))
@@ -822,8 +824,6 @@ STDMETHODIMP CBulbTee2::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLe
       }
    }
 
-   UpdateShape();
-
    // get the points from our polygon implementation
    CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
    m_pShape->get_Point(leftTopIdx, &leftTop);
@@ -832,11 +832,46 @@ STDMETHODIMP CBulbTee2::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLe
    m_pShape->get_Point(rightTopIdx, &rightTop);
    m_pShape->get_Point(rightBottomIdx, &rightBottom);
 
+   CComPtr<IPoint2d> topCL; // at nominal centerline (CL Web)
+   topCL.CoCreateInstance(CLSID_Point2d);
+   if (IsZero(m_C2))
+   {
+      Float64 x, y;
+      leftTop->Location(&x, &y);
+      x += m_W5;
+      y += m_W5 * m_n2;
+      topCL->Move(x, y);
+   }
+   else if (IsEqual(m_C2, m_W5 + m_W6))
+   {
+      Float64 x, y;
+      leftTop->Location(&x, &y);
+      x += m_W5;
+      y += m_W5 * m_n1;
+      topCL->Move(x, y);
+   }
+   else
+   {
+      Float64 x, y;
+      leftTop->Location(&x, &y);
+      x += m_W5;
+      if (m_C2 < m_W5)
+      {
+         y += m_C2 * m_n1 + (m_W5 - m_C2) * m_n2;
+      }
+      else
+      {
+         y += m_W5 * m_n1;
+      }
+      topCL->Move(x, y);
+   }
+
    // these are the actual points... we don't want external users to change
    // them and mess up our shape so we must create clones
    leftTop->Clone(ppLeftTop);
    leftBottom->Clone(ppLeftBottom);
    topCentral->Clone(ppTopCentral);
+   topCL->Clone(ppTopCL);
    rightTop->Clone(ppRightTop);
    rightBottom->Clone(ppRightBottom);
 

@@ -838,8 +838,8 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
    pSection->GetOverhangs(&W5, &W6);
 
    CComQIPtr<IFlangePoints> flangePoints(pSection);
-   CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
-   flangePoints->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+   CComPtr<IPoint2d> leftTop, leftBottom, topCL, topCentral, rightTop, rightBottom;
+   flangePoints->GetTopFlangePoints(&leftTop, &leftBottom, &topCL, &topCentral, &rightTop, &rightBottom);
 
    // Get normal to our girderline
    CComPtr<IPath> path;
@@ -913,8 +913,8 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
       if (!IsZero(jointWidth))
       {
          CComQIPtr<IFlangePoints> flangePoints(leftGirderShape);
-         CComPtr<IPoint2d> leftBeam_leftTop, leftBeam_leftBottom, leftBeam_topCentral, leftBeam_rightTop, leftBeam_rightBottom;
-         flangePoints->GetTopFlangePoints(&leftBeam_leftTop, &leftBeam_leftBottom, &leftBeam_topCentral, &leftBeam_rightTop, &leftBeam_rightBottom);
+         CComPtr<IPoint2d> leftBeam_leftTop, leftBeam_leftBottom, leftBeam_topCL, leftBeam_topCentral, leftBeam_rightTop, leftBeam_rightBottom;
+         flangePoints->GetTopFlangePoints(&leftBeam_leftTop, &leftBeam_leftBottom, &leftBeam_topCL, &leftBeam_topCentral, &leftBeam_rightTop, &leftBeam_rightBottom);
 
          // Edge of joint associated with this girder is half-way between this girder and the girder on the left
          
@@ -1036,8 +1036,8 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
       if (!IsZero(jointWidth))
       {
          CComQIPtr<IFlangePoints> flangePoints(rightGirderShape);
-         CComPtr<IPoint2d> rightBeam_leftTop, rightBeam_leftBottom, rightBeam_topCentral, rightBeam_rightTop, rightBeam_rightBottom;
-         flangePoints->GetTopFlangePoints(&rightBeam_leftTop, &rightBeam_leftBottom, &rightBeam_topCentral, &rightBeam_rightTop, &rightBeam_rightBottom);
+         CComPtr<IPoint2d> rightBeam_leftTop, rightBeam_leftBottom, rightBeam_topCL, rightBeam_topCentral, rightBeam_rightTop, rightBeam_rightBottom;
+         flangePoints->GetTopFlangePoints(&rightBeam_leftTop, &rightBeam_leftBottom, &rightBeam_topCL, &rightBeam_topCentral, &rightBeam_rightTop, &rightBeam_rightBottom);
 
          CComPtr<IPoint2d> pntTopLeft(rightTop);
 

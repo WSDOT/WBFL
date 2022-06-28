@@ -3052,6 +3052,7 @@ library WBFLGeometry
       HRESULT GetTopFlangePoints(
          [out]IPoint2d** ppLeftTop,    ///< point at top-left flange tip
          [out]IPoint2d** ppLeftBottom,  ///< point directly below the top-left flange tip
+         [out]IPoint2d** ppTopCL, ///< point directly above the CL web
          [out]IPoint2d** ppTopCentral,  ///< point at crown point in the top flange
          [out]IPoint2d** ppRightTop,  ///< point at top-right flange tip
          [out]IPoint2d** ppRightBottom ///< point directly below the top-right flange tip
@@ -3204,6 +3205,7 @@ library WBFLGeometry
       HRESULT GetTopFlangePoints(
          [out]IPoint2d** ppLeftTop,    ///< point at top-left flange tip
          [out]IPoint2d** ppLeftBottom,  ///< point directly below the top-left flange tip
+         [out]IPoint2d** ppTopCL, ///< point directly above the CL web
          [out]IPoint2d** ppTopCentral,  ///< point at crown point in the top flange
          [out]IPoint2d** ppRightTop,  ///< point at top-right flange tip
          [out]IPoint2d** ppRightBottom ///< point directly below the top-right flange tip
@@ -3587,6 +3589,7 @@ library WBFLGeometry
       HRESULT GetTopFlangePoints(
          [out]IPoint2d** ppLeftTop,    ///< point at top-left flange tip
          [out]IPoint2d** ppLeftBottom,  ///< point directly below the top-left flange tip
+         [out]IPoint2d** ppTopCL, ///< point directly above the CL web
          [out]IPoint2d** ppTopCentral,  ///< point at crown point in the top flange
          [out]IPoint2d** ppRightTop,  ///< point at top-right flange tip
          [out]IPoint2d** ppRightBottom ///< point directly below the top-right flange tip
