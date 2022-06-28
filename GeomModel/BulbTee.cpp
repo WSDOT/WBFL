@@ -211,7 +211,7 @@ Float64 BulbTee::GetHeight() const
    return GetMaxHeight();
 }
 
-void BulbTee::GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d* topCentral, Point2d* rightTop, Point2d* rightBottom) const
+void BulbTee::GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d* topCL, Point2d* topCentral, Point2d* rightTop, Point2d* rightBottom) const
 {
    IndexType leftTopIdx(11), leftBottomIdx(12), topCentralIdx(10), rightTopIdx(9), rightBottomIdx(8); // index into the polygon points
    if (IsZero(m_C1))
@@ -251,6 +251,38 @@ void BulbTee::GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d*
    *topCentral = polygon->GetPoint(topCentralIdx);
    *rightTop = polygon->GetPoint(rightTopIdx);
    *rightBottom = polygon->GetPoint(rightBottomIdx);
+
+   if (IsZero(m_C2))
+   {
+      Float64 x, y;
+      leftTop->GetLocation(&x, &y);
+      x += m_W5;
+      y += m_W5 * m_N2;
+      topCL->Move(x, y);
+   }
+   else if (IsEqual(m_C2, m_W5 + m_W6))
+   {
+      Float64 x, y;
+      leftTop->GetLocation(&x, &y);
+      x += m_W5;
+      y += m_W5 * m_N1;
+      topCL->Move(x, y);
+   }
+   else
+   {
+      Float64 x, y;
+      leftTop->GetLocation(&x, &y);
+      x += m_W5;
+      if (m_C2 < m_W5)
+      {
+         y += m_C2 * m_N1 + (m_W5 - m_C2) * m_N2;
+      }
+      else
+      {
+         y += m_W5 * m_N1;
+      }
+      topCL->Move(x, y);
+   }
 
 #if defined _DEBUG
    Float64 Hl, Hc, Hr;

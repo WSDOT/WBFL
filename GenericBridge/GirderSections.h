@@ -762,8 +762,8 @@ public:
 
       if (spType == spTop)
       {
-         CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
-         m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+         CComPtr<IPoint2d> leftTop, leftBottom, topCL, topCentral, rightTop, rightBottom;
+         m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCL, &topCentral, &rightTop, &rightBottom);
          points->Add(leftTop);
          points->Add(topCentral);
          points->Add(rightTop);
@@ -842,9 +842,9 @@ public:
 
 // IFlangePoints
 public:
-   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
+   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCL, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
    {
-      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCentral, ppRightTop, ppRightBottom);
+      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCL, ppTopCentral, ppRightTop, ppRightBottom);
    }
 
    STDMETHODIMP GetBottomFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
@@ -930,8 +930,8 @@ public:
       // overide the base class implentation with this
       CHECK_RETOBJ(ppProfile);
 
-      CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
-      m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+      CComPtr<IPoint2d> leftTop, leftBottom, topCL, topCentral, rightTop, rightBottom;
+      m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCL, &topCentral, &rightTop, &rightBottom);
 
       if (bGirderOnly == VARIANT_FALSE)
       {
@@ -1360,8 +1360,8 @@ public:
    // IGirderSection
    STDMETHODIMP get_WorkPoint(IPoint2d** ppWorkPoint)
    {
-      CComPtr<IPoint2d> pntLeftTop, pntLeftBottom, pntRightTop, pntRightBottom;
-      m_Beam->GetTopFlangePoints(&pntLeftTop, &pntLeftBottom, ppWorkPoint, &pntRightTop, &pntRightBottom);
+      CComPtr<IPoint2d> pntLeftTop, pntLeftBottom, pntTopCL, pntRightTop, pntRightBottom;
+      m_Beam->GetTopFlangePoints(&pntLeftTop, &pntLeftBottom, &pntTopCL, ppWorkPoint, &pntRightTop, &pntRightBottom);
       return S_OK;
    }
 
@@ -1487,9 +1487,9 @@ public:
 
    // IFlangePoints
 public:
-   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
+   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCL, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
    {
-      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCentral, ppRightTop, ppRightBottom);
+      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCL, ppTopCentral, ppRightTop, ppRightBottom);
    }
 
    STDMETHODIMP GetBottomFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
@@ -1574,8 +1574,8 @@ public:
       // overide the base class implentation with this
       CHECK_RETOBJ(ppProfile);
 
-      CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
-      m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+      CComPtr<IPoint2d> leftTop, leftBottom, topCL, topCentral, rightTop, rightBottom;
+      m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCL, &topCentral, &rightTop, &rightBottom);
 
       if (bGirderOnly == VARIANT_FALSE)
       {
@@ -1863,8 +1863,8 @@ public:
    // IGirderSection
    STDMETHODIMP get_WorkPoint(IPoint2d** ppWorkPoint)
    {
-      CComPtr<IPoint2d> pntLeftTop, pntLeftBottom, pntRightTop, pntRightBottom;
-      m_Beam->GetTopFlangePoints(&pntLeftTop, &pntLeftBottom, ppWorkPoint, &pntRightTop, &pntRightBottom);
+      CComPtr<IPoint2d> pntLeftTop, pntLeftBottom, pntTopCL, pntRightTop, pntRightBottom;
+      m_Beam->GetTopFlangePoints(&pntLeftTop, &pntLeftBottom, &pntTopCL, ppWorkPoint, &pntRightTop, &pntRightBottom);
       return S_OK;
    }
 
@@ -1995,9 +1995,9 @@ public:
 
    // IFlangePoints
 public:
-   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
+   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCL, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
    {
-      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCentral, ppRightTop, ppRightBottom);
+      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCL, ppTopCentral, ppRightTop, ppRightBottom);
    }
 
    STDMETHODIMP GetBottomFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
@@ -2082,8 +2082,8 @@ public:
       // overide the base class implentation with this
       CHECK_RETOBJ(ppProfile);
 
-      CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
-      m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+      CComPtr<IPoint2d> leftTop, leftBottom, topCL, topCentral, rightTop, rightBottom;
+      m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCL, &topCentral, &rightTop, &rightBottom);
 
       if (bGirderOnly == VARIANT_FALSE)
       {

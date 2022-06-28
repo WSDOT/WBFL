@@ -112,7 +112,7 @@ namespace WBFL
          void SetC1(Float64 c1);
          Float64 GetC1() const;
 
-         void GetTopFlangePoints(Point2d* pntLeftTop, Point2d* pntLeftBottom, Point2d* pntTopCentral, Point2d* pntRightTop, Point2d* pntRightBottom) const;
+         void GetTopFlangePoints(Point2d* pntLeftTop, Point2d* pntLeftBottom, Point2d* pntTopCL, Point2d* pntTopCentral, Point2d* pntRightTop, Point2d* pntRightBottom) const;
          void GetBottomFlangePoints(Point2d* pntLeftTop, Point2d* pntLeftBottom, Point2d* pntRightTop, Point2d* pntRightBottom) const;
          void GetTopFlangeThickness(Float64* pHl, Float64* pHcl, Float64* pHr) const;
 

@@ -216,7 +216,7 @@ Float64 NUDeckedIBeam::GetC1() const
    return m_C1;
 }
 
-void NUDeckedIBeam::GetTopFlangePoints(Point2d* pntLeftTop, Point2d* pntLeftBottom, Point2d* pntTopCentral, Point2d* pntRightTop, Point2d* pntRightBottom) const
+void NUDeckedIBeam::GetTopFlangePoints(Point2d* pntLeftTop, Point2d* pntLeftBottom, Point2d* pntTopCL, Point2d* pntTopCentral, Point2d* pntRightTop, Point2d* pntRightBottom) const
 {
    auto& polygon = GetPolygon();
    *pntLeftBottom = polygon->GetPoint(m_LeftBottomIdx);
@@ -225,6 +225,7 @@ void NUDeckedIBeam::GetTopFlangePoints(Point2d* pntLeftTop, Point2d* pntLeftBott
    *pntRightBottom = polygon->GetPoint(m_RightBottomIdx);
 
    *pntTopCentral = (*pntLeftTop + *pntRightTop) / 2;
+   *pntTopCL = *pntTopCentral;
 }
 
 void NUDeckedIBeam::GetBottomFlangePoints(Point2d* pntLeftTop, Point2d* pntLeftBottom, Point2d* pntRightTop, Point2d* pntRightBottom) const

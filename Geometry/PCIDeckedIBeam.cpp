@@ -496,7 +496,7 @@ STDMETHODIMP CPCIDeckedIBeam::GetTopFlangeThickness(Float64* pHl, Float64* pHc, 
    return S_OK;
 }
 
-STDMETHODIMP CPCIDeckedIBeam::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
+STDMETHODIMP CPCIDeckedIBeam::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCL, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
 {
    CHECK_RETOBJ(ppLeftTop);
    CHECK_RETOBJ(ppLeftBottom);
@@ -506,14 +506,16 @@ STDMETHODIMP CPCIDeckedIBeam::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d*
 
    WBFL::Geometry::Point2d pntLeftTop;
    WBFL::Geometry::Point2d pntLeftBottom;
+   WBFL::Geometry::Point2d pntTopCL;
    WBFL::Geometry::Point2d pntTopCentral;
    WBFL::Geometry::Point2d pntRightTop;
    WBFL::Geometry::Point2d pntRightBottom;
 
-   m_Beam.GetTopFlangePoints(&pntLeftTop, &pntLeftBottom, &pntTopCentral, &pntRightTop, &pntRightBottom);
+   m_Beam.GetTopFlangePoints(&pntLeftTop, &pntLeftBottom, &pntTopCL, &pntTopCentral, &pntRightTop, &pntRightBottom);
 
    CreatePoint(pntLeftTop, ppLeftTop);
    CreatePoint(pntLeftBottom, ppLeftBottom);
+   CreatePoint(pntTopCL, ppTopCL);
    CreatePoint(pntTopCentral, ppTopCentral);
    CreatePoint(pntRightTop, ppRightTop);
    CreatePoint(pntRightBottom, ppRightBottom);

@@ -112,7 +112,7 @@ public:
    Float64 GetCLHeight() const;
 
    /// \image html BulbTee/TopFlangePoints.png   
-   void GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d* topCentral, Point2d* rightTop, Point2d* rightBottom) const;
+   void GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d* topCL, Point2d* topCentral, Point2d* rightTop, Point2d* rightBottom) const;
 
    /// \image html BulbTee/BottomFlangePoints.png   
    void GetBottomFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d* rightTop, Point2d* rightBottom) const;

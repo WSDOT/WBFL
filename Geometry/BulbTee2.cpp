@@ -472,7 +472,7 @@ STDMETHODIMP CBulbTee2::GetTopFlangeThickness(Float64* pHl, Float64* pHc, Float6
    return S_OK;
 }
 
-STDMETHODIMP CBulbTee2::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
+STDMETHODIMP CBulbTee2::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCL,IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom)
 {
    CHECK_RETOBJ(ppLeftTop);
    CHECK_RETOBJ(ppLeftBottom);
@@ -480,10 +480,11 @@ STDMETHODIMP CBulbTee2::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLe
    CHECK_RETOBJ(ppRightTop);
    CHECK_RETOBJ(ppRightBottom);
 
-   WBFL::Geometry::Point2d leftTop, leftBottom, topCentral, rightTop, rightBottom;
-   m_Beam.GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+   WBFL::Geometry::Point2d leftTop, leftBottom, topCL, topCentral, rightTop, rightBottom;
+   m_Beam.GetTopFlangePoints(&leftTop, &leftBottom, &topCL, &topCentral, &rightTop, &rightBottom);
    CreatePoint(leftTop, ppLeftTop);
    CreatePoint(leftBottom, ppLeftBottom);
+   CreatePoint(topCL, ppTopCL);
    CreatePoint(topCentral, ppTopCentral);
    CreatePoint(rightTop, ppRightTop);
    CreatePoint(rightBottom, ppRightBottom);
