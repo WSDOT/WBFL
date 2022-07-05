@@ -1,27 +1,4 @@
-///////////////////////////////////////////////////////////////////////
-// DManip - Direct Manipulation Framework
-// Copyright © 1999-2022  Washington State Department of Transportation
-//                        Bridge and Structures Office
-//
-// This library is a part of the Washington Bridge Foundation Libraries
-// and was developed as part of the Alternate Route Project
-//
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the Alternate Route Library Open Source License as published by 
-// the Washington State Department of Transportation, Bridge and Structures Office.
-//
-// This program is distributed in the hope that it will be useful, but is distributed 
-// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
-// License for more details.
-//
-// You should have received a copy of the Alternate Route Library Open Source License 
-// along with this program; if not, write to the Washington State Department of 
-// Transportation, Bridge and Structures Office, P.O. Box  47340, 
-// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
-///////////////////////////////////////////////////////////////////////
-
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -36,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -50,18 +25,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -82,15 +57,14 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,0,7
- PRODUCTVERSION 7,0,0,7
+ FILEVERSION 7,0,1,0
+ PRODUCTVERSION 7,0,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -105,18 +79,15 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "A member of Alternate Route Project\0"
-            VALUE "CompanyName", "Washington State Department of Transportation\0"
-            VALUE "FileDescription", "DManip DLL\0"
-            VALUE "FileVersion", "7.0.0.7\0"
-            VALUE "InternalName", "DManip\0"
+            VALUE "Comments", "A member of Alternate Route Project"
+            VALUE "CompanyName", "Washington State Department of Transportation"
+            VALUE "FileDescription", "DManip DLL"
+            VALUE "FileVersion", "7.0.1.0"
+            VALUE "InternalName", "DManip"
             VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "DManip30.DLL\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "7.0.0.7\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "OriginalFilename", "DManip30.DLL"
+            VALUE "ProductName", "WBFL"
+            VALUE "ProductVersion", "7.0.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -125,49 +96,85 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // REGISTRY
 //
 
-IDR_DISPLAYLIST			REGISTRY DISCARDABLE    "DisplayList.rgs"
-IDR_DISPLAYMGR			REGISTRY DISCARDABLE    "DisplayMgr.rgs"
-IDR_INPLACEEDITTASK		REGISTRY DISCARDABLE    "InplaceEditTask.rgs"
-IDR_RECTSELECTTASK		REGISTRY DISCARDABLE    "RectSelectTask.rgs"
-IDR_LOCALDRAGDROPTASK		REGISTRY DISCARDABLE    "LocalDragDropTask.rgs"
-IDR_FOREIGNDRAGDROPTASK		REGISTRY DISCARDABLE    "ForeignDragDropTask.rgs"
-IDR_DRAGDATASOURCE		REGISTRY DISCARDABLE    "DragDataSource.rgs"
-IDR_DRAGDATASINK		REGISTRY DISCARDABLE    "DragDataSink.rgs"
-IDR_CENTERONPOINTTASK 		REGISTRY DISCARDABLE    "CenterOnPointTask.rgs"
-IDR_ZOOMRECTTASK		REGISTRY DISCARDABLE    "ZoomRectTask.rgs"
-IDR_TASKFACTORY 		REGISTRY DISCARDABLE    "TaskFactory.rgs"
-IDR_DISPLAYOBJECTFACTORY	REGISTRY DISCARDABLE    "DisplayObjectFactory.rgs"
-IDR_MAPPING			REGISTRY DISCARDABLE    "Mapping.rgs"
-IDR_PLUG			REGISTRY DISCARDABLE    "Plug.rgs"
-IDR_SOCKET			REGISTRY DISCARDABLE    "Socket.rgs"
-IDR_SOCKETFACTORY		REGISTRY DISCARDABLE    "SocketFactory.rgs"
-IDR_POINTDISPLAYOBJECT		REGISTRY DISCARDABLE    "PointDisplayObject.rgs"
-IDR_SIMPLEDRAWPOINTSTRATEGY	REGISTRY DISCARDABLE    "SimpleDrawPointStrategy.rgs"
-IDR_TEXTBLOCK			REGISTRY DISCARDABLE    "TextBlock.rgs"
-IDR_EDITABLETEXTBLOCK		REGISTRY DISCARDABLE    "EditableTextBlock.rgs"
-IDR_EDITABLEUNITVALUETEXTBLOCK	REGISTRY DISCARDABLE    "EditableUnitValueTextBlock.rgs"
-IDR_LINEDISPLAYOBJECT		REGISTRY DISCARDABLE    "LineDisplayObject.rgs"
-IDR_DIMENSIONLINEDISPLAYOBJECT	REGISTRY DISCARDABLE    "DimensionLineDisplayObject.rgs"
-IDR_TOOL			REGISTRY DISCARDABLE    "Tool.rgs"
-IDR_COMPOSITEDISPLAYOBJECT	REGISTRY DISCARDABLE    "CompositeDisplayObject.rgs"
-IDR_SIMPLEDRAWLINESTRATEGY	REGISTRY DISCARDABLE    "SimpleDrawLineStrategy.rgs"
-IDR_SIMPLEDRAWDASHEDLINESTRATEGY	REGISTRY DISCARDABLE    "SimpleDrawDashedLineStrategy.rgs"
-IDR_RECTANGLEDRAWLINESTRATEGY	REGISTRY DISCARDABLE    "RectangleDrawLineStrategy.rgs"
-IDR_SHAPEDRAWSTRATEGY		REGISTRY DISCARDABLE    "ShapeDrawStrategy.rgs"
-IDR_TARGETDRAWSTRATEGY		REGISTRY DISCARDABLE    "TargetDrawStrategy.rgs"
-IDR_COMPOUNDDRAWLINESTRATEGY	REGISTRY DISCARDABLE    "CompoundDrawLineStrategy.rgs"
-IDR_COMPOUNDDRAWPOINTSTRATEGY REGISTRY DISCARDABLE "CompoundDrawPointStrategy.rgs"
-IDR_EXTRECTANGLEDRAWLINESTRATEGY	REGISTRY DISCARDABLE    "ExtRectangleDrawLineStrategy.rgs"
-IDR_VIEWTITLE			REGISTRY DISCARDABLE    "ViewTitle.rgs"
-IDR_ANCHOREDTEXTBLOCK REGISTRY DISCARDABLE    "AnchoredTextBlock.rgs"
-IDR_NORTHARROW			REGISTRY DISCARDABLE    "NorthArrow.rgs"
-IDR_SHAPEGRAVITYWELLSTRATEGY	REGISTRY DISCARDABLE    "ShapeGravityWellStrategy.rgs"
+IDR_DISPLAYLIST         REGISTRY                "DisplayList.rgs"
+
+IDR_DISPLAYMGR          REGISTRY                "DisplayMgr.rgs"
+
+IDR_INPLACEEDITTASK     REGISTRY                "InplaceEditTask.rgs"
+
+IDR_RECTSELECTTASK      REGISTRY                "RectSelectTask.rgs"
+
+IDR_LOCALDRAGDROPTASK   REGISTRY                "LocalDragDropTask.rgs"
+
+IDR_FOREIGNDRAGDROPTASK REGISTRY                "ForeignDragDropTask.rgs"
+
+IDR_DRAGDATASOURCE      REGISTRY                "DragDataSource.rgs"
+
+IDR_DRAGDATASINK        REGISTRY                "DragDataSink.rgs"
+
+IDR_CENTERONPOINTTASK   REGISTRY                "CenterOnPointTask.rgs"
+
+IDR_ZOOMRECTTASK        REGISTRY                "ZoomRectTask.rgs"
+
+IDR_TASKFACTORY         REGISTRY                "TaskFactory.rgs"
+
+IDR_DISPLAYOBJECTFACTORY REGISTRY                "DisplayObjectFactory.rgs"
+
+IDR_MAPPING             REGISTRY                "Mapping.rgs"
+
+IDR_PLUG                REGISTRY                "Plug.rgs"
+
+IDR_SOCKET              REGISTRY                "Socket.rgs"
+
+IDR_SOCKETFACTORY       REGISTRY                "SocketFactory.rgs"
+
+IDR_POINTDISPLAYOBJECT  REGISTRY                "PointDisplayObject.rgs"
+
+IDR_SIMPLEDRAWPOINTSTRATEGY REGISTRY                "SimpleDrawPointStrategy.rgs"
+
+IDR_TEXTBLOCK           REGISTRY                "TextBlock.rgs"
+
+IDR_EDITABLETEXTBLOCK   REGISTRY                "EditableTextBlock.rgs"
+
+IDR_EDITABLEUNITVALUETEXTBLOCK REGISTRY                "EditableUnitValueTextBlock.rgs"
+
+IDR_LINEDISPLAYOBJECT   REGISTRY                "LineDisplayObject.rgs"
+
+IDR_DIMENSIONLINEDISPLAYOBJECT REGISTRY                "DimensionLineDisplayObject.rgs"
+
+IDR_TOOL                REGISTRY                "Tool.rgs"
+
+IDR_COMPOSITEDISPLAYOBJECT REGISTRY                "CompositeDisplayObject.rgs"
+
+IDR_SIMPLEDRAWLINESTRATEGY REGISTRY                "SimpleDrawLineStrategy.rgs"
+
+IDR_SIMPLEDRAWDASHEDLINESTRATEGY REGISTRY                "SimpleDrawDashedLineStrategy.rgs"
+
+IDR_RECTANGLEDRAWLINESTRATEGY REGISTRY                "RectangleDrawLineStrategy.rgs"
+
+IDR_SHAPEDRAWSTRATEGY   REGISTRY                "ShapeDrawStrategy.rgs"
+
+IDR_TARGETDRAWSTRATEGY  REGISTRY                "TargetDrawStrategy.rgs"
+
+IDR_COMPOUNDDRAWLINESTRATEGY REGISTRY                "CompoundDrawLineStrategy.rgs"
+
+IDR_COMPOUNDDRAWPOINTSTRATEGY REGISTRY                "CompoundDrawPointStrategy.rgs"
+
+IDR_EXTRECTANGLEDRAWLINESTRATEGY REGISTRY                "ExtRectangleDrawLineStrategy.rgs"
+
+IDR_VIEWTITLE           REGISTRY                "ViewTitle.rgs"
+
+IDR_ANCHOREDTEXTBLOCK   REGISTRY                "AnchoredTextBlock.rgs"
+
+IDR_NORTHARROW          REGISTRY                "NorthArrow.rgs"
+
+IDR_SHAPEGRAVITYWELLSTRATEGY REGISTRY                "ShapeGravityWellStrategy.rgs"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -175,16 +182,11 @@ IDR_SHAPEGRAVITYWELLSTRATEGY	REGISTRY DISCARDABLE    "ShapeGravityWellStrategy.r
 // Cursor
 //
 
-IDC_TARGET              CURSOR  DISCARDABLE     "res\\Target.cur"
-IDC_MAGNIFY             CURSOR  DISCARDABLE     "res\\Magnify.cur"
+IDC_TARGET              CURSOR                  "res\\Target.cur"
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
+IDC_MAGNIFY             CURSOR                  "res\\Magnify.cur"
 
-
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

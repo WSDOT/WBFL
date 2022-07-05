@@ -354,7 +354,9 @@
     <None Include="NUDeckedBulbTeeSection.rgs" />
     <None Include="NUGirderSection.rgs" />
     <None Include="NUSplicedGirderSegment.rgs" />
+    <None Include="OffsetTendon.rgs" />
     <None Include="OverlaySlab.rgs" />
+    <None Include="ParabolicTendonSegment.rgs" />
     <None Include="PCIDeckedBulbTeeSection.rgs" />
     <None Include="Pier.rgs" />
     <None Include="PierCollection.rgs" />

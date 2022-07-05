@@ -672,6 +672,12 @@
     <None Include="PCIDeckedBulbTeeSection.rgs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ParabolicTendonSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="OffsetTendon.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

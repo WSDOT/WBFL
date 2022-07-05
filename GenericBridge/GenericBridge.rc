@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -14,13 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -28,35 +26,34 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "#include ""winres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
-    "1 TYPELIB ""WBFLGenericBridge.tlb""\r\n"
+    "1 TYPELIB ""WBFLGenericBridge.tlb""\r\0"
 END
 
 #endif    // APSTUDIO_INVOKED
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,0,7
- PRODUCTVERSION 7,0,0,7
+ FILEVERSION 7,0,1,0
+ PRODUCTVERSION 7,0,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -71,19 +68,15 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "A member of Alternate Route Project\0"
-            VALUE "CompanyName", "Washington State Department of Transportation\0"
-            VALUE "FileDescription", "GenericBridge Module\0"
-            VALUE "FileVersion", "7.0.0.7\0"
-            VALUE "InternalName", "GenericBridge\0"
+            VALUE "Comments", "A member of Alternate Route Project"
+            VALUE "CompanyName", "Washington State Department of Transportation"
+            VALUE "FileDescription", "GenericBridge Module"
+            VALUE "FileVersion", "7.0.1.0"
+            VALUE "InternalName", "GenericBridge"
             VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OLESelfRegister", "\0"
-            VALUE "OriginalFilename", "GenericBridge.DLL\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "7.0.0.7\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "OriginalFilename", "GenericBridge.DLL"
+            VALUE "ProductName", "WBFL"
+            VALUE "ProductVersion", "7.0.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -92,93 +85,158 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // REGISTRY
 //
 
-IDR_GENERICBRIDGE       REGISTRY DISCARDABLE    "GenericBridge.rgs"
-IDR_BRIDGEPIER                REGISTRY DISCARDABLE    "BridgePier.rgs"
-IDR_PIER                REGISTRY DISCARDABLE    "Pier.rgs"
-IDR_PIERCOLLECTION      REGISTRY DISCARDABLE    "PierCollection.rgs"
-IDR_SUPERSTRUCTUREMEMBER REGISTRY DISCARDABLE    "SuperstructureMember.rgs"
-IDR_SEGMENT             REGISTRY DISCARDABLE    "Segment.rgs"
-IDR_PRISMATICSUPERSTRUCTUREMEMBERSEGMENT REGISTRY DISCARDABLE "PrismaticSuperstructureMemberSegment.rgs"
-IDR_SEGMENTITEM         REGISTRY DISCARDABLE    "SegmentItem.rgs"
-IDR_FILTEREDSEGMENTCOLLECTION REGISTRY DISCARDABLE    "FilteredSegmentCollection.rgs"
-IDR_COLUMN              REGISTRY DISCARDABLE    "Column.rgs"
-IDR_COLUMNLAYOUT       REGISTRY DISCARDABLE    "ColumnLayout.rgs"
-IDR_BEARINGLAYOUT       REGISTRY DISCARDABLE    "BearingLayout.rgs"
-IDR_LINEARCROSSBEAM           REGISTRY DISCARDABLE    "LinearCrossBeam.rgs"
-IDR_MATERIAL            REGISTRY DISCARDABLE    "Material.rgs"
-IDR_CASTSLAB            REGISTRY DISCARDABLE    "CastSlab.rgs"
-IDR_ALIGNMENTOFFSETSTRATEGY REGISTRY DISCARDABLE    "AlignmentOffsetStrategy.rgs"
-IDR_PRECASTSLAB         REGISTRY DISCARDABLE    "PrecastSlab.rgs"
-IDR_OVERLAYSLAB         REGISTRY DISCARDABLE    "OverlaySlab.rgs"
-IDR_FLANGEDBEAM         REGISTRY DISCARDABLE    "FlangedGirderSection.rgs"
-IDR_FLANGEDBEAM2        REGISTRY DISCARDABLE    "FlangedGirderSection2.rgs"
-IDR_NUGIRDERSECTION     REGISTRY DISCARDABLE    "NUGirderSection.rgs"
-IDR_UGIRDERSECTION      REGISTRY DISCARDABLE    "UGirderSection.rgs"
-IDR_UGIRDERSECTION2     REGISTRY DISCARDABLE    "UGirderSection2.rgs"
-IDR_SUPERSTRUCTUREMEMBERCOLLECTION REGISTRY DISCARDABLE    "SuperstructureMemberCollection.rgs"
-IDR_FSHAPEBARRIER       REGISTRY DISCARDABLE    "FShapeBarrier.rgs"
-IDR_GENERICBARRIER      REGISTRY DISCARDABLE    "GenericBarrier.rgs"
-IDR_LINEARTENDONSEGMENT REGISTRY DISCARDABLE    "LinearTendonSegment.rgs"
-IDR_PARABOLICTENDONSEGMENT REGISTRY DISCARDABLE    "ParabolicTendonSegment.rgs"
-IDR_TENDON              REGISTRY DISCARDABLE    "Tendon.rgs"
-IDR_OFFSETTENDON              REGISTRY DISCARDABLE    "OffsetTendon.rgs"
-IDR_TENDONCOLLECTION    REGISTRY DISCARDABLE    "TendonCollection.rgs"
-IDR_PRESTRESSINGSTRAND  REGISTRY DISCARDABLE    "PrestressingStrand.rgs"
-IDR_BULBTEE             REGISTRY DISCARDABLE    "BulbTeeSection.rgs"
-IDR_MULTIWEBSECTION     REGISTRY DISCARDABLE    "MultiWebSection.rgs"
-IDR_EDGEPATHSTRATEGY    REGISTRY DISCARDABLE    "EdgePathStrategy.rgs"
-IDR_VOIDEDSLABSECTION   REGISTRY DISCARDABLE    "VoidedSlabSection.rgs"
-IDR_VOIDEDSLABSECTION2  REGISTRY DISCARDABLE    "VoidedSlabSection2.rgs"
-IDR_BOXBEAMSECTION      REGISTRY DISCARDABLE    "BoxBeamSection.rgs"
-IDR_MULTIWEBSECTION2    REGISTRY DISCARDABLE    "MultiWebSection2.rgs"
-IDR_SIDEWALKBARRIER     REGISTRY DISCARDABLE    "SidewalkBarrier.rgs"
-IDR_FLANGEDGIRDERENDBLOCKSEGMENT   REGISTRY DISCARDABLE "FlangedGirderEndBlockSegment.rgs"
-IDR_TAPEREDGIRDERSEGMENT REGISTRY DISCARDABLE "TaperedGirderSegment.rgs"
-IDR_VOIDEDSLABENDBLOCKSEGMENT REGISTRY DISCARDABLE "VoidedSlabEndBlockSegment.rgs"
-IDR_THICKENEDFLANGEBULBTEESEGMENT REGISTRY DISCARDABLE "ThickenedFlangeBulbTeeSegment.rgs"
-IDR_DECKEDSLABBEAMENDBLOCKSEGMENT REGISTRY DISCARDABLE "DeckedSlabBeamEndBlockSegment.rgs"
-IDR_BOXBEAMENDBLOCKSEGMENT REGISTRY DISCARDABLE "BoxBeamEndBlockSegment.rgs"
-IDR_DECKEDSLABBEAMSECTION REGISTRY DISCARDABLE "DeckedSlabBeamSection.rgs"
-IDR_UGIRDERSECTION2ENDBLOCKSEGMENT REGISTRY DISCARDABLE "UGirderSection2EndBlockSegment.rgs"
-IDR_FLANGEDSPLICEDGIRDERSEGMENT REGISTRY DISCARDABLE "FlangedSplicedGirderSegment.rgs"
-IDR_USPLICEDGIRDERSEGMENT REGISTRY DISCARDABLE "USplicedGirderSegment.rgs"
-IDR_NUSPLICEDGIRDERSEGMENT REGISTRY DISCARDABLE "NUSplicedGirderSegment.rgs"
-IDR_REBAR               REGISTRY DISCARDABLE    "Rebar.rgs"
-IDR_REBARSECTIONITEM    REGISTRY DISCARDABLE    "RebarSectionItem.rgs"
-IDR_REBARSECTION        REGISTRY DISCARDABLE    "RebarSection.rgs"
-IDR_REBARROWPATTERN     REGISTRY DISCARDABLE    "RebarRowPattern.rgs"
-IDR_REBARROWFACEPATTERN REGISTRY DISCARDABLE    "RebarRowFacePattern.rgs"
-IDR_CROSSBEAMREBARPATTERN     REGISTRY DISCARDABLE    "CrossBeamRebarPattern.rgs"
-IDR_REBARLAYOUT         REGISTRY DISCARDABLE    "RebarLayout.rgs"
-IDR_REBARFACTORY        REGISTRY DISCARDABLE    "RebarFactory.rgs"
-IDR_BRIDGEDECKREBARLAYOUTITEM REGISTRY DISCARDABLE "BridgeDeckRebarLayoutItem.rgs"
-IDR_NMBRIDGEDECKREBARLAYOUTITEM REGISTRY DISCARDABLE "NegativeMomentBridgeDeckRebarLayoutItem.rgs"
-IDR_BRIDGEDECKREBARPATTERN REGISTRY DISCARDABLE "BridgeDeckRebarPattern.rgs"
-IDR_FIXEDLENGTHREBARLAYOUTITEM REGISTRY DISCARDABLE    "FixedLengthRebarLayoutItem.rgs"
-IDR_CASTING_REGION REGISTRY DISCARDABLE "CastingRegion.rgs"
-IDR_CASTING_REGIONS REGISTRY DISCARDABLE "CastingRegionS.rgs"
-IDR_NUDECKEDBULBTEESECTION REGISTRY DISCARDABLE "NUDeckedBulbTeeSection.rgs"
-IDR_PCIDECKEDBULBTEESECTION REGISTRY DISCARDABLE "PCIDeckedBulbTeeSection.rgs"
+IDR_GENERICBRIDGE       REGISTRY                "GenericBridge.rgs"
+
+IDR_BRIDGEPIER          REGISTRY                "BridgePier.rgs"
+
+IDR_PIER                REGISTRY                "Pier.rgs"
+
+IDR_PIERCOLLECTION      REGISTRY                "PierCollection.rgs"
+
+IDR_SUPERSTRUCTUREMEMBER REGISTRY                "SuperstructureMember.rgs"
+
+IDR_SEGMENT             REGISTRY                "Segment.rgs"
+
+IDR_PRISMATICSUPERSTRUCTUREMEMBERSEGMENT REGISTRY                "PrismaticSuperstructureMemberSegment.rgs"
+
+IDR_SEGMENTITEM         REGISTRY                "SegmentItem.rgs"
+
+IDR_FILTEREDSEGMENTCOLLECTION REGISTRY                "FilteredSegmentCollection.rgs"
+
+IDR_COLUMN              REGISTRY                "Column.rgs"
+
+IDR_COLUMNLAYOUT        REGISTRY                "ColumnLayout.rgs"
+
+IDR_BEARINGLAYOUT       REGISTRY                "BearingLayout.rgs"
+
+IDR_LINEARCROSSBEAM     REGISTRY                "LinearCrossBeam.rgs"
+
+IDR_MATERIAL            REGISTRY                "Material.rgs"
+
+IDR_CASTSLAB            REGISTRY                "CastSlab.rgs"
+
+IDR_ALIGNMENTOFFSETSTRATEGY REGISTRY                "AlignmentOffsetStrategy.rgs"
+
+IDR_PRECASTSLAB         REGISTRY                "PrecastSlab.rgs"
+
+IDR_OVERLAYSLAB         REGISTRY                "OverlaySlab.rgs"
+
+IDR_FLANGEDBEAM         REGISTRY                "FlangedGirderSection.rgs"
+
+IDR_FLANGEDBEAM2        REGISTRY                "FlangedGirderSection2.rgs"
+
+IDR_NUGIRDERSECTION     REGISTRY                "NUGirderSection.rgs"
+
+IDR_UGIRDERSECTION      REGISTRY                "UGirderSection.rgs"
+
+IDR_UGIRDERSECTION2     REGISTRY                "UGirderSection2.rgs"
+
+IDR_SUPERSTRUCTUREMEMBERCOLLECTION REGISTRY                "SuperstructureMemberCollection.rgs"
+
+IDR_FSHAPEBARRIER       REGISTRY                "FShapeBarrier.rgs"
+
+IDR_GENERICBARRIER      REGISTRY                "GenericBarrier.rgs"
+
+IDR_LINEARTENDONSEGMENT REGISTRY                "LinearTendonSegment.rgs"
+
+IDR_PARABOLICTENDONSEGMENT REGISTRY                "ParabolicTendonSegment.rgs"
+
+IDR_TENDON              REGISTRY                "Tendon.rgs"
+
+IDR_OFFSETTENDON        REGISTRY                "OffsetTendon.rgs"
+
+IDR_TENDONCOLLECTION    REGISTRY                "TendonCollection.rgs"
+
+IDR_PRESTRESSINGSTRAND  REGISTRY                "PrestressingStrand.rgs"
+
+IDR_BULBTEE             REGISTRY                "BulbTeeSection.rgs"
+
+IDR_MULTIWEBSECTION     REGISTRY                "MultiWebSection.rgs"
+
+IDR_EDGEPATHSTRATEGY    REGISTRY                "EdgePathStrategy.rgs"
+
+IDR_VOIDEDSLABSECTION   REGISTRY                "VoidedSlabSection.rgs"
+
+IDR_VOIDEDSLABSECTION2  REGISTRY                "VoidedSlabSection2.rgs"
+
+IDR_BOXBEAMSECTION      REGISTRY                "BoxBeamSection.rgs"
+
+IDR_MULTIWEBSECTION2    REGISTRY                "MultiWebSection2.rgs"
+
+IDR_SIDEWALKBARRIER     REGISTRY                "SidewalkBarrier.rgs"
+
+IDR_FLANGEDGIRDERENDBLOCKSEGMENT REGISTRY                "FlangedGirderEndBlockSegment.rgs"
+
+IDR_TAPEREDGIRDERSEGMENT REGISTRY                "TaperedGirderSegment.rgs"
+
+IDR_VOIDEDSLABENDBLOCKSEGMENT REGISTRY                "VoidedSlabEndBlockSegment.rgs"
+
+IDR_THICKENEDFLANGEBULBTEESEGMENT REGISTRY                "ThickenedFlangeBulbTeeSegment.rgs"
+
+IDR_DECKEDSLABBEAMENDBLOCKSEGMENT REGISTRY                "DeckedSlabBeamEndBlockSegment.rgs"
+
+IDR_BOXBEAMENDBLOCKSEGMENT REGISTRY                "BoxBeamEndBlockSegment.rgs"
+
+IDR_DECKEDSLABBEAMSECTION REGISTRY                "DeckedSlabBeamSection.rgs"
+
+IDR_UGIRDERSECTION2ENDBLOCKSEGMENT REGISTRY                "UGirderSection2EndBlockSegment.rgs"
+
+IDR_FLANGEDSPLICEDGIRDERSEGMENT REGISTRY                "FlangedSplicedGirderSegment.rgs"
+
+IDR_USPLICEDGIRDERSEGMENT REGISTRY                "USplicedGirderSegment.rgs"
+
+IDR_NUSPLICEDGIRDERSEGMENT REGISTRY                "NUSplicedGirderSegment.rgs"
+
+IDR_REBAR               REGISTRY                "Rebar.rgs"
+
+IDR_REBARSECTIONITEM    REGISTRY                "RebarSectionItem.rgs"
+
+IDR_REBARSECTION        REGISTRY                "RebarSection.rgs"
+
+IDR_REBARROWPATTERN     REGISTRY                "RebarRowPattern.rgs"
+
+IDR_REBARROWFACEPATTERN REGISTRY                "RebarRowFacePattern.rgs"
+
+IDR_CROSSBEAMREBARPATTERN REGISTRY                "CrossBeamRebarPattern.rgs"
+
+IDR_REBARLAYOUT         REGISTRY                "RebarLayout.rgs"
+
+IDR_REBARFACTORY        REGISTRY                "RebarFactory.rgs"
+
+IDR_BRIDGEDECKREBARLAYOUTITEM REGISTRY                "BridgeDeckRebarLayoutItem.rgs"
+
+IDR_NMBRIDGEDECKREBARLAYOUTITEM REGISTRY                "NegativeMomentBridgeDeckRebarLayoutItem.rgs"
+
+IDR_BRIDGEDECKREBARPATTERN REGISTRY                "BridgeDeckRebarPattern.rgs"
+
+IDR_FIXEDLENGTHREBARLAYOUTITEM REGISTRY                "FixedLengthRebarLayoutItem.rgs"
+
+IDR_CASTING_REGION      REGISTRY                "CastingRegion.rgs"
+
+IDR_CASTING_REGIONS     REGISTRY                "CastingRegionS.rgs"
+
+IDR_NUDECKEDBULBTEESECTION REGISTRY                "NUDeckedBulbTeeSection.rgs"
+
+IDR_PCIDECKEDBULBTEESECTION REGISTRY                "PCIDeckedBulbTeeSection.rgs"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_PROJNAME            "GenericBridge"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_FRAMINGPLAN     "Reconfigure the bridge by editing the framing plan\nEdit Framing Plan"
     ID_EDIT_MOVEBRIDGE      "Position the bridge on the alignment\nMove Bridge"
@@ -186,7 +244,7 @@ BEGIN
     ID_EDIT_ALIGNMENT       "Define the roadway alignment\nEdit Alignment"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_E_NUMGIRDERLINES    "Number of girder lines must be at least 1"
     IDS_E_PIERINDEX         "An inalid pier index was used"
@@ -207,7 +265,7 @@ BEGIN
     IDS_E_NO_SEGMENTS_FOR_STAGE "No Segments exist for stage %s"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_E_LOCATION_OUT_OF_RANGE "Location is out of range"
     IDS_E_LESS_THAN_MIN_GIRDER_LINES 
@@ -224,7 +282,7 @@ BEGIN
                             "Cannot complete. Less than minimum number of columns will result."
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
