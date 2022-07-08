@@ -9,7 +9,7 @@
 #include "ModelPropertiesDlg.h"
 
 #include <MathEx.h>
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -18,6 +18,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #define ID(_id_) _T("'") << (_id_+1) << _T("'")
+
+using namespace WBFL::Units;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFEA2DDoc
@@ -226,8 +228,8 @@ void CFEA2DDoc::OnGTStrudl()
       JointIDType id;
       joint->get_ID(&id);
 
-      x = ::ConvertFromSysUnits(x, unitMeasure::Feet);
-      y = ::ConvertFromSysUnits(y, unitMeasure::Feet);
+      x = ::ConvertFromSysUnits(x, Measure::Feet);
+      y = ::ConvertFromSysUnits(y, Measure::Feet);
       ofile << ID(id) << _T(" ") << x << _T(" ") << y << std::endl;
    }
 
@@ -386,10 +388,10 @@ void CFEA2DDoc::OnGTStrudl()
       member->get_EI(&EI);
 
       // (ksi)*(in2) = kip
-      EA = ::ConvertFromSysUnits(EA, unitMeasure::Kip);
+      EA = ::ConvertFromSysUnits(EA, Measure::Kip);
 
       // (ksi)*(in4) = kip*in2
-      EI = ::ConvertFromSysUnits(EI, unitMeasure::KipInch2);
+      EI = ::ConvertFromSysUnits(EI, Measure::KipInch2);
       ofile << ID(mbrID) << _T(" AX ") << EA << _T(" IZ ") << EI << std::endl;
    }
    ofile << _T("UNITS FEET KIP DEG FAH") << std::endl;
@@ -441,10 +443,10 @@ void CFEA2DDoc::OnGTStrudl()
          load->get_WStart(&wStart);
          load->get_WEnd(&wEnd);
 
-         xStart = ::ConvertFromSysUnits(xStart, unitMeasure::Feet);
-         xEnd = ::ConvertFromSysUnits(xEnd, unitMeasure::Feet);
-         wStart = ::ConvertFromSysUnits(wStart, unitMeasure::KipPerFoot);
-         wEnd = ::ConvertFromSysUnits(wEnd, unitMeasure::KipPerFoot);
+         xStart = ::ConvertFromSysUnits(xStart, Measure::Feet);
+         xEnd = ::ConvertFromSysUnits(xEnd, Measure::Feet);
+         wStart = ::ConvertFromSysUnits(wStart, Measure::KipPerFoot);
+         wEnd = ::ConvertFromSysUnits(wEnd, Measure::KipPerFoot);
 
          if (!IsZero(wStart) && !IsZero(wEnd))
          {
@@ -477,8 +479,8 @@ void CFEA2DDoc::OnGTStrudl()
          load->GetForce(&Fx,&Fy,&Mz);
          load->get_Location(&X);
 
-         X = ::ConvertFromSysUnits(X, unitMeasure::Feet);
-         Fy = ::ConvertToSysUnits(Fy, unitMeasure::Kip);
+         X = ::ConvertFromSysUnits(X, Measure::Feet);
+         Fy = ::ConvertToSysUnits(Fy, Measure::Kip);
 
          if ( !IsZero(Fy) )
          {
