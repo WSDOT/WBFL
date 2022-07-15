@@ -41,7 +41,7 @@ gbtAlternativeTensileStressRequirements::gbtAlternativeTensileStressRequirements
    fy = 0;
    bLimitBarStress = true;
    fsMax = 0;
-   concreteType = matConcrete::Normal;
+   concreteType = WBFL::Materials::ConcreteType::Normal;
    fc = 0;
    bHasFct = false;
    Fct = 0;
@@ -308,7 +308,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
 
          CComBSTR name;
          rebar->get_Name(&name);
-         matRebar::Size size = lrfdRebarPool::GetBarSize(OLE2CT(name));
+         WBFL::Materials::Rebar::Size size = lrfdRebarPool::GetBarSize(OLE2CT(name));
 
          Float64 dev_length_factor = 1.0;
          if (pRequirements->bAdjustForDevelopmentLength)

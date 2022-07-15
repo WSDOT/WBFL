@@ -54,12 +54,12 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                         WBFL::Materials::PsStrand::Type typePerm, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                         WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -74,7 +74,7 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 friction,
                          Float64 angleChange,
 
-                         matConcrete::Type concreteType,
+                         WBFL::Materials::ConcreteType concreteType,
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -279,12 +279,12 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
       }
 
 
-      if ( m_TypePerm == matPsStrand::LowRelaxation )
+      if ( m_TypePerm == WBFL::Materials::PsStrand::Type::LowRelaxation )
       {
          losses -= lowRelaxReduction;
       }
 
-      if ( m_ConcreteType != matConcrete::Normal )
+      if ( m_ConcreteType != WBFL::Materials::ConcreteType::Normal )
       {
          losses += (is_si ? WBFL::Units::ConvertToSysUnits(35.,WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(5.0,WBFL::Units::Measure::KSI));
       }
@@ -330,8 +330,8 @@ bool lrfdApproximateLosses::TestMe(WBFL::Debug::Log& rlog)
 //   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //   Float64 PPR   = 1.0;
 //
-//   lrfdApproximateLosses loss( matPsStrand::Gr1860,
-//                               matPsStrand::LowRelaxation,
+//   lrfdApproximateLosses loss( WBFL::Materials::PsStrand::Grade::Gr1860,
+//                               WBFL::Materials::PsStrand::Type::LowRelaxation,
 //                               lrfdApproximateLosses::IBeam,
 //                               Fpj, 0, Ag, Ig, Ybg, e, e, e, Aps, 0, Mdlg, 1.0, Eci, Fc, PPR, t );
 //

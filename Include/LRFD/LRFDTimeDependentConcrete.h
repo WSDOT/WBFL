@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Material - Analytical and Product modeling of civil engineering materials
+// Materials - Analytical and Product modeling of civil engineering materials
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -24,12 +24,12 @@
 #pragma once
 
 #include <Lrfd\LrfdExp.h>
-#include <Material\ConcreteBase.h>
+#include <Lrfd\LRFDConcreteBase.h>
 
 
-struct LRFDCLASS lrfdLRFDTimeDependentConcreteShrinkageDetails : public matConcreteBaseShrinkageDetails
+struct LRFDCLASS lrfdLRFDTimeDependentConcreteShrinkageDetails : public WBFL::Materials::ConcreteBaseShrinkageDetails
 {
-   lrfdLRFDTimeDependentConcreteShrinkageDetails() : matConcreteBaseShrinkageDetails(), 
+   lrfdLRFDTimeDependentConcreteShrinkageDetails() : WBFL::Materials::ConcreteBaseShrinkageDetails(),
       kvs(0),khs(0),kf(0),ktd(0) {}
    Float64 kvs;
    Float64 khs;
@@ -37,9 +37,9 @@ struct LRFDCLASS lrfdLRFDTimeDependentConcreteShrinkageDetails : public matConcr
    Float64 ktd;
 };
 
-struct LRFDCLASS lrfdLRFDTimeDependentConcreteCreepDetails : public matConcreteBaseCreepDetails
+struct LRFDCLASS lrfdLRFDTimeDependentConcreteCreepDetails : public WBFL::Materials::ConcreteBaseCreepDetails
 {
-   lrfdLRFDTimeDependentConcreteCreepDetails() : matConcreteBaseCreepDetails() ,
+   lrfdLRFDTimeDependentConcreteCreepDetails() : WBFL::Materials::ConcreteBaseCreepDetails() ,
       kf(0), kc(0), kvs(0), khc(0), ktd(0) {}
    Float64 kf;
    Float64 kc;
@@ -57,13 +57,15 @@ CLASS
    we will use the ACI 209 model
 *****************************************************************************/
 
-class LRFDCLASS lrfdLRFDTimeDependentConcrete : public matConcreteBase
+class LRFDCLASS lrfdLRFDTimeDependentConcrete : public lrfdLRFDConcreteBase
 {
 public:
-   enum CementType { TypeI, TypeII };
-   static void GetModelParameters(CureMethod cure,CementType cement,Float64* pA,Float64* pBeta);
+   enum class CementType { TypeI, TypeII };
+   static void GetModelParameters(WBFL::Materials::ConcreteBase::CureMethod cure,CementType cement,Float64* pA,Float64* pBeta);
 
    lrfdLRFDTimeDependentConcrete(LPCTSTR name = _T("Unknown"));
+   lrfdLRFDTimeDependentConcrete(const lrfdLRFDTimeDependentConcrete&) = default;
+   lrfdLRFDTimeDependentConcrete& operator=(const lrfdLRFDTimeDependentConcrete&) = default;
 
    // Set/Get the a parameter (days)
    void SetA(Float64 a);
@@ -91,7 +93,7 @@ public:
    void SetEc28(Float64 Ec);
    Float64 GetEc28() const;
 
-   // Sets the 28 day scent modulus by compute what it need to be
+   // Sets the 28 day secent modulus by compute what it need to be
    // based on the current values of alpha and beta for the given
    // value of Ec and the time that that modulus occurs
    void SetEc28(Float64 Ec,Float64 t);
@@ -105,19 +107,6 @@ public:
    // and a later strength (fc2) at age t2. (fc1,fc2 are in system units, t1 and t2 are in days,
    // Alpha is in system units, Beta is unitless
    static void ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pA,Float64* pB);
-
-   // aggregate correction and bounding factors.
-   // see NCHRP Report 496
-   void SetEcCorrectionFactors(Float64 K1,Float64 K2);
-   void GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const;
-   void SetCreepCorrectionFactors(Float64 K1,Float64 K2);
-   void GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const;
-   void SetShrinkageCorrectionFactors(Float64 K1,Float64 K2);
-   void GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const;
-
-   // Concrete density modification factor (LRFD2016 5.2.4.8)
-   void SetLambda(Float64 lambda);
-   Float64 GetLambda() const;
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
@@ -138,14 +127,14 @@ public:
    // Returns the total free shrinkage that has occured from time at casting
    // to the time specified
    virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
-   virtual std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
+   virtual std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
 
    // Returns the creep coefficient at time t for a loading applied at time tla
    virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const override;
-   virtual std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
+   virtual std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
 
    // Creates a clone of this object
-   virtual matConcreteBase* CreateClone() const override;
+   virtual std::unique_ptr<WBFL::Materials::ConcreteBase> CreateClone() const override;
 
    // Set/Get ultimate shrinkage strain
    void SetUltimateShrinkageStrain(Float64 eu);
@@ -170,17 +159,12 @@ public:
    Float64 GetConcreteStrengthFactor() const;
 
    // PCI UHPC parameters
-   void SetFirstCrackStrength(Float64 ffc);
-   Float64 GetFirstCrackStrength() const;
-   void SetPostCrackingTensileStrength(Float64 frr);
-   Float64 GetPostCrackingTensileStrength() const;
-   void SetAutogenousShrinkage(Float64 as);
-   Float64 GetAutogenousShrinkage() const;
-
-protected:
-   // prevent copying and assignment (use CreateClone instead)
-   lrfdLRFDTimeDependentConcrete(const lrfdLRFDTimeDependentConcrete& rOther);
-   lrfdLRFDTimeDependentConcrete& operator = (const lrfdLRFDTimeDependentConcrete& rOther) = delete;
+   virtual void SetFirstCrackingStrength(Float64 ffc) override;
+   virtual Float64 GetFirstCrackingStrength() const override;
+   virtual void SetPostCrackingTensileStrength(Float64 frr) override;
+   virtual Float64 GetPostCrackingTensileStrength() const override;
+   virtual void SetAutogenousShrinkage(Float64 as) override;
+   virtual Float64 GetAutogenousShrinkage() const override;
 
 private:
    Float64 m_Eshu; // ultimate shrinkage strain
@@ -194,15 +178,6 @@ private:
 
    Float64 m_ShearFrCoefficient;
    Float64 m_FlexureFrCoefficient;
-
-   Float64 m_EcK1;
-   Float64 m_EcK2;
-   Float64 m_CreepK1;
-   Float64 m_CreepK2;
-   Float64 m_ShrinkageK1;
-   Float64 m_ShrinkageK2;
-
-   Float64 m_Lambda;
 
    mutable Float64 m_Ec; // this is the validated Ec28 (could be user input or could be computed)
 
@@ -222,11 +197,10 @@ private:
 
    Float64 ComputeConcreteStrengthFactor() const;
 
-   void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails>& pDetails) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
 };

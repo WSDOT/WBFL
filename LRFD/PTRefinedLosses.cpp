@@ -43,7 +43,7 @@ CLASS
 
 Float64 pt_shrinkage_losses(Float64 h);
 Float64 pt_creep_losses(Float64 fcgp, Float64 dfcdp);
-Float64 pt_relaxation_after_transfer(matPsStrand::Type type,Float64 fr,Float64 es,Float64 sr,Float64 cr);
+Float64 pt_relaxation_after_transfer(WBFL::Materials::PsStrand::Type type,Float64 fr,Float64 es,Float64 sr,Float64 cr);
 
 bool pt_IsSI() 
 {
@@ -57,8 +57,8 @@ lrfdPTRefinedLosses::lrfdPTRefinedLosses()
 {
    Init();
 
-   m_Grade = matPsStrand::Gr1860;
-   m_Type  = matPsStrand::LowRelaxation;
+   m_Grade = WBFL::Materials::PsStrand::Grade::Gr1860;
+   m_Type  = WBFL::Materials::PsStrand::Type::LowRelaxation;
    m_Rh    = 70.;
    m_Eci   = WBFL::Units::ConvertToSysUnits(  25000, WBFL::Units::Measure::MPa );
    m_Ep    = lrfdPsStrand::GetModE();
@@ -77,8 +77,8 @@ lrfdPTRefinedLosses::lrfdPTRefinedLosses()
    m_Msidl = 0;
 }
 
-lrfdPTRefinedLosses::lrfdPTRefinedLosses(matPsStrand::Grade gr,
-                           matPsStrand::Type type,
+lrfdPTRefinedLosses::lrfdPTRefinedLosses(WBFL::Materials::PsStrand::Grade gr,
+                           WBFL::Materials::PsStrand::Type type,
                            Float64 fpj,
                            Float64 Ag,   // area of girder
                            Float64 Ig,   // moment of inertia of girder
@@ -334,7 +334,7 @@ Float64 pt_creep_losses(Float64 fcgp, Float64 dfcdp)
    return loss;
 }
 
-Float64 pt_relaxation_after_transfer(matPsStrand::Type type,Float64 fr,Float64 es,Float64 sr,Float64 cr)
+Float64 pt_relaxation_after_transfer(WBFL::Materials::PsStrand::Type type,Float64 fr,Float64 es,Float64 sr,Float64 cr)
 {
    bool is_si = pt_IsSI();
    const WBFL::Units::Stress* p_unit;
@@ -395,8 +395,8 @@ bool lrfdPTRefinedLosses::TestMe(WBFL::Debug::Log& rlog)
 //   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
 //   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //
-//   lrfdPTRefinedLosses loss( matPsStrand::Gr1860,
-//                      matPsStrand::LowRelaxation,
+//   lrfdPTRefinedLosses loss( WBFL::Materials::PsStrand::Grade::Gr1860,
+//                      WBFL::Materials::PsStrand::Type::LowRelaxation,
 //                      Fpj, Ag, Ig, Ybg, Ic, Ybc, e, Aps, Mdlg, Madlg, Msidl,
 //                      Rh, Eci, t );
 //

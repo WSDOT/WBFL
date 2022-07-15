@@ -25,7 +25,7 @@
 #pragma once
 
 #include <WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h>
-#include <Material\Concrete.h>
+#include <Materials/Concrete.h>
 #include <WBFLGeometry.h>
 #include <GeomModel/Primitives3d.h>
 #include <WBFLGenericBridge.h>
@@ -49,7 +49,7 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    Float64 fsMax; // maximum bar stress if bLimitBarStress is true
 
    // concrete properties (only used if bAdjustForDevelopmentLength is true)
-   matConcrete::Type concreteType;
+   WBFL::Materials::ConcreteType concreteType;
    Float64 fc;
    bool bHasFct;
    Float64 Fct;

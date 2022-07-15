@@ -673,17 +673,17 @@ bool StabilityProblemImp::IncludeLateralRollAxisOffset() const
    return m_bIncludeRollAxisLateralOffset;
 }
 
-const matConcreteEx& StabilityProblemImp::GetConcrete() const
+const WBFL::Materials::Concrete& StabilityProblemImp::GetConcrete() const
 {
    return m_Concrete;
 }
 
-matConcreteEx& StabilityProblemImp::GetConcrete()
+WBFL::Materials::Concrete& StabilityProblemImp::GetConcrete()
 {
    return m_Concrete;
 }
 
-void StabilityProblemImp::SetConcrete(const matConcreteEx& concrete)
+void StabilityProblemImp::SetConcrete(const WBFL::Materials::Concrete& concrete)
 {
    m_Concrete = concrete;
 }

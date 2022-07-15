@@ -362,7 +362,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
    get_Rebar(&rebar);
    CComBSTR bstrSize;
    rebar->get_Name(&bstrSize);
-   matRebar::Size size = lrfdRebarPool::GetBarSize(OLE2CT(bstrSize));
+   WBFL::Materials::Rebar::Size size = lrfdRebarPool::GetBarSize(OLE2CT(bstrSize));
    Float64 db;
    rebar->get_NominalDiameter(&db);
 

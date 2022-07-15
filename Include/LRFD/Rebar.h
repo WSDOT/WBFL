@@ -29,8 +29,8 @@
 // SYSTEM INCLUDES
 //
 #include <Lrfd\LrfdExp.h>
-#include <Material\Rebar.h>
-#include <Material\Concrete.h>
+#include <Materials/Rebar.h>
+#include <Materials/Concrete.h>
 #include <Lrfd\Details.h>
 
 // LOCAL INCLUDES
@@ -95,7 +95,7 @@ public:
    //------------------------------------------------------------------------
    // Returns the minimum bar size in the confinment zone per 5.10.10.2
    // Bar size correlates to lrfdRebarPool
-   static matRebar::Size GetMinConfinmentBarSize();
+   static WBFL::Materials::Rebar::Size GetMinConfinmentBarSize();
 
    //------------------------------------------------------------------------
    // Returns the minimum bar area in the confinment zone per 5.10.10.2
@@ -116,30 +116,30 @@ public:
    //------------------------------------------------------------------------
    // Returns max development length of a rebar in tension per 5.11.2.1.1
    // modification factors are not applied
-   static Float64 GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc);
+   static Float64 GetTensileDevelopmentLength(const WBFL::Materials::Rebar& rebar, Float64 fc);
 
    //------------------------------------------------------------------------
    // Returns the hook extension at the free end of the bar per LRFD 5.10.2.1 and 5.10.2.2
-   static Float64 GetHookExtension(matRebar::Size size,Float64 db,Usage usage,Hook hook);
+   static Float64 GetHookExtension(WBFL::Materials::Rebar::Size size,Float64 db,Usage usage,Hook hook);
 
    //------------------------------------------------------------------------
    // Returns the minimum inside bend diameter (LRFD 5.10.2.3)
    // if fractional is true, returns the number of bar diameters
    // otherwise returns the actual bend diameter
-   static Float64 GetBendDiameter(matRebar::Size size,Float64 db,Usage usage,bool bFractional);
+   static Float64 GetBendDiameter(WBFL::Materials::Rebar::Size size,Float64 db,Usage usage,bool bFractional);
 
    //------------------------------------------------------------------------
    // Returns the compression controlled strain limit (LRFD 5.7.2.1)
-   static Float64 GetCompressionControlledStrainLimit(matRebar::Grade grade);
+   static Float64 GetCompressionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade);
 
    //------------------------------------------------------------------------
    // Returns the tension controlled strain limit (LRFD 5.7.2.1)
-   static Float64 GetTensionControlledStrainLimit(matRebar::Grade grade);
+   static Float64 GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade);
 
    //------------------------------------------------------------------------
    // Retuns rebar development length
-   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, const matConcrete& concrete);
-   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct,Float64 density);
+   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::Concrete& concrete);
+   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

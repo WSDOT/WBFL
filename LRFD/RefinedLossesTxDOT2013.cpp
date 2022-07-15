@@ -57,12 +57,12 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013()
 lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                         WBFL::Materials::PsStrand::Type typePerm, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                         WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -276,12 +276,12 @@ void lrfdRefinedLossesTxDOT2013::UpdateLongTermLosses() const
          m_fpt = m_FpjPerm - m_dfpR0[PERMANENT_STRAND] - m_dfpES[PERMANENT_STRAND];
       }
 
-      m_KL = (m_TypePerm == matPsStrand::LowRelaxation ? 30 : 7);
+      m_KL = (m_TypePerm == WBFL::Materials::PsStrand::Type::LowRelaxation ? 30 : 7);
 
       m_dfpR1 = (m_fpt <= 0.0) ? 0 : (m_fpt/m_KL)*(m_fpt/m_FpyPerm - 0.55);
       m_dfpR1 = (m_dfpR1 < 0 ? 0 : m_dfpR1); // Fpt can't be less than 0.55Fpy
 
-      if ( m_CoatingPerm != matPsStrand::None )
+      if ( m_CoatingPerm != WBFL::Materials::PsStrand::Coating::None )
       {
          // See PCI Guidelines for the use of epoxy-coated strand
          // PCI Journal July-August 1993. Section 5.3
@@ -430,8 +430,8 @@ bool lrfdRefinedLossesTxDOT2013::TestMe(WBFL::Debug::Log& rlog)
 //   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
 //   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //
-//   lrfdRefinedLossesTxDOT2013 loss( matPsStrand::Gr1860,
-//                      matPsStrand::LowRelaxation,
+//   lrfdRefinedLossesTxDOT2013 loss( WBFL::Materials::PsStrand::Grade::Gr1860,
+//                      WBFL::Materials::PsStrand::Type::LowRelaxation,
 //                      Fpj, 0, Ag, Ig, Ybg, Ic, Ybc, e, e, e, Aps, 0, Mdlg, Madlg, Msidl, 1.0,
 //                      Rh, Eci, t );
 //

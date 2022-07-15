@@ -270,7 +270,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
    Float64 Ll, Lr;
    pStabilityProblem->GetSupportLocations(&Ll,&Lr);
 
-   const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+   const auto& concrete = pStabilityProblem->GetConcrete();
 
    Float64 Ec = concrete.GetE();
    Float64 L = Lg - Ll - Lr;
@@ -887,7 +887,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
       results.AssumedTiltDirection = Right;
    }
 
-   const matConcreteEx & concrete = pStabilityProblem->GetConcrete();
+   const auto & concrete = pStabilityProblem->GetConcrete();
    Float64 fr = concrete.GetFlexureFr();
 
    Float64 SupportPlacementTolerance = pStabilityProblem->GetSupportPlacementTolerance();
@@ -1455,7 +1455,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
    }
 
 
-   const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+   const auto& concrete = pStabilityProblem->GetConcrete();
    Float64 fr = concrete.GetFlexureFr();
 
    Float64 SupportPlacementTolerance = pStabilityProblem->GetSupportPlacementTolerance();
@@ -2146,7 +2146,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
                                                                                  
    // Create FEM members
 
-   const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+   const auto& concrete = pStabilityProblem->GetConcrete();
    Float64 Ec = concrete.GetE();
 
    // use middle of girder section properties for EA and EI
@@ -2681,7 +2681,7 @@ Float64 StabilityEngineer::ComputeXcg(const IGirder* pGirder, const IStabilityPr
          Float64 Xbar2 = fabs(Xcg2 - Max(Wtop2,Wbot2) / 2);
 
          Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
-         const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+         const auto& concrete = pStabilityProblem->GetConcrete();
          Float64 density = concrete.GetDensityForWeight();
          Float64 unitWeight = density*g;
 
@@ -2698,7 +2698,7 @@ Float64 StabilityEngineer::ComputeXcg(const IGirder* pGirder, const IStabilityPr
       Float64 Wg = 0;
 
       Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
-      const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+      const auto& concrete = pStabilityProblem->GetConcrete();
       Float64 density = concrete.GetDensityForWeight();
       Float64 unitWeight = density*g;
 
@@ -2785,7 +2785,7 @@ Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProb
       CComQIPtr<IFem2dModelResults> femResults(pModel);
       Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
 
-      const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+      const auto& concrete = pStabilityProblem->GetConcrete();
       Float64 density = concrete.GetDensityForWeight();
       Float64 unitWeight = density*g;
 

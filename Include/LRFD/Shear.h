@@ -35,7 +35,7 @@
 
 // LOCAL INCLUDES
 //
-#include <Material\Concrete.h>
+#include <Materials/Concrete.h>
 
 // FORWARD DECLARATIONS
 //
@@ -85,7 +85,7 @@ struct LRFDCLASS lrfdShearData
    Float64 fpoptSegment;
    Float64 fpoptGirder;
    Float64 fc;
-   matConcrete::Type ConcreteType;
+   WBFL::Materials::ConcreteType ConcreteType;
    bool bHasfct;
    Float64 fct;
    Float64 ag; // max aggregate size

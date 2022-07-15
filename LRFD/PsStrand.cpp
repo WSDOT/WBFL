@@ -58,19 +58,19 @@ lrfdPsStrand::~lrfdPsStrand()
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-Float64 lrfdPsStrand::GetUltimateStrength(matPsStrand::Grade gr)
+Float64 lrfdPsStrand::GetUltimateStrength(WBFL::Materials::PsStrand::Grade gr)
 {
    Float64 fpu;
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-   if ( gr == matPsStrand::Gr1725 )
+   if ( gr == WBFL::Materials::PsStrand::Grade::Gr1725 )
    {
       fpu = is_si ? g_1725_MPA : g_250_KSI;
    }
-   else if (gr == matPsStrand::Gr1860)
+   else if (gr == WBFL::Materials::PsStrand::Grade::Gr1860)
    {
       fpu = is_si ? g_1860_MPA : g_270_KSI;
    }
-   else if (gr == matPsStrand::Gr2070)
+   else if (gr == WBFL::Materials::PsStrand::Grade::Gr2070)
    {
       fpu = is_si ? g_2070_MPA : g_300_KSI;
    }
@@ -82,14 +82,14 @@ Float64 lrfdPsStrand::GetUltimateStrength(matPsStrand::Grade gr)
    return fpu;
 }
 
-Float64 lrfdPsStrand::GetYieldStrength(matPsStrand::Grade gr,matPsStrand::Type type)
+Float64 lrfdPsStrand::GetYieldStrength(WBFL::Materials::PsStrand::Grade gr,WBFL::Materials::PsStrand::Type type)
 {
    Float64 fpu = GetUltimateStrength( gr );
-   Float64 fpy = fpu * ( type == matPsStrand::LowRelaxation ? 0.90 : 0.85 );
+   Float64 fpy = fpu * ( type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.90 : 0.85 );
    return fpy;
 }
 
-Float64 lrfdPsStrand::GetStressLimit(matPsStrand::Grade gr,matPsStrand::Type type,Stage stage)
+Float64 lrfdPsStrand::GetStressLimit(WBFL::Materials::PsStrand::Grade gr,WBFL::Materials::PsStrand::Type type,Stage stage)
 {
    Float64 fpu = GetUltimateStrength( gr );
    Float64 fpy = GetYieldStrength( gr, type );
@@ -102,21 +102,21 @@ Float64 lrfdPsStrand::GetStressLimit(matPsStrand::Grade gr,matPsStrand::Type typ
         if ( !is_first_edition )
            THROW( lrfdXCodeVersion, BadVersion );
 
-        f_limit = ( type == matPsStrand::LowRelaxation ? 0.78 : 0.72 ) * fpu;
+        f_limit = ( type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.78 : 0.72 ) * fpu;
         break;
 
    case BeforeTransfer:
         if ( is_first_edition )
            THROW( lrfdXCodeVersion, BadVersion );
 
-        f_limit = ( type == matPsStrand::LowRelaxation ? 0.75 : 0.70 ) * fpu;
+        f_limit = ( type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.75 : 0.70 ) * fpu;
         break;
 
    case AfterTransfer:
         if ( !is_first_edition )
            THROW( lrfdXCodeVersion, BadVersion );
 
-        f_limit = ( type == matPsStrand::LowRelaxation ? 0.74 : 0.70 ) * fpu;
+        f_limit = ( type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.74 : 0.70 ) * fpu;
         break;
 
    case AfterAllLosses:
@@ -143,7 +143,7 @@ Float64 lrfdPsStrand::GetModE()
    return e;
 }
 
-Float64 lrfdPsStrand::GetPjack(const matPsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer)
+Float64 lrfdPsStrand::GetPjack(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer)
 {
    Float64 fpj = lrfdPsStrand::GetFpj( strand, timeToXfer );
    Float64 Pjack = fpj * nStrands * strand.GetNominalArea();
@@ -151,7 +151,7 @@ Float64 lrfdPsStrand::GetPjack(const matPsStrand& strand,StrandIndexType nStrand
    return Pjack;
 }
 
-Float64 lrfdPsStrand::GetPjack(const matPsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer,Float64 coeff)
+Float64 lrfdPsStrand::GetPjack(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer,Float64 coeff)
 {
    Float64 fpj = lrfdPsStrand::GetFpj( strand, timeToXfer, coeff );
    Float64 Pjack = fpj * nStrands * strand.GetNominalArea();
@@ -159,24 +159,24 @@ Float64 lrfdPsStrand::GetPjack(const matPsStrand& strand,StrandIndexType nStrand
    return Pjack;
 }
 
-Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer)
+Float64 lrfdPsStrand::GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToXfer)
 {
    Float64 fpj;
    Float64 coeff; // coefficient on fpu
    if ( lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994 )
    {
-      coeff = ( strand.GetType() == matPsStrand::LowRelaxation ? 0.78 : 0.72 );
+      coeff = ( strand.GetType() == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.78 : 0.72 );
    }
    else
    {
-      coeff = ( strand.GetType() == matPsStrand::LowRelaxation ? 0.75 : 0.70 ); 
+      coeff = ( strand.GetType() == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.75 : 0.70 ); 
    }
 
    fpj = lrfdPsStrand::GetFpj( strand, timeToXfer, coeff );
    return fpj;
 }
 
-Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float64 coeff)
+Float64 lrfdPsStrand::GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToXfer,Float64 coeff)
 {
    Float64 fpj;
 
@@ -197,7 +197,7 @@ Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float6
       fpy = WBFL::Units::ConvertFromSysUnits( fpy, WBFL::Units::Measure::MPa );
       
       Float64 k; // Coefficient in denominator of equation 5.9.5.4.4b
-      k = ( strand.GetType() == matPsStrand::LowRelaxation ? 40.0 : 10.0 );
+      k = ( strand.GetType() == WBFL::Materials::PsStrand::Type::LowRelaxation ? 40.0 : 10.0 );
 
       Float64 t; // time in days
       t = WBFL::Units::ConvertFromSysUnits( timeToXfer, WBFL::Units::Measure::Day );
@@ -227,7 +227,7 @@ Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float6
    return fpj;
 }
 
-Float64 lrfdPsStrand::GetXferLength(const matPsStrand& strand,bool bEpoxyCoated)
+Float64 lrfdPsStrand::GetXferLength(const WBFL::Materials::PsStrand& strand,bool bEpoxyCoated)
 {
    if ( bEpoxyCoated )
    {
@@ -275,7 +275,7 @@ Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
    return k;
 }
 
-Float64 lrfdPsStrand::GetDevLength(const matPsStrand& strand, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded)
+Float64 lrfdPsStrand::GetDevLength(const WBFL::Materials::PsStrand& strand, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded)
 {
    Float64 db = strand.GetNominalDiameter();
    return GetDevLength(db, fps, fpe, mbrDepth, bDebonded);
@@ -305,13 +305,13 @@ Float64 lrfdPsStrand::GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64
    return ld;
 }
 
-Float64 lrfdPsStrand::GetFpjPT(const matPsStrand& strand)
+Float64 lrfdPsStrand::GetFpjPT(const WBFL::Materials::PsStrand& strand)
 {
    Float64 fpy = strand.GetYieldStrength();
    return 0.90*fpy;
 }
 
-Float64 lrfdPsStrand::GetPjackPT(const matPsStrand& strand,StrandIndexType nStrands)
+Float64 lrfdPsStrand::GetPjackPT(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands)
 {
    Float64 fpj = GetFpjPT(strand);
    Float64 Apt = nStrands*strand.GetNominalArea();
@@ -346,7 +346,7 @@ bool lrfdPsStrand::TestMe(WBFL::Debug::Log& rlog)
    Uint16 nStrands = 10;
    Float64 Pjack;
    Float64 xferTime = WBFL::Units::ConvertToSysUnits( 24.0, WBFL::Units::Measure::Hour );
-   const matPsStrand* pStrand = 0;
+   const WBFL::Materials::PsStrand* pStrand = 0;
    lrfdStrandPool* pPool = lrfdStrandPool::GetInstance();
 
    // LRFD 1st Edition
@@ -355,25 +355,25 @@ bool lrfdPsStrand::TestMe(WBFL::Debug::Log& rlog)
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    // Grade 1725 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1153.82, 0.01 ) );
 
    // Grade 1725 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1249.97, 0.01 ) );
 
    // Grade 1860 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1321.92, 0.01 ) );
 
    // Grade 1860 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1432.08, 0.01 ) );
@@ -384,25 +384,25 @@ bool lrfdPsStrand::TestMe(WBFL::Debug::Log& rlog)
    lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEditionWith1997Interims );
 
    // Grade 1725 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1171.98, 0.01 ) );
 
    // Grade 1725 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1214.12, 0.01 ) );
 
    // Grade 1860 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1342.72, 0.01 ) );
 
    // Grade 1860 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
+   pStrand = pPool->GetStrand( WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270 );
    Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
    Pjack = WBFL::Units::ConvertFromSysUnits( Pjack, WBFL::Units::Measure::Kilonewton );
    TRY_TESTME( IsEqual( Pjack, 1391.01, 0.01 ) );

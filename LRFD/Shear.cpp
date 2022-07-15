@@ -398,23 +398,23 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    }
    else
    {
-      if (pData->ConcreteType == matConcrete::Normal)
+      if (pData->ConcreteType == WBFL::Materials::ConcreteType::Normal)
       {
          sqrt_fc = sqrt(fc);
       }
-      else if ((pData->ConcreteType == matConcrete::AllLightweight || pData->ConcreteType == matConcrete::SandLightweight) && pData->bHasfct)
+      else if ((pData->ConcreteType == WBFL::Materials::ConcreteType::AllLightweight || pData->ConcreteType == WBFL::Materials::ConcreteType::SandLightweight) && pData->bHasfct)
       {
          sqrt_fc = min(Kfct*fct, sqrt(fc));
       }
-      else if (pData->ConcreteType == matConcrete::AllLightweight && !pData->bHasfct)
+      else if (pData->ConcreteType == WBFL::Materials::ConcreteType::AllLightweight && !pData->bHasfct)
       {
          sqrt_fc = 0.75*sqrt(fc);
       }
-      else if (pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct)
+      else if (pData->ConcreteType == WBFL::Materials::ConcreteType::SandLightweight && !pData->bHasfct)
       {
          sqrt_fc = 0.85*sqrt(fc);
       }
-      else if (pData->ConcreteType == matConcrete::PCI_UHPC)
+      else if (pData->ConcreteType == WBFL::Materials::ConcreteType::PCI_UHPC)
       {
          ATLASSERT(false); // Vci/Vcw doesn't support PCI UHPC
       }

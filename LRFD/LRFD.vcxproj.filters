@@ -133,6 +133,9 @@
     <ClCompile Include="PCIUHPCCreepCoefficient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LRFDConcreteBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\LRFD\ApproximateLosses.h">
@@ -283,6 +286,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\ILiveLoadDistributionFactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\LRFDConcreteBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

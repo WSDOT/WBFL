@@ -312,7 +312,7 @@
       <Project>{262ce7a1-072b-4578-b45c-75546fa4c384}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\Material\Material.vcxproj">
+    <ProjectReference Include="..\Materials\Materials.vcxproj">
       <Project>{3904763e-7a13-445f-8544-260047d333cd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

@@ -30,7 +30,7 @@
 //
 #include <map>
 #include <Lrfd\LrfdExp.h>
-#include <Material\PsStrand.h>
+#include <Materials/PsStrand.h>
 #include <Lrfd\PsStrand.h>
 #include <System\SingletonKiller.h>
 #include <Lrfd\VersionMgr.h>
@@ -77,23 +77,23 @@ public:
    static lrfdStrandPool* GetInstance();
 
    //------------------------------------------------------------------------
-   const matPsStrand* GetStrand(Int64 key,lrfdVersionMgr::Units units);
+   const WBFL::Materials::PsStrand* GetStrand(Int64 key,lrfdVersionMgr::Units units);
 
    //------------------------------------------------------------------------
-   const matPsStrand* GetStrand(Int64 key);
+   const WBFL::Materials::PsStrand* GetStrand(Int64 key);
 
    //------------------------------------------------------------------------
-   const matPsStrand* GetStrand(matPsStrand::Grade grade,
-                                matPsStrand::Type type,
-                                matPsStrand::Coating coating,
-                                matPsStrand::Size size );
+   const WBFL::Materials::PsStrand* GetStrand(WBFL::Materials::PsStrand::Grade grade,
+                                WBFL::Materials::PsStrand::Type type,
+                                WBFL::Materials::PsStrand::Coating coating,
+                                WBFL::Materials::PsStrand::Size size );
 
    //------------------------------------------------------------------------
    // Returns the lookup key for pStrand.  If pStrand is not a member of
    // the strand pool, returns -1
-   Int64 GetStrandKey(const matPsStrand* pStrand);
+   Int64 GetStrandKey(const WBFL::Materials::PsStrand* pStrand);
 
-   bool CompareStrands(const matPsStrand* pStrandA, const matPsStrand* pStrandB, bool bCompareGrade = true, bool bCompareType = true, bool bCompareCoating = false, bool bCompareSize = false);
+   bool CompareStrands(const WBFL::Materials::PsStrand* pStrandA, const WBFL::Materials::PsStrand* pStrandB, bool bCompareGrade = true, bool bCompareType = true, bool bCompareCoating = false, bool bCompareSize = false);
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -125,8 +125,8 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    static lrfdStrandPool* ms_pInstance;
-   static std::map<Int64, std::shared_ptr<matPsStrand> > ms_USStrand;
-   static std::map<Int64, std::shared_ptr<matPsStrand> > ms_SIStrand;
+   static std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> > ms_USStrand;
+   static std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> > ms_SIStrand;
 
    typedef WBFL::System::SingletonKiller<lrfdStrandPool> Killer;
    friend Killer;
@@ -175,9 +175,9 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   lrfdStrandIter(matPsStrand::Grade grade = matPsStrand::Gr1725,
-                  matPsStrand::Type type = matPsStrand::LowRelaxation,
-                  matPsStrand::Coating coating = matPsStrand::None);
+   lrfdStrandIter(WBFL::Materials::PsStrand::Grade grade = WBFL::Materials::PsStrand::Grade::Gr1725,
+                  WBFL::Materials::PsStrand::Type type = WBFL::Materials::PsStrand::Type::LowRelaxation,
+                  WBFL::Materials::PsStrand::Coating coating = WBFL::Materials::PsStrand::Coating::None);
 
    //------------------------------------------------------------------------
    lrfdStrandIter(const lrfdStrandIter& rOther);
@@ -211,7 +211,7 @@ public:
    operator void*() const;
 
    //------------------------------------------------------------------------
-   const matPsStrand* GetCurrentStrand() const;
+   const WBFL::Materials::PsStrand* GetCurrentStrand() const;
 
    // GROUP: ACCESS
 
@@ -219,34 +219,34 @@ public:
    // Sets the grade of prestress steel for which the available sizes will
    // be iterated over. Sets the iterator to the first element in the
    // iteration sequence.
-   void SetGrade(matPsStrand::Grade grade);
+   void SetGrade(WBFL::Materials::PsStrand::Grade grade);
 
    //------------------------------------------------------------------------
    // Returns the grade of prestress steel for which the available sizes
    // are being iterated over.
-   matPsStrand::Grade GetGrade() const;
+   WBFL::Materials::PsStrand::Grade GetGrade() const;
 
    //------------------------------------------------------------------------
    // Sets the type of prestress steel for which the available sizes will
    // be iterated over. Sets the iterator to the first element in the
    // iteration sequence.
-   void SetType(matPsStrand::Type type);
+   void SetType(WBFL::Materials::PsStrand::Type type);
 
    //------------------------------------------------------------------------
    // Returns the type of prestress steel for which the available sizes
    // are being iterated over.
-   matPsStrand::Type GetType() const;
+   WBFL::Materials::PsStrand::Type GetType() const;
 
    //------------------------------------------------------------------------
    // Sets the coating type of prestress steel for which the available sizes will
    // be iterated over. Sets the iterator to the first element in the
    // iteration sequence.
-   void SetCoating(matPsStrand::Coating coating);
+   void SetCoating(WBFL::Materials::PsStrand::Coating coating);
 
    //------------------------------------------------------------------------
    // Returns the coating type of prestress steel for which the available sizes
    // are being iterated over.
-   matPsStrand::Coating GetCoating() const;
+   WBFL::Materials::PsStrand::Coating GetCoating() const;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -279,13 +279,13 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::vector< const matPsStrand* > m_Strands;
-   std::vector< const matPsStrand* >::iterator m_Begin;
-   std::vector< const matPsStrand* >::iterator m_End;
-   std::vector< const matPsStrand* >::iterator m_Current;
-   matPsStrand::Grade m_Grade;
-   matPsStrand::Type m_Type;
-   matPsStrand::Coating m_Coating;
+   std::vector< const WBFL::Materials::PsStrand* > m_Strands;
+   std::vector< const WBFL::Materials::PsStrand* >::iterator m_Begin;
+   std::vector< const WBFL::Materials::PsStrand* >::iterator m_End;
+   std::vector< const WBFL::Materials::PsStrand* >::iterator m_Current;
+   WBFL::Materials::PsStrand::Grade m_Grade;
+   WBFL::Materials::PsStrand::Type m_Type;
+   WBFL::Materials::PsStrand::Coating m_Coating;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

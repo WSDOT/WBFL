@@ -88,8 +88,8 @@ public:
    // Constructor.  Initializes the object with the give values.
    // fpy is initialized to 0.85fpu for StressRelieved strands and
    // 0.90fpu for LowRelaxation strands.
-   lrfdNoncompositeApproximateLosses2005(matPsStrand::Grade gr,
-                         matPsStrand::Type type,
+   lrfdNoncompositeApproximateLosses2005(WBFL::Materials::PsStrand::Grade gr,
+                         WBFL::Materials::PsStrand::Type type,
                          BeamType beamType,
                          Level level,
 			                Float64 fpj,    // Actual jacking stress
@@ -158,10 +158,10 @@ public:
 
    // GROUP: ACCESS
    //------------------------------------------------------------------------
-   void SetStrandType(matPsStrand::Type type);
-   matPsStrand::Type GetStrandType() const;
-   void SetStrandGrade(matPsStrand::Grade gr);
-   matPsStrand::Grade GetStrandGrade() const;
+   void SetStrandType(WBFL::Materials::PsStrand::Type type);
+   WBFL::Materials::PsStrand::Type GetStrandType() const;
+   void SetStrandGrade(WBFL::Materials::PsStrand::Grade gr);
+   WBFL::Materials::PsStrand::Grade GetStrandGrade() const;
    void SetFpj(Float64 fpj);
    Float64 GetFpj() const;
    void SetAg(Float64 Ag);
@@ -215,8 +215,8 @@ private:
    // GROUP: DATA MEMBERS
    BeamType m_BeamType;
    Level m_Level;
-   matPsStrand::Type m_Type;
-   matPsStrand::Grade m_Grade;
+   WBFL::Materials::PsStrand::Type m_Type;
+   WBFL::Materials::PsStrand::Grade m_Grade;
    Float64 m_Aps;   // Area of prestressing steel
    Float64 m_Ag;    // Area of the girder
    Float64 m_Ig;    // Moment of inertia of the girder
@@ -269,10 +269,10 @@ private:
 
 // INLINE METHODS
 //
-inline void lrfdNoncompositeApproximateLosses2005::SetStrandType(matPsStrand::Type type) { m_Type = type; m_IsDirty = true; }
-inline matPsStrand::Type lrfdNoncompositeApproximateLosses2005::GetStrandType() const { return m_Type; }
-inline void lrfdNoncompositeApproximateLosses2005::SetStrandGrade(matPsStrand::Grade gr) { m_Grade = gr; m_IsDirty = true; }
-inline matPsStrand::Grade lrfdNoncompositeApproximateLosses2005::GetStrandGrade() const { return m_Grade; }
+inline void lrfdNoncompositeApproximateLosses2005::SetStrandType(WBFL::Materials::PsStrand::Type type) { m_Type = type; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Type lrfdNoncompositeApproximateLosses2005::GetStrandType() const { return m_Type; }
+inline void lrfdNoncompositeApproximateLosses2005::SetStrandGrade(WBFL::Materials::PsStrand::Grade gr) { m_Grade = gr; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Grade lrfdNoncompositeApproximateLosses2005::GetStrandGrade() const { return m_Grade; }
 inline void lrfdNoncompositeApproximateLosses2005::SetFpj(Float64 fpj) { m_Fpj = fpj; m_IsDirty = true; }
 inline Float64 lrfdNoncompositeApproximateLosses2005::GetFpj() const { return m_Fpj; }
 inline void lrfdNoncompositeApproximateLosses2005::SetAg(Float64 Ag) { m_Ag = Ag; m_IsDirty = true; }

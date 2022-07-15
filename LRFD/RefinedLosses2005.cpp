@@ -76,12 +76,12 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 x,
                          Float64 Lg,
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                         WBFL::Materials::PsStrand::Type typePerm, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                         WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp,  // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -634,7 +634,7 @@ void lrfdRefinedLosses2005::ValidateParameters() const
    }
 
    // strand type must be low relaxation if lump sum relaxation loss is used
-   if ( m_RelaxationMethod == LumpSum && m_TypePerm != matPsStrand::LowRelaxation && m_TypeTemp != matPsStrand::LowRelaxation )
+   if ( m_RelaxationMethod == LumpSum && m_TypePerm != WBFL::Materials::PsStrand::Type::LowRelaxation && m_TypeTemp != WBFL::Materials::PsStrand::Type::LowRelaxation )
    {
       THROW(lrfdXPsLosses,StrandType);
    }
@@ -695,7 +695,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    case LumpSum:
       // strand type must be low relaxation if lump sum relaxation loss is used
-      if ( m_TypePerm != matPsStrand::LowRelaxation )
+      if ( m_TypePerm != WBFL::Materials::PsStrand::Type::LowRelaxation )
       {
          THROW(lrfdXPsLosses,StrandType);
       }
@@ -707,7 +707,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
       m_dfpR1 = 0;
    }
 
-   if ( m_CoatingPerm != matPsStrand::None )
+   if ( m_CoatingPerm != WBFL::Materials::PsStrand::Coating::None )
    {
       // See PCI Guidelines for the use of epoxy-coated strand
       // PCI Journal July-August 1993. Section 5.3
@@ -901,13 +901,13 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    // Losses: Time of Transfer to Time of Lifting [5.9.5.4.2]
    if ( m_RelaxationMethod == Simplified )
    {
-      m_KL[TEMPORARY_STRAND] = (m_TypeTemp == matPsStrand::LowRelaxation ? 30 : 7);
-      m_KL[PERMANENT_STRAND] = (m_TypePerm == matPsStrand::LowRelaxation ? 30 : 7);
+      m_KL[TEMPORARY_STRAND] = (m_TypeTemp == WBFL::Materials::PsStrand::Type::LowRelaxation ? 30 : 7);
+      m_KL[PERMANENT_STRAND] = (m_TypePerm == WBFL::Materials::PsStrand::Type::LowRelaxation ? 30 : 7);
    }
    else
    {
-      m_KL[TEMPORARY_STRAND] = (m_TypeTemp == matPsStrand::LowRelaxation ? 45 : 10);
-      m_KL[PERMANENT_STRAND] = (m_TypePerm == matPsStrand::LowRelaxation ? 45 : 10);
+      m_KL[TEMPORARY_STRAND] = (m_TypeTemp == WBFL::Materials::PsStrand::Type::LowRelaxation ? 45 : 10);
+      m_KL[PERMANENT_STRAND] = (m_TypePerm == WBFL::Materials::PsStrand::Type::LowRelaxation ? 45 : 10);
    }
 
    m_khs = GetShrinkageHumidityFactor();
@@ -980,7 +980,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       break;
    }
 
-   if ( m_CoatingTemp != matPsStrand::None )
+   if ( m_CoatingTemp != WBFL::Materials::PsStrand::Coating::None )
    {
       // See PCI Guidelines for the use of epoxy-coated strand
       // PCI Journal July-August 1993. Section 5.3
@@ -1016,14 +1016,14 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       break;
    }
 
-   if ( m_CoatingPerm != matPsStrand::None )
+   if ( m_CoatingPerm != WBFL::Materials::PsStrand::Coating::None )
    {
       // See PCI Guidelines for the use of epoxy-coated strand
       // PCI Journal July-August 1993. Section 5.3
       m_dfpR1H[PERMANENT_STRAND] *= 2;
    }
 
-   if ( m_CoatingTemp != matPsStrand::None )
+   if ( m_CoatingTemp != WBFL::Materials::PsStrand::Coating::None )
    {
       // See PCI Guidelines for the use of epoxy-coated strand
       // PCI Journal July-August 1993. Section 5.3
@@ -1095,12 +1095,12 @@ bool lrfdRefinedLosses2005::TestMe(WBFL::Debug::Log& rlog)
    lrfdRefinedLosses2005 loss(19.5072, // location along girder where losses are computed
                          39.0144,    // girder length
                          sptGross,
-                         matPsStrand::Gr1860,
-                         matPsStrand::LowRelaxation,
-                         matPsStrand::None,
-                         matPsStrand::Gr1860,
-                         matPsStrand::LowRelaxation,
-                         matPsStrand::None,
+                         WBFL::Materials::PsStrand::Grade::Gr1860,
+                         WBFL::Materials::PsStrand::Type::LowRelaxation,
+                         WBFL::Materials::PsStrand::Coating::None,
+                         WBFL::Materials::PsStrand::Grade::Gr1860,
+                         WBFL::Materials::PsStrand::Type::LowRelaxation,
+                         WBFL::Materials::PsStrand::Coating::None,
                          1396186227.0505831, // fpj permanent strands
                          1396188385.8038988, // fpj of temporary strands
                          0.0051799896399999995,  // area of permanent strand

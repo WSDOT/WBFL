@@ -87,9 +87,9 @@ Float64 lrfdRebar::GetBurstingZoneLength(Float64 h)
       return h/4;
 }
 
-matRebar::Size lrfdRebar::GetMinConfinmentBarSize()
+WBFL::Materials::Rebar::Size lrfdRebar::GetMinConfinmentBarSize()
 {
-   return matRebar::bs3;
+   return WBFL::Materials::Rebar::Size::bs3;
 }
 
 Float64 lrfdRebar::GetMaxConfinmentBarSpacing()
@@ -104,7 +104,7 @@ Float64 lrfdRebar::GetMinConfinmentAvS()
    // manufacture a bogus rebar to get properties from
    lrfdRebarPool* rp = lrfdRebarPool::GetInstance();
    CHECK(rp);
-   const matRebar* pr = rp->GetRebar(matRebar::A615,matRebar::Grade60,matRebar::bs3);
+   const WBFL::Materials::Rebar* pr = rp->GetRebar(WBFL::Materials::Rebar::Type::A615,WBFL::Materials::Rebar::Grade::Grade60,WBFL::Materials::Rebar::Size::bs3);
    CHECK(pr);
 
    Float64 s  = lrfdRebar::GetMaxConfinmentBarSpacing();
@@ -154,7 +154,7 @@ void lrfdRebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
    }
 }
 
-Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc)
+Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& rebar, Float64 fc)
 {
    ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
 
@@ -165,7 +165,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
    Float64 fy = rebar.GetYieldStrength();
 
    // get size
-   matRebar::Size size = rebar.GetSize();
+   WBFL::Materials::Rebar::Size size = rebar.GetSize();
 
    // Equations taken from 5.11.2.1.1
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
@@ -179,17 +179,17 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
 
       Float64 dl_u = 0;
 
-      if (size==matRebar::bs3 || size==matRebar::bs4 || size==matRebar::bs5  || size==matRebar::bs6 || size==matRebar::bs7 ||
-          size==matRebar::bs8 || size==matRebar::bs9 || size==matRebar::bs10 || size==matRebar::bs11)
+      if (size==WBFL::Materials::Rebar::Size::bs3 || size==WBFL::Materials::Rebar::Size::bs4 || size==WBFL::Materials::Rebar::Size::bs5  || size==WBFL::Materials::Rebar::Size::bs6 || size==WBFL::Materials::Rebar::Size::bs7 ||
+          size==WBFL::Materials::Rebar::Size::bs8 || size==WBFL::Materials::Rebar::Size::bs9 || size==WBFL::Materials::Rebar::Size::bs10 || size==WBFL::Materials::Rebar::Size::bs11)
       {
          dl_u = 0.02*ab_u*fy_u / sqrt(fc_u);
          dl_u = max(dl_u, 0.06 * db_u * fy_u);
       }
-      else if (size==matRebar::bs14)
+      else if (size==WBFL::Materials::Rebar::Size::bs14)
       {
          dl_u = 25 * fy_u / sqrt(fc_u);
       }
-      else if (size==matRebar::bs18)
+      else if (size==WBFL::Materials::Rebar::Size::bs18)
       {
          dl_u = 34 * fy_u / sqrt(fc_u);
       }
@@ -212,17 +212,17 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
 
       Float64 dl_u = 0;
 
-      if (size==matRebar::bs3 || size==matRebar::bs4 || size==matRebar::bs5  || size==matRebar::bs6 || size==matRebar::bs7 ||
-          size==matRebar::bs8 || size==matRebar::bs9 || size==matRebar::bs10 || size==matRebar::bs11)
+      if (size==WBFL::Materials::Rebar::Size::bs3 || size==WBFL::Materials::Rebar::Size::bs4 || size==WBFL::Materials::Rebar::Size::bs5  || size==WBFL::Materials::Rebar::Size::bs6 || size==WBFL::Materials::Rebar::Size::bs7 ||
+          size==WBFL::Materials::Rebar::Size::bs8 || size==WBFL::Materials::Rebar::Size::bs9 || size==WBFL::Materials::Rebar::Size::bs10 || size==WBFL::Materials::Rebar::Size::bs11)
       {
          dl_u = 1.25*ab_u*fy_u / sqrt(fc_u);
          dl_u = max(dl_u, 0.4 * db_u * fy_u);
       }
-      else if (size==matRebar::bs14)
+      else if (size==WBFL::Materials::Rebar::Size::bs14)
       {
          dl_u = 2.7*fy_u / sqrt(fc_u);
       }
-      else if (size==matRebar::bs18)
+      else if (size==WBFL::Materials::Rebar::Size::bs18)
       {
          dl_u = 3.5*fy_u / sqrt(fc_u);
       }
@@ -239,7 +239,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
    return dl;
 }
 
-Float64 lrfdRebar::GetHookExtension(matRebar::Size size,Float64 db,Usage usage,Hook hook)
+Float64 lrfdRebar::GetHookExtension(WBFL::Materials::Rebar::Size size,Float64 db,Usage usage,Hook hook)
 {
    if ( usage == Longitudinal )
    {
@@ -256,18 +256,18 @@ Float64 lrfdRebar::GetHookExtension(matRebar::Size size,Float64 db,Usage usage,H
    {
       if ( hook == hook90 )
       {
-         if ( size <= matRebar::bs5 )
+         if ( size <= WBFL::Materials::Rebar::Size::bs5 )
          {
             return 6*db;
          }
-         else if ( matRebar::bs6 <= size && size <= matRebar::bs8 )
+         else if ( WBFL::Materials::Rebar::Size::bs6 <= size && size <= WBFL::Materials::Rebar::Size::bs8 )
          {
             return 12*db;
          }
       }
       else if ( hook == hook135 )
       {
-         if ( size <= matRebar::bs8 )
+         if ( size <= WBFL::Materials::Rebar::Size::bs8 )
          {
             return 6*db;
          }
@@ -288,14 +288,14 @@ Float64 lrfdRebar::GetHookExtension(matRebar::Size size,Float64 db,Usage usage,H
    return 0;
 }
 
-Float64 lrfdRebar::GetBendDiameter(matRebar::Size size,Float64 db,Usage usage,bool bFractional)
+Float64 lrfdRebar::GetBendDiameter(WBFL::Materials::Rebar::Size size,Float64 db,Usage usage,bool bFractional)
 {
    Float64 K = 0;
    switch(size)
    {
-   case matRebar::bs3:
-   case matRebar::bs4:
-   case matRebar::bs5:
+   case WBFL::Materials::Rebar::Size::bs3:
+   case WBFL::Materials::Rebar::Size::bs4:
+   case WBFL::Materials::Rebar::Size::bs5:
       if ( usage == lrfdRebar::Longitudinal )
       {
          K = 6; // general
@@ -306,21 +306,21 @@ Float64 lrfdRebar::GetBendDiameter(matRebar::Size size,Float64 db,Usage usage,bo
       }
       break;
 
-   case matRebar::bs6:
-   case matRebar::bs7:
-   case matRebar::bs8:
+   case WBFL::Materials::Rebar::Size::bs6:
+   case WBFL::Materials::Rebar::Size::bs7:
+   case WBFL::Materials::Rebar::Size::bs8:
       K = 6;
       break;
 
 
-   case matRebar::bs9:
-   case matRebar::bs10:
-   case matRebar::bs11:
+   case WBFL::Materials::Rebar::Size::bs9:
+   case WBFL::Materials::Rebar::Size::bs10:
+   case WBFL::Materials::Rebar::Size::bs11:
       K = 8;
       break;
 
-   case matRebar::bs14:
-   case matRebar::bs18:
+   case WBFL::Materials::Rebar::Size::bs14:
+   case WBFL::Materials::Rebar::Size::bs18:
       K = 10;
       break;
 
@@ -337,41 +337,41 @@ Float64 lrfdRebar::GetBendDiameter(matRebar::Size size,Float64 db,Usage usage,bo
    return D;
 }
 
-Float64 lrfdRebar::GetCompressionControlledStrainLimit(matRebar::Grade grade)
+Float64 lrfdRebar::GetCompressionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade)
 {
    Float64 ecl;
-   if ( grade <= matRebar::Grade60 )
+   if ( grade <= WBFL::Materials::Rebar::Grade::Grade60 )
    {
       ecl = 0.002;
    }
-   else if ( matRebar::Grade100 <= grade )
+   else if ( WBFL::Materials::Rebar::Grade::Grade100 <= grade )
    {
       ecl = 0.004;
    }
    else
    {
-      ATLASSERT(grade == matRebar::Grade75 || grade == matRebar::Grade80);
-      Float64 fy = (grade == matRebar::Grade75 ? 75 : 80);
+      ATLASSERT(grade == WBFL::Materials::Rebar::Grade::Grade75 || grade == WBFL::Materials::Rebar::Grade::Grade80);
+      Float64 fy = (grade == WBFL::Materials::Rebar::Grade::Grade75 ? 75 : 80);
       ecl = ::LinInterp(fy-60.,0.002,0.004,100.-60.);
    }
 
    return ecl;
 }
 
-Float64 lrfdRebar::GetTensionControlledStrainLimit(matRebar::Grade grade)
+Float64 lrfdRebar::GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade)
 {
    Float64 etl;
-   if ( grade <= matRebar::Grade75 )
+   if ( grade <= WBFL::Materials::Rebar::Grade::Grade75 )
    {
       etl = 0.005;
    }
-   else if ( matRebar::Grade100 <= grade )
+   else if ( WBFL::Materials::Rebar::Grade::Grade100 <= grade )
    {
       etl = 0.008;
    }
    else
    {
-      ATLASSERT(grade == matRebar::Grade80);
+      ATLASSERT(grade == WBFL::Materials::Rebar::Grade::Grade80);
       Float64 fy = 80;
       etl = ::LinInterp(fy-75,0.005,0.008,100.-75.);
    }
@@ -379,12 +379,12 @@ Float64 lrfdRebar::GetTensionControlledStrainLimit(matRebar::Grade grade)
    return etl;
 }
 
-REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, const matConcrete& concrete)
+REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::Concrete& concrete)
 {
    return lrfdRebar::GetRebarDevelopmentLengthDetails(size,Ab,db,fy,concrete.GetType(),concrete.GetFc(),concrete.HasAggSplittingStrength(),concrete.GetAggSplittingStrength(),concrete.GetDensity());
 }
 
-REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size size, Float64 Ab, Float64 db, Float64 fy, matConcrete::Type type, Float64 fc, bool isFct, Float64 Fct,Float64 density)
+REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density)
 {
    REBARDEVLENGTHDETAILS details;
    details.Ab = Ab;
@@ -404,7 +404,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       Float64 fc = WBFL::Units::ConvertFromSysUnits(details.fc,WBFL::Units::Measure::KSI);
       Float64 fy = WBFL::Units::ConvertFromSysUnits(details.fy,WBFL::Units::Measure::KSI);
    
-      if (type == matConcrete::PCI_UHPC)
+      if (type == WBFL::Materials::ConcreteType::PCI_UHPC)
       {
          details.ldb1 = 8.0 * db * fy / 60.0;
          details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1, WBFL::Units::Measure::Inch);
@@ -434,17 +434,17 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       // lightweight concrete factor
       if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion())
       {
-         details.lambdaLw = lrfdConcreteUtil::ComputeConcreteDensityModificationFactor((matConcrete::Type)type,density,isFct,Fct,fc);
+         details.lambdaLw = lrfdConcreteUtil::ComputeConcreteDensityModificationFactor((WBFL::Materials::ConcreteType)type,density,isFct,Fct,fc);
 
          details.factor = details.lambdaRl / details.lambdaLw;// Eqn 5.11.2.1.1-1 was modified in LRFD 2016... using lambdaLw for lambda in the equation
       }
       else
       {
-         if (type==matConcrete::Normal || type == matConcrete::PCI_UHPC)
+         if (type== WBFL::Materials::ConcreteType::Normal || type == WBFL::Materials::ConcreteType::PCI_UHPC)
          {
             details.lambdaLw = 1.0;
          }
-         else if (type==matConcrete::AllLightweight || type==matConcrete::SandLightweight)
+         else if (type == WBFL::Materials::ConcreteType::AllLightweight || type == WBFL::Materials::ConcreteType::SandLightweight)
          {
             details.lambdaLw = 1.3;
          }
@@ -467,14 +467,14 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
          Float64 fc = WBFL::Units::ConvertFromSysUnits(details.fc,WBFL::Units::Measure::KSI);
          Float64 fy = WBFL::Units::ConvertFromSysUnits(details.fy,WBFL::Units::Measure::KSI);
 
-         if (size == matRebar::bs14)
+         if (size == WBFL::Materials::Rebar::Size::bs14)
          {
             details.ldb1 = 2.70*fy/sqrt(fc);
             details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Inch);
          
             details.ldb2 = 0.0;
          }
-         else if (size == matRebar::bs18)
+         else if (size == WBFL::Materials::Rebar::Size::bs18)
          {
             details.ldb1 = 3.5*fy/sqrt(fc);
             details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Inch);
@@ -501,14 +501,14 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
          Float64 fc = WBFL::Units::ConvertFromSysUnits(details.fc,WBFL::Units::Measure::MPa);
          Float64 fy = WBFL::Units::ConvertFromSysUnits(details.fy,WBFL::Units::Measure::MPa);
       
-         if (size == matRebar::bs14)
+         if (size == WBFL::Materials::Rebar::Size::bs14)
          {
             details.ldb1 = 25*fy/sqrt(fc);
             details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Millimeter);
          
             details.ldb2 = 0.0;
          }
-         else if (size == matRebar::bs18)
+         else if (size == WBFL::Materials::Rebar::Size::bs18)
          {
             details.ldb1 = 34*fy/sqrt(fc);
             details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1,WBFL::Units::Measure::Millimeter);
@@ -530,7 +530,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
       }
 
       // Compute and apply factor for LWC
-      if (type==matConcrete::Normal || type == matConcrete::PCI_UHPC)
+      if (type == WBFL::Materials::ConcreteType::Normal || type == WBFL::Materials::ConcreteType::PCI_UHPC)
       {
          details.factor = 1.0;
       }
@@ -548,11 +548,11 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(matRebar::Size
          else
          {
             // fct not specified
-            if (type==matConcrete::AllLightweight)
+            if (type == WBFL::Materials::ConcreteType::AllLightweight)
             {
                details.factor = 1.3;
             }
-            else if (type==matConcrete::SandLightweight)
+            else if (type == WBFL::Materials::ConcreteType::SandLightweight)
             {
                details.factor = 1.2;
             }

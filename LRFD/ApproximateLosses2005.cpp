@@ -64,12 +64,12 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005()
 lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                         WBFL::Materials::PsStrand::Type typePerm, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                         WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -158,8 +158,8 @@ Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer(bool bPerm) const
 {
    Float64 loss = 0;
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
-   matPsStrand::Type type = (bPerm ? m_TypePerm : m_TypeTemp);
-   if ( type == matPsStrand::LowRelaxation )
+   WBFL::Materials::PsStrand::Type type = (bPerm ? m_TypePerm : m_TypeTemp);
+   if ( type == WBFL::Materials::PsStrand::Type::LowRelaxation )
    {
       if (is_si)
       {
@@ -191,8 +191,8 @@ Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer(bool bPerm) const
 
    // See PCI Guidelines for the use of epoxy-coated strand
    // PCI Journal July-August 1993. Section 5.3
-   matPsStrand::Coating coating = (bPerm ? m_CoatingPerm : m_CoatingTemp);
-   if ( coating != matPsStrand::None )
+   WBFL::Materials::PsStrand::Coating coating = (bPerm ? m_CoatingPerm : m_CoatingTemp);
+   if ( coating != WBFL::Materials::PsStrand::Coating::None )
    {
       loss *= 2;
    }
@@ -478,8 +478,8 @@ bool lrfdApproximateLosses2005::TestMe(WBFL::Debug::Log& rlog)
 //   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //   Float64 PPR   = 1.0;
 //
-//   lrfdApproximateLosses2005 loss( matPsStrand::Gr1860,
-//                               matPsStrand::LowRelaxation,
+//   lrfdApproximateLosses2005 loss( WBFL::Materials::PsStrand::Grade::Gr1860,
+//                               WBFL::Materials::PsStrand::Type::LowRelaxation,
 //                               lrfdApproximateLosses2005::IBeam,
 //                               Fpj, Ag, Ig, Ybg, e, Aps, Mdlg, 1.0, Eci, Fc, PPR, t );
 //

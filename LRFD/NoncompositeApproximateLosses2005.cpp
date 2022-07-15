@@ -50,8 +50,8 @@ lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005()
 
    m_BeamType = SingleT;
    m_Level = Average;
-   m_Grade = matPsStrand::Gr1860;
-   m_Type  = matPsStrand::LowRelaxation;
+   m_Grade = WBFL::Materials::PsStrand::Grade::Gr1860;
+   m_Type  = WBFL::Materials::PsStrand::Type::LowRelaxation;
    m_Eci   = WBFL::Units::ConvertToSysUnits(  25000, WBFL::Units::Measure::MPa );
    m_Ep    = lrfdPsStrand::GetModE();
    m_Fpu   = lrfdPsStrand::GetUltimateStrength( m_Grade );
@@ -69,8 +69,8 @@ lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005()
    m_K = 1;
 }
 
-lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005(matPsStrand::Grade gr,
-                           matPsStrand::Type type,
+lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005(WBFL::Materials::PsStrand::Grade gr,
+                           WBFL::Materials::PsStrand::Type type,
                            BeamType beamType,
                            Level level,
                            Float64 fpj,
@@ -304,7 +304,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
 {
    // Losses from jacking to release
    Float64 t_days = WBFL::Units::ConvertFromSysUnits( m_Time, WBFL::Units::Measure::Day );
-   Float64 A = (m_Type == matPsStrand::LowRelaxation ? 40. : 10. );
+   Float64 A = (m_Type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 40. : 10. );
 
    if ( t_days*24. < 1 )
       m_dfR1 = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
@@ -393,7 +393,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
           break;
       }
 
-      if ( m_Type == matPsStrand::LowRelaxation )
+      if ( m_Type == WBFL::Materials::PsStrand::Type::LowRelaxation )
          losses -= lowRelaxReduction;
 
       m_dfApprox = WBFL::Units::ConvertToSysUnits( losses, *p_unit );
@@ -424,8 +424,8 @@ bool lrfdNoncompositeApproximateLosses2005::TestMe(WBFL::Debug::Log& rlog)
 //   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //   Float64 PPR   = 1.0;
 //
-//   lrfdNoncompositeApproximateLosses2005 loss( matPsStrand::Gr1860,
-//                               matPsStrand::LowRelaxation,
+//   lrfdNoncompositeApproximateLosses2005 loss( WBFL::Materials::PsStrand::Grade::Gr1860,
+//                               WBFL::Materials::PsStrand::Type::LowRelaxation,
 //                               lrfdNoncompositeApproximateLosses2005::IBeam,
 //                               Fpj, Ag, Ig, Ybg, e, Aps, Mdlg, 1.0, Eci, Fc, PPR, t );
 //

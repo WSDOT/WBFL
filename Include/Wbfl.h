@@ -50,7 +50,7 @@
 #include <GraphicsLib\GraphicsLib.h>
 #include <LibraryFw\LibraryFw.h>
 #include <LRFD\LRFD.h>
-#include <Material\Material.h>
+#include <Materials/Material.h>
 #include <Math\Math.h>
 #include <ReinforcedConcrete\ReinforcedConcrete.h>
 #include <Reporter\Reporter.h>

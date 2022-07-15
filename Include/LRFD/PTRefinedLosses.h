@@ -88,8 +88,8 @@ public:
    // Constructor.  Initializes the object with the give values.
    // fpy is initialized to 0.85fpu for StressRelieved strands and
    // 0.90fpu for LowRelaxation strands.
-   lrfdPTRefinedLosses(matPsStrand::Grade gr,
-                matPsStrand::Type type,
+   lrfdPTRefinedLosses(WBFL::Materials::PsStrand::Grade gr,
+                WBFL::Materials::PsStrand::Type type,
 				    Float64 fpj,    // Actual jacking stress
                 Float64 Ag,     // area of girder
                 Float64 Ig,     // moment of inertia of girder
@@ -150,10 +150,10 @@ public:
 
    // GROUP: ACCESS
    //------------------------------------------------------------------------
-   void SetStrandType(matPsStrand::Type type);
-   matPsStrand::Type GetStrandType() const;
-   void SetStrandGrade(matPsStrand::Grade gr);
-   matPsStrand::Grade GetStrandGrade() const;
+   void SetStrandType(WBFL::Materials::PsStrand::Type type);
+   WBFL::Materials::PsStrand::Type GetStrandType() const;
+   void SetStrandGrade(WBFL::Materials::PsStrand::Grade gr);
+   WBFL::Materials::PsStrand::Grade GetStrandGrade() const;
    void SetFpj(Float64 fpj);
    Float64 GetFpj() const;
    void SetAg(Float64 Ag);
@@ -209,8 +209,8 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   matPsStrand::Type m_Type;
-   matPsStrand::Grade m_Grade;
+   WBFL::Materials::PsStrand::Type m_Type;
+   WBFL::Materials::PsStrand::Grade m_Grade;
    Float64 m_Ag;    // Area of the girder
    Float64 m_Ig;    // Moment of inertia of the girder
    Float64 m_Ybg;   // Centroid of girder measured from bottom
@@ -266,10 +266,10 @@ private:
 
 // INLINE METHODS
 //
-inline void lrfdPTRefinedLosses::SetStrandType(matPsStrand::Type type) { m_Type = type; m_IsDirty = true; }
-inline matPsStrand::Type lrfdPTRefinedLosses::GetStrandType() const { return m_Type; }
-inline void lrfdPTRefinedLosses::SetStrandGrade(matPsStrand::Grade gr) { m_Grade = gr; m_IsDirty = true; }
-inline matPsStrand::Grade lrfdPTRefinedLosses::GetStrandGrade() const { return m_Grade; }
+inline void lrfdPTRefinedLosses::SetStrandType(WBFL::Materials::PsStrand::Type type) { m_Type = type; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Type lrfdPTRefinedLosses::GetStrandType() const { return m_Type; }
+inline void lrfdPTRefinedLosses::SetStrandGrade(WBFL::Materials::PsStrand::Grade gr) { m_Grade = gr; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Grade lrfdPTRefinedLosses::GetStrandGrade() const { return m_Grade; }
 inline void lrfdPTRefinedLosses::SetFpj(Float64 fpj) { m_Fpj = fpj; m_IsDirty = true; }
 inline Float64 lrfdPTRefinedLosses::GetFpj() const { return m_Fpj; }
 inline void lrfdPTRefinedLosses::SetAg(Float64 Ag) { m_Ag = Ag; m_IsDirty = true; }

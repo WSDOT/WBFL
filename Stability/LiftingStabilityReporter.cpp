@@ -584,7 +584,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    *pPara << rptNewLine; // finishes sweep tolerance line
    *pPara << _T("Lifting Device Placement Tolerance, ") << E_LIFT << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetSupportPlacementTolerance()) << rptNewLine;
 
-   const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+   const auto& concrete = pStabilityProblem->GetConcrete();
    *pPara << RPT_FCI << _T(" = ") << stress.SetValue(concrete.GetFc()) << rptNewLine;
    *pPara << Sub2(_T("E"), _T("ci")) << _T(" = Modulus of Elasticity = ") << modE.SetValue(concrete.GetE()) << rptNewLine;
    *pPara << symbol(lambda) << _T(" = ") << scalar.SetValue(concrete.GetLambda()) << rptNewLine;

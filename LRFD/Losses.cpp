@@ -50,12 +50,12 @@ CLASS
 lrfdLosses::lrfdLosses(Float64 x,
    Float64 Lg,
    lrfdLosses::SectionPropertiesType sectionProperties,
-   matPsStrand::Grade gradePerm, // strand grade
-   matPsStrand::Type typePerm, // strand type
-   matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-   matPsStrand::Grade gradeTemp, // strand grade
-   matPsStrand::Type typeTemp, // strand type
-   matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+   WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+   WBFL::Materials::PsStrand::Type typePerm, // strand type
+   WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+   WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+   WBFL::Materials::PsStrand::Type typeTemp, // strand type
+   WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
    Float64 fpjPerm, // fpj permanent strands
    Float64 fpjTemp,  // fpj of temporary strands
    Float64 ApsPerm,  // area of permanent strand
@@ -191,13 +191,13 @@ lrfdLosses::lrfdLosses()
 {
    Init();
 
-   m_TypePerm                  = matPsStrand::LowRelaxation;
-   m_GradePerm                 = matPsStrand::Gr1860;
-   m_CoatingPerm               = matPsStrand::None;
+   m_TypePerm                  = WBFL::Materials::PsStrand::Type::LowRelaxation;
+   m_GradePerm                 = WBFL::Materials::PsStrand::Grade::Gr1860;
+   m_CoatingPerm               = WBFL::Materials::PsStrand::Coating::None;
 
-   m_TypeTemp                  = matPsStrand::LowRelaxation;
-   m_GradeTemp                 = matPsStrand::Gr1860;
-   m_CoatingTemp               = matPsStrand::None;
+   m_TypeTemp                  = WBFL::Materials::PsStrand::Type::LowRelaxation;
+   m_GradeTemp                 = WBFL::Materials::PsStrand::Grade::Gr1860;
+   m_CoatingTemp               = WBFL::Materials::PsStrand::Coating::None;
 
    m_TempStrandUsage = tsPretensioned;
 
@@ -1179,8 +1179,8 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
       }
 
       Float64 t_days = WBFL::Units::ConvertFromSysUnits( m_ti, WBFL::Units::Measure::Day );
-      Float64 Aperm = (m_TypePerm == matPsStrand::LowRelaxation ? 40. : 10. );
-      Float64 Atemp = (m_TypeTemp == matPsStrand::LowRelaxation ? 40. : 10. );
+      Float64 Aperm = (m_TypePerm == WBFL::Materials::PsStrand::Type::LowRelaxation ? 40. : 10. );
+      Float64 Atemp = (m_TypeTemp == WBFL::Materials::PsStrand::Type::LowRelaxation ? 40. : 10. );
 
       if ( m_TempStrandUsage == tsPretensioned )
       {
@@ -1217,11 +1217,11 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
 
    // See PCI Guidelines for the use of epoxy-coated strand
    // PCI Journal July-August 1993. Section 5.3
-   if ( m_CoatingPerm != matPsStrand::None )
+   if ( m_CoatingPerm != WBFL::Materials::PsStrand::Coating::None )
    {
       m_dfpR0[PERMANENT_STRAND] *= 2;
    }
-   if ( m_CoatingTemp != matPsStrand::None )
+   if ( m_CoatingTemp != WBFL::Materials::PsStrand::Coating::None )
    {
       m_dfpR0[TEMPORARY_STRAND] *= 2;
    }

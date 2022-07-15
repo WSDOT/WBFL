@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Material - Analytical and Product modeling of civil engineering materials
+// Materials - Analytical and Product modeling of civil engineering materials
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -24,27 +24,26 @@
 #pragma once
 
 #include <Lrfd\LrfdExp.h>
-#include <Material\ConcreteBase.h>
-#include <Material\ConcreteEx.h>
+#include <Lrfd\LRFDConcreteBase.h>
+#include <Materials/Concrete.h>
 
-struct LRFDCLASS lrfdLRFDConcreteShrinkageDetails : public matConcreteBaseShrinkageDetails
+struct LRFDCLASS lrfdLRFDConcreteShrinkageDetails : public WBFL::Materials::ConcreteBaseShrinkageDetails
 {
-   lrfdLRFDConcreteShrinkageDetails() : matConcreteBaseShrinkageDetails(), kvs(0),khs(0),kf(0),ktd(0) {}
-   Float64 kvs;
-   Float64 khs;
-   Float64 kf;
-   Float64 ktd;
+   lrfdLRFDConcreteShrinkageDetails() = default;
+   Float64 kvs{ 0 };
+   Float64 khs{ 0 };
+   Float64 kf{ 0 };
+   Float64 ktd{ 0 };
 };
 
-struct LRFDCLASS lrfdLRFDConcreteCreepDetails : public matConcreteBaseCreepDetails
+struct LRFDCLASS lrfdLRFDConcreteCreepDetails : public WBFL::Materials::ConcreteBaseCreepDetails
 {
-   lrfdLRFDConcreteCreepDetails() : matConcreteBaseCreepDetails() ,
-      kf(0), kc(0), kvs(0), khc(0), ktd(0) {}
-   Float64 kf;
-   Float64 kc;
-   Float64 kvs;
-   Float64 khc;
-   Float64 ktd;
+   lrfdLRFDConcreteCreepDetails() = default;
+   Float64 kf{ 0 };
+   Float64 kc{ 0 };
+   Float64 kvs{ 0 };
+   Float64 khc{ 0 };
+   Float64 ktd{ 0 };
 };
 
 
@@ -57,15 +56,18 @@ CLASS
    f'c and Ec. This class is an adaptor for matConcreteEx
 *****************************************************************************/
 
-class LRFDCLASS lrfdLRFDConcrete : public matConcreteBase
+class LRFDCLASS lrfdLRFDConcrete : public lrfdLRFDConcreteBase
 {
 public:
    lrfdLRFDConcrete(LPCTSTR name = _T("Unknown"));
    virtual ~lrfdLRFDConcrete() override;
 
-   void SetConcreteModels(const matConcreteEx& initial,const matConcreteEx& final);
-   const matConcreteEx& GetInitialConcreteModel() const;
-   const matConcreteEx& GetFinalConcreteModel() const;
+   lrfdLRFDConcrete(const lrfdLRFDConcrete&) = default;
+   lrfdLRFDConcrete& operator=(const lrfdLRFDConcrete&) = default;
+
+   void SetConcreteModels(const WBFL::Materials::Concrete& initial,const WBFL::Materials::Concrete & final);
+   const WBFL::Materials::Concrete& GetInitialConcreteModel() const;
+   const WBFL::Materials::Concrete& GetFinalConcreteModel() const;
 
    void SetStartTime(Float64 t);
    Float64 GetStartTime() const;
@@ -73,30 +75,17 @@ public:
    void SetStepTime(Float64 t);
    Float64 GetStepTime() const;
 
-   void Use90DayStrength(const matConcreteEx& concrete90);
+   void Use90DayStrength(const WBFL::Materials::Concrete& concrete90);
    bool Use90DayStrength() const;
-   const matConcreteEx& Get90DayConcreteModel() const;
-
-   // aggregate correction and bounding factors.
-   // see NCHRP Report 496
-   void SetEcCorrectionFactors(Float64 K1,Float64 K2);
-   void GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const;
-   void SetCreepCorrectionFactors(Float64 K1,Float64 K2);
-   void GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const;
-   void SetShrinkageCorrectionFactors(Float64 K1,Float64 K2);
-   void GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const;
-
-   // Concrete density modification factor (LRFD2016 5.2.4.8)
-   void SetLambda(Float64 lambda);
-   Float64 GetLambda() const;
+   const WBFL::Materials::Concrete& Get90DayConcreteModel() const;
 
    // PCI UHPC parameters
-   void SetFirstCrackStrength(Float64 ffc);
-   Float64 GetFirstCrackStrength() const;
-   void SetPostCrackingTensileStrength(Float64 frr);
-   Float64 GetPostCrackingTensileStrength() const;
-   void SetAutogenousShrinkage(Float64 as);
-   Float64 GetAutogenousShrinkage() const;
+   virtual void SetFirstCrackingStrength(Float64 ffc) override;
+   virtual Float64 GetFirstCrackingStrength() const override;
+   virtual void SetPostCrackingTensileStrength(Float64 frr) override;
+   virtual Float64 GetPostCrackingTensileStrength() const override;
+   virtual void SetAutogenousShrinkage(Float64 as) override;
+   virtual Float64 GetAutogenousShrinkage() const override;
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
@@ -115,39 +104,32 @@ public:
    virtual Float64 GetFlexureFr(Float64 t) const override;
 
    virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
-   virtual std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
+   virtual std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
 
    virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const override;
-   virtual std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
+   virtual std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
 
    // Creates a clone of this object
-   virtual matConcreteBase* CreateClone() const override;
+   virtual std::unique_ptr<WBFL::Materials::ConcreteBase> CreateClone() const override;
+
+   // Concrete density modification factor (LRFD2016 5.2.4.8)
+   virtual void SetLambda(Float64 lambda) override;
+   virtual Float64 GetLambda() const override;
+
 
 protected:
-   // prevent copying and assignment (use CreateClone instead)
-   lrfdLRFDConcrete(const lrfdLRFDConcrete& rOther);
-
-   void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDConcreteShrinkageDetails>& pDetails) const;
-   void InitializeCreepDetails(Float64 t,Float64 tla,std::shared_ptr<lrfdLRFDConcreteCreepDetails>& pDetails) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
+   std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
 
    bool Use90DayConcrete(Float64 t) const;
 
 private:
-   matConcreteEx m_InitialConcrete, m_FinalConcrete, m_90DayConcrete;
+   WBFL::Materials::Concrete m_InitialConcrete, m_FinalConcrete, m_90DayConcrete;
    bool m_bUse90DayConcrete;
    Float64 m_StartTime;
    Float64 m_StepTime;
-   Float64 m_EcK1;
-   Float64 m_EcK2;
-   Float64 m_CreepK1;
-   Float64 m_CreepK2;
-   Float64 m_ShrinkageK1;
-   Float64 m_ShrinkageK2;
-   Float64 m_Lambda;
 };

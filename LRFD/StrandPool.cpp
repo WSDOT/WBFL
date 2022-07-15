@@ -40,11 +40,11 @@ CLASS
 ****************************************************************************/
 
 lrfdStrandPool* lrfdStrandPool::ms_pInstance = 0;
-std::map<Int64, std::shared_ptr<matPsStrand> > lrfdStrandPool::ms_USStrand;
-std::map<Int64, std::shared_ptr<matPsStrand> > lrfdStrandPool::ms_SIStrand;
+std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> > lrfdStrandPool::ms_USStrand;
+std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> > lrfdStrandPool::ms_SIStrand;
 lrfdStrandPool::Killer lrfdStrandPool::ms_Killer;
 
-Int64 hash( matPsStrand::Grade grade, matPsStrand::Type type, matPsStrand::Coating coating, matPsStrand::Size size )
+Int64 hash( WBFL::Materials::PsStrand::Grade grade, WBFL::Materials::PsStrand::Type type, WBFL::Materials::PsStrand::Coating coating, WBFL::Materials::PsStrand::Size size )
 {
    Int64 hv = ((Int64)grade) | ((Int64)type) | ((Int64)coating) | ((Int64)size);
    return hv;
@@ -71,9 +71,9 @@ lrfdStrandPool* lrfdStrandPool::GetInstance()
    return ms_pInstance;
 }
 
-const matPsStrand* lrfdStrandPool::GetStrand(Int64 key,lrfdVersionMgr::Units units)
+const WBFL::Materials::PsStrand* lrfdStrandPool::GetStrand(Int64 key,lrfdVersionMgr::Units units)
 {
-   std::map<Int64, std::shared_ptr<matPsStrand> >::iterator found;
+   std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> >::iterator found;
 
    if ( units == lrfdVersionMgr::US )
    {
@@ -91,25 +91,25 @@ const matPsStrand* lrfdStrandPool::GetStrand(Int64 key,lrfdVersionMgr::Units uni
    return (*found).second.get();
 } 
 
-const matPsStrand* lrfdStrandPool::GetStrand(Int64 key)
+const WBFL::Materials::PsStrand* lrfdStrandPool::GetStrand(Int64 key)
 {
    return GetStrand(key,lrfdVersionMgr::GetUnits());
 } 
 
-const matPsStrand* lrfdStrandPool::GetStrand(matPsStrand::Grade grade,
-                                             matPsStrand::Type type,
-                                             matPsStrand::Coating coating,
-                                             matPsStrand::Size size )
+const WBFL::Materials::PsStrand* lrfdStrandPool::GetStrand(WBFL::Materials::PsStrand::Grade grade,
+                                             WBFL::Materials::PsStrand::Type type,
+                                             WBFL::Materials::PsStrand::Coating coating,
+                                             WBFL::Materials::PsStrand::Size size )
 {
    return GetStrand( hash(grade,type,coating, size) );
 }
 
-Int64 lrfdStrandPool::GetStrandKey(const matPsStrand* pStrand)
+Int64 lrfdStrandPool::GetStrandKey(const WBFL::Materials::PsStrand* pStrand)
 {
    return hash( pStrand->GetGrade(), pStrand->GetType(), pStrand->GetCoating(), pStrand->GetSize() );
 }
 
-bool lrfdStrandPool::CompareStrands(const matPsStrand* pStrandA, const matPsStrand* pStrandB, bool bCompareGrade, bool bCompareType, bool bCompareCoating, bool bCompareSize)
+bool lrfdStrandPool::CompareStrands(const WBFL::Materials::PsStrand* pStrandA, const WBFL::Materials::PsStrand* pStrandB, bool bCompareGrade, bool bCompareType, bool bCompareCoating, bool bCompareSize)
 {
    bool bSameGrade = bCompareGrade ? (pStrandA->GetGrade() == pStrandB->GetGrade() ? true : false) : true;
    bool bSameType = bCompareType ? (pStrandA->GetType() == pStrandB->GetType() ? true : false) : true;
@@ -145,103 +145,103 @@ void lrfdStrandPool::Dump(WBFL::Debug::LogContext& os) const
 //======================== LIFECYCLE  =======================================
 
 #define NEW_US_STRAND(name,grade,type,coasting,size,fpu,fpy,e,d,a) \
-   ms_USStrand.insert( std::make_pair(hash(grade,type,coating,size), std::make_shared<matPsStrand>(_T(name),grade,type,coating,size,WBFL::Units::ConvertToSysUnits(fpu,WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(fpy, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(e, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(d,WBFL::Units::Measure::Inch), WBFL::Units::ConvertToSysUnits(a, WBFL::Units::Measure::Inch2) ) ) );
+   ms_USStrand.insert( std::make_pair(hash(grade,type,coating,size), std::make_shared<WBFL::Materials::PsStrand>(_T(name),grade,type,coating,size,WBFL::Units::ConvertToSysUnits(fpu,WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(fpy, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(e, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(d,WBFL::Units::Measure::Inch), WBFL::Units::ConvertToSysUnits(a, WBFL::Units::Measure::Inch2) ) ) );
 
 #define NEW_SI_STRAND(name,grade,type,coating,size,fpu,fpy,e,d,a) \
-ms_SIStrand.insert( std::make_pair(hash(grade,type,coating,size), std::make_shared<matPsStrand>(_T(name),grade,type,coating,size,WBFL::Units::ConvertToSysUnits(fpu,WBFL::Units::Measure::MPa), WBFL::Units::ConvertToSysUnits(fpy, WBFL::Units::Measure::MPa), WBFL::Units::ConvertToSysUnits(e, WBFL::Units::Measure::MPa), WBFL::Units::ConvertToSysUnits(d,WBFL::Units::Measure::Millimeter), WBFL::Units::ConvertToSysUnits(a, WBFL::Units::Measure::Millimeter2) ) ) );
+ms_SIStrand.insert( std::make_pair(hash(grade,type,coating,size), std::make_shared<WBFL::Materials::PsStrand>(_T(name),grade,type,coating,size,WBFL::Units::ConvertToSysUnits(fpu,WBFL::Units::Measure::MPa), WBFL::Units::ConvertToSysUnits(fpy, WBFL::Units::Measure::MPa), WBFL::Units::ConvertToSysUnits(e, WBFL::Units::Measure::MPa), WBFL::Units::ConvertToSysUnits(d,WBFL::Units::Measure::Millimeter), WBFL::Units::ConvertToSysUnits(a, WBFL::Units::Measure::Millimeter2) ) ) );
 
 lrfdStrandPool::lrfdStrandPool()
 { 
    for ( int i = 0; i < 2; i++ )
    {
-      matPsStrand::Coating coating = (i == 0 ? matPsStrand::None : matPsStrand::GritEpoxy);
-      NEW_US_STRAND( "Grade 250 Stress Relieved 1/4\"",   matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D635,    250., 0.85*250., 28500., 0.25,   0.036 );
-      NEW_US_STRAND( "Grade 250 Stress Relieved 5/16\"", matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D794,    250., 0.85*250., 28500., 0.3125, 0.058 );
-      NEW_US_STRAND( "Grade 250 Stress Relieved 3/8\"",  matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D953,    250., 0.85*250., 28500., 0.375,  0.080 );
-      NEW_US_STRAND( "Grade 250 Stress Relieved 7/16\"", matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1111,   250., 0.85*250., 28500., 0.4375, 0.108 );
-      NEW_US_STRAND( "Grade 250 Stress Relieved 1/2\"",   matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1270,   250., 0.85*250., 28500., 0.50,   0.1440 );
-      NEW_US_STRAND( "Grade 250 Stress Relieved 1/2\" Special (0.52in)",   matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1320,   250., 0.85*250., 28500., 0.52,   0.167 );
-      NEW_US_STRAND( "Grade 250 Stress Relieved 0.6\"",   matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1524,   250., 0.85*250., 28500., 0.60,   0.216 );
-      NEW_US_STRAND( "Grade 250 Stress Relieved 0.62\"",   matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1575,   250., 0.85*250., 28500., 0.62,   0.240 );
-      NEW_US_STRAND( "Grade 250 Stress Relieved 0.7\"",   matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1778,   250., 0.85*250., 28500., 0.70,   0.294 );
+      WBFL::Materials::PsStrand::Coating coating = (i == 0 ? WBFL::Materials::PsStrand::Coating::None : WBFL::Materials::PsStrand::Coating::GritEpoxy);
+      NEW_US_STRAND( "Grade 250 Stress Relieved 1/4\"",   WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D635,    250., 0.85*250., 28500., 0.25,   0.036 );
+      NEW_US_STRAND( "Grade 250 Stress Relieved 5/16\"", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D794,    250., 0.85*250., 28500., 0.3125, 0.058 );
+      NEW_US_STRAND( "Grade 250 Stress Relieved 3/8\"",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D953,    250., 0.85*250., 28500., 0.375,  0.080 );
+      NEW_US_STRAND( "Grade 250 Stress Relieved 7/16\"", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1111,   250., 0.85*250., 28500., 0.4375, 0.108 );
+      NEW_US_STRAND( "Grade 250 Stress Relieved 1/2\"",   WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1270,   250., 0.85*250., 28500., 0.50,   0.1440 );
+      NEW_US_STRAND( "Grade 250 Stress Relieved 1/2\" Special (0.52in)",   WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1320,   250., 0.85*250., 28500., 0.52,   0.167 );
+      NEW_US_STRAND( "Grade 250 Stress Relieved 0.6\"",   WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1524,   250., 0.85*250., 28500., 0.60,   0.216 );
+      NEW_US_STRAND( "Grade 250 Stress Relieved 0.62\"",   WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1575,   250., 0.85*250., 28500., 0.62,   0.240 );
+      NEW_US_STRAND( "Grade 250 Stress Relieved 0.7\"",   WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1778,   250., 0.85*250., 28500., 0.70,   0.294 );
 
-      NEW_US_STRAND( "Grade 250 Low Relaxation 1/4\"",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D635,   250., 0.90*250., 28500., 0.25,   0.036 );
-      NEW_US_STRAND( "Grade 250 Low Relaxation 5/16\"",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D794,   250., 0.90*250., 28500., 0.3125, 0.058 );
-      NEW_US_STRAND( "Grade 250 Low Relaxation 3/8\"",   matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D953,   250., 0.90*250., 28500., 0.375,  0.080 );
-      NEW_US_STRAND( "Grade 250 Low Relaxation 7/16\"",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1111,  250., 0.90*250., 28500., 0.4375, 0.108 );
-      NEW_US_STRAND( "Grade 250 Low Relaxation 1/2\"",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1270,  250., 0.90*250., 28500., 0.50,   0.1440 );
-      NEW_US_STRAND( "Grade 250 Low Relaxation 1/2\" Special (0.52in)",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1320,  250., 0.90*250., 28500., 0.52,   0.167 );
-      NEW_US_STRAND( "Grade 250 Low Relaxation 0.6\"",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1524,  250., 0.90*250., 28500., 0.60,   0.216 );
-      NEW_US_STRAND( "Grade 250 Low Relaxation 0.62\"",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1575,  250., 0.90*250., 28500., 0.62,   0.240 );
-      NEW_US_STRAND( "Grade 250 Low Relaxation 0.7\"",    matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1778,  250., 0.90*250., 28500., 0.70,   0.294 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 1/4\"",    WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D635,   250., 0.90*250., 28500., 0.25,   0.036 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 5/16\"",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D794,   250., 0.90*250., 28500., 0.3125, 0.058 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 3/8\"",   WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D953,   250., 0.90*250., 28500., 0.375,  0.080 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 7/16\"",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1111,  250., 0.90*250., 28500., 0.4375, 0.108 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 1/2\"",    WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1270,  250., 0.90*250., 28500., 0.50,   0.1440 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 1/2\" Special (0.52in)",    WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1320,  250., 0.90*250., 28500., 0.52,   0.167 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 0.6\"",    WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1524,  250., 0.90*250., 28500., 0.60,   0.216 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 0.62\"",    WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1575,  250., 0.90*250., 28500., 0.62,   0.240 );
+      NEW_US_STRAND( "Grade 250 Low Relaxation 0.7\"",    WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1778,  250., 0.90*250., 28500., 0.70,   0.294 );
 
-      NEW_US_STRAND( "Grade 270 Stress Relieved 3/8\"",  matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D953,  270., 0.85*270., 28500., 0.375,  0.085 );
-      NEW_US_STRAND( "Grade 270 Stress Relieved 7/16\"", matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1111, 270., 0.85*270., 28500., 0.4375, 0.115 );
-      NEW_US_STRAND( "Grade 270 Stress Relieved 1/2\"",   matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1270, 270., 0.85*270., 28500., 0.50,   0.153 );
-      NEW_US_STRAND( "Grade 270 Stress Relieved 1/2\" Special (0.52in)",   matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1320, 270., 0.85*270., 28500., 0.52,   0.167 );
-      NEW_US_STRAND( "Grade 270 Stress Relieved 0.6\"",   matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1524, 270., 0.85*270., 28500., 0.60,   0.217 );
-      NEW_US_STRAND( "Grade 270 Stress Relieved 0.62\"",   matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1575, 270., 0.85*270., 28500., 0.62,   0.240 );
-      NEW_US_STRAND( "Grade 270 Stress Relieved 0.7\"",   matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1778, 270., 0.85*270., 28500., 0.70,   0.294 );
+      NEW_US_STRAND( "Grade 270 Stress Relieved 3/8\"",  WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D953,  270., 0.85*270., 28500., 0.375,  0.085 );
+      NEW_US_STRAND( "Grade 270 Stress Relieved 7/16\"", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1111, 270., 0.85*270., 28500., 0.4375, 0.115 );
+      NEW_US_STRAND( "Grade 270 Stress Relieved 1/2\"",   WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1270, 270., 0.85*270., 28500., 0.50,   0.153 );
+      NEW_US_STRAND( "Grade 270 Stress Relieved 1/2\" Special (0.52in)",   WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1320, 270., 0.85*270., 28500., 0.52,   0.167 );
+      NEW_US_STRAND( "Grade 270 Stress Relieved 0.6\"",   WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1524, 270., 0.85*270., 28500., 0.60,   0.217 );
+      NEW_US_STRAND( "Grade 270 Stress Relieved 0.62\"",   WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1575, 270., 0.85*270., 28500., 0.62,   0.240 );
+      NEW_US_STRAND( "Grade 270 Stress Relieved 0.7\"",   WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1778, 270., 0.85*270., 28500., 0.70,   0.294 );
 
-      NEW_US_STRAND( "Grade 270 Low Relaxation 3/8\"",   matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D953,  270., 0.90*270., 28500.,  0.375,  0.085 );
-      NEW_US_STRAND( "Grade 270 Low Relaxation 7/16\"",  matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 270., 0.90*270., 28500.,  0.4375, 0.115 );
-      NEW_US_STRAND( "Grade 270 Low Relaxation 1/2\"",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 270., 0.90*270., 28500.,  0.50,   0.153 );
-      NEW_US_STRAND( "Grade 270 Low Relaxation 1/2\" Special (0.52in)",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 270., 0.90*270., 28500.,  0.52,   0.167 );
-      NEW_US_STRAND( "Grade 270 Low Relaxation 0.6\"",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 270., 0.90*270., 28500.,  0.60,   0.217 );
-      NEW_US_STRAND( "Grade 270 Low Relaxation 0.62\"",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 270., 0.90*270., 28500.,  0.62,   0.240 );
-      NEW_US_STRAND( "Grade 270 Low Relaxation 0.7\"",    matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 270., 0.90*270., 28500.,  0.70,   0.294 );
+      NEW_US_STRAND( "Grade 270 Low Relaxation 3/8\"",   WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D953,  270., 0.90*270., 28500.,  0.375,  0.085 );
+      NEW_US_STRAND( "Grade 270 Low Relaxation 7/16\"",  WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1111, 270., 0.90*270., 28500.,  0.4375, 0.115 );
+      NEW_US_STRAND( "Grade 270 Low Relaxation 1/2\"",    WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1270, 270., 0.90*270., 28500.,  0.50,   0.153 );
+      NEW_US_STRAND( "Grade 270 Low Relaxation 1/2\" Special (0.52in)",    WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1320, 270., 0.90*270., 28500.,  0.52,   0.167 );
+      NEW_US_STRAND( "Grade 270 Low Relaxation 0.6\"",    WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1524, 270., 0.90*270., 28500.,  0.60,   0.217 );
+      NEW_US_STRAND( "Grade 270 Low Relaxation 0.62\"",    WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1575, 270., 0.90*270., 28500.,  0.62,   0.240 );
+      NEW_US_STRAND( "Grade 270 Low Relaxation 0.7\"",    WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1778, 270., 0.90*270., 28500.,  0.70,   0.294 );
 
-      //NEW_US_STRAND("Grade 300 Low Relaxation 3/8\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D953, 300., 0.90*300., 28500., 0.375, 0.085);
-      //NEW_US_STRAND("Grade 300 Low Relaxation 7/16\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 300., 0.90*300., 28500., 0.4375, 0.115);
-      //NEW_US_STRAND("Grade 300 Low Relaxation 1/2\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 300., 0.90*300., 28500., 0.50, 0.153);
-      //NEW_US_STRAND("Grade 300 Low Relaxation 1/2\" Special (0.52in)", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 300., 0.90*300., 28500., 0.52, 0.167);
-      NEW_US_STRAND("Grade 300 Low Relaxation 0.6\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 300., 0.90*300., 28500., 0.60, 0.217);
-      //NEW_US_STRAND("Grade 300 Low Relaxation 0.62\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 300., 0.90*300., 28500., 0.62, 0.240);
-      //NEW_US_STRAND("Grade 300 Low Relaxation 0.7\"", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 300., 0.90*300., 28500., 0.70, 0.294);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 3/8\"", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D953, 300., 0.90*300., 28500., 0.375, 0.085);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 7/16\"", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1111, 300., 0.90*300., 28500., 0.4375, 0.115);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 1/2\"", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1270, 300., 0.90*300., 28500., 0.50, 0.153);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 1/2\" Special (0.52in)", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1320, 300., 0.90*300., 28500., 0.52, 0.167);
+      NEW_US_STRAND("Grade 300 Low Relaxation 0.6\"", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1524, 300., 0.90*300., 28500., 0.60, 0.217);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 0.62\"", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1575, 300., 0.90*300., 28500., 0.62, 0.240);
+      //NEW_US_STRAND("Grade 300 Low Relaxation 0.7\"", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1778, 300., 0.90*300., 28500., 0.70, 0.294);
 
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 6.35mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D635,  1725., 0.85*1725., 197000., 6.35,   23.22 );
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 7.94mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D794,  1725., 0.85*1725., 197000., 7.94,   37.42 );
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 9.53mm",  matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D953,  1725., 0.85*1725., 197000., 9.53,   51.61 );
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 11.11mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1111, 1725., 0.85*1725., 197000., 11.11,  69.68 );
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 12.70mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1270, 1725., 0.85*1725., 197000., 12.70,  92.90 );
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 1/2\" Special (13.20mm)", matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1320, 1725., 0.85*1725., 197000., 13.20, 107.7  );
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 15.24mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1524, 1725., 0.85*1725., 197000., 15.24, 139.35 );
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 15.75mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1575, 1725., 0.85*1725., 197000., 15.75, 154.84 );
-      NEW_SI_STRAND( "Grade 1725 Stress Relieved 17.78mm", matPsStrand::Gr1725, matPsStrand::StressRelieved, coating, matPsStrand::D1778, 1725., 0.85*1725., 197000., 17.78, 189.68 );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 6.35mm",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D635,  1725., 0.85*1725., 197000., 6.35,   23.22 );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 7.94mm",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D794,  1725., 0.85*1725., 197000., 7.94,   37.42 );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 9.53mm",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D953,  1725., 0.85*1725., 197000., 9.53,   51.61 );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 11.11mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1111, 1725., 0.85*1725., 197000., 11.11,  69.68 );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 12.70mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1270, 1725., 0.85*1725., 197000., 12.70,  92.90 );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 1/2\" Special (13.20mm)", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1320, 1725., 0.85*1725., 197000., 13.20, 107.7  );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 15.24mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1524, 1725., 0.85*1725., 197000., 15.24, 139.35 );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 15.75mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1575, 1725., 0.85*1725., 197000., 15.75, 154.84 );
+      NEW_SI_STRAND( "Grade 1725 Stress Relieved 17.78mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1778, 1725., 0.85*1725., 197000., 17.78, 189.68 );
 
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 6.35mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D635,  1725., 0.90*1725., 197000., 6.35,   23.22 );
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 7.94mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D794,  1725., 0.90*1725., 197000., 7.94,   37.42 );
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 9.53mm",  matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D953,  1725., 0.90*1725., 197000., 9.53,   51.61 );
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 11.11mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 1725., 0.90*1725., 197000., 11.11,  69.68 );
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 12.70mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 1725., 0.90*1725., 197000., 12.70,  92.90 );
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 1/2\" Special (13.20mm)", matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 1725., 0.90*1725., 197000., 13.20, 107.70 );
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 15.24mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 1725., 0.90*1725., 197000., 15.24, 139.35 );
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 15.75mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 1725., 0.85*1725., 197000., 15.75, 154.84 );
-      NEW_SI_STRAND( "Grade 1725 Low Relaxation 17.78mm", matPsStrand::Gr1725, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 1725., 0.90*1725., 197000., 17.78, 189.68 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 6.35mm",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D635,  1725., 0.90*1725., 197000., 6.35,   23.22 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 7.94mm",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D794,  1725., 0.90*1725., 197000., 7.94,   37.42 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 9.53mm",  WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D953,  1725., 0.90*1725., 197000., 9.53,   51.61 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 11.11mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1111, 1725., 0.90*1725., 197000., 11.11,  69.68 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 12.70mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1270, 1725., 0.90*1725., 197000., 12.70,  92.90 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 1/2\" Special (13.20mm)", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1320, 1725., 0.90*1725., 197000., 13.20, 107.70 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 15.24mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1524, 1725., 0.90*1725., 197000., 15.24, 139.35 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 15.75mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1575, 1725., 0.85*1725., 197000., 15.75, 154.84 );
+      NEW_SI_STRAND( "Grade 1725 Low Relaxation 17.78mm", WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1778, 1725., 0.90*1725., 197000., 17.78, 189.68 );
 
-      NEW_SI_STRAND( "Grade 1860 Stress Relieved 9.53mm",  matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D953,  1860., 0.85*1860., 197000., 9.53,   54.84 );
-      NEW_SI_STRAND( "Grade 1860 Stress Relieved 11.11mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1111, 1860., 0.85*1860., 197000., 1.111,  74.19 );
-      NEW_SI_STRAND( "Grade 1860 Stress Relieved 12.70mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1270, 1860., 0.85*1860., 197000., 12.70,  98.71 );
-      NEW_SI_STRAND( "Grade 1860 Stress Relieved 1/2\" Special (13.20mm)", matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1320, 1860., 0.85*1860., 197000., 13.20, 107.70 );
-      NEW_SI_STRAND( "Grade 1860 Stress Relieved 15.24mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1524, 1860., 0.85*1860., 197000., 15.24, 140.00 );
-      NEW_SI_STRAND( "Grade 1860 Stress Relieved 15.75mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1575, 1860., 0.85*1860., 197000., 15.75, 154.84 );
-      NEW_SI_STRAND( "Grade 1860 Stress Relieved 17.78mm", matPsStrand::Gr1860, matPsStrand::StressRelieved, coating, matPsStrand::D1778, 1860., 0.85*1860., 197000., 17.78, 189.68 );
+      NEW_SI_STRAND( "Grade 1860 Stress Relieved 9.53mm",  WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D953,  1860., 0.85*1860., 197000., 9.53,   54.84 );
+      NEW_SI_STRAND( "Grade 1860 Stress Relieved 11.11mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1111, 1860., 0.85*1860., 197000., 1.111,  74.19 );
+      NEW_SI_STRAND( "Grade 1860 Stress Relieved 12.70mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1270, 1860., 0.85*1860., 197000., 12.70,  98.71 );
+      NEW_SI_STRAND( "Grade 1860 Stress Relieved 1/2\" Special (13.20mm)", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1320, 1860., 0.85*1860., 197000., 13.20, 107.70 );
+      NEW_SI_STRAND( "Grade 1860 Stress Relieved 15.24mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1524, 1860., 0.85*1860., 197000., 15.24, 140.00 );
+      NEW_SI_STRAND( "Grade 1860 Stress Relieved 15.75mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1575, 1860., 0.85*1860., 197000., 15.75, 154.84 );
+      NEW_SI_STRAND( "Grade 1860 Stress Relieved 17.78mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, coating, WBFL::Materials::PsStrand::Size::D1778, 1860., 0.85*1860., 197000., 17.78, 189.68 );
 
-      NEW_SI_STRAND( "Grade 1860 Low Relaxation 9.53mm",  matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D953,  1860., 0.90*1860., 197000.,  9.53,   54.84 );
-      NEW_SI_STRAND( "Grade 1860 Low Relaxation 11.11mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 1860., 0.90*1860., 197000.,  11.11,  74.19 );
-      NEW_SI_STRAND( "Grade 1860 Low Relaxation 12.70mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 1860., 0.90*1860., 197000.,  12.70,  98.71 );
-      NEW_SI_STRAND( "Grade 1860 Low Relaxation 1/2\" Special (13.20mm)", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 1860., 0.90*1860., 197000.,  13.20, 107.70 );
-      NEW_SI_STRAND( "Grade 1860 Low Relaxation 15.24mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 1860., 0.90*1860., 197000.,  15.24, 140.00 );
-      NEW_SI_STRAND( "Grade 1860 Low Relaxation 15.75mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 1860., 0.85*1860., 197000.,  15.75, 154.84 );
-      NEW_SI_STRAND( "Grade 1860 Low Relaxation 17.78mm", matPsStrand::Gr1860, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 1860., 0.90*1860., 197000.,  17.78,  189.68 );
+      NEW_SI_STRAND( "Grade 1860 Low Relaxation 9.53mm",  WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D953,  1860., 0.90*1860., 197000.,  9.53,   54.84 );
+      NEW_SI_STRAND( "Grade 1860 Low Relaxation 11.11mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1111, 1860., 0.90*1860., 197000.,  11.11,  74.19 );
+      NEW_SI_STRAND( "Grade 1860 Low Relaxation 12.70mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1270, 1860., 0.90*1860., 197000.,  12.70,  98.71 );
+      NEW_SI_STRAND( "Grade 1860 Low Relaxation 1/2\" Special (13.20mm)", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1320, 1860., 0.90*1860., 197000.,  13.20, 107.70 );
+      NEW_SI_STRAND( "Grade 1860 Low Relaxation 15.24mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1524, 1860., 0.90*1860., 197000.,  15.24, 140.00 );
+      NEW_SI_STRAND( "Grade 1860 Low Relaxation 15.75mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1575, 1860., 0.85*1860., 197000.,  15.75, 154.84 );
+      NEW_SI_STRAND( "Grade 1860 Low Relaxation 17.78mm", WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1778, 1860., 0.90*1860., 197000.,  17.78,  189.68 );
 
-      //NEW_SI_STRAND("Grade 2070 Low Relaxation 9.53mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D953, 2070., 0.90*2070., 197000., 9.53, 54.84);
-      //NEW_SI_STRAND("Grade 2070 Low Relaxation 11.11mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1111, 2070., 0.90*2070., 197000., 11.11, 74.19);
-      //NEW_SI_STRAND("Grade 2070 Low Relaxation 12.70mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1270, 2070., 0.90*2070., 197000., 12.70, 98.71);
-      //NEW_SI_STRAND("Grade 2070 Low Relaxation 1/2\" Special (13.20mm)", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1320, 2070., 0.90*2070., 197000., 13.20, 107.70);
-      NEW_SI_STRAND("Grade 2070 Low Relaxation 15.24mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1524, 2070., 0.90*2070., 197000., 15.24, 140.00);
-      //NEW_SI_STRAND("Grade 2070 Low Relaxation 15.75mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1575, 2070., 0.85*2070., 197000., 15.75, 154.84);
-      //NEW_SI_STRAND("Grade 2070 Low Relaxation 17.78mm", matPsStrand::Gr2070, matPsStrand::LowRelaxation, coating, matPsStrand::D1778, 2070., 0.90*2070., 197000., 17.78, 189.68);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 9.53mm", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D953, 2070., 0.90*2070., 197000., 9.53, 54.84);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 11.11mm", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1111, 2070., 0.90*2070., 197000., 11.11, 74.19);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 12.70mm", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1270, 2070., 0.90*2070., 197000., 12.70, 98.71);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 1/2\" Special (13.20mm)", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1320, 2070., 0.90*2070., 197000., 13.20, 107.70);
+      NEW_SI_STRAND("Grade 2070 Low Relaxation 15.24mm", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1524, 2070., 0.90*2070., 197000., 15.24, 140.00);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 15.75mm", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1575, 2070., 0.85*2070., 197000., 15.75, 154.84);
+      //NEW_SI_STRAND("Grade 2070 Low Relaxation 17.78mm", WBFL::Materials::PsStrand::Grade::Gr2070, WBFL::Materials::PsStrand::Type::LowRelaxation, coating, WBFL::Materials::PsStrand::Size::D1778, 2070., 0.90*2070., 197000., 17.78, 189.68);
    }
 }
 
@@ -259,7 +259,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-lrfdStrandIter::lrfdStrandIter(matPsStrand::Grade grade,matPsStrand::Type type,matPsStrand::Coating coating)
+lrfdStrandIter::lrfdStrandIter(WBFL::Materials::PsStrand::Grade grade,WBFL::Materials::PsStrand::Type type,WBFL::Materials::PsStrand::Coating coating)
 {
    m_Grade = grade;
    m_Type  = type;
@@ -297,7 +297,7 @@ lrfdStrandIter& lrfdStrandIter::operator=(const lrfdStrandIter& rOther)
 class StrandDiaSorter
 {
 public:
-   int operator() (const matPsStrand* ps1,const matPsStrand* ps2)
+   int operator() (const WBFL::Materials::PsStrand* ps1,const WBFL::Materials::PsStrand* ps2)
    {
       if (ps1->GetNominalDiameter() == ps2->GetNominalDiameter() )
       {
@@ -316,17 +316,17 @@ void lrfdStrandIter::Begin()
    m_Strands.clear();
    CHECK(m_Strands.size() == 0);
    CHECK(m_Strands.empty() == true);
-   std::map< Int64, std::shared_ptr<matPsStrand> >* pStrands = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? &lrfdStrandPool::ms_SIStrand : &lrfdStrandPool::ms_USStrand;
-   std::map< Int64, std::shared_ptr<matPsStrand> >::const_iterator iter;
+   std::map< Int64, std::shared_ptr<WBFL::Materials::PsStrand> >* pStrands = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? &lrfdStrandPool::ms_SIStrand : &lrfdStrandPool::ms_USStrand;
+   std::map< Int64, std::shared_ptr<WBFL::Materials::PsStrand> >::const_iterator iter;
    for ( iter = pStrands->begin(); iter != pStrands->end(); iter++ )
    {
       // The following two lines are from the original implementation.  When we upgraded to
       // VC++ 6.0, the lrfdStrandPool::ms_Strand container started loosing ownership of the
-      // of the matPsStrand objects.  This implementation seems to fix the problem.
-      //const std::pair< Int64, std::unique_ptr<matPsStrand> >& pair = *iter;
-      //const std::unique_ptr<matPsStrand>& AutoPtr = pair.second;
-      const std::shared_ptr<matPsStrand>& AutoPtr = iter->second;
-      const matPsStrand* pStrand = AutoPtr.get();
+      // of the WBFL::Materials::PsStrand objects.  This implementation seems to fix the problem.
+      //const std::pair< Int64, std::unique_ptr<WBFL::Materials::PsStrand> >& pair = *iter;
+      //const std::unique_ptr<WBFL::Materials::PsStrand>& AutoPtr = pair.second;
+      const std::shared_ptr<WBFL::Materials::PsStrand>& AutoPtr = iter->second;
+      const WBFL::Materials::PsStrand* pStrand = AutoPtr.get();
       if ( pStrand->GetGrade() == m_Grade && pStrand->GetType() == m_Type && pStrand->GetCoating() == m_Coating )
          m_Strands.push_back( pStrand );
    }
@@ -374,7 +374,7 @@ lrfdStrandIter::operator void*() const
       return nullptr;
 }
 
-const matPsStrand* lrfdStrandIter::GetCurrentStrand() const
+const WBFL::Materials::PsStrand* lrfdStrandIter::GetCurrentStrand() const
 {
    if ( *this )
       return (*m_Current);
@@ -383,35 +383,35 @@ const matPsStrand* lrfdStrandIter::GetCurrentStrand() const
 }
 
 //======================== ACCESS     =======================================
-void lrfdStrandIter::SetGrade(matPsStrand::Grade grade)
+void lrfdStrandIter::SetGrade(WBFL::Materials::PsStrand::Grade grade)
 {
    m_Grade = grade;
    Begin();
 }
 
-matPsStrand::Grade lrfdStrandIter::GetGrade() const
+WBFL::Materials::PsStrand::Grade lrfdStrandIter::GetGrade() const
 {
    return m_Grade;
 }
 
-void lrfdStrandIter::SetType(matPsStrand::Type type)
+void lrfdStrandIter::SetType(WBFL::Materials::PsStrand::Type type)
 {
    m_Type = type;
    Begin();
 }
 
-matPsStrand::Type lrfdStrandIter::GetType() const
+WBFL::Materials::PsStrand::Type lrfdStrandIter::GetType() const
 {
    return m_Type;
 }
 
-void lrfdStrandIter::SetCoating(matPsStrand::Coating coating)
+void lrfdStrandIter::SetCoating(WBFL::Materials::PsStrand::Coating coating)
 {
    m_Coating = coating;
    Begin();
 }
 
-matPsStrand::Coating lrfdStrandIter::GetCoating() const
+WBFL::Materials::PsStrand::Coating lrfdStrandIter::GetCoating() const
 {
    return m_Coating;
 }
@@ -473,18 +473,18 @@ bool lrfdStrandPool::TestMe(WBFL::Debug::Log& rlog)
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    lrfdStrandPool* pPool = lrfdStrandPool::GetInstance();
-   const matPsStrand* pStrand;
-   matPsStrand::Grade grade;
-   matPsStrand::Type type;
-   matPsStrand::Size size[] = { matPsStrand::D635,// 1/4"
-                                matPsStrand::D794,// 5/16"
-                                matPsStrand::D953,// 3/8"
-                                matPsStrand::D1111,// 7/16"
-                                matPsStrand::D1270,// 1/2"
-                                matPsStrand::D1524,// 0.6"
-                                matPsStrand::D1778,// 0.7"
-                                matPsStrand::D1320,// 1/2 HBS (Special)
-                                matPsStrand::D1575// 0.62"
+   const WBFL::Materials::PsStrand* pStrand;
+   WBFL::Materials::PsStrand::Grade grade;
+   WBFL::Materials::PsStrand::Type type;
+   WBFL::Materials::PsStrand::Size size[] = { WBFL::Materials::PsStrand::Size::D635,// 1/4"
+                                WBFL::Materials::PsStrand::Size::D794,// 5/16"
+                                WBFL::Materials::PsStrand::Size::D953,// 3/8"
+                                WBFL::Materials::PsStrand::Size::D1111,// 7/16"
+                                WBFL::Materials::PsStrand::Size::D1270,// 1/2"
+                                WBFL::Materials::PsStrand::Size::D1524,// 0.6"
+                                WBFL::Materials::PsStrand::Size::D1778,// 0.7"
+                                WBFL::Materials::PsStrand::Size::D1320,// 1/2 HBS (Special)
+                                WBFL::Materials::PsStrand::Size::D1575// 0.62"
    }; 
 
    Int64 hashval;
@@ -494,19 +494,19 @@ bool lrfdStrandPool::TestMe(WBFL::Debug::Log& rlog)
 
    for ( cGrade = 0; cGrade < 3; cGrade++ )
    {
-      grade = (cGrade == 0 ? matPsStrand::Gr1725 : cGrade == 1 ? matPsStrand::Gr1860 : matPsStrand::Gr2070);
+      grade = (cGrade == 0 ? WBFL::Materials::PsStrand::Grade::Gr1725 : cGrade == 1 ? WBFL::Materials::PsStrand::Grade::Gr1860 : WBFL::Materials::PsStrand::Grade::Gr2070);
       nSize = (cGrade == 0 ? 0 : 2);
 
       for ( cType = 0; cType < 2; cType++ )
       {
-         type = (cType == 0 ? matPsStrand::StressRelieved : matPsStrand::LowRelaxation );
+         type = (cType == 0 ? WBFL::Materials::PsStrand::Type::StressRelieved : WBFL::Materials::PsStrand::Type::LowRelaxation );
 
          for ( cCoating = 0; cCoating < 2; cCoating++ )
          {
-            matPsStrand::Coating coating = (cCoating == 0 ? matPsStrand::None : matPsStrand::GritEpoxy);
-            for ( cSize = nSize; cSize < sizeof(size)/sizeof(matPsStrand::Size); cSize++ )
+            WBFL::Materials::PsStrand::Coating coating = (cCoating == 0 ? WBFL::Materials::PsStrand::Coating::None : WBFL::Materials::PsStrand::Coating::GritEpoxy);
+            for ( cSize = nSize; cSize < sizeof(size)/sizeof(WBFL::Materials::PsStrand::Size); cSize++ )
             {
-               rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Coating = ") << coating << _T(" Size = ") << size[cSize] << WBFL::Debug::endl;
+               rlog << _T("Grade = ") << WBFL::Materials::PsStrand::GetGrade(grade,true) << _T(" Type = ") << WBFL::Materials::PsStrand::GetType(type) << _T(" Coating = ") << WBFL::Materials::PsStrand::GetCoating(coating) << _T(" Size = ") << WBFL::Materials::PsStrand::GetSize(size[cSize],true) << WBFL::Debug::endl;
                hashval = hash( grade, type, coating, size[cSize] );
                pStrand = pPool->GetStrand( hashval );
                if (pStrand)
@@ -537,30 +537,30 @@ bool lrfdStrandIter::TestMe(WBFL::Debug::Log& rlog)
    TESTME_PROLOGUE("lrfdStrandIter");
 
    lrfdStrandIter iter;
-   matPsStrand::Grade grade;
-   matPsStrand::Type type;
+   WBFL::Materials::PsStrand::Grade grade;
+   WBFL::Materials::PsStrand::Type type;
    Int16 cGrade, cType;
    Int16 nStrand;
 
    for ( cGrade = 0; cGrade < 2; cGrade++ )
    {
-      grade = (cGrade == 0 ? matPsStrand::Gr1725 : matPsStrand::Gr1860 );
+      grade = (cGrade == 0 ? WBFL::Materials::PsStrand::Grade::Gr1725 : WBFL::Materials::PsStrand::Grade::Gr1860 );
       for ( cType = 0; cType < 2; cType++ )
       {
          nStrand = 0;
 
-         type = (cType == 0 ? matPsStrand::StressRelieved : matPsStrand::LowRelaxation );
+         type = (cType == 0 ? WBFL::Materials::PsStrand::Type::StressRelieved : WBFL::Materials::PsStrand::Type::LowRelaxation );
 
          iter.SetGrade( grade );
          iter.SetType( type );
 
          for ( iter.Begin(); iter; iter.Next() )
          {
-            const matPsStrand* pStrand = iter.GetCurrentStrand();
+            const WBFL::Materials::PsStrand* pStrand = iter.GetCurrentStrand();
             TRY_TESTME( pStrand != 0 );
 
             rlog << pStrand->GetName() << WBFL::Debug::endl;
-            rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Size = ") << pStrand->GetSize() << WBFL::Debug::endl;
+            rlog << _T("Grade = ") << WBFL::Materials::PsStrand::GetGrade(grade,true) << _T(" Type = ") << WBFL::Materials::PsStrand::GetType(type) << _T(" Size = ") << WBFL::Materials::PsStrand::GetSize(pStrand->GetSize(),true) << WBFL::Debug::endl;
 
             TRY_TESTME( pStrand->GetGrade() == grade );
             TRY_TESTME( pStrand->GetType()  == type );

@@ -93,12 +93,12 @@ public:
                          Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                         WBFL::Materials::PsStrand::Type typePerm, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                         WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -113,7 +113,7 @@ public:
                          Float64 friction,
                          Float64 angleChange,
 
-                         matConcrete::Type concreteType,
+                         WBFL::Materials::ConcreteType concreteType,
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -180,7 +180,7 @@ public:
 
 protected:
    // GROUP: DATA MEMBERS
-   matConcrete::Type m_ConcreteType;
+   WBFL::Materials::ConcreteType m_ConcreteType;
    BeamType m_BeamType;
    Float64 m_PPR;
    Float64 m_Shipping;

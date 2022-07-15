@@ -73,6 +73,7 @@
 #include <LRFD\XPsLosses.h>
 #include <LRFD\XRangeOfApplicability.h>
 #include <LRFD\XShear.h>
+#include <LRFD\LRFDConcreteBase.h>
 #include <LRFD\LRFDConcrete.h>
 #include <LRFD\LRFDTimeDependentConcrete.h>
 

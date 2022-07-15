@@ -56,12 +56,12 @@ public:
    lrfdLosses(Float64 x, // location along girder where losses are computed
               Float64 Lg,    // girder length
               SectionPropertiesType sectionProperties, // type of section properties used
-              matPsStrand::Grade gradePerm, // strand grade
-              matPsStrand::Type typePerm, // strand type
-              matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-              matPsStrand::Grade gradeTemp, // strand grade
-              matPsStrand::Type typeTemp, // strand type
-              matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+              WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+              WBFL::Materials::PsStrand::Type typePerm, // strand type
+              WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+              WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+              WBFL::Materials::PsStrand::Type typeTemp, // strand type
+              WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
               Float64 fpjPerm, // fpj permanent strands
               Float64 fpjTemp, // fpj of temporary strands
               Float64 ApsPerm,  // area of permanent strand
@@ -166,22 +166,22 @@ public:
    TempStrandUsage GetTempStrandUsage() const;
 
    // strand type
-   void SetPermanentStrandType(matPsStrand::Type type);
-   matPsStrand::Type GetPermanentStrandType() const;
-   void SetTemporaryStrandType(matPsStrand::Type type);
-   matPsStrand::Type GetTemporaryStrandType() const;
+   void SetPermanentStrandType(WBFL::Materials::PsStrand::Type type);
+   WBFL::Materials::PsStrand::Type GetPermanentStrandType() const;
+   void SetTemporaryStrandType(WBFL::Materials::PsStrand::Type type);
+   WBFL::Materials::PsStrand::Type GetTemporaryStrandType() const;
    
    // strand grade
-   void SetPermanentStrandGrade(matPsStrand::Grade gr);
-   matPsStrand::Grade GetPermanentStrandGrade() const;
-   void SetTemporaryStrandGrade(matPsStrand::Grade gr);
-   matPsStrand::Grade GetTemporaryStrandGrade() const;
+   void SetPermanentStrandGrade(WBFL::Materials::PsStrand::Grade gr);
+   WBFL::Materials::PsStrand::Grade GetPermanentStrandGrade() const;
+   void SetTemporaryStrandGrade(WBFL::Materials::PsStrand::Grade gr);
+   WBFL::Materials::PsStrand::Grade GetTemporaryStrandGrade() const;
    
    // strand coating
-   void SetPermanentStrandCoating(matPsStrand::Coating coating);
-   matPsStrand::Coating GetPermanentStrandCoating() const;
-   void SetTemporaryStrandCoating(matPsStrand::Coating coating);
-   matPsStrand::Coating GetTemporaryStrandCoating() const;
+   void SetPermanentStrandCoating(WBFL::Materials::PsStrand::Coating coating);
+   WBFL::Materials::PsStrand::Coating GetPermanentStrandCoating() const;
+   void SetTemporaryStrandCoating(WBFL::Materials::PsStrand::Coating coating);
+   WBFL::Materials::PsStrand::Coating GetTemporaryStrandCoating() const;
 
    // area of permanent prestressing
    void SetApsPermanent(Float64 Aps);
@@ -435,12 +435,12 @@ protected:
    Float64 m_Fc; // 28 day strength (girder)
    Float64 m_Fci; // release strength (girder)
    Float64 m_FcSlab; // 28 day strength (slab)
-   matPsStrand::Type m_TypePerm;
-   matPsStrand::Grade m_GradePerm;
-   matPsStrand::Coating m_CoatingPerm;
-   matPsStrand::Type m_TypeTemp;
-   matPsStrand::Grade m_GradeTemp;
-   matPsStrand::Coating m_CoatingTemp;
+   WBFL::Materials::PsStrand::Type m_TypePerm;
+   WBFL::Materials::PsStrand::Grade m_GradePerm;
+   WBFL::Materials::PsStrand::Coating m_CoatingPerm;
+   WBFL::Materials::PsStrand::Type m_TypeTemp;
+   WBFL::Materials::PsStrand::Grade m_GradeTemp;
+   WBFL::Materials::PsStrand::Coating m_CoatingTemp;
    WBFL::Geometry::Point2d m_epermRelease; // CG of permanent prestress with respect to centroid of noncomposite section
    WBFL::Geometry::Point2d m_epermFinal; // CG of permanent prestress with respect to centroid of composite section
    WBFL::Geometry::Point2d m_etemp; // CG of temporary prestress 
@@ -560,20 +560,20 @@ inline Float64 lrfdLosses::GetFci() const { return m_Fci; }
 inline void lrfdLosses::SetTempStrandUsage(lrfdLosses::TempStrandUsage usage) { m_TempStrandUsage = usage; m_IsDirty = true; }
 inline lrfdLosses::TempStrandUsage lrfdLosses::GetTempStrandUsage() const { return m_TempStrandUsage; }
 
-inline void lrfdLosses::SetPermanentStrandType(matPsStrand::Type type) { m_TypePerm = type; m_IsDirty = true; }
-inline matPsStrand::Type lrfdLosses::GetPermanentStrandType() const { return m_TypePerm; }
-inline void lrfdLosses::SetTemporaryStrandType(matPsStrand::Type type) { m_TypeTemp = type; m_IsDirty = true; }
-inline matPsStrand::Type lrfdLosses::GetTemporaryStrandType() const { return m_TypeTemp; }
+inline void lrfdLosses::SetPermanentStrandType(WBFL::Materials::PsStrand::Type type) { m_TypePerm = type; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Type lrfdLosses::GetPermanentStrandType() const { return m_TypePerm; }
+inline void lrfdLosses::SetTemporaryStrandType(WBFL::Materials::PsStrand::Type type) { m_TypeTemp = type; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Type lrfdLosses::GetTemporaryStrandType() const { return m_TypeTemp; }
 
-inline void lrfdLosses::SetPermanentStrandGrade(matPsStrand::Grade gr) { m_GradePerm = gr; m_IsDirty = true; }
-inline matPsStrand::Grade lrfdLosses::GetPermanentStrandGrade() const { return m_GradePerm; }
-inline void lrfdLosses::SetTemporaryStrandGrade(matPsStrand::Grade gr) { m_GradeTemp = gr; m_IsDirty = true; }
-inline matPsStrand::Grade lrfdLosses::GetTemporaryStrandGrade() const { return m_GradeTemp; }
+inline void lrfdLosses::SetPermanentStrandGrade(WBFL::Materials::PsStrand::Grade gr) { m_GradePerm = gr; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Grade lrfdLosses::GetPermanentStrandGrade() const { return m_GradePerm; }
+inline void lrfdLosses::SetTemporaryStrandGrade(WBFL::Materials::PsStrand::Grade gr) { m_GradeTemp = gr; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Grade lrfdLosses::GetTemporaryStrandGrade() const { return m_GradeTemp; }
 
-inline void lrfdLosses::SetPermanentStrandCoating(matPsStrand::Coating coating) { m_CoatingPerm = coating; m_IsDirty = true; }
-inline matPsStrand::Coating lrfdLosses::GetPermanentStrandCoating() const { return m_CoatingPerm; }
-inline void lrfdLosses::SetTemporaryStrandCoating(matPsStrand::Coating coating) { m_CoatingTemp = coating; m_IsDirty = true; }
-inline matPsStrand::Coating lrfdLosses::GetTemporaryStrandCoating() const { return m_CoatingTemp; }
+inline void lrfdLosses::SetPermanentStrandCoating(WBFL::Materials::PsStrand::Coating coating) { m_CoatingPerm = coating; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Coating lrfdLosses::GetPermanentStrandCoating() const { return m_CoatingPerm; }
+inline void lrfdLosses::SetTemporaryStrandCoating(WBFL::Materials::PsStrand::Coating coating) { m_CoatingTemp = coating; m_IsDirty = true; }
+inline WBFL::Materials::PsStrand::Coating lrfdLosses::GetTemporaryStrandCoating() const { return m_CoatingTemp; }
 
 inline void lrfdLosses::SetSectionPropertiesType(lrfdLosses::SectionPropertiesType props) { m_SectionProperties = props; m_IsDirty = true; }
 inline lrfdLosses::SectionPropertiesType lrfdLosses::GetSectionPropertiesType() const { return m_SectionProperties; }

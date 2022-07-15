@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Material - Analytical and Product modeling of civil engineering materials
+// Materials - Analytical and Product modeling of civil engineering materials
 // Copyright © 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -35,7 +35,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-void lrfdLRFDTimeDependentConcrete::GetModelParameters(matConcreteBase::CureMethod cure,lrfdLRFDTimeDependentConcrete::CementType cement,Float64* pA,Float64* pB)
+void lrfdLRFDTimeDependentConcrete::GetModelParameters(WBFL::Materials::ConcreteBase::CureMethod cure,lrfdLRFDTimeDependentConcrete::CementType cement,Float64* pA,Float64* pB)
 {
    Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
                         WBFL::Units::ConvertToSysUnits(2.3,WBFL::Units::Measure::Day)} ,  // Moist, Type III
@@ -46,12 +46,14 @@ void lrfdLRFDTimeDependentConcrete::GetModelParameters(matConcreteBase::CureMeth
                         {0.95, // Steam, Type I
                         0.98} }; // Steam, Type III
 
-   *pA = a[cure][cement];
-   *pB = b[cure][cement];
+   auto cure_idx = std::underlying_type<ConcreteBase::CureMethod>::type(cure);
+   auto cement_idx = std::underlying_type<lrfdLRFDTimeDependentConcrete::CementType>::type(cement);
+   *pA = a[cure_idx][cement_idx];
+   *pB = b[cure_idx][cement_idx];
 }
 
 lrfdLRFDTimeDependentConcrete::lrfdLRFDTimeDependentConcrete(LPCTSTR name) :
-matConcreteBase(name),
+   lrfdLRFDConcreteBase(name),
 m_A(WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day)),
 m_Beta(0.95),
 m_Fc28(0),
@@ -62,44 +64,10 @@ m_Eshu(-0.48E-3),
 m_Cu(1.9),
 m_ShearFrCoefficient(WBFL::Units::ConvertToSysUnits(0.24,WBFL::Units::Measure::SqrtKSI)),
 m_FlexureFrCoefficient(WBFL::Units::ConvertToSysUnits(0.24,WBFL::Units::Measure::SqrtKSI)),
-m_EcK1(1.0),
-m_EcK2(1.0),
-m_CreepK1(1.0),
-m_CreepK2(1.0),
-m_ShrinkageK1(1.0),
-m_ShrinkageK2(1.0),
-m_Lambda(1.0),
 m_AutogenousShrinkage(0)
 {
    Float64 fcMin, fpeak;
    lrfdConcreteUtil::GetPCIUHPCMinProperties(&fcMin, &m_ffc, &fpeak, &m_frr);
-}
-
-lrfdLRFDTimeDependentConcrete::lrfdLRFDTimeDependentConcrete(const lrfdLRFDTimeDependentConcrete& rOther) :
-matConcreteBase(rOther),
-m_ShearFrCoefficient(rOther.m_ShearFrCoefficient),
-m_FlexureFrCoefficient(rOther.m_FlexureFrCoefficient),
-m_EcK1(rOther.m_EcK1),
-m_EcK2(rOther.m_EcK2),
-m_CreepK1(rOther.m_CreepK1),
-m_CreepK2(rOther.m_CreepK2),
-m_ShrinkageK1(rOther.m_ShrinkageK1),
-m_ShrinkageK2(rOther.m_ShrinkageK2),
-m_Lambda(1.0),
-m_AutogenousShrinkage(0)
-{
-   m_bIsValid = false;
-   m_Fc28     = rOther.m_Fc28;
-   m_Ec28     = rOther.m_Ec28;
-   m_bUserEc  = rOther.m_bUserEc;
-   m_A        = rOther.m_A;
-   m_Beta     = rOther.m_Beta;
-   m_Eshu     = rOther.m_Eshu;
-   m_Cu       = rOther.m_Cu;
-
-   m_ffc = rOther.m_ffc;
-   m_frr = rOther.m_frr;
-   m_AutogenousShrinkage = rOther.m_AutogenousShrinkage;
 }
 
 void lrfdLRFDTimeDependentConcrete::SetA(Float64 a)
@@ -158,52 +126,6 @@ void lrfdLRFDTimeDependentConcrete::ComputeParameters(Float64 fc1,Float64 t1,Flo
    // solving ACI209 equation 2-1 for Alpha and Beta
    *pB = (t1*fc2 - t2*fc1)/(fc1*(t1-t2));
    *pA = t2*(1.0 - (*pB));
-}
-
-void lrfdLRFDTimeDependentConcrete::SetEcCorrectionFactors(Float64 K1,Float64 K2)
-{
-   m_EcK1 = K1;
-   m_EcK2 = K2;
-}
-
-void lrfdLRFDTimeDependentConcrete::GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const
-{
-   *pK1 = m_EcK1;
-   *pK2 = m_EcK2;
-}
-
-void lrfdLRFDTimeDependentConcrete::SetCreepCorrectionFactors(Float64 K1,Float64 K2)
-{
-   m_CreepK1 = K1;
-   m_CreepK2 = K2;
-}
-
-void lrfdLRFDTimeDependentConcrete::GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const
-{
-   *pK1 = m_CreepK1;
-   *pK2 = m_CreepK2;
-}
-
-void lrfdLRFDTimeDependentConcrete::SetShrinkageCorrectionFactors(Float64 K1,Float64 K2)
-{
-   m_ShrinkageK1 = K1;
-   m_ShrinkageK2 = K2;
-}
-
-void lrfdLRFDTimeDependentConcrete::GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const
-{
-   *pK1 = m_ShrinkageK1;
-   *pK2 = m_ShrinkageK2;
-}
-
-void lrfdLRFDTimeDependentConcrete::SetLambda(Float64 lambda)
-{
-   m_Lambda = lambda;
-}
-
-Float64 lrfdLRFDTimeDependentConcrete::GetLambda() const
-{
-   return m_Lambda;
 }
 
 void lrfdLRFDTimeDependentConcrete::SetFc28(Float64 fc,Float64 t)
@@ -292,7 +214,9 @@ Float64 lrfdLRFDTimeDependentConcrete::GetEc(Float64 t) const
 
    if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
    {
-      Ec *= m_EcK1*m_EcK2;
+      Float64 k1, k2;
+      GetEcCorrectionFactors(&k1, &k2);
+      Ec *= k1*k2;
    }
 
    return Ec;
@@ -302,7 +226,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetFlexureFr(Float64 t) const
 {
    Float64 fc = GetFc(t);
    Float64 fr = lrfdConcreteUtil::ModRupture(fc,m_FlexureFrCoefficient);
-   fr *= m_Lambda;
+   fr *= GetLambda();
    return fr;
 }
 
@@ -310,17 +234,16 @@ Float64 lrfdLRFDTimeDependentConcrete::GetShearFr(Float64 t) const
 {
    Float64 fc = GetFc(t);
    Float64 fr = lrfdConcreteUtil::ModRupture(fc,m_ShearFrCoefficient);
-   fr *= m_Lambda;
+   fr *= GetLambda();
    return fr;
 }
 
 Float64 lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrain(Float64 t) const
 {
-   std::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
-   return pDetails->esh;
+   return GetFreeShrinkageStrainDetails(t)->esh;
 }
 
-std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
 {
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
@@ -338,11 +261,10 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
 
 Float64 lrfdLRFDTimeDependentConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
 {
-   std::shared_ptr<matConcreteBaseCreepDetails> pDetails = GetCreepCoefficientDetails(t,tla);
-   return pDetails->Ct;
+   return GetCreepCoefficientDetails(t,tla)->Ct;
 }
 
-std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
 {
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
@@ -358,9 +280,9 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
    }
 }
 
-matConcreteBase* lrfdLRFDTimeDependentConcrete::CreateClone() const
+std::unique_ptr<WBFL::Materials::ConcreteBase> lrfdLRFDTimeDependentConcrete::CreateClone() const
 {
-   return new lrfdLRFDTimeDependentConcrete(*this);
+   return std::make_unique<lrfdLRFDTimeDependentConcrete>(*this);
 }
 
 void lrfdLRFDTimeDependentConcrete::SetUltimateShrinkageStrain(Float64 eu)
@@ -530,12 +452,12 @@ Float64 lrfdLRFDTimeDependentConcrete::GetConcreteStrengthFactor() const
    return m_kf;
 }
 
-void lrfdLRFDTimeDependentConcrete::SetFirstCrackStrength(Float64 ffc)
+void lrfdLRFDTimeDependentConcrete::SetFirstCrackingStrength(Float64 ffc)
 {
    m_ffc = ffc;
 }
 
-Float64 lrfdLRFDTimeDependentConcrete::GetFirstCrackStrength() const
+Float64 lrfdLRFDTimeDependentConcrete::GetFirstCrackingStrength() const
 {
    return m_ffc;
 }
@@ -668,15 +590,10 @@ Float64 lrfdLRFDTimeDependentConcrete::ComputeConcreteStrengthFactor() const
    return kf;
 }
 
-void lrfdLRFDTimeDependentConcrete::InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails>& pDetails) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
 {
-   matConcreteBase::InitializeShrinkageDetails(t,std::dynamic_pointer_cast<matConcreteBaseShrinkageDetails>(pDetails));
-}
-
-std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
-{
-   std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDTimeDependentConcreteShrinkageDetails>());
-   InitializeShrinkageDetails(t,pDetails);
+   std::unique_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails> pDetails(std::make_unique<lrfdLRFDTimeDependentConcreteShrinkageDetails>());
+   InitializeShrinkageDetails(t,pDetails.get());
 
    pDetails->khs = m_khs;
 
@@ -697,20 +614,20 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
 
    Float64 ks = GetSizeFactorShrinkage(t);
    pDetails->kvs = ks;
-   Float64 K = (GetCureMethod() == matConcreteBase::Moist ? 35.0 : 55.0);
-   Float64 eshu = (GetCureMethod() == matConcreteBase::Moist ? 0.51e-3 : 0.56e-3);
+   Float64 K = (GetCureMethod() == WBFL::Materials::ConcreteBase::CureMethod::Moist ? 35.0 : 55.0);
+   Float64 eshu = (GetCureMethod() == WBFL::Materials::ConcreteBase::CureMethod::Moist ? 0.51e-3 : 0.56e-3);
    Float64 esh = -ks*m_khs*eshu*(shrinkage_time)/(K + shrinkage_time);
 
    pDetails->esh = esh;
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrain2005(Float64 t) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrain2005(Float64 t) const
 {
    Validate();
 
-   std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDTimeDependentConcreteShrinkageDetails>());
-   InitializeShrinkageDetails(t,pDetails);
+   std::unique_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails> pDetails(std::make_unique<lrfdLRFDTimeDependentConcreteShrinkageDetails>());
+   InitializeShrinkageDetails(t,pDetails.get());
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
@@ -746,7 +663,9 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
 
    Float64 ks = GetSizeFactorShrinkage(t);
 
-   Float64 esh = m_ShrinkageK1*m_ShrinkageK2*ks*m_khs*kf*ktd*m_Eshu;
+   Float64 k1, k2;
+   GetShrinkageCorrectionFactors(&k1, &k2);
+   Float64 esh = k1*k2*ks*m_khs*kf*ktd*m_Eshu;
 
    pDetails->kvs = ks;
    pDetails->khs = m_khs;
@@ -756,10 +675,10 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrain2015(Float64 t) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::GetFreeShrinkageStrain2015(Float64 t) const
 {
-   std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDTimeDependentConcreteShrinkageDetails>());
-   InitializeShrinkageDetails(t,pDetails);
+   std::unique_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails> pDetails(std::make_unique<lrfdLRFDTimeDependentConcreteShrinkageDetails>());
+   InitializeShrinkageDetails(t,pDetails.get());
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
@@ -781,14 +700,15 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
 
    Float64 khs = (2.0 - 0.014*m_RelativeHumidity);
    
-//   Float64 kf = ComputeConcreteStrengthFactor(m_AgeAtInitialLoading);
    Float64 kf = ComputeConcreteStrengthFactor();
 
    Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
    fci = WBFL::Units::ConvertFromSysUnits(fci,WBFL::Units::Measure::KSI);
    Float64 ktd = (shrinkage_time)/(12*(100.0 - 4.0*fci)/(fci + 20) + shrinkage_time);
 
-   Float64 esh = -m_ShrinkageK1*m_ShrinkageK2*ks*khs*kf*ktd*0.48E-3;
+   Float64 k1, k2;
+   GetShrinkageCorrectionFactors(&k1, &k2);
+   Float64 esh = -k1*k2*ks*khs*kf*ktd*0.48E-3;
 
    pDetails->kvs = ks;
    pDetails->khs = khs;
@@ -798,10 +718,10 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDTimeDependentConcrete::
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const
 {
-   std::shared_ptr<lrfdLRFDTimeDependentConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDTimeDependentConcreteCreepDetails>());
-   InitializeCreepDetails(t,tla,std::dynamic_pointer_cast<matConcreteBaseCreepDetails>(pDetails));
+   std::unique_ptr<lrfdLRFDTimeDependentConcreteCreepDetails> pDetails(std::make_unique<lrfdLRFDTimeDependentConcreteCreepDetails>());
+   InitializeCreepDetails(t,tla,pDetails.get());
 
    Float64 age = pDetails->age;
    Float64 age_at_loading = pDetails->age_at_loading;
@@ -829,12 +749,12 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
 {
    Validate();
 
-   std::shared_ptr<lrfdLRFDTimeDependentConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDTimeDependentConcreteCreepDetails>());
-   InitializeCreepDetails(t,tla,std::dynamic_pointer_cast<matConcreteBaseCreepDetails>(pDetails));
+   std::unique_ptr<lrfdLRFDTimeDependentConcreteCreepDetails> pDetails(std::make_unique<lrfdLRFDTimeDependentConcreteCreepDetails>());
+   InitializeCreepDetails(t,tla,pDetails.get());
 
    Float64 age = pDetails->age;
    Float64 age_at_loading = pDetails->age_at_loading;
@@ -866,7 +786,9 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
    
    Float64 ks = GetSizeFactorCreep(t,tla);
    Float64 ti = age_at_loading;
-   Float64 Y = m_CreepK1*m_CreepK2*m_Cu*ks*m_khc*kf*ktd*pow(ti,-0.118);
+   Float64 k1, k2;
+   GetCreepCorrectionFactors(&k1, &k2);
+   Float64 Y = k1*k2*m_Cu*ks*m_khc*kf*ktd*pow(ti,-0.118);
 
    pDetails->kvs = ks;
    pDetails->khc = m_khc;
@@ -877,10 +799,10 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
 {
-   std::shared_ptr<lrfdLRFDTimeDependentConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDTimeDependentConcreteCreepDetails>());
-   InitializeCreepDetails(t,tla,std::dynamic_pointer_cast<matConcreteBaseCreepDetails>(pDetails));
+   std::unique_ptr<lrfdLRFDTimeDependentConcreteCreepDetails> pDetails(std::make_unique<lrfdLRFDTimeDependentConcreteCreepDetails>());
+   InitializeCreepDetails(t,tla,pDetails.get());
 
    Float64 age = pDetails->age;
    Float64 age_at_loading = pDetails->age_at_loading;
@@ -906,7 +828,9 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::GetC
    Float64 ktd = (maturity)/(12*(100.0 - 4.0*fci)/(fci + 20) + maturity);
 
    Float64 ti = age_at_loading;
-   Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*kf*ktd*pow(ti,-0.118);
+   Float64 k1, k2;
+   GetCreepCorrectionFactors(&k1, &k2);
+   Float64 Y = 1.9*k1*k2*ks*khc*kf*ktd*pow(ti,-0.118);
 
    pDetails->kvs = ks;
    pDetails->khc = m_khc;

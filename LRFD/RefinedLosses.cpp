@@ -43,7 +43,7 @@ CLASS
 
 Float64 shrinkage_losses(Float64 h);
 Float64 creep_losses(Float64 fcgp, Float64 dfcdp);
-Float64 relaxation_after_transfer(matPsStrand::Type type,Float64 es,Float64 sr,Float64 cr);
+Float64 relaxation_after_transfer(WBFL::Materials::PsStrand::Type type,Float64 es,Float64 sr,Float64 cr);
 
 bool IsSI() 
 {
@@ -60,12 +60,12 @@ lrfdRefinedLosses::lrfdRefinedLosses()
 lrfdRefinedLosses::lrfdRefinedLosses(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                         WBFL::Materials::PsStrand::Type typePerm, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                         WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -287,7 +287,7 @@ void lrfdRefinedLosses::UpdateLongTermLosses() const
       m_dfpR2 = relaxation_after_transfer( m_TypePerm, m_dfpES[PERMANENT_STRAND] + m_dfpp, m_dfpSR, m_dfpCR );
    }
 
-   if ( m_CoatingPerm != matPsStrand::None )
+   if ( m_CoatingPerm != WBFL::Materials::PsStrand::Coating::None )
    {
       // See PCI Guidelines for the use of epoxy-coated strand
       // PCI Journal July-August 1993. Section 5.3
@@ -337,7 +337,7 @@ Float64 creep_losses(Float64 fcgp, Float64 dfcdp)
    return loss;
 }
 
-Float64 relaxation_after_transfer(matPsStrand::Type type,Float64 es,Float64 sr,Float64 cr)
+Float64 relaxation_after_transfer(WBFL::Materials::PsStrand::Type type,Float64 es,Float64 sr,Float64 cr)
 {
    bool is_si = IsSI();
    const WBFL::Units::Stress* p_unit;
@@ -362,7 +362,7 @@ Float64 relaxation_after_transfer(matPsStrand::Type type,Float64 es,Float64 sr,F
    Float64 losses;
    losses = A - 0.4*es - 0.2*(sr+cr);
 
-   if ( type == matPsStrand::LowRelaxation )
+   if ( type == WBFL::Materials::PsStrand::Type::LowRelaxation )
    {
       losses *= 0.3;
    }
@@ -402,8 +402,8 @@ bool lrfdRefinedLosses::TestMe(WBFL::Debug::Log& rlog)
 //   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
 //   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
 //
-//   lrfdRefinedLosses loss( matPsStrand::Gr1860,
-//                      matPsStrand::LowRelaxation,
+//   lrfdRefinedLosses loss( WBFL::Materials::PsStrand::Grade::Gr1860,
+//                      WBFL::Materials::PsStrand::Type::LowRelaxation,
 //                      Fpj, 0, Ag, Ig, Ybg, Ic, Ybc, e, e, e, Aps, 0, Mdlg, Madlg, Msidl, 1.0,
 //                      Rh, Eci, t );
 //

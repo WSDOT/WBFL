@@ -42,12 +42,12 @@ lrfdPCIUHPCLosses::lrfdPCIUHPCLosses(
                          Float64 x,
                          Float64 Lg,
                          lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                         WBFL::Materials::PsStrand::Type typePerm, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                         WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp,  // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
@@ -276,12 +276,12 @@ bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
    lrfdPCIUHPCLosses loss(19.5072, // location along girder where losses are computed
                          39.0144,    // girder length
                          sptGross,
-                         matPsStrand::Gr1860,
-                         matPsStrand::LowRelaxation,
-                         matPsStrand::None,
-                         matPsStrand::Gr1860,
-                         matPsStrand::LowRelaxation,
-                         matPsStrand::None,
+                         WBFL::Materials::PsStrand::Grade::Gr1860,
+                         WBFL::Materials::PsStrand::Type::LowRelaxation,
+                         WBFL::Materials::PsStrand::Coating::None,
+                         WBFL::Materials::PsStrand::Grade::Gr1860,
+                         WBFL::Materials::PsStrand::Type::LowRelaxation,
+                         WBFL::Materials::PsStrand::Coating::None,
                          1396186227.0505831, // fpj permanent strands
                          1396188385.8038988, // fpj of temporary strands
                          0.0051799896399999995,  // area of permanent strand

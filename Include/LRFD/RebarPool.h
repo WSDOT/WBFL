@@ -30,7 +30,7 @@
 //
 
 #include <Lrfd\LrfdExp.h>
-#include <Material\Rebar.h>
+#include <Materials/Rebar.h>
 #include <map>
 #include <System\SingletonKiller.h>
 
@@ -79,26 +79,26 @@ public:
 
 
    //------------------------------------------------------------------------
-   const matRebar* GetRebar(Int32 key);
+   const WBFL::Materials::Rebar* GetRebar(Int32 key);
 
    //------------------------------------------------------------------------
-   const matRebar* GetRebar(matRebar::Type type,
-                                matRebar::Grade grade,
-                                matRebar::Size size );
+   const WBFL::Materials::Rebar* GetRebar(WBFL::Materials::Rebar::Type type,
+                                WBFL::Materials::Rebar::Grade grade,
+                                WBFL::Materials::Rebar::Size size );
 
    //------------------------------------------------------------------------
    // Returns the lookup key for pRebar.  If pRebar is not a member of
    // the rebar pool, returns -1
-   Int32 GetRebarKey(const matRebar* pRebar);
+   Int32 GetRebarKey(const WBFL::Materials::Rebar* pRebar);
 
-   static bool MapOldRebarKey(Int32 oldKey,matRebar::Grade& grade,matRebar::Type& type,matRebar::Size& size);
+   static bool MapOldRebarKey(Int32 oldKey,WBFL::Materials::Rebar::Grade& grade,WBFL::Materials::Rebar::Type& type,WBFL::Materials::Rebar::Size& size);
 
-   static std::_tstring GetMaterialName(matRebar::Type type,matRebar::Grade grade);
-   static std::_tstring GetBarSize(matRebar::Size size);
-   static matRebar::Size GetBarSize(LPCTSTR strSize);
+   static std::_tstring GetMaterialName(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade);
+   static std::_tstring GetBarSize(WBFL::Materials::Rebar::Size size);
+   static WBFL::Materials::Rebar::Size GetBarSize(LPCTSTR strSize);
 
-   static void GetBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize);
-   static void GetTransverseBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize);
+   static void GetBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize);
+   static void GetTransverseBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize);
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -130,7 +130,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    static lrfdRebarPool* ms_pInstance;
-   typedef std::map<Int32, std::shared_ptr<matRebar> > RebarPool;
+   typedef std::map<Int32, std::shared_ptr<WBFL::Materials::Rebar> > RebarPool;
    static RebarPool ms_Rebar;
 
    typedef WBFL::System::SingletonKiller<lrfdRebarPool> Killer;
@@ -180,7 +180,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   lrfdRebarIter(matRebar::Type type = matRebar::A615,matRebar::Grade grade = matRebar::Grade60,bool bTransverseBarsOnly=false);
+   lrfdRebarIter(WBFL::Materials::Rebar::Type type = WBFL::Materials::Rebar::Type::A615,WBFL::Materials::Rebar::Grade grade = WBFL::Materials::Rebar::Grade::Grade60,bool bTransverseBarsOnly=false);
 
    //------------------------------------------------------------------------
    lrfdRebarIter(const lrfdRebarIter& rOther);
@@ -214,7 +214,7 @@ public:
    operator void*() const;
 
    //------------------------------------------------------------------------
-   const matRebar* GetCurrentRebar() const;
+   const WBFL::Materials::Rebar* GetCurrentRebar() const;
 
    // GROUP: ACCESS
 
@@ -222,23 +222,23 @@ public:
    // Sets the grade of prestress steel for which the available sizes will
    // be iterated over. Sets the iterator to the first element in the
    // iteration sequence.
-   void SetGrade(matRebar::Grade grade);
+   void SetGrade(WBFL::Materials::Rebar::Grade grade);
 
    //------------------------------------------------------------------------
    // Returns the grade of prestress steel for which the available sizes
    // are being iterated over.
-   matRebar::Grade GetGrade() const;
+   WBFL::Materials::Rebar::Grade GetGrade() const;
 
    //------------------------------------------------------------------------
    // Sets the type of prestress steel for which the available sizes will
    // be iterated over. Sets the iterator to the first element in the
    // iteration sequence.
-   void SetType(matRebar::Type type);
+   void SetType(WBFL::Materials::Rebar::Type type);
 
    //------------------------------------------------------------------------
    // Returns the type of prestress steel for which the available sizes
    // are being iterated over.
-   matRebar::Type GetType() const;
+   WBFL::Materials::Rebar::Type GetType() const;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -271,12 +271,12 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::vector< const matRebar* > m_Bars;
-   std::vector< const matRebar* >::iterator m_Begin;
-   std::vector< const matRebar* >::iterator m_End;
-   std::vector< const matRebar* >::iterator m_Current;
-   matRebar::Grade m_Grade;
-   matRebar::Type m_Type;
+   std::vector< const WBFL::Materials::Rebar* > m_Bars;
+   std::vector< const WBFL::Materials::Rebar* >::iterator m_Begin;
+   std::vector< const WBFL::Materials::Rebar* >::iterator m_End;
+   std::vector< const WBFL::Materials::Rebar* >::iterator m_Current;
+   WBFL::Materials::Rebar::Grade m_Grade;
+   WBFL::Materials::Rebar::Type m_Type;
    bool m_bTransverseBarsOnly;
 
    // GROUP: LIFECYCLE

@@ -195,6 +195,7 @@
     <ClCompile Include="LoadModifier.cpp" />
     <ClCompile Include="Losses.cpp" />
     <ClCompile Include="LRFDConcrete.cpp" />
+    <ClCompile Include="LRFDConcreteBase.cpp" />
     <ClCompile Include="LRFDTimeDependentConcrete.cpp" />
     <ClCompile Include="LRFRVersionMgr.cpp" />
     <ClCompile Include="LRFRVersionMgrListener.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="..\Include\LRFD\Losses.h" />
     <ClInclude Include="..\Include\LRFD\Lrfd.h" />
     <ClInclude Include="..\Include\LRFD\LRFDConcrete.h" />
+    <ClInclude Include="..\Include\LRFD\LRFDConcreteBase.h" />
     <ClInclude Include="..\Include\LRFD\LrfdExp.h" />
     <ClInclude Include="..\Include\LRFD\LrfdLib.h" />
     <ClInclude Include="..\Include\LRFD\LRFDTimeDependentConcrete.h" />
@@ -291,7 +293,7 @@
     <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
       <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Material\Material.vcxproj">
+    <ProjectReference Include="..\Materials\Materials.vcxproj">
       <Project>{3904763e-7a13-445f-8544-260047d333cd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

@@ -35,7 +35,7 @@
 #include <System\Exception.h>
 #include <System\SectionValue.h>
 
-#include <Material\Concrete.h>
+#include <Materials/Concrete.h>
 
 // LOCAL INCLUDES
 //
@@ -92,17 +92,17 @@ public:
    // Returns the modulus of elasticity of concrete.  The modulus of elasticity
    // is computed in accordance with equation 5.4.2.4-1.
    // If density is out of range, a lrfdXModE exception is thrown.
-   static Float64 ModE(matConcrete::Type type,Float64 fc,Float64 density,bool bCheckRange = true);
+   static Float64 ModE(WBFL::Materials::ConcreteType type,Float64 fc,Float64 density,bool bCheckRange = true);
 
    //------------------------------------------------------------------------
    // Computes the concrete strength from the modulus of elasticy based on
    // LRFD Equation 5.2.4.2-1
-   static Float64 FcFromEc(matConcrete::Type type, Float64 ec,Float64 density);
+   static Float64 FcFromEc(WBFL::Materials::ConcreteType type, Float64 ec,Float64 density);
 
    //------------------------------------------------------------------------
    // Returns the modulus of rupture.  The modulus of rupture is computed in
    // accordnace with Article 5.4.2.6
-   static Float64 ModRupture(Float64 fc, matConcrete::Type concreteType);
+   static Float64 ModRupture(Float64 fc, WBFL::Materials::ConcreteType concreteType);
    static Float64 ModRupture(Float64 fc, Float64 k);
 
    //------------------------------------------------------------------------
@@ -110,7 +110,7 @@ public:
    // with Article 5.7.2.2
    static Float64 Beta1(Float64 fc);
 
-   static void InterfaceShearParameters(bool isRoughened, matConcrete::Type girderConcType, matConcrete::Type deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2);
+   static void InterfaceShearParameters(bool isRoughened, WBFL::Materials::ConcreteType girderConcType, WBFL::Materials::ConcreteType deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2);
 
    //------------------------------------------------------------------------
    // Return nominal horizontal shear resistances per 5.8.4.1
@@ -166,10 +166,10 @@ public:
    //------------------------------------------------------------------------
    // Calculates the concrete density modification factor (lambda)
    // per LRFD 5.4.2.8 (added to LRFD in 2016)
-   static Float64 ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc);
+   static Float64 ComputeConcreteDensityModificationFactor(WBFL::Materials::ConcreteType type,Float64 density,bool bHasFct,Float64 fct,Float64 fc);
 
-   static std::_tstring GetTypeName(matConcrete::Type type,bool bFull);
-   static matConcrete::Type GetTypeFromTypeName(LPCTSTR strName);
+   static std::_tstring GetTypeName(WBFL::Materials::ConcreteType type,bool bFull);
+   static WBFL::Materials::ConcreteType GetTypeFromTypeName(LPCTSTR strName);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -202,7 +202,7 @@ private:
    // GROUP: OPERATIONS
    // GROUP: ACCESS
    // GROUP: INQUIRY
-   static Float64 ModRupture(Float64 fc, matConcrete::Type concreteType,Float64 k);
+   static Float64 ModRupture(Float64 fc, WBFL::Materials::ConcreteType concreteType,Float64 k);
 };
 
 // INLINE METHODS
