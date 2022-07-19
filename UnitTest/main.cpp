@@ -47,7 +47,7 @@ static LPCTSTR lib_list[] = {
                                  _T("WBFLGeomModel.dll"),
                                  _T("WBFLLibraryFw.dll"),
                                  _T("WBFLLrfd.dll"),
-                                 _T("WBFLMaterial.dll"),
+                                 _T("WBFLMaterials.dll"),
                                  _T("WBFLMath.dll"),
                                  _T("WBFLUnits.dll"),
                                  _T("WBFLEAF.dll")
