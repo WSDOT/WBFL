@@ -195,6 +195,7 @@
     <ClCompile Include="LoadModifier.cpp" />
     <ClCompile Include="Losses.cpp" />
     <ClCompile Include="LRFDConcrete.cpp" />
+    <ClCompile Include="LRFDConcrete2.cpp" />
     <ClCompile Include="LRFDConcreteBase.cpp" />
     <ClCompile Include="LRFDTimeDependentConcrete.cpp" />
     <ClCompile Include="LRFRVersionMgr.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="..\Include\LRFD\Losses.h" />
     <ClInclude Include="..\Include\LRFD\Lrfd.h" />
     <ClInclude Include="..\Include\LRFD\LRFDConcrete.h" />
+    <ClInclude Include="..\Include\LRFD\LRFDConcrete2.h" />
     <ClInclude Include="..\Include\LRFD\LRFDConcreteBase.h" />
     <ClInclude Include="..\Include\LRFD\LrfdExp.h" />
     <ClInclude Include="..\Include\LRFD\LrfdLib.h" />

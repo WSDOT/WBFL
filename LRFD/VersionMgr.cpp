@@ -91,7 +91,7 @@ lrfdVersionMgr::Version lrfdVersionMgr::SetVersion(Version version)
    Version temp = ms_Version;
    ms_Version = version;
 
-   if ( lrfdVersionMgr::FourthEdition2007 <= ms_Version && ms_Units == lrfdVersionMgr::SI )
+   if (GetLastSIVersion() < ms_Version && ms_Units == lrfdVersionMgr::SI )
    {
       // SI units were dropped from LRFD starting with 4th Edition 2007
       ms_Units = lrfdVersionMgr::US;
@@ -116,9 +116,8 @@ lrfdVersionMgr::Units lrfdVersionMgr::SetUnits(Units units)
    ms_Units = units;
 
 
-   if ( lrfdVersionMgr::FourthEdition2007 <= ms_Version && ms_Units == lrfdVersionMgr::SI )
+   if ( lrfdVersionMgr::GetLastSIVersion() < ms_Version && ms_Units == lrfdVersionMgr::SI )
    {
-      // SI units were dropped from LRFD starting with 4th Edition 2007
       ASSERT( false );
       ms_Units = lrfdVersionMgr::US;
    }
@@ -329,6 +328,11 @@ lrfdVersionMgr::Version lrfdVersionMgr::GetVersion(LPCTSTR strAbbrev)
       ATLASSERT(false);
       throw 0;
    }
+}
+
+lrfdVersionMgr::Version lrfdVersionMgr::GetLastSIVersion()
+{
+   return lrfdVersionMgr::FourthEdition2007; // the 2008 and 2009 interms where US only so this is the last time SI units version was published
 }
 
 void lrfdVersionMgr::RegisterListener(lrfdVersionMgrListener* pListener)

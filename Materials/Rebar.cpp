@@ -232,10 +232,10 @@ Float64 Rebar::GetUltimateStrength(Type type,Grade grade)
       break;
 
    default:
-      ATLASSERT(false); // should not get here
+      ASSERT(false); // should not get here
    }
 
-   ATLASSERT(0 < value);
+   ASSERT(0 < value);
    return value;
 }
 
@@ -270,10 +270,10 @@ Float64 Rebar::GetYieldStrength(Type type,Grade grade)
       break;
 
    default:
-      ATLASSERT(false); // should not get here
+      ASSERT(false); // should not get here
    }
 
-   ATLASSERT(0 < value);
+   ASSERT(0 < value);
    return value;
 }
 
@@ -308,10 +308,10 @@ Float64 Rebar::GetE(Type type,Grade grade)
       break;
 
    default:
-      ATLASSERT(false); // should not get here
+      ASSERT(false); // should not get here
    }
 
-   ATLASSERT(0 < value);
+   ASSERT(0 < value);
    return value;
 }
 
@@ -325,10 +325,10 @@ Float64 Rebar::GetElongation(Type type, Grade grade, Size size)
    case Type::A615: e = gs_Elongation_A615[gradeIdx][sizeIdx]; break;
    case Type::A706: e = gs_Elongation_A706[gradeIdx][sizeIdx]; break;
    case Type::A1035: e = gs_Elongation_A1035[gradeIdx][sizeIdx]; break;
-   default: ATLASSERT(false);
+   default: ASSERT(false);
    }
 
-   ATLASSERT(e != -1.0);
+   ASSERT(e != -1.0);
    return e;
 }
 

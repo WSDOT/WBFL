@@ -34,22 +34,22 @@ static char THIS_FILE[] = __FILE__;
 using namespace WBFL::Materials;
 
 SimpleConcrete::SimpleConcrete() :
-m_Name( _T("Unknown") ),
-m_Fc( 0 ),
-m_Density( 0 ),
-m_WeightDensity(0),
-m_FrShear(0),
-m_FrFlexure(0),
-m_ModE( 0 ),
-m_MaxAggregateSize(0),
-m_FiberLength(0),
-m_Type(ConcreteType::Normal),
-m_Fct(0),
-m_bHasFct(false),
-m_Lambda(1.0),
-m_ffc(0),
-m_frr(0),
-m_AutogenousShrinkage(0)
+   m_Name(_T("Unknown")),
+   m_Fc(0),
+   m_Density(0),
+   m_WeightDensity(0),
+   m_FrShear(0),
+   m_FrFlexure(0),
+   m_ModE(0),
+   m_MaxAggregateSize(0),
+   m_FiberLength(0),
+   m_Type(ConcreteType::Normal),
+   m_Fct(0),
+   m_bHasFct(false),
+   m_Lambda(1.0),
+   m_ffc(0),
+   m_frr(0),
+   m_AutogenousShrinkage(0)
 {
    // Don't call assert value because this material model is not valid.
 }
@@ -89,7 +89,7 @@ bool SimpleConcrete::operator==(const SimpleConcrete& rOther) const
 
    if (!::IsEqual(m_Density, rOther.m_Density))
       return false;
-   
+
    if (!::IsEqual(m_WeightDensity, rOther.m_WeightDensity))
       return false;
 
@@ -167,9 +167,9 @@ bool SimpleConcrete::HasAggSplittingStrength() const
    return m_bHasFct;
 }
 
-std::_tstring SimpleConcrete::GetTypeName(ConcreteType type,bool bFull)
+std::_tstring SimpleConcrete::GetTypeName(ConcreteType type, bool bFull)
 {
-   switch(type)
+   switch (type)
    {
    case ConcreteType::Normal:
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
@@ -191,13 +191,13 @@ std::_tstring SimpleConcrete::GetTypeName(ConcreteType type,bool bFull)
 
 ConcreteType SimpleConcrete::GetTypeFromTypeName(LPCTSTR strName)
 {
-   if ( std::_tstring(strName) == _T("Normal") )
+   if (std::_tstring(strName) == _T("Normal"))
       return ConcreteType::Normal;
 
-   if ( std::_tstring(strName) == _T("AllLightweight") )
+   if (std::_tstring(strName) == _T("AllLightweight"))
       return ConcreteType::AllLightweight;
 
-   if ( std::_tstring(strName) == _T("SandLightweight") )
+   if (std::_tstring(strName) == _T("SandLightweight"))
       return ConcreteType::SandLightweight;
 
    if (std::_tstring(strName) == _T("PCI-UHPC"))
@@ -366,13 +366,13 @@ bool SimpleConcrete::AssertValid() const
 
 void SimpleConcrete::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for SimpleConcrete")         << WBFL::Debug::endl;
-   os << _T("====================")         << WBFL::Debug::endl;
+   os << _T("Dump for SimpleConcrete") << WBFL::Debug::endl;
+   os << _T("====================") << WBFL::Debug::endl;
    os << _T("Name    : ") << m_Name.c_str() << WBFL::Debug::endl;
-   os << _T("Fc      : ") << m_Fc           << WBFL::Debug::endl;
-   os << _T("Density : ") << m_Density      << WBFL::Debug::endl;
-   os << _T("Mod E   : ") << m_ModE         << WBFL::Debug::endl;
-   os << _T("Max Aggr: ") << m_MaxAggregateSize<< WBFL::Debug::endl;
+   os << _T("Fc      : ") << m_Fc << WBFL::Debug::endl;
+   os << _T("Density : ") << m_Density << WBFL::Debug::endl;
+   os << _T("Mod E   : ") << m_ModE << WBFL::Debug::endl;
+   os << _T("Max Aggr: ") << m_MaxAggregateSize << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 

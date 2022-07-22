@@ -177,6 +177,17 @@
   <ItemGroup>
     <ClCompile Include="ACI209Concrete.cpp" />
     <ClCompile Include="CEBFIPConcrete.cpp" />
+    <ClCompile Include="Concrete.cpp" />
+    <ClCompile Include="ConcreteCorrectionFactorModels.cpp" />
+    <ClCompile Include="ConcreteCreepModel.cpp" />
+    <ClCompile Include="ConcreteCreepTemplateModel.cpp" />
+    <ClCompile Include="ConcreteSecantModulusModel.cpp" />
+    <ClCompile Include="ConcreteShrinkageModel.cpp" />
+    <ClCompile Include="ConcreteShrinkageTemplateModel.cpp" />
+    <ClCompile Include="ConcreteStrengthModel.cpp" />
+    <ClCompile Include="FHWAUHPCConcrete.cpp" />
+    <ClCompile Include="FiberConcrete.cpp" />
+    <ClCompile Include="PCIUHPCConcrete.cpp" />
     <ClCompile Include="SimpleConcrete.cpp" />
     <ClCompile Include="ConcreteBase.cpp" />
     <ClCompile Include="main.cpp">
@@ -186,11 +197,23 @@
     <ClCompile Include="PsStrand.cpp" />
     <ClCompile Include="Rebar.cpp" />
     <ClCompile Include="UnitTest.cpp" />
+    <ClCompile Include="XConcrete.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Materials\ACI209Concrete.h" />
     <ClInclude Include="..\Include\Materials\AutoLib.h" />
     <ClInclude Include="..\Include\Materials\CEBFIPConcrete.h" />
+    <ClInclude Include="..\Include\Materials\Concrete.h" />
+    <ClInclude Include="..\Include\Materials\ConcreteCorrectionFactorModels.h" />
+    <ClInclude Include="..\Include\Materials\ConcreteCreepModel.h" />
+    <ClInclude Include="..\Include\Materials\ConcreteCreepTemplateModel.h" />
+    <ClInclude Include="..\Include\Materials\ConcreteSecantModulusModel.h" />
+    <ClInclude Include="..\Include\Materials\ConcreteShrinkageModel.h" />
+    <ClInclude Include="..\Include\Materials\ConcreteShrinkageTemplateModel.h" />
+    <ClInclude Include="..\Include\Materials\ConcreteStrengthModel.h" />
+    <ClInclude Include="..\Include\Materials\FHWAUHPCConcrete.h" />
+    <ClInclude Include="..\Include\Materials\FiberConcrete.h" />
+    <ClInclude Include="..\Include\Materials\PCIUHPCConcrete.h" />
     <ClInclude Include="..\Include\Materials\SimpleConcrete.h" />
     <ClInclude Include="..\Include\Materials\ConcreteBase.h" />
     <ClInclude Include="..\Include\Materials\ConcreteTypes.h" />
@@ -200,6 +223,7 @@
     <ClInclude Include="..\Include\Materials\PsStrand.h" />
     <ClInclude Include="..\Include\Materials\Rebar.h" />
     <ClInclude Include="..\Include\Materials\UnitTest.h" />
+    <ClInclude Include="..\Include\Materials\XConcrete.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Materials.def" />

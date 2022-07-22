@@ -112,14 +112,14 @@ namespace WBFL
 
          virtual std::unique_ptr<SimpleConcrete> CreateClone() const;
 
-      #if defined _DEBUG
+#if defined _DEBUG
          virtual bool AssertValid() const;
          virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
+#endif // _DEBUG
 
 #if defined _UNITTEST
          static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
+#endif // _UNITTEST
 
       private:
          // GROUP: DATA MEMBERS

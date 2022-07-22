@@ -76,5 +76,6 @@
 #include <LRFD\LRFDConcreteBase.h>
 #include <LRFD\LRFDConcrete.h>
 #include <LRFD\LRFDTimeDependentConcrete.h>
+#include <LRFD\LRFDConcrete2.h>
 
 #endif // INCLUDED_LRFD_LRFD_H_

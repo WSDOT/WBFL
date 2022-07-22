@@ -25,6 +25,9 @@
 
 #include <Materials/MaterialsExp.h>
 #include <Materials/ConcreteBase.h>
+#include <Materials/ConcreteStrengthModel.h>
+#include <Materials/ConcreteSecantModulusModel.h>
+#include <Materials/ConcreteShrinkageModel.h>
 
 namespace WBFL
 {
@@ -184,5 +187,174 @@ namespace WBFL
          Float64 GetFr(Float64 t) const;
          Float64 ModE(Float64 fc,Float64 density) const;
       };
+
+
+      /// Time-dependent concrete model based on CEB-FIP Model Code 1990
+      class MATCLASS CEBFIPConcreteStrengthModel : public ConcreteStrengthModel
+      {
+      public:
+         /// Cement types defined by CEB-FIP model code
+         enum class CementType
+         {
+            RS, ///< rapid hardening, high strength
+            N,  ///< normal hardining
+            R,  ///< rapid hardening
+            SL  ///< slow hardening
+         };
+
+         CEBFIPConcreteStrengthModel() = default;
+         CEBFIPConcreteStrengthModel(const CEBFIPConcreteStrengthModel& rOther) = default;
+         CEBFIPConcreteStrengthModel& operator=(const CEBFIPConcreteStrengthModel& rOther) = default;
+
+         /// Get this model parameters for the specified cement type
+         static void GetModelParameters(CementType cement, Float64* pS);
+
+         /// Computes what the 28 day strength needs to be for a concrete strength
+         /// fc occuring at concrete age for the specified cement type. CEB-FIP Eqn. 2.1-54, solved for f'c at 28 days
+         static Float64 ComputeFc28(Float64 fc, Float64 age, CementType type);
+
+         /// Computes what the 28 day strength needs to be for a concrete strength
+         /// fc occuring at concrete age with parameter s. Solves CEB-FIP Eqn. 2.1-54, solved for f'c at 28 days
+         static Float64 ComputeFc28(Float64 fc, Float64 age, Float64 s);
+
+         /// Computes the value for S giving a concrete strength (fc1) at at age of t1,
+         /// and a later strength (fc2) at age t2. (fc1,fc2 are in system units, t1 and t2 are in days)
+         /// Solves CEB-FIP Equation 2.1-54 for S
+         static void ComputeParameters(Float64 fc1, Float64 t1, Float64 fc2, Float64 t2, Float64* pS);
+
+         /// The s parameter of the concrete model
+         void SetS(Float64 s);
+         Float64 GetS() const;
+
+         /// The betaSc parameter of the concrete model
+         void SetBetaSc(Float64 betaSc);
+         Float64 GetBetaSc() const;
+
+         /// The 28 day concrete strength
+         void SetFc28(Float64 fc);
+         Float64 GetFc28() const;
+
+         /// Sets the 28 day strength by computing what it needs to be
+         /// based on the current values of S for
+         /// a given concrete strength and the time that strength occurs
+         void SetFc28(Float64 fc, Float64 age);
+
+         /// Returns a coefficent which depends on the age of concrete. See CEB-FIP Eqn 2.1-54.
+         Float64 GetBetaCC(Float64 age) const;
+
+         /// Returns the compressive strength of the concrete at time t. If
+         /// t occurs before the time at casting, zero is returned.
+         virtual Float64 GetFc(Float64 age) const override;
+
+      private:
+         Float64 m_Fc28{ 0.0 };
+         Float64 m_S{ 0.0 };
+
+#if defined _DEBUG
+      public:
+         virtual bool AssertValid() const;
+         virtual void Dump(WBFL::Debug::LogContext& os) const;
+#endif // _DEBUG
+
+#if defined _UNITTEST
+      public:
+         static bool TestMe(WBFL::Debug::Log& rlog);
+#endif // _UNITTEST
+      };
+
+
+      class MATCLASS CEBFIPConcreteSecantModulusModel : public ConcreteSecantModulusModel
+      {
+      public:
+         CEBFIPConcreteSecantModulusModel() = default;
+         CEBFIPConcreteSecantModulusModel(const std::shared_ptr<CEBFIPConcreteStrengthModel>& fcModel);
+         CEBFIPConcreteSecantModulusModel(const CEBFIPConcreteSecantModulusModel&) = default;
+         ~CEBFIPConcreteSecantModulusModel() = default;
+         CEBFIPConcreteSecantModulusModel& operator=(const CEBFIPConcreteSecantModulusModel&) = default;
+
+         /// Computes what the 28 day secant modulus needs to be for a secant modulus of Ec
+         /// occuring at concrete age for the specified cement type. CEB-FIP Eqn. 2.1-57, solved for Ec at 28 days
+         static Float64 ComputeEc28(Float64 Ec, Float64 age, CEBFIPConcreteStrengthModel::CementType type);
+         
+         /// Computes what the 28 day secant modulus needs to be for a secant modulus of
+         /// Ec occuring at concrete age with parameter s. Solves CEB-FIP Eqn. 2.1-57, solved for Ec at 28 days
+         static Float64 ComputeEc28(Float64 Ec, Float64 age, Float64 s);
+
+         void SetConcreteStrengthModel(const std::shared_ptr<CEBFIPConcreteStrengthModel>& fcModel);
+         const std::shared_ptr<CEBFIPConcreteStrengthModel>& GetConcreteStrengthModel() const;
+
+         virtual Float64 GetEc(Float64 age) const override;
+      private:
+         std::shared_ptr<CEBFIPConcreteStrengthModel> m_FcModel;
+
+#if defined _DEBUG
+      public:
+         virtual bool AssertValid() const;
+         virtual void Dump(WBFL::Debug::LogContext& os) const;
+#endif // _DEBUG
+
+#if defined _UNITTEST
+      public:
+         static bool TestMe(WBFL::Debug::Log& rlog);
+#endif // _UNITTEST
+      };
+
+      /// Specialization of the shrinkage strain model for CEBFIP
+      class MATCLASS CEBFIPConcreteShrinkageModel : public ConcreteShrinkageModel
+      {
+      public:
+         CEBFIPConcreteShrinkageModel() = default;
+         /// \param vsRatio volume to surface area ratio (assumed to be equivalent to area over perimeter ratio Ac/u)
+         /// \param rh Relative humidity in percent
+         /// \param cementType Cement type
+         /// \param fc28 Concrete 28 day compressive strength
+         CEBFIPConcreteShrinkageModel(Float64 vsRatio, Float64 rh, CEBFIPConcrete::CementType cementType,Float64 fc28);
+         CEBFIPConcreteShrinkageModel(const CEBFIPConcreteShrinkageModel& rOther) = default;
+
+         virtual ~CEBFIPConcreteShrinkageModel() = default;
+
+         CEBFIPConcreteShrinkageModel& operator=(const CEBFIPConcreteShrinkageModel& rOther) = default;
+
+         /// Volume to surface area ratio used to compute the parameter h. h is the notational size of member = 2Ac/u where Ac is the cross-section area and u is the perimeter
+         /// of the member in contact with the atmosphere. See Eqn 2.1-69
+         void SetVSRatio(Float64 vsRatio);
+         Float64 GetVSRatio() const;
+
+         void SetHumidity(Float64 rh);
+         Float64 GetHumidity() const;
+
+         void SetCementType(CEBFIPConcrete::CementType cementType);
+         CEBFIPConcrete::CementType GetCementType() const;
+
+         void SetFc28(Float64 fc28);
+         Float64 GetFc28() const;
+
+         virtual Float64 GetShrinkageStrain(Float64 age) const override;
+
+      private:
+         Float64 m_VSRatio{ 0.0 };
+         Float64 m_RH{ 0.0 };
+         Float64 m_Fc28{ 0.0 };
+         CEBFIPConcrete::CementType m_CementType;
+
+         Float64 GetH() const;
+         Float64 GetNotionalShrinkageCoefficient() const;
+         Float64 GetEpsilonS() const;
+         Float64 GetBetaRH() const;
+         Float64 GetBetaSRH() const;
+         Float64 GetBetaSC() const;
+
+#if defined _DEBUG
+      public:
+         virtual bool AssertValid() const;
+         virtual void Dump(WBFL::Debug::LogContext& os) const;
+#endif // _DEBUG
+
+#if defined _UNITTEST
+      public:
+         static bool TestMe(WBFL::Debug::Log& rlog);
+#endif // _UNITTEST
+      };
+
    };
 };

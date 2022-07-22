@@ -22,33 +22,34 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <LRFD\LrfdLib.h>
-#include <LRFD\UnitTest.h>
-#include <LRFD\AutoVersion.h>
-#include <LRFD\ConcreteUtil.h>
-#include <LRFD\ElasticShortening.h>
-#include <LRFD\ApproximateLosses.h>
-#include <LRFD\ApproximateLosses2005.h>
-#include <LRFD\RefinedLosses.h>
-#include <LRFD\RefinedLosses2005.h>
-#include <LRFD\PCIUHPCLosses.h>
-#include <LRFD\PsStrand.h>
-#include <LRFD\Shear.h>
-#include <LRFD\StrandPool.h>
-#include <LRFD\VersionMgr.h>
-#include <LRFD\RebarPool.h>
-#include <LRFD\Utility.h>
-#include <LRFD\LoadModifier.h>
-#include <LRFD\LldfTypeAEKIJ.h>
-#include <LRFD\LldfTypeAEK.h>
-#include <LRFD\LldfTypeBC.h>
-#include <LRFD\LldfTypeHIJ.h>
-#include <LRFD\LldfTypeG.h>
-#include <LRFD\LldfTxdotMultiWeb.h>
-#include <LRFD\LldfTxdotSpreadSlab.h>
-#include <LRFD\CreepCoefficient.h>
-#include <LRFD\CreepCoefficient2005.h>
-#include <LRFD\PCIUHPCCreepCoefficient.h>
+#include <LRFD/LrfdLib.h>
+#include <LRFD/UnitTest.h>
+#include <LRFD/AutoVersion.h>
+#include <LRFD/ConcreteUtil.h>
+#include <LRFD/ElasticShortening.h>
+#include <LRFD/ApproximateLosses.h>
+#include <LRFD/ApproximateLosses2005.h>
+#include <LRFD/RefinedLosses.h>
+#include <LRFD/RefinedLosses2005.h>
+#include <LRFD/PCIUHPCLosses.h>
+#include <LRFD/PsStrand.h>
+#include <LRFD/Shear.h>
+#include <LRFD/StrandPool.h>
+#include <LRFD/VersionMgr.h>
+#include <LRFD/RebarPool.h>
+#include <LRFD/Utility.h>
+#include <LRFD/LoadModifier.h>
+#include <LRFD/LldfTypeAEKIJ.h>
+#include <LRFD/LldfTypeAEK.h>
+#include <LRFD/LldfTypeBC.h>
+#include <LRFD/LldfTypeHIJ.h>
+#include <LRFD/LldfTypeG.h>
+#include <LRFD/LldfTxdotMultiWeb.h>
+#include <LRFD/LldfTxdotSpreadSlab.h>
+#include <LRFD/CreepCoefficient.h>
+#include <LRFD/CreepCoefficient2005.h>
+#include <LRFD/PCIUHPCCreepCoefficient.h>
+#include <LRFD/LRFDConcrete2.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -68,43 +69,50 @@ CLASS
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-bool lrfdUnitTest::TestMe(WBFL::Debug::Log& rlog)
+bool lrfdUnitTest::TestMe(WBFL::Debug::Log& log)
 {
    bool tst = true;
 
 #if defined _UNITTEST
 
-   tst &= lrfdAutoVersion::TestMe(rlog);
-   tst &= lrfdConcreteUtil::TestMe(rlog);
-   tst &= lrfdApproximateLosses::TestMe(rlog);
-   tst &= lrfdApproximateLosses2005::TestMe(rlog);
-   tst &= lrfdRefinedLosses::TestMe(rlog);
-   tst &= lrfdRefinedLosses2005::TestMe(rlog);
-   tst &= lrfdPCIUHPCLosses::TestMe(rlog);
-   tst &= lrfdPsStrand::TestMe(rlog);
-   tst &= lrfdShear::TestMe(rlog);
-   tst &= lrfdStrandPool::TestMe(rlog);
-   tst &= lrfdStrandIter::TestMe(rlog);
-   tst &= lrfdVersionMgr::TestMe(rlog);
-   tst &= lrfdRebarPool::TestMe(rlog);
-   tst &= lrfdRebarIter::TestMe(rlog);
-   tst &= lrfdUtility::TestMe(rlog);
-   tst &= lrfdLoadModifier::TestMe(rlog);
-   tst &= lrfdCreepCoefficient::TestMe(rlog);
-   tst &= lrfdCreepCoefficient2005::TestMe(rlog);
-   tst &= lrfdPCIUHPCCreepCoefficient::TestMe(rlog);
+   tst &= lrfdAutoVersion::TestMe(log);
+   tst &= lrfdConcreteUtil::TestMe(log);
+   tst &= lrfdApproximateLosses::TestMe(log);
+   tst &= lrfdApproximateLosses2005::TestMe(log);
+   tst &= lrfdRefinedLosses::TestMe(log);
+   tst &= lrfdRefinedLosses2005::TestMe(log);
+   tst &= lrfdPCIUHPCLosses::TestMe(log);
+   tst &= lrfdPsStrand::TestMe(log);
+   tst &= lrfdShear::TestMe(log);
+   tst &= lrfdStrandPool::TestMe(log);
+   tst &= lrfdStrandIter::TestMe(log);
+   tst &= lrfdVersionMgr::TestMe(log);
+   tst &= lrfdRebarPool::TestMe(log);
+   tst &= lrfdRebarIter::TestMe(log);
+   tst &= lrfdUtility::TestMe(log);
+   tst &= lrfdLoadModifier::TestMe(log);
+   tst &= lrfdCreepCoefficient::TestMe(log);
+   tst &= lrfdCreepCoefficient2005::TestMe(log);
+   tst &= lrfdPCIUHPCCreepCoefficient::TestMe(log);
 
-   tst &= lrfdLldfTypeAEKIJ::TestMe(rlog);
-   tst &= lrfdLldfTypeAEK::TestMe(rlog);
-   tst &= lrfdWsdotLldfTypeAEK::TestMe(rlog);
-   tst &= lrfdLldfTypeBC::TestMe(rlog);
-   tst &= lrfdWsdotLldfTypeBC::TestMe(rlog);
-   tst &= lrfdLldfTypeHIJ::TestMe(rlog);
-   tst &= lrfdLldfTypeG::TestMe(rlog);
-   tst &= lrfdTxdotVoidedSlab::TestMe(rlog);
-   tst &= lrfdLldfTypeF::TestMe(rlog);
-   tst &= lrfdTxdotLldfSpreadSlab::TestMe(rlog);
+   tst &= lrfdLldfTypeAEKIJ::TestMe(log);
+   tst &= lrfdLldfTypeAEK::TestMe(log);
+   tst &= lrfdWsdotLldfTypeAEK::TestMe(log);
+   tst &= lrfdLldfTypeBC::TestMe(log);
+   tst &= lrfdWsdotLldfTypeBC::TestMe(log);
+   tst &= lrfdLldfTypeHIJ::TestMe(log);
+   tst &= lrfdLldfTypeG::TestMe(log);
+   tst &= lrfdTxdotVoidedSlab::TestMe(log);
+   tst &= lrfdLldfTypeF::TestMe(log);
+   tst &= lrfdTxdotLldfSpreadSlab::TestMe(log);
 
+   tst &= WBFL::LRFD::LRFDConcreteSecantModulusModel::TestMe(log);
+   tst &= WBFL::LRFD::LRFDVSRatioCorrectionFactorModel::TestMe(log);
+   tst &= WBFL::LRFD::LRFDShrinkageHumidityCorrectionFactorModel::TestMe(log);
+   tst &= WBFL::LRFD::LRFDCreepHumidityCorrectionFactorModel::TestMe(log);
+   tst &= WBFL::LRFD::LRFDConcreteStrengthCorrectionFactorModel::TestMe(log);
+   tst &= WBFL::LRFD::LRFDConcreteTimeDevelopmentCorrectionFactorModel::TestMe(log);
+   tst &= WBFL::LRFD::LRFDConcreteLoadingAgeCorrectionFactorModel::TestMe(log);
 #endif
 
    return tst;

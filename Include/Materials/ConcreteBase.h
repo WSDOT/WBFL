@@ -35,6 +35,7 @@ namespace WBFL
       struct ConcreteBaseCreepDetails;
 
       /// Abstract base class for time-dependent Portland Cement concrete material models.
+      /// \todo - This class and all subclasses will become obsolete
       class MATCLASS ConcreteBase
       {
       public:

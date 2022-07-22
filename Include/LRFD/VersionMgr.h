@@ -160,6 +160,10 @@ public:
    // returns the version enum value from the abbreviated version string
    static Version GetVersion(LPCTSTR strAbbrev);
 
+   //------------------------------------------------------------------------
+   // returns the last version that SI units were supported
+   static Version GetLastSIVersion();
+
 
    // GROUP: INQUIRY
    // GROUP: DEBUG

@@ -23,6 +23,7 @@
 
 #include <Materials/MatLib.h>
 #include <Materials/ACI209Concrete.h>
+#include <Materials/XConcrete.h>
 
 #include <MathEx.h>
 #include <Units/Units.h>
@@ -532,3 +533,688 @@ Float64 ACI209Concrete::ModE(Float64 fc,Float64 density) const
 
    return e;
 }
+
+
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+
+void ACI209ConcreteStrengthModel::GetModelParameters(CuringType cure, CementType cement, Float64* pA, Float64* pBeta)
+{
+   static const Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
+                                     WBFL::Units::ConvertToSysUnits(2.3,WBFL::Units::Measure::Day)} ,  // Moist, Type III
+                                    {WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day),    // Steam, Type I
+                                     WBFL::Units::ConvertToSysUnits(0.7,WBFL::Units::Measure::Day)} }; // Steam, Type III
+   static const Float64 beta[2][2] = { {0.85,  // Moist, Type I
+                                        0.92}, // Moist, Type III
+                                       {0.95, // Steam, Type I
+                                        0.98} }; // Steam, Type III
+
+   auto cure_idx = std::underlying_type<CuringType>::type(cure);
+   auto cement_idx = std::underlying_type<CementType>::type(cement);
+   *pA = a[cure_idx][cement_idx];
+   *pBeta = beta[cure_idx][cement_idx];
+}
+
+Float64 ACI209ConcreteStrengthModel::ComputeFc28(Float64 fc, Float64 age, Float64 a, Float64 b)
+{
+   PRECONDITION(0 < age);
+
+   // solving ACI209 equation 2-1 for (f'c)28
+   Float64 fc28 = (WBFL::Units::ConvertFromSysUnits(a, WBFL::Units::Measure::Day) + b * age) * fc / age;
+   return fc28;
+}
+
+void ACI209ConcreteStrengthModel::ComputeParameters(Float64 fc1, Float64 t1, Float64 fc2, Float64 t2, Float64* pA, Float64* pB)
+{
+   PRECONDITION(!IsZero(t2 - t1));
+
+   // solving ACI209 equation 2-1 for Alpha and Beta
+   *pB = (t1 * fc2 - t2 * fc1) / (fc1 * (t1 - t2));
+   *pA = t2 * (1.0 - (*pB));
+}
+
+void ACI209ConcreteStrengthModel::SetA(Float64 a)
+{
+   if (!IsEqual(m_A, a))
+   {
+      m_A = a;
+      m_bIsValid = false;
+   }
+}
+
+Float64 ACI209ConcreteStrengthModel::GetA() const
+{
+   return m_A;
+}
+
+void ACI209ConcreteStrengthModel::SetBeta(Float64 b)
+{
+   if (!IsEqual(m_Beta, b))
+   {
+      m_Beta = b;
+      m_bIsValid = false;
+   }
+}
+
+Float64 ACI209ConcreteStrengthModel::GetBeta() const
+{
+   return m_Beta;
+}
+
+void ACI209ConcreteStrengthModel::SetFc28(Float64 fc)
+{
+   if (!IsEqual(m_Fc28, fc))
+   {
+      m_Fc28 = fc;
+      m_bIsValid = false;
+   }
+}
+
+void ACI209ConcreteStrengthModel::SetFc28(Float64 fc, Float64 age)
+{
+   ASSERT(!IsZero(age));
+   m_Fc28 = ACI209Concrete::ComputeFc28(fc, age, m_A, m_Beta);
+   m_bIsValid = false;
+}
+
+Float64 ACI209ConcreteStrengthModel::GetFc28() const
+{
+   return m_Fc28;
+}
+
+Float64 ACI209ConcreteStrengthModel::GetFc(Float64 age) const
+{
+   Validate();
+
+   // ACI209 Eqn 2-1
+   Float64 fc = age * m_Fc28 / (m_Alpha + m_Beta * age);
+   return fc;
+}
+
+void ACI209ConcreteStrengthModel::Validate() const
+{
+   if (m_bIsValid)
+   {
+      return;
+   }
+
+   m_Alpha = WBFL::Units::ConvertFromSysUnits(m_A, WBFL::Units::Measure::Day);
+
+   m_bIsValid = true;
+}
+
+#if defined _DEBUG
+bool ACI209ConcreteStrengthModel::AssertValid() const
+{
+   return true;
+}
+
+void ACI209ConcreteStrengthModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   os << _T("Dump for ACI209ConcreteStrengthModel") << WBFL::Debug::endl;
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209ConcreteStrengthModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209ConcreteStrengthModel");
+
+   ACI209ConcreteStrengthModel model;
+   model.SetFc28(7);
+
+   Float64 a, b;
+   ACI209ConcreteStrengthModel::GetModelParameters(CuringType::Moist, CementType::TypeI, &a, &b);
+   model.SetA(a);
+   model.SetBeta(b);
+   TRY_TESTME(IsEqual(model.GetFc(10), 5.6));
+   TRY_TESTME(IsEqual(model.GetFc(56), 7.596899));
+
+   ACI209ConcreteStrengthModel::GetModelParameters(CuringType::Moist, CementType::TypeII, &a, &b);
+   model.SetA(a);
+   model.SetBeta(b);
+   TRY_TESTME(IsEqual(model.GetFc(10), 6.08696));
+   TRY_TESTME(IsEqual(model.GetFc(56), 7.28354));
+
+   ACI209ConcreteStrengthModel::GetModelParameters(CuringType::Steam, CementType::TypeI, &a, &b);
+   model.SetA(a);
+   model.SetBeta(b);
+   TRY_TESTME(IsEqual(model.GetFc(10), 6.66667));
+   TRY_TESTME(IsEqual(model.GetFc(56), 7.23247));
+
+   ACI209ConcreteStrengthModel::GetModelParameters(CuringType::Steam, CementType::TypeII, &a, &b);
+   model.SetA(a);
+   model.SetBeta(b);
+   TRY_TESTME(IsEqual(model.GetFc(10), 6.66667));
+   TRY_TESTME(IsEqual(model.GetFc(56), 7.05290));
+
+   TESTME_EPILOG("ACI209ConcreteStrengthModel");
+}
+#endif // _UNITTEST
+
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+ACI209ConcreteSecantModulusModel::ACI209ConcreteSecantModulusModel(const std::shared_ptr<ConcreteStrengthModel>& fcModel, Float64 density) :
+   ConcreteSecantModulusModel(), m_FcModel(fcModel), m_Density(density)
+{
+}
+
+Float64 ACI209ConcreteSecantModulusModel::ComputeEc28(Float64 Ec, Float64 age, Float64 a, Float64 b)
+{
+   PRECONDITION(0 < age);
+
+   // solving ACI209 equation 2-2 for (Ec)28
+   Float64 Ec28 = sqrt((WBFL::Units::ConvertFromSysUnits(a, WBFL::Units::Measure::Day) + b * age) / age) * Ec;
+   return Ec28;
+}
+
+void ACI209ConcreteSecantModulusModel::SetConcreteStrengthModel(const std::shared_ptr<ConcreteStrengthModel>& fcModel)
+{
+   m_FcModel = fcModel;
+}
+
+const std::shared_ptr<ConcreteStrengthModel>& ACI209ConcreteSecantModulusModel::GetConcreteStrengthModel() const
+{
+   return m_FcModel;
+}
+
+void ACI209ConcreteSecantModulusModel::SetDensity(Float64 density)
+{
+   PRECONDITION(0 < density);
+   m_Density = density;
+}
+
+Float64 ACI209ConcreteSecantModulusModel::GetDensity() const
+{
+   return m_Density;
+}
+
+Float64 ACI209ConcreteSecantModulusModel::GetEc(Float64 age) const
+{
+   if (age < 0) return 0;
+
+   if (m_FcModel == nullptr) THROW_CONCRETE(_T("ACI209ConcreteSecantModulusModel - Concrete strength model not defined"));
+
+   Float64 fc = m_FcModel->GetFc(age);
+
+   Float64 Fc;          // fc in spec units
+   Float64 Density;     // density in spec units
+   Float64 E;           // Modulus of elasticity in spec units
+   Float64 e;           // modulus of elasticity in System Units
+
+   // Convert input to required units
+   Fc = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::PSI);
+   Density = WBFL::Units::ConvertFromSysUnits(m_Density, WBFL::Units::Measure::LbmPerFeet3);
+
+   // Perform the calculation
+   E = 33.0 * sqrt(pow(Density, 3.0) * Fc); // ACI209 Eq 2-5.
+
+   // Convert output to system units.
+   e = WBFL::Units::ConvertToSysUnits(E, WBFL::Units::Measure::PSI);
+   
+   return e;
+}
+
+#if defined _DEBUG
+bool ACI209ConcreteSecantModulusModel::AssertValid() const
+{
+   return true;
+}
+
+void ACI209ConcreteSecantModulusModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   os << _T("Dump for ACI209ConcreteSecantModulusModel") << WBFL::Debug::endl;
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209ConcreteSecantModulusModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209ConcreteSecantModulusModel");
+
+   // want to work is KSI units
+   WBFL::Units::AutoSystem auto_restore_units_system;
+   WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+   WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+   WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
+   WBFL::Units::System::SetTemperatureUnit(WBFL::Units::Measure::Fahrenheit);
+   WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
+
+   ACI209ConcreteSecantModulusModel model;
+   try
+   {
+      model.GetEc(28.0);
+   }
+   catch (XConcrete&)
+   {
+      TRY_TESTME(true);
+   }
+
+   std::shared_ptr<ACI209ConcreteStrengthModel> fcModel(std::make_shared<ACI209ConcreteStrengthModel>());
+   Float64 a, b;
+   ACI209ConcreteStrengthModel::GetModelParameters(CuringType::Moist, CementType::TypeI, &a, &b);
+
+   fcModel->SetFc28(7.0);
+   fcModel->SetA(a);
+   fcModel->SetBeta(b);
+
+   model.SetConcreteStrengthModel(fcModel);
+   model.SetDensity(WBFL::Units::ConvertToSysUnits(150.0, WBFL::Units::Measure::LbmPerFeet3));
+
+   TRY_TESTME(IsEqual(model.GetEc(10), 4536.74994));
+   TRY_TESTME(IsEqual(model.GetEc(56), 5284.07546));
+
+
+   TESTME_EPILOG("ACI209ConcreteSecantModulusModel");
+}
+#endif // _UNITTEST
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+ACI209CreepVSRatioCorrectionFactorModel::ACI209CreepVSRatioCorrectionFactorModel(Float64 vsRatio) :
+   VSRatioCorrectionFactorModel(vsRatio)
+{
+}
+
+Float64 ACI209CreepVSRatioCorrectionFactorModel::GetCorrectionFactor(Float64 t) const
+{
+   Float64 vsRatio = GetVSRatio();
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(vsRatio, WBFL::Units::Measure::Inch);
+   return (2.0 / 3.0) * (1.0 + 1.13 * exp(-0.54 * vs)); // creep (2-21)
+}
+
+#if defined _DEBUG
+bool ACI209CreepVSRatioCorrectionFactorModel::AssertValid() const
+{
+   return __super::AssertValid();
+}
+
+void ACI209CreepVSRatioCorrectionFactorModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   __super::Dump(os);
+}
+
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209CreepVSRatioCorrectionFactorModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209CreepVSRatioCorrectionFactorModel");
+   ACI209CreepVSRatioCorrectionFactorModel model(WBFL::Units::ConvertToSysUnits(4.5, WBFL::Units::Measure::Inch));
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(10), 0.73299));
+   TESTME_EPILOG("ACI209CreepVSRatioCorrectionFactorModel");
+}
+#endif // _UNITTEST
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+ACI209ShrinkageVSRatioCorrectionFactorModel::ACI209ShrinkageVSRatioCorrectionFactorModel(Float64 vsRatio) :
+   VSRatioCorrectionFactorModel(vsRatio)
+{
+}
+
+Float64 ACI209ShrinkageVSRatioCorrectionFactorModel::GetCorrectionFactor(Float64 t) const
+{
+   Float64 vsRatio = GetVSRatio();
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(vsRatio, WBFL::Units::Measure::Inch);
+   return 1.2 * exp(-0.12 * vs); // shrinkage (2-22)
+}
+
+#if defined _DEBUG
+bool ACI209ShrinkageVSRatioCorrectionFactorModel::AssertValid() const 
+{
+   return __super::AssertValid();
+}
+
+void ACI209ShrinkageVSRatioCorrectionFactorModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   __super::Dump(os);
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209ShrinkageVSRatioCorrectionFactorModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209ShrinkageVSRatioCorrectionFactorModel");
+   ACI209ShrinkageVSRatioCorrectionFactorModel model(WBFL::Units::ConvertToSysUnits(4.5, WBFL::Units::Measure::Inch));
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(10), 0.69930));
+   TESTME_EPILOG("ACI209ShrinkageVSRatioCorrectionFactorModel");
+}
+#endif // _UNITTEST
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+
+ACI209ShrinkageHumidityCorrectionFactorModel::ACI209ShrinkageHumidityCorrectionFactorModel(Float64 h) :
+   HumidityCorrectionFactorModel(h)
+{
+}
+
+Float64 ACI209ShrinkageHumidityCorrectionFactorModel::GetCorrectionFactor() const
+{
+   Float64 H = GetH();
+   Float64 RH = 1.0;
+   if (40.0 <= H && H <= 80.0)
+   {
+      RH = 1.40 - 0.0102 * H;
+   }
+   else if (80.0 < H)
+   {
+      RH = 3.00 - 0.030 * H;
+   }
+
+   return RH;
+}
+
+#if defined _DEBUG
+bool ACI209ShrinkageHumidityCorrectionFactorModel::AssertValid() const
+{
+   return __super::AssertValid();
+}
+
+void ACI209ShrinkageHumidityCorrectionFactorModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   __super::Dump(os);
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209ShrinkageHumidityCorrectionFactorModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209ShrinkageHumidityCorrectionFactorModel");
+   ACI209ShrinkageHumidityCorrectionFactorModel model(30);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 1.0));
+
+   model.SetH(50);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 0.89));
+
+   model.SetH(90);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 0.30));
+   TESTME_EPILOG("ACI209ShrinkageHumidityCorrectionFactorModel");
+}
+#endif // _UNITTEST
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+
+ACI209CreepHumidityCorrectionFactorModel::ACI209CreepHumidityCorrectionFactorModel(Float64 h) :
+   HumidityCorrectionFactorModel(h)
+{
+}
+
+Float64 ACI209CreepHumidityCorrectionFactorModel::GetCorrectionFactor() const
+{
+   Float64 H = GetH();
+   Float64 RH = 1.0;
+   if (40.0 < H)
+   {
+      RH = 1.27 - 0.0067 * H;
+   }
+   return RH;
+}
+
+#if defined _DEBUG
+bool ACI209CreepHumidityCorrectionFactorModel::AssertValid() const
+{
+   return __super::AssertValid();
+}
+
+void ACI209CreepHumidityCorrectionFactorModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   __super::Dump(os);
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209CreepHumidityCorrectionFactorModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209CreepHumidityCorrectionFactorModel");
+   ACI209CreepHumidityCorrectionFactorModel model(30);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 1.0));
+
+   model.SetH(50);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 0.935));
+   TESTME_EPILOG("ACI209CreepHumidityCorrectionFactorModel");
+}
+#endif // _UNITTEST
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+
+ACI209ShrinkageTimeDevelopmentCorrectionFactorModel::ACI209ShrinkageTimeDevelopmentCorrectionFactorModel(CuringType curingType) :
+   m_CuringType(curingType)
+{
+}
+
+void ACI209ShrinkageTimeDevelopmentCorrectionFactorModel::SetCuringType(CuringType curingType)
+{
+   m_CuringType = curingType;
+}
+
+CuringType ACI209ShrinkageTimeDevelopmentCorrectionFactorModel::GetCuringType() const
+{
+   return m_CuringType;
+}
+
+Float64 ACI209ShrinkageTimeDevelopmentCorrectionFactorModel::GetCorrectionFactor(Float64 t) const
+{
+   Float64 f = (m_CuringType == CuringType::Moist ? 35 : 55); // Eqn 2-1, 2-9, 2-10
+   Float64 time_factor = t / (f + t);
+   return time_factor;
+}
+
+#if defined _DEBUG
+bool ACI209ShrinkageTimeDevelopmentCorrectionFactorModel::AssertValid() const
+{
+   return __super::AssertValid();
+}
+
+void ACI209ShrinkageTimeDevelopmentCorrectionFactorModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   __super::Dump(os);
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209ShrinkageTimeDevelopmentCorrectionFactorModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209ShrinkageTimeDevelopmentCorrectionFactorModel");
+   ACI209ShrinkageTimeDevelopmentCorrectionFactorModel model;
+   
+   model.SetCuringType(CuringType::Moist);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(89), 0.71774));
+   
+   model.SetCuringType(CuringType::Steam);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(89), 0.61806));
+   
+   TESTME_EPILOG("ACI209ShrinkageTimeDevelopmentCorrectionFactorModel");
+}
+#endif // _UNITTEST
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+
+ACI209CuringCorrectionFactorModel::ACI209CuringCorrectionFactorModel(CuringType curingType,Float64 curingDuration) :
+   m_CuringType(curingType), m_CuringDuration(curingDuration)
+{
+}
+
+void ACI209CuringCorrectionFactorModel::SetCuringType(CuringType curingType)
+{
+   m_CuringType = curingType;
+}
+
+CuringType ACI209CuringCorrectionFactorModel::GetCuringType() const
+{
+   return m_CuringType;
+}
+
+void ACI209CuringCorrectionFactorModel::SetCuringDuration(Float64 curingDuration)
+{
+   m_CuringDuration = curingDuration;
+}
+
+Float64 ACI209CuringCorrectionFactorModel::GetCuringDuration() const
+{
+   return m_CuringDuration;
+}
+
+Float64 ACI209CuringCorrectionFactorModel::GetCorrectionFactor() const
+{
+   // Initial Moist Cure (2.5.3)
+   Float64 CP = 1.0;
+   if (m_CuringType == CuringType::Moist)
+   {
+      // linear interpolate values from table 2.5.3
+      if (m_CuringDuration < 1)
+      {
+         CP = 1.2;
+      }
+      else if (1 <= m_CuringDuration && m_CuringDuration < 3)
+      {
+         CP = LinInterp(m_CuringDuration - 1., 1.2, 1.1, 3. - 1.);
+      }
+      else if (3 <= m_CuringDuration && m_CuringDuration < 7)
+      {
+         CP = LinInterp(m_CuringDuration - 3., 1.1, 1.0, 7. - 3.);
+      }
+      else if (7 <= m_CuringDuration && m_CuringDuration < 14)
+      {
+         CP = LinInterp(m_CuringDuration - 7., 1.0, 0.93, 14. - 7.);
+      }
+      else if (14 <= m_CuringDuration && m_CuringDuration < 28)
+      {
+         CP = LinInterp(m_CuringDuration - 14., 0.93, 0.86, 28. - 14.);
+      }
+      else if (28 <= m_CuringDuration && m_CuringDuration < 90)
+      {
+         CP = LinInterp(m_CuringDuration - 28., 0.86, 0.75, 90. - 28.);
+      }
+      else
+      {
+         CP = 0.75;
+      }
+   }
+
+   return CP;
+}
+
+#if defined _DEBUG
+bool ACI209CuringCorrectionFactorModel::AssertValid() const
+{
+   return true;
+}
+
+void ACI209CuringCorrectionFactorModel::Dump(WBFL::Debug::LogContext& os) const
+{
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209CuringCorrectionFactorModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209CuringCorrectionFactorModel");
+
+   ACI209CuringCorrectionFactorModel model(CuringType::Steam, 7);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 1.0));
+
+   model.SetCuringType(CuringType::Moist);
+
+   model.SetCuringDuration(0);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 1.2));
+
+   model.SetCuringDuration(2);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 1.15));
+
+   model.SetCuringDuration(5);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 1.05));
+
+   model.SetCuringDuration(10);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 0.97));
+
+   model.SetCuringDuration(20);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 0.90));
+
+   model.SetCuringDuration(56);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 0.81033));
+
+   model.SetCuringDuration(180);
+   TRY_TESTME(IsEqual(model.GetCorrectionFactor(), 0.75));
+
+   TESTME_EPILOG("ACI209CuringCorrectionFactorModel");
+}
+#endif // _UNITTEST
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+ACI209ConcreteShrinkageModel::ACI209ConcreteShrinkageModel() :
+   ConcreteShrinkageTemplateModel()
+{
+   SetUltimateShrinkageStrain(-780E-6); // negative for shrinkage
+}
+
+ACI209ConcreteShrinkageModel::ACI209ConcreteShrinkageModel(Float64 ecu) :
+   ConcreteShrinkageTemplateModel(ecu)
+{
+}
+
+void ACI209ConcreteShrinkageModel::SetCuringCorrectionFactorModel(const std::shared_ptr<const ACI209CuringCorrectionFactorModel>& model)
+{
+   m_CuringModel = model;
+}
+
+const std::shared_ptr<const ACI209CuringCorrectionFactorModel>& ACI209ConcreteShrinkageModel::GetCuringCorrectionFactorModel() const
+{
+   return m_CuringModel;
+}
+
+Float64 ACI209ConcreteShrinkageModel::GetShrinkageStrain(Float64 t) const
+{
+   Float64 esh = __super::GetShrinkageStrain(t);
+   Float64 cp = m_CuringModel ? m_CuringModel->GetCorrectionFactor() : 1.0;
+   esh *= cp;
+   return esh;
+}
+
+#if defined _DEBUG
+bool ACI209ConcreteShrinkageModel::AssertValid() const
+{
+   return __super::AssertValid();
+}
+
+void ACI209ConcreteShrinkageModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   __super::Dump(os);
+}
+
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool ACI209ConcreteShrinkageModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("ACI209ConcreteShrinkageModel");
+
+   CuringType curingType{ CuringType::Moist };
+
+   ACI209ConcreteShrinkageModel model;
+   model.SetVSRatioCorrectionFactor(std::make_shared<ACI209ShrinkageVSRatioCorrectionFactorModel>(WBFL::Units::ConvertToSysUnits(4.5,WBFL::Units::Measure::Inch)));
+   model.SetHumidityCorrectionFactor(std::make_shared<ACI209ShrinkageHumidityCorrectionFactorModel>(73));
+   model.SetConcreteTimeDevelopmentCorrectionFactor(std::make_shared<ACI209ShrinkageTimeDevelopmentCorrectionFactorModel>(curingType));
+   model.SetCuringCorrectionFactorModel(std::make_shared<ACI209CuringCorrectionFactorModel>(curingType,7.0));
+
+   TRY_TESTME(IsEqual(model.GetShrinkageStrain(89), -0.000257));
+
+   TESTME_EPILOG("ACI209ConcreteShrinkageModel");
+}
+#endif // _UNITTEST

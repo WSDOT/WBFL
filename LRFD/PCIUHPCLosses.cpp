@@ -389,7 +389,7 @@ bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( IsEqual(value, 243615889.91274610) );
 
    value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value, 256669979.16319764) );
+   TRY_TESTME( IsEqual(value, 257045465.85123089) );
 
    // temporary strands
    value = loss.TemporaryStrand_BeforeTransfer();

@@ -23,6 +23,7 @@
 
 #include <Materials/MatLib.h>
 #include <Materials/CEBFIPConcrete.h>
+#include <Materials/XConcrete.h>
 
 #include <MathEx.h>
 #include <Units/Units.h>
@@ -501,6 +502,7 @@ Float64 CEBFIPConcrete::GetFr(Float64 t) const
 // For now, the easiest solution is to have a localized ModE method here
 Float64 CEBFIPConcrete::ModE(Float64 fc,Float64 density) const
 {
+#pragma Reminder("WORKING HERE - Need to update this - it's not the right model - see SecantModel below")
    Float64 Fc;          // fc in spec units
    Float64 Density;     // density in spec units
    Float64 E;           // Modulus of elasticity in spec units
@@ -518,3 +520,425 @@ Float64 CEBFIPConcrete::ModE(Float64 fc,Float64 density) const
 
    return e;
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+void CEBFIPConcreteStrengthModel::GetModelParameters(CementType cementType, Float64* pS)
+{
+   // See CEBFIP 2.1.6.1 and 2.1.6.4.4
+   if (cementType == CementType::RS)
+   {
+      *pS = 0.20;
+   }
+   else if (cementType == CementType::N || cementType == CementType::R)
+   {
+      *pS = 0.25;
+   }
+   else if (cementType == CementType::SL)
+   {
+      *pS = 0.38;
+   }
+   else
+   {
+      ASSERT(false); // is there a new cement type?
+   }
+}
+
+Float64 CEBFIPConcreteStrengthModel::ComputeFc28(Float64 fc, Float64 age, CementType type)
+{
+   // CEB-FIP Eqn. 2.1-54, solved for f'c at 28 days
+   Float64 s;
+   GetModelParameters(type, &s);
+   Float64 beta = exp(s * (1.0 - sqrt(28. / age)));
+   Float64 fc28 = fc / beta;
+   return fc28;
+}
+
+void CEBFIPConcreteStrengthModel::SetS(Float64 s)
+{
+   m_S = s;
+}
+
+Float64 CEBFIPConcreteStrengthModel::GetS() const
+{
+   return m_S;
+}
+
+void CEBFIPConcreteStrengthModel::SetFc28(Float64 fc)
+{
+   m_Fc28 = fc;
+}
+
+void CEBFIPConcreteStrengthModel::SetFc28(Float64 fc, Float64 age)
+{
+   PRECONDITION(0 < age);
+
+   // CEB-FIP Eqn. 2.1-54, solved for f'c at 28 days
+   // age is in days
+   Float64 beta_cc = GetBetaCC(age);
+   m_Fc28 = fc / beta_cc;
+}
+
+Float64 CEBFIPConcreteStrengthModel::GetFc28() const
+{
+   return m_Fc28;
+}
+
+Float64 CEBFIPConcreteStrengthModel::ComputeFc28(Float64 fc, Float64 age, Float64 s)
+{
+   // CEB-FIP Eqn. 2.1-54, solved for f'c at 28 days
+   // age is in days
+   Float64 fc28 = fc / exp(s * (1.0 - sqrt(28. / age)));
+   return fc28;
+}
+
+void CEBFIPConcreteStrengthModel::ComputeParameters(Float64 fc1, Float64 t1, Float64 fc2, Float64 t2, Float64* pS)
+{
+   // Solving CEB-FIP Equation 2.1-54 for S
+   // t1 and t2 in days
+   *pS = log(fc1 / fc2) / (sqrt(28 / t2) - sqrt(28 / t1));
+}
+
+Float64 CEBFIPConcreteStrengthModel::GetBetaCC(Float64 age) const
+{
+   if (age < 0) return 0;
+
+   Float64 beta_cc = exp(m_S * (1.0 - sqrt(28. / age))); // CEB-FIB Eq'n 2.1-54
+   return beta_cc;
+}
+
+Float64 CEBFIPConcreteStrengthModel::GetFc(Float64 age) const
+{
+   if (age < 0)
+   {
+      return 0;
+   }
+
+   // age must be in days
+   Float64 beta_cc = GetBetaCC(age);
+   Float64 fc = beta_cc * m_Fc28; // CEB-FIP Eqn. 2.1-53
+   return fc;
+}
+
+#if defined _DEBUG
+bool CEBFIPConcreteStrengthModel::AssertValid() const
+{
+   return true;
+}
+
+void CEBFIPConcreteStrengthModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   os << _T("Dump for CEBFIPConcreteStrengthModel") << WBFL::Debug::endl;
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool CEBFIPConcreteStrengthModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("CEBFIPConcreteStrengthModel");
+
+   CEBFIPConcreteStrengthModel model;
+   Float64 s;
+   CEBFIPConcreteStrengthModel::GetModelParameters(CementType::RS, &s);
+
+   model.SetFc28(7);
+   model.SetS(s);
+
+   TRY_TESTME(IsEqual(model.GetFc(10), 6.11807));
+   TRY_TESTME(IsEqual(model.GetFc(56), 7.42229));
+
+
+   TESTME_EPILOG("CEBFIPConcreteStrengthModel");
+}
+#endif // _UNITTEST
+
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+CEBFIPConcreteSecantModulusModel::CEBFIPConcreteSecantModulusModel(const std::shared_ptr<CEBFIPConcreteStrengthModel>& fcModel) :
+   ConcreteSecantModulusModel(), m_FcModel(fcModel)
+{
+}
+
+Float64 CEBFIPConcreteSecantModulusModel::ComputeEc28(Float64 Ec, Float64 age, CEBFIPConcreteStrengthModel::CementType type)
+{
+   // CEB-FIP Eqn. 2.1-57, solved for Ec at 28 days
+   Float64 s;
+   CEBFIPConcreteStrengthModel::GetModelParameters(type, &s);
+   Float64 beta = exp(s * (1.0 - sqrt(28. / age)));
+   Float64 Ec28 = Ec / sqrt(beta);
+   return Ec28;
+}
+
+Float64 CEBFIPConcreteSecantModulusModel::ComputeEc28(Float64 ec, Float64 age, Float64 s)
+{
+   // CEB-FIP Equation 2.1-57, rearranged to solve for Ec28
+   // age must be in days
+   Float64 Ec28 = ec / sqrt(exp(s * (1 - sqrt(28 / age))));
+   return Ec28;
+}
+
+void CEBFIPConcreteSecantModulusModel::SetConcreteStrengthModel(const std::shared_ptr<CEBFIPConcreteStrengthModel>& fcModel)
+{
+   m_FcModel = fcModel;
+}
+
+const std::shared_ptr<CEBFIPConcreteStrengthModel>& CEBFIPConcreteSecantModulusModel::GetConcreteStrengthModel() const
+{
+   return m_FcModel;
+}
+
+Float64 CEBFIPConcreteSecantModulusModel::GetEc(Float64 age) const
+{
+   if (age < 0) return 0;
+
+   if (m_FcModel == nullptr) THROW_CONCRETE(_T("CEBFIPConcreteSecantModulusModel - Concrete strength model not defined"));
+
+   Float64 fcm = m_FcModel->GetFc(28.0); // fc at 28 days
+   Float64 fcmo = WBFL::Units::ConvertToSysUnits(10.0, WBFL::Units::Measure::MPa);
+   Float64 Eco = WBFL::Units::ConvertToSysUnits(2.15e4, WBFL::Units::Measure::MPa);
+   Float64 Eci = Eco * pow(fcm / fcmo, 1.0 / 3.0); // CEB-FIP Eqn 2.1-16 (28 day Ec)
+
+   if (IsEqual(age, 28.0)) return Eci;
+
+   Float64 beta_cc = m_FcModel->GetBetaCC(age);
+
+   Float64 beta_E = sqrt(beta_cc); // CEB-FIP Eqn 2.1-58
+   Float64 E = beta_E * Eci; // CEB-FIP Eqn 2.1-57
+
+   return E;
+}
+
+#if defined _DEBUG
+bool CEBFIPConcreteSecantModulusModel::AssertValid() const
+{
+   return true;
+}
+
+void CEBFIPConcreteSecantModulusModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   os << _T("Dump for CEBFIPConcreteSecantModulusModel") << WBFL::Debug::endl;
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool CEBFIPConcreteSecantModulusModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("CEBFIPConcreteSecantModulusModel");
+
+   // want to work is KSI units
+   WBFL::Units::AutoSystem auto_restore_units_system;
+   WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+   WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+   WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
+   WBFL::Units::System::SetTemperatureUnit(WBFL::Units::Measure::Fahrenheit);
+   WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
+
+   CEBFIPConcreteSecantModulusModel model;
+   try
+   {
+      model.GetEc(28.0);
+   }
+   catch (XConcrete&)
+   {
+      TRY_TESTME(true);
+   }
+
+   std::shared_ptr<CEBFIPConcreteStrengthModel> fcModel(std::make_shared<CEBFIPConcreteStrengthModel>());
+   
+   Float64 s;
+   CEBFIPConcreteStrengthModel::GetModelParameters(CEBFIPConcreteStrengthModel::CementType::RS, &s);
+
+   fcModel->SetFc28(7);
+   fcModel->SetS(s);
+
+   model.SetConcreteStrengthModel(fcModel);
+
+   TRY_TESTME(IsEqual(model.GetEc(10), 4926.62946));
+   TRY_TESTME(IsEqual(model.GetEc(28), 5269.77191));
+   TRY_TESTME(IsEqual(model.GetEc(56), 5426.40256));
+
+
+   TESTME_EPILOG("CEBFIPConcreteSecantModulusModel");
+}
+#endif // _UNITTEST
+
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+
+CEBFIPConcreteShrinkageModel::CEBFIPConcreteShrinkageModel(Float64 vsRatio, Float64 rh, CEBFIPConcrete::CementType cementType, Float64 fc28) :
+   ConcreteShrinkageModel(), m_VSRatio(vsRatio), m_RH(rh), m_CementType(cementType), m_Fc28(fc28)
+{
+}
+
+void CEBFIPConcreteShrinkageModel::SetVSRatio(Float64 vsRatio) 
+{
+   m_VSRatio = vsRatio;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetVSRatio() const
+{
+   return m_VSRatio;
+}
+
+void CEBFIPConcreteShrinkageModel::SetHumidity(Float64 rh)
+{
+   m_RH = rh;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetHumidity() const
+{
+   return m_RH;
+}
+
+void CEBFIPConcreteShrinkageModel::SetCementType(CEBFIPConcrete::CementType cementType)
+{
+   m_CementType = cementType;
+}
+
+CEBFIPConcrete::CementType CEBFIPConcreteShrinkageModel::GetCementType() const
+{
+   return m_CementType;
+}
+
+void CEBFIPConcreteShrinkageModel::SetFc28(Float64 fc28)
+{
+   m_Fc28 = fc28;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetFc28() const
+{
+   return m_Fc28;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetShrinkageStrain(Float64 age) const
+{
+   // Notional shrinkage coefficient... CEB-FIP Eqn. 2.1-75
+   Float64 ecso = GetNotionalShrinkageCoefficient(); // CEB-FIP Eqn. 2.1-75
+
+   // Time development factor CEB-FIP Eqn. 2.1-79
+   Float64 h = GetH();
+   h = WBFL::Units::ConvertFromSysUnits(h, WBFL::Units::Measure::Millimeter); // need h in millimeter
+   Float64 ho = 100; // 100 millimieter
+   Float64 betaS = sqrt(age / (350 * pow(h / ho, 2) + age));
+
+   Float64 esh = ecso * betaS;
+
+   return esh;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetH() const
+{
+   // See Eqn 2.1-69
+   // VS ratio is basically the same as Ac/u and h = 2Ac/u
+   return 2 * m_VSRatio;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetNotionalShrinkageCoefficient() const
+{
+   Float64 es_fcm = GetEpsilonS();
+   Float64 beta_RH = GetBetaRH();
+   Float64 ecso = es_fcm * beta_RH; // CEB-FIP Eqn. 2.1-75
+   return ecso;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetEpsilonS() const
+{
+   Float64 fcm = WBFL::Units::ConvertFromSysUnits(m_Fc28, WBFL::Units::Measure::MPa); // must be in MPa for CEB-FIP equations
+   Float64 fcmo = 10.0; // MPa
+   Float64 betaSC = GetBetaSC();
+   Float64 es_fcm = (160 + 10 * betaSC * (9 - fcm / fcmo)) * 1E-6; // CEB-FIP Eqn 2.1-76
+   return es_fcm;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetBetaRH() const
+{
+   // returns Beta-RH for use in CEB-FIP Eqn. 2.1-75
+   Float64 beta;
+   if (m_RH < 40)
+   {
+      beta = -1.4508; // Assume constant value for RH = 40%
+   }
+   else if (40 <= m_RH && m_RH < 99)
+   {
+      Float64 beta_sRH = GetBetaSRH();
+      ASSERT(0 < beta_sRH);
+      beta = -1.55 * beta_sRH; // CEB-FIP Eqn. 2.1-77
+   }
+   else
+   {
+      beta = 0.25; // CEB-FIP Eqn. 2.1-77
+   }
+
+   return beta;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetBetaSRH() const
+{
+   Float64 betaSRH = 1.0 - pow(m_RH / 100.0, 3);
+   return betaSRH;
+}
+
+Float64 CEBFIPConcreteShrinkageModel::GetBetaSC() const
+{
+   // See CEBFIP 2.1.6.1 and 2.1.6.4.4
+   Float64 betaSC = 0;
+   switch (m_CementType)
+   {
+   case CEBFIPConcrete::CementType::RS:
+      betaSC = 8; break;
+
+   case CEBFIPConcrete::CementType::N:
+   case CEBFIPConcrete::CementType::R:
+      betaSC = 5;
+      break;
+
+   case CEBFIPConcrete::CementType::SL:
+      betaSC = 4;
+      break;
+
+   default:
+      ASSERT(false);
+      betaSC = 0;
+      break;
+   }
+   return betaSC;
+}
+
+#if defined _DEBUG
+bool CEBFIPConcreteShrinkageModel::AssertValid() const
+{
+   return __super::AssertValid();
+}
+
+void CEBFIPConcreteShrinkageModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   __super::Dump(os);
+}
+
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool CEBFIPConcreteShrinkageModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("CEBFIPConcreteShrinkageModel");
+
+   CuringType curingType{ CuringType::Moist };
+
+   CEBFIPConcreteShrinkageModel model(
+      WBFL::Units::ConvertToSysUnits(4.5, WBFL::Units::Measure::Inch),
+      75,
+      CEBFIPConcrete::CementType::N,
+      WBFL::Units::ConvertToSysUnits(7.0, WBFL::Units::Measure::KSI)
+   );
+
+   TRY_TESTME(IsEqual(model.GetShrinkageStrain(89), -7.1166336160217504e-05));
+
+   TESTME_EPILOG("CEBFIPConcreteShrinkageModel");
+}
+#endif // _UNITTEST
