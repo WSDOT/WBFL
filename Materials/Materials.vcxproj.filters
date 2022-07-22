@@ -7,7 +7,7 @@
     <ClCompile Include="CEBFIPConcrete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Concrete.cpp">
+    <ClCompile Include="SimpleConcrete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ConcreteBase.cpp">
@@ -36,7 +36,7 @@
     <ClInclude Include="..\Include\Materials\CEBFIPConcrete.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Materials\Concrete.h">
+    <ClInclude Include="..\Include\Materials\SimpleConcrete.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Materials\ConcreteBase.h">
@@ -85,7 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Materials.rc">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Materials.def" />
   </ItemGroup>
 </Project>

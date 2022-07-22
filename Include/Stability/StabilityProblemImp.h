@@ -26,7 +26,7 @@
 #include <Stability/StabilityExp.h>
 #include <Stability/StabilityTypes.h>
 #include <Stability/StabilityProblem.h>
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 #include <set>
 #include <array>
 
@@ -355,13 +355,13 @@ namespace WBFL
          void IncludeLateralRollAxisOffset(bool bInclude);
 
          /// Concrete definition
-         void SetConcrete(const WBFL::Materials::Concrete& concrete);
+         void SetConcrete(const WBFL::Materials::SimpleConcrete& concrete);
 
          /// Concrete definition
-         virtual const WBFL::Materials::Concrete& GetConcrete() const;
+         virtual const WBFL::Materials::SimpleConcrete& GetConcrete() const;
 
          /// Concrete definition
-         virtual WBFL::Materials::Concrete& GetConcrete();
+         virtual WBFL::Materials::SimpleConcrete& GetConcrete();
 
          /// Reinforcing steel yield strength
          void SetRebarYieldStrength(Float64 fy);
@@ -482,7 +482,7 @@ namespace WBFL
          bool m_bIncludeRollAxisLateralOffset{ false };
          Float64 m_LateralCamber{ 0.0 };
 
-         WBFL::Materials::Concrete m_Concrete;
+         WBFL::Materials::SimpleConcrete m_Concrete;
 
          Float64 m_fy{ 0.0 }; // reinforcement yield strength
 
@@ -578,13 +578,13 @@ namespace WBFL
          void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
          /// Concrete definition
-         void SetConcrete(const WBFL::Materials::Concrete& concrete) { m_Imp.SetConcrete(concrete); }
+         void SetConcrete(const WBFL::Materials::SimpleConcrete& concrete) { m_Imp.SetConcrete(concrete); }
          
          /// Concrete definition
-         const WBFL::Materials::Concrete& GetConcrete() const { return m_Imp.GetConcrete(); }
+         const WBFL::Materials::SimpleConcrete& GetConcrete() const { return m_Imp.GetConcrete(); }
          
          /// Concrete definition
-         WBFL::Materials::Concrete& GetConcrete() { return m_Imp.GetConcrete(); }
+         WBFL::Materials::SimpleConcrete& GetConcrete() { return m_Imp.GetConcrete(); }
 
          /// Reinforcing steel yield strength
          virtual Float64 GetRebarYieldStrength() const override { return m_Imp.GetRebarYieldStrength(); }
@@ -764,11 +764,11 @@ namespace WBFL
          void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
          /// Concrete definition
-         void SetConcrete(const WBFL::Materials::Concrete& concrete) { m_Imp.SetConcrete(concrete); }
+         void SetConcrete(const WBFL::Materials::SimpleConcrete& concrete) { m_Imp.SetConcrete(concrete); }
          /// Concrete definition
-         const WBFL::Materials::Concrete& GetConcrete() const { return m_Imp.GetConcrete(); }
+         const WBFL::Materials::SimpleConcrete& GetConcrete() const { return m_Imp.GetConcrete(); }
          /// Concrete definition
-         WBFL::Materials::Concrete& GetConcrete() { return m_Imp.GetConcrete(); }
+         WBFL::Materials::SimpleConcrete& GetConcrete() { return m_Imp.GetConcrete(); }
 
          /// Reinforcing steel yield strength
          virtual Float64 GetRebarYieldStrength() const  override { return m_Imp.GetRebarYieldStrength(); }
@@ -1007,13 +1007,13 @@ namespace WBFL
          void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
          /// Concrete definition
-         void SetConcrete(const WBFL::Materials::Concrete& concrete) { m_Imp.SetConcrete(concrete); }
+         void SetConcrete(const WBFL::Materials::SimpleConcrete& concrete) { m_Imp.SetConcrete(concrete); }
 
          /// Concrete definition
-         const WBFL::Materials::Concrete& GetConcrete() const { return m_Imp.GetConcrete(); }
+         const WBFL::Materials::SimpleConcrete& GetConcrete() const { return m_Imp.GetConcrete(); }
 
          /// Concrete definition
-         WBFL::Materials::Concrete& GetConcrete() { return m_Imp.GetConcrete(); }
+         WBFL::Materials::SimpleConcrete& GetConcrete() { return m_Imp.GetConcrete(); }
 
          /// Reinforcing steel yield strength
          virtual Float64 GetRebarYieldStrength() const  override { return m_Imp.GetRebarYieldStrength(); }

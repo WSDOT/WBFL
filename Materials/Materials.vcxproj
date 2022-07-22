@@ -177,7 +177,7 @@
   <ItemGroup>
     <ClCompile Include="ACI209Concrete.cpp" />
     <ClCompile Include="CEBFIPConcrete.cpp" />
-    <ClCompile Include="Concrete.cpp" />
+    <ClCompile Include="SimpleConcrete.cpp" />
     <ClCompile Include="ConcreteBase.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -191,7 +191,7 @@
     <ClInclude Include="..\Include\Materials\ACI209Concrete.h" />
     <ClInclude Include="..\Include\Materials\AutoLib.h" />
     <ClInclude Include="..\Include\Materials\CEBFIPConcrete.h" />
-    <ClInclude Include="..\Include\Materials\Concrete.h" />
+    <ClInclude Include="..\Include\Materials\SimpleConcrete.h" />
     <ClInclude Include="..\Include\Materials\ConcreteBase.h" />
     <ClInclude Include="..\Include\Materials\ConcreteTypes.h" />
     <ClInclude Include="..\Include\Materials\Materials.h" />

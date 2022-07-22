@@ -30,5 +30,7 @@ namespace WBFL
    namespace Materials
    {
       enum class ConcreteType { Normal, AllLightweight, SandLightweight, PCI_UHPC };
+      enum class CementType { TypeI, TypeII };
+      enum class CuringType { Moist, Steam };
    };
 };

@@ -44,7 +44,7 @@ lrfdLRFDConcrete::~lrfdLRFDConcrete()
 {
 }
 
-void lrfdLRFDConcrete::SetConcreteModels(const WBFL::Materials::Concrete& initial,const WBFL::Materials::Concrete & final)
+void lrfdLRFDConcrete::SetConcreteModels(const WBFL::Materials::SimpleConcrete& initial,const WBFL::Materials::SimpleConcrete & final)
 {
    m_InitialConcrete = initial;
    m_FinalConcrete   = final;
@@ -61,12 +61,12 @@ void lrfdLRFDConcrete::SetConcreteModels(const WBFL::Materials::Concrete& initia
    SetLambda(m_FinalConcrete.GetLambda());
 }
 
-const WBFL::Materials::Concrete& lrfdLRFDConcrete::GetInitialConcreteModel() const
+const WBFL::Materials::SimpleConcrete& lrfdLRFDConcrete::GetInitialConcreteModel() const
 {
    return m_InitialConcrete;
 }
 
-const WBFL::Materials::Concrete& lrfdLRFDConcrete::GetFinalConcreteModel() const
+const WBFL::Materials::SimpleConcrete& lrfdLRFDConcrete::GetFinalConcreteModel() const
 {
    return m_FinalConcrete;
 }
@@ -141,7 +141,7 @@ Float64 lrfdLRFDConcrete::GetStepTime() const
    return m_StepTime;
 }
 
-void lrfdLRFDConcrete::Use90DayStrength(const WBFL::Materials::Concrete& concrete90)
+void lrfdLRFDConcrete::Use90DayStrength(const WBFL::Materials::SimpleConcrete& concrete90)
 {
    m_bUse90DayConcrete = true;
    m_90DayConcrete = concrete90;
@@ -152,7 +152,7 @@ bool lrfdLRFDConcrete::Use90DayStrength() const
    return m_bUse90DayConcrete;
 }
 
-const WBFL::Materials::Concrete& lrfdLRFDConcrete::Get90DayConcreteModel() const
+const WBFL::Materials::SimpleConcrete& lrfdLRFDConcrete::Get90DayConcreteModel() const
 {
    return m_90DayConcrete;
 }
@@ -363,8 +363,8 @@ std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> lrfdLRFDConcrete:
       kh = 0;
    }
 
-   Float64 K = (GetCureMethod() == WBFL::Materials::ConcreteBase::CureMethod::Moist ? 35.0 : 55.0);
-   Float64 eshu = (GetCureMethod() == WBFL::Materials::ConcreteBase::CureMethod::Moist ? 0.51e-3 : 0.56e-3);
+   Float64 K = (GetCuringType() == WBFL::Materials::CuringType::Moist ? 35.0 : 55.0);
+   Float64 eshu = (GetCuringType() == WBFL::Materials::CuringType::Moist ? 0.51e-3 : 0.56e-3);
    Float64 esh = -ks*kh*eshu*(shrinkage_time)/(K + shrinkage_time);
 
    pDetails->kvs = ks;

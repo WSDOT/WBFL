@@ -60,8 +60,7 @@ CLASS
 class LRFDCLASS lrfdLRFDTimeDependentConcrete : public lrfdLRFDConcreteBase
 {
 public:
-   enum class CementType { TypeI, TypeII };
-   static void GetModelParameters(WBFL::Materials::ConcreteBase::CureMethod cure,CementType cement,Float64* pA,Float64* pBeta);
+   static void GetModelParameters(WBFL::Materials::CuringType cure,WBFL::Materials::CementType cement,Float64* pA,Float64* pBeta);
 
    lrfdLRFDTimeDependentConcrete(LPCTSTR name = _T("Unknown"));
    lrfdLRFDTimeDependentConcrete(const lrfdLRFDTimeDependentConcrete&) = default;

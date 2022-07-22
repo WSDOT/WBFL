@@ -38,8 +38,6 @@ namespace WBFL
       class MATCLASS ConcreteBase
       {
       public:
-         enum class CureMethod { Moist, Steam };
-
          ConcreteBase(LPCTSTR name = _T("Unknown"));
          virtual ~ConcreteBase();
 
@@ -57,7 +55,7 @@ namespace WBFL
          static std::_tstring GetTypeName(ConcreteType type,bool bFull);
          static ConcreteType GetTypeFromTypeName(LPCTSTR strName);
 
-         static std::_tstring GetCureMethod(CureMethod method);
+         static std::_tstring GetCuringType(CuringType curingType);
 
          /// Indicates if the concrete defines an aggregate splitting strength
          bool HasAggSplittingStrength() const;
@@ -106,8 +104,8 @@ namespace WBFL
          Float64 GetCureTime() const;
 
          // Cure method
-         void SetCureMethod(CureMethod method);
-         CureMethod GetCureMethod() const;
+         void SetCuringType(CuringType method);
+         CuringType GetCuringType() const;
 
          /// Returns the age of the concrete at time t. Return value is < 0
          /// if t is before casting
@@ -146,7 +144,7 @@ namespace WBFL
          virtual void OnChanged();
 
          /// Subclasses can call this to initialize the base class details for shrinkage. The parameters that get 
-         /// initialized are cureMethod and shrinkage_during
+         /// initialized are CuringType and shrinkage_during
          void InitializeShrinkageDetails(Float64 t,ConcreteBaseShrinkageDetails* pDetails) const;
 
          /// Subclasses must call this to initialize the base class details for creep. The parameters that get
@@ -167,7 +165,7 @@ namespace WBFL
          Float64     m_TimeAtCasting; // time at casting... days
          Float64     m_AgeAtInitialLoading; // days
          Float64     m_CureTime; // duration of time that the concrete is cured
-         CureMethod  m_CureMethod;
+         CuringType  m_CuringType;
       };
 
       /// Base class for shrinkage strain calculation details. Subclasses extend this to provide additional parameters.
@@ -176,7 +174,7 @@ namespace WBFL
          ConcreteBaseShrinkageDetails() = default;
          virtual ~ConcreteBaseShrinkageDetails() {};
          Float64 shrinkage_duration{ 0 }; ///< duration of time overwhich shrinkage occurs
-         ConcreteBase::CureMethod cureMethod{ ConcreteBase::CureMethod::Moist }; ///< Concrete curing method
+         CuringType curingType{ CuringType::Moist }; ///< Concrete curing method
          Float64 esh{ 0 }; ///< Shrinkage strain
       };
 

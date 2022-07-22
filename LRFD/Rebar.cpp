@@ -379,7 +379,7 @@ Float64 lrfdRebar::GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade
    return etl;
 }
 
-REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::Concrete& concrete)
+REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::SimpleConcrete& concrete)
 {
    return lrfdRebar::GetRebarDevelopmentLengthDetails(size,Ab,db,fy,concrete.GetType(),concrete.GetFc(),concrete.HasAggSplittingStrength(),concrete.GetAggSplittingStrength(),concrete.GetDensity());
 }

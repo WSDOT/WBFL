@@ -35,7 +35,7 @@
 
 // LOCAL INCLUDES
 //
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 
 // FORWARD DECLARATIONS
 //

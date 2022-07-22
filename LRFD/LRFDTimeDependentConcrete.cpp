@@ -35,7 +35,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-void lrfdLRFDTimeDependentConcrete::GetModelParameters(WBFL::Materials::ConcreteBase::CureMethod cure,lrfdLRFDTimeDependentConcrete::CementType cement,Float64* pA,Float64* pB)
+void lrfdLRFDTimeDependentConcrete::GetModelParameters(WBFL::Materials::CuringType cure,WBFL::Materials::CementType cement,Float64* pA,Float64* pB)
 {
    Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
                         WBFL::Units::ConvertToSysUnits(2.3,WBFL::Units::Measure::Day)} ,  // Moist, Type III
@@ -46,8 +46,8 @@ void lrfdLRFDTimeDependentConcrete::GetModelParameters(WBFL::Materials::Concrete
                         {0.95, // Steam, Type I
                         0.98} }; // Steam, Type III
 
-   auto cure_idx = std::underlying_type<ConcreteBase::CureMethod>::type(cure);
-   auto cement_idx = std::underlying_type<lrfdLRFDTimeDependentConcrete::CementType>::type(cement);
+   auto cure_idx = std::underlying_type<WBFL::Materials::CuringType>::type(cure);
+   auto cement_idx = std::underlying_type<WBFL::Materials::CementType>::type(cement);
    *pA = a[cure_idx][cement_idx];
    *pB = b[cure_idx][cement_idx];
 }
@@ -614,8 +614,8 @@ std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> lrfdLRFDTimeDepen
 
    Float64 ks = GetSizeFactorShrinkage(t);
    pDetails->kvs = ks;
-   Float64 K = (GetCureMethod() == WBFL::Materials::ConcreteBase::CureMethod::Moist ? 35.0 : 55.0);
-   Float64 eshu = (GetCureMethod() == WBFL::Materials::ConcreteBase::CureMethod::Moist ? 0.51e-3 : 0.56e-3);
+   Float64 K = (GetCuringType() == WBFL::Materials::CuringType::Moist ? 35.0 : 55.0);
+   Float64 eshu = (GetCuringType() == WBFL::Materials::CuringType::Moist ? 0.51e-3 : 0.56e-3);
    Float64 esh = -ks*m_khs*eshu*(shrinkage_time)/(K + shrinkage_time);
 
    pDetails->esh = esh;

@@ -25,7 +25,7 @@
 #include <Materials/ACI209Concrete.h>
 
 #include <MathEx.h>
-#include <Units\Units.h>
+#include <Units/Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-void ACI209Concrete::GetModelParameters(ConcreteBase::CureMethod cure,ACI209Concrete::CementType cement,Float64* pA,Float64* pB)
+void ACI209Concrete::GetModelParameters(CuringType cure,CementType cement,Float64* pA,Float64* pB)
 {
    Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
                         WBFL::Units::ConvertToSysUnits(2.3,WBFL::Units::Measure::Day)} ,  // Moist, Type III
@@ -46,8 +46,8 @@ void ACI209Concrete::GetModelParameters(ConcreteBase::CureMethod cure,ACI209Conc
                         {0.95, // Steam, Type I
                         0.98} }; // Steam, Type III
 
-   auto cure_idx = std::underlying_type<ConcreteBase::CureMethod>::type(cure);
-   auto cement_idx = std::underlying_type<ACI209Concrete::CementType>::type(cement);
+   auto cure_idx = std::underlying_type<CuringType>::type(cure);
+   auto cement_idx = std::underlying_type<CementType>::type(cement);
    *pA = a[cure_idx][cement_idx];
    *pB = b[cure_idx][cement_idx];
 }
@@ -127,7 +127,7 @@ void ACI209Concrete::ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float6
 void ACI209Concrete::SetFc28(Float64 fc,Float64 t)
 {
    Float64 age = GetAge(t);
-   ATLASSERT(!IsZero(age));
+   ASSERT(!IsZero(age));
    m_Fc28 = ComputeFc28(fc,age,m_A,m_Beta);
    m_bIsValid = false;
 }
@@ -168,7 +168,7 @@ Float64 ACI209Concrete::GetEc28() const
 void ACI209Concrete::SetEc28(Float64 Ec,Float64 t)
 {
    Float64 age = GetAge(t);
-   ATLASSERT(!IsZero(age));
+   ASSERT(!IsZero(age));
    m_Ec28 = ComputeEc28(Ec,age,m_A,m_Beta);
    m_bIsValid = false;
 }
@@ -232,7 +232,7 @@ std::unique_ptr<ConcreteBaseShrinkageDetails> ACI209Concrete::GetFreeShrinkageSt
       return pDetails;
    }
 
-   Float64 f = (m_CureMethod == ConcreteBase::CureMethod::Moist ? 35 : 55); // Eqn 2-1, 2-9, 2-10
+   Float64 f = (m_CuringType == CuringType::Moist ? 35 : 55); // Eqn 2-1, 2-9, 2-10
    Float64 time_factor = shrinkage_time/(f+shrinkage_time);
 
    // Adjustments
@@ -290,7 +290,7 @@ std::unique_ptr<ConcreteBaseCreepDetails> ACI209Concrete::GetCreepCoefficientDet
 
    // Load Age Factor (2.5.1)
    Float64 LA = 1.0;
-   if (m_CureMethod == ConcreteBase::CureMethod::Moist)
+   if (m_CuringType == CuringType::Moist)
    {
       if ( 7 < age_at_loading )
       {
@@ -425,7 +425,7 @@ void ACI209Concrete::ValidateCorrectionFactors() const
 
    // Initial Moist Cure (2.5.3)
    m_CP = 1.0;
-   if ( m_CureMethod == ConcreteBase::CureMethod::Moist )
+   if ( m_CuringType == CuringType::Moist )
    {
       // linear interpolate values from table 2.5.3
       if ( m_CureTime < 1 )
@@ -476,7 +476,7 @@ void ACI209Concrete::ValidateCorrectionFactors() const
    }
 
    // V/S ratio correction factor (2.5.5b)
-   ATLASSERT(0 < m_VS); // did you forget to set V/S ratio?
+   ASSERT(0 < m_VS); // did you forget to set V/S ratio?
    Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    m_VSC = (2.0/3.0)*(1.0 + 1.13*exp(-0.54*vs)); // creep (2-21)
    m_VSS = 1.2*exp(-0.12*vs);                    // shrinkage (2-22)

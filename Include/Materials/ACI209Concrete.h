@@ -55,8 +55,7 @@ namespace WBFL
       class MATCLASS ACI209Concrete : public ConcreteBase
       {
       public:
-         enum class CementType { TypeI, TypeII };
-         static void GetModelParameters(CureMethod cure,CementType cement,Float64* pA,Float64* pBeta);
+         static void GetModelParameters(CuringType cure,CementType cement,Float64* pA,Float64* pBeta);
 
          ACI209Concrete(LPCTSTR name = _T("Unknown"));
          ACI209Concrete(const ACI209Concrete&) = default;

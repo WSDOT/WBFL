@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Materials/MatLib.h>
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-Concrete::Concrete() :
+SimpleConcrete::SimpleConcrete() :
 m_Name( _T("Unknown") ),
 m_Fc( 0 ),
 m_Density( 0 ),
@@ -54,7 +54,7 @@ m_AutogenousShrinkage(0)
    // Don't call assert value because this material model is not valid.
 }
 
-Concrete::Concrete(const std::_tstring& name, Float64 fc, Float64 density, Float64 wDensity, Float64 modE, Float64 frShear, Float64 frFlexure) :
+SimpleConcrete::SimpleConcrete(const std::_tstring& name, Float64 fc, Float64 density, Float64 wDensity, Float64 modE, Float64 frShear, Float64 frFlexure) :
    m_Name(name),
    m_Fc(fc),
    m_Density(density),
@@ -75,11 +75,11 @@ Concrete::Concrete(const std::_tstring& name, Float64 fc, Float64 density, Float
    ASSERTVALID;
 }
 
-Concrete::~Concrete()
+SimpleConcrete::~SimpleConcrete()
 {
 }
 
-bool Concrete::operator==(const Concrete& rOther) const
+bool SimpleConcrete::operator==(const SimpleConcrete& rOther) const
 {
    if (m_Name != rOther.m_Name)
       return false;
@@ -132,42 +132,42 @@ bool Concrete::operator==(const Concrete& rOther) const
    return true;
 }
 
-bool Concrete::operator!=(const Concrete& rOther) const
+bool SimpleConcrete::operator!=(const SimpleConcrete& rOther) const
 {
    return !operator==(rOther);
 }
 
-void Concrete::SetType(ConcreteType type)
+void SimpleConcrete::SetType(ConcreteType type)
 {
    m_Type = type;
 }
 
-ConcreteType Concrete::GetType() const
+ConcreteType SimpleConcrete::GetType() const
 {
    return m_Type;
 }
 
-void Concrete::SetAggSplittingStrength(Float64 fct)
+void SimpleConcrete::SetAggSplittingStrength(Float64 fct)
 {
    m_Fct = fct;
 }
 
-Float64 Concrete::GetAggSplittingStrength() const
+Float64 SimpleConcrete::GetAggSplittingStrength() const
 {
    return m_Fct;
 }
 
-void Concrete::HasAggSplittingStrength(bool bHasFct)
+void SimpleConcrete::HasAggSplittingStrength(bool bHasFct)
 {
    m_bHasFct = bHasFct;
 }
 
-bool Concrete::HasAggSplittingStrength() const
+bool SimpleConcrete::HasAggSplittingStrength() const
 {
    return m_bHasFct;
 }
 
-std::_tstring Concrete::GetTypeName(ConcreteType type,bool bFull)
+std::_tstring SimpleConcrete::GetTypeName(ConcreteType type,bool bFull)
 {
    switch(type)
    {
@@ -184,12 +184,12 @@ std::_tstring Concrete::GetTypeName(ConcreteType type,bool bFull)
       return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
    default:
-      ATLASSERT(false); // is there a new type?
+      ASSERT(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
    }
 }
 
-ConcreteType Concrete::GetTypeFromTypeName(LPCTSTR strName)
+ConcreteType SimpleConcrete::GetTypeFromTypeName(LPCTSTR strName)
 {
    if ( std::_tstring(strName) == _T("Normal") )
       return ConcreteType::Normal;
@@ -203,154 +203,154 @@ ConcreteType Concrete::GetTypeFromTypeName(LPCTSTR strName)
    if (std::_tstring(strName) == _T("PCI-UHPC"))
       return ConcreteType::PCI_UHPC;
 
-   ATLASSERT(false); // invalid name
+   ASSERT(false); // invalid name
    return ConcreteType::Normal;
 }
 
-std::unique_ptr<Concrete> Concrete::CreateClone() const
+std::unique_ptr<SimpleConcrete> SimpleConcrete::CreateClone() const
 {
-   return std::make_unique<Concrete>(*this);
+   return std::make_unique<SimpleConcrete>(*this);
 }
 
-void Concrete::SetName(const std::_tstring& name)
+void SimpleConcrete::SetName(const std::_tstring& name)
 {
    m_Name = name;
 }
 
-std::_tstring Concrete::GetName() const
+std::_tstring SimpleConcrete::GetName() const
 {
    return m_Name;
 }
 
-void Concrete::SetFc(Float64 fc)
+void SimpleConcrete::SetFc(Float64 fc)
 {
    m_Fc = fc;
    ASSERTVALID;
 }
 
-Float64 Concrete::GetFc() const
+Float64 SimpleConcrete::GetFc() const
 {
    return m_Fc;
 }
 
-void Concrete::SetDensity(Float64 density)
+void SimpleConcrete::SetDensity(Float64 density)
 {
    m_Density = density;
    ASSERTVALID;
 }
 
-Float64 Concrete::GetDensity() const
+Float64 SimpleConcrete::GetDensity() const
 {
    return m_Density;
 }
 
-void Concrete::SetDensityForWeight(Float64 d)
+void SimpleConcrete::SetDensityForWeight(Float64 d)
 {
    m_WeightDensity = d;
    ASSERTVALID;
 }
 
-Float64 Concrete::GetDensityForWeight() const
+Float64 SimpleConcrete::GetDensityForWeight() const
 {
    return m_WeightDensity;
 }
 
-void Concrete::SetShearFr(Float64 fr)
+void SimpleConcrete::SetShearFr(Float64 fr)
 {
    m_FrShear = fr;
    ASSERTVALID;
 }
 
-Float64 Concrete::GetShearFr() const
+Float64 SimpleConcrete::GetShearFr() const
 {
    return m_FrShear;
 }
 
-void Concrete::SetFlexureFr(Float64 fr)
+void SimpleConcrete::SetFlexureFr(Float64 fr)
 {
    m_FrFlexure = fr;
    ASSERTVALID;
 }
 
-Float64 Concrete::GetFlexureFr() const
+Float64 SimpleConcrete::GetFlexureFr() const
 {
    return m_FrFlexure;
 }
 
-void Concrete::SetE(Float64 modE)
+void SimpleConcrete::SetE(Float64 modE)
 {
    m_ModE = modE;
    ASSERTVALID;
 }
 
-Float64 Concrete::GetE() const
+Float64 SimpleConcrete::GetE() const
 {
    return m_ModE;
 }
 
-void Concrete::SetMaxAggregateSize(Float64 size)
+void SimpleConcrete::SetMaxAggregateSize(Float64 size)
 {
    m_MaxAggregateSize = size;
 }
 
-Float64 Concrete::GetMaxAggregateSize() const
+Float64 SimpleConcrete::GetMaxAggregateSize() const
 {
    return m_MaxAggregateSize;
 }
 
-void Concrete::SetFiberLength(Float64 length)
+void SimpleConcrete::SetFiberLength(Float64 length)
 {
    m_FiberLength = length;
 }
 
-Float64 Concrete::GetFiberLength() const
+Float64 SimpleConcrete::GetFiberLength() const
 {
    return m_FiberLength;
 }
 
-void Concrete::SetLambda(Float64 lambda)
+void SimpleConcrete::SetLambda(Float64 lambda)
 {
    m_Lambda = lambda;
 }
 
-Float64 Concrete::GetLambda() const
+Float64 SimpleConcrete::GetLambda() const
 {
    return m_Lambda;
 }
 
-void Concrete::SetFirstCrackingStrength(Float64 ffc)
+void SimpleConcrete::SetFirstCrackingStrength(Float64 ffc)
 {
    m_ffc = ffc;
 }
 
-Float64 Concrete::GetFirstCrackingStrength() const
+Float64 SimpleConcrete::GetFirstCrackingStrength() const
 {
    return m_ffc;
 }
 
-void Concrete::SetPostCrackingTensileStrength(Float64 frr)
+void SimpleConcrete::SetPostCrackingTensileStrength(Float64 frr)
 {
    m_frr = frr;
 }
 
-Float64 Concrete::GetPostCrackingTensileStrength() const
+Float64 SimpleConcrete::GetPostCrackingTensileStrength() const
 {
    return m_frr;
 }
 
-void Concrete::SetAutogenousShrinkage(Float64 as)
+void SimpleConcrete::SetAutogenousShrinkage(Float64 as)
 {
    m_AutogenousShrinkage = as;
 }
 
-Float64 Concrete::GetAutogenousShrinkage() const
+Float64 SimpleConcrete::GetAutogenousShrinkage() const
 {
    return m_AutogenousShrinkage;
 }
 
 //======================== DEBUG      =======================================
 #if defined _DEBUG
-bool Concrete::AssertValid() const
+bool SimpleConcrete::AssertValid() const
 {
    //if ( !(m_Fc > 0) )
    //   return false;
@@ -364,9 +364,9 @@ bool Concrete::AssertValid() const
    return true;
 }
 
-void Concrete::Dump(WBFL::Debug::LogContext& os) const
+void SimpleConcrete::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Dump for Concrete")         << WBFL::Debug::endl;
+   os << _T("Dump for SimpleConcrete")         << WBFL::Debug::endl;
    os << _T("====================")         << WBFL::Debug::endl;
    os << _T("Name    : ") << m_Name.c_str() << WBFL::Debug::endl;
    os << _T("Fc      : ") << m_Fc           << WBFL::Debug::endl;
@@ -377,10 +377,10 @@ void Concrete::Dump(WBFL::Debug::LogContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool Concrete::TestMe(WBFL::Debug::Log& rlog)
+bool SimpleConcrete::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("Concrete");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for Concrete");
-   TESTME_EPILOG("Concrete");
+   TESTME_PROLOGUE("SimpleConcrete");
+   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for SimpleConcrete");
+   TESTME_EPILOG("SimpleConcrete");
 }
 #endif // _UNITTEST

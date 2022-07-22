@@ -35,7 +35,7 @@
 #include <System\Exception.h>
 #include <System\SectionValue.h>
 
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 
 // LOCAL INCLUDES
 //

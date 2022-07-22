@@ -38,7 +38,7 @@ m_Name(name),
 m_TimeAtCasting(0),
 m_AgeAtInitialLoading(1.0), // days
 m_CureTime(1.0), // days
-m_CureMethod(ConcreteBase::CureMethod::Moist),
+m_CuringType(CuringType::Moist),
 m_StrengthDensity( 0 ),
 m_WeightDensity( 0 ),
 m_MaxAggregateSize(0),
@@ -87,7 +87,7 @@ std::_tstring ConcreteBase::GetTypeName(ConcreteType type,bool bFull)
       return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
    default:
-      ATLASSERT(false); // is there a new type?
+      ASSERT(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
    }
 }
@@ -110,18 +110,18 @@ ConcreteType ConcreteBase::GetTypeFromTypeName(LPCTSTR strName)
    return ConcreteType::Normal;
 }
 
-std::_tstring ConcreteBase::GetCureMethod(CureMethod method)
+std::_tstring ConcreteBase::GetCuringType(CuringType curingType)
 {
-   switch (method)
+   switch (curingType)
    {
-   case CureMethod::Moist:
+   case CuringType::Moist:
       return _T("Moist");
 
-   case CureMethod::Steam:
+   case CuringType::Steam:
       return _T("Steam");
 
    default:
-      ATLASSERT(false); // is there a new type?
+      ASSERT(false); // is there a new type?
       return _T("Unknown");
    }
 }
@@ -294,18 +294,18 @@ Float64 ConcreteBase::GetCureTime() const
    return m_CureTime;
 }
 
-void ConcreteBase::SetCureMethod(ConcreteBase::CureMethod method)
+void ConcreteBase::SetCuringType(CuringType method)
 {
-   if ( m_CureMethod != method )
+   if ( m_CuringType != method )
    {
-      m_CureMethod = method;
+      m_CuringType = method;
       OnChanged();
    }
 }
 
-ConcreteBase::CureMethod ConcreteBase::GetCureMethod() const
+CuringType ConcreteBase::GetCuringType() const
 {
-   return m_CureMethod;
+   return m_CuringType;
 }
 
 void ConcreteBase::OnChanged()
@@ -315,7 +315,7 @@ void ConcreteBase::OnChanged()
 
 void ConcreteBase::InitializeShrinkageDetails(Float64 t,ConcreteBaseShrinkageDetails* pDetails) const
 {
-   pDetails->cureMethod = GetCureMethod();
+   pDetails->curingType = GetCuringType();
    pDetails->shrinkage_duration = t - (m_CureTime + m_TimeAtCasting);
 }
 

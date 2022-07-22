@@ -30,7 +30,7 @@
 //
 #include <Lrfd\LrfdExp.h>
 #include <Materials/Rebar.h>
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 #include <Lrfd\Details.h>
 
 // LOCAL INCLUDES
@@ -138,7 +138,7 @@ public:
 
    //------------------------------------------------------------------------
    // Retuns rebar development length
-   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::Concrete& concrete);
+   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::SimpleConcrete& concrete);
    static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density);
 
    // GROUP: ACCESS

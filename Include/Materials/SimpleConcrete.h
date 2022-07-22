@@ -34,13 +34,13 @@ namespace WBFL
       ///
       /// This is a static concrete model. All properties are provided as the model is created.
       /// For example, modulus of elasticity is provided, not computed by this model.
-      class MATCLASS Concrete
+      class MATCLASS SimpleConcrete
       {
       public:
          /// Sets name to "Unknown" and density, fc, and modulus of elasticity to zero.
-         Concrete();
+         SimpleConcrete();
 
-         Concrete(
+         SimpleConcrete(
             const std::_tstring& name, ///< Name of the material
             Float64 fc,  ///< compressive strength
             Float64 density,  ///< density used for modulus of elasticity
@@ -50,14 +50,14 @@ namespace WBFL
             Float64 frFlexure ///< modulus of rupture for flexure
          );
 
-         Concrete(const Concrete& rOther) = default;
+         SimpleConcrete(const SimpleConcrete& rOther) = default;
 
-         virtual ~Concrete();
+         virtual ~SimpleConcrete();
 
-         Concrete& operator=(const Concrete& rOther) = default;
+         SimpleConcrete& operator=(const SimpleConcrete& rOther) = default;
 
-         bool operator==(const Concrete& rOther) const;
-         bool operator!=(const Concrete& rOther) const;
+         bool operator==(const SimpleConcrete& rOther) const;
+         bool operator!=(const SimpleConcrete& rOther) const;
 
          void SetType(ConcreteType type);
          ConcreteType GetType() const;
@@ -110,7 +110,7 @@ namespace WBFL
          void SetAutogenousShrinkage(Float64 as);
          Float64 GetAutogenousShrinkage() const;
 
-         virtual std::unique_ptr<Concrete> CreateClone() const;
+         virtual std::unique_ptr<SimpleConcrete> CreateClone() const;
 
       #if defined _DEBUG
          virtual bool AssertValid() const;

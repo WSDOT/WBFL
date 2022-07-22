@@ -37,7 +37,7 @@ namespace WBFL
 
    namespace Materials
    {
-      class Concrete;
+      class SimpleConcrete;
    };
 
    namespace Stability
@@ -134,7 +134,7 @@ namespace WBFL
          virtual bool GetFpe(LPCTSTR strName, Float64 X, Float64* pFpe, Float64* pXps, Float64* pYps) const = 0;
 
          /// Returns the concrete model
-         virtual const WBFL::Materials::Concrete& GetConcrete() const = 0;
+         virtual const WBFL::Materials::SimpleConcrete& GetConcrete() const = 0;
 
          /// Returns the yield strength of rebar. Only used if the girder is modeled with an ISection object
          virtual Float64 GetRebarYieldStrength() const = 0;

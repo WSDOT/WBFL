@@ -30,7 +30,7 @@
 #endif
 
 #include <Materials/ConcreteTypes.h>
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 #include <Materials/ConcreteBase.h>
 #include <Materials/ACI209Concrete.h>
 #include <Materials/CEBFIPConcrete.h>

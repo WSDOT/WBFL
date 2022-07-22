@@ -85,7 +85,7 @@ bool UnitTest::PCILiftingExamples(WBFL::Debug::Log& rlog)
    Float64 L = WBFL::Units::ConvertToSysUnits(136,WBFL::Units::Measure::Feet);
    girder.AddSection(L,Ag,Ix,Iy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf);
 
-   WBFL::Materials::Concrete concrete;
+   WBFL::Materials::SimpleConcrete concrete;
    Float64 fci = 5.5;
    concrete.SetFc(WBFL::Units::ConvertToSysUnits(fci,WBFL::Units::Measure::KSI));
    concrete.SetDensity(WBFL::Units::ConvertToSysUnits(0.150,WBFL::Units::Measure::KipPerFeet3));
@@ -240,7 +240,7 @@ bool UnitTest::PCIHaulingExamples(WBFL::Debug::Log& rlog)
    Float64 L = WBFL::Units::ConvertToSysUnits(136,WBFL::Units::Measure::Feet);
    girder.AddSection(L,Ag,Ix,Iy, Ixy, Xleft,Ytop,Hg,Wtf,Wbf);
 
-   WBFL::Materials::Concrete concrete;
+   WBFL::Materials::SimpleConcrete concrete;
    Float64 fc = 7.0;
    concrete.SetFc(WBFL::Units::ConvertToSysUnits(fc,WBFL::Units::Measure::KSI));
    concrete.SetDensity(WBFL::Units::ConvertToSysUnits(0.150,WBFL::Units::Measure::KipPerFeet3));
@@ -368,7 +368,7 @@ bool UnitTest::OneEndSeated(WBFL::Debug::Log& rlog)
    Float64 L = WBFL::Units::ConvertToSysUnits(136, WBFL::Units::Measure::Feet);
    girder.AddSection(L, Ag, Ix, Iy, Ixy, Xleft, Ytop, Hg, Wtf, Wbf);
 
-   WBFL::Materials::Concrete concrete;
+   WBFL::Materials::SimpleConcrete concrete;
    Float64 fc = 7.0;
    concrete.SetFc(WBFL::Units::ConvertToSysUnits(fc, WBFL::Units::Measure::KSI));
    concrete.SetDensity(WBFL::Units::ConvertToSysUnits(0.150, WBFL::Units::Measure::KipPerFeet3));

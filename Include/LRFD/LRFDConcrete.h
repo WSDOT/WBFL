@@ -25,7 +25,7 @@
 
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\LRFDConcreteBase.h>
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 
 struct LRFDCLASS lrfdLRFDConcreteShrinkageDetails : public WBFL::Materials::ConcreteBaseShrinkageDetails
 {
@@ -65,9 +65,9 @@ public:
    lrfdLRFDConcrete(const lrfdLRFDConcrete&) = default;
    lrfdLRFDConcrete& operator=(const lrfdLRFDConcrete&) = default;
 
-   void SetConcreteModels(const WBFL::Materials::Concrete& initial,const WBFL::Materials::Concrete & final);
-   const WBFL::Materials::Concrete& GetInitialConcreteModel() const;
-   const WBFL::Materials::Concrete& GetFinalConcreteModel() const;
+   void SetConcreteModels(const WBFL::Materials::SimpleConcrete& initial,const WBFL::Materials::SimpleConcrete & final);
+   const WBFL::Materials::SimpleConcrete& GetInitialConcreteModel() const;
+   const WBFL::Materials::SimpleConcrete& GetFinalConcreteModel() const;
 
    void SetStartTime(Float64 t);
    Float64 GetStartTime() const;
@@ -75,9 +75,9 @@ public:
    void SetStepTime(Float64 t);
    Float64 GetStepTime() const;
 
-   void Use90DayStrength(const WBFL::Materials::Concrete& concrete90);
+   void Use90DayStrength(const WBFL::Materials::SimpleConcrete& concrete90);
    bool Use90DayStrength() const;
-   const WBFL::Materials::Concrete& Get90DayConcreteModel() const;
+   const WBFL::Materials::SimpleConcrete& Get90DayConcreteModel() const;
 
    // PCI UHPC parameters
    virtual void SetFirstCrackingStrength(Float64 ffc) override;
@@ -128,7 +128,7 @@ protected:
    bool Use90DayConcrete(Float64 t) const;
 
 private:
-   WBFL::Materials::Concrete m_InitialConcrete, m_FinalConcrete, m_90DayConcrete;
+   WBFL::Materials::SimpleConcrete m_InitialConcrete, m_FinalConcrete, m_90DayConcrete;
    bool m_bUse90DayConcrete;
    Float64 m_StartTime;
    Float64 m_StepTime;

@@ -23,7 +23,7 @@
 
 #include <Materials/MatLib.h>
 #include <Materials/UnitTest.h>
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 #include <Materials/PsStrand.h>
 #include <Materials/Rebar.h>
 
@@ -41,7 +41,7 @@ bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
 
 #if defined _UNITTEST
 
-   tst &= Concrete::TestMe(rlog);
+   tst &= SimpleConcrete::TestMe(rlog);
 #pragma Reminder("WORKING HERE - need to add unit tests for time-dependent concrete models")
    tst &= PsStrand::TestMe(rlog);
    tst &= Rebar::TestMe(rlog);

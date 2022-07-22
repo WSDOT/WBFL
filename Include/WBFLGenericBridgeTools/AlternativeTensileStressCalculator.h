@@ -25,7 +25,7 @@
 #pragma once
 
 #include <WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h>
-#include <Materials/Concrete.h>
+#include <Materials/SimpleConcrete.h>
 #include <WBFLGeometry.h>
 #include <GeomModel/Primitives3d.h>
 #include <WBFLGenericBridge.h>

@@ -25,7 +25,7 @@
 #include <Materials/CEBFIPConcrete.h>
 
 #include <MathEx.h>
-#include <Units\Units.h>
+#include <Units/Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -54,7 +54,7 @@ LPCTSTR CEBFIPConcrete::GetCementType(CementType type)
       return _T("SL");
    }
 
-   ATLASSERT(false); // is there a new cement type?
+   ASSERT(false); // is there a new cement type?
    return _T("UNKNOWN");
 }
 
@@ -78,7 +78,7 @@ void CEBFIPConcrete::GetModelParameters(CementType cementType,Float64* pS,Float6
    }
    else
    {
-      ATLASSERT(false); // is there a new cement type?
+      ASSERT(false); // is there a new cement type?
    }
 }
 
@@ -152,7 +152,7 @@ void CEBFIPConcrete::SetFc28(Float64 fc)
 void CEBFIPConcrete::SetFc28(Float64 fc,Float64 t)
 {
    Float64 age = GetAge(t);
-   ATLASSERT(!IsZero(age));
+   ASSERT(!IsZero(age));
 
    // CEB-FIP Eqn. 2.1-54, solved for f'c at 28 days
    // age is in days
@@ -197,7 +197,7 @@ Float64 CEBFIPConcrete::GetEc28() const
 void CEBFIPConcrete::SetEc28(Float64 Ec,Float64 t)
 {
    Float64 age = GetAge(t);
-   ATLASSERT(!IsZero(age));
+   ASSERT(!IsZero(age));
 
    // CEB-FIP Equation 2.1-57, rearranged to solve for Ec28
    // age must be in days
@@ -388,7 +388,7 @@ Float64 CEBFIPConcrete::GetBetaRH() const
    else if ( 40 <= m_RelativeHumidity && m_RelativeHumidity < 99 )
    {
       Float64 beta_sRH = GetBetaSRH();
-      ATLASSERT(0 < beta_sRH);
+      ASSERT(0 < beta_sRH);
       beta = -1.55*beta_sRH; // CEB-FIP Eqn. 2.1-77
    }
    else
