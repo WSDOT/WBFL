@@ -53,6 +53,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 You will need to download and install the following projects before you can build the WBFL
+* [Visual Studio](https://visualstudio.microsoft.com/) - We are currently using Visual Studio 2022
 * [Boost libraries](http://www.boost.org)
 * [Code Synthesis XSD 3.3](https://codesynthesis.com/products/xsd/)
 
