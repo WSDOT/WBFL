@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BogusCombinationContext", "LBAM\LBAMLoadCombiner\LoadCombinerTest\BogusCombinationContext\BogusCombinationContext.vcxproj", "{01A44D6A-EDF0-4E14-8D05-30277C5D4CE7}"
 EndProject
@@ -14,6 +14,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLDManipTools", "DManipTools\DManipTools.vcxproj", "{1C007106-B50E-45AD-9A59-05F8F0BD6499}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLEngTools", "EngTools\EngTools.vcxproj", "{FE54EDE6-52C3-42C5-9348-710BC38A8EC0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0727C73E-E23D-4B55-800C-0C17CA862844} = {0727C73E-E23D-4B55-800C-0C17CA862844}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLFem2d", "Fem2d\Fem2d.vcxproj", "{9D5FEEEE-54D4-4719-A60D-D68E0943E2C0}"
 EndProject
@@ -25,8 +28,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenericBridgeTest", "Generi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGenericBridgeTools", "GenericBridgeTools\GenericBridgeTools.vcxproj", "{3959272E-B5D9-4404-BE07-3235109FD1FC}"
 	ProjectSection(ProjectDependencies) = postProject
-		{49CF0439-37D0-434B-A40C-629932B9A74B} = {49CF0439-37D0-434B-A40C-629932B9A74B}
 		{262CE7A1-072B-4578-B45C-75546FA4C384} = {262CE7A1-072B-4578-B45C-75546FA4C384}
+		{49CF0439-37D0-434B-A40C-629932B9A74B} = {49CF0439-37D0-434B-A40C-629932B9A74B}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenericBridgeToolsTest", "GenericBridgeTools\GenericBridgeToolsTest\GenericBridgeToolsTest.vcxproj", "{8E588001-1BDF-45C2-9ACD-6F777AF52A3F}"
@@ -75,6 +78,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLLoading", "Loading\Loading.vcxproj", "{A5617CED-E680-4882-8D42-075EBC75DAB4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadingTest", "Loading\LoadingTest\LoadingTest.vcxproj", "{AF231895-FB20-4C28-BE78-3D1267B27847}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A5617CED-E680-4882-8D42-075EBC75DAB4} = {A5617CED-E680-4882-8D42-075EBC75DAB4}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLMaterials", "Materials\Materials.vcxproj", "{3904763E-7A13-445F-8544-260047D333CD}"
 EndProject
@@ -82,8 +88,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLMath", "Math\Math.vcxpr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLMfcTools", "MfcTools\Mfctools.vcxproj", "{6C1D3A4B-A35E-48D2-97A3-D49F38E41E64}"
 	ProjectSection(ProjectDependencies) = postProject
-		{3904763E-7A13-445F-8544-260047D333CD} = {3904763E-7A13-445F-8544-260047D333CD}
 		{262CE7A1-072B-4578-B45C-75546FA4C384} = {262CE7A1-072B-4578-B45C-75546FA4C384}
+		{3904763E-7A13-445F-8544-260047D333CD} = {3904763E-7A13-445F-8544-260047D333CD}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLRCCapacity", "RCCapacity\RCCapacity.vcxproj", "{49CF0439-37D0-434B-A40C-629932B9A74B}"
@@ -106,6 +112,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitServerTest", "UnitServe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\Unittest.vcxproj", "{098AF20D-E70D-420D-B4E5-5967CFE6D162}"
 	ProjectSection(ProjectDependencies) = postProject
+		{A5617CED-E680-4882-8D42-075EBC75DAB4} = {A5617CED-E680-4882-8D42-075EBC75DAB4}
 		{EB9AD1EC-526F-4375-84B4-AA7BAC67D522} = {EB9AD1EC-526F-4375-84B4-AA7BAC67D522}
 	EndProjectSection
 EndProject
@@ -136,6 +143,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLBridgeGeometry", "BridgeGeometry\BridgeGeometry.vcxproj", "{02AB2465-2AA0-45DB-B083-CBF7F55C9722}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGraphing", "Graphing\Graphing.vcxproj", "{753FEB16-EBCA-4E67-9C3B-D0B9C4EC23F1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9C7B0108-AA89-413C-9D75-5D700F0AECE1} = {9C7B0108-AA89-413C-9D75-5D700F0AECE1}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGraphManagerAgent", "GraphManagerAgent\GraphManagerAgent.vcxproj", "{D6CD1A2C-0027-4ED4-B892-FDA3852D47EE}"
 	ProjectSection(ProjectDependencies) = postProject
