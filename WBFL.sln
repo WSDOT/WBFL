@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BogusCombinationContext", "LBAM\LBAMLoadCombiner\LoadCombinerTest\BogusCombinationContext\BogusCombinationContext.vcxproj", "{01A44D6A-EDF0-4E14-8D05-30277C5D4CE7}"
 EndProject
@@ -25,8 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenericBridgeTest", "Generi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGenericBridgeTools", "GenericBridgeTools\GenericBridgeTools.vcxproj", "{3959272E-B5D9-4404-BE07-3235109FD1FC}"
 	ProjectSection(ProjectDependencies) = postProject
-		{49CF0439-37D0-434B-A40C-629932B9A74B} = {49CF0439-37D0-434B-A40C-629932B9A74B}
 		{262CE7A1-072B-4578-B45C-75546FA4C384} = {262CE7A1-072B-4578-B45C-75546FA4C384}
+		{49CF0439-37D0-434B-A40C-629932B9A74B} = {49CF0439-37D0-434B-A40C-629932B9A74B}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenericBridgeToolsTest", "GenericBridgeTools\GenericBridgeToolsTest\GenericBridgeToolsTest.vcxproj", "{8E588001-1BDF-45C2-9ACD-6F777AF52A3F}"
@@ -36,6 +36,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGeometricPrimitives", "GeometricPrimitives\GeometricPrimitives.vcxproj", "{E82A689C-BC85-44B8-8D89-670E7DC03E79}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGeometry", "Geometry\Geometry.vcxproj", "{16E889A9-E3B0-4541-85B2-3A4D98FCCB59}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E82A689C-BC85-44B8-8D89-670E7DC03E79} = {E82A689C-BC85-44B8-8D89-670E7DC03E79}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeometryTest", "Geometry\GeometryTest\GeometryTest.vcxproj", "{A54AA48F-7013-4F2F-936A-D01BB4352B9A}"
 EndProject
@@ -76,6 +79,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLLoading", "Loading\Loading.vcxproj", "{A5617CED-E680-4882-8D42-075EBC75DAB4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoadingTest", "Loading\LoadingTest\LoadingTest.vcxproj", "{AF231895-FB20-4C28-BE78-3D1267B27847}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A5617CED-E680-4882-8D42-075EBC75DAB4} = {A5617CED-E680-4882-8D42-075EBC75DAB4}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLMaterial", "Material\Material.vcxproj", "{3904763E-7A13-445F-8544-260047D333CD}"
 EndProject
