@@ -163,10 +163,16 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
       symlet = 'T';
       break;
    case rptRcSymbol::theta:
-      symlet='q';
+      symlet = 'q';
       break;
    case rptRcSymbol::THETA:
-      symlet='Q';
+      symlet = 'Q';
+      break;
+   case rptRcSymbol::xi:
+      symlet = 0x78;
+      break;
+   case rptRcSymbol::XI:
+      symlet = 0x58;
       break;
    case rptRcSymbol::QED:
       symlet=92;

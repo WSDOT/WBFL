@@ -81,6 +81,8 @@ public:
                      TAU,
                      theta,
                      THETA,
+                     xi,
+                     XI,
                      QED,                     ///< Little triangle made of dots
                      infinity,                ///< lazy 8
                      DEGREES,                 ///< degree symbol
