@@ -69,6 +69,8 @@ int main(int argc, TCHAR* argv[])
    CPSPowerFormulaTest::Test();
    CRebarModelTest::Test();
    CUnconfinedConcreteTest::Test();
+   CUHPConcreteTest::Test();
+   CUHPCMomentCapacityTest::Test();
    CSolverTest::Test();
    CRoundColumnTest::Test();
    //CGeneralSectionTest::Test();
@@ -78,8 +80,7 @@ int main(int argc, TCHAR* argv[])
    CMomentCapacitySolverTest::Test();
    CCrackedSectionSolverTest::Test();
    
-   CUHPConcreteTest::Test();
-   CUHPCMomentCapacityTest::Test();
+
 
    ::CoUninitialize();
 

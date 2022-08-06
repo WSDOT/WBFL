@@ -24,7 +24,7 @@
 #pragma once
 
 #include <Materials/MaterialsExp.h>
-#include <Materials/ConcreteTypes.h>
+#include <Materials/MaterialTypes.h>
 #include <memory>
 
 namespace WBFL

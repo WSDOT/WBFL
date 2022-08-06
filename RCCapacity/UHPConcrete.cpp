@@ -41,23 +41,38 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CUHPConcrete::FinalConstruct()
 {
    HRESULT hr = m_UnitServer.CoCreateInstance(CLSID_UnitServer);
-   if ( FAILED(hr) )
+   if (FAILED(hr))
       return hr;
 
-   m_fc = 18.00; // ksi
-   m_ecu = -0.0035; // negative for compression
-   m_K1 = 1.0;
-   m_alpha = 0.85;
-   m_ftcr = 0.75; // ksi
-   m_ftloc = 1.0; // ksi
-   m_etloc = 0.0025;
-   m_gamma = 0.85;
+   SetupUnits();
 
    return S_OK;
 }
 
 void CUHPConcrete::FinalRelease()
 {
+}
+
+void CUHPConcrete::SetupUnits()
+{
+   CComPtr<IUnitTypes> unitTypes;
+   m_UnitServer->get_UnitTypes(&unitTypes);
+
+   CComPtr<IUnitType> unitType;
+   unitTypes->get_Item(CComVariant("Pressure"), &unitType);
+
+   CComPtr<IUnits> units;
+   unitType->get_Units(&units);
+
+   units->get_Item(CComVariant("ksi"), &m_ksiUnit);
+
+   m_UnitServer.QueryInterface(&m_Convert);
+}
+
+void CUHPConcrete::ClearUnits()
+{
+   m_ksiUnit.Release();
+   m_Convert.Release();
    m_UnitServer.Release();
 }
 
@@ -67,7 +82,7 @@ STDMETHODIMP CUHPConcrete::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IUHPConcrete,
       &IID_IStressStrain,
-      &IID_IStructuredStorage2
+      &IID_ISupportUnitServer
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -80,36 +95,30 @@ STDMETHODIMP CUHPConcrete::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CUHPConcrete::get_fc(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-
-   convert->ConvertToBaseUnits(m_fc,CComBSTR("ksi"),pVal);
-
+   *pVal = m_Model.GetFc();
+   *pVal = WBFL::Units::ConvertFromSysUnits(*pVal, WBFL::Units::Measure::KSI);
+   m_Convert->ConvertToBaseUnits(*pVal, m_ksiUnit, pVal);
    return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::put_fc(Float64 newVal)
 {
-   if ( newVal < 0 || IsZero(newVal) ) 
+   if (newVal < 0 || IsZero(newVal))
       return E_INVALIDARG;
 
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
+   // convert inbound value to KSI
+   m_Convert->ConvertFromBaseUnits(newVal, m_ksiUnit, &newVal);
+   // convert from KSI to the system units
+   newVal = WBFL::Units::ConvertToSysUnits(newVal, WBFL::Units::Measure::KSI);
+   m_Model.SetFc(newVal);
 
-   convert->ConvertFromBaseUnits(newVal,CComBSTR("ksi"),&newVal);
-
-   m_fc = newVal;
-
-   ATLASSERT(18.0 <= m_fc); // 18 ksi is the minimum value for f'c, UHPC GS 1.1
-
-	return S_OK;
+   return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::get_ecu(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_ecu;
+   *pVal = m_Model.GetCompressiveStrainLimit();
    return S_OK;
 }
 
@@ -118,14 +127,15 @@ STDMETHODIMP CUHPConcrete::put_ecu(Float64 newVal)
    if (0 <= newVal)
       return E_INVALIDARG; // compression is negative
 
-   m_ecu = newVal;
+   m_Model.SetCompressiveStrainLimit(newVal);
+
    return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::get_K1(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_K1;
+   *pVal = m_Model.GetK1();
    return S_OK;
 }
 
@@ -134,14 +144,14 @@ STDMETHODIMP CUHPConcrete::put_K1(Float64 newVal)
    if (newVal <= 0)
       return E_INVALIDARG;
 
-   m_K1 = newVal;
+   m_Model.SetK1(newVal);
    return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::get_alpha(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_alpha;
+   *pVal = m_Model.GetAlpha();
    return S_OK;
 }
 
@@ -150,19 +160,16 @@ STDMETHODIMP CUHPConcrete::put_alpha(Float64 newVal)
    if (newVal <= 0)
       return E_INVALIDARG;
 
-   m_alpha = newVal;
+   m_Model.SetAlpha(newVal);
    return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::get_ftcr(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-
-   convert->ConvertToBaseUnits(m_ftcr, CComBSTR("ksi"), pVal);
-
+   *pVal = m_Model.GetFtcr();
+   *pVal = WBFL::Units::ConvertFromSysUnits(*pVal, WBFL::Units::Measure::KSI);
+   m_Convert->ConvertToBaseUnits(*pVal, m_ksiUnit, pVal);
    return S_OK;
 }
 
@@ -171,14 +178,11 @@ STDMETHODIMP CUHPConcrete::put_ftcr(Float64 newVal)
    if (newVal < 0 || IsZero(newVal))
       return E_INVALIDARG;
 
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-
-   convert->ConvertFromBaseUnits(newVal, CComBSTR("ksi"), &newVal);
-
-   m_ftcr = newVal;
-
-   ATLASSERT(0.75 <= m_ftcr); // minimum value is 0.75 ksi, UHPC GS 1.1
+   // convert inbound value to KSI
+   m_Convert->ConvertFromBaseUnits(newVal, m_ksiUnit, &newVal);
+   // convert from KSI to the system units
+   newVal = WBFL::Units::ConvertToSysUnits(newVal, WBFL::Units::Measure::KSI);
+   m_Model.SetFtcr(newVal);
 
    return S_OK;
 }
@@ -186,12 +190,9 @@ STDMETHODIMP CUHPConcrete::put_ftcr(Float64 newVal)
 STDMETHODIMP CUHPConcrete::get_ftloc(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-
-   convert->ConvertToBaseUnits(m_ftloc, CComBSTR("ksi"), pVal);
-
+   *pVal = m_Model.GetFtloc();
+   *pVal = WBFL::Units::ConvertFromSysUnits(*pVal, WBFL::Units::Measure::KSI);
+   m_Convert->ConvertToBaseUnits(*pVal, m_ksiUnit, pVal);
    return S_OK;
 }
 
@@ -200,12 +201,11 @@ STDMETHODIMP CUHPConcrete::put_ftloc(Float64 newVal)
    if (newVal < 0 || IsZero(newVal))
       return E_INVALIDARG;
 
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-
-   convert->ConvertFromBaseUnits(newVal, CComBSTR("ksi"), &newVal);
-
-   m_ftloc = newVal;
+   // convert inbound value to KSI
+   m_Convert->ConvertFromBaseUnits(newVal, m_ksiUnit, &newVal);
+   // convert from KSI to the system units
+   newVal = WBFL::Units::ConvertToSysUnits(newVal, WBFL::Units::Measure::KSI);
+   m_Model.SetFtloc(newVal);
 
    return S_OK;
 }
@@ -213,7 +213,7 @@ STDMETHODIMP CUHPConcrete::put_ftloc(Float64 newVal)
 STDMETHODIMP CUHPConcrete::get_etloc(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_etloc;
+   *pVal = m_Model.Get_etloc();
    return S_OK;
 }
 
@@ -222,14 +222,15 @@ STDMETHODIMP CUHPConcrete::put_etloc(Float64 newVal)
    if (newVal <= 0)
       return E_INVALIDARG; // tension is positive
 
-   m_etloc = newVal;
+   m_Model.Set_etloc(newVal);
+
    return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::get_gamma(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_gamma;
+   *pVal = m_Model.GetGamma();
    return S_OK;
 }
 
@@ -238,94 +239,43 @@ STDMETHODIMP CUHPConcrete::put_gamma(Float64 newVal)
    if (newVal <= 0)
       return E_INVALIDARG;
 
-   m_gamma = newVal;
+   m_Model.SetGamma(newVal);
    return S_OK;
 }
 
 
 STDMETHODIMP CUHPConcrete::put_Name(BSTR name)
 {
-   m_bstrName = name;
+   USES_CONVERSION;
+   m_Model.SetName(OLE2T(name));
    return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::get_Name(BSTR *name)
 {
+   USES_CONVERSION;
    CHECK_RETSTRING(name);
-   *name = m_bstrName.Copy();
+   *name = T2BSTR(m_Model.GetName().c_str());
    return S_OK;
 }
 
-STDMETHODIMP CUHPConcrete::ComputeStress(Float64 strain,Float64 *pVal)
+STDMETHODIMP CUHPConcrete::ComputeStress(Float64 strain, Float64* pVal)
 {
    CHECK_RETVAL(pVal);
 
-   ATLASSERT(m_ftcr <= m_ftloc); // ft,loc must be greater or equal to f,trc, UHPC GS 1.1
-
-   *pVal = 0;
-
-   Float64 Ec = GetEc();
-
-   HRESULT hr = S_OK;
-
-   if (0 < strain)
-   {
-      // tension
-      Float64 e_tcr = m_gamma*m_ftcr / Ec;
-      if (strain < e_tcr)
-      {
-         // strain is less than cracking
-         *pVal = strain*Ec;
-      }
-      else if (::IsLE(strain,m_etloc))
-      {
-         *pVal = (m_ftloc < 1.2*m_ftcr) ? m_gamma*m_ftcr : ::LinInterp(strain - e_tcr,m_gamma*m_ftcr,m_gamma*m_ftloc,m_etloc - e_tcr);
-      }
-      else
-      {
-         // beyond localization so can't carry any tension
-         *pVal = (m_ftloc < 1.2 * m_ftcr) ? m_gamma * m_ftcr : ::LinInterp(strain - e_tcr, m_gamma * m_ftcr, m_gamma * m_ftloc, m_etloc - e_tcr);
-         hr = S_FALSE;
-      }
-   }
-   else
-   {
-      // compression
-      strain = fabs(strain);
-      Float64 e_cp = 1.0*m_alpha*m_fc / Ec;
-      if (strain < e_cp)
-      {
-         *pVal = -strain * Ec;
-      }
-      else if (::IsLE(strain, -m_ecu))
-      {
-         *pVal = -1.0 * m_alpha * m_fc; // negative for compression
-      }
-      else
-      {
-         *pVal = -1.0 * m_alpha * m_fc;// 0.0; // beyond maximum strain
-         hr = S_FALSE;
-      }
-   }
-
-   // The stress is in KSI, convert it to base units because that is what the caller expects
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-   convert->ConvertToBaseUnits(*pVal,CComBSTR("ksi"),pVal);
-
-   return hr;
-}
+   auto result = m_Model.ComputeStress(strain);
+   *pVal = result.first;
+   *pVal = WBFL::Units::ConvertFromSysUnits(*pVal, WBFL::Units::Measure::KSI);
+   m_Convert->ConvertToBaseUnits(*pVal, m_ksiUnit, pVal);
+   return (result.second == true ? S_OK : S_FALSE);
+};
 
 STDMETHODIMP CUHPConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)
 {
    CHECK_RETVAL(minStrain);
    CHECK_RETVAL(maxStrain);
 
-   *maxStrain = m_etloc;
-
-   Float64 Ec = GetEc();
-   Float64 e_cp = -1.0*m_alpha*m_fc / Ec;
-   *minStrain = Min(e_cp, m_ecu); // using Min because compression strain is negative. we want value that is furthest from zero on a numberline. smaller negative values are further from zero.
+   m_Model.GetStrainLimits(minStrain, maxStrain);
 
    return S_OK;
 }
@@ -333,38 +283,27 @@ STDMETHODIMP CUHPConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)
 STDMETHODIMP CUHPConcrete::get_StrainAtPeakStress(Float64* strain)
 {
    CHECK_RETVAL(strain);
-
-   Float64 Ec = GetEc();
-   Float64 e_cp = -1.0*m_alpha*m_fc / Ec;
-   (*strain) = e_cp;
-
+   *strain = m_Model.GetStrainAtPeakStress();
    return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::get_YieldStrain(Float64* pey)
 {
    CHECK_RETVAL(pey);
-   Float64 Ec = GetEc();
-   Float64 e_cp = -1.0*m_alpha*m_fc / Ec;
-   *pey = e_cp;
+   *pey = m_Model.GetYieldStrain();
    return S_OK;
 }
 
 STDMETHODIMP CUHPConcrete::get_ModulusOfElasticity(Float64* pE)
 {
    CHECK_RETVAL(pE);
-   Float64 Ec = GetEc();
-
-   // The stress is in KSI, convert it to base units because that is what the caller expects
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-   convert->ConvertToBaseUnits(Ec,CComBSTR("ksi"),&Ec);
-
-   *pE = Ec;
+   *pE = m_Model.GetModulusOfElasticity();
+   *pE = WBFL::Units::ConvertFromSysUnits(*pE, WBFL::Units::Measure::KSI);
+   m_Convert->ConvertToBaseUnits(*pE, m_ksiUnit, pE);
    return S_OK;
 }
 
-STDMETHODIMP CUHPConcrete::get_UnitServer(IUnitServer** ppVal )
+STDMETHODIMP CUHPConcrete::get_UnitServer(IUnitServer** ppVal)
 {
    CHECK_RETOBJ(ppVal);
 
@@ -374,52 +313,13 @@ STDMETHODIMP CUHPConcrete::get_UnitServer(IUnitServer** ppVal )
    return S_OK;
 }
 
-STDMETHODIMP CUHPConcrete::putref_UnitServer(IUnitServer* pNewVal )
+STDMETHODIMP CUHPConcrete::putref_UnitServer(IUnitServer* pNewVal)
 {
    CHECK_IN(pNewVal);
 
+   ClearUnits();
    m_UnitServer = pNewVal;
-   return S_OK;
-}
+   SetupUnits();
 
-Float64 CUHPConcrete::GetEc()
-{
-   return 2500*m_K1*pow(m_fc,0.33);
-}
-
-///////////////////////////////////////////////////////////////////
-// IStructuredStorage2
-STDMETHODIMP CUHPConcrete::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("UHPConcrete"),1.0);
-
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CUHPConcrete::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("UHPConcrete"));
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   return S_OK;
-}
-
-// IPersist
-STDMETHODIMP CUHPConcrete::GetClassID(CLSID* pClassID)
-{
-   CHECK_IN(pClassID);
-
-   *pClassID = GetObjectCLSID();
    return S_OK;
 }

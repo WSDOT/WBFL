@@ -48,6 +48,7 @@ extern CComModule _Module;
 #include <WBFLUnitServer.h>
 #include <WBFLTools.h>
 #include <WBFLGeometry.h>
+#include <Units/Units.h>
 
 
 //{{AFX_INSERT_LOCATION}}

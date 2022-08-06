@@ -177,6 +177,12 @@
   <ItemGroup>
     <ClCompile Include="ACI209Concrete.cpp" />
     <ClCompile Include="CEBFIPConcrete.cpp" />
+    <ClCompile Include="ConfinedConcreteModel.cpp" />
+    <ClCompile Include="LRFDPrestressModel.cpp" />
+    <ClCompile Include="PCIUHPCModel.cpp" />
+    <ClCompile Include="PSPowerFormulaModel.cpp" />
+    <ClCompile Include="RambergOsgoodModel.cpp" />
+    <ClCompile Include="RebarModel.cpp" />
     <ClCompile Include="SimpleConcrete.cpp" />
     <ClCompile Include="ConcreteBase.cpp" />
     <ClCompile Include="main.cpp">
@@ -185,20 +191,32 @@
     </ClCompile>
     <ClCompile Include="PsStrand.cpp" />
     <ClCompile Include="Rebar.cpp" />
+    <ClCompile Include="StressStrainModel.cpp" />
+    <ClCompile Include="UHPCModel.cpp" />
+    <ClCompile Include="UnconfinedConcreteModel.cpp" />
     <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Materials\ACI209Concrete.h" />
     <ClInclude Include="..\Include\Materials\AutoLib.h" />
     <ClInclude Include="..\Include\Materials\CEBFIPConcrete.h" />
+    <ClInclude Include="..\Include\Materials\ConfinedConcreteModel.h" />
+    <ClInclude Include="..\Include\Materials\LRFDPrestressModel.h" />
+    <ClInclude Include="..\Include\Materials\PCIUHPCModel.h" />
+    <ClInclude Include="..\Include\Materials\PSPowerFormulaModel.h" />
+    <ClInclude Include="..\Include\Materials\RambergOsgoodModel.h" />
+    <ClInclude Include="..\Include\Materials\RebarModel.h" />
     <ClInclude Include="..\Include\Materials\SimpleConcrete.h" />
     <ClInclude Include="..\Include\Materials\ConcreteBase.h" />
-    <ClInclude Include="..\Include\Materials\ConcreteTypes.h" />
+    <ClInclude Include="..\Include\Materials\MaterialTypes.h" />
     <ClInclude Include="..\Include\Materials\Materials.h" />
     <ClInclude Include="..\Include\Materials\MaterialsExp.h" />
     <ClInclude Include="..\Include\Materials\MatLib.h" />
     <ClInclude Include="..\Include\Materials\PsStrand.h" />
     <ClInclude Include="..\Include\Materials\Rebar.h" />
+    <ClInclude Include="..\Include\Materials\StressStrainModel.h" />
+    <ClInclude Include="..\Include\Materials\UHPCModel.h" />
+    <ClInclude Include="..\Include\Materials\UnconfinedConcreteModel.h" />
     <ClInclude Include="..\Include\Materials\UnitTest.h" />
   </ItemGroup>
   <ItemGroup>

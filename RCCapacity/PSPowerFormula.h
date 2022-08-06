@@ -30,6 +30,7 @@
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
+#include <Materials/PSPowerFormulaModel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CPSPowerFormula
@@ -39,19 +40,12 @@ class ATL_NO_VTABLE CPSPowerFormula :
 	public ISupportErrorInfo,
    public IPowerFormula,
 	public IStressStrain,
-	public ISupportUnitServer,
-   public IStructuredStorage2,
-   public IPersist
+   public ISupportUnitServer
 {
 public:
    CPSPowerFormula() :
-      m_bstrName("Strand")
+      m_Model(_T("Strand"))
 	{
-      m_ProductionMethod = pmtLowRelaxation;
-      m_StrandGrade = sgtGrade270;
-
-      m_Fpu = 270;
-      m_Eps = 28500;
 	}
 
    HRESULT FinalConstruct();
@@ -64,31 +58,18 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CPSPowerFormula)
    COM_INTERFACE_ENTRY(IPowerFormula)
 	COM_INTERFACE_ENTRY(IStressStrain)
-	COM_INTERFACE_ENTRY(ISupportUnitServer)
-	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPersist)
+   COM_INTERFACE_ENTRY(ISupportUnitServer)
+   COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
-   void ClearUnits();
-   void SetupUnits();
+void ClearUnits();
+void SetupUnits();
 
-   ProductionMethodType m_ProductionMethod;
-   StrandGradeType m_StrandGrade;
-
-   Float64 m_ReductionFactor;
-
-   Float64 m_Fpu;
-   Float64 m_Eps;
-
-   CComBSTR m_bstrName;
-
+WBFL::Materials::PSPowerFormulaModel m_Model;
    CComPtr<IUnitServer> m_UnitServer;
    CComPtr<IUnit> m_ksiUnit;
    CComPtr<IUnitConvert2> m_Convert;
 
-   Float64 m_MinStrain;
-   Float64 m_MaxStrain;
 
 // ISupportsErrorInfo
 public:
@@ -114,19 +95,10 @@ public:
    STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
 
-// ISupportUnitServer
+   // ISupportUnitServer
 public:
-   STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal ) override;
-	STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal ) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
+   STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal) override;
+   STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal) override;
 };
 
 #endif //__PSPOWERFORMULA_H_

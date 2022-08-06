@@ -29,7 +29,7 @@
 #define __LRFDPrestressFormula_H_
 
 #include "resource.h"       // main symbols
-#include <WBFLUnitServer.h>
+#include <Materials/LRFDPrestressModel.h>
 
 // Computes stress in prestressing using LRFD Equation 5.7.3.1.1-1
 
@@ -40,15 +40,12 @@ class ATL_NO_VTABLE CLRFDPrestressFormula :
 	public CComCoClass<CLRFDPrestressFormula, &CLSID_LRFDPrestressFormula>,
 	public ISupportErrorInfo,
    public ILRFDPrestressFormula,
-	public IStressStrain,
-   public IStructuredStorage2,
-   public IPersist
+	public IStressStrain
 {
 public:
    CLRFDPrestressFormula() :
-      m_bstrName("Strand")
+      m_Model(_T("Strand"))
 	{
-      m_ProductionMethod = pmtLowRelaxation;
 	}
 
    HRESULT FinalConstruct();
@@ -62,22 +59,9 @@ BEGIN_COM_MAP(CLRFDPrestressFormula)
    COM_INTERFACE_ENTRY(ILRFDPrestressFormula)
 	COM_INTERFACE_ENTRY(IStressStrain)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
-   void ClearUnits();
-   void SetupUnits();
-
-   ProductionMethodType m_ProductionMethod;
-
-   Float64 m_Fpu;
-   Float64 m_Eps;
-
-   CComBSTR m_bstrName;
-
-   Float64 m_MinStrain;
-   Float64 m_MaxStrain;
+   WBFL::Materials::LRFDPrestressModel m_Model;
 
 // ISupportsErrorInfo
 public:
@@ -100,15 +84,6 @@ public:
    STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey) override;
    STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 };
 
 #endif //__LRFDPrestressFormula_H_

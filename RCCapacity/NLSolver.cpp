@@ -222,9 +222,6 @@ HRESULT CNLSolver::InitConcreteModel(IStressStrain** model,IUnitServer* unitServ
 
    CComQIPtr<IUnconfinedConcrete> ucc(*model);
 
-   CComQIPtr<ISupportUnitServer> sus(ucc);
-   sus->putref_UnitServer(unitServer);
-
    if ( FAILED(ucc->put_fc(fc)) )
    {
       return CComCoClass<CNLSolver>::Error(IDS_E_INITCONCRETE,IID_INLSolver,RC_E_INITCONCRETE);

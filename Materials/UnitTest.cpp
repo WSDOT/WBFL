@@ -26,6 +26,15 @@
 #include <Materials/SimpleConcrete.h>
 #include <Materials/PsStrand.h>
 #include <Materials/Rebar.h>
+#include <Materials/StressStrainModel.h>
+#include <Materials/ConfinedConcreteModel.h>
+#include <Materials/UnconfinedConcreteModel.h>
+#include <Materials/UHPCModel.h>
+#include <Materials/PCIUHPCModel.h>
+#include <Materials/RambergOsgoodModel.h>
+#include <Materials/PSPowerFormulaModel.h>
+#include <Materials/LRFDPrestressModel.h>
+#include <Materials/RebarModel.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,6 +54,16 @@ bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
 #pragma Reminder("WORKING HERE - need to add unit tests for time-dependent concrete models")
    tst &= PsStrand::TestMe(rlog);
    tst &= Rebar::TestMe(rlog);
+
+   tst &= StressStrainModel::TestMe(rlog);
+   tst &= ConfinedConcreteModel::TestMe(rlog);
+   tst &= UnconfinedConcreteModel::TestMe(rlog);
+   tst &= UHPCModel::TestMe(rlog);
+   tst &= PCIUHPCModel::TestMe(rlog);
+   tst &= RambergOsgoodModel::TestMe(rlog);
+   tst &= PSPowerFormulaModel::TestMe(rlog);
+   tst &= LRFDPrestressModel::TestMe(rlog);
+   tst &= RebarModel::TestMe(rlog);
 
 #endif
 

@@ -28,7 +28,7 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include <WBFLUnitServer.h>
+#include <Materials/RambergOsgoodModel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CRambergOsgoodModel
@@ -37,13 +37,11 @@ class ATL_NO_VTABLE CRambergOsgoodModel :
 	public CComCoClass<CRambergOsgoodModel, &CLSID_RambergOsgoodModel>,
 	public ISupportErrorInfo,
    public IRambergOsgoodModel,
-	public IStressStrain,
-   public IStructuredStorage2,
-   public IPersist
+	public IStressStrain
 {
 public:
    CRambergOsgoodModel() :
-      m_bstrName("Strand")
+      m_Model(_T("Strand"))
 	{
 	}
 
@@ -58,15 +56,9 @@ BEGIN_COM_MAP(CRambergOsgoodModel)
    COM_INTERFACE_ENTRY(IRambergOsgoodModel)
 	COM_INTERFACE_ENTRY(IStressStrain)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
-   Float64 m_A, m_B, m_C, m_Eps, m_fpu;
-   CComBSTR m_bstrName;
-
-   Float64 m_MinStrain;
-   Float64 m_MaxStrain;
+   WBFL::Materials::RambergOsgoodModel m_Model;
 
 // ISupportsErrorInfo
 public:
@@ -86,14 +78,5 @@ public:
    STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey) override;
    STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 };
 

@@ -43,6 +43,15 @@ Angle        System::ms_Angle       = Measure::Radian;
 Float64      System::ms_Gravity     = 9.80665; //; // m/s^2, not 9.81 as we're taught in school
 Acceleration System::ms_GravityUnit = Measure::MeterPerSec2;
 
+void System::SetBaseUnits(const Mass& mass, const Length& length, const Time& time, const Temperature& temp, const Angle& angle)
+{
+   SetMassUnit(mass);
+   SetLengthUnit(length);
+   SetTimeUnit(time);
+   SetTemperatureUnit(temp);
+   SetAngleUnit(angle);
+}
+
 Mass System::SetMassUnit(const Mass& u)
 {
    Mass temp = ms_Mass;

@@ -348,7 +348,6 @@ Float64 SimpleConcrete::GetAutogenousShrinkage() const
    return m_AutogenousShrinkage;
 }
 
-//======================== DEBUG      =======================================
 #if defined _DEBUG
 bool SimpleConcrete::AssertValid() const
 {

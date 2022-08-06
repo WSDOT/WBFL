@@ -29,21 +29,31 @@
 #define __CircularManderSection_H_
 
 #include "resource.h"       // main symbols
-#include <WBFLUnitServer.h>
+#include <Materials/ConfinedConcreteModel.h>
+
+class CManderSection
+{
+public:
+	virtual const std::shared_ptr<const WBFL::Materials::ManderModelSection>& GetSection() const = 0;
+};
 
 /////////////////////////////////////////////////////////////////////////////
 // CCircularManderSection
 class ATL_NO_VTABLE CCircularManderSection : 
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CCircularManderSection, &CLSID_CircularManderSection>,
+	public CManderSection,
 	public ISupportErrorInfo,
 	public ICircularManderSection
 {
 public:
 	CCircularManderSection()
 	{
-      m_esu = 0.004;
+		m_Section = std::make_shared<WBFL::Materials::CircularManderSection>();
+		m_BaseSection = std::dynamic_pointer_cast<WBFL::Materials::ManderModelSection>(m_Section);
 	}
+
+	virtual const std::shared_ptr<const WBFL::Materials::ManderModelSection>& GetSection() const override { return m_BaseSection; }
 
    HRESULT FinalConstruct();
    void FinalRelease();
@@ -59,17 +69,8 @@ BEGIN_COM_MAP(CCircularManderSection)
 END_COM_MAP()
 
 private:
-   TransvReinforcementType m_TransvReinforcementType;
-   Float64 m_Asp;
-   Float64 m_As;
-   Float64 m_db;
-   Float64 m_S;
-   Float64 m_Diameter;
-   Float64 m_Cover;
-   Float64 m_fyh;
-   Float64 m_esu;
-
-   Float64 Get_ds();
+	std::shared_ptr<WBFL::Materials::CircularManderSection> m_Section;
+	std::shared_ptr<const WBFL::Materials::ManderModelSection> m_BaseSection;
 
 // ISupportsErrorInfo
 public:

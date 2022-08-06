@@ -29,7 +29,7 @@
 #define __ManderModel_H_
 
 #include "resource.h"       // main symbols
-#include <WBFLUnitServer.h>
+#include <Materials/ConfinedConcreteModel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CManderModel
@@ -38,12 +38,11 @@ class ATL_NO_VTABLE CManderModel :
 	public CComCoClass<CManderModel, &CLSID_ManderModel>,
 	public ISupportErrorInfo,
 	public IManderModel,
-	public IStressStrain,
-	public ISupportUnitServer
+	public IStressStrain
 {
 public:
    CManderModel() :
-      m_bstrName("Confined Concrete")
+      m_Model(_T("Confined Concrete"))
 	{
 	}
 
@@ -57,19 +56,11 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CManderModel)
 	COM_INTERFACE_ENTRY(IManderModel)
 	COM_INTERFACE_ENTRY(IStressStrain)
-   COM_INTERFACE_ENTRY(ISupportUnitServer)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
-   Float64 m_Fco; // psi
-   Float64 m_eco;
-   Float64 m_R;
-   CComPtr<IManderModelSection> m_Section;
-   CComPtr<IUnitServer> m_UnitServer;
-   CComBSTR m_bstrName;
-
-   Float64 GetEc();
-   void GetConcreteParameters(Float64& fr,Float64& fcc,Float64& ecc);
+	WBFL::Materials::ConfinedConcreteModel m_Model;
+	CComPtr<IManderModelSection> m_Section; // we need to keep a reference to the section so putref_ and get_ have the correct semantics
 
 // ISupportsErrorInfo
 public:
@@ -96,11 +87,6 @@ public:
    STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey) override;
    STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
-
-// ISupportUnitServer
-public:
-	STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal ) override;
-	STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal ) override;
 };
 
 #endif //__ManderModel_H_

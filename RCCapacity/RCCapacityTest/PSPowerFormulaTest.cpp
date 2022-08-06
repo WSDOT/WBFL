@@ -76,7 +76,7 @@ void CPSPowerFormulaTest::Test()
 
    CComQIPtr<ISupportErrorInfo> eInfo(ss);
    TRY_TEST( eInfo != nullptr, true);
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);
+   TRY_TEST(eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain), S_OK);
+   TRY_TEST(eInfo->InterfaceSupportsErrorInfo(IID_ISupportUnitServer), S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_ISupportErrorInfo),   S_FALSE);
 }

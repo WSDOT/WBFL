@@ -30,6 +30,7 @@
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
+#include <Materials/PCIUHPCModel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CPCIUHPConcrete
@@ -39,13 +40,11 @@ class ATL_NO_VTABLE CPCIUHPConcrete :
 	public ISupportErrorInfo,
 	public IPCIUHPConcrete,
 	public IStressStrain,
-	public ISupportUnitServer,
-   public IStructuredStorage2,
-   public IPersist
+   public ISupportUnitServer
 {
 public:
    CPCIUHPConcrete() :
-      m_bstrName("PCI-UHPC")
+      m_Model(_T("PCI-UHPC"))
 	{
 	}
 
@@ -60,16 +59,16 @@ BEGIN_COM_MAP(CPCIUHPConcrete)
 	COM_INTERFACE_ENTRY(IPCIUHPConcrete)
 	COM_INTERFACE_ENTRY(IStressStrain)
    COM_INTERFACE_ENTRY(ISupportUnitServer)
-	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPersist)
+   COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
-   Float64 m_fc; // in KSI units
+   WBFL::Materials::PCIUHPCModel m_Model;
    CComPtr<IUnitServer> m_UnitServer;
-   CComBSTR m_bstrName;
+   CComPtr<IUnit> m_ksiUnit;
+   CComPtr<IUnitConvert2> m_Convert;
 
-   Float64 GetEc();
+   void SetupUnits();
+   void ClearUnits();
 
 // ISupportsErrorInfo
 public:
@@ -90,19 +89,10 @@ public:
    STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
 
-// ISupportUnitServer
+   // ISupportUnitServer
 public:
-		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal ) override;
-		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal ) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
+   STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal) override;
+   STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal) override;
 };
 
 #endif //__PCIUHPConcrete_H_

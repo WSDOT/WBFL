@@ -29,6 +29,7 @@
 #define __REBARMODEL_H_
 
 #include "resource.h"       // main symbols
+#include <Materials/RebarModel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CRebarModel
@@ -37,18 +38,13 @@ class ATL_NO_VTABLE CRebarModel :
 	public CComCoClass<CRebarModel, &CLSID_RebarModel>,
 	public ISupportErrorInfo,
 	public IRebarModel,
-	public IStressStrain,
-   public IStructuredStorage2,
-   public IPersist
+	public IStressStrain
 {
 public:
    CRebarModel() :
-      m_bstrName("Rebar")
+      m_Model(_T("Rebar"))
 	{
-      m_Fy = 60;
-      m_Es = 29000;
-      m_MinStrain = -0.07;
-      m_MaxStrain =  0.07;
+      m_Model.SetProperties(60, 29000, 0.07);
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_REBARMODEL)
@@ -58,15 +54,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CRebarModel)
 	COM_INTERFACE_ENTRY(IRebarModel)
 	COM_INTERFACE_ENTRY(IStressStrain)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPersist)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
-   Float64 m_Fy, m_Es;
-   Float64 m_MinStrain;
-   Float64 m_MaxStrain;
-   CComBSTR m_bstrName;
+   WBFL::Materials::RebarModel m_Model;
 
 // ISupportsErrorInfo
 public:
@@ -91,15 +82,6 @@ public:
    STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey) override;
    STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 };
 
 #endif //__REBARMODEL_H_

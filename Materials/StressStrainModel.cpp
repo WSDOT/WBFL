@@ -21,16 +21,57 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include <Materials/MatLib.h>
+#include <Materials/StressStrainModel.h>
+#include <MathEx.h>
 
-#include <Materials/MaterialsExp.h>
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
-namespace WBFL
+using namespace WBFL::Materials;
+
+StressStrainModel::StressStrainModel(LPCTSTR lpszName) :
+   m_Name(lpszName)
 {
-   namespace Materials
-   {
-      enum class ConcreteType { Normal, AllLightweight, SandLightweight, PCI_UHPC };
-      enum class CementType { TypeI, TypeII };
-      enum class CuringType { Moist, Steam };
-   };
-};
+}
+
+StressStrainModel::StressStrainModel(const std::_tstring& strName) :
+   m_Name(strName)
+{
+}
+
+void StressStrainModel::SetName(const std::_tstring& name)
+{
+   m_Name = name;
+}
+
+std::_tstring StressStrainModel::GetName() const
+{
+   return m_Name;
+}
+
+#if defined _DEBUG
+bool StressStrainModel::AssertValid() const
+{
+   return true;
+}
+
+void StressStrainModel::Dump(WBFL::Debug::LogContext& os) const
+{
+   os << _T("Dump for StressStrainModel")         << WBFL::Debug::endl;
+   os << _T("====================")         << WBFL::Debug::endl;
+   os << _T("Name    : ") << m_Name.c_str() << WBFL::Debug::endl;
+}
+#endif // _DEBUG
+
+#if defined _UNITTEST
+bool StressStrainModel::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("StressStrainModel");
+   TRY_TESTME(true);
+   TESTME_EPILOG("StressStrainModel");
+}
+#endif // _UNITTEST

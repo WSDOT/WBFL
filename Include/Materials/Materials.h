@@ -29,10 +29,19 @@
    #error It is for external users only
 #endif
 
-#include <Materials/ConcreteTypes.h>
+#include <Materials/MaterialTypes.h>
 #include <Materials/SimpleConcrete.h>
 #include <Materials/ConcreteBase.h>
 #include <Materials/ACI209Concrete.h>
 #include <Materials/CEBFIPConcrete.h>
 #include <Materials/PsStrand.h>
 #include <Materials/Rebar.h>
+#include <Materials/StressStrainModel.h>
+#include <Materials/ConfinedConcreteModel.h>
+#include <Materials/UnconfinedConcreteModel.h>
+#include <Materials/UHPCModel.h>
+#include <Materials/PCIUHPCModel.h>
+#include <Materials/RambergOsgoodModel.h>
+#include <Materials/PSPowerFormulaModel.h>
+#include <Materials/LRFDPrestressModel.h>
+#include <Materials/RebarModel.h>

@@ -71,25 +71,23 @@ STDMETHODIMP CStrainHardenedRebarModel::Init(Float64 fy,Float64 fu,Float64 Es,Fl
    if ( efr < 0 || IsZero(efr) )
       return E_INVALIDARG;
 
-   m_Fy = fy;
-   m_Fu = fu;
-   m_Es = Es;
-   m_esh = esh;
-   m_efr = efr;
+   m_Model.SetProperties(fy, fu, Es, esh, efr);
 
 	return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::put_Name(BSTR name)
 {
-   m_bstrName = name;
+   USES_CONVERSION;
+   m_Model.SetName(OLE2T(name));
    return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_Name(BSTR *name)
 {
+   USES_CONVERSION;
    CHECK_RETSTRING(name);
-   *name = m_bstrName.Copy();
+   *name = T2BSTR(m_Model.GetName().c_str());
    return S_OK;
 }
 
@@ -97,36 +95,9 @@ STDMETHODIMP CStrainHardenedRebarModel::ComputeStress(Float64 strain,Float64* pV
 {
    CHECK_RETVAL(pVal);
 
-//   if ( strain < -m_efr || m_efr < strain )
-//   {
-//      *pVal = 0;
-//      return E_FAIL;
-//   }
-
-   Float64 ey = m_Fy/m_Es;
-   Float64 sign = BinarySign(strain);
-   strain = fabs(strain);
-
-   if (InRange(0.0, strain, ey))
-   {
-      *pVal = m_Es*strain;
-   }
-   else if (InRange(ey, strain, m_esh))
-   {
-      *pVal = m_Fy; // plateau
-   }
-   else if (InRange(m_esh, strain, m_efr))
-   {
-      *pVal = m_Fu - (m_Fu - m_Fy)*pow((m_efr - strain), 2) / pow((m_esh - m_efr), 2); // strain hardening
-   }
-   else if (m_efr < strain)
-   {
-      *pVal = m_Fu; // fractured, but just flatten out the line so that the solver doesn't have problems
-   }
-
-   (*pVal) *= sign;
-
-   return (m_efr < sign* strain) ? S_FALSE : S_OK;
+   auto result = m_Model.ComputeStress(strain);
+   *pVal = result.first;
+   return (result.second == true ? S_OK : S_FALSE);
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::StrainLimits(Float64* minStrain,Float64* maxStrain)
@@ -134,106 +105,169 @@ STDMETHODIMP CStrainHardenedRebarModel::StrainLimits(Float64* minStrain,Float64*
    CHECK_RETVAL(minStrain);
    CHECK_RETVAL(maxStrain);
 
-   *minStrain = -m_efr;
-   *maxStrain =  m_efr;
+   m_Model.GetStrainLimits(minStrain, maxStrain);
+
    return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_StrainAtPeakStress(Float64* strain)
 {
    CHECK_RETVAL(strain);
-   *strain = m_efr;
+   *strain = m_Model.GetStrainAtPeakStress();
    return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_YieldStrain(Float64* pey)
 {
    CHECK_RETVAL(pey);
-   *pey = m_Fy/m_Es;
+   *pey = m_Model.GetYieldStrain();
    return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_ModulusOfElasticity(Float64* pE)
 {
-   return get_Es(pE);
+   CHECK_RETVAL(pE);
+   *pE = m_Model.GetModulusOfElasticity();
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_fy(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_Fy;
-	return S_OK;
+
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   *pVal = fy;
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::put_fy(Float64 newVal)
 {
-   if ( newVal < 0 || IsZero(newVal) )
+   if (newVal < 0 || IsZero(newVal))
       return E_INVALIDARG;
 
-   m_Fy = newVal;
-	return S_OK;
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   m_Model.SetProperties(newVal, fu, Es, esh, er);
+
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_fu(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_Fu;
-	return S_OK;
+
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   *pVal = fu;
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::put_fu(Float64 newVal)
 {
-   if ( newVal < 0 || IsZero(newVal) )
+   if (newVal < 0 || IsZero(newVal))
       return E_INVALIDARG;
 
-   m_Fu = newVal;
-	return S_OK;
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   m_Model.SetProperties(fy, newVal, Es, esh, er);
+
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_Es(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_Es;
-	return S_OK;
+
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   *pVal = Es;
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::put_Es(Float64 newVal)
 {
-   if ( newVal < 0 || IsZero(newVal) )
+   if (newVal < 0 || IsZero(newVal))
       return E_INVALIDARG;
 
-   m_Es = newVal;
-	return S_OK;
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   m_Model.SetProperties(fy, fu, newVal, esh, er);
+
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_esh(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_esh;
-	return S_OK;
+
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   *pVal = esh;
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::put_esh(Float64 newVal)
 {
-   if ( newVal < 0 || IsZero(newVal) )
+   if (newVal < 0 || IsZero(newVal))
       return E_INVALIDARG;
 
-   m_esh = newVal;
-	return S_OK;
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   m_Model.SetProperties(fy, fu, Es, newVal, er);
+
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::get_efr(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_efr;
-	return S_OK;
+
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   *pVal = er;
+   return S_OK;
 }
 
 STDMETHODIMP CStrainHardenedRebarModel::put_efr(Float64 newVal)
 {
-   if ( newVal < 0 || IsZero(newVal) )
+   if (newVal < 0 || IsZero(newVal))
       return E_INVALIDARG;
 
-   m_efr = newVal;
-	return S_OK;
+   Float64 fy, fu, Es, esh, er;
+   bool bIsStrainHardening;
+   m_Model.GetProperties(&fy, &fu, &Es, &esh, &er, &bIsStrainHardening);
+   ATLASSERT(bIsStrainHardening == true);
+
+   m_Model.SetProperties(fy, fu, Es, esh, newVal);
+
+   return S_OK;
+
 }
