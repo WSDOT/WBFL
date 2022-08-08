@@ -42,6 +42,7 @@
 #define IDR_NORTHARROW			2044
 #define IDR_SHAPEGRAVITYWELLSTRATEGY	2045
 #define IDR_ANCHOREDTEXTBLOCK 2046
+#define IDR_SHAPEDRAWSTRATEGY2 2047
 
 // Next default values for new objects
 // 

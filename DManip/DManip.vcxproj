@@ -293,6 +293,7 @@
     <None Include="res\registry.bin" />
     <None Include="res\Target.cur" />
     <None Include="ShapeDrawStrategy.rgs" />
+    <None Include="ShapeDrawStrategy2.rgs" />
     <None Include="ShapeGravityWellStrategy.rgs" />
     <None Include="SimpleDrawDashedLineStrategy.rgs" />
     <None Include="SimpleDrawLineStrategy.rgs" />
