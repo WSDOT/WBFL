@@ -32,7 +32,7 @@ namespace WBFL
 {
    namespace EngTools
    {
-// This class represents a beam strain plane in x-y space
+/// This class represents a beam strain plane in x-y space
 class ENGTOOLSCLASS BiaxialBeamStrain
 {
 public:

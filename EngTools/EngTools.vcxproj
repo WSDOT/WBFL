@@ -176,11 +176,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BiaxialBeamStrain.cpp" />
+    <ClCompile Include="FDMeshGenerator.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MohrCircle.cpp" />
+    <ClCompile Include="PrandtlMembraneSolution.cpp" />
+    <ClCompile Include="PrandtlMembraneSolver.cpp" />
+    <ClCompile Include="UniformFDMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\EngTools\AutoLib.h" />
@@ -189,6 +193,10 @@
     <ClInclude Include="..\Include\EngTools\EngToolsExp.h" />
     <ClInclude Include="..\Include\EngTools\EngToolsLib.h" />
     <ClInclude Include="..\Include\EngTools\MohrCircle.h" />
+    <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolution.h" />
+    <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolver.h" />
+    <ClInclude Include="..\Include\EngTools\UniformFDMesh.h" />
+    <ClInclude Include="FDMeshGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="EngTools.def" />
