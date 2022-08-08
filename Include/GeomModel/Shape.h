@@ -87,7 +87,7 @@ public:
    /// Moves the shape so that the locator point is at the specified position
    virtual void SetLocatorPoint(LocatorPoint lp, Point2d& position) = 0;
 
-   /// Assigns a Properties object to the object pointed to by pProperties. 
+   /// Returns the geometric properties of the shape
    /// The origin of the shape properties object is the centroid of this shape
    /// with a rotation of zero.
    virtual ShapeProperties GetProperties() const  = 0;

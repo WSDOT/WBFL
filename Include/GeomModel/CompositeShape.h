@@ -61,7 +61,7 @@ public:
    virtual void SetLocatorPoint(LocatorPoint lp, Point2d& position) override;
 
 
-   /// Assigns a Properties object to the object pointed to by pProperties. 
+   /// Returns the geometric properties of the shape
    /// The origin of the shape properties object is the centroid of this shape
    /// with a rotation of zero.
    virtual ShapeProperties GetProperties() const override;
