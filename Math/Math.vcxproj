@@ -197,6 +197,7 @@
     <ClCompile Include="RootFinder2d.cpp" />
     <ClCompile Include="TrapezoidalRuleIntegrator.cpp" />
     <ClCompile Include="UnitTest.cpp" />
+    <ClCompile Include="UnsymmetricBandedMatrix..cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\MathEx.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="..\Include\Math\RootFinder2d.h" />
     <ClInclude Include="..\Include\Math\TrapezoidalRuleIntegrator.h" />
     <ClInclude Include="..\Include\Math\UnitTest.h" />
+    <ClInclude Include="..\Include\Math\UnsymmetricBandedMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Math.def" />
