@@ -21,43 +21,36 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_SYSTEM_H_
-#define INCLUDED_SYSTEM_SYSTEM_H_
 #pragma once
 
+#include <System\SysExp.h>
 
-// This is a master include file all the packages contained in the system dll.
-#if defined(BUILDSYSLIB)
-	#error Do not use this header file in the System dll source files.
-   #error It is for external users only
-#endif
+namespace WBFL
+{
+   namespace System
+   {
+      /// Utility functions for threading and concurrency
+      class SYSCLASS Threads
+      {
+      public:
+         Threads() = delete;
+         Threads(const Threads&) = delete;
+         ~Threads() = delete;
 
-#include <WBFLDebug.h>
-#include <System\Checks.h>
-#include <System\Date.h>
-#include <System\DllTest.h>
-#include <System\LogContext.h>
-#include <System\EngNotation.h>
-#include <System\Exception.h>
-#include <System\FileLogContext.h>
-#include <System\Flags.h>
-#include <System\IStructuredLoad.h>
-#include <System\IStructuredSave.h>
-#include <System\Log.h>
-#include <System\NumericFormatTool.h>
-#include <System\SectionValue.h>
-#include <System\SingletonKiller.h>
-#include <System\StructuredLoadXml.h>
-#include <System\StructuredSaveXml.h>
-#include <System\SubjectT.h>
-#include <System\Tokenizer.h>
-#include <System\Time.h>
-#include <System\Threads.h>
-#include <SYstem\XProgrammingError.h>
-#include <System\XStructuredLoad.h>
-#include <System\XStructuredSave.h>
-#include <System\ComCatMgr.h>
-#include <System\FileStream.h>
-#include <SysTem\XStructuredLoad.h>
+         Threads& operator=(const Threads&) = delete;
 
-#endif // INCLUDED_SYSTEM_SYSTEM_H_
+         /// Set the minimum number of items per thread. Threading has overhread so if there
+         /// aren't enough items, it may not be worthwhile to use multiple threads.
+         /// This allows you to optimize threading by defining the minimum number of items for
+         /// using multiple threads
+         static void SetMinItemsPerThread(IndexType minItemsPerThread);
+         static IndexType GetMinItemsPerThread();
+
+         /// Returns the number of worker threads and number of items to be processed per thread.
+         static void GetThreadParameters(IndexType nItems, IndexType& nWorkerThreads, IndexType& nItemsPerThread);
+
+       private:
+          static IndexType m_nMinItemsPerThread;
+      };
+   };
+};

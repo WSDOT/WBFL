@@ -21,43 +21,37 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_SYSTEM_H_
-#define INCLUDED_SYSTEM_SYSTEM_H_
-#pragma once
+#include <System\SysLib.h>
+#include <System\Threads.h>
+#include <thread>
 
-
-// This is a master include file all the packages contained in the system dll.
-#if defined(BUILDSYSLIB)
-	#error Do not use this header file in the System dll source files.
-   #error It is for external users only
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
-#include <WBFLDebug.h>
-#include <System\Checks.h>
-#include <System\Date.h>
-#include <System\DllTest.h>
-#include <System\LogContext.h>
-#include <System\EngNotation.h>
-#include <System\Exception.h>
-#include <System\FileLogContext.h>
-#include <System\Flags.h>
-#include <System\IStructuredLoad.h>
-#include <System\IStructuredSave.h>
-#include <System\Log.h>
-#include <System\NumericFormatTool.h>
-#include <System\SectionValue.h>
-#include <System\SingletonKiller.h>
-#include <System\StructuredLoadXml.h>
-#include <System\StructuredSaveXml.h>
-#include <System\SubjectT.h>
-#include <System\Tokenizer.h>
-#include <System\Time.h>
-#include <System\Threads.h>
-#include <SYstem\XProgrammingError.h>
-#include <System\XStructuredLoad.h>
-#include <System\XStructuredSave.h>
-#include <System\ComCatMgr.h>
-#include <System\FileStream.h>
-#include <SysTem\XStructuredLoad.h>
+using namespace WBFL::System;
 
-#endif // INCLUDED_SYSTEM_SYSTEM_H_
+static IndexType gs_hardware_threads = std::thread::hardware_concurrency();
+IndexType Threads::m_nMinItemsPerThread = 10000;
+
+void Threads::SetMinItemsPerThread(IndexType minItemsPerThread)
+{
+   m_nMinItemsPerThread = minItemsPerThread;
+}
+
+IndexType Threads::GetMinItemsPerThread() {
+   return m_nMinItemsPerThread;
+}
+
+void Threads::GetThreadParameters(IndexType nItems, IndexType& nWorkerThreads, IndexType& nItemsPerThread) {
+   IndexType max_threads = (nItems + m_nMinItemsPerThread - 1) / m_nMinItemsPerThread;
+   IndexType nThreads = min(gs_hardware_threads != 0 ? gs_hardware_threads : 2, max_threads);
+   nWorkerThreads = nThreads - 1;
+   nItemsPerThread = nItems / nThreads;
+
+   // this makes everything run in the main thread
+   //nWorkerThreads = 0;
+   //nItemsPerThread = nItems;
+}

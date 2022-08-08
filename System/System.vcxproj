@@ -201,6 +201,7 @@
     <ClCompile Include="SectionValue.cpp" />
     <ClCompile Include="StructuredLoadXml.cpp" />
     <ClCompile Include="StructuredSaveXmlPrs.cpp" />
+    <ClCompile Include="Threads.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
     <ClCompile Include="UnitTest.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="..\Include\System\SysExp.h" />
     <ClInclude Include="..\Include\System\SysLib.h" />
     <ClInclude Include="..\Include\System\System.h" />
+    <ClInclude Include="..\Include\System\Threads.h" />
     <ClInclude Include="..\Include\System\Time.h" />
     <ClInclude Include="..\Include\System\tokenizer.h" />
     <ClInclude Include="..\Include\System\UnitTest.h" />
