@@ -35,14 +35,16 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-UnconfinedConcreteModel::UnconfinedConcreteModel(LPCTSTR lpszName) :
+UnconfinedConcreteModel::UnconfinedConcreteModel(LPCTSTR lpszName,Float64 fc) :
    StressStrainModel(lpszName)
 {
+   SetFc(fc);
 }
 
-UnconfinedConcreteModel::UnconfinedConcreteModel(const std::_tstring& strName) :
+UnconfinedConcreteModel::UnconfinedConcreteModel(const std::_tstring& strName,Float64 fc) :
    StressStrainModel(strName)
 {
+   SetFc(fc);
 }
 
 void UnconfinedConcreteModel::SetFc(Float64 fc)
@@ -50,7 +52,7 @@ void UnconfinedConcreteModel::SetFc(Float64 fc)
    // inbound value is in system units
    // all the calculations in this object require KSI units
    // convert the inbound value to KSI
-   PRECONDITION(0 < fc);
+   PRECONDITION(0 <= fc);
    m_Fc = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI);
    UpdateParameters();
 }

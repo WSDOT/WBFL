@@ -35,14 +35,28 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-RebarModel::RebarModel(LPCTSTR lpszName) :
+RebarModel::RebarModel(LPCTSTR lpszName, Float64 fy, Float64 Es, Float64 er) :
    StressStrainModel(lpszName)
 {
+   SetProperties(fy, Es, er);
 }
 
-RebarModel::RebarModel(const std::_tstring& strName) :
+RebarModel::RebarModel(const std::_tstring& strName, Float64 fy, Float64 Es, Float64 er) :
    StressStrainModel(strName)
 {
+   SetProperties(fy, Es, er);
+}
+
+RebarModel::RebarModel(LPCTSTR lpszName, Float64 fy, Float64 fu, Float64 Es, Float64 esh, Float64 er) :
+   StressStrainModel(lpszName)
+{
+   SetProperties(fy, fu, Es, esh, er);
+}
+
+RebarModel::RebarModel(const std::_tstring& strName, Float64 fy, Float64 fu, Float64 Es, Float64 esh, Float64 er) :
+   StressStrainModel(strName)
+{
+   SetProperties(fy, fu, Es, esh, er);
 }
 
 void RebarModel::SetProperties(Float64 fy, Float64 Es, Float64 er)
