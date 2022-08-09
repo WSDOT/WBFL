@@ -57,7 +57,12 @@ void CGenericShape::FinalRelease()
 
 void CGenericShape::SetShape(const WBFL::Geometry::GenericShape& shape)
 { 
-   m_Shape = shape;    
+   // we can't use the direct assignment of m_Shape = shape because that will
+   // copy the shared pointer. we need our shape to have an independent centroid
+   // so we use the CreateClone method to create the copy
+   std::shared_ptr<WBFL::Geometry::Shape> clone(shape.CreateClone());
+   auto clone_shape = std::dynamic_pointer_cast<WBFL::Geometry::GenericShape>(clone);
+   m_Shape = *clone_shape;
    dynamic_cast<CPoint2d*>(m_pCentroid.p)->SetPoint(m_Shape.GetCentroid());
 }
 

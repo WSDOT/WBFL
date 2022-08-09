@@ -396,7 +396,9 @@ Float64 GenericShape::GetFurthestDistance(const Line2d& line, Line2d::Side side)
 
 std::unique_ptr<Shape> GenericShape::CreateClone() const
 {
-   return std::make_unique<GenericShape>(*this);
+    auto clone = std::make_unique<GenericShape>(*this); // this copies a shared pointer so clone has the same centroid object as this
+    clone->SetCentroid(std::make_shared<WBFL::Geometry::Point2d>(*GetCentroid())); // setting the centroid by reference creates a new shared pointer inside of clone
+    return clone;
 }
 
 #if defined _DEBUG

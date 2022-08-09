@@ -42,6 +42,8 @@ namespace WBFL
       {
       public:
          GenericShape() = default;
+
+         // Copy constructor. The centroid is shared with the copied object.
          GenericShape(const GenericShape&) = default;
 
          GenericShape(Float64 area,
@@ -52,7 +54,7 @@ namespace WBFL
             Float64 perimeter = 0);
 
          GenericShape(Float64 area,
-            const Point2d& centroid,
+            const Point2d& centroid, ///< A copy of this point is created at stored as a shared_ptr
             Float64 ixx = 0, Float64 iyy = 0, Float64 ixy = 0,
             Float64 xLeft = 0, Float64 yBottom = 0,
             Float64 xRight = 0, Float64 yTop = 0,
@@ -73,9 +75,13 @@ namespace WBFL
          /// Returns the area of the shape.
          Float64 GetArea() const;
 
-         /// Sets the centroid of the shape, measured in current coordinates. Returns the old centroid.
-         void SetCentroid(const Point2d& cent);
-         void SetCentroid(std::shared_ptr<Point2d>& cent);
+         /// Sets the centroid of the shape, measured in current coordinates.
+         /// The shared_ptr is moved to the location of centroid
+         void SetCentroid(const Point2d& centoid);
+
+         /// Sets the centroid of the shape, measured in current coordinates.
+         /// The shared_ptr is replace with centroid
+         void SetCentroid(std::shared_ptr<Point2d>& centoid);
 
          /// Returns the centroid of the shape, measured in current coordinates.
          std::shared_ptr<Point2d>& GetCentroid();
@@ -147,9 +153,16 @@ namespace WBFL
          virtual void Rotate(Float64 cx, Float64 cy, Float64 angle) override;
          virtual void Rotate(const Point2d& center, Float64 angle) override;
 
-         virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) override;
+         /// Sets the hook point location. Same as calling SetCentroid
          virtual void SetHookPoint(const Point2d& hookPnt) override;
+
+         /// Sets the hook point location. Same as calling SetCentroid
+         virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) override;
+
+         /// Returns the hook point location. Same as calling GetCentroid
          virtual std::shared_ptr<Point2d>& GetHookPoint() override;
+
+         /// Returns the hook point location. Same as calling GetCentroid
          virtual const std::shared_ptr<Point2d>& GetHookPoint() const override;
 
          /// Returns a point located at the specified location on the bounding box 
