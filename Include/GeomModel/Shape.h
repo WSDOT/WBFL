@@ -132,15 +132,6 @@ public:
    /// Dumps the contents of the class to the given stream.
    virtual void Dump(WBFL::Debug::LogContext& os) const  = 0;
 #endif // _DEBUG
-
-//protected:
-//   // Called by CompositeShape when inserted into a composite.  pParent 
-//   // must be returned in any subsequent calls to GetParent().
-//   // Developers of Shape-derived class must also create composite-friendly
-//   // classes. This means that you should always notify the parent composite
-//   // by calling the appropriate SetDirty() function when your class has
-//   // been modified.
-//   virtual void SetParent(std::shared_ptr<CompositeShape>& pParent)  = 0;
 };
 
    }; // Geometry

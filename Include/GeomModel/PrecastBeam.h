@@ -45,7 +45,7 @@ class GEOMMODELCLASS PrecastBeam : public FlangedBeam
 public:
    /// Default constructor.  Creates a PrecastBeam with all dimensions equal 
    /// to zero,  with its hook point at (0,0).
-   PrecastBeam();
+   PrecastBeam() = default;
 
    /// Explicit constructor.  Creates an I-beam shape with the given 
    /// dimensions.  The hook point is positioned at hookPnt. All beam 

@@ -31,6 +31,7 @@ namespace WBFL
 {
    namespace Geometry
    {
+      class GEOMMODELCLASS Point2d;
       class GEOMMODELCLASS Point3d;
       class GEOMMODELCLASS Size3d;
 
@@ -155,6 +156,8 @@ namespace WBFL
          /// Constructor. Sets coordinate to (x,y,z).
          Point3d(Float64 x,Float64 y,Float64 z);
 
+         Point3d(const Point2d& pnt, Float64 z);
+
          virtual ~Point3d();
 
          Point3d(const Point3d&) = default;
@@ -195,6 +198,9 @@ namespace WBFL
 
          /// Moves this point to a new position defined by x,y,z.
          void Move(Float64 x,Float64 y,Float64 z);
+
+         /// Moves this point to a new position defined by pnt and z.
+         void Move(const Point2d& pnt, Float64 z);
 
          /// Moves this point to a new position defined by newPosition.
          void Move(const Point3d& newPosition);

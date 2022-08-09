@@ -46,17 +46,8 @@ bool IsValidIndex(IndexType idx, const std::vector<Point2d>& container, Polygon:
    return GetIndex(idx, container, symmetry) < container.size();
 }
 
-Polygon::Polygon() :
-ShapeImpl()
-{
-}
-
 Polygon::Polygon(std::shared_ptr<Point2d>& hookPnt) :
    ShapeImpl(hookPnt)
-{
-}
-
-Polygon::~Polygon()
 {
 }
 

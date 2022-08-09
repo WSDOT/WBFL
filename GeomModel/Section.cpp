@@ -46,29 +46,6 @@ inline bool IsValidIndex(IndexType idx, const T& container)
 // create elastic props from a component
 ElasticProperties make_elastic_properties(const SectionComponent& rCmp);
 
-
-Section::Section()
-{
-}
-
-Section::Section(const Section& other)
-{
-   Copy(other);
-}
-
-Section& Section::operator=(const Section& other)
-{
-   if (this != &other)
-   {
-      Copy(other);
-   }
-   return *this;
-}
-
-Section::~Section()
-{
-}
-
 std::unique_ptr<Section> Section::CreateClone() const
 {
    return std::make_unique<Section>(*this);
@@ -261,13 +238,6 @@ std::unique_ptr<Section> Section::CreateClippedSection(const Rect2d& r, Section:
    );
    return clipped;
 }
-
-void Section::Copy(const Section& other)
-{
-   m_Components.clear();
-   m_Components.insert(m_Components.begin(), std::cbegin(other.m_Components), std::cend(other.m_Components));
-}
-
 
 #if defined _DEBUG
 bool Section::AssertValid() const

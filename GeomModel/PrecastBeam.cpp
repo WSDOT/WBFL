@@ -37,10 +37,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Geometry;
 
-PrecastBeam::PrecastBeam() : FlangedBeam()
-{
-}
-
 PrecastBeam::PrecastBeam(Float64 w1, Float64 w2, Float64 w3, Float64 w4, Float64 w5,
    Float64 d1, Float64 d2, Float64 d3, Float64 d4,
    Float64 d5, Float64 d6, Float64 h,

@@ -36,24 +36,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Geometry;
 
-GenericShape::GenericShape()
-{
-}
-
-GenericShape::GenericShape(const GenericShape& other)
-{
-   Copy(other);
-}
-
-GenericShape& GenericShape::operator=(const GenericShape& other)
-{
-   if(this != &other)
-   {
-      Copy(other);
-   }
-   return *this;
-}
-
 GenericShape::GenericShape(Float64 area,
    std::shared_ptr<Point2d>& centroid,
    Float64 ixx, Float64 iyy, Float64 ixy,
@@ -72,10 +54,6 @@ GenericShape::GenericShape(Float64 area,
    Float64 perimeter)
 {
    SetProperties(area, centroid, ixx, iyy, ixy, xLeft, yBottom, xRight, yTop, perimeter);
-}
-
-GenericShape::~GenericShape()
-{
 }
 
 void GenericShape::SetProperties(Float64 area, std::shared_ptr<Point2d>& centroid, Float64 ixx, Float64 iyy, Float64 ixy, Float64 xLeft, Float64 yBottom, Float64 xRight, Float64 yTop, Float64 perimeter)
@@ -421,20 +399,6 @@ std::unique_ptr<Shape> GenericShape::CreateClone() const
    return std::make_unique<GenericShape>(*this);
 }
 
-void GenericShape::Copy(const GenericShape& other)
-{
-   m_Area = other.m_Area;
-   m_pCentroid = std::make_shared<Point2d>(*other.m_pCentroid);
-   m_Ixx = other.m_Ixx;
-   m_Iyy = other.m_Iyy;
-   m_Ixy = other.m_Ixy;
-   m_Xleft = other.m_Xleft;
-   m_Ybottom = other.m_Ybottom;
-   m_Xright = other.m_Xright;
-   m_Ytop = other.m_Ytop;
-   m_Perimeter = other.m_Perimeter;
-}
-
 #if defined _DEBUG
 bool GenericShape::AssertValid() const
 {
@@ -476,7 +440,7 @@ bool GenericShape::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("GenericShape");
 
-GenericShape shape;
+   GenericShape shape;
    TRY_TESTME(IsZero(shape.GetArea()));
    TRY_TESTME(IsZero(shape.GetIxx()));
    TRY_TESTME(IsZero(shape.GetIyy()));

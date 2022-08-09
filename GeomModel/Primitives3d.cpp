@@ -193,11 +193,6 @@ std::ostream& operator<<(std::ostream& os,Size3d& size)
    return os;
 }
 
-
-
-
-
-
 Point3d::Point3d()
 {
 }
@@ -205,6 +200,11 @@ Point3d::Point3d()
 Point3d::Point3d(Float64 x,Float64 y,Float64 z)
 {
    Move(x, y, z);
+}
+
+Point3d::Point3d(const Point2d& pnt, Float64 z)
+{
+   Move(pnt, z);
 }
 
 Point3d::~Point3d()
@@ -260,6 +260,13 @@ void Point3d::Move(Float64 x,Float64 y,Float64 z)
 {
    m_X = x;
    m_Y = y;
+   m_Z = z;
+}
+
+void Point3d::Move(const Point2d& pnt, Float64 z)
+{
+   m_X = pnt.X();
+   m_Y = pnt.Y();
    m_Z = z;
 }
 

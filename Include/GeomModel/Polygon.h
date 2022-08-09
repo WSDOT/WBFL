@@ -70,11 +70,11 @@ class GEOMMODELCLASS Polygon : public ShapeImpl
 public:
    enum class Symmetry {None,X,Y};
 
-   Polygon();
+   Polygon() = default;
    Polygon(std::shared_ptr<Point2d>& hookPnt);
    Polygon(const Polygon&) = default;
 
-   virtual ~Polygon();
+   virtual ~Polygon() = default;
 
    Polygon& operator=(const Polygon&) = default;
 
