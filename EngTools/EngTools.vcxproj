@@ -185,6 +185,7 @@
     <ClCompile Include="PrandtlMembraneSolution.cpp" />
     <ClCompile Include="PrandtlMembraneSolver.cpp" />
     <ClCompile Include="UniformFDMesh.cpp" />
+    <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\EngTools\AutoLib.h" />
@@ -196,6 +197,7 @@
     <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolution.h" />
     <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolver.h" />
     <ClInclude Include="..\Include\EngTools\UniformFDMesh.h" />
+    <ClInclude Include="..\Include\EngTools\UnitTest.h" />
     <ClInclude Include="FDMeshGenerator.h" />
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +207,9 @@
     <ResourceCompile Include="EngTools.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
+      <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\System\System.vcxproj">
       <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

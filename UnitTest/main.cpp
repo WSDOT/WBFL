@@ -50,7 +50,7 @@ static LPCTSTR lib_list[] = {
                                  _T("WBFLMaterials.dll"),
                                  _T("WBFLMath.dll"),
                                  _T("WBFLUnits.dll"),
-                                 _T("WBFLEAF.dll")
+                                 _T("WBFLEAF.dll"),
                                  //_T("WBFLBridgeAnalysis.dll"),
                                  //_T("WBFLBridgeModeling.dll")
                                 };

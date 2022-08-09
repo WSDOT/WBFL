@@ -38,14 +38,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::EngTools;
 
-PrandtlMembraneSolver::PrandtlMembraneSolver()
-{
-}
-
-PrandtlMembraneSolver::~PrandtlMembraneSolver()
-{
-}
-
 void PrandtlMembraneSolver::Initialize(Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry)
 {
    m_DxMin = dxMin;
@@ -99,43 +91,6 @@ PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const std::unique_ptr<WBFL:
    PrandtlMembraneSolution solution(J, std::move(mesh), std::move(meshValues));
    return solution;
 }
-
-//Float64 PrandtlMembrane::ComputeJ(const UniformFDMesh& mesh, std::unique_ptr<Float64[]>& meshValues) const
-//{
-//   IndexType nInteriorNodes = mesh.GetInteriorNodeCount();
-//   IndexType bw = 2 * mesh.GetMaxIntriorNodesPerRow() + 1;
-//   mathUnsymmetricBandedMatrix matrix(nInteriorNodes, bw);
-//   BuildMatrix(mesh, matrix);
-//
-//   meshValues = matrix.Solve();
-//
-//   auto nElements = mesh.GetElementCount();
-//
-//   IndexType nWorkerThreads, nElementsPerThread;
-//   WBFL::System::Threads::GetThreadParameters(nElements, nWorkerThreads, nElementsPerThread);
-//
-//   std::vector<std::future<Float64>> vFutures;
-//   IndexType startElementIdx = 0;
-//   for (IndexType i = 0; i < nWorkerThreads; i++)
-//   {
-//      IndexType endElementIdx = startElementIdx + nElementsPerThread - 1;
-//      vFutures.emplace_back(std::async(&PrandtlMembrane::ComputeVolume, startElementIdx, endElementIdx, std::ref(mesh), std::ref(meshValues)));
-//      startElementIdx = endElementIdx + 1;
-//   }
-//
-//   Float64 V = ComputeVolume(startElementIdx, nElements - 1, mesh, meshValues);
-//   for (auto& result : vFutures)
-//   {
-//      V += result.get();
-//   }
-//
-//   if (mesh.HasSymmetry())
-//   {
-//      V *= 2;
-//   }
-//
-//   return V;
-//}
 
 /////////////////////////////////////////////////////////
 /// Builds the finite difference equations.
@@ -297,3 +252,53 @@ Float64 PrandtlMembraneSolver::ComputeVolume(IndexType startElementIdx, IndexTyp
 
    return V;
 }
+
+#if defined _UNITTEST
+#include <GeomModel/GeomModel.h>
+#include <MathEx.h>
+bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("PrandtlMembraneSolver");
+
+   auto beam = std::make_unique<WBFL::Geometry::PrecastBeam>();
+   beam->SetC1(1);
+   beam->SetD1(3);
+   beam->SetD2(3);
+   beam->SetD3(3);
+   beam->SetD4(3);
+   beam->SetD5(4.5);
+   beam->SetD6(5.125);
+   beam->SetHeight(100);
+   beam->SetT1(6.125);
+   beam->SetT2(6.125);
+   beam->SetW1(6);
+   beam->SetW2(18.4375);
+   beam->SetW3(3);
+   beam->SetW4(3);
+   beam->SetW5(13.125);
+
+   std::unique_ptr<WBFL::Geometry::Shape> shape(std::move(beam));
+
+   // use symmetry
+   PrandtlMembraneSolution solution = PrandtlMembraneSolver::Solve(shape, 0.25, 0.25);
+   TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
+   TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
+
+   // ignore symmetry
+   solution = PrandtlMembraneSolver::Solve(shape, 0.25, 0.25, false);
+   TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
+   TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
+
+   // use a solver object
+   PrandtlMembraneSolver solver;
+   solver.Initialize(0.25, 0.25);
+   solution = solver.Solve(shape);
+   TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
+   TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
+
+   TESTME_EPILOG("PrandtlMembraneSolver");
+}
+
+#endif // _UNITTEST
+
+

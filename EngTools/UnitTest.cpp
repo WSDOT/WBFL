@@ -23,7 +23,9 @@
 
 #include <EngTools/EngToolsLib.h>
 #include <EngTools/UnitTest.h>
-#include <System/dllTest.h>
+#include <EngTools/MohrCircle.h>
+#include <EngTools/BiaxialBeamStrain.h>
+#include <EngTools/PrandtlMembraneSolver.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,16 +33,15 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-// Every DLL has an entry point DllEntryPoint
-BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
-                           DWORD     /*fdwRreason*/,
-                           LPVOID    /*plvReserved*/)
+bool WINAPI WBFL::EngTools::UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
-    return 1;   // Indicate that the DLL was initialized successfully.
-}
+   bool tst = true;
 
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-   return WBFL::EngTools::UnitTest::TestMe(rlog);
+#if defined _UNITTEST
+   tst &= MohrCircle::TestMe(rlog);
+   tst &= BiaxialBeamStrain::TestMe(rlog);
+   tst &= PrandtlMembraneSolver::TestMe(rlog);
+#endif
+
+   return tst;
 }

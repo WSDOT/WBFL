@@ -157,7 +157,7 @@ const FDMeshElement* UniformFDMesh::GetElement(IndexType elementIdx) const
       Update();
    }
 
-   return (m_vElements.size() <= elementIdx ? nullptr : m_vElements[elementIdx].get());
+   return (m_vElements.size() <= elementIdx ? nullptr : &m_vElements[elementIdx]);
 }
 
 const FDMeshElement* UniformFDMesh::GetElementAbove(IndexType gridRowIdx, IndexType elementIdx) const
@@ -174,7 +174,7 @@ const FDMeshElement* UniformFDMesh::GetElementAbove(IndexType gridRowIdx, IndexT
       if (prevGridRowStartIdx <= gridElementIdx && gridElementIdx <= prevGridRowEndIdx)
       {
          IndexType idx = gridElementIdx - prevRow.gridRowStartIdx + prevRow.firstElementIdx;
-         pElement = m_vElements[idx].get();
+         pElement = &m_vElements[idx];
       }
    }
    return pElement;
@@ -199,7 +199,7 @@ const FDMeshElement* UniformFDMesh::GetElementBelow(IndexType gridRowIdx, IndexT
       if (nextGridRowStartIdx <= gridElementIdx && gridElementIdx <= nextGridRowEndIdx)
       {
          IndexType idx = gridElementIdx - nextRow.gridRowStartIdx + nextRow.firstElementIdx;
-         pElement = m_vElements[idx].get();
+         pElement = &m_vElements[idx];
       }
    }
    return pElement;
@@ -218,7 +218,6 @@ void UniformFDMesh::GetGridSize(IndexType* pNx, IndexType* pNy) const
 
 void UniformFDMesh::Update() const
 {
-#pragma Reminder("WORKING HERE - Torsion - for some reason this class doesn't compile if m_vElements uses unique_ptr. It used to compile before I put it in namespaces")
    m_vElements.reserve(m_vElementRows.back().firstElementIdx + m_vElementRows.back().nElements);
 
    auto& iter = std::begin(m_vElementRows);
@@ -233,7 +232,7 @@ void UniformFDMesh::Update() const
    m_nMaxElementsPerRow = firstElementRow.nElements;
    for (IndexType i = 0; i < firstElementRow.nElements; i++)
    {
-      m_vElements.emplace_back(std::make_unique<FDMeshElement>());
+      m_vElements.emplace_back(FDMeshElement());
    }
 
    m_nInteriorNodes = 0; // interior node index
@@ -253,14 +252,14 @@ void UniformFDMesh::Update() const
       {
          IndexType elementIdxThisRow = i + elementRow.gridRowStartIdx;
 
-         m_vElements.emplace_back(std::make_unique<FDMeshElement>());
-         FDMeshElement* pElement = m_vElements.back().get();
+         m_vElements.emplace_back(FDMeshElement());
+         FDMeshElement* pElement = &m_vElements.back();
 
          const FDMeshElement* pElementAbove = GetElementAbove(rowIdx, i);
 
          if (i != 0)
          {
-            const FDMeshElement* pPrevElement = m_vElements[m_vElements.size() - 2].get();
+            const FDMeshElement* pPrevElement = &m_vElements[m_vElements.size() - 2];
             pElement->Node[FDMeshElement::TopLeft] = pPrevElement->Node[FDMeshElement::TopRight];
             if (pElementAbove)
             {
@@ -323,7 +322,8 @@ IndexType UniformFDMesh::GetFirstElementIndex(IndexType gridRowIdx)
    }
 }
 
-void UniformFDMesh::Dump(std::ostream& os) const
+#if defined _DEBUG
+void UniformFDMesh::Dump(WBFL::Debug::LogContext& os) const
 {
    if (m_bIsDirty)
    {
@@ -339,18 +339,19 @@ void UniformFDMesh::Dump(std::ostream& os) const
          os << elementIdx << " (";
          for (int j = 0; j < 4; j++)
          {
-            if (m_vElements[elementIdx]->Node[j] == INVALID_INDEX)
+            if (m_vElements[elementIdx].Node[j] == INVALID_INDEX)
             {
                os << "-";
             }
             else
             {
-               os << m_vElements[elementIdx]->Node[j];
+               os << m_vElements[elementIdx].Node[j];
             }
             os << ", ";
          }
          os << ") ";
       }
-      os << "]" << std::endl;
+      os << "]" << WBFL::Debug::endl;
    }
 }
+#endif // _DEBUG

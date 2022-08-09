@@ -20,9 +20,6 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-#ifndef INCLUDED_ENGTOOLS_BIAXIALBEAMSTRAIN_H_
-#define INCLUDED_ENGTOOLS_BIAXIALBEAMSTRAIN_H_
 #pragma once
 
 #include <EngTools\EngToolsExp.h>
@@ -32,69 +29,56 @@ namespace WBFL
 {
    namespace EngTools
    {
-/// This class represents a beam strain plane in x-y space
-class ENGTOOLSCLASS BiaxialBeamStrain
-{
-public:
-   BiaxialBeamStrain(Float64 strain=0.0);
+      /// This class represents a beam strain plane in x-y space
+      class ENGTOOLSCLASS BiaxialBeamStrain
+      {
+      public:
+         BiaxialBeamStrain(Float64 strain = 0.0);
 
 
-   BiaxialBeamStrain(const WBFL::Geometry::Point2d& p1, Float64 s1, 
-                       const WBFL::Geometry::Point2d& p2, Float64 s2,
-                       const WBFL::Geometry::Point2d& p3, Float64 s3);
+         BiaxialBeamStrain(const WBFL::Geometry::Point2d& p1, Float64 s1,
+                           const WBFL::Geometry::Point2d& p2, Float64 s2,
+                           const WBFL::Geometry::Point2d& p3, Float64 s3);
 
-   BiaxialBeamStrain(const WBFL::Geometry::Line2d& rnaLine,
-                       const WBFL::Geometry::Point2d& p3,Float64 strain);
+         BiaxialBeamStrain(const WBFL::Geometry::Line2d& rnaLine,const WBFL::Geometry::Point2d& p3, Float64 strain);
 
-   BiaxialBeamStrain(const WBFL::Geometry::Line2d& rnaLine,
-      Float64 dist, Float64 strain);
+         BiaxialBeamStrain(const WBFL::Geometry::Line2d& rnaLine,Float64 dist, Float64 strain);
 
 
-   ~BiaxialBeamStrain();
-   
-   BiaxialBeamStrain(const BiaxialBeamStrain& rOther) = default;
-   BiaxialBeamStrain& operator=(const BiaxialBeamStrain& rOther) = default;
+         ~BiaxialBeamStrain() = default;
+         BiaxialBeamStrain(const BiaxialBeamStrain& rOther) = default;
+         BiaxialBeamStrain& operator=(const BiaxialBeamStrain& rOther) = default;
 
-   Float64 GetAxialStrain(Float64 x, Float64 y) const;
-   Float64 GetAxialStrain(const WBFL::Geometry::Point2d& pnt) const;
+         Float64 GetAxialStrain(Float64 x, Float64 y) const;
+         Float64 GetAxialStrain(const WBFL::Geometry::Point2d& pnt) const;
 
-   Float64 GetXStrainLocation(Float64 Strain, Float64 Y, bool& success) const;
-   Float64 GetYStrainLocation(Float64 Strain, Float64 X, bool& success) const;
+         Float64 GetXStrainLocation(Float64 Strain, Float64 Y, bool& success) const;
+         Float64 GetYStrainLocation(Float64 Strain, Float64 X, bool& success) const;
 
-   void SetStrainPlane(const WBFL::Geometry::Line2d& rnaLine,
-                       const WBFL::Geometry::Point2d& p3,Float64 strain);
+         void SetStrainPlane(const WBFL::Geometry::Line2d& rnaLine, const WBFL::Geometry::Point2d& p3, Float64 strain);
 
-   void SetStrainPlane(const WBFL::Geometry::Point2d& p1, Float64 s1,
-                       const WBFL::Geometry::Point2d& p2, Float64 s2,
-                       const WBFL::Geometry::Point2d& p3, Float64 s3);
+         void SetStrainPlane(const WBFL::Geometry::Point2d& p1, Float64 s1,
+                             const WBFL::Geometry::Point2d& p2, Float64 s2,
+                             const WBFL::Geometry::Point2d& p3, Float64 s3);
 
-   void SetStrainPlane(const WBFL::Geometry::Line2d& rnaLine,
-                       Float64 dist, Float64 strain);
+         void SetStrainPlane(const WBFL::Geometry::Line2d& rnaLine, Float64 dist, Float64 strain);
 
-   void SetStrainPlane(Float64 strain);
+         void SetStrainPlane(Float64 strain);
 
 #if defined _DEBUG
-   bool AssertValid() const;
-   void Dump(WBFL::Debug::LogContext& os) const;
+         bool AssertValid() const;
+         void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
-   static bool TestMe();
+         static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
-private:
-   void Update(const WBFL::Geometry::Point2d& p1, Float64 s1,
-               const WBFL::Geometry::Point2d& p2, Float64 s2,
-               const WBFL::Geometry::Point2d& p3, Float64 s3);
-
-   Float64 m_A{ 0 };
-   Float64 m_B{ 0 };
-   Float64 m_C{ 0 };
-   Float64 m_D{ 0 };
-   bool    m_bIsConstantStrain{ true };
-};
-
-   } // EngTools
-} // WBFL
-
-#endif //INCLUDED_ENGTOOLS_BIAXIALBEAMSTRAIN_H_
+      private:
+         WBFL::Geometry::Plane3d m_Plane;
+         void Update(const WBFL::Geometry::Point2d& p1, Float64 s1,
+                     const WBFL::Geometry::Point2d& p2, Float64 s2,
+                     const WBFL::Geometry::Point2d& p3, Float64 s3);
+      };
+   }; // EngTools
+}; // WBFL

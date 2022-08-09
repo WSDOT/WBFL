@@ -24,6 +24,7 @@
 
 #include <EngTools/EngToolsExp.h>
 #include <EngTools/PrandtlMembraneSolution.h>
+#include <EngTools/UniformFDMesh.h>
 
 class mathUnsymmetricBandedMatrix;
 
@@ -36,26 +37,36 @@ namespace WBFL
 
    namespace EngTools
    {
-      class UniformFDMesh;
-
-      /// Computes the St Venant torisional constant using the Prandtl membrane analogy
-      ///
-      /// \f$ \frac{\partial ^2 z}{\partial x^2} + \frac{\partial ^2 z}{\partial y^2} = -\frac{q}{S} \f$
+      /// Computes the St Venant torisional constant using the Prandtl membrane analogy by solving the following equation using the finite difference method
+      /// \f[ \frac{\partial ^2 z}{\partial x^2} + \frac{\partial ^2 z}{\partial y^2} = -\frac{q}{S} \f]
+      /// "Saint-Venant Torsion Constant of Modern Precast Concrete Bridge Girders", Brice R., Pickings R., 2021, PCI Journal, V66, No3, pp23-31
+      /// https://doi.org/10.15554/pcij66.3-01
+      /// 
+      /// "Torsional and Other Properties of Prestressed Concrete Sections", Yoo, C., 2000, PCI Journal , V45, No3, pp66-72
+      /// https://doi.org/10.15554/pcij.05012000.66.72
       class ENGTOOLSCLASS PrandtlMembraneSolver
       {
       public:
-         PrandtlMembraneSolver();
-         ~PrandtlMembraneSolver();
+         PrandtlMembraneSolver() = default;
+         PrandtlMembraneSolver(const PrandtlMembraneSolver&) = default;
+         ~PrandtlMembraneSolver() = default;
+         PrandtlMembraneSolver& operator=(const PrandtlMembraneSolver&) = default;
 
-         /// Computes the torsional constant, J
-         /// \param[in] mesh a finite difference mesh
-         /// \param[out] meshValues the finite difference solution.
-         /// \return Torsional constant, J
-         //Float64 ComputeJ(const UniformFDMesh& mesh, std::unique_ptr<Float64[]>& meshValues) const;
-
+         /// Initializes the solver
+         /// \param dxMin minimim size of a finite difference grid element in the X-direction
+         /// \param dyMin minimim size of a finite difference grid element in the Y-direction
+         /// \param bIgnoreSymmetry if true, the symmetry of the cross section is ignored and the full grid is used for analysis
          void Initialize(Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry = false);
+
+         /// Solves the governing equation for the shape provided. The shape must be symmetric about the Y-axis
          PrandtlMembraneSolution Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape) const;
+
+         /// Solves the governing equation for the shape provided. The shape must be symmetric about the Y-axis
+         /// \param dxMin minimim size of a finite difference grid element in the X-direction
+         /// \param dyMin minimim size of a finite difference grid element in the Y-direction
+         /// \param bIgnoreSymmetry if true, the symmetry of the cross section is ignored and the full grid is used for analysis
          static PrandtlMembraneSolution Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape, Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry = false);
+
       private:
          Float64 m_DxMin{ 1 };
          Float64 m_DyMin{ 1 };
@@ -63,6 +74,11 @@ namespace WBFL
          static void BuildMatrix(const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix); ///< Builds the finite difference system of equations
          static void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix); ///< Builds an individual row in the matrix, called from multiple threads
          static Float64 ComputeVolume(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
+
+#if defined _UNITTEST
+      public:
+         static bool TestMe(WBFL::Debug::Log& rlog);
+#endif // _UNITTEST      };
       };
    };
 };

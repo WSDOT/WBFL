@@ -21,26 +21,22 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <EngTools/EngToolsLib.h>
-#include <EngTools/UnitTest.h>
-#include <System/dllTest.h>
+#pragma once
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include <EngTools\EngToolsExp.h>
 
-// Every DLL has an entry point DllEntryPoint
-BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
-                           DWORD     /*fdwRreason*/,
-                           LPVOID    /*plvReserved*/)
+namespace WBFL
 {
-    return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-   return WBFL::EngTools::UnitTest::TestMe(rlog);
-}
+	namespace EngTools
+	{
+		/// Unit test driver for the EngTools library
+		class ENGTOOLSCLASS UnitTest
+		{
+		public:
+		   UnitTest() = delete;
+		   UnitTest& operator=(const UnitTest&) = delete;
+		   
+		   static bool TestMe(WBFL::Debug::Log& rlog);
+		};
+	};
+};

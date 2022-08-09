@@ -100,7 +100,9 @@ namespace WBFL
 
          void GetGridSize(IndexType* pNx, IndexType* pNy) const; ///< Returns the size of the overall mesh.
 
-         void Dump(std::ostream& os) const; ///< Dumps the mesh information to an output stream
+#if defined _DEBUG
+         void Dump(WBFL::Debug::LogContext& os) const;
+#endif // _DEBUG
 
       protected:
          Float64 m_Dx, m_Dy; // element dimensions
@@ -117,8 +119,7 @@ namespace WBFL
             inline IndexType GetNextRowFirstElementIndex() const { return firstElementIdx + nElements; }
          };
          mutable std::vector<ElementRow> m_vElementRows;
-         //mutable std::vector<std::unique_ptr<FDMeshElement>> m_vElements;
-         mutable std::vector<std::shared_ptr<FDMeshElement>> m_vElements;
+         mutable std::vector<FDMeshElement> m_vElements;
          mutable IndexType m_Nx; // overall number of grid squares in a row
          mutable IndexType m_nMaxElementsPerRow; // maximum number of elements in a row. this is the overall width of the grid and defines the axis of symmetry if the mesh is symmetric
          mutable IndexType m_nMaxInteriorNodesPerRow; // maximum number of interior nodes in a row. bandwidth is equal to 2(max nodes per row)+1

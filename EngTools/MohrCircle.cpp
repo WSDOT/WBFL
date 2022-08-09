@@ -201,121 +201,90 @@ void MohrCircle::Init()
 }
 
 #if defined _UNITTEST
-bool MohrCircle::TestMe()
+bool MohrCircle::TestMe(WBFL::Debug::Log& rlog)
 {
+   TESTME_PROLOGUE("MohrCircle");
+
    Float64 sii,sjj,sij;
    Float64 temp;
 
    MohrCircle ct(64,16,-32);
 
    temp = ct.GetPrincDirection();
-   if ( !IsEqual(ct.GetSmax(),80.,0.01) ||
-        !IsEqual(ct.GetSmin(),0.,0.01) ||
-        !IsEqual(ct.GetTmax(),40.,0.01) ||
-        !IsEqual(temp,ToRadians(26.57),0.01) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(ct.GetSmax(), 80., 0.01));
+   TRY_TESTME(IsEqual(ct.GetSmin(), 0., 0.01));
+   TRY_TESTME(IsEqual(ct.GetTmax(), 40., 0.01));
+   TRY_TESTME(IsEqual(temp, ToRadians(26.57), 0.01));
 
    // should be able to get principals from princ angle
    ct.ComputeState(&sii,&sjj,&sij,temp);
-   if ( !IsEqual( sii, 80.) ||
-        !IsEqual( sjj, 0. ) ||
-        !IsEqual( sij, 0. ) )
-   {
-      return false;
-   }
-
+   TRY_TESTME(IsEqual(sii, 80.));
+   TRY_TESTME(IsEqual(sjj, 0.));
+   TRY_TESTME(IsEqual(sij, 0.));
 
    // Test 1
    // Example 1.1 pg 13 from Ugural and Fenster
    MohrCircle c1(80,40,30);
 
-   if ( !IsEqual(c1.GetSmax(),96.05,0.01) ||
-        !IsEqual(c1.GetSmin(),23.95,0.01) ||
-        !IsEqual(c1.GetTmax(),36.05,0.01) ||
-        !IsEqual(c1.GetPrincDirection(),ToRadians(-28.15),0.01) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(c1.GetSmax(), 96.05, 0.01));
+   TRY_TESTME(IsEqual(c1.GetSmin(), 23.95, 0.01));
+   TRY_TESTME(IsEqual(c1.GetTmax(), 36.05, 0.01));
+   TRY_TESTME(IsEqual(c1.GetPrincDirection(), ToRadians(-28.15), 0.01));
 
    // Test 2
    // Example 1.2 pg 15 from Ugural and Fenster
    MohrCircle c2(-14,28,0);
 
    c2.ComputeState(&sii,&sjj,&sij,ToRadians(30.));
-   if ( !IsEqual( sii, -3.5, 0.1 ) ||
-        !IsEqual( sjj, 17.5, 0.1 ) ||
-        !IsEqual( sij, -18.186, 0.001) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(sii, -3.5, 0.1));
+   TRY_TESTME(IsEqual(sjj, 17.5, 0.1));
+   TRY_TESTME(IsEqual(sij, -18.186, 0.001));
 
    // Test 2
    // Problem 1.3 pg 27 from Ugural and Fenster
    MohrCircle c3(100,-50,-60);
 
-   if ( !IsEqual(c3.GetSmax(),121.0,0.1) ||
-        !IsEqual(c3.GetSmin(),-71.0,0.1) ||
-        !IsEqual(c3.GetTmax(), 96.0,0.1) ||
-        !IsEqual(c3.GetPrincDirection(),ToRadians(19.33),0.1) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(c3.GetSmax(), 121.0, 0.1));
+   TRY_TESTME(IsEqual(c3.GetSmin(), -71.0, 0.1));
+   TRY_TESTME(IsEqual(c3.GetTmax(), 96.0, 0.1));
+   TRY_TESTME(IsEqual(c3.GetPrincDirection(), ToRadians(19.33), 0.1));
 
    MohrCircle c4(150,0,100);
 
-   if ( !IsEqual(c4.GetSmax(),200.0,0.1) ||
-        !IsEqual(c4.GetSmin(),-50.0,0.1) ||
-        !IsEqual(c4.GetTmax(),125.0,0.1) ||
-        !IsEqual(c4.GetPrincDirection(),ToRadians(-26.57),0.1) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(c4.GetSmax(), 200.0, 0.1));
+   TRY_TESTME(IsEqual(c4.GetSmin(), -50.0, 0.1));
+   TRY_TESTME(IsEqual(c4.GetTmax(), 125.0, 0.1));
+   TRY_TESTME(IsEqual(c4.GetPrincDirection(), ToRadians(-26.57), 0.1));
 
    // From "Statics", Merriam, Pge 373
    MohrCircle c5(18.167,10.167,-7.5);
-   if ( !IsEqual(c5.GetSmax(),22.67,0.1) ||
-        !IsEqual(c5.GetSmin(), 5.67,0.1) ||
-        !IsEqual(c5.GetPrincDirection(),ToRadians(30.96),0.01) )
-   {
-      return false;
-   }
+   
+   TRY_TESTME(IsEqual(c5.GetSmax(), 22.67, 0.1));
+   TRY_TESTME(IsEqual(c5.GetSmin(), 5.67, 0.1));
+   TRY_TESTME(IsEqual(c5.GetPrincDirection(), ToRadians(30.96), 0.01));
 
    // From Beer & Johnston, Mechanics of Materials, page 306
    MohrCircle c6(100,60,48);
-   if ( !IsEqual(c6.GetSmax(),132.,0.1) ||
-        !IsEqual(c6.GetSmin(), 28.,0.1) ||
-        !IsEqual(c6.GetPrincDirection(),ToRadians(-33.7),0.1) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(c6.GetSmax(), 132., 0.1));
+   TRY_TESTME(IsEqual(c6.GetSmin(), 28., 0.1));
+   TRY_TESTME(IsEqual(c6.GetPrincDirection(), ToRadians(-33.7), 0.1));
 
    c6.ComputeState(&sii,&sjj,&sij,ToRadians(30.));
-   if ( !IsEqual( sii, 48.4, 0.1 ) ||
-        !IsEqual( sjj, 111.6, 0.1 ) ||
-        !IsEqual( sij, 41.3, 0.01) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(sii, 48.4, 0.1));
+   TRY_TESTME(IsEqual(sjj, 111.6, 0.1));
+   TRY_TESTME(IsEqual(sij, 41.3, 0.1));
 
    MohrCircle c7(50,-10,40);
-   if ( !IsEqual(c7.GetSmax(),70.,0.1) ||
-        !IsEqual(c7.GetSmin(), -30.,0.1) ||
-        !IsEqual(c7.GetPrincDirection(),ToRadians(-26.56),0.1) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(c7.GetSmax(), 70., 0.1));
+   TRY_TESTME(IsEqual(c7.GetSmin(), -30., 0.1));
+   TRY_TESTME(IsEqual(c7.GetPrincDirection(), ToRadians(-26.56), 0.1));
 
    MohrCircle c8(4.18, 3.25, 2.87);
-   if ( !IsEqual(c8.GetSmax(),6.63,0.1) ||
-        !IsEqual(c8.GetSmin(),0.81,0.1) ||
-        !IsEqual(c8.GetPrincDirection(),ToRadians(-40.4),0.1) )
-   {
-      return false;
-   }
+   TRY_TESTME(IsEqual(c8.GetSmax(), 6.63, 0.1));
+   TRY_TESTME(IsEqual(c8.GetSmin(), 0.81, 0.1));
+   TRY_TESTME(IsEqual(c8.GetPrincDirection(), ToRadians(-40.4), 0.1));
 
-   return true;
+   TESTME_EPILOG("MohrCircle");
 }
 #endif // _UNITTEST
 
