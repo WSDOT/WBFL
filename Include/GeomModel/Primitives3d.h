@@ -196,6 +196,9 @@ namespace WBFL
          /// Returns the distance between this point and the origin.
          Float64 Magnitude() const;
 
+         /// Scales X, Y and Z by c
+         void Scale(Float64 c);
+
          /// Moves this point to a new position defined by x,y,z.
          void Move(Float64 x,Float64 y,Float64 z);
 
@@ -263,7 +266,14 @@ namespace WBFL
          Float64 m_Y{ 0.0 };
          Float64 m_Z{ 0.0 };
       };
-   } // namespace Geometry
+
+      inline GEOMMODELFUNC Point3d operator*(const Point3d& p1, const Point3d& p2) { return Point3d(p1.X() * p2.X(), p1.Y() * p2.Y(), p1.Z()*p2.Z()); }
+      inline GEOMMODELFUNC Point3d operator*(Float64 K, const Point3d& p) { return Point3d(p.X() * K, p.Y() * K, p.Z() * K); }
+      inline GEOMMODELFUNC Point3d operator*(const Point3d& p, Float64 K) { return Point3d(p.X() * K, p.Y() * K, p.Z() * K); }
+      inline GEOMMODELFUNC Point3d operator/(Float64 K, const Point3d& p) { return Point3d(p.X() / K, p.Y() / K, p.Z() / K); }
+      inline GEOMMODELFUNC Point3d operator/(const Point3d& p, Float64 K) { return Point3d(p.X() / K, p.Y() / K, p.Z() / K); }
+      inline GEOMMODELFUNC Point3d& operator*=(Point3d& p, Float64 K) { p.Scale(K); return p; }
+      inline GEOMMODELFUNC Point3d& operator/=(Point3d& p, Float64 K) { p.Scale(1.0 / K); return p; }   } // namespace Geometry
 } // namespace WBFL
 
 #endif // INCLUDED_GEOMETRY_PRIMITIVES3D_H_

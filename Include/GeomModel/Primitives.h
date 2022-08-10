@@ -179,6 +179,9 @@ namespace WBFL
          /// Returns the distance between this point and the origin.
          Float64 Magnitude() const;
 
+         /// Scales X and Y by c
+         void Scale(Float64 c);
+
          /// Moves this point to a new position defined by x,y.
          void Move(Float64 x,Float64 y);
 
@@ -253,6 +256,8 @@ namespace WBFL
       inline GEOMMODELFUNC Point2d operator*(const Point2d& p, Float64 K) { return Point2d(p.X() * K, p.Y() * K); }
       inline GEOMMODELFUNC Point2d operator/(Float64 K, const Point2d& p) { return Point2d(p.X() / K, p.Y() / K); }
       inline GEOMMODELFUNC Point2d operator/(const Point2d& p, Float64 K) { return Point2d(p.X() / K, p.Y() / K); }
+      inline GEOMMODELFUNC Point2d& operator*=(Point2d& p, Float64 K) { p.Scale(K); return p; }
+      inline GEOMMODELFUNC Point2d& operator/=(Point2d& p, Float64 K) { p.Scale(1.0/K); return p; }
 
       /// Rect2d is a support class that encapsulates the properties of a rectangle
       /// with sides parallel to the x- and y-axes.

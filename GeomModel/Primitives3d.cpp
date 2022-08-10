@@ -256,6 +256,13 @@ Float64 Point3d::Magnitude() const
    return sqrt( m_X*m_X + m_Y*m_Y + m_Z*m_Z);
 }
 
+void Point3d::Scale(Float64 c)
+{
+   m_X *= c;
+   m_Y *= c;
+   m_Z *= c;
+}
+
 void Point3d::Move(Float64 x,Float64 y,Float64 z)
 {
    m_X = x;
