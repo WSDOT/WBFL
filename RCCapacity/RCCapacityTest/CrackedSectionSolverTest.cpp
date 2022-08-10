@@ -182,6 +182,13 @@ void CCrackedSectionSolverTest::TestRectangularBeam()
    props->get_Centroid(&pntCG);
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y, 81.755394), true);
+
+   Float64 value;
+   props->get_EA(&value);
+   TRY_TEST(IsEqual(value, 1435324.2471274068), true);
+   
+   props->get_EIxx(&value);
+   TRY_TEST(IsEqual(value, 1080016839.2639580), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam1()
@@ -303,6 +310,13 @@ void CCrackedSectionSolverTest::TestTeeBeam1()
    props->get_Centroid(&pntCG);
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y, 101.425427), true);
+
+   Float64 value;
+   props->get_EA(&value);
+   TRY_TEST(IsEqual(value, 1150707.9739471173), true);
+
+   props->get_EIxx(&value);
+   TRY_TEST(IsEqual(value, 380133591.91453171), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam2()
@@ -424,6 +438,13 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
    props->get_Centroid(&pntCG);
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y, 52.15599), true);
+
+   Float64 value;
+   props->get_EA(&value);
+   TRY_TEST(IsEqual(value, 9822852.5720759369), true);
+
+   props->get_EIxx(&value);
+   TRY_TEST(IsEqual(value, 16603253157.345383), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam3()
@@ -550,4 +571,11 @@ void CCrackedSectionSolverTest::TestTeeBeam3()
    props->get_Centroid(&pntCG);
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y, -11.781458), true);
+
+   Float64 value;
+   props->get_EA(&value);
+   TRY_TEST(IsEqual(value, 1251805.8138490969), true);
+
+   props->get_EIxx(&value);
+   TRY_TEST(IsEqual(value, 708414513.80776465), true);
 }
