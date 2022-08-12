@@ -18,7 +18,7 @@ The geometric properties of shapes can be computed. Shape properties including a
 
 Section Modeling
 ----------------
-Shape modeling is exteneded to modeling of structural sections. The Section object models a collection of shapes and associated material properties. Shapes can be designated as solid elements, void elements, structural elements and non-structural elements. Elastic properties, such as EA and EI, can be computed. Elastic properties can tranformed into shape properties.
+Shape modeling is exteneded to modeling of structural sections. The Section object models a collection of shapes and associated material properties. Shapes can be designated as structural elements and non-structural elements. Elastic properties, such as EA and EI, can be computed. Elastic properties can tranformed into shape properties.
 
 Geometric Utilities
 --------------------

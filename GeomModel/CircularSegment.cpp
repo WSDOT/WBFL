@@ -514,7 +514,14 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Rect2d& r, Shap
 
 Float64 CircularSegment::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
-   Float64 dist;
+   Point2d fp;
+   Float64 fd;
+   GetFurthestPoint(line, side, fp, fd);
+   return fd;
+}
+
+void CircularSegment::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+{
    Line2d bndLine(GetChord());
 
    Float64 temp;
@@ -530,7 +537,7 @@ Float64 CircularSegment::GetFurthestDistance(const Line2d& line, Line2d::Side si
    // if dot < 0, the line in question and the straight edge of the shape
    // are in opposite directions
 
-   if ( dot < 0 )
+   if (dot < 0)
    {
       // Lines are in opposite direction.
       // The furthest distance is the greater of the shorter distance from the line
@@ -542,21 +549,33 @@ Float64 CircularSegment::GetFurthestDistance(const Line2d& line, Line2d::Side si
       auto& p2 = chord.GetEndPoint();
       Float64 d1 = -1.0 * line.DistanceToPoint(*p1);
       Float64 d2 = -1.0 * line.DistanceToPoint(*p2);
-      dist = Max(d1,d2);
+      if (d1 < d2)
+      {
+         furthestDistance = d2;
+         furthestPoint = *p2;
+      }
+      else
+      {
+         furthestDistance = d1;
+         furthestPoint = *p1;
+      }
    }
    else
    {
       // Lines are in the same direction. The furthest distance is the
       // shortest distance from the line to the center of the circle plus
       // the radius
+      Circle circle(GetCenter(), m_Radius);
+      circle.GetFurthestPoint(line, side, furthestPoint, furthestDistance);
+
+#if defined _DEBUG
       Float64 distToCenter; // Shortest distance from line to center of circle
                            // if < 0, circle is to the left of the line
       distToCenter = -1.0 * line.DistanceToPoint(GetCenter());
- 
-      dist = m_Radius + distToCenter;
-  }
 
-   return dist;
+      ASSERT(IsEqual(furthestDistance, m_Radius + distToCenter));
+#endif
+   }
 }
 
 #if defined _DEBUG

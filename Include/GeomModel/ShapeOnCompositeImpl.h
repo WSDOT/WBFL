@@ -49,6 +49,7 @@ public:
    virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override;
    virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override;
    virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
+   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
    virtual Float64 GetPerimeter() const override;
 
 protected:

@@ -142,6 +142,26 @@ Float64 CompositeShape::GetFurthestDistance(const Line2d& line, Line2d::Side sid
    return fd;
 }
 
+void CompositeShape::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+{
+   Point2d fp;
+   Float64 fd = -Float64_Max;
+   for (const auto& pair : m_Shapes)
+   {
+      Point2d p;
+      Float64 dist;
+      pair.first->GetFurthestPoint(line, side, p, dist);
+      if (fd < dist)
+      {
+         fp = p;
+         fd = dist;
+      }
+   }
+
+   furthestPoint = fp;
+   furthestDistance = fd;
+}
+
 bool CompositeShape::PointInShape(const Point2d& p) const
 {
    for (const auto& pair : m_Shapes)
@@ -378,6 +398,7 @@ public:
    virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override {return std::make_unique<TestShape>(*this);}
    virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override {return std::make_unique<TestShape>(*this);}
    virtual Float64 GetFurthestDistance(const Line2d& line,Line2d::Side side) const override {return 0;}
+   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override {}
    virtual Rect2d GetBoundingBox() const override { return Rect2d(); }
    virtual bool PointInShape(const Point2d& p) const override { return true; }
    virtual Float64 GetPerimeter() const override { return 0.0; }

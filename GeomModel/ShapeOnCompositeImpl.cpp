@@ -104,6 +104,11 @@ Float64 ShapeOnCompositeImpl::GetFurthestDistance(const Line2d& line, Line2d::Si
    return GetComposite()->GetFurthestDistance(line, side);
 }
 
+void ShapeOnCompositeImpl::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+{
+   GetComposite()->GetFurthestPoint(line, side, furthestPoint, furthestDistance);
+}
+
 Float64 ShapeOnCompositeImpl::GetPerimeter() const
 {
    return GetComposite()->GetPerimeter();

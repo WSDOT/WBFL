@@ -72,5 +72,6 @@
 #include <GeomModel/BoxBeam.h>
 #include <GeomModel/DeckedSlabBeam.h>
 #include <GeomModel/GenericShape.h>
+#include <GeomModel/GeomOp2d.h>
 
 #endif // INCLUDED_GEOMMODEL_GEOMMODEL_H_

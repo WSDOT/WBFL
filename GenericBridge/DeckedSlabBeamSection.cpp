@@ -601,6 +601,12 @@ STDMETHODIMP CDeckedSlabBeamSection::GetWebWidthProjectionsForDebonding(IUnkArra
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation
+STDMETHODIMP CDeckedSlabBeamSection::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->FurthestPoint(line, ppPoint, dist);
+}
+
 STDMETHODIMP CDeckedSlabBeamSection::FurthestDistance(ILine2d* line,Float64 *pVal)
 {
    CComQIPtr<IShape> shape(m_Beam);

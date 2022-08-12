@@ -1773,6 +1773,10 @@ library WBFLGeometry
       /// Returns the distance to the furthest point on the right hand side of a specified line
 		[helpstring("method FurthestDistance"),helpcontext(IDH_IShape_FurthestDistance)]
 		HRESULT	FurthestDistance([in]ILine2d* line,[out, retval] Float64 *pVal);
+
+      /// Returns the point on the shape to the furthest point on the right hand side of a specified line
+      [helpstring("method FurthestPoint")/*, helpcontext(IDH_IShape_FurthestDistance)*/]
+      HRESULT FurthestPoint([in]ILine2d* line, [out] IPoint2d** ppPoint,[out]Float64* dist);
    };
 
    /// Enumerates a collection of Shape objects

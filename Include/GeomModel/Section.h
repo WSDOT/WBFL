@@ -73,29 +73,17 @@ namespace WBFL
          Point2d GetLocatorPoint(Shape::LocatorPoint lp) const;
          void SetLocatorPoint(Shape::LocatorPoint lp, Point2d& position);
 
-         //------------------------------------------------------------------------
-         // AddComponent
-         // Adds a component to the section.  A component consists of a shape (a clone 
-         // of rShape) and the material properties modE and density.  This method 
-         // creates a clone of rShape.  If bRegisterListeners is true,  listeners 
-         // registered with rShape are registered with the clone as well. If a 
-         // shape is modified,  section listeners will be notified through the 
-         // gmSectionListener interface.  A lookup key is returned.  This key is 
-         // used to access the clone of the shape or its associated material 
-         // properties.
+         /// Adds a component to the section.
+         ///
+         /// To model shapes that represent voids, use set fgModE and fgDensity to zero and provide the modulus of elasticity and density of
+         /// the component the shape makes in void in, in the bgModE and bgDensity parameters
          void AddComponent(const Shape& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType);
          void AddComponent(std::unique_ptr<Shape>&& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType);
 
          const SectionComponent& GetComponent(IndexType idx) const;
          SectionComponent& GetComponent(IndexType idx);
 
-         //------------------------------------------------------------------------
-         // RemoveComponent
-         // Removes a component (shape and material) from the section and frees 
-         // the memory allocated by the call to CreateClone() in AddComponent().
-         // If the component could not be found,  this method does nothing (the 
-         // debugging version issues a WARNing).  Returns true if the component 
-         // was successfully removed,  otherwise false.
+
          void RemoveComponent(IndexType idx);
 
          //------------------------------------------------------------------------

@@ -423,6 +423,11 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IShape implementation
+   STDMETHODIMP FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist) override
+   {
+      return m_Shape->FurthestPoint(line, ppPoint, dist);
+   }
+
    STDMETHODIMP FurthestDistance(ILine2d* line,Float64 *pVal) override
    { 
       return m_Shape->FurthestDistance(line,pVal);

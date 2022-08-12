@@ -242,6 +242,20 @@ HRESULT GetFurthestDistance(const T& shape, ILine2d* line,Float64* pVal)
 }
 
 template <class T>
+HRESULT GetFurthestPoint(const T& shape, ILine2d* line, IPoint2d** ppPoint, Float64* pVal)
+{
+   CHECK_IN(line);
+   CHECK_RETVAL(pVal);
+   CHECK_RETOBJ(ppPoint);
+   WBFL::Geometry::Point2d point;
+   Float64 dist;
+   shape.GetFurthestPoint(GetLine(line), WBFL::Geometry::Line2d::Side::Right,point,dist);
+   CreatePoint(point, ppPoint);
+   *pVal = dist;
+   return S_OK;
+}
+
+template <class T>
 HRESULT GetPolyPoints(const T& shape, IPoint2dCollection** ppPolyPoints)
 {
    CHECK_RETOBJ(ppPolyPoints);

@@ -633,6 +633,11 @@ STDMETHODIMP CUGirderSection2::GetWebWidthProjectionsForDebonding(IUnkArray** pp
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation
+STDMETHODIMP CUGirderSection2::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   return m_Shape->FurthestPoint(line, ppPoint, dist);
+}
+
 STDMETHODIMP CUGirderSection2::FurthestDistance(ILine2d* line,Float64 *pVal)
 {
    return m_Shape->FurthestDistance(line,pVal);

@@ -125,6 +125,7 @@ public:
    
 // IShape
 public:
+	STDMETHOD(FurthestPoint)(/*[in]*/ILine2d* line, /*[out]*/ IPoint2d** ppPoint, /*[out]*/Float64* dist) override;
 	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal) override;

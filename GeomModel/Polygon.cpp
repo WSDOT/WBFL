@@ -354,6 +354,14 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape(const Rect2d& r, Shape::ClipR
 
 Float64 Polygon::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
+   Point2d furthestPoint;
+   Float64 furthestDistance;
+   GetFurthestPoint(line, side, furthestPoint, furthestDistance);
+   return furthestDistance;
+}
+
+void Polygon::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+{
    // need to determine which side of line each point is on. Implicit rep of line has normal
    // vector which always points left.
    Float64  c;
@@ -366,9 +374,12 @@ Float64 Polygon::GetFurthestDistance(const Line2d& line, Line2d::Side side) cons
 
    // loop over all points to determine farthest point.
    Float64 max_dist = -Float64_Max;
-   for(const auto& point : m_Points)
+   IndexType idx = INVALID_INDEX; // index of the point furthest from the line
+   bool bIsSymPoint = false; // if true, the furthest point isn't m_Point[idx] .... it is the symmetrical version of that point
+   for (const auto& point : m_Points)
    {
       // get point on line closest to point.
+      bool bSymPoint = false;
       Point2d nearest = line.PointOnLineNearest(point);
       Float64 dist = point.Distance(nearest);  // always positive
       Vector2d vec(point - nearest);
@@ -378,7 +389,7 @@ Float64 Polygon::GetFurthestDistance(const Line2d& line, Line2d::Side side) cons
       // if dot product with n is positive, point is on left
       Float64 dot = n.Dot(vec);
       if (dot < 0)  dist = -dist; // point on other side of line (negative direction)
-
+      
       if (m_Symmetry == Symmetry::X || m_Symmetry == Symmetry::Y)
       {
          Float64 xSign = m_Symmetry == Symmetry::X ? 1 : -1;
@@ -390,17 +401,32 @@ Float64 Polygon::GetFurthestDistance(const Line2d& line, Line2d::Side side) cons
          Float64 dot2 = n.Dot(vec2);
          if (dot2 < 0) dist2 = -dist2; // point on other side of line (negative direction)
 
-         if (dist < dist2)
+         if (dist <= dist2)
          {
             // the symmetrical point is furthest
+            bSymPoint = true;
             dist = dist2;
          }
       }
 
-      max_dist = Max(dist, max_dist);
+      if (max_dist < dist)
+      {
+         bIsSymPoint = bSymPoint;
+         idx = &point - &m_Points[0]; // a little pointer arithmetic to get the index
+         max_dist = dist;
+      }
    }
 
-   return max_dist;
+   ASSERT(idx != INVALID_INDEX && idx < m_Points.size());
+   furthestPoint = m_Points[idx];
+   if (bIsSymPoint)
+   {
+      Float64 xSign = m_Symmetry == Symmetry::X ? 1 : -1;
+      Float64 ySign = m_Symmetry == Symmetry::Y ? 1 : -1;
+      furthestPoint.X() *= xSign;
+      furthestPoint.Y() *= ySign;
+   }
+   furthestDistance = max_dist;
 }
 
 #if defined _DEBUG
@@ -984,6 +1010,7 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, L
       return clipped_Polygon;
 }
 
+
 #if defined _UNITTEST
 #include <GeomModel/UnitTest.h>
 bool Polygon::TestMe(WBFL::Debug::Log& rlog)
@@ -1189,8 +1216,20 @@ bool Polygon::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
 
    line.ThroughPoints(Point2d(-10, 20), Point2d(20, 20));
-   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Right), shape.GetFurthestDistance(line, Line2d::Side::Right)));
-   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Left), shape.GetFurthestDistance(line, Line2d::Side::Left)));
+   Point2d furthestPoint, sym_furthestPoint;
+   Float64 furthestDistance, sym_furthestDistance;
+   sym_shape.GetFurthestPoint(line, Line2d::Side::Right, sym_furthestPoint, sym_furthestDistance);
+   shape.GetFurthestPoint(line, Line2d::Side::Right, furthestPoint, furthestDistance);
+   TRY_TESTME(IsEqual(sym_furthestDistance,furthestDistance));
+   TRY_TESTME(sym_furthestPoint == furthestPoint);
+   TRY_TESTME(sym_furthestPoint == Point2d(0, -10));
+   
+   sym_shape.GetFurthestPoint(line, Line2d::Side::Left, sym_furthestPoint, sym_furthestDistance);
+   shape.GetFurthestPoint(line, Line2d::Side::Left, furthestPoint, furthestDistance);
+   TRY_TESTME(IsEqual(sym_furthestDistance, furthestDistance));
+   // NOTE: there are two valid solutions.... shape and sym_shape each get one of them
+   TRY_TESTME(furthestPoint == Point2d(10,10));
+   TRY_TESTME(sym_furthestPoint == Point2d(0, 10));
 
    line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
    clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);

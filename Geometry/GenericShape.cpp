@@ -284,6 +284,17 @@ STDMETHODIMP CGenericShape::FurthestDistance(ILine2d* line,Float64 *pVal)
    return S_OK;
 }
 
+STDMETHODIMP CGenericShape::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   CHECK_IN(line);
+   CHECK_RETOBJ(ppPoint);
+   CHECK_RETVAL(dist);
+
+   ::GetFurthestPoint<WBFL::Geometry::GenericShape>(m_Shape, line, ppPoint, dist);
+
+   return S_OK;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // IXYPosition
 /////////////////////////////////////////////////////////////////////////////

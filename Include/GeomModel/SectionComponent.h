@@ -40,11 +40,6 @@ namespace WBFL
 class GEOMMODELCLASS SectionComponent
 {
 public:
-   enum class ShapeType { 
-      Solid, ///< The shape represents a solid element of the cross section
-      Void ///< The shape represents a void element of the crosss section. Void shapes must be contained entirely within solid shapes.
-   };
-
    enum class ComponentType 
    { 
       Structural, ///< Designations a component as structural. Structural components contribute to the elastic and mass properties of the Section

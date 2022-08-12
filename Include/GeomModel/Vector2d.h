@@ -228,7 +228,7 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         Float64 m_X{ 0.0 };
+         Float64 m_X{ 1.0 };
          Float64 m_Y{ 0.0 };
       };
 

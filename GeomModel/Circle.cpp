@@ -282,14 +282,36 @@ std::unique_ptr<Shape> Circle::CreateClippedShape(const Rect2d& r, Shape::ClipRe
 
 Float64 Circle::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
-   // get distance from left side of line to center
-   Float64 dist = line.DistanceToPoint(*GetHookPoint());
+   Point2d fp;
+   Float64 fd;
+   GetFurthestPoint(line, side, fp, fd);
+   return fd;
+}
+
+void Circle::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+{
+   Float64 c;
+   Vector2d n;
+   line.GetImplicit(&c, &n);
+   Float64 angle = n.GetDirection();
    if (side == Line2d::Side::Right)
-      dist = -dist;
+      angle += M_PI;
 
-   dist += m_Radius;
+   Float64 x = cos(angle) * m_Radius + GetHookPoint()->X();
+   Float64 y = sin(angle) * m_Radius + GetHookPoint()->Y();
+   furthestPoint.Move(x, y);
+      
+   ASSERT(IsEqual(m_Radius, furthestPoint.Distance(*GetHookPoint())));
 
-   return dist;
+   furthestDistance = line.DistanceToPoint(furthestPoint);
+   if (side == Line2d::Side::Right)
+      furthestDistance *= -1;
+
+   // check distance from line to center
+   ASSERT(IsEqual(furthestDistance, (side == Line2d::Side::Right ? -1 : 1) * line.DistanceToPoint(*GetHookPoint()) + m_Radius));
+
+   // check point is on correct side of line. if furhtestDistance < 0, the correct side is the opposite side than the request
+   ASSERT(line.GetSide(furthestPoint) == (furthestDistance < 0 ? (side == Line2d::Side::Right ? Line2d::Side::Left : Line2d::Side::Right) : side));
 }
 
 #if defined _DEBUG
@@ -493,11 +515,40 @@ bool Circle::TestMe(WBFL::Debug::Log& rlog)
    center->Move(50, -100);
    circle.SetRadius(10);
 
-   TRY_TESTME(IsEqual(circle.GetFurthestDistance(line,Line2d::Side::Right), 110.0));
+   Point2d furthestPoint;
+   Float64 furthestDistance;
+   circle.GetFurthestPoint(line, Line2d::Side::Right, furthestPoint, furthestDistance);
+   TRY_TESTME(furthestPoint == Point2d(50,-110));
+   TRY_TESTME(IsEqual(furthestDistance, 110.0));
 
    // shape on left
    center->Move(50, 100);
-   TRY_TESTME(IsEqual(circle.GetFurthestDistance(line, Line2d::Side::Right), -90.0));
+   circle.GetFurthestPoint(line, Line2d::Side::Right, furthestPoint, furthestDistance);
+   TRY_TESTME(furthestPoint == Point2d(50, 90));
+   TRY_TESTME(IsEqual(furthestDistance, -90.0));
+
+   // center of circle on line
+   center->Move(50, 0);
+   circle.GetFurthestPoint(line, Line2d::Side::Right, furthestPoint, furthestDistance);
+   TRY_TESTME(furthestPoint == Point2d(50, -10));
+   TRY_TESTME(IsEqual(furthestDistance, 10.0));
+
+   circle.GetFurthestPoint(line, Line2d::Side::Left, furthestPoint, furthestDistance);
+   TRY_TESTME(furthestPoint == Point2d(50, 10));
+   TRY_TESTME(IsEqual(furthestDistance, 10.0));
+
+   // make line vertical - center of circle on line
+   p2.Move(0, 100);
+   line.ThroughPoints(p1, p2);
+
+   center->Move(0, 50);
+   circle.GetFurthestPoint(line, Line2d::Side::Right, furthestPoint, furthestDistance);
+   TRY_TESTME(furthestPoint == Point2d(10, 50));
+   TRY_TESTME(IsEqual(furthestDistance, 10.0));
+
+   circle.GetFurthestPoint(line, Line2d::Side::Left, furthestPoint, furthestDistance);
+   TRY_TESTME(furthestPoint == Point2d(-10, 50));
+   TRY_TESTME(IsEqual(furthestDistance, 10.0));
 
    //
    // PointInShape

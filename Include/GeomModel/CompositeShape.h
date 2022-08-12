@@ -93,6 +93,9 @@ public:
    /// from line.
    virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
 
+   /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
+   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
+
    /// Returns the perimeter of the shape
    virtual Float64 GetPerimeter() const override;
 

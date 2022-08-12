@@ -34,6 +34,7 @@ class ATL_NO_VTABLE IShapeXYPositionImpl : public IShape, public IXYPosition
 	virtual T& GetShape() = 0;
 
 	// IShape
+	STDMETHOD(FurthestPoint)(/*[in]*/ILine2d* line, /*[out]*/ IPoint2d** ppPoint, /*[out]*/Float64* dist) override { return ::GetFurthestPoint<T>(GetShape(), line, ppPoint, dist); }
 	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64* pVal) override { return ::GetFurthestDistance<T>(GetShape(), line, pVal); }
 	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64* pVal) override { return ::GetPerimeter<T>(GetShape(), pVal); }
 	STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties** pVal) override { return ::GetShapeProperties<T>(GetShape(), pVal); }

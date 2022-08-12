@@ -115,9 +115,12 @@ public:
    virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const = 0;
 
    /// Returns the distance to a line that is parallel to line, on specified 
-   /// side of line,  that passes through the furthest point on the shape 
+   /// side of line, that passes through the furthest point on the shape 
    /// from line.
    virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const = 0;
+
+   /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
+   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const = 0;
 
    /// Returns the perimeter of the shape
    virtual Float64 GetPerimeter() const = 0;

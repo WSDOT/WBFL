@@ -102,6 +102,11 @@ Float64 ShapeOnPolygonImpl::GetFurthestDistance(const Line2d& line, Line2d::Side
    return GetPolygon()->GetFurthestDistance(line, side);
 }
 
+void ShapeOnPolygonImpl::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+{
+   GetPolygon()->GetFurthestPoint(line, side, furthestPoint, furthestDistance);
+}
+
 bool ShapeOnPolygonImpl::PointInShape(const Point2d& p) const
 {
    return GetPolygon()->PointInShape(p);

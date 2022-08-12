@@ -37,7 +37,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Geometry;
 
-Vector2d::Vector2d() : m_X(0.0), m_Y(0.0)
+Vector2d::Vector2d() : m_X(1.0), m_Y(0.0)
 {
 }
 

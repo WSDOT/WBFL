@@ -789,6 +789,12 @@ STDMETHODIMP CBoxBeamSection::GetWebWidthProjectionsForDebonding(IUnkArray** ppA
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation
+STDMETHODIMP CBoxBeamSection::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->FurthestPoint(line, ppPoint, dist);
+}
+
 STDMETHODIMP CBoxBeamSection::FurthestDistance(ILine2d* line,Float64 *pVal)
 {
    CComQIPtr<IShape> shape(m_Beam);

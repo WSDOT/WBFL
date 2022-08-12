@@ -331,6 +331,19 @@ STDMETHODIMP CPolyShape::FurthestDistance(ILine2d* line, Float64 *pVal)
    return S_OK;
 }
 
+STDMETHODIMP CPolyShape::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   CHECK_IN(line);
+   CHECK_RETOBJ(ppPoint);
+   CHECK_RETVAL(dist);
+   WBFL::Geometry::Point2d point;
+   Float64 fd;
+   m_Polygon.GetFurthestPoint(GetLine(line), WBFL::Geometry::Line2d::Side::Right, point, fd);
+   CreatePoint(point, ppPoint);
+   *dist = fd;
+   return S_OK;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // IXYPosition
 /////////////////////////////////////////////////////////////////////////////

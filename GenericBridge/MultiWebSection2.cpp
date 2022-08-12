@@ -633,6 +633,11 @@ STDMETHODIMP CMultiWebSection2::GetWebWidthProjectionsForDebonding(IUnkArray** p
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation
+STDMETHODIMP CMultiWebSection2::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   return m_Shape->FurthestPoint(line, ppPoint, dist);
+}
+
 STDMETHODIMP CMultiWebSection2::FurthestDistance(ILine2d* line,Float64 *pVal)
 {
    return m_Shape->FurthestDistance(line,pVal);

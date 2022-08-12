@@ -386,12 +386,20 @@ std::unique_ptr<Shape> GenericShape::CreateClippedShape(const Rect2d& r, Shape::
 
 Float64 GenericShape::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
-   // get distance from left side of line to center
-   Float64 dist = line.DistanceToPoint(*m_pCentroid);
-   if (side == Line2d::Side::Right)
-      dist = -dist;
+   Point2d p;
+   Float64 fd;
+   GetFurthestPoint(line, side, p, fd);
+   return fd;
+}
 
-   return dist;
+void GenericShape::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+{
+   furthestPoint = *m_pCentroid;
+
+   // get distance from left side of line to center
+   furthestDistance = line.DistanceToPoint(*m_pCentroid);
+   if (side == Line2d::Side::Right)
+      furthestDistance = -furthestDistance;
 }
 
 std::unique_ptr<Shape> GenericShape::CreateClone() const
