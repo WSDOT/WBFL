@@ -174,7 +174,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST( IsZero(Fz,0.001), true );
-   TRY_TEST( IsEqual(Mx, -30283.27789), true );
+   TRY_TEST( IsEqual(Mx, -30283.28181), true );
    TRY_TEST( IsZero(My), true);
 
    Float64 ec;
@@ -240,7 +240,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -33162.03191), true);
+   TRY_TEST(IsEqual(Mx, -33162.033845), true);
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, H / 2, &ec);
@@ -531,7 +531,7 @@ void CUHPCMomentCapacityTest::Test2()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -237920.68923), true);
+   TRY_TEST(IsEqual(Mx, -237920.68914), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mc = -Mx;
 
@@ -941,7 +941,7 @@ void CUHPCMomentCapacityTest::Test3()
    solution->get_StrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -238146.804901), true);
+   TRY_TEST(IsEqual(Mx, -238146.804912), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mc = -Mx;
 

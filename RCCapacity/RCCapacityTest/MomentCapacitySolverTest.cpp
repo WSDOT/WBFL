@@ -163,7 +163,7 @@ void CMomentCapacitySolverTest::Test()
    solution->get_My(&My);
 
    TRY_TEST( IsZero(Fz,0.001), true );
-   TRY_TEST( IsEqual(Mx,-6888.22525), true );
+   TRY_TEST( IsEqual(Mx,-6888.22801), true );
    TRY_TEST( IsZero(My), true);
 
    CComPtr<IPlane3d> strainPlane;
@@ -185,11 +185,46 @@ void CMomentCapacitySolverTest::Test()
 
 
    TRY_TEST( IsZero(Fz,0.001), true );
-   TRY_TEST( IsEqual(Mx, 6888.22525), true );
+   TRY_TEST( IsEqual(Mx, 6888.22801), true );
    TRY_TEST( IsZero(My), true);
 
    strainPlane->GetZ(0.00,-H/2,&ec);
    TRY_TEST(IsEqual(ec,-0.003),true);
+
+
+   solution.Release();
+
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, PI_OVER_2, -0.003, 0.0, smFixedCompressionStrain, &solution)), true); //compression left, use angle = PI_OVER_2
+
+   solution->get_Fz(&Fz);
+   solution->get_Mx(&Mx);
+   solution->get_My(&My);
+   strainPlane.Release();
+   solution->get_StrainPlane(&strainPlane);
+
+   TRY_TEST(IsZero(Fz, 0.001), true);
+   TRY_TEST(IsZero(Mx), true);
+   TRY_TEST(IsEqual(My, -3374.92488), true);
+
+   strainPlane->GetZ(-W / 2, 0.00, &ec);
+   TRY_TEST(IsEqual(ec, -0.003), true);
+
+   solution.Release();
+
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, 3*PI_OVER_2, -0.003, 0.0, smFixedCompressionStrain, &solution)), true); //compression right, use angle = 3*PI_OVER_2
+
+   solution->get_Fz(&Fz);
+   solution->get_Mx(&Mx);
+   solution->get_My(&My);
+   strainPlane.Release();
+   solution->get_StrainPlane(&strainPlane);
+
+   TRY_TEST(IsZero(Fz, 0.001), true);
+   TRY_TEST(IsZero(Mx), true);
+   TRY_TEST(IsEqual(My, 3374.92488), true);
+
+   strainPlane->GetZ(W / 2, 0.00, &ec);
+   TRY_TEST(IsEqual(ec, -0.003), true);
 
    // make bar3 and bar4 be unbonded for 5 ft
    CComQIPtr<IUnitConvert> convert(unit_server);
@@ -208,7 +243,7 @@ void CMomentCapacitySolverTest::Test()
 
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, 6884.16504, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, 6884.17511, 0.0001), true);
    TRY_TEST(IsZero(My), true);
 
    strainPlane->GetZ(0.00, -H / 2, &ec);

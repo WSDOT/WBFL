@@ -44,7 +44,6 @@ public:
    CRebarModel() :
       m_Model(_T("Rebar"))
 	{
-      m_Model.SetProperties(60, 29000, 0.07);
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_REBARMODEL)

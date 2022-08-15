@@ -165,6 +165,18 @@ void CGeneralSectionSolverTest::Test()
    CComPtr<IGeneralSectionSolution> solution;
    solver->Solve(strainPlane,&solution);
 
+   Float64 value;
+   solution->get_Fz(&value);
+   TRY_TEST(IsEqual(value, -6989.5380720604908),true);
+   solution->get_Mx(&value);
+   TRY_TEST(IsEqual(value, -199028.63168431941), true);
+   solution->get_My(&value);
+   TRY_TEST(IsEqual(value, 0.0), true);
+   solution->get_CompressionResultant(&value);
+   TRY_TEST(IsEqual(value, -7042.3377809023850), true);
+   solution->get_TensionResultant(&value);
+   TRY_TEST(IsEqual(value, 52.799708841892233), true);
+
 #pragma Reminder("************ Finish GeneralSectionSolver tests ****************")
 
 //   CComQIPtr<ISupportErrorInfo> eInfo(ss);

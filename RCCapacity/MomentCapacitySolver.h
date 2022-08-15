@@ -43,10 +43,7 @@ class ATL_NO_VTABLE CMomentCapacitySolver :
 public:
 	CMomentCapacitySolver()
 	{
-      m_bFurthestPointUpdated = false;
-      m_XFurthest = -999999;
-      m_YFurthest = -999999;
-
+      m_bAnalysisPointUpdated = false;
       m_bUpdateLimits = true;
 	}
 
@@ -72,9 +69,9 @@ private:
    CComPtr<IPoint3d> m_P1, m_P2, m_P3;
    Float64 m_AxialTolerance;
    long m_MaxIter;
-   bool m_bFurthestPointUpdated;
-   Float64 m_XFurthest, m_YFurthest;
-   Float64 m_Top, m_Bottom;
+   bool m_bAnalysisPointUpdated;
+   CComPtr<IPoint2d> m_ControlPoint; // this point is varied in the Z direction to manipulate the strain plane
+   CComPtr<IPoint2d> m_FixedPoint; // this point is the fixed control point (like the point of -0.003 compression strain at the top of a section)
 
    bool m_bUpdateLimits;
    Float64 m_FzTensionLimit, m_MxTensionLimit, m_MyTensionLimit, m_eoTensionLimit;
@@ -82,13 +79,10 @@ private:
    HRESULT UpdateLimits();
 
    void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 eo);
-   void UpdateFurthestPoint(Float64 angle, SolutionMethod solutionMethod);
+   void UpdateAnalysisPoints(Float64 angle, SolutionMethod solutionMethod,Float64 strainLocation);
    HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
    HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod, Float64 strainLocation,IMomentCapacitySolution** solution);
    HRESULT ZeroCapacitySolution(IMomentCapacitySolution** solution);
-
-   void UpdateStrainPlane2(Float64 naAngle, Float64 x, Float64 y, Float64 ec, Float64 k);
-   HRESULT AnalyzeSection2(Float64 Fz, Float64 naAngle, Float64 k_or_ec, SolutionMethod solutionMethod, Float64 strainLocation, IMomentCapacitySolution** solution);
 
 // ISupportsErrorInfo
 public:

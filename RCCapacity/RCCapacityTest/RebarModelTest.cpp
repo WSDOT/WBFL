@@ -58,14 +58,14 @@ void CRebarModelTest::Test()
    Float64 val;
    TRY_TEST( rebar->get_fy(nullptr), E_POINTER );
    TRY_TEST( rebar->get_fy(&val), S_OK );
-   TRY_TEST( IsEqual(val,60.0), true );
+   TRY_TEST( IsEqual(val, 413685437.59020001), true );
    TRY_TEST( rebar->put_fy(-10), E_INVALIDARG );
    TRY_TEST( rebar->put_fy(  0), E_INVALIDARG );
    TRY_TEST( rebar->put_fy(val), S_OK );
 
    TRY_TEST( rebar->get_Es(nullptr), E_POINTER );
    TRY_TEST( rebar->get_Es(&val), S_OK );
-   TRY_TEST( IsEqual(val,29000.0), true );
+   TRY_TEST( IsEqual(val, 199947961501.93002), true );
    TRY_TEST( rebar->put_Es(-10), E_INVALIDARG );
    TRY_TEST( rebar->put_Es(  0), E_INVALIDARG );
    TRY_TEST( rebar->put_Es(val), S_OK );
@@ -75,13 +75,13 @@ void CRebarModelTest::Test()
 
    TRY_TEST( ss->ComputeStress(0.001,nullptr), E_POINTER);
    TRY_TEST( ss->ComputeStress(0.001,&val), S_OK );
-   TRY_TEST( IsEqual(val,29.0), true );
+   TRY_TEST( IsEqual(val, 199947961.50193003), true );
    TRY_TEST( ss->ComputeStress(-0.001,&val), S_OK );
-   TRY_TEST( IsEqual(val,-29.0), true );
+   TRY_TEST( IsEqual(val,-199947961.50193003), true );
    TRY_TEST( ss->ComputeStress(0.1,&val), S_FALSE ); // strain exceeds tensile fracture strain
-   TRY_TEST( IsEqual(val,60.0), true );
+   TRY_TEST( IsEqual(val, 413685437.59020001), true );
    TRY_TEST( ss->ComputeStress(-0.1,&val), S_OK );
-   TRY_TEST( IsEqual(val,-60.0), true );
+   TRY_TEST( IsEqual(val,-413685437.59020001), true );
 
    CComQIPtr<ISupportErrorInfo> eInfo(rebar);
    TRY_TEST( eInfo != nullptr, true);

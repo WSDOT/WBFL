@@ -68,6 +68,7 @@ STDMETHODIMP CInteractionCapacityCurveSolution::AddSolutionPoint(IMomentCapacity
    solution->get_Fz(&ci.Fz);
    ci.Capacity = solution;
    m_CapacityInfo.push_back(ci);
+   std::sort(m_CapacityInfo.begin(), m_CapacityInfo.end());
 
    return S_OK;
 }

@@ -42,9 +42,8 @@ class ATL_NO_VTABLE CStrainHardenedRebarModel :
 {
 public:
    CStrainHardenedRebarModel() :
-      m_Model(_T("Strain Hardened Rebar"))
+      m_Model(_T("Strain Hardened Rebar"), WBFL::Units::ConvertToSysUnits(60, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(90, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(29000, WBFL::Units::Measure::KSI), 0.006, 0.07)
 	{
-		m_Model.SetProperties(60, 90, 29000, 0.006, 0.07);
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_STRAINHARDENEDREBARMODEL)

@@ -251,7 +251,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
             if ( slice.BgMaterial )
                slice.BgMaterial->get_Name(&bgName);
 
-            os << std::setw(10) << AREA(top_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(top_slice.Top) << ", " << std::setw(10) << LENGTH(top_slice.Bottom) << ", " << std::setw(20) << LENGTH(top_slice.Xcg) << ", " << std::setw(20) << LENGTH(top_slice.Ycg) << ", " << std::setw(20) << top_slice.ei << ", " << std::setw(20) << strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
+            os << std::setw(10) << AREA(top_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(top_slice.Top) << ", " << std::setw(10) << LENGTH(top_slice.Bottom) << ", " << std::setw(20) << LENGTH(Xcg) << ", " << std::setw(20) << LENGTH(Ycg) << ", " << std::setw(20) << top_slice.ei << ", " << std::setw(20) << total_strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
 #endif // _DEBUG_LOGGING
          }
 
@@ -292,7 +292,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
             if ( slice.BgMaterial )
                slice.BgMaterial->get_Name(&bgName);
 
-            os << std::setw(10) << AREA(bottom_slice.Area) << ", " << std::setw(10) << "T, " <<std::setw(10) << LENGTH(bottom_slice.Top) << ", " << std::setw(10) << LENGTH(bottom_slice.Bottom) << ", " << std::setw(20) << LENGTH(bottom_slice.Xcg) << ", " << std::setw(20) << LENGTH(bottom_slice.Ycg) << ", " << std::setw(20) << bottom_slice.ei << ", " << std::setw(20) << strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
+            os << std::setw(10) << AREA(bottom_slice.Area) << ", " << std::setw(10) << "T, " <<std::setw(10) << LENGTH(bottom_slice.Top) << ", " << std::setw(10) << LENGTH(bottom_slice.Bottom) << ", " << std::setw(20) << LENGTH(Xcg) << ", " << std::setw(20) << LENGTH(Ycg) << ", " << std::setw(20) << bottom_slice.ei << ", " << std::setw(20) << total_strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
 #endif // _DEBUG_LOGGING
          }
 
@@ -344,7 +344,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
             slice.BgMaterial->get_Name(&bgName);
 
          char cSide = (P < 0 ? 'C' : 'T');
-         os << std::setw(10) << AREA(slice.Area) << ", " << std::setw(10) << cSide << ", " <<std::setw(10) << LENGTH(slice.Top) << ", " << std::setw(10) << LENGTH(slice.Bottom) << ", " << std::setw(20) << LENGTH(slice.Xcg) << ", " << std::setw(20) << LENGTH(slice.Ycg) << ", " << std::setw(20) << slice.ei << ", " << std::setw(20) << strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
+         os << std::setw(10) << AREA(slice.Area) << ", " << std::setw(10) << cSide << ", " <<std::setw(10) << LENGTH(slice.Top) << ", " << std::setw(10) << LENGTH(slice.Bottom) << ", " << std::setw(20) << LENGTH(Xcg) << ", " << std::setw(20) << LENGTH(Ycg) << ", " << std::setw(20) << slice.ei << ", " << std::setw(20) << total_strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
 #endif // _DEBUG_LOGGING
       }
    }
