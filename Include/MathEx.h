@@ -257,7 +257,7 @@ inline V LinInterpLine( V x1, V y1, V x2, V y2, V x)
       }
       else
       {
-         ASSERT(0);
+         assert(false);
          return std::numeric_limits<V>::infinity(); // No Solution. For lack of better option
       }
    }
