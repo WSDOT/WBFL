@@ -40,6 +40,7 @@ bool TestDll(LPCTSTR plibname, WBFL::Debug::Log& rlog);
 
 // put names of all dll's to be tested here:
 static LPCTSTR lib_list[] = {
+                                 _T("WBFLRCSection.dll"),
                                  _T("WBFLStability.dll"),
                                  _T("WBFLSystem.dll"),
                                  _T("WBFLRoark.dll"),
@@ -51,6 +52,7 @@ static LPCTSTR lib_list[] = {
                                  _T("WBFLMath.dll"),
                                  _T("WBFLUnits.dll"),
                                  _T("WBFLEAF.dll"),
+                                 _T("WBFLEngTools.dll")
                                  //_T("WBFLBridgeAnalysis.dll"),
                                  //_T("WBFLBridgeModeling.dll")
                                 };
