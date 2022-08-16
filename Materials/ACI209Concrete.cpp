@@ -52,7 +52,7 @@ void ACI209Concrete::GetModelParameters(CuringType cure,CementType cement,Float6
    *pB = b[cure_idx][cement_idx];
 }
 
-ACI209Concrete::ACI209Concrete(LPCTSTR name) :
+ACI209Concrete::ACI209Concrete(const std::_tstring& name) :
 ConcreteBase(name),
 m_A(WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day)),
 m_Beta(0.95),

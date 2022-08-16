@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-LPCTSTR CEBFIPConcrete::GetCementType(CementType type)
+std::_tstring CEBFIPConcrete::GetCementType(CementType type)
 {
    if ( type == CementType::RS )
    {
@@ -102,7 +102,7 @@ Float64 CEBFIPConcrete::ComputeEc28(Float64 Ec,Float64 age,CementType type)
    return Ec28;
 }
 
-CEBFIPConcrete::CEBFIPConcrete(LPCTSTR name) :
+CEBFIPConcrete::CEBFIPConcrete(const std::_tstring& name) :
 ConcreteBase(name),
 m_Fc28(0),
 m_Ec28(0),

@@ -44,21 +44,21 @@ static char THIS_FILE[] = __FILE__;
 
 bool Diagnostics::bWarnPopup = true;
 
-void Diagnostics::Watch( LPCTSTR group, LPCTSTR msg,
-                         LPCTSTR fname, Uint32 line )
+void Diagnostics::Watch(const std::_tstring& group, const std::_tstring& msg,
+                         const std::_tstring& fname, Uint32 line )
 {
    Diagnostics::Message( _T("Watch"), group, msg, fname, line, false );
 }
 
-void Diagnostics::Warn( LPCTSTR group, LPCTSTR msg,
-                        LPCTSTR fname, Uint32 line )
+void Diagnostics::Warn( const std::_tstring& group, const std::_tstring& msg,
+                        const std::_tstring& fname, Uint32 line )
 {
    Diagnostics::Message( _T("Warn"), group, msg, fname, line, bWarnPopup );
 }
 
-void Diagnostics::Message( LPCTSTR type,
-                           LPCTSTR group, LPCTSTR msg,
-                           LPCTSTR fname, Uint32 line, bool bPopup)
+void Diagnostics::Message( const std::_tstring& type,
+                           const std::_tstring& group, const std::_tstring& msg,
+                           const std::_tstring& fname, Uint32 line, bool bPopup)
 {
     std::_tostringstream out;
     out << type << _T(' ') << fname << _T(' ') << line
@@ -71,9 +71,9 @@ void Diagnostics::Message( LPCTSTR type,
       ::MessageBox(0, message.c_str(), _T("Warning"), MB_OK | MB_ICONWARNING );
 }
 
-void Diagnostics::Output( LPCTSTR msg )
+void Diagnostics::Output( const std::_tstring& msg )
 {
-    ::OutputDebugString(msg);
+    ::OutputDebugString(msg.c_str());
 }
 
 void Diagnostics::EnableWarnPopup(bool bEnable)
@@ -86,13 +86,13 @@ bool Diagnostics::IsWarnPopupEnabled()
    return bWarnPopup;
 }
 
-void Message::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
+void Message::Precondition(const std::_tstring& s,const std::_tstring& file, Uint32 line)
 {
 #if defined _DEBUG
 #if defined _UNICODE
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Precondition] %s\n"),s) == 1 )
+    if ( _CrtDbgReportW(_CRT_ASSERT,file.c_str(), line, nullptr, _T("[Precondition] %s\n"), s.c_str()) == 1)
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Precondition] %s\n"),s) == 1 )
+    if ( _CrtDbgReport(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Precondition] %s\n"),s.c_str()) == 1 )
 #endif
        _CrtDbgBreak();
 #else
@@ -100,13 +100,13 @@ void Message::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
 #endif
 }
 
-void Message::Check(LPCTSTR s,LPCTSTR file, Int32 line)
+void Message::Check(const std::_tstring& s,const std::_tstring& file, Uint32 line)
 {
 #if defined _DEBUG
 #if defined _UNICODE
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Check] %s\n"),s) == 1 )
+    if ( _CrtDbgReportW(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Check] %s\n"),s.c_str()) == 1 )
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Check] %s\n"),s) == 1 )
+    if ( _CrtDbgReport(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Check] %s\n"),s.c_str()) == 1 )
 #endif
        _CrtDbgBreak();
 #else
@@ -114,13 +114,13 @@ void Message::Check(LPCTSTR s,LPCTSTR file, Int32 line)
 #endif
 }
 
-void Message::AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line)
+void Message::AssertValidFailed(const std::_tstring& s,const std::_tstring& file, Uint32 line)
 {
 #if defined _DEBUG
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Assert Valid Failed] %s\n"),s) == 1 )
+    if ( _CrtDbgReportW(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Assert Valid Failed] %s\n"),s.c_str()) == 1 )
 #if defined _UNICODE
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Assert Valid Failed] %s\n"),s) == 1 )
+    if ( _CrtDbgReport(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Assert Valid Failed] %s\n"),s.c_str()) == 1 )
 #endif
        _CrtDbgBreak();
 #else

@@ -38,7 +38,8 @@ namespace WBFL
       class MATCLASS ConcreteBase
       {
       public:
-         ConcreteBase(LPCTSTR name = _T("Unknown"));
+         ConcreteBase() = default;
+         ConcreteBase(const std::_tstring& name);
          virtual ~ConcreteBase();
 
          ConcreteBase(const ConcreteBase&) = default;
@@ -153,7 +154,7 @@ namespace WBFL
 
       protected:
          ConcreteType   m_Type;
-         std::_tstring m_Name;
+         std::_tstring m_Name{_T("Unknown")};
          bool        m_bHasFct; // has aggregate splitting strength
          Float64     m_Fct;     // aggregate splitting strength
          Float64     m_MaxAggregateSize;

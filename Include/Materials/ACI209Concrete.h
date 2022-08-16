@@ -57,7 +57,8 @@ namespace WBFL
       public:
          static void GetModelParameters(CuringType cure,CementType cement,Float64* pA,Float64* pBeta);
 
-         ACI209Concrete(LPCTSTR name = _T("Unknown"));
+         ACI209Concrete() = default;
+         ACI209Concrete(const std::_tstring& name);
          ACI209Concrete(const ACI209Concrete&) = default;
          ACI209Concrete& operator=(const ACI209Concrete&) = default;
 

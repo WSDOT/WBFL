@@ -649,7 +649,7 @@ HRESULT CreateASimpleLBAM(ILBAMModel** model)
    // configure LRFD live loads and combinations
    CComPtr<IUnitServer> unitserver;
    unitserver.CoCreateInstance(CLSID_UnitServer);
-   unitserver->SetBaseUnits(CComBSTR("lbm"), CComBSTR("ft"), CComBSTR("sec"), CComBSTR("fahr"), CComBSTR("deg"));
+   unitserver->SetSystemUnits(CComBSTR("lbm"), CComBSTR("ft"), CComBSTR("sec"), CComBSTR("fahr"), CComBSTR("deg"));
 
    hr = factory->ConfigureLiveLoad(*model, VARIANT_TRUE, suUS, unitserver);
    hr = factory->ConfigureLoadCombinations(*model);

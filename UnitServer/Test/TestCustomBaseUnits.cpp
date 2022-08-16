@@ -57,7 +57,7 @@ void CTestCustomBaseUnits::Test()
    unitServer.CoCreateInstance( CLSID_UnitServer );
 
    // Use base units of kip,ft,s,F,deg
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kslug"),CComBSTR("ft"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg")),S_OK);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kslug"),CComBSTR("ft"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg")),S_OK);
 
    CComPtr<IUnitConvert> convert;
    unitServer->get_UnitConvert(&convert);
@@ -146,7 +146,7 @@ void CTestCustomBaseUnits::Test()
    unitServer.CoCreateInstance( CLSID_UnitServer );
 
    // Use base units of kip,ft,s,F,deg
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("Mg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),S_OK);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("Mg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),S_OK);
 
    unitServer->get_UnitConvert(&convert);
 

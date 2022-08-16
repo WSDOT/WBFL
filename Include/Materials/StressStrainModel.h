@@ -34,7 +34,6 @@ namespace WBFL
       {
       public:
          StressStrainModel() = default;
-         StressStrainModel(LPCTSTR lpszName);
          StressStrainModel(const std::_tstring& strName);
          StressStrainModel(const StressStrainModel&) = default;
          virtual ~StressStrainModel() = default;

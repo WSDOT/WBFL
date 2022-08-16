@@ -35,11 +35,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-UHPCModel::UHPCModel(LPCTSTR lpszName) :
-   StressStrainModel(lpszName)
-{
-}
-
 UHPCModel::UHPCModel(const std::_tstring& strName) :
    StressStrainModel(strName)
 {
@@ -219,7 +214,7 @@ Float64 UHPCModel::GetStrainAtPeakStress() const
 
 Float64 UHPCModel::GetEc() const
 {
-   return 2500*m_K1*pow(m_fc,0.33);
+   return 2500*m_K1*pow(m_fc,0.33); // in KSI
 }
 
 

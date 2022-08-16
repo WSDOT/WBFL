@@ -36,7 +36,7 @@ namespace WBFL
       public:
          enum class Reason { BadStationFormat };
 
-         XUnit(Reason reason,LPCTSTR file,Int16 line);
+         XUnit(Reason reason,const std::_tstring& file,Uint32 line);
 
          virtual ~XUnit();
 

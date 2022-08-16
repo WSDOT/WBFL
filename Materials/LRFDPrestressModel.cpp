@@ -35,11 +35,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-LRFDPrestressModel::LRFDPrestressModel(LPCTSTR lpszName) :
-   StressStrainModel(lpszName)
-{
-}
-
 LRFDPrestressModel::LRFDPrestressModel(const std::_tstring& strName) :
    StressStrainModel(strName)
 {

@@ -118,7 +118,7 @@ bool CrackedSectionSolver::TestRectangularBeam(WBFL::Debug::Log& rlog)
 
    // work in KSI units
    WBFL::Units::AutoSystem as;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
    // Get a general section
    std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
@@ -184,7 +184,7 @@ bool CrackedSectionSolver::TestTeeBeam1(WBFL::Debug::Log& rlog)
 
    // work in KSI units
    WBFL::Units::AutoSystem as;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
 
    // Get a general section
@@ -258,7 +258,7 @@ bool CrackedSectionSolver::TestTeeBeam2(WBFL::Debug::Log& rlog)
 
    // work in KSI units
    WBFL::Units::AutoSystem as;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
 
    // Get a general section
@@ -331,7 +331,7 @@ bool CrackedSectionSolver::TestTeeBeam3(WBFL::Debug::Log& rlog)
 
    // work in KSI units
    WBFL::Units::AutoSystem as;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
 
    // Get a general section

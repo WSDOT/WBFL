@@ -38,7 +38,7 @@ namespace WBFL
          enum Reason {BadWrite,CantInitializeTheParser,Unspecified};
 
          XStructuredSave() = default;
-         XStructuredSave( Reason reason, LPCTSTR file, Int16 line);
+         XStructuredSave( Reason reason, const std::_tstring& file, Uint32 line);
          XStructuredSave(const XStructuredSave&) = default;
          virtual ~XStructuredSave() = default;
          XStructuredSave& operator=(const XStructuredSave&) = default;

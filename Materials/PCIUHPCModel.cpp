@@ -25,8 +25,6 @@
 #include <Materials/PCIUHPCModel.h>
 
 #include <Units/Convert.h>
-#include <Units/Measure.h>
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -34,11 +32,6 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace WBFL::Materials;
-
-PCIUHPCModel::PCIUHPCModel(LPCTSTR lpszName) :
-   StressStrainModel(lpszName)
-{
-}
 
 PCIUHPCModel::PCIUHPCModel(const std::_tstring& strName) :
    StressStrainModel(strName)
@@ -156,7 +149,7 @@ bool PCIUHPCModel::TestMe(WBFL::Debug::Log& rlog)
    TESTME_PROLOGUE("PCIUHPCModel");
 
    WBFL::Units::AutoSystem au;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug,WBFL::Units::Measure::Inch,WBFL::Units::Measure::Second,WBFL::Units::Measure::Fahrenheit,WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug,WBFL::Units::Measure::Inch,WBFL::Units::Measure::Second,WBFL::Units::Measure::Fahrenheit,WBFL::Units::Measure::Degree);
 
    PCIUHPCModel model;
    model.SetFc(18.0);

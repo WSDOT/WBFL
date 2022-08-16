@@ -60,7 +60,7 @@ void CMomentCurvatureSolverTest::Test()
    unit_server.CoCreateInstance(CLSID_UnitServer);
 
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"), CComBSTR("in"), CComBSTR("sec"), CComBSTR("F"), CComBSTR("deg"));
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"), CComBSTR("in"), CComBSTR("sec"), CComBSTR("F"), CComBSTR("deg"));
 
    // Get a general section
    CComPtr<IGeneralSection> section;

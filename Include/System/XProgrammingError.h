@@ -44,7 +44,7 @@ namespace WBFL
          };
 
          XProgrammingError() = default;
-         XProgrammingError(Reason reason, LPCTSTR file, Int32 line);
+         XProgrammingError(Reason reason, const std::_tstring& file, Uint32 line);
          virtual ~XProgrammingError() = default;
 
          XProgrammingError& operator=(const XProgrammingError&) = default;

@@ -39,7 +39,6 @@ namespace WBFL
       {
       public:
          RambergOsgoodModel() = default;
-         RambergOsgoodModel(LPCTSTR lpszName);
          RambergOsgoodModel(const std::_tstring& strName);
          RambergOsgoodModel(const RambergOsgoodModel&) = default;
          virtual ~RambergOsgoodModel() = default;

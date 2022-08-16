@@ -40,7 +40,6 @@ namespace WBFL
       {
       public:
          UHPCModel() = default;
-         UHPCModel(LPCTSTR lpszName);
          UHPCModel(const std::_tstring& strName);
          UHPCModel(const UHPCModel&) = default;
          virtual ~UHPCModel() = default;

@@ -35,12 +35,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-UnconfinedConcreteModel::UnconfinedConcreteModel(LPCTSTR lpszName,Float64 fc) :
-   StressStrainModel(lpszName)
-{
-   SetFc(fc);
-}
-
 UnconfinedConcreteModel::UnconfinedConcreteModel(const std::_tstring& strName,Float64 fc) :
    StressStrainModel(strName)
 {

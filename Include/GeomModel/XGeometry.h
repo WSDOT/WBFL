@@ -38,7 +38,7 @@ namespace WBFL
       {
       public:
          XGeometry() = default;
-         XGeometry(LPCTSTR lpszReason, LPCTSTR file, Int32 line);
+         XGeometry(const std::_tstring& strReason, const std::_tstring& file, Uint32 line);
          virtual ~XGeometry() = default;
 
          XGeometry& operator=(const XGeometry&) = default;

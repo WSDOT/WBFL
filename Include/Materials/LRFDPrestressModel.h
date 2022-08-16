@@ -40,7 +40,6 @@ namespace WBFL
       {
       public:
          LRFDPrestressModel() = default;
-         LRFDPrestressModel(LPCTSTR lpszName);
          LRFDPrestressModel(const std::_tstring& strName);
          LRFDPrestressModel(const LRFDPrestressModel&) = default;
          virtual ~LRFDPrestressModel() = default;

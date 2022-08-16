@@ -35,11 +35,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-RambergOsgoodModel::RambergOsgoodModel(LPCTSTR lpszName) :
-   StressStrainModel(lpszName)
-{
-}
-
 RambergOsgoodModel::RambergOsgoodModel(const std::_tstring& strName) :
    StressStrainModel(strName)
 {

@@ -97,7 +97,7 @@ BOOL EAFCreateAppUnitSystem(IAppUnitSystem** ppAppUnitSystem)
    CComPtr<IUnitServer> unitServer;
    appUnitSystem->get_UnitServer(&unitServer);
 
-   hr = unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad"));
+   hr = unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad"));
    ATLASSERT(SUCCEEDED(hr));
 
    CComPtr<IDisplayUnitMgr2> dispUnitMgr;

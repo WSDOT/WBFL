@@ -52,9 +52,7 @@ namespace WBFL
       {
       public:
          RebarModel() = default;
-         RebarModel(LPCTSTR lpszName, Float64 fy= WBFL::Units::ConvertToSysUnits(60, WBFL::Units::Measure::KSI), Float64 Es = WBFL::Units::ConvertToSysUnits(29000, WBFL::Units::Measure::KSI), Float64 er=0.07);
          RebarModel(const std::_tstring& strName, Float64 fy = WBFL::Units::ConvertToSysUnits(60, WBFL::Units::Measure::KSI), Float64 Es = WBFL::Units::ConvertToSysUnits(29000, WBFL::Units::Measure::KSI), Float64 er = 0.07);
-         RebarModel(LPCTSTR lpszName, Float64 fy, Float64 fu, Float64 Es, Float64 esh, Float64 er);
          RebarModel(const std::_tstring& strName, Float64 fy, Float64 fu, Float64 Es, Float64 esh, Float64 er);
          RebarModel(const RebarModel&) = default;
          virtual ~RebarModel() = default;

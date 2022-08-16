@@ -35,11 +35,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-ConfinedConcreteModel::ConfinedConcreteModel(LPCTSTR lpszName) :
-   StressStrainModel(lpszName)
-{
-}
-
 ConfinedConcreteModel::ConfinedConcreteModel(const std::_tstring& strName) :
    StressStrainModel(strName)
 {

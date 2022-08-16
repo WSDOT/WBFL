@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::System;
 
-XStructuredLoad::XStructuredLoad(XStructuredLoad::Reason reason, LPCTSTR file, Int16 line) :
+XStructuredLoad::XStructuredLoad(XStructuredLoad::Reason reason, const std::_tstring& file, Uint32 line) :
 XBase(file,line),
 m_Reason(reason)
 {

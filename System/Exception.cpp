@@ -32,7 +32,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::System;
 
-XBase::XBase(LPCTSTR file, Int32 line ) :
+XBase::XBase(const std::_tstring& file, Uint32 line ) :
 m_File( file ),
 m_Line( line )
 {
@@ -51,12 +51,12 @@ void XBase::GetErrorMessage(std::_tstring* pMsg) const
    *pMsg = os.str();
 }
 
-LPCTSTR XBase::GetFile() const noexcept
+const std::_tstring& XBase::GetFile() const noexcept
 {
-   return m_File.c_str();
+   return m_File;
 }
 
-Int32 XBase::GetLine() const noexcept
+Uint32 XBase::GetLine() const noexcept
 {
    return m_Line;
 }

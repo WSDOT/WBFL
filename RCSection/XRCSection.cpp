@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace WBFL::RCSection;
 
 
-XRCSection::XRCSection(LPCTSTR lpszReason, LPCTSTR file, Int32 line) :
+XRCSection::XRCSection(const std::_tstring& lpszReason, const std::_tstring& file, Uint32 line) :
    WBFL::System::XBase(file, line), m_Reason(lpszReason)
 {
 }

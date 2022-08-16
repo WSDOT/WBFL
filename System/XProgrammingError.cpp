@@ -32,7 +32,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::System;
 
-XProgrammingError::XProgrammingError(Reason reason, LPCTSTR file, Int32 line) :
+XProgrammingError::XProgrammingError(Reason reason, const std::_tstring& file, Uint32 line) :
 XBase(file,line),
 m_Reason( reason )
 {

@@ -32,8 +32,8 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Geometry;
 
-XGeometry::XGeometry(LPCTSTR lpszReason, LPCTSTR file, Int32 line) :
-   WBFL::System::XBase(file, line), m_Reason(lpszReason)
+XGeometry::XGeometry(const std::_tstring& strReason, const std::_tstring& file, Uint32 line) :
+   WBFL::System::XBase(file, line), m_Reason(strReason)
 {
 }
 

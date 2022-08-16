@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-ConcreteBase::ConcreteBase(LPCTSTR name) :
+ConcreteBase::ConcreteBase(const std::_tstring& name) :
 m_Name(name),
 m_TimeAtCasting(0),
 m_AgeAtInitialLoading(1.0), // days

@@ -32,7 +32,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Units;
 
-XUnit::XUnit(Reason reason,LPCTSTR file,Int16 line) :
+XUnit::XUnit(Reason reason,const std::_tstring& file,Uint32 line) :
 WBFL::System::XBase(file,line),
 m_Reason( reason )
 {

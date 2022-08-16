@@ -46,7 +46,6 @@ namespace WBFL
       {
       public:
          PSPowerFormulaModel() = default;
-         PSPowerFormulaModel(LPCTSTR lpszName);
          PSPowerFormulaModel(const std::_tstring& strName);
          PSPowerFormulaModel(const PSPowerFormulaModel&) = default;
          virtual ~PSPowerFormulaModel() = default;

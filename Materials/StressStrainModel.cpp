@@ -33,11 +33,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-StressStrainModel::StressStrainModel(LPCTSTR lpszName) :
-   m_Name(lpszName)
-{
-}
-
 StressStrainModel::StressStrainModel(const std::_tstring& strName) :
    m_Name(strName)
 {

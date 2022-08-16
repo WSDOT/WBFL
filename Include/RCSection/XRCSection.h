@@ -37,7 +37,7 @@ namespace WBFL
       public:
          XRCSection() = default;
          XRCSection(const XRCSection&) = default;
-         XRCSection(LPCTSTR lpszReason, LPCTSTR file, Int32 line);
+         XRCSection(const std::_tstring& lpszReason, const std::_tstring& file, Uint32 line);
          virtual ~XRCSection() = default;
 
          XRCSection& operator=(const XRCSection&) = default;

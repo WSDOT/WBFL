@@ -71,7 +71,7 @@ void CCrackedSectionSolverTest::TestRectangularBeam()
    unit_server.CoCreateInstance(CLSID_UnitServer);
    
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
    WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
    WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
    WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
@@ -200,7 +200,7 @@ void CCrackedSectionSolverTest::TestTeeBeam1()
    unit_server.CoCreateInstance(CLSID_UnitServer);
    
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
    WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
    WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
    WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
@@ -328,7 +328,7 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
    unit_server.CoCreateInstance(CLSID_UnitServer);
    
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
    WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
    WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
    WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
@@ -456,7 +456,7 @@ void CCrackedSectionSolverTest::TestTeeBeam3()
    unit_server.CoCreateInstance(CLSID_UnitServer);
    
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
    WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
    WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
    WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);

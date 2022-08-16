@@ -224,7 +224,7 @@ HRESULT CUnitServerImp::BadUnitTagError(BSTR name)
    return Error(oleMsg,IDH_E_BADUNITTAG, GetHelpFile(), IID_IUnitServer, UNITS_E_BADUNITTAG);
 }
 
-STDMETHODIMP CUnitServerImp::SetBaseUnits(BSTR bstrMass, BSTR bstrLength, BSTR bstrTime, BSTR bstrTemp, BSTR bstrAngle)
+STDMETHODIMP CUnitServerImp::SetSystemUnits(BSTR bstrMass, BSTR bstrLength, BSTR bstrTime, BSTR bstrTemp, BSTR bstrAngle)
 {
    CHECK_IN(bstrMass);
    CHECK_IN(bstrLength);

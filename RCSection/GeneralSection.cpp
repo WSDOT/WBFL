@@ -364,7 +364,7 @@ bool GeneralSection::TestMe(WBFL::Debug::Log& rlog)
 
    // work in KSI units
    WBFL::Units::AutoSystem as;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
    std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
 

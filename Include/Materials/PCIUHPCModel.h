@@ -36,7 +36,6 @@ namespace WBFL
       {
       public:
          PCIUHPCModel() = default;
-         PCIUHPCModel(LPCTSTR lpszName);
          PCIUHPCModel(const std::_tstring& strName);
          PCIUHPCModel(const PCIUHPCModel&) = default;
          virtual ~PCIUHPCModel() = default;
@@ -77,7 +76,7 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         Float64 m_fc{ 17.4 }; // in KSI units
+         Float64 m_fc{ 0.0 };
 
          Float64 GetEc() const;
       };

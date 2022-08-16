@@ -46,7 +46,6 @@ namespace WBFL
       {
       public:
          UnconfinedConcreteModel() = default;
-         UnconfinedConcreteModel(LPCTSTR lpszName,Float64 fc=0);
          UnconfinedConcreteModel(const std::_tstring& strName,Float64 fc=0);
          UnconfinedConcreteModel(const UnconfinedConcreteModel&) = default;
          virtual ~UnconfinedConcreteModel() = default;

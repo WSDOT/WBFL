@@ -69,12 +69,13 @@ namespace WBFL
             SL  ///< slow hardening
          };
 
-         CEBFIPConcrete(LPCTSTR name = _T("Unknown"));
+         CEBFIPConcrete() = default;
+         CEBFIPConcrete(const std::_tstring& name);
          CEBFIPConcrete(const CEBFIPConcrete& rOther) = default;
          CEBFIPConcrete& operator=(const CEBFIPConcrete & rOther) = default;
 
          /// Returns the cement type as a string
-         static LPCTSTR GetCementType(CementType type);
+         static std::_tstring GetCementType(CementType type);
 
          /// Get this model parameters for the specified cement type
          static void GetModelParameters(CementType cement,Float64* pS,Float64* pBetaSC);

@@ -63,22 +63,22 @@ void CTestUnitServer::Test()
    DWORD dwCookie;
    TRY_TEST(AtlAdvise(unitServer,punk,IID_IUnitServerEvents,&dwCookie),S_OK);
 
-   TRY_TEST(unitServer->SetBaseUnits(nullptr,CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),nullptr,CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),nullptr,CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),nullptr,CComBSTR("rad")),E_INVALIDARG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),nullptr),E_INVALIDARG);
+   TRY_TEST(unitServer->SetSystemUnits(nullptr,CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),nullptr,CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),nullptr,CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),nullptr,CComBSTR("rad")),E_INVALIDARG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),nullptr),E_INVALIDARG);
 
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("Junk"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("Junk"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("Junk"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("Junk"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("Junk")),UNITS_E_BADUNITTAG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("Junk"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("Junk"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("Junk"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("Junk"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("Junk")),UNITS_E_BADUNITTAG);
    
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),S_OK);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),S_OK);
 
    // Base units can only be set once. This second call should error out
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BASEUNITSSET);
+   TRY_TEST(unitServer->SetSystemUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BASEUNITSSET);
 
    // Get properties
    CComBSTR bstr;
@@ -273,7 +273,7 @@ void CTestUnitServer::Test()
    // Internal base units that produce kips, inches, and ksi.
    CComPtr<IUnitServer> unitServer2;
    unitServer2.CoCreateInstance( CLSID_UnitServer );
-   unitServer2->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   unitServer2->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
 
    pConv.Release();
    unitServer2->get_UnitConvert(&pConv);

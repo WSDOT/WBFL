@@ -41,7 +41,7 @@ namespace WBFL
          System& operator=(const System&) = delete;
 
          /// Initializes the unit system
-         static void SetBaseUnits(const Mass& mass, const Length& length, const Time& time, const Temperature& temp, const Angle& angle);
+         static void SetSystemUnits(const Mass& mass, const Length& length, const Time& time, const Temperature& temp, const Angle& angle);
 
          /// Sets the system unit for mass
          static Mass SetMassUnit(const Mass& u);

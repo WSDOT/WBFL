@@ -83,7 +83,7 @@ namespace WBFL
             }
             else
             {
-               ASSERT(m_TransvReinforcementType == TransvReinforcementType::Hoops);
+               assert(m_TransvReinforcementType == TransvReinforcementType::Hoops);
                ke = (1 - s_ / (2 * ds)) * (1 - s_ / (2 * ds)) / (1 - pcc);
             }
             return ke;
@@ -136,7 +136,6 @@ namespace WBFL
       {
       public:
          ConfinedConcreteModel() = default;
-         ConfinedConcreteModel(LPCTSTR lpszName);
          ConfinedConcreteModel(const std::_tstring& strName);
          ConfinedConcreteModel(const ConfinedConcreteModel&) = default;
          virtual ~ConfinedConcreteModel() = default;
@@ -193,7 +192,7 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         Float64 m_fco{ 4000.0 }; // PSI
+         Float64 m_fco{ 0.0 };
          Float64 m_eco{ 0.002 };
          Float64 m_R{ 5.0 };
          std::shared_ptr<const ManderModelSection> m_Section;

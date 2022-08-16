@@ -37,7 +37,7 @@ namespace WBFL
       class XEntryNotFoundT : public WBFL::System::XBase
       {
       public:
-         XEntryNotFoundT(const K& key,LPCTSTR file, Int16 line) :
+         XEntryNotFoundT(const K& key, const std::_tstring& file, Uint32 line) :
              WBFL::System::XBase(file,line),
              m_Key( key )
              {

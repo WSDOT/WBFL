@@ -70,10 +70,10 @@ namespace WBFL
          static bool IsWarnPopupEnabled();
 
       protected:
-         static void Watch( LPCTSTR group, LPCTSTR msg,
-                            LPCTSTR fname, Uint32 line );
-         static void Warn( LPCTSTR group, LPCTSTR msg,
-                           LPCTSTR fname, Uint32 line );
+         static void Watch(const std::_tstring& group, const std::_tstring& msg,
+            const std::_tstring& fname, Uint32 line );
+         static void Warn(const std::_tstring& group, const std::_tstring& msg,
+            const std::_tstring& fname, Uint32 line );
 
       public:
           struct Flags
@@ -85,19 +85,19 @@ namespace WBFL
       private:
           static bool bWarnPopup;
 
-          static void Message( LPCTSTR type,
-                               LPCTSTR group, LPCTSTR msg,
-                               LPCTSTR fname, Uint32 line, bool bPopup );
-          static void Output( LPCTSTR msg );
+          static void Message(const std::_tstring& type,
+             const std::_tstring& group, const std::_tstring& msg,
+             const std::_tstring& fname, Uint32 line, bool bPopup );
+          static void Output(const std::_tstring& msg );
       };
 
       /// Class that displays debugging messages
       class SYSCLASS Message
       {
       public:
-         static void Precondition(LPCTSTR s,LPCTSTR file, Int32 line);
-         static void Check(LPCTSTR s,LPCTSTR file, Int32 line);
-         static void AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line);
+         static void Precondition(const std::_tstring& s, const std::_tstring& file, Uint32 line);
+         static void Check(const std::_tstring& s, const std::_tstring& file, Uint32 line);
+         static void AssertValidFailed(const std::_tstring& s, const std::_tstring& file, Uint32 line);
       };
    };
 };
@@ -166,11 +166,11 @@ namespace WBFL
 class qual dbgDiagGroup##g : private WBFL::Debug::Diagnostics                           \
 {                                                                          \
 public:                                                                    \
-    static void Watch( Uint8 level, LPCTSTR msg,                       \
-                       LPCTSTR fname, Uint32 line );                   \
+    static void Watch( Uint8 level, const std::_tstring& msg,                       \
+                       const std::_tstring& fname, Uint32 line );                   \
                                                                            \
-    static void Warn( Uint8 level, LPCTSTR msg,                        \
-                      LPCTSTR fname, Uint32 line );                    \
+    static void Warn( Uint8 level, const std::_tstring& msg,                        \
+                      const std::_tstring& fname, Uint32 line );                    \
                                                                            \
     static void Enable(Uint8 enabled)                                      \
                     { Flags.Enabled = Uint8(enabled ? 1 : 0); }            \
@@ -189,15 +189,15 @@ DECLARE_DIAG_GROUP(g,DIAG_IMPORT);
 
 #define DIAG_DEFINE_GROUP(g,e,l)                                           \
 DECLARE_DIAG_GROUP(g,DIAG_EXPORT);                                         \
-void dbgDiagGroup##g::Watch( Uint8 level, LPCTSTR msg,                 \
-                             LPCTSTR fname, Uint32 line )              \
+void dbgDiagGroup##g::Watch( Uint8 level, const std::_tstring& msg,                 \
+                             const std::_tstring& fname, Uint32 line )              \
 {                                                                          \
      if( IsEnabled() && level <= GetLevel() )                              \
           WBFL::Debug::Diagnostics::Watch( Name, msg, fname, line );                    \
 }                                                                          \
                                                                            \
-void dbgDiagGroup##g::Warn( Uint8 level, LPCTSTR msg,                  \
-                            LPCTSTR fname, Uint32 line )               \
+void dbgDiagGroup##g::Warn( Uint8 level, const std::_tstring& msg,                  \
+                            const std::_tstring& fname, Uint32 line )               \
 {                                                                          \
      if( IsEnabled() && level <= GetLevel() )                              \
           WBFL::Debug::Diagnostics::Warn( Name, msg, fname, line );                     \

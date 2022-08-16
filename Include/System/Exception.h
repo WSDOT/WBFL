@@ -51,7 +51,7 @@ namespace WBFL
       {
       public:
          XBase() = default;
-         XBase(LPCTSTR file, Int32 line);
+         XBase(const std::_tstring& file, Uint32 line);
          XBase(const XBase&) = default;
          virtual ~XBase();
 
@@ -87,15 +87,15 @@ namespace WBFL
 
          /// Returns the name of the file where the exception was originally thrown.
          /// This method will not throw an exception.
-         LPCTSTR GetFile() const noexcept;
+         const std::_tstring& GetFile() const noexcept;
 
          /// Returns the line number from where the exceptino was originally thrown.
          /// This method will not throw an exception.
-         Int32 GetLine() const noexcept;
+         Uint32 GetLine() const noexcept;
 
        private:
          std::_tstring m_File{ _T("Unspecified") };
-         Int32  m_Line{ 0 };
+         Uint32  m_Line{ 0 };
       };
    };
 };

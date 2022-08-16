@@ -130,7 +130,7 @@ bool MomentCapacitySolver::Test1(WBFL::Debug::Log& rlog)
 
    // base units of kip and ksi
    WBFL::Units::AutoSystem au;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
    std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
 
@@ -259,7 +259,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    TESTME_PROLOGUE("MomentCapacitySolver::Test2");
    // base units of kip and ksi
    WBFL::Units::AutoSystem au;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
    std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
 
@@ -402,7 +402,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    // Source: Design Example of a UHPC Girder Bridge with a Conventional Concrete Deck (Graybeal, et.al.)
    // Presented April 5, 2021 to AASHTO T-10
    WBFL::Units::AutoSystem au;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
    WBFL::Geometry::NUBeam beam;
    beam.SetD1(3.8125);
@@ -646,7 +646,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    // This differs from the test above in that it applies initial strains to the concrete
 
    WBFL::Units::AutoSystem au;
-   WBFL::Units::System::SetBaseUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
 
    WBFL::Geometry::NUBeam beam;
    beam.SetD1(3.8125);

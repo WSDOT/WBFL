@@ -45,7 +45,7 @@ namespace WBFL
          enum Reason {InvalidFileFormat, EndOfFile, BadRead, BadVersion, MemoryError,CantInitializeTheParser, UserDefined, Unspecified};
 
          XStructuredLoad() = default;
-         XStructuredLoad( Reason reason, LPCTSTR file, Int16 line);
+         XStructuredLoad( Reason reason, const std::_tstring& file, Uint32 line);
          virtual ~XStructuredLoad() = default;
 
          XStructuredLoad& operator=(const XStructuredLoad&) = default;

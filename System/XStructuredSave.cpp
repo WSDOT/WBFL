@@ -32,7 +32,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::System;
 
-XStructuredSave::XStructuredSave(XStructuredSave::Reason reason, LPCTSTR file, Int16 line) :
+XStructuredSave::XStructuredSave(XStructuredSave::Reason reason, const std::_tstring& file, Uint32 line) :
 XBase(file,line),
 m_Reason(reason)
 {

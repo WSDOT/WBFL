@@ -35,11 +35,6 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Materials;
 
-PSPowerFormulaModel::PSPowerFormulaModel(LPCTSTR lpszName) :
-   StressStrainModel(lpszName)
-{
-}
-
 PSPowerFormulaModel::PSPowerFormulaModel(const std::_tstring& strName) :
    StressStrainModel(strName)
 {
