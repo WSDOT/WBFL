@@ -25,6 +25,8 @@
 
 #include <Materials/MaterialsExp.h>
 #include <Materials/ConcreteBase.h>
+#include <Units/Measure.h>
+#include <Units/Convert.h>
 
 namespace WBFL
 {
@@ -150,28 +152,29 @@ namespace WBFL
          virtual void OnChanged() override;
 
       private:
-         Float64 m_Eshu; // ultimate shrinkage strain
-         Float64 m_Cu;   // ultimate creep coefficient
-         Float64 m_Fc28;
-         Float64 m_Ec28;
-         Float64 m_A; // in system units
-         mutable Float64 m_Alpha; // converted to days
-         Float64 m_Beta; // unitless
-         bool m_bUserEc;
+         Float64 m_Eshu{ -780E-6 }; // ultimate shrinkage strain
+         Float64 m_Cu{2.35};   // ultimate creep coefficient
+         Float64 m_Fc28{0};
+         Float64 m_Ec28{0};
+         Float64 m_A{ WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day) }; // in system units
+         Float64 m_Beta{0.85}; // unitless
+         bool m_bUserEc{false};
 
-         mutable Float64 m_Ec; // this is the validated Ec28 (could be user input or could be computed)
+         mutable Float64 m_Alpha{ 0 }; // converted to days
 
-         mutable Float64 m_CP;  // initial moist cure factor
-         mutable Float64 m_RHS; // relative humidity factor for shrinkage
-         mutable Float64 m_RHC; // relative humidity factor for creep
+         mutable Float64 m_Ec{ 0 }; // this is the validated Ec28 (could be user input or could be computed)
 
-         mutable Float64 m_VSC; // size correction factor (V/S method) creep
-         mutable Float64 m_VSS; // size correction factor (V/S method) shrinkage
+         mutable Float64 m_CP{ 0 };  // initial moist cure factor
+         mutable Float64 m_RHS{ 0 }; // relative humidity factor for shrinkage
+         mutable Float64 m_RHC{ 0 }; // relative humidity factor for creep
 
-         mutable bool m_bIsValid;
+         mutable Float64 m_VSC{ 0 }; // size correction factor (V/S method) creep
+         mutable Float64 m_VSS{0}; // size correction factor (V/S method) shrinkage
+
+         mutable bool m_bIsValid{false};
          void Validate() const;
 
-         mutable bool m_bCorrectionFactorsValidated;
+         mutable bool m_bCorrectionFactorsValidated{false};
          void ValidateCorrectionFactors() const;
 
          Float64 GetFr(Float64 t) const;
