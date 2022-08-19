@@ -283,6 +283,8 @@ void VoidedSlab2::OnUpdateComposite(std::unique_ptr<CompositeShape>& composite) 
    slab->AddPoint(-m_W / 2, m_C3);
    slab->AddPoint(-m_W / 2 + m_C3, 0);
 
+   slab->RemoveDuplicatePoints();
+
    composite->AddShape(std::move(slab));
 
    if (m_nVoids == 0)
@@ -404,18 +406,13 @@ bool VoidedSlab2::TestMe(WBFL::Debug::Log& rlog)
    // PolyPoints
    //
    auto points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 10);
+   TRY_TESTME(points.size() == 4);
    int i = 0;
    TRY_TESTME(points[i++] == Point2d(130.000000, 0.000000));
-   TRY_TESTME(points[i++] == Point2d(130.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(130.000000, 36.000000));
-   TRY_TESTME(points[i++] == Point2d(130.000000, 36.000000));
-   TRY_TESTME(points[i++] == Point2d(130.000000, 36.000000));
-   TRY_TESTME(points[i++] == Point2d(-130.000000, 36.000000));
-   TRY_TESTME(points[i++] == Point2d(-130.000000, 36.000000));
    TRY_TESTME(points[i++] == Point2d(-130.000000, 36.000000));
    TRY_TESTME(points[i++] == Point2d(-130.000000, 0.000000));
-   TRY_TESTME(points[i++] == Point2d(-130.000000, 0.000000));
+   TRY_TESTME(i == points.size());
 
    //
    // PointInShape
@@ -451,6 +448,7 @@ bool VoidedSlab2::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-130.000000, 0.500000));
    TRY_TESTME(points[i++] == Point2d(-130.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(130.000000, 0.000000));
+   TRY_TESTME(i == points.size());
 
    // clip in other direction
    p1.Move(50, 0.50);
@@ -466,6 +464,7 @@ bool VoidedSlab2::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(130.000000, 36.000000));
    TRY_TESTME(points[i++] == Point2d(-130.000000, 36.000000));
    TRY_TESTME(points[i++] == Point2d(-130.000000, 0.500000));
+   TRY_TESTME(i == points.size());
 
    //
    // ClipIn
@@ -481,6 +480,7 @@ bool VoidedSlab2::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-100.000000, 1.500000));
    TRY_TESTME(points[i++] == Point2d(100.000000, 1.500000));
    TRY_TESTME(points[i++] == Point2d(100.000000, 16.500000));
+   TRY_TESTME(i == points.size());
 
    //
    // MoveEx (tests Offset as well)
@@ -491,18 +491,13 @@ bool VoidedSlab2::TestMe(WBFL::Debug::Log& rlog)
    beam.Move(from, to);
 
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 10);
+   TRY_TESTME(points.size() == 4);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(230.000000, 100.000000));
-   TRY_TESTME(points[i++] == Point2d(230.000000, 100.000000));
    TRY_TESTME(points[i++] == Point2d(230.000000, 136.000000));
-   TRY_TESTME(points[i++] == Point2d(230.000000, 136.000000));
-   TRY_TESTME(points[i++] == Point2d(230.000000, 136.000000));
-   TRY_TESTME(points[i++] == Point2d(-30.000000, 136.000000));
-   TRY_TESTME(points[i++] == Point2d(-30.000000, 136.000000));
    TRY_TESTME(points[i++] == Point2d(-30.000000, 136.000000));
    TRY_TESTME(points[i++] == Point2d(-30.000000, 100.000000));
-   TRY_TESTME(points[i++] == Point2d(-30.000000, 100.000000));
+   TRY_TESTME(i == points.size());
 
    //
    // OffsetEx
@@ -510,18 +505,13 @@ bool VoidedSlab2::TestMe(WBFL::Debug::Log& rlog)
    Size2d size(-100, -100);
    beam.Offset(size);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 10);
+   TRY_TESTME(points.size() == 4);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(130.000000, 0.000000));
-   TRY_TESTME(points[i++] == Point2d(130.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(130.000000, 36.000000));
-   TRY_TESTME(points[i++] == Point2d(130.000000, 36.000000));
-   TRY_TESTME(points[i++] == Point2d(130.000000, 36.000000));
-   TRY_TESTME(points[i++] == Point2d(-130.000000, 36.000000));
-   TRY_TESTME(points[i++] == Point2d(-130.000000, 36.000000));
    TRY_TESTME(points[i++] == Point2d(-130.000000, 36.000000));
    TRY_TESTME(points[i++] == Point2d(-130.000000, 0.000000));
-   TRY_TESTME(points[i++] == Point2d(-130.000000, 0.000000));
+   TRY_TESTME(i == points.size());
 
    //
    // LocatorPoint property
@@ -624,6 +614,7 @@ bool VoidedSlab2::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-60.000000, 154.000000));
    TRY_TESTME(points[i++] == Point2d(-60.000000, -106.000000));
    TRY_TESTME(points[i++] == Point2d(-24.000000, -106.000000));
+   TRY_TESTME(i == points.size());
 
    TESTME_EPILOG("VoidedSlab");
 }

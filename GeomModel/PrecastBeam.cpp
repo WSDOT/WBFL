@@ -620,7 +620,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
    // PolyPoints
    //
    auto points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 22);
+   TRY_TESTME(points.size() == 23);
    int i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 100.000000));
    TRY_TESTME(points[i++] == Point2d(-30.500000, 100.000000));
@@ -644,6 +644,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(24.500000, 97.000000));
    TRY_TESTME(points[i++] == Point2d(30.500000, 97.000000));
    TRY_TESTME(points[i++] == Point2d(30.500000, 100.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -741,7 +742,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
 
    beam.Move(from, to);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 22);
+   TRY_TESTME(points.size() == 23);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 200.000000));
@@ -766,6 +767,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(124.500000, 197.000000));
    TRY_TESTME(points[i++] == Point2d(130.500000, 197.000000));
    TRY_TESTME(points[i++] == Point2d(130.500000, 200.000000));
+   TRY_TESTME(points[i++] == Point2d(100.000000, 200.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -774,7 +776,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
    Size2d size(-100, -100);
    beam.Offset(size);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 22);
+   TRY_TESTME(points.size() == 23);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 100.000000));
    TRY_TESTME(points[i++] == Point2d(-30.500000, 100.000000));
@@ -798,6 +800,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(24.500000, 97.000000));
    TRY_TESTME(points[i++] == Point2d(30.500000, 97.000000));
    TRY_TESTME(points[i++] == Point2d(30.500000, 100.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -893,7 +896,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
 
    beam.Rotate(c, M_PI);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 22);
+   TRY_TESTME(points.size() == 23);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(-0.000000, -100.000000));
    TRY_TESTME(points[i++] == Point2d(30.500000, -100.000000));
@@ -917,6 +920,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-24.500000, -97.000000));
    TRY_TESTME(points[i++] == Point2d(-30.500000, -97.000000));
    TRY_TESTME(points[i++] == Point2d(-30.500000, -100.000000));
+   TRY_TESTME(points[i++] == Point2d(-0.000000, -100.000000));
    TRY_TESTME(i == points.size());
 
    TESTME_EPILOG("PrecastBeam");

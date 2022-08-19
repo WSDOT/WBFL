@@ -539,7 +539,7 @@ bool NUDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    // PolyPoints
    //
    auto points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 98);
+   TRY_TESTME(points.size() == 99);
 
    int i = 0;
    TRY_TESTME(points[i++] == Point2d(  0.000000, 0.000000));
@@ -640,6 +640,7 @@ bool NUDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(19.000000, 5.000000));
    TRY_TESTME(points[i++] == Point2d(19.000000, 1.000000));
    TRY_TESTME(points[i++] == Point2d(18.000000, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    //

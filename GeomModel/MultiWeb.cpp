@@ -306,7 +306,7 @@ bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
    // PolyPoints
    //
    auto points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 18);
+   TRY_TESTME(points.size() == 19);
 
    int i = 0;
    TRY_TESTME(points[i++] == Point2d(0, 0));
@@ -327,6 +327,7 @@ bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(22.875, -6));
    TRY_TESTME(points[i++] == Point2d(36, -6));
    TRY_TESTME(points[i++] == Point2d(36, 0));
+   TRY_TESTME(points[i++] == Point2d(0, 0));
    TRY_TESTME(i == points.size());
 
    //
@@ -439,7 +440,7 @@ bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
 
    beam.Move(from, to);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 18);
+   TRY_TESTME(points.size() == 19);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100, 100));
@@ -460,6 +461,7 @@ bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(122.875, 94));
    TRY_TESTME(points[i++] == Point2d(136, 94));
    TRY_TESTME(points[i++] == Point2d(136, 100));
+   TRY_TESTME(points[i++] == Point2d(100, 100));
    TRY_TESTME(i == points.size());
 
 
@@ -469,7 +471,7 @@ bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
    Size2d size(-100, -100);
    beam.Offset(size);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 18);
+   TRY_TESTME(points.size() == 19);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0, 0));
@@ -490,6 +492,7 @@ bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(22.875, -6));
    TRY_TESTME(points[i++] == Point2d(36, -6));
    TRY_TESTME(points[i++] == Point2d(36, 0));
+   TRY_TESTME(points[i++] == Point2d(0, 0));
    TRY_TESTME(i == points.size());
 
    // Test hook point behavior
@@ -588,7 +591,7 @@ bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
 
    beam.Rotate(c, M_PI);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 18);
+   TRY_TESTME(points.size() == 19);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0, 0));
@@ -609,6 +612,7 @@ bool MultiWeb::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-22.875, 6));
    TRY_TESTME(points[i++] == Point2d(-36, 6));
    TRY_TESTME(points[i++] == Point2d(-36, 0));
+   TRY_TESTME(points[i++] == Point2d(0, 0));
    TRY_TESTME(i == points.size());
 
    TESTME_EPILOG("MultiWeb");

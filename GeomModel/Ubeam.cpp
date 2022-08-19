@@ -485,20 +485,9 @@ void UBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
    UpdateSlope();
 
-
-   // compute wall slope
-   Float64 rise = m_D1 - m_D4 - m_D5;
-   Float64 run = (m_W2 - m_W1) / 2 - m_W5;
-
-   Float64 slope;
-   if (IsZero(run))
-      slope = DBL_MAX;
-   else
-      slope = rise / run;
-
    Float64 T = m_T;
-   if (!IsZero(slope))
-      T = m_T * sqrt(slope * slope + 1) / slope;
+   if (!IsZero(m_Slope))
+      T = m_T * sqrt(m_Slope * m_Slope + 1) / m_Slope;
 
    Float64 D4(m_D4), D5(m_D5), D6(m_D6), D7(m_D7);
    if (IsZero(m_W4))
@@ -528,7 +517,7 @@ void UBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
    Float64 p2_x = -m_W1 / 2;
    Float64 p2_y = 0.;
 
-   Float64 p3_x = p2_x - (IsZero(slope) ? 0 : (m_D1 - D4 - D5) / slope);
+   Float64 p3_x = p2_x - (IsZero(m_Slope) ? 0 : (m_D1 - D4 - D5) / m_Slope);
    Float64 p3_y = m_D1 - D4 - D5;
 
    Float64 p4_x = -m_W2 / 2;
@@ -541,12 +530,12 @@ void UBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
    if (IsZero(D4) && IsZero(D5) && !IsZero(D6) & !IsZero(D7))
    {
       // Flange only on the inside
-      p6_x = -m_W2 / 2 + m_W4 + T + (IsZero(slope) ? 0 : (D6 + D7) / slope);
+      p6_x = -m_W2 / 2 + m_W4 + T + (IsZero(m_Slope) ? 0 : (D6 + D7) / m_Slope);
    }
    else if (!IsZero(D4) && !IsZero(D5) && IsZero(D6) & IsZero(D7))
    {
       // Flange only on the outside
-      p6_x = -m_W2 / 2 + m_W5 + T - (IsZero(slope) ? 0 : (D4 + D5) / slope);
+      p6_x = -m_W2 / 2 + m_W5 + T - (IsZero(m_Slope) ? 0 : (D4 + D5) / m_Slope);
    }
    else
    {
@@ -561,7 +550,7 @@ void UBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
    Float64 p8_x = p7_x - m_W4;
    Float64 p8_y = m_D1 - D6 - D7;
 
-   Float64 p9_x = p8_x + (IsZero(slope) ? 0 : (m_D1 - m_D2 - m_D3 - D6 - D7) / slope);
+   Float64 p9_x = p8_x + (IsZero(m_Slope) ? 0 : (m_D1 - m_D2 - m_D3 - D6 - D7) / m_Slope);
    Float64 p9_y = m_D2 + m_D3;
 
    Float64 p10_x = p9_x + m_W3;
@@ -791,7 +780,7 @@ bool UBeam::TestMe(WBFL::Debug::Log& rlog)
    // PolyPoints
    //
    auto points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 20);
+   TRY_TESTME(points.size() == 21);
    int i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(-30.000000, 0.000000));
@@ -813,6 +802,7 @@ bool UBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(42.715000, 55.500000));
    TRY_TESTME(points[i++] == Point2d(37.715000, 54.000000));
    TRY_TESTME(points[i++] == Point2d(30.000000, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -907,7 +897,7 @@ bool UBeam::TestMe(WBFL::Debug::Log& rlog)
 
    beam.Move(from, to);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 20);
+   TRY_TESTME(points.size() == 21);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(points[i++] == Point2d(70.000000, 100.000000));
@@ -929,6 +919,7 @@ bool UBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(142.715000, 155.500000));
    TRY_TESTME(points[i++] == Point2d(137.715000, 154.000000));
    TRY_TESTME(points[i++] == Point2d(130.000000, 100.000000));
+   TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -937,7 +928,7 @@ bool UBeam::TestMe(WBFL::Debug::Log& rlog)
    Size2d size(-100, -100);
    beam.Offset(size);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 20);
+   TRY_TESTME(points.size() == 21);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(-30.000000, 0.000000));
@@ -959,6 +950,7 @@ bool UBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(42.715000, 55.500000));
    TRY_TESTME(points[i++] == Point2d(37.715000, 54.000000));
    TRY_TESTME(points[i++] == Point2d(30.000000, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -1054,7 +1046,7 @@ bool UBeam::TestMe(WBFL::Debug::Log& rlog)
 
    beam.Rotate(c, M_PI);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 20);
+   TRY_TESTME(points.size() == 21);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(30.000000, -0.000000));
@@ -1076,6 +1068,7 @@ bool UBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-42.715000, -55.500000));
    TRY_TESTME(points[i++] == Point2d(-37.715000, -54.000000));
    TRY_TESTME(points[i++] == Point2d(-30.000000, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    TESTME_EPILOG("UBeam");

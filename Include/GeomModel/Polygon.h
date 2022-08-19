@@ -118,6 +118,10 @@ public:
    /// point, not a mirrored point
    void ReplacePoint(IndexType idx,const Point2d& p);
 
+   /// Removes adjacent points that are at the same location.
+   /// If the points form a closed polygon (first and last point are the same), the last point is not removed
+   void RemoveDuplicatePoints();
+
    /// Returns a point-wise representation of the shape
    virtual std::vector<Point2d> GetPolyPoints() const override;
 

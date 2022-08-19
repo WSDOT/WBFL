@@ -625,7 +625,7 @@ bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    // PolyPoints
    //
    auto points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 150);
+   TRY_TESTME(points.size() == 151);
 
    int i = 0;
    TRY_TESTME(points[i++] == Point2d(  0.000000, 0.000000));
@@ -778,6 +778,7 @@ bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(19.187500, 2.349145));
    TRY_TESTME(points[i++] == Point2d(19.187500, 1.000000));
    TRY_TESTME(points[i++] == Point2d(18.187500, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -812,7 +813,7 @@ bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    points = beam.GetPolyPoints();
 
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 150);
+   TRY_TESTME(points.size() == 151);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
@@ -965,6 +966,7 @@ bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(119.187500, 102.349145));
    TRY_TESTME(points[i++] == Point2d(119.187500, 101.000000));
    TRY_TESTME(points[i++] == Point2d(118.187500, 100.000000));
+   TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -975,7 +977,7 @@ bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    beam.Offset(size);
 
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 150);
+   TRY_TESTME(points.size() == 151);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
@@ -1128,6 +1130,7 @@ bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(19.187500, 2.349145));
    TRY_TESTME(points[i++] == Point2d(19.187500, 1.000000));
    TRY_TESTME(points[i++] == Point2d(18.187500, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -1138,7 +1141,7 @@ bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    Point2d c(0, 0);
    beam.Rotate(c, M_PI/6);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 150);
+   TRY_TESTME(points.size() == 151);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
@@ -1291,6 +1294,7 @@ bool PCIDeckedIBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(15.442290, 11.628170));
    TRY_TESTME(points[i++] == Point2d(16.116862, 10.459775));
    TRY_TESTME(points[i++] == Point2d(15.750837, 9.093750));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    //std::cout.setf(std::ios::fixed);

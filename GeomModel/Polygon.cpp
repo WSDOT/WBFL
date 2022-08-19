@@ -36,14 +36,19 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::Geometry;
 
-IndexType GetIndex(IndexType idx, const std::vector<Point2d>& container, Polygon::Symmetry symmetry)
+inline IndexType GetIndex(IndexType idx, const std::vector<Point2d>& container, Polygon::Symmetry symmetry)
 {
    return symmetry == Polygon::Symmetry::None || idx < container.size() ? idx : 2*(container.size() - 1) - idx;
 }
 
-bool IsValidIndex(IndexType idx, const std::vector<Point2d>& container, Polygon::Symmetry symmetry)
+inline bool IsValidIndex(IndexType idx, const std::vector<Point2d>& container, Polygon::Symmetry symmetry)
 {
    return GetIndex(idx, container, symmetry) < container.size();
+}
+
+inline void _RemoveDuplicatePoints(std::vector<Point2d>& vPoints)
+{
+   vPoints.erase(std::unique(vPoints.begin(), vPoints.end()), vPoints.end()); // remove adjacent duplications
 }
 
 Polygon::Polygon(std::shared_ptr<Point2d>& hookPnt) :
@@ -175,6 +180,11 @@ void Polygon::ReplacePoint(IndexType idx,const Point2d& p)
    ReplacePoint(idx, p.X(), p.Y());
 }
 
+void Polygon::RemoveDuplicatePoints()
+{
+   _RemoveDuplicatePoints(m_Points);
+}
+
 std::vector<Point2d> Polygon::GetPolyPoints() const
 {
    UpdatePoints();
@@ -246,12 +256,16 @@ void Polygon::DoOffset(const Size2d& delta)
 
 void Polygon::DoRotate(const Point2d& center, Float64 angle)
 {
-   // rotation kills symmetry
-   std::vector<Point2d> points;
-   GetAllPoints(&points);
-   m_Points = points;
-   m_Symmetry = Symmetry::None;
-   m_SymmetryAxis = 0.0;
+   if (m_Symmetry != Symmetry::None)
+   {
+      // rotation kills symmetry
+      // convert this to a full polygon (no symmetry)
+      std::vector<Point2d> points;
+      GetAllPoints(&points);
+      m_Points = points;
+      m_Symmetry = Symmetry::None;
+      m_SymmetryAxis = 0.0;
+   }
 
    std::for_each(m_Points.begin(), m_Points.end(), [&](auto& point) {point.Rotate(center, angle); });
    if (!m_Points.empty()) GetHookPoint()->Rotate(center, angle);
@@ -437,25 +451,30 @@ bool Polygon::AssertValid() const
    // could add test for bowties here if a suitable algorithm can be found
    auto iter = m_Points.begin();
    auto end = m_Points.end();
-   Point2d p0(*iter);
+   Point2d p0(*iter); // previous point
    iter++;
    for (; iter != end; iter++)
    {
-      Point2d p1(*iter);
-      Size2d size(p1 - p0);
+      Point2d p1(*iter); // current poin
 
-      if (m_Symmetry == Symmetry::X && IsZero(p0.Y() - m_SymmetryAxis) && IsZero(size.Dy()))
+      if (m_Symmetry == Symmetry::X)
       {
-         // if symmetry is about the Y=0 axis, the points can't define an edge on that axis
-         return false;
+         // when symmetry is about the Y=0 axis, the current point cannot be on the opposite side of the symmetry axis that the previous point
+         Float64 d0 = p0.Y() - m_SymmetryAxis;
+         Float64 d1 = p1.Y() - m_SymmetryAxis;
+         if( !IsZero(d0) && !IsZero(d1) && ::BinarySign(d0) != ::BinarySign(d1))
+            return false;
       }
-      else if (m_Symmetry == Symmetry::Y && IsZero(p0.X() - m_SymmetryAxis) && IsZero(size.Dx()))
+      else if (m_Symmetry == Symmetry::Y )
       {
-         // if symmetry is about the X=0 axis, the points can't define an edge on that axis
-         return false;
+         // when symmetry is about the X=0 axis, the current point cannot be on the opposite side of the symmetry axis that the previous point
+         Float64 d0 = p0.X() - m_SymmetryAxis;
+         Float64 d1 = p1.X() - m_SymmetryAxis;
+         if (!IsZero(d0) && !IsZero(d1) && ::BinarySign(d0) != ::BinarySign(d1))
+            return false;
       }
 
-      p0 = p1;
+      p0 = p1; // update previous point
    }
 
    return ShapeImpl::AssertValid();
@@ -866,6 +885,8 @@ Point2d Polygon::GetMirroredPoint(const Point2d& point) const
 
 void Polygon::GetAllPoints(std::vector<Point2d>* points) const
 {
+   ASSERT(m_Symmetry != Symmetry::None);
+
    *points = m_Points;
    Float64 xOffset = m_Symmetry == Symmetry::X ? 0 : m_SymmetryAxis;
    Float64 yOffset = m_Symmetry == Symmetry::Y ? 0 : m_SymmetryAxis;
@@ -874,13 +895,11 @@ void Polygon::GetAllPoints(std::vector<Point2d>* points) const
    auto end = m_Points.rend();
    for (; iter != end; iter++)
    {
-      // working in reverse order, add the the mirrored points to the vector of points, but don't duplicate
-      // points on the axis of symmetry
+      // working in reverse order, add the the mirrored points to the vector of points
       const auto& point(*iter);
-      if( (m_Symmetry == Symmetry::X && !IsZero(point.Y()-yOffset) || (m_Symmetry == Symmetry::Y && !IsZero(point.X()-xOffset))))
-         points->emplace_back(GetMirroredPoint(point));
+      points->emplace_back(GetMirroredPoint(point));
    }
-   points->erase(std::unique(points->begin(), points->end()),points->end()); // remove adjacent duplications
+   _RemoveDuplicatePoints(*points);
 }
 
 std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, Line2d::Side side, const std::vector<Point2d>& points) const

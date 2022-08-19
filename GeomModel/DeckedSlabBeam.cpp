@@ -280,7 +280,7 @@ bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
    // PolyPoints
    //
    auto points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 10);
+   TRY_TESTME(points.size() == 11);
 
    Float64 Wb2 = (A - 9 * 2) / 2.0;
 
@@ -295,6 +295,7 @@ bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-A/2, 12.0));
    TRY_TESTME(points[i++] == Point2d(-Wb2, 12.0));
    TRY_TESTME(points[i++] == Point2d(-Wb2, 0.0));
+   TRY_TESTME(points[i++] == Point2d(0.0, 0.0));
    TRY_TESTME(i == points.size());
 
    //
@@ -408,7 +409,7 @@ bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
 
    // Check the points
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 10);
+   TRY_TESTME(points.size() == 11);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
@@ -421,6 +422,7 @@ bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(61.125000, 112.000000));
    TRY_TESTME(points[i++] == Point2d(70.125000, 112.000000));
    TRY_TESTME(points[i++] == Point2d(70.125000, 100.000000));
+   TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    props = beam.GetProperties();
@@ -436,7 +438,7 @@ bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
 
    // Check the points
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 10);
+   TRY_TESTME(points.size() == 11);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
@@ -449,6 +451,7 @@ bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-38.875000, 12.000000));
    TRY_TESTME(points[i++] == Point2d(-29.875000, 12.000000));
    TRY_TESTME(points[i++] == Point2d(-29.875000, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    props = beam.GetProperties();
@@ -554,7 +557,7 @@ bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
 
    // Check the points
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 10);
+   TRY_TESTME(points.size() == 11);
 
    i = 0;
    TRY_TESTME(points[i++] == Point2d(-38.875000, 38.875000));
@@ -567,6 +570,7 @@ bool DeckedSlabBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-50.875000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(-50.875000, 9.000000));
    TRY_TESTME(points[i++] == Point2d(-38.875000, 9.000000));
+   TRY_TESTME(points[i++] == Point2d(-38.875000, 38.875000));
    TRY_TESTME(i == points.size());
 
    TESTME_EPILOG("DeckedSlabBeam");

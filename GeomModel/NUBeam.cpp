@@ -633,7 +633,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
    //
    auto points = beam.GetPolyPoints();
 
-   TRY_TESTME(points.size() == 174);
+   TRY_TESTME(points.size() == 175);
    int i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(-487.500000, 0.000000));
@@ -809,6 +809,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(487.403372, 102.275460));
    TRY_TESTME(points[i++] == Point2d(487.500000, 99.168460));
    TRY_TESTME(points[i++] == Point2d(487.500000, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
 
@@ -1144,7 +1145,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
 
    beam.Move(from, to);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 174);
+   TRY_TESTME(points.size() == 175);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(points[i++] == Point2d(-387.500000, 100.000000));
@@ -1320,6 +1321,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(587.403372, 202.275460));
    TRY_TESTME(points[i++] == Point2d(587.500000, 199.168460));
    TRY_TESTME(points[i++] == Point2d(587.500000, 100.000000));
+   TRY_TESTME(points[i++] == Point2d(100.000000, 100.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -1328,7 +1330,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
    Size2d size(-100, -100);
    beam.Offset(size);
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 174);
+   TRY_TESTME(points.size() == 175);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(-487.500000, 0.000000));
@@ -1504,6 +1506,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(487.403372, 102.275460));
    TRY_TESTME(points[i++] == Point2d(487.500000, 99.168460));
    TRY_TESTME(points[i++] == Point2d(487.500000, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    //
@@ -1600,7 +1603,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
    beam.Rotate(c, M_PI);
 
    points = beam.GetPolyPoints();
-   TRY_TESTME(points.size() == 174);
+   TRY_TESTME(points.size() == 175);
    i = 0;
    TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(points[i++] == Point2d(487.500000, -0.000000));
@@ -1776,6 +1779,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(points[i++] == Point2d(-487.403372, -102.275460));
    TRY_TESTME(points[i++] == Point2d(-487.500000, -99.168460));
    TRY_TESTME(points[i++] == Point2d(-487.500000, 0.000000));
+   TRY_TESTME(points[i++] == Point2d(0.000000, 0.000000));
    TRY_TESTME(i == points.size());
 
    // Test hook point behavior
