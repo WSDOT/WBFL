@@ -160,12 +160,13 @@ std::pair<Float64, bool> UHPCModel::ComputeStress(Float64 strain) const
       }
       else if (::IsLE(strain, m_etloc))
       {
+         // if (ftloc < 1.2ftcr) then the tension is gammau*ftcr, otherwise there is strain hardening and stress continues to increase to gamma_u*ftloc at etloc
          stress = (m_ftloc < 1.2 * m_ftcr) ? m_gamma * m_ftcr : ::LinInterp(strain - e_tcr, m_gamma * m_ftcr, m_gamma * m_ftloc, m_etloc - e_tcr);
       }
       else
       {
-         // beyond localization so can't carry any tension
-         stress = (m_ftloc < 1.2 * m_ftcr) ? m_gamma * m_ftcr : ::LinInterp(strain - e_tcr, m_gamma * m_ftcr, m_gamma * m_ftloc, m_etloc - e_tcr);
+         // beyond localization so can't carry any tension - keep the stress at the max value
+         stress = (m_ftloc < 1.2 * m_ftcr) ? m_gamma * m_ftcr : m_gamma * m_ftloc;
          bWithinStrainLimits = false;
       }
    }
@@ -174,11 +175,12 @@ std::pair<Float64, bool> UHPCModel::ComputeStress(Float64 strain) const
       // compression
       strain = fabs(strain);
       Float64 e_cp = 1.0 * m_alpha * m_fc / Ec;
+      Float64 e_cu = Max(-m_ecu, e_cp);
       if (strain < e_cp)
       {
          stress = -strain * Ec;
       }
-      else if (::IsLE(strain, -m_ecu))
+      else if (::IsLE(strain, e_cu))
       {
          stress = -1.0 * m_alpha * m_fc; // negative for compression
       }
