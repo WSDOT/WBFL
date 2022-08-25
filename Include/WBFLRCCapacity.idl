@@ -1242,8 +1242,8 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
 
       /// Index of the primary shape
-      [propput, helpstring("property GirderShape")] HRESULT GirderShape([in]IndexType shapeIdx);
-      [propget, helpstring("property GirderShape")] HRESULT GirderShape([out, retval]IndexType* pShapeIdx);
+      [propput, helpstring("property PrimaryShapeIndex")] HRESULT PrimaryShapeIndex([in]IndexType shapeIdx);
+      [propget, helpstring("property PrimaryShapeIndex")] HRESULT PrimaryShapeIndex([out, retval]IndexType* pShapeIdx);
 
       /// Name of the sname
       [propput, helpstring("property Name")] HRESULT Name([in]CollectionIndexType shapeIdx, [in]BSTR bstrName);
@@ -1467,8 +1467,8 @@ library WBFLRCCapacity
       /// Curvature at a solution step
 		[propget,helpcontext(IDH_IMomentCurvatureSolution_Curvature),helpstring("property Curvature")] HRESULT Curvature([in]CollectionIndexType idx,[out,retval]Float64* k);
 
-      /// Strain plan at a solution step
-      [propget, helpcontext(IDH_IMomentCurvatureSolution_StrainPlane), helpstring("property StrainPlane")] HRESULT StrainPlane([in]CollectionIndexType idx, [out, retval]IPlane3d** StrainPlane);
+      /// Incremental strain plane at a solution step
+      [propget, helpcontext(IDH_IMomentCurvatureSolution_StrainPlane), helpstring("property IncrementalStrainPlane")] HRESULT IncrementalStrainPlane([in]CollectionIndexType idx, [out, retval]IPlane3d** StrainPlane);
 
       /// MomentCapacitySolution object at a solution step
       [propget, /*helpcontext(IDH_IMomentCurvatureSolution_StrainPlane),*/ helpstring("property CapacitySolution")] HRESULT CapacitySolution([in]CollectionIndexType idx, [out, retval]IMomentCapacitySolution** solution);
@@ -1541,12 +1541,14 @@ library WBFLRCCapacity
          [in]Float64 fz, ///< Resultant axial force
          [in]Float64 mx, ///< Resultant moment about the horizontal centroidal axis
          [in]Float64 my, ///< Resultant moment about the vertical centroidal axis
-         [in]IPlane3d* strainPlane, ///< Plane3d object representing the strain plane
-         [in]ILine2d* neutralAxis, ///< Line2d object representing the neutral axis
+         [in]IPlane3d* strainPlane, ///< Plane3d object representing the incremental strain plane
+         [in]IPoint2d* pntC, ///< Location of point on the section furthest from neutral axis on the compression side
          [in]IPoint2d* cgC, ///< Location of resultant compression force
          [in]Float64 C, ///< Resultant compression force
+         [in]IPoint2d* pntT, ///< Location of point on the section furthest from neutral axis on the tension side
          [in]IPoint2d* cgT, ///< Location of resultant tension force
          [in]Float64 T, ///< Resultant tension force
+         [in]Float64 k, ///< Curvature of primary shape
          [in]IGeneralSectionSolution* pSolution ///< GeneralSectionSolution object corresponding to the resulting strain plane
       );
 
@@ -1560,13 +1562,16 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_IMomentCapacitySolution_My),helpstring("property My")] HRESULT My([out,retval]Float64* my);
 
       /// Plane3d object representing the strain plane
-		[propget,helpcontext(IDH_IMomentCapacitySolution_StrainPlane),helpstring("property StrainPlane")] HRESULT StrainPlane([out,retval]IPlane3d** strainPlane);
+		[propget,helpcontext(IDH_IMomentCapacitySolution_StrainPlane),helpstring("property IncrementalStrainPlane")] HRESULT IncrementalStrainPlane([out,retval]IPlane3d** strainPlane);
       
       /// Line2d object representing the neutral axis
 		[propget,helpcontext(IDH_IMomentCapacitySolution_NeutralAxis),helpstring("property NeutralAxis")] HRESULT NeutralAxis([out,retval]ILine2d** neutralAxis);
 
       /// Angle of the neutral axis measured in radians, counter-clockwise from the positive X-axis.
 		[propget,helpcontext(IDH_IMomentCapacitySolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([out,retval]Float64* angle);
+
+      /// Distance from the extreme point in compression to the neutral axis
+      [propget, helpstring("property DepthToNeutralAxis")] HRESULT DepthToNeutralAxis([out, retval]Float64* pc);
 
       /// Resultant compression force
 		[propget,helpcontext(IDH_IMomentCapacitySolution_CompressionResultant),helpstring("property CompressionResultant")] HRESULT CompressionResultant([out,retval]Float64* c);
@@ -1579,6 +1584,24 @@ library WBFLRCCapacity
 
       /// Location of the resultant tension force
 		[propget,helpcontext(IDH_IMomentCapacitySolution_TensionResultantLocation),helpstring("property TensionResultantLocation")] HRESULT TensionResultantLocation([out,retval]IPoint2d** cgT);
+
+      /// Location on the section that is furthest from the neutral axis on the compression side
+      [propget, helpstring("property ExtremeCompressionPoint")] HRESULT ExtremeCompressionPoint([out, retval]IPoint2d** pntC);
+
+      /// Location on the section that is furthest from the neutral axis on the tension side
+      [propget, helpstring("property ExtremeTensionPoint")] HRESULT ExtremeTensionPoint([out, retval]IPoint2d** pntT);
+
+      /// Depth to compression resultant from the extreme compression point
+      [propget, helpstring("property DepthToCompressionResultant")] HRESULT DepthToCompressionResultant([out, retval]Float64* pdc);
+
+      /// Depth to tension resultant from the extreme compression point
+      [propget, helpstring("property DepthToTensionResultant")] HRESULT DepthToTensionResultant([out, retval]Float64* pde);
+
+      /// Moment arm, distance between compression and tension resultants
+      [propget, helpstring("property MomentArm")] HRESULT MomentArm([out, retval]Float64* pMA);
+
+      /// Curvature of primary shape
+      [propget, helpstring("property Curvature")] HRESULT Curvature([out, retval]Float64* pK);
 
       /// GeneralSectionSolution object corresponding to the resulting strain plane
 		[propget,helpcontext(IDH_IMomentCapacitySolution_GeneralSectionSolution),helpstring("property GeneralSectionSolution")] HRESULT GeneralSectionSolution([out,retval]IGeneralSectionSolution** solution);

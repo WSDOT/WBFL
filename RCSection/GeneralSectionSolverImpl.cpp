@@ -25,6 +25,7 @@
 #include "GeneralSectionSolverImpl.h"
 #include <GeomModel/ShapeProperties.h>
 #include <GeomModel/GeomOp2d.h>
+#include <GeomModel/Primitives3d.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -236,8 +237,8 @@ std::unique_ptr<GeneralSectionSolution> GeneralSectionSolverImpl::Solve(const WB
 
    // locate centroid of resultant compression and tension forces
    // up to this point the cgC and cgT objects contain the sum of Force*CG
-   IsZero(C) ? cgC.Move(0, 0) : cgC / C;
-   IsZero(T) ? cgT.Move(0, 0) : cgT / T;
+   IsZero(C) ? cgC.Move(0, 0) : cgC /= C;
+   IsZero(T) ? cgT.Move(0, 0) : cgT /= T;
 
    solution->InitSolution(p, mx, my, m_NeutralAxis, cgC, C, cgT, T, std::move(slices), bExceededStrainLimits);
 
@@ -413,6 +414,43 @@ bool GeneralSectionSolverImpl::IsNeutralAxisParallel(const WBFL::Geometry::Plane
 
 void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& incrementalStrainPlane, WBFL::Geometry::Line2d& line) const
 {
+   // get the initial strain plane for the primary shape
+   IndexType primaryShapeIdx = m_Section->GetPrimaryShapeIndex();
+   const auto& initial_strain_plane = m_Section->GetInitialStrain(primaryShapeIdx);
+
+   // get three points on the initial strain plane
+   WBFL::Geometry::Point3d A1, A2, A3;
+   Float64 X1 = -100;
+   Float64 Y1 = 100;
+   Float64 Z1 = 0;
+   Float64 X2 = 100;
+   Float64 Y2 = 100;
+   Float64 Z2 = 0;
+   Float64 X3 = -100;
+   Float64 Y3 = -100;
+   Float64 Z3 = 0;
+   if (initial_strain_plane)
+   {
+      Z1 = initial_strain_plane->GetZ(X1, Y1);
+      Z2 = initial_strain_plane->GetZ(X2, Y2);
+      Z3 = initial_strain_plane->GetZ(X3, Y3);
+   }
+   A1.Move(X1, Y1, Z1);
+   A2.Move(X2, Y2, Z2);
+   A3.Move(X3, Y3, Z3);
+
+   // get the incremental strain on these three points
+   // and offset the initial strain by the increment strain
+   Z1 = incrementalStrainPlane.GetZ(X1, Y1);
+   A1.Offset(0, 0, Z1);
+   Z2 = incrementalStrainPlane.GetZ(X2, Y2);
+   A2.Offset(0, 0, Z2);
+   Z3 = incrementalStrainPlane.GetZ(X3, Y3);
+   A3.Offset(0, 0, Z3);
+
+   // create a new plane... the total strain plane through these three points
+   WBFL::Geometry::Plane3d total_strain_plane(A1, A2, A3);
+
    // find the line that passes through z = 0 (z is the strain axis)
 
    Float64 x1 = -1000;
@@ -423,7 +461,7 @@ void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& 
    bool by1 = true;
    try
    {
-      y1 = incrementalStrainPlane.GetY(x1, z);
+      y1 = total_strain_plane.GetY(x1, z);
    }
    catch (...)
    {
@@ -433,7 +471,7 @@ void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& 
    bool by2 = true;
    try
    {
-      y2 = incrementalStrainPlane.GetY(x2, z);
+      y2 = total_strain_plane.GetY(x2, z);
    }
    catch (...)
    {
@@ -450,7 +488,7 @@ void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& 
 
       try
       {
-         x1 = incrementalStrainPlane.GetX(y1, z);
+         x1 = total_strain_plane.GetX(y1, z);
       }
       catch (...)
       {
@@ -459,7 +497,7 @@ void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& 
 
       try
       {
-         x2 = incrementalStrainPlane.GetX(y2, z);
+         x2 = total_strain_plane.GetX(y2, z);
       }
       catch (...)
       {
@@ -498,7 +536,7 @@ void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& 
    Float64 Z;
    try
    {
-      Z = incrementalStrainPlane.GetZ(X, Y);
+      Z = total_strain_plane.GetZ(X, Y);
    }
    catch (...)
    {

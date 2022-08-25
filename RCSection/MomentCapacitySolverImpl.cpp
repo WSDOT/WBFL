@@ -24,6 +24,7 @@
 #include <RCSection/RCSectionLib.h>
 #include "MomentCapacitySolverImpl.h"
 #include <RCSection/XRCSection.h>
+#include <GeomModel/GeomOp2d.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -120,17 +121,16 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::Solve(Float64 
       Float64 C = solution->GetCompressionResultant();
       Float64 T = solution->GetTensionResultant();
 
-      const auto& strainPlane = solution->GetStrainPlane();
+      const auto& incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
+      UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
       if (IsEqual(Fz, FzC))
       {
-         const auto& na = m_CompressionSolution->GetNeutralAxis();
-         solution->InitSolution(FzC, MxC, MyC, strainPlane, na, cgC, C, cgT, T, std::move(std::make_unique<GeneralSectionSolution>(*m_CompressionSolution)));
+         solution->InitSolution(FzC, MxC, MyC, incrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_CompressionSolution)));
       }
       else
       {
-         const auto& na = m_TensionSolution->GetNeutralAxis();
-         solution->InitSolution(FzT, MxT, MyT, strainPlane, na, cgC, C, cgT, T, std::move(std::make_unique<GeneralSectionSolution>(*m_TensionSolution)));
+         solution->InitSolution(FzT, MxT, MyT, incrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_TensionSolution)));
       }
 
       return solution;
@@ -185,12 +185,12 @@ void MomentCapacitySolverImpl::UpdateLimits() const
    }
 
    m_eoCompressionLimit = compStrain;
-   m_StrainPlane.ThroughAltitude(compStrain);
+   m_IncrementalStrainPlane.ThroughAltitude(compStrain);
 
    IndexType nSlices = GetSlices();
    m_GeneralSolver.SetSlices(1);
 
-   m_CompressionSolution = m_GeneralSolver.Solve(m_StrainPlane);
+   m_CompressionSolution = m_GeneralSolver.Solve(m_IncrementalStrainPlane);
    
    //m_GeneralSolver.SetSlices(nSlices);
 
@@ -199,11 +199,11 @@ void MomentCapacitySolverImpl::UpdateLimits() const
    m_MyCompressionLimit = m_CompressionSolution->GetMy();
 
    m_eoTensionLimit = tensStrain;
-   m_StrainPlane.ThroughAltitude(tensStrain);
+   m_IncrementalStrainPlane.ThroughAltitude(tensStrain);
 
    //m_GeneralSolver.SetSlices(1);
    
-   m_TensionSolution = m_GeneralSolver.Solve(m_StrainPlane);
+   m_TensionSolution = m_GeneralSolver.Solve(m_IncrementalStrainPlane);
    
    m_GeneralSolver.SetSlices(nSlices);
 
@@ -234,13 +234,15 @@ void MomentCapacitySolverImpl::GetTensionLimit(Float64* Fz, Float64* Mx, Float64
 
 void MomentCapacitySolverImpl::UpdateStrainPlane(Float64 angle, Float64 k_or_ec, Float64 strainLocation, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 eo) const
 {
+   UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
+
    if (solutionMethod == MomentCapacitySolver::SolutionMethod::FixedCurvature)
    {
       // curvature is fixed... move the strain plain up/down changing the strain at the extreme point
       Float64 k = k_or_ec;
       if (IsZero(k, 1e-6))
       {
-         m_StrainPlane.ThroughAltitude(eo);
+         m_IncrementalStrainPlane.ThroughAltitude(eo);
       }
       else
       {
@@ -262,7 +264,7 @@ void MomentCapacitySolverImpl::UpdateStrainPlane(Float64 angle, Float64 k_or_ec,
 
          m_P3.Move(0, 0, eo);
 
-         m_StrainPlane.ThroughPoints(m_P1, m_P2, m_P3);
+         m_IncrementalStrainPlane.ThroughPoints(m_P1, m_P2, m_P3);
       }
    }
    else
@@ -290,11 +292,11 @@ void MomentCapacitySolverImpl::UpdateStrainPlane(Float64 angle, Float64 k_or_ec,
 
       if (IsEqual(ec, eo))
       {
-         m_StrainPlane.ThroughAltitude(eo);
+         m_IncrementalStrainPlane.ThroughAltitude(eo);
       }
       else
       {
-         UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
+         UpdateControlPoints(angle, solutionMethod, strainLocation);
 
          Float64 d = 1000; // distance between P1 and P2.
          Float64 sin_angle = sin(angle);
@@ -317,15 +319,13 @@ void MomentCapacitySolverImpl::UpdateStrainPlane(Float64 angle, Float64 k_or_ec,
 
          // The strain plain is defined by three points. One point is where the strain is fixed
          // The other two define a line of constant strain through the trial strain value
-         m_StrainPlane.ThroughPoints(m_P1, m_P2, m_P3);
+         m_IncrementalStrainPlane.ThroughPoints(m_P1, m_P2, m_P3);
       }
    }
 }
 
 void MomentCapacitySolverImpl::UpdateAnalysisPoints(Float64 angle, MomentCapacitySolver::SolutionMethod solutionMethod,Float64 strainLocation) const
 {
-   PRECONDITION(solutionMethod == MomentCapacitySolver::SolutionMethod::FixedCompressionStrain || solutionMethod == MomentCapacitySolver::SolutionMethod::FixedTensionStrain || solutionMethod == MomentCapacitySolver::SolutionMethod::FixedStrain);
-
    if (m_bAnalysisPointUpdated)
       return;
 
@@ -380,6 +380,18 @@ void MomentCapacitySolverImpl::UpdateAnalysisPoints(Float64 angle, MomentCapacit
       }
    }
 
+   m_ExtremeCompressionPoint = pntCompression;
+   m_ExtremeTensionPoint = pntTension;
+
+   m_bAnalysisPointUpdated = true;
+}
+
+void MomentCapacitySolverImpl::UpdateControlPoints(Float64 angle, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 strainLocation) const
+{
+   PRECONDITION(solutionMethod == MomentCapacitySolver::SolutionMethod::FixedCompressionStrain || solutionMethod == MomentCapacitySolver::SolutionMethod::FixedTensionStrain || solutionMethod == MomentCapacitySolver::SolutionMethod::FixedStrain);
+
+   UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
+
    switch (solutionMethod)
    {
    case MomentCapacitySolver::SolutionMethod::FixedCurvature:
@@ -387,13 +399,13 @@ void MomentCapacitySolverImpl::UpdateAnalysisPoints(Float64 angle, MomentCapacit
       break;
 
    case MomentCapacitySolver::SolutionMethod::FixedCompressionStrain:
-      m_FixedPoint = pntCompression;
-      m_ControlPoint = pntTension;
+      m_FixedPoint = m_ExtremeCompressionPoint;
+      m_ControlPoint = m_ExtremeTensionPoint;
       break;
 
    case MomentCapacitySolver::SolutionMethod::FixedTensionStrain:
-      m_FixedPoint = pntTension;
-      m_ControlPoint = pntCompression;
+      m_FixedPoint = m_ExtremeTensionPoint;
+      m_ControlPoint = m_ExtremeCompressionPoint;
       break;
 
    case MomentCapacitySolver::SolutionMethod::FixedStrain:
@@ -404,8 +416,8 @@ void MomentCapacitySolverImpl::UpdateAnalysisPoints(Float64 angle, MomentCapacit
       // determine if pntCompression or pntTension should be the control point
 
       // create vectors from the fixed point to the tension and compression control points
-      WBFL::Geometry::Vector2d vC(m_FixedPoint,pntCompression);
-      WBFL::Geometry::Vector2d vT(m_FixedPoint, pntTension);
+      WBFL::Geometry::Vector2d vC(m_FixedPoint, m_ExtremeCompressionPoint);
+      WBFL::Geometry::Vector2d vT(m_FixedPoint, m_ExtremeTensionPoint);
 
       // ... then get the direction of the vectors (in both directions)
       Float64 dirC1 = vC.GetDirection();
@@ -421,17 +433,15 @@ void MomentCapacitySolverImpl::UpdateAnalysisPoints(Float64 angle, MomentCapacit
       // will be constructed from 3 colinear points (bad)
       if (IsEqual(angle, dirC1) || IsEqual(angle, dirC2))
       {
-         m_ControlPoint = pntTension;
+         m_ControlPoint = m_ExtremeTensionPoint;
       }
       else
       {
-         m_ControlPoint = pntCompression;
+         m_ControlPoint = m_ExtremeCompressionPoint;
       }
    }
    break;
    }
-
-   m_bAnalysisPointUpdated = true;
 }
 
 void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Float64 strainLocation, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 angle, Float64 Fz, Float64* peo_lower, Float64* peo_upper, Float64* pFz_lower, Float64* pFz_upper) const
@@ -456,7 +466,7 @@ void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Flo
    {
       UpdateStrainPlane(angle, k_or_ec, strainLocation, solutionMethod, eo_lower);
 
-      m_GeneralSolution = std::move(m_GeneralSolver.Solve(m_StrainPlane));
+      m_GeneralSolution = std::move(m_GeneralSolver.Solve(m_IncrementalStrainPlane));
 
       Fz_lower = m_GeneralSolution->GetFz();
       Mx = m_GeneralSolution->GetMx();
@@ -465,7 +475,7 @@ void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Flo
       Fz_lower -= Fz;
 
       UpdateStrainPlane(angle, k_or_ec, strainLocation, solutionMethod, eo_upper);
-      m_GeneralSolution = std::move(m_GeneralSolver.Solve(m_StrainPlane));
+      m_GeneralSolution = std::move(m_GeneralSolver.Solve(m_IncrementalStrainPlane));
 
       Fz_upper = m_GeneralSolution->GetFz();
       Mx = m_GeneralSolution->GetMx();
@@ -519,7 +529,7 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::AnalyzeSection
       eo_r = (Fz_upper * eo_lower - Fz_lower * eo_upper) / (Fz_upper - Fz_lower);
 
       UpdateStrainPlane(angle, k_or_ec, strainLocation, solutionMethod, eo_r);
-      m_GeneralSolution = std::move(m_GeneralSolver.Solve(m_StrainPlane));
+      m_GeneralSolution = std::move(m_GeneralSolver.Solve(m_IncrementalStrainPlane));
 
       Fz_r = m_GeneralSolution->GetFz();
       Mx = m_GeneralSolution->GetMx();
@@ -565,43 +575,28 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::AnalyzeSection
    auto cgC = m_GeneralSolution->GetCompressionResultantLocation();
    auto cgT = m_GeneralSolution->GetTensionResultantLocation();
 
-   // build the total strain plane by "Adding" the initial strians with the incremental solution strain
-
-   // Get the incremental strain plane
-   auto incremental_strain_plane = m_StrainPlane;
-
-   // get the initial strain plane for the primary shape
+   // Compute curvature
    const auto& section = GetSection();
    IndexType primaryShapeIdx = section->GetPrimaryShapeIndex();
    const auto& initial_strain_plane = section->GetInitialStrain(primaryShapeIdx);
 
-   // get three points on the initial strain plane
-   WBFL::Geometry::Point3d A1(-100, 100, 0), A2(100, 100, 0), A3(-100, -100, 0);
-   if (initial_strain_plane)
+   auto slices = m_GeneralSolution->FindSlices(primaryShapeIdx);
+   const auto* pSlice1 = slices.front();
+   const auto* pSlice2 = slices.back();
+   Float64 dist = pSlice1->GetCentroid().Distance(pSlice2->GetCentroid());
+   Float64 e1 = pSlice1->GetTotalStrain();
+   Float64 e2 = pSlice2->GetTotalStrain();
+   Float64 k = (e2 - e1) / dist;
+
+#if defined _DEBUG
+   if (solutionMethod == MomentCapacitySolver::SolutionMethod::FixedCurvature)
    {
-      A1.Z() = initial_strain_plane->GetZ(A1.X(), A1.Y());
-      A2.Z() = initial_strain_plane->GetZ(A2.X(), A2.Y());
-      A3.Z() = initial_strain_plane->GetZ(A3.X(), A3.Y());
+      ASSERT(IsEqual(k_or_ec, k));
    }
-
-   // get the incremental strain on these three points
-   // and offset the initial strain by the increment strain
-   Float64 Z = incremental_strain_plane.GetZ(-100, 100);
-   A1.Offset(0, 0, Z);
-
-   Z = incremental_strain_plane.GetZ(100, 100);
-   A2.Offset(0, 0, Z);
-
-   Z = incremental_strain_plane.GetZ(-100, -100);
-   A3.Offset(0, 0, Z);
-
-   // create a new plane... the total strain plane through these three points
-   WBFL::Geometry::Plane3d total_strain_plane(A1, A2, A3);
-
-   const auto& neutralAxis = m_GeneralSolution->GetNeutralAxis();
+#endif
 
    auto solution = CreateMomentCapacitySolution();
-   solution->InitSolution(Pz, Mx, My, total_strain_plane, neutralAxis, cgC, C, cgT, T, std::move(m_GeneralSolution));
+   solution->InitSolution(Pz, Mx, My, m_IncrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, k, std::move(m_GeneralSolution));
 
    if (m_MaxIter <= iter)
    {

@@ -40,16 +40,18 @@ static char THIS_FILE[] = __FILE__;
 // CMomentCapacitySolution
 HRESULT CMomentCapacitySolution::FinalConstruct()
 {
-   m_StrainPlane.CoCreateInstance(CLSID_Plane3d);
-   m_NeutralAxis.CoCreateInstance(CLSID_Line2d);
+   m_IncrementalStrainPlane.CoCreateInstance(CLSID_Plane3d);
    m_cgC.CoCreateInstance(CLSID_Point2d);
    m_cgT.CoCreateInstance(CLSID_Point2d);
+   m_ExtremeCompressionPoint.CoCreateInstance(CLSID_Point2d);
+   m_ExtremeTensionPoint.CoCreateInstance(CLSID_Point2d);
 
    m_Fz = 0;
    m_Mx = 0;
    m_My = 0;
    m_C  = 0;
    m_T  = 0;
+   m_Curvature = 0;
 
    return S_OK;
 }
@@ -74,29 +76,37 @@ STDMETHODIMP CMomentCapacitySolution::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // IMomentCapacitySolution
-STDMETHODIMP CMomentCapacitySolution::InitSolution(Float64 fz,Float64 mx,Float64 my,IPlane3d* strainPlane,ILine2d* neutralAxis,IPoint2d* cgC,Float64 C,IPoint2d* cgT,Float64 T,IGeneralSectionSolution* solution)
+STDMETHODIMP CMomentCapacitySolution::InitSolution(Float64 fz,Float64 mx,Float64 my,IPlane3d* incrementalStrainPlane, IPoint2d* pntC,IPoint2d* cgC,Float64 C, IPoint2d* pntT, IPoint2d* cgT,Float64 T,Float64 k,IGeneralSectionSolution* solution)
 {
    m_Fz = fz;
    m_Mx = mx;
    m_My = my;
 
-   if ( strainPlane )
-      m_StrainPlane = strainPlane;
-
-   if ( neutralAxis )
-      m_NeutralAxis = neutralAxis;
+   if (incrementalStrainPlane)
+   {
+      m_IncrementalStrainPlane.Release();
+      incrementalStrainPlane->Clone(&m_IncrementalStrainPlane);
+   }
 
    m_C = C;
    m_T = T;
 
+   if (pntC)
+      m_ExtremeCompressionPoint->MoveEx(pntC);
+
    if ( cgC )
-      m_cgC = cgC;
+      m_cgC->MoveEx(cgC);
+
+   if (pntT)
+      m_ExtremeTensionPoint->MoveEx(pntT);
 
    if ( cgT )
-      m_cgT = cgT;
+      m_cgT->MoveEx(cgT);
+
+   m_Curvature = k;
 
    if ( solution )
-      m_Solution = solution;
+      m_GeneralSolution = solution;
 
    return S_OK;
 }
@@ -122,34 +132,47 @@ STDMETHODIMP CMomentCapacitySolution::get_My(Float64* my)
    return S_OK;
 }
 
-STDMETHODIMP CMomentCapacitySolution::get_StrainPlane(IPlane3d** strainPlane)
+STDMETHODIMP CMomentCapacitySolution::get_IncrementalStrainPlane(IPlane3d** strainPlane)
 {
    CHECK_RETOBJ(strainPlane);
-   (*strainPlane) = m_StrainPlane;
+   (*strainPlane) = m_IncrementalStrainPlane;
    (*strainPlane)->AddRef();
    return S_OK;
 }
 
 STDMETHODIMP CMomentCapacitySolution::get_NeutralAxis(ILine2d** neutralAxis)
 {
-   CHECK_RETOBJ(neutralAxis);
-   (*neutralAxis) = m_NeutralAxis;
-   (*neutralAxis)->AddRef();
-   return S_OK;
+   return m_GeneralSolution->get_NeutralAxis(neutralAxis);
 }
 
 STDMETHODIMP CMomentCapacitySolution::get_NeutralAxisDirection(Float64* angle)
 {
-   CComPtr<IPoint2d> p;
-   CComPtr<IVector2d> d;
-   m_NeutralAxis->GetExplicit(&p,&d);
-   return d->get_Direction(angle);
+   return m_GeneralSolution->get_NeutralAxisDirection(angle);
 }
 
-STDMETHODIMP CMomentCapacitySolution::get_CompressionResultant(Float64* c)
+STDMETHODIMP CMomentCapacitySolution::get_DepthToNeutralAxis(Float64* pc)
 {
-   CHECK_RETVAL(c);
-   *c = m_C;
+   CHECK_RETVAL(pc);
+
+   // Compute depth to neutral axis, c
+   CComPtr<IGeomUtil2d> geomUtil;
+   geomUtil.CoCreateInstance(CLSID_GeomUtil);
+   CComPtr<ILine2d> na;
+   m_GeneralSolution->get_NeutralAxis(&na);
+   CComPtr<IPoint2d> point_on_na;
+   geomUtil->PointOnLineNearest(na, m_ExtremeCompressionPoint, &point_on_na);
+   Float64 c;
+   point_on_na->DistanceEx(m_ExtremeCompressionPoint, &c);
+
+   *pc = c;
+
+   return S_OK;
+}
+
+STDMETHODIMP CMomentCapacitySolution::get_CompressionResultant(Float64* pC)
+{
+   CHECK_RETVAL(pC);
+   *pC = m_C;
    return S_OK;
 }
 
@@ -176,10 +199,74 @@ STDMETHODIMP CMomentCapacitySolution::get_TensionResultantLocation(IPoint2d** cg
    return S_OK;
 }
 
+STDMETHODIMP CMomentCapacitySolution::get_ExtremeCompressionPoint(IPoint2d** pntC)
+{
+   CHECK_RETOBJ(pntC);
+   (*pntC) = m_ExtremeCompressionPoint;
+   (*pntC)->AddRef();
+   return S_OK;
+}
+
+STDMETHODIMP CMomentCapacitySolution::get_ExtremeTensionPoint(IPoint2d** pntT)
+{
+   CHECK_RETOBJ(pntT);
+   (*pntT) = m_ExtremeTensionPoint;
+   (*pntT)->AddRef();
+   return S_OK;
+}
+
+STDMETHODIMP CMomentCapacitySolution::get_DepthToCompressionResultant(Float64* pdc)
+{
+   CHECK_RETVAL(pdc);
+
+   CComPtr<IGeomUtil2d> geom_util;
+   geom_util.CoCreateInstance(CLSID_GeomUtil);
+
+   CComPtr<ILine2d> na;
+   get_NeutralAxis(&na);
+
+   Float64 d1, d2;
+   geom_util->ShortestOffsetToPoint(na, m_ExtremeCompressionPoint, &d1);
+   geom_util->ShortestOffsetToPoint(na, m_cgC, &d2);
+   
+   *pdc = fabs(d1) - fabs(d2);
+   return S_OK;
+}
+
+STDMETHODIMP CMomentCapacitySolution::get_DepthToTensionResultant(Float64* pde)
+{
+   CHECK_RETVAL(pde);
+
+   CComPtr<IGeomUtil2d> geom_util;
+   geom_util.CoCreateInstance(CLSID_GeomUtil);
+
+   CComPtr<ILine2d> na;
+   get_NeutralAxis(&na);
+
+   Float64 d1, d2;
+   geom_util->ShortestOffsetToPoint(na, m_ExtremeCompressionPoint, &d1);
+   geom_util->ShortestOffsetToPoint(na, m_cgT, &d2);
+
+   *pde = fabs(d1) + fabs(d2);
+   return S_OK;
+}
+
+STDMETHODIMP CMomentCapacitySolution::get_MomentArm(Float64* pMA)
+{
+   return m_cgT->DistanceEx(m_cgC, pMA);
+}
+
+STDMETHODIMP CMomentCapacitySolution::get_Curvature(Float64* pK)
+{
+   CHECK_RETVAL(pK);
+   *pK = m_Curvature;
+   return S_OK;
+}
+
 STDMETHODIMP CMomentCapacitySolution::get_GeneralSectionSolution(IGeneralSectionSolution** solution)
 {
    CHECK_RETOBJ(solution);
-   (*solution) = m_Solution;
+   (*solution) = m_GeneralSolution;
    if (*solution)
    {
       (*solution)->AddRef();

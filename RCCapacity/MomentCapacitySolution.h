@@ -61,13 +61,15 @@ private:
    Float64 m_Fz;
    Float64 m_Mx;
    Float64 m_My;
-   CComPtr<IPlane3d> m_StrainPlane;
-   CComPtr<ILine2d> m_NeutralAxis;
+   CComPtr<IPlane3d> m_IncrementalStrainPlane;
    Float64 m_C;
    Float64 m_T;
    CComPtr<IPoint2d> m_cgC;
    CComPtr<IPoint2d> m_cgT;
-   CComPtr<IGeneralSectionSolution> m_Solution;
+   CComPtr<IPoint2d> m_ExtremeCompressionPoint;
+   CComPtr<IPoint2d> m_ExtremeTensionPoint;
+   Float64 m_Curvature;
+   CComPtr<IGeneralSectionSolution> m_GeneralSolution;
 
 // ISupportsErrorInfo
 public:
@@ -75,17 +77,24 @@ public:
 
 // IMomentCapacitySolution
 public:
-   STDMETHOD(InitSolution)(/*[in]*/Float64 fz,/*[in]*/Float64 mx,/*[in]*/Float64 my,/*[in]*/IPlane3d* strainPlane,/*[in]*/ILine2d* neutralAxis,/*[in]*/IPoint2d* cgC,/*[in]*/Float64 C,/*[in]*/IPoint2d* cgT,/*[in]*/Float64 T,/*[in]*/IGeneralSectionSolution* solution) override;
+   STDMETHOD(InitSolution)(/*[in]*/Float64 fz,/*[in]*/Float64 mx,/*[in]*/Float64 my,/*[in]*/IPlane3d* strainPlane,/*[in]*/IPoint2d* pntC,/*[in]*/IPoint2d* cgC,/*[in]*/Float64 C,/*[in]*/IPoint2d* pntT,/*[in]*/IPoint2d* cgT,/*[in]*/Float64 T,/*[in]*/Float64 k,/*[in]*/IGeneralSectionSolution* solution) override;
 	STDMETHOD(get_Fz)(/*[out,retval]*/Float64* fz) override;
 	STDMETHOD(get_Mx)(/*[out,retval]*/Float64* mx) override;
 	STDMETHOD(get_My)(/*[out,retval]*/Float64* my) override;
-   STDMETHOD(get_StrainPlane)(/*[out,retval]*/IPlane3d** strainPlane) override;
+   STDMETHOD(get_IncrementalStrainPlane)(/*[out,retval]*/IPlane3d** strainPlane) override;
    STDMETHOD(get_NeutralAxis)(/*[out,retval]*/ILine2d** neutralAxis) override;
    STDMETHOD(get_NeutralAxisDirection)(/*[out,retval]*/Float64* angle) override;
+   STDMETHOD(get_DepthToNeutralAxis)(/*[out, retval]*/Float64* pc) override;
    STDMETHOD(get_CompressionResultant)(/*[out,retval]*/Float64* c) override;
 	STDMETHOD(get_TensionResultant)(/*[out,retval]*/Float64* t) override;
    STDMETHOD(get_CompressionResultantLocation)(/*[out,retval]*/IPoint2d** cgC) override;
    STDMETHOD(get_TensionResultantLocation)(/*[out,retval]*/IPoint2d** cgT) override;
+   STDMETHOD(get_ExtremeCompressionPoint)(/*[out, retval]*/IPoint2d** pntC) override;
+   STDMETHOD(get_ExtremeTensionPoint)(/*[out, retval]*/IPoint2d** pntT) override;
+   STDMETHOD(get_DepthToCompressionResultant)(/*[out, retval]*/Float64* pdc) override;
+   STDMETHOD(get_DepthToTensionResultant)(/*[out, retval]*/Float64* pde) override;
+   STDMETHOD(get_MomentArm)(/*[out, retval]*/Float64* pMA) override;
+   STDMETHOD(get_Curvature)(/*[out, retval]*/Float64* pK) override;
    STDMETHOD(get_GeneralSectionSolution)(/*[out,retval]*/IGeneralSectionSolution** solution) override;
 };
 

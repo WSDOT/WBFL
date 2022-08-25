@@ -568,6 +568,50 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,I
 {
    HRESULT hr; 
 
+   // get the initial strain plane for the primary shape
+   IndexType primaryShapeIdx;
+   m_Section->get_PrimaryShapeIndex(&primaryShapeIdx);
+   CComPtr<IPlane3d> initial_strain_plane;
+   m_Section->get_InitialStrain(primaryShapeIdx, &initial_strain_plane);
+
+   // get three points on the initial strain plane
+   CComPtr<IPoint3d> A1, A2, A3;
+   A1.CoCreateInstance(CLSID_Point3d);
+   A2.CoCreateInstance(CLSID_Point3d);
+   A3.CoCreateInstance(CLSID_Point3d);
+   Float64 X1 = -100;
+   Float64 Y1 = 100;
+   Float64 Z1 = 0;
+   Float64 X2 = 100;
+   Float64 Y2 = 100;
+   Float64 Z2 = 0;
+   Float64 X3 = -100;
+   Float64 Y3 = -100;
+   Float64 Z3 = 0;
+   if (initial_strain_plane)
+   {
+      initial_strain_plane->GetZ(X1, Y1, &Z1);
+      initial_strain_plane->GetZ(X2, Y2, &Z2);
+      initial_strain_plane->GetZ(X3, Y3, &Z3);
+   }
+   A1->Move(X1, Y1, Z1);
+   A2->Move(X2, Y2, Z2);
+   A3->Move(X3, Y3, Z3);
+
+   // get the incremental strain on these three points
+   // and offset the initial strain by the increment strain
+   incrementalStrainPlane->GetZ(X1, Y1, &Z1);
+   A1->Offset(0, 0, Z1);
+   incrementalStrainPlane->GetZ(X2, Y2, &Z2);
+   A2->Offset(0, 0, Z2);
+   incrementalStrainPlane->GetZ(X3, Y3, &Z3);
+   A3->Offset(0, 0, Z3);
+
+   // create a new plane... the total strain plane through these three points
+   CComPtr<IPlane3d> total_strain_plane;
+   total_strain_plane.CoCreateInstance(CLSID_Plane3d);
+   total_strain_plane->ThroughPoints(A1, A2, A3);
+   
    // find the line that passes through z = 0 (z is the strain axis)
 
    Float64 x1 = -1000;
@@ -575,8 +619,8 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,I
    Float64 z  = 0.00;
    Float64 y1,y2;
 
-   HRESULT hr1 = incrementalStrainPlane->GetY(x1,z,&y1);
-   HRESULT hr2 = incrementalStrainPlane->GetY(x2,z,&y2);
+   HRESULT hr1 = total_strain_plane->GetY(x1,z,&y1);
+   HRESULT hr2 = total_strain_plane->GetY(x2,z,&y2);
 
    HRESULT hr3 = S_OK;
    HRESULT hr4 = S_OK;
@@ -585,8 +629,8 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,I
       y1 = -1000;
       y2 =  1000;
       
-      hr3 = incrementalStrainPlane->GetX(y1,z,&x1);
-      hr4 = incrementalStrainPlane->GetX(y2,z,&x2);
+      hr3 = total_strain_plane->GetX(y1,z,&x1);
+      hr4 = total_strain_plane->GetX(y2,z,&x2);
    }
 
    if ( FAILED(hr3) || FAILED(hr4) )
@@ -621,7 +665,7 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,I
    Float64 X = x1 + Offset*dx;
    Float64 Y = y1 + Offset*dy;
    Float64 Z;
-   incrementalStrainPlane->GetZ(X,Y,&Z);
+   total_strain_plane->GetZ(X,Y,&Z);
    if (0 < Z)
    {
       // tension is on the left side, so reverse the direction the line

@@ -57,7 +57,7 @@ namespace WBFL
 
          Float64 GetCurvature(IndexType idx) const;
 
-         const WBFL::Geometry::Plane3d& GetStrainPlane(IndexType idx) const;
+         const WBFL::Geometry::Plane3d& GetIncrementalStrainPlane(IndexType idx) const;
 
          const std::unique_ptr<MomentCapacitySolution>& GetCapacitySolution(IndexType idx) const;
 
@@ -118,10 +118,10 @@ namespace WBFL
          return m_CurvaturePoints[idx].k;
       }
 
-      const WBFL::Geometry::Plane3d& MomentCurvatureSolutionImpl::GetStrainPlane(IndexType idx) const
+      const WBFL::Geometry::Plane3d& MomentCurvatureSolutionImpl::GetIncrementalStrainPlane(IndexType idx) const
       {
          PRECONDITION(idx < m_CurvaturePoints.size());
-         return m_CurvaturePoints[idx].Solution->GetStrainPlane();
+         return m_CurvaturePoints[idx].Solution->GetIncrementalStrainPlane();
       }
 
       const std::unique_ptr<MomentCapacitySolution>& MomentCurvatureSolutionImpl::GetCapacitySolution(IndexType idx) const
@@ -175,9 +175,9 @@ Float64 MomentCurvatureSolution::GetCurvature(IndexType idx) const
    return m_pImpl->GetCurvature(idx);
 }
 
-const WBFL::Geometry::Plane3d& MomentCurvatureSolution::GetStrainPlane(IndexType idx) const
+const WBFL::Geometry::Plane3d& MomentCurvatureSolution::GetIncrementalStrainPlane(IndexType idx) const
 {
-   return m_pImpl->GetStrainPlane(idx);
+   return m_pImpl->GetIncrementalStrainPlane(idx);
 }
 
 const std::unique_ptr<MomentCapacitySolution>& MomentCurvatureSolution::GetCapacitySolution(IndexType idx) const

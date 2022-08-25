@@ -119,10 +119,10 @@ STDMETHODIMP CMomentCurvatureSolution::get_Curvature(CollectionIndexType idx,Flo
    return S_OK;
 }
 
-STDMETHODIMP CMomentCurvatureSolution::get_StrainPlane(CollectionIndexType idx,IPlane3d** strainPlane)
+STDMETHODIMP CMomentCurvatureSolution::get_IncrementalStrainPlane(CollectionIndexType idx,IPlane3d** strainPlane)
 {
    CHECK_RETOBJ(strainPlane);
-   m_CurvaturePoints[idx].Solution->get_StrainPlane(strainPlane);
+   m_CurvaturePoints[idx].Solution->get_IncrementalStrainPlane(strainPlane);
    return S_OK;
 }
 

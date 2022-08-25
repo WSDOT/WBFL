@@ -62,8 +62,8 @@ namespace WBFL
          /// Curvature at a solution step
          Float64 GetCurvature(IndexType idx) const;
 
-         /// Strain plan at a solution step
-         const WBFL::Geometry::Plane3d& GetStrainPlane(IndexType idx) const;
+         /// Incremental strain plane at a solution step
+         const WBFL::Geometry::Plane3d& GetIncrementalStrainPlane(IndexType idx) const;
 
          /// MomentCapacitySolution object at a solution step
          const std::unique_ptr<MomentCapacitySolution>& GetCapacitySolution(IndexType idx) const;

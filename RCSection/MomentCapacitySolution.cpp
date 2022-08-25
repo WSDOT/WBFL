@@ -23,6 +23,7 @@
 
 #include <RCSection\RCSectionLib.h>
 #include <RCSection\MomentCapacitySolution.h>
+#include <GeomModel/GeomOp2d.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -49,25 +50,34 @@ namespace WBFL
             Float64 fz,
             Float64 mx,
             Float64 my,
-            const WBFL::Geometry::Plane3d& strainPlane,
-            const WBFL::Geometry::Line2d& neutralAxis,
+            const WBFL::Geometry::Plane3d& incrementalStrainPlane,
+            const WBFL::Geometry::Point2d& pntC,
             const WBFL::Geometry::Point2d& cgC,
             Float64 C,
+            const WBFL::Geometry::Point2d& pntT,
             const WBFL::Geometry::Point2d& cgT,
             Float64 T,
+            Float64 k,
             std::unique_ptr<GeneralSectionSolution>&& solution 
          );
 
          Float64 GetFz() const;
          Float64 GetMx() const;
          Float64 GetMy() const;
-         const WBFL::Geometry::Plane3d& GetStrainPlane() const;
+         const WBFL::Geometry::Plane3d& GetIncrementalStrainPlane() const;
          const WBFL::Geometry::Line2d& GetNeutralAxis() const;
          Float64 GetNeutralAxisDirection() const;
+         Float64 GetDepthToNeutralAxis() const;
          Float64 GetCompressionResultant() const;
          Float64 GetTensionResultant() const;
          const WBFL::Geometry::Point2d& GetCompressionResultantLocation() const;
          const WBFL::Geometry::Point2d& GetTensionResultantLocation() const;
+         const WBFL::Geometry::Point2d& GetExtremeCompressionPoint() const;
+         const WBFL::Geometry::Point2d& GetExtremeTensionPoint() const;
+         Float64 GetDepthToCompressionResultant() const;
+         Float64 GetDepthToTensionResultant() const;
+         Float64 GetMomentArm() const;
+         Float64 GetCurvature() const;
          const std::unique_ptr<GeneralSectionSolution>& GetGeneralSectionSolution() const;
 
       private:
@@ -76,11 +86,13 @@ namespace WBFL
          Float64 m_My{ 0.0 };
          Float64 m_C{ 0.0 };
          Float64 m_T{ 0.0 };
-         WBFL::Geometry::Plane3d m_StrainPlane;
-         WBFL::Geometry::Line2d m_NeutralAxis;
+         Float64 m_Curvature{ 0.0 };
+         WBFL::Geometry::Plane3d m_IncrementalStrainPlane;
          WBFL::Geometry::Point2d m_cgC;
          WBFL::Geometry::Point2d m_cgT;
-         std::unique_ptr<GeneralSectionSolution> m_Solution;
+         WBFL::Geometry::Point2d m_ExtremeCompressionPoint;
+         WBFL::Geometry::Point2d m_ExtremeTensionPoint;
+         std::unique_ptr<GeneralSectionSolution> m_GeneralSolution;
       };
 
 
@@ -88,25 +100,29 @@ namespace WBFL
          Float64 fz,
          Float64 mx,
          Float64 my,
-         const WBFL::Geometry::Plane3d& strainPlane,
-         const WBFL::Geometry::Line2d& neutralAxis,
+         const WBFL::Geometry::Plane3d& incrementalStrainPlane,
+         const WBFL::Geometry::Point2d& pntC,
          const WBFL::Geometry::Point2d& cgC,
          Float64 C,
+         const WBFL::Geometry::Point2d& pntT,
          const WBFL::Geometry::Point2d& cgT,
          Float64 T,
+         Float64 k,
          std::unique_ptr<GeneralSectionSolution>&& solution
       )
       {
          m_Fz = fz;
          m_Mx = mx;
          m_My = my;
-         m_StrainPlane = strainPlane;
-         m_NeutralAxis = neutralAxis;
+         m_IncrementalStrainPlane = incrementalStrainPlane;
+         m_ExtremeCompressionPoint = pntC;
          m_cgC = cgC;
          m_C = C;
+         m_ExtremeTensionPoint = pntT;
          m_cgT = cgT;
          m_T = T;
-         m_Solution = std::move(solution);
+         m_Curvature = k;
+         m_GeneralSolution = std::move(solution);
       }
 
       Float64 MomentCapacitySolutionImpl::GetFz() const
@@ -124,22 +140,29 @@ namespace WBFL
          return m_My;
       }
 
-      const WBFL::Geometry::Plane3d& MomentCapacitySolutionImpl::GetStrainPlane() const
+      const WBFL::Geometry::Plane3d& MomentCapacitySolutionImpl::GetIncrementalStrainPlane() const
       {
-         return m_StrainPlane;
+         return m_IncrementalStrainPlane;
       }
 
       const WBFL::Geometry::Line2d& MomentCapacitySolutionImpl::GetNeutralAxis() const
       {
-         return m_NeutralAxis;
+         return m_GeneralSolution->GetNeutralAxis();
       }
 
       Float64 MomentCapacitySolutionImpl::GetNeutralAxisDirection() const
       {
-         WBFL::Geometry::Point2d p;
-         WBFL::Geometry::Vector2d d;
-         m_NeutralAxis.GetExplicit(&p, &d);
-         return d.GetDirection();
+         return m_GeneralSolution->GetNeutralAxisDirection();
+      }
+
+      Float64 MomentCapacitySolutionImpl::GetDepthToNeutralAxis() const
+      {
+         // Compute depth to neutral axis, c
+         const auto& na = m_GeneralSolution->GetNeutralAxis();
+         auto point_on_na = WBFL::Geometry::GeometricOperations::PointOnLineNearest(na, m_ExtremeCompressionPoint);
+         auto c = point_on_na.Distance(m_ExtremeCompressionPoint);
+
+         return c;
       }
 
       Float64 MomentCapacitySolutionImpl::GetCompressionResultant() const
@@ -162,9 +185,45 @@ namespace WBFL
          return m_cgT;
       }
 
+      const WBFL::Geometry::Point2d& MomentCapacitySolutionImpl::GetExtremeCompressionPoint() const
+      {
+         return m_ExtremeCompressionPoint;
+      }
+
+      const WBFL::Geometry::Point2d& MomentCapacitySolutionImpl::GetExtremeTensionPoint() const
+      {
+         return m_ExtremeTensionPoint;
+      }
+
+      Float64 MomentCapacitySolutionImpl::GetDepthToCompressionResultant() const
+      {
+         const auto& na = m_GeneralSolution->GetNeutralAxis();
+         Float64 d1 = WBFL::Geometry::GeometricOperations::ShortestOffsetToPoint(na, m_ExtremeCompressionPoint);
+         Float64 d2 = WBFL::Geometry::GeometricOperations::ShortestOffsetToPoint(na, m_cgC);
+         return fabs(d1) - fabs(d2);
+      }
+
+      Float64 MomentCapacitySolutionImpl::GetDepthToTensionResultant() const
+      {
+         const auto& na = m_GeneralSolution->GetNeutralAxis();
+         Float64 d1 = WBFL::Geometry::GeometricOperations::ShortestOffsetToPoint(na, m_ExtremeCompressionPoint);
+         Float64 d2 = WBFL::Geometry::GeometricOperations::ShortestOffsetToPoint(na, m_cgT);
+         return fabs(d1) + fabs(d2);
+      }
+
+      Float64 MomentCapacitySolutionImpl::GetMomentArm() const
+      {
+         return m_cgC.Distance(m_cgT);
+      }
+
+      Float64 MomentCapacitySolutionImpl::GetCurvature() const
+      {
+         return m_Curvature;
+      }
+
       const std::unique_ptr<GeneralSectionSolution>& MomentCapacitySolutionImpl::GetGeneralSectionSolution() const
       {
-         return m_Solution;
+         return m_GeneralSolution;
       }
    };
 };
@@ -181,16 +240,18 @@ void MomentCapacitySolution::InitSolution(
    Float64 fz,
    Float64 mx,
    Float64 my,
-   const WBFL::Geometry::Plane3d& strainPlane,
-   const WBFL::Geometry::Line2d& neutralAxis,
+   const WBFL::Geometry::Plane3d& incrementalStrainPlane,
+   const WBFL::Geometry::Point2d& pntC,
    const WBFL::Geometry::Point2d& cgC,
    Float64 C,
+   const WBFL::Geometry::Point2d& pntT,
    const WBFL::Geometry::Point2d& cgT,
    Float64 T,
+   Float64 k,
    std::unique_ptr<GeneralSectionSolution>&& solution
 )
 {
-   m_pImpl->InitSolution(fz, mx, my, strainPlane, neutralAxis, cgC, C, cgT, T, std::move(solution));
+   m_pImpl->InitSolution(fz, mx, my, incrementalStrainPlane, pntC, cgC, C, pntT, cgT, T, k, std::move(solution));
 }
 
 Float64 MomentCapacitySolution::GetFz() const
@@ -208,9 +269,9 @@ Float64 MomentCapacitySolution::GetMy() const
    return m_pImpl->GetMy();
 }
 
-const WBFL::Geometry::Plane3d& MomentCapacitySolution::GetStrainPlane() const
+const WBFL::Geometry::Plane3d& MomentCapacitySolution::GetIncrementalStrainPlane() const
 {
-   return m_pImpl->GetStrainPlane();
+   return m_pImpl->GetIncrementalStrainPlane();
 }
 
 const WBFL::Geometry::Line2d& MomentCapacitySolution::GetNeutralAxis() const
@@ -221,6 +282,11 @@ const WBFL::Geometry::Line2d& MomentCapacitySolution::GetNeutralAxis() const
 Float64 MomentCapacitySolution::GetNeutralAxisDirection() const
 {
    return m_pImpl->GetNeutralAxisDirection();
+}
+
+Float64 MomentCapacitySolution::GetDepthToNeutralAxis() const
+{
+   return m_pImpl->GetDepthToNeutralAxis();
 }
 
 Float64 MomentCapacitySolution::GetCompressionResultant() const
@@ -241,6 +307,36 @@ const WBFL::Geometry::Point2d& MomentCapacitySolution::GetCompressionResultantLo
 const WBFL::Geometry::Point2d& MomentCapacitySolution::GetTensionResultantLocation() const
 {
    return m_pImpl->GetTensionResultantLocation();
+}
+
+const WBFL::Geometry::Point2d& MomentCapacitySolution::GetExtremeCompressionPoint() const
+{
+   return m_pImpl->GetExtremeCompressionPoint();
+}
+
+const WBFL::Geometry::Point2d& MomentCapacitySolution::GetExtremeTensionPoint() const
+{
+   return m_pImpl->GetExtremeTensionPoint();
+}
+
+Float64 MomentCapacitySolution::GetDepthToCompressionResultant() const
+{
+   return m_pImpl->GetDepthToCompressionResultant();
+}
+
+Float64 MomentCapacitySolution::GetDepthToTensionResultant() const
+{
+   return m_pImpl->GetDepthToTensionResultant();
+}
+
+Float64 MomentCapacitySolution::GetMomentArm() const
+{
+   return m_pImpl->GetMomentArm();
+}
+
+Float64 MomentCapacitySolution::GetCurvature() const
+{
+   return m_pImpl->GetCurvature();
 }
 
 const std::unique_ptr<GeneralSectionSolution>& MomentCapacitySolution::GetGeneralSectionSolution() const

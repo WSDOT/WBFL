@@ -65,11 +65,13 @@ private:
    CComPtr<IGeneralSectionSolution> m_GeneralSolution;
    CComPtr<IGeneralSectionSolution> m_TensionSolution;
    CComPtr<IGeneralSectionSolution> m_CompressionSolution;
-   CComPtr<IPlane3d> m_StrainPlane;
+   CComPtr<IPlane3d> m_IncrementalStrainPlane;
    CComPtr<IPoint3d> m_P1, m_P2, m_P3;
    Float64 m_AxialTolerance;
    long m_MaxIter;
    bool m_bAnalysisPointUpdated;
+   CComPtr<IPoint2d> m_ExtremeCompressionPoint; // this is compression side point furthest from the neutral axis
+   CComPtr<IPoint2d> m_ExtremeTensionPoint; // this is the tension side point furthest from the neutral axis
    CComPtr<IPoint2d> m_ControlPoint; // this point is varied in the Z direction to manipulate the strain plane
    CComPtr<IPoint2d> m_FixedPoint; // this point is the fixed control point (like the point of -0.003 compression strain at the top of a section)
 
@@ -80,6 +82,7 @@ private:
 
    void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 eo);
    void UpdateAnalysisPoints(Float64 angle, SolutionMethod solutionMethod,Float64 strainLocation);
+   void UpdateControlPoints(Float64 angle, SolutionMethod solutionMethod, Float64 strainLocation);
    HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
    HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod, Float64 strainLocation,IMomentCapacitySolution** solution);
    HRESULT ZeroCapacitySolution(IMomentCapacitySolution** solution);

@@ -81,7 +81,7 @@ public:
    STDMETHOD(PeakCapacity)(/*[out]*/Float64* Mmax,/*[out]*/Float64* k) override;
    STDMETHOD(get_Moment)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/Float64* Mmax) override;
 	STDMETHOD(get_Curvature)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/Float64* k) override;
-	STDMETHOD(get_StrainPlane)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IPlane3d** strainPlane) override;
+	STDMETHOD(get_IncrementalStrainPlane)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IPlane3d** strainPlane) override;
    STDMETHOD(get_CapacitySolution)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IMomentCapacitySolution** solution) override;
    STDMETHOD(get_PointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
 };

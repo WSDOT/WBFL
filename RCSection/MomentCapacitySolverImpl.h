@@ -69,11 +69,13 @@ namespace WBFL
          mutable std::unique_ptr<GeneralSectionSolution> m_GeneralSolution;
          mutable std::unique_ptr<GeneralSectionSolution> m_TensionSolution;
          mutable std::unique_ptr<GeneralSectionSolution> m_CompressionSolution;
-         mutable WBFL::Geometry::Plane3d m_StrainPlane;
+         mutable WBFL::Geometry::Plane3d m_IncrementalStrainPlane;
          mutable WBFL::Geometry::Point3d m_P1, m_P2, m_P3;
          Float64 m_AxialTolerance{0.01};
          IndexType m_MaxIter{50};
          mutable bool m_bAnalysisPointUpdated{false};
+         mutable WBFL::Geometry::Point2d m_ExtremeCompressionPoint; // this is compression side point furthest from the neutral axis
+         mutable WBFL::Geometry::Point2d m_ExtremeTensionPoint; // this is the tension side point furthest from the neutral axis
          mutable WBFL::Geometry::Point2d m_ControlPoint; // this point is varied in the Z direction to manipulate the strain plane
          mutable WBFL::Geometry::Point2d m_FixedPoint; // this point is the fixed control point (like the point of -0.003 compression strain at the top of a section)
 
@@ -84,6 +86,7 @@ namespace WBFL
 
          void UpdateStrainPlane(Float64 angle, Float64 k_or_ec, Float64 strainLocation, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 eo) const;
          void UpdateAnalysisPoints(Float64 angle, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 strainLocation) const;
+         void UpdateControlPoints(Float64 angle, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 strainLocation) const;
          void GetNeutralAxisParameterRange(Float64 k_or_ec, Float64 strainLocation, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 angle, Float64 Fz, Float64* peo_lower, Float64* peo_upper, Float64* pFz_lower, Float64* pFz_upper) const;
          std::unique_ptr<MomentCapacitySolution> AnalyzeSection(Float64 Fz, Float64 angle, Float64 k_or_ec, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 strainLocation) const;
          std::unique_ptr<MomentCapacitySolution> CreateMomentCapacitySolution() const;

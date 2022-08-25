@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CMomentCapacitySolver::FinalConstruct()
 {
    m_GeneralSolver.CoCreateInstance(CLSID_GeneralSectionSolver);
-   m_StrainPlane.CoCreateInstance(CLSID_Plane3d);
+   m_IncrementalStrainPlane.CoCreateInstance(CLSID_Plane3d);
 
    m_P1.CoCreateInstance(CLSID_Point3d);
    m_P2.CoCreateInstance(CLSID_Point3d);
@@ -60,7 +60,7 @@ void CMomentCapacitySolver::FinalRelease()
    m_GeneralSolution.Release();
    m_TensionSolution.Release();
    m_CompressionSolution.Release();
-   m_StrainPlane.Release();
+   m_IncrementalStrainPlane.Release();
    m_P1.Release();
    m_P2.Release();
    m_P3.Release();
@@ -177,19 +177,18 @@ STDMETHODIMP CMomentCapacitySolver::Solve(Float64 Fz,Float64 angle,Float64 k_or_
       (*solution)->get_CompressionResultant(&C);
       (*solution)->get_TensionResultant(&T);
 
-      CComPtr<IPlane3d> strainPlane;
-      (*solution)->get_StrainPlane(&strainPlane);
+      CComPtr<IPlane3d> incrementalStrainPlane;
+      (*solution)->get_IncrementalStrainPlane(&incrementalStrainPlane);
 
-      CComPtr<ILine2d> na;
+      ATLASSERT(m_bAnalysisPointUpdated == true);
+
       if (IsEqual(Fz,FzC))
       {
-         m_CompressionSolution->get_NeutralAxis(&na);
-         (*solution)->InitSolution(FzC,MxC,MyC,strainPlane,na,cgC,C,cgT,T,m_CompressionSolution);
+         (*solution)->InitSolution(FzC,MxC,MyC, incrementalStrainPlane,m_ExtremeCompressionPoint,cgC,C,m_ExtremeTensionPoint,cgT,T,0.0,m_CompressionSolution);
       }
       else
       {
-         m_TensionSolution->get_NeutralAxis(&na);
-         (*solution)->InitSolution(FzT,MxT,MyT,strainPlane,na,cgC,C,cgT,T,m_TensionSolution);
+         (*solution)->InitSolution(FzT,MxT,MyT, incrementalStrainPlane, m_ExtremeCompressionPoint,cgC,C, m_ExtremeTensionPoint,cgT,T, 0.0,m_TensionSolution);
       }
 
       return hr;
@@ -255,13 +254,13 @@ HRESULT CMomentCapacitySolver::UpdateLimits()
    }
 
    m_eoCompressionLimit = compStrain;
-   m_StrainPlane->ThroughAltitude(compStrain);
+   m_IncrementalStrainPlane->ThroughAltitude(compStrain);
 
    long nSlices;
    get_Slices(&nSlices);
 
    put_Slices(1);
-   HRESULT hr = m_GeneralSolver->Solve(m_StrainPlane, &m_CompressionSolution.p);
+   HRESULT hr = m_GeneralSolver->Solve(m_IncrementalStrainPlane, &m_CompressionSolution.p);
    put_Slices(nSlices);
 
    if (SUCCEEDED(hr))
@@ -276,10 +275,10 @@ HRESULT CMomentCapacitySolver::UpdateLimits()
    }
 
    m_eoTensionLimit = tensStrain;
-   m_StrainPlane->ThroughAltitude(tensStrain);
+   m_IncrementalStrainPlane->ThroughAltitude(tensStrain);
 
    put_Slices(1);
-   hr = m_GeneralSolver->Solve(m_StrainPlane, &m_TensionSolution.p);
+   hr = m_GeneralSolver->Solve(m_IncrementalStrainPlane, &m_TensionSolution.p);
    put_Slices(nSlices);
 
    if (SUCCEEDED(hr))
@@ -341,13 +340,15 @@ STDMETHODIMP CMomentCapacitySolver::TensionLimit(Float64* Fz,Float64* Mx,Float64
 
 void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 eo)
 {
+   UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
+
    if ( solutionMethod == smFixedCurvature )
    {
       // curvature is fixed... move the strain plain up/down changing the strain at the extreme point
       Float64 k = k_or_ec;
       if ( IsZero(k,1e-6) )
       {
-         m_StrainPlane->ThroughAltitude(eo);
+         m_IncrementalStrainPlane->ThroughAltitude(eo);
       }
       else
       {
@@ -369,7 +370,7 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
 
          m_P3->Move( 0, 0, eo );
 
-         m_StrainPlane->ThroughPoints(m_P1,m_P2,m_P3);
+         m_IncrementalStrainPlane->ThroughPoints(m_P1,m_P2,m_P3);
       }
    }
    else
@@ -391,11 +392,11 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
 
       if ( IsEqual(ec,eo) )
       {
-         m_StrainPlane->ThroughAltitude(eo);
+         m_IncrementalStrainPlane->ThroughAltitude(eo);
       }
       else
       {
-         UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
+         UpdateControlPoints(angle, solutionMethod, strainLocation);
 
          Float64 d = 1000; // distance between P1 and P2.
          Float64 sin_angle = sin(angle);
@@ -420,15 +421,13 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
 
          // The strain plain is defined by three points. One point is where the strain is fixed
          // The other two define a line of constant strain through the trial strain value
-         m_StrainPlane->ThroughPoints(m_P1, m_P2, m_P3);
+         m_IncrementalStrainPlane->ThroughPoints(m_P1, m_P2, m_P3);
       }
    }
 }
 
 void CMomentCapacitySolver::UpdateAnalysisPoints(Float64 angle, SolutionMethod solutionMethod,Float64 strainLocation)
 {
-   ATLASSERT(solutionMethod == smFixedCompressionStrain || solutionMethod == smFixedTensionStrain || solutionMethod == smFixedStrain);
-
    if (m_bAnalysisPointUpdated)
       return;
 
@@ -494,19 +493,34 @@ void CMomentCapacitySolver::UpdateAnalysisPoints(Float64 angle, SolutionMethod s
       }
    }
 
+   m_ExtremeCompressionPoint.Release();
+   m_ExtremeCompressionPoint = pntCompression;
+
+   m_ExtremeTensionPoint.Release();
+   m_ExtremeTensionPoint = pntTension;
+
+   m_bAnalysisPointUpdated = true;
+}
+
+void CMomentCapacitySolver::UpdateControlPoints(Float64 angle, SolutionMethod solutionMethod, Float64 strainLocation)
+{
+   ATLASSERT(solutionMethod == smFixedCompressionStrain || solutionMethod == smFixedTensionStrain || solutionMethod == smFixedStrain);
+
+   UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
+
    switch (solutionMethod)
    {
    case smFixedCurvature:
       ATLASSERT(false);
       break;
    case smFixedCompressionStrain:
-      m_FixedPoint = pntCompression;
-      m_ControlPoint = pntTension;
+      m_FixedPoint = m_ExtremeCompressionPoint;
+      m_ControlPoint = m_ExtremeTensionPoint;
       break;
 
    case smFixedTensionStrain:
-      m_FixedPoint = pntTension;
-      m_ControlPoint = pntCompression;
+      m_FixedPoint = m_ExtremeTensionPoint;
+      m_ControlPoint = m_ExtremeCompressionPoint;
       break;
 
    case smFixedStrain:
@@ -519,8 +533,8 @@ void CMomentCapacitySolver::UpdateAnalysisPoints(Float64 angle, SolutionMethod s
 
       // Get Size for fixed point to pntCompression and pntTension...
       CComPtr<ISize2d> sizeC, sizeT;
-      m_FixedPoint->SizeEx(pntCompression, &sizeC);
-      m_FixedPoint->SizeEx(pntTension, &sizeT);
+      m_FixedPoint->SizeEx(m_ExtremeCompressionPoint, &sizeC);
+      m_FixedPoint->SizeEx(m_ExtremeTensionPoint, &sizeT);
 
       // ... then use the sizes to create vectors from fixed point to the tension and compression points ...
       Float64 dx, dy;
@@ -535,7 +549,7 @@ void CMomentCapacitySolver::UpdateAnalysisPoints(Float64 angle, SolutionMethod s
       vT->put_X(dx); vT->put_Y(dy);
 
       // ... then get the direction of the vectors (in both directions)
-      Float64 dirC1,dirC2;
+      Float64 dirC1, dirC2;
       vC->get_Direction(&dirC1);
       vC->Reflect();
       vC->get_Direction(&dirC2);
@@ -550,17 +564,15 @@ void CMomentCapacitySolver::UpdateAnalysisPoints(Float64 angle, SolutionMethod s
       // will be constructed from 3 colinear points (bad)
       if (IsEqual(angle, dirC1) || IsEqual(angle, dirC2))
       {
-         m_ControlPoint = pntTension;
+         m_ControlPoint = m_ExtremeTensionPoint;
       }
       else
       {
-         m_ControlPoint = pntCompression;
+         m_ControlPoint = m_ExtremeCompressionPoint;
       }
    }
-      break;
+   break;
    }
-
-   m_bAnalysisPointUpdated = true;
 }
 
 HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper)
@@ -587,7 +599,7 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
    {
       UpdateStrainPlane(angle,k_or_ec,strainLocation,solutionMethod,eo_lower);
 
-      hr = m_GeneralSolver->Solve(m_StrainPlane,&m_GeneralSolution.p);
+      hr = m_GeneralSolver->Solve(m_IncrementalStrainPlane,&m_GeneralSolution.p);
       if ( FAILED(hr) )
          return hr;
 
@@ -598,7 +610,7 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
       Fz_lower -= Fz;
    
       UpdateStrainPlane(angle,k_or_ec,strainLocation,solutionMethod,eo_upper);
-      hr = m_GeneralSolver->Solve(m_StrainPlane,&m_GeneralSolution.p);
+      hr = m_GeneralSolver->Solve(m_IncrementalStrainPlane,&m_GeneralSolution.p);
       if ( FAILED(hr) )
          return hr;
 
@@ -665,7 +677,7 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
       eo_r = (Fz_upper * eo_lower - Fz_lower * eo_upper) / (Fz_upper - Fz_lower);
 
       UpdateStrainPlane(angle,k_or_ec,strainLocation,solutionMethod,eo_r);
-      hr = m_GeneralSolver->Solve(m_StrainPlane,&m_GeneralSolution.p);
+      hr = m_GeneralSolver->Solve(m_IncrementalStrainPlane,&m_GeneralSolution.p);
       if (FAILED(hr))
       {
          return hr;
@@ -732,55 +744,42 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    m_GeneralSolution->get_CompressionResultantLocation(&cgC);
    m_GeneralSolution->get_TensionResultantLocation(&cgT);
 
-   //CComPtr<IPlane3d> strainPlane;
-   //m_StrainPlane->Clone(&strainPlane);
-
-   // build the total strain plane by "Adding" the initial strians with the incremental solution strain
-   //
-   
-   // Get the incremental strain plane
-   CComPtr<IPlane3d> incremental_strain_plane;
-   m_StrainPlane->Clone(&incremental_strain_plane);
-
-   // get the initial strain plane for the primary shape
+   // Compute curvature
    CComPtr<IGeneralSection> section;
    m_GeneralSolver->get_Section(&section);
    IndexType primaryShapeIdx;
-   section->get_GirderShape(&primaryShapeIdx);
-   CComPtr<IPlane3d> initial_strain_plane;
-   section->get_InitialStrain(primaryShapeIdx, &initial_strain_plane);
+   section->get_PrimaryShapeIndex(&primaryShapeIdx);
+   CComPtr<IUnkArray> arrSlices;
+   m_GeneralSolution->FindSlices(primaryShapeIdx, &arrSlices);
+   IndexType nSlices;
+   arrSlices->get_Count(&nSlices);
+   CComPtr<IUnknown> punk1, punk2;
+   arrSlices->get_Item(0, &punk1);
+   arrSlices->get_Item(nSlices - 1, &punk2);
+   CComQIPtr<IGeneralSectionSlice> slice1(punk1);
+   CComQIPtr<IGeneralSectionSlice> slice2(punk2);
 
-   // get three points on the initial strain plane
-   CComPtr<IPoint3d> A1, A2, A3;
-   A1.CoCreateInstance(CLSID_Point3d);
-   A2.CoCreateInstance(CLSID_Point3d);
-   A3.CoCreateInstance(CLSID_Point3d);
-   Float64 Z;
-   initial_strain_plane->GetZ(-100, 100, &Z);
-   A1->Move(-100, 100, Z);
-   initial_strain_plane->GetZ(100, 100, &Z);
-   A2->Move(100, 100, Z);
-   initial_strain_plane->GetZ(-100, -100, &Z);
-   A3->Move(-100, -100, Z);
+   CComPtr<IPoint2d> cg1, cg2;
+   slice1->get_CG(&cg1);
+   slice2->get_CG(&cg2);
+   Float64 dist;
+   cg1->DistanceEx(cg2, &dist);
 
-   // get the incremental strain on these three points
-   // and offset the initial strain by the increment strain
-   incremental_strain_plane->GetZ(-100, 100, &Z);
-   A1->Offset(0, 0, Z);
-   incremental_strain_plane->GetZ(100, 100, &Z);
-   A2->Offset(0, 0, Z);
-   incremental_strain_plane->GetZ(-100, -100, &Z);
-   A3->Offset(0, 0, Z);
+   Float64 e1, e2;
+   slice1->get_TotalStrain(&e1);
+   slice2->get_TotalStrain(&e2);
 
-   // create a new plane... the total strain plane through these three points
-   CComPtr<IPlane3d> total_strain_plane;
-   total_strain_plane.CoCreateInstance(CLSID_Plane3d);
-   total_strain_plane->ThroughPoints(A1, A2, A3);
+   Float64 k = (e2 - e1) / dist;
 
-   CComPtr<ILine2d> neutralAxis;
-   m_GeneralSolution->get_NeutralAxis(&neutralAxis);
-   //(*solution)->InitSolution(Pz,Mx,My,strainPlane,neutralAxis,cgC,C,cgT,T,m_GeneralSolution);
-   (*solution)->InitSolution(Pz, Mx, My, total_strain_plane, neutralAxis, cgC, C, cgT, T, m_GeneralSolution);
+#if defined _DEBUG
+   if (solutionMethod == smFixedCurvature)
+   {
+      ATLASSERT(IsEqual(k_or_ec, k));
+   }
+#endif
+
+   (*solution)->InitSolution(Pz, Mx, My, m_IncrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, k, m_GeneralSolution);
+
    m_GeneralSolution.Release(); // this must be released because it will get changed by subsequent analyses and that will change (*solution)
 
    if (m_MaxIter <= iter)

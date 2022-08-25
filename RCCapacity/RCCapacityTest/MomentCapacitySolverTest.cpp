@@ -166,8 +166,28 @@ void CMomentCapacitySolverTest::Test()
    TRY_TEST( IsEqual(Mx,-6888.22801), true );
    TRY_TEST( IsZero(My), true);
 
+   Float64 c;
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 1.852083), true);
+
+   Float64 dc;
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 0.926042), true);
+
+   Float64 de;
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 41.433434),true);
+
+   Float64 moment_arm;
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   Float64 k;
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, 0.00161979), true);
+
    CComPtr<IPlane3d> strainPlane;
-   solution->get_StrainPlane(&strainPlane);
+   solution->get_IncrementalStrainPlane(&strainPlane);
 
    Float64 ec;
    strainPlane->GetZ(0.00,H/2,&ec);
@@ -181,16 +201,30 @@ void CMomentCapacitySolverTest::Test()
    solution->get_Mx(&Mx);
    solution->get_My(&My);
    strainPlane.Release();
-   solution->get_StrainPlane(&strainPlane);
+   solution->get_IncrementalStrainPlane(&strainPlane);
 
 
    TRY_TEST( IsZero(Fz,0.001), true );
    TRY_TEST( IsEqual(Mx, 6888.22801), true );
    TRY_TEST( IsZero(My), true);
 
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 1.852083), true);
+
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 0.926042), true);
+
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 41.433434), true);
+
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, -0.00161979), true);
+
    strainPlane->GetZ(0.00,-H/2,&ec);
    TRY_TEST(IsEqual(ec,-0.003),true);
-
 
    solution.Release();
 
@@ -200,11 +234,26 @@ void CMomentCapacitySolverTest::Test()
    solution->get_Mx(&Mx);
    solution->get_My(&My);
    strainPlane.Release();
-   solution->get_StrainPlane(&strainPlane);
+   solution->get_IncrementalStrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
    TRY_TEST(IsZero(Mx), true);
    TRY_TEST(IsEqual(My, -3374.92488), true);
+
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 1.438523), true);
+
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 0.630138), true);
+
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 14.77174), true);
+
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, 0.00208547), true);
 
    strainPlane->GetZ(-W / 2, 0.00, &ec);
    TRY_TEST(IsEqual(ec, -0.003), true);
@@ -217,11 +266,26 @@ void CMomentCapacitySolverTest::Test()
    solution->get_Mx(&Mx);
    solution->get_My(&My);
    strainPlane.Release();
-   solution->get_StrainPlane(&strainPlane);
+   solution->get_IncrementalStrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
    TRY_TEST(IsZero(Mx), true);
    TRY_TEST(IsEqual(My, 3374.92488), true);
+
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 1.438523), true);
+
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 0.630138), true);
+
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 14.77174), true);
+
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, -0.00208547), true);
 
    strainPlane->GetZ(W / 2, 0.00, &ec);
    TRY_TEST(IsEqual(ec, -0.003), true);
@@ -239,12 +303,27 @@ void CMomentCapacitySolverTest::Test()
    solution->get_Mx(&Mx);
    solution->get_My(&My);
    strainPlane.Release();
-   solution->get_StrainPlane(&strainPlane);
+   solution->get_IncrementalStrainPlane(&strainPlane);
 
 
    TRY_TEST(IsZero(Fz, 0.001), true);
    TRY_TEST(IsEqual(Mx, 6884.17511, 0.0001), true);
    TRY_TEST(IsZero(My), true);
+
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 1.667856), true);
+
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 0.83393), true);
+
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 45.78926), true);
+
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, -0.0017987), true);
 
    strainPlane->GetZ(0.00, -H / 2, &ec);
    TRY_TEST(IsEqual(ec, -0.003), true);
