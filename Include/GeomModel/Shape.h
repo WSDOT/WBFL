@@ -102,9 +102,7 @@ public:
    virtual bool PointInShape(const Point2d& p) const = 0;
 
    /// Clips this shape against line.  Clips away the portion of the shape on the
-   /// side of the line defined by side.  This is a factory method.  You are 
-   /// responsible for freeing the memory allocated by this method.  If the shape
-   /// lies entirely on the clipping side of the line a nullptr is returned.
+   /// side of the line defined by side.  If the shape lies entirely on the clipping side of the line a nullptr is returned.
    virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const = 0;
 
    /// Clips this shape against rectangle r.  Clips in or out of the rectangle
@@ -115,11 +113,10 @@ public:
    virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const = 0;
 
    /// Returns the distance to a line that is parallel to line, on specified 
-   /// side of line, that passes through the furthest point on the shape 
-   /// from line.
+   /// side of line, that passes through the furthest point on the shape from line.
    virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const = 0;
 
-   /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
+   /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of the provided line
    virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const = 0;
 
    /// Returns the perimeter of the shape
