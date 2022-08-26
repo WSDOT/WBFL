@@ -152,13 +152,6 @@ void Plane3d::ThroughPoints(const Point3d& p1, const Point3d& p2, const Point3d&
 
    m_D = -1 * (m_A * x1 + m_B * y1 + m_C * z1);
 
-   // normalize coefficients
-   Float64 d = Max(fabs(m_A), fabs(m_B), fabs(m_C), fabs(m_D));
-   m_A /= d;
-   m_B /= d;
-   m_C /= d;
-   m_D /= d;
-
 #if defined _DEBUG
    if (!IsZero(m_D))
    {
