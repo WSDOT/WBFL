@@ -178,7 +178,7 @@ void CTestNUBeam::TestIShape2()
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
-   const CollectionIndexType nPoints = 174; // number of expected points
+   const CollectionIndexType nPoints = 175; // number of expected points
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
    TRY_TEST( cPoints, nPoints );
@@ -187,7 +187,7 @@ void CTestNUBeam::TestIShape2()
    coll->get__Enum(&Enum);
    CComPtr<IPoint2d> points[nPoints];
    ULONG fetched;
-   Enum->Next(174,&points[0],&fetched);
+   Enum->Next(cPoints,&points[0],&fetched);
    TRY_TEST( fetched, nPoints );
 
    Float64 x,y;
@@ -367,7 +367,8 @@ void CTestNUBeam::TestIShape2()
    TEST_POINT(points,487.4033721, 102.27546);
    TEST_POINT(points,487.5, 99.1684601);
    TEST_POINT(points,487.5, 0.);
-   
+   TEST_POINT(points, 0., 0.);
+
    TRY_TEST(i,nPoints);
 
    //

@@ -279,13 +279,13 @@ void CTestDeckedSlabBeam::TestIShape()
 
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 10 );
+   TRY_TEST( cPoints, 11 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 10> points;
+   std::array<CComPtr<IPoint2d>, 11> points;
    ULONG fetched;
-   Enum->Next(10,&points[0],&fetched);
+   Enum->Next(11,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    Float64 x,y;
@@ -300,6 +300,7 @@ void CTestDeckedSlabBeam::TestIShape()
    TEST_POINT(points, -38.875000, 12.000000);
    TEST_POINT(points, -29.875000, 12.000000);
    TEST_POINT(points, -29.875000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
    TRY_TEST(i, cPoints);
 
@@ -567,7 +568,7 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,10);
+   TRY_TEST( cPoints,11);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
@@ -588,6 +589,7 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    TEST_POINT(points, 61.125000, 112.000000);
    TEST_POINT(points, 70.125000, 112.000000);
    TEST_POINT(points, 70.125000, 100.000000);
+   TEST_POINT(points, 100.000000, 100.000000);
 
    TRY_TEST(i, cPoints);
 
@@ -619,10 +621,10 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,10);
+   TRY_TEST( cPoints,11);
 
    coll->get__Enum(&Enum);
-   Enum->Next(10,&points[0],&fetched);
+   Enum->Next(cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    i = 0;
@@ -636,6 +638,7 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    TEST_POINT(points, -38.875000, 12.000000);
    TEST_POINT(points, -29.875000, 12.000000);
    TEST_POINT(points, -29.875000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
    TRY_TEST(i, cPoints);
 
@@ -823,7 +826,7 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,10);
+   TRY_TEST( cPoints,11);
 
    coll->get__Enum(&Enum);
    Enum->Next(99,&points[0],&fetched);
@@ -840,6 +843,7 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    TEST_POINT(points, -50.875000, 0.000000);
    TEST_POINT(points, -50.875000, 9.000000);
    TEST_POINT(points, -38.875000, 9.000000);
+   TEST_POINT(points, -38.875000, 38.875000);
 
    TRY_TEST(i, cPoints);
 }

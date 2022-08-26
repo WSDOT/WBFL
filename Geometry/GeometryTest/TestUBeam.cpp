@@ -404,14 +404,14 @@ void CTestUBeam::TestIShape()
 
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 20 );
+   TRY_TEST( cPoints, 21 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 20> points;
+   std::array<CComPtr<IPoint2d>, 22> points;
    ULONG fetched;
-   Enum->Next(20,&points[0],&fetched);
-   TRY_TEST( fetched, 20 );
+   Enum->Next(cPoints,&points[0],&fetched);
+   TRY_TEST( fetched, 21 );
 
    Float64 x,y;
    int i = 0;
@@ -435,6 +435,7 @@ void CTestUBeam::TestIShape()
    TEST_POINT(points, 42.715000, 55.500000);
    TEST_POINT(points, 37.715000, 54.000000);
    TEST_POINT(points, 30.000000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
    TRY_TEST(i, cPoints);
 
@@ -697,14 +698,14 @@ void CTestUBeam::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,20);
+   TRY_TEST( cPoints,21);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 21> points;
    ULONG fetched;
    Enum->Next(21,&points[0],&fetched);
-   TRY_TEST( fetched, 20 );
+   TRY_TEST( fetched, 21 );
 
    Float64 x,y;
    int i = 0;
@@ -728,6 +729,7 @@ void CTestUBeam::TestIXYPosition()
    TEST_POINT(points, 142.715000, 155.500000);
    TEST_POINT(points, 137.715000, 154.000000);
    TEST_POINT(points, 130.000000, 100.000000);
+   TEST_POINT(points, 100.000000, 100.000000);
 
    TRY_TEST(i, cPoints);
 
@@ -751,11 +753,11 @@ void CTestUBeam::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,20);
+   TRY_TEST( cPoints,21);
 
    coll->get__Enum(&Enum);
-   Enum->Next(20,&points[0],&fetched);
-   TRY_TEST( fetched, 20 );
+   Enum->Next(21,&points[0],&fetched);
+   TRY_TEST( fetched, 21 );
 
    i = 0;
    TEST_POINT(points, 0.000000, 0.000000);
@@ -778,7 +780,8 @@ void CTestUBeam::TestIXYPosition()
    TEST_POINT(points, 42.715000, 55.500000);
    TEST_POINT(points, 37.715000, 54.000000);
    TEST_POINT(points, 30.000000, 0.000000);
-   
+   TEST_POINT(points, 0.000000, 0.000000);
+
    TRY_TEST(i, cPoints);
 
    //
@@ -958,11 +961,11 @@ void CTestUBeam::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,20);
+   TRY_TEST( cPoints,21);
 
    coll->get__Enum(&Enum);
-   Enum->Next(20,&points[0],&fetched);
-   TRY_TEST( fetched, 20 );
+   Enum->Next(21,&points[0],&fetched);
+   TRY_TEST( fetched, 21 );
 
    i = 0;
    TEST_POINT(points, 0.000000, 0.000000);
@@ -985,7 +988,8 @@ void CTestUBeam::TestIXYPosition()
    TEST_POINT(points, -42.715000, -55.500000);
    TEST_POINT(points, -37.715000, -54.000000);
    TEST_POINT(points, -30.000000, 0.000000);
-   
+   TEST_POINT(points, 0.000000, 0.000000);
+
    TRY_TEST(i, cPoints);
 }
 

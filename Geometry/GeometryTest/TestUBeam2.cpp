@@ -415,11 +415,11 @@ void CTestUBeam2::TestIShape()
 
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 18 );
+   TRY_TEST( cPoints, 19 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>,18> points;
+   std::array<CComPtr<IPoint2d>,19> points;
    ULONG fetched;
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
@@ -444,6 +444,7 @@ void CTestUBeam2::TestIShape()
    TEST_POINT(points, 44.125000, 34.125000);
    TEST_POINT(points, 35.875000, 33.250000);
    TEST_POINT(points, 27.500000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
    TRY_TEST(i, cPoints);
 
@@ -707,7 +708,7 @@ void CTestUBeam2::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,18);
+   TRY_TEST( cPoints,19);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
@@ -736,6 +737,7 @@ void CTestUBeam2::TestIXYPosition()
    TEST_POINT(points, 144.125000, 134.125000);
    TEST_POINT(points, 135.875000, 133.250000);
    TEST_POINT(points, 127.500000, 100.000000);
+   TEST_POINT(points, 100.000000, 100.000000);
 
    TRY_TEST(i, cPoints);
 
@@ -759,7 +761,7 @@ void CTestUBeam2::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,18);
+   TRY_TEST( cPoints,19);
 
    coll->get__Enum(&Enum);
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
@@ -784,6 +786,7 @@ void CTestUBeam2::TestIXYPosition()
    TEST_POINT(points, 44.125000, 34.125000);
    TEST_POINT(points, 35.875000, 33.250000);
    TEST_POINT(points, 27.500000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
    TRY_TEST(i, cPoints);
 
@@ -963,7 +966,7 @@ void CTestUBeam2::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,18);
+   TRY_TEST( cPoints,19);
 
    coll->get__Enum(&Enum);
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
@@ -988,6 +991,7 @@ void CTestUBeam2::TestIXYPosition()
    TEST_POINT(points, -44.125000, -34.125000);
    TEST_POINT(points, -35.875000, -33.250000);
    TEST_POINT(points, -27.500000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
    TRY_TEST(i, cPoints); 
 }

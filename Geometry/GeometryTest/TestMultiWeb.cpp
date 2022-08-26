@@ -306,7 +306,7 @@ void CTestMultiWeb::TestIShape()
 
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 18 );
+   TRY_TEST( cPoints, 19 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
@@ -335,6 +335,7 @@ void CTestMultiWeb::TestIShape()
    TEST_POINT(points, 22.875, -6.);
    TEST_POINT(points, 36., -6.);
    TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 0., 0.);
 
    TRY_TEST(i, cPoints);
 
@@ -596,7 +597,7 @@ void CTestMultiWeb::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,18);
+   TRY_TEST( cPoints,19);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
@@ -625,6 +626,7 @@ void CTestMultiWeb::TestIXYPosition()
    TEST_POINT(points, 122.875, 94.);
    TEST_POINT(points, 136., 94.);
    TEST_POINT(points, 136., 100.);
+   TEST_POINT(points, 100., 100.);
 
    TRY_TEST(i, cPoints);
 
@@ -648,7 +650,7 @@ void CTestMultiWeb::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,18);
+   TRY_TEST( cPoints,19);
 
    coll->get__Enum(&Enum);
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
@@ -673,6 +675,7 @@ void CTestMultiWeb::TestIXYPosition()
    TEST_POINT(points, 22.875, -6.);
    TEST_POINT(points, 36., -6.);
    TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 0., 0.);
 
    TRY_TEST(i, cPoints);
 
@@ -853,7 +856,7 @@ void CTestMultiWeb::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,18);
+   TRY_TEST( cPoints,19);
 
    coll->get__Enum(&Enum);
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
@@ -878,6 +881,7 @@ void CTestMultiWeb::TestIXYPosition()
    TEST_POINT(points, -22.875, 6.);
    TEST_POINT(points, -36., 6.);
    TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, 0., 0.);
 
    TRY_TEST(i, cPoints); 
 }

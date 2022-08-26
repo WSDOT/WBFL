@@ -407,14 +407,14 @@ void CTestPrecastBeam2::TestIShape()
 
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 22 );
+   TRY_TEST( cPoints, 23 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 23> points;
    ULONG fetched;
    Enum->Next(23,&points[0],&fetched);
-   TRY_TEST( fetched, 22 );
+   TRY_TEST( fetched, 23 );
 
    Float64 x,y;
 
@@ -505,6 +505,10 @@ void CTestPrecastBeam2::TestIShape()
 
    points[i++]->Location(&x, &y);
    TRY_TEST(IsEqual(x, 30.5), true);
+   TRY_TEST(IsEqual(y, 100.), true);
+
+   points[i++]->Location(&x, &y);
+   TRY_TEST(IsEqual(x, 0.0), true);
    TRY_TEST(IsEqual(y, 100.), true);
 
    TRY_TEST(i, cPoints);
@@ -746,14 +750,14 @@ void CTestPrecastBeam2::TestIXYPosition()
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,22);
+   TRY_TEST( cPoints,23);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 23> points;
    ULONG fetched;
    Enum->Next(23,&points[0],&fetched);
-   TRY_TEST( fetched, 22 );
+   TRY_TEST( fetched, 23 );
 
    Float64 x,y;
 
@@ -867,6 +871,11 @@ void CTestPrecastBeam2::TestIXYPosition()
    TRY_TEST(IsEqual(x, 30.5 + offset), true);
    TRY_TEST(IsEqual(y, 100. + offset), true);
 
+   points[22]->get_X(&x);
+   points[22]->get_Y(&y);
+   TRY_TEST(IsEqual(x, 0.0 + offset), true);
+   TRY_TEST(IsEqual(y, 100. + offset), true);
+
    //
    // OffsetEx
    //
@@ -890,11 +899,11 @@ void CTestPrecastBeam2::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,22);
+   TRY_TEST( cPoints,23);
 
    coll->get__Enum(&Enum);
    Enum->Next(23,&points[0],&fetched);
-   TRY_TEST( fetched, 22 );
+   TRY_TEST( fetched, 23 );
 
 
    points[0]->get_X(&x);
@@ -1005,6 +1014,11 @@ void CTestPrecastBeam2::TestIXYPosition()
    points[21]->get_X(&x);
    points[21]->get_Y(&y);
    TRY_TEST(IsEqual(x, 30.5 + offset), true);
+   TRY_TEST(IsEqual(y, 100. + offset), true);
+
+   points[22]->get_X(&x);
+   points[22]->get_Y(&y);
+   TRY_TEST(IsEqual(x, 0.0 + offset), true);
    TRY_TEST(IsEqual(y, 100. + offset), true);
 
    //
@@ -1184,11 +1198,11 @@ void CTestPrecastBeam2::TestIXYPosition()
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,22);
+   TRY_TEST( cPoints,23);
 
    coll->get__Enum(&Enum);
    Enum->Next(23,&points[0],&fetched);
-   TRY_TEST( fetched, 22 );
+   TRY_TEST( fetched, 23 );
 
    int i = 0;
    points[i++]->Location(&x, &y);
@@ -1277,6 +1291,10 @@ void CTestPrecastBeam2::TestIXYPosition()
 
    points[i++]->Location(&x, &y);
    TRY_TEST(IsEqual(x, -30.5), true);
+   TRY_TEST(IsEqual(y, -100.), true);
+
+   points[i++]->Location(&x, &y);
+   TRY_TEST(IsEqual(x, 0.0), true);
    TRY_TEST(IsEqual(y, -100.), true);
 
    TRY_TEST(i, cPoints);

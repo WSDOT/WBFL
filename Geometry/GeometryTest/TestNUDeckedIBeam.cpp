@@ -499,7 +499,7 @@ void CTestNUDeckedIBeam::TestIShape2()
 	TRY_TEST(shape->get_PolyPoints(nullptr), E_POINTER);
 	TRY_TEST(shape->get_PolyPoints(&coll), S_OK);
 
-	const CollectionIndexType nPoints = 98; // number of expected points
+	const CollectionIndexType nPoints = 99; // number of expected points
 	CollectionIndexType cPoints;
 	coll->get_Count(&cPoints);
 	TRY_TEST(cPoints, nPoints);
@@ -611,6 +611,7 @@ void CTestNUDeckedIBeam::TestIShape2()
    TEST_POINT(points, 19.000000, 5.000000);
    TEST_POINT(points, 19.000000, 1.000000);
    TEST_POINT(points, 18.000000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
    TRY_TEST(i, nPoints);
 
