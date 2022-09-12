@@ -170,7 +170,7 @@ bool MomentCurvatureSolver::TestMe(WBFL::Debug::Log& rlog)
    static std::pair<Float64, Float64> datum[] =
    {
       {0, 2.13162820728e-13},
-      {1e-05, 15294.5421909},
+      {1e-05, 15291.7475619},
       {2e-05, 23162.3803357},
       {3e-05, 27718.2460862},
       {4e-05, 27915.354183},

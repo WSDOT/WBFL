@@ -71,9 +71,6 @@ namespace WBFL
          Float64 m_DxMin{ 1 };
          Float64 m_DyMin{ 1 };
          bool m_bIgnoreSymmetry{ false };
-         static void BuildMatrix(const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix); ///< Builds the finite difference system of equations
-         static void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix); ///< Builds an individual row in the matrix, called from multiple threads
-         static Float64 ComputeVolume(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
 
 #if defined _UNITTEST
       public:

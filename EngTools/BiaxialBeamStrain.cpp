@@ -24,6 +24,9 @@
 
 #include <EngTools/EngToolsLib.h>
 #include <EngTools/BiaxialBeamStrain.h>        // class implementation
+#include <GeomModel/Vector2d.h>
+#include <GeomModel/Line2d.h>
+#include <GeomModel/Primitives3d.h>
 #include <MathEx.h>
 
 #ifdef _DEBUG

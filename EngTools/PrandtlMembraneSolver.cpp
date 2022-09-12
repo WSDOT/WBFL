@@ -38,6 +38,27 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace WBFL::EngTools;
 
+/// Builds the finite difference equations.
+/// \param[in] mesh the finite differnce mesh
+/// \param[in,out] matrix the finite difference equations
+void BuildMatrix(const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix); ///< Builds the finite difference system of equations
+
+/// Creates the finite difference equations for the specified range of rows and stores the coefficients in the matrix
+/// \param[in] startMeshRowIdx index of the first mesh row to be processed
+/// \param[in] endMeshRowIdx index of the last mesh row to be processed
+/// \param[in] mesh the mesh for which the finite difference equations are being generated
+/// \param[in] matrix the augmented coefficient matrix for the finite difference equations
+void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix); ///< Builds an individual row in the matrix, called from multiple threads
+
+/// Computes the membrane volume for a subset of elements in the FD mesh
+/// \param[in] startElementIdx index of the first element for which to compute the volume
+/// \param[in] endElementIdx index of the last element for which to compute the volume
+/// \param[in] mesh the finite difference mesh
+/// \param[in] meshValues the solution to the finite difference equations
+/// \return the volume under the membrane for the specified range of elements
+Float64 ComputeVolume(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
+
+
 void PrandtlMembraneSolver::Initialize(Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry)
 {
    m_DxMin = dxMin;
@@ -73,7 +94,7 @@ PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const std::unique_ptr<WBFL:
    for (IndexType i = 0; i < nWorkerThreads; i++)
    {
       IndexType endElementIdx = startElementIdx + nElementsPerThread - 1;
-      vFutures.emplace_back(std::async(&PrandtlMembraneSolver::ComputeVolume, startElementIdx, endElementIdx, std::ref(mesh), std::ref(meshValues)));
+      vFutures.emplace_back(std::async(&ComputeVolume, startElementIdx, endElementIdx, std::ref(mesh), std::ref(meshValues)));
       startElementIdx = endElementIdx + 1;
    }
 
@@ -92,12 +113,7 @@ PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const std::unique_ptr<WBFL:
    return solution;
 }
 
-/////////////////////////////////////////////////////////
-/// Builds the finite difference equations.
-/// \param[in] mesh the finite differnce mesh
-/// \param[in,out] matrix the finite difference equations
-/////////////////////////////////////////////////////////
-void PrandtlMembraneSolver::BuildMatrix(const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix)
+void BuildMatrix(const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix)
 {
    auto nElements = mesh->GetElementRowCount(); // this is the number of rows of elements
                                                // we need number of rows of nodes which is one more than the number of elements
@@ -113,7 +129,7 @@ void PrandtlMembraneSolver::BuildMatrix(const std::unique_ptr<UniformFDMesh>& me
    for (IndexType i = 0; i < nWorkerThreads; i++)
    {
       IndexType endMeshRowIdx = startMeshRowIdx + nElementsPerThread - 1;
-      vFutures.emplace_back(std::async(&PrandtlMembraneSolver::BuildMatrixRow, startMeshRowIdx, endMeshRowIdx, std::ref(mesh), std::ref(matrix)));
+      vFutures.emplace_back(std::async(&BuildMatrixRow, startMeshRowIdx, endMeshRowIdx, std::ref(mesh), std::ref(matrix)));
       startMeshRowIdx = endMeshRowIdx + 1;
    }
 
@@ -124,15 +140,7 @@ void PrandtlMembraneSolver::BuildMatrix(const std::unique_ptr<UniformFDMesh>& me
    }
 }
 
-/////////////////////////////////////////////////////////////
-/// Creates the finite difference equations for the specified range of rows
-/// and stores the coefficients in the matrix
-/// \param[in] startMeshRowIdx index of the first mesh row to be processed
-/// \param[in] endMeshRowIdx index of the last mesh row to be processed
-/// \param[in] mesh the mesh for which the finite difference equations are being generated
-/// \param[in] matrix the augmented coefficient matrix for the finite difference equations
-/////////////////////////////////////////////////////////////
-void PrandtlMembraneSolver::BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix)
+void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const std::unique_ptr<UniformFDMesh>& mesh, mathUnsymmetricBandedMatrix& matrix)
 {
    // compute constants that are the same for all rows
    Float64 Dx, Dy;
@@ -214,14 +222,7 @@ void PrandtlMembraneSolver::BuildMatrixRow(IndexType startMeshRowIdx, IndexType 
    }
 }
 
-////////////////////////////////////////////////
-/// \param[in] startElementIdx index of the first element for which to compute the volume
-/// \param[in] endElementIdx index of the last element for which to compute the volume
-/// \param[in] mesh the finite difference mesh
-/// \param[in] meshValues the solution to the finite difference equations
-/// \return the volume under the membrane for the specified range of elements
-////////////////////////////////////////////////
-Float64 PrandtlMembraneSolver::ComputeVolume(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
+Float64 ComputeVolume(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
 {
    Float64 V = 0;
    Float64 area = mesh->GetElementArea();

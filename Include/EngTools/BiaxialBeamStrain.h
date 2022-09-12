@@ -23,7 +23,8 @@
 #pragma once
 
 #include <EngTools\EngToolsExp.h>
-#include <GeomModel\GeomModel.h>
+#include <GeomModel\Primitives.h>
+#include <GeomModel\Plane3d.h>
 
 namespace WBFL
 {
