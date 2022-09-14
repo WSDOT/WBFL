@@ -216,7 +216,7 @@ public:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr,true);
+      auto* pFunction = GetGirderProfile(ssMbr,true);
 
       CComPtr<IPolyShape> polyShape;
       polyShape.CoCreateInstance(CLSID_PolyShape);
@@ -409,7 +409,7 @@ public:
 
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, false);
+      auto* pFunction = GetGirderProfile(ssMbr, false);
 
       for (const auto Xgp : xValues)
       {
@@ -977,7 +977,7 @@ protected:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, true);
+      auto* pFunction = GetGirderProfile(ssMbr, true);
 
       Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
       Float64 H = pFunction->Evaluate(Xgp);
@@ -988,7 +988,7 @@ protected:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, false);
+      auto* pFunction = GetGirderProfile(ssMbr, false);
 
       Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
       Float64 H = pFunction->Evaluate(Xgp);

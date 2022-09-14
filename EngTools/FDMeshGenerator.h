@@ -48,12 +48,10 @@ namespace WBFL
          /// \param[in] pShape the shape to generate the mesh for
          /// \param[in] mesh the mesh to be generated
          /// \param[in] bIgnoreSymmetry if true, symmetry of the shape is ignored and a full mesh is generated
-         //std::unique_ptr<UniformFDMesh> GenerateMesh(IShape* pShape, bool bIgnoreSymmetry = false) const;
          std::unique_ptr<UniformFDMesh> GenerateMesh(const std::unique_ptr<WBFL::Geometry::Shape>& shape, bool bIgnoreSymmetry = false) const; ///< Generates a finite difference mesh, taking advantage of a vertical axis of symmetry if present
 
       private:
          Float64 m_DxMax, m_DyMax;
-         //static void GenerateMeshRow(IndexType rowIdx, IndexType Nx, Float64 dx, Float64 dy, Float64 tlx, Float64 tly, IShape* pShape, std::unique_ptr<UniformFDMesh>& mesh);
          static void GenerateMeshRow(IndexType rowIdx, IndexType Nx, Float64 dx, Float64 dy, Float64 tlx, Float64 tly, const std::unique_ptr<WBFL::Geometry::Shape>& shape, std::unique_ptr<UniformFDMesh>& mesh);
          static void GenerateMeshRows(IndexType rowStart, IndexType rowEnd, IndexType Nx, Float64 dx, Float64 dy, Float64 tlx, Float64 tly, const std::unique_ptr<WBFL::Geometry::Shape>& shape, std::unique_ptr<UniformFDMesh>& mesh);
       };

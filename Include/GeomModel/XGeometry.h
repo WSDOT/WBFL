@@ -27,7 +27,7 @@
 #include <GeomModel/Primitives.h>
 #include <System/Exception.h>
 
-#define THROW_GEOMETRY(reason) throw XGeometry(reason,_T(__FILE__),__LINE__)
+#define THROW_GEOMETRY(reason) throw WBFL::Geometry::XGeometry(reason,_T(__FILE__),__LINE__)
 
 namespace WBFL
 {
@@ -37,7 +37,7 @@ namespace WBFL
       class GEOMMODELCLASS XGeometry : public WBFL::System::XBase
       {
       public:
-         XGeometry() = default;
+         XGeometry() = delete;
          XGeometry(const std::_tstring& strReason, const std::_tstring& file, Uint32 line);
          virtual ~XGeometry() = default;
 

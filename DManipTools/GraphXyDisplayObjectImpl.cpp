@@ -222,8 +222,8 @@ public:
    }
 private:
    GraphMapper();
-   mathCoordMapper1d m_xMapper;
-   mathCoordMapper1d m_yMapper;
+   WBFL::Math::CoordMapper1d m_xMapper;
+   WBFL::Math::CoordMapper1d m_yMapper;
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -25,37 +25,37 @@
 
 #pragma once
 
-#include <Math\Polynomial2d.h>
-#include <Math\LinFunc2d.h>
-#include <Math\Function2d.h>
+#include <Math\PolynomialFunction.h>
+#include <Math\LinearFunction.h>
+#include <Math\Function.h>
+#include <Math\XFunction.h>
 #include <MathEx.h>
+#include <WBFLDebug.h>
 
 
-/* //////////// Parabolas ////////////////////////
+/// Function to generate a parabola that has Y==0 at Sx and Ex and with a vertex at 
+/// x==(S+E)/2 with height Vy.
+///
+///
+///              Y                 V
+///              |                 * ---------------------------
+///              |             *      *                      ^
+///              |          *           *                    |
+///              |        *               *                  |
+///              |      *                  *                 |  Vy
+///              |     *                    *                |
+///              |    *                      *               v
+///          --------*------------------------*---------------------------- x
+///              |  *S                        E*             ^
+///              | *                            *            |  dy
+///              |                                           v
+///          -------------------------------------------------------------- X
+///              |
+///              |
 
-   Function to generate a parabola that has Y==0 at Sx and Ex and with a vertex at 
-    x==(S+E)/2 with height Vy.
-
-
-                 Y                 V
-                 |                 * ---------------------------
-                 |             *      *                      ^
-                 |          *           *                    |
-                 |        *               *                  |
-                 |      *                  *                 |  Vy
-                 |     *                    *                |
-                 |    *                      *               v
-             --------*------------------------*---------------------------- x
-                 |  *S                        E*             ^
-                 | *                            *            |  dy
-                 |                                           v
-             -------------------------------------------------------------- X
-                 |
-                 |
-*/
-inline mathPolynomial2d GenerateParabola(Float64 Sx,Float64 Ex,Float64 Vy,Float64 dy=0.0)
+inline WBFL::Math::PolynomialFunction GenerateParabola(Float64 Sx,Float64 Ex,Float64 Vy,Float64 dy=0.0)
 {
-   ATLASSERT(Sx<Ex);
+   CHECK(Sx<Ex);
    Float64 Vx  = (Sx + Ex)/2.0;   // X ordinate of vertex
    Float64 SV2 = (Sx-Vx)*(Sx-Vx); // used many times
 
@@ -69,10 +69,11 @@ inline mathPolynomial2d GenerateParabola(Float64 Sx,Float64 Ex,Float64 Vy,Float6
    coefficients.push_back(B);
    coefficients.push_back(C);
 
-   return mathPolynomial2d(coefficients);
+   return WBFL::Math::PolynomialFunction(coefficients);
 }
 
-inline mathPolynomial2d GenerateParabola1(Float64 x1,Float64 y1,Float64 x2,Float64 y2,Float64 slope)
+/// Create a parabola with a known slope at the left end and zero slope at the right end
+inline WBFL::Math::PolynomialFunction GenerateParabola1(Float64 x1,Float64 y1,Float64 x2,Float64 y2,Float64 slope)
 {
    // slope is known at left end
    Float64 A = ((y2-y1) - (x2-x1)*slope)/((x2-x1)*(x2-x1));
@@ -84,10 +85,11 @@ inline mathPolynomial2d GenerateParabola1(Float64 x1,Float64 y1,Float64 x2,Float
    coefficients.push_back(B);
    coefficients.push_back(C);
 
-   return mathPolynomial2d(coefficients);
+   return WBFL::Math::PolynomialFunction(coefficients);
 }
 
-inline mathPolynomial2d GenerateParabola2(Float64 x1,Float64 y1,Float64 x2,Float64 y2,Float64 slope)
+/// Create a parabola with a known slope at the right end and zero slope at the left end
+inline WBFL::Math::PolynomialFunction GenerateParabola2(Float64 x1,Float64 y1,Float64 x2,Float64 y2,Float64 slope)
 {
    // slope is known at right end
    Float64 A = -((y2-y1) - (x2-x1)*slope)/((x2-x1)*(x2-x1));
@@ -99,10 +101,11 @@ inline mathPolynomial2d GenerateParabola2(Float64 x1,Float64 y1,Float64 x2,Float
    coefficients.push_back(B);
    coefficients.push_back(C);
 
-   return mathPolynomial2d(coefficients);
+   return WBFL::Math::PolynomialFunction(coefficients);
 }
 
-inline void GenerateReverseParabolas(Float64 x1,Float64 y1,Float64 x2,Float64 x3,Float64 y3,mathPolynomial2d* pLeftParabola,mathPolynomial2d* pRightParabola)
+/// Create reverse parabolas
+inline void GenerateReverseParabolas(Float64 x1,Float64 y1,Float64 x2,Float64 x3,Float64 y3, WBFL::Math::PolynomialFunction* pLeftParabola, WBFL::Math::PolynomialFunction* pRightParabola)
 {
    Float64 y2 = (y3*(x2-x1) + y1*(x3-x2))/(x3 - x1);
 
@@ -110,38 +113,37 @@ inline void GenerateReverseParabolas(Float64 x1,Float64 y1,Float64 x2,Float64 x3
    *pRightParabola = GenerateParabola2(x2,y2,x3,y3,0.0);
 }
 
-/* //////////// Line ////////////////////////
-* 
-     Return a line from two points at (X1, Y1), (X2, Y2)
-
-     NOTE: This will throw a mathXEvalError::Undefined if X1==X2 !!!
-
-*/
-inline mathLinFunc2d GenerateLineFunc2dFromPoints(Float64 X1,Float64 Y1,Float64 X2,Float64 Y2)
+/// Create a LinearFunction from two points at (X1, Y1), (X2, Y2)
+inline WBFL::Math::LinearFunction GenerateLineFunc2dFromPoints(Float64 X1,Float64 Y1,Float64 X2,Float64 Y2)
 {
    if (IsEqual(X1,X2))
    {
-      ATLASSERT(0);
-      throw mathXEvalError::Undefined;
+      THROW_FUNCTION(WBFL::Math::XFunction::Reason::Undefined);
    }
 
    Float64 slope = (Y2 - Y1) / (X2 - X1);
    Float64 intercept = Y1 - slope * X1;
 
-   return mathLinFunc2d(slope,intercept);
+   return WBFL::Math::LinearFunction(slope,intercept);
 }
 
 
-// Math function class that just returns zero
-class ZeroFunction : public mathFunction2d
+namespace WBFL
 {
-   virtual Float64 Evaluate(Float64 x) const
+   namespace Math
    {
-      return 0.0;
-   }
+      /// Math function class that just returns zero
+      class ZeroFunction : public Function
+      {
+         virtual Float64 Evaluate(Float64 x) const
+         {
+            return 0.0;
+         }
 
-   virtual mathFunction2d* Clone() const
-   {
-      return new ZeroFunction();
-   }
+         virtual std::unique_ptr<WBFL::Math::Function> Clone() const
+         {
+            return std::make_unique<ZeroFunction>();
+         }
+      };
+   };
 };

@@ -77,7 +77,7 @@ void HaulingCheckArtifact::GetControllingTensionCase(HaulingSlope slope, const H
 
          Float64 cd;
          Corner corner;
-         corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdPositive,
+         corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Positive,
             fAllow, sectionResult.f[slope][impact][wind][TopLeft],
             fAllow, sectionResult.f[slope][impact][wind][TopRight],
             fAllow, sectionResult.f[slope][impact][wind][BottomLeft],
@@ -113,7 +113,7 @@ void HaulingCheckArtifact::GetControllingGlobalCompressionCase(HaulingSlope slop
 
       Float64 cd;
       Corner corner;
-      corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
+      corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
          fAllow, sectionResult.fDirect[slope][impact][TopLeft],
          fAllow, sectionResult.fDirect[slope][impact][TopRight],
          fAllow, sectionResult.fDirect[slope][impact][BottomLeft],
@@ -148,7 +148,7 @@ void HaulingCheckArtifact::GetControllingPeakCompressionCase(HaulingSlope slope,
          WindDirection wind = (WindDirection)w;
          Float64 cd;
          Corner corner;
-         corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
+         corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
             fAllow, sectionResult.f[slope][impact][wind][TopLeft],
             fAllow, sectionResult.f[slope][impact][wind][TopRight],
             fAllow, sectionResult.f[slope][impact][wind][BottomLeft],

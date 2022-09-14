@@ -25,7 +25,13 @@
 
 #pragma once
 
-class mathPwLinearFunction2dUsingPoints;
+namespace WBFL
+{
+   namespace Math
+   {
+      class PiecewiseFunction;
+   };
+};
 
 class CPierImpl
 {
@@ -75,5 +81,5 @@ public:
    CComPtr<IBearingLayout> m_BearingLayout;
    CComPtr<IColumnLayout> m_ColumnLayout;
 
-   void CreateDeckProfileFunction(mathPwLinearFunction2dUsingPoints* pFN);
+   void CreateDeckProfileFunction(WBFL::Math::PiecewiseFunction* pFN);
 };

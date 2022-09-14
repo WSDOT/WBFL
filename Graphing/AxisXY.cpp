@@ -95,7 +95,7 @@ void AxisXY::Draw(HDC hDC)
 
    // Set up mapping between device coords and world (axis) coords. Axis coords
    // will be the A axis.
-   mathCoordMapper1d axis_mapper;
+   WBFL::Math::CoordMapper1d axis_mapper;
 
    axis_mapper.SetCoordinateMap(m_Scale == AxisScale::Linear || m_Scale == AxisScale::Integral ? m_LeftAxisValue  : log10(m_LeftAxisValue),  m_MinLocation, 
                                 m_Scale == AxisScale::Linear || m_Scale == AxisScale::Integral ? m_RightAxisValue : log10(m_RightAxisValue), m_MaxLocation);

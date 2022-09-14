@@ -598,7 +598,7 @@ STDMETHODIMP CTransitionCurve::Intersect(ILine2d* line, VARIANT_BOOL bProjectBac
    // when evaluated, this function returns the distance from the line to the curve
    // if the curve is to the left of the line the distance is negative
    CLineIntersectFunction function(this, line);
-   mathBrentsRootFinder2d rootFinder;
+   WBFL::Math::BrentsRootFinder rootFinder;
    Float64 ya = function.Evaluate(m_StartDist);
    Float64 yb = function.Evaluate(m_Ls);
    if (0 < ya*yb)
@@ -635,7 +635,7 @@ STDMETHODIMP CTransitionCurve::Intersect(ILine2d* line, VARIANT_BOOL bProjectBac
          {
             limit = rootFinder.FindRootInRange(parallel_function, m_StartDist, m_Ls, 0.0000001);
          }
-         catch (mathXRootFinder2dFailed& /*e*/)
+         catch (WBFL::Math::XRootFinder& /*e*/)
          {
             ATLASSERT(false);
          }
@@ -673,7 +673,7 @@ STDMETHODIMP CTransitionCurve::Intersect(ILine2d* line, VARIANT_BOOL bProjectBac
 
                return S_OK; // we got both intersection points... leave now
             }
-            catch (mathXRootFinder2dFailed& /*mx*/)
+            catch (WBFL::Math::XRootFinder& /*mx*/)
             {
                ATLASSERT(false); // should never fire
             }
@@ -690,7 +690,7 @@ STDMETHODIMP CTransitionCurve::Intersect(ILine2d* line, VARIANT_BOOL bProjectBac
          ATLASSERT(TestIntersection(line, pntOnCurve));
          (*points)->Add(pntOnCurve);
       }
-      catch (mathXRootFinder2dFailed& /*mx*/)
+      catch (WBFL::Math::XRootFinder& /*mx*/)
       {
          ATLASSERT(false);
       }
@@ -810,7 +810,7 @@ Float64 CTransitionCurve::SpiralY(Float64 ls,Float64 angle)
 void CTransitionCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d* *pNewPoint)
 {
    CSpiralFunction function(this,point);
-   mathBrentsRootFinder2d rootFinder;
+   WBFL::Math::BrentsRootFinder rootFinder;
    Float64 dist = rootFinder.FindRootInRange(function, m_StartDist,m_Ls,0.00001); // dist from end
    PointOnCurve(dist,pNewPoint);
    *pDistFromStart = dist;

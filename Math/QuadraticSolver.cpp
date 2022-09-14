@@ -31,52 +31,67 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   mathQuadraticSolver
-****************************************************************************/
+using namespace WBFL::Math;
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+QuadraticSolver::QuadraticSolver(Float64 a,Float64 b,Float64 c)
+{
+   SetCoefficients(a, b, c);
+}
 
-//======================== LIFECYCLE  =======================================
-mathQuadraticSolver::mathQuadraticSolver(Float64 a,Float64 b,Float64 c)
+void QuadraticSolver::SetCoefficients(Float64 a, Float64 b, Float64 c)
 {
    m_A = a;
    m_B = b;
    m_C = c;
 }
 
-mathQuadraticSolver::mathQuadraticSolver(const mathQuadraticSolver& rOther)
+void QuadraticSolver::GetCoefficients(Float64* a, Float64* b, Float64* c) const
 {
-   MakeCopy(rOther);
+   *a = m_A;
+   *b = m_B;
+   *c = m_C;
 }
 
-mathQuadraticSolver::~mathQuadraticSolver()
+void QuadraticSolver::SetA(Float64 a)
 {
+   m_A = a;
 }
 
-//======================== OPERATORS  =======================================
-mathQuadraticSolver& mathQuadraticSolver::operator= (const mathQuadraticSolver& rOther)
+Float64 QuadraticSolver::GetA() const
 {
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
+   return m_A;
 }
 
-//======================== OPERATIONS =======================================
-int mathQuadraticSolver::Solve(Float64* x1, Float64* x2) const
+void QuadraticSolver::SetB(Float64 b)
+{
+   m_B = b;
+}
+
+Float64 QuadraticSolver::GetB() const
+{
+   return m_B;
+}
+
+void QuadraticSolver::SetC(Float64 c)
+{
+   m_C = c;
+}
+
+Float64 QuadraticSolver::GetC() const
+{
+   return m_C;
+}
+
+Uint8 QuadraticSolver::Solve(Float64* x1, Float64* x2) const
 {
    Float64 a = m_A;
    Float64 b = m_B;
    Float64 c = m_C;
 
-   if ( IsZero( a ) )
+   if (IsZero(a))
    {
       // the function is linear
-      if ( IsZero(b) )
+      if (IsZero(b))
       {
          // the function is a horizontal line
          return 0; // no roots
@@ -84,108 +99,30 @@ int mathQuadraticSolver::Solve(Float64* x1, Float64* x2) const
       else
       {
          // the function is a sloped line
-         *x1 = -c/b;
+         *x1 = -c / b;
          return 1; // 1 root
       }
    }
 
-   Float64 K = b*b - 4.0*a*c;
-   
-   if ( K < 0 )
+   Float64 K = b * b - 4.0 * a * c;
+
+   if (K < 0)
       return 0;
 
-   K = sqrt( K );
+   K = sqrt(K);
 
-   *x1 = (-b + K) / (2*a);
-   *x2 = (-b - K) / (2*a);
+   *x1 = (-b + K) / (2 * a);
+   *x2 = (-b - K) / (2 * a);
 
    return 2;
 }
 
-//======================== ACCESS     =======================================
-void mathQuadraticSolver::SetA(Float64 a)
-{
-   m_A = a;
-}
-
-Float64 mathQuadraticSolver::GetA() const
-{
-   return m_A;
-}
-
-void mathQuadraticSolver::SetB(Float64 b)
-{
-   m_B = b;
-}
-
-Float64 mathQuadraticSolver::GetB() const
-{
-   return m_B;
-}
-
-void mathQuadraticSolver::SetC(Float64 c)
-{
-   m_C = c;
-}
-
-Float64 mathQuadraticSolver::GetC() const
-{
-   return m_C;
-}
-
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void mathQuadraticSolver::MakeCopy(const mathQuadraticSolver& rOther)
-{
-   m_A = rOther.m_A;
-   m_B = rOther.m_B;
-   m_C = rOther.m_C;
-}
-
-void mathQuadraticSolver::MakeAssignment(const mathQuadraticSolver& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool mathQuadraticSolver::AssertValid() const
-{
-   // Objects of this class are always valid
-   return true;
-}
-
-void mathQuadraticSolver::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for mathQuadraticSolver" << WBFL::Debug::endl;
-   os << "m_A = " << m_A << WBFL::Debug::endl;
-   os << "m_B = " << m_B << WBFL::Debug::endl;
-   os << "m_C = " << m_C << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
 #if defined _UNITTEST
-bool mathQuadraticSolver::TestMe(WBFL::Debug::Log& rlog)
+bool QuadraticSolver::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("mathQuadraticSolver");
+   TESTME_PROLOGUE("QuadraticSolver");
 
-   mathQuadraticSolver solver( 10, 10, 10 );
+   QuadraticSolver solver( 10, 10, 10 );
    Float64 x1, x2;
 
    TRY_TESTME( solver.Solve( &x1, &x2 ) == 0 );
@@ -210,6 +147,6 @@ bool mathQuadraticSolver::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( solver.Solve( &x1, &x2 ) == 1 );
    TRY_TESTME( IsEqual( x1, 2.5 ) );
 
-   TESTME_EPILOG("mathQuadraticSolver");
+   TESTME_EPILOG("QuadraticSolver");
 }
 #endif // _UNITTEST

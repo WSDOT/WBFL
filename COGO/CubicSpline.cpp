@@ -718,7 +718,7 @@ STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point,IPoint2d* *pNewPoint,Flo
       {
          const CSplineSegment& splineSegment = *iter;
          CSplineSegmentProjectPointFunction fn(splineSegment, pntRotated, m_GeomUtil);
-         mathBisectionRootFinder2d rootfinder;
+         WBFL::Math::BisectionRootFinder rootfinder;
 
          // find the length along the spline segment where a normal line passes through
          // point
@@ -1517,7 +1517,7 @@ Float64 CSplineSegment::Length(Float64 dx) const
 
    CSplineSegmentLengthFunction fn(*this);
 
-   mathTrapezoidalRuleIntegrator integrator;
+   WBFL::Math::TrapezoidalRuleIntegrator integrator;
    Float64 L = integrator.Evaluate(fn,xa,xa+dx,50);
    return L;
 }
@@ -1546,7 +1546,7 @@ void CSplineSegment::GetPoint(Float64 distance,Float64* pX,Float64* pY) const
    
    CSplineSegmentPointFunction fn(distance,xa,*this);
 
-   mathBisectionRootFinder2d rootfinder;
+   WBFL::Math::BisectionRootFinder rootfinder;
    Float64 xr = rootfinder.FindRootInRange(fn,xa,xb,0.00001);
    Float64 yr = Evaluate(xr);
 
@@ -1632,7 +1632,7 @@ void CSplineSegment::Intersect(ILine2d* line,IGeomUtil2d* pGU,IPoint2d** p1,IPoi
       //          k1*x^3   + k2*x^2   + k3*x   + k4
       // Spline   D          C          B        A
       // Solver   A          B          C        D
-      mathCubicSolver solver(D,C,(B-m),(A-k));
+      WBFL::Math::CubicSolver solver(D,C,(B-m),(A-k));
 
       nRoots = solver.Solve(&x[0],&x[1],&x[2]);
 
@@ -1688,9 +1688,9 @@ Float64 CSplineSegmentLengthFunction::Evaluate(Float64 x) const
    return sqrt(1 + dy*dy);
 }
 
-mathFunction2d* CSplineSegmentLengthFunction::Clone() const
+std::unique_ptr<WBFL::Math::Function> CSplineSegmentLengthFunction::Clone() const
 {
-   return new CSplineSegmentLengthFunction(m_SplineSegment);
+   return std::make_unique<CSplineSegmentLengthFunction>(m_SplineSegment);
 }
 
 ///////////////////////////////////////////////////////
@@ -1715,9 +1715,9 @@ Float64 CSplineSegmentPointFunction::Evaluate(Float64 x) const
    return result;
 }
 
-mathFunction2d* CSplineSegmentPointFunction::Clone() const
+std::unique_ptr<WBFL::Math::Function> CSplineSegmentPointFunction::Clone() const
 {
-   return new CSplineSegmentPointFunction(m_Distance,m_X0,m_SplineSegment);
+   return std::make_unique<CSplineSegmentPointFunction>(m_Distance,m_X0,m_SplineSegment);
 }
 
 /////////////////////////////////////////////////////////////
@@ -1748,7 +1748,7 @@ Float64 CSplineSegmentProjectPointFunction::Evaluate(Float64 s) const
    return offset;
 }
 
-mathFunction2d* CSplineSegmentProjectPointFunction::Clone() const
+std::unique_ptr<WBFL::Math::Function> CSplineSegmentProjectPointFunction::Clone() const
 {
-   return new CSplineSegmentProjectPointFunction(m_SplineSegment, m_TargetPoint, m_GeomUtil);
+   return std::make_unique<CSplineSegmentProjectPointFunction>(m_SplineSegment, m_TargetPoint, m_GeomUtil);
 }

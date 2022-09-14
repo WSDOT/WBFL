@@ -76,7 +76,7 @@ void OneEndSeatedCheckArtifact::GetControllingTensionCase(const OneEndSeatedSect
 
          Float64 cd;
          Corner corner;
-         corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdPositive,
+         corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Positive,
             fAllow, sectionResult.f[impact][wind][TopLeft],
             fAllow, sectionResult.f[impact][wind][TopRight],
             fAllow, sectionResult.f[impact][wind][BottomLeft],
@@ -111,7 +111,7 @@ void OneEndSeatedCheckArtifact::GetControllingGlobalCompressionCase(const OneEnd
       ImpactDirection impact = (ImpactDirection)i;
       Float64 cd;
       Corner corner;
-      corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
+      corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
          fAllow, sectionResult.fDirect[impact][TopLeft],
          fAllow, sectionResult.fDirect[impact][TopRight],
          fAllow, sectionResult.fDirect[impact][BottomLeft],
@@ -146,7 +146,7 @@ void OneEndSeatedCheckArtifact::GetControllingPeakCompressionCase(const OneEndSe
          WindDirection wind = (WindDirection)w;
          Float64 cd;
          Corner corner;
-         corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
+         corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
             fAllow, sectionResult.f[impact][wind][TopLeft],
             fAllow, sectionResult.f[impact][wind][TopRight],
             fAllow, sectionResult.f[impact][wind][BottomLeft],

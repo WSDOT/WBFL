@@ -25,7 +25,7 @@
 
 #include <GenericBridge\GenericBridgeExp.h>
 #include <WBFLGenericBridge.h>
-#include <Math\CompositeFunction2d.h>
+#include <Math\CompositeFunction.h>
 
 // defines the segment profile transition between control points. for parabolas, left and right are defined based
 // on a parabola symmetric about the Y-axis
@@ -72,4 +72,4 @@ void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(INUBeam* pBeam, Float64 Hg, Fl
 Float64 WBFLGENERICBRIDGEFUNC ComputeTopFlangeThickening(Float64 Xs, Float64 Ls, ThickeningType thickeningType, Float64 tft);
 Float64 WBFLGENERICBRIDGEFUNC ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber);
 
- WBFLGENERICBRIDGEFUNC mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);
+ WBFLGENERICBRIDGEFUNC WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);

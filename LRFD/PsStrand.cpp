@@ -214,8 +214,8 @@ Float64 lrfdPsStrand::GetFpj(const WBFL::Materials::PsStrand& strand,Float64 tim
       c = fbt;
 
       Float64 fpj1, fpj2; // Solutions to a quadratic equation
-      mathQuadraticSolver solver(a,b,c);
-      bool bSolved = (solver.Solve( &fpj1, &fpj2 ) > 0);
+      WBFL::Math::QuadraticSolver solver(a,b,c);
+      bool bSolved = (0 < solver.Solve( &fpj1, &fpj2 ));
       CHECK( bSolved );
       CHECK( fpj1 > fpj2 );
 

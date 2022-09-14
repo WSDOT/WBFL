@@ -155,8 +155,8 @@ STDMETHODIMP CParabolicTendonSegment::get_Position(TendonMeasure measure,Float64
 #pragma Reminder("UPDATE: need to make adjustment for strand being offset in duct if measure is tmTendon")
    CHECK_RETOBJ(cg);
 
-   const mathPolynomial2d& parabolaX = GetParabolaX();
-   const mathPolynomial2d& parabolaY = GetParabolaY();
+   const auto& parabolaX = GetParabolaX();
+   const auto& parabolaY = GetParabolaY();
 
    Float64 x = parabolaX.Evaluate(z);
    Float64 y = parabolaY.Evaluate(z);
@@ -177,10 +177,10 @@ STDMETHODIMP CParabolicTendonSegment::get_Slope(Float64 z,IVector3d** slope)
 {
    CHECK_RETOBJ(slope);
 
-   const mathPolynomial2d& parabolaX = GetParabolaX();
-   const mathPolynomial2d& parabolaY = GetParabolaY();
-   const mathPolynomial2d& slope_fn_x = GetParabolaDX();
-   const mathPolynomial2d& slope_fn_y = GetParabolaDY();
+   const auto& parabolaX = GetParabolaX();
+   const auto& parabolaY = GetParabolaY();
+   const auto& slope_fn_x = GetParabolaDX();
+   const auto& slope_fn_y = GetParabolaDY();
 
    Float64 sx = slope_fn_x.Evaluate(z);
    Float64 sy = slope_fn_y.Evaluate(z);
@@ -309,7 +309,7 @@ STDMETHODIMP CParabolicTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMin
 {
    CHECK_RETVAL(pMinRadiusOfCurvature);
 
-   const mathPolynomial2d& fx = GetParabolaY();
+   const auto& fx = GetParabolaY();
    std::vector<Float64> coefficients(fx.GetCoefficients());
    ATLASSERT(coefficients.size() == 3);
    Float64 A = coefficients[0];
@@ -424,25 +424,25 @@ void CParabolicTendonSegment::UpdateParabolas()
    m_bUpdateParabolas = false;
 }
 
-const mathPolynomial2d& CParabolicTendonSegment::GetParabolaX()
+const WBFL::Math::PolynomialFunction& CParabolicTendonSegment::GetParabolaX()
 {
    UpdateParabolas();
    return m_ParabolaX;
 }
 
-const mathPolynomial2d& CParabolicTendonSegment::GetParabolaDX()
+const WBFL::Math::PolynomialFunction& CParabolicTendonSegment::GetParabolaDX()
 {
    UpdateParabolas();
    return m_ParabolaDX;
 }
 
-const mathPolynomial2d& CParabolicTendonSegment::GetParabolaY()
+const WBFL::Math::PolynomialFunction& CParabolicTendonSegment::GetParabolaY()
 {
    UpdateParabolas();
    return m_ParabolaY;
 }
 
-const mathPolynomial2d& CParabolicTendonSegment::GetParabolaDY()
+const WBFL::Math::PolynomialFunction& CParabolicTendonSegment::GetParabolaDY()
 {
    UpdateParabolas();
    return m_ParabolaDY;

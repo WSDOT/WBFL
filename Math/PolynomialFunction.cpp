@@ -22,7 +22,8 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Math\MathLib.h>
-#include <Math\Polynomial2d.h>
+#include <Math\PolynomialFunction.h>
+#include <Math\XFunction.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -30,44 +31,27 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-mathPolynomial2d::mathPolynomial2d()
-{
-}
+using namespace WBFL::Math;
 
-mathPolynomial2d::mathPolynomial2d(const mathPolynomial2d& rOther) :
-m_Coefficients(rOther.m_Coefficients)
-{
-}
-
-mathPolynomial2d::mathPolynomial2d(const std::vector<Float64>& coefficients) :
+PolynomialFunction::PolynomialFunction(const std::vector<Float64>& coefficients) :
 m_Coefficients(coefficients)
 {
 }
 
-mathPolynomial2d::~mathPolynomial2d()
-{
-}
-
-mathPolynomial2d& mathPolynomial2d::operator=(const mathPolynomial2d& rOther)
-{
-   m_Coefficients = rOther.m_Coefficients;
-   return *this;
-}
-
-void mathPolynomial2d::SetCoefficients(const std::vector<Float64>& coefficients)
+void PolynomialFunction::SetCoefficients(const std::vector<Float64>& coefficients)
 {
    m_Coefficients = coefficients;
 }
 
-const std::vector<Float64>& mathPolynomial2d::GetCoefficients() const
+const std::vector<Float64>& PolynomialFunction::GetCoefficients() const
 {
    return m_Coefficients;
 }
 
-Float64 mathPolynomial2d::Evaluate(Float64 x) const
+Float64 PolynomialFunction::Evaluate(Float64 x) const
 {
    if ( m_Coefficients.size() == 0 )
-      throw  mathXEvalError(mathXEvalError::Undefined,_T(__FILE__),__LINE__);
+      THROW_FUNCTION(XFunction::Reason::Undefined);
 
    std::vector<Float64>::const_reverse_iterator iter;
    iter = m_Coefficients.rbegin();
@@ -86,12 +70,12 @@ Float64 mathPolynomial2d::Evaluate(Float64 x) const
    return y;
 }
 
-mathFunction2d* mathPolynomial2d::Clone() const
+std::unique_ptr<Function> PolynomialFunction::Clone() const
 {
-   return new mathPolynomial2d(*this);
+   return std::make_unique<PolynomialFunction>(*this);
 }
 
-mathPolynomial2d mathPolynomial2d::GetDerivative() const
+PolynomialFunction PolynomialFunction::GetDerivative() const
 {
    std::vector<Float64> coefficients;
 
@@ -106,5 +90,14 @@ mathPolynomial2d mathPolynomial2d::GetDerivative() const
 
    ASSERT(coefficients.size() == m_Coefficients.size()-1);
 
-   return mathPolynomial2d(coefficients);
+   return PolynomialFunction(coefficients);
 }
+
+#if defined _UNITTEST
+bool PolynomialFunction::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("PolynomialFunction");
+   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for PolynomialFunction");
+   TESTME_EPILOG("PolynomialFunction");
+}
+#endif

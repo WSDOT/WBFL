@@ -163,7 +163,7 @@ STDMETHODIMP CLinearCrossBeam::get_Depth(/*[in]*/StageIndexType stageIdx,/*[in]*
 
    CComPtr<IEnumPoint2d> enumPoints;
    bxbProfile->get__Enum(&enumPoints);
-   mathPwLinearFunction2dUsingPoints fnBottom;
+   WBFL::Math::PiecewiseFunction fnBottom;
    while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
    {
       pnt->Location(&x,&y);
@@ -175,7 +175,7 @@ STDMETHODIMP CLinearCrossBeam::get_Depth(/*[in]*/StageIndexType stageIdx,/*[in]*
    GetLowerXBeamProfile(&lxbProfile);
    enumPoints.Release();
    lxbProfile->get__Enum(&enumPoints);
-   mathPwLinearFunction2dUsingPoints fnTop;
+   WBFL::Math::PiecewiseFunction fnTop;
    while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
    {
       pnt->Location(&x,&y);

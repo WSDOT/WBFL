@@ -28,7 +28,7 @@
 #include <memory>
 #include <numeric>
 
-#include <Math\LinFunc2d.h>
+#include <Math\LinearFunction.h>
 #include <Math\MathUtils.h>
 
 #ifdef _DEBUG
@@ -742,8 +742,8 @@ DEFINE_GUID(IID_IFunctionHolder, 0xd62a0d3a, 0x8d99, 0x4f82, 0x81, 0x55, 0xaf, 0
 MIDL_INTERFACE("D62A0D3A-8D99-4F82-8155-AF3E30BC175D")
 IFunctionHolder : public IUnknown
 {
-   virtual void SetFunction(mathCompositeFunction2d* pFunction) = 0;
-   virtual mathCompositeFunction2d* GetFunction() = 0;
+   virtual void SetFunction(WBFL::Math::CompositeFunction* pFunction) = 0;
+   virtual WBFL::Math::CompositeFunction* GetFunction() = 0;
 };
 
 class ATL_NO_VTABLE CFunctionHolder :
@@ -756,20 +756,20 @@ public:
       COM_INTERFACE_ENTRY_IID(IID_IFunctionHolder,IFunctionHolder)
    END_COM_MAP()
 
-   virtual void SetFunction(mathCompositeFunction2d* pFunction) override
+   virtual void SetFunction(WBFL::Math::CompositeFunction* pFunction) override
    {
       m_pFunction.reset(pFunction);
    }
 
-   virtual mathCompositeFunction2d* GetFunction() override
+   virtual WBFL::Math::CompositeFunction* GetFunction() override
    {
       return m_pFunction.get();
    }
 protected:
-   std::unique_ptr<mathCompositeFunction2d> m_pFunction;
+   std::unique_ptr<WBFL::Math::CompositeFunction> m_pFunction;
 };
 
-mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile)
+WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile)
 {
    // The profile function is cached as item data on the superstructure member object
    // Check the cache before proceeding
@@ -784,7 +784,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
    }
    
    // The function isn't cached so create it and then add it to the cache
-   std::unique_ptr<mathCompositeFunction2d> pCompositeFunction(std::make_unique<mathCompositeFunction2d>());
+   std::unique_ptr<WBFL::Math::CompositeFunction> pCompositeFunction(std::make_unique<WBFL::Math::CompositeFunction>());
 
    SegmentIndexType nSegments;
    pSSMbr->get_SegmentCount(&nSegments);
@@ -855,7 +855,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
          if (!bGirderProfile || IsZero(precamber))
          {
             Float64 slope = (h2 - h1) / segment_length;
-            mathLinFunc2d func(slope, h1);
+            WBFL::Math::LinearFunction func(slope, h1);
             pCompositeFunction->AddFunction(xStart, xEnd, func);
             slopeParabola = slope;
          }
@@ -866,7 +866,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
             // from the function to get the profile based on the top of the girder
             // being at zero. That negative cancels out the negative used here and we
             // get the profile we want
-            mathPolynomial2d func(GenerateParabola(xStart, xEnd, -precamber, h1));
+            WBFL::Math::PolynomialFunction func(GenerateParabola(xStart, xEnd, -precamber, h1));
             pCompositeFunction->AddFunction(xStart, xEnd, func);
             slopeParabola = 0;
          }
@@ -901,7 +901,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
          if (0 < variation_length[sztLeftPrismatic])
          {
             // create a prismatic segment
-            mathLinFunc2d func(0.0, h1);
+            WBFL::Math::LinearFunction func(0.0, h1);
             xEnd = xStart + (variation_type == svtNone ? segment_length / 2 : variation_length[sztLeftPrismatic]);
             pCompositeFunction->AddFunction(xStart, xEnd, func);
             slopeParabola = 0;
@@ -915,7 +915,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
             Float64 slope = (h2 - h1) / taper_length;
             Float64 b = h1 - slope*xStart;
 
-            mathLinFunc2d func(slope, b);
+            WBFL::Math::LinearFunction func(slope, b);
             xEnd = xStart + taper_length;
             pCompositeFunction->AddFunction(xStart, xEnd, func);
             xStart = xEnd;
@@ -927,7 +927,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
             Float64 slope = (h3 - h1) / variation_length[sztLeftTapered];
             Float64 b = h1 - slope*xStart;
 
-            mathLinFunc2d left_func(slope, b);
+            WBFL::Math::LinearFunction left_func(slope, b);
             xEnd = xStart + variation_length[sztLeftTapered];
             pCompositeFunction->AddFunction(xStart, xEnd, left_func);
             xStart = xEnd;
@@ -937,7 +937,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
             slope = (h4 - h3) / taper_length;
             b = h3 - slope*xStart;
 
-            mathLinFunc2d middle_func(slope, b);
+            WBFL::Math::LinearFunction middle_func(slope, b);
             xEnd = xStart + taper_length;
             pCompositeFunction->AddFunction(xStart, xEnd, middle_func);
             xStart = xEnd;
@@ -946,7 +946,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
             slope = (h2 - h4) / variation_length[sztRightTapered];
             b = h4 - slope*xStart;
 
-            mathLinFunc2d right_func(slope, b);
+            WBFL::Math::LinearFunction right_func(slope, b);
             xEnd = xStart + variation_length[sztRightTapered];
             pCompositeFunction->AddFunction(xStart, xEnd, right_func);
             xStart = xEnd;
@@ -1001,13 +1001,13 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
                if (yParabolaEnd < yParabolaStart)
                {
                   // slope at end is zero
-                  mathPolynomial2d func = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
+                  WBFL::Math::PolynomialFunction func = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
                   pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func);
                }
                else
                {
                   // slope at start is zero
-                  mathPolynomial2d func = GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+                  WBFL::Math::PolynomialFunction func = GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
                   pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func);
                }
 
@@ -1033,7 +1033,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
 #pragma Reminder("BUG: Assuming slope at start is zero, but it may not be if tangent to a linear segment")
             xParabolaEnd = xSegmentStart + variation_length[sztLeftPrismatic] + variation_length[sztLeftTapered];
             yParabolaEnd = h3;
-            mathPolynomial2d func_left_parabola;
+            WBFL::Math::PolynomialFunction func_left_parabola;
             if (yParabolaEnd < yParabolaStart)
             {
                func_left_parabola = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
@@ -1057,7 +1057,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
                Float64 slope = -(h4 - h3) / taper_length;
                Float64 b = h3 - slope*xParabolaEnd;
 
-               mathLinFunc2d middle_func(slope, b);
+               WBFL::Math::LinearFunction middle_func(slope, b);
                pCompositeFunction->AddFunction(xParabolaEnd, xParabolaStart, middle_func);
                slopeParabola = slope;
             }
@@ -1091,7 +1091,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
                yParabolaEnd = h2;
 
 
-               mathPolynomial2d func_right_parabola;
+               WBFL::Math::PolynomialFunction func_right_parabola;
                if (yParabolaEnd < yParabolaStart)
                {
                   // compute slope at end of parabola
@@ -1149,7 +1149,7 @@ mathCompositeFunction2d* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bG
          if (0 < variation_length[sztRightPrismatic])
          {
             // create a prismatic segment
-            mathLinFunc2d func(0.0, h2);
+            WBFL::Math::LinearFunction func(0.0, h2);
             xEnd = xStart + (variation_type == svtNone ? segment_length / 2 : variation_length[sztRightPrismatic]);
             pCompositeFunction->AddFunction(xStart, xEnd, func);
             slopeParabola = 0;

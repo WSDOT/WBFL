@@ -175,7 +175,7 @@ private:
 };
 
 
-class CEntrySpiralFunction : public mathFunction2d
+class CEntrySpiralFunction : public WBFL::Math::Function
 {
 public:
    CEntrySpiralFunction(CCompoundCurve* hc,IPoint2d* tp) :
@@ -204,9 +204,9 @@ public:
       return offset;
    }
 
-   virtual mathFunction2d* Clone() const override
+   virtual std::unique_ptr<WBFL::Math::Function> Clone() const override
    {
-      return new CEntrySpiralFunction(m_pCurve,m_TargetPoint);
+      return std::make_unique<CEntrySpiralFunction>(m_pCurve,m_TargetPoint);
    }
 
 private:
@@ -217,7 +217,7 @@ private:
 };
 
 
-class CExitSpiralFunction : public mathFunction2d
+class CExitSpiralFunction : public WBFL::Math::Function
 {
 public:
    CExitSpiralFunction(CCompoundCurve* hc,IPoint2d* tp) :
@@ -248,9 +248,9 @@ public:
       return offset;
    }
 
-   virtual mathFunction2d* Clone() const override
+   virtual std::unique_ptr<WBFL::Math::Function> Clone() const override
    {
-      return new CExitSpiralFunction(m_pCurve,m_TargetPoint);
+      return std::make_unique<CExitSpiralFunction>(m_pCurve,m_TargetPoint);
    }
 
 private:
@@ -260,7 +260,7 @@ private:
    CComPtr<ILine2d> m_Line;
 };
 
-class CLineIntersectFunction : public mathFunction2d
+class CLineIntersectFunction : public WBFL::Math::Function
 {
 public:
    CLineIntersectFunction(CCompoundCurve* hc,ILine2d* line) :
@@ -282,9 +282,9 @@ public:
          return offset;
       }
 
-      virtual mathFunction2d* Clone() const override
+      virtual std::unique_ptr< WBFL::Math::Function> Clone() const override
       {
-         return new CLineIntersectFunction(m_pCurve,m_Line);
+         return std::make_unique<CLineIntersectFunction>(m_pCurve,m_Line);
       }
 
 private:
@@ -292,7 +292,7 @@ private:
    CComPtr<ILine2d> m_Line;
 };
 
-class CParallelLineFunction : public mathFunction2d
+class CParallelLineFunction : public WBFL::Math::Function
 {
 public:
    CParallelLineFunction(CCompoundCurve* hc,ILine2d* line) :
@@ -320,9 +320,9 @@ public:
          return dot;
       }
 
-      virtual mathFunction2d* Clone() const override
+      virtual std::unique_ptr<WBFL::Math::Function> Clone() const override
       {
-         return new CParallelLineFunction(m_pCurve,m_Line);
+         return std::make_unique<CParallelLineFunction>(m_pCurve,m_Line);
       }
 
 private:

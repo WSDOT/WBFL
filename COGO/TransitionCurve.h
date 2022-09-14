@@ -159,7 +159,7 @@ private:
 
    int ProjectionRegion(IPoint2d* pPoint);
 
-   class CLineIntersectFunction : public mathFunction2d
+   class CLineIntersectFunction : public WBFL::Math::Function
    {
    public:
       CLineIntersectFunction(CTransitionCurve* tc, ILine2d* line) :
@@ -180,9 +180,9 @@ private:
          return dist;
       }
 
-      virtual mathFunction2d* Clone() const override
+      virtual std::unique_ptr<WBFL::Math::Function> Clone() const override
       {
-         return new CLineIntersectFunction(m_pCurve, m_Line);
+         return std::make_unique<CLineIntersectFunction>(m_pCurve, m_Line);
       }
 
    private:
@@ -190,7 +190,7 @@ private:
       CComPtr<ILine2d> m_Line;
    };
 
-   class CParallelLineFunction : public mathFunction2d
+   class CParallelLineFunction : public WBFL::Math::Function
    {
    public:
       CParallelLineFunction(CTransitionCurve* tc, ILine2d* line) :
@@ -220,9 +220,9 @@ private:
          return m_Angle - angle;
       }
 
-      virtual mathFunction2d* Clone() const override
+      virtual std::unique_ptr<WBFL::Math::Function> Clone() const override
       {
-         return new CParallelLineFunction(m_pCurve, m_Line);
+         return std::make_unique<CParallelLineFunction>(m_pCurve, m_Line);
       }
 
    private:
@@ -231,7 +231,7 @@ private:
       CComPtr<ILine2d> m_Line;
    };
 
-   class CSpiralFunction : public mathFunction2d
+   class CSpiralFunction : public WBFL::Math::Function
    {
    public:
       CSpiralFunction(CTransitionCurve* tc,IPoint2d* tp) :
@@ -260,9 +260,9 @@ private:
          return dist;
       }
    
-      virtual mathFunction2d* Clone() const override
+      virtual std::unique_ptr<WBFL::Math::Function> Clone() const override
       {
-         return new CSpiralFunction(m_pCurve,m_TargetPoint);
+         return std::make_unique<CSpiralFunction>(m_pCurve,m_TargetPoint);
       }
    
    private:

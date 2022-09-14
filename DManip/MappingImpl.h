@@ -146,8 +146,8 @@ private:
    {
       // coordinate mapper from text space to logical space
       // A coordinate is text, B coordinate is logical
-      mathCoordMapper1d m_TextCoordMapperX;
-      mathCoordMapper1d m_TextCoordMapperY;
+      WBFL::Math::CoordMapper1d m_TextCoordMapperX;
+      WBFL::Math::CoordMapper1d m_TextCoordMapperY;
 
       // local dc so we can determine font metrics
       CDC*  m_pDC;

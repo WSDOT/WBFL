@@ -175,56 +175,60 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="1dRange.cpp" />
-    <ClCompile Include="BisectionRootFinder2d.cpp" />
-    <ClCompile Include="BrentsRootFinder2d.cpp" />
+    <ClCompile Include="Range.cpp" />
+    <ClCompile Include="BisectionRootFinder.cpp" />
+    <ClCompile Include="BrentsRootFinder.cpp" />
     <ClCompile Include="CDRatio.cpp" />
-    <ClCompile Include="CompositeFunction2d.cpp" />
+    <ClCompile Include="CompositeFunction.cpp" />
     <ClCompile Include="CoordMapper1d.cpp" />
     <ClCompile Include="CubicSolver.cpp" />
     <ClCompile Include="FixedPointIteration.cpp" />
-    <ClCompile Include="Function2d.cpp" />
-    <ClCompile Include="LinFunc2d.cpp" />
+    <ClCompile Include="LinearFunction.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="NumericIntegrator2d.cpp" />
-    <ClCompile Include="Polynomial2d.cpp" />
-    <ClCompile Include="PwLinearFunction2d.cpp" />
-    <ClCompile Include="PwLinearFunction2dUsingPoints.cpp" />
+    <ClCompile Include="PolynomialFunction.cpp" />
+    <ClCompile Include="PiecewiseFunction.cpp" />
     <ClCompile Include="QuadraticSolver.cpp" />
-    <ClCompile Include="RootFinder2d.cpp" />
+    <ClCompile Include="RootFinder.cpp" />
     <ClCompile Include="TrapezoidalRuleIntegrator.cpp" />
     <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="UnsymmetricBandedMatrix..cpp" />
+    <ClCompile Include="XFixedPointIteration.cpp" />
+    <ClCompile Include="XFunction.cpp" />
+    <ClCompile Include="XNumericIntegration.cpp" />
+    <ClCompile Include="XRootFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\MathEx.h" />
-    <ClInclude Include="..\Include\Math\1dRange.h" />
+    <ClInclude Include="..\Include\Math\Range.h" />
     <ClInclude Include="..\Include\Math\AutoLib.h" />
-    <ClInclude Include="..\Include\Math\BisectionRootFinder2d.h" />
-    <ClInclude Include="..\Include\Math\BrentsRootFinder2d.h" />
+    <ClInclude Include="..\Include\Math\BisectionRootFinder.h" />
+    <ClInclude Include="..\Include\Math\BrentsRootFinder.h" />
     <ClInclude Include="..\Include\Math\CDRatio.h" />
-    <ClInclude Include="..\Include\Math\CompositeFunction2d.h" />
+    <ClInclude Include="..\Include\Math\CompositeFunction.h" />
     <ClInclude Include="..\Include\Math\CoordMapper1d.h" />
     <ClInclude Include="..\Include\Math\CubicSolver.h" />
     <ClInclude Include="..\Include\Math\FixedPointIteration.h" />
-    <ClInclude Include="..\Include\Math\Function2d.h" />
-    <ClInclude Include="..\Include\Math\LinFunc2d.h" />
+    <ClInclude Include="..\Include\Math\Function.h" />
+    <ClInclude Include="..\Include\Math\LinearFunction.h" />
     <ClInclude Include="..\Include\Math\Math.h" />
     <ClInclude Include="..\Include\Math\MathExp.h" />
     <ClInclude Include="..\Include\Math\MathLib.h" />
     <ClInclude Include="..\Include\Math\MathUtils.h" />
-    <ClInclude Include="..\Include\Math\NumericIntegrator2d.h" />
-    <ClInclude Include="..\Include\Math\Polynomial2d.h" />
-    <ClInclude Include="..\Include\Math\PwLinearFunction2d.h" />
-    <ClInclude Include="..\Include\Math\PwLinearFunction2dUsingPoints.h" />
+    <ClInclude Include="..\Include\Math\NumericIntegration.h" />
+    <ClInclude Include="..\Include\Math\PolynomialFunction.h" />
+    <ClInclude Include="..\Include\Math\PiecewiseFunction.h" />
     <ClInclude Include="..\Include\Math\QuadraticSolver.h" />
-    <ClInclude Include="..\Include\Math\RootFinder2d.h" />
+    <ClInclude Include="..\Include\Math\RootFinder.h" />
     <ClInclude Include="..\Include\Math\TrapezoidalRuleIntegrator.h" />
     <ClInclude Include="..\Include\Math\UnitTest.h" />
     <ClInclude Include="..\Include\Math\UnsymmetricBandedMatrix.h" />
+    <ClInclude Include="..\Include\Math\XFixedPointIteration.h" />
+    <ClInclude Include="..\Include\Math\XFunction.h" />
+    <ClInclude Include="..\Include\Math\XNumericIntegration.h" />
+    <ClInclude Include="..\Include\Math\XRootFinder.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Math.def" />

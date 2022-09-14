@@ -21,82 +21,25 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_UNITTEST_H_
-#define INCLUDED_MATH_UNITTEST_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Math\MathExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   mathUnitTest
-
-   Unit Testing class for the material package
-
-
-DESCRIPTION
-
-LOG
-   rdp : 05.27.1998 : Created file
-*****************************************************************************/
-
-class MATHCLASS mathUnitTest
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace Math
+   {
+      /// Unit Testing class for the material package
+      class MATHCLASS UnitTest
+      {
+      public:
+         UnitTest(const UnitTest&) = delete;
+         UnitTest& operator=(const UnitTest&) = delete;
+         
+         static bool TestMe(WBFL::Debug::Log& rlog);
 
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   mathUnitTest(const mathUnitTest&);
-   mathUnitTest& operator=(const mathUnitTest&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   static bool TestEx(WBFL::Debug::Log& rlog);
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
+      private:
+         static bool TestEx(WBFL::Debug::Log& rlog);
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // 

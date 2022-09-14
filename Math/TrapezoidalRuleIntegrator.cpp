@@ -22,14 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Math\MathLib.h>
-
-/****************************************************************************
-CLASS
-   mathTrapezoidalRuleIntegrator
-****************************************************************************/
-
 #include <Math\TrapezoidalRuleIntegrator.h>
-#include <Math\Function2d.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,23 +30,37 @@ CLASS
 static char THIS_FILE[] = __FILE__;
 #endif
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::Math;
 
-Float64 mathTrapezoidalRuleIntegrator::Evaluate(const mathFunction2d& f,Float64 xMin,Float64 xMax,Uint16 nIntervals)
+Float64 TrapezoidalRuleIntegrator::Evaluate(const std::function<Float64(Float64)>& f, Float64 xMin, Float64 xMax, Uint16 nIntervals) const
 {
-   Float64 stepSize = (xMax - xMin)/nIntervals;
+   Float64 stepSize = (xMax - xMin) / nIntervals;
 
    Float64 A = 0;
-   for ( Uint16 i = 0; i < nIntervals; i++ )
+   for (Uint16 i = 0; i < nIntervals; i++)
    {
-      Float64 xa = xMin + stepSize*i;
-      Float64 xb = xMin + stepSize*(i+1);
+      Float64 xa = xMin + stepSize * i;
+      Float64 xb = xMin + stepSize * (i + 1);
 
-      Float64 ya = f.Evaluate(xa);
-      Float64 yb = f.Evaluate(xb);
+      Float64 ya = f(xa);
+      Float64 yb = f(xb);
 
-      A += 0.5*(yb+ya)*(xb-xa);
+      A += 0.5 * (yb + ya) * (xb - xa);
    }
 
    return A;
 }
+
+Float64 TrapezoidalRuleIntegrator::Evaluate(const Function& f,Float64 xMin,Float64 xMax,Uint16 nIntervals) const
+{
+   return Evaluate([&f](Float64 x) {return f.Evaluate(x); }, xMin, xMax, nIntervals);
+}
+
+#if defined _UNITTEST
+bool TrapezoidalRuleIntegrator::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("TrapezoidalRuleIntegrator");
+   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for TrapezoidalRuleIntegrator");
+   TESTME_EPILOG("TrapezoidalRuleIntegrator");
+}
+#endif

@@ -23,17 +23,9 @@
 
 #include <Math\MathLib.h>
 #include <Math\UnitTest.h>
-#include <Math\BrentsRootFinder2d.h>
-#include <Math\BisectionRootFinder2d.h>
-#include <Math\RootFinder2d.h>
-#include <Math\CoordMapper1d.h>
-#include <Math\Function2d.h>
-#include <Math\Polynomial2d.h>
-#include <Math\LinFunc2d.h>
-#include <Math\QuadraticSolver.h>
-#include <Math\CubicSolver.h>
-#include <Math\1dRange.h>
-#include <Math\PwLinearFunction2dUsingPoints.h>
+
+#undef BUILDMATHLIB
+#include <Math\Math.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,37 +33,37 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-/****************************************************************************
-CLASS
-   mathUnitTest
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
+using namespace WBFL::Math;
 
 bool test_rootfinders(WBFL::Debug::Log& rlog);
 
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-bool mathUnitTest::TestMe(WBFL::Debug::Log& rlog)
+bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool tst = true;
 
 #if defined _UNITTEST
 
-   tst &= mathBrentsRootFinder2d::TestMe(rlog);
-   tst &= mathBisectionRootFinder2d::TestMe(rlog);
-   tst &= mathCoordMapper1d::TestMe( rlog );
-//   tst &= mathFunction2d::TestMe( rlog );
-   tst &= mathRootFinder2d::TestMe(rlog);
-//   tst &= mathLinFunc2d::TestMe( rlog );
-//   tst &= mathXEvalError::TestMe( rlog );
-//   tst &= mathXRootFinder2dFailed::TestMe( rlog );
-   tst &= mathQuadraticSolver::TestMe( rlog );
-   tst &= mathCubicSolver::TestMe( rlog );
-   tst &= math1dRange::TestMe(rlog);
-   tst &= mathPwLinearFunction2dUsingPoints::TestMe(rlog);
+   tst &= BisectionRootFinder::TestMe(rlog);
+   tst &= BrentsRootFinder::TestMe(rlog);
+   //tst &= CDRatio::TestMe(rlog);
+   tst &= CompositeFunction::TestMe(rlog);
+   tst &= CoordMapper1d::TestMe( rlog );
+   tst &= CubicSolver::TestMe(rlog);
+   tst &= FixedPointIteration::TestMe(rlog);
+   //tst &= Function::TestMe(rlog);
+   //tst &= LinearFunction::TestMe(rlog);
+   //tst &= NumericIntegration::TestMe(rlog);
+   tst &= PolynomialFunction::TestMe(rlog);
+   tst &= PiecewiseFunction::TestMe(rlog);
+   tst &= QuadraticSolver::TestMe(rlog);
+   tst &= Range::TestMe(rlog);
+   tst &= RootFinder::TestMe(rlog);
+   tst &= TrapezoidalRuleIntegrator::TestMe(rlog);
+   //tst &= UnsymmetricBandedMatrix::TestMe(rlog);
+   //tst &= XFixedPointIteration::TestMe(rlog);
+   //tst &= XFunction::TestMe(rlog);
+   //tst &= XNumericIntegration::TestMe(rlog);
+   //tst &= XRootFinder::TestMe(rlog);
 
    tst &= test_rootfinders(rlog);
 
@@ -83,7 +75,7 @@ bool mathUnitTest::TestMe(WBFL::Debug::Log& rlog)
 }
 
 
-bool mathUnitTest::TestEx(WBFL::Debug::Log& rlog)
+bool UnitTest::TestEx(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("mathEx");
 
@@ -122,40 +114,19 @@ bool mathUnitTest::TestEx(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("mathEx")
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-
 bool test_rootfinders(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Root Finder Tests");
 
-   mathBrentsRootFinder2d brents;
-   mathBisectionRootFinder2d bisection;
+   BrentsRootFinder brents;
+   BisectionRootFinder bisection;
 
    std::vector<Float64> c;
    c.push_back(1);
    c.push_back(4);
    c.push_back(0);
    c.push_back(-10);
-   mathPolynomial2d f1(c);
+   PolynomialFunction f1(c);
    Float64 x;
    Float64 tol = 1e-03;
 

@@ -21,41 +21,33 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include <Math\MathLib.h>
+#include <Math\XRootFinder.h>
 
-#include <Math\MathExp.h>
-#include <Math\Function2d.h>
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
+using namespace WBFL::Math;
 
-/*****************************************************************************
-CLASS 
-   mathPolynomial2d
-
-DESCRIPTION
-   Defines a polynomial function
-
-LOG
-   rab : 11.17.1997 : Created file
-*****************************************************************************/
-
-class MATHCLASS mathPolynomial2d : public mathFunction2d
+XRootFinder::XRootFinder(XRootFinder::Reason reason, const std::_tstring& file, Uint32 line) :
+   WBFL::System::XBase(file, line), m_Reason(reason)
 {
-public:
-   mathPolynomial2d();
-   mathPolynomial2d(const mathPolynomial2d& rOther);
-   mathPolynomial2d(const std::vector<Float64>& coefficients);
-   virtual ~mathPolynomial2d();
+}
 
-   mathPolynomial2d& operator=(const mathPolynomial2d& rOther);
+void XRootFinder::Throw() const
+{
+   throw *static_cast<const XRootFinder*>(this);
+}
 
-   void SetCoefficients(const std::vector<Float64>& coefficients);
-   const std::vector<Float64>& GetCoefficients() const;
-   
-   virtual Float64 Evaluate(Float64 x) const override;
-   virtual mathFunction2d* Clone() const override;
+Int32 XRootFinder::GetReason() const noexcept
+{
+   return std::underlying_type<XRootFinder::Reason>::type(m_Reason);
+}
 
-   mathPolynomial2d GetDerivative() const;
-
-private:
-   std::vector<Float64> m_Coefficients;
-};
+XRootFinder::Reason XRootFinder::GetReasonCode() const noexcept
+{
+   return m_Reason;
+}

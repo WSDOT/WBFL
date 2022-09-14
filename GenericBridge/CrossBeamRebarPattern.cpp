@@ -149,7 +149,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Location(Float64 Xxb,CollectionIndexTyp
    CComPtr<IPoint2dCollection> profile;
    get_Profile(barIdx,&profile);
 
-   mathPwLinearFunction2dUsingPoints fn;
+   WBFL::Math::PiecewiseFunction fn;
    CComPtr<IEnumPoint2d> enumPoints;
    profile->get__Enum(&enumPoints);
    CComPtr<IPoint2d> point;

@@ -22,7 +22,8 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Math\MathLib.h>
-#include <Math\CompositeFunction2d.h>
+#include <Math\CompositeFunction.h>
+#include <Math\XFunction.h>
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -31,51 +32,34 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-mathCompositeFunction2d::mathCompositeFunction2d()
-{
-}
+using namespace WBFL::Math;
 
-mathCompositeFunction2d::mathCompositeFunction2d(const mathCompositeFunction2d& other)
+void CompositeFunction::AddFunction(Float64 xMin,Float64 xMax,const Function& func)
 {
-   *this = other;
-}
-
-mathCompositeFunction2d& mathCompositeFunction2d::operator=(const mathCompositeFunction2d& other)
-{
-   m_Segments.clear();
-   m_Segments = other.m_Segments;
-   return *this;
-}
-
-mathCompositeFunction2d::~mathCompositeFunction2d()
-{
-}
-
-void mathCompositeFunction2d::AddFunction(Float64 xMin,Float64 xMax,mathFunction2d& func)
-{
-   Segment segment;
-   segment.xMin = xMin;
-   segment.xMax = xMax;
-   segment.pFunc = func.Clone();
-
-   m_Segments.push_back(segment);
+   m_Segments.emplace_back(xMin, xMax, func.Clone());
    std::sort(m_Segments.begin(), m_Segments.end());
 }
 
-IndexType mathCompositeFunction2d::GetFunctionCount() const
+void CompositeFunction::AddFunction(Float64 xMin, Float64 xMax, std::unique_ptr<Function>&& func)
+{
+   m_Segments.emplace_back(xMin, xMax, std::move(func));
+   std::sort(m_Segments.begin(), m_Segments.end());
+}
+
+IndexType CompositeFunction::GetFunctionCount() const
 {
    return m_Segments.size();
 }
 
-void mathCompositeFunction2d::GetFunction(IndexType idx,const mathFunction2d** ppFunc,Float64* pXMin,Float64* pXMax) const
+const std::unique_ptr<Function>& CompositeFunction::GetFunction(IndexType idx,Float64* pXMin,Float64* pXMax) const
 {
    const Segment& segment = m_Segments[idx];
-   *ppFunc = segment.pFunc;
    *pXMax = segment.xMax;
    *pXMin = segment.xMin;
+   return segment.pFunc;
 }
 
-void mathCompositeFunction2d::AdjustLimits(IndexType idx,Float64 xMin,Float64 xMax)
+void CompositeFunction::AdjustLimits(IndexType idx,Float64 xMin,Float64 xMax)
 {
    Segment& segment = m_Segments[idx];
    segment.xMin = xMin;
@@ -83,13 +67,10 @@ void mathCompositeFunction2d::AdjustLimits(IndexType idx,Float64 xMin,Float64 xM
    std::sort(m_Segments.begin(), m_Segments.end());
 }
 
-Float64 mathCompositeFunction2d::Evaluate(Float64 x) const
+Float64 CompositeFunction::Evaluate(Float64 x) const
 {
-   std::vector<Segment>::const_iterator iter(m_Segments.begin());
-   std::vector<Segment>::const_iterator iterEnd(m_Segments.end());
-   for ( ; iter != iterEnd; iter++ )
+   for(const Segment& segment : m_Segments)
    {
-      const Segment& segment = *iter;
       if ( segment.InRange(x) )
       {
          return segment.pFunc->Evaluate(x);
@@ -98,15 +79,29 @@ Float64 mathCompositeFunction2d::Evaluate(Float64 x) const
 
    // function is undefined at x
    ASSERT(false); // hmmm?
-   throw new mathXEvalError(mathXEvalError::Undefined,_T(__FILE__),__LINE__);
+   THROW_FUNCTION(XFunction::Reason::Undefined);
 }
 
-mathFunction2d* mathCompositeFunction2d::Clone() const
+std::unique_ptr<Function> CompositeFunction::Clone() const
 {
-   return new mathCompositeFunction2d(*this);
+   std::unique_ptr<CompositeFunction> clone(std::make_unique<CompositeFunction>());
+   for (const Segment& segment : m_Segments)
+   {
+      clone->AddFunction(segment.xMin, segment.xMax, segment.pFunc->Clone());
+   }
+   return clone;
 }
 
-void mathCompositeFunction2d::Clear()
+void CompositeFunction::Clear()
 {
    m_Segments.clear();
 }
+
+#if defined _UNITTEST
+bool CompositeFunction::TestMe(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("CompositeFunction");
+   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for CompositeFunction");
+   TESTME_EPILOG("CompositeFunction");
+}
+#endif

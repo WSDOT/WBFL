@@ -21,149 +21,63 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_QUADRATICSOLVER_H_
-#define INCLUDED_MATH_QUADRATICSOLVER_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Math\MathExp.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   mathQuadraticSolver
-
-   Utility class to solve quadratic equations.
-
-
-DESCRIPTION
-   Utility class to solve quadratic equations. 
-
-   Finds the roots of equations having the form ax^2 + bx + c = 0
-
-LOG
-   rab : 10.06.1998 : Created file
-*****************************************************************************/
-
-class MATHCLASS mathQuadraticSolver
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace Math
+   {
+      /// Utility class to solve quadratic equations. 
+      ///
+      /// Finds the roots of equations having the form ax^2 + bx + c = 0
+      class MATHCLASS QuadraticSolver
+      {
+      public:
+         QuadraticSolver() = default;
+         QuadraticSolver(Float64 a,Float64 b,Float64 c);
+         QuadraticSolver(const QuadraticSolver&) = default;
+         
+         ~QuadraticSolver() = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   mathQuadraticSolver(Float64 a,Float64 b,Float64 c);
+         QuadraticSolver& operator=(const QuadraticSolver&) = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   mathQuadraticSolver(const mathQuadraticSolver& rOther);
+         void SetCoefficients(Float64 a, Float64 b, Float64 c);
+         void GetCoefficients(Float64* a, Float64* b, Float64* c) const;
+         
+         /// Sets the coefficient a
+         void SetA(Float64 a);
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~mathQuadraticSolver();
+         /// Gets the coefficient a
+         Float64 GetA() const;
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   mathQuadraticSolver& operator = (const mathQuadraticSolver& rOther);
+         /// Sets the coefficient b
+         void SetB(Float64 b);
 
-   // GROUP: OPERATIONS
+         /// Gets the coefficient b
+         Float64 GetB() const;
 
-   //------------------------------------------------------------------------
-   // Solves the quadratic equation. Returns the number of roots found
-   int Solve(Float64* x1, Float64* x2) const;
+         /// Sets the coefficient c
+         void SetC(Float64 c);
 
-   // GROUP: ACCESS
+         /// Gets the coefficient c
+         Float64 GetC() const;
 
-   //------------------------------------------------------------------------
-   // Sets the coefficient a
-   void SetA(Float64 a);
+         /// Solves the quadratic equation. Returns the number of roots found
+         /// \param[out] x1 first root
+         /// \param[out] x2 second root
+         Uint8 Solve(Float64* x1, Float64* x2) const;
 
-   //------------------------------------------------------------------------
-   // Gets the coefficient a
-   Float64 GetA() const;
+      private:
+         Float64 m_A{0.0};
+         Float64 m_B{0.0};
+         Float64 m_C{0.0};
 
-   //------------------------------------------------------------------------
-   // Sets the coefficient b
-   void SetB(Float64 b);
-
-   //------------------------------------------------------------------------
-   // Gets the coefficient b
-   Float64 GetB() const;
-
-   //------------------------------------------------------------------------
-   // Sets the coefficient c
-   void SetC(Float64 c);
-
-   //------------------------------------------------------------------------
-   // Gets the coefficient c
-   Float64 GetC() const;
-
-
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const mathQuadraticSolver& rOther);
-
-   //------------------------------------------------------------------------
-   virtual void MakeAssignment(const mathQuadraticSolver& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Float64 m_A;
-   Float64 m_B;
-   Float64 m_C;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   #endif // _UNITTEST
+      #if defined _UNITTEST
+      public:
+         static bool TestMe(WBFL::Debug::Log& rlog);
+      #endif // _UNITTEST
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_MATH_QUADRATICSOLVER_H_

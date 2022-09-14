@@ -32,7 +32,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-mathUnsymmetricBandedMatrix::mathUnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage) :
+using namespace WBFL::Math;
+
+UnsymmetricBandedMatrix::UnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage) :
    N(N), BW(BW), storage(storage)
 {
    ba = nullptr;
@@ -40,18 +42,18 @@ mathUnsymmetricBandedMatrix::mathUnsymmetricBandedMatrix(IndexType N, IndexType 
    Initialize(N, BW);
 }
 
-mathUnsymmetricBandedMatrix::mathUnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage, Float64** ba, Float64* b) :
+UnsymmetricBandedMatrix::UnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage, Float64** ba, Float64* b) :
    N(N), BW(BW), storage(storage), ba(ba), b(b)
 {
    half_band_width = BW / 2;
 }
 
-mathUnsymmetricBandedMatrix::~mathUnsymmetricBandedMatrix()
+UnsymmetricBandedMatrix::~UnsymmetricBandedMatrix()
 {
    Clear();
 }
 
-void mathUnsymmetricBandedMatrix::Initialize(IndexType n, IndexType bw)
+void UnsymmetricBandedMatrix::Initialize(IndexType n, IndexType bw)
 {
    Clear();
    N = n;
@@ -81,41 +83,41 @@ void mathUnsymmetricBandedMatrix::Initialize(IndexType n, IndexType bw)
    memset((void*)b, 0, N * sizeof(Float64));
 }
 
-IndexType mathUnsymmetricBandedMatrix::GetSize() const
+IndexType UnsymmetricBandedMatrix::GetSize() const
 {
    return N;
 }
 
-IndexType mathUnsymmetricBandedMatrix::GetBandwidth() const
+IndexType UnsymmetricBandedMatrix::GetBandwidth() const
 {
    return BW;
 }
 
-void mathUnsymmetricBandedMatrix::SetCoefficient(IndexType i, IndexType j, Float64 aij)
+void UnsymmetricBandedMatrix::SetCoefficient(IndexType i, IndexType j, Float64 aij)
 {
    IndexType m, n;
    Full2Condensed(i, j, half_band_width, m, n);
    ba[m][n] = aij;
 }
 
-Float64 mathUnsymmetricBandedMatrix::GetCoefficient(IndexType i, IndexType j)
+Float64 UnsymmetricBandedMatrix::GetCoefficient(IndexType i, IndexType j)
 {
    IndexType m, n;
    Full2Condensed(i, j, half_band_width, m, n);
    return ba[m][n];
 }
 
-void mathUnsymmetricBandedMatrix::SetB(IndexType i, Float64 bi)
+void UnsymmetricBandedMatrix::SetB(IndexType i, Float64 bi)
 {
    b[i] = bi;
 }
 
-Float64 mathUnsymmetricBandedMatrix::GetB(IndexType i) const
+Float64 UnsymmetricBandedMatrix::GetB(IndexType i) const
 {
    return b[i];
 }
 
-std::unique_ptr<Float64[]> mathUnsymmetricBandedMatrix::Solve()
+std::unique_ptr<Float64[]> UnsymmetricBandedMatrix::Solve()
 {
    std::unique_ptr<Float64[]> x = std::make_unique<Float64[]>(N);
 
@@ -179,7 +181,7 @@ std::unique_ptr<Float64[]> mathUnsymmetricBandedMatrix::Solve()
    return x;
 }
 
-void mathUnsymmetricBandedMatrix::Full2Condensed(IndexType i, IndexType j, IndexType half_band_width, IndexType& m, IndexType& n) const
+void UnsymmetricBandedMatrix::Full2Condensed(IndexType i, IndexType j, IndexType half_band_width, IndexType& m, IndexType& n) const
 {
    if (storage == Storage::Column)
    {
@@ -193,7 +195,7 @@ void mathUnsymmetricBandedMatrix::Full2Condensed(IndexType i, IndexType j, Index
    }
 }
 
-void mathUnsymmetricBandedMatrix::ReduceRow(Float64 c, IndexType i, IndexType j, IndexType kStart, IndexType kEnd)
+void UnsymmetricBandedMatrix::ReduceRow(Float64 c, IndexType i, IndexType j, IndexType kStart, IndexType kEnd)
 {
    for (IndexType k = kStart; k <= kEnd; k++)
    {
@@ -207,19 +209,19 @@ void mathUnsymmetricBandedMatrix::ReduceRow(Float64 c, IndexType i, IndexType j,
    }
 }
 
-Float64& mathUnsymmetricBandedMatrix::operator()(IndexType i, IndexType j)
+Float64& UnsymmetricBandedMatrix::operator()(IndexType i, IndexType j)
 {
    IndexType m, n;
    Full2Condensed(i, j, half_band_width, m, n);
    return ba[m][n];
 }
 
-Float64& mathUnsymmetricBandedMatrix::operator[](IndexType i)
+Float64& UnsymmetricBandedMatrix::operator[](IndexType i)
 {
    return b[i];
 }
 
-void mathUnsymmetricBandedMatrix::Clear()
+void UnsymmetricBandedMatrix::Clear()
 {
    if (b)
    {
@@ -249,7 +251,7 @@ void mathUnsymmetricBandedMatrix::Clear()
    }
 }
 
-void mathUnsymmetricBandedMatrix::Dump(std::ostream& os, bool bFull) const
+void UnsymmetricBandedMatrix::Dump(std::ostream& os, bool bFull) const
 {
    if (bFull)
       DumpFull(os);
@@ -257,7 +259,7 @@ void mathUnsymmetricBandedMatrix::Dump(std::ostream& os, bool bFull) const
       DumpBanded(os);
 }
 
-void mathUnsymmetricBandedMatrix::DumpBanded(std::ostream& os) const
+void UnsymmetricBandedMatrix::DumpBanded(std::ostream& os) const
 {
    for (IndexType i = 0; i < N; i++)
    {
@@ -273,7 +275,7 @@ void mathUnsymmetricBandedMatrix::DumpBanded(std::ostream& os) const
    }
 }
 
-void mathUnsymmetricBandedMatrix::DumpFull(std::ostream& os) const
+void UnsymmetricBandedMatrix::DumpFull(std::ostream& os) const
 {
    for (IndexType i = 0; i < N; i++)
    {

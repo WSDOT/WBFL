@@ -159,23 +159,23 @@ private:
    mutable Float64 m_Length;
 };
 
-class CSplineSegmentLengthFunction : public mathFunction2d
+class CSplineSegmentLengthFunction : public WBFL::Math::Function
 {
 public:
    CSplineSegmentLengthFunction(const CSplineSegment& splineSegment);
    Float64 Evaluate(Float64 x) const;
-   virtual mathFunction2d* Clone() const override;
+   virtual std::unique_ptr<WBFL::Math::Function> Clone() const override;
 
 private:
    const CSplineSegment& m_SplineSegment;
 };
 
-class CSplineSegmentPointFunction : public mathFunction2d
+class CSplineSegmentPointFunction : public WBFL::Math::Function
 {
 public:
    CSplineSegmentPointFunction(Float64 distance,Float64 x0,const CSplineSegment& splineSegment);
    Float64 Evaluate(Float64 x) const;
-   virtual mathFunction2d* Clone() const override;
+   virtual std::unique_ptr<WBFL::Math::Function> Clone() const override;
 
 private:
    Float64 m_Distance; // distance along segment where solution is sought
@@ -184,12 +184,12 @@ private:
 };
 
 
-class CSplineSegmentProjectPointFunction : public mathFunction2d
+class CSplineSegmentProjectPointFunction : public WBFL::Math::Function
 {
 public:
    CSplineSegmentProjectPointFunction(const CSplineSegment& splineSegment,IPoint2d* tp,IGeomUtil2d* gu);
    Float64 Evaluate(Float64 x) const;
-   virtual mathFunction2d* Clone() const override;
+   virtual std::unique_ptr<WBFL::Math::Function> Clone() const override;
 
 private:
    const CSplineSegment& m_SplineSegment;

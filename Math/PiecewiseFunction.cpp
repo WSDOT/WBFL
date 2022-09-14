@@ -22,7 +22,10 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Math\MathLib.h>
-#include <Math\PwLinearFunction2dUsingPoints.h>
+#include <Math\PiecewiseFunction.h>
+#include <Math\XFunction.h>
+#include <GeomModel\LineSegment2d.h>
+#include <GeomModel\GeomOp2d.h>
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -31,18 +34,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+using namespace WBFL::Math;
+
 static const Float64 FLT_TOLER=1.0e-06; // close enough
 
-/****************************************************************************
-CLASS
-   mathPwLinearFunction2dUsingPoints
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
 // free functions
-void seek_right (const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, CollectionIndexType* segment)
+void seek_right(const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, CollectionIndexType* segment)
 {
-   PRECONDITION(segment!=0);
+   PRECONDITION(segment!=nullptr);
    std::vector<WBFL::Geometry::Point2d>::size_type siz = points.size();
    CHECK(*segment<siz);
    CHECK(points[*segment-1].X() <= x);
@@ -59,12 +58,13 @@ void seek_right (const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, 
    }
 
    // x not in function range - throw
-   THROW(mathXEvalError, Undefined);
+   THROW_FUNCTION(XFunction::Reason::Undefined);
 }
-void seek_left(const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, CollectionIndexType* segment)
+
+void seek_left(const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, IndexType* segment)
 {
    // assume that x is left of the right end of this segment.
-   PRECONDITION(segment!=0);
+   PRECONDITION(segment != nullptr);
    std::vector<WBFL::Geometry::Point2d>::size_type siz = points.size();
    CHECK(*segment<siz);
    CHECK(x<=points[*segment].X());
@@ -88,7 +88,7 @@ void seek_left(const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, Co
    } while (loop);
 
    // x not in function range - throw
-   THROW(mathXEvalError, Undefined);
+   THROW_FUNCTION(XFunction::Reason::Undefined);
 }
 
 Float64 interpolate(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2, Float64 x)
@@ -111,41 +111,25 @@ bool point_sort(const WBFL::Geometry::Point2d& p1,const WBFL::Geometry::Point2d&
    return p1.X() < p2.X();
 }
 
-//======================== LIFECYCLE  =======================================
-mathPwLinearFunction2dUsingPoints::mathPwLinearFunction2dUsingPoints() :
-mathPwLinearFunction2d(),
-m_LastSegment(0)
-{
-}
-
-mathPwLinearFunction2dUsingPoints::mathPwLinearFunction2dUsingPoints(const std::vector<WBFL::Geometry::Point2d>& points):
-mathPwLinearFunction2d(),
-m_Points(points),
-m_LastSegment(0)
+PiecewiseFunction::PiecewiseFunction(const std::vector<WBFL::Geometry::Point2d>& points) :
+m_Points(points)
 {
    ASSERTVALID;
 }
 
-mathPwLinearFunction2dUsingPoints::~mathPwLinearFunction2dUsingPoints()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-Float64 mathPwLinearFunction2dUsingPoints::Evaluate(Float64 x) const
+Float64 PiecewiseFunction::Evaluate(Float64 x) const
 {
    ASSERTVALID;
    // first find which segment x lies in
    bool found=false;
 
-   if (GetNumPoints()==0)
+   if (m_Points.empty())
    {
       // x not in function range - throw
-      THROW(mathXEvalError, Undefined);
+      THROW_FUNCTION(XFunction::Reason::Undefined);
    }
 
-   math1dRange range = GetRange();
+   auto range = GetRange();
    if ( x < range.GetLeftBoundLocation() )
    {
       return m_Points.front().Y();
@@ -193,50 +177,50 @@ Float64 mathPwLinearFunction2dUsingPoints::Evaluate(Float64 x) const
    return yval;
 }
 
-mathFunction2d* mathPwLinearFunction2dUsingPoints::Clone() const
+std::unique_ptr<Function> PiecewiseFunction::Clone() const
 {
-   return new mathPwLinearFunction2dUsingPoints(m_Points);
+   return std::make_unique<PiecewiseFunction>(m_Points);
 }
 
-math1dRange mathPwLinearFunction2dUsingPoints::GetRange() const
+Range PiecewiseFunction::GetRange() const
 {
    ASSERTVALID;
    if (0 < m_Points.size())
    {
-      return math1dRange(m_Points.front().X(),math1dRange::Bound,
-                         m_Points.back().X() ,math1dRange::Bound);
+      return Range(m_Points.front().X(),Range::BoundType::Bound,
+                   m_Points.back().X() ,Range::BoundType::Bound);
    }
    else
    {
-      return math1dRange();
+      return Range();
    }
 }
 
-CollectionIndexType mathPwLinearFunction2dUsingPoints::GetNumPoints() const
+IndexType PiecewiseFunction::GetPointCount() const
 {
    return m_Points.size();
 }
 
-WBFL::Geometry::Point2d mathPwLinearFunction2dUsingPoints::GetPoint(CollectionIndexType pnum) const
+const WBFL::Geometry::Point2d& PiecewiseFunction::GetPoint(IndexType idx) const
 {
    ASSERTVALID;
-   PRECONDITION(pnum<GetNumPoints());
-   return m_Points[pnum];
+   PRECONDITION(idx < m_Points.size());
+   return m_Points[idx];
 }
 
-std::vector<WBFL::Geometry::Point2d> mathPwLinearFunction2dUsingPoints::GetPoints() const
+const std::vector<WBFL::Geometry::Point2d>& PiecewiseFunction::GetPoints() const
 {
    ASSERTVALID;
    return m_Points;
 }
 
-void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<WBFL::Geometry::Point2d>& points)
+void PiecewiseFunction::SetPoints(const std::vector<WBFL::Geometry::Point2d>& points)
 {
    ASSERTVALID;
    m_Points = points;
    std::sort(m_Points.begin(),m_Points.end(),point_sort);
 
-   CollectionIndexType size = GetNumPoints();
+   auto size = m_Points.size();
    if (size < m_LastSegment)
    {
       m_LastSegment = size;
@@ -244,32 +228,31 @@ void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<WBFL::Geomet
    ASSERTVALID;
 }
 
-CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(const WBFL::Geometry::Point2d& point)
+IndexType PiecewiseFunction::AddPoint(const WBFL::Geometry::Point2d& point)
 {
    ASSERTVALID;
    m_Points.push_back(point);
    std::sort(m_Points.begin(),m_Points.end(),point_sort);
    ASSERTVALID;
-   return GetNumPoints();
+   return m_Points.size();
 }
 
-CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(Float64 X,Float64 Y)
+IndexType PiecewiseFunction::AddPoint(Float64 X,Float64 Y)
 {
    return AddPoint(WBFL::Geometry::Point2d(X,Y));
 }
 
-void mathPwLinearFunction2dUsingPoints::Clear()
+void PiecewiseFunction::Clear()
 {
    ASSERTVALID;
    m_Points.clear();
    m_LastSegment = 0;
 }
 
-Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dUsingPoints& rOther, 
-                                                   const math1dRange& range, WBFL::Geometry::Point2d* p)
+Int16 PiecewiseFunction::Intersect(const PiecewiseFunction& rOther,const Range& range, WBFL::Geometry::Point2d* p) const
 {
    // first determine if we have a range in common
-   math1dRange r = range.Intersection(GetRange());
+   Range r = range.Intersection(GetRange());
    r = r.Intersection(rOther.GetRange());
    if (r.IsNull())
    {
@@ -277,8 +260,8 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
    }
 
    // next determine the ranges of segments that we may have an intersection on
-   CollectionIndexType this_first=1,  this_last;
-   CollectionIndexType other_first=1, other_last;
+   IndexType this_first=1,  this_last;
+   IndexType other_first=1, other_last;
    try
    {
       seek_right(m_Points, r.GetLeftBoundLocation(), &this_first);
@@ -296,8 +279,8 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
    }
 
    // walk over ranges and try to find intersection point
-   CollectionIndexType this_curr =this_first;
-   CollectionIndexType other_curr=other_first;
+   IndexType this_curr =this_first;
+   IndexType other_curr=other_first;
    bool loop=true;
    WBFL::Geometry::Point2d intersection_point;
    while(loop)
@@ -348,7 +331,7 @@ Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dU
    return 0;
 }
 
-void mathPwLinearFunction2dUsingPoints::GetMaximumsInRange(const math1dRange& range, Float64* pMin, Float64* pMax)
+void PiecewiseFunction::GetMaximumsInRange(const Range& range, Float64* pMin, Float64* pMax) const
 {
    Float64 left_bnd = range.GetLeftBoundLocation();
    Float64 right_bnd = range.GetRightBoundLocation();
@@ -363,15 +346,15 @@ void mathPwLinearFunction2dUsingPoints::GetMaximumsInRange(const math1dRange& ra
    // Loop over remaining values to find max's
    Float64 last_x(left_bnd);
    Float64 last_y(left_y);
-   CollectionIndexType idx(m_LastSegment); // m_LastSegment set by Evaluate
-   CollectionIndexType size(m_Points.size());
+   IndexType idx(m_LastSegment); // m_LastSegment set by Evaluate
+   IndexType size(m_Points.size());
 
    while(true)
    {
       if (size <= idx)
       {
          // We have hit end of bounds without finding a value. Throw
-         THROW(mathXEvalError, Undefined);
+         THROW_FUNCTION(XFunction::Reason::Undefined);
       }
 
       Float64 x = m_Points[idx].X();
@@ -410,7 +393,7 @@ void mathPwLinearFunction2dUsingPoints::GetMaximumsInRange(const math1dRange& ra
    *pMax = max_y;
 }
 
-void mathPwLinearFunction2dUsingPoints::MirrorAboutY(Float64 xLocation)
+void PiecewiseFunction::MirrorAboutY(Float64 xLocation)
 {
    // Mirror all points around xLocation. This is done with two operations:
    // 1) reverse order of points
@@ -424,7 +407,7 @@ void mathPwLinearFunction2dUsingPoints::MirrorAboutY(Float64 xLocation)
    }
 }
 
-void mathPwLinearFunction2dUsingPoints::GetYValues(std::vector<Float64>& Yvec)
+void PiecewiseFunction::GetYValues(std::vector<Float64>& Yvec) const
 {
    for (const auto& point : m_Points)
    {
@@ -432,7 +415,7 @@ void mathPwLinearFunction2dUsingPoints::GetYValues(std::vector<Float64>& Yvec)
    }
 }
 
-void mathPwLinearFunction2dUsingPoints::ResetOuterRange( const math1dRange& range)
+void PiecewiseFunction::ResetOuterRange(const Range& range)
 {
    Float64 xleft = range.GetLeftBoundLocation();
    Float64 xright = range.GetRightBoundLocation();
@@ -442,8 +425,7 @@ void mathPwLinearFunction2dUsingPoints::ResetOuterRange( const math1dRange& rang
    // New range must fit at outer edges of function
    if (size < 2 || m_Points[1].X()<=xleft || xright<=m_Points[size-2].X())
    {
-      ATLASSERT(false);
-      THROW(mathXEvalError, Undefined);
+      THROW_FUNCTION(XFunction::Reason::Undefined);
    }
    else
    { 
@@ -454,38 +436,15 @@ void mathPwLinearFunction2dUsingPoints::ResetOuterRange( const math1dRange& rang
 }
 
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool mathPwLinearFunction2dUsingPoints::AssertValid() const
+bool PiecewiseFunction::AssertValid() const
 {
-   if (!mathPwLinearFunction2d::AssertValid())
-      return false;
-
    // values of x must increase
-   CollectionIndexType size = GetNumPoints();
+   IndexType size = m_Points.size();
    if (0 < size)
    {
       Float64 cval = m_Points[0].X();
-      for(CollectionIndexType i=1; i < size; i++)
+      for(IndexType i=1; i < size; i++)
       {
          if (m_Points[i].X() < cval)
          {
@@ -512,34 +471,33 @@ bool mathPwLinearFunction2dUsingPoints::AssertValid() const
    return true;
 }
 
-void mathPwLinearFunction2dUsingPoints::Dump(WBFL::Debug::LogContext& os) const
+void PiecewiseFunction::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << _T("Start Dump for mathPwLinearFunction2dUsingPoints") << WBFL::Debug::endl;
-   mathPwLinearFunction2d::Dump( os );
-   CollectionIndexType siz = GetNumPoints();
+   os << _T("Start Dump for PiecewiseFunction") << WBFL::Debug::endl;
+   IndexType siz = m_Points.size();
    os << _T("Number of Points = ") <<siz<< WBFL::Debug::endl;
-   for (CollectionIndexType i = 0; i<siz; i++)
+   for (IndexType i = 0; i<siz; i++)
    {
       os <<i<<_T("  (")<< m_Points[i].X()<<_T(", ")<<m_Points[i].Y()<<_T(")")<< WBFL::Debug::endl;
    }
    os << _T("m_LastSegment = ")<< m_LastSegment << WBFL::Debug::endl;
-   os << _T("End Dump for mathPwLinearFunction2dUsingPoints")<< WBFL::Debug::endl;
+   os << _T("End Dump for PiecewiseFunction")<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
 #if defined _UNITTEST
-bool mathPwLinearFunction2dUsingPoints::TestMe(WBFL::Debug::Log& rlog)
+bool PiecewiseFunction::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("mathPwLinearFunction2dUsingPoints");
+   TESTME_PROLOGUE("PiecewiseFunction");
 
    // create a function
-   mathPwLinearFunction2dUsingPoints fun1;
+   PiecewiseFunction fun1;
    TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d(-4,-2))==1);
    TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d(-3,-1))==2);
    TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d( 1, 2))==3);
    TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d( 3,-1))==4);
-   TRY_TESTME(fun1.GetRange()==math1dRange(-4,math1dRange::Bound,3,math1dRange::Bound));
-   TRY_TESTME(fun1.GetNumPoints()==4);
+   TRY_TESTME(fun1.GetRange()==Range(-4,Range::BoundType::Bound,3,Range::BoundType::Bound));
+   TRY_TESTME(fun1.GetPointCount()==4);
    TRY_TESTME(fun1.Evaluate(-4)==-2);
    TRY_TESTME(fun1.Evaluate(-3)==-1);
    TRY_TESTME(fun1.Evaluate( 1)==2);
@@ -557,7 +515,7 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(WBFL::Debug::Log& rlog)
    pvec.emplace_back( 0.0,1);
    pvec.emplace_back( 2.2,1);
    pvec.emplace_back( 5,1);
-   mathPwLinearFunction2dUsingPoints fun2(pvec);
+   PiecewiseFunction fun2(pvec);
    TRY_TESTME(fun2.GetPoints()==pvec);
    TRY_TESTME(fun2.Evaluate(0.0)==1);
    TRY_TESTME(fun2.Evaluate(3.0)==1);
@@ -565,13 +523,13 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(WBFL::Debug::Log& rlog)
    {
       fun2.Evaluate(-7); // out of bounds
    }
-   catch (mathXEvalError& e)
+   catch (XFunction& e)
    {
-      TRY_TESTME(e.GetReasonCode()==mathXEvalError::Undefined);
+      TRY_TESTME(e.GetReasonCode()==XFunction::Reason::Undefined);
    }
    // intersection
    WBFL::Geometry::Point2d ip1,ip2;
-   math1dRange r(-3.5,math1dRange::Bound,.9,math1dRange::Bound);
+   Range r(-3.5,Range::BoundType::Bound,.9,Range::BoundType::Bound);
    TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==1);
    TRY_TESTME(ip1== WBFL::Geometry::Point2d(-1./3.,1));
    TRY_TESTME(fun2.Intersect(fun1,r,&ip2)==1);
@@ -626,9 +584,9 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(WBFL::Debug::Log& rlog)
       r.SetRightBoundLocation(5.0);
       fun1.GetMaximumsInRange(r, &fmin, &fmax);
    }
-   catch (mathXEvalError& e)
+   catch (XFunction& e)
    {
-      TRY_TESTME(e.GetReasonCode()==mathXEvalError::Undefined);
+      TRY_TESTME(e.GetReasonCode()==XFunction::Reason::Undefined);
    }
  
 
@@ -637,6 +595,6 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(WBFL::Debug::Log& rlog)
 #endif
 
 
-   TESTME_EPILOG("PwLinearFunction2dUsingPoints");
+   TESTME_EPILOG("PiecewiseFunction");
 }
 #endif // _UNITTEST

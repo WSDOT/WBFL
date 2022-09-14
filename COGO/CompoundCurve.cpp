@@ -1687,7 +1687,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
       // when evaluated, this function returns the distance from the line to the curve
       // if the curve is to the left of the line the distance is negative
       CLineIntersectFunction function(this,line);
-      mathBrentsRootFinder2d rootFinder;
+      WBFL::Math::BrentsRootFinder rootFinder;
       Float64 ya = function.Evaluate(0);
       Float64 yb = function.Evaluate(m_Ls1);
       if ( 0 < ya*yb )
@@ -1723,7 +1723,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
             {
                limit = rootFinder.FindRootInRange(parallel_function,0,m_Ls1,0.0000001);
             }
-            catch(mathXRootFinder2dFailed& /*e*/)
+            catch(WBFL::Math::XRootFinder& /*e*/)
             {
                ATLASSERT(false);
             }
@@ -1789,7 +1789,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
 
                      return S_OK; // we got both intersection points... leave now
                   }
-                  catch (mathXRootFinder2dFailed& /*mx*/)
+                  catch (WBFL::Math::XRootFinder& /*mx*/)
                   {
                      ATLASSERT(false); // should never fire
                   }
@@ -1806,7 +1806,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
             PointOnCurve(dist1,&pntEntrySpiral);
             ATLASSERT(TestIntersection(line,pntEntrySpiral));
          }
-         catch (mathXRootFinder2dFailed& /*mx*/)
+         catch (WBFL::Math::XRootFinder& /*mx*/)
          {
             ATLASSERT(false); 
          }
@@ -1821,7 +1821,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
       // when evaluated, this function returns the distance from the line to the curve
       // if the curve is to the left of the line the distance is negative
       CLineIntersectFunction function(this,line);
-      mathBrentsRootFinder2d rootFinder;
+      WBFL::Math::BrentsRootFinder rootFinder;
       Float64 length;
       get_TotalLength(&length);
       Float64 ya = function.Evaluate(length-m_Ls2);
@@ -1859,7 +1859,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
             {
                limit = rootFinder.FindRootInRange(parallel_function,length-m_Ls2,length,0.0000001);
             }
-            catch(mathXRootFinder2dFailed& /*e*/)
+            catch(WBFL::Math::XRootFinder& /*e*/)
             {
                ATLASSERT(false);
             }
@@ -1925,7 +1925,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
 
                      return S_OK; // we got both intersection points... leave now
                   }
-                  catch (mathXRootFinder2dFailed& /*mx*/)
+                  catch (WBFL::Math::XRootFinder& /*mx*/)
                   {
                      ATLASSERT(false); // should never fire
                   }
@@ -1942,7 +1942,7 @@ STDMETHODIMP CCompoundCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,V
             PointOnCurve(dist1,&pntExitSpiral);
             ATLASSERT(TestIntersection(line,pntExitSpiral));
          }
-         catch (mathXRootFinder2dFailed& /*mx*/)
+         catch (WBFL::Math::XRootFinder& /*mx*/)
          {
             ATLASSERT(false); 
          }
@@ -2289,7 +2289,7 @@ void CCompoundCurve::ProjectPointOnEntrySpiral(IPoint2d* point,Float64* pDistFro
    Float64 Ls;
    get_SpiralLength(spEntry,&Ls);
 
-   mathBrentsRootFinder2d rootFinder;
+   WBFL::Math::BrentsRootFinder rootFinder;
    Float64 dist = rootFinder.FindRootInRange(function,0,Ls,0.00001);
 
    PointOnEntrySpiral(dist,newPoint);
@@ -2304,7 +2304,7 @@ void CCompoundCurve::ProjectPointOnExitSpiral(IPoint2d* point,Float64* pDistFrom
    Float64 Ls;
    get_SpiralLength(spExit,&Ls);
 
-   mathBrentsRootFinder2d rootFinder;
+   WBFL::Math::BrentsRootFinder rootFinder;
    Float64 dist = rootFinder.FindRootInRange(function,0,Ls,0.00001); // dist from end
 
    PointOnExitSpiral(dist,newPoint);
