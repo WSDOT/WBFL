@@ -21,12 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(_WBCGID_H_)
-#define _WBCGID_H_
-
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
 
 #define INITGUID
 #include <objbase.h>
@@ -50,5 +45,3 @@ public:
       HTMLID_OPTIONS      = 3,
    };
 };
-
-#endif // _WBCGID_H_

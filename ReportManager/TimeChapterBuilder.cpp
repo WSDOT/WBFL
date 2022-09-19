@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ChapterBuilder.cpp: implementation of the CChapterBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "ReportManager.h"
 #include <ReportManager\TimeChapterBuilder.h>
@@ -37,34 +33,24 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::Reporting;
 
-CTimeChapterBuilder::CTimeChapterBuilder()
-{
-}
-
-CTimeChapterBuilder::~CTimeChapterBuilder()
-{
-
-}
-LPCTSTR CTimeChapterBuilder::GetName() const
+LPCTSTR TimeChapterBuilder::GetName() const
 {
    return _T("Reporting Time");
 }
 
-Uint16 CTimeChapterBuilder::GetMaxLevel() const
+Uint16 TimeChapterBuilder::GetMaxLevel() const
 {
    return 1;
 }
 
-bool CTimeChapterBuilder::Select() const
+bool TimeChapterBuilder::Select() const
 {
    return true;
 }
 
-rptChapter* CTimeChapterBuilder::Build(CReportSpecification* pRptSpec,Uint16 level) const
+rptChapter* TimeChapterBuilder::Build(const std::shared_ptr<const ReportSpecification>& pRptSpec,Uint16 level) const
 {
    ATLASSERT(false); // don't call this method
    rptChapter* pChapter = new rptChapter(GetName());
@@ -73,7 +59,7 @@ rptChapter* CTimeChapterBuilder::Build(CReportSpecification* pRptSpec,Uint16 lev
    return pChapter;
 }
 
-rptChapter* CTimeChapterBuilder::Build(WBFL::System::Time& start, WBFL::System::Time& end) const
+rptChapter* TimeChapterBuilder::Build(WBFL::System::Time& start, WBFL::System::Time& end) const
 {
    Uint32 elapsedTime = end.Seconds() - start.Seconds();
    rptChapter* pChapter = new rptChapter(GetName());
@@ -83,7 +69,7 @@ rptChapter* CTimeChapterBuilder::Build(WBFL::System::Time& start, WBFL::System::
    return pChapter;
 }
 
-CChapterBuilder* CTimeChapterBuilder::Clone() const
+std::unique_ptr<ChapterBuilder> TimeChapterBuilder::Clone() const
 {
-   return new CTimeChapterBuilder;
+   return std::make_unique<TimeChapterBuilder>();
 }

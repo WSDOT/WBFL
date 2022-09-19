@@ -1279,7 +1279,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
          if (itfnd == m_BuiltInReportNames.end())
          {
             // Remove report if it's not built in. ptr release should delete it.
-            std::shared_ptr<CReportBuilder> ptr = pReportMgr->RemoveReportBuilder(rName.c_str());
+            std::shared_ptr<WBFL::Reporting::ReportBuilder> ptr = pReportMgr->RemoveReportBuilder(rName.c_str());
          }
 
          itn++;
@@ -1297,18 +1297,18 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
       if ( itfnd == m_BuiltInReportNames.end() )
       {
          // get parent report
-         std::shared_ptr<CReportBuilder> pParentBuilder = pReportMgr->GetReportBuilder(rCustom.m_ParentReportName);
+         std::shared_ptr<WBFL::Reporting::ReportBuilder> pParentBuilder = pReportMgr->GetReportBuilder(rCustom.m_ParentReportName);
          if (pParentBuilder)
          {
             // found parent. Now we can create new builder for custom
-            std::shared_ptr<CReportBuilder> newBuilder( std::make_shared<CReportBuilder>(rCustom.m_ReportName.c_str()));
+            std::shared_ptr<WBFL::Reporting::ReportBuilder> newBuilder( std::make_shared<WBFL::Reporting::ReportBuilder>(rCustom.m_ReportName.c_str()));
             newBuilder->SetReportSpecificationBuilder( pParentBuilder->GetReportSpecificationBuilder() );
 
             // Title page
-            std::shared_ptr<CTitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
+            std::shared_ptr<WBFL::Reporting::TitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
             if (ptp)
             {
-               std::shared_ptr<CTitlePageBuilder> pntp( ptp->Clone() );
+               std::shared_ptr<WBFL::Reporting::TitlePageBuilder> pntp( ptp->Clone() );
                pntp->SetReportTitle( rCustom.m_ReportName.c_str() );
                newBuilder->AddTitlePageBuilder(pntp);
             }
@@ -1321,7 +1321,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
             std::vector<std::_tstring>::iterator itChapName = rCustom.m_Chapters.begin();
             while(itChapName != rCustom.m_Chapters.end())
             {
-               std::shared_ptr<CChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
+               std::shared_ptr<WBFL::Reporting::ChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
                if ( pChapterB )
                {
                   newBuilder->AddChapterBuilder( pChapterB );

@@ -118,13 +118,13 @@ bool MohrCircle::AssertValid() const
    //if (!InRange(0., m_Angle, TWO_PI))
    //   return false;
 
-   if (0 < m_Radius)
+   if (::IsGT(0.0,m_Radius))
    {
       if (!IsEqual((m_Smax - m_Smin) / (2 * m_Radius), 1.0))
          return false;
    }
 
-   if (m_Smax < m_Smin)
+   if (::IsGT(m_Smax,m_Smin))
       return false;
 
    return true;

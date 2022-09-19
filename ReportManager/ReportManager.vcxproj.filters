@@ -19,9 +19,6 @@
     <ClCompile Include="ReportDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReportHint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ReportManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

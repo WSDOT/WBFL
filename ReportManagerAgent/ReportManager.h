@@ -41,6 +41,7 @@ class ATL_NO_VTABLE CReportManagerAgent :
 public:
 	CReportManagerAgent()
 	{
+      m_pRptMgr = WBFL::Reporting::ReportBuilderManager::Create();
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_REPORTMANAGER)
@@ -54,7 +55,7 @@ BEGIN_COM_MAP(CReportManagerAgent)
 END_COM_MAP()
 
 private:
-   CReportBuilderManager m_RptMgr;
+   std::shared_ptr<WBFL::Reporting::ReportBuilderManager> m_pRptMgr;
    IBroker* m_pBroker; // weak reference
 
 // IAgentEx
@@ -70,22 +71,21 @@ public:
 
 // IReportManager
 public:
-   virtual void AddReportBuilder(CReportBuilder* pReportBuilder) override;
-   virtual void AddReportBuilder(std::shared_ptr<CReportBuilder>& pReportBuilder) override;
+   virtual void AddReportBuilder(std::shared_ptr<WBFL::Reporting::ReportBuilder>& pReportBuilder) override;
    virtual CollectionIndexType GetReportBuilderCount(bool bIncludeHidden) const override;
-   virtual std::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName) override;
-   virtual std::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName) override;
-   virtual std::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) override;
-   virtual std::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName) override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(LPCTSTR strReportName) override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(const std::_tstring& strReportName) override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName) override;
    virtual std::vector<std::_tstring> GetReportNames(bool bIncludeHidden) const override;
-   virtual CReportDescription GetReportDescription(LPCTSTR strReportName) override;
-   virtual CReportDescription GetReportDescription(const std::_tstring& strReportName) override;
+   virtual WBFL::Reporting::ReportDescription GetReportDescription(LPCTSTR strReportName) override;
+   virtual WBFL::Reporting::ReportDescription GetReportDescription(const std::_tstring& strReportName) override;
    virtual const CBitmap* GetMenuBitmap(LPCTSTR strReportName) override;
    virtual const CBitmap* GetMenuBitmap(const std::_tstring& strReportName) override;
-   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName) override;
-   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName) override;
-   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc) override;
-   virtual std::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder) override;
-   virtual INT_PTR DisplayReportDialog(DWORD flags, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder) override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName) override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName) override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> GetReportSpecificationBuilder(const WBFL::Reporting::ReportDescription& rptDesc) override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportBrowser> CreateReportBrowser(HWND hwndParent, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder) override;
+   virtual INT_PTR DisplayReportDialog(DWORD flags, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder) override;
 };
 

@@ -21,16 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportBrowser.h: interface for the CReportBrowser class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_REPORTBROWSER_H__461AB263_1A55_405D_BE56_9E516F285506__INCLUDED_)
-#define AFX_REPORTBROWSER_H__461AB263_1A55_405D_BE56_9E516F285506__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportSpecificationBuilder.h>
@@ -40,43 +31,97 @@
 class rptReport;
 class CWebBrowser;
 class TweakIESettings;
-class CReportBuilderManager;
 
-class REPORTMANAGERCLASS CReportBrowser  
+namespace WBFL
 {
-public:
-	CReportBrowser();
-	virtual ~CReportBrowser();
+   namespace Reporting
+   {
+      class ReportBuilderManager;
 
-   void UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefresh);
-   bool Initialize(HWND hwnd,CReportBuilderManager* pRptMgr, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder, std::shared_ptr<rptReport>& pReport);
-   std::shared_ptr<CReportSpecification> GetReportSpecification();
-   std::shared_ptr<rptReport> GetReport();
-   std::_tstring GetReportTitle();
-   void Move(POINT topLeft);
-   void Size(SIZE size);
-   void Print(bool bPrompt);
-   bool Edit(bool bUpdate = true); // returns false if the user cancelled the edit
-   void Find();
-   void SelectAll();
-   void Refresh();
-   void ViewSource();
-   void Back();
-   void Forward();
-   void NavigateAnchor(long id);
+      /// Class that controls the report browser window
+      class REPORTMANAGERCLASS ReportBrowser
+      {
+      public:
+	      ReportBrowser();
+	      ~ReportBrowser();
 
-   CWnd* GetBrowserWnd();
+         /// Initalizes the report browser window
+         /// \todo The rptReport should be constant, but can't be until the WBFL::Reporter framework is updated
+         bool Initialize(
+            HWND hwnd, ///< handle to the parent window
+            const std::shared_ptr<const ReportBuilderManager>& pRptMgr, ///< Report builder manager
+            const std::shared_ptr<ReportSpecification>& pRptSpec, ///< The report specification
+            const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder, ///< The Report specification builder
+            std::shared_ptr<rptReport>& pReport ///< The report to display
+         );
 
-private:
-   CWebBrowser* m_pWebBrowser;
-   std::_tstring m_Filename;
-   std::shared_ptr<CReportSpecification> m_pRptSpec;
-   std::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
-   std::shared_ptr<rptReport> m_pReport;
-   CReportBuilderManager* m_pRptMgr;
+         /// Updates the browser's content with the new report.
+         /// \todo The rptReport should be constant, but can't be until the WBFL::Reporter framework is updated
+         void UpdateReport(
+            std::shared_ptr<rptReport>& pReport, ///< The new report
+            bool bRefresh ///< If true, the browser window is refreshed with the new report content
+         );
 
-   void MakeFilename();
+         /// Returns the report specification
+         std::shared_ptr<ReportSpecification> GetReportSpecification();
 
+         /// Returns the report
+         /// \todo The rptReport should be constant, but can't be until the WBFL::Reporter framework is updated
+         std::shared_ptr<rptReport> GetReport();
+
+         /// Returns the report title
+         std::_tstring GetReportTitle();
+
+         /// Moves the browser window by locating the top left point
+         void Move(POINT topLeft);
+
+         /// Sets the size of the browser window
+         void Size(SIZE size);
+
+         /// Prints the content of the browser window
+         void Print(
+            bool bPrompt ///< If true, the user is prompted to select a printer, otherwise the default printer is used
+         );
+
+         /// When called, an interface is presented that allows the user to modify the report content based
+         /// \return False if the user cancelled the edit, otherwise true
+         bool Edit(
+            bool bUpdate = true ///< When true, the contents of the report are updated
+         ); 
+
+         /// Allows the user to search the report
+         void Find();
+
+         /// Selects all of the content of the report
+         void SelectAll();
+
+         /// Redraws the contents in the browser window
+         void Refresh();
+
+         /// Displays the source code of the browser content
+         void ViewSource();
+
+         /// Navigates to the previous content
+         void Back();
+
+         /// Navigates ahead
+         void Forward();
+
+         /// Navigages to a specific anchor in a report
+         void NavigateAnchor(long id);
+
+         /// Returns the browser window
+         CWnd* GetBrowserWnd();
+
+      private:
+         std::unique_ptr<CWebBrowser> m_pWebBrowser; // this is an MFC class so it has to be dynamically created
+         std::_tstring m_Filename;
+         std::shared_ptr<ReportSpecification> m_pRptSpec;
+         std::shared_ptr<const ReportSpecificationBuilder> m_pRptSpecBuilder;
+         std::shared_ptr<rptReport> m_pReport;
+         std::shared_ptr<const ReportBuilderManager> m_pRptMgr;
+
+         void MakeFilename();
+      };
+   };
 };
-
-#endif // !defined(AFX_REPORTBROWSER_H__461AB263_1A55_405D_BE56_9E516F285506__INCLUDED_)

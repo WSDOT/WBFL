@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportSpecificationBuilder.cpp: implementation of the CReportSpecificationBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "ReportManager.h"
 #include <ReportManager\ReportSpecificationBuilder.h>
@@ -36,26 +32,18 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::Reporting;
 
-CReportSpecificationBuilder::CReportSpecificationBuilder()
-{
+// declaration of free functions
+std::shared_ptr<ReportSpecification> DoCreateReportSpec(const ReportDescription& rptDesc, const std::vector<ChapterInfo>& vChInfo);
+std::shared_ptr<ReportSpecification> DoCreateReportSpec(const ReportDescription& rptDesc, const std::vector<std::_tstring>& vChList);
 
-}
-
-CReportSpecificationBuilder::~CReportSpecificationBuilder()
-{
-
-}
-
-std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateReportSpec(const CReportDescription& rptDesc, std::shared_ptr<CReportSpecification>& pRptSpec)
+std::shared_ptr<ReportSpecification> ReportSpecificationBuilder::CreateReportSpec(const ReportDescription& rptDesc, std::shared_ptr<ReportSpecification>& pRptSpec) const
 {
    if ( 0 < rptDesc.GetChapterCount() )
    {
       AFX_MANAGE_STATE(AfxGetStaticModuleState());
-      CReportSpecDlg dlg(&rptDesc,pRptSpec);
+      CReportSpecDlg dlg(rptDesc,pRptSpec);
       if ( dlg.DoModal() == IDOK )
       {
          return DoCreateReportSpec(rptDesc,dlg.m_ChapterList);
@@ -71,22 +59,22 @@ std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateReportS
    }
 }
 
-std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateDefaultReportSpec(const CReportDescription& rptDesc)
+std::shared_ptr<ReportSpecification> ReportSpecificationBuilder::CreateDefaultReportSpec(const ReportDescription& rptDesc) const
 {
-   std::vector<CChapterInfo> vChInfo = rptDesc.GetChapterInfo();
+   std::vector<ChapterInfo> vChInfo = rptDesc.GetChapterInfo();
    return DoCreateReportSpec(rptDesc,vChInfo);
 }
 
-std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo)
+std::shared_ptr<ReportSpecification> DoCreateReportSpec(const ReportDescription& rptDesc,const std::vector<ChapterInfo>& vChInfo)
 {
-   std::shared_ptr<CReportSpecification> pRptSpec( std::make_shared<CReportSpecification>(rptDesc.GetReportName()) );
+   auto pRptSpec( std::make_shared<ReportSpecification>(rptDesc.GetReportName()) );
    rptDesc.ConfigureReportSpecification(vChInfo,pRptSpec);
    return pRptSpec;
 }
 
-std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<std::_tstring>& vChList)
+std::shared_ptr<ReportSpecification> DoCreateReportSpec(const ReportDescription& rptDesc,const std::vector<std::_tstring>& vChList)
 {
-   std::shared_ptr<CReportSpecification> pRptSpec( std::make_shared<CReportSpecification>(rptDesc.GetReportName()) );
+   auto pRptSpec( std::make_shared<ReportSpecification>(rptDesc.GetReportName()) );
    rptDesc.ConfigureReportSpecification(vChList,pRptSpec);
    return pRptSpec;
 }

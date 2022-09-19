@@ -21,18 +21,14 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_REPORTSPECDLG_H__A3EE66C1_88D8_486F_8375_1258BEC7B39A__INCLUDED_)
-#define AFX_REPORTSPECDLG_H__A3EE66C1_88D8_486F_8375_1258BEC7B39A__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// ReportSpecDlg.h : header file
-//
+
 
 #include <ReportManager\ReportDescription.h>
 #include <ReportManager\ReportSpecification.h>
 
+
+using namespace WBFL::Reporting;
 
 /////////////////////////////////////////////////////////////////////////////
 // CReportSpecDlg dialog
@@ -41,7 +37,7 @@ class CReportSpecDlg : public CDialog
 {
 // Construction
 public:
-	CReportSpecDlg(const CReportDescription* pRptDesc, std::shared_ptr<CReportSpecification>& pRptSpec,CWnd* pParent = nullptr);   // standard constructor
+	CReportSpecDlg(const ReportDescription& rptDesc, std::shared_ptr<ReportSpecification>& pRptSpec,CWnd* pParent = nullptr);
 
 // Dialog Data
 	//{{AFX_DATA(CReportSpecDlg)
@@ -50,8 +46,8 @@ public:
 	CCheckListBox	m_clbChapterList;
 	//}}AFX_DATA
 
-   const CReportDescription* m_pRptDesc;
-   std::vector<CChapterInfo> m_ChapterInfo;
+   const ReportDescription& m_RptDesc;
+   std::vector<ChapterInfo> m_ChapterInfo;
    std::vector<std::_tstring> m_ChapterList;
 
 
@@ -68,7 +64,7 @@ protected:
    void ClearChapterCheckMarks();
    void InitChapterListFromSpec();
 
-   std::shared_ptr<CReportSpecification> m_pInitRptSpec;
+   std::shared_ptr<ReportSpecification> m_pInitRptSpec;
 
 	// Generated message map functions
 	//{{AFX_MSG(CReportSpecDlg)
@@ -79,5 +75,3 @@ protected:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_REPORTSPECDLG_H__A3EE66C1_88D8_486F_8375_1258BEC7B39A__INCLUDED_)

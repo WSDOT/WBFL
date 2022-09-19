@@ -71,7 +71,7 @@ STDMETHODIMP CReportManagerAgent::Reset()
 
 STDMETHODIMP CReportManagerAgent::ShutDown()
 {
-   m_RptMgr.ClearAll();
+   m_pRptMgr->ClearAll();
    return S_OK;
 }
 
@@ -84,87 +84,82 @@ STDMETHODIMP CReportManagerAgent::GetClassID(CLSID* pCLSID)
 //
 // IReportManager
 //
-void CReportManagerAgent::AddReportBuilder(CReportBuilder* pReportBuilder)
+void CReportManagerAgent::AddReportBuilder(std::shared_ptr<WBFL::Reporting::ReportBuilder>& pReportBuilder)
 {
-   m_RptMgr.AddReportBuilder(pReportBuilder);
-}
-
-void CReportManagerAgent::AddReportBuilder(std::shared_ptr<CReportBuilder>& pReportBuilder)
-{
-   m_RptMgr.AddReportBuilder(pReportBuilder);
+   m_pRptMgr->AddReportBuilder(pReportBuilder);
 }
 
 CollectionIndexType CReportManagerAgent::GetReportBuilderCount(bool bIncludeHidden) const
 {
-   return m_RptMgr.GetReportBuilderCount(bIncludeHidden);
+   return m_pRptMgr->GetReportBuilderCount(bIncludeHidden);
 }
 
-std::shared_ptr<CReportBuilder> CReportManagerAgent::GetReportBuilder(LPCTSTR strReportName)
+std::shared_ptr<WBFL::Reporting::ReportBuilder> CReportManagerAgent::GetReportBuilder(LPCTSTR strReportName)
 {
-   return m_RptMgr.GetReportBuilder(strReportName);
+   return m_pRptMgr->GetReportBuilder(strReportName);
 }
 
-std::shared_ptr<CReportBuilder> CReportManagerAgent::GetReportBuilder(const std::_tstring& strReportName)
+std::shared_ptr<WBFL::Reporting::ReportBuilder> CReportManagerAgent::GetReportBuilder(const std::_tstring& strReportName)
 {
-   return m_RptMgr.GetReportBuilder(strReportName);
+   return m_pRptMgr->GetReportBuilder(strReportName);
 }
 
-std::shared_ptr<CReportBuilder> CReportManagerAgent::RemoveReportBuilder(LPCTSTR strReportName)
+std::shared_ptr<WBFL::Reporting::ReportBuilder> CReportManagerAgent::RemoveReportBuilder(LPCTSTR strReportName)
 {
-   return m_RptMgr.RemoveReportBuilder(strReportName);
+   return m_pRptMgr->RemoveReportBuilder(strReportName);
 }
 
-std::shared_ptr<CReportBuilder> CReportManagerAgent::RemoveReportBuilder(const std::_tstring& strReportName)
+std::shared_ptr<WBFL::Reporting::ReportBuilder> CReportManagerAgent::RemoveReportBuilder(const std::_tstring& strReportName)
 {
-   return m_RptMgr.RemoveReportBuilder(strReportName);
+   return m_pRptMgr->RemoveReportBuilder(strReportName);
 }
 
 std::vector<std::_tstring> CReportManagerAgent::GetReportNames(bool bIncludeHidden) const
 {
-   return m_RptMgr.GetReportNames(bIncludeHidden);
+   return m_pRptMgr->GetReportNames(bIncludeHidden);
 }
 
-CReportDescription CReportManagerAgent::GetReportDescription(LPCTSTR strReportName)
+WBFL::Reporting::ReportDescription CReportManagerAgent::GetReportDescription(LPCTSTR strReportName)
 {
-   return m_RptMgr.GetReportDescription(strReportName);
+   return m_pRptMgr->GetReportDescription(strReportName);
 }
 
-CReportDescription CReportManagerAgent::GetReportDescription(const std::_tstring& strReportName)
+WBFL::Reporting::ReportDescription CReportManagerAgent::GetReportDescription(const std::_tstring& strReportName)
 {
-   return m_RptMgr.GetReportDescription(strReportName);
+   return m_pRptMgr->GetReportDescription(strReportName);
 }
 
 const CBitmap* CReportManagerAgent::GetMenuBitmap(LPCTSTR strReportName)
 {
-   return m_RptMgr.GetMenuBitmap(strReportName);
+   return m_pRptMgr->GetMenuBitmap(strReportName);
 }
 
 const CBitmap* CReportManagerAgent::GetMenuBitmap(const std::_tstring& strReportName)
 {
-   return m_RptMgr.GetMenuBitmap(strReportName);
+   return m_pRptMgr->GetMenuBitmap(strReportName);
 }
 
-std::shared_ptr<CReportSpecificationBuilder> CReportManagerAgent::GetReportSpecificationBuilder(LPCTSTR strReportName)
+std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> CReportManagerAgent::GetReportSpecificationBuilder(LPCTSTR strReportName)
 {
-   return m_RptMgr.GetReportSpecificationBuilder(strReportName);
+   return m_pRptMgr->GetReportSpecificationBuilder(strReportName);
 }
 
-std::shared_ptr<CReportSpecificationBuilder> CReportManagerAgent::GetReportSpecificationBuilder(const std::_tstring& strReportName)
+std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> CReportManagerAgent::GetReportSpecificationBuilder(const std::_tstring& strReportName)
 {
-   return m_RptMgr.GetReportSpecificationBuilder(strReportName);
+   return m_pRptMgr->GetReportSpecificationBuilder(strReportName);
 }
 
-std::shared_ptr<CReportSpecificationBuilder> CReportManagerAgent::GetReportSpecificationBuilder(const CReportDescription& rptDesc)
+std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> CReportManagerAgent::GetReportSpecificationBuilder(const WBFL::Reporting::ReportDescription& rptDesc)
 {
-   return m_RptMgr.GetReportSpecificationBuilder(rptDesc);
+   return m_pRptMgr->GetReportSpecificationBuilder(rptDesc);
 }
 
-std::shared_ptr<CReportBrowser> CReportManagerAgent::CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
+std::shared_ptr<WBFL::Reporting::ReportBrowser> CReportManagerAgent::CreateReportBrowser(HWND hwndParent, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
-   return m_RptMgr.CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+   return m_pRptMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
 }
 
-INT_PTR CReportManagerAgent::DisplayReportDialog(DWORD flags, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
+INT_PTR CReportManagerAgent::DisplayReportDialog(DWORD flags, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
-   return m_RptMgr.DisplayReportDialog(flags,pRptSpec,pRptSpecBuilder);
+   return m_pRptMgr->DisplayReportDialog(flags,pRptSpec,pRptSpecBuilder);
 }

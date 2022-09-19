@@ -21,12 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ChapterBuilder.cpp: implementation of the CChapterBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
-#include "ReportManager.h"
 #include <ReportManager\ChapterBuilder.h>
 
 #ifdef _DEBUG
@@ -35,25 +30,14 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::Reporting;
 
-CChapterBuilder::CChapterBuilder()
-{
-}
-
-CChapterBuilder::~CChapterBuilder()
-{
-
-}
-
-LPCTSTR CChapterBuilder::GetKey() const
+LPCTSTR ChapterBuilder::GetKey() const
 {
    return GetName();
 }
 
-bool CChapterBuilder::NeedsUpdate(CReportHint* pHint,CReportSpecification* pRptSpec,Uint16 level) const
+bool ChapterBuilder::NeedsUpdate(const std::shared_ptr<const ReportHint>&, const std::shared_ptr<const ReportSpecification>& pRptSpec,Uint16 level) const
 {
    return true;
 }

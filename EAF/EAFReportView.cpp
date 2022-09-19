@@ -157,7 +157,7 @@ int CEAFReportView::OnCreate(LPCREATESTRUCT lpCreateStruct)
    return 0;
 }
 
-bool CEAFReportView::InitReport(std::shared_ptr<CReportSpecification>& pSpec, std::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder)
+bool CEAFReportView::InitReport(std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder)
 {
    m_pReportSpec = pSpec;
    if ( !m_pReportSpec )
@@ -175,7 +175,7 @@ bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,BOOL bPromptForSpec
    return CreateReport(rptIdx,m_pReportSpec,m_pRptSpecBuilder);
 }
 
-bool CEAFReportView::CreateReport(CollectionIndexType rptIdx, std::shared_ptr<CReportSpecification>& pSpec, std::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder)
+bool CEAFReportView::CreateReport(CollectionIndexType rptIdx, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder)
 {
    if ( !InitReport(pSpec,pSpecBuilder) )
       return false;
@@ -229,8 +229,8 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,BOOL b
             // Turn off the error message so the user doesn't see it
             CEAFMainFrame* pFrame = EAFGetMainFrame();
             pFrame->DisableFailCreateMessage();
-            m_pReportSpec = std::shared_ptr<CReportSpecification>();
-            m_pRptSpecBuilder = std::shared_ptr<CReportSpecificationBuilder>();
+            m_pReportSpec = std::shared_ptr<WBFL::Reporting::ReportSpecification>();
+            m_pRptSpecBuilder = std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder>();
             return;
          }
       }
@@ -241,8 +241,8 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,BOOL b
       rptName = rptNames[rptIdx];
    }
 
-   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(rptName);
-   CReportDescription rptDesc = pRptBuilder->GetReportDescription();
+   auto pRptBuilder = GetReportBuilder(rptName);
+   WBFL::Reporting::ReportDescription rptDesc = pRptBuilder->GetReportDescription();
 
    m_pRptSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
    if ( bPromptForSpec )
@@ -267,14 +267,14 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,BOOL b
    }
 }
 
-HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
+HRESULT CEAFReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
 {
    if ( m_pReportSpec == nullptr )
       return S_OK;
 
-   HRESULT hr = m_pReportSpec->Validate();
-   if ( FAILED(hr) )
-      return hr;
+   bool bIsValid = m_pReportSpec->IsValid();
+   if (!bIsValid)
+      return E_FAIL;
 
    try
    {
@@ -292,7 +292,7 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
       // if we already have a report browser, just refresh the report
       if ( m_pReportBrowser )
       {
-         std::shared_ptr<CReportBuilder> pBuilder = GetReportBuilder( m_pReportSpec->GetReportName() );
+         auto pBuilder = GetReportBuilder( m_pReportSpec->GetReportName() );
 
          // It is possible for the report builder to be deleted dynamically (e.g., if it is a custom report)
          if (!pBuilder)
@@ -394,7 +394,7 @@ void CEAFReportView::RefreshReport()
 {
    m_pReportSpec = m_pReportBrowser->GetReportSpecification();
 
-   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(m_pReportSpec->GetReportName());
+   auto pRptBuilder = GetReportBuilder(m_pReportSpec->GetReportName());
 
    std::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pReportSpec );
 
@@ -498,16 +498,17 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
    // Something has changed to invalidate the report
    m_bInvalidReport = true;
 
-   std::unique_ptr<CReportHint> pRptHint( TranslateHint(pSender,lHint,pHint) );
-   UpdateNow(pRptHint.get());
+   std::unique_ptr<WBFL::Reporting::ReportHint> pRptHint( TranslateHint(pSender,lHint,pHint) );
+   std::shared_ptr<WBFL::Reporting::ReportHint> hint(pRptHint.release());
+   UpdateNow(hint);
 }
 
-CReportHint* CEAFReportView::TranslateHint(CView* pSender, LPARAM lHint, CObject* pHint)
+WBFL::Reporting::ReportHint* CEAFReportView::TranslateHint(CView* pSender, LPARAM lHint, CObject* pHint)
 {
    return nullptr;
 }
 
-void CEAFReportView::UpdateNow(CReportHint* pHint)
+void CEAFReportView::UpdateNow(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
 {
    if ( CEAFReportView::ms_bIsUpdatingReport )
    {
@@ -735,7 +736,7 @@ std::vector<std::_tstring> CEAFReportView::GetReportNames()
    }
 }
 
-std::shared_ptr<CReportBuilder> CEAFReportView::GetReportBuilder(const std::_tstring& strRptName)
+std::shared_ptr<const WBFL::Reporting::ReportBuilder> CEAFReportView::GetReportBuilder(const std::_tstring& strRptName) const
 {
    if ( m_pReportBuilderMgr )
    {
@@ -747,7 +748,7 @@ std::shared_ptr<CReportBuilder> CEAFReportView::GetReportBuilder(const std::_tst
    }
 }
 
-std::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
+std::shared_ptr<WBFL::Reporting::ReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
    if ( m_pReportBuilderMgr )
    {
@@ -764,7 +765,7 @@ void CEAFReportView::NotifyReportButtonWasClicked()
    EditReport();
 }
 
-std::shared_ptr<CReportSpecification> CEAFReportView::GetReportSpecification()
+std::shared_ptr<const WBFL::Reporting::ReportSpecification> CEAFReportView::GetReportSpecification() const
 {
    return m_pReportSpec;
 }

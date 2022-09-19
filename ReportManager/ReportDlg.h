@@ -21,27 +21,19 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_REPORTDLG_H__0116CAC5_A624_4A3A_8A98_2D140B68DBF0__INCLUDED_)
-#define AFX_REPORTDLG_H__0116CAC5_A624_4A3A_8A98_2D140B68DBF0__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// ReportDlg.h : header file
-//
 
 #include <ReportManager\ReportBuilderManager.h>
 #include <ReportManager\ReportSpecification.h>
 #include <ReportManager\ReportBrowser.h>
 
-/////////////////////////////////////////////////////////////////////////////
-// CReportDlg dialog
+using namespace WBFL::Reporting;
 
+/// MFC Dialog that allows the user to configure a report
 class CReportDlg : public CDialog
 {
-// Construction
 public:
-   CReportDlg(CReportBuilderManager& rptMgr, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder,CWnd* pParent = nullptr);   // standard constructor
+	CReportDlg(const std::shared_ptr<const ReportBuilderManager>& rptMgr, const std::shared_ptr<ReportSpecification>& pRptSpec, const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder, CWnd* pParent = nullptr);
 
 // Dialog Data
 	//{{AFX_DATA(CReportDlg)
@@ -63,10 +55,10 @@ public:
 // Implementation
 protected:
    CString m_strRptName;
-   CReportBuilderManager& m_RptMgr;
-   std::shared_ptr<CReportSpecification> m_pRptSpec;
-   std::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
-   std::shared_ptr<CReportBrowser> m_pBrowser;
+	std::shared_ptr<const ReportBuilderManager> m_pRptMgr;
+   std::shared_ptr<ReportSpecification> m_pRptSpec;
+   std::shared_ptr<const ReportSpecificationBuilder> m_pRptSpecBuilder;
+   std::shared_ptr<ReportBrowser> m_pBrowser;
 
 	// Generated message map functions
 	//{{AFX_MSG(CReportDlg)
@@ -76,8 +68,3 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_REPORTDLG_H__0116CAC5_A624_4A3A_8A98_2D140B68DBF0__INCLUDED_)

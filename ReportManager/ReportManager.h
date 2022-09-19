@@ -21,15 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportManager.h : main header file for the REPORTMANAGER DLL
-//
-
-#if !defined(AFX_REPORTMANAGER_H__76EEC75A_6272_44CB_922E_50819BF6022B__INCLUDED_)
-#define AFX_REPORTMANAGER_H__76EEC75A_6272_44CB_922E_50819BF6022B__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #ifndef __AFXWIN_H__
 	#error include 'stdafx.h' before including this file for PCH
@@ -66,5 +58,3 @@ public:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_REPORTMANAGER_H__76EEC75A_6272_44CB_922E_50819BF6022B__INCLUDED_)

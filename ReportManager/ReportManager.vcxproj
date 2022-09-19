@@ -184,7 +184,6 @@
     <ClCompile Include="ReportBuilderManager.cpp" />
     <ClCompile Include="ReportDescription.cpp" />
     <ClCompile Include="ReportDlg.cpp" />
-    <ClCompile Include="ReportHint.cpp" />
     <ClCompile Include="ReportManager.cpp" />
     <ClCompile Include="ReportSpecDlg.cpp" />
     <ClCompile Include="ReportSpecification.cpp" />

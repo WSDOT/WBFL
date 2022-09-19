@@ -26,9 +26,18 @@
 #include <ReportManager\ReportManagerExp.h>
 
 
-class REPORTMANAGERCLASS CReportHint
+namespace WBFL
 {
-public:
-	CReportHint();
-	virtual ~CReportHint();
+	namespace Reporting
+	{
+		/// Represents a hint that indicates how something has changed. Used by ChapterBuilders
+		/// to determine of a chapter needs to be updated.
+		/// Create derived classes for your specific reporting needs.
+		class REPORTMANAGERCLASS ReportHint
+		{
+		public:
+			ReportHint() = default;
+			virtual ~ReportHint() = default;
+		};
+	};
 };

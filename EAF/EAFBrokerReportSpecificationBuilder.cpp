@@ -40,17 +40,17 @@ CEAFBrokerReportSpecificationBuilder::~CEAFBrokerReportSpecificationBuilder(void
 {
 }
 
-std::shared_ptr<CReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateReportSpec(const CReportDescription& rptDesc, std::shared_ptr<CReportSpecification>& pRptSpec)
+std::shared_ptr<WBFL::Reporting::ReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateReportSpec(const WBFL::Reporting::ReportDescription& rptDesc, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec) const
 {
    // create a regular report spec using the base class implementation... that way we get to use the UI
-   std::shared_ptr<CReportSpecification> pReportSpec = CReportSpecificationBuilder::CreateReportSpec(rptDesc,pRptSpec);
+   auto pReportSpec = WBFL::Reporting::ReportSpecificationBuilder::CreateReportSpec(rptDesc,pRptSpec);
    if ( pReportSpec == nullptr )
    {
       return pReportSpec;
    }
 
    // create a new report spec of our type
-   std::shared_ptr<CReportSpecification> pEAFRptSpec(std::make_shared<CEAFBrokerReportSpecification>(rptDesc.GetReportName(), m_pBroker));
+   std::shared_ptr<WBFL::Reporting::ReportSpecification> pEAFRptSpec(std::make_shared<CEAFBrokerReportSpecification>(rptDesc.GetReportName(), m_pBroker));
 
    // copy the data from the regular report spec to our report spec
    pEAFRptSpec->SetReportName(pReportSpec->GetReportName().c_str());
@@ -63,10 +63,10 @@ std::shared_ptr<CReportSpecification> CEAFBrokerReportSpecificationBuilder::Crea
    return pEAFRptSpec;
 }
 
-std::shared_ptr<CReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateDefaultReportSpec(const CReportDescription& rptDesc)
+std::shared_ptr<WBFL::Reporting::ReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateDefaultReportSpec(const WBFL::Reporting::ReportDescription& rptDesc) const
 {
    // Use all chapters at the maximum level
-   std::shared_ptr<CReportSpecification> pRptSpec( std::make_shared<CEAFBrokerReportSpecification>(rptDesc.GetReportName(),m_pBroker) );
+   std::shared_ptr<WBFL::Reporting::ReportSpecification> pRptSpec( std::make_shared<CEAFBrokerReportSpecification>(rptDesc.GetReportName(),m_pBroker) );
 
    rptDesc.ConfigureReportSpecification(pRptSpec);
 

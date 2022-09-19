@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TitlePageBuilder.cpp: implementation of the CTitlePageBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "ReportManager.h"
 #include <ReportManager\TitlePageBuilder.h>
@@ -35,37 +31,25 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::Reporting;
 
-CTitlePageBuilder::CTitlePageBuilder(LPCTSTR title) :
+TitlePageBuilder::TitlePageBuilder(LPCTSTR title) :
 m_Title(title)
 {
 
 }
 
-CTitlePageBuilder::CTitlePageBuilder(const CTitlePageBuilder& other) :
-m_Title(other.m_Title)
-{
-}
-
-CTitlePageBuilder::~CTitlePageBuilder()
-{
-
-}
-
-const std::_tstring& CTitlePageBuilder::GetReportTitle() const
+const std::_tstring& TitlePageBuilder::GetReportTitle() const
 {
    return m_Title;
 }
 
-void CTitlePageBuilder::SetReportTitle(LPCTSTR title)
+void TitlePageBuilder::SetReportTitle(LPCTSTR title)
 {
    m_Title = title;
 }
 
-bool CTitlePageBuilder::NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpecification>& pRptSpec)
+bool TitlePageBuilder::NeedsUpdate(const std::shared_ptr<const ReportHint>&, const std::shared_ptr<const ReportSpecification>& pRptSpec) const
 {
    // be conservative... assume report title pages needs updating
    // Override this method if you want an different outcome

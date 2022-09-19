@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportDescription.cpp: implementation of the CReportDescription class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "ReportManager.h"
 #include <ReportManager\ReportDescription.h>
@@ -37,43 +33,36 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::Reporting;
 
-CReportDescription::CReportDescription(LPCTSTR strReportName) :
+ReportDescription::ReportDescription(const std::_tstring& strReportName) :
 m_ReportName(strReportName)
 {
 
 }
 
-CReportDescription::~CReportDescription()
+const std::_tstring& ReportDescription::GetReportName() const
 {
-
+   return m_ReportName;
 }
 
-LPCTSTR CReportDescription::GetReportName() const
-{
-   return m_ReportName.c_str();
-}
-
-void CReportDescription::AddChapter(const CChapterBuilder* pChapterBuilder)
+void ReportDescription::AddChapter(const std::shared_ptr<const ChapterBuilder>& pChapterBuilder)
 {
    m_ChapterBuilders.push_back(pChapterBuilder);
 }
 
-IndexType CReportDescription::GetChapterCount() const
+IndexType ReportDescription::GetChapterCount() const
 {
    return m_ChapterBuilders.size();
 }
 
-std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
+std::vector<ChapterInfo> ReportDescription::GetChapterInfo() const
 {
-   std::vector<CChapterInfo> v;
+   std::vector<ChapterInfo> v;
 
    for( const auto& pChBuilder : m_ChapterBuilders)
    {
-      CChapterInfo chInfo;
+      ChapterInfo chInfo;
       chInfo.Name     = pChBuilder->GetName();
       chInfo.Key      = pChBuilder->GetKey();
       chInfo.MaxLevel = pChBuilder->GetMaxLevel();
@@ -85,9 +74,9 @@ std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
    return v;
 }
 
-void CReportDescription::ConfigureReportSpecification(std::shared_ptr<CReportSpecification>& pRptSpec) const
+void ReportDescription::ConfigureReportSpecification(std::shared_ptr<ReportSpecification>& pRptSpec) const
 {
-   std::vector<CChapterInfo> vChInfo = GetChapterInfo();
+   std::vector<ChapterInfo> vChInfo = GetChapterInfo();
 
    pRptSpec->ClearChapters();
 
@@ -100,26 +89,26 @@ void CReportDescription::ConfigureReportSpecification(std::shared_ptr<CReportSpe
    }
 }
 
-void CReportDescription::ConfigureReportSpecification(const std::vector<std::_tstring>& chList, std::shared_ptr<CReportSpecification>& pRptSpec) const
+void ReportDescription::ConfigureReportSpecification(const std::vector<std::_tstring>& chList, std::shared_ptr<ReportSpecification>& pRptSpec) const
 {
-   std::vector<CChapterInfo> vChInfo = GetChapterInfo();
+   std::vector<ChapterInfo> vChInfo = GetChapterInfo();
 
    pRptSpec->ClearChapters();
 
-   for( const auto& strChName : chList)
+   for( const auto& strChKey : chList)
    {
-      CChapterInfo search;
-      search.Name = strChName;
+      ChapterInfo search;
+      search.Key= strChKey;
 
-      std::vector<CChapterInfo>::iterator found = std::find(vChInfo.begin(),vChInfo.end(),search);
-      ATLASSERT( found != vChInfo.end() ); // if this fires, the supplied chapter list isn't consistent with the report description
-      CChapterInfo chInfo = *found;
-      ATLASSERT( chInfo.Name == strChName);
+      std::vector<ChapterInfo>::iterator found = std::find(vChInfo.begin(),vChInfo.end(),search);
+      ASSERT( found != vChInfo.end() ); // if this fires, the supplied chapter list isn't consistent with the report description
+      ChapterInfo chInfo = *found;
+      ASSERT( chInfo.Key == strChKey);
       pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
    }
 }
 
-void CReportDescription::ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo, std::shared_ptr<CReportSpecification>& pRptSpec) const
+void ReportDescription::ConfigureReportSpecification(const std::vector<ChapterInfo>& vChInfo, std::shared_ptr<ReportSpecification>& pRptSpec) const
 {
    pRptSpec->ClearChapters();
 
