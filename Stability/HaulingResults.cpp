@@ -73,25 +73,25 @@ HaulingSectionResult::HaulingSectionResult()
    memset((void*)FScr, 0, sizeof(FScr));
 
    FScrMin.fill(0);
-   FScrImpactDirection.fill(NoImpact);
-   FScrWindDirection.fill(Left);
-   FScrCorner.fill(BottomLeft);
+   FScrImpactDirection.fill(ImpactDirection::NoImpact);
+   FScrWindDirection.fill(WindDirection::Left);
+   FScrCorner.fill(Corner::BottomLeft);
 
 
    for (int s = 0; s < 2; s++)
    {
       HaulingSlope slope = (HaulingSlope)s;
-      fMinDirect[slope][Top] = Float64_Max;
-      fMinDirect[slope][Bottom] = Float64_Max;
-      fMaxDirect[slope][Top] = -Float64_Max;
-      fMaxDirect[slope][Bottom] = -Float64_Max;
+      fMinDirect[+slope][+GirderFace::Top] = Float64_Max;
+      fMinDirect[+slope][+GirderFace::Bottom] = Float64_Max;
+      fMaxDirect[+slope][+GirderFace::Top] = -Float64_Max;
+      fMaxDirect[+slope][+GirderFace::Bottom] = -Float64_Max;
 
-      fMin[slope][Top] = Float64_Max;
-      fMin[slope][Bottom] = Float64_Max;
-      fMax[slope][Top] = -Float64_Max;
-      fMax[slope][Bottom] = -Float64_Max;
+      fMin[+slope][+GirderFace::Top] = Float64_Max;
+      fMin[+slope][+GirderFace::Bottom] = Float64_Max;
+      fMax[+slope][+GirderFace::Top] = -Float64_Max;
+      fMax[+slope][+GirderFace::Bottom] = -Float64_Max;
 
-      FScrMin[slope] = Float64_Max;
+      FScrMin[+slope] = Float64_Max;
    }
 
 }
@@ -104,42 +104,42 @@ HaulingResults::HaulingResults()
    {
       HaulingSlope slope = (HaulingSlope)s;
 
-      MaxDirectStress[slope] = -Float64_Max;
-      MaxDirectStressAnalysisPointIndex[slope] = 0;
-      MaxDirectStressImpactDirection[slope] = NoImpact;
-      MaxDirectStressCorner[slope] = TopLeft;
+      MaxDirectStress[+slope] = -Float64_Max;
+      MaxDirectStressAnalysisPointIndex[+slope] = 0;
+      MaxDirectStressImpactDirection[+slope] = ImpactDirection::NoImpact;
+      MaxDirectStressCorner[+slope] = Corner::TopLeft;
 
-      MinDirectStress[slope] = Float64_Max;
-      MinDirectStressAnalysisPointIndex[slope] = 0;
-      MinDirectStressImpactDirection[slope] = NoImpact;
-      MinDirectStressCorner[slope] = TopLeft;
+      MinDirectStress[+slope] = Float64_Max;
+      MinDirectStressAnalysisPointIndex[+slope] = 0;
+      MinDirectStressImpactDirection[+slope] = ImpactDirection::NoImpact;
+      MinDirectStressCorner[+slope] = Corner::TopLeft;
 
-      MaxStress[slope] = -Float64_Max;
-      MaxStressAnalysisPointIndex[slope] = 0;
-      MaxStressImpactDirection[slope] = NoImpact;
-      MaxStressWindDirection[slope] = Left;
-      MaxStressCorner[slope] = TopLeft;
+      MaxStress[+slope] = -Float64_Max;
+      MaxStressAnalysisPointIndex[+slope] = 0;
+      MaxStressImpactDirection[+slope] = ImpactDirection::NoImpact;
+      MaxStressWindDirection[+slope] = WindDirection::Left;
+      MaxStressCorner[+slope] = Corner::TopLeft;
 
-      MinStress[slope] = Float64_Max;
-      MinStressAnalysisPointIndex[slope] = 0;
-      MinStressImpactDirection[slope] = NoImpact;
-      MinStressWindDirection[slope] = Left;
-      MinStressCorner[slope] = TopLeft;
+      MinStress[+slope] = Float64_Max;
+      MinStressAnalysisPointIndex[+slope] = 0;
+      MinStressImpactDirection[+slope] = ImpactDirection::NoImpact;
+      MinStressWindDirection[+slope] = WindDirection::Left;
+      MinStressCorner[+slope] = Corner::TopLeft;
 
-      MinFScr[slope] = Float64_Max;
-      FScrAnalysisPointIndex[slope] = 0;
-      FScrImpactDirection[slope] = NoImpact;
-      FScrWindDirection[slope] = Left;
-      FScrCorner[slope] = TopLeft;
+      MinFScr[+slope] = Float64_Max;
+      FScrAnalysisPointIndex[+slope] = 0;
+      FScrImpactDirection[+slope] = ImpactDirection::NoImpact;
+      FScrWindDirection[+slope] = WindDirection::Left;
+      FScrCorner[+slope] = Corner::TopLeft;
 
-      FSfImpactDirection[slope] = NoImpact;
-      FSfWindDirection[slope] = Left;
-      MinFsFailure[slope] = Float64_Max;
-      MinAdjFsFailure[slope] = Float64_Max;
+      FSfImpactDirection[+slope] = ImpactDirection::NoImpact;
+      FSfWindDirection[+slope] = WindDirection::Left;
+      MinFsFailure[+slope] = Float64_Max;
+      MinAdjFsFailure[+slope] = Float64_Max;
 
-      FSroImpactDirection[slope] = NoImpact;
-      FSroWindDirection[slope] = Left;
-      MinFsRollover[slope] = Float64_Max;
+      FSroImpactDirection[+slope] = ImpactDirection::NoImpact;
+      FSroWindDirection[+slope] = WindDirection::Left;
+      MinFsRollover[+slope] = Float64_Max;
 
       for (int i = 0; i < 3; i++)
       {
@@ -147,8 +147,8 @@ HaulingResults::HaulingResults()
          for (int w = 0; w < 2; w++)
          {
             WindDirection wind = (WindDirection)w;
-            bRotationalStability[slope][impact][wind] = true;
-            bRolloverStability[slope][impact][wind] = true;
+            bRotationalStability[+slope][+impact][+wind] = true;
+            bRolloverStability[+slope][+impact][+wind] = true;
          }
       }
    }
@@ -161,7 +161,7 @@ HaulingResults::HaulingResults()
    memset((void*)ThetaRollover, 0, sizeof(ThetaRollover));
    memset((void*)FsRollover,0,sizeof(FsRollover));
 
-   AssumedTiltDirection = Left;
+   AssumedTiltDirection = GirderSide::Left;
 }
 
 bool HaulingResults::HasRotationalStablity() const
@@ -175,7 +175,7 @@ bool HaulingResults::HasRotationalStablity() const
          for (int w = 0; w < 2; w++)
          {
             WindDirection wind = (WindDirection)w;
-            if (!bRotationalStability[slope][impact][wind])
+            if (!bRotationalStability[+slope][+impact][+wind])
             {
                // only one has to be false
                return false;
@@ -197,7 +197,7 @@ bool HaulingResults::HasRolloverStability() const
          for (int w = 0; w < 2; w++)
          {
             WindDirection wind = (WindDirection)w;
-            if (!bRolloverStability[slope][impact][wind])
+            if (!bRolloverStability[+slope][+impact][+wind])
             {
                // only one has to be false
                return false;

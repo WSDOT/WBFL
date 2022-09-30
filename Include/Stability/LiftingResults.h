@@ -44,15 +44,15 @@ namespace WBFL
          Float64 Mg;  ///< moment due to girder weight
          Float64 Mw;  ///< transverse moment due to wind
 
-         std::array<Float64, 4> fps;   ///< corner stresses due to prestressing (array indcies are [Corner])
-         std::array<Float64, 4> fg;    ///< corner stresses due to girder weight without impact (array indcies are [Corner])
-         std::array<Float64, 4> fw;    ///< corner stresses due to wind towards the left (array indcies are [Corner])
-         std::array<Float64, 4> fcable; ///< corner stresses due to included lift cable without impact (array indcies are [Corner])
+         std::array<Float64, 4> fps;   ///< corner stresses due to prestressing (array indcies are [+corner])
+         std::array<Float64, 4> fg;    ///< corner stresses due to girder weight without impact (array indcies are [+corner])
+         std::array<Float64, 4> fw;    ///< corner stresses due to wind towards the left (array indcies are [+corner])
+         std::array<Float64, 4> fcable; ///< corner stresses due to included lift cable without impact (array indcies are [+corner])
 
-         Float64 fDirect[3][4]; ///< stress due to direct loads (girder self weight and ps). Array indicies are [ImpactDirection][Corner]
+         Float64 fDirect[3][4]; ///< stress due to direct loads (girder self weight and ps). Array indicies are [ImpactDirection][+corner]
 
-         Float64 fTilt[3][2][4];   ///< stress due to equilibrium rotation of girder caused by girder self weight. Array indicies are [ImpactDirection][WindDirection][Corner]
-         Float64 f[3][2][4];       ///< stress at a corner (fDirect + fTilt + fWind + fCF). Array indicies are [ImpactDirection][WindDirection][Corner]
+         Float64 fTilt[3][2][4];   ///< stress due to equilibrium rotation of girder caused by girder self weight. Array indicies are [ImpactDirection][WindDirection][+corner]
+         Float64 f[3][2][4];       ///< stress at a corner (fDirect + fTilt + fWind + fCF). Array indicies are [ImpactDirection][WindDirection][+corner]
 
          std::array<Float64, 2> fMinDirect;    ///< min direct stress. Array indicies are [GirderFace]
          std::array<ImpactDirection, 2> MinDirectStressImpactDirection;    ///< impact direction associated with the minimum girder stress. Array indicies are [GirderFace]
@@ -73,16 +73,16 @@ namespace WBFL
          std::array<Corner, 2> MaxStressCorner;             ///< corner where the maximum girder stress occurs. Array indicies are [GirderFace]
 
          // FScr computation values at each corner for each impact and wind
-         Float64 Mcr[3][2][4];        ///< cracking moment. Array indicies are [ImpactDirection][WindDirection][Corner]
-         Float64 ThetaCrack[3][2][4]; ///< rotation angle causing cracking. Array indicies are [ImpactDirection][WindDirection][Corner]
-         Float64 FScr[3][2][4]; ///< factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection][Corner]
+         Float64 Mcr[3][2][4];        ///< cracking moment. Array indicies are [ImpactDirection][WindDirection][+corner]
+         Float64 ThetaCrack[3][2][4]; ///< rotation angle causing cracking. Array indicies are [ImpactDirection][WindDirection][+corner]
+         Float64 FScr[3][2][4]; ///< factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection][+corner]
 
          // Governing FScr and corner where it occurs for each impact and wind
          Float64 MinFScr[3][2]; ///< same as FScr[ImpactDirection][WindDirection][MinFScrCorner[ImpactDirection][WindDirection]]. Array indicies are [ImpactDirection][WindDirection].
          Corner MinFScrCorner[3][2]; ///< Corner where the governing factor of safety occurs. Array indicies are [ImpactDirection][WindDirection].
 
          // Governing FScr at this section for all load cases
-         Float64 FScrMin; ///< controlling FScr. The least of all FScr[ImpactDirection][WindDirection][Corner].
+         Float64 FScrMin; ///< controlling FScr. The least of all FScr[ImpactDirection][WindDirection][+corner].
          ImpactDirection FScrMinImpactDirection; ///< impact direction for FScrMin.
          WindDirection FScrMinWindDirection; ///< wind direction for FScrMin.
          Corner FScrMinCorner; ///< corner for FScrMin. 

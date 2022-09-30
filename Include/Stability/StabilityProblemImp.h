@@ -498,7 +498,7 @@ namespace WBFL
          Float64 m_ImpactUp{ 0.0 };
          Float64 m_ImpactDown{ 0.0 };
 
-         WindType m_WindLoadType{ Speed };
+         WindType m_WindLoadType{ WindType::Speed };
          Float64 m_WindLoad{ 0.0 }; // velocity or pressure, depending on m_WindLoadType
 
          // eccentricity and weight per unit length of appurtenances
@@ -917,7 +917,7 @@ namespace WBFL
       private:
          StabilityProblemImp m_Imp;
 
-         HaulingImpact m_ImpactUsage{ Both };
+         HaulingImpact m_ImpactUsage{ HaulingImpact::Both };
 
          Float64 m_Ktheta{ 0.0 }; // Truck rotational stiffness
          Float64 m_Wcc{ 0.0 }; // center-center spacing between truck wheels
@@ -927,7 +927,7 @@ namespace WBFL
 
          Float64 m_Velocity{ 0.0 };
          Float64 m_Radius{ Float64_Max };
-         CFType m_CFType{ Favorable };
+         CFType m_CFType{ CFType::Favorable };
       };
 
       /// Defines the parameters of a girder seated at one end stability analysis problem
@@ -1155,7 +1155,7 @@ namespace WBFL
          Float64 m_Wcc{ 0.0 }; // center-center spacing between truck wheels
          Float64 m_Hrc{ 0.0 }; // height of roll axis above roadway
          Float64 m_CrownSlope{ 0.0 }; // normal crown slope
-         GirderSide m_SeatedEnd{ Left };
+         GirderSide m_SeatedEnd{ GirderSide::Left };
          Float64 m_YrollLiftEnd{ 0.0 };
          Float64 m_elift{ 0.0 };
          Float64 m_Kadjust{ 0.50 };

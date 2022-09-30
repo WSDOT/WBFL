@@ -460,7 +460,7 @@ void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Material
       if (lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::ThirdEditionWith2006Interims)
       {
          std::array<Float64, 4> Lamda{ 1.0, 0.85, 0.75, 1.0 };
-         Float64 lambda = min(Lamda[std::underlying_type<WBFL::Materials::ConcreteType>::type(girderConcType)], Lamda[std::underlying_type<WBFL::Materials::ConcreteType>::type(deckConcType)]);
+         Float64 lambda = min(Lamda[+girderConcType], Lamda[+deckConcType]);
          *pU *= lambda;
       }
 

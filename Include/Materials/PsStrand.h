@@ -211,5 +211,10 @@ namespace WBFL
       {
          return m_ModE;
       }
+
+      inline constexpr auto operator+(PsStrand::Grade t) noexcept { return std::underlying_type<PsStrand::Grade>::type(t); }
+      inline constexpr auto operator+(PsStrand::Type t) noexcept { return std::underlying_type<PsStrand::Type>::type(t); }
+      inline constexpr auto operator+(PsStrand::Size t) noexcept { return std::underlying_type<PsStrand::Size>::type(t); }
+      inline constexpr auto operator+(PsStrand::Coating t) noexcept { return std::underlying_type<PsStrand::Coating>::type(t); }
    };
 };

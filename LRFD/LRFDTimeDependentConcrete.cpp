@@ -46,10 +46,8 @@ void lrfdLRFDTimeDependentConcrete::GetModelParameters(WBFL::Materials::CuringTy
                         {0.95, // Steam, Type I
                         0.98} }; // Steam, Type III
 
-   auto cure_idx = std::underlying_type<WBFL::Materials::CuringType>::type(cure);
-   auto cement_idx = std::underlying_type<WBFL::Materials::CementType>::type(cement);
-   *pA = a[cure_idx][cement_idx];
-   *pB = b[cure_idx][cement_idx];
+   *pA = a[+cure][+cement];
+   *pB = b[+cure][+cement];
 }
 
 lrfdLRFDTimeDependentConcrete::lrfdLRFDTimeDependentConcrete(LPCTSTR name) :

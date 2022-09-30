@@ -45,15 +45,15 @@ namespace WBFL
          Float64 Mw;  ///< transverse moment due to wind
          Float64 Mcf; ///< transverse moment due to CF
 
-         std::array<Float64, 4> fps;   ///< corner stresses due to prestressing (array indcies are [Corner])
-         std::array<Float64, 4> fg;    ///< corner stresses due to girder weight without impact (array indcies are [Corner])
-         std::array<Float64, 4> fw;    ///< corner stresses due to wind towards the left (array indcies are [Corner])
-         std::array<Float64, 4> fcf;   ///< corner stresses due to centrifugal towards the left (array indcies are [Corner])
+         std::array<Float64, 4> fps;   ///< corner stresses due to prestressing (array indcies are [+corner])
+         std::array<Float64, 4> fg;    ///< corner stresses due to girder weight without impact (array indcies are [+corner])
+         std::array<Float64, 4> fw;    ///< corner stresses due to wind towards the left (array indcies are [+corner])
+         std::array<Float64, 4> fcf;   ///< corner stresses due to centrifugal towards the left (array indcies are [+corner])
 
-         Float64 fDirect[2][3][4]; ///< stress due to direct loads (girder self weight and ps). Array indicies are [HaulingSlope][ImpactDirection][Corner]
+         Float64 fDirect[2][3][4]; ///< stress due to direct loads (girder self weight and ps). Array indicies are [HaulingSlope][ImpactDirection][+corner]
 
-         Float64 fTilt[2][3][2][4];   ///< stress due to equilibrium rotation of girder caused by girder self weight. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
-         Float64 f[2][3][2][4];       ///< stress at a corner (fDirect + fTilt + fWind + fCF). Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
+         Float64 fTilt[2][3][2][4];   ///< stress due to equilibrium rotation of girder caused by girder self weight. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][+corner]
+         Float64 f[2][3][2][4];       ///< stress at a corner (fDirect + fTilt + fWind + fCF). Array indicies are [HaulingSlope][ImpactDirection][WindDirection][+corner]
 
          Float64 fMinDirect[2][2];    ///< min direct stress. Array indicies are [HaulingSlope][GirderFace]
          ImpactDirection MinDirectStressImpactDirection[2][2];    ///< impact direction associated with the minimum girder stress. Array indicies are [HaulingSlope][GirderFace]
@@ -73,11 +73,11 @@ namespace WBFL
          WindDirection MaxStressWindDirection[2][2];      ///< wind direction associated with the maximum girder stress. Array indicies are [HaulingSlope][GirderFace]
          Corner MaxStressCorner[2][2];             ///< corner where the maximum girder stress occurs. Array indicies are [HaulingSlope][GirderFace]
 
-         Float64 Mcr[2][3][2][4];        ///< cracking moment. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
-         Float64 ThetaCrack[2][3][2][4]; ///< rotation angle causing cracking. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
-         Float64 FScr[2][3][2][4]; ///< factor of safety against cracking. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][Corner]
+         Float64 Mcr[2][3][2][4];        ///< cracking moment. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][+corner]
+         Float64 ThetaCrack[2][3][2][4]; ///< rotation angle causing cracking. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][+corner]
+         Float64 FScr[2][3][2][4]; ///< factor of safety against cracking. Array indicies are [HaulingSlope][ImpactDirection][WindDirection][+corner]
 
-         std::array<Float64, 2> FScrMin; ///< controlling FScr. The least of all FScr[HaulingSlope][ImpactDirection][WindDirection][Corner]. Array indicies are [HaulingSlope]
+         std::array<Float64, 2> FScrMin; ///< controlling FScr. The least of all FScr[HaulingSlope][ImpactDirection][WindDirection][+corner]. Array indicies are [HaulingSlope]
          std::array<ImpactDirection, 2> FScrImpactDirection; ///< impact direction for FScrMin. Array indicies are [HaulingSlope]
          std::array<WindDirection, 2> FScrWindDirection; ///< wind direction for FScrMin. Array indicies are [HaulingSlope]
          std::array<Corner, 2> FScrCorner; ///< corner for FScrMin. Array indicies are [HaulingSlope]

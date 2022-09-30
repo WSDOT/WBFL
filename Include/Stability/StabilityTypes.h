@@ -45,101 +45,117 @@ namespace WBFL
       };
 
       /// Constant indicating the face of a girder
-      typedef enum GirderFace
+      enum class GirderFace
       {
          Top, ///< Top face
          Bottom ///< Bottom face
-      } GirderFace;
+      };
+      inline constexpr auto operator+(GirderFace t) noexcept { return std::underlying_type<GirderFace>::type(t); }
 
       /// Constant indicating the side of a girder
-      typedef enum GirderSide
+      enum class GirderSide
       {
          Left, ///< Left side
          Right ///< Right side
-      } GirderSide;
+      };
+      inline constexpr auto operator+(GirderSide t) noexcept { return std::underlying_type<GirderSide>::type(t); }
 
       /// Constant indicate the direction of impact
-      typedef enum ImpactDirection
+      enum class ImpactDirection
       {
          NoImpact, ///< No impact
          ImpactUp, ///< Impact up
          ImpactDown ///< Impact down
-      } ImpactDirection;
+      };
+      inline constexpr auto operator+(ImpactDirection t) noexcept { return std::underlying_type<ImpactDirection>::type(t); }
 
       /// Constant indicating when impact is considered in hauling stability analysis
-      typedef enum HaulingImpact
+      enum class HaulingImpact
       {
          NormalCrown, ///< impact applied only to the normal crown condition
          MaxSuper,    ///< impact applied only to the max superelevation condition   
          Both         ///< impact applied to both conditions
-      } HaulingImpact;
+      };
+      inline constexpr auto operator+(HaulingImpact t) noexcept { return std::underlying_type<HaulingImpact>::type(t); }
 
       /// Constant indicating the direction of wind
-      typedef GirderSide WindDirection;
+      enum class WindDirection
+      {
+         Left, ///< Towards the Left (right to left <--)
+         Right ///< Towards the Right (left to right -->)
+      };
+      inline constexpr auto operator+(WindDirection t) noexcept { return std::underlying_type<WindDirection>::type(t); }
 
       /// Constant indicating how wind load is defined
-      typedef enum WindType
+      enum class WindType
       {
          Speed, ///< defined by a wind speed and wind pressure is to be computed
          Pressure ///< wind pressure is input
-      } WindType;
+      };
+      inline constexpr auto operator+(WindType t) noexcept { return std::underlying_type<WindType>::type(t); }
 
       /// Constant indicating a nominal corner of the girder
-      typedef enum Corner
+      enum class Corner
       {
          TopLeft,
          TopRight,
          BottomLeft,
          BottomRight
-      } Corner;
+      };
+      inline constexpr auto operator+(Corner t) noexcept { return std::underlying_type<Corner>::type(t); }
 
       /// Constant indicate the location of a harp point
-      typedef enum HarpPointLocation
+      enum class HarpPointLocation
       {
          StartHP, ///< Point near start of the girder where strands are deflected (typcially the left end of the girder)
          LeftHP, ///< Point where strands are deflected, left of mid-span
          RightHP, ///< Point where strands are deflected, right of mid-span
          EndHP ///< Point near end of the girder where strands are deflected (typcially the right end of the girder)
-      } HarpPointLocation;
+      };
+      inline constexpr auto operator+(HarpPointLocation t) noexcept { return std::underlying_type<HarpPointLocation>::type(t); }
 
       /// Constant indicating the face of prismatic section of the girder
-      typedef enum Section
+      enum class Section
       {
          Start, ///< Start of the section
          End ///< End of the section
-      } Section;
+      };
+      inline constexpr auto operator+(Section t) noexcept { return std::underlying_type<Section>::type(t); }
 
       /// Constant indicating the type of centrifugal force occuring in the analysis
-      typedef enum CFType
+      enum class CFType
       {
          Adverse, ///< CF is towards the left (increases lateral deflection and roll over)
          Favorable ///< CF is towards the right
-      } CFType;
+      };
+      inline constexpr auto operator+(CFType t) noexcept { return std::underlying_type<CFType>::type(t); }
 
       /// Constant indicating the method for compute the lateral offset of the center of mass /f$ z_o /f$
-      typedef enum CalculationMethod
+      enum class CalculationMethod
       {
          Exact, ///< A closed form, exact method 
          Approximate ///< An approximate numerical method
-      } CalculationMethod;
+      };
+      inline constexpr auto operator+(CalculationMethod t) noexcept { return std::underlying_type<CalculationMethod>::type(t); }
 
       /// Constant indicating one of the hauling analysis crown slope types
-      typedef enum HaulingSlope
+      enum class HaulingSlope
       {
          CrownSlope, ///< The normal roadway crown slope
          Superelevation ///< Slope at maximum superelevation
-      } HaulingSlope;
+      };
+      inline constexpr auto operator+(HaulingSlope t) noexcept { return std::underlying_type<HaulingSlope>::type(t); }
 
       /// Returns the GirderFace corresponding to a Corner
       inline GirderFace GetFace(Corner corner)
       {
-         return (corner == TopLeft || corner == TopRight ? Top : Bottom);
+         return (corner == Corner::TopLeft || corner == Corner::TopRight ? GirderFace::Top : GirderFace::Bottom);
       }
 
       /// Returns the GirderSide corresponding to a Corner
       inline GirderSide GetSide(Corner corner)
       {
-         return (corner == TopLeft || corner == BottomLeft ? Left : Right);
+         return (corner == Corner::TopLeft || corner == Corner::BottomLeft ? GirderSide::Left : GirderSide::Right);
       }
    }
 }

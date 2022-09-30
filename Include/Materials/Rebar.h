@@ -190,5 +190,9 @@ namespace WBFL
       {
          return Rebar::GetElongation(m_Type, m_Grade, m_Size);
       }
+
+      inline constexpr auto operator+(Rebar::Size t) noexcept { return std::underlying_type<Rebar::Size>::type(t); }
+      inline constexpr auto operator+(Rebar::Type t) noexcept { return std::underlying_type<Rebar::Type>::type(t); }
+      inline constexpr auto operator+(Rebar::Grade t) noexcept { return std::underlying_type<Rebar::Grade>::type(t); }
    };
 };

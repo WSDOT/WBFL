@@ -46,10 +46,8 @@ void ACI209Concrete::GetModelParameters(CuringType cure,CementType cement,Float6
                         {0.95, // Steam, Type I
                         0.98} }; // Steam, Type III
 
-   auto cure_idx = std::underlying_type<CuringType>::type(cure);
-   auto cement_idx = std::underlying_type<CementType>::type(cement);
-   *pA = a[cure_idx][cement_idx];
-   *pB = b[cure_idx][cement_idx];
+   *pA = a[+cure][+cement];
+   *pB = b[+cure][+cement];
 }
 
 ACI209Concrete::ACI209Concrete(const std::_tstring& name) :

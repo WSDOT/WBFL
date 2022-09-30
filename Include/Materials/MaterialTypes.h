@@ -31,12 +31,15 @@ namespace WBFL
    {
       /// Constant indicating a type of concrete
       enum class ConcreteType { Normal, AllLightweight, SandLightweight, PCI_UHPC, FHWA_UHPC };
+      constexpr auto operator+(ConcreteType t) noexcept { return std::underlying_type<ConcreteType>::type(t); }
 
       /// Constant indicating a cement type
       enum class CementType { TypeI, TypeII };
+      constexpr auto operator+(CementType t) noexcept { return std::underlying_type<CementType>::type(t); }
 
       /// Constant a curing type
       enum class CuringType { Moist, Steam };
+      constexpr auto operator+(CuringType t) noexcept { return std::underlying_type<CuringType>::type(t); }
 
       /// Utility  method that returns if a concrete type is UHPC
       inline bool IsUHPC(WBFL::Materials::ConcreteType type)
@@ -51,6 +54,7 @@ namespace WBFL
          Grade270, ///< Prestressing is Grade 270 (270 ksi)
          Grade300  ///< Prestressing is Grade 300 (300 ksi)
       };
+      constexpr auto operator+(StrandGrade t) noexcept { return std::underlying_type<StrandGrade>::type(t); }
 
       /// Constant indicating the production type of prestressing strand
       enum class StrandType
@@ -58,13 +62,15 @@ namespace WBFL
          LowRelaxation, ///< strand has low relaxation properties
          StressRelieved ///< strand has stress relieved properties
       };
-   
+      constexpr auto operator+(StrandType t) noexcept { return std::underlying_type<StrandType>::type(t); }
+
       /// Constant indicating the type of longitudinal reinforcement modeled in a CircularManderSection
       enum class TransvReinforcementType
       {
          Spiral = 0, ///< Transverse reinforcement is a continuous spiral
          Hoops = 1   ///< Transverse reinforcement is discrete hoops
       };
+      constexpr auto operator+(TransvReinforcementType t) noexcept { return std::underlying_type<TransvReinforcementType>::type(t); }
    };
 };
 

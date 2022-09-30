@@ -125,13 +125,13 @@ bool UnitTest::PCILiftingExamples(WBFL::Debug::Log& rlog)
 
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],1.844,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[+impact][+wind][+sectionResult.MinFScrCorner[+impact][+wind]],1.844,0.001) );
 
-            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[impact][wind][TopLeft    ],WBFL::Units::Measure::KSI), 0.113,0.001) );
-            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[impact][wind][BottomRight],WBFL::Units::Measure::KSI),-3.290,0.001) );
+            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+impact][+wind][+Corner::TopLeft    ],WBFL::Units::Measure::KSI), 0.113,0.001) );
+            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+impact][+wind][+Corner::BottomRight],WBFL::Units::Measure::KSI),-3.290,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],1.839,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[+impact][+wind],1.839,0.001) );
       }
    }
 
@@ -147,13 +147,13 @@ bool UnitTest::PCILiftingExamples(WBFL::Debug::Log& rlog)
 
          for (const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]], 1.235, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[+impact][+wind][+sectionResult.MinFScrCorner[+impact][+wind]], 1.235, 0.001));
 
-            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[impact][wind][TopLeft], WBFL::Units::Measure::KSI), 0.353, 0.001));
-            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[impact][wind][BottomRight], WBFL::Units::Measure::KSI), -3.412, 0.001));
+            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+impact][+wind][+Corner::TopLeft], WBFL::Units::Measure::KSI), 0.353, 0.001));
+            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+impact][+wind][+Corner::BottomRight], WBFL::Units::Measure::KSI), -3.412, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], 1.470, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[+impact][+wind], 1.470, 0.001));
       }
    }
    stabilityProblem.SetAppurtenanceLoading(0.0, 0.0); // remove eccentric load
@@ -169,16 +169,16 @@ bool UnitTest::PCILiftingExamples(WBFL::Debug::Log& rlog)
          WindDirection wind = (WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind][sectionResult.MinFScrCorner[impact][wind]],impact == ImpactDown ? 1.708 : 1.844,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[+impact][+wind][+sectionResult.MinFScrCorner[+impact][+wind]],impact == ImpactDirection::ImpactDown ? 1.708 : 1.844,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[impact][wind],impact == ImpactDown ? 1.593 : 1.839,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[+impact][+wind],impact == ImpactDirection::ImpactDown ? 1.593 : 1.839,0.001) );
       }
    }
 
    // Example 6.1.3
    stabilityProblem.SetImpact(0,0);
-   stabilityProblem.SetWindLoading(Pressure,WBFL::Units::ConvertToSysUnits(2.5,WBFL::Units::Measure::PSF));
+   stabilityProblem.SetWindLoading(WindType::Pressure,WBFL::Units::ConvertToSysUnits(2.5,WBFL::Units::Measure::PSF));
    result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
    {
@@ -188,12 +188,12 @@ bool UnitTest::PCILiftingExamples(WBFL::Debug::Log& rlog)
          WindDirection wind = (WindDirection)j;
          for( const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopLeft],  wind == Left ? 2.541 : 1.578, 0.001));
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopRight], Float64_Max, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[+impact][+wind][+Corner::TopLeft],  wind == WindDirection::Left ? 2.541 : 1.578, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[+impact][+wind][+Corner::TopRight], Float64_Max, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == Left ? 2.241 : 1.658, 0.001));
-         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == Left ? 2.541 : 1.658, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[+impact][+wind], wind == WindDirection::Left ? 2.241 : 1.658, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[+impact][+wind], wind == WindDirection::Left ? 2.541 : 1.658, 0.001));
       }
    }
 
@@ -208,12 +208,12 @@ bool UnitTest::PCILiftingExamples(WBFL::Debug::Log& rlog)
          WindDirection wind = (WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopLeft], wind == Left ? 2.398 : 1.628, 0.001));
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopRight], Float64_Max, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[+impact][+wind][+Corner::TopLeft], wind == WindDirection::Left ? 2.398 : 1.628, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[+impact][+wind][+Corner::TopRight], Float64_Max, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], wind == Left ? 2.033 : 1.568, 0.001));
-         TRY_TESTME(::IsEqual(result.AdjFsFailure[impact][wind], wind == Left ? 2.398 : 1.628, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[+impact][+wind], wind == WindDirection::Left ? 2.033 : 1.568, 0.001));
+         TRY_TESTME(::IsEqual(result.AdjFsFailure[+impact][+wind], wind == WindDirection::Left ? 2.398 : 1.628, 0.001));
       }
    }
 
@@ -266,7 +266,7 @@ bool UnitTest::PCIHaulingExamples(WBFL::Debug::Log& rlog)
    stabilityProblem.SetYRollAxis(WBFL::Units::ConvertToSysUnits(-48.0,WBFL::Units::Measure::Inch) - Hg); // location of roll axes below top of girder);
 
    stabilityProblem.SetImpact( 0.0, 0.0 );
-   stabilityProblem.SetImpactUsage(Both);
+   stabilityProblem.SetImpactUsage(HaulingImpact::Both);
 
    stabilityProblem.SetRotationalStiffness(WBFL::Units::ConvertToSysUnits(40500., WBFL::Units::Measure::KipInchPerRadian));
    stabilityProblem.SetSupportSlope(0.06);
@@ -286,14 +286,14 @@ bool UnitTest::PCIHaulingExamples(WBFL::Debug::Log& rlog)
          WindDirection wind = (WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[Superelevation][impact][wind][TopLeft],1.428,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[+HaulingSlope::Superelevation][+impact][+wind][+Corner::TopLeft],1.428,0.001) );
 
-            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][TopLeft    ],WBFL::Units::Measure::KSI), 0.466,0.001) );
-            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][BottomRight],WBFL::Units::Measure::KSI),-3.486,0.001) );
+            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+HaulingSlope::Superelevation][+impact][+wind][+Corner::TopLeft    ],WBFL::Units::Measure::KSI), 0.466,0.001) );
+            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+HaulingSlope::Superelevation][+impact][+wind][+Corner::BottomRight],WBFL::Units::Measure::KSI),-3.486,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[Superelevation][impact][wind],2.825,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[Superelevation][impact][wind],1.994,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[+HaulingSlope::Superelevation][+impact][+wind],2.825,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[+HaulingSlope::Superelevation][+impact][+wind],1.994,0.001) );
       }
    }
 
@@ -309,14 +309,14 @@ bool UnitTest::PCIHaulingExamples(WBFL::Debug::Log& rlog)
          WindDirection wind = (WindDirection)j;
          for (const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME(::IsEqual(sectionResult.FScr[Superelevation][impact][wind][TopLeft], 1.276, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[+HaulingSlope::Superelevation][+impact][+wind][+Corner::TopLeft], 1.276, 0.001));
 
-            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][TopLeft], WBFL::Units::Measure::KSI), 0.501, 0.001));
-            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][BottomRight], WBFL::Units::Measure::KSI), -3.482, 0.001));
+            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+HaulingSlope::Superelevation][+impact][+wind][+Corner::TopLeft], WBFL::Units::Measure::KSI), 0.501, 0.001));
+            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+HaulingSlope::Superelevation][+impact][+wind][+Corner::BottomRight], WBFL::Units::Measure::KSI), -3.482, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[Superelevation][impact][wind], 2.596, 0.001));
-         TRY_TESTME(::IsEqual(result.FsRollover[Superelevation][impact][wind], 1.845, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[+HaulingSlope::Superelevation][+impact][+wind], 2.596, 0.001));
+         TRY_TESTME(::IsEqual(result.FsRollover[+HaulingSlope::Superelevation][+impact][+wind], 1.845, 0.001));
       }
    }
    stabilityProblem.SetAppurtenanceLoading(0.0, 0.0); // remove eccentric load
@@ -324,7 +324,7 @@ bool UnitTest::PCIHaulingExamples(WBFL::Debug::Log& rlog)
    // Example 6.2.2
    stabilityProblem.SetTurningRadius(WBFL::Units::ConvertToSysUnits(120,WBFL::Units::Measure::Feet));
    stabilityProblem.SetVelocity(WBFL::Units::ConvertToSysUnits(10.,WBFL::Units::Measure::Mile)/WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Hour));
-   stabilityProblem.SetCentrifugalForceType(Adverse);
+   stabilityProblem.SetCentrifugalForceType(CFType::Adverse);
    stabilityProblem.SetSupportSlope( 0.02 );
    stabilityProblem.SetSuperelevation( 0.02 );
    result = engineer.AnalyzeHauling(&girder,&stabilityProblem);
@@ -336,14 +336,14 @@ bool UnitTest::PCIHaulingExamples(WBFL::Debug::Log& rlog)
          WindDirection wind = (WindDirection)j;
          for(const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME( ::IsEqual(sectionResult.FScr[Superelevation][impact][wind][TopLeft],0.970,0.001) );
+            TRY_TESTME( ::IsEqual(sectionResult.FScr[+HaulingSlope::Superelevation][+impact][+wind][+Corner::TopLeft],0.970,0.001) );
 
-            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][TopLeft    ],WBFL::Units::Measure::KSI), 0.647,0.001) );
-            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[Superelevation][impact][wind][BottomRight],WBFL::Units::Measure::KSI),-3.598,0.001) );
+            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+HaulingSlope::Superelevation][+impact][+wind][+Corner::TopLeft    ],WBFL::Units::Measure::KSI), 0.647,0.001) );
+            TRY_TESTME( ::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+HaulingSlope::Superelevation][+impact][+wind][+Corner::BottomRight],WBFL::Units::Measure::KSI),-3.598,0.001) );
          }
 
-         TRY_TESTME( ::IsEqual(result.FsFailure[Superelevation][impact][wind],2.787,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[Superelevation][impact][wind],1.835,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[+HaulingSlope::Superelevation][+impact][+wind],2.787,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[+HaulingSlope::Superelevation][+impact][+wind],1.835,0.001) );
       }
    }
    TESTME_EPILOG("PCIHaulingExamples");
@@ -414,14 +414,14 @@ bool UnitTest::OneEndSeated(WBFL::Debug::Log& rlog)
          WindDirection wind = (WindDirection)j;
          for (const auto& sectionResult : result.vSectionResults)
          {
-            TRY_TESTME(::IsEqual(sectionResult.FScr[impact][wind][TopLeft], 3.010, 0.001));
+            TRY_TESTME(::IsEqual(sectionResult.FScr[+impact][+wind][+Corner::TopLeft], 3.010, 0.001));
 
-            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[impact][wind][TopLeft], WBFL::Units::Measure::KSI), 0.0095, 0.001));
-            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[impact][wind][BottomRight], WBFL::Units::Measure::KSI), -3.203, 0.001));
+            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+impact][+wind][+Corner::TopLeft], WBFL::Units::Measure::KSI), 0.0095, 0.001));
+            TRY_TESTME(::IsEqual(WBFL::Units::ConvertFromSysUnits(sectionResult.f[+impact][+wind][+Corner::BottomRight], WBFL::Units::Measure::KSI), -3.203, 0.001));
          }
 
-         TRY_TESTME(::IsEqual(result.FsFailure[impact][wind], 3.637, 0.001));
-         TRY_TESTME(::IsEqual(result.FsRollover[impact][wind], 2.975, 0.001));
+         TRY_TESTME(::IsEqual(result.FsFailure[+impact][+wind], 3.637, 0.001));
+         TRY_TESTME(::IsEqual(result.FsRollover[+impact][+wind], 2.975, 0.001));
       }
    }
 

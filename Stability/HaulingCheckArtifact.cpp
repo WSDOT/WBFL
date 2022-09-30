@@ -78,10 +78,10 @@ void HaulingCheckArtifact::GetControllingTensionCase(HaulingSlope slope, const H
          Float64 cd;
          Corner corner;
          corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Positive,
-            fAllow, sectionResult.f[slope][impact][wind][TopLeft],
-            fAllow, sectionResult.f[slope][impact][wind][TopRight],
-            fAllow, sectionResult.f[slope][impact][wind][BottomLeft],
-            fAllow, sectionResult.f[slope][impact][wind][BottomRight], &cd);
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::TopLeft],
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::TopRight],
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomLeft],
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomRight], &cd);
 
          if ((i == 0 && w == 0) || // this is the first time so this cd wins
             (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -98,7 +98,7 @@ void HaulingCheckArtifact::GetControllingTensionCase(HaulingSlope slope, const H
    }
 
    *pfAllow = Fallow;
-   *pbPassed = (::IsLE(sectionResult.f[slope][*pImpact][*pWind][*pCorner], *pfAllow));
+   *pbPassed = (::IsLE(sectionResult.f[+slope][+(*pImpact)][+(*pWind)][+(*pCorner)], *pfAllow));
 
    *pCD = CD;
 }
@@ -114,10 +114,10 @@ void HaulingCheckArtifact::GetControllingGlobalCompressionCase(HaulingSlope slop
       Float64 cd;
       Corner corner;
       corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
-         fAllow, sectionResult.fDirect[slope][impact][TopLeft],
-         fAllow, sectionResult.fDirect[slope][impact][TopRight],
-         fAllow, sectionResult.fDirect[slope][impact][BottomLeft],
-         fAllow, sectionResult.fDirect[slope][impact][BottomRight], &cd);
+         fAllow, sectionResult.fDirect[+slope][+impact][+Corner::TopLeft],
+         fAllow, sectionResult.fDirect[+slope][+impact][+Corner::TopRight],
+         fAllow, sectionResult.fDirect[+slope][+impact][+Corner::BottomLeft],
+         fAllow, sectionResult.fDirect[+slope][+impact][+Corner::BottomRight], &cd);
 
       if ((i == 0) || // this is the first time so this cd wins
          (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -131,7 +131,7 @@ void HaulingCheckArtifact::GetControllingGlobalCompressionCase(HaulingSlope slop
    }
 
    *pfAllow = fAllow;
-   *pbPassed = (::IsLT(*pfAllow, sectionResult.fDirect[slope][*pImpact][*pCorner]));
+   *pbPassed = (::IsLT(*pfAllow, sectionResult.fDirect[+slope][+(*pImpact)][+(*pCorner)]));
 
    *pCD = CD;
 }
@@ -149,10 +149,10 @@ void HaulingCheckArtifact::GetControllingPeakCompressionCase(HaulingSlope slope,
          Float64 cd;
          Corner corner;
          corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
-            fAllow, sectionResult.f[slope][impact][wind][TopLeft],
-            fAllow, sectionResult.f[slope][impact][wind][TopRight],
-            fAllow, sectionResult.f[slope][impact][wind][BottomLeft],
-            fAllow, sectionResult.f[slope][impact][wind][BottomRight], &cd);
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::TopLeft],
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::TopRight],
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomLeft],
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomRight], &cd);
 
          if ((i == 0 && w == 0) || // this is the first time so this cd wins
             (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -168,15 +168,15 @@ void HaulingCheckArtifact::GetControllingPeakCompressionCase(HaulingSlope slope,
    }
 
    *pfAllow = fAllow;
-   *pbPassed = (::IsLT(*pfAllow, sectionResult.f[slope][*pImpact][*pWind][*pCorner]));
+   *pbPassed = (::IsLT(*pfAllow, sectionResult.f[+slope][+(*pImpact)][+(*pWind)][+(*pCorner)]));
 
    *pCD = CD;
 }
 
 bool HaulingCheckArtifact::Passed(bool bIgnoreConfigurationLimits) const
 {
-   bool bPassed = (Passed(CrownSlope) && Passed(Superelevation) ? true : false);
-   bPassed = bPassed && PassedDirectStressCheck(CrownSlope) && PassedDirectStressCheck(Superelevation);
+   bool bPassed = (Passed(HaulingSlope::CrownSlope) && Passed(HaulingSlope::Superelevation) ? true : false);
+   bPassed = bPassed && PassedDirectStressCheck(HaulingSlope::CrownSlope) && PassedDirectStressCheck(HaulingSlope::Superelevation);
    if (!bIgnoreConfigurationLimits)
    {
       bPassed = bPassed && PassedClearSpan() && PassedLeadingOverhang() && PassedMaxWeight();
@@ -192,7 +192,7 @@ bool HaulingCheckArtifact::Passed(HaulingSlope slope) const
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
-         if (!m_Results.bRotationalStability[slope][impact][wind] || !m_Results.bRolloverStability[slope][impact][wind])
+         if (!m_Results.bRotationalStability[+slope][+impact][+wind] || !m_Results.bRolloverStability[+slope][+impact][+wind])
          {
             return false;
          }
@@ -203,17 +203,17 @@ bool HaulingCheckArtifact::Passed(HaulingSlope slope) const
 
 bool HaulingCheckArtifact::PassedCrackingCheck(HaulingSlope slope) const
 {
-   return m_Criteria.MinFScr < m_Results.MinFScr[slope];
+   return m_Criteria.MinFScr < m_Results.MinFScr[+slope];
 }
 
 bool HaulingCheckArtifact::PassedFailureCheck(HaulingSlope slope) const
 {
-   return m_Criteria.MinFSf < m_Results.MinFsFailure[slope];
+   return m_Criteria.MinFSf < m_Results.MinFsFailure[+slope];
 }
 
 bool HaulingCheckArtifact::PassedRolloverCheck(HaulingSlope slope) const
 {
-   return m_Criteria.MinFSf < m_Results.MinFsRollover[slope];
+   return m_Criteria.MinFSf < m_Results.MinFsRollover[+slope];
 }
 
 bool HaulingCheckArtifact::PassedStressCheck(HaulingSlope slope) const
@@ -228,7 +228,7 @@ bool HaulingCheckArtifact::PassedDirectStressCheck(HaulingSlope slope) const
 
 bool HaulingCheckArtifact::PassedDirectCompressionCheck(HaulingSlope slope) const
 {
-   return (::IsLE(m_Criteria.AllowableCompression_GlobalStress, m_Results.MinDirectStress[slope]) ? true : false);
+   return (::IsLE(m_Criteria.AllowableCompression_GlobalStress, m_Results.MinDirectStress[+slope]) ? true : false);
 }
 
 bool HaulingCheckArtifact::PassedDirectTensionCheck(HaulingSlope slope) const
@@ -244,7 +244,7 @@ bool HaulingCheckArtifact::PassedDirectTensionCheck(HaulingSlope slope) const
          for (IndexType c = 0; c < 4; c++)
          {
             Corner corner = (Corner)c;
-            Float64 f = sectionResult.fDirect[slope][impact][corner];
+            Float64 f = sectionResult.fDirect[+slope][+impact][+corner];
 
 #if defined REBAR_FOR_DIRECT_TENSION
             Float64 fAllow = GetAllowableTension(slope, sectionResult, impact);
@@ -272,7 +272,7 @@ bool HaulingCheckArtifact::PassedDirectTensionCheck(HaulingSlope slope) const
 
 bool HaulingCheckArtifact::PassedCompressionCheck(HaulingSlope slope) const
 {
-   return (::IsLE(m_Criteria.AllowableCompression_PeakStress, m_Results.MinStress[slope]) ? true : false);
+   return (::IsLE(m_Criteria.AllowableCompression_PeakStress, m_Results.MinStress[+slope]) ? true : false);
 }
 
 bool HaulingCheckArtifact::PassedTensionCheck(HaulingSlope slope) const
@@ -294,7 +294,7 @@ bool HaulingCheckArtifact::PassedTensionCheck(HaulingSlope slope) const
             for (IndexType w = 0; w < 2; w++)
             {
                WindDirection wind = (WindDirection)w;
-               Float64 f = sectionResult.f[slope][impact][wind][corner];
+               Float64 f = sectionResult.f[+slope][+impact][+wind][+corner];
                if (::IsLE(fAllow, f))
                {
                   return false;
@@ -337,11 +337,11 @@ bool HaulingCheckArtifact::PassedMaxWeight() const
 
 Float64 HaulingCheckArtifact::RequiredFcCompression(HaulingSlope slope) const
 {
-   Float64 minDirectStress = m_Results.MinDirectStress[slope];
+   Float64 minDirectStress = m_Results.MinDirectStress[+slope];
    Float64 global_coeff = m_Criteria.CompressionCoefficient_GlobalStress;
    Float64 fcReqd_Global = -minDirectStress / global_coeff;
 
-   Float64 minStress = m_Results.MinStress[slope];
+   Float64 minStress = m_Results.MinStress[+slope];
    Float64 peak_coeff = m_Criteria.CompressionCoefficient_PeakStress;
    Float64 fcReqd_Peak = -minStress / peak_coeff;
    return Max(fcReqd_Global, fcReqd_Peak);

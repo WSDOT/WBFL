@@ -79,26 +79,26 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
    pStabilityProblem->GetImpact(&impactUp,&impactDown);
    IndexType nImpactCases = 0;
    strImpact[nImpactCases] = _T("No impact");
-   impactDir[nImpactCases] = NoImpact;
+   impactDir[nImpactCases] = ImpactDirection::NoImpact;
    impactFactor[nImpactCases] = 1.0;
-   impactIndex[NoImpact] = nImpactCases;
+   impactIndex[+ImpactDirection::NoImpact] = nImpactCases;
 
    if (!IsZero(impactUp))
    {
       nImpactCases++;
       strImpact[nImpactCases] = _T("Impact Up");
-      impactDir[nImpactCases] = ImpactUp;
+      impactDir[nImpactCases] = ImpactDirection::ImpactUp;
       impactFactor[nImpactCases] = 1.0 - impactUp;
-      impactIndex[ImpactUp] = nImpactCases;
+      impactIndex[+ImpactDirection::ImpactUp] = nImpactCases;
    }
 
    if (!IsZero(impactDown))
    {
       nImpactCases++;
       strImpact[nImpactCases] = _T("Impact Down");
-      impactDir[nImpactCases] = ImpactDown;
+      impactDir[nImpactCases] = ImpactDirection::ImpactDown;
       impactFactor[nImpactCases] = 1.0 + impactDown;
-      impactIndex[ImpactDown] = nImpactCases;
+      impactIndex[+ImpactDirection::ImpactDown] = nImpactCases;
    }
 
    WindType windLoadType;
@@ -115,7 +115,7 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
    {
       if (IsZero(results.Wwind))
       {
-         if (!results.bIsStable[impactDir[impactCase]][Left])
+         if (!results.bIsStable[+impactDir[impactCase]][+WindDirection::Left])
          {
             bUnstable = true;
             if (0 < nImpactCases)
@@ -133,16 +133,16 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
          for (int w = 0; w < 2; w++)
          {
             WindDirection wind = (WindDirection)w;
-            if (!results.bIsStable[impactDir[impactCase]][wind])
+            if (!results.bIsStable[+impactDir[impactCase]][+wind])
             {
                bUnstable = true;
                if (0 < nImpactCases)
                {
-                  *pPara << color(Red) << _T("WARNING: Lifting instability for the ") << strImpact[impactCase] << _T(" case with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  *pPara << color(Red) << _T("WARNING: Lifting instability for the ") << strImpact[impactCase] << _T(" case with wind towards the ") << strWindDir[+wind] << _T(".") << color(Black) << rptNewLine;
                }
                else
                {
-                  *pPara << color(Red) << _T("WARNING: Lifting instability with wind towards the ") << strWindDir[wind] << _T(".") << color(Black) << rptNewLine;
+                  *pPara << color(Red) << _T("WARNING: Lifting instability with wind towards the ") << strWindDir[+wind] << _T(".") << color(Black) << rptNewLine;
                }
             }
          }
@@ -284,17 +284,17 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
       Float64 cd;
       pArtifact->GetControllingTensionCase(sectionResult,&impact,&wind,&corner,&fAllow,&bPassed,&cd);
 
-      Float64 f = sectionResult.f[impact][wind][corner];
+      Float64 f = sectionResult.f[+impact][+wind][+corner];
       (*pStressTable)(row,col++) << stress.SetValue(f);
-      (*pStressTable)(row,col++) << strCorner[corner];
+      (*pStressTable)(row,col++) << strCorner[+corner];
 
       if ( bLabelImpact )
       {
-         (*pStressTable)(row,col++) << strImpact[impactIndex[impact]];
+         (*pStressTable)(row,col++) << strImpact[impactIndex[+impact]];
       }
       if ( bLabelWind )
       {
-         (*pStressTable)(row,col++) << strWindDir[wind];
+         (*pStressTable)(row,col++) << strWindDir[+wind];
       }
 
       if ( f < 0 )
@@ -325,14 +325,14 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
          if (i == 0)
          {
             pArtifact->GetControllingPeakCompressionCase(sectionResult, &impact, &wind, &corner, &fAllow, &bPassed, &cd);
-            f = sectionResult.f[impact][wind][corner];
-            strLocation = strCorner[corner];
+            f = sectionResult.f[+impact][+wind][+corner];
+            strLocation = strCorner[+corner];
          }
          else
          {
             pArtifact->GetControllingGlobalCompressionCase(sectionResult, &impact, &corner, &fAllow, &bPassed, &cd);
-            f = sectionResult.fDirect[impact][corner];
-            strLocation = strFace[GetFace(corner)];
+            f = sectionResult.fDirect[+impact][+corner];
+            strLocation = strFace[+GetFace(corner)];
          }
 
          if (i == 1) (*pStressTable)(row, col) << rptNewLine;
@@ -344,13 +344,13 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
          if (bLabelImpact)
          {
             if (i == 1) (*pStressTable)(row, col) << rptNewLine;
-            (*pStressTable)(row, col++) << strImpact[impactIndex[impact]];
+            (*pStressTable)(row, col++) << strImpact[impactIndex[+impact]];
          }
 
          if (bLabelWind)
          {
             if (i == 1) (*pStressTable)(row, col) << rptNewLine;
-            (*pStressTable)(row, col++) << strWindDir[wind];
+            (*pStressTable)(row, col++) << strWindDir[+wind];
          }
 
          if (i == 1) (*pStressTable)(row, col) << rptNewLine;
@@ -366,15 +366,15 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
 
       // FS cracking
       Float64 FScr = sectionResult.FScrMin;
-      (*pStressTable)(row, col++) << strCorner[sectionResult.FScrMinCorner];
+      (*pStressTable)(row, col++) << strCorner[+sectionResult.FScrMinCorner];
 
       if (bLabelImpact)
       {
-         (*pStressTable)(row, col++) << strImpact[impactIndex[sectionResult.FScrMinImpactDirection]];
+         (*pStressTable)(row, col++) << strImpact[impactIndex[+sectionResult.FScrMinImpactDirection]];
       }
       if (bLabelWind)
       {
-         (*pStressTable)(row, col++) << strWindDir[sectionResult.FScrMinWindDirection];
+         (*pStressTable)(row, col++) << strWindDir[+sectionResult.FScrMinWindDirection];
       }
 
       if (FScr == Float64_Max)
@@ -409,11 +409,11 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
    (*pTable)(row,1) << scalar.SetValue(results.MinAdjFsFailure);
    if (bLabelImpact)
    {
-      (*pTable)(row, 1) << rptNewLine << strImpact[impactIndex[results.FSfImpactDirection]];
+      (*pTable)(row, 1) << rptNewLine << strImpact[impactIndex[+results.FSfImpactDirection]];
    }
    if (bLabelWind)
    {
-      (*pTable)(row, 1) << rptNewLine << _T("Wind ") << strWindDir[results.FSfWindDirection];
+      (*pTable)(row, 1) << rptNewLine << _T("Wind ") << strWindDir[+results.FSfWindDirection];
    }
    row++;
 
@@ -453,26 +453,26 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    pStabilityProblem->GetImpact(&impactUp, &impactDown);
    IndexType nImpactCases = 0;
    strImpact[nImpactCases] = _T("No impact");
-   impactDir[nImpactCases] = NoImpact;
+   impactDir[nImpactCases] = ImpactDirection::NoImpact;
    impactFactor[nImpactCases] = 1.0;
-   impactIndex[NoImpact] = nImpactCases;
+   impactIndex[+ImpactDirection::NoImpact] = nImpactCases;
 
    if (!IsZero(impactUp))
    {
       nImpactCases++;
       strImpact[nImpactCases] = _T("Impact Up");
-      impactDir[nImpactCases] = ImpactUp;
+      impactDir[nImpactCases] = ImpactDirection::ImpactUp;
       impactFactor[nImpactCases] = 1.0 - impactUp;
-      impactIndex[ImpactUp] = nImpactCases;
+      impactIndex[+ImpactDirection::ImpactUp] = nImpactCases;
    }
 
    if (!IsZero(impactDown))
    {
       nImpactCases++;
       strImpact[nImpactCases] = _T("Impact Down");
-      impactDir[nImpactCases] = ImpactDown;
+      impactDir[nImpactCases] = ImpactDirection::ImpactDown;
       impactFactor[nImpactCases] = 1.0 + impactDown;
-      impactIndex[ImpactDown] = nImpactCases;
+      impactIndex[+ImpactDirection::ImpactDown] = nImpactCases;
    }
 
    WindType windLoadType;
@@ -494,7 +494,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    bool bSimpleFormatTest1 = /*IsZero(pStabilityProblem->GetFpeLateralEccentricity()) &&*/ (!pStabilityProblem->IncludeLateralRollAxisOffset() || (pStabilityProblem->IncludeLateralRollAxisOffset() && IsZero(pStabilityProblem->GetLateralCamber())));
 
    Float64 Ag, Ixx, Iyy, Ixy, Xcg, Ycg, Hg, Wtop, Wbot;
-   pGirder->GetSectionProperties(0, Start, &Ag, &Ixx, &Iyy, &Ixy, &Xcg, &Ycg, &Hg, &Wtop, &Wbot);
+   pGirder->GetSectionProperties(0, Section::Start, &Ag, &Ixx, &Iyy, &Ixy, &Xcg, &Ycg, &Hg, &Wtop, &Wbot);
    if (bSimpleFormatTest1)
    {
       // we might be able to use simple formatting... check the section properties
@@ -595,9 +595,9 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    if (nSections == 1)
    {
       Float64 Ag1, Ixx1, Iyy1, Ixy1, Xcg1, Ycg1, Hg1, Wtop1, Wbot1;
-      pGirder->GetSectionProperties(0, Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
+      pGirder->GetSectionProperties(0, Section::Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
       Float64 Ag2, Ixx2, Iyy2, Ixy2, Xcg2, Ycg2, Hg2, Wtop2, Wbot2;
-      pGirder->GetSectionProperties(0, End, &Ag2, &Ixx2, &Iyy2, &Ixy2, &Xcg2, &Ycg2, &Hg2, &Wtop2, &Wbot2);
+      pGirder->GetSectionProperties(0, Section::End, &Ag2, &Ixx2, &Iyy2, &Ixy2, &Xcg2, &Ycg2, &Hg2, &Wtop2, &Wbot2);
       if (IsEqual(Ag1, Ag2) && IsEqual(Ixx1, Ixx2) && IsEqual(Iyy1, Iyy2) && IsEqual(Ixy1, Ixy2) && IsEqual(Xcg1, Xcg2) && IsEqual(Ycg1, Ycg2) && IsEqual(Hg1, Hg2) && IsEqual(Wtop1, Wtop2) && IsEqual(Wbot1, Wbot2))
       {
          bPrismaticBeam = true;
@@ -634,7 +634,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             *pChapter << pPara;
 
             Point pntTL, pntTR, pntBL, pntBR;
-            pGirder->GetStressPoints(0, Start, &pntTL, &pntTR, &pntBL, &pntBR);
+            pGirder->GetStressPoints(0, Section::Start, &pntTL, &pntTR, &pntBL, &pntBR);
             *pPara << _T("Top Left") << rptNewLine;
             *pPara << _T("X = ") << shortLength.SetValue(pntTL.X()) << rptNewLine;
             *pPara << _T("Y = ") << shortLength.SetValue(pntTL.Y()) << rptNewLine << rptNewLine;
@@ -775,7 +775,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          (*pSectPropTable)(row, col++) << longLength.SetValue(L);
 
          Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
-         pGirder->GetSectionProperties(sectIdx, Start, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+         pGirder->GetSectionProperties(sectIdx, Section::Start, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
          (*pSectPropTable)(row, col++) << area.SetValue(Ag);
          (*pSectPropTable)(row, col++) << inertia.SetValue(Ixx);
          (*pSectPropTable)(row, col++) << inertia.SetValue(Iyy);
@@ -789,7 +789,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          (*pSectPropTable)(row, col++) << shortLength.SetValue(Wtop);
          (*pSectPropTable)(row, col++) << shortLength.SetValue(Wbot);
 
-         pGirder->GetSectionProperties(sectIdx, End, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+         pGirder->GetSectionProperties(sectIdx, Section::End, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
          (*pSectPropTable)(row, col++) << area.SetValue(Ag);
          (*pSectPropTable)(row, col++) << inertia.SetValue(Ixx);
          (*pSectPropTable)(row, col++) << inertia.SetValue(Iyy);
@@ -810,7 +810,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             (*pStressPointTable)(row, col++) << longLength.SetValue(L);
 
             Point pntTL, pntTR, pntBL, pntBR;
-            pGirder->GetStressPoints(sectIdx, Start, &pntTL, &pntTR, &pntBL, &pntBR);
+            pGirder->GetStressPoints(sectIdx, Section::Start, &pntTL, &pntTR, &pntBL, &pntBR);
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.X());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.Y());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTR.X());
@@ -820,7 +820,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBR.X());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBR.Y());
 
-            pGirder->GetStressPoints(sectIdx, End, &pntTL, &pntTR, &pntBL, &pntBR);
+            pGirder->GetStressPoints(sectIdx, Section::End, &pntTL, &pntTR, &pntBL, &pntBR);
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.X());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.Y());
             (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTR.X());
@@ -864,7 +864,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       {
          *pPara << _T(", ");
       }
-      *pPara << Sub2(_T("m"),_T("e")) << _T(" = ") << scalar.SetValue(pResults->emag[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << Sub2(_T("m"),_T("e")) << _T(" = ") << scalar.SetValue(pResults->emag[+impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
 
    *pPara << rptNewLine;
@@ -899,7 +899,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          *pPara << _T(", ");
       }
 
-      *pPara << YR << _T(" = ") << shortLength.SetValue(pResults->Dra[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << YR << _T(" = ") << shortLength.SetValue(pResults->Dra[+impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
@@ -916,10 +916,10 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
       *pPara << _T("Lateral Camber, ") << Sub2(symbol(DELTA), _T("lc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetLateralCamber()) << rptNewLine;
 
-      if (pResults->XcgMethod == Exact)
+      if (pResults->XcgMethod == CalculationMethod::Exact)
       {
          Float64 Ag1, Ixx1, Iyy1, Ixy1, Xcg1, Ycg1, Hg1, Wtop1, Wbot1;
-         pGirder->GetSectionProperties(0, Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
+         pGirder->GetSectionProperties(0, Section::Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
          if (Wbot1 < Wtop1)
          {
             *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << _T("|") << Sub2(_T("X"), _T("left")) << _T(" - ") << Sub2(_T("W"), _T("top")) << _T("/2| = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
@@ -975,12 +975,12 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       {
          *pPara << _T(", ");
       }
-      *pPara << EI << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << EI << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[+impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
    *pPara << _T("Lateral Deflection of center of gravity due to total girder weight applied to weak axis, ") << ZO << rptNewLine;
-   if (pResults->ZoMethod == Exact)
+   if (pResults->ZoMethod == CalculationMethod::Exact)
    {
       if (bSimpleFormat)
       {
@@ -1030,7 +1030,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       {
          *pPara << _T(", ");
       }
-      *pPara << ZO << _T(" = ") << shortLength.SetValue(pResults->Zo[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << ZO << _T(" = ") << shortLength.SetValue(pResults->Zo[+impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
@@ -1040,7 +1040,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    *pPara << _T("Wind Load Parameters") << rptNewLine;
    pPara = new rptParagraph;
    *pChapter << pPara;
-   if (windLoadType == Speed)
+   if (windLoadType == WindType::Speed)
    {
       *pPara << _T("Wind Speed, V = ") << velocity.SetValue(windLoad) << rptNewLine;
       *pPara << _T("Pressure exposure and elevation coefficient, ") << Sub2(_T("K"), _T("z")) << _T(" = 1.0 for Service I (LRFD 3.8.1.2)") << rptNewLine;
@@ -1062,7 +1062,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       {
          *pPara << _T(", ");
       }
-      *pPara << Y_WIND << _T(" = ") << shortLength.SetValue(pResults->Ywind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << Y_WIND << _T(" = ") << shortLength.SetValue(pResults->Ywind[+impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
@@ -1074,7 +1074,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       {
          *pPara << _T(", ");
       }
-      *pPara << Z_WIND << _T(" = ") << shortLength.SetValue(pResults->ZoWind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << Z_WIND << _T(" = ") << shortLength.SetValue(pResults->ZoWind[+impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
@@ -1086,7 +1086,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       {
          *pPara << _T(", ");
       }
-      *pPara << E_WIND << _T(" = ") << shortLength.SetValue(pResults->EccWind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << E_WIND << _T(" = ") << shortLength.SetValue(pResults->EccWind[+impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
@@ -1179,17 +1179,17 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fps[TopLeft], sectionResult.fps[TopRight], 0.001));
-         ATLASSERT(IsEqual(sectionResult.fps[BottomLeft], sectionResult.fps[BottomRight], 0.001));
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[TopLeft]);
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[BottomLeft]);
+         ATLASSERT(IsEqual(sectionResult.fps[+Corner::TopLeft], sectionResult.fps[+Corner::TopRight], 0.001));
+         ATLASSERT(IsEqual(sectionResult.fps[+Corner::BottomLeft], sectionResult.fps[+Corner::BottomRight], 0.001));
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::TopLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::BottomLeft]);
       }
       else
       {
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[TopLeft]);
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[TopRight]);
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[BottomLeft]);
-         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[BottomRight]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::TopLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::TopRight]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::BottomLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::BottomRight]);
       }
 
       row++;
@@ -1296,39 +1296,39 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fg[TopLeft], sectionResult.fg[TopRight]));
-         ATLASSERT(IsEqual(sectionResult.fg[BottomLeft], sectionResult.fg[BottomRight]));
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[TopLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[BottomLeft]);
+         ATLASSERT(IsEqual(sectionResult.fg[+Corner::TopLeft],    sectionResult.fg[+Corner::TopRight]));
+         ATLASSERT(IsEqual(sectionResult.fg[+Corner::BottomLeft], sectionResult.fg[+Corner::BottomRight]));
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::TopLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::BottomLeft]);
       }
       else
       {
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[TopLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[TopRight]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[BottomLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[BottomRight]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::TopLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::TopRight]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::BottomLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::BottomRight]);
       }
 
       (*pStressTable)(row, col++) << moment.SetValue(sectionResult.Mw);
 
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[TopLeft]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[TopRight]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[BottomLeft]);
-      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[BottomRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[+Corner::TopLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[+Corner::TopRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[+Corner::BottomLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[+Corner::BottomRight]);
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fcable[TopLeft], sectionResult.fcable[TopRight]));
-         ATLASSERT(IsEqual(sectionResult.fcable[BottomLeft], sectionResult.fcable[BottomRight]));
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[TopLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[BottomLeft]);
+         ATLASSERT(IsEqual(sectionResult.fcable[+Corner::TopLeft],    sectionResult.fcable[+Corner::TopRight]));
+         ATLASSERT(IsEqual(sectionResult.fcable[+Corner::BottomLeft], sectionResult.fcable[+Corner::BottomRight]));
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[+Corner::TopLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[+Corner::BottomLeft]);
       }
       else
       {
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[TopLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[TopRight]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[BottomLeft]);
-         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[BottomRight]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[+Corner::TopLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[+Corner::TopRight]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[+Corner::BottomLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[+Corner::BottomRight]);
       }
 
       row++;
@@ -1398,21 +1398,21 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          else if ( !bLabelImpact && bLabelWind )
          {
             // only one impact case and wind cases
-            strTitle.Format(_T("Wind towards the %s (%s)"),strWindDir[wind],strWindDirEx[wind]);
+            strTitle.Format(_T("Wind towards the %s (%s)"),strWindDir[+wind],strWindDirEx[+wind]);
          }
          else if ( bLabelImpact && bLabelWind )
          {
             // more than one impact case and wind cases
-            strTitle.Format(_T("%s, Wind towards the %s (%s)"),strImpact[impactCase],strWindDir[wind], strWindDirEx[wind]);
+            strTitle.Format(_T("%s, Wind towards the %s (%s)"),strImpact[impactCase],strWindDir[+wind], strWindDirEx[+wind]);
          }
          else
          {
             strTitle = _T("");
          }
 
-         Float64 windSign = (wind == Left ? 1 : -1);
-         std::_tstring strWindSign(wind == Left ? _T("+") : _T("-"));
-         std::_tstring strOppWindSign(wind == Left ? _T("-") : _T("+"));
+         Float64 windSign = (wind == WindDirection::Left ? 1 : -1);
+         std::_tstring strWindSign(wind == WindDirection::Left ? _T("+") : _T("-"));
+         std::_tstring strOppWindSign(wind == WindDirection::Left ? _T("-") : _T("+"));
 
          if (strTitle != _T(""))
          {
@@ -1422,7 +1422,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             *pPara << strTitle << rptNewLine;
          }
 
-         if (!pResults->bIsStable[impactDir[impactCase]][wind])
+         if (!pResults->bIsStable[+impactDir[impactCase]][+wind])
          {
             pPara = new rptParagraph;
             *pChapter << pPara;
@@ -1455,9 +1455,9 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          }
 
          *pPara << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(")/(") << YR << _T(" - ") << ZO << _T(") = ");
-         *pPara << tiltAngle.SetValue(pResults->ThetaEq[impactDir[impactCase]][wind]) << rptNewLine;
-         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
-         if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
+         *pPara << tiltAngle.SetValue(pResults->ThetaEq[+impactDir[impactCase]][+wind]) << rptNewLine;
+         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[+pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[+pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
+         if (pResults->ThetaEq[+impactDir[impactCase]][+wind] < 0)
          {
             *pPara << _T("NOTE: ") << E_WIND << _T(" > ") << EI << _T(" + ") << Z_WIND << _T(", Wind loading is sufficient to reverse the direction of girder tilt.") << rptNewLine;
          }
@@ -1546,8 +1546,8 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          (*pPara) << M_CR << _T(" = Cracking Moment") << rptNewLine;
          if (bSimpleFormat)
          {
-            std::_tstring strLeftSign(pResults->ThetaEq[impactDir[impactCase]][wind] < 0 ? _T("") : _T("-"));
-            std::_tstring strRightSign(pResults->ThetaEq[impactDir[impactCase]][wind] < 0 ? _T("-") : _T(""));
+            std::_tstring strLeftSign(pResults->ThetaEq[+impactDir[impactCase]][+wind] < 0 ? _T("") : _T("-"));
+            std::_tstring strRightSign(pResults->ThetaEq[+impactDir[impactCase]][+wind] < 0 ? _T("-") : _T(""));
             (*pPara) << _T("Top Left ") << M_CR << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" - (IM)") << RPT_STRESS(_T("h")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("top")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
             (*pPara) << _T("Top Right ") << M_CR << _T(" = ") << strRightSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" - (IM)") << RPT_STRESS(_T("h")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("top")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
             (*pPara) << _T("Bottom Left ") << M_CR << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" - (IM)") << RPT_STRESS(_T("h")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("bot")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
@@ -1564,10 +1564,10 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          (*pPara) << THETA_CRACK << _T(" = tilt angle at cracking") << rptNewLine;
          (*pPara) << THETA_CRACK << _T(" = ") << M_CR << _T("/(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << rptNewLine;
          (*pPara) << _T("-0.4 radian") << _T(" ") << symbol(LTE) << _T(" ") << THETA_CRACK << _T(" ") << symbol(LTE) << _T(" ") << _T("0.4 radian") << rptNewLine;
-         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
+         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[+pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[+pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
 
          (*pPara) << FS_CR << _T(" = Factor of Safety Against Cracking") << rptNewLine;
-         if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
+         if (pResults->ThetaEq[+impactDir[impactCase]][+wind] < 0)
          {
             (*pPara) << FS_CR << _T(" = (") << EI << _T(" + ") << Z_WIND << _T(" + (") << ZO << _T(" - ") << YR << _T(")") << THETA_CRACK <<_T(")/") << E_WIND << rptNewLine;
          }
@@ -1747,23 +1747,23 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             (*pTotalStressTable)(srow,col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength,offset,false));
 
             (*pTotalStressTable)(srow,col++) << scalar.SetValue(sectionResult.OffsetFactor);
-            (*pTotalStressTable)(srow,col++) << shortLength.SetValue(sectionResult.eh[impactDir[impactCase]][wind]);
-            (*pTotalStressTable)(srow,col++) << moment.SetValue(sectionResult.Mh[impactDir[impactCase]][wind]);
+            (*pTotalStressTable)(srow,col++) << shortLength.SetValue(sectionResult.eh[+impactDir[impactCase]][+wind]);
+            (*pTotalStressTable)(srow,col++) << moment.SetValue(sectionResult.Mh[+impactDir[impactCase]][+wind]);
 
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fDirect[impactDir[impactCase]][TopLeft]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fDirect[impactDir[impactCase]][TopRight]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fDirect[impactDir[impactCase]][BottomLeft]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fDirect[impactDir[impactCase]][BottomRight]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fDirect[+impactDir[impactCase]][+Corner::TopLeft]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fDirect[+impactDir[impactCase]][+Corner::TopRight]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fDirect[+impactDir[impactCase]][+Corner::BottomLeft]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fDirect[+impactDir[impactCase]][+Corner::BottomRight]);
 
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fTilt[impactDir[impactCase]][wind][TopLeft]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fTilt[impactDir[impactCase]][wind][TopRight]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fTilt[impactDir[impactCase]][wind][BottomLeft]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fTilt[impactDir[impactCase]][wind][BottomRight]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fTilt[+impactDir[impactCase]][+wind][+Corner::TopLeft]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fTilt[+impactDir[impactCase]][+wind][+Corner::TopRight]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fTilt[+impactDir[impactCase]][+wind][+Corner::BottomLeft]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.fTilt[+impactDir[impactCase]][+wind][+Corner::BottomRight]);
 
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.f[impactDir[impactCase]][wind][TopLeft]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.f[impactDir[impactCase]][wind][TopRight]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.f[impactDir[impactCase]][wind][BottomLeft]);
-            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.f[impactDir[impactCase]][wind][BottomRight]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.f[+impactDir[impactCase]][+wind][+Corner::TopLeft]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.f[+impactDir[impactCase]][+wind][+Corner::TopRight]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.f[+impactDir[impactCase]][+wind][+Corner::BottomLeft]);
+            (*pTotalStressTable)(srow,col++) << stress.SetValue(sectionResult.f[+impactDir[impactCase]][+wind][+Corner::BottomRight]);
 
             srow++;
 
@@ -1773,15 +1773,15 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             for (int c = 0; c < 4; c++)
             {
                Corner corner = (Corner)c;
-               (*pFullCrackingTable)(fcrow, col++) << moment.SetValue(sectionResult.Mcr[impactDir[impactCase]][wind][corner]);
-               (*pFullCrackingTable)(fcrow, col++) << crackAngle.SetValue(sectionResult.ThetaCrack[impactDir[impactCase]][wind][corner]);
-               if (sectionResult.FScr[impactDir[impactCase]][wind][corner] == Float64_Max)
+               (*pFullCrackingTable)(fcrow, col++) << moment.SetValue(sectionResult.Mcr[+impactDir[impactCase]][+wind][+corner]);
+               (*pFullCrackingTable)(fcrow, col++) << crackAngle.SetValue(sectionResult.ThetaCrack[+impactDir[impactCase]][+wind][+corner]);
+               if (sectionResult.FScr[+impactDir[impactCase]][+wind][+corner] == Float64_Max)
                {
                   (*pFullCrackingTable)(fcrow, col++) << symbol(infinity);
                }
                else
                {
-                  (*pFullCrackingTable)(fcrow, col++) << scalar.SetValue(sectionResult.FScr[impactDir[impactCase]][wind][corner]);
+                  (*pFullCrackingTable)(fcrow, col++) << scalar.SetValue(sectionResult.FScr[+impactDir[impactCase]][+wind][+corner]);
                }
             }
 
@@ -1790,20 +1790,20 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
             col = 0;
             (*pCrackingTable)(crow,col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength,offset,false));
-            Corner corner = (Corner)MinIndex(sectionResult.FScr[impactDir[impactCase]][wind][TopLeft],
-                                                                 sectionResult.FScr[impactDir[impactCase]][wind][TopRight],
-                                                                 sectionResult.FScr[impactDir[impactCase]][wind][BottomLeft],
-                                                                 sectionResult.FScr[impactDir[impactCase]][wind][BottomRight]);
-            (*pCrackingTable)(crow,col++) << moment.SetValue(sectionResult.Mcr[impactDir[impactCase]][wind][corner]);
-            (*pCrackingTable)(crow,col++) << strFlange[corner].c_str();
-            (*pCrackingTable)(crow,col++) << crackAngle.SetValue(sectionResult.ThetaCrack[impactDir[impactCase]][wind][corner]);
-            if (sectionResult.FScr[impactDir[impactCase]][wind][corner] == Float64_Max)
+            Corner corner = (Corner)MinIndex(sectionResult.FScr[+impactDir[impactCase]][+wind][+Corner::TopLeft],
+                                             sectionResult.FScr[+impactDir[impactCase]][+wind][+Corner::TopRight],
+                                             sectionResult.FScr[+impactDir[impactCase]][+wind][+Corner::BottomLeft],
+                                             sectionResult.FScr[+impactDir[impactCase]][+wind][+Corner::BottomRight]);
+            (*pCrackingTable)(crow,col++) << moment.SetValue(sectionResult.Mcr[+impactDir[impactCase]][+wind][+corner]);
+            (*pCrackingTable)(crow,col++) << strFlange[+corner].c_str();
+            (*pCrackingTable)(crow,col++) << crackAngle.SetValue(sectionResult.ThetaCrack[+impactDir[impactCase]][+wind][+corner]);
+            if (sectionResult.FScr[+impactDir[impactCase]][+wind][+corner] == Float64_Max)
             {
                (*pCrackingTable)(crow, col++) << symbol(infinity);
             }
             else
             {
-               (*pCrackingTable)(crow, col++) << scalar.SetValue(sectionResult.FScr[impactDir[impactCase]][wind][corner]);
+               (*pCrackingTable)(crow, col++) << scalar.SetValue(sectionResult.FScr[+impactDir[impactCase]][+wind][+corner]);
             }
 
             crow++;
@@ -1814,39 +1814,39 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             {
                col = 0;
                (*pRebarTable)(rrow,col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength,offset,false));
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].Yna);
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].Yna);
                if (bSimpleFormat)
                {
-                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntTopLeft.Z());
-                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntBottomLeft.Z());
+                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntTopLeft.Z());
+                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntBottomLeft.Z());
                }
                else
                {
-                  (*pRebarTable)(rrow, col++) << scalar.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].NAslope);
+                  (*pRebarTable)(rrow, col++) << scalar.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].NAslope);
 
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntTopLeft.X());
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntTopLeft.Y());
-                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntTopLeft.Z());
+                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntTopLeft.X());
+                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntTopLeft.Y());
+                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntTopLeft.Z());
 
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntTopRight.X());
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntTopRight.Y());
-                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntTopRight.Z());
+                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntTopRight.X());
+                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntTopRight.Y());
+                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntTopRight.Z());
 
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntBottomLeft.X());
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntBottomLeft.Y());
-                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntBottomLeft.Z());
+                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntBottomLeft.X());
+                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntBottomLeft.Y());
+                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntBottomLeft.Z());
 
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntBottomRight.X());
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntBottomRight.Y());
-                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].pntBottomRight.Z());
+                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntBottomRight.X());
+                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntBottomRight.Y());
+                  (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].pntBottomRight.Z());
                }
 
 
                if (bReportTensileForceDetails)
                {
-                  if (sectionResult.altTensionRequirements[impactDir[impactCase]][wind].tensionForceSolution)
+                  if (sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].tensionForceSolution)
                   {
-                     rptRcTable* pDetailsTable = CreateGeneralSectionDetailsTable(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].tensionForceSolution, sectionResult.altTensionRequirements[impactDir[impactCase]][wind].Ytg, pDisplayUnits);
+                     rptRcTable* pDetailsTable = CreateGeneralSectionDetailsTable(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].tensionForceSolution, sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].Ytg, pDisplayUnits);
                      (*pRebarTable)(rrow, col++) << pDetailsTable;
                   }
                   else
@@ -1855,16 +1855,16 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
                   }
                }
 
-               (*pRebarTable)(rrow,col++) << area.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].AreaTension);
-               (*pRebarTable)(rrow,col++) << force.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].T);
-               (*pRebarTable)(rrow,col++) << area.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].AsProvided);
-               if (sectionResult.altTensionRequirements[impactDir[impactCase]][wind].AsRequired < 0)
+               (*pRebarTable)(rrow,col++) << area.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].AreaTension);
+               (*pRebarTable)(rrow,col++) << force.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].T);
+               (*pRebarTable)(rrow,col++) << area.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].AsProvided);
+               if (sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].AsRequired < 0)
                {
                   (*pRebarTable)(rrow, col++) << _T("-");
                }
                else
                {
-                  (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]][wind].AsRequired);
+                  (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]][+wind].AsRequired);
                }
                
                rrow++;
@@ -1880,7 +1880,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          *pChapter << pPara;
 
          *pPara << THETA_FAILURE << _T(" = maximum tilt angle") << rptNewLine;
-         if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
+         if (pResults->ThetaEq[+impactDir[impactCase]][+wind] < 0)
          {
             *pPara << THETA_FAILURE << _T(" = ") << _T("(") << ZO << _T(" - ") << YR << _T(" - 2.5") << Z_WIND << _T(")") << _T("/(5") << ZO << _T(")") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
          }
@@ -1888,19 +1888,19 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          {
             *pPara << THETA_FAILURE << _T(" = ") << symbol(ROOT) << _T("((") << EI << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(") / (2.5") << ZO << _T(")) ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
          }
-         *pPara << THETA_FAILURE << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[impactDir[impactCase]][wind]) << rptNewLine;
-         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
+         *pPara << THETA_FAILURE << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[+impactDir[impactCase]][+wind]) << rptNewLine;
+         *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[+pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[+pResults->AssumedTiltDirection] << _T(").") << rptNewLine;
          *pPara << FS_F << _T(" = Factor of Safety Against Failure") << rptNewLine;
-         if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
+         if (pResults->ThetaEq[+impactDir[impactCase]][+wind] < 0)
          {
-            *pPara << FS_F << _T(" = (") << EI << _T(" - ") << YR << THETA_FAILURE << _T(" + (") << Z_WIND << _T(" + ") << ZO << _T(")(1 - 2.5") << THETA_FAILURE << _T("))/") << E_WIND << _T("") << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+            *pPara << FS_F << _T(" = (") << EI << _T(" - ") << YR << THETA_FAILURE << _T(" + (") << Z_WIND << _T(" + ") << ZO << _T(")(1 - 2.5") << THETA_FAILURE << _T("))/") << E_WIND << _T("") << _T(" = ") << scalar.SetValue(pResults->FsFailure[+impactDir[impactCase]][+wind]) << rptNewLine;
          }
          else
          {
-            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = ") << _T("(") << YR << THETA_FAILURE << _T(") / (") << EI << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(" + (1 + 2.5") << THETA_FAILURE << _T(")(") << ZO << THETA_FAILURE << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND  << _T(")) = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = ") << _T("(") << YR << THETA_FAILURE << _T(") / (") << EI << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(" + (1 + 2.5") << THETA_FAILURE << _T(")(") << ZO << THETA_FAILURE << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND  << _T(")) = ") << scalar.SetValue(pResults->FsFailure[+impactDir[impactCase]][+wind]) << rptNewLine;
          }
          *pPara << _T("If ") << FS_F << _T(" is less than ") << FS_CR << _T(" then ") << FS_F << _T(" = ") << FS_CR << _T(". ");
-         *pPara << FS_F << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << _T(", ") << FS_CR << _T(" = ") << scalar.SetValue(pResults->MinFScr[impactDir[impactCase]][wind]) << _T(", therefore ") << FS_F << _T(" = ") << scalar.SetValue(pResults->AdjFsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+         *pPara << FS_F << _T(" = ") << scalar.SetValue(pResults->FsFailure[+impactDir[impactCase]][+wind]) << _T(", ") << FS_CR << _T(" = ") << scalar.SetValue(pResults->MinFScr[+impactDir[impactCase]][+wind]) << _T(", therefore ") << FS_F << _T(" = ") << scalar.SetValue(pResults->AdjFsFailure[+impactDir[impactCase]][+wind]) << rptNewLine;
 
          *pPara << rptNewLine;
 
@@ -2035,38 +2035,38 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
             const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
             (*pRebarTable)(rrow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
-            (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].Yna);
+            (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].Yna);
             if (bSimpleFormat)
             {
-               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntTopLeft.Z());
-               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntBottomLeft.Z());
+               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntTopLeft.Z());
+               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntBottomLeft.Z());
             }
             else
             {
-               (*pRebarTable)(rrow, col++) << scalar.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].NAslope);
+               (*pRebarTable)(rrow, col++) << scalar.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].NAslope);
 
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntTopLeft.X());
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntTopLeft.Y());
-               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntTopLeft.Z());
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntTopLeft.X());
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntTopLeft.Y());
+               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntTopLeft.Z());
 
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntTopRight.X());
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntTopRight.Y());
-               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntTopRight.Z());
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntTopRight.X());
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntTopRight.Y());
+               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntTopRight.Z());
 
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntBottomLeft.X());
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntBottomLeft.Y());
-               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntBottomLeft.Z());
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntBottomLeft.X());
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntBottomLeft.Y());
+               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntBottomLeft.Z());
 
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntBottomRight.X());
-               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntBottomRight.Y());
-               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].pntBottomRight.Z());
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntBottomRight.X());
+               (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntBottomRight.Y());
+               (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].pntBottomRight.Z());
             }
             
             if (bReportTensileForceDetails)
             {
-               if (sectionResult.altTensionRequirements[impactDir[impactCase]].tensionForceSolution)
+               if (sectionResult.altTensionRequirements[+impactDir[impactCase]].tensionForceSolution)
                {
-                  rptRcTable* pDetailsTable = CreateGeneralSectionDetailsTable(sectionResult.altTensionRequirements[impactDir[impactCase]].tensionForceSolution, sectionResult.altTensionRequirements[impactDir[impactCase]].Ytg, bSimpleFormat, pDisplayUnits);
+                  rptRcTable* pDetailsTable = CreateGeneralSectionDetailsTable(sectionResult.altTensionRequirements[+impactDir[impactCase]].tensionForceSolution, sectionResult.altTensionRequirements[+impactDir[impactCase]].Ytg, bSimpleFormat, pDisplayUnits);
                   (*pRebarTable)(rrow, col++) << pDetailsTable;
                }
                else
@@ -2076,16 +2076,16 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
             }
 
 
-            (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].AreaTension);
-            (*pRebarTable)(rrow, col++) << force.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].T);
-            (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].AsProvided);
-            if (sectionResult.altTensionRequirements[impactDir[impactCase]].AsRequired < 0)
+            (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].AreaTension);
+            (*pRebarTable)(rrow, col++) << force.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].T);
+            (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].AsProvided);
+            if (sectionResult.altTensionRequirements[+impactDir[impactCase]].AsRequired < 0)
             {
                (*pRebarTable)(rrow, col++) << _T("-");
             }
             else
             {
-               (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[impactDir[impactCase]].AsRequired);
+               (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[+impactDir[impactCase]].AsRequired);
             }
 
             rrow++;
@@ -2107,17 +2107,17 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       if (bLabelImpact && !bLabelWind)
       {
          // more than one impact case but no wind
-         strTitle.Format(_T("%s"), strImpact[impactIndex[pResults->FScrMinImpactDirection]]);
+         strTitle.Format(_T("%s"), strImpact[impactIndex[+pResults->FScrMinImpactDirection]]);
       }
       else if (!bLabelImpact && bLabelWind)
       {
          // only one impact case and wind cases
-         strTitle.Format(_T("Wind towards the %s"), strWindDir[pResults->FScrMinWindDirection]);
+         strTitle.Format(_T("Wind towards the %s"), strWindDir[+pResults->FScrMinWindDirection]);
       }
       else if (bLabelImpact && bLabelWind)
       {
          // more than one impact case and wind cases
-         strTitle.Format(_T("%s, Wind towards the %s"), strImpact[impactIndex[pResults->FScrMinImpactDirection]], strWindDir[pResults->FScrMinWindDirection]);
+         strTitle.Format(_T("%s, Wind towards the %s"), strImpact[impactIndex[+pResults->FScrMinImpactDirection]], strWindDir[+pResults->FScrMinWindDirection]);
       }
       else
       {
@@ -2126,7 +2126,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
       longLength.ShowUnitTag(true);
       *pPara << _T("The minimum factor of safety against cracking, ") << rptRcStringLiteral(pStabilityProblem->GetAnalysisPoint(pResults->vSectionResults[pResults->FScrMinAnalysisPointIndex].AnalysisPointIndex)->AsString(pDisplayUnits->SpanLength, offset, true)) << _T(" ");
-      *pPara << strFlange[pResults->FScrMinCorner].c_str() << _T(" flange tip");
+      *pPara << strFlange[+pResults->FScrMinCorner].c_str() << _T(" flange tip");
       if (strTitle.IsEmpty())
       {
          *pPara << rptNewLine;
@@ -2142,17 +2142,17 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       if (bLabelImpact && !bLabelWind)
       {
          // more than one impact case but no wind
-         strTitle.Format(_T("%s"), strImpact[impactIndex[pResults->FSfImpactDirection]]);
+         strTitle.Format(_T("%s"), strImpact[impactIndex[+pResults->FSfImpactDirection]]);
       }
       else if (!bLabelImpact && bLabelWind)
       {
          // only one impact case and wind cases
-         strTitle.Format(_T("Wind towards the %s"), strWindDir[pResults->FSfWindDirection]);
+         strTitle.Format(_T("Wind towards the %s"), strWindDir[+pResults->FSfWindDirection]);
       }
       else if (bLabelImpact && bLabelWind)
       {
          // more than one impact case and wind cases
-         strTitle.Format(_T("%s, Wind towards the %s"), strImpact[impactIndex[pResults->FSfImpactDirection]], strWindDir[pResults->FSfWindDirection]);
+         strTitle.Format(_T("%s, Wind towards the %s"), strImpact[impactIndex[+pResults->FSfImpactDirection]], strWindDir[+pResults->FSfWindDirection]);
       }
       else
       {

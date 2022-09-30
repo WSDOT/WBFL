@@ -49,7 +49,7 @@ CCOneEndSeatedTensionStressLimit::CCOneEndSeatedTensionStressLimit()
 #if defined REBAR_FOR_DIRECT_TENSION
 Float64 CCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact) const
 {
-   if (sectionResult.altTensionRequirements[impact].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact].AsRequired)
+   if (sectionResult.altTensionRequirements[+impact].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[+impact].AsRequired)
    {
       return AllowableTensionWithRebar;
    }
@@ -61,7 +61,7 @@ Float64 CCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSect
 #else
 Float64 CCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
 {
-   if (sectionResult.altTensionRequirements[impact][wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact][wind].AsRequired)
+   if (sectionResult.altTensionRequirements[+impact][+wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[+impact][+wind].AsRequired)
    {
       return AllowableTensionWithRebar;
    }
