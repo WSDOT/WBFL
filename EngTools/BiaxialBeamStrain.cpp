@@ -71,31 +71,31 @@ Float64 BiaxialBeamStrain::GetAxialStrain(Float64 x, Float64 y) const
 }
 
 
-Float64 BiaxialBeamStrain::GetXStrainLocation(Float64 Strain, Float64 Y, bool& Success) const
+bool BiaxialBeamStrain::GetXStrainLocation(Float64 Strain, Float64 Y, Float64& X) const
 {
    try
    {
-      Success = true;
-      return m_Plane.GetX(Y, Strain);
+      X = m_Plane.GetX(Y, Strain);
+      return true;
    }
    catch(...)
    {
-      Success = false;
-      return 0;
+      X = -99999999;
+      return false;
    }
 }
 
-Float64 BiaxialBeamStrain::GetYStrainLocation(Float64 Strain, Float64 X, bool& Success) const
+bool BiaxialBeamStrain::GetYStrainLocation(Float64 Strain, Float64 X, Float64& Y) const
 {
    try
    {
-      Success = true;
-      return m_Plane.GetY(X, Strain);
+      Y = m_Plane.GetY(X, Strain);
+      return true;
    }
    catch (...)
    {
-      Success = false;
-      return 0;
+      Y = -999999999;
+      return false;
    }
 }
 
@@ -163,20 +163,23 @@ bool BiaxialBeamStrain::TestMe(WBFL::Debug::Log& rlog)
    Line2d naline(p1,p2);
    BiaxialBeamStrain bs(naline, p3, .2);
 
-   bool flag;
    Point2d tp1(4,4), tp2(-4,-4);
    TRY_TESTME(IsEqual(bs.GetAxialStrain(tp1), .2333, .001));
    TRY_TESTME(IsEqual(bs.GetAxialStrain(tp2),-.56667,.001));
-   TRY_TESTME(IsEqual(bs.GetXStrainLocation(-.56667,-4.,flag),-4.,.001));
-   TRY_TESTME(IsEqual(bs.GetYStrainLocation(0.23333, 4.,flag), 4.,.001));
-
+   Float64 x, y;
+   TRY_TESTME(bs.GetXStrainLocation(-.56667,-4.,x));
+   TRY_TESTME(bs.GetYStrainLocation(0.23333, 4.,y));
+   TRY_TESTME(IsEqual(x, -4., .001));
+   TRY_TESTME(IsEqual(y, 4., .001));
    // flip line around and test again
    naline.ThroughPoints(p2,p1);
    bs.SetStrainPlane(naline, p3, .2);
    TRY_TESTME(IsEqual(bs.GetAxialStrain(tp1),.2333,.001));
    TRY_TESTME(IsEqual(bs.GetAxialStrain(tp2),-.56667,.001));
-   TRY_TESTME(IsEqual(bs.GetXStrainLocation(-.56667,-4.,flag),-4.,.001));
-   TRY_TESTME(IsEqual(bs.GetYStrainLocation(0.23333, 4., flag), 4., .001));
+   TRY_TESTME(bs.GetXStrainLocation(-.56667,-4.,x));
+   TRY_TESTME(bs.GetYStrainLocation(0.23333, 4., y));
+   TRY_TESTME(IsEqual(x, -4., .001));
+   TRY_TESTME(IsEqual(y, 4., .001));
 
    TESTME_EPILOG("BiaxialBeamStrain");
 }

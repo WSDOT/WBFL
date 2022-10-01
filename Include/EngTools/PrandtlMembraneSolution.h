@@ -31,7 +31,7 @@ namespace WBFL
    {
       class UniformFDMesh;
 
-      // Solution to the Prandtl Membrane analysis for the torsion constant problem
+      /// Solution to the Prandtl Membrane analysis for the torsion constant problem
       class ENGTOOLSCLASS PrandtlMembraneSolution
       {
       public:

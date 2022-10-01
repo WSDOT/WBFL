@@ -50,13 +50,17 @@ m_Sij(sij)
    Init();
 }
 
-MohrCircle::~MohrCircle()
+void MohrCircle::SetStresses(Float64 sii, Float64 sjj, Float64 sij)
 {
+   m_Sii = sii;
+   m_Sjj = sjj;
+   m_Sij = sij;
+   Init();
 }
 
 void MohrCircle::ComputeState(Float64* pSii,Float64* pSjj, Float64* pSij,Float64 angle,bool bSysUnits)
 {
-   PRECONDITION( pSii != 0 && pSjj != 0 && pSij != 0 );
+   PRECONDITION( pSii != nullptr && pSjj != nullptr && pSij != nullptr );
 
    Float64 angle2;
    if ( bSysUnits )
@@ -111,7 +115,7 @@ Float64 MohrCircle::GetTmax() const
    return m_Radius;
 }
 
-Float64 MohrCircle::GetPrincDirection(bool bSysUnits) const
+Float64 MohrCircle::GetPrincipleDirection(bool bSysUnits) const
 {
    // internal principle angle is stored in clockwise direction and is
    // twice external angle - need to convert to counter-clockwise external.
@@ -119,7 +123,7 @@ Float64 MohrCircle::GetPrincDirection(bool bSysUnits) const
    angle = (2.*M_PI-m_Angle)/2.;
 
    // only return (-pi/2 <= angle <= pi/2)
-   if (angle>M_PI/2.)
+   if (PI_OVER_2 < angle)
       angle -= M_PI;
 
    if ( bSysUnits )
@@ -210,7 +214,7 @@ bool MohrCircle::TestMe(WBFL::Debug::Log& rlog)
 
    MohrCircle ct(64,16,-32);
 
-   temp = ct.GetPrincDirection();
+   temp = ct.GetPrincipleDirection();
    TRY_TESTME(IsEqual(ct.GetSmax(), 80., 0.01));
    TRY_TESTME(IsEqual(ct.GetSmin(), 0., 0.01));
    TRY_TESTME(IsEqual(ct.GetTmax(), 40., 0.01));
@@ -229,7 +233,7 @@ bool MohrCircle::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(c1.GetSmax(), 96.05, 0.01));
    TRY_TESTME(IsEqual(c1.GetSmin(), 23.95, 0.01));
    TRY_TESTME(IsEqual(c1.GetTmax(), 36.05, 0.01));
-   TRY_TESTME(IsEqual(c1.GetPrincDirection(), ToRadians(-28.15), 0.01));
+   TRY_TESTME(IsEqual(c1.GetPrincipleDirection(), ToRadians(-28.15), 0.01));
 
    // Test 2
    // Example 1.2 pg 15 from Ugural and Fenster
@@ -247,27 +251,27 @@ bool MohrCircle::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(c3.GetSmax(), 121.0, 0.1));
    TRY_TESTME(IsEqual(c3.GetSmin(), -71.0, 0.1));
    TRY_TESTME(IsEqual(c3.GetTmax(), 96.0, 0.1));
-   TRY_TESTME(IsEqual(c3.GetPrincDirection(), ToRadians(19.33), 0.1));
+   TRY_TESTME(IsEqual(c3.GetPrincipleDirection(), ToRadians(19.33), 0.1));
 
    MohrCircle c4(150,0,100);
 
    TRY_TESTME(IsEqual(c4.GetSmax(), 200.0, 0.1));
    TRY_TESTME(IsEqual(c4.GetSmin(), -50.0, 0.1));
    TRY_TESTME(IsEqual(c4.GetTmax(), 125.0, 0.1));
-   TRY_TESTME(IsEqual(c4.GetPrincDirection(), ToRadians(-26.57), 0.1));
+   TRY_TESTME(IsEqual(c4.GetPrincipleDirection(), ToRadians(-26.57), 0.1));
 
    // From "Statics", Merriam, Pge 373
    MohrCircle c5(18.167,10.167,-7.5);
    
    TRY_TESTME(IsEqual(c5.GetSmax(), 22.67, 0.1));
    TRY_TESTME(IsEqual(c5.GetSmin(), 5.67, 0.1));
-   TRY_TESTME(IsEqual(c5.GetPrincDirection(), ToRadians(30.96), 0.01));
+   TRY_TESTME(IsEqual(c5.GetPrincipleDirection(), ToRadians(30.96), 0.01));
 
    // From Beer & Johnston, Mechanics of Materials, page 306
    MohrCircle c6(100,60,48);
    TRY_TESTME(IsEqual(c6.GetSmax(), 132., 0.1));
    TRY_TESTME(IsEqual(c6.GetSmin(), 28., 0.1));
-   TRY_TESTME(IsEqual(c6.GetPrincDirection(), ToRadians(-33.7), 0.1));
+   TRY_TESTME(IsEqual(c6.GetPrincipleDirection(), ToRadians(-33.7), 0.1));
 
    c6.ComputeState(&sii,&sjj,&sij,ToRadians(30.));
    TRY_TESTME(IsEqual(sii, 48.4, 0.1));
@@ -277,12 +281,12 @@ bool MohrCircle::TestMe(WBFL::Debug::Log& rlog)
    MohrCircle c7(50,-10,40);
    TRY_TESTME(IsEqual(c7.GetSmax(), 70., 0.1));
    TRY_TESTME(IsEqual(c7.GetSmin(), -30., 0.1));
-   TRY_TESTME(IsEqual(c7.GetPrincDirection(), ToRadians(-26.56), 0.1));
+   TRY_TESTME(IsEqual(c7.GetPrincipleDirection(), ToRadians(-26.56), 0.1));
 
    MohrCircle c8(4.18, 3.25, 2.87);
    TRY_TESTME(IsEqual(c8.GetSmax(), 6.63, 0.1));
    TRY_TESTME(IsEqual(c8.GetSmin(), 0.81, 0.1));
-   TRY_TESTME(IsEqual(c8.GetPrincDirection(), ToRadians(-40.4), 0.1));
+   TRY_TESTME(IsEqual(c8.GetPrincipleDirection(), ToRadians(-40.4), 0.1));
 
    TESTME_EPILOG("MohrCircle");
 }

@@ -37,26 +37,50 @@ namespace WBFL
       {
       public:
          MohrCircle();
-         MohrCircle(Float64 sii, Float64 sjj, Float64 sij);
+         MohrCircle(
+            Float64 sii, ///< Normal stress in direction ii
+            Float64 sjj, ///< Normal stress in direction jj
+            Float64 sij  ///< Shear stress
+         );
          MohrCircle(const MohrCircle& rOther) = default;
 
-         ~MohrCircle();
+         ~MohrCircle() = default;
 
          MohrCircle& operator=(const MohrCircle& rOther) = default;
 
-         void ComputeState(Float64* pSii, Float64* pSjj, Float64* pSij, Float64 angle, bool bSysUnits = true);
+         /// Sets the state of stresses
+         void SetStresses(Float64 sii, Float64 sjj, Float64 sij);
 
-         Float64 GetSii() { return m_Sii; }
-         Float64 GetSjj() { return m_Sjj; }
-         Float64 GetSij() { return m_Sij; }
+         Float64 GetSii() const { return m_Sii; }
+         Float64 GetSjj() const { return m_Sjj; }
+         Float64 GetSij() const { return m_Sij; }
          void SetSii(Float64 sii);
          void SetSjj(Float64 sjj);
          void SetSij(Float64 sij);
+
+         /// Computes the state of stresses at the specified angle.
+         /// angle is measure counterclockwise from the positive i-direction
+         /// If bSysUnits is true, angle is in system onits, otherwise it is in radians.
+         void ComputeState(Float64* pSii, Float64* pSjj, Float64* pSij, Float64 angle, bool bSysUnits = true);
+
+
+         /// Returns the maximum principle stress
          Float64 GetSmax() const;
+
+         /// Returns the minimum principle stress
          Float64 GetSmin() const;
+
+         /// Returns the maximum shear stress
          Float64 GetTmax() const;
-         Float64 GetPrincDirection(bool bSysUnits = true) const;
+
+         /// Returns the direction of the principle stress. 
+         /// If bSysUnits is true, the angle is returned in system units otherwise it is in radians.
+         Float64 GetPrincipleDirection(bool bSysUnits = true) const;
+
+         /// Returns center point of circle
          Float64 GetCenter() const;
+
+         /// Returns radius of circle
          Float64 GetRadius() const;
 
 #if defined _DEBUG

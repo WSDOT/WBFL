@@ -5,4 +5,9 @@ Introduction
 ------------
 This library provides tools to perform common engineering calculations.
 
-\todo Provide more details
+The available tools are:
+* Mohr Circle
+* Biaxial Beam Strain
+* Torsion constant by Prandtl membrane analogy
+
+
