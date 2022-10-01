@@ -64,18 +64,18 @@ namespace WBFL
          void ComputeState(Float64* pSii, Float64* pSjj, Float64* pSij, Float64 angle, bool bSysUnits = true);
 
 
-         /// Returns the maximum principle stress
+         /// Returns the maximum principal stress
          Float64 GetSmax() const;
 
-         /// Returns the minimum principle stress
+         /// Returns the minimum principal stress
          Float64 GetSmin() const;
 
          /// Returns the maximum shear stress
          Float64 GetTmax() const;
 
-         /// Returns the direction of the principle stress. 
+         /// Returns the direction of the principal stress. 
          /// If bSysUnits is true, the angle is returned in system units otherwise it is in radians.
-         Float64 GetPrincipleDirection(bool bSysUnits = true) const;
+         Float64 GetPrincipalDirection(bool bSysUnits = true) const;
 
          /// Returns center point of circle
          Float64 GetCenter() const;
@@ -99,7 +99,7 @@ namespace WBFL
 
          Float64 m_Smin;
          Float64 m_Smax;
-         // Note: Internal principle angle is stored in clockwise direction.
+         // Note: Internal principal angle is stored in clockwise direction.
          Float64 m_Angle;
          Float64 m_Radius;
          Float64 m_Center;
