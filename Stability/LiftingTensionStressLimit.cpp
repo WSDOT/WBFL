@@ -42,6 +42,8 @@ CCLiftingTensionStressLimit::CCLiftingTensionStressLimit()
    bMaxTension = false;
    MaxTension = 0;
 
+   bWithRebarLimit = false;
+
    AllowableTension = 0;
    AllowableTensionWithRebar = 0;
 }
