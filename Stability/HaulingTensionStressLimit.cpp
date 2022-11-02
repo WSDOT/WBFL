@@ -47,6 +47,7 @@ CCHaulingTensionStressLimit::CCHaulingTensionStressLimit()
       TensionCoefficientWithRebar[+slope] = 0;
       AllowableTension[+slope] = 0;
       AllowableTensionWithRebar[+slope] = 0;
+      bWithRebarLimit[+slope] = false;
    }
 }
 
