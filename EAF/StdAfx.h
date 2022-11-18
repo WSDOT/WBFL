@@ -70,6 +70,13 @@ extern CComModule _Module;
 #include <afxwin.h>
 #include <afxmt.h>
 
+
+// #import is not compatible with the /MP compiler option
+// https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/ recommends moving
+// #import directives into the PCH
+#import <mshtml.tlb>
+
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

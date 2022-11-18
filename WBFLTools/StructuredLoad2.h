@@ -33,8 +33,6 @@
 #include <list>
 #include <map>
 
-#import  <msxml6.dll> rename_namespace("MSXML")
-
 /////////////////////////////////////////////////////////////////////////////
 // CStructuredLoad2
 class ATL_NO_VTABLE CStructuredLoad2 : 

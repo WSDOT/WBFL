@@ -30,7 +30,6 @@
 
 #include <list>
 #include <map>
-#import  <msxml6.dll> rename_namespace("MSXML")
 
 
 #include "resource.h"       // main symbols

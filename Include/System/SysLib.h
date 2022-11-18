@@ -37,4 +37,9 @@ DESCRIPTION
 
 #include <Private\WBFLPackage.h>
 
+// #import is not compatible with the /MP compiler option
+// https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/ recommends moving
+// #import directives into the PCH
+#import  <msxml6.dll> rename_namespace("MSXML")
+
 #endif // INCLUDED_SYSTEM_SYSLIB_H_

@@ -187,7 +187,7 @@ void CTestNUBeam::TestIShape2()
    coll->get__Enum(&Enum);
    CComPtr<IPoint2d> points[nPoints];
    ULONG fetched;
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, nPoints );
 
    Float64 x,y;

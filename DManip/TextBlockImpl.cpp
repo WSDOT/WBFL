@@ -129,8 +129,8 @@ STDMETHODIMP_(void) CTextBlockImpl::Draw(CDC* pDC)
       pDC->TextOut(lx,ly,str);
 
 
-      int dx = size.cy*sin_textAngle;
-      int dy = size.cy*cos_textAngle;
+      LONG dx = (LONG)((Float64)size.cy*sin_textAngle);
+      LONG dy = (LONG)((Float64)size.cy*cos_textAngle);
       lx += dx;
       ly += dy;
    }

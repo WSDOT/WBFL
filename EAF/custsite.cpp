@@ -47,8 +47,6 @@
 
 #pragma warning(disable:4192 4278)
 
-#import <mshtml.tlb>
-
 #include "custsite.h"
 #include <EAF\EAFCustSiteVars.h>
 #include <system\tokenizer.h>

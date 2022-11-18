@@ -410,7 +410,7 @@ void CTestUBeam::TestIShape()
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 22> points;
    ULONG fetched;
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, 21 );
 
    Float64 x,y;

@@ -23,7 +23,6 @@
 #include <System\SysLib.h>
 #include <System\StructuredLoadXml.h>
 #include <istream>
-#import  <msxml6.dll> rename_namespace("MSXML")
 #include <list>
 
 #include "FindReplaceAll.h"

@@ -29,7 +29,6 @@
 #include "FindReplaceAll.h"
 
 #include <list>
-#import  <msxml6.dll> rename_namespace("MSXML")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
