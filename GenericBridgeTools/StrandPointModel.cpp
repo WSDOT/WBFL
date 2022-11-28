@@ -321,10 +321,6 @@ STDMETHODIMP CStrandPointModel::GetStrandProfile(StrandType strandType, StrandIn
    m_pSegment->get_Length(&Ls);
    
    std::vector<Float64> vPoints;
-   vPoints.reserve(18);
-
-   vPoints.push_back(0.0);
-   vPoints.push_back(Ls);
 
    std::array<Float64, 4> Xhp;
    if (strandType == Harped)
@@ -336,12 +332,22 @@ STDMETHODIMP CStrandPointModel::GetStrandProfile(StrandType strandType, StrandIn
 
    // add debond locations
    const auto& strandRecord(m_Strands[strandType][strandIdx]);
-   if (!IsZero(strandRecord.Debond[etStart]))
+   if (IsZero(strandRecord.Debond[etStart]))
+   {
+      // not debonded at start so add a point at 0.0
+      vPoints.push_back(0.0);
+   }
+   else
    {
       vPoints.push_back(strandRecord.Debond[etStart]);
    }
 
-   if (!IsEqual(Ls,strandRecord.Debond[etEnd]))
+   if (IsEqual(Ls, strandRecord.Debond[etEnd]))
+   {
+      // not debonded at end so add point at Ls
+      vPoints.push_back(Ls);
+   }
+   else
    {
       vPoints.push_back(strandRecord.Debond[etEnd]);
    }
@@ -820,7 +826,7 @@ STDMETHODIMP CStrandPointModel::IsExteriorStraightStrandDebondedInRow(Float64 Xs
    std::advance(iter, rowIdx);
    const auto& vStrands = iter->Strands;
 
-   // find the records with the smallest and larget X values... these are the "exterior" strands
+   // find the records with the smallest and largest X values... these are the "exterior" strands
    const StrandRecord* pLeft = nullptr;
    const StrandRecord* pRight = nullptr;
    for (const auto& strandIdx : vStrands)
@@ -937,13 +943,18 @@ STDMETHODIMP CStrandPointModel::GetStraightStrandDebondedRows(Float64 Xs, IIndex
 void CStrandPointModel::RemoveDebondedStrandPositions(StrandType strandType,Float64 Xs, IPoint2dCollection* pPoints)
 {
    // If the strand is debonded at Xs, remove it from pPoints
+   
+   Float64 Ls;
+   m_pSegment->get_Length(&Ls);
+
    IndexType nPoints;
    pPoints->get_Count(&nPoints);
-   // work backrwards so removing an item doesn't mess up the iteration
+   // work backwards so removing an item doesn't mess up the iteration
    for (IndexType strandIdx = nPoints - 1; 0 <= strandIdx && strandIdx != INVALID_INDEX; strandIdx--)
    {
       const auto& strandRecord(m_Strands[strandType][strandIdx]);
-      if (::IsLE(Xs, strandRecord.Debond[etStart]) || ::IsLE(strandRecord.Debond[etEnd], Xs))
+      if ((::IsLE(Xs, strandRecord.Debond[etStart]) && !IsZero(strandRecord.Debond[etStart])) ||
+         (::IsLE(strandRecord.Debond[etEnd], Xs) && !IsEqual(strandRecord.Debond[etEnd],Ls)))
       {
          // Xs is in the debonded region, remove this strand from the point collection
          pPoints->Remove(strandIdx);
