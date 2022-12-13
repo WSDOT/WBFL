@@ -260,11 +260,11 @@ void UniformFDMesh::Update() const
          if (i != 0)
          {
             const FDMeshElement* pPrevElement = &m_vElements[m_vElements.size() - 2];
-            pElement->Node[FDMeshElement::TopLeft] = pPrevElement->Node[FDMeshElement::TopRight];
+            pElement->Node[+FDMeshElement::Corner::TopLeft] = pPrevElement->Node[+FDMeshElement::Corner::TopRight];
             if (pElementAbove)
             {
                // bottom left node of the element above this element shares this element's top left node
-               (const_cast<FDMeshElement*>(pElementAbove))->Node[FDMeshElement::BottomLeft] = pElement->Node[FDMeshElement::TopLeft];
+               (const_cast<FDMeshElement*>(pElementAbove))->Node[+FDMeshElement::Corner::BottomLeft] = pElement->Node[+FDMeshElement::Corner::TopLeft];
             }
          }
 
@@ -279,12 +279,12 @@ void UniformFDMesh::Update() const
                (i == lastElementThisRowIdx && m_bIsSymmetric && elementIdxThisRow == m_Nx-1)
                )
             {
-               pElement->Node[FDMeshElement::TopRight] = m_nInteriorNodes; // this is an interior node
+               pElement->Node[+FDMeshElement::Corner::TopRight] = m_nInteriorNodes; // this is an interior node
                nInteriorNodesThisRow++;
                m_nInteriorNodes++;
 
                // bottom right node of the element above this element shares this element's top right node
-               (const_cast<FDMeshElement*>(pElementAbove))->Node[FDMeshElement::BottomRight] = pElement->Node[FDMeshElement::TopRight]; 
+               (const_cast<FDMeshElement*>(pElementAbove))->Node[+FDMeshElement::Corner::BottomRight] = pElement->Node[+FDMeshElement::Corner::TopRight];
             }
          }
       } // next element in the row

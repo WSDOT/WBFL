@@ -180,43 +180,43 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
       {
          const auto* pElement = mesh->GetElement(elementIdx);
 
-         if (pElement->Node[FDMeshElement::BottomRight] != INVALID_INDEX)
+         if (pElement->Node[+FDMeshElement::Corner::BottomRight] != INVALID_INDEX)
          {
-            matrix(pElement->Node[FDMeshElement::BottomRight], pElement->Node[FDMeshElement::BottomRight]) = K0;
+            matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomRight]) = K0;
 
             const auto* pBelowElement = mesh->GetElementBelow(meshRowIdx, elementIdx - startElementIdx);
-            if (pBelowElement && pBelowElement->Node[FDMeshElement::BottomRight] != INVALID_INDEX)
+            if (pBelowElement && pBelowElement->Node[+FDMeshElement::Corner::BottomRight] != INVALID_INDEX)
             {
-               matrix(pElement->Node[FDMeshElement::BottomRight], pBelowElement->Node[FDMeshElement::BottomRight]) = K13;
+               matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pBelowElement->Node[+FDMeshElement::Corner::BottomRight]) = K13;
             }
 
-            if (pElement->Node[FDMeshElement::BottomLeft] != INVALID_INDEX)
+            if (pElement->Node[+FDMeshElement::Corner::BottomLeft] != INVALID_INDEX)
             {
                if (bIsSymmetric && gridRowStartIdx == symmetryIdx)
                {
-                  matrix(pElement->Node[FDMeshElement::BottomRight], pElement->Node[FDMeshElement::BottomLeft]) = K24_Sym;
+                  matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomLeft]) = K24_Sym;
                }
                else
                {
-                  matrix(pElement->Node[FDMeshElement::BottomRight], pElement->Node[FDMeshElement::BottomLeft]) = K24;
+                  matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomLeft]) = K24;
                }
             }
 
-            if (pElement->Node[FDMeshElement::TopRight] != INVALID_INDEX)
+            if (pElement->Node[+FDMeshElement::Corner::TopRight] != INVALID_INDEX)
             {
-               matrix(pElement->Node[FDMeshElement::BottomRight], pElement->Node[FDMeshElement::TopRight]) = K13;
+               matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::TopRight]) = K13;
             }
 
             if (!bIsSymmetric || gridRowStartIdx != symmetryIdx)
             {
                const auto* pNextElement = mesh->GetElement(elementIdx + 1);
-               if (pNextElement->Node[FDMeshElement::BottomRight] != INVALID_INDEX)
+               if (pNextElement->Node[+FDMeshElement::Corner::BottomRight] != INVALID_INDEX)
                {
-                  matrix(pElement->Node[FDMeshElement::BottomRight], pNextElement->Node[FDMeshElement::BottomRight]) = K24;
+                  matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pNextElement->Node[+FDMeshElement::Corner::BottomRight]) = K24;
                }
             }
 
-            matrix[pElement->Node[FDMeshElement::BottomRight]] = Dy2;
+            matrix[pElement->Node[+FDMeshElement::Corner::BottomRight]] = Dy2;
          }
       }
    }

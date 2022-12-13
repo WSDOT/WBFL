@@ -35,13 +35,14 @@ namespace WBFL
       {
       public:
          // access array with Corner enum
-         enum Corner { BottomLeft, BottomRight, TopRight, TopLeft }; // the order of this must match the order of the poly points in a rectangle object
+         enum class Corner { BottomLeft, BottomRight, TopRight, TopLeft }; // the order of this must match the order of the poly points in a rectangle object
 
          /// Indicies of the nodes of the mesh element. Use the Corner enum to access the array. 
          /// Indicies are INVALID_INDEX when the node attached to a boundary or the index of
          /// and internal node
          std::array<IndexType, 4> Node{ INVALID_INDEX,INVALID_INDEX,INVALID_INDEX,INVALID_INDEX };
       };
+      inline constexpr auto operator+(FDMeshElement::Corner c) noexcept { return std::underlying_type<FDMeshElement::Corner>::type(c); }
 
       /// A finite difference mesh of uniformly sized mesh elements
       class ENGTOOLSCLASS UniformFDMesh
@@ -57,8 +58,8 @@ namespace WBFL
          void AllocateElementRows(IndexType nRows); ///< Allocates element rows for the mesh. This must be called prior to calling AddElements()
          void SetElementSize(Float64 dx, Float64 dy); ///< Sets the size of the mesh elements
          void GetElementSize(Float64* pdx, Float64* pdy) const; ///< Gets the size of the mesh elements
-         Float64 GetElementArea() const; ///< Returns the cross sectional area of a mesh element
-         Float64 GetMeshArea() const; ///< Returs the area of the mesh
+         Float64 GetElementArea() const; ///< Returns the area of a single mesh element
+         Float64 GetMeshArea() const; ///< Returns the total mesh area
 
          /// Adds elements to a previously allocated mesh row
          void AddElements(IndexType gridRowIdx, /**< index of the grid row where elements are being added */

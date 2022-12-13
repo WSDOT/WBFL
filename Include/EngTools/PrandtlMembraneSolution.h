@@ -53,7 +53,13 @@ namespace WBFL
          /// Returns the finite diffence mesh
          const std::unique_ptr<UniformFDMesh>& GetFiniteDifferenceMesh() const;
 
-         /// Returns the finite difference solution
+         /// Returns the finite difference solution.
+         ///
+         /// The FD solution is the elevation of the Prandtl Membrate at each of the nodes of
+         /// the FD mesh.The array index is the node index of the FD model.
+         /// 
+         /// Access a FD solution value with GetFiniteDifferenceMesh()->GetElement(elementIndex)->Node[corner], where corner
+         /// is one of the FDMeshElement::Corner enum values.
          const std::unique_ptr<Float64[]>& GetFiniteDifferenceSolution() const;
 
       private:

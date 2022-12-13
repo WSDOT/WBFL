@@ -26,8 +26,6 @@
 #include <EngTools/PrandtlMembraneSolution.h>
 #include <EngTools/UniformFDMesh.h>
 
-class mathUnsymmetricBandedMatrix;
-
 namespace WBFL
 {
    namespace Geometry
