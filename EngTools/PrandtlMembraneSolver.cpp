@@ -27,8 +27,12 @@
 #include <EngTools/UniformFDMesh.h>
 #include <future>
 #include <System/Threads.h>
+#include <GeomModel/Primitives3d.h>
+#include <GeomModel/Plane3d.h>
+#include <GeomModel/Vector3d.h>
 #include <Math/UnsymmetricBandedMatrix.h>
 #include "FDMeshGenerator.h"
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,8 +59,8 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
 /// \param[in] endElementIdx index of the last element for which to compute the volume
 /// \param[in] mesh the finite difference mesh
 /// \param[in] meshValues the solution to the finite difference equations
-/// \return the volume under the membrane for the specified range of elements
-Float64 ComputeVolume(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
+/// \return tuple containing the volume under the membrane for the specified range of elements, the maximum membrane slope, and the index of the element where the maxum slop occurs
+std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
 
 
 void PrandtlMembraneSolver::Initialize(Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry)
@@ -89,27 +93,37 @@ PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const std::unique_ptr<WBFL:
    IndexType nWorkerThreads, nElementsPerThread;
    WBFL::System::Threads::GetThreadParameters(nElements, nWorkerThreads, nElementsPerThread);
 
-   std::vector<std::future<Float64>> vFutures;
+   std::vector<std::future<std::tuple<Float64,Float64,IndexType>>> vFutures;
    IndexType startElementIdx = 0;
    for (IndexType i = 0; i < nWorkerThreads; i++)
    {
       IndexType endElementIdx = startElementIdx + nElementsPerThread - 1;
-      vFutures.emplace_back(std::async(&ComputeVolume, startElementIdx, endElementIdx, std::ref(mesh), std::ref(meshValues)));
+      vFutures.emplace_back(std::async(&ComputeVolumeAndMaxSlope, startElementIdx, endElementIdx, std::ref(mesh), std::ref(meshValues)));
       startElementIdx = endElementIdx + 1;
    }
 
-   Float64 J = ComputeVolume(startElementIdx, nElements - 1, mesh, meshValues);
-   for (auto& result : vFutures)
+   auto result = ComputeVolumeAndMaxSlope(startElementIdx, nElements - 1, mesh, meshValues);
+   for (auto& future : vFutures)
    {
-      J += result.get();
+      auto fresult = future.get();
+      std::get<0>(result) += std::get<0>(fresult); // Add J (similar to J += future.J
+
+      // compare maximum slope (stored in element 1 of the tuple)
+      if (std::get<1>(result) < std::get<1>(fresult))
+      {
+         // fresult has a greater maximum slope... assign it to result
+         // and assign the corresponding element index
+         std::get<1>(result) = std::get<1>(fresult);
+         std::get<2>(result) = std::get<2>(fresult);
+      }
    }
 
    if (mesh->HasSymmetry())
    {
-      J *= 2;
+      std::get<0>(result) *= 2;
    }
 
-   PrandtlMembraneSolution solution(J, std::move(mesh), std::move(meshValues));
+   PrandtlMembraneSolution solution(std::get<0>(result), std::get<1>(result), std::get<2>(result), std::move(mesh), std::move(meshValues));
    return solution;
 }
 
@@ -222,25 +236,104 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
    }
 }
 
-Float64 ComputeVolume(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
+std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
 {
    Float64 V = 0;
    Float64 area = mesh->GetElementArea();
-   static std::array<Float64, 5> area_factor{ 0, 1. / 3., 0.5, 5. / 6., 1.0 };
+   static std::array<Float64, 5> area_factor{ 0, 1. / 3., 0.5, 5. / 6., 1.0 }; // factors for computing volume based on number of non-boundary nodes
+
+   Float64 maxSlope = -Float64_Max;
+   IndexType maxSlopeElementIdx = INVALID_INDEX;
+
+   Float64 dx, dy;
+   mesh->GetElementSize(&dx, &dy);
+
+   // Slopes are computed based on 4 planes derived from the mesh element corners taken 3 at a time.
+   // This array holds the corners used to create each plane
+   using ElementCorners = std::tuple<FDMeshElement::Corner, FDMeshElement::Corner, FDMeshElement::Corner>;
+   static std::array<ElementCorners, 4> elementCorners{
+      ElementCorners(FDMeshElement::Corner::BottomLeft, FDMeshElement::Corner::TopRight, FDMeshElement::Corner::TopLeft),
+      ElementCorners(FDMeshElement::Corner::BottomLeft, FDMeshElement::Corner::BottomRight, FDMeshElement::Corner::TopRight),
+      ElementCorners(FDMeshElement::Corner::BottomLeft, FDMeshElement::Corner::BottomRight, FDMeshElement::Corner::TopLeft),
+      ElementCorners(FDMeshElement::Corner::BottomRight, FDMeshElement::Corner::TopRight, FDMeshElement::Corner::TopLeft)
+   };
+
+   // This array holds the coordinates of the 3 points used to create each of the 4 planes.
+   using PlanePoints = std::tuple<WBFL::Geometry::Point3d, WBFL::Geometry::Point3d, WBFL::Geometry::Point3d>;
+   std::array<PlanePoints, 4> planePoints{
+      PlanePoints({0.,0.,0.},{dx,dy,0.},{0.,dy,0.}),
+      PlanePoints({0.,0.,0.},{dx,0.,0.},{dx,dy,0.}),
+      PlanePoints({0.,0.,0.},{dx,0.,0.},{0.,dy,0.}),
+      PlanePoints({dx,0.,0.},{dx,dy,0.},{0.,dy,0.})
+   };
+
+
+   WBFL::Geometry::Plane3d plane;
+   WBFL::Geometry::Point3d p0, p1, p2;
+
    for (IndexType elementIdx = startElementIdx; elementIdx <= endElementIdx; elementIdx++)
    {
       const auto* pElement = mesh->GetElement(elementIdx);
       IndexType nInteriorNodes = 0;
       Float64 sum_values = 0;
-      for (long i = 0; i < 4; i++)
+      for (long i = 0; i < 4; i++) // loop index doubles as corner index and one of four planes used to compute max slope
       {
+         // volume computation - sum the non-boundary mesh values and keep track of the number of non-boundary points in the element
          if (pElement->Node[i] != INVALID_INDEX)
          {
             sum_values += meshValues[pElement->Node[i]];
             nInteriorNodes++;
          }
+
+         // compute max slope...
+
+         // three points to make a plane... the z value at all these points is set to zero
+         p0 = std::get<0>(planePoints[i]);
+         p1 = std::get<1>(planePoints[i]);
+         p2 = std::get<2>(planePoints[i]);
+
+         // set the z value based on the mesh results
+         p0.Z() = pElement->Node[+std::get<0>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<0>(elementCorners[i])]];
+         p1.Z() = pElement->Node[+std::get<1>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<1>(elementCorners[i])]];
+         p2.Z() = pElement->Node[+std::get<2>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<2>(elementCorners[i])]];
+         
+         // create a plane through the points
+         plane.ThroughPoints(p0, p1, p2);
+
+         // get the vector normal to the plane, and normalize it
+         auto normal = plane.NormalVector();
+         normal.Normalize();
+
+         // the direction of the max slope is the normal vector projected onto the horizontal plane
+         auto max_slope_direction = normal;
+         max_slope_direction.Z() = 0; // set z to creates the vector in the horizontal plane
+
+         // if max_direction is a zero vector, than the plane is horizontal and normal is in the Z direction only
+         // for that case, take cosine of the slope to be 0 (so angle with normal vector is Pi/2)
+         // slope will then be 0 after the taking the arccosine and adjusting for normal vector orientation
+
+         Float64 cos_slope = 0; // cosine of slope
+         if (!max_slope_direction.IsZero())
+         {
+            max_slope_direction.Normalize();
+
+            // dot product of the two unit vectors is the cos of the angle between the vectors
+            cos_slope = normal.Dot(max_slope_direction);
+         }
+
+         // get the angle...
+         Float64 slope = acos(cos_slope);
+         slope = PI_OVER_2 - slope; // rotate by Pi/2 since the angle is with the normal vector, not the vector in the plane
+
+         if (maxSlope < slope)
+         {
+            // capture the maximum slope and record the element where it occurs
+            maxSlope = slope;
+            maxSlopeElementIdx = elementIdx;
+         }
       }
 
+      // back to volume calculation....
       // if there are no interior nodes, all nodes are on the boundary and
       // their values are zero so no contribution to the volume under the membrane
       if (nInteriorNodes != 0)
@@ -251,7 +344,7 @@ Float64 ComputeVolume(IndexType startElementIdx, IndexType endElementIdx, const 
       }
    }
 
-   return V;
+   return std::make_tuple(V, maxSlope, maxSlopeElementIdx);
 }
 
 #if defined _UNITTEST
@@ -280,15 +373,24 @@ bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
 
    std::unique_ptr<WBFL::Geometry::Shape> shape(std::move(beam));
 
+   Float64 maxSlope;
+   IndexType maxSlopeElementIdx;
+
    // use symmetry
    PrandtlMembraneSolution solution = PrandtlMembraneSolver::Solve(shape, 0.25, 0.25);
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
+   solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
+   TRY_TESTME(IsEqual(maxSlope, 1.540554));
+   TRY_TESTME(maxSlopeElementIdx == 6412);
 
    // ignore symmetry
    solution = PrandtlMembraneSolver::Solve(shape, 0.25, 0.25, false);
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
+   solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
+   TRY_TESTME(IsEqual(maxSlope, 1.540554));
+   TRY_TESTME(maxSlopeElementIdx == 6412);
 
    // use a solver object
    PrandtlMembraneSolver solver;
@@ -296,6 +398,9 @@ bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
    solution = solver.Solve(shape);
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
+   solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
+   TRY_TESTME(IsEqual(maxSlope, 1.540554));
+   TRY_TESTME(maxSlopeElementIdx == 6412);
 
    TESTME_EPILOG("PrandtlMembraneSolver");
 }

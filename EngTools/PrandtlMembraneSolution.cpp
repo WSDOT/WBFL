@@ -36,23 +36,25 @@ using namespace WBFL::EngTools;
 
 PrandtlMembraneSolution::PrandtlMembraneSolution(PrandtlMembraneSolution&& other)
 {
-   Initialize(other.m_J, std::move(other.m_Mesh), std::move(other.m_MeshValues));
+   Initialize(other.m_J, other.m_MaxSlope, other.m_ElementIndex, std::move(other.m_Mesh), std::move(other.m_MeshValues));
 }
 
-PrandtlMembraneSolution::PrandtlMembraneSolution(Float64 J, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues)
+PrandtlMembraneSolution::PrandtlMembraneSolution(Float64 J, Float64 maxSlope, IndexType elementIdx, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues)
 {
-   Initialize(J, std::move(mesh), std::move(meshValues));
+   Initialize(J, maxSlope, elementIdx, std::move(mesh), std::move(meshValues));
 }
 
 PrandtlMembraneSolution& PrandtlMembraneSolution::operator=(PrandtlMembraneSolution&& other)
 {
-   Initialize(other.m_J, std::move(other.m_Mesh), std::move(other.m_MeshValues));
+   Initialize(other.m_J, other.m_MaxSlope, other.m_ElementIndex, std::move(other.m_Mesh), std::move(other.m_MeshValues));
    return *this;
 }
 
-void PrandtlMembraneSolution::Initialize(Float64 J, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues)
+void PrandtlMembraneSolution::Initialize(Float64 J, Float64 maxSlope, IndexType elementIdx, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues)
 {
    m_J = J;
+   m_MaxSlope = maxSlope;
+   m_ElementIndex = elementIdx;
    m_Mesh = std::move(mesh);
    m_MeshValues = std::move(meshValues);
 }
@@ -60,6 +62,12 @@ void PrandtlMembraneSolution::Initialize(Float64 J, std::unique_ptr<UniformFDMes
 Float64 PrandtlMembraneSolution::GetJ() const
 {
    return m_J;
+}
+
+void PrandtlMembraneSolution::GetMaxSlope(Float64* pMaxSlope, IndexType* pElementIdx) const
+{
+   *pMaxSlope = m_MaxSlope;
+   *pElementIdx = m_ElementIndex;
 }
 
 const std::unique_ptr<UniformFDMesh>& PrandtlMembraneSolution::GetFiniteDifferenceMesh() const

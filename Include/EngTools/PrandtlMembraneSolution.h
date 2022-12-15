@@ -37,18 +37,25 @@ namespace WBFL
       public:
          PrandtlMembraneSolution() = default; ///< Call Initialize to initialize the solution
          PrandtlMembraneSolution(PrandtlMembraneSolution&& other);
-         PrandtlMembraneSolution(Float64 J, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues);
+         PrandtlMembraneSolution(Float64 J, Float64 maxSlope,IndexType elementIdx,std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues);
          PrandtlMembraneSolution& operator=(PrandtlMembraneSolution&& other);
 
          /// Initializes the solution
          ///
          /// \param J torsion constant
+         /// \param Maximum slope on the membrane surface
+         /// \param Index of the element where the maximum slope occurs
          /// \param mesh the finite difference mesh used to solve the problem
          /// \param meshValues the mesh ordinate values for the solution
-         void Initialize(Float64 J, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues);
+         void Initialize(Float64 J, Float64 maxSlope, IndexType elementIdx, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues);
 
          /// Returns the torsion constant
          Float64 GetJ() const;
+
+         /// @brief Returns the maximum slope on the membrane surface
+         /// @param[out] pMaxSlope Maximum slope
+         /// @param[out] pElementIdx Element where the maximum slope occurs
+         void GetMaxSlope(Float64* pMaxSlope, IndexType* pElementIdx) const;
 
          /// Returns the finite diffence mesh
          const std::unique_ptr<UniformFDMesh>& GetFiniteDifferenceMesh() const;
@@ -63,9 +70,11 @@ namespace WBFL
          const std::unique_ptr<Float64[]>& GetFiniteDifferenceSolution() const;
 
       private:
-         Float64 m_J{ 0 };
-         std::unique_ptr<UniformFDMesh> m_Mesh;
-         std::unique_ptr<Float64[]> m_MeshValues;
+         Float64 m_J{ 0 }; // torsion constant
+         Float64 m_MaxSlope{ 0 }; // maximum slope on the membrane surface
+         IndexType m_ElementIndex{ INVALID_INDEX }; // element where the maximum slope occurs
+         std::unique_ptr<UniformFDMesh> m_Mesh; // finite difference mesh
+         std::unique_ptr<Float64[]> m_MeshValues; // solution (ordinate values at the mesh nodes)
       };
    };
 };
