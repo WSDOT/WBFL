@@ -45,7 +45,7 @@ namespace WBFL
          /// Creates a strain plane with a neutral axis line, a point, and the strain at the point
          BiaxialBeamStrain(const WBFL::Geometry::Line2d& rnaLine,const WBFL::Geometry::Point2d& p3, Float64 strain);
 
-         /// Creates a strain plane with a neutral axis line, a perpenpicular offset distance from the neutral axis, and the strain at the osset distance
+         /// Creates a strain plane with a neutral axis line, a perpendicular offset distance from the neutral axis, and the strain at the offset distance
          BiaxialBeamStrain(const WBFL::Geometry::Line2d& rnaLine,Float64 offset, Float64 strain);
 
 
@@ -61,7 +61,7 @@ namespace WBFL
             const WBFL::Geometry::Point2d& p2, Float64 s2,
             const WBFL::Geometry::Point2d& p3, Float64 s3);
 
-         /// Creates a strain plane with a neutral axis line, a perpenpicular offset distance from the neutral axis, and the strain at the osset distance
+         /// Creates a strain plane with a neutral axis line, a perpendicular offset distance from the neutral axis, and the strain at the offset distance
          void SetStrainPlane(const WBFL::Geometry::Line2d& rnaLine, Float64 offset, Float64 strain);
 
          /// Creates a uniform strain plane
@@ -78,14 +78,14 @@ namespace WBFL
          /// \param[in] Y the Y-ordinate
          /// \param[out] X the X-ordinate
          /// \return true if successful
-         bool GetXStrainLocation(Float64 Strain, Float64 Y, Float64& X) const;
+         bool GetXStrainLocation(Float64 strain, Float64 Y, Float64& X) const;
 
          /// Given a strain and X-ordinate, returns the corresponding Y-ordinate. 
          /// \param[in] strain the strain
          /// \param[in] X the X-ordinate
          /// \param[out] Y the Y-ordinate
          /// \return true if successful
-         bool GetYStrainLocation(Float64 Strain, Float64 X, Float64& Y) const;
+         bool GetYStrainLocation(Float64 strain, Float64 X, Float64& Y) const;
 
 
 #if defined _DEBUG

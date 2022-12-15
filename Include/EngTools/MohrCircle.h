@@ -60,7 +60,7 @@ namespace WBFL
 
          /// Computes the state of stresses at the specified angle.
          /// angle is measure counterclockwise from the positive i-direction
-         /// If bSysUnits is true, angle is in system onits, otherwise it is in radians.
+         /// If bSysUnits is true, angle is in system units, otherwise it is in radians.
          void ComputeState(Float64* pSii, Float64* pSjj, Float64* pSij, Float64 angle, bool bSysUnits = true);
 
 
