@@ -25,6 +25,7 @@
 #include <GeomModel/Plane3d.h>
 #include <GeomModel/Primitives3d.h>
 #include <GeomModel/Vector2d.h>
+#include <GeomModel/Vector3d.h>
 #include <GeomModel/Line2d.h>
 #include <GeomModel/LineSegment3d.h>
 #include <GeomModel/GeomOp2d.h>
@@ -42,6 +43,11 @@ using namespace WBFL::Geometry;
 
 Plane3d::Plane3d()
 {
+}
+
+Plane3d::Plane3d(const Point3d& p, const Vector3d& n)
+{
+   Init(p, n);
 }
 
 Plane3d::Plane3d(Float64 a, Float64 b, Float64 c, Float64 d)
@@ -66,6 +72,12 @@ Plane3d::Plane3d(const Point3d& p1, const Point3d& p2, const Point3d& p3)
 
 Plane3d::~Plane3d()
 {
+}
+
+void Plane3d::Init(const Point3d& p, const Vector3d& n)
+{
+   n.GetDimensions(&m_A, &m_B, &m_C);
+   m_D = -1*(m_A * p.X() + m_B * p.Y() + m_C * p.Z());
 }
 
 void Plane3d::Init(Float64 a, Float64 b, Float64 c, Float64 d)
@@ -122,7 +134,7 @@ void Plane3d::ThroughLine(const Line2d& line, const Point3d& point)
 void Plane3d::ThroughPoints(const Point3d& p1, const Point3d& p2, const Point3d& p3)
 {
    if (p1 == p2 || p2 == p3 || p1 == p3 || IsZero(LineSegment3d(p1,p2).DistanceToPoint(p3)))
-      THROW_GEOMETRY(_T("Plane3d::ThroughPoints - points cannot be coincident or colinear"));
+      THROW_GEOMETRY(_T("Plane3d::ThroughPoints - points cannot be coincident or co-linear"));
 
    // if they are, throw an exception
    const int x = 0;
@@ -320,6 +332,14 @@ Point3d Plane3d::PointOnPlaneNearest(const Point3d& point) const
    return point + Point3d(x, y, z);
 }
 
+Vector3d Plane3d::NormalVector() const
+{
+   // REFERENCE: https://tutorial.math.lamar.edu/classes/calcIII/EqnsOfPlanes.aspx
+   // the coefficients A, B, and C define the normal vector
+   Vector3d v(m_A, m_B, m_C);
+   return v;
+}
+
 
 #if defined _DEBUG
 bool Plane3d::AssertValid() const
@@ -485,6 +505,23 @@ bool Plane3d::TestMe(WBFL::Debug::Log& rlog)
    {
       TRY_TESTME(true);
    }
+
+   p1.Move(1,-2, 0);
+   p2.Move(3, 1, 4);
+   p3.Move(0, -1, 2);
+   plane.ThroughPoints(p1, p2, p3);
+   auto v = plane.NormalVector();
+   TRY_TESTME(IsEqual(v.X(), 2.0));
+   TRY_TESTME(IsEqual(v.Y(),-8.0));
+   TRY_TESTME(IsEqual(v.Z(), 5.0));
+
+   plane.Init(p1, v);
+   Float64 a, b, c, d;
+   plane.GetConstants(&a, &b, &c, &d);
+   TRY_TESTME(IsEqual(a, 2.0));
+   TRY_TESTME(IsEqual(b,-8.0));
+   TRY_TESTME(IsEqual(c, 5.0));
+   TRY_TESTME(IsEqual(d,-18.0));
 
    TESTME_EPILOG("Plane3d");
 }

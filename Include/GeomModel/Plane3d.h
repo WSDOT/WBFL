@@ -35,6 +35,7 @@ namespace WBFL
       class LineSegment3d;
       class Line2d;
       class Point3d;
+      class Vector3d;
 
       /// Represents a plane in three dimension space.
       ///
@@ -43,6 +44,7 @@ namespace WBFL
       {
       public:
          Plane3d();
+         Plane3d(const Point3d& p, const Vector3d& n);
          Plane3d(Float64 a, Float64 b, Float64 c, Float64 d);
          Plane3d(Float64 altitude);
          Plane3d(const Line2d& line, const Point3d& point);
@@ -52,7 +54,13 @@ namespace WBFL
          Plane3d(const Plane3d&) = default;
          Plane3d& operator=(const Plane3d&) = default;
 
+         /// Defines the plane with a point and a vector normal to the plane
+         void Init(const Point3d& p, const Vector3d& n);
+
+         /// Defines the plane with the coefficients of the scalar equation of a plane (Ax + By + Cz + D = 0)
          void Init(Float64 a, Float64 b, Float64 c, Float64 d);
+
+         /// Gets the coefficients for the scalar equation of a plane
          void GetConstants(Float64* pA, Float64* pB, Float64* pC, Float64* pD) const;
 
          /// Defines a plane parallel to the XY plane at the specified altitude.
@@ -77,11 +85,17 @@ namespace WBFL
          Float64 GetY(Float64 x, Float64 z) const;
          Float64 GetZ(Float64 x, Float64 y) const;
 
+         /// Returns the point of intersection of the specified line segment and the plane
          Point3d LineSegmentIntersect(const LineSegment3d& lineSegment) const;
 
+         /// Returns the shortest distance from the specified point to the plane
          Float64 ShortestDistance(const Point3d& point) const;
 
+         /// Returns the point on the plane nearest the specified point
          Point3d PointOnPlaneNearest(const Point3d& point) const;
+
+         /// Returns the a vector normal to the plane. The vector is taken to be Ax,By,Cz and is not normalized
+         Vector3d NormalVector() const;
 
 #if defined _DEBUG
          /// Returns true if the class is in a valid state, otherwise returns false
