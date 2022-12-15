@@ -24,9 +24,10 @@
 #include "FDMeshGenerator.h"
 #include <MathEx.h>
 
-//#include <WBFLGeometry.h>
-#include <GeomModel/GeomModel.h>
-#include <System\Threads.h>
+#include <GeomModel/Shape.h>
+#include <GeomModel/Primitives.h>
+#include <GeomModel/ShapeProperties.h>
+#include <System/Threads.h>
 
 #include <vector>
 #include <future>

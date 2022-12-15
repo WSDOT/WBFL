@@ -43,7 +43,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace WBFL::EngTools;
 
 /// Builds the finite difference equations.
-/// \param[in] mesh the finite differnce mesh
+/// \param[in] mesh the finite difference mesh
 /// \param[in,out] matrix the finite difference equations
 void BuildMatrix(const std::unique_ptr<UniformFDMesh>& mesh, WBFL::Math::UnsymmetricBandedMatrix& matrix); ///< Builds the finite difference system of equations
 
@@ -59,7 +59,7 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
 /// \param[in] endElementIdx index of the last element for which to compute the volume
 /// \param[in] mesh the finite difference mesh
 /// \param[in] meshValues the solution to the finite difference equations
-/// \return tuple containing the volume under the membrane for the specified range of elements, the maximum membrane slope, and the index of the element where the maxum slop occurs
+/// \return tuple containing the volume under the membrane for the specified range of elements, the maximum membrane slope, and the index of the element where the maximum slop occurs
 std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
 
 
@@ -310,20 +310,22 @@ std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType start
 
          // if max_direction is a zero vector, than the plane is horizontal and normal is in the Z direction only
          // for that case, take cosine of the slope to be 0 (so angle with normal vector is Pi/2)
-         // slope will then be 0 after the taking the arccosine and adjusting for normal vector orientation
+         // slope will then be 0 after the taking the arc-cosine and adjusting for normal vector orientation
 
-         Float64 cos_slope = 0; // cosine of slope
+         Float64 cos_angle = 0; // cosine of angle between vectors
          if (!max_slope_direction.IsZero())
          {
             max_slope_direction.Normalize();
 
             // dot product of the two unit vectors is the cos of the angle between the vectors
-            cos_slope = normal.Dot(max_slope_direction);
+            cos_angle = normal.Dot(max_slope_direction);
          }
 
          // get the angle...
-         Float64 slope = acos(cos_slope);
-         slope = PI_OVER_2 - slope; // rotate by Pi/2 since the angle is with the normal vector, not the vector in the plane
+         Float64 angle = acos(cos_angle);
+         angle = PI_OVER_2 - angle; // rotate by Pi/2 since the angle is with the normal vector, not the vector in the plane
+
+         Float64 slope = tan(angle); // make the angle a slope
 
          if (maxSlope < slope)
          {
@@ -381,16 +383,18 @@ bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
    solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 1.540554));
+   TRY_TESTME(IsEqual(maxSlope, 33.056141));
    TRY_TESTME(maxSlopeElementIdx == 6412);
+   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.0008931));
 
    // ignore symmetry
    solution = PrandtlMembraneSolver::Solve(shape, 0.25, 0.25, false);
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
    solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 1.540554));
+   TRY_TESTME(IsEqual(maxSlope, 33.056141));
    TRY_TESTME(maxSlopeElementIdx == 6412);
+   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.0008931));
 
    // use a solver object
    PrandtlMembraneSolver solver;
@@ -399,8 +403,9 @@ bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
    solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 1.540554));
+   TRY_TESTME(IsEqual(maxSlope, 33.056141));
    TRY_TESTME(maxSlopeElementIdx == 6412);
+   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.0008931));
 
    TESTME_EPILOG("PrandtlMembraneSolver");
 }

@@ -195,7 +195,7 @@ void MohrCircle::Init()
    }
    else
    {
-      // stored angle is in mohr's system (twice external angle and measured clockwise)
+      // stored angle is in Mohr's system (twice external angle and measured clockwise)
       m_Angle = atan2( 2*m_Sij, (m_Sii-m_Sjj) );
       if (m_Angle<0)
          m_Angle += 2*M_PI;
@@ -260,7 +260,7 @@ bool MohrCircle::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(c4.GetTmax(), 125.0, 0.1));
    TRY_TESTME(IsEqual(c4.GetPrincipalDirection(), ToRadians(-26.57), 0.1));
 
-   // From "Statics", Merriam, Pge 373
+   // From "Statics", Merriam, Pg 373
    MohrCircle c5(18.167,10.167,-7.5);
    
    TRY_TESTME(IsEqual(c5.GetSmax(), 22.67, 0.1));

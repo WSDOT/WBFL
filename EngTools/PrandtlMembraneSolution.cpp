@@ -70,6 +70,13 @@ void PrandtlMembraneSolution::GetMaxSlope(Float64* pMaxSlope, IndexType* pElemen
    *pElementIdx = m_ElementIndex;
 }
 
+Float64 PrandtlMembraneSolution::GetTmaxPerUnitTorque() const
+{
+   Float64 J = GetJ();
+   Float64 Tmax = m_MaxSlope / (2 * J);
+   return Tmax;
+}
+
 const std::unique_ptr<UniformFDMesh>& PrandtlMembraneSolution::GetFiniteDifferenceMesh() const
 {
    return m_Mesh;

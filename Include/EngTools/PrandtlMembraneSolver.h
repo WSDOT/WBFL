@@ -35,7 +35,7 @@ namespace WBFL
 
    namespace EngTools
    {
-      /// Computes the St Venant torisional constant using the Prandtl membrane analogy by solving the following equation using the finite difference method
+      /// Computes the St Venant torsional constant using the Prandtl membrane analogy by solving the following equation using the finite difference method
       /// \f[ \frac{\partial ^2 z}{\partial x^2} + \frac{\partial ^2 z}{\partial y^2} = -\frac{q}{S} \f]
       /// "Saint-Venant Torsion Constant of Modern Precast Concrete Bridge Girders", Brice R., Pickings R., 2021, PCI Journal, V66, No3, pp23-31
       /// https://doi.org/10.15554/pcij66.3-01
@@ -50,19 +50,23 @@ namespace WBFL
          ~PrandtlMembraneSolver() = default;
          PrandtlMembraneSolver& operator=(const PrandtlMembraneSolver&) = default;
 
-         /// Initializes the solver
-         /// \param dxMin minimim size of a finite difference grid element in the X-direction
-         /// \param dyMin minimim size of a finite difference grid element in the Y-direction
-         /// \param bIgnoreSymmetry if true, the symmetry of the cross section is ignored and the full grid is used for analysis
+         /// @brief Initializes the solver
+         /// @param dxMin minimum size of a finite difference grid element in the X-direction
+         /// @param dyMin minimum size of a finite difference grid element in the Y-direction
+         /// @param bIgnoreSymmetry if true, the symmetry of the cross section is ignored and the full grid is used for analysis
          void Initialize(Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry = false);
 
-         /// Solves the governing equation for the shape provided. The shape must be symmetric about the Y-axis
+         /// @brief Solves the governing equation for the shape provided. The shape must be symmetric about the Y-axis
+         /// @param shape shape of the section to be analyzed
+         /// @return Returns a PrandtlMembraneSolution object
          PrandtlMembraneSolution Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape) const;
 
-         /// Solves the governing equation for the shape provided. The shape must be symmetric about the Y-axis
-         /// \param dxMin minimim size of a finite difference grid element in the X-direction
-         /// \param dyMin minimim size of a finite difference grid element in the Y-direction
-         /// \param bIgnoreSymmetry if true, the symmetry of the cross section is ignored and the full grid is used for analysis
+         /// @brief  the governing equation for the shape provided. The shape must be symmetric about the Y-axis
+         /// @param shape shape of the section to be analyzed
+         /// @param dxMin minimum size of a finite difference grid element in the X-direction
+         /// @param dyMin minimum size of a finite difference grid element in the Y-direction
+         /// @param bIgnoreSymmetry if true, the symmetry of the cross section is ignored and the full grid is used for analysis
+         /// @return Returns a PrandtlMembraneSolution object
          static PrandtlMembraneSolution Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape, Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry = false);
 
       private:

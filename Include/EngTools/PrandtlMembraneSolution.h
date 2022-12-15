@@ -43,8 +43,8 @@ namespace WBFL
          /// Initializes the solution
          ///
          /// \param J torsion constant
-         /// \param Maximum slope on the membrane surface
-         /// \param Index of the element where the maximum slope occurs
+         /// \param maxSlope Maximum slope on the membrane surface
+         /// \param elementIdx Index of the element where the maximum slope occurs
          /// \param mesh the finite difference mesh used to solve the problem
          /// \param meshValues the mesh ordinate values for the solution
          void Initialize(Float64 J, Float64 maxSlope, IndexType elementIdx, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues);
@@ -57,12 +57,16 @@ namespace WBFL
          /// @param[out] pElementIdx Element where the maximum slope occurs
          void GetMaxSlope(Float64* pMaxSlope, IndexType* pElementIdx) const;
 
-         /// Returns the finite diffence mesh
+         /// @brief Returns the maximum shear stress per unit torque
+         /// @return Max shear stress per unit torque
+         Float64 GetTmaxPerUnitTorque() const;
+
+         /// Returns the finite difference mesh
          const std::unique_ptr<UniformFDMesh>& GetFiniteDifferenceMesh() const;
 
          /// Returns the finite difference solution.
          ///
-         /// The FD solution is the elevation of the Prandtl Membrate at each of the nodes of
+         /// The FD solution is the elevation of the Prandtl Membrane at each of the nodes of
          /// the FD mesh.The array index is the node index of the FD model.
          /// 
          /// Access a FD solution value with GetFiniteDifferenceMesh()->GetElement(elementIndex)->Node[corner], where corner

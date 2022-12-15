@@ -37,8 +37,8 @@ namespace WBFL
          // access array with Corner enum
          enum class Corner { BottomLeft, BottomRight, TopRight, TopLeft }; // the order of this must match the order of the poly points in a rectangle object
 
-         /// Indicies of the nodes of the mesh element. Use the Corner enum to access the array. 
-         /// Indicies are INVALID_INDEX when the node attached to a boundary or the index of
+         /// Indices of the nodes of the mesh element. Use the Corner enum to access the array. 
+         /// Indices are INVALID_INDEX when the node attached to a boundary or the index of
          /// and internal node
          std::array<IndexType, 4> Node{ INVALID_INDEX,INVALID_INDEX,INVALID_INDEX,INVALID_INDEX };
       };
@@ -68,7 +68,7 @@ namespace WBFL
          );
 
          /// Adds a new row of mesh elements at the bottom of the mesh
-         void AddElementRow(IndexType gridRowStartIdx, /**< index within the grid row where the first elemetn is located */
+         void AddElementRow(IndexType gridRowStartIdx, /**< index within the grid row where the first element is located */
             IndexType nElements/**< number of elements to add */
          );
 
