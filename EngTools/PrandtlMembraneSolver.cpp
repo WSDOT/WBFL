@@ -246,7 +246,7 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
    static std::array<Float64, 5> area_factor{ 0, 1. / 3., 0.5, 5. / 6., 1.0 }; // factors for computing volume based on number of non-boundary nodes
 
    Float64 maxSlope = -Float64_Max;
-   WBFL::Geometry::Vector2d direction;
+   WBFL::Geometry::Vector2d shear_stress_direction;
 
    Float64 dx, dy;
    mesh->GetElementSize(&dx, &dy);
@@ -301,7 +301,7 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
       // create a plane through the points
       plane.ThroughPoints(p0, p1, p2);
 
-      // get the vector normal to the plane, and normalize it
+      // get the vector normal to the plane and normalize it (need unit vectors for dot product calculation)
       auto normal = plane.NormalVector();
       normal.Normalize();
 
@@ -309,14 +309,14 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
       auto max_slope_direction = normal;
       max_slope_direction.Z() = 0; // set z to creates the vector in the horizontal plane
 
-      // if max_direction is a zero vector, than the plane is horizontal and normal is in the Z direction only
+      // if max_direction is a zero vector, then the plane is horizontal and normal is in the Z direction only
       // for that case, take cosine of the slope to be 0 (so angle with normal vector is Pi/2)
       // slope will then be 0 after the taking the arc-cosine and adjusting for normal vector orientation
 
       Float64 cos_angle = 0; // cosine of angle between vectors
       if (max_slope_direction.IsZero())
       {
-         max_slope_direction.X() = 1.0; // if there isn't a clear direction, make it to the left but skip the calcs that are in the else-block
+         max_slope_direction.X() = 1.0; // if there isn't a clear direction, make it to the left but skip the calculations that are in the else-block
       }
       else
       {
@@ -336,8 +336,14 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
       {
          // capture the maximum slope and record the element where it occurs
          maxSlope = slope;
-         direction.X() = max_slope_direction.X();
-         direction.Y() = max_slope_direction.Y();
+         
+         shear_stress_direction.X() = max_slope_direction.X();
+         shear_stress_direction.Y() = max_slope_direction.Y();
+
+         // this is the direction of the maximum slope.... 
+         // the direction of the shear stress is 90 degrees to this direction, 
+         // in the direction of the shear stress contour line (line of constant elevation on the membrane bubble)
+         shear_stress_direction.Rotate(PI_OVER_2);
       }
    }
 
@@ -351,7 +357,7 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
       V += dV;
    }
 
-   return std::tuple<Float64, Float64, WBFL::Geometry::Vector2d>(V, maxSlope, direction);
+   return std::tuple<Float64, Float64, WBFL::Geometry::Vector2d>(V, maxSlope, shear_stress_direction);
 }
 
 std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <EngTools\EngToolsExp.h>
+#include <EngTools/EngToolsExp.h>
+#include <GeomModel/Rectangle.h>
 
 
 namespace WBFL
@@ -72,6 +73,11 @@ namespace WBFL
          /// Access a FD solution value with GetFiniteDifferenceMesh()->GetElement(elementIndex)->Node[corner], where corner
          /// is one of the FDMeshElement::Corner enum values.
          const std::unique_ptr<Float64[]>& GetFiniteDifferenceSolution() const;
+
+         /// @brief Returns the geometric shape of a mesh element. The top left corner of the FD grid is at (0,0).
+         /// @param elementIdx 
+         /// @return Geometric shape of a mesh element
+         WBFL::Geometry::Rectangle GetMeshElement(IndexType elementIdx) const;
 
       private:
          Float64 m_J{ 0 }; // torsion constant

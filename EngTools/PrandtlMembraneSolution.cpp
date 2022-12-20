@@ -86,3 +86,18 @@ const std::unique_ptr<Float64[]>& PrandtlMembraneSolution::GetFiniteDifferenceSo
 {
    return m_MeshValues;
 }
+
+WBFL::Geometry::Rectangle PrandtlMembraneSolution::GetMeshElement(IndexType elementIdx) const
+{
+   // top left corner is at (0,0)
+   Float64 dx, dy;
+   m_Mesh->GetElementSize(&dx, &dy);
+
+   IndexType gridRowIdx, gridRowPositionIdx;
+   m_Mesh->GetElementPosition(elementIdx, &gridRowIdx, &gridRowPositionIdx);
+   Float64 x = gridRowPositionIdx * dx;
+   Float64 y = -1.0 * gridRowIdx * dy;
+
+   WBFL::Geometry::Point2d center(x + dx / 2, y - dy / 2);
+   return WBFL::Geometry::Rectangle(center, dx, dy);
+}

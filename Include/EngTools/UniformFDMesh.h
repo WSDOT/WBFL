@@ -75,12 +75,14 @@ namespace WBFL
          IndexType GetElementRowCount() const; ///< Returns the number of element rows in the mesh
 
 
-         /// Gets the range of element indices in an element row
-         void GetElementRange(IndexType elementRowIdx, /**<[in] element row for which to get the element range*/
-            IndexType* pGridRowStartIdx, /**<[out] index within the grid row where the first element is located */
-            IndexType* pFirstElementIdx, /**<[out] global index of the first element in the row */
-            IndexType* pLastElementIdx/**<[out] global index of the last element in the row */
+         /// Gets the range of element indices in a row
+         void GetElementRange(IndexType gridRowIdx, ///<[in] grid row for which to get the element range
+            IndexType* pGridRowStartIdx, ///<[out] index within the grid row where the first element is located
+            IndexType* pFirstElementIdx, ///<[out] global index of the first element in the row
+            IndexType* pLastElementIdx ///<[out] global index of the last element in the row
          ) const;
+
+         void GetElementPosition(IndexType elementIdx, IndexType* pGridRowIdx, IndexType* pGridRowPositionIdx) const;
 
          IndexType GetElementCount() const; ///< Returns the total number of elements in the mesh
          IndexType GetInteriorNodeCount() const; ///< Returns the number of interior nodes
@@ -109,17 +111,18 @@ namespace WBFL
          Float64 m_Dx, m_Dy; // element dimensions
          bool m_bIsSymmetric;
 
-         struct ElementRow
+         struct GridRow
          {
             IndexType gridRowStartIdx; // index in the grid row where the first element is located
-            IndexType nElements; // number of elements in this row
             IndexType firstElementIdx; // global index of the first element in this row
+            IndexType nElements; // number of elements in this row
 
-            inline ElementRow() : gridRowStartIdx(INVALID_INDEX), nElements(INVALID_INDEX), firstElementIdx(INVALID_INDEX) {};
-            inline ElementRow(IndexType a, IndexType b, IndexType c) : gridRowStartIdx(a), nElements(b), firstElementIdx(c) {};
+            inline GridRow() : gridRowStartIdx(INVALID_INDEX), firstElementIdx(INVALID_INDEX), nElements(INVALID_INDEX) {};
+            inline GridRow(IndexType a, IndexType b, IndexType c) : gridRowStartIdx(a), firstElementIdx(b), nElements(c) {};
             inline IndexType GetNextRowFirstElementIndex() const { return firstElementIdx + nElements; }
+            inline bool ContainsElement(IndexType elementIdx) const { return firstElementIdx <= elementIdx && elementIdx < (firstElementIdx + nElements); }
          };
-         mutable std::vector<ElementRow> m_vElementRows;
+         mutable std::vector<GridRow> m_vGridRows;
          mutable std::vector<FDMeshElement> m_vElements;
          mutable IndexType m_Nx; // overall number of grid squares in a row
          mutable IndexType m_nMaxElementsPerRow; // maximum number of elements in a row. this is the overall width of the grid and defines the axis of symmetry if the mesh is symmetric

@@ -64,7 +64,7 @@ bool UniformFDMesh::HasSymmetry() const
 
 void UniformFDMesh::AllocateElementRows(IndexType nRows)
 {
-   m_vElementRows.resize(nRows);
+   m_vGridRows.resize(nRows);
 }
 
 void UniformFDMesh::SetElementSize(Float64 dx, Float64 dy)
@@ -91,7 +91,7 @@ Float64 UniformFDMesh::GetMeshArea() const
 
 void UniformFDMesh::AddElements(IndexType gridRowIdx, IndexType gridRowStartIdx, IndexType nElements)
 {
-   auto& row = m_vElementRows[gridRowIdx];
+   auto& row = m_vGridRows[gridRowIdx];
    row.gridRowStartIdx = gridRowStartIdx;
    row.nElements = nElements;
    row.firstElementIdx = GetFirstElementIndex(gridRowIdx);
@@ -102,23 +102,45 @@ void UniformFDMesh::AddElements(IndexType gridRowIdx, IndexType gridRowStartIdx,
 
 void UniformFDMesh::AddElementRow(IndexType gridRowStartIdx, IndexType nElements)
 {
-   IndexType firstElementIdx = (m_vElementRows.size() == 0 ? 0 : m_vElementRows.back().GetNextRowFirstElementIndex());
-   m_vElementRows.emplace_back(gridRowStartIdx, nElements, firstElementIdx);
+   IndexType firstElementIdx = (m_vGridRows.size() == 0 ? 0 : m_vGridRows.back().GetNextRowFirstElementIndex());
+   m_vGridRows.emplace_back(gridRowStartIdx, nElements, firstElementIdx);
    m_Nx = max(m_Nx, gridRowStartIdx + nElements);
    m_bIsDirty = true;
 }
 
 IndexType UniformFDMesh::GetElementRowCount() const
 {
-   return m_vElementRows.size();
+   return m_vGridRows.size();
 }
 
-void UniformFDMesh::GetElementRange(IndexType elementRowIdx, IndexType* pGridRowStartIdx, IndexType* pFirstElementIdx, IndexType* pLastElementIdx) const
+void UniformFDMesh::GetElementRange(IndexType gridRowIdx, IndexType* pGridRowStartIdx, IndexType* pFirstElementIdx, IndexType* pLastElementIdx) const
 {
-   const auto& elementRow(m_vElementRows[elementRowIdx]);
-   *pGridRowStartIdx = elementRow.gridRowStartIdx;
-   *pFirstElementIdx = elementRow.firstElementIdx;
-   *pLastElementIdx = *pFirstElementIdx + elementRow.nElements - 1;
+   const auto& gridRow(m_vGridRows[gridRowIdx]);
+   *pGridRowStartIdx = gridRow.gridRowStartIdx;
+   *pFirstElementIdx = gridRow.firstElementIdx;
+   *pLastElementIdx = *pFirstElementIdx + gridRow.nElements - 1;
+}
+
+void UniformFDMesh::GetElementPosition(IndexType elementIdx, IndexType* pGridRowIdx, IndexType* pGridRowPositionIdx) const
+{
+   *pGridRowIdx = 0; // keep track of the rows
+   for (const auto& gridRow : m_vGridRows)
+   {
+      if (gridRow.ContainsElement(elementIdx))
+      {
+         // element is contained in the row
+
+         IndexType d = elementIdx - gridRow.firstElementIdx; // element count from first element to current element
+         *pGridRowPositionIdx = gridRow.gridRowStartIdx + d; // position of the element from the start of the grid row
+         return;
+      }
+
+      (*pGridRowIdx)++;
+   }
+
+   // element was not found
+   *pGridRowIdx = INVALID_INDEX;
+   *pGridRowPositionIdx = INVALID_INDEX;
 }
 
 IndexType UniformFDMesh::GetElementCount() const
@@ -163,12 +185,12 @@ const FDMeshElement* UniformFDMesh::GetElement(IndexType elementIdx) const
 const FDMeshElement* UniformFDMesh::GetElementAbove(IndexType gridRowIdx, IndexType elementIdx) const
 {
    const FDMeshElement* pElement = nullptr;
-   if (0 < gridRowIdx && gridRowIdx < m_vElementRows.size())
+   if (0 < gridRowIdx && gridRowIdx < m_vGridRows.size())
    {
-      const auto& thisRow = m_vElementRows[gridRowIdx];
+      const auto& thisRow = m_vGridRows[gridRowIdx];
       IndexType gridElementIdx = thisRow.gridRowStartIdx + elementIdx; // this is the index of the element counting from the left edge of the overall mesh
 
-      const auto& prevRow = m_vElementRows[gridRowIdx - 1];
+      const auto& prevRow = m_vGridRows[gridRowIdx - 1];
       IndexType prevGridRowStartIdx = prevRow.gridRowStartIdx;
       IndexType prevGridRowEndIdx = prevRow.gridRowStartIdx + prevRow.nElements - 1;
       if (prevGridRowStartIdx <= gridElementIdx && gridElementIdx <= prevGridRowEndIdx)
@@ -188,12 +210,12 @@ const FDMeshElement* UniformFDMesh::GetElementBelow(IndexType gridRowIdx, IndexT
    }
 
    const FDMeshElement* pElement = nullptr;
-   if (gridRowIdx < m_vElementRows.size())
+   if (gridRowIdx < m_vGridRows.size())
    {
-      const auto& thisRow = m_vElementRows[gridRowIdx];
+      const auto& thisRow = m_vGridRows[gridRowIdx];
       IndexType gridElementIdx = thisRow.gridRowStartIdx + elementIdx; // this is the index of the element counting from the left edge of the overall mesh
 
-      const auto& nextRow = m_vElementRows[gridRowIdx + 1];
+      const auto& nextRow = m_vGridRows[gridRowIdx + 1];
       IndexType nextGridRowStartIdx = nextRow.gridRowStartIdx;
       IndexType nextGridRowEndIdx = nextRow.gridRowStartIdx + nextRow.nElements - 1;
       if (nextGridRowStartIdx <= gridElementIdx && gridElementIdx <= nextGridRowEndIdx)
@@ -213,15 +235,15 @@ void UniformFDMesh::GetGridSize(IndexType* pNx, IndexType* pNy) const
    }
 
    *pNx = m_Nx;
-   *pNy = m_vElementRows.size();
+   *pNy = m_vGridRows.size();
 }
 
 void UniformFDMesh::Update() const
 {
-   m_vElements.reserve(m_vElementRows.back().firstElementIdx + m_vElementRows.back().nElements);
+   m_vElements.reserve(m_vGridRows.back().firstElementIdx + m_vGridRows.back().nElements);
 
-   auto& iter = std::begin(m_vElementRows);
-   auto& end = std::end(m_vElementRows);
+   auto& iter = std::begin(m_vGridRows);
+   auto& end = std::end(m_vGridRows);
 
    // create elements for the first row
    // by definition, the top left and top right nodes are boundary nodes
@@ -311,10 +333,10 @@ IndexType UniformFDMesh::GetFirstElementIndex(IndexType gridRowIdx)
       return 0;
    }
 
-   auto& row = m_vElementRows[gridRowIdx];
+   auto& row = m_vGridRows[gridRowIdx];
    if (row.firstElementIdx == INVALID_INDEX)
    {
-      return GetFirstElementIndex(gridRowIdx - 1) + m_vElementRows[gridRowIdx - 1].nElements;
+      return GetFirstElementIndex(gridRowIdx - 1) + m_vGridRows[gridRowIdx - 1].nElements;
    }
    else
    {
@@ -330,7 +352,7 @@ void UniformFDMesh::Dump(WBFL::Debug::LogContext& os) const
       Update();
    }
 
-   for (const auto& row : m_vElementRows)
+   for (const auto& row : m_vGridRows)
    {
       os << "[";
       for (IndexType i = 0; i < row.nElements; i++)
