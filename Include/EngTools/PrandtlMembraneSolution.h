@@ -42,11 +42,11 @@ namespace WBFL
 
          /// Initializes the solution
          ///
-         /// \param J torsion constant
-         /// \param maxSlope Maximum slope on the membrane surface
-         /// \param elementIdx Index of the element where the maximum slope occurs
-         /// \param mesh the finite difference mesh used to solve the problem
-         /// \param meshValues the mesh ordinate values for the solution
+         /// @param J torsion constant
+         /// @param maxSlope Maximum slope on the membrane surface
+         /// @param elementIdx Index of the element where the maximum slope occurs
+         /// @param mesh the finite difference mesh used to solve the problem
+         /// @param meshValues the mesh ordinate values for the solution
          void Initialize(Float64 J, Float64 maxSlope, IndexType elementIdx, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues);
 
          /// Returns the torsion constant

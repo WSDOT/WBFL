@@ -29,6 +29,7 @@
 #include <System/Threads.h>
 #include <GeomModel/Primitives3d.h>
 #include <GeomModel/Plane3d.h>
+#include <GeomModel/Vector2d.h>
 #include <GeomModel/Vector3d.h>
 #include <Math/UnsymmetricBandedMatrix.h>
 #include "FDMeshGenerator.h"
@@ -105,21 +106,23 @@ PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const std::unique_ptr<WBFL:
    auto result = ComputeVolumeAndMaxSlope(startElementIdx, nElements - 1, mesh, meshValues);
    for (auto& future : vFutures)
    {
-      auto fresult = future.get();
-      std::get<0>(result) += std::get<0>(fresult); // Add J (similar to J += future.J
+      auto future_result = future.get();
+      std::get<0>(result) += std::get<0>(future_result); // Add J (similar to J += future.J
 
       // compare maximum slope (stored in element 1 of the tuple)
-      if (std::get<1>(result) < std::get<1>(fresult))
+      if (std::get<1>(result) < std::get<1>(future_result))
       {
-         // fresult has a greater maximum slope... assign it to result
+         // future_result has a greater maximum slope... assign it to result
          // and assign the corresponding element index
-         std::get<1>(result) = std::get<1>(fresult);
-         std::get<2>(result) = std::get<2>(fresult);
+         std::get<1>(result) = std::get<1>(future_result);
+         std::get<2>(result) = std::get<2>(future_result);
       }
    }
 
    if (mesh->HasSymmetry())
    {
+      // if there is symmetry, only have the section was modeled
+      // so double J to get the full value
       std::get<0>(result) *= 2;
    }
 
@@ -236,14 +239,14 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
    }
 }
 
-std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
+std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::GetElementVolumeAndMaxSlope(IndexType elementIndex, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
 {
    Float64 V = 0;
    Float64 area = mesh->GetElementArea();
    static std::array<Float64, 5> area_factor{ 0, 1. / 3., 0.5, 5. / 6., 1.0 }; // factors for computing volume based on number of non-boundary nodes
 
    Float64 maxSlope = -Float64_Max;
-   IndexType maxSlopeElementIdx = INVALID_INDEX;
+   WBFL::Geometry::Vector2d direction;
 
    Float64 dx, dy;
    mesh->GetElementSize(&dx, &dy);
@@ -271,82 +274,103 @@ std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType start
    WBFL::Geometry::Plane3d plane;
    WBFL::Geometry::Point3d p0, p1, p2;
 
-   for (IndexType elementIdx = startElementIdx; elementIdx <= endElementIdx; elementIdx++)
+   const auto* pElement = mesh->GetElement(elementIndex);
+   IndexType nInteriorNodes = 0;
+   Float64 sum_values = 0;
+   for (long i = 0; i < 4; i++) // loop index doubles as corner index and one of four planes used to compute max slope
    {
-      const auto* pElement = mesh->GetElement(elementIdx);
-      IndexType nInteriorNodes = 0;
-      Float64 sum_values = 0;
-      for (long i = 0; i < 4; i++) // loop index doubles as corner index and one of four planes used to compute max slope
+      // volume computation - sum the non-boundary mesh values and keep track of the number of non-boundary points in the element
+      if (pElement->Node[i] != INVALID_INDEX)
       {
-         // volume computation - sum the non-boundary mesh values and keep track of the number of non-boundary points in the element
-         if (pElement->Node[i] != INVALID_INDEX)
-         {
-            sum_values += meshValues[pElement->Node[i]];
-            nInteriorNodes++;
-         }
-
-         // compute max slope...
-
-         // three points to make a plane... the z value at all these points is set to zero
-         p0 = std::get<0>(planePoints[i]);
-         p1 = std::get<1>(planePoints[i]);
-         p2 = std::get<2>(planePoints[i]);
-
-         // set the z value based on the mesh results
-         p0.Z() = pElement->Node[+std::get<0>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<0>(elementCorners[i])]];
-         p1.Z() = pElement->Node[+std::get<1>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<1>(elementCorners[i])]];
-         p2.Z() = pElement->Node[+std::get<2>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<2>(elementCorners[i])]];
-         
-         // create a plane through the points
-         plane.ThroughPoints(p0, p1, p2);
-
-         // get the vector normal to the plane, and normalize it
-         auto normal = plane.NormalVector();
-         normal.Normalize();
-
-         // the direction of the max slope is the normal vector projected onto the horizontal plane
-         auto max_slope_direction = normal;
-         max_slope_direction.Z() = 0; // set z to creates the vector in the horizontal plane
-
-         // if max_direction is a zero vector, than the plane is horizontal and normal is in the Z direction only
-         // for that case, take cosine of the slope to be 0 (so angle with normal vector is Pi/2)
-         // slope will then be 0 after the taking the arc-cosine and adjusting for normal vector orientation
-
-         Float64 cos_angle = 0; // cosine of angle between vectors
-         if (!max_slope_direction.IsZero())
-         {
-            max_slope_direction.Normalize();
-
-            // dot product of the two unit vectors is the cos of the angle between the vectors
-            cos_angle = normal.Dot(max_slope_direction);
-         }
-
-         // get the angle...
-         Float64 angle = acos(cos_angle);
-         angle = PI_OVER_2 - angle; // rotate by Pi/2 since the angle is with the normal vector, not the vector in the plane
-
-         Float64 slope = tan(angle); // make the angle a slope
-
-         if (maxSlope < slope)
-         {
-            // capture the maximum slope and record the element where it occurs
-            maxSlope = slope;
-            maxSlopeElementIdx = elementIdx;
-         }
+         sum_values += meshValues[pElement->Node[i]];
+         nInteriorNodes++;
       }
 
-      // back to volume calculation....
-      // if there are no interior nodes, all nodes are on the boundary and
-      // their values are zero so no contribution to the volume under the membrane
-      if (nInteriorNodes != 0)
+      // compute max slope...
+
+      // three points to make a plane... the z value at all these points is set to zero
+      p0 = std::get<0>(planePoints[i]);
+      p1 = std::get<1>(planePoints[i]);
+      p2 = std::get<2>(planePoints[i]);
+
+      // set the z value based on the mesh results
+      p0.Z() = pElement->Node[+std::get<0>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<0>(elementCorners[i])]];
+      p1.Z() = pElement->Node[+std::get<1>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<1>(elementCorners[i])]];
+      p2.Z() = pElement->Node[+std::get<2>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<2>(elementCorners[i])]];
+
+      // create a plane through the points
+      plane.ThroughPoints(p0, p1, p2);
+
+      // get the vector normal to the plane, and normalize it
+      auto normal = plane.NormalVector();
+      normal.Normalize();
+
+      // the direction of the max slope is the normal vector projected onto the horizontal plane
+      auto max_slope_direction = normal;
+      max_slope_direction.Z() = 0; // set z to creates the vector in the horizontal plane
+
+      // if max_direction is a zero vector, than the plane is horizontal and normal is in the Z direction only
+      // for that case, take cosine of the slope to be 0 (so angle with normal vector is Pi/2)
+      // slope will then be 0 after the taking the arc-cosine and adjusting for normal vector orientation
+
+      Float64 cos_angle = 0; // cosine of angle between vectors
+      if (max_slope_direction.IsZero())
       {
-         Float64 avg_value = sum_values / nInteriorNodes;
-         Float64 dV = area_factor[nInteriorNodes] * area * avg_value;
-         V += dV;
+         max_slope_direction.X() = 1.0; // if there isn't a clear direction, make it to the left but skip the calcs that are in the else-block
+      }
+      else
+      {
+         max_slope_direction.Normalize();
+
+         // dot product of the two unit vectors is the cos of the angle between the vectors
+         cos_angle = normal.Dot(max_slope_direction);
+      }
+
+      // get the angle...
+      Float64 angle = acos(cos_angle);
+      angle = PI_OVER_2 - angle; // rotate by Pi/2 since the angle is with the normal vector, not the vector in the plane
+
+      Float64 slope = tan(angle); // make the angle a slope
+
+      if (maxSlope < slope)
+      {
+         // capture the maximum slope and record the element where it occurs
+         maxSlope = slope;
+         direction.X() = max_slope_direction.X();
+         direction.Y() = max_slope_direction.Y();
       }
    }
 
-   return std::make_tuple(V, maxSlope, maxSlopeElementIdx);
+   // back to volume calculation....
+   // if there are no interior nodes, all nodes are on the boundary and
+   // their values are zero so no contribution to the volume under the membrane
+   if (nInteriorNodes != 0)
+   {
+      Float64 avg_value = sum_values / nInteriorNodes;
+      Float64 dV = area_factor[nInteriorNodes] * area * avg_value;
+      V += dV;
+   }
+
+   return std::tuple<Float64, Float64, WBFL::Geometry::Vector2d>(V, maxSlope, direction);
+}
+
+std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
+{
+   std::tuple<Float64, Float64, IndexType> result{ 0,-Float64_Max,INVALID_INDEX };
+
+   for (IndexType elementIdx = startElementIdx; elementIdx <= endElementIdx; elementIdx++)
+   {
+      auto element_result = PrandtlMembraneSolver::GetElementVolumeAndMaxSlope(elementIdx, mesh, meshValues);
+      std::get<0>(result) += std::get<0>(element_result); // += Volume
+
+      if (std::get<1>(result) < std::get<1>(element_result))
+      {
+         // element maxSlope is greater than overall max slope
+         std::get<1>(result) = std::get<1>(element_result);
+         std::get<2>(result) = elementIdx;
+      }
+   }
+   return result;
 }
 
 #if defined _UNITTEST

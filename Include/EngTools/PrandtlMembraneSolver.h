@@ -31,6 +31,7 @@ namespace WBFL
    namespace Geometry
    {
       class Shape;
+      class Vector2d;
    };
 
    namespace EngTools
@@ -68,6 +69,13 @@ namespace WBFL
          /// @param bIgnoreSymmetry if true, the symmetry of the cross section is ignored and the full grid is used for analysis
          /// @return Returns a PrandtlMembraneSolution object
          static PrandtlMembraneSolution Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape, Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry = false);
+
+         /// @brief Computes the volume, maximum slope, and direction of maximum slope for a solution element
+         /// @param elementIndex Index of the element
+         /// @param mesh The finite difference mesh
+         /// @param meshValues The finite difference solution values
+         /// @return A tuple containing Element Volume, Maximum Slope of Membrane Surface, Direction of Maximum Slope
+         static std::tuple<Float64,Float64,WBFL::Geometry::Vector2d> GetElementVolumeAndMaxSlope(IndexType elementIndex, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
 
       private:
          Float64 m_DxMin{ 1 };
