@@ -33,7 +33,7 @@ namespace WBFL
    {
       class Size2d;
       class Point2d;
-      /// Represents a vector in a two dimensional cartesian coordinate system. 
+      /// Represents a vector in a two dimensional Cartesian coordinate system. 
       ///
       /// A vector is a quantity that has magnitude and direction. The default vector is {1,0}.
       /// \image html Vector2d/Vector.jpg
@@ -178,12 +178,12 @@ namespace WBFL
          Vector2d OffsetBy(const Size2d& size) const;
 
          /// Scales this vector to the given magnitude and returns a reference to it.
-         /// A negative value for lengthmagnitude will cause the vector to point in 
+         /// A negative value for magnitude will cause the vector to point in 
          /// the opposite direction. Changes this vector.
          Vector2d& SetMagnitude(Float64 magnitude);
 
          /// Returns a vector of the given magnitude along the direction of
-         /// this. A negative value for lengthmagnitude will cause the vector to 
+         /// this. A negative value for magnitude will cause the vector to 
          /// point in the opposite direction. This vector is not changed.
          Vector2d SetMagnitudeBy(Float64 magnitude) const;
 
