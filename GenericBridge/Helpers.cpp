@@ -450,6 +450,8 @@ void AdjustForEndBlocks(IPrecastBeam2* pBeam, Float64 Wt, Float64 Wb)
    Float64 t1 = T1;
    Float64 t2 = T2;
 
+   // adjust dimensions based on end block size
+
    // near top flange
    if (2 * (W1 + W2 + W3) + T1 < Wt)
    {
@@ -462,21 +464,31 @@ void AdjustForEndBlocks(IPrecastBeam2* pBeam, Float64 Wt, Float64 Wb)
       d3 = 0;
       t1 = Wt;
    }
+   else if (2 * (W2 + W3) + T1 < Wt)
+   {
+      // end block is wider than the sloped portion of the top flange
+      w1 = (W1 + W2 + W3 + T1 / 2) - Wt / 2;
+      w2 = 0;
+      w3 = 0;
+      d2 = 0;
+      d3 = 0;
+      t1 = Wt;
+   }
    else if (W3 + T1 / 2 < Wt / 2)
    {
       // end block extends beyond top fillet
       w3 = 0;
-      w2 = W1 + W2 + W3 + T1 / 2 - Wt / 2;
+      w2 = W2 + W3 + T1 / 2 - Wt / 2;
       w2 = (IsZero(w2) ? 0 : w2); // eliminate noise
-      d2 = (D2 / W1)*w1;
-      d3 = D3 + (D2 - d2);
+      d2 = (D2 / W2) * w2;
+      d3 = 0;
       t1 = Wt;
    }
    else if (T1 / 2 < Wt / 2)
    {
       // end block intersects top fillet
       w3 = W3 + T1 / 2 - Wt / 2;
-      d3 = (D3 / W3)*w3;
+      d3 = (D3 / W3) * w3;
       t1 = Wt;
    }
 
@@ -491,21 +503,21 @@ void AdjustForEndBlocks(IPrecastBeam2* pBeam, Float64 Wt, Float64 Wb)
       d6 = 0;
       t2 = Wb;
    }
-   else if (W5 + T2 / 2 < Wb / 2)
+   else if (W4 + T2 / 2 < Wb / 2)
    {
       // end block extends beyond bottom fillet
-      w5 = 0;
-      w4 = W4 + W5 + T2 / 2 - Wb / 2;
-      w4 = (IsZero(w4) ? 0 : w3); // eliminate noise
-      d5 = (D5 / W4)*w4;
-      d6 = D6 + (D5 - d5);
+      w4 = 0;
+      w5 = W4 + W5 + T2 / 2 - Wb / 2;
+      w5 = (IsZero(w5) ? 0 : w5); // eliminate noise
+      d4 = D4 + (D5 - d5);
+      d5 = (D5 / W5) * w5;
       t2 = Wb;
    }
    else if (T2 / 2 < Wb / 2)
    {
       // end block intersects bottom fillet
-      w5 = W5 + T2 / 2 - Wb / 2;
-      d6 = (D6 / W5)*w5;
+      w4 = W4 + T2 / 2 - Wb / 2;
+      d4 = (D4 / W4) * w4;
       t2 = Wb;
    }
 
