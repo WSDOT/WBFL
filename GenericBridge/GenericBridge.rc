@@ -52,8 +52,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,2,0
- PRODUCTVERSION 7,0,2,0
+ FILEVERSION 7,0,3,0
+ PRODUCTVERSION 7,0,3,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -71,12 +71,12 @@ BEGIN
             VALUE "Comments", "A member of Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "GenericBridge Module"
-            VALUE "FileVersion", "7.0.2.0"
+            VALUE "FileVersion", "7.0.3.0"
             VALUE "InternalName", "GenericBridge"
             VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "GenericBridge.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "7.0.2.0"
+            VALUE "ProductVersion", "7.0.3.0"
         END
     END
     BLOCK "VarFileInfo"

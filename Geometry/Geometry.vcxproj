@@ -268,6 +268,7 @@
     <None Include="CompositeShapeItem.rgs" />
     <None Include="CoordinateXform2d.rgs" />
     <None Include="CoordinateXform3d.rgs" />
+    <None Include="DeckedSlabBeam.rgs" />
     <None Include="GenericShape.rgs" />
     <None Include="Geometry.def" />
     <None Include="GeomUtil.rgs" />
