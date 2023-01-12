@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Graphing - Line graph plotting and graph definition management library
-// Copyright © 1999-2022  Washington State Department of Transportation
+// Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries

@@ -49,7 +49,7 @@ BEGIN
             VALUE "FileDescription", "Materials Modeling Services\0"
             VALUE "FileVersion", "7.1.0.0\0"
             VALUE "InternalName", "Materials\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "WBFLMaterials.dll\0"
             VALUE "PrivateBuild", "\0"

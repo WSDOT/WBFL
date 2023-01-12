@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "WBFL Fem2d Module\0"
             VALUE "FileVersion", "7.1.0.0\0"
             VALUE "InternalName", "Fem2d\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OLESelfRegister", "\0"
             VALUE "OriginalFilename", "Fem2d.DLL\0"
