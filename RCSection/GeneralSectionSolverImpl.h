@@ -88,7 +88,7 @@ namespace WBFL
             IndexType ShapeIdx; // index of the general section shape from which this slice is taken
             Float64 Area; // slice area
             Float64 Top; // top of slice elevation (may be off the section)
-            Float64 Bottom; // bottom of slice elevation (may be off the sectino)
+            Float64 Bottom; // bottom of slice elevation (may be off the section)
             WBFL::Geometry::Point2d pntCG;
             Float64 ei; // initial strain at the centroid of this slice
             Float64 Le; // elongation length (typically 1 unit, but can be different for unbonded reinforcement elements)

@@ -67,3 +67,38 @@ bool WBFL::RCSection::UnitTest::TestMe(WBFL::Debug::Log& rlog)
 
    return tst;
 }
+
+
+void WBFL::RCSection::UnitTest::DumpSolution(const std::shared_ptr<GeneralSection>& section, const std::unique_ptr<MomentCapacitySolution>& solution)
+{
+   const auto& general_solution = solution->GetGeneralSectionSolution();
+
+   IndexType nSlices = general_solution->GetSliceCount();
+   std::cout << "Element, Material, Top, Bottom, Ycg, Area, initial strain, incremental strain, total strain, stress, force, moment" << std::endl;
+   for (IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++)
+   {
+      const auto& slice = general_solution->GetSlice(sliceIdx);
+      Float64 area = slice->GetArea();
+      const auto& cg = slice->GetCentroid();
+      Float64 initial_strain = slice->GetInitialStrain();
+      Float64 incremental_strain = slice->GetIncrementalStrain();
+      Float64 total_strain = slice->GetTotalStrain();
+      Float64 fgStress = slice->GetForegroundStress();
+
+      const auto& ss = slice->GetForegroundMaterial();
+      auto material_name = ss->GetName();
+
+      Float64 y = cg.Y();
+
+      const auto& shape = slice->GetShape();
+      auto rect = shape->GetBoundingBox();
+      auto top = rect.Top();
+      auto bottom = rect.Bottom();
+
+      IndexType shapeIdx = slice->GetShapeIndex();
+
+      const auto& shape_name = section->GetName(shapeIdx);
+
+      std::wcout << shape_name << ", " << material_name << ", " << top << ", " << bottom << ", " << y << ", " << area << ", " << initial_strain << ", " << incremental_strain << ", " << total_strain << ", " << fgStress << ", " << area * fgStress << ", " << area * fgStress * y << std::endl;
+   }
+}

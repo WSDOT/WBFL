@@ -58,14 +58,14 @@ Float64 lrfdCreepCoefficient2005::GetCreepCoefficient(Float64 t, Float64 ti) con
     if (m_bUpdate)
         Update();
 
-    ti = WBFL::Units::ConvertFromSysUnits(GetAdjustedInitialAge(ti), WBFL::Units::Measure::Day);
+    ti = GetAdjustedInitialAge(ti);
 
     Float64 C = GetUltimateCreep();
     Float64 ktd = GetKtd(t);
-    Float64 Ct = C * m_K1 * m_K2 * m_kvs * m_khc * m_kf * ktd * pow(ti, -0.118);
+    Float64 kl = GetKl(ti);
+    Float64 Ct = C * m_K1 * m_K2 * m_kvs * m_khc * m_kf * ktd * kl;
     return Ct;
 }
-
 
 Float64 lrfdCreepCoefficient2005::GetAdjustedInitialAge(Float64 ti) const
 {
@@ -126,6 +126,12 @@ Float64 lrfdCreepCoefficient2005::GetKhc() const
 Float64 lrfdCreepCoefficient2005::GetKtd(Float64 t) const
 {
     return ComputeKtd(t);
+}
+
+Float64 lrfdCreepCoefficient2005::GetKl(Float64 ti) const
+{
+   ti = WBFL::Units::ConvertFromSysUnits(ti, WBFL::Units::Measure::Day);
+   return pow(ti, -0.118);
 }
 
 Float64 lrfdCreepCoefficient2005::GetUltimateCreep() const

@@ -106,8 +106,8 @@ namespace WBFL
          virtual void GetStressPoints(Float64 X, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const = 0;
 
          /// Returns additional loads applied to the girder. The first parameters is the location of the load measured from
-         /// the left end of the girder and the second is the magintude of the load. Positive values are in the direction of gravity (downwards).
-         /// These loads can be used to model cast-in-place elements such as end diaphraphms in U-Beam girders
+         /// the left end of the girder and the second is the magnitude of the load. Positive values are in the direction of gravity (downwards).
+         /// These loads can be used to model cast-in-place elements such as end diaphragms in U-Beam girders
          virtual std::vector<std::pair<Float64, Float64>> GetAdditionalLoads() const = 0;
 
          /// Drag coefficient for wind loads
@@ -154,7 +154,7 @@ namespace WBFL
          /// The 1" in the expression is the sweep growth.
          virtual Float64 GetSweepGrowth() const = 0;
 
-         /// Lateral offset from CL Girder and Roll Axis to account for accidiental mis-alignment
+         /// Lateral offset from CL Girder and Roll Axis to account for accidental mis-alignment
          virtual Float64 GetSupportPlacementTolerance() const = 0;
 
          /// Returns the camber. This is the natural camber. Do not include formed camber (precamber).
@@ -225,7 +225,7 @@ namespace WBFL
          /// Returns how impact is used in the analysis
          virtual HaulingImpact GetImpactUsage() const = 0;
 
-         /// Returns the superelevation rate (always a postive value)
+         /// Returns the superelevation rate (always a positive value)
          virtual Float64 GetSuperelevation() const = 0;
 
          /// Returns the velocity of the truck. Used for computing centrifugal force.
@@ -258,7 +258,7 @@ namespace WBFL
          /// seated end of the girder
          virtual Float64 GetYRollLiftEnd() const = 0;
 
-         /// Lateral offset from CL Girder and Roll Axis at the lifting point to account for accidiental mis-alignment
+         /// Lateral offset from CL Girder and Roll Axis at the lifting point to account for accidental mis-alignment
          virtual Float64 GetLiftPlacementTolerance() const = 0;
       };
    }

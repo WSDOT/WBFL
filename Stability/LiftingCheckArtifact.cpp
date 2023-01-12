@@ -214,7 +214,7 @@ bool LiftingCheckArtifact::PassedDirectTensionCheck() const
 {
    // since the allowable tension can change based on the amount of reinforcement
    // in the tension region, we have to check every point for every condition
-   // against its associted allowable
+   // against its associated allowable
    for (const auto& sectionResult : m_Results.vSectionResults)
    {
       for (IndexType i = 0; i < 3; i++)
@@ -262,7 +262,7 @@ bool LiftingCheckArtifact::PassedTensionCheck() const
 {
    // since the allowable tension can change based on the amount of reinforcement
    // in the tension region, we have to check every point for every condition
-   // against its associted allowable
+   // against its associated allowable
    for (const auto& sectionResult : m_Results.vSectionResults)
    {
       for (IndexType i = 0; i < 3; i++)

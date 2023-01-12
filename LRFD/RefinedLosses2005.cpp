@@ -398,14 +398,14 @@ Float64 lrfdRefinedLosses2005::GetDeltaFcdf() const
    return m_DeltaFcdf;
 }
 
-Float64 lrfdRefinedLosses2005::Getkhs() const
+Float64 lrfdRefinedLosses2005::Getkhs_Girder() const
 {
-    if ( m_IsDirty )
-    {
-        UpdateLosses();
-    }
+   return GetShrinkageHumidityFactor_Girder();
+}
 
-    return m_khs;
+Float64 lrfdRefinedLosses2005::Getkhs_Deck() const
+{
+   return GetShrinkageHumidityFactor_Deck();
 }
 
 Float64 lrfdRefinedLosses2005::Get_ebid() const
@@ -804,9 +804,16 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_dfpSS = IsZero(m_ApsPerm) ? 0.0 : (m_Ep / m_Ec) * m_DeltaFcdf * m_Kdf * (1 + 0.7 * m_pGirderCreep->GetCreepCoefficient(GetMaturityDeckPlacementToFinal(),m_td));
 }
 
-Float64 lrfdRefinedLosses2005::GetShrinkageHumidityFactor() const
+Float64 lrfdRefinedLosses2005::GetShrinkageHumidityFactor_Girder() const
 {
    return 2.0 - 0.014 * m_H;
+}
+
+Float64 lrfdRefinedLosses2005::GetShrinkageHumidityFactor_Deck() const
+{
+   // the scope is important here - we always want to call the lrfdRefinedLosses2005
+   // version of the function here, not a overwritten sub-class version   
+   return lrfdRefinedLosses2005::GetShrinkageHumidityFactor_Girder();
 }
 
 Float64 lrfdRefinedLosses2005::GetShrinkageStrain_Girder() const
@@ -816,6 +823,8 @@ Float64 lrfdRefinedLosses2005::GetShrinkageStrain_Girder() const
 
 Float64 lrfdRefinedLosses2005::GetShrinkageStrain_Deck() const
 {
+   // the scope is important here - we always want to call the lrfdRefinedLosses2005
+   // version of the function here, not a overwritten sub-class version
     return lrfdRefinedLosses2005::GetShrinkageStrain_Girder();
 }
 
@@ -825,7 +834,7 @@ Float64 lrfdRefinedLosses2005::GetShrinkageStrainAtHauling() const
    Float64 ktd = m_pGirderCreep->GetKtd(t);
    Float64 kvs = m_pGirderCreep->GetKvs();
    Float64 kf = m_pGirderCreep->GetKf();
-   Float64 khs = m_khs;
+   Float64 khs = GetShrinkageHumidityFactor_Girder();
    Float64 esh = GetShrinkageStrain_Girder();
    Float64 ebih = m_ShrinkageK1 * m_ShrinkageK2 * kvs * khs * kf * ktd * esh;
    if (AdjustShrinkageStrain())
@@ -845,7 +854,7 @@ Float64 lrfdRefinedLosses2005::GetShrinkageStrainAtDeckPlacement() const
    Float64 ktd = m_pGirderCreep->GetKtd(t);
    Float64 kvs = m_pGirderCreep->GetKvs();
    Float64 kf = m_pGirderCreep->GetKf();
-   Float64 khs = m_khs;
+   Float64 khs = GetShrinkageHumidityFactor_Girder();
    Float64 esh = GetShrinkageStrain_Girder();
    Float64 ebid = m_ShrinkageK1 * m_ShrinkageK2 * kvs * khs * kf * ktd * esh;
 
@@ -866,7 +875,7 @@ Float64 lrfdRefinedLosses2005::GetShrinkageStrainAtFinal() const
    Float64 ktd = m_pGirderCreep->GetKtd(t);
    Float64 kvs = m_pGirderCreep->GetKvs();
    Float64 kf = m_pGirderCreep->GetKf();
-   Float64 khs = m_khs;
+   Float64 khs = GetShrinkageHumidityFactor_Girder();
    Float64 esh = GetShrinkageStrain_Girder();
    Float64 ebif = m_ShrinkageK1 * m_ShrinkageK2 * kvs * khs * kf * ktd * esh;
    if (AdjustShrinkageStrain())
@@ -888,7 +897,7 @@ Float64 lrfdRefinedLosses2005::GetDeckShrinkageStrain() const
    Float64 t = GetDeckMaturityAtFinal();
    Float64 ktd = m_pDeckCreep->GetKtd(t);
    Float64 kvs = m_pDeckCreep->GetKvs();
-   Float64 khs = m_khs;
+   Float64 khs = GetShrinkageHumidityFactor_Deck();
    Float64 kf = m_pDeckCreep->GetKf();
    Float64 esh = GetShrinkageStrain_Deck();
    Float64 eddf = m_Ksh * m_DeckShrinkageK1 * m_DeckShrinkageK2 * kvs * khs * kf * ktd * esh;
@@ -909,8 +918,6 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       m_KL[TEMPORARY_STRAND] = (m_TypeTemp == WBFL::Materials::PsStrand::Type::LowRelaxation ? 45 : 10);
       m_KL[PERMANENT_STRAND] = (m_TypePerm == WBFL::Materials::PsStrand::Type::LowRelaxation ? 45 : 10);
    }
-
-   m_khs = GetShrinkageHumidityFactor();
 
    // Shrinkage of Girder Concrete [5.9.5.4.2a]
    Float64 Aps = m_ApsPerm;

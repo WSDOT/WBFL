@@ -490,7 +490,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    bool bSimpleFormat = false;
 
    // this is the first check to see if epxs and lateral camber meet the criteria for simple formatting
-   // we have to deal with the section propertes later
+   // we have to deal with the section properties later
    bool bSimpleFormatTest1 = /*IsZero(pStabilityProblem->GetFpeLateralEccentricity()) &&*/ (!pStabilityProblem->IncludeLateralRollAxisOffset() || (pStabilityProblem->IncludeLateralRollAxisOffset() && IsZero(pStabilityProblem->GetLateralCamber())));
 
    Float64 Ag, Ixx, Iyy, Ixy, Xcg, Ycg, Hg, Wtop, Wbot;
@@ -542,7 +542,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       *pPara << _T("Overhang Bracket Weight, ") << Sub2(_T("W"), _T("b")) << _T(" = ") << force_per_length.SetValue(Wb) << rptNewLine;
       *pPara << _T("Girder Weight with Overhang Brackets, ") << Sub2(_T("W"), _T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
       *pPara << _T("Overhang Bracket Eccentricity, ") << Sub2(_T("e"), _T("b")) << _T(" = ") << shortLength.SetValue(eb) << rptNewLine;
-      *pPara << _T("Lateral eccentricty of girder weight with overhang brackets, ") << Sub2(_T("e"), _T("a")) << _T(" = ") Sub2(_T("W"),_T("b")) << _T("*") << Sub2(_T("e"),_T("b")) << _T("/(") << Sub2(_T("W"),_T("girder")) << _T("+") << Sub2(_T("W"),_T("b")) << _T(") = ") << shortLength.SetValue(pResults->ea) << rptNewLine;
+      *pPara << _T("Lateral eccentricity of girder weight with overhang brackets, ") << Sub2(_T("e"), _T("a")) << _T(" = ") Sub2(_T("W"),_T("b")) << _T("*") << Sub2(_T("e"),_T("b")) << _T("/(") << Sub2(_T("W"),_T("girder")) << _T("+") << Sub2(_T("W"),_T("b")) << _T(") = ") << shortLength.SetValue(pResults->ea) << rptNewLine;
       *pPara << _T("Left reaction due to girder weight and overhang brackets, ") << force.SetValue(pResults->Rl) << rptNewLine;
       *pPara << _T("Right reaction due to girder weight and overhang brackets, ") << force.SetValue(pResults->Rr) << rptNewLine;
    }
@@ -888,7 +888,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
    Float64 camber = pStabilityProblem->GetCamber();
    Float64 precamber = pGirder->GetPrecamber();
-   *pPara << _T("Camber Multipler, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
+   *pPara << _T("Camber Multiplier, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
    *pPara << _T("Camber, ") << Sub2(symbol(DELTA), _T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
    *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
    *pPara << _T("Location of center of gravity below roll axis, ") << YR << _T(" = ") << Sub2(_T("Y"), _T("top")) << _T(" - ") << FO << _T("(") << _T("m") << Sub2(symbol(DELTA), _T("camber")) << /*_T(" + ") << _T("(IM)") << Sub2(symbol(DELTA), _T("lift")) <<*/ _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" + ") << Sub2(_T("y"), _T("rc")) << rptNewLine;

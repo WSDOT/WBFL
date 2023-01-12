@@ -29,6 +29,9 @@ namespace WBFL
 {
 	namespace RCSection
 	{
+		class GeneralSection;
+		class MomentCapacitySolution;
+
 		/// Unit test driver for the RCSection library
 		class RCSCLASS UnitTest
 		{
@@ -37,6 +40,8 @@ namespace WBFL
 		   UnitTest& operator=(const UnitTest&) = delete;
 		   
 		   static bool TestMe(WBFL::Debug::Log& rlog);
+			static void DumpSolution(const std::shared_ptr<GeneralSection>& section, const std::unique_ptr<MomentCapacitySolution>& solution);
+
 		};
 	};
 };

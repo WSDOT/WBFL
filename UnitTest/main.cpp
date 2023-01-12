@@ -130,6 +130,13 @@ bool TestDll(LPCTSTR plibname, WBFL::Debug::Log& rlog)
             rlog << ost.str();
             rlog.LogTestResult(ost.str(), WBFL::Debug::Log::TestResult::Failed);
          }
+         catch (WBFL::System::XBase& xb)
+         {
+            ost << _T("*** Failed *** Handled uncaught sysXBase exception from :") << dllname << std::endl
+               << _T("Reason was ") << xb.GetReason() << std::endl;
+            rlog << ost.str();
+            rlog.LogTestResult(ost.str(), WBFL::Debug::Log::TestResult::Failed);
+         }
          catch (std::exception& e)
          {
             ost << _T("*** Failed *** Handled uncaught std::exception from :") << dllname << std::endl

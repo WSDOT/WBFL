@@ -86,8 +86,8 @@ void CUHPConcreteTest::Test()
    TRY_TEST(IsEqual(val, 0.85*8273708.7518), true); // gamma*ft,cr
 
    // after crack localization
-   TRY_TEST(ss->ComputeStress(0.0050, &val), S_FALSE);
-   TRY_TEST(IsEqual(val, 0.85 * 8273708.7518), true);
+   TRY_TEST(ss->ComputeStress(0.0050, &val), S_OK);
+   TRY_TEST(IsEqual(val, 0.0), true);
 
    // compute stress for compression strain
 
@@ -97,7 +97,7 @@ void CUHPConcreteTest::Test()
 
    // plastic region
    TRY_TEST(ss->ComputeStress(-0.003, &val), S_OK);
-   TRY_TEST(IsEqual(val, -0.85*151684660.45), true); // stress plateu at alpha*f'c
+   TRY_TEST(IsEqual(val, -0.85*151684660.45), true); // stress plateau at alpha*f'c
 
    // after crushing
    TRY_TEST(ss->ComputeStress(-0.004, &val), S_FALSE); // -0.0035 is crushing

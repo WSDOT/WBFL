@@ -107,10 +107,10 @@ namespace WBFL
       /// Constant indicate the location of a harp point
       enum class HarpPointLocation
       {
-         StartHP, ///< Point near start of the girder where strands are deflected (typcially the left end of the girder)
+         StartHP, ///< Point near start of the girder where strands are deflected (typically the left end of the girder)
          LeftHP, ///< Point where strands are deflected, left of mid-span
          RightHP, ///< Point where strands are deflected, right of mid-span
-         EndHP ///< Point near end of the girder where strands are deflected (typcially the right end of the girder)
+         EndHP ///< Point near end of the girder where strands are deflected (typically the right end of the girder)
       };
       inline constexpr auto operator+(HarpPointLocation t) noexcept { return std::underlying_type<HarpPointLocation>::type(t); }
 
@@ -122,7 +122,7 @@ namespace WBFL
       };
       inline constexpr auto operator+(Section t) noexcept { return std::underlying_type<Section>::type(t); }
 
-      /// Constant indicating the type of centrifugal force occuring in the analysis
+      /// Constant indicating the type of centrifugal force occurring in the analysis
       enum class CFType
       {
          Adverse, ///< CF is towards the left (increases lateral deflection and roll over)

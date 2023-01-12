@@ -172,11 +172,6 @@ std::unique_ptr<CrackedSectionSolution> CrackedSectionSolverImpl::Solve(Float64 
       THROW_RCSECTION(_T("Solution not found - did not converge before maximum number of iterations"));
    }
 
-#if defined _DEBUG_LOGGING
-   m_Log->Close(m_dwCookie);
-   m_Log.Release();
-#endif // _DEBUG_LOGGING
-
    return std::make_unique<CrackedSectionSolution>(pntCG,std::move(slices));
 }
 
@@ -354,7 +349,7 @@ void CrackedSectionSolverImpl::AnalyzeSection(Float64 Yguess, std::vector<std::u
             slices.emplace_back(std::make_unique<CrackedSectionSlice>(slice.ShapeIdx, top_slice.SliceShape, top_slice.Area, top_slice.pntCG, Efg, Ebg));
 
 #if defined _DEBUG_LOGGING
-            os << std::setw(10) << AREA(top_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(top_slice.Top) << ", " << std::setw(10) << LENGTH(top_slice.Bottom) << ", " << std::setw(20) << LENGTH(top_slice.Xcg) << ", " << std::setw(20) << LENGTH(top_slice.Ycg) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
+            os << std::setw(10) << AREA(top_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(top_slice.Top) << ", " << std::setw(10) << LENGTH(top_slice.Bottom) << ", " << std::setw(20) << LENGTH(top_slice.pntCG.X()) << ", " << std::setw(20) << LENGTH(top_slice.pntCG.Y()) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
 #endif // _DEBUG_LOGGING
          }
 
@@ -372,7 +367,7 @@ void CrackedSectionSolverImpl::AnalyzeSection(Float64 Yguess, std::vector<std::u
             slices.emplace_back(std::make_unique<CrackedSectionSlice>(slice.ShapeIdx, bottom_slice.SliceShape, bottom_slice.Area, bottom_slice.pntCG, Efg, Ebg));
 
 #if defined _DEBUG_LOGGING
-            os << std::setw(10) << AREA(bottom_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(bottom_slice.Top) << ", " << std::setw(10) << LENGTH(bottom_slice.Bottom) << ", " << std::setw(20) << LENGTH(bottom_slice.Xcg) << ", " << std::setw(20) << LENGTH(bottom_slice.Ycg) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
+            os << std::setw(10) << AREA(bottom_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(bottom_slice.Top) << ", " << std::setw(10) << LENGTH(bottom_slice.Bottom) << ", " << std::setw(20) << LENGTH(bottom_slice.pntCG.X()) << ", " << std::setw(20) << LENGTH(bottom_slice.pntCG.Y()) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
 #endif // _DEBUG_LOGGING
          }
       }
@@ -388,8 +383,8 @@ void CrackedSectionSolverImpl::AnalyzeSection(Float64 Yguess, std::vector<std::u
          slices.emplace_back(std::make_unique<CrackedSectionSlice>(slice.ShapeIdx, slice.SliceShape, slice.Area, slice.pntCG, Efg, Ebg));
 
 #if defined _DEBUG_LOGGING
-         char cSide = (slice.Ycg > Yguess ? 'C' : 'T');
-         os << std::setw(10) << AREA(slice.Area) << ", " << std::setw(10) << cSide << ", " << std::setw(10) << LENGTH(slice.Top) << ", " << std::setw(10) << LENGTH(slice.Bottom) << ", " << std::setw(20) << LENGTH(slice.Xcg) << ", " << std::setw(20) << LENGTH(slice.Ycg) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
+         char cSide = (Yguess < slice.pntCG.Y() ? 'C' : 'T');
+         os << std::setw(10) << AREA(slice.Area) << ", " << std::setw(10) << cSide << ", " << std::setw(10) << LENGTH(slice.Top) << ", " << std::setw(10) << LENGTH(slice.Bottom) << ", " << std::setw(20) << LENGTH(slice.pntCG.X()) << ", " << std::setw(20) << LENGTH(slice.pntCG.Y()) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
 #endif // _DEBUG_LOGGING
       }
    } // next slice
@@ -405,7 +400,6 @@ void CrackedSectionSolverImpl::AnalyzeSection(Float64 Yguess, std::vector<std::u
    os << std::endl;
    os << "Y = " << LENGTH(y) << std::endl;
    os << "Yguess - Y = " << LENGTH(Yguess - y) << std::endl;
-   m_Log->LogMessage(m_dwCookie, CComBSTR(os.str().c_str()));
 #endif // _DEBUG_LOGGING
 }
 

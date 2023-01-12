@@ -670,7 +670,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    bool bSimpleFormat = false;
 
    // this is the first check to see if epxs and lateral camber meet the criteria for simple formatting
-   // we have to deal with the section propertes later
+   // we have to deal with the section properties later
    bool bSimpleFormatTest1 = (!pStabilityProblem->IncludeLateralRollAxisOffset() || (pStabilityProblem->IncludeLateralRollAxisOffset() && IsZero(pStabilityProblem->GetLateralCamber())));
 
    Float64 Ag, Ixx, Iyy, Ixy, Xcg, Ycg, Hg, Wtop, Wbot;
@@ -725,7 +725,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
       *pPara << _T("Overhang Bracket Weight, ") << Sub2(_T("W"), _T("b")) << _T(" = ") << force_per_length.SetValue(Wb) << rptNewLine;
       *pPara << _T("Girder Weight with Overhang Brackets, ") << Sub2(_T("W"), _T("g")) << _T(" = ") << force.SetValue(pResults->Wg) << rptNewLine;
       *pPara << _T("Overhang Bracket Eccentricity, ") << Sub2(_T("e"), _T("b")) << _T(" = ") << shortLength.SetValue(eb) << rptNewLine;
-      *pPara << _T("Lateral eccentricty of girder weight with overhang brackets, ") << Sub2(_T("e"), _T("a")) << _T(" = ") Sub2(_T("W"), _T("b")) << _T("*") << Sub2(_T("e"), _T("b")) << _T("/(") << Sub2(_T("W"), _T("girder")) << _T("+") << Sub2(_T("W"), _T("b")) << _T(") = ") << shortLength.SetValue(pResults->ea) << rptNewLine;
+      *pPara << _T("Lateral eccentricity of girder weight with overhang brackets, ") << Sub2(_T("e"), _T("a")) << _T(" = ") Sub2(_T("W"), _T("b")) << _T("*") << Sub2(_T("e"), _T("b")) << _T("/(") << Sub2(_T("W"), _T("girder")) << _T("+") << Sub2(_T("W"), _T("b")) << _T(") = ") << shortLength.SetValue(pResults->ea) << rptNewLine;
       *pPara << _T("Trailing end reaction due to girder weight and overhang brackets, ") << force.SetValue(pResults->Rl) << rptNewLine;
       *pPara << _T("Leading end reaction due to girder weight and overhang brackets, ") << force.SetValue(pResults->Rr) << rptNewLine;
    }
@@ -1063,7 +1063,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 
    Float64 camber = pStabilityProblem->GetCamber();
    Float64 precamber = pGirder->GetPrecamber();
-   *pPara << _T("Camber Multipler, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
+   *pPara << _T("Camber Multiplier, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
    *pPara << _T("Camber, ") << Sub2(symbol(DELTA), _T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
    *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
    *pPara << _T("Location of center of gravity above roll axis, ") << YR << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("top")) << _T(" + ") << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(") = ") << shortLength.SetValue(pResults->Dra[+ImpactDirection::NoImpact]) << rptNewLine;
@@ -1231,11 +1231,11 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    *pChapter << pPara;
    *pPara << _T("Turning radius, R = ") << longLength.SetValue(pStabilityProblem->GetTurningRadius()) << rptNewLine;
    *pPara << _T("Velocity, V = ") << velocity.SetValue(pStabilityProblem->GetVelocity()) << rptNewLine;
-   *pPara << _T("Centrigual Force, ") << W_CF << _T(" = (") << Sub2(_T("W"),_T("g")) << Super2(_T("V"),_T("2")) << _T(")/(gR) = ") << force.SetValue(pResults->Wcf) << rptNewLine;
-   *pPara << _T("Centrigural force is ") << strCF << rptNewLine;
+   *pPara << _T("Centrifugal Force, ") << W_CF << _T(" = (") << Sub2(_T("W"),_T("g")) << Super2(_T("V"),_T("2")) << _T(")/(gR) = ") << force.SetValue(pResults->Wcf) << rptNewLine;
+   *pPara << _T("Centrifugal force is ") << strCF << rptNewLine;
    *pPara << _T("Location of resultant centrifugal force above roll axis, ") << Y_CF << _T(" = ") << YR << _T(" = ") << shortLength.SetValue(pResults->Dra[+ImpactDirection::NoImpact]) << rptNewLine;
    *pPara << _T("Lateral Deflection due to centrifugal force, ") << Sub2(_T("z"),_T("cf")) << _T(" = ") << W_CF << ZO << _T("/") << Sub2(_T("W"),_T("g")) << _T(" = ") << shortLength.SetValue(pResults->ZoCF) << rptNewLine;
-   *pPara << _T("Overturning moment due to centrigural force, ") << Sub2(_T("M"), _T("otcf")) << _T(" = ") << W_CF << Y_CF << _T(" = ") << ot_moment.SetValue(pResults->MotCF) << rptNewLine;
+   *pPara << _T("Overturning moment due to centrifugal force, ") << Sub2(_T("M"), _T("otcf")) << _T(" = ") << W_CF << Y_CF << _T(" = ") << ot_moment.SetValue(pResults->MotCF) << rptNewLine;
    *pPara << rptNewLine;
 
    auto vNames = pStabilityProblem->GetPrestressNames();

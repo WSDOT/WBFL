@@ -23,7 +23,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Lrfd\LrfdLib.h>
-#include <Lrfd\PCIUHPCLosses.h>
+#include <Lrfd\FHWAUHPCLosses.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,13 +32,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 //======================== LIFECYCLE  =======================================
-lrfdPCIUHPCLosses::lrfdPCIUHPCLosses()
+lrfdFHWAUHPCLosses::lrfdFHWAUHPCLosses()
 {
-   m_dfpAS[TEMPORARY_STRAND] = 0;
-   m_dfpAS[PERMANENT_STRAND] = 0;
 }
 
-lrfdPCIUHPCLosses::lrfdPCIUHPCLosses(
+lrfdFHWAUHPCLosses::lrfdFHWAUHPCLosses(
                          Float64 x,
                          Float64 Lg,
                          lrfdLosses::SectionPropertiesType sectionProperties,
@@ -64,7 +62,6 @@ lrfdPCIUHPCLosses::lrfdPCIUHPCLosses(
 
                          Float64 ShrinkageK1,
                          Float64 ShrinkageK2,
-                         Float64 AutogenousShrinkage,
                          
                          Float64 DeckShrinkageK1,
                          Float64 DeckShrinkageK2,
@@ -115,9 +112,7 @@ lrfdPCIUHPCLosses::lrfdPCIUHPCLosses(
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod,
                          std::shared_ptr<const lrfdCreepCoefficient2005>& pGirderCreep,
-                         std::shared_ptr<const lrfdCreepCoefficient2005>& pDeckCreep,
-                         bool bUHPCGirder,
-                         bool bPCTTGirder
+                         std::shared_ptr<const lrfdCreepCoefficient2005>& pDeckCreep
                          ) :
 lrfdRefinedLosses2005(x, Lg, sectionProperties, gradePerm, typePerm, coatingPerm, gradeTemp, typeTemp, coatingTemp, fpjPerm, fpjTemp, ApsPerm, ApsTemp, aps, epermRelease, epermFinal, etemp, usage, anchorSet, wobble, friction, angleChange, ShrinkageK1, ShrinkageK2,  DeckShrinkageK1, DeckShrinkageK2, 
    Fc, Fci,FcSlab, Ec, Eci, Ecd, 
@@ -128,138 +123,46 @@ lrfdRefinedLosses2005(x, Lg, sectionProperties, gradePerm, typePerm, coatingPerm
    rh, ti,th, td, tf, bIgnoreInitialRelaxation, bValidateParameters, relaxationMethod, pGirderCreep, pDeckCreep
 )
 {
-   m_bUHPCGirder = bUHPCGirder;
-   m_bPCTTGirder = bPCTTGirder;
-   m_eAS = AutogenousShrinkage;
-   m_dfpAS[TEMPORARY_STRAND] = 0;
-   m_dfpAS[PERMANENT_STRAND] = 0;
 }
 
-
-lrfdPCIUHPCLosses::~lrfdPCIUHPCLosses()
+lrfdFHWAUHPCLosses::~lrfdFHWAUHPCLosses()
 {
 }
 
-Float64 lrfdPCIUHPCLosses::TemporaryStrand_AutogenousShrinkage() const
+Float64 lrfdFHWAUHPCLosses::GetShrinkageHumidityFactor_Girder() const
 {
-   if ( m_IsDirty ) 
-   {
-      UpdateLosses();
-   }
-   return m_dfpAS[TEMPORARY_STRAND];
+   return 1.5 - 0.01*m_H;
 }
 
-Float64 lrfdPCIUHPCLosses::PermanentStrand_AutogenousShrinkage() const
+Float64 lrfdFHWAUHPCLosses::GetShrinkageStrain_Girder() const
 {
-   if (m_IsDirty)
-   {
-      UpdateLosses();
-   }
-   return m_dfpAS[PERMANENT_STRAND];
-}
-
-Float64 lrfdPCIUHPCLosses::TemporaryStrand_AtShipping() const
-{
-   // adds autogenous shrinkage loss to the Shipping losses
-   // autogenous shrinkage occurs after release and initial lifting - the next stage is Shipping
-   return __super::TemporaryStrand_AtShipping() + TemporaryStrand_AutogenousShrinkage();
-}
-
-Float64 lrfdPCIUHPCLosses::PermanentStrand_AtShipping() const
-{
-   // adds autogenous shrinkage loss to the Shipping losses
-   // autogenous shrinkage occurs after release and initial lifting - the next stage is Shipping
-   return __super::PermanentStrand_AtShipping() + PermanentStrand_AutogenousShrinkage();
-}
-
-Float64 lrfdPCIUHPCLosses::PermanentStrand_AfterDeckPlacement() const
-{
-   // adds autogenous shrinkage loss... shipping loss is not included in AfterDeckPlacement
-   // so we need to add the autogenous shrinkage loss here as well
-   return __super::PermanentStrand_AfterDeckPlacement() + PermanentStrand_AutogenousShrinkage();
-}
-
-Float64 lrfdPCIUHPCLosses::GetShrinkageHumidityFactor_Girder() const
-{
-   return 1.0;
-}
-
-Float64 lrfdPCIUHPCLosses::GetShrinkageStrain_Girder() const
-{
-    if (m_bUHPCGirder)
-        return (m_bPCTTGirder ? 0.0 : 0.30e-03);
-    else
-        return __super::GetShrinkageStrain_Girder();
-}
-
-void lrfdPCIUHPCLosses::UpdateInitialLosses() const
-{
-   __super::UpdateInitialLosses();
-   UpdateAutogenousShrinkageLoss();
-}
-
-void lrfdPCIUHPCLosses::UpdateAutogenousShrinkageLoss() const
-{
-   if (m_bUHPCGirder)
-   {
-      Float64 Aps = m_ApsPerm;
-      WBFL::Geometry::Point2d e = m_epermFinal;
-      if (m_TempStrandUsage == lrfdRefinedLosses2005::tsPretensioned)
-      {
-         Aps += m_ApsTemp;
-         e = GetEccpgFinal();
-      }
-
-      Float64 D = m_Ixxn * m_Iyyn - m_Ixyn * m_Ixyn;
-      Float64 DE = (e.Y() * m_Iyyn + e.X() * m_Ixyn) * m_etemp.Y() - (e.X() * m_Ixxn + e.Y() * m_Ixyn) * m_etemp.X(); // e(X,Y) is where the total prestress force is acting... m_etemp(X,Y) is where we want the change in stress
-      Float64 K_temp = 1 + (m_Ep / m_Eci) * (Aps / m_An) * (1 + m_An * DE / D);
-      K_temp = 1 / K_temp;
-
-      DE = (e.Y() * m_Iyyn + e.X() * m_Ixyn) * m_epermFinal.Y() - (e.X() * m_Ixxn + e.Y() * m_Ixyn) * m_epermFinal.X(); // e(X,Y) is where the total prestress force is acting... m_epermFinal(X,Y) is where we want the change in stress
-      Float64 K_perm = 1 + (m_Ep / m_Eci) * (Aps / m_An) * (1 + m_An * DE / D);
-      K_perm = 1 / K_perm;
-
-
-      m_dfpAS[TEMPORARY_STRAND] = m_eAS * m_Ep * K_temp;
-      m_dfpAS[PERMANENT_STRAND] = m_eAS * m_Ep * K_perm;
-   }
-   else
-   {
-       m_dfpAS[TEMPORARY_STRAND] = 0;
-       m_dfpAS[PERMANENT_STRAND] = 0;
-   }
+   return 0.6e-03;
 }
 
 #if defined _UNITTEST
 #include <Lrfd\AutoVersion.h>
-bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
+bool lrfdFHWAUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("lrfdPCIUHPCLosses");
+   TESTME_PROLOGUE("lrfdFHWAUHPCLosses");
 
    lrfdAutoVersion av;
 
-
-   std::shared_ptr<lrfdPCIUHPCCreepCoefficient> pGirderCreep = std::make_shared<lrfdPCIUHPCCreepCoefficient>();
-   pGirderCreep->SetCuringMethod(lrfdPCIUHPCCreepCoefficient::Accelerated);
-   pGirderCreep->SetCuringMethodTimeAdjustmentFactor(WBFL::Units::ConvertToSysUnits(7, WBFL::Units::Measure::Day));
-   pGirderCreep->SetFci(35852736.609413415);
-   pGirderCreep->SetRelHumidity(75);
-   pGirderCreep->SetSurfaceArea(6.9711699425657105);
-   pGirderCreep->SetVolume(0.56485774124999988);
-   pGirderCreep->SetK1(1.0);
-   pGirderCreep->SetK2(1.0);
+   std::shared_ptr<lrfdFHWAUHPCCreepCoefficient> pGirderCreep = std::make_shared<lrfdFHWAUHPCCreepCoefficient>();
+   pGirderCreep->SetFci(WBFL::Units::ConvertToSysUnits(14.0,WBFL::Units::Measure::KSI));
+   pGirderCreep->SetRelHumidity(73);
+   pGirderCreep->SetK1(0.62);
 
    std::shared_ptr<lrfdCreepCoefficient2005> pDeckCreep = std::make_shared<lrfdCreepCoefficient2005>();
    pDeckCreep->SetCuringMethod(lrfdCreepCoefficient2005::Normal);
    pDeckCreep->SetCuringMethodTimeAdjustmentFactor(WBFL::Units::ConvertToSysUnits(7, WBFL::Units::Measure::Day));
-   pDeckCreep->SetFci(0.8 * 27579029.172680002); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
-   pDeckCreep->SetRelHumidity(75);
-   pDeckCreep->SetSurfaceArea(1.8288000000760127);
-   pDeckCreep->SetVolume(0.32516064001351508);
+   pDeckCreep->SetFci(0.8 * WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::KSI)); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
+   pDeckCreep->SetRelHumidity(73);
+   pDeckCreep->SetSurfaceArea(1.0);
+   pDeckCreep->SetVolume(WBFL::Units::ConvertToSysUnits(3.940,WBFL::Units::Measure::Inch));
    pDeckCreep->SetK1(1.0);
    pDeckCreep->SetK2(1.0);
 
-   lrfdPCIUHPCLosses loss(19.5072, // location along girder where losses are computed
+   lrfdFHWAUHPCLosses loss(19.5072, // location along girder where losses are computed
                          39.0144,    // girder length
                          sptGross,
                          WBFL::Materials::PsStrand::Grade::Gr1860,
@@ -284,9 +187,8 @@ bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
                          0.25000000000000000, // friction
                          0, // angle change
 
-                         1,1, // K for girder
-                         0.6e-3, // autogenous shrinkage of girder
-                         1,1, // K for slab
+                         0.41,1, // K for girder
+                         1,1, // K fog slab
 
                          41368543.759020001,   // 28 day strength of girder concrete
                          35852736.609413415,  // Release strength
@@ -334,8 +236,7 @@ bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
                          172800000.00000000,   // Final time
                          false,true,Refined,
                          std::shared_ptr<const lrfdCreepCoefficient2005>(std::dynamic_pointer_cast<const lrfdCreepCoefficient2005>(pGirderCreep)),
-                         std::shared_ptr<const lrfdCreepCoefficient2005>(pDeckCreep),
-                         true, false // UHPC Girder, no PCTT
+                         std::shared_ptr<const lrfdCreepCoefficient2005>(pDeckCreep)
                          );
 
    lrfdVersionMgr::RegisterListener( &loss );
@@ -358,22 +259,22 @@ bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AtShipping();
-   TRY_TESTME( IsEqual(value, 155971364.15963775) );
+   TRY_TESTME( IsEqual(value, 81340582.966499269) );
 
    value = loss.PermanentStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 155971364.15963775) );
+   TRY_TESTME( IsEqual(value, 81340582.966499269) );
 
    value = loss.PermanentStrand_AfterTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 155971364.15963775) );
+   TRY_TESTME( IsEqual(value, 81340582.966499269) );
 
    value = loss.PermanentStrand_AfterDeckPlacement();
-   TRY_TESTME( IsEqual(value, 243615889.91274610) );
+   TRY_TESTME( IsEqual(value, 139856443.92492411) );
 
    value = loss.PermanentStrand_AfterSIDL();
-   TRY_TESTME( IsEqual(value, 243615889.91274610) );
+   TRY_TESTME( IsEqual(value, 139856443.92492411) );
 
    value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value, 257045465.85123089) );
+   TRY_TESTME( IsEqual(value, 140798870.67772746) );
 
    // temporary strands
    value = loss.TemporaryStrand_BeforeTransfer();
@@ -389,10 +290,10 @@ bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AtShipping();
-   TRY_TESTME( IsEqual(value, 166983083.96746388) );
+   TRY_TESTME( IsEqual(value, 70200702.851341456) );
 
    value = loss.TemporaryStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 166983083.96746388) );
+   TRY_TESTME( IsEqual(value, 70200702.851341456) );
 
    value = loss.TemporaryStrand_AfterTemporaryStrandRemoval();
    TRY_TESTME( IsEqual(value,0.) );
@@ -408,7 +309,7 @@ bool lrfdPCIUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
 
    lrfdVersionMgr::UnregisterListener( &loss );
 
-   TESTME_EPILOG("lrfdPCIUHPCLosses");
+   TESTME_EPILOG("lrfdFHWAUHPCLosses");
 }
 
 #endif // _UNITTEST

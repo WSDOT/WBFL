@@ -40,7 +40,7 @@ const Float64 EPS = 3.0e-10; // from Ken P.
 Float64 BrentsRootFinder::FindRootInRange(const std::function<Float64(Float64)>& f, Float64 a, Float64 b, Float64 tol) const
 {
    // This form of findRoot finds a root subject to the requirement that the root is
-   // bracketted by a and b. The exception mathXRootFinderFailed is thrown if "a"
+   // bracketed by a and b. The exception mathXRootFinderFailed is thrown if "a"
    // and "b" do not bracket the root, i.e., do not cause the function to change sign.
 
    try

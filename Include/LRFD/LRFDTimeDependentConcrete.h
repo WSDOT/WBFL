@@ -83,7 +83,7 @@ public:
    // a given concrete strength and the time that strength occurs
    void SetFc28(Float64 fc,Float64 t);
 
-   // Indiciates if a user value for Ec is used. If not, it is comptued
+   // Indicates if a user value for Ec is used. If not, it is computed
    // from Fc28
    void UserEc28(bool bUserEc);
    bool UserEc28() const;
@@ -92,19 +92,19 @@ public:
    void SetEc28(Float64 Ec);
    Float64 GetEc28() const;
 
-   // Sets the 28 day secent modulus by compute what it need to be
+   // Sets the 28 day secant modulus by compute what it needs to be
    // based on the current values of alpha and beta for the given
-   // value of Ec and the time that that modulus occurs
+   // value of Ec and the time that the modulus occurs
    void SetEc28(Float64 Ec,Float64 t);
 
    // Computes what the 28 day strength needs to be for a concrete strength
-   // fc occuring at concrete age with parameters a (alpha, days) and b (beta)
+   // fc occurring at concrete age with parameters a (alpha, days) and b (beta)
    static Float64 ComputeFc28(Float64 fc,Float64 age,Float64 a,Float64 b);
    static Float64 ComputeEc28(Float64 ec,Float64 age,Float64 a,Float64 b);
 
-   // Computes the values for Alpha and Beta giving a concrete strength (fc1) at at age of t1,
+   // Computes the values for Alpha and Beta giving a concrete strength (fc1) at age of t1,
    // and a later strength (fc2) at age t2. (fc1,fc2 are in system units, t1 and t2 are in days,
-   // Alpha is in system units, Beta is unitless
+   // Alpha is in system units, Beta is unit less
    static void ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pA,Float64* pB);
 
    // Returns the compressive strength of the concrete at time t. If
@@ -123,7 +123,7 @@ public:
    // t occurs before the time at casting, zero is returned.
    virtual Float64 GetFlexureFr(Float64 t) const override;
 
-   // Returns the total free shrinkage that has occured from time at casting
+   // Returns the total free shrinkage that has occurred from time at casting
    // to the time specified
    virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
    virtual std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
@@ -165,6 +165,24 @@ public:
    virtual void SetAutogenousShrinkage(Float64 as) override;
    virtual Float64 GetAutogenousShrinkage() const override;
 
+   // FHWA UHPC Parameters
+   virtual void SetCompressionResponseReductionFactor(Float64 alpha_u) override;
+   virtual Float64 GetCompressionResponseReductionFactor() const override;
+   virtual void SetCompressiveStrainLimit(Float64 ecu) override;
+   virtual void SetElasticTensileStrainLimit(Float64 etcr) override;
+   virtual Float64 GetElasticTensileStrainLimit() const override;
+   virtual void SetInitialEffectiveCrackingStrength(Float64 ft_cri) override;
+   virtual Float64 GetInitialEffectiveCrackingStrength() const override;
+   virtual void SetDesignEffectiveCrackingStrength(Float64 ft_cr) override;
+   virtual Float64 GetDesignEffectiveCrackingStrength() const override;
+   virtual void SetCrackLocalizationStrength(Float64 ft_loc) override;
+   virtual Float64 GetCrackLocalizationStrength() const override;
+   virtual void SetCrackLocalizationStrain(Float64 et_loc) override;
+   virtual Float64 GetCrackLocalizationStrain() const override;
+
+   virtual Float64 GetElasticCompressiveStrainLimit() const override;
+   virtual Float64 GetCompressiveStrainLimit(bool* pbIsExperimental = nullptr) const override;
+
 private:
    Float64 m_Eshu; // ultimate shrinkage strain
    Float64 m_Cu;   // ultimate creep coefficient
@@ -188,6 +206,16 @@ private:
    Float64 m_ffc; // first crack tensile strength
    Float64 m_frr; // post-crack residual tensile strength
    Float64 m_AutogenousShrinkage;
+
+   // FHWA UHPC
+   Float64 m_alpha_u;
+   Float64 m_ecu;
+   Float64 m_etcr;
+   Float64 m_ftcri;
+   Float64 m_ftcr;
+   Float64 m_ftloc;
+   Float64 m_etloc;
+   bool m_bExperimental_ecu;
 
    mutable bool m_bIsValid;
    void Validate() const;

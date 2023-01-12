@@ -60,7 +60,7 @@ namespace WBFL
 
          /// Analyzes the section results and retrieves the controlling tension stress case
          /// \param[in] slope Specifies the roadway slope type
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[out] pImpact Impact direction associated with the controlling case
          /// \param[out] pWind Wind direction associated with the controlling case
          /// \param[out] pCorner Corner associated with the controlling case
@@ -71,7 +71,7 @@ namespace WBFL
 
          /// Analyzes the section results and retrieves the controlling global compression case.
          /// \param[in] slope Specifies the roadway slope type
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[out] pImpact Impact direction associated with the controlling case
          /// \param[out] pCorner Corner associated with the controlling case
          /// \param[out] pfAllow Tension stress limit associated with the controlling case
@@ -81,7 +81,7 @@ namespace WBFL
 
          /// Analyzes the section results and retrieves the controlling peak compression case.
          /// \param[in] slope Specifies the roadway slope type
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[out] pImpact Impact direction associated with the controlling case
          /// \param[out] pWind Wind direction associated with the controlling case
          /// \param[out] pCorner Corner associated with the controlling case
@@ -136,13 +136,13 @@ namespace WBFL
 #if defined REBAR_FOR_DIRECT_TENSION
          /// Returns the tension stress limit
          /// \param[in] slope Specifies the roadway slope type
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[in] impact Impact direction
          Float64 GetAllowableTension(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection impact) const;
 #else
          /// Returns the tension stress limit
          /// \param[in] slope Specifies the roadway slope type
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[in] impact Impact direction
          /// \param[in] wind Wind direction
          Float64 GetAllowableTension(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const;

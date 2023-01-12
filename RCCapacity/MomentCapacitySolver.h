@@ -32,6 +32,11 @@
 #include <WBFLUnitServer.h>
 #include <vector>
 
+//#define _MOMENT_CAPACITY_LOGGING
+// uncomment this preprocessor directive to enable logging of the moment capacity solution
+// logging produces 2 files, MomentCapacity.log records the strain guess and resulting axial force, good for plotting
+// MomentCapacityDetails.log records the slice-by-slice calculation details for each strain guess
+
 /////////////////////////////////////////////////////////////////////////////
 // CMomentCapacitySolver
 class ATL_NO_VTABLE CMomentCapacitySolver : 
@@ -86,6 +91,13 @@ private:
    HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
    HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod, Float64 strainLocation,IMomentCapacitySolution** solution);
    HRESULT ZeroCapacitySolution(IMomentCapacitySolution** solution);
+
+#if defined _MOMENT_CAPACITY_LOGGING
+   void LogSolution();
+   CComPtr<ILogFile> m_LogFile;
+   DWORD m_dwCookie1;
+   DWORD m_dwCookie2;
+#endif
 
 // ISupportsErrorInfo
 public:

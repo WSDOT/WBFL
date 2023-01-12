@@ -53,7 +53,7 @@ namespace WBFL
 
          ~AutoVariable()
          {
-            // we are goign out of scope, restor the original value
+            // we are going out of scope, restore the original value
             *m_pValue = m_OldValue;
          }
 

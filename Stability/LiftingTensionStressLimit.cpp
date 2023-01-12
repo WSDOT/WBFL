@@ -176,9 +176,11 @@ void CCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCh
    }
 }
 
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
 
-
-UHPCLiftingTensionStressLimit::UHPCLiftingTensionStressLimit()
+PCIUHPCLiftingTensionStressLimit::PCIUHPCLiftingTensionStressLimit()
 {
    ffc = 0;
    fc28 = 0;
@@ -186,41 +188,41 @@ UHPCLiftingTensionStressLimit::UHPCLiftingTensionStressLimit()
 }
 
 #if defined REBAR_FOR_DIRECT_TENSION
-Float64 UHPCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact) const
+Float64 PCIUHPCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact) const
 {
    return AllowableTension;
 }
 #else
-Float64 UHPCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
+Float64 PCIUHPCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
 {
    return AllowableTension;
 }
 #endif
 
-Float64 UHPCLiftingTensionStressLimit::GetRequiredFcTension(const LiftingCheckArtifact* pArtifact) const
+Float64 PCIUHPCLiftingTensionStressLimit::GetRequiredFcTension(const LiftingCheckArtifact* pArtifact) const
 {
    Float64 maxStress = pArtifact->GetLiftingResults().MaxStress;
    Float64 fcReqd = pow(1.5 * maxStress / ffc, 2) * fc28;
    return fcReqd;
 }
 
-Float64 UHPCLiftingTensionStressLimit::GetRequiredFcTensionWithoutRebar(const LiftingCheckArtifact* pArtifact) const
+Float64 PCIUHPCLiftingTensionStressLimit::GetRequiredFcTensionWithoutRebar(const LiftingCheckArtifact* pArtifact) const
 {
     return GetRequiredFcTension(pArtifact);
 }
 
-Float64 UHPCLiftingTensionStressLimit::GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const
+Float64 PCIUHPCLiftingTensionStressLimit::GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const
 {
     return GetRequiredFcTension(pArtifact);
 }
 
-void UHPCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
+void PCIUHPCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
    *pPara << _T("Tension stress limit = (2/3)(") << RPT_STRESS(_T("fc")) << _T(")") << symbol(ROOT) << _T("(") << RPT_FCI << _T("/") << RPT_FC << _T(")") << _T(" = ") << stress.SetValue(AllowableTension) << rptNewLine;
 }
 
-void UHPCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
+void PCIUHPCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
@@ -234,5 +236,68 @@ void UHPCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const Lifting
    else
    {
       *pPara << stress.SetValue(fcReqd) << rptNewLine;
+   }
+}
+
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+
+FHWAUHPCLiftingTensionStressLimit::FHWAUHPCLiftingTensionStressLimit()
+{
+   gamma_u = 0;
+   ft_cri = 0;
+   AllowableTension = 0;
+}
+
+#if defined REBAR_FOR_DIRECT_TENSION
+Float64 FHWAUHPCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact) const
+{
+   return AllowableTension;
+}
+#else
+Float64 FHWAUHPCLiftingTensionStressLimit::GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
+{
+   return AllowableTension;
+}
+#endif
+
+Float64 FHWAUHPCLiftingTensionStressLimit::GetRequiredFcTension(const LiftingCheckArtifact* pArtifact) const
+{
+   Float64 maxStress = pArtifact->GetLiftingResults().MaxStress;
+   Float64 ft_cri_reqd = maxStress / gamma_u;
+   return ft_cri_reqd;
+}
+
+Float64 FHWAUHPCLiftingTensionStressLimit::GetRequiredFcTensionWithoutRebar(const LiftingCheckArtifact* pArtifact) const
+{
+   return GetRequiredFcTension(pArtifact);
+}
+
+Float64 FHWAUHPCLiftingTensionStressLimit::GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const
+{
+   return GetRequiredFcTension(pArtifact);
+}
+
+void FHWAUHPCLiftingTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
+{
+   INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
+   *pPara << _T("Tension stress limit = ") << Sub2(symbol(gamma),_T("u")) << RPT_STRESS(_T("t,cri")) << _T(" = ") << stress.SetValue(AllowableTension) << rptNewLine;
+}
+
+void FHWAUHPCLiftingTensionStressLimit::ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
+{
+   INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
+
+   Float64 ft_cri_Reqd = GetRequiredFcTension(pArtifact);
+   *pPara << RPT_STRESS(_T("t,cri")) << _T(" required for tensile stress = ");
+   if (ft_cri_Reqd < 0)
+   {
+      ATLASSERT(ft_cri_Reqd == -99999);
+      *pPara << _T("Regardless of the initial effective cracking strength, the stress requirements will not be satisfied.") << rptNewLine;
+   }
+   else
+   {
+      *pPara << stress.SetValue(ft_cri_Reqd) << rptNewLine;
    }
 }

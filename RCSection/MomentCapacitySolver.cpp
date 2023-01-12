@@ -114,6 +114,7 @@ void MomentCapacitySolver::GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My
 #include <Units/Units.h>
 #include <Materials/Materials.h>
 #include <GeomModel/GeomModel.h>
+#include <RCSection/UnitTest.h>
 bool MomentCapacitySolver::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("MomentCapacitySolver");
@@ -121,6 +122,7 @@ bool MomentCapacitySolver::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(Test2(rlog));
    TRY_TESTME(Test3(rlog));
    TRY_TESTME(Test4(rlog));
+   TRY_TESTME(Test5(rlog));
    TESTME_EPILOG("MomentCapacitySolver");
 }
 
@@ -426,7 +428,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(k, 0.0045 / (H / 2)));
 
    // Solve for concrete crushing
-   // this example will have tension strains the the rebar that exceed the fracture limit)
+   // this example will have tension strains the rebar that exceed the fracture limit)
    solution = solver.Solve(0.00, 0.0, -0.0035, 0.0, MomentCapacitySolver::SolutionMethod::FixedCompressionStrain); // compression top, use angle = 0
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == true);
 
@@ -436,7 +438,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -33162.03191));
+   TRY_TESTME(IsEqual(Mx, -7176.35942));
    TRY_TESTME(IsZero(My));
 
    ec = incrementalStrainPlane.GetZ(0.00, H / 2);
@@ -447,7 +449,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(k, -0.0035 / (H / 2)));
 
    // Solve again but this time set the strain at the top
-   // this example will have tension strains the the rebar that exceed the fracture limit)
+   // this example will have tension strains the rebar that exceed the fracture limit)
    solution = solver.Solve(0.00, 0.0, -0.0035, H/2, MomentCapacitySolver::SolutionMethod::FixedStrain); // compression top, use angle = 0
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == true);
 
@@ -457,7 +459,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -33162.033845));
+   TRY_TESTME(IsEqual(Mx, -7176.35942));
    TRY_TESTME(IsZero(My));
 
    ec = incrementalStrainPlane.GetZ(0.00, H / 2);
@@ -568,7 +570,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    auto solution = solver.Solve(0.00, 0.00, esl - ei, Y, MomentCapacitySolver::SolutionMethod::FixedStrain);
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == false);
    //std::cout << "Nominal moment when stress in bottom layer of strand is equal to 0.80fy, Msl" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Float64 Fz, Mx, My;
    Fz = solution->GetFz();
@@ -594,7 +596,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    solution = solver.Solve(0.00, 0.00, 0.0045, 0.0, MomentCapacitySolver::SolutionMethod::FixedTensionStrain);
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == false);
    //std::cout << "Nominal moment at crack localization, Ml" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Fz = solution->GetFz();
    Mx = solution->GetMx();
@@ -620,7 +622,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    solution = solver.Solve(0.00, 0.00, -0.0035, 0.0, MomentCapacitySolver::SolutionMethod::FixedStrain);  // strain in deck concrete exceeds crushing limit of -0.003
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == true);
    //std::cout << "Nominal moment at compression strain limit in UHPC section, Mc" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Fz = solution->GetFz();
    Mx = solution->GetMx();
@@ -628,30 +630,30 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -237920.689141));
+   TRY_TESTME(IsEqual(Mx, -223541.607261));
    TRY_TESTME(IsZero(My));
    Float64 Mc = -Mx;
 
    ec = incrementalStrainPlane.GetZ(0.00,10.0); // strain at top of deck
-   TRY_TESTME(IsEqual(ec, -0.00824344));
+   TRY_TESTME(IsEqual(ec, -0.0100945));
 
    ec = incrementalStrainPlane.GetZ(0.00,-h); // strain at bottom of beam
-   TRY_TESTME(IsEqual(ec, 0.0221146));
+   TRY_TESTME(IsEqual(ec, 0.03211012));
 
    ec = incrementalStrainPlane.GetZ(0.00, 0.00);
    TRY_TESTME(IsEqual(ec, -0.0035)); // strain at top of girder
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 17.378604));
+   TRY_TESTME(IsEqual(c, 15.3074806));
 
    Float64 Yc = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yc, 0.00047434445702061241, 0.000000001));
+   TRY_TESTME(IsEqual(Yc, 0.00065944659318803141, 0.000000001));
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    solution = solver.Solve(0.00, 0.00, -0.003, 0.0, MomentCapacitySolver::SolutionMethod::FixedCompressionStrain); // exceeds tensile capacity of UHPC
-   TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == true);
+   TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == false);
    //std::cout << "Nominal moment at compression strain limit in deck, Md" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Fz = solution->GetFz();
    Mx = solution->GetMx();
@@ -659,7 +661,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -228894.0801, 0.0001));
+   TRY_TESTME(IsEqual(Mx, -217226.2917154));
    TRY_TESTME(IsZero(My));
    Float64 Md = -Mx;
 
@@ -667,16 +669,16 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, -0.003));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 19.73137));
+   TRY_TESTME(IsEqual(c, 17.0288085));
 
    Float64 Yd = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yd, 0.000152042, 0.000000001));
+   TRY_TESTME(IsEqual(Yd, 0.00017617204437190607, 0.000000001));
 
    // Nominal moment capacity at maximum usable strain of reinforcement, Mt, Yt
    solution = solver.Solve(0.00, 0.00, 0.035 - ei, Y, MomentCapacitySolver::SolutionMethod::FixedStrain); // strain exceeds crushing strain of UHPC
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == true);
    //std::cout << "Nominal moment at maximum usable strain in reinforcement, Mt" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Fz = solution->GetFz();
    Mx = solution->GetMx();
@@ -684,7 +686,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -239340.350413));
+   TRY_TESTME(IsEqual(Mx, -223564.728907));
    TRY_TESTME(IsZero(My));
    Float64 Mt = -Mx;
 
@@ -692,10 +694,10 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, 0.035 - ei));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 16.588564));
+   TRY_TESTME(IsEqual(c, 15.4280634));
 
    Float64 Yt = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yt, 0.00064231443480217956, 0.000000001));
+   TRY_TESTME(IsEqual(Yt, 0.00062630895788410863, 0.000000001));
 
    // Ductility ratio
    IndexType i = MinIndex(fabs(Yl), fabs(Yc), fabs(Yd), fabs(Yt)); // want least curvature
@@ -832,7 +834,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    auto solution = solver.Solve(0.00, 0.00, esl - ei, Y, MomentCapacitySolver::SolutionMethod::FixedStrain);
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == false);
    //std::cout << "Nominal moment when stress in bottom layer of strand is equal to 0.80fy, Msl" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Float64 Fz, Mx, My;
    Fz = solution->GetFz();
@@ -871,7 +873,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    solution = solver.Solve(0.00, 0.00, 0.0045 - 0.99 / 6933, 0.0, MomentCapacitySolver::SolutionMethod::FixedTensionStrain);
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == false);
    //std::cout << "Nominal moment at crack localization, Ml" << std::endl;
-   //DumpSolution(section, solution);
+   //UnitTest::DumpSolution(section, solution);
 
    Fz = solution->GetFz();
    Mx = solution->GetMx();
@@ -898,7 +900,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    solution = solver.Solve(0.00, 0.00, -0.0035 + 11.02 / 6933, 0.0, MomentCapacitySolver::SolutionMethod::FixedStrain);  // strain in deck concrete exceeds crushing limit of -0.003
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == true);
    //std::cout << "Nominal moment at compression strain limit in UHPC section, Mc" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Fz = solution->GetFz();
    Mx = solution->GetMx();
@@ -906,31 +908,31 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -238146.378845));
+   TRY_TESTME(IsEqual(Mx, -223586.9252094));
    TRY_TESTME(IsZero(My));
    Float64 Mc = -Mx;
 
    ec = strainPlane->GetZ(0.00, 10.00) + incrementalStrainPlane.GetZ(0.00, 10.0); // strain at top of deck
-   TRY_TESTME(IsEqual(ec, -0.008287341));
+   TRY_TESTME(IsEqual(ec, -0.010161668));
 
    ec = strainPlane->GetZ(0.00, -h) + incrementalStrainPlane.GetZ(0.00, -h); // strain at bottom of beam
-   TRY_TESTME(IsEqual(ec, 0.02235164));
+   TRY_TESTME(IsEqual(ec, 0.032473005));
 
    ec = strainPlane->GetZ(0.00, 0.00) + incrementalStrainPlane.GetZ(0.00, 0.00);
    TRY_TESTME(IsEqual(ec, -0.0035));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 17.310948));
+   TRY_TESTME(IsEqual(c, 15.2539398));
 
    Float64 Yc = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yc, 0.00047873407773392891, 0.000000001));
+   TRY_TESTME(IsEqual(Yc, 0.00066616675401505931, 0.000000001));
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    // this case not in FHWA example
    solution = solver.Solve(0.00, 0.00, -0.003 + 1.33 / 3950, 0.0, MomentCapacitySolver::SolutionMethod::FixedCompressionStrain); // exceeds tensile capacity of UHPC
-   TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == true);
+   TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == false);
    //std::cout << "Nominal moment at compression strain limit in deck, Md" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Fz = solution->GetFz();
    Mx = solution->GetMx();
@@ -938,7 +940,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -234914.0752089, 0.0001));
+   TRY_TESTME(IsEqual(Mx, -220191.339216));
    TRY_TESTME(IsZero(My));
    Float64 Md = -Mx;
 
@@ -951,17 +953,17 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
 
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 18.029146));
+   TRY_TESTME(IsEqual(c, 16.522741));
 
    Float64 Yd = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yd, 0.00025367735580106488, 0.000000001));
+   TRY_TESTME(IsEqual(Yd, 0.00027680552396696029, 0.000000001));
 
    // Nominal moment capacity at maximum usable strain of reinforcement, Mt, Yt
    // this case not in FHWA example
    solution = solver.Solve(0.00, 0.00, 0.035 - ei, Y, MomentCapacitySolver::SolutionMethod::FixedStrain); // strain exceeds crushing strain of UHPC
    TRY_TESTME(solution->GetGeneralSectionSolution()->ExceededStrainLimits() == true);
    //std::cout << "Nominal moment at maximum usable strain in reinforcement, Mt" << std::endl;
-   //DumpSolution(section,solution);
+   //UnitTest::DumpSolution(section,solution);
 
    Fz = solution->GetFz();
    Mx = solution->GetMx();
@@ -969,7 +971,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -239341.064759));
+   TRY_TESTME(IsEqual(Mx, -223623.7790312));
    TRY_TESTME(IsZero(My));
    Float64 Mt = -Mx;
 
@@ -986,10 +988,10 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, 0.035));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 16.582841));
+   TRY_TESTME(IsEqual(c, 15.3788084));
 
    Float64 Yt = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yt, 0.00064396492246266562, 0.000000001));
+   TRY_TESTME(IsEqual(Yt, 0.00062733397212413888, 0.000000001));
 
    // Ductility ratio
    IndexType i = MinIndex(fabs(Yl), fabs(Yc), fabs(Yd), fabs(Yt)); // want least curvature
@@ -1006,5 +1008,243 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("MomentCapacitySolver::Test4");
 }
 
+
+bool MomentCapacitySolver::Test5(WBFL::Debug::Log& rlog)
+{
+   TESTME_PROLOGUE("MomentCapacitySolver::Test5");
+
+   // These test cases are from "Analysis of a Rectangular Mild Steel Reinforced UHPC Beam", FHWA, Graybeal, et. al.
+
+   // base units of kip and ksi
+   WBFL::Units::AutoSystem au;
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+   std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+
+   //
+   // materials
+   //
+
+   // concrete
+   std::shared_ptr<WBFL::Materials::UHPCModel> concrete(std::make_shared<WBFL::Materials::UHPCModel>(_T("Concrete")));
+   Float64 ecu = -0.0035;
+   Float64 etcr = 0.000147;
+   Float64 etloc = 0.003;
+   Float64 esl = 0.00166;
+   Float64 esy = 0.00207;
+   Float64 esu = 0.09;
+   concrete->SetFc(22.0);
+   concrete->SetCompressiveStrainLimit(ecu);
+   concrete->SetFtcr(1.2);
+   concrete->SetFtloc(1.2);
+   concrete->Set_etloc(etloc);
+
+   // rebar
+   std::shared_ptr<WBFL::Materials::RebarModel> rebar(std::make_shared<WBFL::Materials::RebarModel>(_T("Rebar"), 60.0, 29000.0, 0.09));
+
+   //
+   // shapes
+   //
+
+   // main beam
+   Float64 H = WBFL::Units::ConvertToSysUnits(24, WBFL::Units::Measure::Inch);
+   Float64 W = WBFL::Units::ConvertToSysUnits(12, WBFL::Units::Measure::Inch);
+   WBFL::Geometry::Rectangle beam;
+   beam.SetHeight(H);
+   beam.SetWidth(W);
+   auto tc = beam.GetLocatorPoint(WBFL::Geometry::Shape::LocatorPoint::TopCenter);
+
+   // #11 rebar
+   Float64 Ab = 1.56;
+   Float64 Db = H/2 - WBFL::Units::ConvertToSysUnits(21.795, WBFL::Units::Measure::Inch);
+   WBFL::Geometry::GenericShape bar1(Ab, WBFL::Geometry::Point2d((W / 2 - 2), Db));
+   WBFL::Geometry::GenericShape bar2(Ab, WBFL::Geometry::Point2d(0, Db));
+   WBFL::Geometry::GenericShape bar3(Ab, WBFL::Geometry::Point2d(-(W / 2 - 2), Db));
+
+   section->AddShape(_T("Beam"), beam, concrete, nullptr, nullptr, 1.0, true);
+   section->AddShape(_T("Bar 1"), bar1, rebar, nullptr, nullptr, 1.0);
+   section->AddShape(_T("Bar 2"), bar2, rebar, nullptr, nullptr, 1.0);
+   section->AddShape(_T("Bar 3"), bar3, rebar, nullptr, nullptr, 1.0);
+
+   MomentCapacitySolver solver;
+   solver.SetSlices(100);
+   solver.SetSliceGrowthFactor(0);
+   solver.SetTolerance(0.001);
+   solver.SetSection(section);
+
+   // First crack in UHPC
+   auto solution = solver.Solve(0.00, 0.00, etcr, -H/2, MomentCapacitySolver::SolutionMethod::FixedStrain);
+   //std::cout << "Nominal moment at first cracking, Mcr" << std::endl;
+   //UnitTest::DumpSolution(section,solution);
+
+   Float64 Fz = solution->GetFz();
+   Float64 Mx = solution->GetMx();
+   Float64 My = solution->GetMy();
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TESTME(IsZero(Fz, 0.001));
+   TRY_TESTME(IsEqual(Mx, -116.3116654));
+   TRY_TESTME(IsZero(My));
+
+   Float64 c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(c, 12.623387));
+
+   Float64 dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(dc, 4.2100597));
+
+   Float64 de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(de, 20.5051832));
+
+   Float64 moment_arm = solution->GetMomentArm();
+   TRY_TESTME(IsEqual(moment_arm, de - dc));
+
+   Float64 k = solution->GetCurvature();
+   TRY_TESTME(IsEqual(k, 0.0000129212444, 0.00000001));
+
+   std::reference_wrapper<const WBFL::Geometry::Plane3d> incrementalStrainPlane = solution->GetIncrementalStrainPlane();
+
+   Float64 ec = incrementalStrainPlane.get().GetZ(0.00, -H / 2);
+   TRY_TESTME(IsEqual(ec, etcr));
+
+   // Steel Service
+   solution = solver.Solve(0.00, 0.00, esl, Db, MomentCapacitySolver::SolutionMethod::FixedStrain);
+   //std::cout << "Nominal moment at steel service stress, Msl" << std::endl;
+   //UnitTest::DumpSolution(section,solution);
+
+   Fz = solution->GetFz();
+   Mx = solution->GetMx();
+   My = solution->GetMy();
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TESTME(IsZero(Fz, 0.001));
+   TRY_TESTME(IsEqual(Mx, -560.05208));
+   TRY_TESTME(IsZero(My));
+
+   c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(c, 8.747254));
+
+   dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(dc, 2.919356));
+
+   de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(de, 19.51533227));
+
+   moment_arm = solution->GetMomentArm();
+   TRY_TESTME(IsEqual(moment_arm, de - dc));
+
+   k = solution->GetCurvature();
+   TRY_TESTME(IsEqual(k, 0.00012722504304234797, 0.00000001));
+
+   incrementalStrainPlane = solution->GetIncrementalStrainPlane();
+   ec = incrementalStrainPlane.get().GetZ(0.00, Db);
+   TRY_TESTME(IsEqual(ec, esl));
+
+   // Steel Yield
+   solution = solver.Solve(0.00, 0.00, esy, Db, MomentCapacitySolver::SolutionMethod::FixedStrain);
+   //std::cout << "Nominal moment at steel yield, Msy" << std::endl;
+   //UnitTest::DumpSolution(section,solution);
+
+   Fz = solution->GetFz();
+   Mx = solution->GetMx();
+   My = solution->GetMy();
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TESTME(IsZero(Fz, 0.001));
+   TRY_TESTME(IsEqual(Mx, -653.37846));
+   TRY_TESTME(IsZero(My));
+
+   c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(c, 8.48033333));
+
+   dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(dc, 2.830492));
+
+   de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(de, 19.6878473));
+
+   moment_arm = solution->GetMomentArm();
+   TRY_TESTME(IsEqual(moment_arm, de - dc));
+
+   k = solution->GetCurvature();
+   TRY_TESTME(IsEqual(k, 0.00015546765498959168, 0.00000001));
+
+   incrementalStrainPlane = solution->GetIncrementalStrainPlane();
+   ec = incrementalStrainPlane.get().GetZ(0.00, Db);
+   TRY_TESTME(IsEqual(ec, esy));
+
+   // UHPC Localization
+   solution = solver.Solve(0.00, 0.00, etloc, -H/2, MomentCapacitySolver::SolutionMethod::FixedStrain);
+   //std::cout << "Nominal moment at UHPC localization, Ml" << std::endl;
+   //UnitTest::DumpSolution(section,solution);
+
+   Fz = solution->GetFz();
+   Mx = solution->GetMx();
+   My = solution->GetMy();
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TESTME(IsZero(Fz, 0.001));
+   TRY_TESTME(IsEqual(Mx, -665.909452));
+   TRY_TESTME(IsZero(My));
+
+   c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(c, 7.8343756));
+
+   dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(dc, 2.615559));
+
+   de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(de, 19.479851));
+
+   moment_arm = solution->GetMomentArm();
+   TRY_TESTME(IsEqual(moment_arm, de - dc));
+
+   k = solution->GetCurvature();
+   TRY_TESTME(IsEqual(k, 0.00018557897542485202, 0.00000001));
+
+   incrementalStrainPlane = solution->GetIncrementalStrainPlane();
+   ec = incrementalStrainPlane.get().GetZ(0.00, -H/2);
+   TRY_TESTME(IsEqual(ec, etloc));
+
+
+   // Compression crushing of UHPC
+   solution = solver.Solve(0.00, 0.00, ecu, 0.0, MomentCapacitySolver::SolutionMethod::FixedCompressionStrain);
+   //std::cout << "Nominal moment at UHPC crushing, Mc" << std::endl;
+   //UnitTest::DumpSolution(section,solution);
+
+   Fz = solution->GetFz();
+   Mx = solution->GetMx();
+   My = solution->GetMy();
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TESTME(IsZero(Fz, 0.001));
+   TRY_TESTME(IsEqual(Mx, -496.47595));
+   TRY_TESTME(IsZero(My));
+
+   c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(),WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(c, 2.204866));
+
+   dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(dc, 0.778786));
+
+   de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
+   TRY_TESTME(IsEqual(de, 20.365055));
+
+   moment_arm = solution->GetMomentArm();
+   TRY_TESTME(IsEqual(moment_arm, de - dc));
+
+   k = solution->GetCurvature();
+   TRY_TESTME(IsEqual(k, 0.0015873979879543205, 0.00000001));
+
+   incrementalStrainPlane = solution->GetIncrementalStrainPlane();
+   ec = incrementalStrainPlane.get().GetZ(0.00, H / 2);
+   TRY_TESTME(IsEqual(ec, ecu));
+
+   TESTME_EPILOG("MomentCapacitySolver::Test5");
+}
 
 #endif // _UNITTEST

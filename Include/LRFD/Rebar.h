@@ -137,9 +137,9 @@ public:
    static Float64 GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade);
 
    //------------------------------------------------------------------------
-   // Retuns rebar development length
-   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::SimpleConcrete& concrete);
-   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density);
+   // Returns rebar development length
+   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::SimpleConcrete& concrete,bool bIsTopBar,bool bEpoxyCoated,bool bMeetsCoverRequirements);
+   static REBARDEVLENGTHDETAILS GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density, bool bIsTopBar, bool bEpoxyCoated, bool bMeetsCoverRequirements);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

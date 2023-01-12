@@ -27,10 +27,10 @@
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\Losses.h>
 #include <LRFD\RefinedLosses2005.h>
-#include <Lrfd\PCIUHPCCreepCoefficient.h>
+#include <Lrfd\FHWAUHPCCreepCoefficient.h>
 
 
-class LRFDCLASS lrfdPCIUHPCLosses : public lrfdRefinedLosses2005
+class LRFDCLASS lrfdFHWAUHPCLosses : public lrfdRefinedLosses2005
 {
 public:
    //------------------------------------------------------------------------
@@ -49,13 +49,13 @@ public:
    // e = 0 mm
    // Mg = 0 N-m
    // Mdl = 0 N-m
-   lrfdPCIUHPCLosses();
+   lrfdFHWAUHPCLosses();
 
    //------------------------------------------------------------------------
    // Constructor.  Initializes the object with the give values.
    // fpy is initialized to 0.85fpu for StressRelieved strands and
    // 0.90fpu for LowRelaxation strands.
-   lrfdPCIUHPCLosses(Float64 x, // location along girder where losses are computed
+   lrfdFHWAUHPCLosses(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
                          WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
@@ -80,7 +80,6 @@ public:
 
                          Float64 ShrinkageK1,
                          Float64 ShrinkageK2,
-                         Float64 AutogenousShrinkage,
                          
                          Float64 DeckShrinkageK1,
                          Float64 DeckShrinkageK2,
@@ -123,49 +122,25 @@ public:
                          const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
                          Float64 rh,  // Relative humidity [0,100]
-                         Float64 ti,  // Time until prestress transfer
-                         Float64 th,  // Time at hauling
-                         Float64 td,  // Time to deck placement
-                         Float64 tf,  // Final time
+                         Float64 ti,   // Time until prestress transfer
+                         Float64 th,   // Time at hauling
+                         Float64 td,   // Time to deck placement
+                         Float64 tf,   // Final time
                          bool bIgnoreInitialRelaxation,
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod,
                          std::shared_ptr<const lrfdCreepCoefficient2005>& pGirderCreep,
-                         std::shared_ptr<const lrfdCreepCoefficient2005>& pDeckCreep,
-                         bool bUHPCGirder,
-                         bool bPCTTGirder
+                         std::shared_ptr<const lrfdCreepCoefficient2005>& pDeckCreep
                          );
 
-   ~lrfdPCIUHPCLosses();
-
-   // Autogenous shrinkage loss
-   Float64 TemporaryStrand_AutogenousShrinkage() const;
-   Float64 PermanentStrand_AutogenousShrinkage() const;
-
-   virtual Float64 TemporaryStrand_AtShipping() const override;
-   virtual Float64 PermanentStrand_AtShipping() const override;
-   virtual Float64 PermanentStrand_AfterDeckPlacement() const override;
+   ~lrfdFHWAUHPCLosses();
 
 #if defined _UNITTEST
    static bool TestMe(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
 
 protected:
-   virtual void UpdateInitialLosses() const override;
-   void UpdateAutogenousShrinkageLoss() const;
-
-   //virtual void CreateGirderCreepCoefficients() const override;
-   //virtual void CreateDeckCreepCoefficients() const override;
-
    virtual Float64 GetShrinkageHumidityFactor_Girder() const override;
-   //virtual Float64 GetShrinkageStrainAtHauling() const;
-   //virtual Float64 GetShrinkageStrainAtDeckPlacement() const;
-   //virtual Float64 GetShrinkageStrainAtFinal() const;
-   //virtual Float64 GetDeckShrinkageStrain() const;
    virtual Float64 GetShrinkageStrain_Girder() const override;
-
-   bool m_bUHPCGirder, m_bPCTTGirder;
-   Float64 m_eAS; // autogenous shrinkage strain
-   mutable std::array<Float64, 2> m_dfpAS;
 };
 

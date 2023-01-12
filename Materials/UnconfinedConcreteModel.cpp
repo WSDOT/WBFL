@@ -53,7 +53,7 @@ void UnconfinedConcreteModel::SetFc(Float64 fc)
 
 Float64 UnconfinedConcreteModel::GetFc() const
 {
-   // the internval value is in KSI, convert it back to system units
+   // the internal value is in KSI, convert it back to system units
    return WBFL::Units::ConvertToSysUnits(m_Fc,WBFL::Units::Measure::KSI);
 }
 

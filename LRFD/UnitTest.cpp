@@ -32,8 +32,10 @@
 #include <LRFD\RefinedLosses.h>
 #include <LRFD\RefinedLosses2005.h>
 #include <LRFD\PCIUHPCLosses.h>
+#include <LRFD\FHWAUHPCLosses.h>
 #include <LRFD\PsStrand.h>
 #include <LRFD\Shear.h>
+#include <LRFD\FHWAUHPCShear.h>
 #include <LRFD\StrandPool.h>
 #include <LRFD\VersionMgr.h>
 #include <LRFD\RebarPool.h>
@@ -49,6 +51,7 @@
 #include <LRFD\CreepCoefficient.h>
 #include <LRFD\CreepCoefficient2005.h>
 #include <LRFD\PCIUHPCCreepCoefficient.h>
+#include <LRFD\FHWAUHPCCreepCoefficient.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -81,6 +84,7 @@ bool lrfdUnitTest::TestMe(WBFL::Debug::Log& rlog)
    tst &= lrfdRefinedLosses::TestMe(rlog);
    tst &= lrfdRefinedLosses2005::TestMe(rlog);
    tst &= lrfdPCIUHPCLosses::TestMe(rlog);
+   tst &= lrfdFHWAUHPCLosses::TestMe(rlog);
    tst &= lrfdPsStrand::TestMe(rlog);
    tst &= lrfdShear::TestMe(rlog);
    tst &= lrfdStrandPool::TestMe(rlog);
@@ -93,6 +97,8 @@ bool lrfdUnitTest::TestMe(WBFL::Debug::Log& rlog)
    tst &= lrfdCreepCoefficient::TestMe(rlog);
    tst &= lrfdCreepCoefficient2005::TestMe(rlog);
    tst &= lrfdPCIUHPCCreepCoefficient::TestMe(rlog);
+   tst &= lrfdFHWAUHPCCreepCoefficient::TestMe(rlog);
+   tst &= lrfdUHPCShear::TestMe(rlog);
 
    tst &= lrfdLldfTypeAEKIJ::TestMe(rlog);
    tst &= lrfdLldfTypeAEK::TestMe(rlog);

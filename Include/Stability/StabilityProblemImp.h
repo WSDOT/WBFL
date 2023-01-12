@@ -70,10 +70,10 @@ namespace WBFL
       /// Defines points on the perimeter of the girder section where stresses are computed and evaluated for a girder section.
       struct STABILITYCLASS StressPoints
       {
-         std::array<Point, 2> pntTL; ///< Top left point. Array indicies are [Section].
-         std::array<Point, 2> pntTR; ///< Top right point. Array indicies are [Section].
-         std::array<Point, 2> pntBL; ///< Bottom left point. Array indicies are [Section].
-         std::array<Point, 2> pntBR; ///< Bottom right point. Array indicies are [Section].
+         std::array<Point, 2> pntTL; ///< Top left point. Array indices are [Section].
+         std::array<Point, 2> pntTR; ///< Top right point. Array indices are [Section].
+         std::array<Point, 2> pntBL; ///< Bottom left point. Array indices are [Section].
+         std::array<Point, 2> pntBR; ///< Bottom right point. Array indices are [Section].
 
          /// Returns true if the objects are equal
          bool operator==(const StressPoints& other) const
@@ -115,15 +115,15 @@ namespace WBFL
       /// Girders are defined by a sequence of sections with prismatic or linearly varying properties.
       struct STABILITYCLASS SectionProperties
       {
-         std::array<Float64, 2> Ag; ///< Area of girder. Array indicies are [Section].
-         std::array<Float64, 2> Ixx; ///< X-axis moment of inertia. Array indicies are [Section].
-         std::array<Float64, 2> Iyy; ///< Y-axis moment of inertia. Array indicies are [Section].
-         std::array<Float64, 2> Ixy; ///< Product of inertia. Array indicies are [Section].
-         std::array<Float64, 2> Ytop; ///< center of mass (centroid) from top of girder. Array indicies are [Section].
-         std::array<Float64, 2> Xleft; ///< center of mass from roll center. Array indicies are [Section].
-         std::array<Float64, 2> Hg; ///< Height of the girder. Array indicies are [Section].
-         std::array<Float64, 2> Wtf; ///< Top flange width. Array indicies are [Section].
-         std::array<Float64, 2> Wbf; ///< Bottom flange width. Array indicies are [Section].
+         std::array<Float64, 2> Ag; ///< Area of girder. Array indices are [Section].
+         std::array<Float64, 2> Ixx; ///< X-axis moment of inertia. Array indices are [Section].
+         std::array<Float64, 2> Iyy; ///< Y-axis moment of inertia. Array indices are [Section].
+         std::array<Float64, 2> Ixy; ///< Product of inertia. Array indices are [Section].
+         std::array<Float64, 2> Ytop; ///< center of mass (centroid) from top of girder. Array indices are [Section].
+         std::array<Float64, 2> Xleft; ///< center of mass from roll center. Array indices are [Section].
+         std::array<Float64, 2> Hg; ///< Height of the girder. Array indices are [Section].
+         std::array<Float64, 2> Wtf; ///< Top flange width. Array indices are [Section].
+         std::array<Float64, 2> Wbf; ///< Bottom flange width. Array indices are [Section].
          Float64 L; ///< Distance over which these properties apply
 
          std::shared_ptr<StressPoints> m_pStressPoints; ///< Stress points for this girder section
@@ -250,13 +250,13 @@ namespace WBFL
          virtual Float64 GetPrecamber() const override;
 
       private:
-         ISegment* m_pSegment{ nullptr }; // weak refernce
+         ISegment* m_pSegment{ nullptr }; // weak reference
          std::vector<SectionProperties> m_vSectionProperties;
 
          std::vector<std::pair<Float64, Float64>> m_vPointLoads; // additional point loads (used for items precast with the girder such as internal diaphragms)
                                                                  // first parameter is location from left end of girder, second parameter is the load magnitude. Positive loads are up
 
-         Float64 m_exb{ 0.0 }; // eccentricty of overhang bracket appurtenance loading
+         Float64 m_exb{ 0.0 }; // eccentricity of overhang bracket appurtenance loading
          Float64 m_Wb{ 0.0 }; // magnitude of overhang bracket appurtenance loading
 
          Float64 m_DragCoefficient{ 2.2 }; // default for I-Beams
@@ -283,7 +283,7 @@ namespace WBFL
          bool operator!=(const StabilityProblemImp& other) const; ///< Returns true if the objects are not equal
 
          // Effective prestress for can vary along the girder
-         // Define Fpe at different locations along the girder. Fpe will be linerally interpolated between locations.
+         // Define Fpe at different locations along the girder. Fpe will be linearly interpolated between locations.
          // If Fpe is requested before the first or after the last defined point, the first/last values will be used
          // For constant Fpe, define a Fpe at a single location
 
@@ -440,9 +440,9 @@ namespace WBFL
          void SetWindLoading(WindType type, Float64 load);
 
 
-         ///  Sets the appurtenance loading and eccentricty
+         ///  Sets the appurtenance loading and eccentricity
          void SetAppurtenanceLoading(
-            Float64 ex, ///< Eccentricty of the loading. Positive values are in the same direction as girder sweep
+            Float64 ex, ///< Eccentricity of the loading. Positive values are in the same direction as girder sweep
             Float64 W ///< Magnitude of loading uniformly distributed along the length of the girder.
          );
 
@@ -658,7 +658,7 @@ namespace WBFL
          ///  Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
 
-         ///  Sets the appurtenance loading and eccentricty
+         ///  Sets the appurtenance loading and eccentricity
          void SetAppurtenanceLoading(Float64 ex, Float64 W) { m_Imp.SetAppurtenanceLoading(ex, W);}
 
          /// Sets the lifting cable angle
@@ -853,7 +853,7 @@ namespace WBFL
          /// Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
 
-         /// Sets the appurtenance loading and eccentricty
+         /// Sets the appurtenance loading and eccentricity
          void SetAppurtenanceLoading(Float64 ex, Float64 W) { m_Imp.SetAppurtenanceLoading(ex, W); }
 
          /// Sets the truck rotational stiffness (Ktheta)
@@ -880,10 +880,10 @@ namespace WBFL
          /// Returns the normal crown slope (always a positive value)
          virtual Float64 GetSupportSlope() const override;
 
-         /// Sets the superelevation rate (always a postive value)
+         /// Sets the superelevation rate (always a positive value)
          void SetSuperelevation(Float64 superelevation);
 
-         /// Returns the superelevation rate (always a postive value)
+         /// Returns the superelevation rate (always a positive value)
          virtual Float64 GetSuperelevation() const override;
 
          /// Sets the velocity of the truck. Used for computing centrifugal force.
@@ -1094,7 +1094,7 @@ namespace WBFL
          /// Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
 
-         /// Sets the appurtenance loading and eccentricty
+         /// Sets the appurtenance loading and eccentricity
          void SetAppurtenanceLoading(Float64 ex, Float64 W) { m_Imp.SetAppurtenanceLoading(ex, W); }
 
          /// Sets the truck rotational stiffness (Ktheta)

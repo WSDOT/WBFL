@@ -42,7 +42,7 @@ namespace WBFL
 
          Float64 AllowableCompression_GlobalStress; ///< Compression stress limit for global stress
          Float64 AllowableCompression_PeakStress; ///< Compression stress limit for peak stress
-         Float64 CompressionCoefficient_GlobalStress; ///< Compression stress limit coefficienent for global stress
+         Float64 CompressionCoefficient_GlobalStress; ///< Compression stress limit coefficient for global stress
          Float64 CompressionCoefficient_PeakStress; ///< Compression stress limit coefficient for peak stress
 
          std::shared_ptr<IHaulingTensionStressLimit> TensionStressLimit;

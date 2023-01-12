@@ -135,7 +135,7 @@ void lrfdConcreteUtil::GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, F
 Float64 lrfdConcreteUtil::ModE(WBFL::Materials::ConcreteType type,Float64 fc,Float64 density,bool bCheckRange)
 {
    Float64 e;  // modulus of elasticity in System Units
-   if (type == WBFL::Materials::ConcreteType::PCI_UHPC)
+   if (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::FHWA_UHPC)
    {
       Float64 Fc = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::KSI);
       Float64 Ec = 2500 * pow(Fc,0.33); // Fc in KSI, Ec in KSI (This is LRFD Equation C5.4.2.4-1)
@@ -222,10 +222,10 @@ Float64 lrfdConcreteUtil::FcFromEc(WBFL::Materials::ConcreteType type, Float64 e
 {
    Float64 fc;          // fc in system units
 
-   if (type == WBFL::Materials::ConcreteType::PCI_UHPC)
+   if (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::FHWA_UHPC)
    {
       Float64 Ec = WBFL::Units::ConvertFromSysUnits(ec, WBFL::Units::Measure::KSI);
-      Float64 Fc = pow(Ec / 2500., 2);
+      Float64 Fc = pow(Ec / 2500., 1/0.33);
       fc = WBFL::Units::ConvertToSysUnits(Fc, WBFL::Units::Measure::KSI);
    }
    else
@@ -416,6 +416,26 @@ void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Material
          *pU = (isRoughened ? 1.0 : 0.7);
          *pK1 = (isRoughened ? 0.25 : 0.20);
          *pK2 = (isRoughened ? g_1p5_KSI : g_p8_KSI);
+      }
+   }
+   else if (girderConcType == WBFL::Materials::ConcreteType::FHWA_UHPC)
+   {
+      // GS 1.7.4.4
+      if (deckConcType == WBFL::Materials::ConcreteType::FHWA_UHPC)
+      {
+         // UHPC deck on UHPC girder
+         *pC = (isRoughened ? g_p5_KSI : g_p025_KSI);
+         *pU = (isRoughened ? 1.0 : 0.6);
+         *pK1 = 99999999; // want this value super high so K1f'cAcf never controls
+         *pK2 = (isRoughened ? g_1p8_KSI : g_p8_KSI);
+      }
+      else
+      {
+         // conventional deck concrete on UHPC girder, PCI SDG Table 7.4.3-1 Case 4 and 6
+         *pC = (isRoughened ? g_p240_KSI : g_p025_KSI);
+         *pU = (isRoughened ? 1.0 : 0.6);
+         *pK1 = 99999999; // want this value super high so K1f'cAcf never controls
+         *pK2 = (isRoughened ? g_1p8_KSI : g_p8_KSI);
       }
    }
    else
@@ -788,6 +808,9 @@ std::_tstring lrfdConcreteUtil::GetTypeName(WBFL::Materials::ConcreteType type,b
    case WBFL::Materials::ConcreteType::PCI_UHPC:
       return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
+   case WBFL::Materials::ConcreteType::FHWA_UHPC:
+      return bFull ? _T("FHWA Ultra High Performance Concrete (FHWA-UHPC)") : _T("FHWA-UHPC");
+
    default:
       ATLASSERT(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
@@ -812,6 +835,10 @@ WBFL::Materials::ConcreteType lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strN
    else if (std::_tstring(strName) == _T("PCI-UHPC"))
    {
       type = WBFL::Materials::ConcreteType::PCI_UHPC;
+   }
+   else if (std::_tstring(strName) == _T("FHWA-UHPC"))
+   {
+      type = WBFL::Materials::ConcreteType::FHWA_UHPC;
    }
    else
    {

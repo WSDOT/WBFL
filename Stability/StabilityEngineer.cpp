@@ -90,8 +90,8 @@ OneEndSeatedResults StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGird
    PrepareResults(pGirder, pStabilityProblem, results);
 
    // PrepareResults computes the initial eccentricity assuming seated or hanging from both ends
-   // The eccentricty for that case is  ei = Fo*Delta_sweep + e_seat
-   // but the eccentricty for seated at one end must account for different offsets of the seated and hanging end
+   // The eccentricity for that case is  ei = Fo*Delta_sweep + e_seat
+   // but the eccentricity for seated at one end must account for different offsets of the seated and hanging end
    // ei = Fo*Delta_Sweep + Lb/Ls*e_seat + La/Ls*e_lift
    // Subtract off e_seat and add in Lb/Ls*e_seat + La/Ls*e_lift
    Float64 Lg = pGirder->GetGirderLength();
@@ -342,7 +342,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
       results.Zo[+impact]     *= results.emag[+impact]; // emag includes impact
       results.ZoWind[+impact] *= results.emag[+impact];
 
-      //// add the deflection due to the horiztonal component of the lifting cable force
+      //// add the deflection due to the horizontal component of the lifting cable force
       //// to the location of the resultant gravity and wind forces
       //results.Dra[+impact]   -= results.OffsetFactor*IM[+impact]*results.dLift;
       //results.Ywind[+impact] -= results.OffsetFactor*IM[+impact]*results.dLift;
@@ -351,7 +351,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
       results.EccWind[+impact] = results.Wwind*results.Ywind[+impact]/(IM[+impact]*Wg);
 
       // if the roll axis is below the center of mass for a hanging girder, it is unstable.
-      // the girder will have to turn completely over to acheive equilibrium
+      // the girder will have to turn completely over to achieve equilibrium
 
       // Compute tilt equilibrium angle
       for ( IndexType w = 0; w < 2; w++ )
@@ -396,7 +396,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
    // this parameter is used to compute the moment arm for the horizontal force in the inclined
    // lift cable measured transversely from the laterally deflected beam.
    // we are conservative to assume equal overhangs based on the smallest overhang
-   // this puts the force furthest from the arc which is concervative
+   // this puts the force furthest from the arc which is conservative
    Float64 a = Min(Ll,Lr);
 
    PoiIDType poiID = 0;
@@ -417,7 +417,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
          rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
          segment->get_GirderShape(X,sbLeft,cstGirder, &shape); // this is in girder section coordinates
 
-         // position the shape in centroidal/stress pointscoordinates
+         // position the shape in centroidal/stress point coordinates
          CComPtr<IShapeProperties> props;
          shape->get_ShapeProperties(&props);
          CComPtr<IPoint2d> pntCG;
@@ -462,7 +462,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
          if (!IsZero(Fpe))
          {
             Float64 eyps = Ytop - Yps; // eccentricity of strands (positive values means ps force is below CG)
-            Float64 exps = Xleft - Xps; // lateral eccentricty of strands (positive values means ps force is left of the CG)
+            Float64 exps = Xleft - Xps; // lateral eccentricity of strands (positive values means ps force is left of the CG)
 
             Float64 Mxps = -Fpe*eyps;
             Float64 Myps = -Fpe*exps;
@@ -568,7 +568,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
                   else
                   {
                      // Because there is lateral deflection of the girder, the force in the inclined lift cable creates a moment about the Y-axis
-                     // Compute the eccentricty of the force and the moment at this section
+                     // Compute the eccentricity of the force and the moment at this section
                      sectionResult.eh[+impact][+wind] = SupportPlacementTolerance*results.emag[+impact] * (1 - sectionResult.OffsetFactor) + (results.EccLateralSweep[+impact] + windSign*results.ZoWind[+impact])*sectionResult.OffsetFactor;
                      sectionResult.Mh[+impact][+wind] = -Plift*sectionResult.eh[+impact][+wind];
                   }
@@ -623,7 +623,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
                   }
 
                   // compute cracking moment and cracking factor of safety
-                  Float64 mcr = 0; // if the direct stress exceedes the modulus of rupture, the beam is cracked before it is tilted
+                  Float64 mcr = 0; // if the direct stress exceeded the modulus of rupture, the beam is cracked before it is tilted
                   Float64 f_direct = sectionResult.fDirect[+impact][+corner] + windSign*sectionResult.fw[+corner];
                   if (f_direct < fr)
                   {
@@ -720,7 +720,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
                   results.FScrCorner[+impact][+wind] = sectionResult.MinFScrCorner[+impact][+wind];
                }
 
-               // keep track of overall mininium FScr
+               // keep track of overall minimum FScr
                if (::IsLT(sectionResult.MinFScr[+impact][+wind], results.FScrMin))
                {
                   // for all impact and wind cases, the minimum FScr along the beam occurs at this section
@@ -977,7 +977,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
          rebarLayout->CreateRebarSection(X, INVALID_INDEX, &rebarSection);
          segment->get_GirderShape(X, sbLeft, cstGirder, &shape); // this is in girder section coordinates
 
-         // position the shape in centroidal/stress pointscoordinates
+         // position the shape in centroidal/stress point coordinates
          CComPtr<IShapeProperties> props;
          shape->get_ShapeProperties(&props);
          CComPtr<IPoint2d> pntCG;
@@ -1020,7 +1020,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
          Float64 Fpe, Xps, Yps;
          pStabilityProblem->GetFpe(strName, X, &Fpe, &Xps, &Yps);
          Float64 eyps = Ytop - Yps; // eccentricity of strands (positive values means ps force is below CG)
-         Float64 exps = Xleft - Xps; // lateral eccentricty of strands (positive values means ps force is left of the CG)
+         Float64 exps = Xleft - Xps; // lateral eccentricity of strands (positive values means ps force is left of the CG)
 
          Float64 Mxps = -Fpe * eyps;
          Float64 Myps = -Fpe * exps;
@@ -1169,7 +1169,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
                   }
 
                   // compute cracking moment and cracking factor of safety
-                  Float64 mcr = 0; // if the direct stress exceedes the modulus of rupture, the beam is cracked before it is tilted...
+                  Float64 mcr = 0; // if the direct stress exceeds the modulus of rupture, the beam is cracked before it is tilted...
                   Float64 fscr = 0; // ... and the FScr is 0.
                   Float64 theta_crack = 0;
                   Float64 f_direct = sectionResult.fDirect[+impact][+corner] + windSign * sectionResult.fw[+corner];
@@ -1335,7 +1335,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
                }
                else
                {
-                  Float64 sign = (results.ThetaEq[+impact][+wind] < 0 ? -1 : 1); // let equilbrium angle determine direction of failure mode
+                  Float64 sign = (results.ThetaEq[+impact][+wind] < 0 ? -1 : 1); // let equilibrium angle determine direction of failure mode
 
                   Float64 Z = Zt + ei + Mot / (im * Wg) + (im * results.Zo[+ImpactDirection::NoImpact] + results.Dra[+ImpactDirection::NoImpact] + sign * 2.5 * Zt) * alpha;
                   Float64 S = alpha * alpha + sign * Z / (2.5 * im * results.Zo[+ImpactDirection::NoImpact]);
@@ -1369,7 +1369,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
             ////////////////////////////////////////
             
             // critical angle at rollover (this is the angle when the truck is just about to overturn)
-            Float64 sign = (results.ThetaEq[+impact][+wind] < 0 ? -1 : 1); // let equilbrium angle determine direction of failure mode
+            Float64 sign = (results.ThetaEq[+impact][+wind] < 0 ? -1 : 1); // let equilibrium angle determine direction of failure mode
             Float64 Zmax = Wcc / 2;
             Float64 Wro = windSign * results.Wwind;
 
@@ -1543,7 +1543,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
          rebarLayout->CreateRebarSection(X, INVALID_INDEX, &rebarSection);
          segment->get_GirderShape(X, sbLeft, cstGirder, &shape); // this is in girder section coordinates
 
-         // position the shape in centroidal/stress pointscoordinates
+         // position the shape in centroidal/stress point coordinates
          CComPtr<IShapeProperties> props;
          shape->get_ShapeProperties(&props);
          CComPtr<IPoint2d> pntCG;
@@ -1586,7 +1586,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
          Float64 Fpe, Xps, Yps;
          pStabilityProblem->GetFpe(strName,X,&Fpe,&Xps,&Yps);
          Float64 eyps = Ytop - Yps; // eccentricity of strands (positive values means ps force is below CG)
-         Float64 exps = Xleft - Xps; // lateral eccentricty of strands (positive values means ps force is left of the CG)
+         Float64 exps = Xleft - Xps; // lateral eccentricity of strands (positive values means ps force is left of the CG)
 
          Float64 Mxps = -Fpe*eyps;
          Float64 Myps = -Fpe*exps;
@@ -1758,7 +1758,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                      }
 
                      // compute cracking moment and cracking factor of safety
-                     Float64 mcr = 0; // if the direct stress exceedes the modulus of rupture, the beam is cracked before it is tilted...
+                     Float64 mcr = 0; // if the direct stress exceeds the modulus of rupture, the beam is cracked before it is tilted...
                      Float64 fscr = 0; // ... and the FScr is 0.
                      Float64 theta_crack = 0;
                      Float64 f_direct = sectionResult.fDirect[+slope][+impact][+corner] + windSign*sectionResult.fw[+corner];
@@ -1940,7 +1940,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                   }
                   else
                   {
-                     Float64 sign = (results.ThetaEq[+slope][+impact][+wind] < 0 ? -1 : 1); // let equilbrium angle determine direction of failure mode
+                     Float64 sign = (results.ThetaEq[+slope][+impact][+wind] < 0 ? -1 : 1); // let equilibrium angle determine direction of failure mode
 
                      Float64 Z = Zt + ei + Mot / (im*Wg) + (im*results.Zo[+ImpactDirection::NoImpact] + results.Dra[+ImpactDirection::NoImpact] + sign*2.5*Zt)*alpha;
                      Float64 S = alpha*alpha + sign*Z / (2.5 * im*results.Zo[+ImpactDirection::NoImpact]);
@@ -1974,7 +1974,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                ////////////////////////////////////////
 
                // critical angle at rollover (this is the angle when the truck is just about to overturn)
-               Float64 sign = (results.ThetaEq[+slope][+impact][+wind] < 0 ? -1 : 1); // let equilbrium angle determine direction of failure mode
+               Float64 sign = (results.ThetaEq[+slope][+impact][+wind] < 0 ? -1 : 1); // let equilibrium angle determine direction of failure mode
                Float64 Zmax = Wcc / 2;
                Float64 Wro = windSign*results.Wwind;
                if (slope == HaulingSlope::Superelevation)
@@ -2280,7 +2280,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       Wg += wg;
 
       // Centrifugal force
-      // cummulate the total centrifugal force
+      // cumulate the total centrifugal force
       // average force * distance = [(wStart+wEnd)/2]*(Ls)
       // to save on doing the divide by 2 operation, we'll skip it here
       // and do it once after the this loop.
@@ -2291,7 +2291,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       // Wind
       Float64 windStart = Hg[+Section::Start] * WindPressure;
       Float64 windEnd = Hg[+Section::End] * WindPressure;
-      // cummulate the total wind load
+      // cumulate the total wind load
       // average wind load * distance = [(wStart+wEnd)/2]*(Ls)
       // to save on doing the divide by 2 operation, we'll skip it here
       // and do it once after the this loop.
@@ -2301,7 +2301,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       // the location of the resultant wind force is Sum(ExposedArea*DepthToCGofExposedArea)/(Total Exposed Area)
       // NOTE: if we use WindForce = (ExposedArea*WindPressure) and WindPressure is 0, Ywind = 0... but we really want 
       // the location of the wind force if there was one
-      // Assuming sections that taper linerally in depth, the DepthToCGofExposedArea for each segment is the centroid of a trapazoid
+      // Assuming sections that taper linearly in depth, the DepthToCGofExposedArea for each segment is the centroid of a trapezoid
       // y = (a^2 + ab + b^2)/(3(a+b))
       // Exposed Area = (a+b)L/2
       // Where we are doing the summation. The negative is because we are measuring down from the top which is what we need for
@@ -2315,7 +2315,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
 
       // NOTE: Wind and CF is applied in the same direction as gravity
       // We have a 2D, plane frame model, not a 3D space frame. Our FEM engine does not support out of plane loading
-      // Techincally, this is incorrect, however the moments and shears are the same for loads applied transverse to the girder
+      // Technically, this is incorrect, however the moments and shears are the same for loads applied transverse to the girder
       // Deflections will be incorrect. Deflections from the FEM model will need to be scaled by Ix/Iy
 
       if (mbrIDStart == mbrIDEnd)

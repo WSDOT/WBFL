@@ -101,7 +101,7 @@ namespace WBFL
          // Determines Xleft, relative to the roll axis
          Float64 ComputeXcg(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results) const;
 
-         // Deterimes how to compute Zo
+         // Determines how to compute Zo
          void GetZoComputationMethod(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, IFem2dModel* pModel, Results& results) const;
 
          // Computes Zo by either a closed form exact solution or by numerical integration

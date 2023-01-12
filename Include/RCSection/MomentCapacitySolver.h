@@ -67,7 +67,7 @@ namespace WBFL
          void SetSliceGrowthFactor(Float64 sliceGrowthFactor);
          Float64 GetSliceGrowthFactor() const;
 
-         /// Convergance tolerance for axial force equilibrium
+         /// Convergence tolerance for axial force equilibrium
          void SetTolerance(Float64 tolerance);
          Float64 GetTolerance() const;
 
@@ -132,6 +132,7 @@ namespace WBFL
          static bool Test2(WBFL::Debug::Log& rlog);
          static bool Test3(WBFL::Debug::Log& rlog);
          static bool Test4(WBFL::Debug::Log& rlog);
+         static bool Test5(WBFL::Debug::Log& rlog);
 #endif // _UNITTEST
       };
    };

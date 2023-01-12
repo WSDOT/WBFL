@@ -231,7 +231,8 @@ public:
 
    //------------------------------------------------------------------------
    // Creep and shrinkage parameters
-   Float64 Getkhs() const;
+   Float64 Getkhs_Girder() const;
+   Float64 Getkhs_Deck() const;
    Float64 Get_ebid() const;
    Float64 Get_ebih() const;
    Float64 GetKid() const;
@@ -308,7 +309,8 @@ protected:
    virtual void ValidateParameters() const override;
    virtual void UpdateLongTermLosses() const override;
    virtual void UpdateHaulingLosses() const override;
-   virtual Float64 GetShrinkageHumidityFactor() const;
+   virtual Float64 GetShrinkageHumidityFactor_Girder() const;
+   virtual Float64 GetShrinkageHumidityFactor_Deck() const;
    virtual Float64 GetShrinkageStrainAtHauling() const;
    virtual Float64 GetShrinkageStrainAtDeckPlacement() const;
    virtual Float64 GetShrinkageStrainAtFinal() const;
@@ -340,7 +342,6 @@ protected:
    mutable Float64 m_DeltaFcdf;
 
 
-   mutable Float64 m_khs;
    mutable Float64 m_ebid;
    mutable Float64 m_ebih;
    mutable Float64 m_Kid;

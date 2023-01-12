@@ -91,7 +91,7 @@ namespace WBFL
             IndexType ShapeIdx; // index of the general section shape from which this slice is taken
             Float64 Area; // slice area
             Float64 Top; // top of slice elevation (may be off the section)
-            Float64 Bottom; // bottom of slice elevation (may be off the sectino)
+            Float64 Bottom; // bottom of slice elevation (may be off the section)
             WBFL::Geometry::Point2d pntCG;
             std::shared_ptr<const WBFL::Materials::StressStrainModel> FgMaterial;
             std::shared_ptr<const WBFL::Materials::StressStrainModel> BgMaterial;

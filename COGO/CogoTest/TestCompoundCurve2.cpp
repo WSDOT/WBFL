@@ -686,8 +686,8 @@ void CTestCompoundCurve::Test8a()
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 505.64223947528126),true);
-   TRY_TEST(IsEqual(py, 1000.9854324189444),true);
+   TRY_TEST(IsEqual(px, 505.64225645686224),true);
+   TRY_TEST(IsEqual(py, 1000.9854331731150),true);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
@@ -699,8 +699,8 @@ void CTestCompoundCurve::Test8a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 818.84457984632149),true);
-   TRY_TEST(IsEqual(py, 1124.3794034250211),true);
+   TRY_TEST(IsEqual(px, 818.84459859920526),true);
+   TRY_TEST(IsEqual(py, 1124.3794191254133),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -725,8 +725,8 @@ void CTestCompoundCurve::Test8a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 508.67040313139313),true);
-   TRY_TEST(IsEqual(py, 1001.1261375196194),true);
+   TRY_TEST(IsEqual(px, 508.67043163106791),true);
+   TRY_TEST(IsEqual(py, 1001.1261389033072),true);
    
    p2->get_X(&px);
    p2->get_Y(&py);
@@ -890,8 +890,8 @@ void CTestCompoundCurve::Test8a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 883.61560958489838),true);
-   TRY_TEST(IsEqual(py, 1183.8303918815288),true);
+   TRY_TEST(IsEqual(px, 883.61562936445966),true);
+   TRY_TEST(IsEqual(py, 1183.8304112645556),true);
 
    p2->get_X(&px);
    p2->get_Y(&py);
@@ -1210,8 +1210,8 @@ void CTestCompoundCurve::Test8b()
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 505.64223947528126),true);
-   TRY_TEST(IsEqual(py, 1000.9854324189444),true);
+   TRY_TEST(IsEqual(px, 505.64225645686224),true);
+   TRY_TEST(IsEqual(py, 1000.9854331731150),true);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
@@ -1223,8 +1223,8 @@ void CTestCompoundCurve::Test8b()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 818.84457984632149),true);
-   TRY_TEST(IsEqual(py, 1124.3794034250211),true);
+   TRY_TEST(IsEqual(px, 818.84459859920526),true);
+   TRY_TEST(IsEqual(py, 1124.3794191254133),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -1254,8 +1254,8 @@ void CTestCompoundCurve::Test8b()
    
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px, 508.67040313139313),true);
-   TRY_TEST(IsEqual(py, 1001.1261375196194),true);
+   TRY_TEST(IsEqual(px, 508.67043163106791),true);
+   TRY_TEST(IsEqual(py, 1001.1261389033072),true);
 
    // intersect circular curve in two places
    // first locate two points on the curve
@@ -1418,8 +1418,8 @@ void CTestCompoundCurve::Test8b()
 
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px, 883.61560958489838),true);
-   TRY_TEST(IsEqual(py, 1183.8303918815288),true);
+   TRY_TEST(IsEqual(px, 883.61562929997854),true);
+   TRY_TEST(IsEqual(py, 1183.8304112013670),true);
 
 
    // line tangent to circular curve
@@ -1734,8 +1734,8 @@ void CTestCompoundCurve::Test9a()
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-505.64223947528126),true);
-   TRY_TEST(IsEqual(py, 1000.9854324189444),true);
+   TRY_TEST(IsEqual(px, -505.64225645686224),true);
+   TRY_TEST(IsEqual(py, 1000.9854331731151),true);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
@@ -1747,8 +1747,8 @@ void CTestCompoundCurve::Test9a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-818.84457984632149),true);
-   TRY_TEST(IsEqual(py, 1124.3794034250211),true);
+   TRY_TEST(IsEqual(px, -818.84459859920526),true);
+   TRY_TEST(IsEqual(py, 1124.3794191254133),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -1773,8 +1773,8 @@ void CTestCompoundCurve::Test9a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-508.67040313139313),true);
-   TRY_TEST(IsEqual(py, 1001.1261375196194),true);
+   TRY_TEST(IsEqual(px, -508.67043163106791),true);
+   TRY_TEST(IsEqual(py, 1001.1261389033072),true);
    
    p2->get_X(&px);
    p2->get_Y(&py);
@@ -1938,8 +1938,8 @@ void CTestCompoundCurve::Test9a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-883.61560958489838),true);
-   TRY_TEST(IsEqual(py, 1183.8303918815288),true);
+   TRY_TEST(IsEqual(px, -883.61562936445966),true);
+   TRY_TEST(IsEqual(py, 1183.8304112645556),true);
 
    p2->get_X(&px);
    p2->get_Y(&py);
@@ -2258,8 +2258,8 @@ void CTestCompoundCurve::Test9b()
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-505.64223947528126),true);
-   TRY_TEST(IsEqual(py, 1000.9854324189444),true);
+   TRY_TEST(IsEqual(px, -505.64225645686224),true);
+   TRY_TEST(IsEqual(py, 1000.9854331731151),true);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
@@ -2271,8 +2271,8 @@ void CTestCompoundCurve::Test9b()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-818.84457984632149),true);
-   TRY_TEST(IsEqual(py, 1124.3794034250211),true);
+   TRY_TEST(IsEqual(px, -818.84459859920514),true);
+   TRY_TEST(IsEqual(py, 1124.3794191254135),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -2302,8 +2302,8 @@ void CTestCompoundCurve::Test9b()
    
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px,-508.67040313139313),true);
-   TRY_TEST(IsEqual(py, 1001.1261375196194),true);
+   TRY_TEST(IsEqual(px, -508.67043163106791),true);
+   TRY_TEST(IsEqual(py, 1001.1261389033072),true);
 
    // intersect circular curve in two places
    // first locate two points on the curve
@@ -2466,8 +2466,8 @@ void CTestCompoundCurve::Test9b()
 
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px,-883.61560958489838),true);
-   TRY_TEST(IsEqual(py, 1183.8303918815288),true);
+   TRY_TEST(IsEqual(px, -883.61562929997831),true);
+   TRY_TEST(IsEqual(py, 1183.8304112013673),true);
 
 
    // line tangent to circular curve
@@ -2782,8 +2782,8 @@ void CTestCompoundCurve::Test10a()
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 505.64223947528126),true);
-   TRY_TEST(IsEqual(py,-1000.9854324189444),true);
+   TRY_TEST(IsEqual(px, 505.64225645686224),true);
+   TRY_TEST(IsEqual(py, -1000.9854331731150),true);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
@@ -2795,8 +2795,8 @@ void CTestCompoundCurve::Test10a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 818.84457984632149),true);
-   TRY_TEST(IsEqual(py,-1124.3794034250211),true);
+   TRY_TEST(IsEqual(px, 818.84459859920514),true);
+   TRY_TEST(IsEqual(py, -1124.3794191254133),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -2821,8 +2821,8 @@ void CTestCompoundCurve::Test10a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 508.67040313139313),true);
-   TRY_TEST(IsEqual(py,-1001.1261375196194),true);
+   TRY_TEST(IsEqual(px, 508.67043163106791),true);
+   TRY_TEST(IsEqual(py, -1001.1261389033072),true);
    
    p2->get_X(&px);
    p2->get_Y(&py);
@@ -2985,8 +2985,8 @@ void CTestCompoundCurve::Test10a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 883.61560958489838),true);
-   TRY_TEST(IsEqual(py,-1183.8303918815288),true);
+   TRY_TEST(IsEqual(px, 883.61562936445955),true);
+   TRY_TEST(IsEqual(py, -1183.8304112645556),true);
 
    p2->get_X(&px);
    p2->get_Y(&py);
@@ -3306,8 +3306,8 @@ void CTestCompoundCurve::Test10b()
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 505.64223947528126),true);
-   TRY_TEST(IsEqual(py,-1000.9854324189444),true);
+   TRY_TEST(IsEqual(px, 505.64225645686224),true);
+   TRY_TEST(IsEqual(py, -1000.9854331731150),true);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
@@ -3319,8 +3319,8 @@ void CTestCompoundCurve::Test10b()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 818.84457984632149),true);
-   TRY_TEST(IsEqual(py,-1124.3794034250211),true);
+   TRY_TEST(IsEqual(px, 818.84459859920514),true);
+   TRY_TEST(IsEqual(py, -1124.3794191254133),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -3350,8 +3350,8 @@ void CTestCompoundCurve::Test10b()
    
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px, 508.67040313139313),true);
-   TRY_TEST(IsEqual(py,-1001.1261375196194),true);
+   TRY_TEST(IsEqual(px, 508.67043163106791),true);
+   TRY_TEST(IsEqual(py, -1001.1261389033072),true);
 
    // intersect circular curve in two places
    // first locate two points on the curve
@@ -3529,8 +3529,8 @@ void CTestCompoundCurve::Test10b()
 
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px, 883.61560958489838),true);
-   TRY_TEST(IsEqual(py,-1183.8303918815288),true);
+   TRY_TEST(IsEqual(px, 883.61562929997842),true);
+   TRY_TEST(IsEqual(py, -1183.8304112013670),true);
 
 
    // line tangent to circular curve
@@ -3844,8 +3844,8 @@ void CTestCompoundCurve::Test11a()
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-505.64223947528126),true);
-   TRY_TEST(IsEqual(py,-1000.9854324189444),true);
+   TRY_TEST(IsEqual(px, -505.64225645686224),true);
+   TRY_TEST(IsEqual(py, -1000.9854331731150),true);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
@@ -3857,8 +3857,8 @@ void CTestCompoundCurve::Test11a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-818.84457984632149),true);
-   TRY_TEST(IsEqual(py,-1124.3794034250211),true);
+   TRY_TEST(IsEqual(px, -818.84459859920526),true);
+   TRY_TEST(IsEqual(py, -1124.3794191254133),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -3883,8 +3883,8 @@ void CTestCompoundCurve::Test11a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-508.67040313139313),true);
-   TRY_TEST(IsEqual(py,-1001.1261375196194),true);
+   TRY_TEST(IsEqual(px, -508.67043163106791),true);
+   TRY_TEST(IsEqual(py, -1001.1261389033072),true);
    
    p2->get_X(&px);
    p2->get_Y(&py);
@@ -4047,8 +4047,8 @@ void CTestCompoundCurve::Test11a()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-883.61560958489838),true);
-   TRY_TEST(IsEqual(py,-1183.8303918815288),true);
+   TRY_TEST(IsEqual(px, -883.61562936445966),true);
+   TRY_TEST(IsEqual(py, -1183.8304112645556),true);
 
    p2->get_X(&px);
    p2->get_Y(&py);
@@ -4367,8 +4367,8 @@ void CTestCompoundCurve::Test11b()
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-505.64223947528126),true);
-   TRY_TEST(IsEqual(py,-1000.9854324189444),true);
+   TRY_TEST(IsEqual(px, -505.64225645686224),true);
+   TRY_TEST(IsEqual(py, -1000.9854331731150),true);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
@@ -4380,8 +4380,8 @@ void CTestCompoundCurve::Test11b()
    
    p1->get_X(&px);
    p1->get_Y(&py);
-   TRY_TEST(IsEqual(px,-818.84457984632149),true);
-   TRY_TEST(IsEqual(py,-1124.3794034250211),true);
+   TRY_TEST(IsEqual(px, -818.84459859920526),true);
+   TRY_TEST(IsEqual(py, -1124.3794191254133),true);
 
    // make line intersect circular curve
    line->ThroughPoints(cc,pi);
@@ -4411,8 +4411,8 @@ void CTestCompoundCurve::Test11b()
    
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px,-508.67040313139313),true);
-   TRY_TEST(IsEqual(py,-1001.1261375196194),true);
+   TRY_TEST(IsEqual(px, -508.67043163106791),true);
+   TRY_TEST(IsEqual(py, -1001.1261389033072),true);
 
    // intersect circular curve in two places
    // first locate two points on the curve
@@ -4590,8 +4590,8 @@ void CTestCompoundCurve::Test11b()
 
    p2->get_X(&px);
    p2->get_Y(&py);
-   TRY_TEST(IsEqual(px,-883.61560958489838),true);
-   TRY_TEST(IsEqual(py,-1183.8303918815288),true);
+   TRY_TEST(IsEqual(px, -883.61562929997854),true);
+   TRY_TEST(IsEqual(py, -1183.8304112013670),true);
 
 
    // line tangent to circular curve

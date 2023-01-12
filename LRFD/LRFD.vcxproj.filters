@@ -133,7 +133,16 @@
     <ClCompile Include="PCIUHPCCreepCoefficient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FHWAUHPCCreepCoefficient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FHWAUHPCLosses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="LRFDConcreteBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FHWAUHPCShear.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -288,7 +297,16 @@
     <ClInclude Include="..\Include\LRFD\ILiveLoadDistributionFactor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\LRFD\FHWAUHPCCreepCoefficient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\FHWAUHPCLosses.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Include\LRFD\LRFDConcreteBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\FHWAUHPCShear.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

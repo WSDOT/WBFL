@@ -24,24 +24,39 @@
 
 #pragma once
 
-#include <Lrfd\LrfdExp.h>
+#include <LRFD\LrfdExp.h>
+#include <LRFD\CreepCoefficient2005.h>
 
-struct LRFDCLASS REBARDEVLENGTHDETAILS
+/*****************************************************************************
+CLASS 
+   lrfdFHWAUHPCCreepCoefficient
+
+   Computes the creep coefficient per FHWA UHPC GS 1.4.2.8.2
+*****************************************************************************/
+
+class LRFDCLASS lrfdFHWAUHPCCreepCoefficient : public lrfdCreepCoefficient2005
 {
-   Float64 Ab;
-   Float64 fy;
-   Float64 fc;
-   Float64 db;
-   Float64 lambdaRl;  // Reinforcement location factor
-   Float64 lambdaLw;  // Lightweight concrete modification factor or density modification factor
-   Float64 lambdaCf; // Coating factor
-   Float64 factor; // Total Factor applied to equation
+public:
+   lrfdFHWAUHPCCreepCoefficient();
+   virtual ~lrfdFHWAUHPCCreepCoefficient();
 
-   bool bRlCfLimit; // if true, lambdaRl*lambdaCf was limited to 1.7
+protected:
+   virtual Float64 GetUltimateCreep() const override;
+   virtual Float64 GetAdjustedInitialAge(Float64 ti) const override;
+   virtual Float64 GetKl(Float64 ti) const override;
+   virtual Float64 ComputeKvs() const override;
+   virtual Float64 ComputeKhc() const override;
+   virtual Float64 ComputeKf() const override;
+   virtual Float64 ComputeKtd(Float64 t) const override;
 
-   // Two equations for #11 or smaller (before 2015)
-   Float64 ldb1;
-   Float64 ldb2;
-   Float64 ldb; // controlling value
-   Float64 ld; // factor*ldb
+private:
+   bool m_bPCTT;
+
+#if defined _UNITTEST
+public:
+   //------------------------------------------------------------------------
+   // Runs a self-diagnostic test.  Returns true if the test passed,
+   // otherwise false.
+   static bool TestMe(WBFL::Debug::Log& rlog);
+#endif // _UNITTEST
 };

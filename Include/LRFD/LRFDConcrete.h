@@ -87,6 +87,25 @@ public:
    virtual void SetAutogenousShrinkage(Float64 as) override;
    virtual Float64 GetAutogenousShrinkage() const override;
 
+   // FHWA UHPC Parameters
+   virtual void SetCompressionResponseReductionFactor(Float64 alpha_u) override;
+   virtual Float64 GetCompressionResponseReductionFactor() const override;
+   virtual void SetCompressiveStrainLimit(Float64 ecu) override;
+   virtual void SetElasticTensileStrainLimit(Float64 etcr) override;
+   virtual Float64 GetElasticTensileStrainLimit() const override;
+   virtual void SetInitialEffectiveCrackingStrength(Float64 ft_cri) override;
+   virtual Float64 GetInitialEffectiveCrackingStrength() const override;
+   virtual void SetDesignEffectiveCrackingStrength(Float64 ft_cr) override;
+   virtual Float64 GetDesignEffectiveCrackingStrength() const override;
+   virtual void SetCrackLocalizationStrength(Float64 ft_loc) override;
+   virtual Float64 GetCrackLocalizationStrength() const override;
+   virtual void SetCrackLocalizationStrain(Float64 et_loc) override;
+   virtual Float64 GetCrackLocalizationStrain() const override;
+
+   // e.cu per GS 1.4.2.4.2 Max(e.cu,e.cp)
+   virtual Float64 GetElasticCompressiveStrainLimit() const override;
+   virtual Float64 GetCompressiveStrainLimit(bool* pbIsExperimental = nullptr) const override;
+
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
    virtual Float64 GetFc(Float64 t) const override;

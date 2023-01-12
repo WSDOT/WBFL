@@ -87,11 +87,11 @@ namespace WBFL
       };
 
 
-      /// UHPC concrete tension stress limit
-      class STABILITYCLASS UHPCLiftingTensionStressLimit : public ILiftingTensionStressLimit
+      /// PCI UHPC concrete tension stress limit
+      class STABILITYCLASS PCIUHPCLiftingTensionStressLimit : public ILiftingTensionStressLimit
       {
       public:
-         UHPCLiftingTensionStressLimit();
+         PCIUHPCLiftingTensionStressLimit();
 
 #if defined REBAR_FOR_DIRECT_TENSION
          virtual Float64 GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact) const override;
@@ -107,6 +107,30 @@ namespace WBFL
 
          Float64 ffc; // First crack tension strength
          Float64 fc28; // 28-day compressive strength
+         Float64 AllowableTension; ///< Tension stress limit
+      };
+
+
+      /// FHWA UHPC concrete tension stress limit
+      class STABILITYCLASS FHWAUHPCLiftingTensionStressLimit : public ILiftingTensionStressLimit
+      {
+      public:
+         FHWAUHPCLiftingTensionStressLimit();
+
+#if defined REBAR_FOR_DIRECT_TENSION
+         virtual Float64 GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact) const override;
+#else
+         virtual Float64 GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const override;
+#endif
+         virtual Float64 GetRequiredFcTension(const LiftingCheckArtifact* pArtifact) const override;
+         virtual Float64 GetRequiredFcTensionWithoutRebar(const LiftingCheckArtifact* pArtifact) const override;
+         virtual Float64 GetRequiredFcTensionWithRebar(const LiftingCheckArtifact* pArtifact) const override;
+
+         virtual void ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
+         virtual void ReportRequiredConcreteStrength(const LiftingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const override;
+
+         Float64 gamma_u;
+         Float64 ft_cri; // Initial effective cracking strength
          Float64 AllowableTension; ///< Tension stress limit
       };
    }

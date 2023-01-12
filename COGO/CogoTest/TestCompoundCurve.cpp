@@ -706,7 +706,7 @@ void CTestCompoundCurve::Test1()
    TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
-   TRY_TEST(IsEqual(px,450.78715),true);
+   TRY_TEST(IsEqual(px,450.78716),true);
    TRY_TEST(IsEqual(py,999.99459),true);
 
    // This point should project onto both spirals.

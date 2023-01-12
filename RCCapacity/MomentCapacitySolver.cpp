@@ -51,6 +51,10 @@ HRESULT CMomentCapacitySolver::FinalConstruct()
    m_AxialTolerance = 0.01;
    m_MaxIter = 50;
 
+#if defined _MOMENT_CAPACITY_LOGGING
+   m_LogFile.CoCreateInstance(CLSID_LogFile);
+#endif
+
    return S_OK;
 }
 
@@ -141,6 +145,11 @@ STDMETHODIMP CMomentCapacitySolver::get_Section(IGeneralSection** pSection)
 
 STDMETHODIMP CMomentCapacitySolver::Solve(Float64 Fz,Float64 angle,Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,IMomentCapacitySolution** solution)
 {
+#if defined _MOMENT_CAPACITY_LOGGING
+   m_LogFile->Open(_T("F:/MomentCapacityDetails.log"), &m_dwCookie1);
+   m_LogFile->Open(_T("F:/MomentCapacity.log"), &m_dwCookie2);
+#endif
+
    // initialize some parameters using during the solution
    m_bAnalysisPointUpdated = false;
 
@@ -156,7 +165,7 @@ STDMETHODIMP CMomentCapacitySolver::Solve(Float64 Fz,Float64 angle,Float64 k_or_
 
    if ((IsZero(FzT) && IsZero(MxT) && IsZero(MyT)) || (IsZero(FzC) && IsZero(MxC) && IsZero(MyC)))
    {
-      // no tension or compression capacity so the capacity is zeron
+      // no tension or compression capacity so the capacity is zero
       return ZeroCapacitySolution(solution);
    }
 
@@ -164,7 +173,7 @@ STDMETHODIMP CMomentCapacitySolver::Solve(Float64 Fz,Float64 angle,Float64 k_or_
    {
       // The axial force is equal to the tension or compression capacity so we have our solution
 
-      // start with a zero capacity solution sinced it is initialized for the zero curvature case
+      // start with a zero capacity solution since it is initialized for the zero curvature case
       HRESULT hr = ZeroCapacitySolution(solution);
 
 
@@ -194,7 +203,14 @@ STDMETHODIMP CMomentCapacitySolver::Solve(Float64 Fz,Float64 angle,Float64 k_or_
       return hr;
    }
 
-   return AnalyzeSection(Fz, angle, k_or_ec, solutionMethod, strainLocation, solution);
+   HRESULT hr = AnalyzeSection(Fz, angle, k_or_ec, solutionMethod, strainLocation, solution);
+
+#if defined _MOMENT_CAPACITY_LOGGING
+      m_LogFile->Close(m_dwCookie1);
+      m_LogFile->Close(m_dwCookie2);
+#endif
+
+      return hr;
 }
 
 STDMETHODIMP CMomentCapacitySolver::get_PlasticCentroid(IPoint2d** pcg)
@@ -401,21 +417,12 @@ void CMomentCapacitySolver::UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Floa
          Float64 d = 1000; // distance between P1 and P2.
          Float64 sin_angle = sin(angle);
          Float64 cos_angle = cos(angle);
-         if (solutionMethod == smFixedStrain)
-         {
-            Float64 yna = ec / eo; // distance from where strain is known to the neutral axis
-            m_P1->Move(-yna * sin_angle - d * cos_angle, strainLocation + yna * cos_angle - d * sin_angle, 0.0);
-            m_P2->Move(-yna * sin_angle + d * cos_angle, strainLocation + yna * cos_angle + d * sin_angle, 0.0);
-         }
-         else
-         {
-            Float64 X, Y;
-            m_ControlPoint->Location(&X, &Y);
-            m_P1->Move(X - d * cos_angle, Y - d * sin_angle, eo);
-            m_P2->Move(X + d * cos_angle, Y + d * sin_angle, eo);
-         }
 
          Float64 X, Y;
+         m_ControlPoint->Location(&X, &Y);
+         m_P1->Move(X - d * cos_angle, Y - d * sin_angle, eo);
+         m_P2->Move(X + d * cos_angle, Y + d * sin_angle, eo);
+
          m_FixedPoint->Location(&X, &Y);
          m_P3->Move(X, Y, ec);
 
@@ -504,6 +511,8 @@ void CMomentCapacitySolver::UpdateAnalysisPoints(Float64 angle, SolutionMethod s
 
 void CMomentCapacitySolver::UpdateControlPoints(Float64 angle, SolutionMethod solutionMethod, Float64 strainLocation)
 {
+   // Why do we call this multiple times? Once the control points are set, they shouldn't change
+   // Implement this so it calls it only once, but then there were issues....
    ATLASSERT(solutionMethod == smFixedCompressionStrain || solutionMethod == smFixedTensionStrain || solutionMethod == smFixedStrain);
 
    UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
@@ -528,10 +537,8 @@ void CMomentCapacitySolver::UpdateControlPoints(Float64 angle, SolutionMethod so
       if (m_FixedPoint == nullptr) m_FixedPoint.CoCreateInstance(CLSID_Point2d);
       m_FixedPoint->Move(0, strainLocation);
 
-      // fixed point is not guarenteed to be at pntCompression or pntTension
-      // determine if pntCompression or pntTension should be the control point
 
-      // Get Size for fixed point to pntCompression and pntTension...
+      // Get Size for fixed point to m_ExtremeCompressionPoint and m_ExtremeTensionPoint...
       CComPtr<ISize2d> sizeC, sizeT;
       m_FixedPoint->SizeEx(m_ExtremeCompressionPoint, &sizeC);
       m_FixedPoint->SizeEx(m_ExtremeTensionPoint, &sizeT);
@@ -561,13 +568,15 @@ void CMomentCapacitySolver::UpdateControlPoints(Float64 angle, SolutionMethod so
 
       // ... if the direction of the vector between fixed point and the compression point are the same as the direction of the neutral axis (or in opposite directions)
       // the use the tension point, otherwise use the compression point. if the point with the same direction as the neutral axis is used, the strain plane
-      // will be constructed from 3 colinear points (bad)
+      // will be constructed from 3 co-linear points (bad)
       if (IsEqual(angle, dirC1) || IsEqual(angle, dirC2))
       {
+         //m_LogFile->LogMessage(m_dwCookie1, _T("Tension Side Control Point"));
          m_ControlPoint = m_ExtremeTensionPoint;
       }
       else
       {
+         //m_LogFile->LogMessage(m_dwCookie1, _T("Compression Side Control Point"));
          m_ControlPoint = m_ExtremeCompressionPoint;
       }
    }
@@ -577,14 +586,27 @@ void CMomentCapacitySolver::UpdateControlPoints(Float64 angle, SolutionMethod so
 
 HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper)
 {
+#if defined _MOMENT_CAPACITY_LOGGING
+   m_LogFile->LogMessage(m_dwCookie1, _T("Neutral Axis Parameter Range"));
+#endif
+
    Float64 FzMax, FzMin, Mx, My;
    TensionLimit(&FzMax,&Mx,&My,peo_upper);
    CompressionLimit(&FzMin,&Mx,&My,peo_lower);
 
    if (!InRange(FzMin, Fz, FzMax))
    {
+#if defined _MOMENT_CAPACITY_LOGGING
+      m_LogFile->LogMessage(m_dwCookie1, _T("Neutral Axis Parameter Range Failed - Neutral Axis Not Bounded (1)"));
+#endif
       return Error(IDS_E_NEUTRALAXISNOTBOUNDED, IID_IMomentCapacitySolver, RC_E_NEUTRALAXISNOTBOUNDED);
    }
+
+   // This method assumes increasing the difference between min and max will yield the desired range.
+   // However, when the controlling strain is not at the extreme edges of the section the range can
+   // grow infinitely. In these cases, the actual range is smaller than the initial guess.
+   // Win the MaxStrain limit is reach, the initial guess is reduced by a factor of 100 (see code at end of this method)
+   Float64 MaxStrain = 10.00; // this limit is established by trial and error - it may not be optimized.
 
    Float64 eo_lower = (solutionMethod == smFixedCompressionStrain ? k_or_ec : *peo_lower);
    Float64 eo_upper = (solutionMethod == smFixedTensionStrain ? k_or_ec : *peo_upper);
@@ -594,11 +616,11 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
 
    HRESULT hr;
 
+   bool bReset = false; // reset state - if the solution isn't converging, reset the parameters and try again - this can only happen once
    bool bDone = false;
    while ( !bDone )
    {
       UpdateStrainPlane(angle,k_or_ec,strainLocation,solutionMethod,eo_lower);
-
       hr = m_GeneralSolver->Solve(m_IncrementalStrainPlane,&m_GeneralSolution.p);
       if ( FAILED(hr) )
          return hr;
@@ -608,7 +630,19 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
       m_GeneralSolution->get_My(&My);
 
       Fz_lower -= Fz;
-   
+
+#if defined _MOMENT_CAPACITY_LOGGING
+      CString str;
+      str.Format(_T("strain = %f"), eo_lower);
+      m_LogFile->LogMessage(m_dwCookie1, str);
+      LogSolution();
+      str.Format(_T("Fz = %f"), Fz_lower);
+      m_LogFile->LogMessage(m_dwCookie1, str);
+
+      str.Format(_T("%f, %f"), eo_lower, Fz_lower);
+      m_LogFile->LogMessage(m_dwCookie2, str);
+#endif
+
       UpdateStrainPlane(angle,k_or_ec,strainLocation,solutionMethod,eo_upper);
       hr = m_GeneralSolver->Solve(m_IncrementalStrainPlane,&m_GeneralSolution.p);
       if ( FAILED(hr) )
@@ -620,6 +654,17 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
 
       Fz_upper -= Fz;
 
+#if defined _MOMENT_CAPACITY_LOGGING
+      str.Format(_T("strain = %f"), eo_upper);
+      m_LogFile->LogMessage(m_dwCookie1, str);
+      LogSolution();
+      str.Format(_T("Fz = %f"), Fz_upper);
+      m_LogFile->LogMessage(m_dwCookie1, str);
+      
+      str.Format(_T("%f, %f"), eo_upper, Fz_upper);
+      m_LogFile->LogMessage(m_dwCookie2, str);
+#endif
+
       if ( Fz_lower*Fz_upper <= 0 )
       {
          bDone = true;
@@ -629,7 +674,36 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Floa
          eo_lower -= (eo_upper - eo_lower)/2;
          eo_upper += (eo_upper - eo_lower)/2;
       }
+
+      if (solutionMethod == smFixedStrain && (eo_lower < -MaxStrain || MaxStrain < eo_upper))
+      {
+         if (!bReset)
+         {
+            bReset = true; // solution parameters are being reset, mark true because we only get to reset once
+
+            // For fixed point analysis, the fixed point is typically somewhere within the depth of the section
+            // and the control strain is at one of the extreme edges. The initial guess strains can be too
+            // big and the solution is not bounded. The real bounding strains are on a smaller range
+            // so retry bounding with smaller initial strains.
+#if defined _MOMENT_CAPACITY_LOGGING
+            m_LogFile->LogMessage(m_dwCookie1, _T("Neutral Axis Parameter Range Failed - Neutral Axis Not Bounded (2) - shrink strain range and try again"));
+#endif
+            eo_lower = *peo_lower / 100;
+            eo_upper = *peo_upper / 100;
+         }
+         else
+         {
+#if defined _MOMENT_CAPACITY_LOGGING
+            m_LogFile->LogMessage(m_dwCookie1, _T("Neutral Axis Parameter Range Failed - Neutral Axis Not Bounded (3)"));
+#endif
+            return Error(IDS_E_NEUTRALAXISNOTBOUNDED, IID_IMomentCapacitySolver, RC_E_NEUTRALAXISNOTBOUNDED);
+         }
+      }
    }
+
+#if defined _MOMENT_CAPACITY_LOGGING
+   m_LogFile->LogMessage(m_dwCookie1, _T("Neutral axis bounded"));
+#endif
 
    *peo_lower = eo_lower;
    *peo_upper = eo_upper;
@@ -671,7 +745,7 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
          break; // converged
       }
 
-      hr = S_OK; // need to reset for each iteration - there may have been an overstrained material in a previous interation but the solution was incorrect. don't want to carry that bad state into this iteration
+      hr = S_OK; // need to reset for each iteration - there may have been an over-strained material in a previous iteration but the solution was incorrect. don't want to carry that bad state into this iteration
 
       // update guess for strain at the control point
       eo_r = (Fz_upper * eo_lower - Fz_lower * eo_upper) / (Fz_upper - Fz_lower);
@@ -688,6 +762,18 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
       m_GeneralSolution->get_My(&My);
 
       Fz_r -= Fz;
+
+#if defined _MOMENT_CAPACITY_LOGGING
+      CString str;
+      str.Format(_T("Trial %d, strain = %f"),iter,eo_r);
+      m_LogFile->LogMessage(m_dwCookie1, str);
+      LogSolution();
+      str.Format(_T("Fz = %f"), Fz_r);
+      m_LogFile->LogMessage(m_dwCookie1, str);
+
+      str.Format(_T("%f, %f"), eo_r, Fz_r);
+      m_LogFile->LogMessage(m_dwCookie2, str);
+#endif
 
       if ( 0 < Fz_r*Fz_upper )
       {
@@ -804,3 +890,52 @@ HRESULT CMomentCapacitySolver::ZeroCapacitySolution(IMomentCapacitySolution** so
 
   return S_OK;
 }
+
+#if defined _MOMENT_CAPACITY_LOGGING
+void CMomentCapacitySolver::LogSolution()
+{
+   CString strHeading(_T("Name,Area,Xcg,Ycg,ei,de,et,fg,bg,Fz"));
+   m_LogFile->LogMessage(m_dwCookie1, strHeading);
+
+   IndexType nSlices;
+   m_GeneralSolution->get_SliceCount(&nSlices);
+   for (IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++)
+   {
+      CComPtr<IGeneralSectionSlice> slice;
+      m_GeneralSolution->get_Slice(sliceIdx, &slice);
+
+      IndexType shapeIdx;
+      slice->get_ShapeIndex(&shapeIdx);
+
+      CComPtr<IGeneralSection> section;
+      get_Section(&section);
+
+      CComBSTR bstrName;
+      section->get_Name(shapeIdx, &bstrName);
+      CString strName(bstrName);
+
+      Float64 area;
+      slice->get_Area(&area);
+
+      CComPtr<IPoint2d> cg;
+      slice->get_CG(&cg);
+      Float64 x, y;
+      cg->Location(&x, &y);
+
+      Float64 ei, delta_e, total_e;
+      slice->get_InitialStrain(&ei);
+      slice->get_IncrementalStrain(&delta_e);
+      slice->get_TotalStrain(&total_e);
+
+      Float64 ffg, fbg;
+      slice->get_ForegroundStress(&ffg);
+      slice->get_BackgroundStress(&fbg);
+
+      Float64 fz = area * (ffg - fbg);
+
+      CString str;
+      str.Format(_T("%s, %f, %f, %f, %f, %f, %f,%f, %f, %f"), strName, area, x, y, ei, delta_e, total_e, ffg, fbg, fz);
+      m_LogFile->LogMessage(m_dwCookie1, str);
+   }
+}
+#endif

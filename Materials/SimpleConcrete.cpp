@@ -49,7 +49,15 @@ m_bHasFct(false),
 m_Lambda(1.0),
 m_ffc(0),
 m_frr(0),
-m_AutogenousShrinkage(0)
+m_AutogenousShrinkage(0),
+m_alpha_u(0.85),
+m_ecu(0),
+m_etcr(0),
+m_ftcri(0),
+m_ftcr(0),
+m_ftloc(0),
+m_etloc(0),
+m_bExperimental_ecu(false)
 {
    // Don't call assert value because this material model is not valid.
 }
@@ -70,7 +78,15 @@ SimpleConcrete::SimpleConcrete(const std::_tstring& name, Float64 fc, Float64 de
    m_Lambda(1.0),
    m_ffc(0),
    m_frr(0),
-   m_AutogenousShrinkage(0)
+   m_AutogenousShrinkage(0),
+   m_alpha_u(0.85),
+   m_ecu(0),
+   m_etcr(0),
+   m_ftcri(0),
+   m_ftcr(0),
+   m_ftloc(0),
+   m_etloc(0),
+   m_bExperimental_ecu(false)
 {
    ASSERTVALID;
 }
@@ -120,6 +136,7 @@ bool SimpleConcrete::operator==(const SimpleConcrete& rOther) const
    if (!::IsEqual(m_Lambda, rOther.m_Lambda))
       return false;
 
+   // PCI UHPC
    if (!::IsEqual(m_ffc, rOther.m_ffc))
       return false;
 
@@ -127,6 +144,31 @@ bool SimpleConcrete::operator==(const SimpleConcrete& rOther) const
       return false;
 
    if (!::IsEqual(m_AutogenousShrinkage, rOther.m_AutogenousShrinkage))
+      return false;
+
+   // FHWA UHPC
+   if (!IsEqual(m_alpha_u, rOther.m_alpha_u))
+      return false;
+
+   if (m_bExperimental_ecu != rOther.m_bExperimental_ecu)
+      return false;
+
+   if(m_bExperimental_ecu && !::IsEqual(m_ecu, rOther.m_ecu)) // only check if experimental value
+      return false;
+
+   if (!::IsEqual(m_etcr, rOther.m_etcr))
+      return false;
+
+   if (!::IsEqual(m_ftcri, rOther.m_ftcri))
+      return false;
+
+   if (!::IsEqual(m_ftcr, rOther.m_ftcr))
+      return false;
+
+   if (!::IsEqual(m_ftloc, rOther.m_ftloc))
+      return false;
+   
+   if (!::IsEqual(m_etloc, rOther.m_etloc))
       return false;
 
    return true;
@@ -348,6 +390,98 @@ Float64 SimpleConcrete::GetAutogenousShrinkage() const
    return m_AutogenousShrinkage;
 }
 
+void SimpleConcrete::SetCompressionResponseReductionFactor(Float64 alpha_u)
+{
+   m_alpha_u = alpha_u;
+}
+
+Float64 SimpleConcrete::GetCompressionResponseReductionFactor() const
+{
+   return m_alpha_u;
+}
+
+void SimpleConcrete::SetCompressiveStrainLimit(Float64 ecu)
+{
+   m_ecu = ecu;
+   m_bExperimental_ecu = true;
+}
+
+void SimpleConcrete::SetElasticTensileStrainLimit(Float64 etcr)
+{
+   m_etcr = etcr;
+}
+
+Float64 SimpleConcrete::GetElasticTensileStrainLimit() const
+{
+   return m_etcr;
+}
+
+void SimpleConcrete::SetInitialEffectiveCrackingStrength(Float64 ft_cri)
+{
+   m_ftcri = ft_cri;
+}
+
+Float64 SimpleConcrete::GetInitialEffectiveCrackingStrength() const
+{
+   return m_ftcri;
+}
+
+void SimpleConcrete::SetDesignEffectiveCrackingStrength(Float64 ft_cr)
+{
+   m_ftcr = ft_cr;
+}
+
+Float64 SimpleConcrete::GetDesignEffectiveCrackingStrength() const
+{
+   return m_ftcr;
+}
+
+void SimpleConcrete::SetCrackLocalizationStrength(Float64 ft_loc)
+{
+   m_ftloc = ft_loc;
+}
+
+Float64 SimpleConcrete::GetCrackLocalizationStrength() const
+{
+   return m_ftloc;
+}
+
+void SimpleConcrete::SetCrackLocalizationStrain(Float64 et_loc)
+{
+   m_etloc = et_loc;
+}
+
+Float64 SimpleConcrete::GetCrackLocalizationStrain() const
+{
+   return m_etloc;
+}
+
+Float64 SimpleConcrete::GetElasticCompressiveStrainLimit() const
+{
+   Float64 e_cp = -1.0 * m_alpha_u * m_Fc / m_ModE; // GS Eq 1.4.2.4.2-1
+   return e_cp;
+}
+
+Float64 SimpleConcrete::GetCompressiveStrainLimit(bool* pbIsExperimental) const
+{
+   if (pbIsExperimental)
+   {
+      *pbIsExperimental = m_bExperimental_ecu;
+   }
+
+   if (m_bExperimental_ecu)
+   {
+      return m_ecu;
+   }
+   else
+   {
+      // GS 1.4.2.4.2
+      Float64 e_cp = GetElasticCompressiveStrainLimit();
+      return Min(e_cp, -0.0035);
+   }
+}
+
+//======================== DEBUG      =======================================
 #if defined _DEBUG
 bool SimpleConcrete::AssertValid() const
 {

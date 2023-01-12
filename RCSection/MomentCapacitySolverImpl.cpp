@@ -110,7 +110,7 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::Solve(Float64 
    {
       // The axial force is equal to the tension or compression capacity so we have our solution
 
-      // start with a zero capacity solution sinced it is initialized for the zero curvature case
+      // start with a zero capacity solution since it is initialized for the zero curvature case
       auto solution = CreateMomentCapacitySolution();
 
 
@@ -412,7 +412,7 @@ void MomentCapacitySolverImpl::UpdateControlPoints(Float64 angle, MomentCapacity
    {
       m_FixedPoint.Move(0, strainLocation);
 
-      // fixed point is not guarenteed to be at pntCompression or pntTension
+      // fixed point is not guaranteed to be at pntCompression or pntTension
       // determine if pntCompression or pntTension should be the control point
 
       // create vectors from the fixed point to the tension and compression control points
@@ -430,7 +430,7 @@ void MomentCapacitySolverImpl::UpdateControlPoints(Float64 angle, MomentCapacity
 
       // ... if the direction of the vector between fixed point and the compression point are the same as the direction of the neutral axis (or in opposite directions)
       // the use the tension point, otherwise use the compression point. if the point with the same direction as the neutral axis is used, the strain plane
-      // will be constructed from 3 colinear points (bad)
+      // will be constructed from 3 co-linear points (bad)
       if (IsEqual(angle, dirC1) || IsEqual(angle, dirC2))
       {
          m_ControlPoint = m_ExtremeTensionPoint;
@@ -461,6 +461,13 @@ void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Flo
    Float64 Fz_lower = 0;
    Float64 Fz_upper = 0;
 
+   // This method assumes increasing the difference between min and max will yield the desired range.
+   // However, when the controlling strain is not at the extreme edges of the section the range can
+   // grow infinitely. In these cases, the actual range is smaller than the initial guess.
+   // Win the MaxStrain limit is reach, the initial guess is reduced by a factor of 100 (see code at end of this method)
+   Float64 MaxStrain = 10.00; // this limit is established by trial and error - it may not be optimized.
+
+   bool bReset = false; // reset state - if the solution isn't converging, reset the parameters and try again - this can only happen once
    bool bDone = false;
    while (!bDone)
    {
@@ -491,6 +498,24 @@ void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Flo
       {
          eo_lower -= (eo_upper - eo_lower) / 2;
          eo_upper += (eo_upper - eo_lower) / 2;
+      }
+
+      if (solutionMethod == MomentCapacitySolver::SolutionMethod::FixedStrain && (eo_lower < -MaxStrain || MaxStrain < eo_upper))
+      {
+         if (!bReset)
+         {
+            bReset = true; // solution parameters are being reset, mark true because we only get to reset once
+            // For fixed point analysis, the fixed point is typically somewhere within the depth of the section
+            // and the control strain is at one of the extreme edges. The initial guess strains can be too
+            // big and the solution is not bounded. The real bounding strains are on a smaller range
+            // so retry bounding with smaller initial strains.
+            eo_lower = *peo_lower / 100;
+            eo_upper = *peo_upper / 100;
+         }
+         else
+         {
+            THROW_RCSECTION(_T("Solution not found - neutral axis not bounded"));
+         }
       }
    }
 
@@ -572,8 +597,8 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::AnalyzeSection
 
    ASSERT(IsZero(C + T - Fz, m_AxialTolerance));
 
-   auto cgC = m_GeneralSolution->GetCompressionResultantLocation();
-   auto cgT = m_GeneralSolution->GetTensionResultantLocation();
+   const auto& cgC = m_GeneralSolution->GetCompressionResultantLocation();
+   const auto& cgT = m_GeneralSolution->GetTensionResultantLocation();
 
    // Compute curvature
    const auto& section = GetSection();

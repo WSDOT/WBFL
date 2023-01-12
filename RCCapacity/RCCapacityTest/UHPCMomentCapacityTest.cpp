@@ -55,6 +55,7 @@ void CUHPCMomentCapacityTest::Test()
    Test1();
    Test2();
    Test3();
+   Test4();
 }
 
 Float64 GetStrain(CComPtr<IPlane3d>& plane1, CComPtr<IPlane3d>& plane2, Float64 X, Float64 Y)
@@ -217,7 +218,7 @@ void CUHPCMomentCapacityTest::Test1()
    TRY_TEST(IsEqual(k, 0.0045/(H/2)), true);
 
    // Solve for concrete crushing
-   // this example will have tension strains the the rebar that exceed the fracture limit)
+   // this example will have tension strains the rebar that exceed the fracture limit)
    solution.Release();
    incrementalStrainPlane.Release();
    TRY_TEST(solver->Solve(0.00, 0.00, -0.0035, 0, smFixedCompressionStrain, &solution), RC_E_MATERIALFAILURE); // compression top, use angle = 0
@@ -228,7 +229,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_IncrementalStrainPlane(&incrementalStrainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -33162.03191), true); 
+   TRY_TEST(IsEqual(Mx, -7176.35942), true);
    TRY_TEST(IsZero(My), true);
 
    ec = GetStrain(strainPlane,incrementalStrainPlane,0.00, H / 2);
@@ -239,7 +240,7 @@ void CUHPCMomentCapacityTest::Test1()
    TRY_TEST(IsEqual(k, -0.0035/(H/2)), true);
 
    // Solve again but this time set the strain at the top
-   // this example will have tension strains the the rebar that exceed the fracture limit)
+   // this example will have tension strains the rebar that exceed the fracture limit)
    solution.Release();
    incrementalStrainPlane.Release();
    TRY_TEST(solver->Solve(0.00, 0.00, -0.0035, H / 2, smFixedStrain, &solution), RC_E_MATERIALFAILURE); // compression top, use angle = 0
@@ -250,7 +251,7 @@ void CUHPCMomentCapacityTest::Test1()
    solution->get_IncrementalStrainPlane(&incrementalStrainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -33162.033845), true);
+   TRY_TEST(IsEqual(Mx, -7176.35942), true);
    TRY_TEST(IsZero(My), true);
 
    ec = GetStrain(strainPlane,incrementalStrainPlane,0.00, H / 2);
@@ -541,28 +542,28 @@ void CUHPCMomentCapacityTest::Test2()
    solution->get_IncrementalStrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -237920.68914), true);
+   TRY_TEST(IsEqual(Mx, -223541.607261), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mc = -Mx;
 
    strainPlane->GetZ(0.00, 10.00, &ec); // strain at top of deck
-   TRY_TEST(IsEqual(ec,-0.00824344), true);
+   TRY_TEST(IsEqual(ec,-0.0100945), true);
 
    strainPlane->GetZ(0.00, -h, &ec); // strain at bottom of beam
-   TRY_TEST(IsEqual(ec, 0.0221146), true);
+   TRY_TEST(IsEqual(ec, 0.03211012), true);
 
    strainPlane->GetZ(0.00, 0.00, &ec);
    TRY_TEST(IsEqual(ec, -0.0035), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis
-   TRY_TEST(IsEqual(Yna, -7.378604), true); 
+   TRY_TEST(IsEqual(Yna, -5.3074806), true);
 
    Float64 Yc = ec / Yna;
-   TRY_TEST(IsEqual(Yc, 0.00047434446, 0.000000001), true);
+   TRY_TEST(IsEqual(Yc, 0.00065944659318803141, 0.000000001), true);
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    solution.Release();
-   TRY_TEST(solver->Solve(0.00, 0.00, -0.003, 0.0, smFixedCompressionStrain, &solution), RC_E_MATERIALFAILURE); // exceeds tensile capacity of UHPC
+   TRY_TEST(solver->Solve(0.00, 0.00, -0.003, 0.0, smFixedCompressionStrain, &solution), S_OK); 
    //std::cout << "Nominal moment at compression strain limit in deck, Md" << std::endl;
    //DumpSolution(section,solution);
 
@@ -573,7 +574,7 @@ void CUHPCMomentCapacityTest::Test2()
    solution->get_IncrementalStrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -228894.0801, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -217226.2917154, 0.0001), true);
    TRY_TEST(IsZero(My), true);
    Float64 Md = -Mx;
 
@@ -581,10 +582,10 @@ void CUHPCMomentCapacityTest::Test2()
    TRY_TEST(IsEqual(ec, -0.003), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis
-   TRY_TEST(IsEqual(Yna, -9.73137), true);
+   TRY_TEST(IsEqual(Yna, -7.0288085), true);
 
    Float64 Yd = ec /(Yna - 10);
-   TRY_TEST(IsEqual(Yd, 0.000152042, 0.000000001), true);
+   TRY_TEST(IsEqual(Yd, 0.00017617204437190607, 0.000000001), true);
 
    // Nominal moment capacity at maximum usable strain of reinforcement, Mt, Yt
    solution.Release();
@@ -599,7 +600,7 @@ void CUHPCMomentCapacityTest::Test2()
    solution->get_IncrementalStrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -239340.350413), true);
+   TRY_TEST(IsEqual(Mx, -223564.728907), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mt = -Mx;
 
@@ -607,10 +608,10 @@ void CUHPCMomentCapacityTest::Test2()
    TRY_TEST(IsEqual(ec, 0.035 - ei), true);
 
    strainPlane->GetY(0.0, 0.0, &Yna); // location of neutral axis
-   TRY_TEST(IsEqual(Yna, -6.588564), true);
+   TRY_TEST(IsEqual(Yna, -5.4280634), true);
 
    Float64 Yt = ec /(Yna - Y);
-   TRY_TEST(IsEqual(Yt, 0.000642314, 0.000000001), true);
+   TRY_TEST(IsEqual(Yt, 0.00062630895788410863, 0.000000001), true);
 
    // Ductility ratio
    IndexType i = MinIndex(fabs(Yl), fabs(Yc), fabs(Yd), fabs(Yt)); // want least curvature
@@ -952,30 +953,30 @@ void CUHPCMomentCapacityTest::Test3()
    solution->get_IncrementalStrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -238146.378845), true);
+   TRY_TEST(IsEqual(Mx, -223586.9252094), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mc = -Mx;
 
    ec = GetStrain(strainPlane,girder_initial_strain,0.00, 10.00); // strain at top of deck
-   TRY_TEST(IsEqual(ec, -0.008287341), true);
+   TRY_TEST(IsEqual(ec, -0.010161668), true);
 
    ec = GetStrain(strainPlane, girder_initial_strain, 0.00, -h); // strain at bottom of beam
-   TRY_TEST(IsEqual(ec, 0.02235164), true);
+   TRY_TEST(IsEqual(ec, 0.032473005), true);
 
    ec = GetStrain(strainPlane,girder_initial_strain,0.00, 0.00);
    TRY_TEST(IsEqual(ec, -0.0035), true);
 
    solution->get_DepthToNeutralAxis(&c); // location of neutral axis
-   TRY_TEST(IsEqual(c, 17.310948), true);
+   TRY_TEST(IsEqual(c, 15.2539398), true);
 
    Float64 Yc;
    solution->get_Curvature(&Yc);
-   TRY_TEST(IsEqual(Yc, 0.000478734, 0.000000001), true);
+   TRY_TEST(IsEqual(Yc, 0.00066616675401505931, 0.000000001), true);
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    // this case not in FHWA example
    solution.Release();
-   TRY_TEST(solver->Solve(0.00, 0.00, -0.003 + 1.33 / 3950, 0.0, smFixedCompressionStrain, &solution), RC_E_MATERIALFAILURE); // exceeds tensile capacity of UHPC
+   TRY_TEST(solver->Solve(0.00, 0.00, -0.003 + 1.33 / 3950, 0.0, smFixedCompressionStrain, &solution), S_OK);
    //std::cout << "Nominal moment at compression strain limit in deck, Md" << std::endl;
    //DumpSolution(section,solution);
 
@@ -986,7 +987,7 @@ void CUHPCMomentCapacityTest::Test3()
    solution->get_IncrementalStrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -234914.0752089, 0.0001), true);
+   TRY_TEST(IsEqual(Mx, -220191.339216, 0.0001), true);
    TRY_TEST(IsZero(My), true);
    Float64 Md = -Mx;
 
@@ -999,11 +1000,11 @@ void CUHPCMomentCapacityTest::Test3()
 
 
    solution->get_DepthToNeutralAxis(&c); // location of neutral axis
-   TRY_TEST(IsEqual(c, 18.029146), true);
+   TRY_TEST(IsEqual(c, 16.522741), true);
 
    Float64 Yd;
    solution->get_Curvature(&Yd);
-   TRY_TEST(IsEqual(Yd, 0.00025367735580106483, 0.000000001), true);
+   TRY_TEST(IsEqual(Yd, 0.00027680552396696029, 0.000000001), true);
 
    // Nominal moment capacity at maximum usable strain of reinforcement, Mt, Yt
    // this case not in FHWA example
@@ -1019,7 +1020,7 @@ void CUHPCMomentCapacityTest::Test3()
    solution->get_IncrementalStrainPlane(&strainPlane);
 
    TRY_TEST(IsZero(Fz, 0.001), true);
-   TRY_TEST(IsEqual(Mx, -239341.064759), true);
+   TRY_TEST(IsEqual(Mx, -223623.7790312), true);
    TRY_TEST(IsZero(My), true);
    Float64 Mt = -Mx;
 
@@ -1041,11 +1042,11 @@ void CUHPCMomentCapacityTest::Test3()
    TRY_TEST(IsEqual(ec, 0.035), true);
 
    solution->get_DepthToNeutralAxis(&c); // location of neutral axis
-   TRY_TEST(IsEqual(c, 16.582841), true);
+   TRY_TEST(IsEqual(c, 15.3788084), true);
 
    Float64 Yt;
    solution->get_Curvature(&Yt);
-   TRY_TEST(IsEqual(Yt, 0.00064396492246266562, 0.000000001), true);
+   TRY_TEST(IsEqual(Yt, 0.00062733397212413888, 0.000000001), true);
 
    // Ductility ratio
    IndexType i = MinIndex(fabs(Yl), fabs(Yc), fabs(Yd), fabs(Yt)); // want least curvature
@@ -1058,4 +1059,301 @@ void CUHPCMomentCapacityTest::Test3()
    phi = ::ForceIntoRange(0.75, phi, 0.90);
    TRY_TEST(IsEqual(phi, 0.8408, 0.0001), true); // 0.83 from FHWA example
    //Float64 Mr = phi*Mn;
+}
+
+void CUHPCMomentCapacityTest::Test4()
+{
+   // These test cases are from "Analysis of a Rectangular Mild Steel Reinforced UHPC Beam", FHWA, Graybeal, et. al.
+
+   CHRException hr;
+
+   CComPtr<IUnitServer> unit_server;
+   unit_server.CoCreateInstance(CLSID_UnitServer);
+
+   // base units of kip and ksi
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"), CComBSTR("in"), CComBSTR("sec"), CComBSTR("F"), CComBSTR("deg"));
+   WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+   WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+   WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
+
+   // Get a general section
+   CComPtr<IGeneralSection> section;
+   TRY_TEST(section.CoCreateInstance(CLSID_GeneralSection), S_OK);
+
+   //
+   // materials
+   //
+
+   // concrete
+   CComPtr<IUHPConcrete> concrete;
+   concrete.CoCreateInstance(CLSID_UHPConcrete);
+   CComQIPtr<ISupportUnitServer> sus(concrete);
+   sus->putref_UnitServer(unit_server);
+   Float64 ecu = -0.0035;
+   Float64 etcr = 0.000147;
+   Float64 etloc = 0.003;
+   Float64 esl = 0.00166;
+   Float64 esy = 0.00207;
+   Float64 esu = 0.09;
+   concrete->put_fc(22.0); // 22 KSI concrete
+   concrete->put_ecu(ecu);
+   concrete->put_ftcr(1.2);
+   concrete->put_ftloc(1.2);
+   concrete->put_etloc(etloc);
+
+   // rebar
+   CComPtr<IRebarModel> rebar;
+   rebar.CoCreateInstance(CLSID_RebarModel);
+   rebar->Init(60., 29000., 0.09);
+
+   //
+   // shapes
+   //
+
+   // main beam
+   Float64 H = WBFL::Units::ConvertToSysUnits(24, WBFL::Units::Measure::Inch);
+   Float64 W = WBFL::Units::ConvertToSysUnits(12, WBFL::Units::Measure::Inch);
+   CComPtr<IRectangle> beam;
+   beam.CoCreateInstance(CLSID_Rect);
+   beam->put_Height(H);
+   beam->put_Width(W);
+
+   // #11 rebar
+   Float64 Ab = 1.56;
+   Float64 Db = H / 2 - WBFL::Units::ConvertToSysUnits(21.795, WBFL::Units::Measure::Inch);
+   CComPtr<IPoint2d> center;
+
+   CComPtr<IGenericShape> bar1;
+   bar1.CoCreateInstance(CLSID_GenericShape);
+   bar1->put_Area(Ab);
+   center.Release();
+   bar1->get_Centroid(&center);
+   center->Move(W / 2 - 2, Db);
+
+   CComPtr<IGenericShape> bar2;
+   bar2.CoCreateInstance(CLSID_GenericShape);
+   bar2->put_Area(Ab);
+   center.Release();
+   bar2->get_Centroid(&center);
+   center->Move(0, Db);
+
+   CComPtr<IGenericShape> bar3;
+   bar3.CoCreateInstance(CLSID_GenericShape);
+   bar3->put_Area(Ab);
+   center.Release();
+   bar3->get_Centroid(&center);
+   center->Move(-(W / 2 - 2), Db);
+
+   CComQIPtr<IShape> shape1(beam);
+   CComQIPtr<IShape> shape2(bar1);
+   CComQIPtr<IShape> shape3(bar2);
+   CComQIPtr<IShape> shape4(bar3);
+
+   CComQIPtr<IStressStrain> material1(concrete);
+   CComQIPtr<IStressStrain> material2(rebar);
+
+   section->AddShape(CComBSTR("Beam"), shape1, material1, nullptr, nullptr, 1.0, VARIANT_TRUE); // beam
+   section->AddShape(CComBSTR("Bar 1"), shape2, material2, nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 1
+   section->AddShape(CComBSTR("Bar 2"), shape3, material2, nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 2
+   section->AddShape(CComBSTR("Bar 3"), shape4, material2, nullptr, nullptr, 1.0, VARIANT_FALSE); // bar 3
+
+   CComPtr<IMomentCapacitySolver> solver;
+   TRY_TEST(solver.CoCreateInstance(CLSID_MomentCapacitySolver), S_OK);
+
+   solver->put_Slices(100);
+   solver->put_SliceGrowthFactor(0);
+   solver->put_AxialTolerance(0.001);
+   solver->putref_Section(section);
+
+   CComPtr<IPlane3d> strainPlane;
+   section->get_InitialStrain(0, &strainPlane);
+
+   // First crack in UHPC
+   CComPtr<IMomentCapacitySolution> solution;
+   Float64 Fz, Mx, My;
+   CComPtr<IPlane3d> incrementalStrainPlane;
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, 0.00, etcr, -H/2, smFixedStrain, &solution)), true);
+   //std::cout << "Nominal moment at first cracking, Mcr" << std::endl;
+   //DumpSolution(section,solution);
+
+   solution->get_Fz(&Fz);
+   solution->get_Mx(&Mx);
+   solution->get_My(&My);
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TEST(IsZero(Fz, 0.001), true);
+   TRY_TEST(IsEqual(Mx, -116.3116654), true);
+   TRY_TEST(IsZero(My), true);
+
+   Float64 c;
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 12.623387), true);
+
+   Float64 dc;
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 4.2100597), true);
+
+   Float64 de;
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 20.5051832), true);
+
+   Float64 moment_arm;
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   Float64 k;
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, 0.0000129212444, 0.00000001), true);
+
+   incrementalStrainPlane.Release();
+   solution->get_IncrementalStrainPlane(&incrementalStrainPlane);
+   Float64 ec;
+   incrementalStrainPlane->GetZ(0.0, -H / 2, &ec);
+   TRY_TEST(IsEqual(ec, etcr), true);
+
+   // Steel Service
+   solution.Release();
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, 0.00, esl, Db, smFixedStrain, &solution)), true);
+   //std::cout << "Nominal moment at steel service stress, Msl" << std::endl;
+   //DumpSolution(section, solution);
+
+   solution->get_Fz(&Fz);
+   solution->get_Mx(&Mx);
+   solution->get_My(&My);
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TEST(IsEqual(Mx, -560.05208), true);
+   TRY_TEST(IsZero(My), true);
+   TRY_TEST(IsZero(Fz, 0.001), true);
+
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 8.747254), true);
+
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 2.919356), true);
+
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 19.51533227), true);
+
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, 0.00012722504304234797, 0.00000001), true);
+
+   incrementalStrainPlane.Release();
+   solution->get_IncrementalStrainPlane(&incrementalStrainPlane);
+   incrementalStrainPlane->GetZ(0.0, Db, &ec);
+   TRY_TEST(IsEqual(ec, esl), true);
+
+   // Steel Yield
+   solution.Release();
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, 0.00, esy, Db, smFixedStrain, &solution)), true);
+   //std::cout << "Nominal moment at steel yield, Msy" << std::endl;
+   //DumpSolution(section,solution);
+
+   solution->get_Fz(&Fz);
+   solution->get_Mx(&Mx);
+   solution->get_My(&My);
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TEST(IsZero(Fz, 0.001), true);
+   TRY_TEST(IsEqual(Mx, -653.37846), true);
+   TRY_TEST(IsZero(My), true);
+
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 8.48033333), true);
+
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 2.830492), true);
+
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 19.6878473), true);
+
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, 0.00015546765498959168, 0.00000001), true);
+
+   incrementalStrainPlane.Release();
+   solution->get_IncrementalStrainPlane(&incrementalStrainPlane);
+   incrementalStrainPlane->GetZ(0.0, Db, &ec);
+   TRY_TEST(IsEqual(ec, esy), true);
+
+   // UHPC Localization
+   solution.Release();
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, 0.00, etloc, -H/2, smFixedStrain, &solution)), true);
+   //std::cout << "Nominal moment at UHPC localization, Ml" << std::endl;
+   //DumpSolution(section,solution);
+
+   solution->get_Fz(&Fz);
+   solution->get_Mx(&Mx);
+   solution->get_My(&My);
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TEST(IsZero(Fz, 0.001), true);
+   TRY_TEST(IsEqual(Mx, -665.909452), true);
+   TRY_TEST(IsZero(My), true);
+
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 7.8343756), true);
+
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 2.615559), true);
+
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 19.479851), true);
+
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, 0.00018557897542485202, 0.00000001), true);
+
+   incrementalStrainPlane.Release();
+   solution->get_IncrementalStrainPlane(&incrementalStrainPlane);
+   incrementalStrainPlane->GetZ(0.0, -H/2, &ec);
+   TRY_TEST(IsEqual(ec, etloc), true);
+
+
+   // Compression crushing of UHPC
+   solution.Release();
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, 0.00, ecu, 0.0, smFixedCompressionStrain, &solution)), true);
+   //std::cout << "Nominal moment at UHPC crushing, Mc" << std::endl;
+   //DumpSolution(section,solution);
+
+   solution->get_Fz(&Fz);
+   solution->get_Mx(&Mx);
+   solution->get_My(&My);
+
+   Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
+
+   TRY_TEST(IsZero(Fz, 0.001), true);
+   TRY_TEST(IsEqual(Mx, -496.47595), true);
+   TRY_TEST(IsZero(My), true);
+
+   solution->get_DepthToNeutralAxis(&c);
+   TRY_TEST(IsEqual(c, 2.204866), true);
+
+   solution->get_DepthToCompressionResultant(&dc);
+   TRY_TEST(IsEqual(dc, 0.778786), true);
+
+   solution->get_DepthToTensionResultant(&de);
+   TRY_TEST(IsEqual(de, 20.365055), true);
+
+   solution->get_MomentArm(&moment_arm);
+   TRY_TEST(IsEqual(moment_arm, de - dc), true);
+
+   solution->get_Curvature(&k);
+   TRY_TEST(IsEqual(k, 0.0015873979879543205, 0.00000001), true);
+
+   incrementalStrainPlane.Release();
+   solution->get_IncrementalStrainPlane(&incrementalStrainPlane);
+   incrementalStrainPlane->GetZ(0.0, H / 2, &ec);
+   TRY_TEST(IsEqual(ec, ecu), true);
 }

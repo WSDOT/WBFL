@@ -62,7 +62,15 @@ m_Eshu(-0.48E-3),
 m_Cu(1.9),
 m_ShearFrCoefficient(WBFL::Units::ConvertToSysUnits(0.24,WBFL::Units::Measure::SqrtKSI)),
 m_FlexureFrCoefficient(WBFL::Units::ConvertToSysUnits(0.24,WBFL::Units::Measure::SqrtKSI)),
-m_AutogenousShrinkage(0)
+m_AutogenousShrinkage(0),
+m_alpha_u(0.85),
+m_ecu(0),
+m_bExperimental_ecu(false),
+m_etcr(0),
+m_ftcri(0),
+m_ftcr(0),
+m_ftloc(0),
+m_etloc(0)
 {
    Float64 fcMin, fpeak;
    lrfdConcreteUtil::GetPCIUHPCMinProperties(&fcMin, &m_ffc, &fpeak, &m_frr);
@@ -443,7 +451,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
 
 Float64 lrfdLRFDTimeDependentConcrete::GetConcreteStrengthFactor() const
 {
-   // this method is only valide for pre-2005 loss methods
+   // this method is only valid for pre-2005 loss methods
    // 2005 and later, kf is a function of the concrete strength at time of loading
    ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims);
    Validate();
@@ -478,6 +486,101 @@ void lrfdLRFDTimeDependentConcrete::SetAutogenousShrinkage(Float64 as)
 Float64 lrfdLRFDTimeDependentConcrete::GetAutogenousShrinkage() const
 {
    return m_AutogenousShrinkage;
+}
+
+void lrfdLRFDTimeDependentConcrete::SetCompressionResponseReductionFactor(Float64 alpha_u)
+{
+   m_alpha_u = alpha_u;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetCompressionResponseReductionFactor() const
+{
+   return m_alpha_u;
+}
+
+void lrfdLRFDTimeDependentConcrete::SetCompressiveStrainLimit(Float64 ecu)
+{
+   // if this value is explicitly set, assume it is an experimentally derived value
+   // from ASTM C1856 per GS 1.4.2.4.2
+   m_ecu = ecu;
+   m_bExperimental_ecu = true; 
+}
+
+void lrfdLRFDTimeDependentConcrete::SetElasticTensileStrainLimit(Float64 etcr)
+{
+   m_etcr = etcr;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetElasticTensileStrainLimit() const
+{
+   return m_etcr;
+}
+
+void lrfdLRFDTimeDependentConcrete::SetInitialEffectiveCrackingStrength(Float64 ft_cri)
+{
+   m_ftcri = ft_cri;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetInitialEffectiveCrackingStrength() const
+{
+   return m_ftcri;
+}
+
+void lrfdLRFDTimeDependentConcrete::SetDesignEffectiveCrackingStrength(Float64 ft_cr)
+{
+   m_ftcr = ft_cr;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetDesignEffectiveCrackingStrength() const
+{
+   return m_ftcr;
+}
+
+void lrfdLRFDTimeDependentConcrete::SetCrackLocalizationStrength(Float64 ft_loc)
+{
+   m_ftloc = ft_loc;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetCrackLocalizationStrength() const
+{
+   return m_ftloc;
+}
+
+void lrfdLRFDTimeDependentConcrete::SetCrackLocalizationStrain(Float64 et_loc)
+{
+   m_etloc = et_loc;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetCrackLocalizationStrain() const
+{
+   return m_etloc;
+}
+
+
+Float64 lrfdLRFDTimeDependentConcrete::GetElasticCompressiveStrainLimit() const
+{
+   Float64 fc = GetFc28();
+   Float64 Ec = GetEc28();
+   Float64 ecp = -1.0 * m_alpha_u * fc / Ec;
+   return ecp;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetCompressiveStrainLimit(bool* pbIsExperimental) const
+{
+   if (pbIsExperimental)
+   {
+      *pbIsExperimental = m_bExperimental_ecu;
+   }
+
+   if (m_bExperimental_ecu)
+   {
+      return m_ecu;
+   }
+   else
+   {
+      Float64 ecp = GetElasticCompressiveStrainLimit();
+      return Min(ecp, -0.0035); // See GS 1.4.2.4.2
+   }
 }
 
 void lrfdLRFDTimeDependentConcrete::Validate() const

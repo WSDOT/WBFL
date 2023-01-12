@@ -60,7 +60,7 @@ namespace WBFL
          const LiftingCriteria& GetCriteria() const;
 
          /// Analyzes the section results and retrieves the controlling tension stress case
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[out] pImpact Impact direction associated with the controlling case
          /// \param[out] pWind Wind direction associated with the controlling case
          /// \param[out] pCorner Corner associated with the controlling case
@@ -70,7 +70,7 @@ namespace WBFL
          void GetControllingTensionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
 
          /// Analyzes the section results and retrieves the controlling global compression case.
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[out] pImpact Impact direction associated with the controlling case
          /// \param[out] pCorner Corner associated with the controlling case
          /// \param[out] pfAllow Tension stress limit associated with the controlling case
@@ -79,7 +79,7 @@ namespace WBFL
          void GetControllingGlobalCompressionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
 
          /// Analyzes the section results and retrieves the controlling peak compression case.
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[out] pImpact Impact direction associated with the controlling case
          /// \param[out] pWind Wind direction associated with the controlling case
          /// \param[out] pCorner Corner associated with the controlling case
@@ -117,12 +117,12 @@ namespace WBFL
 
 #if defined REBAR_FOR_DIRECT_TENSION
          /// Returns the tension stress limit
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[in] impact Impact direction
          Float64 GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact) const;
 #else
          /// Returns the tension stress limit
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[in] impact Impact direction
          /// \param[in] wind Wind direction
          Float64 GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const;

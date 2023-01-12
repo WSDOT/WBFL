@@ -577,7 +577,7 @@ bool StabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Floa
 
    // set values can't be modified because it could change the sort order... however
    // we are only sorting on one element of Fpe and it isn't being changed here
-   // cast away const so we can modify the relavent paramenters of fpe
+   // cast away const so we can modify the relevant parameters of fpe
    WBFL::Stability::Fpe& fpe(const_cast<WBFL::Stability::Fpe&>(*iter));
 
    fpe.fpe = Fpe;

@@ -102,13 +102,31 @@ namespace WBFL
          void SetLambda(Float64 lambda);
          Float64 GetLambda() const;
 
-         //--------------------- UHPC Properties
+         /// PCI UHPC Properties
          void SetFirstCrackingStrength(Float64 ffc);
          Float64 GetFirstCrackingStrength() const;
          void SetPostCrackingTensileStrength(Float64 frr);
          Float64 GetPostCrackingTensileStrength() const;
          void SetAutogenousShrinkage(Float64 as);
          Float64 GetAutogenousShrinkage() const;
+
+         /// FHWA UHPC Parameters
+         void SetCompressionResponseReductionFactor(Float64 alpha_u);
+         Float64 GetCompressionResponseReductionFactor() const;
+         void SetCompressiveStrainLimit(Float64 ecu);
+         void SetElasticTensileStrainLimit(Float64 etcr);
+         Float64 GetElasticTensileStrainLimit() const;
+         void SetInitialEffectiveCrackingStrength(Float64 ft_cri);
+         Float64 GetInitialEffectiveCrackingStrength() const;
+         void SetDesignEffectiveCrackingStrength(Float64 ft_cr);
+         Float64 GetDesignEffectiveCrackingStrength() const;
+         void SetCrackLocalizationStrength(Float64 ft_loc);
+         Float64 GetCrackLocalizationStrength() const;
+         void SetCrackLocalizationStrain(Float64 et_loc);
+         Float64 GetCrackLocalizationStrain() const;
+
+         Float64 GetElasticCompressiveStrainLimit() const; 
+         Float64 GetCompressiveStrainLimit(bool* pbIsExperimental = nullptr) const; // computed per GS 1.4.2.4
 
          virtual std::unique_ptr<SimpleConcrete> CreateClone() const;
 
@@ -137,10 +155,20 @@ namespace WBFL
          Float64     m_FiberLength;
          Float64     m_Lambda;
 
-         // UHPC
+         // PCI UHPC
          Float64 m_ffc;
          Float64 m_frr;
          Float64 m_AutogenousShrinkage;
+
+         // FHWA UHPC
+         Float64 m_alpha_u;
+         Float64 m_ecu;
+         Float64 m_etcr;
+         Float64 m_ftcri;
+         Float64 m_ftcr;
+         Float64 m_ftloc;
+         Float64 m_etloc;
+         bool m_bExperimental_ecu;
       };
    };
 };

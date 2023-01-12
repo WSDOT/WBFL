@@ -27,7 +27,7 @@
 //
 
 // This file will be processed by the MIDL tool to
-// produce the type library (RCCapacity.tlb) and marshalling code.
+// produce the type library (RCCapacity.tlb) and marshaling code.
 
 import "oaidl.idl";
 import "ocidl.idl";
@@ -111,10 +111,10 @@ library WBFLRCCapacity
 	  [propget,helpcontext(IDH_IStressStrain_Name),helpstring("property Name")] HRESULT Name([out,retval]BSTR *name);
 
      /// Yield strain
-      [propget,helpcontext(IDH_IStressStrain_YieldStrain),helpstring("propety YieldStrain")] HRESULT YieldStrain([out,retval]Float64* pey);
+      [propget,helpcontext(IDH_IStressStrain_YieldStrain),helpstring("property YieldStrain")] HRESULT YieldStrain([out,retval]Float64* pey);
 
       /// Modulus of Elasticity
-      [propget,helpcontext(IDH_IStressStrain_ModulusOfElasticity),helpstring("propety ModulusOfElasticity")] HRESULT ModulusOfElasticity([out,retval]Float64* pE);
+      [propget,helpcontext(IDH_IStressStrain_ModulusOfElasticity),helpstring("property ModulusOfElasticity")] HRESULT ModulusOfElasticity([out,retval]Float64* pE);
 
       /// Computes stress for the specified level of strain
       ///
@@ -179,7 +179,7 @@ library WBFLRCCapacity
 		[propget, helpcontext(IDH_IRCBeam_fpu),helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_fpu),helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
 
-      /// Yield strengh of prestress reinforcement
+      /// Yield strength of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam_fpy),helpstring("property fpy")] HRESULT fpy([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam_fpy),helpstring("property fpy")] HRESULT fpy([in] Float64 newVal);
 
@@ -259,7 +259,7 @@ library WBFLRCCapacity
          [in] CollectionIndexType index, ///< index of the layer
          [out] Float64 * ds,  ///< depth to the reinforcement
          [out] Float64 * As, ///< area of reinforcement
-         [out] Float64* devFactor ///< developemnt length factor
+         [out] Float64* devFactor ///< development length factor
       );
 
       /// Removes a layer of mild steel reinforcement from the model
@@ -382,7 +382,7 @@ library WBFLRCCapacity
          [in] CollectionIndexType index, ///< index of the layer
          [out] Float64 * ds,  ///< depth to the reinforcement
          [out] Float64 * As, ///< area of reinforcement
-         [out] Float64* devFactor ///< developemnt length factor
+         [out] Float64* devFactor ///< development length factor
       );
 
       /// Removes a layer of mild steel reinforcement from the model
@@ -564,7 +564,7 @@ library WBFLRCCapacity
          [in] Float64 Yweb ///< Depth to the resultant compression force in the web
       );
 
-      /// Nominal moment capcity
+      /// Nominal moment capacity
 		[propget, helpcontext(IDH_IRCSolutionEx_Mn),helpstring("property Mn")] HRESULT Mn([out, retval] Float64 *pVal);
 
       /// Depth to the neutral axis
@@ -701,11 +701,11 @@ library WBFLRCCapacity
       [propput, helpcontext(IDH_IPCISolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
       [propget, helpcontext(IDH_IPCISolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
 
-      /// Prestressing strand constituative model.
+      /// Prestressing strand constitutive model.
       [propputref, helpcontext(IDH_IPCISolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_IPCISolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
 
-      /// Mild steel reinforcement constituative model.
+      /// Mild steel reinforcement constitutive model.
       [propputref, helpcontext(IDH_IPCISolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_IPCISolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
 
@@ -731,7 +731,7 @@ library WBFLRCCapacity
    ]
    interface INLSolver : IRCSolver
    {
-      /// Number of slices for discritization of the section
+      /// Number of slices for discretization of the section
       [propput, helpcontext(IDH_INLSolver_Slices),helpstring("property Slices")] HRESULT Slices([in] long nSlices);
       [propget, helpcontext(IDH_INLSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval] long* nSlices);
 
@@ -741,19 +741,19 @@ library WBFLRCCapacity
       [propput, helpcontext(IDH_INLSolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
       [propget, helpcontext(IDH_INLSolver_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
 
-      /// Slab concrete constituative model.
+      /// Slab concrete constitutive model.
       [propputref, helpcontext(IDH_INLSolver_SlabConcreteModel),helpstring("property SlabConcreteModel")] HRESULT SlabConcreteModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_INLSolver_SlabConcreteModel),helpstring("property SlabConcreteModel")] HRESULT SlabConcreteModel([out,retval] IStressStrain* *model);
 
-      /// Beam concrete constituative model.
+      /// Beam concrete constitutive model.
       [propputref, helpcontext(IDH_INLSolver_BeamConcreteModel),helpstring("property BeamConcreteModel")] HRESULT BeamConcreteModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_INLSolver_BeamConcreteModel),helpstring("property BeamConcreteModel")] HRESULT BeamConcreteModel([out,retval] IStressStrain* *model);
 
-      /// Prestressing strand constituative model.
+      /// Prestressing strand constitutive model.
       [propputref, helpcontext(IDH_INLSolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_INLSolver_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
 
-      /// Mild steel reinforcement constituative model.
+      /// Mild steel reinforcement constitutive model.
       [propputref, helpcontext(IDH_INLSolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_INLSolver_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
 
@@ -773,9 +773,9 @@ library WBFLRCCapacity
    ///
    /// This interface extends the IRCSolver interface.
    ///
-   /// The method of solution is based on the equations publised in Article 5.7.3 of the AASHTO LRFD Bridge Design Specifications, 2nd Edition, 1998 with interim revisions through 2002.
+   /// The method of solution is based on the equations published in Article 5.7.3 of the AASHTO LRFD Bridge Design Specifications, 2nd Edition, 1998 with interim revisions through 2002.
    ///
-   /// An elastic-plastic constituative model is assumed for mild steel reinforcement.
+   /// An elastic-plastic constitutive model is assumed for mild steel reinforcement.
    ///
    /// T-Section behavior
    ///
@@ -809,8 +809,8 @@ library WBFLRCCapacity
    ///
    /// This interface extends the IRCSolver interface.
    ///
-   /// The method of solution is based on the equations publised in Article 5.7.3 of the AASHTO LRFD Bridge Design Specifications, 2nd Edition, 1998 with interim revisions through 2002.
-   /// Objects implementing this interface differ from LRFDSolver (ILRFDSolver interface) objects in that the constituative model (stress-strain model) for prestress reinforcement and mild steel
+   /// The method of solution is based on the equations published in Article 5.7.3 of the AASHTO LRFD Bridge Design Specifications, 2nd Edition, 1998 with interim revisions through 2002.
+   /// Objects implementing this interface differ from LRFDSolver (ILRFDSolver interface) objects in that the constitutive model (stress-strain model) for prestress reinforcement and mild steel
    /// reinforcement is specified.
    ///
    /// T-Section behavior
@@ -833,11 +833,11 @@ library WBFLRCCapacity
       [propput, helpcontext(IDH_ILRFDSolver2_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
       [propget, helpcontext(IDH_ILRFDSolver2_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
 
-      /// The constituative model for prestress reinforcement
+      /// The constitutive model for prestress reinforcement
       [propputref, helpcontext(IDH_ILRFDSolver2_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_ILRFDSolver2_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
 
-      /// The constituative model for mild steel reinforcement
+      /// The constitutive model for mild steel reinforcement
       [propputref, helpcontext(IDH_ILRFDSolver2_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
       [propget, helpcontext(IDH_ILRFDSolver2_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
 
@@ -946,7 +946,7 @@ library WBFLRCCapacity
 
    /// Interface defining properties of Ultra High Performance Concrete (UHPC)
    ///
-   /// Mechanical Behavior and Design Properties of Ultra-High Perfornace Concrete
+   /// Mechanical Behavior and Design Properties of Ultra-High Performance Concrete
    /// El-Helou, Rafic, Haber, Z., Graybeal, B.
    /// (Unpublished as of 2020)
    /// /todo - Update reference after publication
@@ -1224,28 +1224,28 @@ library WBFLRCCapacity
 	]
 	interface IGeneralSection : IUnknown
 	{
-      /// Adds a shape, it's constituative models, and initial strain state to the section model
+      /// Adds a shape, it's constitutive models, and initial strain state to the section model
       ///
       /// A linear variation of the initial strain is assumed over the depth of the shape.
       /// Incremental strains due to imposed section curvature are divided by Le to get the net strain.
 		[helpcontext(IDH_IGeneralSection_AddShape),helpstring("method AddShape")] HRESULT AddShape(
          [in]BSTR bstrName, ///< Name that identifies the shape (eg Deck, Girder, Rebar, etc)
          [in]IShape* pShape, ///< The shape of a component of the cross section
-         [in]IStressStrain* pfgMaterial, ///< The foreground material constituative model
-         [in]IStressStrain* pbgMaterial, ///< The background material constituative model
+         [in]IStressStrain* pfgMaterial, ///< The foreground material constitutive model
+         [in]IStressStrain* pbgMaterial, ///< The background material constitutive model
          [in]IPlane3d* pInitialStrain, ///< Initial strain. This parameter can be set to Nothing (nullptr) if there is not initial strains
          [in]Float64 Le, ///< Strain elongation length (typically 1.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
          [in]VARIANT_BOOL vbIsPrimaryShape ///< Indicates if this is the primary shape of the section. Initial strains of the primary shape are combined with the incremental solution strains to form the solution strain plane. The last shape to be designated as the primary shape will be considered the one and only primary shape
       );
 
-      /// Number of shapes in the cross setion
+      /// Number of shapes in the cross section
 		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
 
       /// Index of the primary shape
       [propput, helpstring("property PrimaryShapeIndex")] HRESULT PrimaryShapeIndex([in]IndexType shapeIdx);
       [propget, helpstring("property PrimaryShapeIndex")] HRESULT PrimaryShapeIndex([out, retval]IndexType* pShapeIdx);
 
-      /// Name of the sname
+      /// Name of the shape
       [propput, helpstring("property Name")] HRESULT Name([in]CollectionIndexType shapeIdx, [in]BSTR bstrName);
       [propget, helpstring("property Name")] HRESULT Name([in]CollectionIndexType shapeIdx, [out, retval]BSTR* pbstrName);
 
@@ -1274,7 +1274,7 @@ library WBFLRCCapacity
       [propput, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElonationLength")] HRESULT ElongationLength([in]CollectionIndexType shapeIdx, [in]Float64 Le);
    };
 
-   /// Interface representing a "slice" in a fiber based discritization of a GeneralSection cross section object. 
+   /// Interface representing a "slice" in a fiber based discretization of a GeneralSection cross section object. 
 	[
 		object,
 		uuid(D079B9D4-BEB3-40e3-B603-016F1D29CBCD),
@@ -1285,7 +1285,7 @@ library WBFLRCCapacity
 	]
 	interface IGeneralSectionSlice : IUnknown
 	{
-      /// Initilizes the slice with its properties.
+      /// Initializes the slice with its properties.
 		[helpcontext(IDH_IGeneralSectionSlice_InitSlice),helpstring("method InitSlice")] 
       HRESULT InitSlice(
          [in]IndexType shapeIdx, ///< Index of the general section shape from which this slice is cut
@@ -1362,7 +1362,7 @@ library WBFLRCCapacity
          [in]Float64 C, ///< Resultant compression force
          [in]IPoint2d* cgT, ///< Location of the resultant tension force
          [in]Float64 T, ///< Resultant tension force
-         [in]IUnkArray* slices /// Array of fibers ("slices") resulting from the discritization of the cross section. All objects implement the IGeneralSectionSlice interface.
+         [in]IUnkArray* slices /// Array of fibers ("slices") resulting from the discretization of the cross section. All objects implement the IGeneralSectionSlice interface.
       );
 
       /// Resultant axial force
@@ -1426,7 +1426,7 @@ library WBFLRCCapacity
       /// The height of the slice furthest from the compression face is this factor times the height of the first slice. If the slice growth factor is 2, the last slice
       /// will be twice as tall as the first slice.
       ///
-      /// Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
+      /// Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height when the factor is 1.
 		[propput,helpcontext(IDH_IGeneralSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
 		[propget,helpcontext(IDH_IGeneralSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
 
@@ -1500,11 +1500,11 @@ library WBFLRCCapacity
       /// The height of the slice furthest from the compression face is this factor times the height of the first slice. If the slice growth factor is 2, the last slice
       /// will be twice as tall as the first slice.
       ///
-      /// Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
+      /// Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height when the factor is 1.
       [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
       [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
 
-      /// Convergance tolerance for axial force
+      /// Convergence tolerance for axial force
       [propput,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IMomentCurvatureSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
 
@@ -1535,7 +1535,7 @@ library WBFLRCCapacity
 	]
 	interface IMomentCapacitySolution : IUnknown
 	{
-      /// Initalizes the solution object
+      /// Initializes the solution object
 		[helpcontext(IDH_IMomentCapacitySolution_InitSolution),helpstring("method InitSolution")] 
       HRESULT InitSolution(
          [in]Float64 fz, ///< Resultant axial force
@@ -1609,7 +1609,7 @@ library WBFLRCCapacity
 
    /// Interface defining moment capacity solver.
    ///
-   /// A moment capacity solver discritizes a GeneralSection object into GeneralSectionSlices and performs a moment capacity analysis by summing the force and moment contribution of each
+   /// A moment capacity solver discretized a GeneralSection object into GeneralSectionSlices and performs a moment capacity analysis by summing the force and moment contribution of each
    // slice, varying the location of the neutral axis, while keep it's direction constant, until equilibrium if satisfied. This is a common fiber based strain compatibility analysis.
    [
 		uuid(A4B19FD5-ADD9-43bf-B2C6-EF65D59CD3C9),
@@ -1632,11 +1632,11 @@ library WBFLRCCapacity
       ///
       /// The height of the slice furthest from the compression face is this factor times the height of the first slice.If the slice growth factor is 2, the last slice will be twice as tall as the first slice.
       ///
-      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
+      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height when the factor is 1.
 	   [propput,helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
 		[propget,helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
 
-      /// Convergance tolerance for axial force equilibrium
+      /// Convergence tolerance for axial force equilibrium
       [propput,helpcontext(IDH_IMomentCapacitySolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IMomentCapacitySolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
 
@@ -1739,11 +1739,11 @@ library WBFLRCCapacity
       ///
       /// The height of the slice furthest from the compression face is this factor times the height of the first slice.If the slice growth factor is 2, the last slice will be twice as tall as the first slice.
       ///
-      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
+      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height when the factor is 1.
       [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
       [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
 
-      /// Convergance tolerance for axial force
+      /// Convergence tolerance for axial force
       [propput,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
 
@@ -1785,7 +1785,7 @@ library WBFLRCCapacity
 	};
 
    /// Interface implemented by objects that compute P-M interaction diagrams for GeneralSection objects. 
-   /// Moment interaction analysis is performed for a specifed direction of the neutral axis and axial load is varied between the tension and compression limits of the section.
+   /// Moment interaction analysis is performed for a specified direction of the neutral axis and axial load is varied between the tension and compression limits of the section.
    [
 		uuid(AD04E104-0570-432b-9FF0-E5634F2CE942),
 		oleautomation,
@@ -1807,11 +1807,11 @@ library WBFLRCCapacity
       ///
       /// The height of the slice furthest from the compression face is this factor times the height of the first slice.If the slice growth factor is 2, the last slice will be twice as tall as the first slice.
       ///
-      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
+      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height when the factor is 1.
       [propput, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
       [propget, helpcontext(IDH_IMomentCapacitySolver_SliceGrowthFactor), helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out, retval]Float64* sliceGrowthFactor);
 
-      /// Convergance tolerance for axial force
+      /// Convergence tolerance for axial force
       [propput,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IAxialInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
 
@@ -1850,7 +1850,7 @@ library WBFLRCCapacity
 	};
 
    /// Interface implemented by objects that compute Mx-My biaxial bending interaction diagrams for GeneralSection objects. 
-   /// Moment interaction analysis is performed for a specifed maginitude of axial load that must be with the tension and compression limits of the section.
+   /// Moment interaction analysis is performed for a specified magnitude of axial load that must be with the tension and compression limits of the section.
 	[
 		uuid(7573B050-8EEC-4385-AFBF-9BD4690DCB7C),
 		oleautomation,
@@ -1868,7 +1868,7 @@ library WBFLRCCapacity
       [propput,helpcontext(IDH_IMomentInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([in]long nSlices);
 		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
 
-      /// Convergance tolerance for axial force
+      /// Convergence tolerance for axial force
 	    [propput,helpcontext(IDH_IMomentInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_IMomentInteractionCurveSolver_AxialTolerance),helpstring("property AxialTolerance")] HRESULT AxialTolerance([out,retval]Float64* tolerance);
 
@@ -1993,7 +1993,7 @@ library WBFLRCCapacity
 		[propputref,helpcontext(IDH_ICrackedSectionSolver_Section),helpstring("property Section")] HRESULT Section([in]IGeneralSection* pSection);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_Section),helpstring("property Section")] HRESULT Section([out,retval]IGeneralSection** pSection);
 
-      /// Convergance tolerance for centroid
+      /// Convergence tolerance for centroid
       [propput,helpcontext(IDH_ICrackedSectionSolver_CGTolerance),helpstring("property CGTolerance")] HRESULT CGTolerance([in]Float64 tolerance);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_CGTolerance),helpstring("property CGTolerance")] HRESULT CGTolerance([out,retval]Float64* tolerance);
 
@@ -2009,7 +2009,7 @@ library WBFLRCCapacity
       ///
       /// The height of the slice furthest from the compression face is this factor times the height of the first slice.If the slice growth factor is 2, the last slice will be twice as tall as the first slice.
       ///
-      ///  Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height wht the factor is 1.
+      /// Slice heights reduce when the factor is less than 1 and grow if greater than 1. All slices are the same height when the factor is 1.
 		[propput,helpcontext(IDH_ICrackedSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
 
@@ -2078,7 +2078,7 @@ library WBFLRCCapacity
 		[propput,helpcontext(IDH_ICircularManderSection_Diameter),helpstring("property Diameter")] HRESULT Diameter([in]Float64 d);
 		[propget,helpcontext(IDH_ICircularManderSection_Diameter),helpstring("property Diameter")] HRESULT Diameter([out,retval]Float64* d);
 
-      /// Clearn cover to longitindal reinforcement.
+      /// Clear cover to longitudinal reinforcement.
 		[propput,helpcontext(IDH_ICircularManderSection_Cover),helpstring("property Cover")] HRESULT Cover([in]Float64 c);
 		[propget,helpcontext(IDH_ICircularManderSection_Cover),helpstring("property Cover")] HRESULT Cover([out,retval]Float64* c);
 	};
@@ -2219,8 +2219,8 @@ library WBFLRCCapacity
          [in]long Nh, ///< Number of bars over the height of the section (N2)
          [in]long Nw, ///< Number of bars over the width of the section (N1)
          [in]Float64 As, ///< Area of one reinforcing bar
-         [in]IStressStrain* concrete, ///< Constituative model for concrete
-         [in]IStressStrain* rebar, ///< Constituative model for reinforcing bars
+         [in]IStressStrain* concrete, ///< Constitutive model for concrete
+         [in]IStressStrain* rebar, ///< Constitutive model for reinforcing bars
          [out,retval]IGeneralSection** section ///< The resulting GeneralSection object
       );
 
@@ -2232,8 +2232,8 @@ library WBFLRCCapacity
          [in]Float64 cover,  ///< Cover to center of reinforcement
          [in]long Nb, ///< Number of reinforcing bars
          [in]Float64 As, ///< Area of one reinforcing bar
-         [in]IStressStrain* concrete, ///< Constituative model for concrete
-         [in]IStressStrain* rebar, ///< Constituative model for reinforcing bars
+         [in]IStressStrain* concrete, ///< Constitutive model for concrete
+         [in]IStressStrain* rebar, ///< Constitutive model for reinforcing bars
          [out,retval]IGeneralSection** section ///< The resulting GeneralSection object
       );
 	};
@@ -2445,7 +2445,7 @@ library WBFLRCCapacity
       interface IStructuredStorage2;
 	};
 
-   /// Material model for mild steel reinforcement. This is an elast-plastic model with strain-hardening.
+   /// Material model for mild steel reinforcement. This is an elasto-plastic model with strain-hardening.
    ///
    /// Implements the IStrainHardenedRebarModel, IStressStrain, and ISupportUnitServer interfaces
    [
@@ -2705,9 +2705,9 @@ library WBFLRCCapacity
 		[default] interface IGeneralSection;
 	};
 
-   /// An object that represents a "slice" in a fiber based discritization of a GeneralSection structure element.
+   /// An object that represents a "slice" in a fiber based discretization of a GeneralSection structure element.
    /// GeneralSectionSlice objects are created by general section solvers, such as GeneralSectionSolver and CrackedSectionSolver, as part of a section analysis and 
-   /// are obtained through the solution object suc as GeneralSectionSolution or CrackedSectionSolution. These objects have fiber level state of stress information 
+   /// are obtained through the solution object such as GeneralSectionSolution or CrackedSectionSolution. These objects have fiber level state of stress information 
    /// for the related section analysis solution.
    ///
    /// Implements the IGeneralSectionSlice interface.

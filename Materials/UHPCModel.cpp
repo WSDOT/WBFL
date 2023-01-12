@@ -165,9 +165,8 @@ std::pair<Float64, bool> UHPCModel::ComputeStress(Float64 strain) const
       }
       else
       {
-         // beyond localization so can't carry any tension - keep the stress at the max value
-         stress = (m_ftloc < 1.2 * m_ftcr) ? m_gamma * m_ftcr : m_gamma * m_ftloc;
-         bWithinStrainLimits = false;
+         // beyond localization so can't carry any tension;
+         stress = 0;
       }
    }
    else
@@ -204,7 +203,7 @@ void UHPCModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
 
    Float64 Ec = GetEc();
    Float64 e_cp = -1.0 * m_alpha * m_fc / Ec;
-   *pMinStrain = Min(e_cp, m_ecu); // using Min because compression strain is negative. we want value that is furthest from zero on a numberline. smaller negative values are further from zero.
+   *pMinStrain = Min(e_cp, m_ecu); // using Min because compression strain is negative. we want value that is furthest from zero on a number line. smaller negative values are further from zero.
 }
 
 Float64 UHPCModel::GetStrainAtPeakStress() const
@@ -262,7 +261,7 @@ bool UHPCModel::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(model.GetK1(), 1.0));
    TRY_TESTME(IsEqual(model.GetModulusOfElasticity(), 47803365821.695671));
 
-   // compute stresses for tension stressions
+   // compute stresses for tension strains
 
    // elastic region
    auto stress = model.ComputeStress(0.00005);
@@ -274,7 +273,7 @@ bool UHPCModel::TestMe(WBFL::Debug::Log& rlog)
 
    // after crack localization
    stress = model.ComputeStress(0.0050);
-   TRY_TESTME( IsEqual(stress.first,0.85 * ft_loc) && stress.second == false);
+   TRY_TESTME( IsEqual(stress.first,0.0) && stress.second == true);
 
    // compute stresses for compression strains
 

@@ -86,6 +86,8 @@ public:
    Float64 GetKhc() const;
    virtual Float64 GetKtd(Float64 t) const override;
 
+   virtual Float64 GetKl(Float64 ti) const;
+
    // GROUP: INQUIRY
 
 protected:

@@ -190,6 +190,9 @@
     <ClCompile Include="CreepCoefficient.cpp" />
     <ClCompile Include="CreepCoefficient2005.cpp" />
     <ClCompile Include="ElasticShortening.cpp" />
+    <ClCompile Include="FHWAUHPCCreepCoefficient.cpp" />
+    <ClCompile Include="FHWAUHPCLosses.cpp" />
+    <ClCompile Include="FHWAUHPCShear.cpp" />
     <ClCompile Include="LiveLoadDistributionFactorBase.cpp" />
     <ClCompile Include="LldfTxdotMultiWeb.cpp" />
     <ClCompile Include="LldfTxdotSpreadSlab.cpp" />
@@ -242,6 +245,9 @@
     <ClInclude Include="..\Include\LRFD\CreepCoefficient2005.h" />
     <ClInclude Include="..\Include\LRFD\Details.h" />
     <ClInclude Include="..\Include\LRFD\ElasticShortening.h" />
+    <ClInclude Include="..\Include\LRFD\FHWAUHPCCreepCoefficient.h" />
+    <ClInclude Include="..\Include\LRFD\FHWAUHPCLosses.h" />
+    <ClInclude Include="..\Include\LRFD\FHWAUHPCShear.h" />
     <ClInclude Include="..\Include\LRFD\ILiveLoadDistributionFactor.h" />
     <ClInclude Include="..\Include\LRFD\LiveLoadDistributionFactorBase.h" />
     <ClInclude Include="..\Include\LRFD\LldfTxdotMultiWeb.h" />
