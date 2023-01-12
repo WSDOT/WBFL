@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2022  Washington State Department of Transportation
+// Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries

@@ -49,7 +49,7 @@ BEGIN
             VALUE "FileDescription", "System\0"
             VALUE "FileVersion", "7.0.2.0\0"
             VALUE "InternalName", "System\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Sys30.dll\0"
             VALUE "PrivateBuild", "\0"

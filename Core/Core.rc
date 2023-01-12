@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "Core Services"
             VALUE "FileVersion", "7.0.2.0"
             VALUE "InternalName", "Core"
-            VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "Core30.DLL"
             VALUE "ProductName", "WBFL"
             VALUE "ProductVersion", "7.0.2.0"
