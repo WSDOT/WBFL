@@ -1639,7 +1639,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
 #if !defined REBAR_FOR_DIRECT_TENSION
          rptRcTable* pRebarTable = nullptr;
-         if ( segment )
+         if ( segment && concrete.GetType() != WBFL::Materials::ConcreteType::FHWA_UHPC)
          {
             std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(LrfdCw8th(_T("C5.9.4.1.2"),_T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
             ColumnIndexType nColumns = (bSimpleFormat ? 8 : 19);
@@ -1923,7 +1923,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       } // next wind direction
 
 #if defined REBAR_FOR_DIRECT_TENSION
-      if (segment)
+      if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::FHWA_UHPC)
       {
          rptRcTable* pRebarTable = nullptr;
          std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));

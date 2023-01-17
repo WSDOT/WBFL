@@ -734,7 +734,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
          } // next corner
 
          // compute rebar requirements for tension stresses
-         if (segment)
+         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::FHWA_UHPC)
          {
             gbtAlternativeTensileStressRequirements altTensionRequirements;
 
@@ -1233,7 +1233,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
             } // next wind direction
          } // next corner
 
-         if (segment)
+         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::FHWA_UHPC)
          {
             gbtAlternativeTensileStressRequirements altTensionRequirements;
 
@@ -1826,7 +1826,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                } // next wind direction
             } // next corner
 
-            if (segment)
+            if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::FHWA_UHPC)
             {
                gbtAlternativeTensileStressRequirements altTensionRequirements;
 
