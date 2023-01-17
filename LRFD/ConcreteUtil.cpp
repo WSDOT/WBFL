@@ -423,18 +423,18 @@ void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Material
       // GS 1.7.4.4
       if (deckConcType == WBFL::Materials::ConcreteType::FHWA_UHPC)
       {
-         // UHPC deck on UHPC girder
+         // UHPC deck on UHPC girder, Case 3 and 4
          *pC = (isRoughened ? g_p5_KSI : g_p025_KSI);
          *pU = (isRoughened ? 1.0 : 0.6);
-         *pK1 = 99999999; // want this value super high so K1f'cAcf never controls
+         *pK1 = 99999999; // want this value super high so K1*f'c*Acf never controls
          *pK2 = (isRoughened ? g_1p8_KSI : g_p8_KSI);
       }
       else
       {
-         // conventional deck concrete on UHPC girder, PCI SDG Table 7.4.3-1 Case 4 and 6
+         // conventional deck concrete on UHPC girder, PCI SDG Table 7.4.3-1 Case 7 and 8
          *pC = (isRoughened ? g_p240_KSI : g_p025_KSI);
          *pU = (isRoughened ? 1.0 : 0.6);
-         *pK1 = 99999999; // want this value super high so K1f'cAcf never controls
+         *pK1 = 99999999; // want this value super high so K1*f'c*Acf never controls
          *pK2 = (isRoughened ? g_1p8_KSI : g_p8_KSI);
       }
    }
@@ -631,7 +631,7 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
 
    HsAvfOverSMinType hsAvfOverSMin;
 
-   // All spec versions evalulate 5.8.4.4-1
+   // All spec versions evaluate 5.8.4.4-1
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
       Float64 bv_used = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Millimeter);
@@ -681,7 +681,7 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
       // Final is min of two equations
       hsAvfOverSMin.AvfOverSMin = min(hsAvfOverSMin.res5_7_4_2_3, hsAvfOverSMin.res5_7_4_2_1);
 
-      // But, less than zero means the reinforcement isn't needed to satify strength
+      // But, less than zero means the reinforcement isn't needed to satisfy strength
       // requirements. Set to zero if so
       if ( hsAvfOverSMin.AvfOverSMin  < 0.0 )
       {
@@ -731,7 +731,7 @@ Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const WBFL::System::SectionValue& 
    }
    else
    {
-      // solve eqn 1 for Av
+      // solve equation 1 for Av
       Float64 Avs_reqd = ( (vuh/phi - c*bv)/u - Pc )/fy;
       Avs_reqd = max(Avs_reqd, AvfOverSMin);
 
