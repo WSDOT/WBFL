@@ -26,6 +26,7 @@
 #include <EngTools/PrandtlMembraneSolver.h>        // class implementation
 #include <EngTools/UniformFDMesh.h>
 #include <future>
+#include <numeric>
 #include <System/Threads.h>
 #include <GeomModel/Primitives3d.h>
 #include <GeomModel/Plane3d.h>
@@ -241,7 +242,6 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
 
 std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::GetElementVolumeAndMaxSlope(IndexType elementIndex, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
 {
-   Float64 V = 0;
    Float64 area = mesh->GetElementArea();
    static std::array<Float64, 5> area_factor{ 0, 1. / 3., 0.5, 5. / 6., 1.0 }; // factors for computing volume based on number of non-boundary nodes
 
@@ -251,52 +251,67 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
    Float64 dx, dy;
    mesh->GetElementSize(&dx, &dy);
 
-   // Slopes are computed based on 4 planes derived from the mesh element corners taken 3 at a time.
-   // This array holds the corners used to create each plane
-   using ElementCorners = std::tuple<FDMeshElement::Corner, FDMeshElement::Corner, FDMeshElement::Corner>;
-   static std::array<ElementCorners, 4> elementCorners{
-      ElementCorners(FDMeshElement::Corner::BottomLeft, FDMeshElement::Corner::TopRight, FDMeshElement::Corner::TopLeft),
-      ElementCorners(FDMeshElement::Corner::BottomLeft, FDMeshElement::Corner::BottomRight, FDMeshElement::Corner::TopRight),
-      ElementCorners(FDMeshElement::Corner::BottomLeft, FDMeshElement::Corner::BottomRight, FDMeshElement::Corner::TopLeft),
-      ElementCorners(FDMeshElement::Corner::BottomRight, FDMeshElement::Corner::TopRight, FDMeshElement::Corner::TopLeft)
+   const auto* pElement = mesh->GetElement(elementIndex);
+   auto nInteriorNodes = std::count_if(pElement->Node.begin(), pElement->Node.end(), [](auto idx) {return idx != INVALID_INDEX; });
+   if (nInteriorNodes == 0)
+   {
+      ASSERT(false); // not sure if this should ever happen
+      return std::tuple<Float64, Float64, WBFL::Geometry::Vector2d>(0, 0, WBFL::Geometry::Vector2d(1, 0));
+   }
+
+   Float64 sum_values = std::accumulate(pElement->Node.begin(), pElement->Node.end(), 0.0, [&pElement, &meshValues](Float64 sum, IndexType idx) { return sum + (idx == INVALID_INDEX ? 0.0 : meshValues[idx]); });
+   Float64 avg_value = sum_values / nInteriorNodes;
+
+   Float64 V = area_factor[nInteriorNodes] * area * avg_value;
+
+   Float64 center_value = sum_values / 4;
+   // For purposes of computing the shear stress and slope of the mesh element planes, 
+   // if there is only one result take the value at the center of the mesh element to be zero.
+   if (nInteriorNodes == 1)
+      center_value = 0.0;
+
+   // Slopes are computed based on 4 planes derived from the mesh element corners taken 2 at a time plus the center point of the mesh element.
+   // This array holds the corners on the boundary of the mesh element used to create each plane. The third point is always the center.
+   // Points are defined counter-clockwise so the surface normal is outward from the membrane bubble surface
+   //
+   //  4                  3
+   //   +-----------------+
+   //   |                 |  ^
+   //   |                 |  |
+   //   |        C        |  dy
+   //   |                 |  |
+   //   |                 |  v
+   //   +-----------------+
+   //  1      <-- dx -->  2
+   using ElementCorners = std::pair<FDMeshElement::Corner, FDMeshElement::Corner>;
+   static std::array<ElementCorners, 4> elementCorners{                                      // Order of points for defining planes
+      ElementCorners(FDMeshElement::Corner::BottomLeft, FDMeshElement::Corner::BottomRight), // 1->2->C
+      ElementCorners(FDMeshElement::Corner::BottomRight, FDMeshElement::Corner::TopRight),   // 2->3->C
+      ElementCorners(FDMeshElement::Corner::TopRight, FDMeshElement::Corner::TopLeft),       // 3->4->C
+      ElementCorners(FDMeshElement::Corner::TopLeft, FDMeshElement::Corner::BottomLeft)      // 4->1->C
    };
 
-   // This array holds the coordinates of the 3 points used to create each of the 4 planes.
-   using PlanePoints = std::tuple<WBFL::Geometry::Point3d, WBFL::Geometry::Point3d, WBFL::Geometry::Point3d>;
+   // This array holds the coordinates of the 2 boundary points used to create each of the 4 planes.
+   using PlanePoints = std::pair<WBFL::Geometry::Point3d, WBFL::Geometry::Point3d>;
    std::array<PlanePoints, 4> planePoints{
-      PlanePoints({0.,0.,0.},{dx,dy,0.},{0.,dy,0.}),
-      PlanePoints({0.,0.,0.},{dx,0.,0.},{dx,dy,0.}),
-      PlanePoints({0.,0.,0.},{dx,0.,0.},{0.,dy,0.}),
-      PlanePoints({dx,0.,0.},{dx,dy,0.},{0.,dy,0.})
+      PlanePoints({0.,0.,0.},{dx,0.,0.}),
+      PlanePoints({dx,0.,0.},{dx,dy,0.}),
+      PlanePoints({dx,dy,0.},{0.,dy,0.}),
+      PlanePoints({0.,dy,0.},{0.,0.,0.})
    };
-
 
    WBFL::Geometry::Plane3d plane;
-   WBFL::Geometry::Point3d p0, p1, p2;
+   WBFL::Geometry::Point3d p0, p1, p2(dx/2,dy/2, center_value); // p2 is the center point
 
-   const auto* pElement = mesh->GetElement(elementIndex);
-   IndexType nInteriorNodes = 0;
-   Float64 sum_values = 0;
-   for (long i = 0; i < 4; i++) // loop index doubles as corner index and one of four planes used to compute max slope
+   for (long i = 0; i < 4; i++) // loop over the four planes
    {
-      // volume computation - sum the non-boundary mesh values and keep track of the number of non-boundary points in the element
-      if (pElement->Node[i] != INVALID_INDEX)
-      {
-         sum_values += meshValues[pElement->Node[i]];
-         nInteriorNodes++;
-      }
-
-      // compute max slope...
-
       // three points to make a plane... the z value at all these points is set to zero
-      p0 = std::get<0>(planePoints[i]);
-      p1 = std::get<1>(planePoints[i]);
-      p2 = std::get<2>(planePoints[i]);
+      p0 = planePoints[i].first;
+      p1 = planePoints[i].second;
 
       // set the z value based on the mesh results
-      p0.Z() = pElement->Node[+std::get<0>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<0>(elementCorners[i])]];
-      p1.Z() = pElement->Node[+std::get<1>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<1>(elementCorners[i])]];
-      p2.Z() = pElement->Node[+std::get<2>(elementCorners[i])] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+std::get<2>(elementCorners[i])]];
+      p0.Z() = pElement->Node[+elementCorners[i].first]  == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+elementCorners[i].first]];
+      p1.Z() = pElement->Node[+elementCorners[i].second] == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+elementCorners[i].second]];
 
       // create a plane through the points
       plane.ThroughPoints(p0, p1, p2);
@@ -345,16 +360,6 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
          // in the direction of the shear stress contour line (line of constant elevation on the membrane bubble)
          shear_stress_direction.Rotate(PI_OVER_2);
       }
-   }
-
-   // back to volume calculation....
-   // if there are no interior nodes, all nodes are on the boundary and
-   // their values are zero so no contribution to the volume under the membrane
-   if (nInteriorNodes != 0)
-   {
-      Float64 avg_value = sum_values / nInteriorNodes;
-      Float64 dV = area_factor[nInteriorNodes] * area * avg_value;
-      V += dV;
    }
 
    return std::tuple<Float64, Float64, WBFL::Geometry::Vector2d>(V, maxSlope, shear_stress_direction);
