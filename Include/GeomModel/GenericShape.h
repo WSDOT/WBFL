@@ -210,6 +210,11 @@ namespace WBFL
          /// Returns the perimeter of the shape
          virtual Float64 GetPerimeter() const override;
 
+         /// Reflects the centroid point across the line.
+         /// Since this shape doesn't have an actual shape, the properties are not altered.
+         virtual void Reflect(const Line2d& line) override;
+         virtual std::unique_ptr<Shape> CreateReflectedShape(const Line2d& line) const override;
+
          /// Creates a clone of this shape.
          virtual std::unique_ptr<Shape> CreateClone() const override;
 

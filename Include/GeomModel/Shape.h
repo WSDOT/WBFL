@@ -68,6 +68,15 @@ public:
    virtual void Rotate(Float64 cx, Float64 cy, Float64 angle) = 0;
    virtual void Rotate(const Point2d& center, Float64 angle) = 0;
 
+   /// @brief Reflects the shape across a line
+   /// @param line the reflecting line
+   virtual void Reflect(const Line2d& line) = 0;
+
+   /// @brief Creates a copy of this shape that is reflected across a line
+   /// @param line the reflecting line
+   /// @return the reflected shape
+   virtual std::unique_ptr<Shape> CreateReflectedShape(const Line2d& line) const = 0;
+
    /// Sets the hook point object
    virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) = 0;
 

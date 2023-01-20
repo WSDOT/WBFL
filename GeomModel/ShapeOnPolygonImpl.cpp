@@ -117,6 +117,11 @@ Float64 ShapeOnPolygonImpl::GetPerimeter() const
    return GetPolygon()->GetPerimeter();
 }
 
+void ShapeOnPolygonImpl::Reflect(const Line2d& line)
+{
+   GetPolygon()->Reflect(line);
+}
+
 #if defined _DEBUG
 bool ShapeOnPolygonImpl::AssertValid() const
 {

@@ -209,6 +209,18 @@ Float64 GenericShape::GetPerimeter() const
    return m_Perimeter;
 }
 
+void GenericShape::Reflect(const Line2d& line)
+{
+   m_pCentroid->Move(GeometricOperations::ReflectPointAcrossLine(*m_pCentroid, line));
+}
+
+std::unique_ptr<Shape> GenericShape::CreateReflectedShape(const Line2d& line) const
+{
+   auto clone = CreateClone();
+   clone->Reflect(line);
+   return clone;
+}
+
 void GenericShape::Offset(Float64 dx, Float64 dy)
 {
    Offset(Size2d(dx, dy));
@@ -578,7 +590,7 @@ bool GenericShape::TestMe(WBFL::Debug::Log& rlog)
    clip = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
    TRY_TESTME(clip == nullptr);
 
-   // in rect
+   // in rectangle
    clipRect.Set(-100, 15, 100, 25);
    clip = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
    TRY_TESTME(clip != nullptr);

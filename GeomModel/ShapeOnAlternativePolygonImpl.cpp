@@ -96,6 +96,11 @@ void ShapeOnAlternativePolygonImpl::Rotate(const Point2d& center, Float64 angle)
    SetDirtyFlag();
 }
 
+void ShapeOnAlternativePolygonImpl::Reflect(const Line2d& line)
+{
+   GetPolygon()->Reflect(line);
+}
+
 void ShapeOnAlternativePolygonImpl::Copy(const ShapeOnAlternativePolygonImpl& other)
 {
    m_bIsDirty = other.m_bIsDirty;

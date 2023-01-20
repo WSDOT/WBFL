@@ -61,6 +61,7 @@ public:
    virtual void Move(const Point2d& from, const Point2d& to) override;
    virtual void Rotate(const Point2d& center, Float64 angle) override;
    virtual void Rotate(Float64 cx, Float64 cy, Float64 angle) override;
+   virtual std::unique_ptr<Shape> CreateReflectedShape(const Line2d& line) const override;
    virtual Point2d GetLocatorPoint(LocatorPoint lp) const override;
    virtual void SetLocatorPoint(LocatorPoint lp, Point2d& position) override;
 

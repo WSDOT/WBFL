@@ -53,6 +53,7 @@ public:
 
    virtual void Offset(const Size2d& delta) override;
    virtual void Rotate(const Point2d& center, Float64 angle) override;
+   virtual void Reflect(const Line2d& line) override;
 
 #if defined _DEBUG
    /// Returns true if the class is in a valid state, otherwise returns false
@@ -69,7 +70,7 @@ public:
 protected:
    virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const = 0;
 
-   /// Retreives the polygon representation. DO NOT CALL THIS FROM OnUpdatePolygon.
+   /// Retrieves the polygon representation. DO NOT CALL THIS FROM OnUpdatePolygon.
    std::unique_ptr<Polygon>& GetPolygon() const;
    void SetDirtyFlag(bool bFlag = true);
    bool IsDirty() const;

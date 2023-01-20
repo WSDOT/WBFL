@@ -38,7 +38,7 @@ namespace WBFL
    /// \image html PolyShape/PolyShape.jpg
    /// The points of the polygon can be defined clockwise or counter-clockwise. The polygon can be open (first and last points are not the same) or closed (first and last points are the same).
    /// The hook point is the first point of the polygon. Moving the hook point causes all the points of the polygon to move.
-   /// While it is possible to create degenerate shapes, shapes where edges cross(like a bowtie), shape properties will not be computed correctly for these types of shapes.
+   /// While it is possible to create degenerate shapes, shapes where edges cross (like a bow tie), shape properties will not be computed correctly for these types of shapes.
    /// 
    /// Specifying symmetry can greatly improve efficiency. Points may be defined for half of a polygon with either the a line parallel to the Y-axis or the X-axis as the axis of symmetry.
    /// The half-polygon cannot have points that define an edge that is coincident with the axis of symmetry.
@@ -139,20 +139,12 @@ public:
    virtual bool PointInShape(const Point2d& p) const override;
    virtual Float64 GetPerimeter() const override;
 
-   // Clips this shape against line.  Clips away the portion of the shape on the
-   // side of the line defined by side.  This is a factory method.  You are 
-   // responsible for freeing the memory allocated by this method.  If the shape
-   // lies entirely on the clipping side of the line 0 is returned. Any listeners
-   // to the original section are not transferred to this new section.
+   // Clips this shape against line. Clips away the portion of the shape on the
+   // side of the line defined by side.
    virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override;
 
    /// Clips this shape against rectangle r.  Clips in or out of the rectangle
-   /// as specified by region.  This is a factory method.  You are responsible 
-   /// for freeing memory allocated by this method.  This method returns 0 if, 
-   /// the shape lies entirely within the clipping rectangle and region is set 
-   /// to clip out, or the shape and the rectangle do not intersect and region 
-   /// is to clip in. Any listeners to the original section are not transferred
-   /// to this new section.
+   /// as specified by region.
    virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r,Shape::ClipRegion region) const override;
 
    /// Returns the distance to a line that is parallel to line, on specified 
@@ -162,6 +154,9 @@ public:
 
    /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
    virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
+
+   /// Reflects the polygon across the line. This operations removes the symmetrical property of the shape
+   virtual void Reflect(const Line2d& line) override;
 
 #if defined _DEBUG
    /// Returns true if the class is in a valid state, otherwise returns false

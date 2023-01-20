@@ -51,11 +51,12 @@ public:
    virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
    virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
    virtual Float64 GetPerimeter() const override;
+   virtual void Reflect(const Line2d& line) override;
 
 protected:
    virtual void OnUpdateComposite(std::unique_ptr<CompositeShape>& composite) const = 0;
 
-   /// Retreives the composite hsape representation. DO NOT CALL THIS FROM OnUpdateComposite.
+   /// Retrieves the composite shape representation. DO NOT CALL THIS FROM OnUpdateComposite.
    std::unique_ptr<CompositeShape>& GetComposite() const;
    void SetDirtyFlag(bool bFlag = true);
    bool IsDirty() const;

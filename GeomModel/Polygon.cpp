@@ -24,6 +24,7 @@
 #include <GeomModel/GeomModelLib.h>
 #include <GeomModel/Polygon.h>
 #include <GeomModel/LineSegment2d.h>
+#include <GeomModel/GeomOp2d.h>
 #include <MathEx.h>
 #include <stdexcept>
 #include <algorithm>
@@ -292,7 +293,7 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape(const Line2d& line, Line2d::S
    }
    else
    {
-      // Clipping symmetric shapes is complicated and often results in unsymmetric shapes.
+      // Clipping symmetric shapes is complicated and often results in unsymmetrical shapes.
       // To make life easy, create the fully populated vector of points and operate as if the
       // shape is not symmetric
       std::vector<Point2d> points;
@@ -443,19 +444,31 @@ void Polygon::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& f
    furthestDistance = max_dist;
 }
 
+void Polygon::Reflect(const Line2d& line)
+{
+   // this is probably not the best implementation because it destroys symmetry, but it is easiest
+   auto points = GetPolyPoints();
+   m_Points.clear();
+   for (auto& point : points)
+   {
+      m_Points.emplace_back(GeometricOperations::ReflectPointAcrossLine(point, line));
+   }
+   m_Symmetry = Symmetry::None;
+}
+
 #if defined _DEBUG
 bool Polygon::AssertValid() const
 {
    if (m_Points.empty()) return true;
 
-   // could add test for bowties here if a suitable algorithm can be found
+   // could add test for bow ties here if a suitable algorithm can be found
    auto iter = m_Points.begin();
    auto end = m_Points.end();
    Point2d p0(*iter); // previous point
    iter++;
    for (; iter != end; iter++)
    {
-      Point2d p1(*iter); // current poin
+      Point2d p1(*iter); // current point
 
       if (m_Symmetry == Symmetry::X)
       {
@@ -494,7 +507,7 @@ void Polygon::UpdateProperties() const
 
    ASSERTVALID;
 
-   // Intialize and check for null polygon.
+   // Initialize and check for null polygon.
    Float64 area = 0.0;
    Float64 ixx = 0.0;
    Float64 iyy = 0.0;
@@ -618,7 +631,7 @@ void Polygon::UpdateProperties() const
             const Point2d& beginp = (*ip1);
             if (lastp != beginp)
             {
-               // one more loop to close poly
+               // one more loop to close polygon
                last_round = true;
             }
             else
@@ -641,7 +654,7 @@ void Polygon::UpdateProperties() const
    }
    else
    {
-      // Finish centriod
+      // Finish centroid
       cg.X() /= area_local;
       cg.Y() /= area_local;
 
@@ -844,7 +857,7 @@ bool Polygon::PointInShape_Private(const Point2d& point) const
             Point2d beginp = (*ip1);
             if (lastp != beginp)
             {
-               // one more loop to close poly
+               // one more loop to close polygon
                last_round = true;
             }
             else
@@ -860,7 +873,7 @@ bool Polygon::PointInShape_Private(const Point2d& point) const
    // is in or out.
    sum /= TWO_PI; // ( 1/2*PI )
 
-   bool contained;
+   bool contained{false};
 
    if (IsEqual(sum, -1., angular_tolerance) || IsEqual(sum, 1., angular_tolerance))
       contained = true;
@@ -895,7 +908,7 @@ void Polygon::GetAllPoints(std::vector<Point2d>* points) const
    auto end = m_Points.rend();
    for (; iter != end; iter++)
    {
-      // working in reverse order, add the the mirrored points to the vector of points
+      // working in reverse order, add the mirrored points to the vector of points
       const auto& point(*iter);
       points->emplace_back(GetMirroredPoint(point));
    }
@@ -925,7 +938,7 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, L
    Float64 s;      // dot product of the normal vector and the position vector
                   // of this Polygon
 
-   // If the polyPolygon isn't at least a triangle, just get the heck outta here.
+   // If the polyPolygon isn't at least a triangle, just get the heck out of here.
    CollectionIndexType nPoints = points.size();
    if (nPoints < 3)
       return nullptr;
@@ -991,7 +1004,7 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, L
          Point2d intersect;
          intersect.Y() = (A2 * C1 - A1 * C2) / (A1 * B2 - A2 * B1);
 
-         if (IsZero(A1) && IsZero(A2)) // lines are concident
+         if (IsZero(A1) && IsZero(A2)) // lines are coincident
             intersect.X() = current.X();
          else if (IsZero(A1)) // Clipping line is horizontal
             intersect.X() = last.X() + (-B2 / A2) * (intersect.Y() - last.Y());

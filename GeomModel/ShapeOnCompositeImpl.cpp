@@ -114,6 +114,11 @@ Float64 ShapeOnCompositeImpl::GetPerimeter() const
    return GetComposite()->GetPerimeter();
 }
 
+void ShapeOnCompositeImpl::Reflect(const Line2d& line)
+{
+   GetComposite()->Reflect(line);
+}
+
 void ShapeOnCompositeImpl::DoOffset(const Size2d& delta)
 {
    GetComposite()->Offset(delta);

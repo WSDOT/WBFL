@@ -141,6 +141,12 @@ namespace WBFL
          /// \image html GeomUtil2d/ShortestOffsetToPoint.jpg
          static Float64 ShortestOffsetToPoint(const Line2d& line, const Point2d& point);
 
+         /// @brief Reflects a point across a line
+         /// @param point the point to be reflected
+         /// @param line the line across the point is reflected
+         /// @return the reflected point
+         static Point2d ReflectPointAcrossLine(const Point2d& point, const Line2d& line);
+
          /// Transforms a point from the local 3d system to a global 3d space.
          /// origin is the coordinate of the origin of the local coordinate system, in global coordinates
          /// unitVector is a unit vector that defines the local coordinate system,

@@ -574,6 +574,19 @@ Float64 GeometricOperations::ShortestOffsetToPoint(const Line2d& line, const Poi
    return distance;
 }
 
+Point2d GeometricOperations::ReflectPointAcrossLine(const Point2d& point, const Line2d& line)
+{
+   Float64 c;
+   Vector2d n;
+   line.GetImplicit(&c, &n);
+
+   Float64 dist = line.DistanceToPoint(point);
+
+   Point2d reflected_point(point.X() - 2 * dist * n.X(), point.Y() - 2 * dist * n.Y());
+
+   return reflected_point;
+}
+
 Point3d GeometricOperations::GlobalToLocal(const Point3d& origin,
                                     const Vector3d& unitVector,
                                     Float64 angle,
@@ -822,6 +835,90 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    p3.Move(20, 10);
    dist = GeometricOperations::ShortestOffsetToPoint(line, p3);
    TRY_TESTME(IsEqual(dist, 7.07106)); // Point on right side (+)
+
+   //
+   // ReflectPointAcrossLine
+   //
+
+   // 45degree line
+   p1.Move(0, 0);
+   p2.Move(100, 100);
+   line.ThroughPoints(p1, p2);
+   p3.Move(50, 0);
+   auto rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(0, 50));
+
+   // -45degree line
+   p1.Move(0, 0);
+   p2.Move(-100, -100);
+   line.ThroughPoints(p1, p2);
+   p3.Move(50, 0);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(0, 50));
+
+   // 135degree line
+   p1.Move(0, 0);
+   p2.Move(-100, 100);
+   line.ThroughPoints(p1, p2);
+   p3.Move(50, 0);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(0, -50));
+
+   // -135degree line
+   p1.Move(0, 0);
+   p2.Move(100, -100);
+   line.ThroughPoints(p1, p2);
+   p3.Move(50, 0);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(0, -50));
+
+   // x-axis
+   p1.Move(0, 0);
+   p2.Move(100, 0);
+   line.ThroughPoints(p1, p2);
+   p3.Move(50, 0);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(50, 0));
+
+   p3.Move(50, 50);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(50, -50));
+
+   p3.Move(50, -50);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(50, 50));
+
+   // horizontal parallel to x-axis
+   p1.Move(0, 10);
+   p2.Move(100, 10);
+   line.ThroughPoints(p1, p2);
+   p3.Move(50, 0);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(50, 20));
+
+   // y-axis
+   p1.Move(0, 0);
+   p2.Move(0, 100);
+   line.ThroughPoints(p1, p2);
+   p3.Move(0, 50);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(0, 50));
+
+   p3.Move(50, 50);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(-50, 50));
+
+   p3.Move(-50, 50);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(50, 50));
+
+   // vertical parallel to y-axis
+   p1.Move(10, 0);
+   p2.Move(10, 100);
+   line.ThroughPoints(p1, p2);
+   p3.Move(0, 50);
+   rp = GeometricOperations::ReflectPointAcrossLine(p3, line);
+   TRY_TESTME(rp == Point2d(20, 50));
 
    //
    // PointOnLineNearest

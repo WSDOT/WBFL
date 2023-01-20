@@ -60,6 +60,8 @@ public:
    virtual Point2d GetLocatorPoint(LocatorPoint point) const override;
    virtual void SetLocatorPoint(LocatorPoint lp, Point2d& position) override;
 
+   virtual void Reflect(const Line2d& line) override;
+   virtual std::unique_ptr<Shape> CreateReflectedShape(const Line2d& line) const override;
 
    /// Returns the geometric properties of the shape
    /// The origin of the shape properties object is the centroid of this shape

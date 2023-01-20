@@ -203,6 +203,18 @@ std::vector<Point2d> CompositeShape::GetPolyPoints() const
       return m_Shapes.front().first->GetPolyPoints();
 }
 
+void CompositeShape::Reflect(const Line2d& line)
+{
+   std::for_each(m_Shapes.begin(), m_Shapes.end(), [&line](auto& pair) {pair.first->Reflect(line); });
+}
+
+std::unique_ptr<Shape> CompositeShape::CreateReflectedShape(const Line2d& line) const
+{
+   auto clone = CreateClone();
+   clone->Reflect(line);
+   return clone;
+}
+
 std::unique_ptr<Shape> CompositeShape::CreateClone() const
 {
    return std::make_unique<CompositeShape>(*this);
@@ -403,6 +415,8 @@ public:
    virtual bool PointInShape(const Point2d& p) const override { return true; }
    virtual Float64 GetPerimeter() const override { return 0.0; }
    virtual std::vector<Point2d> GetPolyPoints() const override { return m_DummyPoints; }
+   virtual void Reflect(const Line2d& line) override {};
+   virtual std::unique_ptr<Shape> CreateReflectedShape(const Line2d& line) const override { auto clone = CreateClone(); clone->Reflect(line); return clone; }
    bool operator==(const TestShape& rhs) const{return m_Props==rhs.m_Props;}
 protected:
    virtual void DoOffset(const Size2d& delta) override {}

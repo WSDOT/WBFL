@@ -151,12 +151,12 @@ namespace WBFL
          bool operator==(const Point2d& other) const;
          bool operator!=(const Point2d& other) const;
 
-         /// Calcuates an offset to this point using the given size argument as 
+         /// Calculates an offset to this point using the given size argument as 
          /// the displacement.  Returns (x+size.Dx(),y+size.Dy()).  This point is
          /// not changed.
          Point2d operator+ (const Size2d& size) const;
 
-         /// Calcuates an offset to this point using the given size argument as 
+         /// Calculates an offset to this point using the given size argument as 
          /// the displacement.  Returns (x-size.Dx(),y-size.Dy()).  This point is
          /// not changed.
          Point2d operator- (const Size2d& size) const;

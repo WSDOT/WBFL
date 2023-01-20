@@ -99,6 +99,13 @@ void ShapeImpl::Rotate(Float64 cx, Float64 cy, Float64 angle)
    Rotate(Point2d(cx, cy), angle);
 }
 
+std::unique_ptr<Shape> ShapeImpl::CreateReflectedShape(const Line2d& line) const
+{
+   auto clone = CreateClone();
+   clone->Reflect(line);
+   return clone;
+}
+
 void ShapeImpl::SetLocatorPoint(LocatorPoint lp, Point2d& position)
 {
    Move(lp, position);
