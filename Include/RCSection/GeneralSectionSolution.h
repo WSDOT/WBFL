@@ -54,7 +54,7 @@ namespace WBFL
             Float64 C, ///< Resultant compression force
             const WBFL::Geometry::Point2d& cgT, ///< Location of the resultant tension force
             Float64 T, ///< Resultant tension force
-            std::vector<std::unique_ptr<GeneralSectionSlice>>&& vSlices, ///< Array of fibers ("slices") resulting from the discritization of the cross section.
+            std::vector<std::unique_ptr<GeneralSectionSlice>>&& vSlices, ///< Array of fibers ("slices") resulting from the discretization of the cross section.
             bool bExceededStrainLimits ///< Set to true if the strain limit of any of the materials were exceeded during the analysis
          );
 

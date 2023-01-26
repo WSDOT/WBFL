@@ -374,7 +374,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
    m_NeutralAxis->GetExplicit(&pnt,&vec);
    neutral_axis->SetExplicit(pnt,vec);
 
-   (*solution)->InitSolution(p,mx,my,neutral_axis,cgC,C,cgT,T,slices);
+   (*solution)->InitSolution(p,mx,my,neutral_axis,cgC,C,cgT,T,slices, bExceededStrainLimits);
 
 #if defined _DEBUG_LOGGING
    os << std::setw(10) << "Area, " << std::setw(10) << "Side, " << std::setw(10) << "Top, " << std::setw(10) << "Bottom, " << std::setw(20) << "Xcg, " << std::setw(20) << "Ycg, " << std::setw(20) << "initial strain, " << std::setw(20) << "strain, " << std::setw(20) << "fg material, " << std::setw(10) << "fg stress, "  << std::setw(20) << "bg material, " << std::setw(10) << "bg stress, " << std::setw(10) << "stress, " << std::setw(10) << "force" << std::endl;

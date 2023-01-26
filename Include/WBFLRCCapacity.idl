@@ -1362,7 +1362,8 @@ library WBFLRCCapacity
          [in]Float64 C, ///< Resultant compression force
          [in]IPoint2d* cgT, ///< Location of the resultant tension force
          [in]Float64 T, ///< Resultant tension force
-         [in]IUnkArray* slices /// Array of fibers ("slices") resulting from the discretization of the cross section. All objects implement the IGeneralSectionSlice interface.
+         [in]IUnkArray* slices, ///< Array of fibers ("slices") resulting from the discretization of the cross section. All objects implement the IGeneralSectionSlice interface.
+         [in]VARIANT_BOOL bExceededStrainLimits ///< Set to true if the strain limit of any of the materials were exceeded during the analysis
       );
 
       /// Resultant axial force
@@ -1400,6 +1401,9 @@ library WBFLRCCapacity
 
       /// Returns a collection of IGeneralSectionSlice objects for a specific shape in the IGeneralSection model
       [helpstring("FindSlices")] HRESULT FindSlices([in]IndexType shapeIdx, [out, retval]IUnkArray** ppSlices);
+
+      /// Parameter indicating if the strain limit of one or more of the materials in the section was exceeded
+      [propget, helpstring("ExceededStrainLimits")] HRESULT ExceededStrainLimits([out, retval]VARIANT_BOOL* pbExceededStrainLimits);
 	};
 
    /// Interface for objects performing biaxial fiber based general section analysis

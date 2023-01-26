@@ -61,7 +61,7 @@ STDMETHODIMP CGeneralSectionSolution::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // IGeneralSectionSolution
-STDMETHODIMP CGeneralSectionSolution::InitSolution(Float64 fz,Float64 mx,Float64 my,ILine2d* neutralAxis,IPoint2d* cgc,Float64 c,IPoint2d* cgt,Float64 t,IUnkArray* slices)
+STDMETHODIMP CGeneralSectionSolution::InitSolution(Float64 fz,Float64 mx,Float64 my,ILine2d* neutralAxis,IPoint2d* cgc,Float64 c,IPoint2d* cgt,Float64 t,IUnkArray* slices,VARIANT_BOOL bExceededStrainLimits)
 {
    m_NeutralAxis = neutralAxis;
    m_Fz = fz;
@@ -72,6 +72,7 @@ STDMETHODIMP CGeneralSectionSolution::InitSolution(Float64 fz,Float64 mx,Float64
    m_cgC = cgc;
    m_cgT = cgt;
    m_Slices = slices;
+   m_bExceededStrainLimits = bExceededStrainLimits;
 
    return S_OK;
 }
@@ -140,6 +141,13 @@ STDMETHODIMP CGeneralSectionSolution::get_TensionResultantLocation(IPoint2d** cg
    CHECK_RETOBJ(cgT);
    (*cgT) = m_cgT;
    (*cgT)->AddRef();
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSectionSolution::get_ExceededStrainLimits(VARIANT_BOOL* pbExceededStrainLimits)
+{
+   CHECK_RETOBJ(pbExceededStrainLimits);
+   *pbExceededStrainLimits = m_bExceededStrainLimits;
    return S_OK;
 }
 
