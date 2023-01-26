@@ -122,7 +122,7 @@ bool TestLib(WBFL::Debug::Log& rlog)
    // save manager and libraries and close stream
    {
       WBFL::System::FileStream os;
-      if (!os.open(_T("TestLib.xml"), true)) exit(1);
+      if (!os.open(_T("TestLib.xml"), false)) exit(1);
       WBFL::System::StructuredSaveXml save;
       save.BeginSave(&os);
       saveman.SaveMe(&save);
