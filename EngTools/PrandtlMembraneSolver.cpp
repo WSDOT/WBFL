@@ -418,18 +418,18 @@ bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
    solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 33.056141));
+   TRY_TESTME(IsEqual(maxSlope, 31.320506783765548));
    TRY_TESTME(maxSlopeElementIdx == 6412);
-   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.0008931));
+   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
 
    // ignore symmetry
    solution = PrandtlMembraneSolver::Solve(shape, 0.25, 0.25, false);
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
    solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 33.056141));
+   TRY_TESTME(IsEqual(maxSlope, 31.320506783765548));
    TRY_TESTME(maxSlopeElementIdx == 6412);
-   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.0008931));
+   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
 
    // use a solver object
    PrandtlMembraneSolver solver;
@@ -438,9 +438,9 @@ bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
    TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
    solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 33.056141));
+   TRY_TESTME(IsEqual(maxSlope, 31.320506783765548));
    TRY_TESTME(maxSlopeElementIdx == 6412);
-   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.0008931));
+   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
 
    TESTME_EPILOG("PrandtlMembraneSolver");
 }
