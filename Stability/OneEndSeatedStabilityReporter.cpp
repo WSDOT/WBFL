@@ -956,10 +956,10 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
    *pPara << _T("Camber, ") << Sub2(symbol(DELTA), _T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
    *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
    *pPara << _T("Location of center of gravity above roll axis, ") << YR << _T(" = ") 
-      << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("top")) << _T(" + ")
-      << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" - ")
-      << _T("(") << LA << _T("/") << LS << _T(")(") << Sub2(_T("H"),_T("roll")) << _T(" - ") 
-      << Sub2(_T("H"),_T("g")) << _T(" + ") << Sub2(_T("y"),_T("lift")) << _T(")")
+      << Sub2(_T("H"),_T("g")) << _T(" - ") << Sub2(_T("Y"), _T("top")) << _T(" + ")
+      << FO << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" + ")
+      << _T("(") << LB << _T("/") << LS << _T(")") << Sub2(_T("H"),_T("roll")) << _T(" - ") 
+      << _T("(") << LA << _T("/") << LS << _T(")(") << Sub2(_T("H"),_T("g")) << _T(" + ") << Sub2(_T("y"),_T("lift")) << _T(")")
       << _T(" = ") << shortLength.SetValue(pResults->Dra[+ImpactDirection::NoImpact]) << rptNewLine;
 
    *pPara << rptNewLine;

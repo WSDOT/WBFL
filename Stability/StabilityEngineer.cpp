@@ -875,7 +875,10 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
    Float64 Ls = Lg - Ll - Lr;
 
    if (pStabilityProblem->GetSeatedEnd() == GirderSide::Right)
+   {
       std::swap(La, Lb);
+      std::swap(Ll, Lr);
+   }
 
    Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
    pGirder->GetSectionProperties(Lg / 2, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
@@ -899,17 +902,25 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
    Float64 Kadjust = pStabilityProblem->GetRotationalStiffnessAdjustmentFactor();
    Ktheta *= Kadjust;
 
-   // Compute roll axis adjustment
+   // Offset factor is for equal length overhangs based on the seated end
+   results.OffsetFactor = pow(((Lg - 2 * Ll) / Lg), 2) - 1. / 3.;
+
+   // Compute roll axis location
    //
    // In the Analyze method Dra is computed assuming a horizontal roll axis through two lift points or to seat points.
    // For this analysis, the roll axis is inclined going from the bottom to the top of the girder.
+   // Recompute Dra here
+   Float64 Camber = pStabilityProblem->GetCamber();
+   Float64 Precamber = pGirder->GetPrecamber();
+   Float64 m = pStabilityProblem->GetCamberMultiplier();
+   Float64 Ybot = Hg + Ytop;
    Float64 Yroll = pStabilityProblem->GetYRollAxis(); // location of roll axis down (negative value) from top of girder for the seated end
-   Float64 h_roll = -(Hg + Yroll); // Hg + Yroll is distance from bottom of girder to roll axis
+   Float64 h_roll = -(Hg + Yroll);
    Float64 ylift = pStabilityProblem->GetYRollLiftEnd(); 
-   Float64 DraAdjustment = (Lb / Ls - 1) * h_roll - (La / Ls) * (Hg + ylift);
-   results.Dra[+ImpactDirection::NoImpact] += DraAdjustment;
-   results.Dra[+ImpactDirection::ImpactUp] += DraAdjustment;
-   results.Dra[+ImpactDirection::ImpactDown] += DraAdjustment;
+   Float64 Dra = Ybot + results.OffsetFactor*(m*Camber + Precamber) + (Lb / Ls) * h_roll - (La / Ls) * (Hg + ylift);
+   results.Dra[+ImpactDirection::NoImpact] = Dra;
+   results.Dra[+ImpactDirection::ImpactUp] = Dra;
+   results.Dra[+ImpactDirection::ImpactDown] = Dra;
 
    // overturning moment due to wind applied toward the left
    // Ywind and Dra are a function of impact because of impact forces in the horizontal

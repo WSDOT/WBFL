@@ -355,6 +355,10 @@ bool UnitTest::OneEndSeated(WBFL::Debug::Log& rlog)
    Girder girder;
    OneEndSeatedStabilityProblem stabilityProblem;
 
+   // base units of kip and inch
+   WBFL::Units::AutoSystem au;
+   WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Radian);
+
    Float64 Hg = WBFL::Units::ConvertToSysUnits(72, WBFL::Units::Measure::Inch);
    Float64 Wtf = WBFL::Units::ConvertToSysUnits(42, WBFL::Units::Measure::Inch);
    Float64 Wbf = WBFL::Units::ConvertToSysUnits(26, WBFL::Units::Measure::Inch);
@@ -392,7 +396,7 @@ bool UnitTest::OneEndSeated(WBFL::Debug::Log& rlog)
    stabilityProblem.SetSweepTolerance(2 * 0.000520833333);
    stabilityProblem.SetSweepGrowth(WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Inch));
    stabilityProblem.SetSupportPlacementTolerance(WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Inch));
-   stabilityProblem.SetYRollAxis(WBFL::Units::ConvertToSysUnits(-48.0, WBFL::Units::Measure::Inch) - Hg); // location of roll axes below top of girder);
+   stabilityProblem.SetYRollAxis(WBFL::Units::ConvertToSysUnits(-48.0, WBFL::Units::Measure::Inch) - Hg); // roll axis is 48" below top of girder
 
    stabilityProblem.SetImpact(0.0, 0.0);
 
