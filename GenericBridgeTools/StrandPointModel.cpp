@@ -776,7 +776,7 @@ STDMETHODIMP CStrandPointModel::get_StraightStrandDebondInRow(Float64 Xs, RowInd
       if (0 < strandRecord.Debond[etStart] || strandRecord.Debond[etEnd] < Lg)
       {
          // this strand has debonding
-         *nStrands++;
+         (*nStrands)++;
       }
    }
 
