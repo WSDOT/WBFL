@@ -411,7 +411,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
          details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1, WBFL::Units::Measure::Inch);
          ldb_min = 0.0; // no minimum requirement
       }
-      else if (type == WBFL::Materials::ConcreteType::FHWA_UHPC && size <= WBFL::Materials::Rebar::Size::bs8 && 14.0 < fc)
+      else if (type == WBFL::Materials::ConcreteType::UHPC && size <= WBFL::Materials::Rebar::Size::bs8 && 14.0 < fc)
       {
          fy = Min(fy, 100.0); // fy can be taken greater than 100 ksi
          Float64 Nd = (fy <= 75.0 ? 10.0 : 12.0);
@@ -421,7 +421,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
       }
       else
       {
-         if (type == WBFL::Materials::ConcreteType::FHWA_UHPC)
+         if (type == WBFL::Materials::ConcreteType::UHPC)
          {
             // GS 1.10.8.2.1 - f'c shall not be taken greater than 15 ksi in LRFD Eq. 5.10.8.2.1a-2
             Float64 fc_max = WBFL::Units::ConvertToSysUnits(15.0, WBFL::Units::Measure::KSI);
@@ -436,7 +436,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
 
       details.ldb = Max(details.ldb1,details.ldb2,ldb_min);
    
-      if (type == WBFL::Materials::ConcreteType::FHWA_UHPC)
+      if (type == WBFL::Materials::ConcreteType::UHPC)
       {
          // lambda Rl is always 1.0 for UHPC - GS 1.10.8.2
          details.lambdaRl = 1.0;
@@ -452,7 +452,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
       // lightweight concrete factor
       if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion())
       {
-         if (type == WBFL::Materials::ConcreteType::FHWA_UHPC)
+         if (type == WBFL::Materials::ConcreteType::UHPC)
             details.lambdaLw = 1.0; // GS 1.10.8.2.1
          else
             details.lambdaLw = lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(type,density,isFct,Fct,fc);
@@ -461,7 +461,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
       }
       else
       {
-         if (type== WBFL::Materials::ConcreteType::Normal || type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::FHWA_UHPC)
+         if (type== WBFL::Materials::ConcreteType::Normal || type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::UHPC)
          {
             details.lambdaLw = 1.0;
          }
@@ -503,7 +503,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
    {
       // UHPCs depend on LRFD 2020 or later so we should never get here with UHPC concrete
       ASSERT(type != WBFL::Materials::ConcreteType::PCI_UHPC);
-      ASSERT(type != WBFL::Materials::ConcreteType::FHWA_UHPC);
+      ASSERT(type != WBFL::Materials::ConcreteType::UHPC);
 
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
       {

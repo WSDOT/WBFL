@@ -114,12 +114,12 @@ Float64 UHPCModel::Get_etloc() const
 
 void UHPCModel::SetGamma(Float64 gamma)
 {
-   m_gamma = gamma;
+   m_gamma_u = gamma;
 }
 
 Float64 UHPCModel::GetGamma() const
 {
-   return m_gamma;
+   return m_gamma_u;
 }
 
 std::unique_ptr<StressStrainModel> UHPCModel::Clone() const
@@ -152,16 +152,16 @@ std::pair<Float64, bool> UHPCModel::ComputeStress(Float64 strain) const
    if (0 < strain)
    {
       // tension
-      Float64 e_tcr = m_gamma * m_ftcr / Ec;
+      Float64 e_tcr = m_gamma_u * m_ftcr / Ec;
       if (strain < e_tcr)
       {
          // strain is less than cracking
          stress = strain * Ec;
       }
-      else if (::IsLE(strain, m_etloc))
+      else if (::IsLE(strain, m_gamma_u*m_etloc))
       {
-         // if (ftloc < 1.2ftcr) then the tension is gammau*ftcr, otherwise there is strain hardening and stress continues to increase to gamma_u*ftloc at etloc
-         stress = (m_ftloc < 1.2 * m_ftcr) ? m_gamma * m_ftcr : ::LinInterp(strain - e_tcr, m_gamma * m_ftcr, m_gamma * m_ftloc, m_etloc - e_tcr);
+         // if (ftloc < 1.2ftcr) then the tension is gamma_u*ftcr, otherwise there is strain hardening and stress continues to increase to gamma_u*ftloc at etloc
+         stress = (m_ftloc < 1.2 * m_ftcr) ? m_gamma_u * m_ftcr : ::LinInterp(strain - e_tcr, m_gamma_u * m_ftcr, m_gamma_u * m_ftloc, m_gamma_u*m_etloc - e_tcr);
       }
       else
       {
@@ -199,7 +199,7 @@ void UHPCModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
    PRECONDITION(pMinStrain != nullptr);
    PRECONDITION(pMaxStrain != nullptr);
 
-   *pMaxStrain = m_etloc;
+   *pMaxStrain = m_gamma_u*m_etloc;
 
    Float64 Ec = GetEc();
    Float64 e_cp = -1.0 * m_alpha * m_fc / Ec;

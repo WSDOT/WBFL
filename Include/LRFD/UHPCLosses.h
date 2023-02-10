@@ -27,10 +27,10 @@
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\Losses.h>
 #include <LRFD\RefinedLosses2005.h>
-#include <Lrfd\FHWAUHPCCreepCoefficient.h>
+#include <Lrfd\UHPCCreepCoefficient.h>
 
 
-class LRFDCLASS lrfdFHWAUHPCLosses : public lrfdRefinedLosses2005
+class LRFDCLASS lrfdUHPCLosses : public lrfdRefinedLosses2005
 {
 public:
    //------------------------------------------------------------------------
@@ -49,13 +49,13 @@ public:
    // e = 0 mm
    // Mg = 0 N-m
    // Mdl = 0 N-m
-   lrfdFHWAUHPCLosses();
+   lrfdUHPCLosses();
 
    //------------------------------------------------------------------------
    // Constructor.  Initializes the object with the give values.
    // fpy is initialized to 0.85fpu for StressRelieved strands and
    // 0.90fpu for LowRelaxation strands.
-   lrfdFHWAUHPCLosses(Float64 x, // location along girder where losses are computed
+   lrfdUHPCLosses(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
                          lrfdLosses::SectionPropertiesType sectionProperties,
                          WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
@@ -133,7 +133,7 @@ public:
                          std::shared_ptr<const lrfdCreepCoefficient2005>& pDeckCreep
                          );
 
-   ~lrfdFHWAUHPCLosses();
+   ~lrfdUHPCLosses();
 
 #if defined _UNITTEST
    static bool TestMe(WBFL::Debug::Log& rlog);

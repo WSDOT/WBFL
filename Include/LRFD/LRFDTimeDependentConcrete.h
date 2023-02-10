@@ -165,7 +165,7 @@ public:
    virtual void SetAutogenousShrinkage(Float64 as) override;
    virtual Float64 GetAutogenousShrinkage() const override;
 
-   // FHWA UHPC Parameters
+   // UHPC Parameters
    virtual void SetCompressionResponseReductionFactor(Float64 alpha_u) override;
    virtual Float64 GetCompressionResponseReductionFactor() const override;
    virtual void SetCompressiveStrainLimit(Float64 ecu) override;
@@ -179,6 +179,8 @@ public:
    virtual Float64 GetCrackLocalizationStrength() const override;
    virtual void SetCrackLocalizationStrain(Float64 et_loc) override;
    virtual Float64 GetCrackLocalizationStrain() const override;
+   virtual void SetFiberOrientationReductionFactor(Float64 gamma_u) override;
+   virtual Float64 GetFiberOrientationReductionFactor() const override;
 
    virtual Float64 GetElasticCompressiveStrainLimit() const override;
    virtual Float64 GetCompressiveStrainLimit(bool* pbIsExperimental = nullptr) const override;
@@ -207,7 +209,7 @@ private:
    Float64 m_frr; // post-crack residual tensile strength
    Float64 m_AutogenousShrinkage;
 
-   // FHWA UHPC
+   // UHPC
    Float64 m_alpha_u;
    Float64 m_ecu;
    Float64 m_etcr;
@@ -215,6 +217,7 @@ private:
    Float64 m_ftcr;
    Float64 m_ftloc;
    Float64 m_etloc;
+   Float64 m_gamma_u;
    bool m_bExperimental_ecu;
 
    mutable bool m_bIsValid;

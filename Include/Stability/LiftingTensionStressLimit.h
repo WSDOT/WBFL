@@ -111,11 +111,11 @@ namespace WBFL
       };
 
 
-      /// FHWA UHPC concrete tension stress limit
-      class STABILITYCLASS FHWAUHPCLiftingTensionStressLimit : public ILiftingTensionStressLimit
+      /// UHPC concrete tension stress limit
+      class STABILITYCLASS UHPCLiftingTensionStressLimit : public ILiftingTensionStressLimit
       {
       public:
-         FHWAUHPCLiftingTensionStressLimit();
+         UHPCLiftingTensionStressLimit();
 
 #if defined REBAR_FOR_DIRECT_TENSION
          virtual Float64 GetTensionLimit(const LiftingSectionResult& sectionResult, ImpactDirection impact) const override;

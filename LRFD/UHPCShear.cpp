@@ -23,7 +23,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Lrfd\LrfdLib.h>
-#include <Lrfd\FHWAUHPCShear.h>
+#include <Lrfd\UHPCShear.h>
 #include <Units\Convert.h>
 #include <Math\BrentsRootFinder.h>
 #include <Math\FixedPointIteration.h>
@@ -67,7 +67,7 @@ public:
       result += (2 * m_pData->rho * m_fv / m_pData->Ec) * cot_theta_2 * (1 + cot_theta_2);
 
       // Subtract left hand side so this equation return 0 when the correct value of theta is used
-      result -= m_pData->etloc;
+      result -= m_pData->gamma_u*m_pData->etloc;
 
       return result;
    }
@@ -108,7 +108,7 @@ public:
       Float64 e2 = -(2 * m_pData->ftloc / m_pData->Ec) * (cot_theta_2) - (2 * m_pData->rho * fv_guess / m_pData->Ec) * (1 + cot_theta_2);
 
       // Compute ev by GS Eq 1.7.3.4.1-3
-      Float64 ev = m_pData->etloc - 0.5 * m_pData->es + e2;
+      Float64 ev = m_pData->gamma_u*m_pData->etloc - 0.5 * m_pData->es + e2;
 
       // Compute fv by GS Eq 1.7.3.4.1-4
       Float64 fv = Min(m_pData->Es * ev, m_pData->fy);
@@ -153,13 +153,14 @@ bool lrfdUHPCShear::ComputeShearResistanceParameters(lrfdUHPCShearData* pData)
    Float64 etloc = pData->etloc;
    Float64 etcr = pData->etcr;
    Float64 alpha = pData->alpha;
+   Float64 gamma_u = pData->gamma_u;
 
    // compute net longitudinal tensile strain at the centroid of the tensile reinforcement as shown in LRFD Figure 5.7.3.4.21
    // Per GS Eq 1.7.3.4.1-6
    // If Es*As + Eps*Aps is zero, then this equation is divide by zero. It also means the tension tie is provided only be the concrete
    // so we ant to use the -7 equation below. To force that happen, just set es = -1 because the -7 equation is required of es is negative or less than etcr
    Float64 T = Es * As + Eps * Aps;
-   Float64 es = IsZero(T) ? -1 : (fabs(Mu) / dv + 0.5 * Nu + fabs(Vu - Vp) - Aps * fpo - ft * Ac) / T;
+   Float64 es = IsZero(T) ? -1 : (fabs(Mu) / dv + 0.5 * Nu + fabs(Vu - Vp) - Aps * fpo - gamma_u*ft * Ac) / T;
 
    if (es < etcr)
    {
@@ -169,9 +170,9 @@ bool lrfdUHPCShear::ComputeShearResistanceParameters(lrfdUHPCShearData* pData)
 
    pData->es = es;
 
-   if (etloc < es)
+   if (gamma_u*etloc < es)
    {
-      // if es is greater than etloc, the solution method isn't valid
+      // if es is greater than gamma_u*etloc, the solution method isn't valid
       // because the UHPC is fractured.
       pData->fv = 0;
       pData->Theta = 0;
@@ -228,6 +229,7 @@ bool lrfdUHPCShear::TestCase1(WBFL::Debug::Log& rlog)
    data.ftloc = 1.2;
    data.etloc = 0.004;
    data.etcr = 0.001;
+   data.gamma_u = 1.0;
 
    lrfdUHPCShear::ComputeShearResistanceParameters(&data);
 
@@ -281,6 +283,7 @@ bool lrfdUHPCShear::TestCase2(WBFL::Debug::Log& rlog)
    data.ftloc = 1.2;
    data.etloc = 0.003;
    data.etcr = 0.001;
+   data.gamma_u = 1.0;
 
    lrfdUHPCShear::ComputeShearResistanceParameters(&data);
 

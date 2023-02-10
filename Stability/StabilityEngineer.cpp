@@ -89,30 +89,6 @@ OneEndSeatedResults StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGird
 
    PrepareResults(pGirder, pStabilityProblem, results);
 
-   // PrepareResults computes the initial eccentricity assuming seated or hanging from both ends
-   // The eccentricity for that case is  ei = Fo*Delta_sweep + e_seat
-   // but the eccentricity for seated at one end must account for different offsets of the seated and hanging end
-   // ei = Fo*Delta_Sweep + Lb/Ls*e_seat + La/Ls*e_lift
-   // Subtract off e_seat and add in Lb/Ls*e_seat + La/Ls*e_lift
-   Float64 Lg = pGirder->GetGirderLength();
-
-   Float64 Ll, Lr;
-   pStabilityProblem->GetSupportLocations(&Ll, &Lr);
-
-   Float64 La = Lg / 2 - Ll;
-   Float64 Lb = Lg / 2 - Lr;
-   Float64 Ls = Lg - Ll - Lr;
-
-   if (pStabilityProblem->GetSeatedEnd() == GirderSide::Right)
-      std::swap(La, Lb);
-
-   for (IndexType i = 0; i < 3; i++)
-   {
-      ImpactDirection impact = (ImpactDirection)i;
-      results.EccLateralSweep[+impact] -= pStabilityProblem->GetSupportPlacementTolerance();
-      results.EccLateralSweep[+impact] += (La*pStabilityProblem->GetLiftPlacementTolerance() + Lb*pStabilityProblem->GetSupportPlacementTolerance())/Ls;
-   }
-
    AnalyzeOneEndSeated(pGirder, pStabilityProblem, results);
    return results;
 }
@@ -734,7 +710,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
          } // next corner
 
          // compute rebar requirements for tension stresses
-         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::FHWA_UHPC)
+         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
          {
             gbtAlternativeTensileStressRequirements altTensionRequirements;
 
@@ -904,6 +880,20 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
 
    // Offset factor is for equal length overhangs based on the seated end
    results.OffsetFactor = pow(((Lg - 2 * Ll) / Lg), 2) - 1. / 3.;
+
+   // PrepareResults computes the initial eccentricity assuming seated or hanging from both ends
+   // The eccentricity for that case is  ei = Fo*Delta_sweep + e_seat
+   // but the eccentricity for seated at one end must account for different offsets of the seated and hanging end
+   // ei = Fo*Delta_Sweep + Lb/Ls*e_seat + La/Ls*e_lift
+   // Re-compute ei for this case
+   Float64 e_seat = pStabilityProblem->GetSupportPlacementTolerance();
+   Float64 e_lift = pStabilityProblem->GetLiftPlacementTolerance();
+   Float64 ei = results.OffsetFactor * results.LateralSweep + (La * e_lift + Lb * e_seat) / Ls;
+   for (IndexType i = 0; i < 3; i++)
+   {
+      ImpactDirection impact = (ImpactDirection)i;
+      results.EccLateralSweep[+impact] = ei;
+   }
 
    // Compute roll axis location
    //
@@ -1244,7 +1234,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
             } // next wind direction
          } // next corner
 
-         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::FHWA_UHPC)
+         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
          {
             gbtAlternativeTensileStressRequirements altTensionRequirements;
 
@@ -1837,7 +1827,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                } // next wind direction
             } // next corner
 
-            if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::FHWA_UHPC)
+            if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
             {
                gbtAlternativeTensileStressRequirements altTensionRequirements;
 

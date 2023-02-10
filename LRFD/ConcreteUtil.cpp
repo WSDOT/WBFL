@@ -135,7 +135,7 @@ void lrfdConcreteUtil::GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, F
 Float64 lrfdConcreteUtil::ModE(WBFL::Materials::ConcreteType type,Float64 fc,Float64 density,bool bCheckRange)
 {
    Float64 e;  // modulus of elasticity in System Units
-   if (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::FHWA_UHPC)
+   if (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::UHPC)
    {
       Float64 Fc = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::KSI);
       Float64 Ec = 2500 * pow(Fc,0.33); // Fc in KSI, Ec in KSI (This is LRFD Equation C5.4.2.4-1)
@@ -222,7 +222,7 @@ Float64 lrfdConcreteUtil::FcFromEc(WBFL::Materials::ConcreteType type, Float64 e
 {
    Float64 fc;          // fc in system units
 
-   if (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::FHWA_UHPC)
+   if (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::UHPC)
    {
       Float64 Ec = WBFL::Units::ConvertFromSysUnits(ec, WBFL::Units::Measure::KSI);
       Float64 Fc = pow(Ec / 2500., 1/0.33);
@@ -418,10 +418,10 @@ void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Material
          *pK2 = (isRoughened ? g_1p5_KSI : g_p8_KSI);
       }
    }
-   else if (girderConcType == WBFL::Materials::ConcreteType::FHWA_UHPC)
+   else if (girderConcType == WBFL::Materials::ConcreteType::UHPC)
    {
       // GS 1.7.4.4
-      if (deckConcType == WBFL::Materials::ConcreteType::FHWA_UHPC)
+      if (deckConcType == WBFL::Materials::ConcreteType::UHPC)
       {
          // UHPC deck on UHPC girder, Case 3 and 4
          *pC = (isRoughened ? g_p5_KSI : g_p025_KSI);
@@ -808,8 +808,8 @@ std::_tstring lrfdConcreteUtil::GetTypeName(WBFL::Materials::ConcreteType type,b
    case WBFL::Materials::ConcreteType::PCI_UHPC:
       return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
-   case WBFL::Materials::ConcreteType::FHWA_UHPC:
-      return bFull ? _T("FHWA Ultra High Performance Concrete (FHWA-UHPC)") : _T("FHWA-UHPC");
+   case WBFL::Materials::ConcreteType::UHPC:
+      return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
 
    default:
       ATLASSERT(false); // is there a new type?
@@ -836,9 +836,9 @@ WBFL::Materials::ConcreteType lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strN
    {
       type = WBFL::Materials::ConcreteType::PCI_UHPC;
    }
-   else if (std::_tstring(strName) == _T("FHWA-UHPC"))
+   else if (std::_tstring(strName) == _T("UHPC") || std::_tstring(strName) == _T("FHWA-UHPC"))
    {
-      type = WBFL::Materials::ConcreteType::FHWA_UHPC;
+      type = WBFL::Materials::ConcreteType::UHPC;
    }
    else
    {

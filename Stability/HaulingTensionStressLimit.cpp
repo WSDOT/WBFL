@@ -234,7 +234,7 @@ void PCIUHPCHaulingTensionStressLimit::ReportRequiredConcreteStrength(HaulingSlo
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 
-FHWAUHPCHaulingTensionStressLimit::FHWAUHPCHaulingTensionStressLimit()
+UHPCHaulingTensionStressLimit::UHPCHaulingTensionStressLimit()
 {
    gamma_u = 0;
    ft_cr = 0;
@@ -243,31 +243,31 @@ FHWAUHPCHaulingTensionStressLimit::FHWAUHPCHaulingTensionStressLimit()
 }
 
 #if defined REBAR_FOR_DIRECT_TENSION
-Float64 FHWAUHPCHaulingTensionStressLimit::GetTensionLimit(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection impact) const
+Float64 UHPCHaulingTensionStressLimit::GetTensionLimit(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection impact) const
 {
    return AllowableTension[+slope];
 }
 #else
-Float64 FHWAUHPCHaulingTensionStressLimit::GetTensionLimit(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
+Float64 UHPCHaulingTensionStressLimit::GetTensionLimit(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
 {
    return AllowableTension[+slope];
 }
 #endif
 
-Float64 FHWAUHPCHaulingTensionStressLimit::GetRequiredFcTension(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const
+Float64 UHPCHaulingTensionStressLimit::GetRequiredFcTension(HaulingSlope slope, const HaulingCheckArtifact* pArtifact) const
 {
    Float64 maxStress = pArtifact->GetHaulingResults().MaxStress[+slope];
    Float64 ft_cr_reqd = maxStress / gamma_u;
    return ft_cr_reqd;
 }
 
-void FHWAUHPCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
+void UHPCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
    *pPara << _T("Tension stress limit = ") << Sub2(symbol(gamma), _T("u")) << RPT_STRESS(_T("t,cr")) << _T(" = ") << stress.SetValue(AllowableTension[+slope]) << rptNewLine;
 }
 
-void FHWAUHPCHaulingTensionStressLimit::ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
+void UHPCHaulingTensionStressLimit::ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 

@@ -52,6 +52,7 @@ struct LRFDCLASS lrfdUHPCShearData
    Float64 etloc{ 0.0 };
    Float64 etcr{ 0.0 };
    Float64 alpha{ PI_OVER_2 };
+   Float64 gamma_u{ 0.0 };
 
    Float64 fy{ 0.0 };
    Float64 AvS{ 0.0 }; // Av/s per 5.8.2.5 (equation 5.8.2.5-1)

@@ -29,16 +29,16 @@
 
 /*****************************************************************************
 CLASS 
-   lrfdFHWAUHPCCreepCoefficient
+   lrfdUHPCCreepCoefficient
 
-   Computes the creep coefficient per FHWA UHPC GS 1.4.2.8.2
+   Computes the creep coefficient per UHPC GS 1.4.2.8.2
 *****************************************************************************/
 
-class LRFDCLASS lrfdFHWAUHPCCreepCoefficient : public lrfdCreepCoefficient2005
+class LRFDCLASS lrfdUHPCCreepCoefficient : public lrfdCreepCoefficient2005
 {
 public:
-   lrfdFHWAUHPCCreepCoefficient();
-   virtual ~lrfdFHWAUHPCCreepCoefficient();
+   lrfdUHPCCreepCoefficient();
+   virtual ~lrfdUHPCCreepCoefficient();
 
 protected:
    virtual Float64 GetUltimateCreep() const override;

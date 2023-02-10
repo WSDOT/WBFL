@@ -87,7 +87,7 @@ public:
    virtual void SetAutogenousShrinkage(Float64 as) override;
    virtual Float64 GetAutogenousShrinkage() const override;
 
-   // FHWA UHPC Parameters
+   // UHPC Parameters
    virtual void SetCompressionResponseReductionFactor(Float64 alpha_u) override;
    virtual Float64 GetCompressionResponseReductionFactor() const override;
    virtual void SetCompressiveStrainLimit(Float64 ecu) override;
@@ -101,6 +101,8 @@ public:
    virtual Float64 GetCrackLocalizationStrength() const override;
    virtual void SetCrackLocalizationStrain(Float64 et_loc) override;
    virtual Float64 GetCrackLocalizationStrain() const override;
+   virtual void SetFiberOrientationReductionFactor(Float64 gamma_u) override;
+   virtual Float64 GetFiberOrientationReductionFactor() const override;
 
    // e.cu per GS 1.4.2.4.2 Max(e.cu,e.cp)
    virtual Float64 GetElasticCompressiveStrainLimit() const override;

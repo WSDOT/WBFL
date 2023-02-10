@@ -23,7 +23,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Lrfd\LrfdLib.h>
-#include <Lrfd\FHWAUHPCLosses.h>
+#include <Lrfd\UHPCLosses.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,11 +32,11 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 //======================== LIFECYCLE  =======================================
-lrfdFHWAUHPCLosses::lrfdFHWAUHPCLosses()
+lrfdUHPCLosses::lrfdUHPCLosses()
 {
 }
 
-lrfdFHWAUHPCLosses::lrfdFHWAUHPCLosses(
+lrfdUHPCLosses::lrfdUHPCLosses(
                          Float64 x,
                          Float64 Lg,
                          lrfdLosses::SectionPropertiesType sectionProperties,
@@ -125,29 +125,29 @@ lrfdRefinedLosses2005(x, Lg, sectionProperties, gradePerm, typePerm, coatingPerm
 {
 }
 
-lrfdFHWAUHPCLosses::~lrfdFHWAUHPCLosses()
+lrfdUHPCLosses::~lrfdUHPCLosses()
 {
 }
 
-Float64 lrfdFHWAUHPCLosses::GetShrinkageHumidityFactor_Girder() const
+Float64 lrfdUHPCLosses::GetShrinkageHumidityFactor_Girder() const
 {
    return 1.5 - 0.01*m_H;
 }
 
-Float64 lrfdFHWAUHPCLosses::GetShrinkageStrain_Girder() const
+Float64 lrfdUHPCLosses::GetShrinkageStrain_Girder() const
 {
    return 0.6e-03;
 }
 
 #if defined _UNITTEST
 #include <Lrfd\AutoVersion.h>
-bool lrfdFHWAUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
+bool lrfdUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
 {
-   TESTME_PROLOGUE("lrfdFHWAUHPCLosses");
+   TESTME_PROLOGUE("lrfdUHPCLosses");
 
    lrfdAutoVersion av;
 
-   std::shared_ptr<lrfdFHWAUHPCCreepCoefficient> pGirderCreep = std::make_shared<lrfdFHWAUHPCCreepCoefficient>();
+   std::shared_ptr<lrfdUHPCCreepCoefficient> pGirderCreep = std::make_shared<lrfdUHPCCreepCoefficient>();
    pGirderCreep->SetFci(WBFL::Units::ConvertToSysUnits(14.0,WBFL::Units::Measure::KSI));
    pGirderCreep->SetRelHumidity(73);
    pGirderCreep->SetK1(0.62);
@@ -162,7 +162,7 @@ bool lrfdFHWAUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
    pDeckCreep->SetK1(1.0);
    pDeckCreep->SetK2(1.0);
 
-   lrfdFHWAUHPCLosses loss(19.5072, // location along girder where losses are computed
+   lrfdUHPCLosses loss(19.5072, // location along girder where losses are computed
                          39.0144,    // girder length
                          sptGross,
                          WBFL::Materials::PsStrand::Grade::Gr1860,
@@ -309,7 +309,7 @@ bool lrfdFHWAUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
 
    lrfdVersionMgr::UnregisterListener( &loss );
 
-   TESTME_EPILOG("lrfdFHWAUHPCLosses");
+   TESTME_EPILOG("lrfdUHPCLosses");
 }
 
 #endif // _UNITTEST

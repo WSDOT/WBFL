@@ -86,6 +86,7 @@ SimpleConcrete::SimpleConcrete(const std::_tstring& name, Float64 fc, Float64 de
    m_ftcr(0),
    m_ftloc(0),
    m_etloc(0),
+   m_gamma_u(1.0),
    m_bExperimental_ecu(false)
 {
    ASSERTVALID;
@@ -146,7 +147,7 @@ bool SimpleConcrete::operator==(const SimpleConcrete& rOther) const
    if (!::IsEqual(m_AutogenousShrinkage, rOther.m_AutogenousShrinkage))
       return false;
 
-   // FHWA UHPC
+   // UHPC
    if (!IsEqual(m_alpha_u, rOther.m_alpha_u))
       return false;
 
@@ -167,8 +168,11 @@ bool SimpleConcrete::operator==(const SimpleConcrete& rOther) const
 
    if (!::IsEqual(m_ftloc, rOther.m_ftloc))
       return false;
-   
+
    if (!::IsEqual(m_etloc, rOther.m_etloc))
+      return false;
+
+   if (!::IsEqual(m_gamma_u, rOther.m_gamma_u))
       return false;
 
    return true;
@@ -225,6 +229,9 @@ std::_tstring SimpleConcrete::GetTypeName(ConcreteType type,bool bFull)
    case ConcreteType::PCI_UHPC:
       return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
+   case ConcreteType::UHPC:
+      return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
+
    default:
       ASSERT(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
@@ -244,6 +251,9 @@ ConcreteType SimpleConcrete::GetTypeFromTypeName(LPCTSTR strName)
 
    if (std::_tstring(strName) == _T("PCI-UHPC"))
       return ConcreteType::PCI_UHPC;
+
+   if (std::_tstring(strName) == _T("UHPC") || std::_tstring(strName) == _T("FHWA-UHPC"))
+      return ConcreteType::UHPC;
 
    ASSERT(false); // invalid name
    return ConcreteType::Normal;
@@ -454,6 +464,16 @@ void SimpleConcrete::SetCrackLocalizationStrain(Float64 et_loc)
 Float64 SimpleConcrete::GetCrackLocalizationStrain() const
 {
    return m_etloc;
+}
+
+void SimpleConcrete::SetFiberOrientationReductionFactor(Float64 gamma_u)
+{
+   m_gamma_u = gamma_u;
+}
+
+Float64 SimpleConcrete::GetFiberOrientationReductionFactor() const
+{
+   return m_gamma_u;
 }
 
 Float64 SimpleConcrete::GetElasticCompressiveStrainLimit() const

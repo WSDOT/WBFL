@@ -86,8 +86,8 @@ std::_tstring ConcreteBase::GetTypeName(ConcreteType type,bool bFull)
    case ConcreteType::PCI_UHPC:
       return bFull ? _T("PCI Ultra High Performance Concrete (PCI-UHPC)") : _T("PCI-UHPC");
 
-   case ConcreteType::FHWA_UHPC:
-      return bFull ? _T("FHWA Ultra High Performance Concrete (FHWA-UHPC)") : _T("FHWA-UHPC");
+   case ConcreteType::UHPC:
+      return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
 
    default:
       ASSERT(false); // is there a new type?
@@ -109,8 +109,8 @@ ConcreteType ConcreteBase::GetTypeFromTypeName(LPCTSTR strName)
    if (std::_tstring(strName) == _T("PCI-UHPC"))
       return ConcreteType::PCI_UHPC;
 
-   if (std::_tstring(strName) == _T("FHWA-UHPC"))
-      return ConcreteType::FHWA_UHPC;
+   if (std::_tstring(strName) == _T("UHPC"))
+      return ConcreteType::UHPC;
 
    ATLASSERT(false); // invalid name
    return ConcreteType::Normal;

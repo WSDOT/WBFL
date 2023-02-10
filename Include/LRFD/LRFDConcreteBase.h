@@ -56,7 +56,7 @@ public:
    virtual void SetAutogenousShrinkage(Float64 as) = 0;
    virtual Float64 GetAutogenousShrinkage() const = 0;
 
-   // FHWA UHPC parameters
+   // UHPC parameters
    virtual void SetCompressionResponseReductionFactor(Float64 alpha_u) = 0;
    virtual Float64 GetCompressionResponseReductionFactor() const = 0;
 
@@ -75,6 +75,8 @@ public:
    virtual Float64 GetCrackLocalizationStrength() const = 0;
    virtual void SetCrackLocalizationStrain(Float64 et_loc) = 0;
    virtual Float64 GetCrackLocalizationStrain() const = 0;
+   virtual void SetFiberOrientationReductionFactor(Float64 gamma_u) = 0;
+   virtual Float64 GetFiberOrientationReductionFactor() const = 0;
 
    virtual Float64 GetElasticCompressiveStrainLimit() const = 0;
    virtual Float64 GetCompressiveStrainLimit(bool* pbIsExperimental = nullptr) const = 0;

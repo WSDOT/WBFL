@@ -48,7 +48,7 @@
 #include <LRFD\RefinedLosses.h>
 #include <LRFD\RefinedLosses2005.h>
 #include <LRFD\PCIUHPCLosses.h>
-#include <LRFD\FHWAUHPCLosses.h>
+#include <LRFD\UHPCLosses.h>
 #include <LRFD\LumpSumLosses.h>
 #include <LRFD\PTRefinedLosses.h>
 #include <LRFD\ApproximateLosses.h>
@@ -60,7 +60,7 @@
 #include <LRFD\RebarPool.h>
 #include <LRFD\Rebar.h>
 #include <LRFD\Shear.h>
-#include <LRFD\FHWAUHPCShear.h>
+#include <LRFD\UHPCShear.h>
 #include <LRFD\StrandPool.h>
 #include <LRFD\Utility.h>
 #include <LRFD\VersionMgr.h>
@@ -70,7 +70,7 @@
 #include <LRFD\CreepCoefficient.h>
 #include <LRFD\CreepCoefficient2005.h>
 #include <LRFD\PCIUHPCCreepCoefficient.h>
-#include <LRFD\FHWAUHPCCreepCoefficient.h>
+#include <LRFD\UHPCCreepCoefficient.h>
 #include <LRFD\XCreepCoefficient.h>
 #include <LRFD\XCodeVersion.h>
 #include <LRFD\XPsLosses.h>

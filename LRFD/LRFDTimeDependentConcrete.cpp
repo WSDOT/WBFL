@@ -70,7 +70,8 @@ m_etcr(0),
 m_ftcri(0),
 m_ftcr(0),
 m_ftloc(0),
-m_etloc(0)
+m_etloc(0),
+m_gamma_u(1.0)
 {
    Float64 fcMin, fpeak;
    lrfdConcreteUtil::GetPCIUHPCMinProperties(&fcMin, &m_ffc, &fpeak, &m_frr);
@@ -556,6 +557,15 @@ Float64 lrfdLRFDTimeDependentConcrete::GetCrackLocalizationStrain() const
    return m_etloc;
 }
 
+void lrfdLRFDTimeDependentConcrete::SetFiberOrientationReductionFactor(Float64 gamma_u)
+{
+   m_gamma_u = gamma_u;
+}
+
+Float64 lrfdLRFDTimeDependentConcrete::GetFiberOrientationReductionFactor() const
+{
+   return m_gamma_u;
+}
 
 Float64 lrfdLRFDTimeDependentConcrete::GetElasticCompressiveStrainLimit() const
 {

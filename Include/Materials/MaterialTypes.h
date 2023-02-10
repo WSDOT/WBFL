@@ -30,7 +30,7 @@ namespace WBFL
    namespace Materials
    {
       /// Constant indicating a type of concrete
-      enum class ConcreteType { Normal, AllLightweight, SandLightweight, PCI_UHPC, FHWA_UHPC };
+      enum class ConcreteType { Normal, AllLightweight, SandLightweight, PCI_UHPC, UHPC };
       constexpr auto operator+(ConcreteType t) noexcept { return std::underlying_type<ConcreteType>::type(t); }
 
       /// Constant indicating a cement type
@@ -44,7 +44,7 @@ namespace WBFL
       /// Utility  method that returns if a concrete type is UHPC
       inline bool IsUHPC(WBFL::Materials::ConcreteType type)
       {
-         return (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::FHWA_UHPC) ? true : false;
+         return (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::UHPC) ? true : false;
       }
 
       /// Constant indicating the grade of prestressing strand

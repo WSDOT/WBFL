@@ -91,6 +91,7 @@ STDMETHODIMP CPCIUHPConcrete::InterfaceSupportsErrorInfo(REFIID riid)
    }
    return S_FALSE;
 }
+
 STDMETHODIMP CPCIUHPConcrete::get_fc(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);

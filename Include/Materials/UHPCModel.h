@@ -32,7 +32,7 @@ namespace WBFL
    {
       /// Material model for Ultra High Performance Concrete (UHPC)
       ///
-      /// Mechanical Behavior and Design Properties of Ultra-High Perfornace Concrete
+      /// Mechanical Behavior and Design Properties of Ultra-High Performance Concrete
       /// El-Helou, Rafic, Haber, Z., Graybeal, B.
       /// (Unpublished as of 2020)
       /// /todo - Update reference after publication
@@ -116,7 +116,7 @@ namespace WBFL
          Float64 m_ftcr{ 0.75 }; // KSI
          Float64 m_ftloc{ 1.0 }; // KSI
          Float64 m_etloc{ 0.0025 };
-         Float64 m_gamma{ 0.85 };
+         Float64 m_gamma_u{ 1.0 };
 
          Float64 GetEc() const; // returns Ec in KSI
       };

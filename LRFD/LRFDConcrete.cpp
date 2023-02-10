@@ -205,6 +205,18 @@ Float64 lrfdLRFDConcrete::GetCrackLocalizationStrain() const
    return m_FinalConcrete.GetCrackLocalizationStrain();
 }
 
+void lrfdLRFDConcrete::SetFiberOrientationReductionFactor(Float64 gamma_u)
+{
+   m_InitialConcrete.SetFiberOrientationReductionFactor(gamma_u);
+   m_FinalConcrete.SetFiberOrientationReductionFactor(gamma_u);
+}
+
+Float64 lrfdLRFDConcrete::GetFiberOrientationReductionFactor() const
+{
+   ASSERT(IsEqual(m_InitialConcrete.GetFiberOrientationReductionFactor(), m_FinalConcrete.GetFiberOrientationReductionFactor()));
+   return m_FinalConcrete.GetFiberOrientationReductionFactor();
+}
+
 Float64 lrfdLRFDConcrete::GetElasticCompressiveStrainLimit() const
 {
    return m_FinalConcrete.GetElasticCompressiveStrainLimit();
