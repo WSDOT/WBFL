@@ -371,7 +371,7 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("UNITS INCH KIP DEG FAH") << std::endl;
    ofile << _T("MEMBER PROPERTIES PRISMATIC") << std::endl;
    ofile << _T("$ WSDOT Internal FEM model has EA and EI. Strudl wants E, A, and I.") << std::endl;
-   ofile << _T("$ The properies below for A are really EA (kip) and I are really EI (kip*in^2).") << std::endl;
+   ofile << _T("$ The properties below for A are really EA (kip) and I are really EI (kip*in^2).") << std::endl;
    ofile << _T("$ E will be set to 1.0 below.") << std::endl;
    for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
@@ -448,7 +448,7 @@ void CFEA2DDoc::OnGTStrudl()
 
          if (!IsZero(wStart) && !IsZero(wEnd))
          {
-            if (xStart < 0 || xEnd < 0)
+            if (xStart < 0 && xEnd < 0)
             {
                ofile << ID(mbrID) << _T(" FORCE Y LINEAR FRA WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
             }
