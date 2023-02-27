@@ -456,6 +456,15 @@
     <None Include="TransitionCurve.rgs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="CrossSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CrossSectionCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CrossSectionFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

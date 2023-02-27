@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,3,0
- PRODUCTVERSION 7,0,3,0
+ FILEVERSION 7,0,4,0
+ PRODUCTVERSION 7,0,4,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +70,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFL COGO Module"
-            VALUE "FileVersion", "7.0.3.0"
+            VALUE "FileVersion", "7.0.4.0"
             VALUE "InternalName", "COGO"
             VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "COGO.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "7.0.3.0"
+            VALUE "ProductVersion", "7.0.4.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -93,65 +91,113 @@ END
 //
 
 IDR_ANGLE               REGISTRY                "Angle.rgs"
+
 IDR_DIRECTION           REGISTRY                "Direction.rgs"
+
 IDR_COGOMODEL           REGISTRY                "CogoModel.rgs"
+
 IDR_LINESEGMENTCOLLECTION REGISTRY                "LineSegmentCollection.rgs"
+
 IDR_PROFILEPOINT        REGISTRY                "ProfilePoint.rgs"
+
 IDR_PROFILEPOINTCOLLECTION REGISTRY                "ProfilePointCollection.rgs"
+
 IDR_VERTCURVE           REGISTRY                "VertCurve.rgs"
+
 IDR_VERTCURVECOLLECTION REGISTRY                "VertCurveCollection.rgs"
-IDR_COMPOUNDCURVE           REGISTRY                "CompoundCurve.rgs"
+
+IDR_COMPOUNDCURVE       REGISTRY                "CompoundCurve.rgs"
+
 IDR_COMPOUNDCURVECOLLECTION REGISTRY                "CompoundCurveCollection.rgs"
+
 IDR_PROFILEELEMENT      REGISTRY                "ProfileElement.rgs"
+
 IDR_PROFILE             REGISTRY                "Profile.rgs"
+
 IDR_CROSSSECTION        REGISTRY                "CrossSection.rgs"
+
 IDR_CROSSSECTIONCOLLECTION REGISTRY                "CrossSectionCollection.rgs"
+
 IDR_PATHELEMENT         REGISTRY                "PathElement.rgs"
+
 IDR_ALIGNMENT           REGISTRY                "Alignment.rgs"
+
 IDR_ALIGNMENTCOLLECTION REGISTRY                "AlignmentCollection.rgs"
+
 IDR_VERTCURVEFACTORY    REGISTRY                "VertCurveFactory.rgs"
+
 IDR_PROFILEPOINTFACTORY REGISTRY                "ProfilePointFactory.rgs"
-IDR_COMPOUNDCURVEFACTORY    REGISTRY                "CompoundCurveFactory.rgs"
+
+IDR_COMPOUNDCURVEFACTORY REGISTRY                "CompoundCurveFactory.rgs"
+
 IDR_CROSSSECTIONFACTORY REGISTRY                "CrossSectionFactory.rgs"
+
 IDR_ALIGNMENTFACTORY    REGISTRY                "AlignmentFactory.rgs"
+
 IDR_ANGLEDISPLAYUNITFORMATTER REGISTRY                "AngleDisplayUnitFormatter.rgs"
+
 IDR_DIRECTIONDISPLAYUNITFORMATTER REGISTRY                "DirectionDisplayUnitFormatter.rgs"
+
 IDR_POINTFACTORY        REGISTRY                "PointFactory.rgs"
+
 IDR_LINESEGMENTFACTORY  REGISTRY                "LineSegmentFactory.rgs"
+
 IDR_STATION             REGISTRY                "Station.rgs"
+
 IDR_POINTCOLLECTION     REGISTRY                "PointCollection.rgs"
+
 IDR_COGOENGINE          REGISTRY                "CogoEngine.rgs"
+
 IDR_PATH                REGISTRY                "Path.rgs"
+
 IDR_PATHCOLLECTION      REGISTRY                "PathCollection.rgs"
+
 IDR_PATHFACTORY         REGISTRY                "PathFactory.rgs"
+
 IDR_CUBICSPLINE         REGISTRY                "CubicSpline.rgs"
+
 IDR_STATIONEQUATION     REGISTRY                "StationEquation.rgs"
+
 IDR_STATIONEQUATIONCOLLECTION REGISTRY                "StationEquationCollection.rgs"
+
 IDR_WIDENING            REGISTRY                "Widening.rgs"
+
 IDR_WIDENINGCOLLECTION  REGISTRY                "WideningCollection.rgs"
+
 IDR_SUPERELEVATION      REGISTRY                "Superelevation.rgs"
+
 IDR_SUPERELEVATIONCOLLECTION REGISTRY                "SuperelevationCollection.rgs"
+
 IDR_TEMPLATESEGMENT     REGISTRY                "TemplateSegment.rgs"
+
 IDR_SURFACETEMPLATE     REGISTRY                "SurfaceTemplate.rgs"
+
 IDR_SURFACETEMPLATECOLLECTION REGISTRY                "SurfaceTemplateCollection.rgs"
+
 IDR_SURFACE             REGISTRY                "Surface.rgs"
+
 IDR_SURFACECOLLECTION   REGISTRY                "SurfaceCollection.rgs"
+
 IDR_SURFACEPOINT        REGISTRY                "SurfacePoint.rgs"
-IDR_SURFACEPROFILE        REGISTRY                "SurfaceProfile.rgs"
-IDR_TRANSITIONCURVE REGISTRY "TransitionCurve.rgs"
-IDR_CIRCULARCURVE REGISTRY "CircularCurve.rgs"
+
+IDR_SURFACEPROFILE      REGISTRY                "SurfaceProfile.rgs"
+
+IDR_TRANSITIONCURVE     REGISTRY                "TransitionCurve.rgs"
+
+IDR_CIRCULARCURVE       REGISTRY                "CircularCurve.rgs"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PROJNAME            "COGO"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_E_POINTNOTFOUND     "Point %d was not found"
     IDS_E_POINTALREADYDEFINED "Point %d is already defined"
@@ -172,7 +218,7 @@ BEGIN
     IDS_E_VERTCURVEPOINTS   "Vertical curve points are out of order. Check stations of the BVC, PVI, and EVC points"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_E_VERTCURVENOTFOUND "Vertical curve %d was not found"
     IDS_E_VERTCURVEALREADYDEFINED "Vertical curve %d is already defined"
@@ -193,7 +239,7 @@ BEGIN
     IDS_E_NOINTERSECTION    "The interection point was not found"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_E_ALIGNMENTNOTFOUND "Alignment %d was not found"
     IDS_E_ALIGNMENTALREADYDEFINED "Alignment %d is already defined"
@@ -213,7 +259,7 @@ BEGIN
     IDS_E_INVALIDRIDGEPOINT "The ridge point index is invalid."
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

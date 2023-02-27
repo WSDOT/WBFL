@@ -301,6 +301,9 @@
     <None Include="CogoEngine.rgs" />
     <None Include="CogoModel.rgs" />
     <None Include="CogoUtil.rgs" />
+    <None Include="CrossSection.rgs" />
+    <None Include="CrossSectionCollection.rgs" />
+    <None Include="CrossSectionFactory.rgs" />
     <None Include="CubicSpline.rgs" />
     <None Include="Direction.rgs" />
     <None Include="DirectionDisplayUnitFormatter.rgs" />
