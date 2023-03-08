@@ -394,7 +394,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    Float64 My = solution->GetMy();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -30283.2818122));
+   TRY_TESTME(IsEqual(Mx, -34044.067077037711));
    TRY_TESTME(IsZero(My));
 
    auto incrementalStrainPlane = solution->GetIncrementalStrainPlane();
@@ -417,7 +417,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -30283.27790, 0.0001));
+   TRY_TESTME(IsEqual(Mx, -34044.067077037762));
    TRY_TESTME(IsZero(My));
 
    ec = incrementalStrainPlane.GetZ(0.00, -H / 2);
@@ -438,7 +438,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -7176.35942));
+   TRY_TESTME(IsEqual(Mx, -7179.6800558284367));
    TRY_TESTME(IsZero(My));
 
    ec = incrementalStrainPlane.GetZ(0.00, H / 2);
@@ -459,7 +459,7 @@ bool MomentCapacitySolver::Test2(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -7176.35942));
+   TRY_TESTME(IsEqual(Mx, -7179.6800558276200));
    TRY_TESTME(IsZero(My));
 
    ec = incrementalStrainPlane.GetZ(0.00, H / 2);
@@ -579,7 +579,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    auto incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -178123.6634, 0.0001)); //-164292.0 (13691 k-ft) from FHWA example slides
+   TRY_TESTME(IsEqual(Mx, -181098.57017320217));
    TRY_TESTME(IsZero(My));
    Float64 Msl = -Mx;
 
@@ -587,10 +587,10 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, esl - ei));
 
    Float64 c = solution->GetDepthToNeutralAxis(); // location of neutral axis below top of girder
-   TRY_TESTME(IsEqual(c, 30.589411)); // 30.7" from top of girder from FHWA example slides
+   TRY_TESTME(IsEqual(c, 30.888677550628351)); // 30.7" from top of girder from FHWA example slides
 
    Float64 Ysl = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Ysl, 3.5925134773340822e-05, 0.00000001)); // 0.0000545 from FHWA example slides
+   TRY_TESTME(IsEqual(Ysl, 3.6270706495074482e-05)); // 0.0000545 from FHWA example slides
 
    // Nominal moment capacity at crack localization, Ml and Yl
    solution = solver.Solve(0.00, 0.00, 0.0045, 0.0, MomentCapacitySolver::SolutionMethod::FixedTensionStrain);
@@ -604,7 +604,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -222618.3053, 0.0001)); // -215664.0 (17972 k-ft) from FHWA example slides
+   TRY_TESTME(IsEqual(Mx, -225562.34822251741));
    TRY_TESTME(IsZero(My));
    Float64 Ml = -Mx;
 
@@ -612,10 +612,10 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, 0.0045));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis below top of girder
-   TRY_TESTME(IsEqual(c, 20.006818)); // 25.5-10" = 15.5" from top of girder from FHWA example slides
+   TRY_TESTME(IsEqual(c, 20.377082883243805)); // 25.5-10" = 15.5" from top of girder from FHWA example slides
 
    Float64 Yl = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yl, 0.00010228857626419155, 0.00000001)); // 0.0001167 from FHWA example slides
+   TRY_TESTME(IsEqual(Yl, 0.00010315678770302787)); // 0.0001167 from FHWA example slides
 
    // Nominal moment capacity at compression strain limit in UHPC section, Mc, Yc
    // fixed strain at top of girder (not top of section/top of deck)
@@ -630,24 +630,24 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -223541.607261));
+   TRY_TESTME(IsEqual(Mx, -223570.08762778816));
    TRY_TESTME(IsZero(My));
    Float64 Mc = -Mx;
 
    ec = incrementalStrainPlane.GetZ(0.00,10.0); // strain at top of deck
-   TRY_TESTME(IsEqual(ec, -0.0100945));
+   TRY_TESTME(IsEqual(ec, -0.010052730543170270));
 
    ec = incrementalStrainPlane.GetZ(0.00,-h); // strain at bottom of beam
-   TRY_TESTME(IsEqual(ec, 0.03211012));
+   TRY_TESTME(IsEqual(ec, 0.031884744933119456));
 
    ec = incrementalStrainPlane.GetZ(0.00, 0.00);
    TRY_TESTME(IsEqual(ec, -0.0035)); // strain at top of girder
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 15.3074806));
+   TRY_TESTME(IsEqual(c, 15.341284792563254));
 
    Float64 Yc = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yc, 0.00065944659318803141, 0.000000001));
+   TRY_TESTME(IsEqual(Yc, 0.00065527305431702684));
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    solution = solver.Solve(0.00, 0.00, -0.003, 0.0, MomentCapacitySolver::SolutionMethod::FixedCompressionStrain); // exceeds tensile capacity of UHPC
@@ -661,7 +661,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -217226.2917154));
+   TRY_TESTME(IsEqual(Mx, -217497.65849270599));
    TRY_TESTME(IsZero(My));
    Float64 Md = -Mx;
 
@@ -669,10 +669,10 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, -0.003));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 17.0288085));
+   TRY_TESTME(IsEqual(c, 17.190295278682484));
 
    Float64 Yd = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yd, 0.00017617204437190607, 0.000000001));
+   TRY_TESTME(IsEqual(Yd, 0.00017451707206683477));
 
    // Nominal moment capacity at maximum usable strain of reinforcement, Mt, Yt
    solution = solver.Solve(0.00, 0.00, 0.035 - ei, Y, MomentCapacitySolver::SolutionMethod::FixedStrain); // strain exceeds crushing strain of UHPC
@@ -686,7 +686,7 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -223564.728907));
+   TRY_TESTME(IsEqual(Mx, -223602.40886387459));
    TRY_TESTME(IsZero(My));
    Float64 Mt = -Mx;
 
@@ -694,21 +694,21 @@ bool MomentCapacitySolver::Test3(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, 0.035 - ei));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 15.4280634));
+   TRY_TESTME(IsEqual(c, 15.449766641678792));
 
    Float64 Yt = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yt, 0.00062630895788410863, 0.000000001));
+   TRY_TESTME(IsEqual(Yt, 0.00062660096305226180));
 
    // Ductility ratio
    IndexType i = MinIndex(fabs(Yl), fabs(Yc), fabs(Yd), fabs(Yt)); // want least curvature
    Float64 Mn = (i == 0 ? Ml : i == 1 ? Mc : i == 2 ? Md : Mt);
    Float64 Yn = (i == 0 ? Yl : i == 1 ? Yc : i == 2 ? Yd : Yt);
    Float64 mu = Yn / Ysl;
-   TRY_TESTME(IsEqual(mu, 2.8473, 0.0001)); // 2.14 from FHWA example slides
+   TRY_TESTME(IsEqual(mu, 2.8440799110719399));
 
    Float64 phi = 0.75 + 0.15 * (mu - 1.0) / (3.0 - 1.0);
    phi = ::ForceIntoRange(0.75, phi, 0.90);
-   TRY_TESTME(IsEqual(phi, 0.8885, 0.0001)); // 0.83 from FHWA example slides
+   TRY_TESTME(IsEqual(phi, 0.88830599333039550));
    //Float64 Mr = phi*Mn;
 
    TESTME_EPILOG("MomentCapacitySolver::Test3");
@@ -844,7 +844,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    auto incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -161495.742597 /*13458 k-ft*/, 0.0001)); //-164292.0 = 13691 k-ft from FHWA example slides
+   TRY_TESTME(IsEqual(Mx, -164299.60969484772));
    TRY_TESTME(IsZero(My));
    Float64 Msl = -Mx;
 
@@ -861,13 +861,13 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, esl));
 
    Float64 c = solution->GetDepthToNeutralAxis(); // location of neutral axis below top of girder
-   TRY_TESTME(IsEqual(c, 41.85653)); // 40.7" from top of girder from FHWA example slides
+   TRY_TESTME(IsEqual(c, 41.946997318037461)); // 40.7" from top of girder from FHWA example slides
 
    ec = strainPlane->GetZ(0.00, -h) + incrementalStrainPlane.GetZ(0.00, -h); // strain at bottom of girder
-   TRY_TESTME(IsEqual(ec, 0.00117416, 0.00000001)); // 0.00127 from FHWA example slides
+   TRY_TESTME(IsEqual(ec, 0.0011746386224908293)); // 0.00127 from FHWA example slides
 
    Float64 Ysl = ec / (H - c); // curvature
-   TRY_TESTME(IsEqual(Ysl, 0.00005302513, 0.00000001)); // 0.0000545 from FHWA example slides
+   TRY_TESTME(IsEqual(Ysl, 5.3264339529218973e-05)); // 0.0000545 from FHWA example slides
 
    // Nominal moment capacity at crack localization, Ml and Yl (slide 51)
    solution = solver.Solve(0.00, 0.00, 0.0045 - 0.99 / 6933, 0.0, MomentCapacitySolver::SolutionMethod::FixedTensionStrain);
@@ -881,7 +881,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -215602.6815382 /*17966.9 k-ft*/)); // -215664.0 = 17972 k-ft from FHWA example slides
+   TRY_TESTME(IsEqual(Mx, -218718.17250680181));
    TRY_TESTME(IsZero(My));
    Float64 Ml = -Mx;
 
@@ -889,10 +889,10 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, 0.0045));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis below top of girder
-   TRY_TESTME(IsEqual(c, 25.61227)); // 25.5" from top of girder from FHWA example slides
+   TRY_TESTME(IsEqual(c, 25.742792233456484)); // 25.5" from top of girder from FHWA example slides
 
    Float64 Yl = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yl, 0.00011722496753905967, 0.00000001)); // 0.0001167 from FHWN example slides
+   TRY_TESTME(IsEqual(Yl, 0.00011762489378368373)); // 0.0001167 from FHWN example slides
 
    // Nominal moment capacity at compression strain limit in UHPC section, Mc, Yc
    // fixed strain at top of girder (not top of section/top of deck)
@@ -908,24 +908,24 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -223586.9252094));
+   TRY_TESTME(IsEqual(Mx, -223615.85443648804));
    TRY_TESTME(IsZero(My));
    Float64 Mc = -Mx;
 
    ec = strainPlane->GetZ(0.00, 10.00) + incrementalStrainPlane.GetZ(0.00, 10.0); // strain at top of deck
-   TRY_TESTME(IsEqual(ec, -0.010161668));
+   TRY_TESTME(IsEqual(ec, -0.010120459978491793));
 
    ec = strainPlane->GetZ(0.00, -h) + incrementalStrainPlane.GetZ(0.00, -h); // strain at bottom of beam
-   TRY_TESTME(IsEqual(ec, 0.032473005));
+   TRY_TESTME(IsEqual(ec, 0.032250483883855680));
 
    ec = strainPlane->GetZ(0.00, 0.00) + incrementalStrainPlane.GetZ(0.00, 0.00);
    TRY_TESTME(IsEqual(ec, -0.0035));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 15.2539398));
+   TRY_TESTME(IsEqual(c, 15.286641730892747));
 
    Float64 Yc = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yc, 0.00066616675401505931, 0.000000001));
+   TRY_TESTME(IsEqual(Yc, 0.00066204599784917915));
 
    // Nominal moment capacity at compression strain limit in deck, Md, Yd
    // this case not in FHWA example
@@ -940,7 +940,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -220191.339216));
+   TRY_TESTME(IsEqual(Mx, -220305.78201001103));
    TRY_TESTME(IsZero(My));
    Float64 Md = -Mx;
 
@@ -953,10 +953,10 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
 
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 16.522741));
+   TRY_TESTME(IsEqual(c, 16.568688039937381));
 
    Float64 Yd = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yd, 0.00027680552396696029, 0.000000001));
+   TRY_TESTME(IsEqual(Yd, 0.00027603790721190399));
 
    // Nominal moment capacity at maximum usable strain of reinforcement, Mt, Yt
    // this case not in FHWA example
@@ -971,7 +971,7 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -223623.7790312));
+   TRY_TESTME(IsEqual(Mx, -223660.09745040588));
    TRY_TESTME(IsZero(My));
    Float64 Mt = -Mx;
 
@@ -988,21 +988,21 @@ bool MomentCapacitySolver::Test4(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(ec, 0.035));
 
    c = solution->GetDepthToNeutralAxis(); // location of neutral axis
-   TRY_TESTME(IsEqual(c, 15.3788084));
+   TRY_TESTME(IsEqual(c, 15.402116413297318));
 
    Float64 Yt = solution->GetCurvature();
-   TRY_TESTME(IsEqual(Yt, 0.00062733397212413888, 0.000000001));
+   TRY_TESTME(IsEqual(Yt, 0.00062764776124294764));
 
    // Ductility ratio
    IndexType i = MinIndex(fabs(Yl), fabs(Yc), fabs(Yd), fabs(Yt)); // want least curvature
    Float64 Mn = (i == 0 ? Ml : i == 1 ? Mc : i == 2 ? Md : Mt);
    Float64 Yn = (i == 0 ? Yl : i == 1 ? Yc : i == 2 ? Yd : Yt);
    Float64 mu = Yn / Ysl;
-   TRY_TESTME(IsEqual(mu, 2.2107, 0.0001)); // 2.14 from FHWA example slides
+   TRY_TESTME(IsEqual(mu, 2.2083235204514042)); // 2.14 from FHWA example slides
 
    Float64 phi = 0.75 + 0.15 * (mu - 1.0) / (3.0 - 1.0);
    phi = ::ForceIntoRange(0.75, phi, 0.90);
-   TRY_TESTME(IsEqual(phi, 0.8408, 0.0001)); // 0.83 from FHWA example
+   TRY_TESTME(IsEqual(phi, 0.84062426403385526)); // 0.83 from FHWA example
    //Float64 Mr = phi*Mn;
 
    TESTME_EPILOG("MomentCapacitySolver::Test4");
@@ -1119,23 +1119,23 @@ bool MomentCapacitySolver::Test5(WBFL::Debug::Log& rlog)
    Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -560.05208));
+   TRY_TESTME(IsEqual(Mx, -591.34970272876944));
    TRY_TESTME(IsZero(My));
 
    c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(c, 8.747254));
+   TRY_TESTME(IsEqual(c, 8.9626174836075290));
 
    dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(dc, 2.919356));
+   TRY_TESTME(IsEqual(dc, 2.9910195801700095));
 
    de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(de, 19.51533227));
+   TRY_TESTME(IsEqual(de, 19.406907222621737));
 
    moment_arm = solution->GetMomentArm();
    TRY_TESTME(IsEqual(moment_arm, de - dc));
 
    k = solution->GetCurvature();
-   TRY_TESTME(IsEqual(k, 0.00012722504304234797, 0.00000001));
+   TRY_TESTME(IsEqual(k, 0.00012936023360272074));
 
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
    ec = incrementalStrainPlane.get().GetZ(0.00, Db);
@@ -1153,23 +1153,23 @@ bool MomentCapacitySolver::Test5(WBFL::Debug::Log& rlog)
    Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -653.37846));
+   TRY_TESTME(IsEqual(Mx, -685.64719986516275));
    TRY_TESTME(IsZero(My));
 
    c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(c, 8.48033333));
+   TRY_TESTME(IsEqual(c, 8.6738076792667673));
 
    dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(dc, 2.830492));
+   TRY_TESTME(IsEqual(dc, 2.8949297089456660));
 
    de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(de, 19.6878473));
+   TRY_TESTME(IsEqual(de, 19.558750550402124));
 
    moment_arm = solution->GetMomentArm();
    TRY_TESTME(IsEqual(moment_arm, de - dc));
 
    k = solution->GetCurvature();
-   TRY_TESTME(IsEqual(k, 0.00015546765498959168, 0.00000001));
+   TRY_TESTME(IsEqual(k, 0.00015776005330926543));
 
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
    ec = incrementalStrainPlane.get().GetZ(0.00, Db);
@@ -1187,23 +1187,23 @@ bool MomentCapacitySolver::Test5(WBFL::Debug::Log& rlog)
    Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -665.909452));
+   TRY_TESTME(IsEqual(Mx, -699.68265568280822));
    TRY_TESTME(IsZero(My));
 
    c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(c, 7.8343756));
+   TRY_TESTME(IsEqual(c, 8.0319504415745122));
 
    dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(dc, 2.615559));
+   TRY_TESTME(IsEqual(dc, 2.6812903791657448));
 
    de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(de, 19.479851));
+   TRY_TESTME(IsEqual(de, 19.333818953013445));
 
    moment_arm = solution->GetMomentArm();
    TRY_TESTME(IsEqual(moment_arm, de - dc));
 
    k = solution->GetCurvature();
-   TRY_TESTME(IsEqual(k, 0.00018557897542485202, 0.00000001));
+   TRY_TESTME(IsEqual(k, 0.00018787516841197829));
 
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
    ec = incrementalStrainPlane.get().GetZ(0.00, -H/2);
@@ -1222,23 +1222,23 @@ bool MomentCapacitySolver::Test5(WBFL::Debug::Log& rlog)
    Mx = WBFL::Units::ConvertFromSysUnits(Mx, WBFL::Units::Measure::KipFeet);
 
    TRY_TESTME(IsZero(Fz, 0.001));
-   TRY_TESTME(IsEqual(Mx, -496.47595));
+   TRY_TESTME(IsEqual(Mx, -496.99875340434528));
    TRY_TESTME(IsZero(My));
 
    c = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToNeutralAxis(),WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(c, 2.204866));
+   TRY_TESTME(IsEqual(c, 2.2295543700228144));
 
    dc = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToCompressionResultant(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(dc, 0.778786));
+   TRY_TESTME(IsEqual(dc, 0.78735338433768298));
 
    de = WBFL::Units::ConvertFromSysUnits(solution->GetDepthToTensionResultant(), WBFL::Units::Measure::Inch);
-   TRY_TESTME(IsEqual(de, 20.365055));
+   TRY_TESTME(IsEqual(de, 20.175863643178527));
 
    moment_arm = solution->GetMomentArm();
    TRY_TESTME(IsEqual(moment_arm, de - dc));
 
    k = solution->GetCurvature();
-   TRY_TESTME(IsEqual(k, 0.0015873979879543205, 0.00000001));
+   TRY_TESTME(IsEqual(k, 0.0015698204300638766));
 
    incrementalStrainPlane = solution->GetIncrementalStrainPlane();
    ec = incrementalStrainPlane.get().GetZ(0.00, H / 2);

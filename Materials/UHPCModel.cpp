@@ -257,7 +257,7 @@ bool UHPCModel::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(model.Get_etloc(), et_loc));
 
    TRY_TESTME(IsEqual(model.GetAlpha(), 0.85));
-   TRY_TESTME(IsEqual(model.GetGamma(), 0.85));
+   TRY_TESTME(IsEqual(model.GetGamma(), 1.0));
    TRY_TESTME(IsEqual(model.GetK1(), 1.0));
    TRY_TESTME(IsEqual(model.GetModulusOfElasticity(), 47803365821.695671));
 
@@ -269,7 +269,7 @@ bool UHPCModel::TestMe(WBFL::Debug::Log& rlog)
 
    // plastic region
    stress = model.ComputeStress(0.0010);
-   TRY_TESTME( IsEqual(stress.first,0.85 * ft_cr) && stress.second == true);
+   TRY_TESTME( IsEqual(stress.first,model.GetGamma()*ft_cr) && stress.second == true);
 
    // after crack localization
    stress = model.ComputeStress(0.0050);
@@ -283,7 +283,7 @@ bool UHPCModel::TestMe(WBFL::Debug::Log& rlog)
 
    // plastic region
    stress = model.ComputeStress(-0.003);
-   TRY_TESTME(IsEqual(stress.first,-0.85 * fc) && stress.second == true); // stress plateu at alpha*f'c
+   TRY_TESTME(IsEqual(stress.first,-0.85 * fc) && stress.second == true); // stress plateau at alpha*f'c
 
    // after crushing
    stress = model.ComputeStress(-0.004);
