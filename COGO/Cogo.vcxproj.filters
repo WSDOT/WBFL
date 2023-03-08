@@ -49,9 +49,6 @@
     <ClCompile Include="LineSegmentCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenBridgeML.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -199,9 +196,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LineSegmentCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\WBFLCogo\OpenBridgeML.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Path.h">

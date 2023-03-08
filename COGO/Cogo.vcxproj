@@ -256,7 +256,6 @@
     <ClCompile Include="CompoundCurveCollection.cpp" />
     <ClCompile Include="CompoundCurveFactory.cpp" />
     <ClCompile Include="LineSegmentCollection.cpp" />
-    <ClCompile Include="OpenBridgeML.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PathCollection.cpp" />
     <ClCompile Include="PathElement.cpp" />
@@ -358,7 +357,6 @@
     <ClInclude Include="..\Include\WBFLCogo\AutoLib.h" />
     <ClInclude Include="..\Include\WBFLCogo\COGOExp.h" />
     <ClInclude Include="..\Include\WBFLCogo\CogoHelpers.h" />
-    <ClInclude Include="..\Include\WBFLCogo\OpenBridgeML.h" />
     <ClInclude Include="Alignment.h" />
     <ClInclude Include="AlignmentCollection.h" />
     <ClInclude Include="AlignmentFactory.h" />
