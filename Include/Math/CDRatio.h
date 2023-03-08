@@ -44,6 +44,15 @@ namespace WBFL
          static bool IsCDRatioLess(Sense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2);
 
          /// Returns the index of the minimum CD ratio
+         /// \param[in] sense Sense of capacity being evaluated
+         /// \param[in] capacity1 capacity for first C/D ratio
+         /// \param[in] demand1 demand for first C/D ratio
+         /// \param[in] capacity2 capacity for second C/D ratio
+         /// \param[in] demand2 demand for second C/D ratio
+         /// \param[in] capacity3 capacity for third C/D ratio
+         /// \param[in] demand3 demand for third C/D ratio
+         /// \param[in] capacity4 capacity for fourth C/D ratio
+         /// \param[in] demand4 demand for fourth C/D ratio
          /// \param[out] pCD The minimum C/D ratio
          static int MinCDRatio(Sense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4,Float64* pCD);
       };
