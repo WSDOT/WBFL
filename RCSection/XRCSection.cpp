@@ -48,9 +48,10 @@ Int32 XRCSection::GetReason() const noexcept
    return 0;
 }
 
-void XRCSection::GetErrorMessage(std::_tstring* pMsg) const
+std::_tstring XRCSection::GetErrorMessage() const
 {
-   __super::GetErrorMessage(pMsg);
-   *pMsg += m_Reason;
+   auto msg = __super::GetErrorMessage();
+   msg += m_Reason;
+   return msg;
 }
 

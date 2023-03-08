@@ -150,9 +150,7 @@ bool TestLib(WBFL::Debug::Log& rlog)
    }
    catch(const WBFL::System::XStructuredLoad& rex)
    {
-      std::_tstring msg;
-      rex.GetErrorMessage(&msg);
-      std::_tcout << msg << std::endl;
+      std::_tcout << rex.GetErrorMessage() << std::endl;
    }
 
    // dump loaded one

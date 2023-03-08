@@ -48,8 +48,8 @@ m_Message( msg )
 }
 
 //======================== OPERATIONS =======================================
-void lrfdXRangeOfApplicability::GetErrorMessage(std::_tstring* pMsg) const
+std::_tstring lrfdXRangeOfApplicability::GetErrorMessage() const
 {
-   *pMsg = m_Message;
+   return m_Message;
 }
 

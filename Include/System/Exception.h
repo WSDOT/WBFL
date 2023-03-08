@@ -74,22 +74,22 @@ namespace WBFL
          /// around).
          virtual Int32 GetReason() const noexcept = 0;
 
-         /// Assigns an error message to pMsg.  The default implementation is to 
+         /// Returns the error message.  The default implementation is to 
          /// create a message in the following format:
          ///
-         /// A *exception_type* error, number *reason*, has occured in *filename* at line *line*.
+         /// A *exception_type* error, number *reason*, has occurred in *filename* at line *line*.
          ///
          /// Where exception_type is the dynamic type of the exception,
          /// reason is the reason code returned by GetReason(),
          /// filename is the filename returned by GetFile(),  and
          /// line is the line number returned by GetLine().
-         virtual void GetErrorMessage(std::_tstring* pMsg) const;
+         virtual std::_tstring GetErrorMessage() const;
 
          /// Returns the name of the file where the exception was originally thrown.
          /// This method will not throw an exception.
          const std::_tstring& GetFile() const noexcept;
 
-         /// Returns the line number from where the exceptino was originally thrown.
+         /// Returns the line number from where the exception was originally thrown.
          /// This method will not throw an exception.
          Uint32 GetLine() const noexcept;
 

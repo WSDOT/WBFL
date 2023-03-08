@@ -54,7 +54,7 @@ namespace WBFL
          virtual Int32 GetReason() const noexcept override;
          Reason GetReasonCode() const noexcept;
 
-         virtual void GetErrorMessage(std::_tstring* pMsg) const override;
+         virtual std::_tstring GetErrorMessage() const override;
 
          /// Set an extended message containing state data of the loader that crashed
          /// This message will be appended to the message from the base class

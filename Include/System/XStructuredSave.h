@@ -47,7 +47,7 @@ namespace WBFL
          virtual Int32 GetReason() const noexcept override;
          Reason GetReasonCode() const noexcept;
 
-         virtual void GetErrorMessage(std::_tstring* pMsg) const override;
+         virtual std::_tstring GetErrorMessage() const override;
 
       private:
          Reason m_Reason{ Unspecified };

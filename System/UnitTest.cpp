@@ -164,9 +164,7 @@ bool TestStructuredStorage(WBFL::Debug::Log& rlog)
    }
    catch (WBFL::System::XStructuredLoad& ex)
    {
-      std::_tstring msg;
-      ex.GetErrorMessage(&msg);
-      std::_tcout << msg;
+      std::_tcout << ex.GetErrorMessage();
    }
 
    TESTME_EPILOG("Structured Storage XMLPRS Library");

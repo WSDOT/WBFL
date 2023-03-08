@@ -107,7 +107,7 @@ public:
    virtual void Throw() const override { throw *static_cast<const lrfdXRangeOfApplicability*>(this); }
    virtual Int32 GetReason() const noexcept override { return (Int32)m_Reason; }
    lrfdXRangeOfApplicability::Reason GetReasonCode() const noexcept { return m_Reason; }
-   virtual void GetErrorMessage(std::_tstring* pMsg) const override;
+   virtual std::_tstring GetErrorMessage() const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -42,13 +42,14 @@ XBase::~XBase()
 {
 }
 
-void XBase::GetErrorMessage(std::_tstring* pMsg) const
+std::_tstring XBase::GetErrorMessage() const
 {
    const type_info& ti = typeid(*this);
    std::_tostringstream os;
    os << "A " << ti.name() << " error, number " << GetReason()
       << ", has occurred in " << GetFile() << " at line " << GetLine() << std::endl;
-   *pMsg = os.str();
+   
+   return os.str();
 }
 
 const std::_tstring& XBase::GetFile() const noexcept

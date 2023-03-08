@@ -110,8 +110,7 @@ int CEAFApp::Run()
    }
    catch(WBFL::System::XBase& e)
    {
-      std::_tstring msg;
-      e.GetErrorMessage(&msg);
+      std::_tstring msg = e.GetErrorMessage();
       AfxMessageBox(msg.c_str(),MB_OK);
       ExitInstance();
    }

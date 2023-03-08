@@ -61,38 +61,40 @@ void XStructuredLoad::SetExtendedMessage(LPCTSTR msg)
    m_ExtendedMessage = std::_tstring(msg);
 }
 
-void XStructuredLoad::GetErrorMessage(std::_tstring* pMsg) const
+std::_tstring XStructuredLoad::GetErrorMessage() const
 {
-   __super::GetErrorMessage(pMsg);
+   auto msg = __super::GetErrorMessage();
    switch (m_Reason)
    {
    case InvalidFileFormat:
-      *pMsg += _T("File format was invalid\n\n");
+      msg += _T("File format was invalid\n\n");
       break;
    case EndOfFile:
-      *pMsg += _T("Unexpected end of file\n\n");
+      msg += _T("Unexpected end of file\n\n");
       break;
    case BadRead:
-      *pMsg += _T("Unexpected error trying to read file\n\n");
+      msg += _T("Unexpected error trying to read file\n\n");
       break;
    case BadVersion:
-      *pMsg += _T("Unexpected version number reading structured data\n\n");
+      msg += _T("Unexpected version number reading structured data\n\n");
       break;
    case MemoryError:
-      *pMsg += _T("Memory allocation error during structured read\n\n");
+      msg += _T("Memory allocation error during structured read\n\n");
       break;
    case CantInitializeTheParser:
-      *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed\n\n");
+      msg += _T("Could not initialize the parser. Perhaps the parser component is not installed\n\n");
       break;
    case UserDefined:
-      *pMsg += _T("User Defined error reading structured data\n\n");
+      msg += _T("User Defined error reading structured data\n\n");
       break;
    case Unspecified:
-      *pMsg += _T("Unspecified error reading structured data\n\n");
+      msg += _T("Unspecified error reading structured data\n\n");
       break;
    default:
-      *pMsg += _T("Unknown error reading structured data\n\n");
+      msg += _T("Unknown error reading structured data\n\n");
       break;
    }
-   *pMsg += m_ExtendedMessage;
+   msg += m_ExtendedMessage;
+
+   return msg;
 }

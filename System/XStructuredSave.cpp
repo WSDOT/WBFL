@@ -53,24 +53,26 @@ XStructuredSave::Reason XStructuredSave::GetReasonCode() const noexcept
    return m_Reason;
 }
 
-void XStructuredSave::GetErrorMessage(std::_tstring* pMsg) const
+std::_tstring XStructuredSave::GetErrorMessage() const
 {
-   __super::GetErrorMessage(pMsg);
+   auto msg = __super::GetErrorMessage();
 
    switch (m_Reason)
    {
    case BadWrite:
-      *pMsg += _T("A unknown error occured writing to the file");
+      msg += _T("A unknown error occurred writing to the file");
       break;
    case CantInitializeTheParser:
-      *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed");
+      msg += _T("Could not initialize the parser. Perhaps the parser component is not installed");
       break;
    case Unspecified:
-      *pMsg += _T("Unspecified error writing structured data");
+      msg += _T("Unspecified error writing structured data");
       break;
    default:
-      *pMsg += _T("Unknown error writing structured data");
+      msg += _T("Unknown error writing structured data");
       break;
    }
-   *pMsg += _T("\n\n");
+   msg += _T("\n\n");
+
+   return msg;
 }

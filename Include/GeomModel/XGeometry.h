@@ -33,7 +33,7 @@ namespace WBFL
 {
    namespace Geometry
    {
-      /// A geometric modeling error has occured
+      /// A geometric modeling error has occurred
       class GEOMMODELCLASS XGeometry : public WBFL::System::XBase
       {
       public:
@@ -45,7 +45,7 @@ namespace WBFL
 
          virtual void Throw() const override;
          virtual Int32 GetReason() const noexcept override;
-         virtual void GetErrorMessage(std::_tstring* pMsg) const override;
+         virtual std::_tstring GetErrorMessage() const override;
 
       private:
          std::_tstring m_Reason;

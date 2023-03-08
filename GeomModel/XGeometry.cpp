@@ -47,9 +47,10 @@ Int32 XGeometry::GetReason() const noexcept
    return 0;
 }
 
-void XGeometry::GetErrorMessage(std::_tstring* pMsg) const
+std::_tstring XGeometry::GetErrorMessage() const
 {
-   __super::GetErrorMessage(pMsg);
-   *pMsg += m_Reason;
+   auto msg = __super::GetErrorMessage();
+   msg += m_Reason;
+   return msg;
 }
 

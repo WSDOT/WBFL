@@ -31,7 +31,7 @@ namespace WBFL
 {
    namespace RCSection
    {
-      /// A RC Section Modeling or Solution error has occured
+      /// A RC Section Modeling or Solution error has occurred
       class RCSCLASS XRCSection : public WBFL::System::XBase
       {
       public:
@@ -44,7 +44,7 @@ namespace WBFL
 
          virtual void Throw() const override;
          virtual Int32 GetReason() const noexcept override;
-         virtual void GetErrorMessage(std::_tstring* pMsg) const override;
+         virtual std::_tstring GetErrorMessage() const override;
 
       private:
          std::_tstring m_Reason;
