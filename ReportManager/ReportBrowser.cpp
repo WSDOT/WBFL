@@ -243,6 +243,17 @@ void ReportBrowser::SelectAll()
    }
 }
 
+void ReportBrowser::Copy()
+{
+   LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
+   IOleCommandTarget* pIOleCmdTarget;
+   if (S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget))
+   {
+      pIOleCmdTarget->Exec(nullptr, OLECMDID_COPY, OLECMDEXECOPT_DODEFAULT, nullptr, nullptr);
+      pIOleCmdTarget->Release();
+   }
+}
+
 void ReportBrowser::ViewSource()
 {
    LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();

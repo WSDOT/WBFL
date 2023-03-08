@@ -45,7 +45,7 @@ namespace WBFL
 	      ReportBrowser();
 	      ~ReportBrowser();
 
-         /// Initalizes the report browser window
+         /// Initializes the report browser window
          /// \todo The rptReport should be constant, but can't be until the WBFL::Reporter framework is updated
          bool Initialize(
             HWND hwnd, ///< handle to the parent window
@@ -84,7 +84,7 @@ namespace WBFL
          );
 
          /// When called, an interface is presented that allows the user to modify the report content based
-         /// \return False if the user cancelled the edit, otherwise true
+         /// \return False if the user canceled the edit, otherwise true
          bool Edit(
             bool bUpdate = true ///< When true, the contents of the report are updated
          ); 
@@ -94,6 +94,9 @@ namespace WBFL
 
          /// Selects all of the content of the report
          void SelectAll();
+
+         /// Copies the selected text
+         void Copy();
 
          /// Redraws the contents in the browser window
          void Refresh();
@@ -107,7 +110,7 @@ namespace WBFL
          /// Navigates ahead
          void Forward();
 
-         /// Navigages to a specific anchor in a report
+         /// Navigates to a specific anchor in a report
          void NavigateAnchor(long id);
 
          /// Returns the browser window

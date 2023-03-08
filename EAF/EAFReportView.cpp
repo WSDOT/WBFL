@@ -222,8 +222,8 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,BOOL b
          }
          else
          {
-            // the user cancelled the report creation because he failed to
-            // select a report (ie. the Cancel buttow was pressed)
+            // the user canceled the report creation because he failed to
+            // select a report (i.e. the Cancel button was pressed)
 
             // The view creation must fail and this is intentional
             // Turn off the error message so the user doesn't see it
@@ -256,7 +256,7 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,BOOL b
 
    if ( m_pReportSpec == nullptr )
    {
-      // the user probably cancelled the report creation because he pressed the Cancel button
+      // the user probably canceled the report creation because he pressed the Cancel button
       // in the report specification dialog
 
       // The view creation must fail and this is intentional
@@ -306,7 +306,7 @@ HRESULT CEAFReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Re
             }
 
             // delete the report browser because what ever it is displaying is totally invalid
-            // also need to elimintate it so that we can draw the error message on the view window itself
+            // also need to eliminate it so that we can draw the error message on the view window itself
             m_pReportBrowser = nullptr;
             return E_FAIL;
          }
@@ -343,7 +343,7 @@ HRESULT CEAFReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Re
       if ( m_pReportBrowser )
       {
          // delete the report browser because what ever it is displaying is totally invalid
-         // also need to elimintate it so that we can draw the error message on the view window itself
+         // also need to eliminate it so that we can draw the error message on the view window itself
          m_pReportBrowser = nullptr;
       }
 
@@ -385,7 +385,7 @@ void CEAFReportView::EditReport()
 {
    if ( m_pReportBrowser->Edit(false) ) // just edit, don't update... we need to wrap a progress window around the updating
    {
-      // returning false means the user cancelled the edit
+      // returning false means the user canceled the edit
       RefreshReport();
    }
 }
@@ -464,7 +464,7 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       }
 
       // delete the report browser because what ever it is displaying is totally invalid
-      // also need to elimintate it so that we can draw the error message on the view window itself
+      // also need to eliminate it so that we can draw the error message on the view window itself
       m_pReportBrowser = nullptr;
 
       Invalidate();
@@ -486,7 +486,7 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       }
 
       // delete the report browser because what ever it is displaying is totally invalid
-      // also need to elimintate it so that we can draw the error message on the view window itself
+      // also need to eliminate it so that we can draw the error message on the view window itself
       m_pReportBrowser = nullptr;
 
       Invalidate();
@@ -631,6 +631,11 @@ void CEAFReportView::OnCmenuSelected(UINT id)
   case CCS_RB_SELECT_ALL:
      m_pReportBrowser->SelectAll();
      break;
+
+  case CCS_RB_COPY:
+     m_pReportBrowser->Copy();
+     break;
+
   case CCS_RB_PRINT:
      m_pReportBrowser->Print(true);
      break;
@@ -661,12 +666,24 @@ void CEAFReportView::OnCmenuSelected(UINT id)
 
 BOOL CEAFReportView::PreTranslateMessage(MSG* pMsg) 
 {
-   if (pMsg->message == WM_KEYDOWN && (pMsg->wParam =='f' || pMsg->wParam =='F') ) 
+   if (pMsg->message == WM_KEYDOWN )
    {
-      // ctrl - F = Find
-      if (::GetKeyState(VK_CONTROL))
+      if (::GetKeyState(VK_CONTROL) && (pMsg->wParam == 'f' || pMsg->wParam == 'F'))
       {
+         // Ctrl + F = Find
          m_pReportBrowser->Find();
+         return TRUE;
+      }
+      else if (::GetKeyState(VK_CONTROL) && (pMsg->wParam == 'c' || pMsg->wParam == 'C'))
+      {
+         // Ctrl + C = Copy
+         m_pReportBrowser->Copy();
+         return TRUE;
+      }
+      else if (::GetKeyState(VK_CONTROL) && (pMsg->wParam == 'a' || pMsg->wParam == 'A'))
+      {
+         // Ctrl + A = Select All
+         m_pReportBrowser->SelectAll();
          return TRUE;
       }
    }

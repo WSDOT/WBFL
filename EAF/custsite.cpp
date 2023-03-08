@@ -240,119 +240,119 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
             hr = pDispDoc->QueryInterface( __uuidof(MSHTML::IHTMLDocument2)/*IID_IHTMLDocument2*/, (void**)&pHTMLDocument );
 		      if (hr == S_OK)
 		      {
-               // check to see if any text is selected. If so, use IE's UI instead of our own
 			      MSHTML::IHTMLSelectionObjectPtr pSel;
       			pSel = pHTMLDocument->Getselection( );
 
                _bstr_t bstr;
                bstr = pSel->Gettype();
                CString strTag((TCHAR*)bstr);
-               if (strTag=="None") // nothing selected, show our context menu
+
+               UINT nFlags_Copy = MF_STRING | (strTag == "None" ? MF_GRAYED : MF_ENABLED);
+
+               CMenu menu;
+	            if (!(menu.CreatePopupMenu()))
+	            {
+                  ::AfxMessageBox(_T("Could not create CMenu"));
+	            }
+               if ( pThis->m_bHasEdit )
                {
-                  CMenu menu;
-	               if (!(menu.CreatePopupMenu()))
+                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_EDIT, _T("&Edit") );
+               }
+               menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_FIND, _T("&Find") );
+               menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_PRINT, _T("&Print") );
+               menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_SELECT_ALL, _T("&Select All") );
+               menu.AppendMenu(nFlags_Copy, CCS_CMENU_BASE + CCS_RB_COPY, _T("&Copy"));
+               menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_REFRESH, _T("&Refresh") );
+#ifdef _DEBUG
+               menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_SOURCE, _T("&View Source") );
+#endif
+
+               // create pop up
+
+               MSHTML::IHTMLElementCollectionPtr pcoll;
+               pcoll = pHTMLDocument->Getanchors();
+               if (pcoll)
+               {
+                  CMenu popup;
+	               if (!(popup.CreatePopupMenu()))
 	               {
                      ::AfxMessageBox(_T("Could not create CMenu"));
 	               }
-                  if ( pThis->m_bHasEdit )
+
+                  long len;
+                  len = pcoll->Getlength();
+                  long i = 0;
+                  while (i<len)
                   {
-                     menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_EDIT, _T("&Edit") );
-                  }
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_FIND, _T("&Find") );
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_PRINT, _T("&Print") );
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_SELECT_ALL, _T("&Select All") );
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_REFRESH, _T("&Refresh") );
-#ifdef _DEBUG
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_SOURCE, _T("&View Source") );
-#endif
-
-                  // create pop up
-
-                  MSHTML::IHTMLElementCollectionPtr pcoll;
-                  pcoll = pHTMLDocument->Getanchors();
-                  if (pcoll)
-                  {
-                     CMenu popup;
-	                  if (!(popup.CreatePopupMenu()))
-	                  {
-                        ::AfxMessageBox(_T("Could not create CMenu"));
-	                  }
-
-                     long len;
-                     len = pcoll->Getlength();
-                     long i = 0;
-                     while (i<len)
+                     long chid;
+                     CString chtitle;
+                     anchorType at = GetAnchorInfo(i, pcoll, &chid, &chtitle);
+                     if (at==atChapter)
                      {
-                        long chid;
-                        CString chtitle;
-                        anchorType at = GetAnchorInfo(i, pcoll, &chid, &chtitle);
-                        if (at==atChapter)
+                        // chapter items
+                        bool no_para = true;
+
+                        // next look for titled paragraphs - create submenu if they exist
+                        if (i+1<len)
                         {
-                           // chapter items
-                           bool no_para = true;
-
-                           // next look for titled paragraphs - create submenu if they exist
-                           if (i+1<len)
+                           CString partitle;
+                           long pid;
+                           at = GetAnchorInfo(i+1, pcoll, &pid, &partitle);
+                           if(at==atParagraph)
                            {
-                              CString partitle;
-                              long pid;
-                              at = GetAnchorInfo(i+1, pcoll, &pid, &partitle);
-                              if(at==atParagraph)
+                              no_para = false;
+
+                              CMenu popup2;
+	                           if (!(popup2.CreatePopupMenu()))
+	                           {
+                                 ::AfxMessageBox(_T("Could not create CMenu"));
+	                           }
+
+                              while(at==atParagraph && i<len)
                               {
-                                 no_para = false;
-
-                                 CMenu popup2;
-	                              if (!(popup2.CreatePopupMenu()))
-	                              {
-                                    ::AfxMessageBox(_T("Could not create CMenu"));
-	                              }
-
-                                 while(at==atParagraph && i<len)
-                                 {
-                                    popup2.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_TOC+pid, partitle );
-                                    i++;
-                                    if (i+1<len)
-                                       at = GetAnchorInfo(i+1, pcoll, &pid, &partitle);
-                                    else
-                                       break;
-                                 }
-
-                                 popup.AppendMenu( MF_POPUP | MF_ENABLED, (UINT_PTR)popup2.Detach(), chtitle );
+                                 popup2.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_TOC+pid, partitle );
+                                 i++;
+                                 if (i+1<len)
+                                    at = GetAnchorInfo(i+1, pcoll, &pid, &partitle);
+                                 else
+                                    break;
                               }
+
+                              popup.AppendMenu( MF_POPUP | MF_ENABLED, (UINT_PTR)popup2.Detach(), chtitle );
                            }
-
-                           // append chapter menu item as string if no paragraphs
-                           if (no_para)
-                              popup.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_TOC+chid, chtitle );
-
                         }
 
-                        i++;
+                        // append chapter menu item as string if no paragraphs
+                        if (no_para)
+                           popup.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_TOC+chid, chtitle );
+
                      }
 
-                     if ( 0 < popup.GetMenuItemCount() )
-                     {
-                        menu.AppendMenu( MF_SEPARATOR, 0);
-                        menu.AppendMenu( MF_POPUP | MF_ENABLED, (UINT_PTR)popup.Detach(), _T("&Table of Contents") );
-                     }
+                     i++;
                   }
 
-                  //
-                  // Wiring is here for Forward and back browser options, but it doesn't work as advertised.
-                  // must be a problem with the history list settings. shine it for now.
-                  //
-                  // menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_FORWARD, "&Forward" );
-                  // menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_BACK, "&Back" );
-
-                  POINT cpt = *pptPosition;
-
-                  CWnd* pwtop = CWnd::GetActiveWindow(); // cannot call AfxGetMainWnd() here. It will bust menus when in CDialogs
-                  CWnd* pwcommand = pwtop;
-
-                  menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cpt.x, cpt.y, pwcommand );
-
-                  return S_OK; // We've shown our own context menu. MSHTML.DLL will no longer try to show its own.
+                  if ( 0 < popup.GetMenuItemCount() )
+                  {
+                     menu.AppendMenu( MF_SEPARATOR, 0);
+                     menu.AppendMenu( MF_POPUP | MF_ENABLED, (UINT_PTR)popup.Detach(), _T("&Table of Contents") );
+                  }
                }
+
+               //
+               // Wiring is here for Forward and back browser options, but it doesn't work as advertised.
+               // must be a problem with the history list settings. shine it for now.
+               //
+               // menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_FORWARD, "&Forward" );
+               // menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_BACK, "&Back" );
+
+               POINT cpt = *pptPosition;
+
+               CWnd* pwtop = CWnd::GetActiveWindow(); // cannot call AfxGetMainWnd() here. It will bust menus when in CDialogs
+               CWnd* pwcommand = pwtop;
+
+               menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cpt.x, cpt.y, pwcommand );
+
+               return S_OK; // We've shown our own context menu. MSHTML.DLL will no longer try to show its own.
             }
          }
       }
