@@ -235,6 +235,59 @@ void CTestAlignment::Test()
    TRY_TEST(IsEqual(stationVal,1234.56),true);
 
    //
+   // GetDirection
+   alignment->put_RefStation(CComVariant(0.0));
+   point.Release();
+   point.CoCreateInstance(CLSID_Point2d);
+   point->Move(0, 0);
+   TRY_TEST(alignment->AddEx(point), S_OK);
+   point.Release();
+   point.CoCreateInstance(CLSID_Point2d);
+   point->Move(100, 100);
+   TRY_TEST(alignment->AddEx(point), S_OK);
+
+   CComPtr<IDirection> direction;
+   alignment->GetDirection(CComVariant(0.0), CComBSTR("N"), &direction);
+   Float64 value;
+   direction->get_Value(&value);
+   TRY_TEST(IsEqual(value, 3 * M_PI / 4), true);
+
+   direction.Release();
+   alignment->GetDirection(CComVariant(0.0), CComBSTR("Normal"), &direction);
+   direction->get_Value(&value);
+   TRY_TEST(IsEqual(value, 3 * M_PI / 4), true);
+
+   direction.Release();
+   alignment->GetDirection(CComVariant(50.0), CComBSTR("15 0 0 L"), &direction);
+   direction->get_Value(&value);
+   TRY_TEST(IsEqual(value, 3 * M_PI / 4 + ToRadians(15)), true);
+
+   direction.Release();
+   alignment->GetDirection(CComVariant(50.0), CComBSTR("15 0 0 R"), &direction);
+   direction->get_Value(&value);
+   TRY_TEST(IsEqual(value, 3 * M_PI / 4 - ToRadians(15)), true);
+
+   direction.Release();
+   alignment->GetDirection(CComVariant(100.0), CComBSTR("N 45 W"), &direction);
+   direction->get_Value(&value);
+   TRY_TEST(IsEqual(value, 3 * M_PI / 4), true);
+
+   direction.Release();
+   alignment->GetDirection(CComVariant(100.0), CComBSTR("S 45 W"), &direction);
+   direction->get_Value(&value);
+   TRY_TEST(IsEqual(value, 5*M_PI / 4), true);
+
+   direction.Release();
+   alignment->GetDirection(CComVariant(100.0), CComBSTR("N 45 E"), &direction);
+   direction->get_Value(&value);
+   TRY_TEST(IsEqual(value, M_PI / 4), true);
+
+   direction.Release();
+   alignment->GetDirection(CComVariant(100.0), CComBSTR("S 45 E"), &direction);
+   direction->get_Value(&value);
+   TRY_TEST(IsEqual(value, 3 * M_PI / 4), true);
+
+   //
    // _EnumAlignmentElements
    alignment->Clear();
    alignment->AddEx(point);
