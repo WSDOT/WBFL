@@ -59,6 +59,7 @@ void CUHPConcreteTest::Test()
    concrete->put_ftcr(8273708.7518); // 1.2 KSI
    concrete->put_ftloc(8273708.7518); // 1.2 KSI
    concrete->put_etloc(0.0045);
+   concrete->put_gamma(0.85);
 
    Float64 val;
    TRY_TEST( concrete->put_fc(0), E_INVALIDARG);
