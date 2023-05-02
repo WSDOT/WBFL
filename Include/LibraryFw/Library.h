@@ -769,10 +769,10 @@ protected:
    bool m_bIsDepreciated;
    libLibraryManager* m_pLibraryManager;
 
-   typedef std::shared_ptr<T>         LibItem;
-   typedef typename std::map<std::_tstring, LibItem >        EntryList;
-   typedef typename EntryList::iterator                    EntryListIterator;
-   typedef typename EntryList::const_iterator              EntryListConstIterator;
+   using LibItem = std::shared_ptr<T>;
+   using EntryList = typename std::map<std::_tstring, LibItem>;
+   using EntryListIterator = typename EntryList::iterator;
+   using EntryListConstIterator = typename EntryList::const_iterator;
 
    EntryList m_EntryList;
 

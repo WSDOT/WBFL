@@ -32,12 +32,6 @@
 #include <GeomModel/GeomModel.h>
 #include <assert.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdShear
@@ -1623,7 +1617,7 @@ Float64 get_theta(Float64 vfc,Float64 ex)
    Int16 col1, col2;
    
    get_row_and_col_index(vfc,ex,&row1,&row2,&col1,&col2);
-   ASSERT( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
+   CHECK( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
 
    Float64 theta11;  // Theta on row 1, col 1
    Float64 theta12;  // Theta on row 1, col 2
@@ -1669,7 +1663,7 @@ Float64 get_beta(Float64 vfc,Float64 ex)
    Int16 col1, col2;
    
    get_row_and_col_index(vfc,ex,&row1,&row2,&col1,&col2);
-   ASSERT( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
+   CHECK( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
 
    Float64 beta11;  // beta on row 1, col 1
    Float64 beta12;  // beta on row 1, col 2

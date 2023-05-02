@@ -203,11 +203,11 @@ private:
             }
          }
       };
-      typedef std::map<CComBSTR, ResultQuad> StageMap;
-      typedef std::map<CComBSTR, StageMap>   ComboMap;
+      using StageMap = std::map<CComBSTR, ResultQuad>;
+      using ComboMap = std::map<CComBSTR, StageMap>;
 
-      typedef StageMap::iterator             StageMapIterator;
-      typedef ComboMap::iterator             ComboMapIterator;
+      using StageMapIterator = StageMap::iterator;
+      using ComboMapIterator = ComboMap::iterator;
 
       ComboMap m_Results;
    };
@@ -231,8 +231,8 @@ private:
    PoiIDType m_PoiId;
 
    // stress point collections by stage
-   typedef std::map<CComBSTR, CComPtr<IStressPoints> > StressPointsMap;
-   typedef StressPointsMap::iterator                 StressPointsIterator;
+   using StressPointsMap = std::map<CComBSTR, CComPtr<IStressPoints>>;
+   using StressPointsIterator = StressPointsMap::iterator;
 
    StressPointsMap  m_StressPoints;
 
@@ -412,8 +412,8 @@ private:
    CComPtr<ILoadCombination> m_LoadCombo2;
    CComPtr<ILoadCombination> m_LoadCombo3;
 
-   typedef std::map<PoiIDType, ComboBenchMark> BenchMarkMap;
-   typedef BenchMarkMap::iterator         BenchMarkIterator;
+   using BenchMarkMap = std::map<PoiIDType, ComboBenchMark>;
+   using BenchMarkIterator = BenchMarkMap::iterator;
 
    BenchMarkMap m_BenchMarks;
 };

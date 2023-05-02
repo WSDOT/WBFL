@@ -27,12 +27,6 @@
 #include <Math\XRootFinder.h>
 #include <Math\XFunction.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 const Float64 EPS = 3.0e-10; // from Ken P.

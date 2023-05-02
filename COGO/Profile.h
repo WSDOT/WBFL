@@ -34,10 +34,10 @@
 #include "Collections.h"
 #include <vector>
 
-typedef CComVariant ProfileType;
-typedef std::vector<ProfileType> Profiles;
-typedef CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> > ProfileEnum;
-typedef ICollectionOnSTLImpl<IProfile, std::vector<CComVariant>, VARIANT, _Copy<VARIANT>, ProfileEnum> IProfileCollection;
+using ProfileType = CComVariant;
+using Profiles = std::vector<ProfileType>;
+using ProfileEnum = CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> >;
+using IProfileCollection = ICollectionOnSTLImpl<IProfile, std::vector<CComVariant>, VARIANT, _Copy<VARIANT>, ProfileEnum>;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -48,17 +48,19 @@ class ATL_NO_VTABLE CProfile :
 	public CComCoClass<CProfile, &CLSID_Profile>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CProfile,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IProfileCollection,
-   public IStructuredStorage2,
-   public IPersistImpl<CProfile>
+   public IProfile
 {
 public:
 	CProfile()
 	{
+      m_pAlignment = nullptr;
 	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
+
+   void SetProfile(std::shared_ptr<WBFL::COGO::Profile> profile);
+   std::shared_ptr<WBFL::COGO::Profile> GetProfile() { return m_Profile; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PROFILE)
 
@@ -66,13 +68,9 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CProfile)
 	COM_INTERFACE_ENTRY(IProfile)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-   STDMETHOD(put_Alignment)(IAlignment* pAlignment);
 
 
 // ISupportsErrorInfo
@@ -80,50 +78,42 @@ END_COM_MAP()
 
 // IProfile
 public:
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg) override;
+   STDMETHOD(put_Alignment)(/*[in]*/IAlignment* ppAlignment) override;
    STDMETHOD(get_Alignment)(/*[out,retval]*/IAlignment** ppAlignment) override;
-   STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone) override;
-	STDMETHOD(Clear)() override;
-	STDMETHOD(Slope)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope) override;
-   STDMETHOD(TemplateSegmentSlope)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope) override;
-	STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* grade) override;
-	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* elev) override;
-	STDMETHOD(Remove)(/*[in]*/ VARIANT varID) override;
-	STDMETHOD(Add)(/*[in]*/ IProfileElement* element) override;
-	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IProfileElement* *pVal) override;
-   STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IProfileElement* pVal) override;
-   STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval) override;  
-   STDMETHOD(get_Surfaces)(/*[out,retval]*/ISurfaceCollection** ppSurfaces) override;
-   STDMETHOD(putref_Surfaces)(/*[in]*/ISurfaceCollection* pSurfaces) override;
-   STDMETHOD(GetSurface)(CogoObjectID id,VARIANT varStation,ISurface** ppSurface) override;
-   STDMETHOD(RidgePointOffset)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset) override;
-   STDMETHOD(RidgePointElevation)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev) override;
+   STDMETHOD(AddProfileElement)(/*[in]*/ IProfileElement* element) override;
+   STDMETHOD(get_ProfileElementCount)(/*[out, retval]*/ CollectionIndexType* pVal) override;
+   STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IProfileElement** pVal) override;
+   STDMETHOD(ClearProfileElements)() override;
+   STDMETHOD(AddSurface)(IDType id, ISurface* pSurface) override;
+   STDMETHOD(GetSurface)(IDType id, ISurface** ppSurface) override;
+   STDMETHOD(ClearSurfaces)() override;
+   STDMETHOD(Clear)();
+   STDMETHOD(CreateSurfaceTemplateSectionCut)(IDType surfaceID, VARIANT varStation, VARIANT_BOOL vbApplySuperelevation, ISurfaceTemplate** ppTemplate) override;
+   STDMETHOD(CreateSurfaceTemplateSectionCutEx)(ISurface* pSurface, VARIANT varStation, VARIANT_BOOL vbApplySuperelevation, ISurfaceTemplate** ppTemplate) override;
+   STDMETHOD(Elevation)(/*[in]*/IDType surfaceID,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* elev) override;
+   STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* grade) override;
+   STDMETHOD(CrossSlope)(/*[in]*/IDType surfaceID,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope) override;
 
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
+   //STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone) override;
+   STDMETHOD(SurfaceTemplateSegmentSlope)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope) override;
+   //STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval) override;
+   //STDMETHOD(get_Surfaces)(/*[out,retval]*/ISurfaceCollection** ppSurfaces) override;
+   //STDMETHOD(putref_Surfaces)(/*[in]*/ISurfaceCollection* pSurfaces) override;
+   STDMETHOD(GetSurfaceContainingStation)(VARIANT varStation,IDType* pID,ISurface** ppSurface) override;
+   STDMETHOD(GetRidgePointOffset)(CogoObjectID id,VARIANT varStation,IndexType ridgePoint1Idx,IndexType ridgePoint2dIdx,Float64* pOffset) override;
+   STDMETHOD(GetRidgePointElevation)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,Float64* pElev) override;
+   STDMETHOD(GetRidgePointOffsetAndElevation)(CogoObjectID id, VARIANT varStation, IndexType ridgePoint1Idx, IndexType ridgePoint2Idx,Float64* pOffset, Float64* pElev) override;
 
 private:
-   IAlignment* m_pAlignment; // weak reference
-   CComPtr<ISurfaceCollection> m_Surfaces;
+   std::shared_ptr<WBFL::COGO::Profile> m_Profile;
+   IAlignment* m_pAlignment; // weak pointer to parent. See notes in get_Alignment
 
-   // objects used for searching the collection
-   CComPtr<IProfileElement> m_TestElement;
-   CComPtr<IProfilePoint> m_TestPoint;
+   std::vector<CComPtr<IProfileElement>> m_ProfileElements; // Profile owns the COM profile elements
+   std::map<IDType, CComPtr<ISurface>> m_Surfaces; // Profile owns the COM surfaces
 
-   HRESULT GetStation(VARIANT varStation,IStation** station);
-
-   HRESULT GradeAndElevation(IStation* pStation,Float64 offset,Float64* grade,Float64* elev,Float64* pSlope);
-   void BeforeProfileGradeAndElevation(IStation* pStation,Float64* grade,Float64* elev);
-   void ProfileGradeAndElevation(IStation* pStation,Float64* grade,Float64* elev);
-   void AfterProfileGradeAndElevation(IStation* pStation,Float64*grade, Float64* elev);
-   HRESULT AdjustForOffset(IStation* pStation,Float64 offset,Float64 profileElev,Float64* pAdjElev,Float64* pSlope);
-
-   void AssociateWithProfile(IProfileElement* element,bool bAssociate=true);
+#if defined _DEBUG
+   void Validate() const;
+#endif
 };
 
 #endif //__PROFILE_H_

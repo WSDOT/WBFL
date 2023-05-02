@@ -122,8 +122,8 @@ struct FixedTruck
 private:
    void ComputeAxleLocations();
 
-   typedef std::vector<FtAxle>     AxleContainer;
-   typedef AxleContainer::iterator AxleIterator;
+   using AxleContainer = std::vector<FtAxle>;
+   using AxleIterator = AxleContainer::iterator;
 
    Float64                m_Front;
    Float64                m_Rear;

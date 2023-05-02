@@ -32,12 +32,6 @@
 #include <math.h>
 #include <limits>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /// Line2d encapsulates the notion of a line with infinite length. The 
 /// implementation for this is taken from Chapter 1 of the original
 /// Graphics Gems book by Brett Glassner.
@@ -45,9 +39,9 @@ static char THIS_FILE[] = __FILE__;
 using namespace WBFL::Geometry;
 
 Point2d PointOnExplicitNearest(Float64 C, const Vector2d& N, const Point2d& point);
-void ExplicitToImplicit(const Point2d& U, const Vector2d& rV, Float64* C, Vector2d* N);
-void ImplicitToExplicit(Float64 C, const Vector2d& rN, Point2d* U, Vector2d* V);
-void PointToImplicit(const Point2d& rp1, const Point2d& rp2, Float64* c, Vector2d* v);
+std::pair<Float64,Vector2d> ExplicitToImplicit(const Point2d& U, const Vector2d& rV);
+std::pair<Point2d,Vector2d> ImplicitToExplicit(Float64 C, const Vector2d& rN);
+std::pair<Float64,Vector2d> PointToImplicit(const Point2d& rp1, const Point2d& rp2);
 
 
 Line2d::Line2d():
@@ -59,14 +53,14 @@ m_c(0)
 
 Line2d::Line2d(const Point2d& p1,const Point2d& p2)
 {
-   PointToImplicit(p1,p2,&m_c,&m_N);
+   std::tie(m_c,m_N) = PointToImplicit(p1,p2);
 
    ASSERTVALID;
 }
 
 Line2d::Line2d(const LineSegment2d& ls)
 {
-   Line2d t(*ls.GetStartPoint(), *ls.GetEndPoint());
+   Line2d t(ls.GetStartPoint(), ls.GetEndPoint());
    *this = t;
 
    ASSERTVALID;
@@ -83,7 +77,7 @@ m_N(rn)
 
 Line2d::Line2d(const Point2d& ru, const Vector2d& rv)
 {
-   ExplicitToImplicit(ru,rv,&m_c,&m_N);
+   std::tie(m_c,m_N) = ExplicitToImplicit(ru,rv);
    m_N.Normalize();
 
    ASSERTVALID;
@@ -104,12 +98,12 @@ bool Line2d::operator!=(const Line2d& other) const
    return !(*this == other);
 }
 
-bool Line2d::ContainsPoint(const Point2d& p) const
+bool Line2d::ContainsPoint(const Point2d& p,Float64 tolerance) const
 {
    ASSERTVALID;
 
    Vector2d pv(p);
-   return IsZero( m_N.Dot(pv) - m_c);
+   return IsZero( m_N.Dot(pv) - m_c, tolerance);
 
 }
 
@@ -120,7 +114,7 @@ Float64 Line2d::GetSlope() const
    Vector2d t = m_N.Normal(Vector2d::Side::Right);
    if (t.X() == 0)
    {
-	  Float64 infinity = std::numeric_limits<Float64>::infinity();
+	  constexpr Float64 infinity = std::numeric_limits<Float64>::infinity();
 
       if (t.Y() > 0)
          return infinity;
@@ -225,10 +219,10 @@ Line2d& Line2d::Rotate(const Point2d& centerPoint, Float64 angle)
 
    Point2d U;
    Vector2d V;
-   ImplicitToExplicit(m_c, m_N, &U, &V);
+   std::tie(U,V) = ImplicitToExplicit(m_c, m_N);
    U.Rotate(centerPoint, angle);
    V.Rotate(angle);
-   ExplicitToImplicit(U,V,&m_c,&m_N);
+   std::tie(m_c,m_N) = ExplicitToImplicit(U,V);
 
    ASSERTVALID;
 
@@ -260,11 +254,11 @@ Line2d Line2d::Parallel(const Point2d& point) const
 
    Point2d U;
    Vector2d V;
-   ImplicitToExplicit(m_c, m_N, &U, &V);
+   std::tie(U,V) = ImplicitToExplicit(m_c, m_N);
    // create a new point with explicit U at point
    Line2d t;
    U = point;
-   ExplicitToImplicit(U,V,&t.m_c,&t.m_N);
+   std::tie(t.m_c,t.m_N) = ExplicitToImplicit(U,V);
    return t;
 }
 
@@ -279,7 +273,7 @@ Line2d Line2d::Normal(const Point2d& point) const
    {
       Point2d u;
       Vector2d v;
-      ImplicitToExplicit(m_c,m_N,&u,&v);
+      std::tie(u,v) = ImplicitToExplicit(m_c,m_N);
       Vector2d direction = v.Normal(); // direct of line is normal to this line 
       return Line2d(point,direction);
    }
@@ -298,7 +292,7 @@ void Line2d::Reverse()
 
 void Line2d::SetImplicit(Float64 c, const Vector2d& n)
 {
-   if (n.IsZero()) THROW_GEOMETRY(_T("Line2d::SetImplicit - normal vector has zero magnitude"));
+   if (n.IsZero()) THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
    m_c = c;
    m_N = n;
@@ -307,33 +301,32 @@ void Line2d::SetImplicit(Float64 c, const Vector2d& n)
    ASSERTVALID;
 }
 
-void Line2d::GetImplicit(Float64* c, Vector2d* n) const
+std::pair<Float64,Vector2d> Line2d::GetImplicit() const
 {
-   *c = m_c;
-   *n = m_N;
+   return std::make_pair(m_c, m_N);
 }
 
 void Line2d::SetExplicit(const Point2d& u, const Vector2d& v)
 {
-   if(v.IsZero()) THROW_GEOMETRY(_T("Line2d::SetExplicit - direction vector has zero magnitude"));
+   if(v.IsZero()) THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
-   ExplicitToImplicit(u, v, &m_c, &m_N);
+   std::tie(m_c,m_N) = ExplicitToImplicit(u, v);
 
    ASSERTVALID;
 }
 
-void Line2d::GetExplicit(Point2d* u, Vector2d* v) const
+std::pair<Point2d,Vector2d> Line2d::GetExplicit() const
 {
    ASSERTVALID;
    
-   ImplicitToExplicit(m_c, m_N, u, v);
+   return ImplicitToExplicit(m_c, m_N);
 }
 
 void Line2d::ThroughPoints(const Point2d& p1,const Point2d& p2)
 {
-   if(p1 == p2) THROW_GEOMETRY(_T("Line2d::ThroughPoints - points are coincident"));
+   if(p1 == p2) THROW_GEOMETRY(WBFL_GEOMETRY_E_COINCIDENTPOINTS);
 
-   PointToImplicit(p1,p2,&m_c,&m_N);
+   std::tie(m_c,m_N) = PointToImplicit(p1,p2);
 
    ASSERTVALID;
 }
@@ -476,14 +469,14 @@ bool Line2d::TestMe(WBFL::Debug::Log& rlog)
    Point2d  pe(0,3), pe2;
    Line2d ex45(pe, ve);
    TRY_TESTME (ex45 == at45);
-   ex45.GetExplicit(&pe, &ve);
-   at45.GetExplicit(&pe2, &ve2);
+   std::tie(pe,ve) = ex45.GetExplicit();
+   std::tie(pe2,ve2) = at45.GetExplicit();
    TRY_TESTME (ve == ve2 && pe == pe2);
 
    Float64 c1,c2;
    Vector2d vi, vi2;
-   ex45.GetImplicit(&c1, &vi);
-   at45.GetImplicit(&c2, &vi2);
+   std::tie(c1,vi) = ex45.GetImplicit();
+   std::tie(c2,vi2) = at45.GetImplicit();
    TRY_TESTME (c1 == c2 && vi == vi2);
 
    // collinearity
@@ -546,19 +539,21 @@ bool Line2d::TestMe(WBFL::Debug::Log& rlog)
 #endif // _UNITTEST
 
 
-void ExplicitToImplicit(const Point2d& U, const Vector2d& V, Float64* C, Vector2d* N)
+std::pair<Float64,Vector2d> ExplicitToImplicit(const Point2d& U, const Vector2d& V)
 {
    Vector2d n = V.NormalizeBy();
-   *N = n.Normal();
+   auto N = n.Normal();
    Vector2d uv(U);
-   *C = N->Dot(uv);
+   auto C = N.Dot(uv);
+   return std::make_pair(C,N);
 }
 
-void ImplicitToExplicit(Float64 C, const Vector2d& N, Point2d* U, Vector2d* V)
+std::pair<Point2d,Vector2d> ImplicitToExplicit(Float64 C, const Vector2d& N)
 {
    Point2d origin(0,0);
-   *U = PointOnExplicitNearest(C, N, origin);
-   *V = N.Normal(Vector2d::Side::Right);
+   auto U = PointOnExplicitNearest(C, N, origin);
+   auto V = N.Normal(Vector2d::Side::Right);
+   return std::make_pair(U, V);
 }
 
 Point2d PointOnExplicitNearest(Float64 C, const Vector2d& N, const Point2d& point)
@@ -572,7 +567,7 @@ Point2d PointOnExplicitNearest(Float64 C, const Vector2d& N, const Point2d& poin
    return point - tp;
 }
 
-void PointToImplicit(const Point2d& p1, const Point2d& p2, Float64* c, Vector2d* n)
+std::pair<Float64,Vector2d> PointToImplicit(const Point2d& p1, const Point2d& p2)
 {
    Size2d size = p2 - p1;
    if (size.Dx() == 0.0 && size.Dy() == 0.0)
@@ -580,13 +575,13 @@ void PointToImplicit(const Point2d& p1, const Point2d& p2, Float64* c, Vector2d*
       // Not using IsZero() or p1 == p2 (becauses it uses IsZero/IsEqual)... 
       // we need to be forgiving about creating a line... the two points must
       // be exactly equal to throw this exception, not just close enough
-      THROW_GEOMETRY(_T("Line2d - points are coincident"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_COINCIDENTPOINTS);
    }
    else
    {
       Point2d  lu(p1);
       Vector2d lv(size);
-      ExplicitToImplicit(lu, lv, c, n);
+      return ExplicitToImplicit(lu, lv);
    }
 }
 

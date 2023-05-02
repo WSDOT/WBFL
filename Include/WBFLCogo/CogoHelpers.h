@@ -22,58 +22,114 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_COGO_COGOHELPERS_H_
-#define INCLUDED_COGO_COGOHELPERS_H_
+
 #pragma once
 
 #include <WBFLCogo\COGOExp.h>
-
+#include <CoordGeom/CoordGeom.h>
 #include <string>
 
-/*****************************************************************************
-CLASS 
-   cogoUtil
-
-   Utility class for cogo related operations.
-
-DESCRIPTION
-   Utility class for cogo related operations.  This classes handles things like
-   converting to and from DMS format and stationing format.
-
-LOG
-   rab : 06.19.1997 : Created file
-*****************************************************************************/
-
+/// @brief  Utility class for COGO related operations. 
 class COGOCLASS cogoUtil
 {
 public:
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   static std::pair<HRESULT, WBFL::COGO::Direction> DirectionFromVariant(VARIANT varDirection);
+   static WBFL::COGO::Direction& GetInnerDirection(IDirection* pDirection);
+   static HRESULT CreateDirection(const WBFL::COGO::Direction& direction, IDirection** ppDir);
 
-   //------------------------------------------------------------------------
-   // Converts an angle given in radians to deg-min-sec format
-   static void ToDMS(Float64 value,long* deg,long* min,Float64* sec);
+   static std::pair<HRESULT, WBFL::COGO::Station> StationFromVariant(VARIANT varStation);
+   static WBFL::COGO::Station& GetInnerStation(IStation* pStation);
+   static HRESULT CreateStation(const WBFL::COGO::Station& station, IStation** pStation);
 
-   //------------------------------------------------------------------------
-   // Converts an angle given in deg-min-sec format to an angle in radians
-   static Float64 FromDMS(long deg,long min = 0,Float64 sec = 0.0);
+   static HRESULT CreateStationEquation(const WBFL::COGO::StationEquation& equation, IStationEquation** ppEquation);
 
-   //------------------------------------------------------------------------
-   // Normalizes an angle between 0 and 2pi.
-   static Float64 NormalizeAngle(Float64 angle);
+   static HRESULT CreateProfileElement(std::shared_ptr<WBFL::COGO::ProfileElement> pe, IProfileElement** ppProfileElement);
+   static std::shared_ptr<WBFL::COGO::ProfileElement> GetInnerProfileElement(IProfileElement* pProfileElement);
 
-   static HRESULT DirectionFromVariant(VARIANT varDir,IDirection** dir);
-   static HRESULT AngleFromVariant(VARIANT varAngle,IAngle** angle);
-   static HRESULT StationFromVariant(VARIANT varStation,bool bClone,IStation** station);
+   static HRESULT CreatePathElement(std::shared_ptr<WBFL::COGO::PathElement> pe, IPathElement** ppPathElement);
+   static std::shared_ptr<WBFL::COGO::PathElement> GetInnerPathElement(IPathElement* pPathElement);
+
+   static HRESULT CreatePathSegment(std::shared_ptr<WBFL::COGO::PathSegment> pathSegment, IPathSegment** ppPathSegment);
+   static std::shared_ptr<WBFL::COGO::PathSegment> GetInnerPathSegment(IPathSegment* pPathSegment);
+
+   static HRESULT CreateProfile(std::shared_ptr<WBFL::COGO::Profile> profile, IProfile** ppProfile);
+   static std::shared_ptr<WBFL::COGO::Profile> GetInnerProfile(IProfile* pProfile);
+
+   static HRESULT CreatePath(std::shared_ptr<WBFL::COGO::Path> path, IPath** ppPath);
+   static std::shared_ptr<WBFL::COGO::Path> GetInnerPath(IPath* pPath);
+
+   static HRESULT CreateAlignment(std::shared_ptr<WBFL::COGO::Alignment> alignment, IAlignment** ppAlignment);
+   static std::shared_ptr<WBFL::COGO::Alignment> GetInnerAlignment(IAlignment* pAlignment);
+
+   static HRESULT CreateSurface(std::shared_ptr<WBFL::COGO::Surface> surface, ISurface** ppSurface);
+   static std::shared_ptr<WBFL::COGO::Surface> GetInnerSurface(ISurface* pSurface);
+
+   static std::shared_ptr<WBFL::COGO::ProfilePoint> GetInnerProfilePoint(IProfilePoint* pProfilePoint);
+   static WBFL::COGO::ProfilePoint GetProfilePoint(IProfilePoint* pProfilePoint);
+   static HRESULT CreateProfilePoint(std::shared_ptr<WBFL::COGO::ProfilePoint> profilePoint, IProfilePoint** ppProfilePoint);
+   static HRESULT CreateProfilePoint(const WBFL::COGO::ProfilePoint& profilePoint, IProfilePoint** ppProfilePoint);
+
+   static std::shared_ptr<WBFL::COGO::SurfacePoint> GetInnerSurfacePoint(ISurfacePoint* pSurfacePoint);
+   static HRESULT CreateSurfacePoint(std::shared_ptr<WBFL::COGO::SurfacePoint> surfacePoint, ISurfacePoint** ppSurfacePoint);
+
+   static std::shared_ptr<WBFL::COGO::SurfaceProfile> GetInnerSurfaceProfile(ISurfaceProfile* pSurfaceProfile);
+   static HRESULT CreateSurfaceProfile(ISurface* pSurface, std::shared_ptr<WBFL::COGO::SurfaceProfile> surfaceProfile, ISurfaceProfile** ppSurfaceProfile);
+
+   static std::shared_ptr<WBFL::COGO::SurfaceTemplate> GetInnerSurfaceTemplate(ISurfaceTemplate* pSurfaceTemplate);
+   static HRESULT CreateSurfaceTemplate(ISurface* pSurface,std::shared_ptr<WBFL::COGO::SurfaceTemplate> st, ISurfaceTemplate** ppSurfaceTemplate);
+
+   static HRESULT CreateSurfaceTemplateSegment(const WBFL::COGO::SurfaceTemplateSegment& segment, ISurfaceTemplateSegment** ppSegment);
+
+   static std::shared_ptr<WBFL::COGO::Superelevation> GetInnerSuperelevation(ISuperelevation* pSuperelevation);
+   static HRESULT CreateSuperelevation(std::shared_ptr<WBFL::COGO::Superelevation> superelevation, ISuperelevation** ppSuperelevation);
+
+   static std::shared_ptr<WBFL::COGO::Widening> GetInnerWidening(IWidening* pWidening);
+   static HRESULT CreateWidening(std::shared_ptr<WBFL::COGO::Widening> widening, IWidening** ppWidening);
+
+   static std::shared_ptr<WBFL::COGO::CompoundCurve> GetInnerCompoundCurve(ICompoundCurve* pCurve);
+   static HRESULT CreateCompoundCurve(std::shared_ptr<WBFL::COGO::CompoundCurve> curve, ICompoundCurve** ppCurve);
+
+   static std::shared_ptr<WBFL::COGO::CircularCurve> GetInnerCircularCurve(ICircularCurve* pCurve);
+   static HRESULT CreateCircularCurve(std::shared_ptr<WBFL::COGO::CircularCurve> curve, ICircularCurve** ppCurve);
+
+   static std::shared_ptr<WBFL::COGO::TransitionCurve> GetInnerTransitionCurve(ITransitionCurve* pCurve);
+   static HRESULT CreateTransitionCurve(std::shared_ptr<WBFL::COGO::TransitionCurve> curve, ITransitionCurve** ppCurve);
+
+   static std::shared_ptr<WBFL::COGO::CubicSpline> GetInnerCubicSpline(ICubicSpline* pCurve);
+   static HRESULT CreateCubicSpline(std::shared_ptr<WBFL::COGO::CubicSpline> curve, ICubicSpline** ppCurve);
+
+   static std::shared_ptr<WBFL::COGO::ProfileSegment> GetInnerProfileSegment(IProfileSegment* pCurve);
+   static HRESULT CreateProfileSegment(std::shared_ptr<WBFL::COGO::ProfileSegment> curve, IProfileSegment** ppCurve);
+
+   static std::shared_ptr<WBFL::COGO::VerticalCurve> GetInnerVerticalCurve(IVerticalCurve* pVertCurve);
+   static HRESULT CreateVerticalCurve(std::shared_ptr<WBFL::COGO::VerticalCurve> vc, IVerticalCurve** ppVertCurve);
+
    static HRESULT LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* dir,Float64 offset,IPoint2d** ppoint);
+
+   static HRESULT AngleFromVariant(VARIANT varAngle, IAngle** angle);
+   static std::pair<HRESULT, WBFL::COGO::Angle> AngleFromVariant(VARIANT varAngle);
+   static HRESULT CreateAngle(const WBFL::COGO::Angle& angle, IAngle** ppAngle);
+   static HRESULT CreateAngle(std::shared_ptr<WBFL::COGO::Angle> angle, IAngle** ppAngle);
+   static std::shared_ptr<WBFL::COGO::Angle> GetInnerAngle(IAngle* pAngle);
+
+   static HRESULT CreatePoint(std::shared_ptr<WBFL::Geometry::Point2d> point, IPoint2d** ppPoint);
+   static HRESULT CreatePoint(const WBFL::Geometry::Point2d& point, IPoint2d** ppPoint);
+   static HRESULT CreatePoint(std::shared_ptr<WBFL::Geometry::Point3d> point, IPoint3d** ppPoint);
+   static HRESULT CreatePoint(const WBFL::Geometry::Point3d& point, IPoint3d** ppPoint);
+   static std::shared_ptr<WBFL::Geometry::Point2d> GetInnerPoint(IPoint2d* pPoint);
+   static std::shared_ptr<WBFL::Geometry::Point3d> GetInnerPoint(IPoint3d* pPoint);
+   static WBFL::Geometry::Point2d GetPoint(IPoint2d* pPoint);
+   static WBFL::Geometry::Line2d GetLine(ILine2d* pLine);
+   static WBFL::Geometry::LineSegment2d GetLineSegment(ILineSegment2d* pLineSegment);
+   static WBFL::Geometry::Circle GetCircle(ICircle* pCircle);
+   static WBFL::Geometry::Circle2d GetCircle2d(ICircle* pCircle);
+   static HRESULT CreateLineSegment(const WBFL::Geometry::LineSegment2d& ls, ILineSegment2d** ppLineSegment);
+
+   static HRESULT CreatePoints(const std::vector<WBFL::Geometry::Point2d>& points, IPoint2dCollection** ppPoints);
 
    static bool IsEqual(IPoint2d* p1,IPoint2d* p2);
    static void CopyPoint(IPoint2d* to,IPoint2d* from);
-   static void LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNearest,IPoint2d** newPnt);
-
-   // Gets the parts of a bearing
-	static void GetBrgParts(Float64 brgVal,NSDirectionType* pnsDir,long* pDeg,long* pMin,Float64* pSec,EWDirectionType *pewDir);
+   static HRESULT LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNearest,IPoint2d** newPnt);
 
    // returns true if pPoint is on the line formed by pStart and pEnd and comes before pStart
    static bool IsPointBeforeStart(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoint);
@@ -81,81 +137,13 @@ public:
    // returns true if pPoint is on the line formed by pStart and pEnd and comes after pEnd
    static bool IsPointAfterEnd(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoint);
 
-//   //------------------------------------------------------------------------
-//   // Converts a floating point number to a station string.  station must
-//   // be a positive number.  Unit conversions are not performed on station.
-//   // nDigOffset is the number of digits between the + sign and the decimal 
-//   // place. nDec is the number of digits after the decimal place. The macros 
-//   // COGO_US_STATION and COGO_SI_STATION can be used in place of the second 
-//   // and third parameters.
-//   //
-//   // Example
-//   // retval = cogoUtil::StationToString( station, COGO_US_STATION, buffer, sizeof(buffer) );
-//   //
-//   // The resulting string is stored in str.  cch is the size of str.
-//   //
-//   // Returns zero on success, required size of str if it is too small, or -1 on
-//   // an other error.
-//   static short StationToString(Float64 station,short nDigOffset,short nDec,TCHAR* str,short cch);
-//
-//   //------------------------------------------------------------------------
-//   // Converts a station string to a floating point number.  nDigOffset is the 
-//   // number of digits between the + sign and the decimal place. nDec is the 
-//   // number of digits after the decimal place.  The macros COGO_US_STATION and
-//   // COGO_SI_STATION can be used in place of the second and third parameters.
-//   //
-//   // Returns false if the station string was not correctly formed.
-//   //
-//   // Unit conversions are not performed on the resulting station.
-//   static bool StringToStation(LPCTSTR str,short nDigOffset,short nDec,Float64* pStation);
-//
-   //------------------------------------------------------------------------
    // Solves the inverse problem for points (x1,y1) and (x2,y2);
-   static void Inverse(IPoint2d* p1,IPoint2d* p2,Float64* pDist,IDirection** ppDir);
-
-
+   static void Inverse(IPoint2d* p1, IPoint2d* p2, Float64* pDist, IDirection** ppDir); 
    static HRESULT ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,std::_tstring* strMinTag,std::_tstring* strSecTag);
-
-   static bool IsEqual(IProfile* pProfile,IStation* pSta1,IStation* pSta2);
-   static bool IsEqual(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2);
-   static bool IsEqual(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2);
-
-   static Float64 Distance(IProfile* pProfile,IStation* pSta1,IStation* pSta2);
-   static Float64 Distance(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2);
-   static Float64 Distance(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2);
-
-   static Int8 Compare(IProfile* pProfile,IStation* pSta1,IStation* pSta2);
-   static Int8 Compare(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2);
-   static Int8 Compare(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2);
-
-   static Float64 GetNormalizedStationValue(IProfile* pProfile,IStation* pSta);
-   static Float64 GetNormalizedStationValue(IAlignment* pAlignment,IStation* pSta);
-   static Float64 GetNormalizedStationValue(IStationEquationCollection* pEquations,IStation* pSta);
-   static void IncrementStationBy(IProfile* pProfile,IStation* pStation,Float64 dist);
-   static void IncrementStationBy(IAlignment* pAlignment,IStation* pStation,Float64 dist);
-   static void IncrementStationBy(IStationEquationCollection* pEquations,IStation* pStation,Float64 dist);
-
-   static void CreateStation(IProfile* pProfile,Float64 normalizedStation,IStation** pSta);
-   static void CreateStation(IAlignment* pAlignment,Float64 normalizedStation,IStation** pSta);
-   static void CreateStation(IStationEquationCollection* pEquations,Float64 normalizedStation,IStation** pSta);
-
-   static HRESULT CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 offset, ILine2d** line);
-   static HRESULT IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offset1, IPoint2d* p2, VARIANT varDir2, Float64 offset2, IPoint2d** point);
-   static HRESULT IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64 offset, IPoint2d* pntCenter, Float64 radius, IPoint2d* pntNearest, IPoint2d** point);
-   static HRESULT IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float64 r2, IPoint2d* nearest, IPoint2d** point);
 
 private:
    cogoUtil() = delete;
    cogoUtil(const cogoUtil& rOther) = delete;
    cogoUtil& operator=(const cogoUtil& rOther) = delete;
 };
-
-//cogoAngle ToAngle(IAngle* pAngle);
-//void ToPoint(IPoint2dEx* pPoint,Float64* pX,Float64* pY);
-//
-//HRESULT CreateCogoPoint2d( VARIANT id,Float64 x,Float64 y, IPoint2dEx** ppPoint);
-//HRESULT CreateAngle(const cogoAngle& angle,IAngle** ppAngle);
-HRESULT CreateDirection(Float64 dir,IDirection** ppDirection);
-
-#endif // INCLUDED_COGO_COGOHELPERS_H_
 

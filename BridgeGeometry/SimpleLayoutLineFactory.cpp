@@ -56,7 +56,7 @@ STDMETHODIMP CSimpleLayoutLineFactory::Create(IBridgeGeometry* pBridge,IPathColl
       hr = m_Paths->get_Item(id,&path);
       ATLASSERT(SUCCEEDED(hr));
       
-      hr = pPaths->AddEx(id,path);
+      hr = pPaths->Add(id,path);
       ATLASSERT(SUCCEEDED(hr));
    }
 
@@ -70,7 +70,7 @@ STDMETHODIMP CSimpleLayoutLineFactory::Reset()
 
 STDMETHODIMP CSimpleLayoutLineFactory::AddPath(LineIDType ID,IPath* path)
 {
-   HRESULT hr = m_Paths->AddEx(ID,path);
+   HRESULT hr = m_Paths->Add(ID,path);
    if ( FAILED(hr) )
       return hr;
    return S_OK;

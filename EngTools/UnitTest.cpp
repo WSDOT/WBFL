@@ -27,12 +27,6 @@
 #include <EngTools/BiaxialBeamStrain.h>
 #include <EngTools/PrandtlMembraneSolver.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 bool WINAPI WBFL::EngTools::UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool tst = true;

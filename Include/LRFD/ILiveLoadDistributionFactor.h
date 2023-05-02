@@ -184,10 +184,10 @@ public:
          }
          else
          {
-            ATLASSERT(false);
+            CHECK(false);
             m = -1;
          }
-         ATLASSERT(0 < m);
+         CHECK(0 < m);
          return m;
       }
    };

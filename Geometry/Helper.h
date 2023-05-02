@@ -40,9 +40,11 @@ interface IPolyShape;
 
 #include <GeomModel/GenericShape.h>
 #include <GeomModel/Circle.h>
+#include <GeomModel/Circle2d.h>
 #include <GeomModel/CircularSegment.h>
 #include <GeomModel/CompositeShape.h>
 
+// Forward declarations
 namespace WBFL
 {
    namespace Geometry
@@ -66,8 +68,8 @@ namespace WBFL
 };
 
 
-std::shared_ptr<WBFL::Geometry::Point2d>& GetInnerPoint(IPoint2d* pPoint);
-std::shared_ptr<WBFL::Geometry::Point3d>& GetInnerPoint(IPoint3d* pPoint);
+std::shared_ptr<WBFL::Geometry::Point2d> GetInnerPoint(IPoint2d* pPoint);
+std::shared_ptr<WBFL::Geometry::Point3d> GetInnerPoint(IPoint3d* pPoint);
 
 WBFL::Geometry::Point2d GetPoint(IPoint2d* pPoint);
 WBFL::Geometry::Line2d GetLine(ILine2d* pLine);
@@ -76,6 +78,7 @@ WBFL::Geometry::Rect2d GetRect(IRect2d* pRect);
 WBFL::Geometry::Size2d GetSize(ISize2d* pSize);
 WBFL::Geometry::Vector2d GetVector(IVector2d* pVector);
 WBFL::Geometry::Circle GetCircle(ICircle* pCircle);
+WBFL::Geometry::Circle2d GetCircle2d(ICircle* pCircle);
 
 WBFL::Geometry::Point3d GetPoint(IPoint3d* pPoint);
 WBFL::Geometry::Vector3d GetVector(IVector3d* pVector);
@@ -91,12 +94,12 @@ HRESULT GetSize(ISize2d* pSize,Float64* pdx,Float64* pdy);
 HRESULT GetRect(IRect2d* rect,Float64 *left,Float64 *top,Float64 *right,Float64 *bottom);
 
 HRESULT CreatePoint(const WBFL::Geometry::Point2d& point, IPoint2d** ppPoint);
-HRESULT CreatePoint(const std::shared_ptr<WBFL::Geometry::Point2d>& point, IPoint2d** ppPoint);
+HRESULT CreatePoint(std::shared_ptr<WBFL::Geometry::Point2d>& point, IPoint2d** ppPoint);
 HRESULT CreatePoint(IPoint2d* pPoint,IPoint2d** ppPoint);
 HRESULT CreatePoint(Float64 x,Float64 y,IPoint2d** ppPoint);
 
 HRESULT CreatePoint(const WBFL::Geometry::Point3d& point, IPoint3d** ppPoint);
-HRESULT CreatePoint(const std::shared_ptr<WBFL::Geometry::Point3d>& point, IPoint3d** ppPoint);
+HRESULT CreatePoint(std::shared_ptr<WBFL::Geometry::Point3d>& point, IPoint3d** ppPoint);
 HRESULT CreatePoint(IPoint3d* pPoint,IPoint3d** ppPoint);
 HRESULT CreatePoint(Float64 x,Float64 y,Float64 z,IPoint3d** ppPoint);
 

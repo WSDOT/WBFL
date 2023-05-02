@@ -24,12 +24,6 @@
 #include <Math\MathLib.h>
 #include <Math\XRootFinder.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 XRootFinder::XRootFinder(XRootFinder::Reason reason, const std::_tstring& file, Uint32 line) :

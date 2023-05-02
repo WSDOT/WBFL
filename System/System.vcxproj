@@ -221,7 +221,6 @@
     <ResourceCompile Include="System.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\Private\WbflPackage.h" />
     <ClInclude Include="..\Include\System\AutoLib.h" />
     <ClInclude Include="..\Include\System\AutoVariable.h" />
     <ClInclude Include="..\Include\System\Checks.h" />

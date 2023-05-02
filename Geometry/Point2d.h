@@ -43,8 +43,8 @@ public:
 	{
 	}
 
-   std::shared_ptr<WBFL::Geometry::Point2d>& GetPoint() { return m_pPoint; }
-   void SetPoint(std::shared_ptr<WBFL::Geometry::Point2d>& point) { m_pPoint = point; }
+   std::shared_ptr<WBFL::Geometry::Point2d> GetPoint() { return m_pPoint; }
+   void SetPoint(std::shared_ptr<WBFL::Geometry::Point2d> point) { m_pPoint = point; }
 
    HRESULT FinalConstruct();
    void FinalRelease();

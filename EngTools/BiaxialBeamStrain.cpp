@@ -27,13 +27,6 @@
 #include <GeomModel/Vector2d.h>
 #include <GeomModel/Line2d.h>
 #include <GeomModel/Primitives3d.h>
-#include <MathEx.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::EngTools;
 using namespace WBFL::Geometry;
@@ -104,7 +97,7 @@ void BiaxialBeamStrain::SetStrainPlane(const Line2d& rnaLine,const Point2d& p3,F
    // get two points on the line
    Point2d  p1, p2;
    Vector2d tv;
-   rnaLine.GetExplicit(&p1, &tv);
+   std::tie(p1,tv) = rnaLine.GetExplicit();
    p2 = p1.OffsetBy(tv.X(), tv.Y());
 
    SetStrainPlane(p1, 0., p2, 0., p3, strain);
@@ -123,7 +116,7 @@ void BiaxialBeamStrain::SetStrainPlane(const Line2d& rnaLine, Float64 dist, Floa
    Line2d tl = rnaLine.Parallel(dist,Line2d::Side::Left);
    Point2d  p3;
    Vector2d tv;
-   tl.GetExplicit(&p3, &tv);  // get a point along offset line
+   std::tie(p3,tv) = tl.GetExplicit();  // get a point along offset line
 
    SetStrainPlane(rnaLine, p3, strain);
 }

@@ -36,14 +36,13 @@
 #endif // _MSC_VER > 1000
 
 
-#include <Private\WBFLPackage.h>
-
-
 #include <ObjBase.h>
 #include <AtlBase.h>
 #include <MathEx.h>
 #include <iostream>
 #include <WbflTools.h>
+
+#include <WBFLTest.h>
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

@@ -57,13 +57,14 @@ void CTestTransitionCurve::Test()
 
 void Verify(Float64 L, ITransitionCurve* pCurve, std::array<std::pair<Float64, Float64>, 6>& values)
 {
+   CComQIPtr<IPathElement> element(pCurve);
    static Float64 tol = 0.0001;
    auto size = values.size();
    for (auto i = 0; i < size; i++)
    {
       Float64 s = i*L / (size-1);
       CComPtr<IPoint2d> p;
-      pCurve->PointOnCurve(s, &p);
+      element->PointOnCurve(s, &p);
 
       Float64 x, y;
       p->Location(&x, &y);
@@ -82,7 +83,7 @@ void CTestTransitionCurve::Test1()
 
    CComPtr<ITransitionCurve> curve;
    TRY_TEST(curve.CoCreateInstance(CLSID_TransitionCurve),S_OK);
-   TRY_TEST(curve->Init(nullptr, nullptr, R1, R2, L, Clothoid), S_OK);
+   TRY_TEST(curve->Init(nullptr, CComVariant(), R1, R2, L, Clothoid), S_OK);
 
    std::array<std::pair<Float64, Float64>,6> values1
    {
@@ -106,13 +107,13 @@ void CTestTransitionCurve::Test1()
       std::make_pair(83.8359,43.0612)
    };
 
-   TRY_TEST(curve->Init(nullptr, nullptr, R1, R2, L, Clothoid), S_OK);
+   TRY_TEST(curve->Init(nullptr, CComVariant(), R1, R2, L, Clothoid), S_OK);
    Verify(L, curve, values2);
 
    // CW (right) curves
    R1 = 0;
    R2 = -50;
-   TRY_TEST(curve->Init(nullptr, nullptr, R1, R2, L, Clothoid), S_OK);
+   TRY_TEST(curve->Init(nullptr, CComVariant(), R1, R2, L, Clothoid), S_OK);
 
    std::array<std::pair<Float64, Float64>, 6> values3
    {
@@ -127,7 +128,7 @@ void CTestTransitionCurve::Test1()
 
    R1 = -50;
    R2 = 0;
-   TRY_TEST(curve->Init(nullptr, nullptr, R1, R2, L, Clothoid), S_OK);
+   TRY_TEST(curve->Init(nullptr, CComVariant(), R1, R2, L, Clothoid), S_OK);
 
    std::array<std::pair<Float64, Float64>, 6> values4
    {
@@ -158,10 +159,8 @@ void CTestTransitionCurve::Test1()
    CComQIPtr<ISupportErrorInfo> eInfo(curve);
    TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ITransitionCurve ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_TransitionCurve,IID_ITransitionCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_TransitionCurve,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }

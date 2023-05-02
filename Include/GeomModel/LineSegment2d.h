@@ -40,11 +40,9 @@ namespace WBFL
       class GEOMMODELCLASS LineSegment2d
       {
       public:
-         LineSegment2d();
+         LineSegment2d() = default;
 
          /// Explicit constructor.  Creates a line segment from start to end.
-         LineSegment2d(std::shared_ptr<Point2d>& start, std::shared_ptr<Point2d>& end);
-
          LineSegment2d(const Point2d& start, const Point2d& end);
 
          /// Explicit constructor.  Creates a line segment from start to end.
@@ -52,18 +50,19 @@ namespace WBFL
 
          /// Explicit constructor.  Creates a line segment that starts at start 
          /// and ends at (start.X()+relEnd.Dx(),start.Y()+relEnd.Dy()).
-         LineSegment2d(std::shared_ptr<Point2d>& start, const Size2d& relEnd);
          LineSegment2d(const Point2d& start, const Size2d& relEnd);
 
-         virtual ~LineSegment2d();
+         virtual ~LineSegment2d() = default;
 
-         LineSegment2d(const LineSegment2d&);
-         LineSegment2d& operator=(const LineSegment2d&);
+         LineSegment2d(const LineSegment2d&) = default;
+         LineSegment2d& operator=(const LineSegment2d&) = default;
 
          bool operator==(const LineSegment2d& other) const;
          bool operator!=(const LineSegment2d& other) const;
 
-         void ThroughPoints(std::shared_ptr<Point2d>& start, std::shared_ptr<Point2d>& end);
+         /// @brief Defines the line segment as passing through two points
+         /// @param start Start of the line segment
+         /// @param end End of the line segment
          void ThroughPoints(const Point2d& start, const Point2d& end);
 
          /// Returns true if point is contained between the end points of this line 
@@ -74,26 +73,30 @@ namespace WBFL
          Float64 Length() const;
 
          /// Sets the start point of the line segment.
-         void SetStartPoint(std::shared_ptr<Point2d>& startPoint);
          void SetStartPoint(const Point2d& startPoint);
 
          /// Returns the start point of the line segment.
-         std::shared_ptr<Point2d>& GetStartPoint();
-         const std::shared_ptr<Point2d>& GetStartPoint() const;
+         const Point2d& GetStartPoint() const;
 
          /// Sets the end point of the line segment.
-         void SetEndPoint(std::shared_ptr<Point2d>& endPoint);
          void SetEndPoint(const Point2d& endPoint);
 
          /// Returns the end point of the line segment.
-         std::shared_ptr<Point2d>& GetEndPoint();
-         const std::shared_ptr<Point2d>& GetEndPoint() const;
+         const Point2d& GetEndPoint() const;
 
          /// Returns the mid point of the line segment.
          Point2d GetMidPoint() const;
 
-         LineSegment2d& Offset(Float64 distance);
-         LineSegment2d& OffsetBy(Float64 distance) const;
+         /// @brief Offsets this line segment.
+         /// @image html LineSegment2d/Offset.png
+         /// @param offset Offset. Positive values offset the line segment to the right, looking from start to end
+         /// @return This line segment in the offset position
+         LineSegment2d& Offset(Float64 offset);
+
+         /// @brief Returns a line segment which is offset to this line segment by the given amount
+         /// @param offset Offset
+         /// @return A line segment offset from this line segment
+         LineSegment2d OffsetBy(Float64 offset) const;
 
          /// Offsets this line segment by the given delta arguments. This line is 
          /// changed by translating its control points by the given distance.  
@@ -133,8 +136,8 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         std::shared_ptr<Point2d> m_pStart{ std::make_shared<Point2d>(0,0) };
-         std::shared_ptr<Point2d> m_pEnd{ std::make_shared<Point2d>(1,0) };
+         Point2d m_Start;
+         Point2d m_End;
       };
    }; // Geometry
 }; // WBFL

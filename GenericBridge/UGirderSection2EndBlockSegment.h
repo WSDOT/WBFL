@@ -33,7 +33,7 @@
 
 // Template takes care of all
 class CUGirderVoidSurfaceAreaCalculator;
-typedef TEndBlockSegmentImpl<IUGirderSection2EndBlockSegment, IUGirderSection2, IUBeam2, &CLSID_UGirderSection2EndBlockSegment, IDR_UGIRDERSECTION2ENDBLOCKSEGMENT, OutlineEndBlock<IUBeam2>, CUGirderVoidSurfaceAreaCalculator> CUGirderSection2EndBlockSegment;
+using CUGirderSection2EndBlockSegment = TEndBlockSegmentImpl<IUGirderSection2EndBlockSegment, IUGirderSection2, IUBeam2, &CLSID_UGirderSection2EndBlockSegment, IDR_UGIRDERSECTION2ENDBLOCKSEGMENT, OutlineEndBlock<IUBeam2>, CUGirderVoidSurfaceAreaCalculator>;
 
 class CUGirderVoidSurfaceAreaCalculator
 {

@@ -31,7 +31,7 @@
 #include "WBFLComCollections.h"
 #include "resource.h"       // main symbols
 
-typedef CComVectorCollection<ISuperstructureMemberCollection, ISuperstructureMember, IEnumSuperstructureMembers, &IID_IEnumSuperstructureMembers, CollectionIndexType> SSMBRVectorImpl;
+using SSMBRVectorImpl = CComVectorCollection<ISuperstructureMemberCollection, ISuperstructureMember, IEnumSuperstructureMembers, &IID_IEnumSuperstructureMembers, CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSuperstructureMemberCollection

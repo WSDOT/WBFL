@@ -159,19 +159,12 @@ void CTestWidening::Test()
    TRY_TEST(pWidening->get_Segment(0,&segmentIdx),S_OK);
    TRY_TEST(segmentIdx,5);
 
-   CComPtr<IStructuredStorage2> ss;
-   TRY_TEST(pWidening->get_StructuredStorage(nullptr),E_POINTER);
-   TRY_TEST(pWidening->get_StructuredStorage(&ss),S_OK);
-   TRY_TEST(ss != nullptr,true);
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pWidening);
    TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IWidening ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_Widening,IID_IWidening,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Widening,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }

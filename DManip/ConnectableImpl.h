@@ -157,7 +157,7 @@ public:
    }
 
 protected:
-   typedef std::vector<CComPtr<iSocket> > SocketContainer;
+   using SocketContainer = std::vector<CComPtr<iSocket>>;
    SocketContainer m_Sockets;
 
 private:

@@ -38,11 +38,7 @@
 #include <RCSection/AxialInteractionCurveSolver.h>
 #include <RCSection/MomentInteractionCurveSolver.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include <iostream>
 
 bool WBFL::RCSection::UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
@@ -67,7 +63,6 @@ bool WBFL::RCSection::UnitTest::TestMe(WBFL::Debug::Log& rlog)
 
    return tst;
 }
-
 
 void WBFL::RCSection::UnitTest::DumpSolution(const std::shared_ptr<GeneralSection>& section, const std::unique_ptr<MomentCapacitySolution>& solution)
 {

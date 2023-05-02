@@ -27,66 +27,23 @@
 #include <iostream>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
-LineSegment2d::LineSegment2d()
+LineSegment2d::LineSegment2d(const Point2d& start, const Point2d& end) :
+   m_Start(start), m_End(end)
 {
-}
-
-LineSegment2d::LineSegment2d(const LineSegment2d& other) 
-{
-   m_pStart = std::make_shared<Point2d>(*other.m_pStart);
-   m_pEnd = std::make_shared<Point2d>(*other.m_pEnd);
-}
-
-LineSegment2d& LineSegment2d::operator=(const LineSegment2d& other)
-{
-   if (this != &other)
-   {
-      m_pStart = std::make_shared<Point2d>(*other.m_pStart);
-      m_pEnd = std::make_shared<Point2d>(*other.m_pEnd);
-   }
-   return *this;
-}
-
-LineSegment2d::LineSegment2d(std::shared_ptr<Point2d>& start, std::shared_ptr<Point2d>& end):
-m_pStart(start),
-m_pEnd(end)
-{
-}
-
-LineSegment2d::LineSegment2d(const Point2d& start, const Point2d& end)
-{
-   m_pStart->Move(start);
-   m_pEnd->Move(end);
 }
 
 LineSegment2d::LineSegment2d(Float64 x1,Float64 y1, Float64 x2,Float64 y2)
 {
-   m_pStart->Move(x1, y1);
-   m_pEnd->Move(x2, y2);
-}
-
-LineSegment2d::LineSegment2d(std::shared_ptr<Point2d>& start, const Size2d& relEnd):
-m_pStart(start)
-{
-   m_pEnd->Move(m_pStart->X() + relEnd.Dx(), m_pStart->Y() + relEnd.Dy());
+   m_Start.Move(x1, y1);
+   m_End.Move(x2, y2);
 }
 
 LineSegment2d::LineSegment2d(const Point2d& start, const Size2d& relEnd)
 {
-   m_pStart->Move(start);
-   m_pEnd->Move(m_pStart->X() + relEnd.Dx(), m_pStart->Y() + relEnd.Dy());
-}
-
-LineSegment2d::~LineSegment2d()
-{
+   m_Start.Move(start);
+   m_End.Move(m_Start.X() + relEnd.Dx(), m_Start.Y() + relEnd.Dy());
 }
 
 bool LineSegment2d::operator==(const LineSegment2d& other) const
@@ -99,30 +56,24 @@ bool LineSegment2d::operator!=(const LineSegment2d& other) const
    return !(*this == other);
 }
 
-void LineSegment2d::ThroughPoints(std::shared_ptr<Point2d>& start, std::shared_ptr<Point2d>& end)
-{
-   m_pStart = start;
-   m_pEnd = end;
-}
-
 void LineSegment2d::ThroughPoints(const Point2d& start, const Point2d& end)
 {
-   m_pStart->Move(start);
-   m_pEnd->Move(end);
+   m_Start.Move(start);
+   m_End.Move(end);
 }
 
 bool LineSegment2d::ContainsPoint(const Point2d& point,Float64 tol) const
 {
-   // stole implemenation from unidraw's LineObj class and added tolerance. We might
+   // adopted implementation from unidraw's LineObj class and added tolerance. We might
    // want to consider having a global geometric tolerance for the gp package.
    
-	if ((point.X() >= Min(m_pStart->X(), m_pEnd->X())-tol) && 
-       (point.X() <= Max(m_pStart->X(), m_pEnd->X())+tol) &&
-	    (point.Y() >= Min(m_pStart->Y(), m_pEnd->Y())-tol) && 
-       (point.Y() <= Max(m_pStart->Y(), m_pEnd->Y())+tol))
+	if ((point.X() >= Min(m_Start.X(), m_End.X())-tol) && 
+       (point.X() <= Max(m_Start.X(), m_End.X())+tol) &&
+	    (point.Y() >= Min(m_Start.Y(), m_End.Y())-tol) && 
+       (point.Y() <= Max(m_Start.Y(), m_End.Y())+tol))
    {
-      Float64 prod = (point.Y() - m_pStart->Y())*(m_pEnd->X() - m_pStart->X()) - 
-                     (m_pEnd->Y() - m_pStart->Y() )*(point.X() - m_pStart->X());
+      Float64 prod = (point.Y() - m_Start.Y())*(m_End.X() - m_Start.X()) - 
+                     (m_End.Y() - m_Start.Y() )*(point.X() - m_Start.X());
 
       if (IsZero(prod,tol))
          return true;
@@ -135,71 +86,51 @@ bool LineSegment2d::ContainsPoint(const Point2d& point,Float64 tol) const
 
 Float64 LineSegment2d::Length() const
 {
-   return m_pStart->Distance(*m_pEnd);
-}
-
-void LineSegment2d::SetStartPoint(std::shared_ptr<Point2d>& p)
-{
-   m_pStart = p;
+   return m_Start.Distance(m_End);
 }
 
 void LineSegment2d::SetStartPoint(const Point2d& startPoint)
 {
-   m_pStart->Move(startPoint);
+   m_Start.Move(startPoint);
 }
 
-std::shared_ptr<Point2d>& LineSegment2d::GetStartPoint()
+const Point2d& LineSegment2d::GetStartPoint() const
 {
-   return m_pStart;
-}
-
-const std::shared_ptr<Point2d>& LineSegment2d::GetStartPoint() const
-{
-   return m_pStart;
-}
-
-void LineSegment2d::SetEndPoint(std::shared_ptr<Point2d>& p)
-{
-   m_pEnd = p;
+   return m_Start;
 }
 
 void LineSegment2d::SetEndPoint(const Point2d& endPoint)
 {
-   m_pEnd->Move(endPoint);
+   m_End.Move(endPoint);
 }
 
-std::shared_ptr<Point2d>& LineSegment2d::GetEndPoint()
+const Point2d& LineSegment2d::GetEndPoint() const
 {
-   return m_pEnd;
-}
-
-const std::shared_ptr<Point2d>& LineSegment2d::GetEndPoint() const
-{
-   return m_pEnd;
+   return m_End;
 }
 
 Point2d LineSegment2d::GetMidPoint() const
 {
-   Size2d size = *m_pEnd - *m_pStart;
+   Size2d size = m_End - m_Start;
    size /= 2;
-   return *m_pStart + size;
+   return m_Start + size;
 }
 
 LineSegment2d& LineSegment2d::Offset(Float64 distance)
 {
-   auto size = *m_pEnd - *m_pStart;
+   Size2d size = m_End - m_Start;
    auto length = size.Magnitude();
    Float64 ox = 0;
    Float64 oy = 0;
    if (!IsZero(length))
    {
-      ox = -distance * size.Dy() / length;
-      oy =  distance * size.Dx() / length;
+      ox =  distance * size.Dy() / length;
+      oy = -distance * size.Dx() / length;
    }
    return Offset(ox, oy);
 }
 
-LineSegment2d& LineSegment2d::OffsetBy(Float64 distance) const
+LineSegment2d LineSegment2d::OffsetBy(Float64 distance) const
 {
    LineSegment2d t(*this);
    return t.Offset(distance);
@@ -207,10 +138,10 @@ LineSegment2d& LineSegment2d::OffsetBy(Float64 distance) const
 
 LineSegment2d& LineSegment2d::Offset(Float64 dx,Float64 dy)
 {
-   m_pStart->X() += dx;
-   m_pStart->Y() += dy;
-   m_pEnd->X() += dx;
-   m_pEnd->Y() += dy;
+   m_Start.X() += dx;
+   m_Start.Y() += dy;
+   m_End.X() += dx;
+   m_End.Y() += dy;
    return *this;
 }
 
@@ -233,8 +164,8 @@ LineSegment2d LineSegment2d::OffsetBy(const Size2d& size) const
 
 LineSegment2d& LineSegment2d::Rotate(const Point2d& centerPoint, Float64 angle)
 {
-   m_pStart->Rotate(centerPoint, angle);
-   m_pEnd->Rotate(centerPoint, angle);
+   m_Start.Rotate(centerPoint, angle);
+   m_End.Rotate(centerPoint, angle);
    return *this;
 
 }
@@ -248,14 +179,14 @@ LineSegment2d LineSegment2d::RotateBy(const Point2d& centerPoint, Float64 angle)
 std::vector<Point2d> LineSegment2d::Divide(IndexType nSpaces) const
 {
    if (nSpaces == 0 || nSpaces == INVALID_INDEX)
-      THROW_GEOMETRY(_T("LineSegment2d::Divide - invalid number of spaces"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
 
    std::vector<Point2d> points;
-   Size2d size = *m_pEnd - *m_pStart;
+   Size2d size = m_End - m_Start;
    Size2d delta = size/(Float64)nSpaces;
    for ( IndexType i = 0; i < nSpaces + 1; i++ )
    {
-      Point2d p = *m_pStart + (Float64)i*delta;
+      Point2d p = m_Start + (Float64)i*delta;
       points.push_back( p );
    }
 
@@ -271,8 +202,8 @@ bool LineSegment2d::AssertValid() const
 void LineSegment2d::Dump(WBFL::Debug::LogContext& os) const
 {
    os << _T("Dump for LineSegment2d") << WBFL::Debug::endl;
-   os << _T("  m_pStart = (")<< m_pStart->X()<<_T(", ")<< m_pStart->Y()<<_T(")")<< WBFL::Debug::endl;
-   os << _T("  m_pEnd = (")<< m_pEnd->X()<<_T(", ")<< m_pEnd->Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  m_pStart = (")<< m_Start.X()<<_T(", ")<< m_Start.Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("  m_pEnd = (")<< m_End.X()<<_T(", ")<< m_End.Y()<<_T(")")<< WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -289,8 +220,8 @@ bool LineSegment2d::TestMe(WBFL::Debug::Log& rlog)
    LineSegment2d ltemp1, ltemp2;
 
    // get/set endpoints
-   TRY_TESTME (*at45.GetEndPoint()   == p1_4);
-   TRY_TESTME (*at45.GetStartPoint() == pn3_0);
+   TRY_TESTME(at45.GetEndPoint()   == p1_4);
+   TRY_TESTME(at45.GetStartPoint() == pn3_0);
    ltemp1 = at45;
    ltemp1.SetEndPoint(pn1_0);
    TRY_TESTME (ltemp1.ContainsPoint(Point2d(-2,0)));

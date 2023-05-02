@@ -25,12 +25,6 @@
 #include <System\Threads.h>
 #include <thread>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::System;
 
 static IndexType gs_hardware_threads = std::thread::hardware_concurrency();

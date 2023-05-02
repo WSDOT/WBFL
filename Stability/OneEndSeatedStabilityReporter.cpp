@@ -24,25 +24,17 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/OneEndSeatedStabilityReporter.h>
 #include <Stability/ReportingConstants.h>
-#include <EAF\EAFApp.h>
 #include <array>
 
 #include <WBFLGenericBridgeTools\GeneralSectionDetailsTable.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Stability;
-
 
 OneEndSeatedStabilityReporter::OneEndSeatedStabilityReporter()
 {
 }
 
-void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,const IOneEndSeatedStabilityProblem* pStabilityProblem,const OneEndSeatedCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel,Float64 offset)
+void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,const IOneEndSeatedStabilityProblem* pStabilityProblem,const OneEndSeatedCheckArtifact* pArtifact,rptChapter* pChapter, const WBFL::Units::IndirectMeasure* pDisplayUnits,LPCTSTR lpszLocColumnLabel,Float64 offset)
 {
    rptParagraph* pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
    *pChapter << pPara;
@@ -50,9 +42,6 @@ void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder
 
    pPara = new rptParagraph;
    *pChapter << pPara;
-
-   CEAFApp* pApp = EAFGetApp();
-   const WBFL::Units::IndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
 
    INIT_SCALAR_PROTOTYPE(rptRcScalar, scalar, pDisplayUnits->Scalar);
    INIT_UV_PROTOTYPE( rptStressUnitValue,   stress,       pDisplayUnits->Stress, true);
@@ -504,11 +493,8 @@ void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder
    *pChapter << pPara;
 }
 
-void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IOneEndSeatedStabilityProblem* pStabilityProblem,const OneEndSeatedResults* pResults,rptChapter* pChapter, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
+void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IOneEndSeatedStabilityProblem* pStabilityProblem,const OneEndSeatedResults* pResults,rptChapter* pChapter, const WBFL::Units::IndirectMeasure* pDisplayUnits,LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
 {
-   CEAFApp* pApp = EAFGetApp();
-   const WBFL::Units::IndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
-
    CComPtr<ISegment> segment;
    pGirder->GetSegment(&segment);
 
@@ -656,7 +642,9 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
    Float64 Hroll = -(Hg + pStabilityProblem->GetYRollAxis());
    *pPara << _T("Height of roll axis above support, ") << Sub2(_T("H"), _T("roll")) << _T(" = ") << shortLength.SetValue(Hroll) << rptNewLine;
 
-   CString slope_unit(pApp->GetUnitsMode() == eafTypes::umSI ? _T("m/m") : _T("ft/ft"));
+   std::_tostringstream os;
+   os << pDisplayUnits->AlignmentLength.UnitOfMeasure.UnitTag() << _T("/") << pDisplayUnits->AlignmentLength.UnitOfMeasure.UnitTag();
+   auto slope_unit(os.str());
 
    *pPara << _T("Support Slope, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSupportSlope() << _T(" ") << slope_unit << rptNewLine;
 
@@ -665,7 +653,7 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
    *pPara << _T("Downward Impact = ") << 100*impactDown << _T("%") << rptNewLine;
 
 
-   if ( pApp->GetUnitsMode() == eafTypes::umUS )
+   if ( pDisplayUnits->ComponentDim.UnitOfMeasure.UnitTag() == WBFL::Units::Measure::Inch.UnitTag())
    {
       Float64 sweepTolerance = pStabilityProblem->GetSweepTolerance();
       INT x = (INT)::RoundOff((1.0/(sweepTolerance*120.0)),1.0);
@@ -675,6 +663,7 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
    {
       *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"),_T("sweep")) << _T(" = ") << 1000*pStabilityProblem->GetSweepTolerance() << _T("mm/m");
    }
+
    Float64 sweepGrowth = pStabilityProblem->GetSweepGrowth();
    if (!IsZero(sweepGrowth))
    {
@@ -1368,31 +1357,33 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
       {
          WindDirection wind = (WindDirection)windCase;
 
-         CString strTitle;
+         std::_tostringstream os;
 
          if (bLabelImpact && !bLabelWind)
          {
             // more than one impact case but no wind
-            strTitle.Format(_T("%s"), strImpact[impactCase]);
+            os << strImpact[impactCase] << std::ends;
          }
          else if (!bLabelImpact && bLabelWind)
          {
             // only one impact case and wind cases
-            strTitle.Format(_T("Wind towards the %s (%s)"), strWindDir[+wind], strWindDirEx[+wind]);
+            os << _T("Wind towards the ") << strWindDir[+wind] << _T("(") << strWindDirEx[+wind] << _T(")") << std::ends;
          }
          else if (bLabelImpact && bLabelWind)
          {
             // more than one impact case and wind cases
-            strTitle.Format(_T("%s, Wind towards the %s (%s)"), strImpact[impactCase], strWindDir[+wind], strWindDirEx[+wind]);
+            os << strImpact[impactCase] << _T(", Wind towards the ") << strWindDir[+wind] << _T("(") << strWindDirEx[+wind] << _T(")") << std::ends;
          }
          else
          {
-            strTitle = _T("");
+            os << _T("");
          }
+
+         auto strTitle = os.str();
 
          pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
          *pChapter << pPara;
-         pPara->SetName(strTitle);
+         pPara->SetName(strTitle.c_str());
          *pPara << strTitle << rptNewLine;
 
          pPara = new rptParagraph;
@@ -2230,33 +2221,35 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
       pPara = new rptParagraph;
       *pChapter << pPara;
 
-      CString strTitle;
+      std::_tstringstream os;
 
       if (bLabelImpact && !bLabelWind)
       {
          // more than one impact case but no wind
-         strTitle.Format(_T("%s"), strImpact[impactIndex[+pResults->FScrImpactDirection]]);
+         os << strImpact[impactIndex[+pResults->FScrImpactDirection]] << std::ends;
       }
       else if (!bLabelImpact && bLabelWind)
       {
          // only one impact case and wind cases
-         strTitle.Format(_T("Wind towards the %s"), strWindDir[+pResults->FScrWindDirection]);
+         os << _T("Wind towards the ") << strWindDir[+pResults->FScrWindDirection] << std::ends;
       }
       else if (bLabelImpact && bLabelWind)
       {
          // more than one impact case and wind cases
-         strTitle.Format(_T("%s, Wind towards the %s"), strImpact[impactIndex[+pResults->FScrImpactDirection]], strWindDir[+pResults->FScrWindDirection]);
+         os << strImpact[impactIndex[+pResults->FScrImpactDirection]] << _T(", Wind towards the ") << strWindDir[+pResults->FScrWindDirection] << std::ends;
       }
       else
       {
-         strTitle = _T("");
+         os << _T("") << std::ends;
       }
+
+      auto strTitle = os.str();
 
       longLength.ShowUnitTag(true);
       *pPara << _T("The minimum factor of safety against cracking, ") << rptRcStringLiteral(pStabilityProblem->GetAnalysisPoint(pResults->vSectionResults[pResults->FScrAnalysisPointIndex].AnalysisPointIndex)->AsString(pDisplayUnits->SpanLength, offset, true)) << _T(" ");
 
       *pPara << strFlange[+pResults->vSectionResults[pResults->FScrAnalysisPointIndex].FScrCorner] << _T(" flange tip");
-      if (strTitle.IsEmpty())
+      if (strTitle.empty())
       {
          *pPara << rptNewLine;
       }

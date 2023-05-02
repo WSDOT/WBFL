@@ -38,7 +38,7 @@ static char THIS_FILE[] = __FILE__;
 
 // CAlignmentOffsetLayoutLineFactory
 
-STDMETHODIMP CAlignmentOffsetLayoutLineFactory::Create(IBridgeGeometry* pBridge,IPathCollection* pPaths)
+STDMETHODIMP CAlignmentOffsetLayoutLineFactory::Create(IBridgeGeometry* pBridge, IPathCollection* pPaths)
 {
    CHECK_IN(pBridge);
    CHECK_IN(pPaths);
@@ -63,7 +63,7 @@ STDMETHODIMP CAlignmentOffsetLayoutLineFactory::Create(IBridgeGeometry* pBridge,
       if ( FAILED(hr) )
          return hr;
 
-      hr = pPaths->AddEx((CogoObjectID)id,path);
+      hr = pPaths->Add((CogoObjectID)id,path);
       if ( FAILED(hr) )
          return hr;
    }

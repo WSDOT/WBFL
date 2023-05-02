@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -36,6 +36,6 @@
 #include <Roark/BeamWithUnequalOverhangsUniformLoad.h>
 #include <Roark/CompositeBeam.h>
 #include <Roark/PPIntermediateCouple.h>
-#include <Roark/PPIntermdiateLoad.h>
+#include <Roark/PPIntermediateLoad.h>
 #include <Roark/PPPartialUniformLoad.h>
 #include <Roark/RoarkBeam.h>

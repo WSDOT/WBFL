@@ -37,12 +37,6 @@
 #include <MathEx.h>
 #include <limits>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 Int16 GeometricOperations::Intersect(const LineSegment2d& ls1, const LineSegment2d& ls2, Point2d* point)
@@ -54,9 +48,9 @@ Int16 GeometricOperations::Intersect(const LineSegment2d& ls1, const LineSegment
    {
       // Segment 1 is zero length, but segment 2 is not.
       // See if start point of segment 1 is on segment 2.
-      if ( ls2.ContainsPoint( *ls1.GetStartPoint() ) )
+      if ( ls2.ContainsPoint( ls1.GetStartPoint() ) )
       {
-         *point = *ls1.GetStartPoint();
+         *point = ls1.GetStartPoint();
          return 1;
       }
       else
@@ -69,9 +63,9 @@ Int16 GeometricOperations::Intersect(const LineSegment2d& ls1, const LineSegment
    {
       // Segment 2 is zero length, but segment 1 is not.
       // See if start point of segment 2 is on segment 1.
-      if ( ls1.ContainsPoint( *ls2.GetStartPoint() ) )
+      if ( ls1.ContainsPoint( ls2.GetStartPoint() ) )
       {
-         *point = *ls2.GetStartPoint();
+         *point = ls2.GetStartPoint();
          return 1;
       }
       else
@@ -84,9 +78,9 @@ Int16 GeometricOperations::Intersect(const LineSegment2d& ls1, const LineSegment
    {
       // Both segment 1 and segment 2 are zero length.
       // See if their start points are the same
-      if ( *ls1.GetStartPoint() == *ls2.GetStartPoint() )
+      if ( ls1.GetStartPoint() == ls2.GetStartPoint() )
       {
-         *point = *ls1.GetStartPoint();
+         *point = ls1.GetStartPoint();
          return 1;
       }
       else
@@ -109,8 +103,8 @@ Int16 GeometricOperations::Intersect(const LineSegment2d& ls1, const LineSegment
    else if (it==-1)
    {
       // lines are collinear - do they share points?
-      Point2d ls1s = *ls1.GetStartPoint();
-      Point2d ls1e = *ls1.GetEndPoint();
+      Point2d ls1s = ls1.GetStartPoint();
+      Point2d ls1e = ls1.GetEndPoint();
       if (ls2.ContainsPoint(ls1s))
       {
          *point = ls1s;
@@ -141,8 +135,8 @@ Int16 GeometricOperations::Intersect(const Line2d& l, const Line2d& m, Point2d* 
    Point2d  mu;
    Vector2d mv;
 
-   l.GetImplicit(&lc, &ln);
-   m.GetExplicit(&mu, &mv);
+   std::tie(lc,ln) = l.GetImplicit();
+   std::tie(mu,mv) = m.GetExplicit();
 
    Float64 d = ln.Dot(mv);
    if (d!=0)
@@ -155,9 +149,9 @@ Int16 GeometricOperations::Intersect(const Line2d& l, const Line2d& m, Point2d* 
       if (f < 0) mv.Reflect();
 
       Float64 x1, y1;
-      muv.GetDimensions(&x1, &y1);
+      std::tie(x1,y1) = muv.GetDimensions();
       Float64 x2, y2;
-      mv.GetDimensions(&x2, &y2);
+      std::tie(x2,y2) = mv.GetDimensions();
       point->Move(x1 - x2, y1 - y2);
 
       return 1;
@@ -174,9 +168,9 @@ Int16 GeometricOperations::Intersect(const LineSegment2d& ls, const Line2d& l, P
 {
    if ( IsZero( ls.Length() ) )
    {
-      if ( l.ContainsPoint( *ls.GetStartPoint() ) )
+      if ( l.ContainsPoint( ls.GetStartPoint() ) )
       {
-         *point = *ls.GetStartPoint();
+         *point = ls.GetStartPoint();
          return 1;
       }
       else
@@ -196,7 +190,7 @@ Int16 GeometricOperations::Intersect(const LineSegment2d& ls, const Line2d& l, P
    }
    else if (it==-1)
    {
-      *point = *ls.GetStartPoint();
+      *point = ls.GetStartPoint();
       return -1;
    }
    else
@@ -215,12 +209,13 @@ Int16 GeometricOperations::Intersect(const Line2d& l,const Circle2d& c,Point2d* 
    Point2d center = *c.GetCenter();
    Point2d poln = l.PointOnLineNearest( center );
    Float64 radius = c.GetRadius();
-   if ( radius < poln.Distance(center) )
-      return 0; // Shorted dist to line is > radius.  They can't intersect
+   Float64 distance = poln.Distance(center);
+   if ( radius < distance && !IsEqual(radius,distance) )
+      return 0; // Shortest dist to line is > radius.  They can't intersect
 
    Point2d p;
    Vector2d v;
-   l.GetExplicit(&p, &v);
+   std::tie(p,v) = l.GetExplicit();
    Size2d size = v.GetSize();
 
    if ( IsZero(size.Dx()) )
@@ -262,7 +257,8 @@ Int16 GeometricOperations::Intersect(const Line2d& l,const Circle2d& c,Point2d* 
       Float64 C = pow(center.X(),2) + pow((b-center.Y()),2) - pow(radius,2);
 
       Float64 D = B*B - 4*A*C;
-      CHECK( D >= 0 );
+      D = (IsZero(D) ? 0 : D);
+      CHECK( 0 <= D );
       Float64 x1 = (-B - sqrt(D))/(2*A);
       Float64 x2 = (-B + sqrt(D))/(2*A);
 
@@ -338,8 +334,8 @@ Int16 GeometricOperations::Intersect(const Circle2d& c1, const Circle2d& c2, Poi
    // OK... do the regular intersection calculations
 
    // Compute some constants used in the solution of the quadratic equation
-   Float64 cx1, cy1; center1->GetLocation(&cx1, &cy1);
-   Float64 cx2, cy2; center2->GetLocation(&cx2, &cy2);
+   Float64 cx1, cy1; std::tie(cx1,cy1) = center1->GetLocation();
+   Float64 cx2, cy2; std::tie(cx2,cy2) = center2->GetLocation();
 
    Float64 K = (r1 * r1 - r2 * r2) - cx1 * cx1 + cx2 * cx2 - (cy2 - cy1) * (cy2 - cy1);
 
@@ -407,7 +403,7 @@ Int16 GeometricOperations::Intersect(const Circle& c1, const Circle& c2, Point2d
 
 Point2d GeometricOperations::PointOnLine(const Point2d& p1, const Point2d& p2, Float64 distFromStart)
 {
-   if (p1 == p2) THROW_GEOMETRY(_T("GeometricOperations::ProjectPointAlongLine - p1 and p2 cannot be coincident"));
+   if (p1 == p2) THROW_GEOMETRY(WBFL_GEOMETRY_E_COINCIDENTPOINTS);
 
    if (IsZero(distFromStart))
       return p1;
@@ -426,8 +422,8 @@ bool GeometricOperations::IsParallel(const Line2d& l1, const Line2d& l2)
 {
    Float64 c1, c2;
    Vector2d n1, n2;
-   l1.GetImplicit(&c1, &n1);
-   l2.GetImplicit(&c2, &n2);
+   std::tie(c1,n1) = l1.GetImplicit();
+   std::tie(c2,n2) = l2.GetImplicit();
    // test normal vectors. if they are in the same, or opposite directions, the lines are parallel
    return (n1 == n2 || n1 == -n2); 
 }
@@ -451,8 +447,8 @@ bool GeometricOperations::SameDirection(const Line2d& l1, const Line2d& l2)
 {
    Float64 c1, c2;
    Vector2d n1, n2;
-   l1.GetImplicit(&c1, &n1);
-   l2.GetImplicit(&c2, &n2);
+   std::tie(c1,n1) = l1.GetImplicit();
+   std::tie(c2,n2) = l2.GetImplicit();
    return (n1 == n2);
 }
 
@@ -488,7 +484,7 @@ void GeometricOperations::GenerateCircle(const Point2d& center,
                                 Float64 deltaAngle,
                                 std::vector<Point2d>* vPoints)
 {
-   if (radius < 0) THROW_GEOMETRY(_T("GeometricOperations::GenerateCircle - invalid radius"));
+   if (radius < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_RADIUS);
 
    // Design note: lots of points can be used to general a circle - to avoid copying a large container on return
    // a container is provided by the caller that is filled up. We intentionally do not clear the container because
@@ -509,9 +505,9 @@ Float64 GeometricOperations::Angle(const Point2d& start, const Point2d& center, 
    Float64 dx1, dy1; // Delta x and y center to start point
    Float64 dx2, dy2; // Delta x and y center to end point
 
-   start.GetLocation(&sx, &sy);
-   center.GetLocation(&cx, &cy);
-   end.GetLocation(&ex, &ey);
+   std::tie(sx,sy) = start.GetLocation();
+   std::tie(cx,cy) = center.GetLocation();
+   std::tie(ex,ey) = end.GetLocation();
    
    dx1 = sx - cx;
    dy1 = sy - cy;
@@ -520,7 +516,7 @@ Float64 GeometricOperations::Angle(const Point2d& start, const Point2d& center, 
    dy2 = ey - cy;
 
    if (IsZero(dx1) && IsZero(dy1) || IsZero(dx2) && IsZero(dy2))
-      THROW_GEOMETRY(_T("GeometricOperations::Angle - start, center, and end cannot be coincident points"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_COINCIDENTPOINTS);
 
    Float64 angle1 = atan2(dy1, dx1);
    if (IsZero(angle1))
@@ -566,7 +562,7 @@ Float64 GeometricOperations::ShortestOffsetToPoint(const Line2d& line, const Poi
 
    Float64 c;
    Vector2d n;
-   line.GetImplicit(&c, &n);
+   std::tie(c,n) = line.GetImplicit();
 
    Float64 dot = n.Dot(v);
    if (dot < 0) distance *= -1.0;
@@ -578,7 +574,7 @@ Point2d GeometricOperations::ReflectPointAcrossLine(const Point2d& point, const 
 {
    Float64 c;
    Vector2d n;
-   line.GetImplicit(&c, &n);
+   std::tie(c,n) = line.GetImplicit();
 
    Float64 dist = line.DistanceToPoint(point);
 
@@ -599,7 +595,7 @@ Point3d GeometricOperations::GlobalToLocal(const Point3d& origin,
    Float64 nDot;
 
    if (!IsEqual(unitVector.GetMagnitude(), 1.0))
-      THROW_GEOMETRY(_T("GeometricOperations::GlobalToLocal - invalid unit vector"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG); // must be a unit vector
 
    vKnownSubvOrigin = vKnown - vOrigin;
    nDot = vKnownSubvOrigin.Dot(unitVector);
@@ -626,8 +622,8 @@ Point3d GeometricOperations::LocalToGlobal(const Point3d& origin,
    Vector3d KnownCrossUnit;
    Vector3d vKnown(point);
 
-   if (!IsEqual(unitVector.GetMagnitude(), 1.0))
-      THROW_GEOMETRY(_T("GeometricOperations::GlobalToLocal - invalid unit vector"));
+   if (!IsEqual(unitVector.GetMagnitude(), 1.0)) // must be a unit vector
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
 
    KnownDotUnit = vKnown.Dot(unitVector);
    KnownCrossUnit = vKnown.Cross(unitVector);
@@ -670,14 +666,14 @@ Point2d GeometricOperations::GlobalToLocal(const Point2d& origin,
 
 Line2d GeometricOperations::CreateParallelLine(const Line2d& line, Float64 dist)
 {
-   Float64 c;  Vector2d n;  line.GetImplicit(&c, &n);
+   Float64 c;  Vector2d n;  std::tie(c,n) = line.GetImplicit();
    c -= dist;
    return Line2d(c, n);
 }
 
 LineSegment2d GeometricOperations::CreateParallelLineSegment(const LineSegment2d& segment, Float64 dist)
 {
-   Size2d size = (*segment.GetEndPoint()) - (*segment.GetStartPoint());
+   Size2d size = segment.GetEndPoint() - segment.GetStartPoint();
    Float64 dir = atan2(size.Dy(), size.Dx());
    LineSegment2d new_segment(segment);
    new_segment.Offset(dist * sin(dir), -dist * cos(dir));
@@ -686,7 +682,7 @@ LineSegment2d GeometricOperations::CreateParallelLineSegment(const LineSegment2d
 
 Line2d GeometricOperations::CreateParallelLineThroughPoint(const Line2d& line, const Point2d& point)
 {
-   Point2d u; Vector2d v; line.GetExplicit(&u, &v);
+   Point2d u; Vector2d v; std::tie(u,v) = line.GetExplicit();
    return Line2d(point, v);
 }
 
@@ -702,7 +698,7 @@ Line2d GeometricOperations::CreateNormalLineThroughPoint(const Line2d& line, con
    {
       Point2d u;
       Vector2d v;
-      line.GetExplicit(&u, &v);
+      std::tie(u,v) = line.GetExplicit();
 
       Vector2d n = v.Normal();
 
@@ -712,7 +708,7 @@ Line2d GeometricOperations::CreateNormalLineThroughPoint(const Line2d& line, con
 
 Point2d GeometricOperations::PointOnLineNearest(const Line2d& line, const Point2d& point)
 {
-   Float64 c; Vector2d n; line.GetImplicit(&c, &n);
+   Float64 c; Vector2d n; std::tie(c,n) = line.GetImplicit();
 
    n.Normalize(); // N must be normalized for this calculation
 
@@ -724,8 +720,8 @@ Point2d GeometricOperations::PointOnLineNearest(const Line2d& line, const Point2
 
    n.Scale(q);
 
-   Float64 xn, yn; n.GetDimensions(&xn, &yn);
-   Float64 x, y; point.GetLocation(&x, &y);
+   Float64 xn, yn; std::tie(xn,yn) = n.GetDimensions();
+   Float64 x, y; std::tie(x,y) = point.GetLocation();
 
    return Point2d(x - xn, y - yn);
 }
@@ -749,7 +745,7 @@ bool GeometricOperations::IsPointInTriangle(const Point2d& p, const Point2d& A, 
    Float64 denom = dot00 * dot11 - dot01 * dot01;
    if (IsZero(denom))
    {
-      THROW_GEOMETRY(_T("GeometricOperations::InPointInTriangle - invalid points"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
    }
 
    Float64 u = (dot11 * dot02 - dot01 * dot12) / denom;
@@ -994,13 +990,15 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    LineSegment2d seg2 = GeometricOperations::CreateParallelLineSegment(seg1, 10.0);
    TRY_TESTME(GeometricOperations::IsParallel(seg1, seg2));
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(10, 0);
+   p1.Move(0, 0);
+   p2.Move(10, 0);
+   seg1.ThroughPoints(p1,p2);
    seg2 = GeometricOperations::CreateParallelLineSegment(seg1, 10.0);
    TRY_TESTME(GeometricOperations::IsParallel(seg1, seg2));
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(0, 10);
+   p1.Move(0, 0);
+   p2.Move(0, 10);
+   seg1.ThroughPoints(p1, p2);
    seg2 = GeometricOperations::CreateParallelLineSegment(seg1, 10.0);
    TRY_TESTME(GeometricOperations::IsParallel(seg1, seg2));
 
@@ -1025,13 +1023,13 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    line2 = GeometricOperations::CreateNormalLineThroughPoint(line, p3);
 
    Float64 c; Vector2d v;
-   line2.GetImplicit(&c, &v);
+   std::tie(c,v) = line2.GetImplicit();
    TRY_TESTME(IsEqual(c, 2.4));
    TRY_TESTME(v == Vector2d(Size2d(0.8, 0.6)));
 
    p3.Move(0, 4);
    line2 = GeometricOperations::CreateNormalLineThroughPoint(line, p3);
-   line2.GetImplicit(&c, &v);
+   std::tie(c,v) = line2.GetImplicit();
    TRY_TESTME(IsEqual(c, 2.4));
    TRY_TESTME(v == Vector2d(Size2d(0.8, 0.6)));
 
@@ -1129,70 +1127,87 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 0);
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(10, 10);
-   seg2.GetStartPoint()->Move(10, 0);
-   seg2.GetEndPoint()->Move(0, 10);
+   p1.Move(0, 0);
+   p2.Move(10, 10);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(10, 0);
+   p4.Move(0, 10);
+   seg2.ThroughPoints(p3, p4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 1);
    TRY_TESTME(intersect1 == Point2d(5, 5));
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(0, 0);
-   seg2.GetStartPoint()->Move(10, 0);
-   seg2.GetEndPoint()->Move(0, 10);
+   p1.Move(0, 0);
+   p2.Move(0, 0);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(10, 0);
+   p4.Move(0, 10);
+   seg2.ThroughPoints(p3, p4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 0);
 
-   seg1.GetStartPoint()->Move(5, 5);
-   seg1.GetEndPoint()->Move(5, 5);
-   seg2.GetStartPoint()->Move(10, 0);
-   seg2.GetEndPoint()->Move(0, 10);
+   p1.Move(5, 5);
+   p2.Move(5, 5);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(10, 0);
+   p4.Move(0, 10);
+   seg2.ThroughPoints(p3, p4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 1);
    TRY_TESTME(intersect1 == Point2d(5, 5));
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(10, 10);
-   seg2.GetStartPoint()->Move(0, 10);
-   seg2.GetEndPoint()->Move(0, 10);
+   p1.Move(0, 0);
+   p2.Move(10, 10);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(0, 10);
+   p4.Move(0, 10);
+   seg2.ThroughPoints(p3, p4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 0);
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(10, 10);
-   seg2.GetStartPoint()->Move(5, 5);
-   seg2.GetEndPoint()->Move(5, 5);
+   p1.Move(0, 0);
+   p2.Move(10, 10);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(5, 5);
+   p4.Move(5, 5);
+   seg2.ThroughPoints(p3, p4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 1);
    TRY_TESTME(intersect1 == Point2d(5, 5));
 
-   seg1.GetStartPoint()->Move(5, 5);
-   seg1.GetEndPoint()->Move(5, 5);
-   seg2.GetStartPoint()->Move(10, 10);
-   seg2.GetEndPoint()->Move(10, 10);
+   p1.Move(5, 5);
+   p2.Move(5, 5);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(10, 10);
+   p4.Move(10, 10);
+   seg2.ThroughPoints(p3, p4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 0);
 
-   seg1.GetStartPoint()->Move(10, 10);
-   seg1.GetEndPoint()->Move(10, 10);
-   seg2.GetStartPoint()->Move(10, 10);
-   seg2.GetEndPoint()->Move(10, 10);
+   p1.Move(10, 10);
+   p2.Move(10, 10);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(10, 10);
+   p4.Move(10, 10);
+   seg2.ThroughPoints(p3, p4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 1);
    TRY_TESTME(intersect1 == Point2d(10, 10));
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(4, 4);
-   seg2.GetStartPoint()->Move(0, 10);
-   seg2.GetEndPoint()->Move(10, 0);
+   p1.Move(0, 0);
+   p2.Move(4, 4);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(0, 10);
+   p4.Move(10, 0);
+   seg2.ThroughPoints(p3, p4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 0);
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(4, 4);
-   seg2.GetStartPoint()->Move(0, 10);
-   seg2.GetEndPoint()->Move(5, 4);
+   p1.Move(0, 0);
+   p2.Move(4, 4);
+   seg1.ThroughPoints(p1, p2);
+   p3.Move(0, 10);
+   p4.Move(5, 4);
    result = GeometricOperations::Intersect(seg1, seg2, &intersect1);
    TRY_TESTME(result == 0);
 
@@ -1211,23 +1226,27 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(result == 1);
    TRY_TESTME(intersect1 == Point2d(5, 5));
 
-   seg1.GetEndPoint()->Move(100, 100);
+   p2.Move(100, 100);
+   seg1.ThroughPoints(seg1.GetStartPoint(), p2);
    result = GeometricOperations::Intersect(line, seg1, &intersect1);
    TRY_TESTME(result == 1);
    TRY_TESTME(intersect1 == Point2d(100, 100));
 
-   seg1.GetStartPoint()->Move(0, 0);
-   seg1.GetEndPoint()->Move(10, 10);
+   p1.Move(0, 0);
+   p2.Move(10, 10);
+   seg1.ThroughPoints(p1, p2);
    result = GeometricOperations::Intersect(line, seg1, &intersect1);
    TRY_TESTME(result == -1);
 
-   seg1.GetStartPoint()->Move(10, 15);
-   seg1.GetEndPoint()->Move(10, 15);
+   p1.Move(10, 15);
+   p2.Move(10, 15);
+   seg1.ThroughPoints(p1, p2);
    result = GeometricOperations::Intersect(line, seg1, &intersect1);
    TRY_TESTME(result == 0);
 
-   seg1.GetStartPoint()->Move(5, 5);
-   seg1.GetEndPoint()->Move(5, 5);
+   p1.Move(5, 5);
+   p2.Move(5, 5);
+   seg1.ThroughPoints(p1, p2);
    result = GeometricOperations::Intersect(line, seg1, &intersect1);
    TRY_TESTME(result == 1);
    TRY_TESTME(intersect1 == Point2d(5, 5));
@@ -1331,8 +1350,9 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    seg1.ThroughPoints(p3, p4);
    TRY_TESTME(!GeometricOperations::IsParallel(line, seg1));
 
-   seg1.GetStartPoint()->Move(0, 10);
-   seg1.GetEndPoint()->Move(10, 20);
+   p3.Move(0, 10);
+   p4.Move(10, 20);
+   seg1.ThroughPoints(p3, p4);
    TRY_TESTME(GeometricOperations::IsParallel(line, seg1));
    TRY_TESTME(GeometricOperations::IsParallel(seg1, line));
 
@@ -1348,7 +1368,8 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    seg2.ThroughPoints(p3, p4);
    TRY_TESTME(GeometricOperations::IsParallel(seg1, seg2));
 
-   seg2.GetEndPoint()->Offset(3, 5);
+   p4.Offset(3, 5);
+   seg2.ThroughPoints(seg2.GetStartPoint(), p4);
    TRY_TESTME(!GeometricOperations::IsParallel(seg1, seg2));
 
    //
@@ -1480,7 +1501,7 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( p1 == Point2d(0,0) );
    TRY_TESTME( p2 == Point2d(10,0) );
 
-   // Horizonal line at top of circle
+   // Horizontal line at top of circle
    l1.ThroughPoints( Point2d(0,5), Point2d(5,5) );
    nIntersect = Intersect(l1,circle,&p1,&p2);
    TRY_TESTME(nIntersect == 1);
@@ -1510,8 +1531,6 @@ bool GeometricOperations::TestMe(WBFL::Debug::Log& rlog)
    l1.ThroughPoints( Point2d(100,100), Point2d(100,200) );
    nIntersect = Intersect(l1,circle,&p1,&p2);
    TRY_TESTME( nIntersect == 0 );
-
-
 
    TESTME_EPILOG("GeometricOperations");
 }

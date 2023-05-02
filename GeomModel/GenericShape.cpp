@@ -28,12 +28,6 @@
 #include <MathEx.h>
 #include "MohrCircle.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 GenericShape::GenericShape(Float64 area,
@@ -341,7 +335,7 @@ ShapeProperties GenericShape::GetProperties() const
 Rect2d GenericShape::GetBoundingBox() const
 {
    Float64 cx, cy;
-   m_pCentroid->GetLocation(&cx, &cy);
+   std::tie(cx,cy) = m_pCentroid->GetLocation();
    return Rect2d(cx - m_Xleft, cy - m_Ybottom, cx + m_Xright, cy + m_Ytop);
 }
 
@@ -353,10 +347,10 @@ std::vector<Point2d> GenericShape::GetPolyPoints() const
 bool GenericShape::PointInShape(const Point2d& p) const
 {
    Float64 x,y;
-   p.GetLocation(&x,&y);
+   std::tie(x,y) = p.GetLocation();
 
    Float64 cx,cy;
-   m_pCentroid->GetLocation(&cx, &cy);
+   std::tie(cx,cy) = m_pCentroid->GetLocation();
 
    if ( (cx-m_Xleft <= x && x <= cx+m_Xright) &&
         (cy-m_Ybottom <= y && y <= cy+m_Ytop) )

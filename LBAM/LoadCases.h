@@ -33,8 +33,8 @@
 #include "LBAMCP.h"
 
 class CLoadCases;
-typedef  CComBSTRKeyedCollection<ILoadCases, ILoadCase, IEnumLoadCase, &IID_IEnumLoadCase,CollectionIndexType> LoadCaseCollImpl;
-typedef CPersistentCollection<CLoadCases, LoadCaseCollImpl,CollectionIndexType> PersistentLoadCaseCollImpl;
+using LoadCaseCollImpl = CComBSTRKeyedCollection<ILoadCases, ILoadCase, IEnumLoadCase, &IID_IEnumLoadCase, CollectionIndexType>;
+using PersistentLoadCaseCollImpl = CPersistentCollection<CLoadCases, LoadCaseCollImpl,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadCases

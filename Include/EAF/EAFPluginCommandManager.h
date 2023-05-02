@@ -107,7 +107,7 @@ private:
       CComPtr<IEAFCommandCallback> pCallback;
    };
 
-   typedef std::map<UINT,CCallbackItem> CallbackContainer;
-   typedef std::pair<UINT,CCallbackItem> CallbackEntry;
+   using CallbackContainer = std::map<UINT, CCallbackItem>;
+   using CallbackEntry = std::pair<UINT,CCallbackItem>;
    CallbackContainer m_Callbacks;
 };

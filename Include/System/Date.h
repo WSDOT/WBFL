@@ -28,6 +28,7 @@
 #include <ostream>
 #include <string>
 
+#include <System/Debug.h>
 
 namespace WBFL
 {
@@ -36,10 +37,10 @@ namespace WBFL
       class Time;
 
 
-      typedef Uint16 DayTy;
-      typedef Uint16 MonthTy;
-      typedef Uint16 YearTy;
-      typedef Uint32 JulTy;
+      using DayTy = Uint16;
+      using MonthTy = Uint16;
+      using YearTy = Uint16;
+      using JulTy = Uint32;
 
       static const JulTy jul1901 = 2415386L;  // Julian day for 1/1/1901
 
@@ -71,7 +72,7 @@ namespace WBFL
          /// If year is between 00 and 99, 1900 will be added to year.
          Date( DayTy, LPCTSTR month, YearTy );
 
-         /// Construct forr the given day, month, and year.
+         /// Constructor for the given day, month, and year.
          /// If year is between 00 and 99, 1900 will be added to year.
          Date( DayTy, MonthTy, YearTy );
 
@@ -81,7 +82,7 @@ namespace WBFL
          /// Construct from a Time object
          Date( const Time& ); 
 
-         /// Construct from Julean date
+         /// Construct from Julian date
          Date( JulTy j );
 
          Int16 operator< ( const Date& date ) const;

@@ -99,8 +99,8 @@ namespace WBFL
          // however, we sill need the constructor so it is private so client's can't directly create this object
          ReportBuilderManager() = default;
 
-         typedef std::map<std::_tstring, std::shared_ptr<ReportBuilder> > RptBuilderContainer;
-         typedef std::pair<std::_tstring, std::shared_ptr<ReportBuilder> > RptBuilderEntry;
+         using RptBuilderContainer = std::map<std::_tstring, std::shared_ptr<ReportBuilder>>;
+         using RptBuilderEntry = std::pair<std::_tstring, std::shared_ptr<ReportBuilder>>;
          RptBuilderContainer m_RptBuilders;
 
          std::shared_ptr<rptReport> CreateReport(const std::shared_ptr<ReportSpecification>& pRptSpec) const;

@@ -28,12 +28,6 @@
 #include <GeomModel\GeomOp2d.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 static const Float64 FLT_TOLER=1.0e-06; // close enough
@@ -94,10 +88,10 @@ void seek_left(const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, In
 Float64 interpolate(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2, Float64 x)
 {
    // vertical segments not allowed
-   ATLASSERT( !IsEqual(p1.X(),p2.X()) );
+   CHECK( !IsEqual(p1.X(),p2.X()) );
    
    // make sure x is between p1 and p2
-   ATLASSERT(InRange(p1.X(),x,p2.X()));
+   CHECK(InRange(p1.X(),x,p2.X()));
 
    Float64 a     = x - p1.X();
    Float64 l     = p1.Y();

@@ -223,9 +223,9 @@ protected:
    };
 
    // our main container
-   typedef std::vector<InflPoint> InfluencePointContainer;
-   typedef InfluencePointContainer::iterator InfluencePointIterator;
-   typedef InfluencePointContainer::const_iterator ConstInfluencePointIterator;
+   using InfluencePointContainer = std::vector<InflPoint>;
+   using InfluencePointIterator = InfluencePointContainer::iterator;
+   using ConstInfluencePointIterator = InfluencePointContainer::const_iterator;
 
    InfluencePointContainer m_InfluencePoints[3]; // one container for each InfluenceSideType
    Float64 m_Area[3];

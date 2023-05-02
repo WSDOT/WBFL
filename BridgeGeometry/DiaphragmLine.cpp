@@ -147,7 +147,7 @@ HRESULT CDiaphragmLine::LocatePoints()
 
       if ( m_bStaggered )
       {
-         // find mid-point between pntLeft and pntRight. This is the point the staggered diaphram
+         // find mid-point between pntLeft and pntRight. This is the point the staggered diaphragm
          // passes through in the center of the girder bay
          Float64 xl,yl,xr,yr;
          pntLeft->Location(&xl,&yl);
@@ -162,7 +162,8 @@ HRESULT CDiaphragmLine::LocatePoints()
          endPoints.pntLeft.Release();
          Float64 distFromStart;
          VARIANT_BOOL vbOnProjection;
-         leftPath->ProjectPoint(pntC,&endPoints.pntLeft, &distFromStart, &vbOnProjection);
+         CComQIPtr<IPathElement> element(leftPath);
+         element->ProjectPoint(pntC,&endPoints.pntLeft, &distFromStart, &vbOnProjection);
 
          // Create a line from this point through point (cx,cy)
          CComPtr<ILine2d> staggeredLine;

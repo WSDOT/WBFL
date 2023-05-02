@@ -35,8 +35,8 @@
 #include <string>
 #include "WbflUnitServerCP.h"
 
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT,VARIANT,_Copy<VARIANT>, std::vector<CComVariant> > EnumDisplayUnitGroups2;
-typedef ICollectionOnSTLImpl<IDisplayUnitMgr2,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,EnumDisplayUnitGroups2> IDisplayUnitGroup2Collection;
+using EnumDisplayUnitGroups2 = CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> >;
+using IDisplayUnitGroup2Collection = ICollectionOnSTLImpl<IDisplayUnitMgr2,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,EnumDisplayUnitGroups2>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayUnitMgr2

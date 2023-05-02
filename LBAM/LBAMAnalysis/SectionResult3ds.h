@@ -34,8 +34,8 @@
 
 class CSectionResult3Ds;
 
-typedef CComVectorCollection<ISectionResult3Ds, ISectionResult3D, IEnumSectionResult3D, &IID_IEnumSectionResult3D,CollectionIndexType> SFRVectorImpl;
-typedef CPersistentCollection<CSectionResult3Ds, SFRVectorImpl,CollectionIndexType> PersistentSFRCollImpl;
+using SFRVectorImpl = CComVectorCollection<ISectionResult3Ds, ISectionResult3D, IEnumSectionResult3D, &IID_IEnumSectionResult3D, CollectionIndexType>;
+using PersistentSFRCollImpl = CPersistentCollection<CSectionResult3Ds, SFRVectorImpl,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSectionResult3Ds

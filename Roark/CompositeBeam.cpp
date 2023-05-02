@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -24,13 +24,6 @@
 
 #include <Roark/RoarkLib.h>
 #include <Roark/CompositeBeam.h>
-#include <MathEx.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Beams;
 
@@ -78,56 +71,61 @@ std::unique_ptr<RoarkBeam> CompositeBeam::CreateClone() const
    return clone;
 }
 
-void CompositeBeam::GetReactions(Float64 *pRa,Float64* pRb) const
+std::pair<Float64, Float64> CompositeBeam::GetReactions() const
 {
-   *pRa = 0;
-   *pRb = 0;
-   for(const auto& beam : m_Beams)
-   {
-      Float64 Ra, Rb;
-      beam->GetReactions( &Ra, &Rb );
-      *pRa += Ra;
-      *pRb += Rb;
-   }
-}
-
-void CompositeBeam::GetMoments(Float64* pMa,Float64* pMb) const
-{
-   *pMa = 0;
-   *pMb = 0;
-   for(const auto& beam : m_Beams)
-   {
-      Float64 Ma, Mb;
-      beam->GetMoments( &Ma, &Mb );
-      *pMa += Ma;
-      *pMb += Mb;
-   }
-}
-
-void CompositeBeam::GetRotations(Float64* pra,Float64* prb) const
-{
-   *pra = 0;
-   *prb = 0;
+   Float64 Ra = 0;
+   Float64 Rb = 0;
    for(const auto& beam : m_Beams)
    {
       Float64 ra, rb;
-      beam->GetRotations( &ra, &rb );
-      *pra += ra;
-      *prb += rb;
+      std::tie(ra,rb) = beam->GetReactions();
+      Ra += ra;
+      Rb += rb;
    }
+   return std::make_pair(Ra, Rb);
 }
 
-void CompositeBeam::GetDeflections(Float64* pYa,Float64* pYb) const
+
+std::pair<Float64, Float64> CompositeBeam::GetMoments() const
 {
-   *pYa = 0;
-   *pYb = 0;
+   Float64 Ma = 0;
+   Float64 Mb = 0;
    for(const auto& beam : m_Beams)
    {
-      Float64 Ya, Yb;
-      beam->GetDeflections( &Ya, &Yb );
-      *pYa += Ya;
-      *pYb += Yb;
+      Float64 ma, mb;
+      std::tie(ma,mb) = beam->GetMoments();
+      Ma += ma;
+      Mb += mb;
    }
+   return std::make_pair(Ma, Mb);
+}
+
+std::pair<Float64, Float64> CompositeBeam::GetRotations() const
+{
+   Float64 ra = 0;
+   Float64 rb = 0;
+   for(const auto& beam : m_Beams)
+   {
+      Float64 _ra, _rb;
+      std::tie(_ra,_rb) = beam->GetRotations();
+      ra += _ra;
+      rb += _rb;
+   }
+   return std::make_pair(ra, rb);
+}
+
+std::pair<Float64, Float64> CompositeBeam::GetDeflections() const
+{
+   Float64 Ya = 0;
+   Float64 Yb = 0;
+   for(const auto& beam : m_Beams)
+   {
+      Float64 ya, yb;
+      std::tie(ya,yb) = beam->GetDeflections();
+      Ya += ya;
+      Yb += yb;
+   }
+   return std::make_pair(Ya, Yb);
 }
 
 WBFL::System::SectionValue CompositeBeam::ComputeShear(Float64 x) const

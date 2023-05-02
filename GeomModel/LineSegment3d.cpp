@@ -28,60 +28,23 @@
 #include <iostream>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
-
-LineSegment3d::LineSegment3d()
-{
-}
-
-LineSegment3d::LineSegment3d(const LineSegment3d& other)
-{
-   m_pStart = std::make_shared<Point3d>(*other.m_pStart);
-   m_pEnd = std::make_shared<Point3d>(*other.m_pEnd);
-}
-
-LineSegment3d& LineSegment3d::operator=(const LineSegment3d& other)
-{
-   if (this != &other)
-   {
-      m_pStart = std::make_shared<Point3d>(*other.m_pStart);
-      m_pEnd = std::make_shared<Point3d>(*other.m_pEnd);
-   }
-   return *this;
-}
-
-LineSegment3d::LineSegment3d(std::shared_ptr<Point3d>& start, std::shared_ptr<Point3d>& end):
-m_pStart(start),
-m_pEnd(end)
-{
-}
 
 LineSegment3d::LineSegment3d(Float64 x1,Float64 y1, Float64 z1, Float64 x2,Float64 y2, Float64 z2)
 {
-   m_pStart->Move(x1, y1, z1);
-   m_pEnd->Move(x2, y2, z2);
+   m_Start.Move(x1, y1, z1);
+   m_End.Move(x2, y2, z2);
 }
 
-LineSegment3d::LineSegment3d(std::shared_ptr<Point3d>& start, const Size3d& relEnd):
-m_pStart(start)
+LineSegment3d::LineSegment3d(const Point3d& start, const Point3d& end) :
+m_Start(start), m_End(end)
 {
-   m_pEnd->Move(m_pStart->X() + relEnd.Dx(), m_pStart->Y() + relEnd.Dy(), m_pStart->Z() + relEnd.Dz());
 }
 
 LineSegment3d::LineSegment3d(const Point3d& start, const Size3d& relEnd)
 {
-   m_pStart->Move(start);
-   m_pEnd->Move(m_pStart->X() + relEnd.Dx(), m_pStart->Y() + relEnd.Dy(), m_pStart->Z() + relEnd.Dz());
-}
-
-LineSegment3d::~LineSegment3d()
-{
+   m_Start.Move(start);
+   m_End.Move(m_Start.X() + relEnd.Dx(), m_Start.Y() + relEnd.Dy(), m_Start.Z() + relEnd.Dz());
 }
 
 bool LineSegment3d::operator==(const LineSegment3d& other) const
@@ -94,64 +57,48 @@ bool LineSegment3d::operator!=(const LineSegment3d& other) const
    return !(*this == other);
 }
 
-void LineSegment3d::ThroughPoints(std::shared_ptr<Point3d>& start, std::shared_ptr<Point3d>& end)
-{
-   m_pStart = start;
-   m_pEnd = end;
-}
-
 void LineSegment3d::ThroughPoints(const Point3d& start, const Point3d& end)
 {
-   m_pStart->Move(start);
-   m_pEnd->Move(end);
+   m_Start = start;
+   m_End = end;
 }
 
 Float64 LineSegment3d::GetLength() const
 {
-   return m_pStart->Distance(*m_pEnd);
+   return m_Start.Distance(m_End);
 }
 
-void LineSegment3d::SetStartPoint (std::shared_ptr<Point3d>& p)
+void LineSegment3d::SetStartPoint(const Point3d& p)
 {
-   m_pStart = p;
+   m_Start = p;
 }
 
-std::shared_ptr<Point3d>& LineSegment3d::GetStartPoint()
+const Point3d& LineSegment3d::GetStartPoint() const
 {
-   return m_pStart;
+   return m_Start;
 }
 
-const std::shared_ptr<Point3d>& LineSegment3d::GetStartPoint() const
+void LineSegment3d::SetEndPoint(const Point3d& p)
 {
-   return m_pStart;
+   m_End = p;
 }
 
-void LineSegment3d::SetEndPoint(std::shared_ptr<Point3d>& p)
+const Point3d& LineSegment3d::GetEndPoint() const
 {
-   m_pEnd = p;
-}
-
-std::shared_ptr<Point3d>& LineSegment3d::GetEndPoint()
-{
-   return m_pEnd;
-}
-
-const std::shared_ptr<Point3d>& LineSegment3d::GetEndPoint() const
-{
-   return m_pEnd;
+   return m_End;
 }
 
 Point3d LineSegment3d::GetMidPoint() const
 {
-   Size3d size = *m_pEnd - *m_pStart;
+   Size3d size = m_End - m_Start;
    size /= 2;
-   return *m_pStart + size;
+   return m_Start + size;
 }
 
 LineSegment3d& LineSegment3d::Offset(Float64 dx,Float64 dy,Float64 dz)
 {
-   m_pStart->Offset(dx, dy, dz);
-   m_pEnd->Offset(dx, dy, dz);
+   m_Start.Offset(dx, dy, dz);
+   m_End.Offset(dx, dy, dz);
    return *this;
 }
 
@@ -175,11 +122,11 @@ LineSegment3d LineSegment3d::OffsetBy(const Size3d& size) const
 std::vector<Point3d> LineSegment3d::Divide(Uint16 nSpaces) const
 {
    std::vector<Point3d> points;
-   Size3d size = *m_pEnd - *m_pStart;
+   Size3d size = m_End - m_Start;
    Size3d delta = size/nSpaces;
    for ( Uint16 i = 0; i < nSpaces + 1; i++ )
    {
-      Point3d p = *m_pStart + i*delta;
+      Point3d p = m_Start + i*delta;
       points.push_back( p );
    }
 
@@ -190,8 +137,8 @@ Float64 LineSegment3d::DistanceToPoint(const Point3d& p) const
 {
    //https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
    Vector3d v0(p);
-   Vector3d v1(*m_pStart);
-   Vector3d v2(*m_pEnd);
+   Vector3d v1(m_Start);
+   Vector3d v2(m_End);
 
    auto vd = (v2 - v1).Cross(v1 - v0);
    auto vn = (v2 - v1);
@@ -208,8 +155,8 @@ bool LineSegment3d::AssertValid() const
 void LineSegment3d::Dump(WBFL::Debug::LogContext& os) const
 {
    os << _T("Dump for LineSegment3d") << WBFL::Debug::endl;
-   os << _T("  m_pStart = (")<< m_pStart->X()<<_T(", ")<< m_pStart->Y() <<_T(", ") << m_pStart->Z() << _T(")") << WBFL::Debug::endl;
-   os << _T("  m_End = (")<< m_pEnd->X()<<_T(", ")<< m_pEnd->Y() << _T(", ") << m_pEnd->Z() << _T(")") << WBFL::Debug::endl;
+   os << _T("  m_pStart = (")<< m_Start.X()<<_T(", ")<< m_Start.Y() <<_T(", ") << m_Start.Z() << _T(")") << WBFL::Debug::endl;
+   os << _T("  m_End = (")<< m_End.X()<<_T(", ")<< m_End.Y() << _T(", ") << m_End.Z() << _T(")") << WBFL::Debug::endl;
 }
 #endif // _DEBUG
 
@@ -230,15 +177,14 @@ bool LineSegment3d::TestMe(WBFL::Debug::Log& rlog)
    // Test Offset method
    //
    seg.Offset(-10, -10, 0);
-   TRY_TESTME(IsEqual(seg.GetStartPoint()->X(), 0.0));
-   TRY_TESTME(IsEqual(seg.GetStartPoint()->Y(), 0.0));
-   TRY_TESTME(IsEqual(seg.GetStartPoint()->Z(), 10.0));
-   TRY_TESTME(IsEqual(seg.GetEndPoint()->X(), 10.0));
-   TRY_TESTME(IsEqual(seg.GetEndPoint()->Y(), 10.0));
-   TRY_TESTME(IsEqual(seg.GetEndPoint()->Z(), 20.0));
+   TRY_TESTME(IsEqual(seg.GetStartPoint().X(), 0.0));
+   TRY_TESTME(IsEqual(seg.GetStartPoint().Y(), 0.0));
+   TRY_TESTME(IsEqual(seg.GetStartPoint().Z(), 10.0));
+   TRY_TESTME(IsEqual(seg.GetEndPoint().X(), 10.0));
+   TRY_TESTME(IsEqual(seg.GetEndPoint().Y(), 10.0));
+   TRY_TESTME(IsEqual(seg.GetEndPoint().Z(), 20.0));
 
-   seg.GetStartPoint()->Move(10, 10, 10);
-   seg.GetEndPoint()->Move(20, 20, 20);
+   seg.ThroughPoints(Point3d(10, 10, 10), Point3d(20, 20, 20));
 
    auto midpoint = seg.GetMidPoint();
    TRY_TESTME(IsEqual(midpoint.X(), 15.0));

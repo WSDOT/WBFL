@@ -60,7 +60,7 @@ namespace WBFL
 {
    namespace Debug
    {
-      /// Base class for the dbgDiagGroup classes and handles basic message outout
+      /// Base class for the dbgDiagGroup classes and handles basic message output
       class SYSCLASS Diagnostics
       {
       public:

@@ -79,12 +79,7 @@ public:
    /// Creates a clone
    virtual rptReportContent* CreateClone() const override
    {
-#if defined _DEBUG
-      // this is the same as DEBUG_NEW... we just can't use DEBUG_NEW in a header file
-      return new(__FILE__,__LINE__) rptRcUnitValueT( *this );
-#else
       return new rptRcUnitValueT( *this );
-#endif
    }
 
    /// Assigns a new value and returns a reference to this
@@ -158,7 +153,7 @@ private:
 
 #define DECLARE_RC_UNIT_VALUE(u,t) \
    REPORTERTPL rptRcUnitValueT<u>; \
-   typedef rptRcUnitValueT<u> t;
+   using t = rptRcUnitValueT<u>;
 
 DECLARE_RC_UNIT_VALUE( WBFL::Units::Mass,           rptMassUnitValue           );
 DECLARE_RC_UNIT_VALUE( WBFL::Units::MassPerLength,  rptMassPerLengthUnitValue  );
@@ -180,9 +175,9 @@ DECLARE_RC_UNIT_VALUE( WBFL::Units::PerLength,      rptPerLengthUnitValue      )
 DECLARE_RC_UNIT_VALUE( WBFL::Units::ForceLength2,   rptForceLength2UnitValue   );
 DECLARE_RC_UNIT_VALUE( WBFL::Units::Velocity,       rptVelocityUnitValue       );
 
-typedef rptPressureUnitValue rptStressUnitValue;
-typedef rptLength2UnitValue  rptAreaUnitValue;
-typedef rptLength3UnitValue  rptVolumeUnitValue;
-typedef rptLengthUnitValue   rptAreaPerLengthValue;
+using rptStressUnitValue = rptPressureUnitValue;
+using rptAreaUnitValue = rptLength2UnitValue;
+using rptVolumeUnitValue = rptLength3UnitValue;
+using rptAreaPerLengthValue = rptLengthUnitValue;
 
 #endif // INCLUDED_REPORTER_RCUNITVALUET_H_

@@ -153,7 +153,7 @@ protected:
       { return m_ToolBarID == other.m_ToolBarID; }
    };
 
-   typedef std::vector<CEAFToolBarInfo> ToolBarInfo;
+   using ToolBarInfo = std::vector<CEAFToolBarInfo>;
    ToolBarInfo m_ToolBarInfo;
    std::vector<UINT> m_ToolBarIDs;
    void SetToolBarState(CToolBar* pToolBar,BOOL bShow);

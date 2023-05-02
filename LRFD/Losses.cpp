@@ -28,13 +28,6 @@
 #include <Lrfd\VersionMgr.h>
 #include <Units\Convert.h>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 // NOTE: Eccentricities have the opposite sign from the coordinate system used to compute stresses
 // That is [(Pex*Ixx + Pey*Ixy)(x) - (Pey*Iyy + Pex*Ixy)(y)]/(IxxIyy - Ixy^2)
 // x = -ex, y = -ey

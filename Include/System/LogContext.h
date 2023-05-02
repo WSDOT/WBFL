@@ -24,15 +24,10 @@
 #pragma once
 
 #include <System\SysExp.h>
-
+#include <System\SectionValue.h>
 
 namespace WBFL
 {
-   namespace System
-   {
-      class SectionValue;
-   };
-
    namespace Debug
    {
       /// Abstract logging context.

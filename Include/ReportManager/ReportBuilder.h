@@ -127,7 +127,7 @@ namespace WBFL
          std::shared_ptr<TitlePageBuilder> m_pTitlePageBuilder;
          std::shared_ptr<ReportSpecificationBuilder> m_pRptSpecBuilder{std::make_shared<ReportSpecificationBuilder>()};
 
-         typedef std::vector<std::shared_ptr<ChapterBuilder>> ChapterBuilderContainer;
+         using ChapterBuilderContainer = std::vector<std::shared_ptr<ChapterBuilder>>;
          ChapterBuilderContainer m_ChapterBuilders;
       };
    };

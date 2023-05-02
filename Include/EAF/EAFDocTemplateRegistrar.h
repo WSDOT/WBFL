@@ -41,6 +41,6 @@ public:
 
 private:
    long m_Key;
-   typedef std::map<long,CEAFDocTemplate*> TemplateContainer;
+   using TemplateContainer = std::map<long,CEAFDocTemplate*>;
    TemplateContainer m_Templates;
 };

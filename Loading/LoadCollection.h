@@ -226,8 +226,7 @@ public:
    // COM_INTERFACE_ENTRY_CHAIN(CPersistentCollection<Tderived,TColl,Version>)
    // to their interface maps.
    // This chains their primary map to this secondary map
-   typedef CLoadCollection<T, piidT, TDerived, LoadType, IItemType, CItemType,
-           EnumType, piidEnum> _ThisClass;
+   using _ThisClass = CLoadCollection<T, piidT, TDerived, LoadType, IItemType, CItemType, EnumType, piidEnum>;
 
    BEGIN_COM_MAP(_ThisClass)
       COM_INTERFACE_ENTRY(IStructuredStorage2)
@@ -236,10 +235,10 @@ public:
    END_COM_MAP()
 
 private:
-   typedef CComPtr<IItemType>         StoredType;
-   typedef typename std::map<IDType, StoredType> ContainerType;
-   typedef typename ContainerType::iterator    ContainerIteratorType;
-   typedef typename ContainerType::value_type  ContainerValueType;
+   using StoredType = CComPtr<IItemType>;
+   using ContainerType = typename std::map<IDType, StoredType>;
+   using ContainerIteratorType = typename ContainerType::iterator;
+   using ContainerValueType = typename ContainerType::value_type;
 
    ContainerType m_Container; // key value pair
    IDType        m_LastUniqueKey;
@@ -334,8 +333,8 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef _CopyMapOfCComVariantsToInterface<IItemType, ContainerType> CopyType;
-      typedef CComEnumOnSTL<EnumType, piidEnum, IItemType*, CopyType, ContainerType> MyEnumType;
+      using CopyType = _CopyMapOfCComVariantsToInterface<IItemType, ContainerType>;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidEnum, IItemType*, CopyType, ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )
@@ -359,8 +358,8 @@ public:
 	   *ppUnk = nullptr;
 	   HRESULT hRes = S_OK;
 
-      typedef _CopyMapOfCComVariants<ContainerType> CopyVariantType;
-      typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyVariantType, ContainerType > VecEnumType;
+      using CopyVariantType = _CopyMapOfCComVariants<ContainerType>;
+      using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyVariantType, ContainerType >;
 	   CComObject<VecEnumType>* p;
 	   hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	   if (SUCCEEDED(hRes))
@@ -385,7 +384,7 @@ public:
       CHECK_IN(pLoad);
 
       IDType ID = ++m_LastUniqueKey;
-      typedef AddLoadParams Parameters;
+      using Parameters = AddLoadParams;
       Parameters parameters(ID,Stage,LoadGroup,pLoad);
 
       HRESULT hr = DoAddLoad(this,parameters);

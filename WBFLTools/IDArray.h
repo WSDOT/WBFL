@@ -75,7 +75,7 @@ public:
 	STDMETHOD(get__EnumElements)(struct IEnumIDArray ** ) override;
 
 protected:
-   typedef std::vector<IDType>       ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
+   using ContainerType = std::vector<IDType>;
+	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 };

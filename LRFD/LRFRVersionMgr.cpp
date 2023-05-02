@@ -27,12 +27,6 @@
 #include <Lrfd\LRFRVersionMgrListener.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfrVersionMgr
@@ -136,7 +130,7 @@ LPCTSTR lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version,bool bA
       return (bAbbreviated ? _T("LRFR2020") : _T("Third Edition 2018, with 2020 interim provisions"));
 
    default:
-      ASSERT(false);
+      CHECK(false);
       return _T("LRFR2008");
    }
 }
@@ -186,7 +180,7 @@ lrfrVersionMgr::Version lrfrVersionMgr::GetVersion(LPCTSTR strAbbrev)
    }
    else
    {
-      ATLASSERT(false);
+      CHECK(false);
       throw 0;
    }
 }

@@ -26,12 +26,6 @@
 #include <Math\XFunction.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 void CompositeFunction::AddFunction(Float64 xMin,Float64 xMax,const Function& func)
@@ -78,7 +72,7 @@ Float64 CompositeFunction::Evaluate(Float64 x) const
    }
 
    // function is undefined at x
-   ASSERT(false); // hmmm?
+   CHECK(false); // hmmm?
    THROW_FUNCTION(XFunction::Reason::Undefined);
 }
 

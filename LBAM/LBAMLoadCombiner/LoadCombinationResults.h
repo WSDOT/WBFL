@@ -96,8 +96,8 @@ private:
       CComPtr<ILoadCombinationResultConfiguration> m_Config;
    };
 
-   typedef std::vector<ComboRes>  ComboResList;
-   typedef ComboResList::iterator ComboResIterator;
+   using ComboResList = std::vector<ComboRes>;
+	using ComboResIterator = ComboResList::iterator;
 
    ComboResList m_ComboResults;
 };

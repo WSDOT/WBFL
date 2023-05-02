@@ -103,6 +103,8 @@ public:
 public:
    STDMETHOD(get_BridgeGeometry)(IBridgeGeometry** bridgeGeometry) override;
    STDMETHOD(get_Alignment)(IAlignment** ppAlignment) override;
+   STDMETHOD(get_ProfileID)(/*[out, retval]*/ IDType* pProfileID) override;
+   STDMETHOD(get_SurfaceID)(/*[out, retval]*/ IDType* pSurfaceID) override;
    STDMETHOD(get_Piers)(/*[out,retval]*/ IPierCollection* *piers) override;
    STDMETHOD(get_Length)(/*[out,retval]*/Float64* length) override;
    STDMETHOD(get_SpanLength)(SpanIndexType spanIdx,Float64* length) override;

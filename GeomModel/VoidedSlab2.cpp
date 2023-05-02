@@ -28,12 +28,6 @@
 #include <GeomModel/Circle.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 VoidedSlab2::VoidedSlab2() :
@@ -230,7 +224,7 @@ std::shared_ptr<Shape> VoidedSlab2::GetSlabShape() const
 std::shared_ptr<Shape> VoidedSlab2::GetVoidShape(IndexType voidIdx) const
 {
    if (m_nVoids <= voidIdx)
-      THROW_GEOMETRY(_T("VoidedSlab2::GetVoidShape - invalid index"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    return GetComposite()->GetShape(voidIdx + 1);
 }

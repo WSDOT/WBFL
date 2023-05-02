@@ -29,12 +29,6 @@
 #include <stdexcept>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 inline IndexType GetIndex(IndexType idx, const std::vector<Point2d>& container, Polygon::Symmetry symmetry)
@@ -133,7 +127,7 @@ void Polygon::RemovePoint(IndexType idx)
    }
    else
    {
-      THROW_GEOMETRY(_T("Polygon::RemovePoint - invalid index"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    }
 }
 
@@ -151,7 +145,7 @@ Point2d Polygon::GetPoint(IndexType idx) const
    }
    else
    {
-      THROW_GEOMETRY(_T("Polygon::GetPoint - invalid index"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    }
 }
 
@@ -172,7 +166,7 @@ void Polygon::ReplacePoint(IndexType idx, Float64 x, Float64 y)
    }
    else
    {
-      THROW_GEOMETRY(_T("Polygon::ReplacePoint - invalid index"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    }
 }
 
@@ -381,7 +375,7 @@ void Polygon::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& f
    // vector which always points left.
    Float64  c;
    Vector2d n;
-   line.GetImplicit(&c, &n);
+   std::tie(c,n) = line.GetImplicit();
 
    // change n to point toward desired side of line
    if (Line2d::Side::Right == side)
@@ -432,7 +426,7 @@ void Polygon::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& f
       }
    }
 
-   ASSERT(idx != INVALID_INDEX && idx < m_Points.size());
+   CHECK(idx != INVALID_INDEX && idx < m_Points.size());
    furthestPoint = m_Points[idx];
    if (bIsSymPoint)
    {
@@ -898,7 +892,7 @@ Point2d Polygon::GetMirroredPoint(const Point2d& point) const
 
 void Polygon::GetAllPoints(std::vector<Point2d>* points) const
 {
-   ASSERT(m_Symmetry != Symmetry::None);
+   CHECK(m_Symmetry != Symmetry::None);
 
    *points = m_Points;
    Float64 xOffset = m_Symmetry == Symmetry::X ? 0 : m_SymmetryAxis;
@@ -923,7 +917,7 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, L
    Point2d  pnt_a;
    Point2d  pnt_b;
 
-   line.GetExplicit(&pnt_a, &dir);  // point on the line and direction vector
+   std::tie(pnt_a,dir) = line.GetExplicit();  // point on the line and direction vector
    if (side == Line2d::Side::Right)
    {
       pnt_b = pnt_a.OffsetBy(dir.X(), dir.Y());

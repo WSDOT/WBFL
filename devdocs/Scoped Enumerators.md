@@ -1,4 +1,4 @@
-# Scoped Enumerators
+# Scoped Enumerators {#WBFL_Scoped_Enumerators}
 
 Scoped enumerators should be used unless there is a compelling reason to do otherwise.
 

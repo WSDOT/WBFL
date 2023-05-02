@@ -76,14 +76,15 @@ END_COM_MAP()
    HRESULT FinalConstruct();
 
 private:
-   typedef struct SHAPEINFO
+   struct SHAPEINFO
    {
       CComPtr<IShape> Shape;
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
-   } SHAPEINFO;
+   };
+   using SHAPEINFO = SHAPEINFO;
 
-   typedef struct SLICEINFO
+   struct SLICEINFO
    {
       Float64 Area;
       Float64 Top;
@@ -97,7 +98,8 @@ private:
       CComPtr<IShape> SliceShape;
 
       bool operator<(const SLICEINFO& other) { return other.Ycg < Ycg; }
-   } SLICEINFO;
+   };
+   using SLICEINFO = SLICEINFO;
 
    long m_nSlices;
    Float64 m_Tolerance;

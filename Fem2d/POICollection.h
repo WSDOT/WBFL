@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "POI.h"
 
-typedef CModelCollection<IFem2dPOICollection, IFem2dPOI, CPOI, IFem2dEnumPOI, &IID_IFem2dEnumPOI,PoiIDType> POICollImpl;
+using POICollImpl = CModelCollection<IFem2dPOICollection, IFem2dPOI, CPOI, IFem2dEnumPOI, &IID_IFem2dEnumPOI, PoiIDType>;
 
 
 /////////////////////////////////////////////////////////////////////////////

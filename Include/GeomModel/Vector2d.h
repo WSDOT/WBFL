@@ -201,18 +201,20 @@ namespace WBFL
 
          /// Returns the x component of this vector.
          Float64 X() const;
+         void X(Float64 x);
 
          /// Returns the x component of this vector.
          Float64& X();
 
          /// Returns the y component of this vector.
          Float64 Y() const;
+         void Y(Float64 y);
 
          /// Returns the y component of this vector.
          Float64& Y();
 
          /// Returns the dimensions of this vector
-         void GetDimensions(Float64* x, Float64* y) const;
+         std::pair<Float64,Float64> GetDimensions() const;
    
       #if defined _DEBUG
          /// Returns true if the class is in a valid state, otherwise returns false

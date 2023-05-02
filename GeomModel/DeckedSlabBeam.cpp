@@ -26,12 +26,6 @@
 #include <GeomModel/Polygon.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 DeckedSlabBeam::DeckedSlabBeam() :
@@ -53,30 +47,30 @@ DeckedSlabBeam::~DeckedSlabBeam()
 {
 }
 
-void DeckedSlabBeam::SetA(Float64 a) { m_A = a; SetDirtyFlag(); }
+void DeckedSlabBeam::SetA(Float64 a) { if (a < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_DIMENSION);  m_A = a; SetDirtyFlag(); }
 Float64 DeckedSlabBeam::GetA() const { return m_A; }
 
-void DeckedSlabBeam::SetB(Float64 b) { m_B = b; SetDirtyFlag(); }
+void DeckedSlabBeam::SetB(Float64 b) { if (b < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_DIMENSION);  m_B = b; SetDirtyFlag(); }
 Float64 DeckedSlabBeam::GetB() const { return m_B; }
 
-void DeckedSlabBeam::SetC(Float64 c) { m_C = c; SetDirtyFlag(); }
+void DeckedSlabBeam::SetC(Float64 c) { if (c < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_DIMENSION);  m_C = c; SetDirtyFlag(); }
 Float64 DeckedSlabBeam::GetC() const { return m_C; }
 
-void DeckedSlabBeam::SetW(Float64 w) { m_W = w; SetDirtyFlag(); }
+void DeckedSlabBeam::SetW(Float64 w) { if (w < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_DIMENSION);  m_W = w; SetDirtyFlag(); }
 Float64 DeckedSlabBeam::GetW() const { return m_W; }
 
-void DeckedSlabBeam::SetTt(Float64 tt) { m_Tt = tt; SetDirtyFlag(); }
+void DeckedSlabBeam::SetTt(Float64 tt) { if (tt < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_DIMENSION);  m_Tt = tt; SetDirtyFlag(); }
 Float64 DeckedSlabBeam::GetTt() const { return m_Tt; }
 
-void DeckedSlabBeam::SetTb(Float64 tb) { m_Tb = tb; SetDirtyFlag(); }
+void DeckedSlabBeam::SetTb(Float64 tb) { if (tb < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_DIMENSION);  m_Tb = tb; SetDirtyFlag(); }
 Float64 DeckedSlabBeam::GetTb() const { return m_Tb; }
 
-void DeckedSlabBeam::SetF(Float64 f) { m_F = f;  SetDirtyFlag(); }
+void DeckedSlabBeam::SetF(Float64 f) { if (f < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_DIMENSION); m_F = f;  SetDirtyFlag(); }
 Float64 DeckedSlabBeam::GetF() const { return m_F; }
 
 void DeckedSlabBeam::SetVoidCount(IndexType nVoids)
 {
-   if (1 < nVoids) THROW_GEOMETRY(_T("DeckedSlabBeam::SetVoidCount - number of voids can only be 0 or 1"));
+   if (1 < nVoids) THROW_GEOMETRY(WBFL_GEOMETRY_E_DIMENSION);
 
    m_nVoids = nVoids;
    SetDirtyFlag();
@@ -120,7 +114,7 @@ std::shared_ptr<Shape> DeckedSlabBeam::GetSlabShape() const
 
 std::shared_ptr<Shape> DeckedSlabBeam::GetVoidShape(IndexType voidIdx) const
 {
-   if (m_nVoids <= voidIdx) THROW_GEOMETRY(_T("DeckedSlabBeam::GetVoidShape - invalid index"));
+   if (m_nVoids <= voidIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    return GetComposite()->GetShape(voidIdx + 1);
 }

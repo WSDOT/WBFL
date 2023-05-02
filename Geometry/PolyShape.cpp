@@ -169,7 +169,7 @@ STDMETHODIMP CPolyShape::GetPoint(CollectionIndexType index, Float64* pX, Float6
    try
    {
       const auto& point = m_Polygon.GetPoint(index);
-      point.GetLocation(pX, pY);
+      std::tie(*pX,*pY) = point.GetLocation();
    }
    catch (...)
    {

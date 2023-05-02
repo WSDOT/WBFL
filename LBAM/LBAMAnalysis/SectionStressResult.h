@@ -88,8 +88,8 @@ END_COM_MAP()
 	STDMETHOD(HpSetResults)(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals) override;
 
 public:
-   typedef std::vector<Float64> Float64Vec;
-   typedef Float64Vec::iterator Float64Iterator;
+   using Float64Vec = std::vector<Float64>;
+	using Float64Iterator = Float64Vec::iterator;
    Float64Vec m_LeftResults;
    Float64Vec m_RightResults;
 };

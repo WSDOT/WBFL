@@ -109,7 +109,7 @@ namespace WBFL
          static const Time Hour;
          static const Time Day;
 
-         static const Temperature Celcius;
+         static const Temperature Celsius;
          static const Temperature Fahrenheit;
 
          static const Angle Radian;

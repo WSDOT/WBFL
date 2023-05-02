@@ -40,7 +40,7 @@ public:
    ShapeOnCompositeImpl(const ShapeOnCompositeImpl& rOther);
    virtual ~ShapeOnCompositeImpl();
 
-   ShapeOnCompositeImpl& ShapeOnCompositeImpl::operator= (const ShapeOnCompositeImpl& rOther);
+   ShapeOnCompositeImpl& operator= (const ShapeOnCompositeImpl& rOther);
 
    virtual ShapeProperties GetProperties() const override;
    virtual Rect2d GetBoundingBox() const override;

@@ -27,6 +27,8 @@
 #include <System\XStructuredLoad.h>
 #include <memory>
 
+#include <System/Debug.h>
+
 struct IStream;
 
 namespace WBFL
@@ -41,7 +43,7 @@ namespace WBFL
       /// Property methods try to read a property at the
       /// current file pointer location. If the function returns true, the property
       /// was read and the file pointer advances. If the function returns false,
-      /// the property was not at the current locaton and the file pointer does not
+      /// the property was not at the current location and the file pointer does not
       /// advance.
       class SYSCLASS StructuredLoadXml : public IStructuredLoad
       {

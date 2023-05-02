@@ -41,8 +41,8 @@ namespace WBFL
       UNITSTPL XEntryNotFoundT<  std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure>;
       UNITSTPL LibraryT<         std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure>;
 
-      typedef LibraryT<         std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure> Library;
-      typedef XEntryNotFoundT<  std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure> EntryNotFound;
+      using Library       = LibraryT<         std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure>;
+      using EntryNotFound = XEntryNotFoundT<  std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure>;
 
    };
 };

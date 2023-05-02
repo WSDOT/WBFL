@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <System\SysExp.h>
-
+#include <System/SysExp.h>
+#include <System/Log.h>
 namespace WBFL
 {
    namespace System

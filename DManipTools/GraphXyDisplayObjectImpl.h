@@ -94,9 +94,9 @@ public:
    BOOL     m_DoDisplayGrid;
    CollectionIndexType m_NumberOfMajorIncrements;
 
-   typedef CComPtr<iGraphXyDataProvider> DataSetHolder;
-   typedef std::vector< DataSetHolder >  DataSetCollection;
-   typedef DataSetCollection::iterator   DataSetIterator;
+   using DataSetHolder = CComPtr<iGraphXyDataProvider>;
+   using DataSetCollection = std::vector< DataSetHolder >;
+   using DataSetIterator = DataSetCollection::iterator;
    DataSetCollection                     m_DataSets;
 
 private:

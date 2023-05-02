@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -24,13 +24,6 @@
 
 #include <Roark/RoarkLib.h>
 #include <Roark/BeamWithUnequalOverhangsUniformLoad.h>
-#include <MathEx.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Beams;
 
@@ -75,7 +68,7 @@ Float64 BeamWithUnequalOverhangsUniformLoad::GetW() const
    return m_W;
 }
 
-void BeamWithUnequalOverhangsUniformLoad::GetReactions(Float64 *pRa,Float64* pRb) const
+std::pair<Float64, Float64> BeamWithUnequalOverhangsUniformLoad::GetReactions() const
 {
    Float64 L = GetL();
    Float64 c = m_LeftOverhang;
@@ -83,11 +76,12 @@ void BeamWithUnequalOverhangsUniformLoad::GetReactions(Float64 *pRa,Float64* pRb
    Float64 d = L - c - e;
    Float64 W = m_W * L;
 
-   (*pRa) = -W*(c+d-e)/(2*d);
-   (*pRb) = -W*(d+e-c)/(2*d);
+   Float64 Ra = -W*(c+d-e)/(2*d);
+   Float64 Rb = -W*(d+e-c)/(2*d);
+   return std::make_pair(Ra, Rb);
 }
 
-void BeamWithUnequalOverhangsUniformLoad::GetMoments(Float64* pMa,Float64* pMb) const
+std::pair<Float64, Float64> BeamWithUnequalOverhangsUniformLoad::GetMoments() const
 {
    Float64 L = GetL();
    Float64 c = m_LeftOverhang;
@@ -95,21 +89,20 @@ void BeamWithUnequalOverhangsUniformLoad::GetMoments(Float64* pMa,Float64* pMb) 
    Float64 d = L - c - e;
    Float64 W = m_W * L;
 
-   (*pMa) = W*c*c/(2*L);
-   (*pMb) = W*e*e/(2*L);
+   Float64 Ma = W*c*c/(2*L);
+   Float64 Mb = W*e*e/(2*L);
+   return std::make_pair(Ma, Mb);
 }
 
-void BeamWithUnequalOverhangsUniformLoad::GetRotations(Float64* pra,Float64* prb) const
+std::pair<Float64, Float64> BeamWithUnequalOverhangsUniformLoad::GetRotations() const
 {
    Float64 L = GetL();
-   *pra=  ComputeRotation(m_LeftOverhang);
-   *prb = ComputeRotation(L-m_RightOverhang);
+   return std::make_pair(ComputeRotation(m_LeftOverhang), ComputeRotation(L-m_RightOverhang));
 }
 
-void BeamWithUnequalOverhangsUniformLoad::GetDeflections(Float64* pYa,Float64* pYb) const
+std::pair<Float64, Float64> BeamWithUnequalOverhangsUniformLoad::GetDeflections() const
 {
-   *pYa = 0;
-   *pYb = 0;
+   return std::make_pair(0.0, 0.0);
 }
 
 WBFL::System::SectionValue BeamWithUnequalOverhangsUniformLoad::ComputeShear(Float64 x) const
@@ -122,7 +115,7 @@ WBFL::System::SectionValue BeamWithUnequalOverhangsUniformLoad::ComputeShear(Flo
    Float64 W = m_W*L;
 
    Float64 Rl, Rr;
-   GetReactions(&Rl,&Rr);
+   std::tie(Rl,Rr) = GetReactions();
 
    WBFL::System::SectionValue v;
    if ( x < c )
@@ -163,7 +156,7 @@ WBFL::System::SectionValue BeamWithUnequalOverhangsUniformLoad::ComputeMoment(Fl
    Float64 W = m_W*L;
 
    Float64 Rl, Rr;
-   GetReactions(&Rl,&Rr);
+   std::tie(Rl,Rr) = GetReactions();
 
    Float64 m;
    if ( x < c )
@@ -188,7 +181,7 @@ WBFL::System::SectionValue BeamWithUnequalOverhangsUniformLoad::ComputeMoment(Fl
 Float64 BeamWithUnequalOverhangsUniformLoad::ComputeRotation(Float64 x) const
 {
    Float64 L, EI;
-   GetProperties(&L, &EI);
+   std::tie(L,EI) = GetProperties();
 
    PRECONDITION(0.0 <= x && x <= L);
    Float64 c = m_LeftOverhang;
@@ -219,7 +212,7 @@ Float64 BeamWithUnequalOverhangsUniformLoad::ComputeRotation(Float64 x) const
 Float64 BeamWithUnequalOverhangsUniformLoad::ComputeDeflection(Float64 x) const
 {
    Float64 L, EI;
-   GetProperties(&L, &EI);
+   std::tie(L,EI) = GetProperties();
 
    PRECONDITION(0.0 <= x && x <= L);
    Float64 c = m_LeftOverhang;
@@ -228,7 +221,7 @@ Float64 BeamWithUnequalOverhangsUniformLoad::ComputeDeflection(Float64 x) const
    Float64 W = m_W*L;
 
    Float64 Rl, Rr;
-   GetReactions(&Rl,&Rr);
+   std::tie(Rl,Rr) = GetReactions();
 
    Float64 y_ei;
    if ( x < c )

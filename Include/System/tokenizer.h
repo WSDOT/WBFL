@@ -23,42 +23,44 @@
 
 #pragma once
 #include <System\SysExp.h>
-#include <Windows.h>
 
 #include <vector>
 #include <string>
 #include <istream>
 
+#include <System/Debug.h>
+
+
 namespace WBFL
 {
    namespace System
    {
-         typedef std::_tstring Token; ///< A token
-         typedef std::_tstring Delimiter; ///< A delimiter
-         typedef std::_tstring TString; ///< A string of tokens
-         typedef TString::iterator TIter; ///< An iterator for the tokens
+         using Token = std::_tstring; ///< A token
+         using Delimiter = std::_tstring; ///< A delimiter
+         using TString = std::_tstring; ///< A string of tokens
+         using TIter = TString::iterator; ///< An iterator for the tokens
 
          /// String tokenizer
          ///
-         /// Given a string of tokens and a token delimeter, this class provides
+         /// Given a string of tokens and a token delimiter, this class provides
          /// token iteration.
          class SYSCLASS Tokenizer
          {
   
          public:
              // Typedefs for use as STL container:
-             typedef std::vector<Token>::value_type value_type;
-             typedef std::vector<Token>::reference reference;
-             typedef std::vector<Token>::const_reference const_reference;
-             typedef std::vector<Token>::iterator iterator;
-             typedef std::vector<Token>::const_iterator const_iterator;
-             typedef std::vector<Token>::reverse_iterator reverse_iterator;
-             typedef std::vector<Token>::const_reverse_iterator const_reverse_iterator;
-             typedef std::vector<Token>::difference_type difference_type;
-             typedef std::vector<Token>::size_type size_type;
+             using value_type = std::vector<Token>::value_type;
+             using reference = std::vector<Token>::reference;
+             using const_reference = std::vector<Token>::const_reference;
+             using iterator = std::vector<Token>::iterator;
+             using const_iterator = std::vector<Token>::const_iterator;
+             using reverse_iterator = std::vector<Token>::reverse_iterator;
+             using const_reverse_iterator = std::vector<Token>::const_reverse_iterator;
+             using difference_type = std::vector<Token>::difference_type;
+             using size_type = std::vector<Token>::size_type;
     
-             Tokenizer(LPCTSTR OneDel /*! a single delimeter*/);
-             Tokenizer(LPCTSTR *Token_Del/*! a null terminated string of single character delimeters*/);
+             Tokenizer(LPCTSTR OneDel /*! a single delimiter*/);
+             Tokenizer(LPCTSTR *Token_Del/*! a null terminated string of single character delimiters*/);
 
              ~Tokenizer();
 
@@ -86,10 +88,10 @@ namespace WBFL
              size_type max_size() const;
              bool empty() const;
     
-             /// Add a null terminated string of delimeter separated tokens for tokenizing
+             /// Add a null terminated string of delimiter separated tokens for tokenizing
              void push_back(LPCTSTR CString);
 
-             /// Add a string of delimeter separated tokens for tokenizing
+             /// Add a string of delimiter separated tokens for tokenizing
              void push_back(const std::_tstring& str);
 
              // Utilities for dealing with tokens once they are identified
@@ -99,6 +101,10 @@ namespace WBFL
              static bool ParseLong(LPCTSTR lpszText, long* i);
              /// Parse a null-terminated string to an unsigned. Return false if not a number.
              static bool ParseULong(LPCTSTR lpszText, unsigned long* l);
+             /// Parse a null-terminated string to a short. Return false if not a number.
+             static bool ParseShort(LPCTSTR lpszText, short* i);
+             /// Parse a null-terminated string to an unsigned short. Return false if not a number.
+             static bool ParseUShort(LPCTSTR lpszText, unsigned short* l);
 
     
          private:

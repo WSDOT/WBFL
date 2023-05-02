@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_SYSLIB_H_
-#define INCLUDED_SYSTEM_SYSLIB_H_
 #pragma once
 
 /*****************************************************************************
@@ -35,11 +33,8 @@ DESCRIPTION
    Support library that provides system services.
 *****************************************************************************/
 
-#include <Private\WBFLPackage.h>
-
+#pragma warning(disable:4192)
 // #import is not compatible with the /MP compiler option
 // https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/ recommends moving
 // #import directives into the PCH
 #import  <msxml6.dll> rename_namespace("MSXML")
-
-#endif // INCLUDED_SYSTEM_SYSLIB_H_

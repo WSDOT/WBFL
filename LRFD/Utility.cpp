@@ -26,12 +26,6 @@
 #include <Lrfd\Utility.h>
 #include <Lrfd\VersionMgr.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 // precomputed conversions
 static const Float64 g_3600_MM = WBFL::Units::ConvertToSysUnits( 3600., WBFL::Units::Measure::Millimeter );
 static const Float64 g_6000_MM = WBFL::Units::ConvertToSysUnits( 6000., WBFL::Units::Measure::Millimeter );

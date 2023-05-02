@@ -29,18 +29,12 @@
 #include <GeomModel/MassProperties.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 template <class T>
-inline bool IsValidIndex(IndexType idx, const T& container)
+inline void ValidateIndex(IndexType idx, const T& container)
 {
-   return idx < container.size();
+   if (container.size() < idx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 }
 
 // create elastic props from a component
@@ -123,38 +117,20 @@ void Section::AddComponent(std::unique_ptr<Shape>&& shape, Float64 fgModE, Float
 
 const SectionComponent& Section::GetComponent(IndexType idx) const
 {
-   if(IsValidIndex(idx,m_Components))
-   {
-      return m_Components[idx];
-   }
-   else
-   {
-      THROW_GEOMETRY(_T("Section::GetComponent - invalid index"));
-   }
+   ValidateIndex(idx, m_Components);
+   return m_Components[idx];
 }
 
 SectionComponent& Section::GetComponent(IndexType idx)
 {
-   if (IsValidIndex(idx, m_Components))
-   {
-      return m_Components[idx];
-   }
-   else
-   {
-      THROW_GEOMETRY(_T("Section::GetComponent - invalid index"));
-   }
+   ValidateIndex(idx, m_Components);
+   return m_Components[idx];
 }
 
 void Section::RemoveComponent(IndexType idx)
 {
-   if (IsValidIndex(idx, m_Components))
-   {
-      m_Components.erase(m_Components.begin() + idx);
-   }
-   else
-   {
-      THROW_GEOMETRY(_T("Section::GetComponent - invalid index"));
-   }
+   ValidateIndex(idx, m_Components);
+   m_Components.erase(m_Components.begin() + idx);
 }
 
 void Section::Clear()

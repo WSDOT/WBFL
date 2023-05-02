@@ -25,6 +25,7 @@
 #include <RCSection/RCSectionExp.h>
 #include <RCSection/GeneralSection.h>
 #include <RCSection/MomentCapacitySolution.h>
+#include <RCSection/CapacityLimit.h>
 
 namespace WBFL
 {
@@ -32,7 +33,7 @@ namespace WBFL
    {
       class MomentCapacitySolverImpl;
 
-      /// A moment capacity solver discritizes a GeneralSection object into GeneralSectionSlices and performs a moment capacity analysis by summing the force and moment contribution of each
+      /// A moment capacity solver discretized a GeneralSection object into GeneralSectionSlices and performs a moment capacity analysis by summing the force and moment contribution of each
       // slice, varying the location of the neutral axis, while keep it's direction constant, until equilibrium if satisfied. This is a common fiber based strain compatibility analysis.
       class RCSCLASS MomentCapacitySolver
       {
@@ -104,22 +105,12 @@ namespace WBFL
          /// Compression limit
          ///
          /// The compression limit is the force state for the maximum compression force that can be applied to the section
-         void GetCompressionLimit(
-            Float64* Fz, ///< Maximum axial compression force
-            Float64* Mx, ///< Corresponding moment about the X-axis
-            Float64* My, ///< Corresponding moment about the Y-axis
-            Float64* eo ///< Strain at (0,0)
-         ) const;
+         const CapacityLimit& GetCompressionLimit() const;
 
          /// Tension limit
          ///
          /// The tension limit is the force state for the maximum tensile force that can be applied to the section
-         void GetTensionLimit(
-            Float64* Fz, ///< Maximum axial tension force
-            Float64* Mx, ///< Corresponding moment about the X-axis
-            Float64* My, ///< Corresponding moment about the Y-axis
-            Float64* eo ///< Strain at (0,0)
-         ) const;
+         const CapacityLimit& GetTensionLimit() const;
 
       private:
          std::unique_ptr<MomentCapacitySolverImpl> m_pImpl;

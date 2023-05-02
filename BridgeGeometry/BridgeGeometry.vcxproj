@@ -149,6 +149,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="EqualSpaceDiaphragmLineFactory.cpp" />
     <ClCompile Include="GirderLine.cpp" />
+    <ClCompile Include="PathCollection.cpp" />
     <ClCompile Include="PierLine.cpp" />
     <ClCompile Include="PierLineCollection.cpp" />
     <ClCompile Include="SimpleDeckBoundaryFactory.cpp" />
@@ -172,6 +173,7 @@
     <None Include="DiaphragmLine.rgs" />
     <None Include="EqualSpaceDiaphragmLineFactory.rgs" />
     <None Include="GirderLine.rgs" />
+    <None Include="PathCollection.rgs" />
     <None Include="PierLine.rgs" />
     <None Include="PierLineCollection.rgs" />
     <None Include="res\BridgeGeometry.rc2" />
@@ -194,6 +196,7 @@
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="EqualSpaceDiaphragmLineFactory.h" />
     <ClInclude Include="GirderLine.h" />
+    <ClInclude Include="PathCollection.h" />
     <ClInclude Include="PierLine.h" />
     <ClInclude Include="PierLineCollection.h" />
     <ClInclude Include="Resource.h" />

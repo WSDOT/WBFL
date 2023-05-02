@@ -27,13 +27,6 @@
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
@@ -194,7 +187,7 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() co
          return 0;
 
       default:
-         ASSERT(false); // is there a new temporary strand usage?
+         CHECK(false); // is there a new temporary strand usage?
          return 0;
       }
    }

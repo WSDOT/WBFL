@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "PointLoad.h"
 
-typedef CLoadsCollection<IFem2dPointLoadCollection, IFem2dPointLoad, CPointLoad, IFem2dEnumPointLoad, &IID_IFem2dEnumPointLoad,LoadIDType> PointLoadCollImpl;
+using PointLoadCollImpl = CLoadsCollection<IFem2dPointLoadCollection, IFem2dPointLoad, CPointLoad, IFem2dEnumPointLoad, &IID_IFem2dEnumPointLoad,LoadIDType>;
 
 class ModelEvents;
 

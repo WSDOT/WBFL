@@ -31,11 +31,11 @@
 #include "LoadCP.h"
 #include "LBAMUtils.h"
 
-typedef CLoadItem<IPointLoadItem, IPointLoad, &IID_IPointLoadItem> CPointLoadItem;
+using CPointLoadItem = CLoadItem<IPointLoadItem, IPointLoad, &IID_IPointLoadItem>;
 class CPointLoads;
-typedef CLoadCollection<IPointLoads, &IID_IPointLoads, CPointLoads, IPointLoad, 
+using PointLoadColl_Impl = CLoadCollection<IPointLoads, &IID_IPointLoads, CPointLoads, IPointLoad,
                         IPointLoadItem, CPointLoadItem, 
-                        IEnumPointLoad, &IID_IEnumPointLoad> PointLoadColl_Impl;
+                        IEnumPointLoad, &IID_IEnumPointLoad>;
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -74,7 +74,7 @@ public:
 
 // Implementation
 protected:
-   typedef std::vector<CAdapt<CComPtr<iTool> > > ToolContainer;
+   using ToolContainer = std::vector<CAdapt<CComPtr<iTool>>>;
    ToolContainer m_Tools;
 
    CToolTipCtrl m_ctrlToolTip;

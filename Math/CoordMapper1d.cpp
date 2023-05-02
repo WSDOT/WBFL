@@ -24,12 +24,6 @@
 #include <Math\MathLib.h>
 #include <Math\CoordMapper1d.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 CoordMapper1d::CoordMapper1d(Float64 d, bool IsSameDirection)
@@ -54,7 +48,7 @@ Float64 CoordMapper1d::GetB( Float64 A) const
 
 void CoordMapper1d::SetCoordinateMap(Float64 a1, Float64 b1, Float64 a2, Float64 b2)
 {
-   ASSERT(!IsEqual(a1, a2, 1.0e-16));//, _T("a1 cannot equal a2") );
+   CHECK(!IsEqual(a1, a2, 1.0e-16));//, _T("a1 cannot equal a2") );
 
    // set up mapping equation: A = B * m_c + m_d
 
@@ -65,7 +59,7 @@ void CoordMapper1d::SetCoordinateMap(Float64 a1, Float64 b1, Float64 a2, Float64
    }
    else
    {
-      ASSERT(false); //, _T("b1 cannot equal b2") );
+      CHECK(false); //, _T("b1 cannot equal b2") );
       m_c = 1; // same default as in constructor
    }
 

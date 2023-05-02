@@ -28,13 +28,6 @@
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\Utility.h>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdLldfTypeAEKIJ
@@ -385,7 +378,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_S
       {
          Float64 de = WBFL::Units::ConvertFromSysUnits( de_raw, WBFL::Units::Measure::Millimeter );
 
-         ATLASSERT( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEdition2014 );
+         CHECK( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEdition2014 );
 
          if ( lrfdVersionMgr::FirstEdition1994 < lrfdVersionMgr::GetVersion()  )
          {

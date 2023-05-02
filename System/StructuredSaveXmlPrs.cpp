@@ -30,12 +30,6 @@
 
 #include <list>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::System;
 
 // This class is implemented with the famous PIMPL idiom.
@@ -80,9 +74,9 @@ namespace WBFL
          MSXML::IXMLDOMDocumentPtr       m_spDoc;
          MSXML::IXMLDOMNodePtr           m_spCurrentUnit;
          long          m_Level; // unit nesting level
-         typedef std::pair<std::_tstring, Float64> ListItem;
-         typedef std::list<ListItem> UnitList;
-         typedef UnitList::const_iterator UnitListConstIterator;
+         using ListItem = std::pair<std::_tstring, Float64>;
+         using UnitList = std::list<ListItem>;
+         using UnitListConstIterator = UnitList::const_iterator;
          UnitList   m_UnitList; // stack of information about current units.
 
 

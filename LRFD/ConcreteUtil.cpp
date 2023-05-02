@@ -27,12 +27,6 @@
 #include <Lrfd\VersionMgr.h>
 #include <System\XProgrammingError.h>
 #include <array>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
  
 static const Float64 g_p7_MPA    = WBFL::Units::ConvertToSysUnits(0.7,WBFL::Units::Measure::MPa);
 static const Float64 g_p52_MPA   = WBFL::Units::ConvertToSysUnits(0.52,WBFL::Units::Measure::MPa);
@@ -696,7 +690,7 @@ Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz(Float64 Hg)
 {
    if ( lrfdVersionMgr::SeventhEdition2014 <= lrfdVersionMgr::GetVersion() )
    {
-      ATLASSERT(lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US);
+      CHECK(lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US);
       return min(Hg,g_48_IN);
    }
    else
@@ -812,7 +806,7 @@ std::_tstring lrfdConcreteUtil::GetTypeName(WBFL::Materials::ConcreteType type,b
       return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
 
    default:
-      ATLASSERT(false); // is there a new type?
+      CHECK(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
    }
 }
@@ -842,7 +836,7 @@ WBFL::Materials::ConcreteType lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strN
    }
    else
    {
-      ATLASSERT(false); // invalid name
+      CHECK(false); // invalid name
       type = WBFL::Materials::ConcreteType::Normal;
    }
 
@@ -892,7 +886,7 @@ bool lrfdConcreteUtil::TestMe(WBFL::Debug::Log& rlog)
    WBFL::Units::System::SetMassUnit( WBFL::Units::Measure::Kilogram );
    WBFL::Units::System::SetLengthUnit( WBFL::Units::Measure::Meter );
    WBFL::Units::System::SetTimeUnit( WBFL::Units::Measure::Second );
-   WBFL::Units::System::SetTemperatureUnit( WBFL::Units::Measure::Celcius );
+   WBFL::Units::System::SetTemperatureUnit( WBFL::Units::Measure::Celsius );
    WBFL::Units::System::SetAngleUnit( WBFL::Units::Measure::Radian );
 
    //

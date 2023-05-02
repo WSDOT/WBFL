@@ -66,7 +66,7 @@ STDMETHODIMP CLine2d::GetExplicit(IPoint2d** p,IVector2d** d)
 
    WBFL::Geometry::Point2d pu;
    WBFL::Geometry::Vector2d pv;
-   m_Line.GetExplicit(&pu, &pv);
+   std::tie(pu,pv) = m_Line.GetExplicit();
 
    CreatePoint(pu, p);
    CreateVector(pv, d);
@@ -113,7 +113,7 @@ STDMETHODIMP CLine2d::GetImplicit(Float64 *pC, IVector2d** pN)
    CHECK_RETOBJ(pN);
 
    WBFL::Geometry::Vector2d n;
-   m_Line.GetImplicit(pC, &n);
+   std::tie(*pC,n) = m_Line.GetImplicit();
    return CreateVector(n, pN);
 }
 

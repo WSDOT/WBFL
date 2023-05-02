@@ -27,12 +27,6 @@
 #include <Units/Convert.h>
 #include <Units/Measure.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Materials;
 
 PSPowerFormulaModel::PSPowerFormulaModel(const std::_tstring& strName) :
@@ -48,7 +42,7 @@ void PSPowerFormulaModel::SetStrandGrade(StrandGrade grade)
    case StrandGrade::Grade250: m_fpu = 250; break;
    case StrandGrade::Grade270: m_fpu = 270; break;
    case StrandGrade::Grade300: m_fpu = 300; break;
-   default: ASSERT(false); // is there a new grade?
+   default: CHECK(false); // is there a new grade?
    }
 }
 
@@ -122,7 +116,7 @@ std::pair<Float64, bool> PSPowerFormulaModel::ComputeStress(Float64 strain) cons
       }
       else
       {
-         ASSERT(m_Type == StrandType::StressRelieved);
+         CHECK(m_Type == StrandType::StressRelieved);
          // ################ NOTE ############
          // This is the formula for low relaxation strands
          // since I don't have one for stress relieved this is going to have to do for now
@@ -149,7 +143,7 @@ std::pair<Float64, bool> PSPowerFormulaModel::ComputeStress(Float64 strain) cons
       }
       else
       {
-         ASSERT(m_Type == StrandType::StressRelieved);
+         CHECK(m_Type == StrandType::StressRelieved);
          // from Collins and Mitchell text book
          fps = strain * (885. + 27645. / pow((1 + pow(118 * strain, 6)), 1. / 6));
 
@@ -171,7 +165,7 @@ std::pair<Float64, bool> PSPowerFormulaModel::ComputeStress(Float64 strain) cons
       }
       else
       {
-         ASSERT(m_Type == StrandType::StressRelieved);
+         CHECK(m_Type == StrandType::StressRelieved);
          // There isn't an "Official" stress relieved power formula for grade 300 (probably never will be)
          // Use the low relaxation version of the formula here - see above
          fps = strain * (263. + 33811. / pow((1 + pow(120.4 * strain, 5.347)), 1. / 5.347));
@@ -182,7 +176,7 @@ std::pair<Float64, bool> PSPowerFormulaModel::ComputeStress(Float64 strain) cons
    }
    else
    {
-      ATLASSERT(false); // is there a new type
+      CHECK(false); // is there a new type
    }
 
    // The stress is in KSI, convert it to base units because that is what the caller expects

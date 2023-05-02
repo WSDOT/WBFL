@@ -32,8 +32,8 @@
 #include "WBFLComCollections.h"
 
 class CFlexRebarLayoutItem;
-typedef CComVectorCollection<IRebarLayoutItem,IRebarPattern,IEnumRebarPatterns,&IID_IEnumRebarPatterns,CollectionIndexType> PtrnColl;
-typedef CPersistentCollection<CFlexRebarLayoutItem,PtrnColl,CollectionIndexType> PersistentFlexRebarLayoutItem;
+using PtrnColl = CComVectorCollection<IRebarLayoutItem, IRebarPattern, IEnumRebarPatterns, &IID_IEnumRebarPatterns, CollectionIndexType>;
+using PersistentFlexRebarLayoutItem = CPersistentCollection<CFlexRebarLayoutItem,PtrnColl,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFlexRebarLayoutItem

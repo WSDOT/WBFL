@@ -28,12 +28,6 @@
 #include <MathEx.h>
 #include <iostream>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 ShapeProperties::ShapeProperties()
@@ -410,15 +404,15 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
    Float64 mxx = 0, myy = 0;        // first moments
 
    Float64 cx1, cy1;
-   m_Centroid.GetLocation(&cx1, &cy1);
+   std::tie(cx1,cy1) = m_Centroid.GetLocation();
 
    Float64 cx2, cy2;
-   other.GetCentroid().GetLocation(&cx2, &cy2);
+   std::tie(cx2,cy2) = other.GetCentroid().GetLocation();
 
    mxx = m_Area * m_Centroid.Y() + scale* other.m_Area * other.m_Centroid.Y();
    myy = m_Area * m_Centroid.X() + scale * other.m_Area * other.m_Centroid.X();
 
-   // Get centriodal I for each shape and transform it to the global axes
+   // Get centroidal I for each shape and transform it to the global axes
    ixx = (m_Ixx + m_Area * m_Centroid.Y() * m_Centroid.Y() +
       scale * other.m_Ixx + scale * other.m_Area * other.m_Centroid.Y() * other.m_Centroid.Y());
 
@@ -434,7 +428,7 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
    m_Centroid.X() = myy / m_Area;
 
    Float64 cgx, cgy;
-   m_Centroid.GetLocation(&cgx, &cgy);
+   std::tie(cgx,cgy) = m_Centroid.GetLocation();
 
    m_Ixx = ixx - m_Area * m_Centroid.Y() * m_Centroid.Y();
    m_Iyy = iyy - m_Area * m_Centroid.X() * m_Centroid.X();
@@ -493,7 +487,7 @@ bool Test_AddOperator1(WBFL::Debug::Log& rlog)
 bool Test_AddOperator2(WBFL::Debug::Log& rlog)
 {
    // Test the addition of properties when one property object is in centroidal
-   // coordinates and one is in global coordaintes
+   // coordinates and one is in global coordinates
    TESTME_PROLOGUE( "ShapeProperties - Test_AddOperator2" );
 
    ShapeProperties shape1(10,Point2d(10,10),10,10,10,10,10,10,10);
@@ -529,7 +523,7 @@ bool Test_Assignment1(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE( "ShapeProperties - Test_Assignment1" );
 
-   // Test the mutators and accessor when property object is in centrodial units
+   // Test the mutators and accessors when property object is in centroidal units
    // This is just a raw test to make sure we get back what we put in.
    // This test makes no assumptions about the correctness of the section properties!!!
    ShapeProperties shape;
@@ -574,7 +568,7 @@ bool Test_Assignment2(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE( "ShapeProperties - Test_Assignment2" );
 
-   // Test the mutators and accessor when property object is in centrodial units
+   // Test the mutators and accessors when property object is in centroidal units
    // This test verifies section properties remain correct.
    ShapeProperties shape(10,Point2d(10,10),10,10,10,10,10,10,10);
 
@@ -711,7 +705,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsZero(40 - gsr.GetI12Max()));
    TRY_TESTME(IsZero(40 + gsr.GetI12Min()));
 
-   // try addition and subraction
+   // try addition and subtraction
    ShapeProperties s1(4., Point2d(4, 2), 0, 0, 0, 0, 0, 0, 0);
    ShapeProperties s2(4., Point2d(-4, -2), 0, 0, 0, 0, 0, 0, 0);
    ShapeProperties s4(-4., Point2d(-4, -2), 0, 0, 0, 0, 0, 0, 0);

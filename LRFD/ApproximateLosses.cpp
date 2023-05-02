@@ -29,12 +29,6 @@
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdApproximateLosses
@@ -218,7 +212,7 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
    else
    {
       // approximate loss method was removed from LRFD 5th Edition, 2010
-      ASSERT( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FifthEdition2010 );
+      CHECK( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FifthEdition2010 );
 
       Float64 losses;
       const WBFL::Units::Stress* p_unit;

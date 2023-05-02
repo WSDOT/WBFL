@@ -27,12 +27,6 @@
 #include <Units/Convert.h>
 #include <Units/Measure.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Materials;
 
 UHPCModel::UHPCModel(const std::_tstring& strName) :
@@ -44,7 +38,7 @@ void UHPCModel::SetFc(Float64 fc)
 {
    PRECONDITION(0 < fc);
    m_fc = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI);
-   ASSERT(18.0 <= m_fc); // 18 ksi is the minimum value for f'c per UHPC GS 1.1
+   CHECK(18.0 <= m_fc); // 18 ksi is the minimum value for f'c per UHPC GS 1.1
 }
 
 Float64 UHPCModel::GetFc() const
@@ -143,7 +137,7 @@ Float64 UHPCModel::GetModulusOfElasticity() const
 
 std::pair<Float64, bool> UHPCModel::ComputeStress(Float64 strain) const
 {
-   ATLASSERT(m_ftcr <= m_ftloc); // ft,loc must be greater or equal to f,trc, UHPC GS 1.1
+   CHECK(m_ftcr <= m_ftloc); // ft,loc must be greater or equal to f,trc, UHPC GS 1.1
 
    Float64 Ec = GetEc();
 

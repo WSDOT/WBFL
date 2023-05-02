@@ -31,7 +31,7 @@
 #include "WBFLComCollections.h"
 
 class CCompositeSectionEx;
-typedef CComVectorCollectionNoEnum<ICompositeSectionEx,ICompositeSectionItemEx,CollectionIndexType> CompositeSectionExVectorImpl;
+using CompositeSectionExVectorImpl = CComVectorCollectionNoEnum<ICompositeSectionEx,ICompositeSectionItemEx,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCompositeSection

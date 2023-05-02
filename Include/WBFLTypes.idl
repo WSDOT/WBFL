@@ -101,7 +101,7 @@ cpp_quote("#endif")
 cpp_quote("#include <limits.h>")
 cpp_quote("#include <float.h>")
 
-cpp_quote("typedef        char    Int8;") // MIDL makes this an unsigned char
+cpp_quote("typedef        INT8    Int8;") // MIDL makes this an unsigned char
 cpp_quote("typedef long double Float80;") // long double isn't an MIDL type
 
 cpp_quote("#define Int8_Max      SCHAR_MAX")
@@ -125,11 +125,11 @@ cpp_quote("#define Float64_Min   DBL_MIN")
 cpp_quote("#define Float80_Max   LDBL_MAX")
 cpp_quote("#define Float80_Min   LDBL_MIN")
 
-typedef signed short   Int16;
+typedef INT16 Int16;
 typedef INT32 Int32;
 
-typedef unsigned char  Uint8;
-typedef unsigned short Uint16;
+typedef UINT8 Uint8;
+typedef UINT16 Uint16;
 typedef UINT32 Uint32;
 
 typedef INT64 Int64;
@@ -240,8 +240,8 @@ typedef IndexType ZoneIndexType;
 typedef IndexType DuctIndexType;
 typedef IndexType IntervalIndexType;
 
-cpp_quote("typedef Int64 SpanGirderHashType;")
-cpp_quote("typedef Int64 PierGirderHashType;")
+cpp_quote("using SpanGirderHashType = Int64;")
+cpp_quote("using PierGirderHashType = Int64;")
 
 cpp_quote("inline Uint16 make_Uint16(Uint8  lo, Uint8  hi) {return (Uint16)(lo & 0xFF)  | (Uint16)(hi & 0xFF) << 8;}")
 cpp_quote("inline Int16  make_Int16 (Int8   lo, Int8   hi) {return (Int16)(lo  & 0xFF) | (Int16) (hi & 0xFF)  << 8;}")

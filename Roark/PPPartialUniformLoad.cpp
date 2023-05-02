@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -24,13 +24,6 @@
 
 #include <Roark/RoarkLib.h>
 #include <Roark/PPPartialUniformLoad.h>
-#include <MathEx.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Beams;
 
@@ -82,44 +75,42 @@ Float64 PPPartialUniformLoad::GetW() const
    return W/c;
 }
 
-void PPPartialUniformLoad::GetReactions(Float64* pRa,Float64* pRb) const
+std::pair<Float64, Float64> PPPartialUniformLoad::GetReactions() const
 {
    Float64 L = GetL();
-   *pRa = -W*d/L;
-   *pRb = -W*(a + 0.5*c)/L;
+   Float64 Ra = -W*d/L;
+   Float64 Rb = -W*(a + 0.5*c)/L;
+   return std::make_pair(Ra, Rb);
 }
 
-void PPPartialUniformLoad::GetMoments(Float64* pMa,Float64* pMb) const
+std::pair<Float64, Float64> PPPartialUniformLoad::GetMoments() const
 {
-   *pMa = 0.;
-   *pMb = 0.;
+   return std::make_pair(0.0, 0.0);
 }
 
-void PPPartialUniformLoad::GetRotations(Float64* pra,Float64* prb) const
-{
-   Float64 L = GetL();
-   *pra = ComputeRotation(0);
-   *prb = ComputeRotation(L);
-}
-
-void PPPartialUniformLoad::GetDeflections(Float64* pYa,Float64* pYb) const
+std::pair<Float64, Float64> PPPartialUniformLoad::GetRotations() const
 {
    Float64 L = GetL();
-   *pYa = ComputeDeflection(0);
-   *pYb = ComputeDeflection(L);
+   return std::make_pair(ComputeRotation(0),ComputeRotation(L));
+}
+
+std::pair<Float64, Float64> PPPartialUniformLoad::GetDeflections() const
+{
+   Float64 L = GetL();
+   return std::make_pair(ComputeDeflection(0), ComputeDeflection(L));
 }
 
 WBFL::System::SectionValue PPPartialUniformLoad::ComputeShear(Float64 x) const
 {
    Float64 V;
-   Float64 Ra,Rb;
-
+   
    if ( IsZero(W) )
       return 0;
 
    Float64 L = GetL();
 
-   GetReactions(&Ra,&Rb);
+   Float64 Ra, Rb;
+   std::tie(Ra,Rb) = GetReactions();
 
    if (x < a)
       V = Ra;
@@ -134,12 +125,13 @@ WBFL::System::SectionValue PPPartialUniformLoad::ComputeShear(Float64 x) const
 WBFL::System::SectionValue PPPartialUniformLoad::ComputeMoment(Float64 x) const
 {
    Float64 M;
-   Float64 Ra, Rb;
+
 
    if ( IsZero(W) )
       return 0;
 
-   GetReactions(&Ra,&Rb);
+   Float64 Ra, Rb;
+   std::tie(Ra,Rb) = GetReactions();
 
    if (x < a)
       M = Ra*x;
@@ -155,15 +147,14 @@ Float64 PPPartialUniformLoad::ComputeRotation(Float64 x) const
 {
    Float64 r;
 
-   Float64 Ra, Rb;
-
    if ( IsZero(W) )
       return 0;
 
    Float64 L, EI;
-   GetProperties(&L, &EI);
+   std::tie(L,EI) = GetProperties();
 
-   GetReactions(&Ra,&Rb);
+   Float64 Ra, Rb;
+   std::tie(Ra,Rb) = GetReactions();
 
    Float64 K1, K2, K3, K6;
 
@@ -194,15 +185,14 @@ Float64 PPPartialUniformLoad::ComputeDeflection(Float64 x) const
 {
    Float64 y;
 
-   Float64 Ra, Rb;
-
    if ( IsZero(W) )
       return 0;
 
    Float64 L, EI;
-   GetProperties(&L, &EI);
+   std::tie(L,EI) = GetProperties();
 
-   GetReactions(&Ra,&Rb);
+   Float64 Ra, Rb;
+   std::tie(Ra,Rb) = GetReactions();
 
    Float64 K1, K2, K3, K6;
 
@@ -311,7 +301,7 @@ bool PPPartialUniformLoad::TestMe(WBFL::Debug::Log& rlog)
 
    PPPartialUniformLoad beam(La,Lb,w,l,ei);
    Float64 Ra, Rb;
-   beam.GetReactions(&Ra,&Rb);
+   std::tie(Ra,Rb) = beam.GetReactions();
    TRY_TESTME( IsEqual(Ra,5.0) );
    TRY_TESTME( IsEqual(Rb ,5.0) );
 

@@ -27,12 +27,6 @@
 #include <Lrfd\VersionMgrListener.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdVersionMgr
@@ -44,7 +38,7 @@ lrfdVersionMgr::Version lrfdVersionMgr::ms_Version = (lrfdVersionMgr::Version)((
 lrfdVersionMgr::Units   lrfdVersionMgr::ms_Units   = lrfdVersionMgr::US;
 bool lrfdVersionMgr::ms_IsDamaged = false;
 
-typedef std::list<lrfdVersionMgrListener*,std::allocator<lrfdVersionMgrListener*> > Listeners;
+using Listeners = std::list<lrfdVersionMgrListener*,std::allocator<lrfdVersionMgrListener*>>;
 Listeners lrfdVersionMgr::ms_Listeners;
 
 void notify_listeners(Listeners& rList)
@@ -119,7 +113,7 @@ lrfdVersionMgr::Units lrfdVersionMgr::SetUnits(Units units)
    if ( lrfdVersionMgr::FourthEdition2007 <= ms_Version && ms_Units == lrfdVersionMgr::SI )
    {
       // SI units were dropped from LRFD starting with 4th Edition 2007
-      ASSERT( false );
+      CHECK( false );
       ms_Units = lrfdVersionMgr::US;
    }
 
@@ -219,7 +213,7 @@ LPCTSTR lrfdVersionMgr::GetVersionString(lrfdVersionMgr::Version version,bool bA
       return (bAbbreviated ? _T("AashtoLrfd2020") : _T("9th Edition 2020"));
 
    default:
-      ASSERT(false);
+      CHECK(false);
       return _T("Unknown");
    }
 }
@@ -326,7 +320,7 @@ lrfdVersionMgr::Version lrfdVersionMgr::GetVersion(LPCTSTR strAbbrev)
    }
    else
    {
-      ATLASSERT(false);
+      CHECK(false);
       throw 0;
    }
 }

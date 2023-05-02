@@ -26,12 +26,6 @@
 
 #include <WBFLSTL.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 std::_tstring rptStyleManager::ms_ReportTitleStyle           = _T("ReportTitle");
 std::_tstring rptStyleManager::ms_ReportSubtitleStyle        = _T("ReportSubtitle");
 std::_tstring rptStyleManager::ms_ChapterTitleStyle          = _T("ChapterTitle");
@@ -261,7 +255,7 @@ LPCTSTR rptStyleManager::GetTableCellStyle(Uint32 style)
       index |= 0x0004;
    }
 
-   ATLASSERT( 0 <= index && index <= 5 );
+   CHECK( 0 <= index && index <= 5 );
 
    return ms_TableCellStyle[index].c_str();
 }
@@ -302,7 +296,7 @@ LPCTSTR rptStyleManager::GetTableStripeRowCellStyle(Uint32 style)
       index |= 0x0004;
    }
 
-   ATLASSERT( 0 <= index && index <= 5 );
+   CHECK( 0 <= index && index <= 5 );
 
    return ms_TableStripeRowCellStyle[index].c_str();
 }

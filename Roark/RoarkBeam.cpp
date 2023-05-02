@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -24,12 +24,6 @@
 
 #include <Roark/RoarkLib.h>
 #include <Roark/RoarkBeam.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Beams;
 
@@ -63,10 +57,9 @@ Float64 RoarkBeam::GetEI() const
    return EI;
 }
 
-void RoarkBeam::GetProperties(Float64* pL, Float64* pEI) const
+std::pair<Float64,Float64> RoarkBeam::GetProperties() const
 {
-   *pL = L;
-   *pEI = EI;
+   return std::make_pair(L, EI);
 }
 
 

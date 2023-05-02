@@ -213,7 +213,7 @@ STDMETHODIMP CLongArray::get__NewEnum(IUnknown** ppUnk)
 	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
-   typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyLong, ContainerType > VecEnumType;
+   using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyLong, ContainerType >;
 	CComObject<VecEnumType>* p;
 	hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	if (SUCCEEDED(hRes))
@@ -231,7 +231,7 @@ STDMETHODIMP CLongArray::get__EnumElements(/*[out, retval]*/ IEnumLongArray* *pp
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumLongArray, &IID_IEnumLongArray, LONG, _CopyLongC, ContainerType> MyEnumType;
+   using MyEnumType = CComEnumOnSTL<IEnumLongArray, &IID_IEnumLongArray, LONG, _CopyLongC, ContainerType>;
    CComObject<MyEnumType>* pEnum;
    HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
    if ( FAILED(hr) )

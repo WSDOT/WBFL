@@ -81,8 +81,8 @@ END_COM_MAP()
 
 public:
 	STDMETHOD(FactorAndSum)(IStressResult* incRes, Float64 factor) override;
-   typedef std::vector<Float64> Float64Vec;
-   typedef Float64Vec::iterator Float64Iterator;
+   using Float64Vec = std::vector<Float64>;
+	using Float64Iterator = Float64Vec::iterator;
    Float64Vec m_Results;
 };
 

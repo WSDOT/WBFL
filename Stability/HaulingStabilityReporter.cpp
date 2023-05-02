@@ -24,16 +24,9 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/HaulingStabilityReporter.h>
 #include <Stability/ReportingConstants.h>
-#include <EAF\EAFApp.h>
 #include <array>
 
 #include <WBFLGenericBridgeTools\GeneralSectionDetailsTable.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Stability;
 
@@ -42,7 +35,7 @@ HaulingStabilityReporter::HaulingStabilityReporter()
 {
 }
 
-void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel,Float64 offset)
+void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingCheckArtifact* pArtifact,rptChapter* pChapter, const WBFL::Units::IndirectMeasure* pDisplayUnits, LPCTSTR lpszLocColumnLabel,Float64 offset)
 {
    rptParagraph* pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
    *pChapter << pPara;
@@ -50,9 +43,6 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
 
    pPara = new rptParagraph;
    *pChapter << pPara;
-
-   CEAFApp* pApp = EAFGetApp();
-   const WBFL::Units::IndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
 
    INIT_SCALAR_PROTOTYPE(rptRcScalar, scalar, pDisplayUnits->Scalar);
    INIT_UV_PROTOTYPE( rptStressUnitValue,   stress,       pDisplayUnits->Stress, true);
@@ -608,11 +598,8 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
    }
 }
 
-void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingResults* pResults,rptChapter* pChapter, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
+void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingResults* pResults,rptChapter* pChapter, const WBFL::Units::IndirectMeasure* pDisplayUnits, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
 {
-   CEAFApp* pApp = EAFGetApp();
-   const WBFL::Units::IndirectMeasure* pDisplayUnits = pApp->GetDisplayUnits();
-
    CComPtr<ISegment> segment;
    pGirder->GetSegment(&segment);
 
@@ -747,7 +734,9 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    *pPara << _T("Truck Rotational Stiffness, ") << K_THETA << _T(" = ") << rotational_stiffness.SetValue(pStabilityProblem->GetRotationalStiffness()) << rptNewLine;
    *pPara << _T("Wheel line spacing (C-C distance between tires), ") << Sub2(_T("W"), _T("cc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetSupportWidth()) << rptNewLine;
 
-   CString slope_unit(pApp->GetUnitsMode() == eafTypes::umSI ? _T("m/m") : _T("ft/ft"));
+   std::_tostringstream os;
+   os << pDisplayUnits->AlignmentLength.UnitOfMeasure.UnitTag() << _T("/") << pDisplayUnits->AlignmentLength.UnitOfMeasure.UnitTag();
+   auto slope_unit(os.str());
 
    *pPara << _T("Normal Crown Slope, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSupportSlope() << _T(" ") << slope_unit << rptNewLine;
    *pPara << _T("Maximum Superelevation, ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSuperelevation() << _T(" ") << slope_unit << rptNewLine;
@@ -772,7 +761,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
       ATLASSERT(false); // is there a new type?
    }
 
-   if ( pApp->GetUnitsMode() == eafTypes::umUS )
+   if (pDisplayUnits->ComponentDim.UnitOfMeasure.UnitTag() == WBFL::Units::Measure::Inch.UnitTag())
    {
       Float64 sweepTolerance = pStabilityProblem->GetSweepTolerance();
       INT x = (INT)::RoundOff((1.0/(sweepTolerance*120.0)),1.0);
@@ -782,6 +771,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    {
       *pPara << _T("Sweep Tolerance, ") << Sub2(_T("t"),_T("sweep")) << _T(" = ") << 1000*pStabilityProblem->GetSweepTolerance() << _T("mm/m");
    }
+
    Float64 sweepGrowth = pStabilityProblem->GetSweepGrowth();
    if (!IsZero(sweepGrowth))
    {
@@ -1562,32 +1552,32 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
          {
             WindDirection wind = (WindDirection)windCase;
 
-            CString strTitle;
+            std::_tostringstream os;
 
             if (bLabelImpact && !bLabelWind)
             {
                // more than one impact case but no wind
-               strTitle.Format(_T("Analysis at %s - %s"), strSlope[+slope], strImpact[impactCase]);
+               os << _T("Analysis at ") << strSlope[+slope] << _T(" - ") <<  strImpact[impactCase] << std::ends;
             }
             else if (!bLabelImpact && bLabelWind)
             {
                // only one impact case and wind cases
-               strTitle.Format(_T("Analysis at %s - Wind towards the %s (%s)"), strSlope[+slope], strWindDir[+wind], strWindDirEx[+wind]);
+               os << _T("Analysis at ") << strSlope[+slope] << _T("- Wind towards the ") << strWindDir[+wind] << _T("(") << strWindDirEx[+wind] << _T(")") << std::ends;
             }
             else if (bLabelImpact && bLabelWind)
             {
                // more than one impact case and wind cases
-               strTitle.Format(_T("Analysis at %s - %s, Wind towards the %s (%s)"), strSlope[+slope], strImpact[impactCase], strWindDir[+wind], strWindDirEx[+wind]);
+               os << _T("Analysis at ") << strSlope[+slope] << _T(" - ") << strImpact[impactCase] << _T(", Wind towards the ") << strWindDir[+wind] << _T("(") << strWindDirEx[+wind] << _T(")") << std::ends;
             }
             else
             {
-               strTitle.Format(_T("Analysis at %s"), strSlope[+slope]);
+               os << _T("Analysis at ") << strSlope[+slope] << std::ends;
             }
 
             pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
             *pChapter << pPara;
-            pPara->SetName(strTitle);
-            *pPara << strTitle << rptNewLine;
+            pPara->SetName(os.str().c_str());
+            *pPara << os.str() << rptNewLine;
 
             pPara = new rptParagraph;
             *pChapter << pPara;
@@ -2540,33 +2530,34 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
          pPara = new rptParagraph;
          *pChapter << pPara;
 
-         CString strTitle;
+         std::_tostringstream os;
 
          if (bLabelImpact && !bLabelWind)
          {
             // more than one impact case but no wind
-            strTitle.Format(_T("%s"), strImpact[impactIndex[+pResults->FScrImpactDirection[+slope]]]);
+            os << strImpact[impactIndex[+pResults->FScrImpactDirection[+slope]]] << std::ends;
          }
          else if (!bLabelImpact && bLabelWind)
          {
             // only one impact case and wind cases
-            strTitle.Format(_T("Wind towards the %s"), strWindDir[+pResults->FScrWindDirection[+slope]]);
+            os << _T("Wind towards the ") << strWindDir[+pResults->FScrWindDirection[+slope]] << std::ends;
          }
          else if (bLabelImpact && bLabelWind)
          {
             // more than one impact case and wind cases
-            strTitle.Format(_T("%s, Wind towards the %s"), strImpact[impactIndex[+pResults->FScrImpactDirection[+slope]]], strWindDir[+pResults->FScrWindDirection[+slope]]);
+            os << strImpact[impactIndex[+pResults->FScrImpactDirection[+slope]]] << _T(", Wind towards the ") << strWindDir[+pResults->FScrWindDirection[+slope]] << std::ends;
          }
          else
          {
-            strTitle = _T("");
+            os << _T("");
          }
+         auto strTitle = os.str();
 
          longLength.ShowUnitTag(true);
          *pPara << _T("The minimum factor of safety against cracking, ") << rptRcStringLiteral(pStabilityProblem->GetAnalysisPoint(pResults->vSectionResults[pResults->FScrAnalysisPointIndex[+slope]].AnalysisPointIndex)->AsString(pDisplayUnits->SpanLength, offset, true)) << _T(" ");
 
          *pPara << strFlange[+pResults->vSectionResults[pResults->FScrAnalysisPointIndex[+slope]].FScrCorner[+slope]] << _T(" flange tip");
-         if (strTitle.IsEmpty())
+         if (strTitle.empty())
          {
             *pPara << rptNewLine;
          }

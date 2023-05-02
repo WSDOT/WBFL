@@ -26,12 +26,6 @@
 #include <Lrfd\RebarPool.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdRebarPool
@@ -114,7 +108,7 @@ bool lrfdRebarPool::MapOldRebarKey(Int32 oldKey,WBFL::Materials::Rebar::Grade& g
    case 14: size = WBFL::Materials::Rebar::Size::bs14; break;
    case 18: size = WBFL::Materials::Rebar::Size::bs18; break;
    default:
-      ATLASSERT(false);
+      CHECK(false);
       return false;
    }
 
@@ -141,7 +135,7 @@ std::_tstring lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type type,W
          str = _T("AASHTO M31 (A615) - Grade 80");
          break;
       default:
-         ATLASSERT(false); // not value
+         CHECK(false); // not value
          str = _T("Unknown");
          break;
       }
@@ -159,7 +153,7 @@ std::_tstring lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type type,W
       case WBFL::Materials::Rebar::Grade::Grade40:
       case WBFL::Materials::Rebar::Grade::Grade75:
       default:
-         ATLASSERT(false); // not value
+         CHECK(false); // not value
          str = _T("Unknown");
          break;
       }
@@ -175,7 +169,7 @@ std::_tstring lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type type,W
       case WBFL::Materials::Rebar::Grade::Grade75:
       case WBFL::Materials::Rebar::Grade::Grade80:
       default:
-         ATLASSERT(false); // not value
+         CHECK(false); // not value
          str = _T("Unknown");
          break;
       }
@@ -202,7 +196,7 @@ std::_tstring lrfdRebarPool::GetBarSize(WBFL::Materials::Rebar::Size size)
    case WBFL::Materials::Rebar::Size::bs18:    str = _T("#18"); break;
    case WBFL::Materials::Rebar::Size::bsNone:  str = _T("None"); break;
    default:
-      ATLASSERT(false);
+      CHECK(false);
    }
 
    return str;
@@ -234,7 +228,7 @@ WBFL::Materials::Rebar::Size lrfdRebarPool::GetBarSize(LPCTSTR strSize)
    else if ( size == _T("#18") )
       return WBFL::Materials::Rebar::Size::bs18;
 
-   ATLASSERT(false); // should never get here
+   CHECK(false); // should never get here
    return WBFL::Materials::Rebar::Size::bsNone;
 }
 

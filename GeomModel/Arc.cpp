@@ -28,12 +28,6 @@
 #include <GeomModel/Vector2d.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 Arc::Arc() :
@@ -170,7 +164,7 @@ bool Arc::IsPointOnArc(const Point2d& p) const
 std::vector<Point2d> Arc::Divide(IndexType nSpaces) const
 {
    if (nSpaces < 1 || nSpaces == INVALID_INDEX)
-      THROW_GEOMETRY(_T("Arc::Divide - invalid number of spaces"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
 
    std::vector<Point2d> vPoints;
 
@@ -180,9 +174,9 @@ std::vector<Point2d> Arc::Divide(IndexType nSpaces) const
    Float64 radius; // Radius (measured center to start)
    Float64 dir;    // Direction of start vector measured from Y = 0 (+X)
 
-   m_Start.GetLocation(&sx, &sy);
-   m_Center.GetLocation(&cx, &cy);
-   m_End.GetLocation(&ex, &ey);
+   std::tie(sx,sy) = m_Start.GetLocation();
+   std::tie(cx,cy) = m_Center.GetLocation();
+   std::tie(ex,ey) = m_End.GetLocation();
 
    radius = sqrt(pow(sx - cx, 2) + pow(sy - cy, 2));
 

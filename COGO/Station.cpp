@@ -47,7 +47,6 @@ STDMETHODIMP CStation::InterfaceSupportsErrorInfo(REFIID riid)
    static const IID* arr[] = 
    {
       &IID_IStation,
-      &IID_IStructuredStorage2
    };
    for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
    {
@@ -60,39 +59,32 @@ STDMETHODIMP CStation::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CStation::get_StationZoneIndex(ZoneIndexType *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_ZoneIdx;
+   *pVal = m_Station.GetStationZoneIndex();
    return S_OK;
 }
 
 STDMETHODIMP CStation::put_StationZoneIndex(ZoneIndexType newVal)
 {
-   m_ZoneIdx = newVal;
+   m_Station.SetStationZoneIndex(newVal);
    return S_OK;
 }
 
 STDMETHODIMP CStation::get_Value(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_Value;
+   *pVal = m_Station.GetValue();
 	return S_OK;
 }
 
 STDMETHODIMP CStation::put_Value(Float64 newVal)
 {
-   m_Value = newVal;
+   m_Station.SetValue(newVal);
 	return S_OK;
-}
-
-STDMETHODIMP CStation::get_NormalizedValue(IAlignment* pAlignment,Float64* pValue)
-{
-   CHECK_RETVAL(pValue);
-   *pValue = cogoUtil::GetNormalizedStationValue(pAlignment,this);
-   return S_OK;
 }
 
 STDMETHODIMP CStation::Offset(Float64 offset)
 {
-   m_Value += offset;
+   m_Station.Offset(offset);
    return S_OK;
 }
 
@@ -100,44 +92,50 @@ STDMETHODIMP CStation::GetStation(ZoneIndexType* pZoneIdx,Float64* pStation)
 {
    CHECK_RETVAL(pZoneIdx);
    CHECK_RETVAL(pStation);
-   *pZoneIdx = m_ZoneIdx;
-   *pStation = m_Value;
+   std::tie(*pStation,*pZoneIdx) = m_Station.GetStation();
    return S_OK;
 }
 
 STDMETHODIMP CStation::SetStation(ZoneIndexType zoneIdx,Float64 station)
 {
-   m_ZoneIdx = zoneIdx;
-   m_Value = station;
+   m_Station.SetStation(zoneIdx, station);
    return S_OK;
 }
 
 STDMETHODIMP CStation::FromVariant(VARIANT varStation)
 {
-   CComPtr<IStation> station;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,false,&station);
-   if ( FAILED(hr) )
-      return hr;
+   HRESULT hr;
+   WBFL::COGO::Station station;
+   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   if (FAILED(hr)) return hr;
 
-   station->GetStation(&m_ZoneIdx,&m_Value);
+   m_Station = station;
+   return S_OK;
+}
+
+STDMETHODIMP CStation::FromString(BSTR station, UnitModeType unitMode)
+{
+   USES_CONVERSION;
+   std::_tstring strStation(OLE2T(station));
+
+   try
+   {
+      m_Station.FromString(strStation, unitMode == umUS ? WBFL::Units::StationFormats::US : WBFL::Units::StationFormats::SI);
+   }
+   catch(...)
+   {
+      return E_INVALIDARG;
+   }
 
    return S_OK;
 }
 
-STDMETHODIMP CStation::FromString(BSTR station,UnitModeType unitMode)
-{
-   if ( unitMode == umSI )
-      return StringToStation(station,3,3);
-   else
-      return StringToStation(station,2,2);
-}
-
 STDMETHODIMP CStation::AsString(UnitModeType unitMode,VARIANT_BOOL vbIncludeStationZone, BSTR *station)
 {
-   if ( unitMode == umSI )
-      return StationToString(3,3,vbIncludeStationZone,station);
-   else
-      return StationToString(2,2,vbIncludeStationZone,station);
+   USES_CONVERSION;
+   auto strStation = m_Station.AsString(unitMode == umUS ? WBFL::Units::StationFormats::US : WBFL::Units::StationFormats::SI, vbIncludeStationZone == VARIANT_TRUE);
+   *station = CComBSTR(strStation.c_str());
+   return S_OK;
 }
 
 STDMETHODIMP CStation::Clone(IStation* *clone)
@@ -150,206 +148,7 @@ STDMETHODIMP CStation::Clone(IStation* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   (*clone)->SetStation(m_ZoneIdx,m_Value);
+   (*clone)->SetStation(m_Station.GetStationZoneIndex(),m_Station.GetValue());
 
    return S_OK;
-}
-
-STDMETHODIMP CStation::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IStructuredStorage2
-STDMETHODIMP CStation::Save(IStructuredSave2* pSave)
-{
-   pSave->BeginUnit(CComBSTR("Station"),1.0);
-   pSave->put_Property(CComBSTR("Value"),CComVariant(m_Value));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CStation::Load(IStructuredLoad2* pLoad)
-{
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("Station"));
-
-   pLoad->get_Property(CComBSTR("Value"),&var);
-   m_Value = var.dblVal;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   return S_OK;
-}
-
-//////////////////////////////////////////////////
-// Helpers
-HRESULT CStation::StationToString(int nDigOffset,int nDec,VARIANT_BOOL vbIncludeStationZone,BSTR* strStation)
-{
-   USES_CONVERSION;
-
-   Float64 station = fabs(m_Value);
-
-   Float64 shifter = pow(10.,nDigOffset);
-   int v1 = (int)floor(station/shifter);
-   Float64 v2 = station - v1*shifter;
-   
-   // Check to make sure that v2 is not basically the same as shifter
-   // If station = 69500.00000, we sometimes get 694+100.00 instead of
-   // 695+00.
-   if ( IsZero(v2-shifter,5*pow(10.,-(nDec+1))) )
-   {
-      v2 = 0;
-      v1++;
-   }
-
-   int width = nDigOffset + nDec + 1; // add one for the '.'
-
-   int nChar;
-   nChar = (v1 == 0) ? 1 : (int)log10((Float64)v1) + 1;
-   nChar += width; // includes one for the '.'
-   nChar++; // one for the '+'
-   nChar++; // one for the '\n'
-   if ( m_Value < 0 )
-      nChar++; // for the leading "-" sign
-
-
-   ZoneIndexType zoneIdx = (m_ZoneIdx == INVALID_INDEX ? 0 : m_ZoneIdx);
-   if ( vbIncludeStationZone == VARIANT_TRUE )
-   {
-      if ( zoneIdx == 0 )
-         nChar += 2; // ",1" will be added to the station string
-      else
-         nChar += (int)log10((Float64)zoneIdx) + 2; // ",nnn" where nnn is the zone index
-   }
-
-   LPTSTR pBuffer = new TCHAR[nChar];
-   if ( vbIncludeStationZone == VARIANT_TRUE )
-   {
-      _stprintf_s(pBuffer,nChar,(m_Value < 0 ? _T("-%d+%0*.*f,%d") : _T("%d+%0*.*f,%d") ),v1,width,nDec,v2,zoneIdx+1);
-   }
-   else
-   {
-      _stprintf_s(pBuffer,nChar,(m_Value < 0 ? _T("-%d+%0*.*f") : _T("%d+%0*.*f") ),v1,width,nDec,v2);
-   }
-   *strStation = T2BSTR(pBuffer);
-
-   delete[] pBuffer;
-
-   return S_OK;
-}
-
-HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
-{
-   USES_CONVERSION;
-
-   CComBSTR bstrStation(strString);
-
-   TCHAR* pBuffer = 0;
-   HRESULT hr = S_OK;
-
-   TCHAR chFirst;
-   Float64 d;
-
-   // Look for the +
-   int nChar = bstrStation.Length()+1;
-   pBuffer = new TCHAR[nChar];
-   _tcscpy_s( pBuffer, bstrStation.Length()+1, OLE2T(bstrStation) );
-
-   LPTSTR pChar = pBuffer+nChar-2;
-   int idx = nChar-2;
-	while (*pChar != _T(',') && 0 <= idx )
-	{
-		pChar--;
-      idx--;
-	}
-
-   ZoneIndexType zoneIdx = INVALID_INDEX;
-   if ( *pChar == _T(',') )
-   {
-      // found a zone index
-      LPTSTR pEnd = pBuffer+nChar-2;
-      zoneIdx = (ZoneIndexType)_tcstol(pChar+1,&pEnd,10)-1;
-      *pChar = _T('\0');
-   }
-
-   pChar = pBuffer;
-	while (*pChar != _T('+') && *pChar != _T('\0') )
-	{
-		pChar++;
-	}
-
-	if (*pChar == _T('+') )
-	{
-		// The + was found
-
-		// Verify that the station is not ill-formed
-		// That is, there must be nOffsetDigits between the +
-		// and the decimal point or the end of the string
-
-      // first, the string must be long enough to hold the correct number of digits
-      CollectionIndexType pos = (pChar - pBuffer);
-      CollectionIndexType min_length = pos + nDigOffset + 2;
-      if ( nChar < (int)min_length )
-      {
-         hr = E_BADSTATIONSTRING;
-         goto CleanUp;
-      }
-
-		TCHAR cDecimal = *(pChar + nDigOffset + 1);
-		if ( cDecimal != _T('.') && cDecimal != 0 && cDecimal != _T('\n') && !isspace(cDecimal) )
-		{
-         hr = E_BADSTATIONSTRING;
-         goto CleanUp;
-		}
-
-
-	   // Remove the + by shifting the remaining characters 1 to the left
-	   _tcscpy_s(pChar,nChar - size_t(pChar-pBuffer),pChar+1);
-	}
-   else
-   {
-      // The + wasn't found, this must be a regular number
-      d = _tstof( pBuffer );
-      if ( IsZero( d ) && pBuffer[0] != _T('0') )
-      {
-         hr = E_BADSTATIONSTRING;
-         goto CleanUp;
-      }
-      
-      put_Value(d);
-      hr = S_OK;
-      goto CleanUp;
-   }
-		
-	// Now that the + has been removed, convert the string to a Float64
-	chFirst = pBuffer[0];
-   d = _tcstod(pBuffer,&pChar);
-
-   if (d == 0.0 && chFirst != _T('0') )
-	{
-		// Could not convert
-      hr = CComCoClass<CStation,&CLSID_Station>::Error(IDS_E_BADSTATIONSTRING,IID_IStation,COGO_E_BADSTATIONSTRING);
-      goto CleanUp;
-	}
-
-	while (*pChar == _T(' ') || *pChar == _T('\t') )
-	   pChar++;
-
-   if (*pChar != _T('\0') )
-	{
-	   // Not terminated properly
-      hr = E_BADSTATIONSTRING;
-      goto CleanUp;
-	}
-
-   SetStation(zoneIdx,d);
-   hr = S_OK;
-
-CleanUp:
-   delete[] pBuffer;
-   return hr;
 }

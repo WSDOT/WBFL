@@ -76,8 +76,8 @@ public:
 	STDMETHOD(get__EnumElements)(struct IEnumLongArray ** ) override;
 
 protected:
-   typedef std::vector<LONG>       ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
+   using ContainerType = std::vector<LONG>;
+	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 };
 #endif //__LngArray_H_

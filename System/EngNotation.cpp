@@ -23,12 +23,7 @@
 
 #include <System\SysLib.h>
 #include <System\EngNotation.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include <atlconv.h>
 
 // Engineering notation is implemented with a custom c++ stream manipulator. More information on
 // custom manipulators can be found at https://docs.microsoft.com/en-us/cpp/standard-library/other-one-argument-output-stream-manipulators

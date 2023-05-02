@@ -103,19 +103,19 @@ public:
 
    HRESULT Copy(CSegments* copy);
 
-   typedef  ISegmentItem* ItemType;
+   using ItemType = ISegmentItem*;
 
 private:
    CSegments();
 
 // data members               cookie
-   typedef CAdapt<CComPtr<ISegmentItem>> ValueType;
-   typedef std::pair< DWORD, ValueType > StoredType; 
-   typedef std::vector<StoredType> VectorType;
-   typedef VectorType::iterator  VectorIteratorType;
-   typedef std::map< CComBSTR, VectorType > ContainerType;
-   typedef ContainerType::iterator  ContainerIteratorType;
-   typedef ContainerType::const_iterator  ContainerConstIteratorType;
+   using ValueType = CAdapt<CComPtr<ISegmentItem>>;
+   using StoredType = std::pair<DWORD, ValueType>;
+   using VectorType = std::vector<StoredType>;
+   using VectorIteratorType = VectorType::iterator;
+   using ContainerType = std::map< CComBSTR, VectorType>;
+   using ContainerIteratorType = ContainerType::iterator;
+   using ContainerConstIteratorType = ContainerType::const_iterator;
 
    ContainerType m_Segments;
 
@@ -268,7 +268,7 @@ public:
 
    friend iterator; // this is NOT VERY OBVIOUS HERE!!! , but it won't compile elsewhere
 
-   typedef iterator const_iterator;
+   using const_iterator = iterator;
 };
 
 #endif //__SEGMENTS_H_

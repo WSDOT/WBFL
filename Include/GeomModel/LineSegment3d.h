@@ -40,46 +40,41 @@ namespace WBFL
       class GEOMMODELCLASS LineSegment3d
       {
       public:
-         LineSegment3d();
+         LineSegment3d() = default;
 
          /// Explicit constructor.  Creates a line segment from start to end.
-         LineSegment3d(std::shared_ptr<Point3d>& start, std::shared_ptr<Point3d>& end);
+         LineSegment3d(const Point3d& start, const Point3d& end);
 
          /// Explicit constructor.  Creates a line segment from start to end.
          LineSegment3d(Float64 x1,Float64 y1,Float64 z1, Float64 x2,Float64 y2,Float64 z2);
 
          /// Explicit constructor.  Creates a line segment that starts at start 
          /// and ends at (start.X()+relEnd.Dx(),start.Y()+relEnd.Dy(),start.Z()+relEnd.Dz()).
-         LineSegment3d(std::shared_ptr<Point3d>& start, const Size3d& relEnd);
          LineSegment3d(const Point3d& start, const Size3d& relEnd);
 
-         virtual ~LineSegment3d();
-
-         LineSegment3d(const LineSegment3d& other);
-         LineSegment3d& operator=(const LineSegment3d& other);
+         LineSegment3d(const LineSegment3d& other) = default;
+         LineSegment3d& operator=(const LineSegment3d& other) = default;
+         virtual ~LineSegment3d() = default;
 
          bool operator==(const LineSegment3d& other) const;
          bool operator!=(const LineSegment3d& other) const;
 
-         void ThroughPoints(std::shared_ptr<Point3d>& start, std::shared_ptr<Point3d>& end);
          void ThroughPoints(const Point3d& start, const Point3d& end);
 
          /// Returns the length of the line segment.
          Float64 GetLength() const;
 
          /// Sets the start point of the line segment.
-         void SetStartPoint(std::shared_ptr<Point3d>& startPoint);
+         void SetStartPoint(const Point3d& startPoint);
 
          /// Returns the start point of the line segment.
-         std::shared_ptr<Point3d>& GetStartPoint();
-         const std::shared_ptr<Point3d>& GetStartPoint() const;
+         const Point3d& GetStartPoint() const;
 
          /// Sets the end point of the line segment.
-         void SetEndPoint(std::shared_ptr<Point3d>& endPoint);
+         void SetEndPoint(const Point3d& endPoint);
 
          /// Returns the end point of the line segment.
-         std::shared_ptr<Point3d>& GetEndPoint();
-         const std::shared_ptr<Point3d>& GetEndPoint() const;
+         const Point3d& GetEndPoint() const;
 
          /// Returns the mid point of the line segment.
          Point3d GetMidPoint() const;
@@ -115,8 +110,8 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         std::shared_ptr<Point3d> m_pStart{ std::make_shared<Point3d>(0,0,0) };
-         std::shared_ptr<Point3d> m_pEnd{ std::make_shared<Point3d>(1,0,0) };
+         Point3d m_Start;
+         Point3d m_End;
       };
    }; // Geometry
 }; // WBFL

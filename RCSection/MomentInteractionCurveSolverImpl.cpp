@@ -25,12 +25,6 @@
 #include "MomentInteractionCurveSolverImpl.h"
 #include <RCSection/XRCSection.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #define MAX_FAIL 4
 
 using namespace WBFL::RCSection;
@@ -85,24 +79,26 @@ IndexType MomentInteractionCurveSolverImpl::GetMaxIterations() const
    return m_Solver.GetMaxIterations();
 }
 
-void MomentInteractionCurveSolverImpl::GetCompressionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& MomentInteractionCurveSolverImpl::GetCompressionLimit() const
 {
-   m_Solver.GetCompressionLimit(Fz, Mx, My, eo);
+   return m_Solver.GetCompressionLimit();
 }
 
-void MomentInteractionCurveSolverImpl::GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& MomentInteractionCurveSolverImpl::GetTensionLimit() const
 {
-   return m_Solver.GetTensionLimit(Fz, Mx, My, eo);
+   return m_Solver.GetTensionLimit();
 }
 
 std::unique_ptr<InteractionCurveSolution> MomentInteractionCurveSolverImpl::Solve(Float64 Fz, Float64 startNA, Float64 endNA, IndexType nSteps) const
 {
    auto solution(std::make_unique<InteractionCurveSolution>());
 
-   Float64 FzMin, FzMax;
-   Float64 Mx, My, eo;
-   GetTensionLimit(&FzMax, &Mx, &My, &eo);
-   GetCompressionLimit(&FzMin, &Mx, &My, &eo);
+   const auto& tension_capacity_limit = GetTensionLimit();
+   const auto& compression_capacity_limit = GetCompressionLimit();
+   
+   auto FzMax = tension_capacity_limit.Fz;
+   auto FzMin = compression_capacity_limit.Fz;
+   auto eo = compression_capacity_limit.eo;
 
    if (!InRange(FzMin, Fz, FzMax))
    {

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.VerticalCurve.1 = s 'VerticalCurve Class'
+	{
+		CLSID = s '{7581BC4E-4E7C-4761-B59E-2D75EA2E1120}'
+	}
+	WBFLCogo.VerticalCurve = s 'VerticalCurve Class'
+	{
+		CLSID = s '{7581BC4E-4E7C-4761-B59E-2D75EA2E1120}'
+		CurVer = s 'WBFLCogo.VerticalCurve.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7581BC4E-4E7C-4761-B59E-2D75EA2E1120} = s 'VerticalCurve Class'
+		{
+			ProgID = s 'WBFLCogo.VerticalCurve.1'
+			VersionIndependentProgID = s 'WBFLCogo.VerticalCurve'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

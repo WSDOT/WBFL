@@ -28,12 +28,6 @@
 #include <GeomModel/GeomOp2d.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 MultiWeb2::MultiWeb2() :
@@ -207,7 +201,7 @@ Float64 MultiWeb2::GetC2() const
 void MultiWeb2::SetWebCount(WebIndexType nWebs)
 {
    // minimum of 2 webs required
-   if (nWebs < 2) THROW_GEOMETRY(_T("MultiWeb2::SetWebCount - number of webs must at least 2"));
+   if (nWebs < 2) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
 
    m_WebCount = nWebs;
    SetDirtyFlag();
@@ -242,7 +236,7 @@ bool MultiWeb2::GetRightBlockout() const
 
 Float64 MultiWeb2::GetWebLocation(WebIndexType webIdx)
 {
-   if (m_WebCount <= webIdx) THROW_GEOMETRY(_T("MultiWeb2::GetWebLocation - invalid web index"));
+   if (m_WebCount <= webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    Float64 W = GetTopFlangeWidth();
 
@@ -290,7 +284,7 @@ Float64 MultiWeb2::GetTopFlangeWidth() const
 
 Float64 MultiWeb2::GetAvgWebWidth(WebIndexType webIdx) const
 {
-   if (m_WebCount <= webIdx) THROW_GEOMETRY(_T("MultiWeb2::GetWebLocation - invalid web index"));
+   if (m_WebCount <= webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    if (webIdx == 0 || webIdx == m_WebCount - 1)
    {

@@ -44,7 +44,7 @@
 #define MATHTPL   extern template class MATHCLASS
 #endif
 
-#include <WbflAll.h>
 #include <Math\AutoLib.h>
+#include <WbflAll.h>
 
 #endif // INCLUDED_MATH_MATHEXP_H_

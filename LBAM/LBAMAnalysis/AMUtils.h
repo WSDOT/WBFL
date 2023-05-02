@@ -99,7 +99,7 @@ public:
    SupportIDType         m_LbamTemporarySupportID; // applicable to temporary supports only
 };
 
-typedef SubNodeLocs::iterator SubNodeLocIterator;
+using SubNodeLocIterator = SubNodeLocs::iterator;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -148,8 +148,8 @@ private:
    SuperNodeLoc();
 };
 
-typedef std::set<SuperNodeLoc>  SuperNodeLocs;
-typedef SuperNodeLocs::iterator SuperNodeLocIterator;
+using SuperNodeLocs = std::set<SuperNodeLoc>;
+using SuperNodeLocIterator = SuperNodeLocs::iterator;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -176,8 +176,8 @@ private:
    InfluenceLoadLocation();
 };
 
-typedef std::vector<InfluenceLoadLocation>    InfluenceLoadSet;
-typedef InfluenceLoadSet::iterator         InfluenceLoadSetIterator;
+using InfluenceLoadSet = std::vector<InfluenceLoadLocation>;
+using InfluenceLoadSetIterator = InfluenceLoadSet::iterator;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -353,8 +353,8 @@ private:
 };
 
 
-typedef std::set<PoiMap*, PoiMapLess>           PoiMapCollection;
-typedef PoiMapCollection::iterator PoiMapIterator;
+using PoiMapCollection = std::set<PoiMap*, PoiMapLess>;
+using PoiMapIterator = PoiMapCollection::iterator;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////

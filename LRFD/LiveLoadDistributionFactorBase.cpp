@@ -29,12 +29,6 @@
 #include <set>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 static const Float64 g_600_MM  = WBFL::Units::ConvertToSysUnits( 600.0, WBFL::Units::Measure::Millimeter );
 static const Float64 g_1800_MM = WBFL::Units::ConvertToSysUnits( 1800.0, WBFL::Units::Measure::Millimeter );
 static const Float64 g_3000_MM = WBFL::Units::ConvertToSysUnits( 3000.0, WBFL::Units::Measure::Millimeter );
@@ -180,7 +174,7 @@ private:
 
    // These are possible lane/axle locations for each of the four possible locations
    // They will be ordered by the maximum lever they apply to our girder
-   typedef std::set<LaneLocation> LaneSet;
+   using LaneSet = std::set<LaneLocation>;
    LaneSet m_LeftAxleLeftShy;
    LaneSet m_LeftAxleRightShy;
    LaneSet m_RightAxleLeftShy;
@@ -193,7 +187,7 @@ private:
 };
 
 
-// Here we compute the possible lane layoutes for each of the four possible configurations
+// Here we compute the possible lane layouts for each of the four possible configurations
 void InteriorLeverRuleAxlePlacer::Compute()
 {
    if (!m_IsComputed)

@@ -29,6 +29,7 @@
 #include "resource.h"       // main symbols
 
 #include "WBFLBridgeGeometry.h"
+#include "PathCollection.h"
 
 
 #if defined(_WIN32_WCE) && !defined(_CE_DCOM) && !defined(_CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA)
@@ -64,7 +65,13 @@ END_COM_MAP()
 
 	HRESULT FinalConstruct()
 	{
-      m_Paths.CoCreateInstance(CLSID_PathCollection);
+		CComObject<CPathCollection>* pPaths;
+		HRESULT hr = CComObject<CPathCollection>::CreateInstance(&pPaths);
+		if (FAILED(hr))
+			return hr;
+
+		m_Paths = pPaths;
+
 		return S_OK;
 	}
 

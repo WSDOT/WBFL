@@ -30,6 +30,7 @@
 
 #include "WBFLBridgeGeometry.h"
 #include <map>
+#include <array>
 
 #if defined(_WIN32_WCE) && !defined(_CE_DCOM) && !defined(_CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA)
 #error "Single-threaded COM objects are not properly supported on Windows CE platform, such as the Windows Mobile platforms that do not include full DCOM support. Define _CE_ALLOW_SINGLE_THREADED_OBJECTS_IN_MTA to force ATL to support creating single-thread COM object's and allow use of it's single-threaded COM object implementations. The threading model in your rgs file was set to 'Free' as that is the only threading model supported in non DCOM Windows CE platforms."
@@ -79,7 +80,7 @@ END_COM_MAP()
    LineIDType m_ID; // id of this diaphragm line
    GirderIDType m_LeftGirderID; // id of the girder line where this diaphragm starts
    GirderIDType m_RightGirderID;// id of the girder line where this diaphragm end
-   bool m_bStaggered; // true if the diaphragm lines are staggared
+   bool m_bStaggered; // true if the diaphragm lines are staggered
    CComPtr<ILine2d> m_Line;
 
    IBridgeGeometry* m_pBridge;
@@ -88,10 +89,10 @@ END_COM_MAP()
       CComPtr<IPoint2d> pntLeft;
       CComPtr<IPoint2d> pntRight;
    };
-   typedef std::map<GirderIDType,EndPoints> EndPointContainer;
+   using EndPointContainer = std::map<GirderIDType,EndPoints>;
    EndPointContainer m_EndPoints; // intersection of diaphragm lines between girder lines
                                                             // key is left hand girder ID
-   CComPtr<IPoint2d> m_Point[2]; // intersection of diaphragm line and start and end girder line
+   std::array<CComPtr<IPoint2d>, 2> m_Point; // intersection of diaphragm line and start and end girder line
 
    HRESULT UpdateGeometry();
    HRESULT LocatePoints();

@@ -54,9 +54,6 @@ private:
    static void Test10();
    static void Test11();
    static void Test12();
-   static void Test13();
-   static void Test14();
-   static void Test15();
 };
 
 #endif // !defined(AFX_TESTProfile_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

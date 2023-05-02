@@ -54,8 +54,17 @@ void CTestVertCurve::Test()
 
 void CTestVertCurve::Test1()
 {
-   CComPtr<IVertCurve> vc;
-   TRY_TEST(vc.CoCreateInstance(CLSID_VertCurve),S_OK);
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+   CComPtr<IProfile> profile;
+   profile.CoCreateInstance(CLSID_Profile);
+   alignment->AddProfile(0, profile);
+
+   CComPtr<IVerticalCurve> vc;
+   TRY_TEST(vc.CoCreateInstance(CLSID_VerticalCurve),S_OK);
+
+   CComQIPtr<IProfileElement> element(vc);
+   profile->AddProfileElement(element);
 
    CComPtr<IProfilePoint> pbg, pvi, pfg;
    pbg.CoCreateInstance(CLSID_ProfilePoint);
@@ -72,13 +81,13 @@ void CTestVertCurve::Test1()
    pfg->put_Station(CComVariant(400));
    pfg->put_Elevation(100);
 
-   TRY_TEST( vc->putref_PBG(nullptr), E_INVALIDARG );
-   TRY_TEST( vc->putref_PVI(nullptr), E_INVALIDARG );
-   TRY_TEST( vc->putref_PFG(nullptr), E_INVALIDARG );
+   TRY_TEST( vc->put_PBG(nullptr), E_INVALIDARG );
+   TRY_TEST( vc->put_PVI(nullptr), E_INVALIDARG );
+   TRY_TEST( vc->put_PFG(nullptr), E_INVALIDARG );
 
-   TRY_TEST( vc->putref_PBG(pbg), S_OK );
-   TRY_TEST( vc->putref_PVI(pvi), S_OK );
-   TRY_TEST( vc->putref_PFG(pfg), S_OK );
+   TRY_TEST( vc->put_PBG(pbg), S_OK );
+   TRY_TEST( vc->put_PVI(pvi), S_OK );
+   TRY_TEST( vc->put_PFG(pfg), S_OK );
 
    TRY_TEST( vc->put_L1(-1),E_INVALIDARG);
    TRY_TEST( vc->put_L1(0),S_OK);
@@ -98,8 +107,8 @@ void CTestVertCurve::Test1()
    TRY_TEST( IsEqual(g2,0.25), true );
 
    Float64 L;
-   TRY_TEST( vc->get_Length(nullptr), E_POINTER );
-   TRY_TEST( vc->get_Length(&L), S_OK );
+   TRY_TEST( element->GetLength(nullptr), E_POINTER );
+   TRY_TEST( element->GetLength(&L), S_OK );
    TRY_TEST( IsEqual( L, 300.), true );
 
    Float64 elev;
@@ -149,7 +158,7 @@ void CTestVertCurve::Test1()
 
    // high point at end
    pfg->put_Elevation(200);
-   vc->putref_PFG(pfg);
+   vc->put_PFG(pfg);
    point.Release();
    TRY_TEST( vc->get_HighPoint(&point), S_OK );
    station.Release();
@@ -170,9 +179,9 @@ void CTestVertCurve::Test1()
    pfg->put_Elevation(50);
 
    vc->put_L2(100);
-   vc->putref_PBG(pbg);
-   vc->putref_PVI(pvi);
-   vc->putref_PFG(pfg);
+   vc->put_PBG(pbg);
+   vc->put_PVI(pvi);
+   vc->put_PFG(pfg);
 
    // high point between ends
    point.Release();
@@ -196,7 +205,7 @@ void CTestVertCurve::Test1()
 
    // low point at start
    pbg->put_Elevation(10);
-   vc->putref_PBG(pbg);
+   vc->put_PBG(pbg);
    point.Release();
    TRY_TEST( vc->get_LowPoint(&point), S_OK );
    station.Release();
@@ -207,10 +216,10 @@ void CTestVertCurve::Test1()
    TRY_TEST(IsEqual(elev, 10.0),true);
 
    // put the points out of order
-   vc->putref_PBG(pfg);
-   vc->putref_PVI(pbg);
-   vc->putref_PFG(pvi);
-   TRY_TEST( vc->get_Length(&L), COGO_E_VERTCURVEPOINTS );
+   vc->put_PBG(pfg);
+   vc->put_PVI(pbg);
+   vc->put_PFG(pvi);
+   TRY_TEST( element->GetLength(&L), E_FAIL );
 
    // From "Fundamentals of Surveying" Schmidt and Wong, Third Edition
    // PWS Engineering Press, 1985, ISBN 0-534-04161-2, pg 453, Example 12.3
@@ -223,9 +232,9 @@ void CTestVertCurve::Test1()
    pfg->put_Station(CComVariant(5650));
    pfg->put_Elevation(441.14);
 
-   vc->putref_PBG(pbg);
-   vc->putref_PVI(pvi);
-   vc->putref_PFG(pfg);
+   vc->put_PBG(pbg);
+   vc->put_PVI(pvi);
+   vc->put_PFG(pfg);
 
    vc->put_L1(400);
    vc->put_L2(400);
@@ -309,13 +318,11 @@ void CTestVertCurve::Test1()
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(vc);
    TRY_TEST( eInfo != nullptr, true );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IVertCurve ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
+   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IVerticalCurve ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
-   TRY_TEST( TestIObjectSafety(CLSID_VertCurve,IID_IVertCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_VertCurve,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   TRY_TEST( TestIObjectSafety(CLSID_VerticalCurve,IID_IVerticalCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
 void CTestVertCurve::Test2()
@@ -323,26 +330,16 @@ void CTestVertCurve::Test2()
    CComPtr<IAlignment> alignment;
    TRY_TEST(alignment.CoCreateInstance(CLSID_Alignment),S_OK);
 
-   CComPtr<IProfile> profile;
-   alignment->get_Profile(&profile);
-
-   CComPtr<IVertCurve> vc;
-   TRY_TEST(vc.CoCreateInstance(CLSID_VertCurve),S_OK);
-
-   profile->AddEx(vc);
-
-   profile.Release();
-   TRY_TEST(vc->get_Profile(nullptr),E_POINTER);
-   TRY_TEST(vc->get_Profile(&profile),S_OK);
-   TRY_TEST(profile!=nullptr,true);
-
    // create station equation
-   CComPtr<IStationEquationCollection> equations;
-   alignment->get_StationEquations(&equations);
-   CComPtr<IStationEquation> equation;
-   equations->Add(150,250,&equation);
-   equation.Release();
-   equations->Add(400,200,&equation);
+   alignment->AddStationEquation(150, 250);
+   alignment->AddStationEquation(400, 200);
+
+   CComPtr<IProfile> profile;
+   profile.CoCreateInstance(CLSID_Profile);
+   alignment->AddProfile(0, profile);
+
+   CComPtr<IVerticalCurve> vc;
+   TRY_TEST(vc.CoCreateInstance(CLSID_VerticalCurve),S_OK);
 
    CComPtr<IProfilePoint> pbg, pvi, pfg;
    vc->get_PBG(&pbg);
@@ -352,18 +349,29 @@ void CTestVertCurve::Test2()
    // Sag curve
    pbg->put_Station(CComVariant(100)); // normalized station
    pbg->put_Elevation(100);
+   vc->put_PBG(pbg);
 
    CComPtr<IStation> objPVIStation;
    objPVIStation.CoCreateInstance(CLSID_Station);
    objPVIStation->SetStation(1,300); // station in equation zone 1
    pvi->put_Station(CComVariant(objPVIStation));
    pvi->put_Elevation(50);
+   vc->put_PVI(pvi);
    
    pfg->put_Station(CComVariant(400)); // normalized station
    pfg->put_Elevation(100);
+   vc->put_PFG(pfg);
 
    TRY_TEST( vc->put_L1(100),S_OK);
    TRY_TEST( vc->put_L2(200),S_OK);
+
+   CComQIPtr<IProfileElement> element(vc);
+   profile->AddProfileElement(element);
+
+   profile.Release();
+   TRY_TEST(element->get_Profile(nullptr), E_POINTER);
+   TRY_TEST(element->get_Profile(&profile), S_OK);
+   TRY_TEST(profile != nullptr, true);
 
    Float64 g1, g2;
    TRY_TEST( vc->get_EntryGrade(&g1), S_OK );
@@ -373,42 +381,42 @@ void CTestVertCurve::Test2()
    TRY_TEST( IsEqual(g2,0.25), true );
 
    Float64 L;
-   TRY_TEST( vc->get_Length(&L), S_OK );
+   TRY_TEST( element->GetLength(&L), S_OK );
    TRY_TEST( IsEqual( L, 300.), true );
 
    CComPtr<IStation> station;
-   equations->ConvertFromNormalizedStation(150,&station);
+   alignment->ConvertFromNormalizedStation(150,&station);
    Float64 elev;
    TRY_TEST( vc->Elevation(CComVariant(station),&elev), S_OK );
    TRY_TEST( IsEqual(elev,81.25), true );
    station.Release();
-   equations->ConvertFromNormalizedStation(200,&station);
+   alignment->ConvertFromNormalizedStation(200,&station);
    TRY_TEST( vc->Elevation(CComVariant(station),&elev), S_OK );
    TRY_TEST( IsEqual(elev,75.0), true );
    station.Release();
-   equations->ConvertFromNormalizedStation(250,&station);
+   alignment->ConvertFromNormalizedStation(250,&station);
    TRY_TEST( vc->Elevation(CComVariant(station),&elev), S_OK );
    TRY_TEST( IsEqual(elev,76.5625), true );
 
    Float64 grade;
    station.Release();
-   equations->ConvertFromNormalizedStation(150,&station);
+   alignment->ConvertFromNormalizedStation(150,&station);
    TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
    TRY_TEST( IsEqual(grade,-0.25), true );
    station.Release();
-   equations->ConvertFromNormalizedStation(200,&station);
+   alignment->ConvertFromNormalizedStation(200,&station);
    TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
    TRY_TEST( IsEqual(grade,0.0), true );
    station.Release();
-   equations->ConvertFromNormalizedStation(250,&station);
+   alignment->ConvertFromNormalizedStation(250,&station);
    TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
    TRY_TEST( IsEqual(grade,0.0625), true );
    station.Release();
-   equations->ConvertFromNormalizedStation(0,&station);
+   alignment->ConvertFromNormalizedStation(0,&station);
    TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
    TRY_TEST( IsEqual(grade,-0.50), true );
    station.Release();
-   equations->ConvertFromNormalizedStation(600,&station);
+   alignment->ConvertFromNormalizedStation(600,&station);
    TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
    TRY_TEST( IsEqual(grade, 0.25), true );
 
@@ -438,7 +446,7 @@ void CTestVertCurve::Test2()
 
    // high point at end
    pfg->put_Elevation(200);
-   vc->putref_PFG(pfg);
+   vc->put_PFG(pfg);
    point.Release();
    TRY_TEST( vc->get_HighPoint(&point), S_OK );
    station.Release();
@@ -452,12 +460,17 @@ void CTestVertCurve::Test2()
 
 void CTestVertCurve::Test3()
 {
+   CComPtr<IAlignment> alignment;
+   TRY_TEST(alignment.CoCreateInstance(CLSID_Alignment), S_OK);
+
+   CComPtr<IProfile> profile;
+   profile.CoCreateInstance(CLSID_Profile);
+   alignment->AddProfile(0, profile);
+
    // This is same as Test1, except that instead of PBG and PFG being points off the curve, 
    // they are the BVC and EVC. We input grades instead of lengths (PVI gets computed)
-   CComPtr<IVertCurve> vc;
-   TRY_TEST(vc.CoCreateInstance(CLSID_VertCurve),S_OK);
-
-   vc->put_ComputeFromGradePoints(VARIANT_TRUE);
+   CComPtr<IVerticalCurve> vc;
+   TRY_TEST(vc.CoCreateInstance(CLSID_VerticalCurve),S_OK);
 
    CComPtr<IProfilePoint> pbg, pfg;
    pbg.CoCreateInstance(CLSID_ProfilePoint);
@@ -470,11 +483,10 @@ void CTestVertCurve::Test3()
    pfg->put_Station(CComVariant(400));
    pfg->put_Elevation(100);
 
-   TRY_TEST( vc->putref_PBG(pbg), S_OK );
-   TRY_TEST( vc->putref_PFG(pfg), S_OK );
+   vc->Init2(pbg, pfg, -0.5, 0.25);
 
-   TRY_TEST(vc->put_EntryGrade(-0.5),S_OK);
-   TRY_TEST(vc->put_ExitGrade(0.25),S_OK);
+   CComQIPtr<IProfileElement> element(vc);
+   profile->AddProfileElement(element); // add the curve to the profile before we get any values
 
    Float64 l1, l2;
    TRY_TEST(vc->get_L1(nullptr), E_POINTER);
@@ -485,8 +497,8 @@ void CTestVertCurve::Test3()
    TRY_TEST(IsEqual(l2,200.0),true);
 
    Float64 L;
-   TRY_TEST( vc->get_Length(nullptr), E_POINTER );
-   TRY_TEST( vc->get_Length(&L), S_OK );
+   TRY_TEST( element->GetLength(nullptr), E_POINTER );
+   TRY_TEST( element->GetLength(&L), S_OK );
    TRY_TEST( IsEqual( L, 300.), true );
 
    Float64 elev;
@@ -536,6 +548,7 @@ void CTestVertCurve::Test3()
 
    // high point at end
    pfg->put_Elevation(200);
+   vc->put_PFG(pfg);
    vc->put_ExitGrade(0.75);
    point.Release();
    TRY_TEST( vc->get_HighPoint(&point), S_OK );

@@ -35,10 +35,10 @@ namespace WBFL
    {
       class Time;
 
-      typedef Uint16 HourTy;
-      typedef Uint16 MinuteTy;
-      typedef Uint16 SecondTy;
-      typedef Uint32 ClockTy;
+      using HourTy = Uint16;
+      using MinuteTy = Uint16;
+      using SecondTy = Uint16;
+      using ClockTy = Uint32;
 
       static const Uint32 secFrom_Jan_1_1901_to_Jan_1_1970 = 2177452800L;
 

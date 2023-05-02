@@ -241,12 +241,15 @@ HRESULT CGirderLine::CreatePath()
       PierLineIntersect(m_EndPierLine,  line,&m_PierPoint[etEnd]);
 
       // girder line is a straight line cord between the intersection of the CL-piers
-      CComPtr<ILineSegment2d> lineSegment;
-      lineSegment.CoCreateInstance(CLSID_LineSegment2d);
+      CComPtr<IPathSegment> lineSegment;
+      lineSegment.CoCreateInstance(CLSID_PathSegment);
       lineSegment->ThroughPoints(m_PierPoint[etStart],m_PierPoint[etEnd]);
 
       m_Path.CoCreateInstance(CLSID_Path);
-      m_Path->AddEx(lineSegment);
+
+      CComQIPtr<IPathElement> element(lineSegment);
+      ATLASSERT(element);
+      m_Path->Add(element);
    }
    else
    {
@@ -260,21 +263,25 @@ HRESULT CGirderLine::CreatePath()
       // determine where the girder path starts and end
 
       Float64 start_distance, end_distance, offset;
-      layoutPath->Offset(m_PierPoint[etStart],&start_distance,&offset);
+      layoutPath->DistanceAndOffset(m_PierPoint[etStart],&start_distance,&offset);
       ATLASSERT(IsZero(offset));
       
-      layoutPath->Offset(m_PierPoint[etEnd],&end_distance,&offset);
+      layoutPath->DistanceAndOffset(m_PierPoint[etEnd],&end_distance,&offset);
       ATLASSERT(IsZero(offset));
 
       CComPtr<IPath> subPath;
-      layoutPath->CreateSubPath(start_distance,end_distance,&subPath);
+      CComQIPtr<IPathElement> layoutpath_element(layoutPath);
+      layoutpath_element->CreateSubpath(start_distance,end_distance,&subPath);
 
       m_Path.CoCreateInstance(CLSID_Path);
-      m_Path->AddEx(subPath);
+
+      CComQIPtr<IPathElement> element(subPath);
+      ATLASSERT(element);
+      m_Path->Add(element);
    }
 
-
-   m_Path->get_Length(&m_LayoutLength);
+   CComQIPtr<IPathElement> pe(m_Path);
+   pe->GetLength(&m_LayoutLength);
 
    return S_OK;
 }
@@ -510,7 +517,7 @@ HRESULT CGirderLine::GetGirderSpacingLine(EndType endType,IPierLine* pPierLine,I
 
          // get the normal to the alignment at this station
          CComPtr<IDirection> pierNormal;
-         alignment->Normal(CComVariant(pierStation),&pierNormal);
+         alignment->GetNormal(CComVariant(pierStation),&pierNormal);
 
          // get the intersection of the pier and the alignment
          CComPtr<IPoint2d> pntPier;
@@ -558,12 +565,12 @@ HRESULT CGirderLine::GetGirderSpacingLine(EndType endType,IPierLine* pPierLine,I
             // get station and offset of CL Bearing/Alignment intersection point
             CComPtr<IStation> objCLBrgStation;
             Float64 offset;
-            alignment->Offset(pntBrg,&objCLBrgStation,&offset);
+            alignment->StationAndOffset(pntBrg,&objCLBrgStation,&offset);
             ATLASSERT(IsZero(offset));
 
             // get the normal at this station
             CComPtr<IDirection> normal;
-            alignment->Normal(CComVariant(objCLBrgStation),&normal);
+            alignment->GetNormal(CComVariant(objCLBrgStation),&normal);
 
             // create the work line
             CreateLine(pntBrg,normal,ppLine);

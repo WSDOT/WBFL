@@ -31,11 +31,11 @@
 #include "LoadingCP.h"
 #include "LoadingUtils.h"
 
-typedef CLoadItem<ldIPointLoadItem, ldIPointLoad, &IID_ldIPointLoadItem> CPointLoadItem;
+using CPointLoadItem = CLoadItem<ldIPointLoadItem, ldIPointLoad, &IID_ldIPointLoadItem>;
 class CPointLoads;
-typedef CLoadCollection<ldIPointLoads, &IID_ldIPointLoads, CPointLoads, ldIPointLoad, 
+using PointLoadColl_Impl = CLoadCollection<ldIPointLoads, &IID_ldIPointLoads, CPointLoads, ldIPointLoad,
                         ldIPointLoadItem, CPointLoadItem, 
-                        ldIEnumPointLoad, &IID_ldIEnumPointLoad> PointLoadColl_Impl;
+                        ldIEnumPointLoad, &IID_ldIEnumPointLoad>;
 
 
 /////////////////////////////////////////////////////////////////////////////

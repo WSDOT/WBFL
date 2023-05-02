@@ -102,13 +102,15 @@ STDMETHODIMP CUniformSpacingLayoutLineFactory::Create(IBridgeGeometry* pBridge,I
       locate->ByDistDir(pntAlignmentEnd,  m_EndOffset,  CComVariant(nextDirection),0.0,&pntEnd);
 
       // Create first layout line
-      CComPtr<ILineSegment2d> layoutLine;
-      layoutLine.CoCreateInstance(CLSID_LineSegment2d);
+      CComPtr<IPathSegment> layoutLine;
+      layoutLine.CoCreateInstance(CLSID_PathSegment);
       layoutLine->ThroughPoints(pntStart,pntEnd);
       CComPtr<IPath> path;
       path.CoCreateInstance(CLSID_Path);
-      path->AddEx(layoutLine);
-      pPaths->AddEx(m_LayoutLineID,path);
+      CComQIPtr<IPathElement> element(layoutLine);
+      ATLASSERT(element);
+      path->Add(element);
+      pPaths->Add(m_LayoutLineID,path);
 
       m_LayoutLineID += m_LayoutLineIDInc;
 
@@ -132,11 +134,15 @@ STDMETHODIMP CUniformSpacingLayoutLineFactory::Create(IBridgeGeometry* pBridge,I
          locate->ByDistDir(pntAlignmentStart,startOffset,CComVariant(prevDirection),0.0,&pntStart);
          locate->ByDistDir(pntAlignmentEnd,  endOffset,  CComVariant(nextDirection),0.0,&pntEnd);
 
-         layoutLine.CoCreateInstance(CLSID_LineSegment2d);
+         layoutLine.CoCreateInstance(CLSID_PathSegment);
          layoutLine->ThroughPoints(pntStart,pntEnd);
          path.CoCreateInstance(CLSID_Path);
-         path->AddEx(layoutLine);
-         pPaths->AddEx(m_LayoutLineID,path);
+
+         element.Release();
+         layoutLine->QueryInterface(&element);
+         ATLASSERT(element);
+         path->Add(element);
+         pPaths->Add(m_LayoutLineID,path);
 
          m_LayoutLineID += m_LayoutLineIDInc;
 

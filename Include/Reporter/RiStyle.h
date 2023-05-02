@@ -392,7 +392,7 @@ protected:
    void MakeAssignment(const rptRiStyle& rOther);
 
 private:
-	typedef std::bitset<FMSIZE> FmSetType;
+	using FmSetType = std::bitset<FMSIZE>;
    enum BorderLoc {BTOP, BBOTTOM, BLEFT, BRIGHT};
 
    FontType      m_Font;

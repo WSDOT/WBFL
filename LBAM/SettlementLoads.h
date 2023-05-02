@@ -31,11 +31,11 @@
 #include "LoadCollection.h"
 #include "LBAMUtils.h"
 
-typedef CLoadItem<ISettlementLoadItem, ISettlementLoad, &IID_ISettlementLoadItem> CSettlementLoadItem;
+using CSettlementLoadItem = CLoadItem<ISettlementLoadItem, ISettlementLoad, &IID_ISettlementLoadItem>;
 class CSettlementLoads;
-typedef CLoadCollection<ISettlementLoads, &IID_ISettlementLoads, CSettlementLoads, ISettlementLoad, 
+using SettlementLoadColl_Impl = CLoadCollection<ISettlementLoads, &IID_ISettlementLoads, CSettlementLoads, ISettlementLoad,
                         ISettlementLoadItem, CSettlementLoadItem, 
-                        IEnumSettlementLoad, &IID_IEnumSettlementLoad> SettlementLoadColl_Impl;
+                        IEnumSettlementLoad, &IID_IEnumSettlementLoad>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettlementLoads

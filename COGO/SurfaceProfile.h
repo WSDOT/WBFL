@@ -40,17 +40,19 @@ class ATL_NO_VTABLE CSurfaceProfile :
 	public CComCoClass<CSurfaceProfile, &CLSID_SurfaceProfile>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CSurfaceProfile,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public ISurfaceProfile,
-   public IStructuredStorage2,
-   public IPersistImpl<CSurfaceProfile>
+   public ISurfaceProfile
 {
 public:
 	CSurfaceProfile()
 	{
+      m_pSurface = nullptr;
 	}
 
 	HRESULT FinalConstruct();
    void FinalRelease();
+
+   void SetSurfaceProfile(std::shared_ptr<WBFL::COGO::SurfaceProfile> profile) { m_SurfaceProfile = profile; }
+   std::shared_ptr<WBFL::COGO::SurfaceProfile> GetSurfaceProfile() { return m_SurfaceProfile; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SURFACEPROFILE)
 
@@ -58,11 +60,8 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CSurfaceProfile)
 	COM_INTERFACE_ENTRY(ISurfaceProfile)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -73,36 +72,19 @@ public:
 public:
    STDMETHOD(get_Surface)(ISurface* *pVal) override;
    STDMETHOD(putref_Surface)(ISurface* newVal) override;
-   STDMETHOD(put_Station)(VARIANT varStation) override;
    STDMETHOD(get_Station)(IStation** station) override;
-   STDMETHOD(put_Direction)(VARIANT varDirection) override;
    STDMETHOD(get_Direction)(IDirection** direction) override;
-   STDMETHOD(AddPoint)(VARIANT varStation,Float64 normalOffset,Float64 cutLineOffset,Float64 elev,IPoint2d* pnt) override;
-   STDMETHOD(AddPointEx)(ISurfacePoint* point) override;
-   STDMETHOD(RemovePoint)(CollectionIndexType idx) override;
+   STDMETHOD(get_SkewAngle)(IAngle** skewAngle) override;
    STDMETHOD(get_Item)(CollectionIndexType idx,ISurfacePoint** point) override;
    STDMETHOD(get_Count)(CollectionIndexType* count) override;
-   STDMETHOD(Clear)() override;
    STDMETHOD(GetSurfacePointElevationChange)(CollectionIndexType surfacePointIdx1,CollectionIndexType surfacePointIdx2,Float64* deltaElevation) override;
    STDMETHOD(GetElevationChange)(CollectionIndexType surfacePointIdx,Float64 offset,Float64* deltaElevation) override;
    STDMETHOD(GetSlope)(CollectionIndexType surfacePointIdx,Float64 offset,Float64* pSlope) override;
    STDMETHOD(GetSegmentSlope)(CollectionIndexType segmentIdx,Float64* pSlope) override;
    STDMETHOD(GetSurfacePointOffset)(IndexType surfacePointIdx,Float64* pOffset) override;
    STDMETHOD(GetSurfacePointElevation)(IndexType surfacePointIdx,Float64* pOffset,Float64* pElev) override;
-   STDMETHOD(Clone)(ISurfaceProfile* *clone) override;
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
+   std::shared_ptr<WBFL::COGO::SurfaceProfile> m_SurfaceProfile;
    ISurface* m_pSurface; // weak reference
-   CComPtr<IStation> m_Station;
-   CComPtr<IDirection> m_Direction;
-   std::vector<CComPtr<ISurfacePoint>> m_SurfacePoints;
-
-   HRESULT ValidateStation(IStation* station);
-   HRESULT SurfaceProfileError(UINT nHelpString,HRESULT hRes);
 };

@@ -60,8 +60,6 @@ END_COM_MAP()
 
 private:
    WBFL::Geometry::LineSegment2d m_LineSegment;
-   CComPtr<IPoint2d> m_Start;
-   CComPtr<IPoint2d> m_End;
 
 // ISupportsErrorInfo
 public:
@@ -80,7 +78,7 @@ public:
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy, /*[in]*/ Float64 angle) override;
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_EndPoint)(/*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(putref_EndPoint)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(put_EndPoint)(/*[in]*/ IPoint2d* newVal) override;
 	STDMETHOD(get_StartPoint)(/*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(putref_StartPoint)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(put_StartPoint)(/*[in]*/ IPoint2d* newVal) override;
 };

@@ -116,7 +116,7 @@ CString FormatPercentage(Float64 value,bool bIncludeUnitTag)
    return strPercentage;
 }
 
-CString FormatStation(const WBFL::Units::StationFormat& format,Float64 value)
+CString FormatStation(const WBFL::Units::StationFormat& format,Float64 value,ZoneIndexType zoneIdx)
 {
-   return format.AsString(value).c_str();
+   return format.AsString(value,zoneIdx).c_str();
 }

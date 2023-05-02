@@ -24,15 +24,6 @@
 #include <System\SysLib.h>
 #include <System\XStructuredLoad.h>
 
-#ifdef _DEBUG
-#if defined(_AFX_NO_DEBUG_CRT)
-#pramga message("WARNING - Memory debugging disabled")
-#endif
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::System;
 
 XStructuredLoad::XStructuredLoad(XStructuredLoad::Reason reason, const std::_tstring& file, Uint32 line) :

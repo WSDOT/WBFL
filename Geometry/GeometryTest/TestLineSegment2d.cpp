@@ -58,8 +58,8 @@ void CTestLineSegment2d::Test()
    p1->put_X(10);
    p1->put_Y(10);
 
-   TRY_TEST(pSeg->putref_StartPoint(nullptr),E_INVALIDARG);
-   TRY_TEST(pSeg->putref_StartPoint(p1),S_OK);
+   TRY_TEST(pSeg->put_StartPoint(nullptr),E_INVALIDARG);
+   TRY_TEST(pSeg->put_StartPoint(p1),S_OK);
 
    CComPtr<IPoint2d> pStart;
    TRY_TEST(pSeg->get_StartPoint(nullptr),E_POINTER);
@@ -79,23 +79,14 @@ void CTestLineSegment2d::Test()
    TRY_TEST(IsEqual(x,10.0),true);
    TRY_TEST(IsEqual(y,10.0),true);
 
-   // Move p1, pStart should change as well
-   p1->put_X(30);
-   pStart->get_X(&x);
-   TRY_TEST( IsEqual(x,30.0), true );
-   pStart.Release();
-   pSeg->get_StartPoint(&pStart);
-   pStart->get_X(&x);
-   TRY_TEST( IsEqual(x,30.0), true );
-
    //
    // Test EndPoint property
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance( CLSID_Point2d );
    p2->put_X(20);
    p2->put_Y(20);
-   TRY_TEST(pSeg->putref_EndPoint(nullptr),E_INVALIDARG);
-   TRY_TEST(pSeg->putref_EndPoint(p2),S_OK);
+   TRY_TEST(pSeg->put_EndPoint(nullptr),E_INVALIDARG);
+   TRY_TEST(pSeg->put_EndPoint(p2),S_OK);
 
    CComPtr<IPoint2d> pEnd;
    TRY_TEST(pSeg->get_EndPoint(nullptr),E_POINTER);
@@ -114,15 +105,6 @@ void CTestLineSegment2d::Test()
    TRY_TEST(IsEqual(x,20.0),true);
    TRY_TEST(IsEqual(y,20.0),true);
 
-   // Move p2, pEnd should change as well
-   p2->put_X(30);
-   pEnd->get_X(&x);
-   TRY_TEST( IsEqual(x,30.0), true );
-   pEnd.Release();
-   pSeg->get_EndPoint(&pEnd);
-   pEnd->get_X(&x);
-   TRY_TEST( IsEqual(x,30.0), true );
-
    //
    // Test Length property
    //
@@ -130,8 +112,8 @@ void CTestLineSegment2d::Test()
    p1->put_Y(10);
    p2->put_X(20);
    p2->put_Y(20);
-   pSeg->putref_StartPoint(p1);
-   pSeg->putref_EndPoint(p2);
+   pSeg->put_StartPoint(p1);
+   pSeg->put_EndPoint(p2);
    Float64 length;
    TRY_TEST(pSeg->get_Length(nullptr),E_POINTER);
    TRY_TEST(pSeg->get_Length(&length),S_OK);
@@ -144,8 +126,8 @@ void CTestLineSegment2d::Test()
    p1->put_Y(10);
    p2->put_X(20);
    p2->put_Y(20);
-   pSeg->putref_StartPoint(p1);
-   pSeg->putref_EndPoint(p2);
+   pSeg->put_StartPoint(p1);
+   pSeg->put_EndPoint(p2);
    TRY_TEST(pSeg->Offset(-10,-10),S_OK);
    pStart.Release();
    pSeg->get_StartPoint(&pStart);
@@ -167,8 +149,8 @@ void CTestLineSegment2d::Test()
    p1->put_Y(-10);
    p2->put_X(-20);
    p2->put_Y(-20);
-   pSeg->putref_StartPoint(p1);
-   pSeg->putref_EndPoint(p2);
+   pSeg->put_StartPoint(p1);
+   pSeg->put_EndPoint(p2);
    CComPtr<ISize2d> size;
    size.CoCreateInstance( CLSID_Size2d );
    size->put_Dx(10);
@@ -195,8 +177,8 @@ void CTestLineSegment2d::Test()
    p1->put_Y(-10);
    p2->put_X(-20);
    p2->put_Y(-20);
-   pSeg->putref_StartPoint(p1);
-   pSeg->putref_EndPoint(p2);
+   pSeg->put_StartPoint(p1);
+   pSeg->put_EndPoint(p2);
    TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
    pStart.Release();
    pSeg->get_StartPoint(&pStart);
@@ -204,17 +186,97 @@ void CTestLineSegment2d::Test()
    pSeg->get_EndPoint(&pEnd);
    pStart->get_X(&x);
    pStart->get_Y(&y);
-   TRY_TEST( IsEqual(x,  0.0), true );
-   TRY_TEST( IsEqual(y,-20.0), true );
+   TRY_TEST( IsEqual(x, -20.0), true );
+   TRY_TEST( IsEqual(y, 0.0), true );
    pEnd->get_X(&x);
    pEnd->get_Y(&y);
-   TRY_TEST( IsEqual(x,-10.0), true );
-   TRY_TEST( IsEqual(y,-30.0), true );
+   TRY_TEST( IsEqual(x,-30.0), true );
+   TRY_TEST( IsEqual(y,-10.0), true );
    
    p1->put_X(-10);
    p1->put_Y(-10);
    p2->put_X(-20);
    p2->put_Y(-20);
+   pSeg->ThroughPoints(p1, p2);
+   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x, 0.0), true );
+   TRY_TEST( IsEqual(y, -20.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x,-10.0), true );
+   TRY_TEST( IsEqual(y,-30.0), true );
+
+   p1->put_X(10);
+   p1->put_Y(10);
+   p2->put_X(20);
+   p2->put_Y(20);
+   pSeg->put_StartPoint(p1);
+   pSeg->put_EndPoint(p2);
+   TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x, 20.0), true );
+   TRY_TEST( IsEqual(y, 00.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x, 30.0), true );
+   TRY_TEST( IsEqual(y, 10.0), true );
+   
+   p1->put_X(10);
+   p1->put_Y(10);
+   p2->put_X(20);
+   p2->put_Y(20);
+   pSeg->ThroughPoints(p1, p2);
+   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x, 0.0), true );
+   TRY_TEST( IsEqual(y, 20.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x, 10.0), true );
+   TRY_TEST( IsEqual(y, 30.0), true );
+
+   p1->put_X(-10);
+   p1->put_Y(10);
+   p2->put_X(-20);
+   p2->put_Y(20);
+   pSeg->put_StartPoint(p1);
+   pSeg->put_EndPoint(p2);
+   pSeg->ThroughPoints(p1, p2);
+   TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x, 0.0), true );
+   TRY_TEST( IsEqual(y, 20.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x,-10.0), true );
+   TRY_TEST( IsEqual(y, 30.0), true );
+   
+   p1->put_X(-10);
+   p1->put_Y(10);
+   p2->put_X(-20);
+   p2->put_Y(20);
+   pSeg->ThroughPoints(p1, p2);
    TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
    pStart.Release();
    pSeg->get_StartPoint(&pStart);
@@ -227,90 +289,14 @@ void CTestLineSegment2d::Test()
    pEnd->get_X(&x);
    pEnd->get_Y(&y);
    TRY_TEST( IsEqual(x,-30.0), true );
-   TRY_TEST( IsEqual(y,-10.0), true );
-
-   p1->put_X(10);
-   p1->put_Y(10);
-   p2->put_X(20);
-   p2->put_Y(20);
-   pSeg->putref_StartPoint(p1);
-   pSeg->putref_EndPoint(p2);
-   TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
-   pStart.Release();
-   pSeg->get_StartPoint(&pStart);
-   pEnd.Release();
-   pSeg->get_EndPoint(&pEnd);
-   pStart->get_X(&x);
-   pStart->get_Y(&y);
-   TRY_TEST( IsEqual(x,  0.0), true );
-   TRY_TEST( IsEqual(y, 20.0), true );
-   pEnd->get_X(&x);
-   pEnd->get_Y(&y);
-   TRY_TEST( IsEqual(x, 10.0), true );
-   TRY_TEST( IsEqual(y, 30.0), true );
-   
-   p1->put_X(10);
-   p1->put_Y(10);
-   p2->put_X(20);
-   p2->put_Y(20);
-   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
-   pStart.Release();
-   pSeg->get_StartPoint(&pStart);
-   pEnd.Release();
-   pSeg->get_EndPoint(&pEnd);
-   pStart->get_X(&x);
-   pStart->get_Y(&y);
-   TRY_TEST( IsEqual(x, 20.0), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
-   pEnd->get_X(&x);
-   pEnd->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.0), true );
    TRY_TEST( IsEqual(y, 10.0), true );
-
-   p1->put_X(-10);
-   p1->put_Y(10);
-   p2->put_X(-20);
-   p2->put_Y(20);
-   pSeg->putref_StartPoint(p1);
-   pSeg->putref_EndPoint(p2);
-   TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
-   pStart.Release();
-   pSeg->get_StartPoint(&pStart);
-   pEnd.Release();
-   pSeg->get_EndPoint(&pEnd);
-   pStart->get_X(&x);
-   pStart->get_Y(&y);
-   TRY_TEST( IsEqual(x,-20.0), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
-   pEnd->get_X(&x);
-   pEnd->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.0), true );
-   TRY_TEST( IsEqual(y, 10.0), true );
-   
-   p1->put_X(-10);
-   p1->put_Y(10);
-   p2->put_X(-20);
-   p2->put_Y(20);
-   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
-   pStart.Release();
-   pSeg->get_StartPoint(&pStart);
-   pEnd.Release();
-   pSeg->get_EndPoint(&pEnd);
-   pStart->get_X(&x);
-   pStart->get_Y(&y);
-   TRY_TEST( IsEqual(x,  0.0), true );
-   TRY_TEST( IsEqual(y, 20.0), true );
-   pEnd->get_X(&x);
-   pEnd->get_Y(&y);
-   TRY_TEST( IsEqual(x,-10.0), true );
-   TRY_TEST( IsEqual(y, 30.0), true );
 
    p1->put_X(10);
    p1->put_Y(-10);
    p2->put_X(20);
    p2->put_Y(-20);
-   pSeg->putref_StartPoint(p1);
-   pSeg->putref_EndPoint(p2);
+   pSeg->put_StartPoint(p1);
+   pSeg->put_EndPoint(p2);
    TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
    pStart.Release();
    pSeg->get_StartPoint(&pStart);
@@ -318,30 +304,31 @@ void CTestLineSegment2d::Test()
    pSeg->get_EndPoint(&pEnd);
    pStart->get_X(&x);
    pStart->get_Y(&y);
-   TRY_TEST( IsEqual(x, 20.0), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
-   pEnd->get_X(&x);
-   pEnd->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.0), true );
-   TRY_TEST( IsEqual(y,-10.0), true );
-   
-   p1->put_X(10);
-   p1->put_Y(-10);
-   p2->put_X(20);
-   p2->put_Y(-20);
-   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
-   pStart.Release();
-   pSeg->get_StartPoint(&pStart);
-   pEnd.Release();
-   pSeg->get_EndPoint(&pEnd);
-   pStart->get_X(&x);
-   pStart->get_Y(&y);
-   TRY_TEST( IsEqual(x,  0.0), true );
-   TRY_TEST( IsEqual(y,-20.0), true );
+   TRY_TEST( IsEqual(x, 0.0), true );
+   TRY_TEST( IsEqual(y, -20.0), true );
    pEnd->get_X(&x);
    pEnd->get_Y(&y);
    TRY_TEST( IsEqual(x, 10.0), true );
    TRY_TEST( IsEqual(y,-30.0), true );
+   
+   p1->put_X(10);
+   p1->put_Y(-10);
+   p2->put_X(20);
+   p2->put_Y(-20);
+   pSeg->ThroughPoints(p1, p2);
+   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x, 20.0), true );
+   TRY_TEST( IsEqual(y, 0.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x, 30.0), true );
+   TRY_TEST( IsEqual(y,-10.0), true );
 
    //
    // Test Rotate method
@@ -350,8 +337,8 @@ void CTestLineSegment2d::Test()
    pStart->put_Y(10);
    pEnd->put_X(20);
    pEnd->put_Y(20);
-   pSeg->putref_StartPoint(pStart);
-   pSeg->putref_EndPoint(pEnd);
+   pSeg->put_StartPoint(pStart);
+   pSeg->put_EndPoint(pEnd);
 
    TRY_TEST(pSeg->Rotate(0,0,M_PI),S_OK);
    pStart.Release();
@@ -374,8 +361,8 @@ void CTestLineSegment2d::Test()
    pStart->put_Y(10);
    pEnd->put_X(20);
    pEnd->put_Y(20);
-   pSeg->putref_StartPoint(pStart);
-   pSeg->putref_EndPoint(pEnd);
+   pSeg->put_StartPoint(pStart);
+   pSeg->put_EndPoint(pEnd);
 
    CComPtr<IPoint2d> center;
    center.CoCreateInstance( CLSID_Point2d );

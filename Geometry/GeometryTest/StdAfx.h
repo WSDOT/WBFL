@@ -35,8 +35,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <Private\WbflPackage.h>
-
 #include <ObjBase.h>
 #include <AtlBase.h>
 //You may derive a class from CComModule and use it if you want to override
@@ -48,6 +46,7 @@ extern CComModule _Module;
 #include "Test.h"
 
 #include <MathEx.h>
+#include <WBFLTest.h>
 
 
 inline bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptions)

@@ -56,6 +56,6 @@ inline CString FormatDimension(Float64 value,const T& indirectMeasure,bool bIncl
 CString MFCTOOLSFUNC FormatOffset(Float64 offset,const WBFL::Units::LengthData& indirectMeasure,bool bIncludeUnitTag = true);
 CString MFCTOOLSFUNC FormatScalar(Float64 value,const WBFL::Units::ScalarData& indirectMeasure);
 CString MFCTOOLSFUNC FormatPercentage(Float64 value,bool bIncludeUnitTag = true);
-CString MFCTOOLSFUNC FormatStation(const WBFL::Units::StationFormat& format,Float64 value);
+CString MFCTOOLSFUNC FormatStation(const WBFL::Units::StationFormat& format,Float64 value,ZoneIndexType zoneIdx = INVALID_INDEX);
 CString MFCTOOLSFUNC FormatDirection(IDirection* pDirection);
 CString MFCTOOLSFUNC FormatAngle(IAngle* pAngle);

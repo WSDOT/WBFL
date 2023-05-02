@@ -36,7 +36,7 @@
 #include <functional>
 
 class CFlangedBeam;
-typedef CGirderSectionImpl<CFlangedBeam, &CLSID_FlangedGirderSection, IFlangedGirderSection, &IID_IFlangedGirderSection, IPrecastBeam, &CLSID_PrecastBeam> CFlangedBeamImpl;
+using CFlangedBeamImpl = CGirderSectionImpl<CFlangedBeam, &CLSID_FlangedGirderSection, IFlangedGirderSection, &IID_IFlangedGirderSection, IPrecastBeam, &CLSID_PrecastBeam>;
 
 class CFlangedBeam : 
    public CFlangedBeamImpl,
@@ -234,7 +234,7 @@ public:
 };
 
 class CFlangedBeam2;
-typedef CGirderSectionImpl<CFlangedBeam2, &CLSID_FlangedGirderSection2, IFlangedGirderSection2, &IID_IFlangedGirderSection2, IPrecastBeam2, &CLSID_PrecastBeam2> CFlangedBeam2Impl;
+using CFlangedBeam2Impl = CGirderSectionImpl<CFlangedBeam2, &CLSID_FlangedGirderSection2, IFlangedGirderSection2, &IID_IFlangedGirderSection2, IPrecastBeam2, &CLSID_PrecastBeam2>;
 
 class CFlangedBeam2 :
    public CFlangedBeam2Impl,
@@ -430,7 +430,7 @@ public:
 };
 
 class CBulbTeeSection;
-typedef CGirderSectionImpl<CBulbTeeSection, &CLSID_BulbTeeSection, IBulbTeeSection, &IID_IBulbTeeSection, IBulbTee2, &CLSID_BulbTee2> CBulbTeeSectionBase;
+using CBulbTeeSectionBase = CGirderSectionImpl<CBulbTeeSection, &CLSID_BulbTeeSection, IBulbTeeSection, &IID_IBulbTeeSection, IBulbTee2, &CLSID_BulbTee2>;
 class CBulbTeeSection : 
    public CBulbTeeSectionBase,
    public IAsymmetricSection,
@@ -1086,7 +1086,7 @@ public:
 };
 
 class CNUDeckedBulbTeeSection;
-typedef CGirderSectionImpl<CNUDeckedBulbTeeSection, &CLSID_NUDeckedBulbTeeSection, INUDeckedBulbTeeSection, &IID_INUDeckedBulbTeeSection, INUDeckedIBeam, &CLSID_NUDeckedIBeam> CNUDeckedBulbTeeSectionBase;
+using CNUDeckedBulbTeeSectionBase = CGirderSectionImpl<CNUDeckedBulbTeeSection, &CLSID_NUDeckedBulbTeeSection, INUDeckedBulbTeeSection, &IID_INUDeckedBulbTeeSection, INUDeckedIBeam, &CLSID_NUDeckedIBeam>;
 class CNUDeckedBulbTeeSection :
    public CNUDeckedBulbTeeSectionBase,
    //public IAsymmetricSection,
@@ -1589,7 +1589,7 @@ public:
 };
 
 class CPCIDeckedBulbTeeSection;
-typedef CGirderSectionImpl<CPCIDeckedBulbTeeSection, &CLSID_PCIDeckedBulbTeeSection, IPCIDeckedBulbTeeSection, &IID_IPCIDeckedBulbTeeSection, IPCIDeckedIBeam, &CLSID_PCIDeckedIBeam> CPCIDeckedBulbTeeSectionBase;
+using CPCIDeckedBulbTeeSectionBase = CGirderSectionImpl<CPCIDeckedBulbTeeSection, &CLSID_PCIDeckedBulbTeeSection, IPCIDeckedBulbTeeSection, &IID_IPCIDeckedBulbTeeSection, IPCIDeckedIBeam, &CLSID_PCIDeckedIBeam>;
 class CPCIDeckedBulbTeeSection :
    public CPCIDeckedBulbTeeSectionBase,
    //public IAsymmetricSection,

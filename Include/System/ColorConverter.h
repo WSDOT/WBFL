@@ -43,6 +43,13 @@ namespace WBFL
       /// Reference : "Computer Graphics - Principles and Practice"
       /// Foley, van Dam, Feiner, Hughes, 1990 Addison-Wesly,
       /// ISBN 0-201-12110-7 pg 590 -593
+      ///
+      /// 
+      /// > Due to floating point to integer round off, a call to HLStoRGB followed by
+      /// > a call to RGBtoHLS will not yield the original HLS values.
+      /// 
+      /// > A call to RGBtoHLS followed by a call to HLStoRGB will yield the original
+      /// > RGB values.
       class SYSCLASS ColorConverter
       {
       public:
@@ -51,18 +58,14 @@ namespace WBFL
          ~ColorConverter() = delete;
          ColorConverter& operator=(const ColorConverter&) = delete;
 
-         // Note:
-         // Due to floating point to integer round off, a call to HLStoRGB followed by
-         // a call to RGBtoHLS will not yield the original HLS values.
-         //
-         // A call to RGBtoHLS followed by a call to HLStoRGB will yield the original
-         // RGB values.
 
          /// Converts color from HLS to RGB model
-         static void HLStoRGB(Float64 hue, Float64 lightness, Float64 saturation, BYTE* pRed, BYTE* pGreen, BYTE* pBlue);
+         /// @return A tuple in the format (Red,Green,Blue)
+         static std::tuple <BYTE, BYTE, BYTE> HLStoRGB(Float64 hue, Float64 lightness, Float64 saturation);
 
          ///  Converts color from RGB to HLS model
-         static void RGBtoHLS(BYTE red, BYTE green, BYTE blue, Float64* pHue, Float64* pLightness, Float64* pSaturation);
+         /// @return A tuple in the format (Hue,Lightness,Saturation)
+         static std::tuple<Float64,Float64,Float64> RGBtoHLS(BYTE red, BYTE green, BYTE blue);
 
          // Note:
          // Due to floating point to integer round off, a call to HSVtoRGB followed by
@@ -72,10 +75,12 @@ namespace WBFL
          // RGB values.
 
          /// Converts color from HSV to RGB model
-         static void HSVtoRGB(Float64 hue,Float64 saturation,Float64 value,BYTE* pRed,BYTE* pGreen,BYTE* pBlue);
+         /// @return A tuple in the format (Red,Green,Blue)
+         static std::tuple <BYTE, BYTE, BYTE> HSVtoRGB(Float64 hue,Float64 saturation,Float64 value);
 
          /// Converts color from RGB to HSV model
-         static void RGBtoHSV(BYTE red,BYTE green,BYTE blue,Float64* pHue,Float64* pSaturation,Float64* pValue);
+         /// @return A tuple in the format (Hue,Lightness,Value)
+         static std::tuple<Float64, Float64, Float64> RGBtoHSV(BYTE red,BYTE green,BYTE blue);
 
       private:
          static Float64 ComputeValue(Float64 n1,Float64 n2,Float64 hue);

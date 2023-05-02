@@ -114,15 +114,16 @@ public:
 	STDMETHOD(Save)(IStructuredSave2 * Save);
 
 
-   typedef  ISegmentItem* ItemType;
+   using ItemType = ISegmentItem*;
+
 private:
    CSegments();
 
 // data members               cookie
-   //typedef std::pair< DWORD, CAdapt<CComPtr<ISegmentItem> > > StoredType; 
-   typedef CAdapt<CComPtr<ISegmentItem>> StoredType; 
-   typedef std::vector<StoredType> VectorType;
-   typedef VectorType::iterator  VectorIteratorType;
+   //using StoredType = std::pair< DWORD, CAdapt<CComPtr<ISegmentItem>>>;
+   using StoredType = CAdapt<CComPtr<ISegmentItem>>;
+   using VectorType = std::vector<StoredType>;
+   using VectorIteratorType = VectorType::iterator;
 
    VectorType m_Segments;
 

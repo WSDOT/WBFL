@@ -83,7 +83,7 @@ namespace WBFL
             }
             else
             {
-               assert(m_TransvReinforcementType == TransvReinforcementType::Hoops);
+               CHECK(m_TransvReinforcementType == TransvReinforcementType::Hoops);
                ke = (1 - s_ / (2 * ds)) * (1 - s_ / (2 * ds)) / (1 - pcc);
             }
             return ke;

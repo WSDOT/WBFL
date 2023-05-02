@@ -283,7 +283,7 @@ STDMETHODIMP CPOIStressPoints::get__EnumElements(/*[out, retval]*/ IEnumPOIStres
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumPOIStressPoints, &IID_IEnumPOIStressPoints, IPOIStressPointsItem*, CustomCopyType, ContainerType> MyEnumType;
+   using MyEnumType = CComEnumOnSTL<IEnumPOIStressPoints, &IID_IEnumPOIStressPoints, IPOIStressPointsItem*, CustomCopyType, ContainerType>;
    CComObject<MyEnumType>* pEnum;
    HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -309,7 +309,7 @@ STDMETHODIMP CPOIStressPoints::get__NewEnum(IUnknown** ppUnk)
 	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
-   typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType > VecEnumType;
+   using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType>;
 	CComObject<VecEnumType>* p;
 	hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	if (SUCCEEDED(hRes))

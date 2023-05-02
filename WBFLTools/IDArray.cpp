@@ -208,7 +208,7 @@ STDMETHODIMP CIDArray::get__NewEnum(IUnknown** ppUnk)
 	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
-   typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyID, ContainerType > VecEnumType;
+   using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyID, ContainerType>;
 	CComObject<VecEnumType>* p;
 	hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	if (SUCCEEDED(hRes))
@@ -226,7 +226,7 @@ STDMETHODIMP CIDArray::get__EnumElements(/*[out, retval]*/ IEnumIDArray* *ppenum
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumIDArray, &IID_IEnumIDArray, IDType, _CopyIDC, ContainerType> MyEnumType;
+   using MyEnumType = CComEnumOnSTL<IEnumIDArray, &IID_IEnumIDArray, IDType, _CopyIDC, ContainerType>;
    CComObject<MyEnumType>* pEnum;
    HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
    if ( FAILED(hr) )

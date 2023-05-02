@@ -33,8 +33,8 @@
 	class GenericCopy
 	{
 	public :
-		typedef DestinationType	destination_type;
-		typedef SourceType		source_type;
+		using destination_type = DestinationType;
+      using source_type = SourceType;
 
 		static void init(destination_type* p)
 		{
@@ -55,11 +55,11 @@
 	class MapCopy
 	{
 	public :
-		typedef DestinationType			destination_type;
-		typedef typename MapType::value_type		source_type;
+		using destination_type = DestinationType;
+		using source_type = typename MapType::value_type;
 		
-		typedef MapType					map_type;
-		typedef typename MapType::mapped_type	pseudosource_type;
+		using map_type = MapType;
+		using pseudosource_type = typename MapType::mapped_type;
 
 		static void init(destination_type* p)
 		{
@@ -93,11 +93,11 @@
 	class MapCopyValueToInterface
 	{
 	public :
-		typedef InterfaceType			interface_type;
-		typedef typename MapType::value_type		source_type;
+		using interface_type = InterfaceType;
+      using source_type = typename MapType::value_type;
 		
-		typedef MapType					map_type;
-		typedef typename MapType::mapped_type	pseudosource_type;
+		using map_type = MapType;
+      using pseudosource_type = typename MapType::mapped_type;
 
 		static void init(interface_type* p)
 		{
@@ -127,9 +127,9 @@
 	class MapCopyID
 	{
 	public :
-		typedef typename MapType::value_type	source_type;
-      typedef typename MapType::key_type     key_type;
-		typedef MapType					map_type;
+		using source_type = typename MapType::value_type;
+      using key_type = typename MapType::key_type;
+      using map_type = MapType;
 
 		static void init(key_type* p)
 		{
@@ -150,10 +150,10 @@
    class CopyFromPair1
    {
    public:
-      typedef PairType pair_type;
-      typedef typename PairType::first_type first_type;
-      typedef typename PairType::second_type second_type;
-      typedef DestinationType destination_type;
+      using pair_type = PairType;
+      using first_type = typename PairType::first_type;
+      using second_type = typename PairType::second_type;
+      using destination_type = DestinationType;
 
       static void init(destination_type* p)
       {
@@ -173,10 +173,10 @@
    class CopyFromPair2
    {
    public:
-      typedef PairType pair_type;
-      typedef typename PairType::first_type first_type;
-      typedef typename PairType::second_type second_type;
-      typedef DestinationType destination_type;
+      using pair_type = PairType;
+      using first_type = typename PairType::first_type;
+      using second_type = typename PairType::second_type;
+      using destination_type = DestinationType;
 
       static void init(second_type* p)
       {
@@ -196,10 +196,10 @@
    class CopyFromPair2Interface
    {
    public:
-      typedef PairType pair_type;
-      typedef typename PairType::first_type first_type;
-      typedef typename PairType::second_type second_type;
-      typedef InterfaceType interface_type;
+      using pair_type = PairType;
+      using first_type = typename PairType::first_type;
+      using second_type = typename PairType::second_type;
+      using interface_type = InterfaceType;
 
       static void init(second_type* p)
       {
@@ -223,8 +223,8 @@
 		}
    };
 
-//typedef std::map<CogoObjectID,CComVariant> MyMap;
-//typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, MapCopy<std::map<IDType,Iitem>,VARIANT>, std::map<IDType,Iitem> > MapEnum;
+//using MyMap = std::map<CogoObjectID,CComVariant>;
+//using MapEnum = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, MapCopy<std::map<IDType,Iitem>,VARIANT>, std::map<IDType,Iitem> >;
 
 template <class T,class Icoll,const IID* piid,typename IDType,class Iitem>
 class PersistentIDCollection :
@@ -235,7 +235,7 @@ class PersistentIDCollection :
    public IPersistImpl<T>
 {
 public:
-   typedef PersistentIDCollection<T,Icoll,piid,IDType,Iitem> _ThisClass;
+   using _ThisClass = PersistentIDCollection<T,Icoll,piid,IDType,Iitem>;
 
    PersistentIDCollection<T,Icoll,piid,IDType,Iitem>(Float64 colVersion=1.0,Float64 itemVersion=1.0)
    {

@@ -25,12 +25,6 @@
 #include <Materials/SimpleConcrete.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Materials;
 
 SimpleConcrete::SimpleConcrete() :
@@ -59,7 +53,7 @@ m_ftloc(0),
 m_etloc(0),
 m_bExperimental_ecu(false)
 {
-   // Don't call assert value because this material model is not valid.
+   // Don't call CHECK value because this material model is not valid.
 }
 
 SimpleConcrete::SimpleConcrete(const std::_tstring& name, Float64 fc, Float64 density, Float64 wDensity, Float64 modE, Float64 frShear, Float64 frFlexure) :
@@ -233,7 +227,7 @@ std::_tstring SimpleConcrete::GetTypeName(ConcreteType type,bool bFull)
       return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
 
    default:
-      ASSERT(false); // is there a new type?
+      CHECK(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
    }
 }
@@ -255,7 +249,7 @@ ConcreteType SimpleConcrete::GetTypeFromTypeName(LPCTSTR strName)
    if (std::_tstring(strName) == _T("UHPC") || std::_tstring(strName) == _T("FHWA-UHPC"))
       return ConcreteType::UHPC;
 
-   ASSERT(false); // invalid name
+   CHECK(false); // invalid name
    return ConcreteType::Normal;
 }
 

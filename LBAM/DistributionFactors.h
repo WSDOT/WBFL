@@ -34,8 +34,9 @@
 #include "FilteredDfSegmentCollection.h"
 
 class CDistributionFactors;
-typedef CComSegmentCollection< IDistributionFactors, IDistributionFactorSegment, IEnumDistributionFactorSegment, &IID_IEnumDistributionFactorSegment,CollectionIndexType > DistributionFactorCollImpl;
-typedef CPersistentCollection<CDistributionFactors, DistributionFactorCollImpl,CollectionIndexType> PersistentDistributionFactorCollImpl;
+using DistributionFactorCollImpl = CComSegmentCollection< IDistributionFactors, IDistributionFactorSegment, IEnumDistributionFactorSegment, &IID_IEnumDistributionFactorSegment, CollectionIndexType>;
+using PersistentDistributionFactorCollImpl = CPersistentCollection<CDistributionFactors, DistributionFactorCollImpl,CollectionIndexType>;
+
 /////////////////////////////////////////////////////////////////////////////
 // CDistributionFactors
 class ATL_NO_VTABLE CDistributionFactors : 

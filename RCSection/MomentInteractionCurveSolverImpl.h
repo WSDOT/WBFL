@@ -54,9 +54,8 @@ namespace WBFL
          void SetMaxIterations(IndexType maxIter);
          IndexType GetMaxIterations() const;
 
-         void GetCompressionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const;
-
-         void GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const;
+         const CapacityLimit& GetCompressionLimit() const;
+         const CapacityLimit& GetTensionLimit() const;
 
          std::unique_ptr<InteractionCurveSolution> Solve(Float64 Fz,Float64 startNA, Float64 endNA, IndexType nSteps) const;
 

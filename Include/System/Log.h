@@ -73,6 +73,8 @@
                            rlog << WBFL::Debug::endl; \
                         }}
 
+#define TRY_TESTME_CATCH(pf) {try{if((pf)) TRY_TESTME(false);}catch(...){TRY_TESTME(true);}}
+
 #define TEST_FAIL_EX(msg) TEST_FAIL \
                           rlog <<_T(" ")<< msg <<WBFL::Debug::endl;
                             
@@ -151,7 +153,7 @@ namespace WBFL
          LogContext& GetLogContext();
 
       private:
-#pragma warning ( disable : 4251 ) // m_ErrorLog is not accessable to clients
+#pragma warning ( disable : 4251 ) // m_ErrorLog is not accessible to clients
          std::vector<std::pair<TestResult, std::_tstring>> m_ErrorLog;
 
          DebugWindowLogContext m_DefaultContext; // Use this if one is not supplied.

@@ -98,6 +98,33 @@ STDMETHODIMP CBridge::get_BridgeAlignment(IAlignment** alignment)
    return get_Alignment(m_BridgeAlignmentID,alignment);
 }
 
+STDMETHODIMP CBridge::put_ProfileID(IDType profileID)
+{
+   m_ProfileID = profileID;
+   return S_OK;
+}
+
+STDMETHODIMP CBridge::get_ProfileID(IDType* pProfileID)
+{
+   CHECK_RETVAL(pProfileID);
+   *pProfileID = m_ProfileID;
+   return S_OK;
+}
+
+STDMETHODIMP CBridge::put_SurfaceID(IDType surfaceID)
+{
+   m_SurfaceID = surfaceID;
+   return S_OK;
+}
+
+STDMETHODIMP CBridge::get_SurfaceID(IDType* pSurfaceID)
+{
+   CHECK_RETVAL(pSurfaceID);
+   *pSurfaceID = m_SurfaceID;
+   return S_OK;
+}
+
+
 STDMETHODIMP CBridge::put_AlignmentOffset(Float64 offset)
 {
    m_AlignmentOffset = offset;
@@ -422,9 +449,6 @@ HRESULT CBridge::UpdateBridgeLine()
 HRESULT CBridge::UpdatePierGeometry()
 {
    HRESULT hr = S_OK;
-
-   CComPtr<IPointCollection> points;
-   m_CogoModel->get_Points(&points);
 
    CComPtr<IEnumPierLines> pEnum;
    m_PierLines->get__EnumPiers(&pEnum);

@@ -32,7 +32,7 @@
 #include <System\SingletonKiller.h>
 
 /// Report style name
-typedef std::_tstring rptStyleName;
+using rptStyleName = std::_tstring;
 
 
 /// A library of font styles for an application
@@ -76,12 +76,12 @@ private:
    // singleton instance
    static rptFontStyleLibrary* ms_pInstance;
 
-   typedef WBFL::System::SingletonKiller<rptFontStyleLibrary> Killer;
+   using Killer = WBFL::System::SingletonKiller<rptFontStyleLibrary>;
    friend Killer;
    static Killer ms_Killer;
 
    // map of custom styles
-   typedef std::map<rptStyleName, rptRiStyle, std::less<rptStyleName>, std::allocator<rptRiStyle> > StyleMap;
+   using StyleMap = std::map<rptStyleName, rptRiStyle, std::less<rptStyleName>, std::allocator<rptRiStyle>>;
    StyleMap m_StyleMap;
 
    // a default style

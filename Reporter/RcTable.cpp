@@ -29,12 +29,6 @@
 #include <xutility>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptRcTable::rptRcTable(ColumnIndexType NumColumns, Float64 InitWidth)
 {
    CHECK(NumColumns>0);
@@ -121,26 +115,9 @@ rptRcTable& rptRcTable::operator= (const rptRcTable& rOther)
 
 rptTableCellParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 {
-   CHECK(ColNo<m_NumColumns);
-   USES_CONVERSION;
-
+   PRECONDITION(ColNo<m_NumColumns);
    if ( m_NumColumns <= ColNo )
    {
-#if !defined _DEBUG
-      // Report class name if no label
-      std::_tstring tname;
-      if (m_Label.GetName() == 0)
-      {
-         const type_info& ti = typeid(*this);
-         tname = A2T(ti.name());
-      }
-      else
-      {
-         tname = m_Label.GetName();
-      }
-
-      ::MessageBox(nullptr,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
-#endif
       ColNo = m_NumColumns-1;
    }
 
@@ -165,27 +142,15 @@ rptTableCellParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexTy
 
 const rptTableCellParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType ColNo) const
 {
-   CHECK(ColNo<m_NumColumns);
-   USES_CONVERSION;
+   PRECONDITION(ColNo<m_NumColumns);
 
    if ( m_NumColumns <= ColNo )
    {
-#if !defined _DEBUG
-      // Report class name if no label
-      std::_tstring tname = this->m_Label.GetName();
-      if (tname.size()==0)
-      {
-         const type_info& ti = typeid(*this);
-         tname = A2T(ti.name());
-      }
-
-      ::MessageBox(nullptr,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
-#endif
       ColNo = m_NumColumns-1;
    }
 
    // check if row entry has been allocated. If it has not, then assert out
-   // We can't grow the table becase this is a const method
+   // We can't grow the table because this is a const method
    CHECKX( RowNo < (RowIndexType)m_TableData[ColNo].size(), _T("The specified row has not been allocated"));
 
    return m_TableData[ColNo][RowNo];
@@ -559,7 +524,7 @@ void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, Column
          ColumnIndexType endSkipping = ColNo + span;
          for (ColumnIndexType i = ColNo+1; i < endSkipping && i < m_NumColumns; i++)
          {
-            ASSERT(m_TableData[i][RowNo].m_ColSpan != SKIP_CELL); // if this fires, the current cell is already skipped... you have overlapping spanning regions
+            CHECK(m_TableData[i][RowNo].m_ColSpan != SKIP_CELL); // if this fires, the current cell is already skipped... you have overlapping spanning regions
             m_TableData[i][RowNo].m_ColSpan = SKIP_CELL;
          }
       }

@@ -59,8 +59,6 @@ public:
 
 private:
    WBFL::Geometry::LineSegment3d m_LineSegment;
-   CComPtr<IPoint3d> m_Start;
-   CComPtr<IPoint3d> m_End;
 
    // ISupportsErrorInfo
    STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -75,7 +73,7 @@ public:
    //STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy, /*[in]*/ Float64 angle) override;
    STDMETHOD(get_Length)(/*[out, retval]*/ Float64* pVal) override;
    STDMETHOD(get_EndPoint)(/*[out, retval]*/ IPoint3d** pVal) override;
-   STDMETHOD(putref_EndPoint)(/*[in]*/ IPoint3d* newVal) override;
+   STDMETHOD(put_EndPoint)(/*[in]*/ IPoint3d* newVal) override;
    STDMETHOD(get_StartPoint)(/*[out, retval]*/ IPoint3d** pVal) override;
-   STDMETHOD(putref_StartPoint)(/*[in]*/ IPoint3d* newVal) override;
+   STDMETHOD(put_StartPoint)(/*[in]*/ IPoint3d* newVal) override;
 };

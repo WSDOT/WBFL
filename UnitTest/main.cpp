@@ -21,9 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Private\WbflPackage.h>
 #include <System\System.h>
-#include <tchar.h>
 #include <iostream>
 #include <ostream>
 #include <fstream>
@@ -52,7 +50,8 @@ static LPCTSTR lib_list[] = {
                                  _T("WBFLMath.dll"),
                                  _T("WBFLUnits.dll"),
                                  _T("WBFLEAF.dll"),
-                                 _T("WBFLEngTools.dll")
+                                 _T("WBFLEngTools.dll"),
+                                 _T("WBFLCoordGeom.dll")
                                  //_T("WBFLBridgeAnalysis.dll"),
                                  //_T("WBFLBridgeModeling.dll")
                                 };

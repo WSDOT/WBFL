@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -24,13 +24,7 @@
 
 #include <Roark/RoarkLib.h>
 #include <Roark/PPIntermediateCouple.h>
-#include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Beams;
 
@@ -66,31 +60,29 @@ Float64 PPIntermediateCouple::GetMo() const
    return M;
 }
 
-void PPIntermediateCouple::GetReactions(Float64 *pRa,Float64* pRb) const
+std::pair<Float64, Float64> PPIntermediateCouple::GetReactions() const
 {
    Float64 L = GetL();
-   *pRa = M/L;
-   *pRb = -M/L;
+   Float64 Ra = M/L;
+   Float64 Rb = -M/L;
+   return std::make_pair(Ra, Rb);
 }
 
-void PPIntermediateCouple::GetMoments(Float64* pMa,Float64* pMb) const
+std::pair<Float64, Float64>PPIntermediateCouple::GetMoments() const
 {
-   *pMa = 0.0;
-   *pMb = 0.0;
+   return std::make_pair(0.0, 0.0);
 }
 
-void PPIntermediateCouple::GetRotations(Float64* pra,Float64* prb) const
-{
-   Float64 L = GetL();
-   *pra = ComputeRotation(0.0);
-   *prb = ComputeRotation(L);
-}
-
-void PPIntermediateCouple::GetDeflections(Float64* pYa,Float64* pYb) const
+std::pair<Float64, Float64>PPIntermediateCouple::GetRotations() const
 {
    Float64 L = GetL();
-   *pYa = ComputeDeflection(0.0);
-   *pYb = ComputeDeflection(L);
+   return std::make_pair(ComputeRotation(0.0), ComputeRotation(L));
+}
+
+std::pair<Float64, Float64> PPIntermediateCouple::GetDeflections() const
+{
+   Float64 L = GetL();
+   return std::make_pair(ComputeDeflection(0.0), ComputeDeflection(L));
 }
 
 WBFL::System::SectionValue PPIntermediateCouple::ComputeShear(Float64 /*x*/) const
@@ -137,7 +129,7 @@ Float64 PPIntermediateCouple::ComputeRotation(Float64 x) const
    Float64 r = 0;
 
    Float64 L, EI;
-   GetProperties(&L, &EI);
+   std::tie(L,EI) = GetProperties();
 
    if ( x < a )
    {
@@ -158,7 +150,7 @@ Float64 PPIntermediateCouple::ComputeDeflection(Float64 x) const
    Float64 y = 0;
 
    Float64 L, EI;
-   GetProperties(&L, &EI);
+   std::tie(L,EI) = GetProperties();
 
    if ( x < a )
    {

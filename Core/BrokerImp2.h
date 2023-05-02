@@ -121,14 +121,14 @@ public:
    STDMETHOD(get_ExtensionAgent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
 
 private:
-   typedef std::set<InterfaceItem> Interfaces;
+   using Interfaces = std::set<InterfaceItem>;
    Interfaces m_Interfaces; // collection of all interface records
    boost::circular_buffer<InterfaceItem> m_MostFrequentlyUsed; // collection of most frequently used interfaces
                                              // this collection will be searched first
 
    std::map<CComBSTR,CComBSTR> m_CLSIDMap;
 
-   typedef std::map<CLSID,CComPtr<IAgentEx>> Agents; // interface pointers are referenced counted
+   using Agents = std::map<CLSID,CComPtr<IAgentEx>>; // interface pointers are referenced counted
    Agents m_Agents;
    Agents m_ExtensionAgents;
 

@@ -25,12 +25,6 @@
 #include <RCSection\CrackedSectionSolver.h>
 #include "CrackedSectionSolverImpl.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::RCSection;
 
 CrackedSectionSolver::CrackedSectionSolver()

@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 //////////////////////////////////////////////////////////////////////
 void TestGrade(IProfile* profile,Float64 results[],long minStation=440,long maxStation=1560,long inc=160);
 void TestCrownSlopes(IProfile* profile,CogoObjectID surfaceID,IndexType ridgePointIdx,Float64 results[][2],long minStation=440,long maxStation=1560,long inc=160);
-void TestElevation(IProfile* profile,Float64 offset,Float64 results[],long minStation=440,long maxStation=1560,long inc=160);
+void TestElevation(IProfile* profile,IDType surfaceID,Float64 offset,Float64 results[],long minStation=440,long maxStation=1560,long inc=160);
 
 CTestProfile::CTestProfile()
 {
@@ -62,81 +62,78 @@ void CTestProfile::Test()
    Test10();
    Test11();
    Test12();
-   Test13();
-   Test14();
-   Test15();
 }
 
 void CTestProfile::Test1()
 {
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
    TRY_TEST(profile.CoCreateInstance(CLSID_Profile),S_OK);
+
+   alignment->AddProfile(0, profile);
 
    //
    // Test Add
    //
 
-   // Create a profile point
-   CComPtr<IProfilePoint> point;
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(100.0));
-   point->put_Elevation(50.0);
+   CComPtr<IProfilePoint> start;
+   start.CoCreateInstance(CLSID_ProfilePoint);
+   start->put_Station(CComVariant(100.0));
+   start->put_Elevation(50.0);
 
-   // Create a profile element and assign the profile point to it
-   CComPtr<IProfileElement> element;
-   element.CoCreateInstance(CLSID_ProfileElement);
-   element->putref_Value(point);
+   CComPtr<IProfilePoint> end;
+   end.CoCreateInstance(CLSID_ProfilePoint);
+   end->put_Station(CComVariant(50.0));
+   end->put_Elevation(10.0);
 
-   // add it to the profile
-   TRY_TEST(profile->Add(nullptr),E_INVALIDARG);
-   TRY_TEST(profile->Add(element),S_OK);
-
-   //
-   // Test AddEx
-   //
-
-   // create a new point
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(50));
-   point->put_Elevation(10);
+   CComPtr<IProfileSegment> segment;
+   segment.CoCreateInstance(CLSID_ProfileSegment);
+   segment->Move(start, end);
+   CComQIPtr<IProfileElement> element(segment);
 
    // add it to the profile
-   TRY_TEST(profile->AddEx(nullptr),E_INVALIDARG);
-   TRY_TEST(profile->AddEx(profile),COGO_E_PROFILEELEMENTTYPE);
-   TRY_TEST(profile->AddEx(point), S_OK);
+   TRY_TEST(profile->AddProfileElement(nullptr),E_INVALIDARG);
+   TRY_TEST(profile->AddProfileElement(element), S_OK);
 
    // create a vertical curve
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
+   CComPtr<IVerticalCurve> vc;
+   vc.CoCreateInstance(CLSID_VerticalCurve);
+   CComPtr<IProfilePoint> point;
    point.Release();
    vc->get_PBG(&point);
    point->put_Station(CComVariant(200));
    point->put_Elevation(250);
+   vc->put_PBG(point);
 
    point.Release();
    vc->get_PVI(&point);
    point->put_Station(CComVariant(300));
    point->put_Elevation(250);
+   vc->put_PVI(point);
 
    point.Release();
    vc->get_PFG(&point);
    point->put_Station(CComVariant(400));
    point->put_Elevation(150);
+   vc->put_PFG(point);
 
    vc->put_L1(100);
    vc->put_L2(100);
 
    // add it to the profile
-   TRY_TEST(profile->AddEx(vc), S_OK);
+   element.Release();
+   vc.QueryInterface(&element);
+   TRY_TEST(profile->AddProfileElement(element), S_OK);
 
    //
    // Test Count
    //
    CollectionIndexType count;
-   TRY_TEST(profile->get_Count(nullptr),E_POINTER);
-   TRY_TEST(profile->get_Count(&count),S_OK);
-   TRY_TEST(count,3);
+   TRY_TEST(profile->get_ProfileElementCount(nullptr),E_POINTER);
+   TRY_TEST(profile->get_ProfileElementCount(&count),S_OK);
+   TRY_TEST(count,2);
 
    //
    // Test Item
@@ -148,133 +145,104 @@ void CTestProfile::Test1()
    TRY_TEST(profile->get_Item(100,&element),E_INVALIDARG);
    TRY_TEST(profile->get_Item(0,nullptr),E_POINTER);
    TRY_TEST(profile->get_Item(0,&element),S_OK);
-   ProfileElementType type;
-   element->get_Type(&type);
-   TRY_TEST(type,pePoint);
-   CComPtr<IUnknown> dispVal;
-   element->get_Value(&dispVal);
+
    point.Release();
-   dispVal->QueryInterface(&point);
+   element->GetStartPoint(&point);
    CComPtr<IStation> station;
    Float64 sta, elev;
-   point->get_Station(&station);
-   station->get_Value(&sta);
-   point->get_Elevation(&elev);
-   TRY_TEST(IsEqual(sta,50.0),true);
-   TRY_TEST(IsEqual(elev,10.0),true);
-
-   element.Release();
-   TRY_TEST(profile->get_Item(1,&element),S_OK);
-   element->get_Type(&type);
-   TRY_TEST(type,pePoint);
-   dispVal.Release();
-   element->get_Value(&dispVal);
-   point.Release();
-   dispVal->QueryInterface(&point);
-   station.Release();
    point->get_Station(&station);
    station->get_Value(&sta);
    point->get_Elevation(&elev);
    TRY_TEST(IsEqual(sta,100.0),true);
    TRY_TEST(IsEqual(elev,50.0),true);
 
-   element.Release();
-   TRY_TEST(profile->get_Item(2,&element),S_OK);
-   element->get_Type(&type);
-   TRY_TEST(type,peVertCurve);
-   dispVal.Release();
-   element->get_Value(&dispVal);
-   vc.Release();
-   dispVal->QueryInterface(&vc);
    point.Release();
-   vc->get_BVC(&point);
    station.Release();
+   element->GetEndPoint(&point);
+   point->get_Station(&station);
+   station->get_Value(&sta);
+   point->get_Elevation(&elev);
+   TRY_TEST(IsEqual(sta, 50.0), true);
+   TRY_TEST(IsEqual(elev, 10.0), true);
+
+   element.Release();
+   TRY_TEST(profile->get_Item(1,&element),S_OK);
+
+   point.Release();
+   station.Release();
+   element->GetStartPoint(&point);
    point->get_Station(&station);
    station->get_Value(&sta);
    point->get_Elevation(&elev);
    TRY_TEST(IsEqual(sta,200.0),true);
    TRY_TEST(IsEqual(elev,250.0),true);
 
-   TRY_TEST(profile->putref_Item(1,nullptr),E_INVALIDARG);
-   TRY_TEST(profile->putref_Item(-1,element),E_INVALIDARG);
-   TRY_TEST(profile->putref_Item(100,element),E_INVALIDARG);
-   TRY_TEST(profile->putref_Item(1,element),S_OK);
-   element.Release();
-   TRY_TEST(profile->get_Item(1,&element),S_OK);
-   element->get_Type(&type);
-   TRY_TEST(type,peVertCurve);
+   ////
+   //// Test Remove
+   ////
+   //point.Release();
+   //vc->get_BVC(&point);
+   //TRY_TEST(profile->Remove(CComVariant()),E_INVALIDARG);
+   //TRY_TEST(profile->Remove(CComVariant(profile)),E_INVALIDARG);
+   //TRY_TEST(profile->Remove(CComVariant(-1)),E_INVALIDARG);
+   //TRY_TEST(profile->Remove(CComVariant(100)),E_INVALIDARG);
+   //TRY_TEST(profile->Remove(CComVariant(point)),E_INVALIDARG);
+   //TRY_TEST(profile->Remove(CComVariant(vc)),S_OK); // Remove the vert curve
+   //TRY_TEST(profile->Remove(CComVariant(1)),S_OK);  // Remove the element at index 1
 
-   //
-   // Test Remove
-   //
-   point.Release();
-   vc->get_BVC(&point);
-   TRY_TEST(profile->Remove(CComVariant()),E_INVALIDARG);
-   TRY_TEST(profile->Remove(CComVariant(profile)),E_INVALIDARG);
-   TRY_TEST(profile->Remove(CComVariant(-1)),E_INVALIDARG);
-   TRY_TEST(profile->Remove(CComVariant(100)),E_INVALIDARG);
-   TRY_TEST(profile->Remove(CComVariant(point)),E_INVALIDARG);
-   TRY_TEST(profile->Remove(CComVariant(vc)),S_OK); // Remove the vert curve
-   TRY_TEST(profile->Remove(CComVariant(1)),S_OK);  // Remove the element at index 1
-
-   profile->get_Count(&count);
-   TRY_TEST(count,1);
-
-   //
-   // Test Surfaces
-   //
-   CComPtr<ISurfaceCollection> surfaces;
-   TRY_TEST(profile->get_Surfaces(nullptr),E_POINTER);
-   TRY_TEST(profile->get_Surfaces(&surfaces),S_OK);
-   TRY_TEST(profile->putref_Surfaces(nullptr),E_INVALIDARG);
-   TRY_TEST(profile->putref_Surfaces(surfaces),S_OK);
+   //profile->get_Count(&count);
+   //TRY_TEST(count,1);
 
    //
    // Test Clear
    //
-   TRY_TEST(profile->Clear(),S_OK);
-   profile->get_Count(&count);
+   profile->ClearProfileElements();
+   profile->get_ProfileElementCount(&count);
    TRY_TEST(count,0);
    
-   //
-   // Test _Enum
-   //
-   profile->Clear();
-   profile->Add(element);
-   profile->Add(element);
-   CComPtr<IEnumProfileElements> pEnum;
-   TRY_TEST(profile->get__EnumProfileElements(nullptr), E_POINTER );
-   TRY_TEST(profile->get__EnumProfileElements(&pEnum), S_OK );
+   ////
+   //// Test _Enum
+   ////
+   //profile->Clear();
+   //profile->Add(element);
+   //profile->Add(element);
+   //CComPtr<IEnumProfileElements> pEnum;
+   //TRY_TEST(profile->get__EnumProfileElements(nullptr), E_POINTER );
+   //TRY_TEST(profile->get__EnumProfileElements(&pEnum), S_OK );
 
-   ULONG fetched;
-   CComPtr<IProfileElement> pe;
-   TRY_TEST(pEnum->Next(1,&pe,&fetched ),S_OK);
-   TRY_TEST(pe.IsEqualObject(element),true);
+   //ULONG fetched;
+   //CComPtr<IProfileElement> pe;
+   //TRY_TEST(pEnum->Next(1,&pe,&fetched ),S_OK);
+   //TRY_TEST(pe.IsEqualObject(element),true);
 
-   pe.Release();
-   TRY_TEST(pEnum->Next(1,&pe,&fetched ),S_OK);
-   TRY_TEST(pe.IsEqualObject(element),true);
+   //pe.Release();
+   //TRY_TEST(pEnum->Next(1,&pe,&fetched ),S_OK);
+   //TRY_TEST(pe.IsEqualObject(element),true);
 
-   point.Release();
-   vc.Release();
-   vc.CoCreateInstance(CLSID_VertCurve);
+   //point.Release();
+   //vc.Release();
+   //vc.CoCreateInstance(CLSID_VerticalCurve);
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(profile);
    TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IProfile ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_Profile,IID_IProfile,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Profile,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
 void CTestProfile::Test2()
 {
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   TRY_TEST(profile.CoCreateInstance(CLSID_Profile),S_OK);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
+
+   alignment->AddProfile(0, profile);
+
 
    //
    // Test Elevation and Grade
@@ -285,98 +253,90 @@ void CTestProfile::Test2()
    //             PVI 10+00 Elev 100.0
    //             EVC 13+00 Elev  91.0
    // Profile Point: Station 14+00 Elev 88.0
-   CComPtr<IProfilePoint> point;
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(600));
-   point->put_Elevation(80);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> start;
+   start.CoCreateInstance(CLSID_ProfilePoint);
+   start->Move(CComVariant(600),80);
 
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
-   point.Release();
-   vc->get_PBG(&point);
-   point->put_Station(CComVariant(700));
-   point->put_Elevation(85);
-   point.Release();
-   vc->get_PVI(&point);
-   point->put_Station(CComVariant(1000));
-   point->put_Elevation(100);
-   point.Release();
-   vc->get_PFG(&point);
-   point->put_Station(CComVariant(1300));
-   point->put_Elevation(91);
-   vc->put_L1(300);
-   vc->put_L2(300);
-   profile->AddEx(vc);
-   
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(1400));
-   point->put_Elevation(88);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> pbg;
+   pbg.CoCreateInstance(CLSID_ProfilePoint);
+   pbg->Move(CComVariant(700), 85.0);
+
+   CComPtr<IProfilePoint> pvi;
+   pvi.CoCreateInstance(CLSID_ProfilePoint);
+   pvi->Move(CComVariant(1000), 100);
+
+   CComPtr<IProfilePoint> pfg;
+   pfg.CoCreateInstance(CLSID_ProfilePoint);
+   pfg->Move(CComVariant(1300), 91);
+
+   CComPtr<IProfilePoint> end;
+   end.CoCreateInstance(CLSID_ProfilePoint);
+   end->Move(CComVariant(1400), 88);
+
+   CComPtr<IProfileSegment> start_segment;
+   start_segment.CoCreateInstance(CLSID_ProfileSegment);
+   start_segment->Move(start, pbg);
+   CComQIPtr<IProfileElement> element(start_segment);
+   profile->AddProfileElement(element);
+
+   CComPtr<IVerticalCurve> vc;
+   vc.CoCreateInstance(CLSID_VerticalCurve);
+   vc->Init(pbg, pvi, pfg, 300, 300);
+   element.Release();
+   vc.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   CComPtr<IProfileSegment> end_segment;
+   end_segment.CoCreateInstance(CLSID_ProfileSegment);
+   end_segment->Move(pfg,end);
+   element.Release();
+   end_segment.QueryInterface(&element);
+   profile->AddProfileElement(element);
 
    // create roadway surface model
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
-
+   IDType surfaceID = 0;
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+   profile->AddSurface(surfaceID, surface); // this may need to go after the surface is built with by-value semantics
 
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
+   surface->put_SurfaceTemplateSegmentCount(4);
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
 
    CComPtr<ISurfaceTemplate> template430;
-   template430.CoCreateInstance(CLSID_SurfaceTemplate);
-   template430->put_Station(CComVariant(430.0));
-   template430->AddSegment(20.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0,-0.02,tsHorizontal);
-   template430->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template430);
+   surface->CreateSurfaceTemplate(CComVariant(430), &template430);
+   template430->UpdateSegmentParameters(0, 20.0, 0.02,tsHorizontal);
+   template430->UpdateSegmentParameters(1,  5.0, 0.02,tsHorizontal);
+   template430->UpdateSegmentParameters(2,  5.0,-0.02,tsHorizontal);
+   template430->UpdateSegmentParameters(3, 20.0,-0.02,tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template700;
-   template700.CoCreateInstance(CLSID_SurfaceTemplate);
-   template700->put_Station(CComVariant(700.0));
-   template700->AddSegment(20.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0,-0.02,tsHorizontal);
-   template700->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template700);
+   surface->CreateSurfaceTemplate(CComVariant(700), &template700);
+   template700->UpdateSegmentParameters(0, 20.0, 0.02,tsHorizontal);
+   template700->UpdateSegmentParameters(1,  5.0, 0.02,tsHorizontal);
+   template700->UpdateSegmentParameters(2,  5.0,-0.02,tsHorizontal);
+   template700->UpdateSegmentParameters(3, 20.0,-0.02,tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1000;
-   template1000.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1000->put_Station(CComVariant(1000.0));
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   templates->Add(template1000);
+   surface->CreateSurfaceTemplate(CComVariant(1000), &template1000);
+   template1000->UpdateSegmentParameters(0, 20.0,-0.06,tsHorizontal);
+   template1000->UpdateSegmentParameters(1,  5.0,-0.06,tsHorizontal);
+   template1000->UpdateSegmentParameters(2,  5.0,-0.06,tsHorizontal);
+   template1000->UpdateSegmentParameters(3, 20.0,-0.06,tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1300;
-   template1300.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1300->put_Station(CComVariant(1300.0));
-   template1300->AddSegment(20.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1300->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1300);
+   surface->CreateSurfaceTemplate(CComVariant(1300), &template1300);
+   template1300->UpdateSegmentParameters(0, 20.0, 0.04,tsHorizontal);
+   template1300->UpdateSegmentParameters(1,  5.0, 0.04,tsHorizontal);
+   template1300->UpdateSegmentParameters(2,  5.0,-0.08,tsHorizontal);
+   template1300->UpdateSegmentParameters(3, 20.0,-0.08,tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1600;
-   template1600.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1600->put_Station(CComVariant(1600.0));
-   template1600->AddSegment(20.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1600->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1600);
+   surface->CreateSurfaceTemplate(CComVariant(1600), &template1600);
+   template1600->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1600->UpdateSegmentParameters(3, 20.0,-0.08,tsHorizontal);
 
    Float64 Grades[] = { 5.0000, 5.0000, 4.2000, 2.0667, -0.0667, -2.2000, -3.0000, -3.0000 };
    TestGrade(profile,Grades);
@@ -391,15 +351,15 @@ void CTestProfile::Test2()
    Float64 ElevE[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
    Float64 ElevOL[]= { 71.600, 79.600, 87.800, 93.987, 95.533, 92.440, 87.400, 82.600 };
    Float64 ElevOR[]= { 71.600, 79.600, 87.200, 91.787, 93.067, 91.040, 86.400, 81.600 };
-   TestElevation(profile,-15,ElevA);
-   TestElevation(profile, -5,ElevB);
-   TestElevation(profile, -2,ElevC);
-   TestElevation(profile,  0,ElevD);
-   TestElevation(profile,  5,ElevE);
-   TestElevation(profile,-35,ElevOL); // off of surface at left edge
-   TestElevation(profile,-50,ElevOL); // off of surface at left edge
-   TestElevation(profile, 30,ElevOR); // off of surface at right edge
-   TestElevation(profile, 50,ElevOR); // off of surface at right edge
+   TestElevation(profile, surfaceID,-15,ElevA);
+   TestElevation(profile, surfaceID, -5,ElevB);
+   TestElevation(profile, surfaceID, -2,ElevC);
+   TestElevation(profile, surfaceID,  0,ElevD);
+   TestElevation(profile, surfaceID,  5,ElevE);
+   TestElevation(profile, surfaceID,-35,ElevOL); // off of surface at left edge
+   TestElevation(profile, surfaceID,-50,ElevOL); // off of surface at left edge
+   TestElevation(profile, surfaceID, 30,ElevOR); // off of surface at right edge
+   TestElevation(profile, surfaceID, 50,ElevOR); // off of surface at right edge
 
    // shift the crown point offset to +5
    surface->put_AlignmentPoint(1);
@@ -410,33 +370,33 @@ void CTestProfile::Test2()
    Float64 ElevH[] = { 72.040, 80.040, 87.768, 92.696, 94.307, 92.600, 88.080, 83.280 };
    Float64 ElevI[] = { 72.100, 80.100, 87.780, 92.580, 94.207, 92.660, 88.200, 83.400 };
    Float64 ElevJ[] = { 71.900, 79.900, 87.500, 92.087, 93.553, 91.900, 87.400, 82.600 };
-   TestElevation(profile, -5,ElevF);
-   TestElevation(profile,  0,ElevG);
-   TestElevation(profile,  2,ElevH);
-   TestElevation(profile,  5,ElevI);
-   TestElevation(profile, 15,ElevJ);
+   TestElevation(profile, surfaceID, -5,ElevF);
+   TestElevation(profile, surfaceID,  0,ElevG);
+   TestElevation(profile, surfaceID,  2,ElevH);
+   TestElevation(profile, surfaceID,  5,ElevI);
+   TestElevation(profile, surfaceID, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
-   CComPtr<IEnumSurfaceTemplates> enumTemplates;
-   templates->get__EnumSurfaceTemplates(&enumTemplates);
-   CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
+
+   IndexType nTemplates;
+   surface->GetSurfaceTemplateCount(&nTemplates);
+   for(IndexType idx = 0; idx < nTemplates; idx++)
    {
+      CComPtr<ISurfaceTemplate> surface_template;
+      surface->GetSurfaceTemplate(idx, &surface_template);
       IndexType nSegments;
-      surfaceTemplate->get_Count(&nSegments);
+      surface_template->get_Count(&nSegments);
       for ( IndexType idx = 0; idx < nSegments; idx++ )
       {
-         CComPtr<ITemplateSegment> segment;
-         surfaceTemplate->get_Item(idx,&segment);
+         Float64 width, slope;
+         TemplateSlopeType slopeType;
+         surface_template->GetSegmentParameters(idx, &width, &slope, &slopeType);
 
-         Float64 slope;
-         segment->get_Slope(&slope);
          slope *= -1;
-         segment->put_Slope(slope);
+         surface_template->UpdateSegmentParameters(idx, width, slope, slopeType);
       }
-      surfaceTemplate.Release();
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
@@ -447,11 +407,11 @@ void CTestProfile::Test2()
    Float64 ElevM[] = { 71.960, 79.960, 87.704, 92.675, 94.243, 92.408, 87.840, 83.040 };
    Float64 ElevN[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
    Float64 ElevO[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
-   TestElevation(profile,-15,ElevK);
-   TestElevation(profile, -5,ElevL);
-   TestElevation(profile, -2,ElevM);
-   TestElevation(profile,  0,ElevN);
-   TestElevation(profile,  5,ElevO);
+   TestElevation(profile, surfaceID,-15,ElevK);
+   TestElevation(profile, surfaceID, -5,ElevL);
+   TestElevation(profile, surfaceID, -2,ElevM);
+   TestElevation(profile, surfaceID,  0,ElevN);
+   TestElevation(profile, surfaceID,  5,ElevO);
 
    // shift the crown point offset to +5, keep the slopes the same
    surface->put_AlignmentPoint(1);
@@ -462,17 +422,23 @@ void CTestProfile::Test2()
    Float64 ElevR[] = { 71.960, 79.960, 87.752, 92.851, 94.440, 92.520, 87.920, 83.120 };
    Float64 ElevS[] = { 71.900, 79.900, 87.740, 92.967, 94.540, 92.460, 87.800, 83.000 };
    Float64 ElevT[] = { 72.100, 80.100, 88.020, 93.460, 95.193, 93.220, 88.600, 83.800 };
-   TestElevation(profile, -5,ElevP);
-   TestElevation(profile,  0,ElevQ);
-   TestElevation(profile,  2,ElevR);
-   TestElevation(profile,  5,ElevS);
-   TestElevation(profile, 15,ElevT);
+   TestElevation(profile, surfaceID, -5,ElevP);
+   TestElevation(profile, surfaceID,  0,ElevQ);
+   TestElevation(profile, surfaceID,  2,ElevR);
+   TestElevation(profile, surfaceID,  5,ElevS);
+   TestElevation(profile, surfaceID, 15,ElevT);
 }
 
 void CTestProfile::Test3()
 {
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   TRY_TEST(profile.CoCreateInstance(CLSID_Profile),S_OK);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
+
+   alignment->AddProfile(0, profile);
+
 
    //
    // Test Elevation and Grade
@@ -484,92 +450,79 @@ void CTestProfile::Test3()
    //
    // Profile Point: Station 14+00 Elev 88.0
 
-   CComPtr<IProfilePoint> point;
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
-   vc->get_PBG(&point);
-   point->put_Station(CComVariant(700));
-   point->put_Elevation(85);
-   point.Release();
-   vc->get_PVI(&point);
-   point->put_Station(CComVariant(1000));
-   point->put_Elevation(100);
-   point.Release();
-   vc->get_PFG(&point);
-   point->put_Station(CComVariant(1300));
-   point->put_Elevation(91);
-   vc->put_L1(300);
-   vc->put_L2(300);
-   profile->AddEx(vc);
+   CComPtr<IProfilePoint> pbg;
+   pbg.CoCreateInstance(CLSID_ProfilePoint);
+   pbg->Move(CComVariant(700), 85.0);
 
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(1400));
-   point->put_Elevation(88);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> pvi;
+   pvi.CoCreateInstance(CLSID_ProfilePoint);
+   pvi->Move(CComVariant(1000), 100);
+
+   CComPtr<IProfilePoint> pfg;
+   pfg.CoCreateInstance(CLSID_ProfilePoint);
+   pfg->Move(CComVariant(1300), 91);
+
+   CComPtr<IProfilePoint> end;
+   end.CoCreateInstance(CLSID_ProfilePoint);
+   end->Move(CComVariant(1400), 88);
+
+   CComPtr<IVerticalCurve> vc;
+   vc.CoCreateInstance(CLSID_VerticalCurve);
+   vc->Init(pbg, pvi, pfg, 300, 300);
+   CComQIPtr<IProfileElement> element(vc);
+   profile->AddProfileElement(element);
+
+   CComPtr<IProfileSegment> end_segment;
+   end_segment.CoCreateInstance(CLSID_ProfileSegment);
+   end_segment->Move(pfg, end);
+   element.Release();
+   end_segment.QueryInterface(&element);
+   profile->AddProfileElement(element);
 
    // create roadway surface model
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
-
+   IDType surfaceID = 0;
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+   profile->AddSurface(surfaceID, surface); // this may need to go after the surface is built with by-value semantics
 
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
+   surface->put_SurfaceTemplateSegmentCount(4);
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
 
    CComPtr<ISurfaceTemplate> template430;
-   template430.CoCreateInstance(CLSID_SurfaceTemplate);
-   template430->put_Station(CComVariant(430.0));
-   template430->AddSegment(20.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0,-0.02,tsHorizontal);
-   template430->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template430);
+   surface->CreateSurfaceTemplate(CComVariant(430), &template430);
+   template430->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(1, 5.0, 0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(2, 5.0, -0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(3, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template700;
-   template700.CoCreateInstance(CLSID_SurfaceTemplate);
-   template700->put_Station(CComVariant(700.0));
-   template700->AddSegment(20.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0,-0.02,tsHorizontal);
-   template700->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template700);
+   surface->CreateSurfaceTemplate(CComVariant(700), &template700);
+   template700->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(1, 5.0, 0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(2, 5.0, -0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(3, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1000;
-   template1000.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1000->put_Station(CComVariant(1000.0));
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   templates->Add(template1000);
+   surface->CreateSurfaceTemplate(CComVariant(1000), &template1000);
+   template1000->UpdateSegmentParameters(0, 20.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(1, 5.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(2, 5.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(3, 20.0, -0.06, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1300;
-   template1300.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1300->put_Station(CComVariant(1300.0));
-   template1300->AddSegment(20.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1300->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1300);
+   surface->CreateSurfaceTemplate(CComVariant(1300), &template1300);
+   template1300->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1300->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1300->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1300->UpdateSegmentParameters(3, 20.0, -0.08, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1600;
-   template1600.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1600->put_Station(CComVariant(1600.0));
-   template1600->AddSegment(20.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1600->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1600);
+   surface->CreateSurfaceTemplate(CComVariant(1600), &template1600);
+   template1600->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1600->UpdateSegmentParameters(3, 20.0, -0.08, tsHorizontal);
 
    Float64 Grades[] = { 5.0000, 5.0000, 4.2000, 2.0667, -0.0667, -2.2000, -3.0000, -3.0000 };
    TestGrade(profile,Grades);
@@ -582,11 +535,11 @@ void CTestProfile::Test3()
    Float64 ElevC[] = { 72.040, 80.040, 87.816, 92.872, 94.504, 92.712, 88.160, 83.360 };
    Float64 ElevD[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
    Float64 ElevE[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
-   TestElevation(profile,-15,ElevA);
-   TestElevation(profile, -5,ElevB);
-   TestElevation(profile, -2,ElevC);
-   TestElevation(profile,  0,ElevD);
-   TestElevation(profile,  5,ElevE);
+   TestElevation(profile, surfaceID,-15,ElevA);
+   TestElevation(profile, surfaceID, -5,ElevB);
+   TestElevation(profile, surfaceID, -2,ElevC);
+   TestElevation(profile, surfaceID,  0,ElevD);
+   TestElevation(profile, surfaceID,  5,ElevE);
 
    // shift the crown point offset to +5
    surface->put_AlignmentPoint(1);
@@ -597,33 +550,33 @@ void CTestProfile::Test3()
    Float64 ElevH[] = { 72.040, 80.040, 87.768, 92.696, 94.307, 92.600, 88.080, 83.280 };
    Float64 ElevI[] = { 72.100, 80.100, 87.780, 92.580, 94.207, 92.660, 88.200, 83.400 };
    Float64 ElevJ[] = { 71.900, 79.900, 87.500, 92.087, 93.553, 91.900, 87.400, 82.600 };
-   TestElevation(profile, -5,ElevF);
-   TestElevation(profile,  0,ElevG);
-   TestElevation(profile,  2,ElevH);
-   TestElevation(profile,  5,ElevI);
-   TestElevation(profile, 15,ElevJ);
+   TestElevation(profile, surfaceID, -5,ElevF);
+   TestElevation(profile, surfaceID,  0,ElevG);
+   TestElevation(profile, surfaceID,  2,ElevH);
+   TestElevation(profile, surfaceID,  5,ElevI);
+   TestElevation(profile, surfaceID, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
-   CComPtr<IEnumSurfaceTemplates> enumTemplates;
-   templates->get__EnumSurfaceTemplates(&enumTemplates);
-   CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
-   {
-      IndexType nSegments;
-      surfaceTemplate->get_Count(&nSegments);
-      for ( IndexType idx = 0; idx < nSegments; idx++ )
-      {
-         CComPtr<ITemplateSegment> segment;
-         surfaceTemplate->get_Item(idx,&segment);
 
-         Float64 slope;
-         segment->get_Slope(&slope);
+   IndexType nTemplates;
+   surface->GetSurfaceTemplateCount(&nTemplates);
+   for (IndexType idx = 0; idx < nTemplates; idx++)
+   {
+      CComPtr<ISurfaceTemplate> surface_template;
+      surface->GetSurfaceTemplate(idx, &surface_template);
+      IndexType nSegments;
+      surface_template->get_Count(&nSegments);
+      for (IndexType idx = 0; idx < nSegments; idx++)
+      {
+         Float64 width, slope;
+         TemplateSlopeType slopeType;
+         surface_template->GetSegmentParameters(idx, &width, &slope, &slopeType);
+
          slope *= -1;
-         segment->put_Slope(slope);
+         surface_template->UpdateSegmentParameters(idx, width, slope, slopeType);
       }
-      surfaceTemplate.Release();
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, {-0.0200,  0.0760}, {-0.0400,  0.0800}, {-0.0400,  0.0800} };
@@ -634,11 +587,11 @@ void CTestProfile::Test3()
    Float64 ElevM[] = { 71.960, 79.960, 87.704, 92.675, 94.243, 92.408, 87.840, 83.040 };
    Float64 ElevN[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
    Float64 ElevO[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
-   TestElevation(profile,-15,ElevK);
-   TestElevation(profile, -5,ElevL);
-   TestElevation(profile, -2,ElevM);
-   TestElevation(profile,  0,ElevN);
-   TestElevation(profile,  5,ElevO);
+   TestElevation(profile, surfaceID,-15,ElevK);
+   TestElevation(profile, surfaceID, -5,ElevL);
+   TestElevation(profile, surfaceID, -2,ElevM);
+   TestElevation(profile, surfaceID,  0,ElevN);
+   TestElevation(profile, surfaceID,  5,ElevO);
 
    // shift the crown point offset to +5, keep the slopes the same
    surface->put_AlignmentPoint(1);
@@ -649,17 +602,23 @@ void CTestProfile::Test3()
    Float64 ElevR[] = { 71.960, 79.960, 87.752, 92.851, 94.440, 92.520, 87.920, 83.120 };
    Float64 ElevS[] = { 71.900, 79.900, 87.740, 92.967, 94.540, 92.460, 87.800, 83.000 };
    Float64 ElevT[] = { 72.100, 80.100, 88.020, 93.460, 95.193, 93.220, 88.600, 83.800 };
-   TestElevation(profile, -5,ElevP);
-   TestElevation(profile,  0,ElevQ);
-   TestElevation(profile,  2,ElevR);
-   TestElevation(profile,  5,ElevS);
-   TestElevation(profile, 15,ElevT);
+   TestElevation(profile, surfaceID, -5,ElevP);
+   TestElevation(profile, surfaceID,  0,ElevQ);
+   TestElevation(profile, surfaceID,  2,ElevR);
+   TestElevation(profile, surfaceID,  5,ElevS);
+   TestElevation(profile, surfaceID, 15,ElevT);
 }
 
 void CTestProfile::Test4()
 {
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   TRY_TEST(profile.CoCreateInstance(CLSID_Profile),S_OK);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
+
+   alignment->AddProfile(0, profile);
+
 
    //
    // Test Elevation and Grade
@@ -673,103 +632,87 @@ void CTestProfile::Test4()
    //             PVI 14+50 Elev 100.0
    //             EVC 14+90 Elev  91.0
 
-   CComPtr<IProfilePoint> point;
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
-   vc->get_PBG(&point);
-   point->put_Station(CComVariant(700));
-   point->put_Elevation(85);
-   point.Release();
-   vc->get_PVI(&point);
-   point->put_Station(CComVariant(1000));
-   point->put_Elevation(100);
-   point.Release();
-   vc->get_PFG(&point);
-   point->put_Station(CComVariant(1300));
-   point->put_Elevation(91);
-   vc->put_L1(300);
-   vc->put_L2(300);
-   profile->AddEx(vc);
+   CComPtr<IProfilePoint> pbg1;
+   pbg1.CoCreateInstance(CLSID_ProfilePoint);
+   pbg1->Move(CComVariant(700), 85.0);
 
-   vc.Release();
-   vc.CoCreateInstance(CLSID_VertCurve);
-   point.Release();
-   vc->get_PBG(&point);
-   point->put_Station(CComVariant(1390));
-   point->put_Elevation(85);
-   point.Release();
-   vc->get_PVI(&point);
-   point->put_Station(CComVariant(1450));
-   point->put_Elevation(100);
-   point.Release();
-   vc->get_PFG(&point);
-   point->put_Station(CComVariant(1490));
-   point->put_Elevation(91);
-   vc->put_L1(60);
-   vc->put_L2(40);
-   profile->AddEx(vc);
+   CComPtr<IProfilePoint> pvi1;
+   pvi1.CoCreateInstance(CLSID_ProfilePoint);
+   pvi1->Move(CComVariant(1000), 100);
 
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
+   CComPtr<IProfilePoint> pfg1;
+   pfg1.CoCreateInstance(CLSID_ProfilePoint);
+   pfg1->Move(CComVariant(1300), 91);
 
+   CComPtr<IProfilePoint> pbg2;
+   pbg2.CoCreateInstance(CLSID_ProfilePoint);
+   pbg2->Move(CComVariant(1390), 85.0);
+
+   CComPtr<IProfilePoint> pvi2;
+   pvi2.CoCreateInstance(CLSID_ProfilePoint);
+   pvi2->Move(CComVariant(1450), 100);
+
+   CComPtr<IProfilePoint> pfg2;
+   pfg2.CoCreateInstance(CLSID_ProfilePoint);
+   pfg2->Move(CComVariant(1490), 91);
+
+   CComPtr<IVerticalCurve> vc1;
+   vc1.CoCreateInstance(CLSID_VerticalCurve);
+   vc1->Init(pbg1, pvi1, pfg1, 300, 300);
+   CComQIPtr<IProfileElement> element(vc1);
+   profile->AddProfileElement(element);
+
+   CComPtr<IVerticalCurve> vc2;
+   vc2.CoCreateInstance(CLSID_VerticalCurve);
+   vc2->Init(pbg2, pvi2, pfg2, 60, 40);
+   element.Release();
+   vc2.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   // create roadway surface model
+   IDType surfaceID = 0;
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+   profile->AddSurface(surfaceID, surface); // this may need to go after the surface is built with by-value semantics
 
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
+   surface->put_SurfaceTemplateSegmentCount(4);
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
 
    CComPtr<ISurfaceTemplate> template430;
-   template430.CoCreateInstance(CLSID_SurfaceTemplate);
-   template430->put_Station(CComVariant(430.0));
-   template430->AddSegment(20.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0,-0.02,tsHorizontal);
-   template430->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template430);
+   surface->CreateSurfaceTemplate(CComVariant(430), &template430);
+   template430->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(1, 5.0, 0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(2, 5.0, -0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(3, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template700;
-   template700.CoCreateInstance(CLSID_SurfaceTemplate);
-   template700->put_Station(CComVariant(700.0));
-   template700->AddSegment(20.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0,-0.02,tsHorizontal);
-   template700->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template700);
+   surface->CreateSurfaceTemplate(CComVariant(700), &template700);
+   template700->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(1, 5.0, 0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(2, 5.0, -0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(3, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1000;
-   template1000.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1000->put_Station(CComVariant(1000.0));
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   templates->Add(template1000);
+   surface->CreateSurfaceTemplate(CComVariant(1000), &template1000);
+   template1000->UpdateSegmentParameters(0, 20.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(1, 5.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(2, 5.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(3, 20.0, -0.06, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1300;
-   template1300.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1300->put_Station(CComVariant(1300.0));
-   template1300->AddSegment(20.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1300->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1300);
+   surface->CreateSurfaceTemplate(CComVariant(1300), &template1300);
+   template1300->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1300->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1300->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1300->UpdateSegmentParameters(3, 20.0, -0.08, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1600;
-   template1600.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1600->put_Station(CComVariant(1600.0));
-   template1600->AddSegment(20.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1600->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1600);
+   surface->CreateSurfaceTemplate(CComVariant(1600), &template1600);
+   template1600->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1600->UpdateSegmentParameters(3, 20.0, -0.08, tsHorizontal);
 
    Float64 Grades[] = { 5.0000, 5.0000, 4.2000, 2.0667, -0.0667, -2.2000, 21.8333, -22.5000 };
    TestGrade(profile,Grades);
@@ -782,11 +725,11 @@ void CTestProfile::Test4()
    Float64 ElevC[] = { 72.040, 80.040, 87.816, 92.872, 94.504, 92.712, 87.5017, 75.410 };
    Float64 ElevD[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 87.3417, 75.250 };
    Float64 ElevE[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 86.9417, 74.850 };
-   TestElevation(profile,-15,ElevA);
-   TestElevation(profile, -5,ElevB);
-   TestElevation(profile, -2,ElevC);
-   TestElevation(profile,  0,ElevD);
-   TestElevation(profile,  5,ElevE);
+   TestElevation(profile, surfaceID,-15,ElevA);
+   TestElevation(profile, surfaceID, -5,ElevB);
+   TestElevation(profile, surfaceID, -2,ElevC);
+   TestElevation(profile, surfaceID,  0,ElevD);
+   TestElevation(profile, surfaceID,  5,ElevE);
 
    // shift the crown point offset to +5
    surface->put_AlignmentPoint(1);
@@ -797,33 +740,33 @@ void CTestProfile::Test4()
    Float64 ElevH[] = { 72.040, 80.040, 87.768, 92.696, 94.307, 92.600, 87.4217, 75.330 };
    Float64 ElevI[] = { 72.100, 80.100, 87.780, 92.580, 94.207, 92.660, 87.5417, 75.450 };
    Float64 ElevJ[] = { 71.900, 79.900, 87.500, 92.087, 93.553, 91.900, 86.7417, 74.650 };
-   TestElevation(profile, -5,ElevF);
-   TestElevation(profile,  0,ElevG);
-   TestElevation(profile,  2,ElevH);
-   TestElevation(profile,  5,ElevI);
-   TestElevation(profile, 15,ElevJ);
+   TestElevation(profile, surfaceID, -5,ElevF);
+   TestElevation(profile, surfaceID,  0,ElevG);
+   TestElevation(profile, surfaceID,  2,ElevH);
+   TestElevation(profile, surfaceID,  5,ElevI);
+   TestElevation(profile, surfaceID, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
-   CComPtr<IEnumSurfaceTemplates> enumTemplates;
-   templates->get__EnumSurfaceTemplates(&enumTemplates);
-   CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
-   {
-      IndexType nSegments;
-      surfaceTemplate->get_Count(&nSegments);
-      for ( IndexType idx = 0; idx < nSegments; idx++ )
-      {
-         CComPtr<ITemplateSegment> segment;
-         surfaceTemplate->get_Item(idx,&segment);
 
-         Float64 slope;
-         segment->get_Slope(&slope);
+   IndexType nTemplates;
+   surface->GetSurfaceTemplateCount(&nTemplates);
+   for (IndexType idx = 0; idx < nTemplates; idx++)
+   {
+      CComPtr<ISurfaceTemplate> surface_template;
+      surface->GetSurfaceTemplate(idx, &surface_template);
+      IndexType nSegments;
+      surface_template->get_Count(&nSegments);
+      for (IndexType idx = 0; idx < nSegments; idx++)
+      {
+         Float64 width, slope;
+         TemplateSlopeType slopeType;
+         surface_template->GetSegmentParameters(idx, &width, &slope, &slopeType);
+
          slope *= -1;
-         segment->put_Slope(slope);
+         surface_template->UpdateSegmentParameters(idx, width, slope, slopeType);
       }
-      surfaceTemplate.Release();
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
@@ -834,11 +777,11 @@ void CTestProfile::Test4()
    Float64 ElevM[] = { 71.960, 79.960, 87.704, 92.675, 94.243, 92.408, 87.1817, 75.090 };
    Float64 ElevN[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 87.3417, 75.250 };
    Float64 ElevO[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 87.7417, 75.650 };
-   TestElevation(profile,-15,ElevK);
-   TestElevation(profile, -5,ElevL);
-   TestElevation(profile, -2,ElevM);
-   TestElevation(profile,  0,ElevN);
-   TestElevation(profile,  5,ElevO);
+   TestElevation(profile, surfaceID,-15,ElevK);
+   TestElevation(profile, surfaceID, -5,ElevL);
+   TestElevation(profile, surfaceID, -2,ElevM);
+   TestElevation(profile, surfaceID,  0,ElevN);
+   TestElevation(profile, surfaceID,  5,ElevO);
 
    // shift the crown point offset to +5, keep the slopes the same
    surface->put_AlignmentPoint(1);
@@ -849,17 +792,23 @@ void CTestProfile::Test4()
    Float64 ElevR[] = { 71.960, 79.960, 87.752, 92.851, 94.440, 92.520, 87.2617, 75.170 };
    Float64 ElevS[] = { 71.900, 79.900, 87.740, 92.967, 94.540, 92.460, 87.1417, 75.050 };
    Float64 ElevT[] = { 72.100, 80.100, 88.020, 93.460, 95.193, 93.220, 87.9417, 75.850 };
-   TestElevation(profile, -5,ElevP);
-   TestElevation(profile,  0,ElevQ);
-   TestElevation(profile,  2,ElevR);
-   TestElevation(profile,  5,ElevS);
-   TestElevation(profile, 15,ElevT);
+   TestElevation(profile, surfaceID, -5,ElevP);
+   TestElevation(profile, surfaceID,  0,ElevQ);
+   TestElevation(profile, surfaceID,  2,ElevR);
+   TestElevation(profile, surfaceID,  5,ElevS);
+   TestElevation(profile, surfaceID, 15,ElevT);
 }
 
 void CTestProfile::Test5()
 {
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   TRY_TEST(profile.CoCreateInstance(CLSID_Profile),S_OK);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
+
+   alignment->AddProfile(0, profile);
+
 
    //
    // Test Elevation and Grade
@@ -871,103 +820,101 @@ void CTestProfile::Test5()
    //             PVI 10+00 Elev 100.0
    //             EVC 13+00 Elev  91.0
    // Profile Point: Station 14+00 Elev 88.0
-   CComPtr<IProfilePoint> point;
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(610));
-   point->put_Elevation(80.5);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> start;
+   start.CoCreateInstance(CLSID_ProfilePoint);
+   start->Move(CComVariant(610), 80.5);
 
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(650));
-   point->put_Elevation(82.5);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> p1;
+   p1.CoCreateInstance(CLSID_ProfilePoint);
+   p1->Move(CComVariant(650), 82.5);
 
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
-   point.Release();
-   vc->get_PBG(&point);
-   point->put_Station(CComVariant(700));
-   point->put_Elevation(85);
-   point.Release();
-   vc->get_PVI(&point);
-   point->put_Station(CComVariant(1000));
-   point->put_Elevation(100);
-   point.Release();
-   vc->get_PFG(&point);
-   point->put_Station(CComVariant(1300));
-   point->put_Elevation(91);
-   vc->put_L1(300);
-   vc->put_L2(300);
-   profile->AddEx(vc);
-   
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(1400));
-   point->put_Elevation(88);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> pbg;
+   pbg.CoCreateInstance(CLSID_ProfilePoint);
+   pbg->Move(CComVariant(700), 85.0);
 
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
+   CComPtr<IProfilePoint> pvi;
+   pvi.CoCreateInstance(CLSID_ProfilePoint);
+   pvi->Move(CComVariant(1000), 100);
 
+   CComPtr<IProfilePoint> pfg;
+   pfg.CoCreateInstance(CLSID_ProfilePoint);
+   pfg->Move(CComVariant(1300), 91);
+
+   CComPtr<IProfilePoint> end;
+   end.CoCreateInstance(CLSID_ProfilePoint);
+   end->Move(CComVariant(1400), 88);
+
+   CComPtr<IProfileSegment> start_segment1;
+   start_segment1.CoCreateInstance(CLSID_ProfileSegment);
+   start_segment1->Move(start, p1);
+   CComQIPtr<IProfileElement> element(start_segment1);
+   profile->AddProfileElement(element);
+
+   CComPtr<IProfileSegment> start_segment2;
+   start_segment2.CoCreateInstance(CLSID_ProfileSegment);
+   start_segment2->Move(p1, pbg);
+   element.Release();
+   start_segment2.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   CComPtr<IVerticalCurve> vc;
+   vc.CoCreateInstance(CLSID_VerticalCurve);
+   vc->Init(pbg, pvi, pfg, 300, 300);
+   element.Release();
+   vc.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   CComPtr<IProfileSegment> end_segment;
+   end_segment.CoCreateInstance(CLSID_ProfileSegment);
+   end_segment->Move(pfg, end);
+   element.Release();
+   end_segment.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   // create roadway surface model
+   IDType surfaceID = 0;
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+   profile->AddSurface(surfaceID, surface); // this may need to go after the surface is built with by-value semantics
 
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
+   surface->put_SurfaceTemplateSegmentCount(4);
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
 
    CComPtr<ISurfaceTemplate> template430;
-   template430.CoCreateInstance(CLSID_SurfaceTemplate);
-   template430->put_Station(CComVariant(430.0));
-   template430->AddSegment(20.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0,-0.02,tsHorizontal);
-   template430->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template430);
+   surface->CreateSurfaceTemplate(CComVariant(430), &template430);
+   template430->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(1, 5.0, 0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(2, 5.0, -0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(3, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template700;
-   template700.CoCreateInstance(CLSID_SurfaceTemplate);
-   template700->put_Station(CComVariant(700.0));
-   template700->AddSegment(20.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0,-0.02,tsHorizontal);
-   template700->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template700);
+   surface->CreateSurfaceTemplate(CComVariant(700), &template700);
+   template700->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(1, 5.0, 0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(2, 5.0, -0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(3, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1000;
-   template1000.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1000->put_Station(CComVariant(1000.0));
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   templates->Add(template1000);
+   surface->CreateSurfaceTemplate(CComVariant(1000), &template1000);
+   template1000->UpdateSegmentParameters(0, 20.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(1, 5.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(2, 5.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(3, 20.0, -0.06, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1300;
-   template1300.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1300->put_Station(CComVariant(1300.0));
-   template1300->AddSegment(20.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1300->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1300);
+   surface->CreateSurfaceTemplate(CComVariant(1300), &template1300);
+   template1300->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1300->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1300->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1300->UpdateSegmentParameters(3, 20.0, -0.08, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1600;
-   template1600.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1600->put_Station(CComVariant(1600.0));
-   template1600->AddSegment(20.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1600->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1600);
+   surface->CreateSurfaceTemplate(CComVariant(1600), &template1600);
+   template1600->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1600->UpdateSegmentParameters(3, 20.0, -0.08, tsHorizontal);
 
    Float64 Grades[] = { 5.0000, 5.0000, 4.2000, 2.0667, -0.0667, -2.2000, -3.0000, -3.0000 };
    TestGrade(profile,Grades);
@@ -980,11 +927,11 @@ void CTestProfile::Test5()
    Float64 ElevC[] = { 72.040, 80.040, 87.816, 92.872, 94.504, 92.712, 88.160, 83.360 };
    Float64 ElevD[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
    Float64 ElevE[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
-   TestElevation(profile,-15,ElevA);
-   TestElevation(profile, -5,ElevB);
-   TestElevation(profile, -2,ElevC);
-   TestElevation(profile,  0,ElevD);
-   TestElevation(profile,  5,ElevE);
+   TestElevation(profile, surfaceID,-15,ElevA);
+   TestElevation(profile, surfaceID, -5,ElevB);
+   TestElevation(profile, surfaceID, -2,ElevC);
+   TestElevation(profile, surfaceID,  0,ElevD);
+   TestElevation(profile, surfaceID,  5,ElevE);
 
    // shift the crown point offset to +5
    surface->put_AlignmentPoint(1);
@@ -995,33 +942,33 @@ void CTestProfile::Test5()
    Float64 ElevH[] = { 72.040, 80.040, 87.768, 92.696, 94.307, 92.600, 88.080, 83.280 };
    Float64 ElevI[] = { 72.100, 80.100, 87.780, 92.580, 94.207, 92.660, 88.200, 83.400 };
    Float64 ElevJ[] = { 71.900, 79.900, 87.500, 92.087, 93.553, 91.900, 87.400, 82.600 };
-   TestElevation(profile, -5,ElevF);
-   TestElevation(profile,  0,ElevG);
-   TestElevation(profile,  2,ElevH);
-   TestElevation(profile,  5,ElevI);
-   TestElevation(profile, 15,ElevJ);
+   TestElevation(profile, surfaceID, -5,ElevF);
+   TestElevation(profile, surfaceID,  0,ElevG);
+   TestElevation(profile, surfaceID,  2,ElevH);
+   TestElevation(profile, surfaceID,  5,ElevI);
+   TestElevation(profile, surfaceID, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
-   CComPtr<IEnumSurfaceTemplates> enumTemplates;
-   templates->get__EnumSurfaceTemplates(&enumTemplates);
-   CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
-   {
-      IndexType nSegments;
-      surfaceTemplate->get_Count(&nSegments);
-      for ( IndexType idx = 0; idx < nSegments; idx++ )
-      {
-         CComPtr<ITemplateSegment> segment;
-         surfaceTemplate->get_Item(idx,&segment);
 
-         Float64 slope;
-         segment->get_Slope(&slope);
+   IndexType nTemplates;
+   surface->GetSurfaceTemplateCount(&nTemplates);
+   for (IndexType idx = 0; idx < nTemplates; idx++)
+   {
+      CComPtr<ISurfaceTemplate> surface_template;
+      surface->GetSurfaceTemplate(idx, &surface_template);
+      IndexType nSegments;
+      surface_template->get_Count(&nSegments);
+      for (IndexType idx = 0; idx < nSegments; idx++)
+      {
+         Float64 width, slope;
+         TemplateSlopeType slopeType;
+         surface_template->GetSegmentParameters(idx, &width, &slope, &slopeType);
+
          slope *= -1;
-         segment->put_Slope(slope);
+         surface_template->UpdateSegmentParameters(idx, width, slope, slopeType);
       }
-      surfaceTemplate.Release();
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
@@ -1032,11 +979,11 @@ void CTestProfile::Test5()
    Float64 ElevM[] = { 71.960, 79.960, 87.704, 92.675, 94.243, 92.408, 87.840, 83.040 };
    Float64 ElevN[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
    Float64 ElevO[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
-   TestElevation(profile,-15,ElevK);
-   TestElevation(profile, -5,ElevL);
-   TestElevation(profile, -2,ElevM);
-   TestElevation(profile,  0,ElevN);
-   TestElevation(profile,  5,ElevO);
+   TestElevation(profile, surfaceID,-15,ElevK);
+   TestElevation(profile, surfaceID, -5,ElevL);
+   TestElevation(profile, surfaceID, -2,ElevM);
+   TestElevation(profile, surfaceID,  0,ElevN);
+   TestElevation(profile, surfaceID,  5,ElevO);
 
    // shift the crown point offset to +5, keep the slopes the same
    surface->put_AlignmentPoint(1);
@@ -1047,17 +994,23 @@ void CTestProfile::Test5()
    Float64 ElevR[] = { 71.960, 79.960, 87.752, 92.851, 94.440, 92.520, 87.920, 83.120 };
    Float64 ElevS[] = { 71.900, 79.900, 87.740, 92.967, 94.540, 92.460, 87.800, 83.000 };
    Float64 ElevT[] = { 72.100, 80.100, 88.020, 93.460, 95.193, 93.220, 88.600, 83.800 };
-   TestElevation(profile, -5,ElevP);
-   TestElevation(profile,  0,ElevQ);
-   TestElevation(profile,  2,ElevR);
-   TestElevation(profile,  5,ElevS);
-   TestElevation(profile, 15,ElevT);
+   TestElevation(profile, surfaceID, -5,ElevP);
+   TestElevation(profile, surfaceID,  0,ElevQ);
+   TestElevation(profile, surfaceID,  2,ElevR);
+   TestElevation(profile, surfaceID,  5,ElevS);
+   TestElevation(profile, surfaceID, 15,ElevT);
 }
 
 void CTestProfile::Test6()
 {
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   TRY_TEST(profile.CoCreateInstance(CLSID_Profile),S_OK);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
+
+   alignment->AddProfile(0, profile);
+
 
    //
    // Test Elevation and Grade
@@ -1070,109 +1023,112 @@ void CTestProfile::Test6()
    //             EVC 13+00 Elev  91.0
    // Profile Point: Station 14+00 Elev 88.0
    // Profile Point: Station 14+50 Elev 86.5
-   CComPtr<IProfilePoint> point;
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(610));
-   point->put_Elevation(80.5);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> start;
+   start.CoCreateInstance(CLSID_ProfilePoint);
+   start->Move(CComVariant(610), 80.5);
 
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(650));
-   point->put_Elevation(82.5);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> p1;
+   p1.CoCreateInstance(CLSID_ProfilePoint);
+   p1->Move(CComVariant(650), 82.5);
 
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
-   point.Release();
-   vc->get_PBG(&point);
-   point->put_Station(CComVariant(700));
-   point->put_Elevation(85);
-   point.Release();
-   vc->get_PVI(&point);
-   point->put_Station(CComVariant(1000));
-   point->put_Elevation(100);
-   point.Release();
-   vc->get_PFG(&point);
-   point->put_Station(CComVariant(1300));
-   point->put_Elevation(91);
-   vc->put_L1(300);
-   vc->put_L2(300);
-   profile->AddEx(vc);
-   
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(1400));
-   point->put_Elevation(88);
-   profile->AddEx(point);
-   
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(1450));
-   point->put_Elevation(86.5);
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> pbg;
+   pbg.CoCreateInstance(CLSID_ProfilePoint);
+   pbg->Move(CComVariant(700), 85.0);
 
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
+   CComPtr<IProfilePoint> pvi;
+   pvi.CoCreateInstance(CLSID_ProfilePoint);
+   pvi->Move(CComVariant(1000), 100);
 
+   CComPtr<IProfilePoint> pfg;
+   pfg.CoCreateInstance(CLSID_ProfilePoint);
+   pfg->Move(CComVariant(1300), 91);
+
+   CComPtr<IProfilePoint> p2;
+   p2.CoCreateInstance(CLSID_ProfilePoint);
+   p2->Move(CComVariant(1400), 88.0);
+
+   CComPtr<IProfilePoint> end;
+   end.CoCreateInstance(CLSID_ProfilePoint);
+   end->Move(CComVariant(1450), 86.5);
+
+   CComPtr<IProfileSegment> start_segment1;
+   start_segment1.CoCreateInstance(CLSID_ProfileSegment);
+   start_segment1->Move(start, p1);
+   CComQIPtr<IProfileElement> element(start_segment1);
+   profile->AddProfileElement(element);
+
+   CComPtr<IProfileSegment> start_segment2;
+   start_segment2.CoCreateInstance(CLSID_ProfileSegment);
+   start_segment2->Move(p1, pbg);
+   element.Release();
+   start_segment2.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   CComPtr<IVerticalCurve> vc;
+   vc.CoCreateInstance(CLSID_VerticalCurve);
+   vc->Init(pbg, pvi, pfg, 300, 300);
+   element.Release();
+   vc.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   CComPtr<IProfileSegment> segment2;
+   segment2.CoCreateInstance(CLSID_ProfileSegment);
+   segment2->Move(pfg, p2);
+   element.Release();
+   segment2.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   CComPtr<IProfileSegment> end_segment;
+   end_segment.CoCreateInstance(CLSID_ProfileSegment);
+   end_segment->Move(p2, end);
+   element.Release();
+   end_segment.QueryInterface(&element);
+   profile->AddProfileElement(element);
+
+   // create roadway surface model
+   IDType surfaceID = 0;
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+   profile->AddSurface(surfaceID, surface); // this may need to go after the surface is built with by-value semantics
 
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
+   surface->put_SurfaceTemplateSegmentCount(4);
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
 
    CComPtr<ISurfaceTemplate> template430;
-   template430.CoCreateInstance(CLSID_SurfaceTemplate);
-   template430->put_Station(CComVariant(430.0));
-   template430->AddSegment(20.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0,-0.02,tsHorizontal);
-   template430->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template430);
+   surface->CreateSurfaceTemplate(CComVariant(430), &template430);
+   template430->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(1, 5.0, 0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(2, 5.0, -0.02, tsHorizontal);
+   template430->UpdateSegmentParameters(3, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template700;
-   template700.CoCreateInstance(CLSID_SurfaceTemplate);
-   template700->put_Station(CComVariant(700.0));
-   template700->AddSegment(20.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0,-0.02,tsHorizontal);
-   template700->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template700);
+   surface->CreateSurfaceTemplate(CComVariant(700), &template700);
+   template700->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(1, 5.0, 0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(2, 5.0, -0.02, tsHorizontal);
+   template700->UpdateSegmentParameters(3, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1000;
-   template1000.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1000->put_Station(CComVariant(1000.0));
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   templates->Add(template1000);
+   surface->CreateSurfaceTemplate(CComVariant(1000), &template1000);
+   template1000->UpdateSegmentParameters(0, 20.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(1, 5.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(2, 5.0, -0.06, tsHorizontal);
+   template1000->UpdateSegmentParameters(3, 20.0, -0.06, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1300;
-   template1300.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1300->put_Station(CComVariant(1300.0));
-   template1300->AddSegment(20.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1300->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1300);
+   surface->CreateSurfaceTemplate(CComVariant(1300), &template1300);
+   template1300->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1300->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1300->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1300->UpdateSegmentParameters(3, 20.0, -0.08, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template1600;
-   template1600.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1600->put_Station(CComVariant(1600.0));
-   template1600->AddSegment(20.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1600->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1600);
+   surface->CreateSurfaceTemplate(CComVariant(1600), &template1600);
+   template1600->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(1, 5.0, 0.04, tsHorizontal);
+   template1600->UpdateSegmentParameters(2, 5.0, -0.08, tsHorizontal);
+   template1600->UpdateSegmentParameters(3, 20.0, -0.08, tsHorizontal);
 
    Float64 Grades[] = { 5.0000, 5.0000, 4.2000, 2.0667, -0.0667, -2.2000, -3.0000, -3.0000 };
    TestGrade(profile,Grades);
@@ -1185,11 +1141,11 @@ void CTestProfile::Test6()
    Float64 ElevC[] = { 72.040, 80.040, 87.816, 92.872, 94.504, 92.712, 88.160, 83.360 };
    Float64 ElevD[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
    Float64 ElevE[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
-   TestElevation(profile,-15,ElevA);
-   TestElevation(profile, -5,ElevB);
-   TestElevation(profile, -2,ElevC);
-   TestElevation(profile,  0,ElevD);
-   TestElevation(profile,  5,ElevE);
+   TestElevation(profile, surfaceID,-15,ElevA);
+   TestElevation(profile, surfaceID, -5,ElevB);
+   TestElevation(profile, surfaceID, -2,ElevC);
+   TestElevation(profile, surfaceID,  0,ElevD);
+   TestElevation(profile, surfaceID,  5,ElevE);
 
    // shift the crown point offset to +5
    surface->put_AlignmentPoint(1);
@@ -1200,33 +1156,33 @@ void CTestProfile::Test6()
    Float64 ElevH[] = { 72.040, 80.040, 87.768, 92.696, 94.307, 92.600, 88.080, 83.280 };
    Float64 ElevI[] = { 72.100, 80.100, 87.780, 92.580, 94.207, 92.660, 88.200, 83.400 };
    Float64 ElevJ[] = { 71.900, 79.900, 87.500, 92.087, 93.553, 91.900, 87.400, 82.600 };
-   TestElevation(profile, -5,ElevF);
-   TestElevation(profile,  0,ElevG);
-   TestElevation(profile,  2,ElevH);
-   TestElevation(profile,  5,ElevI);
-   TestElevation(profile, 15,ElevJ);
+   TestElevation(profile, surfaceID, -5,ElevF);
+   TestElevation(profile, surfaceID,  0,ElevG);
+   TestElevation(profile, surfaceID,  2,ElevH);
+   TestElevation(profile, surfaceID,  5,ElevI);
+   TestElevation(profile, surfaceID, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
    surface->put_AlignmentPoint(3);
    surface->put_ProfileGradePoint(3);
-   CComPtr<IEnumSurfaceTemplates> enumTemplates;
-   templates->get__EnumSurfaceTemplates(&enumTemplates);
-   CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
-   {
-      IndexType nSegments;
-      surfaceTemplate->get_Count(&nSegments);
-      for ( IndexType idx = 0; idx < nSegments; idx++ )
-      {
-         CComPtr<ITemplateSegment> segment;
-         surfaceTemplate->get_Item(idx,&segment);
 
-         Float64 slope;
-         segment->get_Slope(&slope);
+   IndexType nTemplates;
+   surface->GetSurfaceTemplateCount(&nTemplates);
+   for (IndexType idx = 0; idx < nTemplates; idx++)
+   {
+      CComPtr<ISurfaceTemplate> surface_template;
+      surface->GetSurfaceTemplate(idx, &surface_template);
+      IndexType nSegments;
+      surface_template->get_Count(&nSegments);
+      for (IndexType idx = 0; idx < nSegments; idx++)
+      {
+         Float64 width, slope;
+         TemplateSlopeType slopeType;
+         surface_template->GetSegmentParameters(idx, &width, &slope, &slopeType);
+
          slope *= -1;
-         segment->put_Slope(slope);
+         surface_template->UpdateSegmentParameters(idx, width, slope, slopeType);
       }
-      surfaceTemplate.Release();
    }
 
    Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
@@ -1237,11 +1193,11 @@ void CTestProfile::Test6()
    Float64 ElevM[] = { 71.960, 79.960, 87.704, 92.675, 94.243, 92.408, 87.840, 83.040 };
    Float64 ElevN[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
    Float64 ElevO[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
-   TestElevation(profile,-15,ElevK);
-   TestElevation(profile, -5,ElevL);
-   TestElevation(profile, -2,ElevM);
-   TestElevation(profile,  0,ElevN);
-   TestElevation(profile,  5,ElevO);
+   TestElevation(profile, surfaceID,-15,ElevK);
+   TestElevation(profile, surfaceID, -5,ElevL);
+   TestElevation(profile, surfaceID, -2,ElevM);
+   TestElevation(profile, surfaceID,  0,ElevN);
+   TestElevation(profile, surfaceID,  5,ElevO);
 
    // shift the crown point offset to +5, keep the slopes the same
    surface->put_AlignmentPoint(1);
@@ -1252,320 +1208,313 @@ void CTestProfile::Test6()
    Float64 ElevR[] = { 71.960, 79.960, 87.752, 92.851, 94.440, 92.520, 87.920, 83.120 };
    Float64 ElevS[] = { 71.900, 79.900, 87.740, 92.967, 94.540, 92.460, 87.800, 83.000 };
    Float64 ElevT[] = { 72.100, 80.100, 88.020, 93.460, 95.193, 93.220, 88.600, 83.800 };
-   TestElevation(profile, -5,ElevP);
-   TestElevation(profile,  0,ElevQ);
-   TestElevation(profile,  2,ElevR);
-   TestElevation(profile,  5,ElevS);
-   TestElevation(profile, 15,ElevT);
+   TestElevation(profile, surfaceID, -5,ElevP);
+   TestElevation(profile, surfaceID,  0,ElevQ);
+   TestElevation(profile, surfaceID,  2,ElevR);
+   TestElevation(profile, surfaceID,  5,ElevS);
+   TestElevation(profile, surfaceID, 15,ElevT);
 }
 
 void CTestProfile::Test7()
 {
    // Test a profile with no elements
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   profile.CoCreateInstance(CLSID_Profile);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
+
+   alignment->AddProfile(0, profile);
+
+
+   IDType surfaceID = 0;
 
    Float64 val;
-   profile->Elevation(CComVariant(100.00),0.0,&val);
+   profile->Elevation(surfaceID,CComVariant(100.00),0.0,&val);
    TRY_TEST(IsZero(val),true);
 
-   profile->Grade(CComVariant(100.00),&val);
+   profile->Grade(CComVariant(100.00), &val);
    TRY_TEST(IsZero(val),true);
 
-   profile->Slope(CComVariant(100.00),-10.0,&val);
+   profile->CrossSlope(surfaceID,CComVariant(100.00) ,-10.0,&val);
    TRY_TEST(IsZero(val),true);
 
-   profile->Slope(CComVariant(100.00),10.0,&val);
+   profile->CrossSlope(surfaceID,CComVariant(100.00), 10.0,&val);
    TRY_TEST(IsZero(val),true);
 
    // add a surface and re-test the slopes
    // create roadway surface model
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
-
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+   profile->AddSurface(surfaceID, surface);
 
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
 
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
+   surface->put_SurfaceTemplateSegmentCount(2);
    surface->put_AlignmentPoint(1);
    surface->put_ProfileGradePoint(1);
 
    CComPtr<ISurfaceTemplate> template0;
-   template0.CoCreateInstance(CLSID_SurfaceTemplate);
-   template0->put_Station(CComVariant(0.0));
-   template0->AddSegment(20.0, 0.02,tsHorizontal);
-   template0->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template0);
+   surface->CreateSurfaceTemplate(CComVariant(0), &template0);
+   template0->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template0->UpdateSegmentParameters(1, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template50;
-   template50.CoCreateInstance(CLSID_SurfaceTemplate);
-   template50->put_Station(CComVariant(50.0));
-   template50->AddSegment(20.0, 0.02,tsHorizontal);
-   template50->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template50);
+   surface->CreateSurfaceTemplate(CComVariant(50), &template50);
+   template50->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template50->UpdateSegmentParameters(1, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template100;
-   template100.CoCreateInstance(CLSID_SurfaceTemplate);
-   template100->put_Station(CComVariant(100.0));
-   template100->AddSegment(20.0, 0.04,tsHorizontal);
-   template100->AddSegment(20.0,-0.04,tsHorizontal);
-   templates->Add(template100);
+   surface->CreateSurfaceTemplate(CComVariant(100), &template100);
+   template100->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template100->UpdateSegmentParameters(1, 20.0, -0.04, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template200;
-   template200.CoCreateInstance(CLSID_SurfaceTemplate);
-   template200->put_Station(CComVariant(200.0));
-   template200->AddSegment(20.0, 0.04,tsHorizontal);
-   template200->AddSegment(20.0,-0.04,tsHorizontal);
-   templates->Add(template200);
+   surface->CreateSurfaceTemplate(CComVariant(200), &template200);
+   template200->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template200->UpdateSegmentParameters(1, 20.0, -0.04, tsHorizontal);
 
-   profile->Slope(CComVariant(0.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.02),true);
+   profile->CrossSlope(surfaceID, CComVariant(0.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.02), true);
 
-   profile->Slope(CComVariant(0.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.02),true);
+   profile->CrossSlope(surfaceID, CComVariant(0.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.02), true);
 
-   profile->Slope(CComVariant(50.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.02),true);
+   profile->CrossSlope(surfaceID, CComVariant(50.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.02), true);
 
-   profile->Slope(CComVariant(50.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.02),true);
+   profile->CrossSlope(surfaceID, CComVariant(50.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.02), true);
 
-   profile->Slope(CComVariant(75.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.03),true);
+   profile->CrossSlope(surfaceID, CComVariant(75.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.03), true);
 
-   profile->Slope(CComVariant(75.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.03),true);
+   profile->CrossSlope(surfaceID, CComVariant(75.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.03), true);
 
-   profile->Slope(CComVariant(100.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.04),true);
+   profile->CrossSlope(surfaceID, CComVariant(100.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.04), true);
 
-   profile->Slope(CComVariant(100.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.04),true);
+   profile->CrossSlope(surfaceID, CComVariant(100.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.04), true);
 
-   profile->Slope(CComVariant(150.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.04),true);
+   profile->CrossSlope(surfaceID, CComVariant(150.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.04), true);
 
-   profile->Slope(CComVariant(150.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.04),true);
+   profile->CrossSlope(surfaceID, CComVariant(150.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.04), true);
 }
 
 void CTestProfile::Test8()
 {
    // Test a profile with one point element
+   //
+   // One point profiles are not allowed in the C++ version
+   // This test is originally from the COM version
+   // Use a flat profile segment to simulate what the old COM version did
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   profile.CoCreateInstance(CLSID_Profile);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
 
-   CComPtr<IProfilePoint> point;
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->put_Station(CComVariant(100));
-   point->put_Elevation(100);
+   alignment->AddProfile(0, profile);
 
-   profile->AddEx(point);
+   CComPtr<IProfilePoint> start;
+   start.CoCreateInstance(CLSID_ProfilePoint);
+   start->put_Station(CComVariant(100.0));
+   start->put_Elevation(100.0);
+
+   CComPtr<IProfilePoint> end;
+   end.CoCreateInstance(CLSID_ProfilePoint);
+   end->put_Station(CComVariant(200.0));
+   end->put_Elevation(100.0);
+
+   CComPtr<IProfileSegment> segment;
+   segment.CoCreateInstance(CLSID_ProfileSegment);
+   segment->Move(start, end);
+
+   CComQIPtr<IProfileElement> element(segment);
+   TRY_TEST(profile->AddProfileElement(element), S_OK);
 
    Float64 val;
-   profile->Elevation(CComVariant(100.00),0.0,&val);
-   TRY_TEST(IsEqual(val,100.0),true);
+   profile->Elevation(INVALID_ID, CComVariant(100.00), 0.0, &val);
+   TRY_TEST(IsEqual(val, 100.0), true);
 
-   profile->Grade(CComVariant(100.00),&val);
-   TRY_TEST(IsZero(val),true);
+   profile->Grade(CComVariant(100.00), &val);
+   TRY_TEST(IsZero(val), true);
 
-   profile->Slope(CComVariant(100.00),-10.0,&val);
-   TRY_TEST(IsZero(val),true);
+   profile->CrossSlope(INVALID_ID, CComVariant(100.00), -10.0, &val);
+   TRY_TEST(IsZero(val), true);
 
-   profile->Slope(CComVariant(100.00),10.0,&val);
-   TRY_TEST(IsZero(val),true);
+   profile->CrossSlope(INVALID_ID, CComVariant(100.00), 10.0, &val);
+   TRY_TEST(IsZero(val), true);
 
-   // add some cross sections and re-test the crown slopes
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
+   // add a surface and re-test the slopes
+   // create roadway surface model
+   IDType surfaceID = 0;
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
+   profile->AddSurface(surfaceID, surface);
 
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
+   surface->put_SurfaceTemplateSegmentCount(2);
    surface->put_AlignmentPoint(1);
    surface->put_ProfileGradePoint(1);
 
    CComPtr<ISurfaceTemplate> template0;
-   template0.CoCreateInstance(CLSID_SurfaceTemplate);
-   template0->put_Station(CComVariant(0.0));
-   template0->AddSegment(20.0, 0.02,tsHorizontal);
-   template0->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template0);
+   surface->CreateSurfaceTemplate(CComVariant(0), &template0);
+   template0->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template0->UpdateSegmentParameters(1, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template50;
-   template50.CoCreateInstance(CLSID_SurfaceTemplate);
-   template50->put_Station(CComVariant(50.0));
-   template50->AddSegment(20.0, 0.02,tsHorizontal);
-   template50->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template50);
+   surface->CreateSurfaceTemplate(CComVariant(50), &template50);
+   template50->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template50->UpdateSegmentParameters(1, 20.0, -0.02, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template100;
-   template100.CoCreateInstance(CLSID_SurfaceTemplate);
-   template100->put_Station(CComVariant(100.0));
-   template100->AddSegment(20.0, 0.04,tsHorizontal);
-   template100->AddSegment(20.0,-0.04,tsHorizontal);
-   templates->Add(template100);
+   surface->CreateSurfaceTemplate(CComVariant(100), &template100);
+   template100->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template100->UpdateSegmentParameters(1, 20.0, -0.04, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template200;
-   template200.CoCreateInstance(CLSID_SurfaceTemplate);
-   template200->put_Station(CComVariant(200.0));
-   template200->AddSegment(20.0, 0.04,tsHorizontal);
-   template200->AddSegment(20.0,-0.04,tsHorizontal);
-   templates->Add(template200);
+   surface->CreateSurfaceTemplate(CComVariant(200), &template200);
+   template200->UpdateSegmentParameters(0, 20.0, 0.04, tsHorizontal);
+   template200->UpdateSegmentParameters(1, 20.0, -0.04, tsHorizontal);
 
-   profile->Slope(CComVariant(0.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.02),true);
+   profile->CrossSlope(surfaceID, CComVariant(0.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.02), true);
 
-   profile->Slope(CComVariant(0.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.02),true);
+   profile->CrossSlope(surfaceID, CComVariant(0.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.02), true);
 
-   profile->Slope(CComVariant(50.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.02),true);
+   profile->CrossSlope(surfaceID, CComVariant(50.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.02), true);
 
-   profile->Slope(CComVariant(50.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.02),true);
+   profile->CrossSlope(surfaceID, CComVariant(50.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.02), true);
 
-   profile->Slope(CComVariant(75.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.03),true);
+   profile->CrossSlope(surfaceID, CComVariant(75.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.03), true);
 
-   profile->Slope(CComVariant(75.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.03),true);
+   profile->CrossSlope(surfaceID, CComVariant(75.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.03), true);
 
-   profile->Slope(CComVariant(100.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.04),true);
+   profile->CrossSlope(surfaceID, CComVariant(100.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.04), true);
 
-   profile->Slope(CComVariant(100.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.04),true);
+   profile->CrossSlope(surfaceID, CComVariant(100.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.04), true);
 
-   profile->Slope(CComVariant(150.00),-10.0,&val);
-   TRY_TEST(IsEqual(val, 0.04),true);
+   profile->CrossSlope(surfaceID, CComVariant(150.00), -10.0, &val);
+   TRY_TEST(IsEqual(val, 0.04), true);
 
-   profile->Slope(CComVariant(150.00),10.0,&val);
-   TRY_TEST(IsEqual(val,-0.04),true);
+   profile->CrossSlope(surfaceID, CComVariant(150.00), 10.0, &val);
+   TRY_TEST(IsEqual(val, -0.04), true);
 }
 
 void CTestProfile::Test9()
 {
    // Test a profile with one vertical curve element
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   profile.CoCreateInstance(CLSID_Profile);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
 
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
-   CComPtr<IProfilePoint> point;
-   vc->get_PBG(&point);
-   point->put_Station(CComVariant(4850));
-   point->put_Elevation(436.34);
+   alignment->AddProfile(0, profile);
 
-   point.Release();
-   vc->get_PVI(&point);
-   point->put_Station(CComVariant(5250));
-   point->put_Elevation(432.34);
 
-   point.Release();
-   vc->get_PFG(&point);
-   point->put_Station(CComVariant(5650));
-   point->put_Elevation(441.14);
+   CComPtr<IProfilePoint> pbg;
+   pbg.CoCreateInstance(CLSID_ProfilePoint);
+   pbg->Move(CComVariant(4850), 436.34);
 
-   vc->put_L1(400);
-   vc->put_L2(400);
+   CComPtr<IProfilePoint> pvi;
+   pvi.CoCreateInstance(CLSID_ProfilePoint);
+   pvi->Move(CComVariant(5250), 432.34);
 
-   profile->AddEx(vc);
+   CComPtr<IProfilePoint> pfg;
+   pfg.CoCreateInstance(CLSID_ProfilePoint);
+   pfg->Move(CComVariant(5650), 441.14);
+
+   CComPtr<IVerticalCurve> vc;
+   vc.CoCreateInstance(CLSID_VerticalCurve);
+   vc->Init(pbg, pvi, pfg, 400, 400);
+   CComQIPtr<IProfileElement> element(vc);
+   profile->AddProfileElement(element);
 
    Float64 elev;
-   profile->Elevation(CComVariant(4700),0.00,&elev);   TRY_TEST(IsEqual(elev,437.84),true);
-   profile->Elevation(CComVariant(4850),0.00,&elev);   TRY_TEST(IsEqual(elev,436.34),true);
-   profile->Elevation(CComVariant(4900),0.00,&elev);   TRY_TEST(IsEqual(elev,435.89),true);
-   profile->Elevation(CComVariant(5000),0.00,&elev);   TRY_TEST(IsEqual(elev,435.29),true);
-   profile->Elevation(CComVariant(5100),0.00,&elev);   TRY_TEST(IsEqual(elev,435.09),true);
-   profile->Elevation(CComVariant(5200),0.00,&elev);   TRY_TEST(IsEqual(elev,435.29),true);
-   profile->Elevation(CComVariant(5300),0.00,&elev);   TRY_TEST(IsEqual(elev,435.89),true);
-   profile->Elevation(CComVariant(5400),0.00,&elev);   TRY_TEST(IsEqual(elev,436.89),true);
-   profile->Elevation(CComVariant(5500),0.00,&elev);   TRY_TEST(IsEqual(elev,438.29),true);
-   profile->Elevation(CComVariant(5600),0.00,&elev);   TRY_TEST(IsEqual(elev,440.09),true);
-   profile->Elevation(CComVariant(5650),0.00,&elev);   TRY_TEST(IsEqual(elev,441.14),true);
-   profile->Elevation(CComVariant(6000),0.00,&elev);   TRY_TEST(IsEqual(elev,448.84),true);
+   profile->Elevation(INVALID_ID, CComVariant(4700), 0.00, &elev);   TRY_TEST(IsEqual(elev, 437.84), true);
+   profile->Elevation(INVALID_ID, CComVariant(4850), 0.00, &elev);   TRY_TEST(IsEqual(elev, 436.34), true);
+   profile->Elevation(INVALID_ID, CComVariant(4900), 0.00, &elev);   TRY_TEST(IsEqual(elev, 435.89), true);
+   profile->Elevation(INVALID_ID, CComVariant(5000), 0.00, &elev);   TRY_TEST(IsEqual(elev, 435.29), true);
+   profile->Elevation(INVALID_ID, CComVariant(5100), 0.00, &elev);   TRY_TEST(IsEqual(elev, 435.09), true);
+   profile->Elevation(INVALID_ID, CComVariant(5200), 0.00, &elev);   TRY_TEST(IsEqual(elev, 435.29), true);
+   profile->Elevation(INVALID_ID, CComVariant(5300), 0.00, &elev);   TRY_TEST(IsEqual(elev, 435.89), true);
+   profile->Elevation(INVALID_ID, CComVariant(5400), 0.00, &elev);   TRY_TEST(IsEqual(elev, 436.89), true);
+   profile->Elevation(INVALID_ID, CComVariant(5500), 0.00, &elev);   TRY_TEST(IsEqual(elev, 438.29), true);
+   profile->Elevation(INVALID_ID, CComVariant(5600), 0.00, &elev);   TRY_TEST(IsEqual(elev, 440.09), true);
+   profile->Elevation(INVALID_ID, CComVariant(5650), 0.00, &elev);   TRY_TEST(IsEqual(elev, 441.14), true);
+   profile->Elevation(INVALID_ID, CComVariant(6000), 0.00,&elev);   TRY_TEST(IsEqual(elev,448.84),true);
 }
 
 void CTestProfile::Test10()
 {
    // Test a profile with one vertical curve element
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   profile.CoCreateInstance(CLSID_Profile);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
 
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
-   CComPtr<IProfilePoint> point;
-   vc->get_PBG(&point);
-   point->put_Station(CComVariant(100));
-   point->put_Elevation(100);
+   alignment->AddProfile(0, profile);
 
-   point.Release();
-   vc->get_PVI(&point);
-   point->put_Station(CComVariant(200));
-   point->put_Elevation(90);
 
-   point.Release();
-   vc->get_PFG(&point);
-   point->put_Station(CComVariant(300));
-   point->put_Elevation(100);
+   CComPtr<IProfilePoint> pbg;
+   pbg.CoCreateInstance(CLSID_ProfilePoint);
+   pbg->Move(CComVariant(100), 100);
 
-   vc->put_L1(50);
-   vc->put_L2(50);
+   CComPtr<IProfilePoint> pvi;
+   pvi.CoCreateInstance(CLSID_ProfilePoint);
+   pvi->Move(CComVariant(200), 90);
 
-   profile->AddEx(vc);
+   CComPtr<IProfilePoint> pfg;
+   pfg.CoCreateInstance(CLSID_ProfilePoint);
+   pfg->Move(CComVariant(300), 100);
+
+   CComPtr<IVerticalCurve> vc;
+   vc.CoCreateInstance(CLSID_VerticalCurve);
+   vc->Init(pbg, pvi, pfg, 50, 50);
+   CComQIPtr<IProfileElement> element(vc);
+   profile->AddProfileElement(element);
 
    // create roadway surface model
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
-
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
 
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
+   surface->put_AlignmentPoint(1);
+   surface->put_ProfileGradePoint(1);
+   IDType surfaceID = 0;
 
-   surfaces->Add(surface);
+   profile->AddSurface(surfaceID, surface);
 
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
+   surface->put_SurfaceTemplateSegmentCount(2);
    surface->put_AlignmentPoint(1);
    surface->put_ProfileGradePoint(1);
 
    CComPtr<ISurfaceTemplate> template50;
-   template50.CoCreateInstance(CLSID_SurfaceTemplate);
-   template50->put_Station(CComVariant(50.0));
-   template50->AddSegment(20.0, 0.02,tsHorizontal);
-   template50->AddSegment(20.0,-0.04,tsHorizontal);
-   templates->Add(template50);
+   surface->CreateSurfaceTemplate(CComVariant(50), &template50);
+   template50->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template50->UpdateSegmentParameters(1, 20.0, -0.04, tsHorizontal);
 
    CComPtr<ISurfaceTemplate> template100;
-   template100.CoCreateInstance(CLSID_SurfaceTemplate);
-   template100->put_Station(CComVariant(100.0));
-   template100->AddSegment(20.0, 0.02,tsHorizontal);
-   template100->AddSegment(20.0,-0.04,tsHorizontal);
-   templates->Add(template100);
+   surface->CreateSurfaceTemplate(CComVariant(100), &template100);
+   template100->UpdateSegmentParameters(0, 20.0, 0.02, tsHorizontal);
+   template100->UpdateSegmentParameters(1, 20.0, -0.04, tsHorizontal);
 
    Float64 elev;
-   profile->Elevation(CComVariant(100), 0.00,&elev);   TRY_TEST(IsEqual(elev,100.00),true);
-   profile->Elevation(CComVariant(100), 5.00,&elev);   TRY_TEST(IsEqual(elev, 99.80),true);
-   profile->Elevation(CComVariant(100),-5.00,&elev);   TRY_TEST(IsEqual(elev, 99.90),true);
+   profile->Elevation(surfaceID, CComVariant(100), 0.00, &elev);   TRY_TEST(IsEqual(elev, 100.00), true);
+   profile->Elevation(surfaceID, CComVariant(100), 5.00, &elev);   TRY_TEST(IsEqual(elev, 99.80), true);
+   profile->Elevation(surfaceID, CComVariant(100), -5.00,&elev);   TRY_TEST(IsEqual(elev, 99.90),true);
 }
 
 void CTestProfile::Test11()
@@ -1576,699 +1525,406 @@ void CTestProfile::Test11()
    // The elevation at the BVC not computed correctly by the Profile object
    // however, it is computed correctly by the VertCurve object
    // RAB: 11/14/2001
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+
    CComPtr<IProfile> profile;
-   profile.CoCreateInstance(CLSID_Profile);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
+
+   alignment->AddProfile(0, profile);
+
 
    // Start point
    CComPtr<IProfilePoint> start;
    start.CoCreateInstance(CLSID_ProfilePoint);
-   start->put_Station(CComVariant(100));
-   start->put_Elevation(50);
+   start->Move(CComVariant(100), 50);
 
-   CComPtr<IProfilePoint> pvi;
+   CComPtr<IProfilePoint> pvi1;
+   pvi1.CoCreateInstance(CLSID_ProfilePoint);
+   pvi1->Move(CComVariant(300), 80);
 
-   // Vert Curve #1
-   CComPtr<IVertCurve> vc1;
-   vc1.CoCreateInstance(CLSID_VertCurve);
-   vc1->put_L1(50);
-   vc1->put_L2(50);
-   pvi.Release();
-   vc1->get_PVI(&pvi);
-   pvi->put_Station(CComVariant(300));
-   pvi->put_Elevation(80);
+   CComPtr<IProfilePoint> pvi2;
+   pvi2.CoCreateInstance(CLSID_ProfilePoint);
+   pvi2->Move(CComVariant(500), 50);
 
-   // Vert Curve #2
-   CComPtr<IVertCurve> vc2;
-   vc2.CoCreateInstance(CLSID_VertCurve);
-   vc2->put_L1(50);
-   vc2->put_L2(50);
-   pvi.Release();
-   vc2->get_PVI(&pvi);
-   pvi->put_Station(CComVariant(500));
-   pvi->put_Elevation(50);
-
-   // Vert Curve #3
-   CComPtr<IVertCurve> vc3;
-   vc3.CoCreateInstance(CLSID_VertCurve);
-   vc3->put_L1(50);
-   vc3->put_L2(50);
-   pvi.Release();
-   vc3->get_PVI(&pvi);
-   pvi->put_Station(CComVariant(700));
-   pvi->put_Elevation(80);
+   CComPtr<IProfilePoint> pvi3;
+   pvi3.CoCreateInstance(CLSID_ProfilePoint);
+   pvi3->Move(CComVariant(700), 80);
 
    // Finish point
    CComPtr<IProfilePoint> finish;
    finish.CoCreateInstance(CLSID_ProfilePoint);
-   finish->put_Station(CComVariant(900));
-   finish->put_Elevation(50);
+   finish->Move(CComVariant(900),50);
 
+   // Vert Curve #1
+   CComPtr<IVerticalCurve> vc1;
+   vc1.CoCreateInstance(CLSID_VerticalCurve);
+   vc1->Init(start, pvi1, pvi2, 50, 50);
 
-   // Set the PBG and PFG for each Vert Curve
-   // Use the Start, Finish, and PVI points.
-   vc1->putref_PBG(start);
-   pvi.Release();
-   vc2->get_PVI(&pvi);
-   vc1->putref_PFG(pvi);
+   // Vert Curve #2
+   CComPtr<IVerticalCurve> vc2;
+   vc2.CoCreateInstance(CLSID_VerticalCurve);
+   vc2->Init(pvi1, pvi2, pvi3, 50, 50);
 
-   pvi.Release();
-   vc1->get_PVI(&pvi);
-   vc2->putref_PBG(pvi);
-   pvi.Release();
-   vc3->get_PVI(&pvi);
-   vc2->putref_PFG(pvi);
+   // Vert Curve #3
+   CComPtr<IVerticalCurve> vc3;
+   vc3.CoCreateInstance(CLSID_VerticalCurve);
+   vc3->Init(pvi2, pvi3, finish, 50, 50);
 
-   pvi.Release();
-   vc2->get_PVI(&pvi);
-   vc3->putref_PBG(pvi);
-   vc3->putref_PFG(finish);
-
-   profile->AddEx(start);
-   profile->AddEx(vc1);
-   profile->AddEx(vc2);
-   profile->AddEx(vc3);
-   profile->AddEx(finish);
+   CComQIPtr<IProfileElement> element1(vc1), element2(vc2), element3(vc3);
+   profile->AddProfileElement(element1);
+   profile->AddProfileElement(element2);
+   profile->AddProfileElement(element3);
 
    Float64 elev;
-   profile->Elevation(CComVariant(250), 0.00,&elev);   TRY_TEST(IsEqual(elev,72.5),true);
-   profile->Elevation(CComVariant(450), 0.00,&elev);   TRY_TEST(IsEqual(elev,57.5),true);
-   profile->Elevation(CComVariant(650), 0.00,&elev);   TRY_TEST(IsEqual(elev,72.5),true);
+   profile->Elevation(INVALID_ID, CComVariant(250), 0.00, &elev);   TRY_TEST(IsEqual(elev, 72.5), true);
+   profile->Elevation(INVALID_ID, CComVariant(450), 0.00, &elev);   TRY_TEST(IsEqual(elev, 57.5), true);
+   profile->Elevation(INVALID_ID, CComVariant(650), 0.00,&elev);   TRY_TEST(IsEqual(elev,72.5),true);
 }
 
 void CTestProfile::Test12()
 {
    CComPtr<IAlignment> alignment;
    alignment.CoCreateInstance(CLSID_Alignment);
+   Float64 refStation = 2336.53;
+   alignment->put_RefStation(CComVariant(refStation));
 
-   CComPtr<IStationEquationCollection> equations;
-   alignment->get_StationEquations(&equations);
+   CComPtr<IPoint2d> pbt;
+   pbt.CoCreateInstance(CLSID_Point2d);
+   pbt->Move(2451859.110, 1005078.896);
+
+   CComPtr<IDirection> bkTangent;
+   bkTangent.CoCreateInstance(CLSID_Direction);
+   bkTangent->FromString(CComBSTR("N 02 06 34 E"));
+
+   CComPtr<ICogoEngine> engine;
+   engine.CoCreateInstance(CLSID_CogoEngine);
+
+   CComQIPtr<ILocate2> locate(engine);
+   CComPtr<IPoint2d> pi;
+   locate->ByDistDir(pbt, (2587.80 - refStation), CComVariant(bkTangent), 0.0, &pi);
+
+   CComPtr<IDirection> fwdTangent;
+   fwdTangent.CoCreateInstance(CLSID_Direction);
+   fwdTangent->FromString(CComBSTR("N 02 06 34 E"));
+   fwdTangent->IncrementBy(CComVariant("10 01 30 R"));
+
+   CComPtr<IPoint2d> pft;
+   locate->ByDistDir(pbt, 5000.0, CComVariant(fwdTangent), 0.0, &pft);
+
+   CComPtr<ICircularCurve> curve;
+   curve.CoCreateInstance(CLSID_CircularCurve);
+   curve->put_PBT(pbt);
+   curve->put_PI(pi);
+   curve->put_PFT(pft);
+   curve->put_Radius(2864.79);
+
+   CComPtr<IPoint2d> pc;
+   curve->get_PC(&pc);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(pbt, pc);
+
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
+   element.Release();
+   curve.QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IProfile> profile;
-   alignment->get_Profile(&profile);
+   TRY_TEST(profile.CoCreateInstance(CLSID_Profile), S_OK);
 
-   //
-   // Test Elevation and Grade
-   //
-   // Alignment has station equations
-   //
-   // Station 4+00 back = 8+00 ahead
-   // Station 12+00 back = 10+00 ahead
-   equations->Add(400,800,nullptr);
-   equations->Add(1200,1000,nullptr);
-   //
-   //
-   // Profile Point: Station 10+00,1 Elev 80.0 (6+00 normalized)
-   // Vert Curve: BVC 11+00,1 Elev  85.0 (7+00 normalized)
-   //             PVI 12+00,2 Elev 100.0 (10+00 normalized)
-   //             EVC 15+00,2 Elev  91.0 (13+00 normalized)
-   // Profile Point: Station 16+00,2 Elev 88.0 (14+00 normalized)
-   CComPtr<IStation> station;
-   station.CoCreateInstance(CLSID_Station);
-   Float64 value;
+   alignment->AddProfile(0, profile);
 
-   CComPtr<IProfilePoint> point;
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->putref_Profile(profile);
-   station->SetStation(1,1000);
-   equations->ConvertToNormalizedStation(CComVariant(station),&value);
-   TRY_TEST(IsEqual(value,600.),true);
-   point->put_Station(CComVariant(station));
-   point->put_Elevation(80);
-   profile->AddEx(point);
 
-   CComPtr<IVertCurve> vc;
-   vc.CoCreateInstance(CLSID_VertCurve);
-   vc->put_Profile(profile);
-   point.Release();
-   vc->get_PBG(&point);
-   station->SetStation(1,1100);
-   equations->ConvertToNormalizedStation(CComVariant(station),&value);
-   TRY_TEST(IsEqual(value,700.),true);
-   point->put_Station(CComVariant(station));
-   point->put_Elevation(85);
-   point.Release();
-   vc->get_PVI(&point);
-   station->SetStation(2,1200);
-   equations->ConvertToNormalizedStation(CComVariant(station),&value);
-   TRY_TEST(IsEqual(value,1000.),true);
-   point->put_Station(CComVariant(station));
-   point->put_Elevation(100);
-   point.Release();
-   vc->get_PFG(&point);
-   station->SetStation(2,1500);
-   equations->ConvertToNormalizedStation(CComVariant(station),&value);
-   TRY_TEST(IsEqual(value,1300.),true);
-   point->put_Station(CComVariant(station));
-   point->put_Elevation(91);
-   vc->put_L1(300);
-   vc->put_L2(300);
-   profile->AddEx(vc);
-   
-   point.Release();
-   point.CoCreateInstance(CLSID_ProfilePoint);
-   point->putref_Profile(profile);
-   station->SetStation(2,1600);
-   equations->ConvertToNormalizedStation(CComVariant(station),&value);
-   TRY_TEST(IsEqual(value,1400.),true);
-   point->put_Station(CComVariant(station));
-   point->put_Elevation(88);
-   profile->AddEx(point);
+   // Start point
+   CComPtr<IProfilePoint> bvc1;
+   bvc1.CoCreateInstance(CLSID_ProfilePoint);
+   bvc1->Move(CComVariant(2000.61), 289.97);
 
-   // create roadway surface model
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
+   CComPtr<IProfilePoint> evc1;
+   evc1.CoCreateInstance(CLSID_ProfilePoint);
+   evc1->Move(CComVariant(2255.97), 293.16);
+
+   CComPtr<IVerticalCurve> vc1;
+   vc1.CoCreateInstance(CLSID_VerticalCurve);
+   vc1->Init2(bvc1, evc1, 1.97585 / 100, 0.5187 / 100);
+
+   CComPtr<IProfilePoint> bvc2;
+   bvc2.CoCreateInstance(CLSID_ProfilePoint);
+   bvc2->Move(CComVariant(2749.94), 295.72);
+
+   CComPtr<IProfilePoint> pvi2;
+   pvi2.CoCreateInstance(CLSID_ProfilePoint);
+   pvi2->Move(CComVariant(2997.77), 297.01);
+
+   CComPtr<IProfilePoint> evc2;
+   evc2.CoCreateInstance(CLSID_ProfilePoint);
+   evc2->Move(CComVariant(3245.63), 295.74);
+
+   CComPtr<IVerticalCurve> vc2;
+   vc2.CoCreateInstance(CLSID_VerticalCurve);
+   vc2->Init(bvc2, pvi2, evc2, 495.73 / 2, 495.73 / 2);
+
+   CComQIPtr<IProfileElement> pelement(vc1);
+   profile->AddProfileElement(pelement);
+   pelement.Release();
+   vc2.QueryInterface(&pelement);
+   profile->AddProfileElement(pelement);
 
    CComPtr<ISurface> surface;
    surface.CoCreateInstance(CLSID_Surface);
-
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
-   surface->put_AlignmentPoint(3);
-   surface->put_ProfileGradePoint(3);
-
-   CComPtr<ISurfaceTemplate> template430;
-   template430.CoCreateInstance(CLSID_SurfaceTemplate);
-   template430->put_Station(CComVariant(430.0));
-   template430->AddSegment(20.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0, 0.02,tsHorizontal);
-   template430->AddSegment( 5.0,-0.02,tsHorizontal);
-   template430->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template430);
-
-   CComPtr<ISurfaceTemplate> template700;
-   template700.CoCreateInstance(CLSID_SurfaceTemplate);
-   template700->putref_Surface(surface);
-   station->SetStation(1,1100); // 7+00 normalized = 11+00,1
-   equations->ConvertToNormalizedStation(CComVariant(station),&value);
-   TRY_TEST(IsEqual(value,700.),true);
-   template700->put_Station(CComVariant(station));
-   template700->AddSegment(20.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0, 0.02,tsHorizontal);
-   template700->AddSegment( 5.0,-0.02,tsHorizontal);
-   template700->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template700);
-
-   CComPtr<ISurfaceTemplate> template1000;
-   template1000.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1000->putref_Surface(surface);
-   station->SetStation(2,1200); // 10+00 normalized = 12+00,2
-   equations->ConvertToNormalizedStation(CComVariant(station),&value);
-   TRY_TEST(IsEqual(value,1000.),true);
-   template1000->put_Station(CComVariant(station));
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment( 5.0,-0.06,tsHorizontal);
-   template1000->AddSegment(20.0,-0.06,tsHorizontal);
-   templates->Add(template1000);
-
-   CComPtr<ISurfaceTemplate> template1300;
-   template1300.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1300->putref_Surface(surface);
-   station->SetStation(2,1500); // 13+00 normalized = 15+00,2
-   equations->ConvertToNormalizedStation(CComVariant(station),&value);
-   TRY_TEST(IsEqual(value,1300.),true);
-   template1300->put_Station(CComVariant(station));
-   template1300->AddSegment(20.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1300->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1300->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1300);
-
-   CComPtr<ISurfaceTemplate> template1600;
-   template1600.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1600->put_Station(CComVariant(1600.0));
-   template1600->AddSegment(20.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0, 0.04,tsHorizontal);
-   template1600->AddSegment( 5.0,-0.08,tsHorizontal);
-   template1600->AddSegment(20.0,-0.08,tsHorizontal);
-   templates->Add(template1600);
-
-
-   Float64 Grades[] = { 5.0000, 5.0000, 4.2000, 2.0667, -0.0667, -2.2000, -3.0000, -3.0000 };
-   TestGrade(profile,Grades);
-
-   Float64 CrownSlopes1[][2] = { { 0.0200, -0.0200}, { 0.0200, -0.0200}, { 0.0040, -0.0280}, { -0.0387, -0.0493}, { -0.0333,-0.0653}, { 0.0200, -0.0760}, { 0.0400, -0.0800}, { 0.0400, -0.0800} };
-   TestCrownSlopes(profile,surfaceID,2,CrownSlopes1);
-
-   Float64 ElevA[] = { 71.900, 79.900, 87.860, 93.407, 95.033, 92.740, 88.000, 83.200 };
-   Float64 ElevB[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
-   Float64 ElevC[] = { 72.040, 80.040, 87.816, 92.872, 94.504, 92.712, 88.160, 83.360 };
-   Float64 ElevD[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
-   Float64 ElevE[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
-   TestElevation(profile,-15,ElevA);
-   TestElevation(profile, -5,ElevB);
-   TestElevation(profile, -2,ElevC);
-   TestElevation(profile,  0,ElevD);
-   TestElevation(profile,  5,ElevE);
-
-   // shift the crown point offset to +5
-   surface->put_AlignmentPoint(1);
+   surface->put_SurfaceTemplateSegmentCount(2);
+   surface->put_AlignmentPoint(2);
    surface->put_ProfileGradePoint(1);
+   profile->AddSurface(0, surface);
 
-   Float64 ElevF[] = { 71.900, 79.900, 87.740, 92.967, 94.540, 92.460, 87.800, 83.000 };
-   Float64 ElevG[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
-   Float64 ElevH[] = { 72.040, 80.040, 87.768, 92.696, 94.307, 92.600, 88.080, 83.280 };
-   Float64 ElevI[] = { 72.100, 80.100, 87.780, 92.580, 94.207, 92.660, 88.200, 83.400 };
-   Float64 ElevJ[] = { 71.900, 79.900, 87.500, 92.087, 93.553, 91.900, 87.400, 82.600 };
-   TestElevation(profile, -5,ElevF);
-   TestElevation(profile,  0,ElevG);
-   TestElevation(profile,  2,ElevH);
-   TestElevation(profile,  5,ElevI);
-   TestElevation(profile, 15,ElevJ);
+   CComPtr<ISurfaceTemplate> surface_template;
+   surface->CreateSurfaceTemplate(CComVariant(refStation), &surface_template);
+   surface_template->UpdateSegmentParameters(0, 36, -0.02, tsHorizontal);
+   surface_template->UpdateSegmentParameters(1, 16, -0.02, tsHorizontal);
 
-   // shift the crown point offset back to -5 and reverse all of the crown slopes
-   surface->put_AlignmentPoint(3);
-   surface->put_ProfileGradePoint(3);
-   CComPtr<IEnumSurfaceTemplates> enumTemplates;
-   templates->get__EnumSurfaceTemplates(&enumTemplates);
-   CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
+   CComPtr<ISuperelevation> superelevation;
+   superelevation.CoCreateInstance(CLSID_Superelevation);
+   superelevation->Init(CComVariant(2198), CComVariant(2300), CComVariant(2770), CComVariant(2872), -0.04, 1, stLinear, 0, 0, stLinear, 0, 0);
+
+   surface->AddSuperelevation(superelevation);
+
+   std::vector<std::tuple<Float64, Float64, Float64, Float64>> vResults1{
+      {2000.61000, 290.69000, 289.97000, 289.65000},
+      {2025.51040, 291.16440, 290.44440, 290.12440},
+      {2050.41080, 291.60360, 290.88360, 290.56360},
+      {2075.31120, 292.00762, 291.28762, 290.96762},
+      {2100.21160, 292.37644, 291.65644, 291.33644},
+      {2125.11200, 292.71007, 291.99007, 291.67007},
+      {2150.01240, 293.00836, 292.28836, 291.96836},
+      {2174.91280, 293.27110, 292.55110, 292.23110},
+      {2199.81320, 293.51106, 292.77826, 292.45257},
+      {2224.71360, 293.87842, 292.96985, 292.56604},
+      {2249.61400, 294.21021, 293.12587, 292.64395},
+      {2274.51440, 294.51621, 293.25611, 292.69606},
+      {2299.41480, 294.82102, 293.38515, 292.74699},
+      {2324.31520, 294.95420, 293.51420, 292.87420},
+      {2349.21560, 295.08325, 293.64325, 293.00325},
+      {2374.11600, 295.21229, 293.77229, 293.13229},
+      {2399.01640, 295.34134, 293.90134, 293.26134},
+      {2423.91680, 295.47038, 294.03038, 293.39038},
+      {2448.81720, 295.59943, 294.15943, 293.51943},
+      {2473.71760, 295.72848, 294.28848, 293.64848},
+      {2498.61800, 295.85752, 294.41752, 293.77752},
+      {2523.51840, 295.98657, 294.54657, 293.90657},
+      {2548.41880, 296.11562, 294.67562, 294.03562},
+      {2573.31920, 296.24466, 294.80466, 294.16466},
+      {2598.21960, 296.37371, 294.93371, 294.29371},
+      {2623.12000, 296.50275, 295.06275, 294.42275},
+      {2648.02040, 296.63180, 295.19180, 294.55180},
+      {2672.92080, 296.76085, 295.32085, 294.68085},
+      {2697.82120, 296.88989, 295.44989, 294.80989},
+      {2722.72160, 297.01894, 295.57894, 294.93894},
+      {2747.62200, 297.14799, 295.70799, 295.06799},
+      {2772.52240, 297.25441, 295.83222, 295.20013},
+      {2797.42280, 297.19006, 295.94363, 295.38967},
+      {2822.32320, 297.11279, 296.04213, 295.56628},
+      {2847.22360, 297.02260, 296.12771, 295.72998},
+      {2872.12400, 296.92037, 296.20037, 295.88037},
+      {2897.02440, 296.98011, 296.26011, 295.94011},
+      {2921.92480, 297.02693, 296.30693, 295.98693},
+      {2946.82520, 297.06084, 296.34084, 296.02084},
+      {2971.72560, 297.08182, 296.36182, 296.04182},
+      {2996.62600, 297.08989, 296.36989, 296.04989},
+      {3021.52640, 297.08503, 296.36503, 296.04503},
+      {3046.42680, 297.06726, 296.34726, 296.02726},
+      {3071.32720, 297.03657, 296.31657, 295.99657},
+      {3096.22760, 296.99296, 296.27296, 295.95296},
+      {3121.12800, 296.93643, 296.21643, 295.89643},
+      {3146.02840, 296.86698, 296.14698, 295.82698},
+      {3170.92880, 296.78462, 296.06462, 295.74462},
+      {3195.82920, 296.68933, 295.96933, 295.64933},
+      {3220.72960, 296.58112, 295.86112, 295.54112}
+   };
+
+   for (int i = 0; i < 50; i++)
    {
-      IndexType nSegments;
-      surfaceTemplate->get_Count(&nSegments);
-      for ( IndexType idx = 0; idx < nSegments; idx++ )
-      {
-         CComPtr<ITemplateSegment> segment;
-         surfaceTemplate->get_Item(idx,&segment);
+      Float64 station(2000.61 + i * (3245.63 - 2000.61) / 50);
+      Float64 elevL, elevP, elevR;
+      profile->Elevation(0, CComVariant(station), -52, &elevL); // 52 ft left of alignment
+      profile->Elevation(0, CComVariant(station), -16, &elevP); // 16 ft left of alignment
+      profile->Elevation(0, CComVariant(station), 0, &elevR); // on the alignment
 
-         Float64 slope;
-         segment->get_Slope(&slope);
-         slope *= -1;
-         segment->put_Slope(slope);
-      }
-      surfaceTemplate.Release();
+      TRY_TEST(IsEqual(station, std::get<0>(vResults1[i])),true);
+      TRY_TEST(IsEqual(std::get<1>(vResults1[i]), elevL),true);
+      TRY_TEST(IsEqual(std::get<2>(vResults1[i]), elevP),true);
+      TRY_TEST(IsEqual(std::get<3>(vResults1[i]), elevR),true);
    }
 
-   Float64 CrownSlopes2[][2] = { { -0.0200,  0.0200}, { -0.0200,  0.0200}, { -0.0040,  0.0280}, { 0.0387,  0.0493}, { 0.0333, 0.0653}, { -0.0200,  0.0760}, { -0.0400,  0.0800}, { -0.0400,  0.0800} };
-   TestCrownSlopes(profile,surfaceID,2,CrownSlopes2);
+   superelevation->put_PivotPoint(0); // pivot about left curb line
+   std::vector<std::tuple<Float64, Float64, Float64, Float64>> vResults2{
+      {2000.61000, 290.69000, 289.97000, 289.65000},
+      {2025.51040, 291.16440, 290.44440, 290.12440},
+      {2050.41080, 291.60360, 290.88360, 290.56360},
+      {2075.31120, 292.00762, 291.28762, 290.96762},
+      {2100.21160, 292.37644, 291.65644, 291.33644},
+      {2125.11200, 292.71007, 291.99007, 291.67007},
+      {2150.01240, 293.00836, 292.28836, 291.96836},
+      {2174.91280, 293.27110, 292.55110, 292.23110},
+      {2199.81320, 293.49826, 292.76546, 292.43977},
+      {2224.71360, 293.68985, 292.78128, 292.37748},
+      {2249.61400, 293.84587, 292.76154, 292.27961},
+      {2274.51440, 293.97611, 292.71600, 292.15596},
+      {2299.41480, 294.10515, 292.66928, 292.03112},
+      {2324.31520, 294.23420, 292.79420, 292.15420},
+      {2349.21560, 294.36325, 292.92325, 292.28325},
+      {2374.11600, 294.49229, 293.05229, 292.41229},
+      {2399.01640, 294.62134, 293.18134, 292.54134},
+      {2423.91680, 294.75038, 293.31038, 292.67038},
+      {2448.81720, 294.87943, 293.43943, 292.79943},
+      {2473.71760, 295.00848, 293.56848, 292.92848},
+      {2498.61800, 295.13752, 293.69752, 293.05752},
+      {2523.51840, 295.26657, 293.82657, 293.18657},
+      {2548.41880, 295.39562, 293.95562, 293.31562},
+      {2573.31920, 295.52466, 294.08466, 293.44466},
+      {2598.21960, 295.65371, 294.21371, 293.57371},
+      {2623.12000, 295.78275, 294.34275, 293.70275},
+      {2648.02040, 295.91180, 294.47180, 293.83180},
+      {2672.92080, 296.04085, 294.60085, 293.96085},
+      {2697.82120, 296.16989, 294.72989, 294.08989},
+      {2722.72160, 296.29894, 294.85894, 294.21894},
+      {2747.62200, 296.42799, 294.98799, 294.34799},
+      {2772.52240, 296.55222, 295.13002, 294.49793},
+      {2797.42280, 296.66363, 295.41721, 294.86324},
+      {2822.32320, 296.76213, 295.69147, 295.21562},
+      {2847.22360, 296.84771, 295.95282, 295.55509},
+      {2872.12400, 296.92037, 296.20037, 295.88037},
+      {2897.02440, 296.98011, 296.26011, 295.94011},
+      {2921.92480, 297.02693, 296.30693, 295.98693},
+      {2946.82520, 297.06084, 296.34084, 296.02084},
+      {2971.72560, 297.08182, 296.36182, 296.04182},
+      {2996.62600, 297.08989, 296.36989, 296.04989},
+      {3021.52640, 297.08503, 296.36503, 296.04503},
+      {3046.42680, 297.06726, 296.34726, 296.02726},
+      {3071.32720, 297.03657, 296.31657, 295.99657},
+      {3096.22760, 296.99296, 296.27296, 295.95296},
+      {3121.12800, 296.93643, 296.21643, 295.89643},
+      {3146.02840, 296.86698, 296.14698, 295.82698},
+      {3170.92880, 296.78462, 296.06462, 295.74462},
+      {3195.82920, 296.68933, 295.96933, 295.64933},
+      {3220.72960, 296.58112, 295.86112, 295.54112}
+   };
 
-   Float64 ElevK[] = { 72.100, 80.100, 87.660, 92.140, 93.713, 92.380, 88.000, 83.200 };
-   Float64 ElevL[] = { 71.900, 79.900, 87.620, 92.527, 94.047, 92.180, 87.600, 82.800 };
-   Float64 ElevM[] = { 71.960, 79.960, 87.704, 92.675, 94.243, 92.408, 87.840, 83.040 };
-   Float64 ElevN[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
-   Float64 ElevO[] = { 72.100, 80.100, 87.900, 93.020, 94.700, 92.940, 88.400, 83.600 };
-   TestElevation(profile,-15,ElevK);
-   TestElevation(profile, -5,ElevL);
-   TestElevation(profile, -2,ElevM);
-   TestElevation(profile,  0,ElevN);
-   TestElevation(profile,  5,ElevO);
+   for (int i = 0; i < 50; i++)
+   {
+      Float64 station(2000.61 + i * (3245.63 - 2000.61) / 50);
+      Float64 elevL, elevP, elevR;
+      profile->Elevation(0, CComVariant(station), -52, &elevL); // 52 ft left of alignment
+      profile->Elevation(0, CComVariant(station), -16, &elevP); // 16 ft left of alignment
+      profile->Elevation(0, CComVariant(station), 0, &elevR); // on the alignment
 
-   // shift the crown point offset to +5, keep the slopes the same
-   surface->put_AlignmentPoint(1);
-   surface->put_ProfileGradePoint(1);
-   
-   Float64 ElevP[] = { 72.100, 80.100, 87.780, 92.580, 94.207, 92.660, 88.200, 83.400 };
-   Float64 ElevQ[] = { 72.000, 80.000, 87.760, 92.773, 94.373, 92.560, 88.000, 83.200 };
-   Float64 ElevR[] = { 71.960, 79.960, 87.752, 92.851, 94.440, 92.520, 87.920, 83.120 };
-   Float64 ElevS[] = { 71.900, 79.900, 87.740, 92.967, 94.540, 92.460, 87.800, 83.000 };
-   Float64 ElevT[] = { 72.100, 80.100, 88.020, 93.460, 95.193, 93.220, 88.600, 83.800 };
-   TestElevation(profile, -5,ElevP);
-   TestElevation(profile,  0,ElevQ);
-   TestElevation(profile,  2,ElevR);
-   TestElevation(profile,  5,ElevS);
-   TestElevation(profile, 15,ElevT);
+      TRY_TEST(IsEqual(station, std::get<0>(vResults2[i])), true);
+      TRY_TEST(IsEqual(std::get<1>(vResults2[i]), elevL), true);
+      TRY_TEST(IsEqual(std::get<2>(vResults2[i]), elevP), true);
+      TRY_TEST(IsEqual(std::get<3>(vResults2[i]), elevR), true);
+   }
+
+
+   superelevation->put_PivotPoint(2); // pivot about right curb line
+   std::vector<std::tuple<Float64, Float64, Float64, Float64>> vResults3{
+      {2000.61000, 290.69000, 289.97000, 289.65000},
+      {2025.51040, 291.16440, 290.44440, 290.12440},
+      {2050.41080, 291.60360, 290.88360, 290.56360},
+      {2075.31120, 292.00762, 291.28762, 290.96762},
+      {2100.21160, 292.37644, 291.65644, 291.33644},
+      {2125.11200, 292.71007, 291.99007, 291.67007},
+      {2150.01240, 293.00836, 292.28836, 291.96836},
+      {2174.91280, 293.27110, 292.55110, 292.23110},
+      {2199.81320, 293.51675, 292.78395, 292.45826},
+      {2224.71360, 293.96222, 293.05366, 292.64985},
+      {2249.61400, 294.37213, 293.28780, 292.80587},
+      {2274.51440, 294.75625, 293.49615, 292.93611},
+      {2299.41480, 295.13919, 293.70332, 293.06515},
+      {2324.31520, 295.27420, 293.83420, 293.19420},
+      {2349.21560, 295.40325, 293.96325, 293.32325},
+      {2374.11600, 295.53229, 294.09229, 293.45229},
+      {2399.01640, 295.66134, 294.22134, 293.58134},
+      {2423.91680, 295.79038, 294.35038, 293.71038},
+      {2448.81720, 295.91943, 294.47943, 293.83943},
+      {2473.71760, 296.04848, 294.60848, 293.96848},
+      {2498.61800, 296.17752, 294.73752, 294.09752},
+      {2523.51840, 296.30657, 294.86657, 294.22657},
+      {2548.41880, 296.43562, 294.99562, 294.35562},
+      {2573.31920, 296.56466, 295.12466, 294.48466},
+      {2598.21960, 296.69371, 295.25371, 294.61371},
+      {2623.12000, 296.82275, 295.38275, 294.74275},
+      {2648.02040, 296.95180, 295.51180, 294.87180},
+      {2672.92080, 297.08085, 295.64085, 295.00085},
+      {2697.82120, 297.20989, 295.76989, 295.12989},
+      {2722.72160, 297.33894, 295.89894, 295.25894},
+      {2747.62200, 297.46799, 296.02799, 295.38799},
+      {2772.52240, 297.56650, 296.14430, 295.51222},
+      {2797.42280, 297.42403, 296.17760, 295.62363},
+      {2822.32320, 297.26864, 296.19798, 295.72213},
+      {2847.22360, 297.10033, 296.20544, 295.80771},
+      {2872.12400, 296.92037, 296.20037, 295.88037},
+      {2897.02440, 296.98011, 296.26011, 295.94011},
+      {2921.92480, 297.02693, 296.30693, 295.98693},
+      {2946.82520, 297.06084, 296.34084, 296.02084},
+      {2971.72560, 297.08182, 296.36182, 296.04182},
+      {2996.62600, 297.08989, 296.36989, 296.04989},
+      {3021.52640, 297.08503, 296.36503, 296.04503},
+      {3046.42680, 297.06726, 296.34726, 296.02726},
+      {3071.32720, 297.03657, 296.31657, 295.99657},
+      {3096.22760, 296.99296, 296.27296, 295.95296},
+      {3121.12800, 296.93643, 296.21643, 295.89643},
+      {3146.02840, 296.86698, 296.14698, 295.82698},
+      {3170.92880, 296.78462, 296.06462, 295.74462},
+      {3195.82920, 296.68933, 295.96933, 295.64933},
+      {3220.72960, 296.58112, 295.86112, 295.54112}
+   };
+
+   for (int i = 0; i < 50; i++)
+   {
+      Float64 station(2000.61 + i * (3245.63 - 2000.61) / 50);
+      Float64 elevL, elevP, elevR;
+      profile->Elevation(0, CComVariant(station), -52, &elevL); // 52 ft left of alignment
+      profile->Elevation(0, CComVariant(station), -16, &elevP); // 16 ft left of alignment
+      profile->Elevation(0, CComVariant(station), 0, &elevR); // on the alignment
+
+      TRY_TEST(IsEqual(station, std::get<0>(vResults3[i])), true);
+      TRY_TEST(IsEqual(std::get<1>(vResults3[i]), elevL), true);
+      TRY_TEST(IsEqual(std::get<2>(vResults3[i]), elevP), true);
+      TRY_TEST(IsEqual(std::get<3>(vResults3[i]), elevR), true);
+   }
 }
 
-void CTestProfile::Test13()
+void TestElevation(IProfile* profile, IDType surfaceID,Float64 offset,Float64 results[],long minStation,long maxStation,long inc)
 {
-   CComPtr<IAlignment> alignment;
-   alignment.CoCreateInstance(CLSID_Alignment);
-
-   CComPtr<IStationEquationCollection> equations;
-   alignment->get_StationEquations(&equations);
-
-   CComPtr<IProfile> profile;
-   alignment->get_Profile(&profile);
-
-   // Flat profile so we don't have to do anything
-
-   // create roadway surface model
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
-
-   CComPtr<ISurface> surface;
-   surface.CoCreateInstance(CLSID_Surface);
-
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
-   surface->put_AlignmentPoint(2);
-   surface->put_ProfileGradePoint(2);
-
-   CComPtr<ISurfaceTemplate> template1;
-   template1.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1->put_Station(CComVariant(0.0));
-   template1->AddSegment(20.0, 0.02,tsHorizontal);
-   template1->AddSegment(10.0, 0.01,tsHorizontal);
-   template1->AddSegment(10.0,-0.01,tsHorizontal);
-   template1->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template1);
-
-   CComPtr<ISurfaceTemplate> template2;
-   template2.CoCreateInstance(CLSID_SurfaceTemplate);
-   template2->put_Station(CComVariant(2000.0));
-   template2->AddSegment(20.0, 0.02,tsHorizontal);
-   template2->AddSegment(10.0, 0.01,tsHorizontal);
-   template2->AddSegment(10.0,-0.01,tsHorizontal);
-   template2->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template2);
-
-   // check basic elevations before widenings are applied
-   Float64 ElevA[] = {  0.000,  0.000,  0.000,  0.000,  0.000,  0.000,  0.000,  0.000 };
-   Float64 ElevB[] = { -0.100, -0.100, -0.100, -0.100, -0.100, -0.100, -0.100, -0.100 };
-   Float64 ElevC[] = { -0.500, -0.500, -0.500, -0.500, -0.500, -0.500, -0.500, -0.500 };
-   TestElevation(profile,  0,ElevA);
-   TestElevation(profile,-10,ElevB);
-   TestElevation(profile, 10,ElevB);
-   TestElevation(profile,-30,ElevC);
-   TestElevation(profile, 30,ElevC);
-   TestElevation(profile,-40,ElevC);
-   TestElevation(profile, 40,ElevC);
-
-   // Widen left edge
-   CComPtr<IWideningCollection> widenings;
-   surface->get_Widenings(&widenings);
-   CComPtr<IWidening> widening;
-   widenings->Add(CComVariant(500.00),CComVariant(500.00),CComVariant(1500.00),CComVariant(1500.00),10.0,0,INVALID_INDEX,&widening);
-
-   Float64 ElevD[] = { -0.500, -0.700, -0.700, -0.700, -0.700, -0.700, -0.700, -0.500 };
-   TestElevation(profile,  0,ElevA);
-   TestElevation(profile,-10,ElevB);
-   TestElevation(profile, 10,ElevB);
-   TestElevation(profile,-30,ElevC);
-   TestElevation(profile, 30,ElevC);
-   TestElevation(profile,-40,ElevD);
-   TestElevation(profile, 40,ElevC);
-
-   // Widen right edge
-   widening->put_Segment(0,3);
-   TestElevation(profile,  0,ElevA);
-   TestElevation(profile,-10,ElevB);
-   TestElevation(profile, 10,ElevB);
-   TestElevation(profile,-30,ElevC);
-   TestElevation(profile, 30,ElevC);
-   TestElevation(profile,-40,ElevC);
-   TestElevation(profile, 40,ElevD);
-
-   // Widen left and right in the middle of the section
-   widening->put_Segment(0,1);
-   widening->put_Segment(1,2);
-   Float64 ElevE[] = { -0.500, -0.400, -0.400, -0.400, -0.400, -0.400, -0.400, -0.500 };
-   Float64 ElevF[] = { -0.500, -0.600, -0.600, -0.600, -0.600, -0.600, -0.600, -0.500 };
-   TestElevation(profile,  0,ElevA);
-   TestElevation(profile,-10,ElevB);
-   TestElevation(profile, 10,ElevB);
-   TestElevation(profile,-30,ElevE);
-   TestElevation(profile, 30,ElevE);
-   TestElevation(profile,-60,ElevF);
-   TestElevation(profile, 60,ElevF);
-
-   // narrow left and right on the outside segments
-   widening->put_Segment(0,0);
-   widening->put_Segment(1,3);
-   widening->put_Widening(-10.0);
-   Float64 ElevG[] = { -0.500, -0.300, -0.300, -0.300, -0.300, -0.300, -0.300, -0.500 };
-   TestElevation(profile,  0,ElevA);
-   TestElevation(profile,-10,ElevB);
-   TestElevation(profile, 10,ElevB);
-   TestElevation(profile,-30,ElevG);
-   TestElevation(profile, 30,ElevG);
-   TestElevation(profile,-60,ElevG);
-   TestElevation(profile, 60,ElevG);
-
-   // Taper the transitions
-   widening->put_BeginFullWidening(CComVariant(700.0));
-   widening->put_EndFullWidening(CComVariant(1300.0));
-   Float64 ElevH[] = { -0.500, -0.400, -0.300, -0.300, -0.300, -0.300, -0.400, -0.500 };
-   TestElevation(profile,  0,ElevA);
-   TestElevation(profile,-10,ElevB);
-   TestElevation(profile, 10,ElevB);
-   TestElevation(profile,-30,ElevH);
-   TestElevation(profile, 30,ElevH);
-   TestElevation(profile,-60,ElevH);
-   TestElevation(profile, 60,ElevH);
-}
-
-void CTestProfile::Test14()
-{
-   CComPtr<IAlignment> alignment;
-   alignment.CoCreateInstance(CLSID_Alignment);
-
-   CComPtr<IStationEquationCollection> equations;
-   alignment->get_StationEquations(&equations);
-
-   CComPtr<IProfile> profile;
-   alignment->get_Profile(&profile);
-
-   // Flat profile so we don't have to do anything
-
-   // create roadway surface model
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
-
-   CComPtr<ISurface> surface;
-   surface.CoCreateInstance(CLSID_Surface);
-
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
-   surface->put_AlignmentPoint(1);
-   surface->put_ProfileGradePoint(1);
-
-   CComPtr<ISurfaceTemplate> template1;
-   template1.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1->put_Station(CComVariant(0.0));
-   template1->AddSegment(20.0, 0.02,tsHorizontal);
-   template1->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template1);
-
-   CComPtr<ISurfaceTemplate> template2;
-   template2.CoCreateInstance(CLSID_SurfaceTemplate);
-   template2->put_Station(CComVariant(2000.0));
-   template2->AddSegment(20.0, 0.02,tsHorizontal);
-   template2->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template2);
-
-   // check basic elevations before widenings are applied
-   Float64 ElevA[] = {  0.000,  0.000,  0.000,  0.000,  0.000,  0.000,  0.000,  0.000 };
-   Float64 ElevB[] = { -0.400, -0.400, -0.400, -0.400, -0.400, -0.400, -0.400, -0.400 };
-   TestElevation(profile,  0,ElevA);
-   TestElevation(profile,-20,ElevB);
-   TestElevation(profile, 20,ElevB);
-
-   // Superelevation (curve to the right - pivot on right edge)
-   CComPtr<ISuperelevationCollection> superelevations;
-   surface->get_Superelevations(&superelevations);
-   CComPtr<ISuperelevation> super;
-   superelevations->Add(CComVariant(500),CComVariant(700), CComVariant(800), CComVariant(1000), -0.06, 2, stLinear, 0.0, 0.0, stLinear, 0.0, 0.0, &super);
-
-   Float64 ElevC[] = {  0.000,  0.400,  0.800,  0.320,  0.000,  0.000,  0.000,  0.000 };
-   Float64 ElevD[] = { -0.400,  0.800,  2.000,  0.560, -0.400, -0.400, -0.400, -0.400 };
-   TestElevation(profile,  0,ElevC);
-   TestElevation(profile,-20,ElevD);
-   TestElevation(profile, 20,ElevB); // pivot on right edge... elevations don't change
-
-   // Pivot on CL
-   super->put_PivotPoint(1);
-
-   Float64 ElevE[] = { -0.400,  0.400,  1.200,  0.240, -0.400, -0.400, -0.400, -0.400 };
-   Float64 ElevF[] = { -0.400, -0.800, -1.200, -0.720, -0.400, -0.400, -0.400, -0.400 };
-   TestElevation(profile,  0,ElevA); // pivot on CL... elevations don't change
-   TestElevation(profile,-20,ElevE);
-   TestElevation(profile, 20,ElevF);
-
-   // Pivot on Left edge
-   super->put_PivotPoint(0);
-
-   Float64 ElevG[] = {  0.000, -0.800, -1.600, -0.640,  0.000,  0.000,  0.000,  0.000 };
-   Float64 ElevH[] = { -0.400, -1.600, -2.800, -1.360, -0.400, -0.400, -0.400, -0.400 };
-   TestElevation(profile,  0,ElevG);
-   TestElevation(profile,-20,ElevB); // pivot on left edge... elevations don't change
-   TestElevation(profile, 20,ElevH);
-
-   // Curve to left... pivot on right edge
-   super->put_Rate(0.06);
-   super->put_PivotPoint(2);
-   TestElevation(profile,  0,ElevG);
-   TestElevation(profile,-20,ElevH);
-   TestElevation(profile, 20,ElevB); // pivot on right edge... elevations don't change
-
-   // Pivot on CL
-   super->put_PivotPoint(1);
-
-   TestElevation(profile,  0,ElevA); // pivot on CL... elevations don't change
-   TestElevation(profile,-20,ElevF);
-   TestElevation(profile, 20,ElevE);
-
-   // Pivot on Left edge
-   super->put_PivotPoint(0);
-
-   TestElevation(profile,  0,ElevC);
-   TestElevation(profile,-20,ElevB); // pivot on left edge... elevations don't change
-   TestElevation(profile, 20,ElevD);
-}
-
-void CTestProfile::Test15()
-{
-   CComPtr<IAlignment> alignment;
-   alignment.CoCreateInstance(CLSID_Alignment);
-
-   CComPtr<IStationEquationCollection> equations;
-   alignment->get_StationEquations(&equations);
-
-   CComPtr<IProfile> profile;
-   alignment->get_Profile(&profile);
-
-   // Flat profile so we don't have to do anything
-
-   // create roadway surface model
-   CComPtr<ISurfaceCollection> surfaces;
-   profile->get_Surfaces(&surfaces);
-
-   CComPtr<ISurface> surface;
-   surface.CoCreateInstance(CLSID_Surface);
-
-   CogoObjectID surfaceID = COGO_FINISHED_SURFACE_ID;
-   surface->put_ID(surfaceID);
-
-   surfaces->Add(surface);
-
-   CComPtr<ISurfaceTemplateCollection> templates;
-   surface->get_SurfaceTemplates(&templates);
-
-   surface->put_AlignmentPoint(1);
-   surface->put_ProfileGradePoint(1);
-
-   CComPtr<ISurfaceTemplate> template1;
-   template1.CoCreateInstance(CLSID_SurfaceTemplate);
-   template1->put_Station(CComVariant(0.0));
-   template1->AddSegment(20.0, 0.02,tsHorizontal);
-   template1->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template1);
-
-   CComPtr<ISurfaceTemplate> template2;
-   template2.CoCreateInstance(CLSID_SurfaceTemplate);
-   template2->put_Station(CComVariant(2000.0));
-   template2->AddSegment(20.0, 0.02,tsHorizontal);
-   template2->AddSegment(20.0,-0.02,tsHorizontal);
-   templates->Add(template2);
-
-   // check basic elevations before widenings are applied
-   Float64 ElevA[] = {  0.000,  0.000,  0.000,  0.000,  0.000,  0.000,  0.000,  0.000 };
-   Float64 ElevB[] = { -0.400, -0.400, -0.400, -0.400, -0.400, -0.400, -0.400, -0.400 };
-   TestElevation(profile,  0,ElevA);
-   TestElevation(profile,-20,ElevB);
-   TestElevation(profile, 20,ElevB);
-
-   // Superelevation (curve to the right - pivot on right edge)
-   CComPtr<ISuperelevationCollection> superelevations;
-   surface->get_Superelevations(&superelevations);
-   CComPtr<ISuperelevation> super;
-   superelevations->Add(CComVariant(500),CComVariant(700), CComVariant(800), CComVariant(1000), -0.06, 2, stParabolic, 50.0, 50.0, stParabolic, 50.0, 50.0, &super);
-
-   //                   4+25    5+25    6+26    7+25    8+25    9+25    10+25
-   Float64 ElevC[] = {  0.000,  0.033,  0.533,  0.800,  0.766,  0.266,  0.000 };
-   Float64 ElevD[] = { -0.400, -0.300,  1.199,  2.000,  1.899,  0.399, -0.400 };
-   TestElevation(profile,  0,ElevC,425,1025,100);
-   TestElevation(profile,-20,ElevD,425,1025,100);
-   TestElevation(profile, 20,ElevB,425,1025,100); // pivot on right edge... elevations don't change
-
-   // Parabolic transition with zero length parabolas
-   super->SetBeginTransitionParameters(0.0,0.0);
-   super->SetEndTransitionParameters(0.0,0.0);
-   Float64 ElevE[] = {  0.000,  0.400,  0.800,  0.320,  0.000,  0.000,  0.000,  0.000 };
-   Float64 ElevF[] = { -0.400,  0.800,  2.000,  0.560, -0.400, -0.400, -0.400, -0.400 };
-   TestElevation(profile,  0,ElevE);
-   TestElevation(profile,-20,ElevF);
-   TestElevation(profile, 20,ElevB); // pivot on right edge... elevations don't change
-
-   // Parabolic transition without the linear portion
-   // L1 = 100, L2 = 100 (L3 = 0)
-   super->SetBeginTransitionParameters(100.0,100.0);
-   super->SetEndTransitionParameters(100.0,100.0);
-   Float64 ElevG[] = {  0.000,  0.025,  0.575,  0.800,  0.775,  0.225,  0.000,  0.000 };
-   Float64 ElevH[] = { -0.400, -0.325,  1.325,  2.000,  1.925,  0.275, -0.400, -0.400 };
-   TestElevation(profile,  0,ElevG,425,1025,100);
-   TestElevation(profile,-20,ElevH,425,1025,100);
-   TestElevation(profile, 20,ElevB,425,1025,100); // pivot on right edge... elevations don't change
-
-   // Also test case where L3 < 0 (L1+L2 is too big for transition)
-   super->SetBeginTransitionParameters(150.0,150.0);
-   Float64 elev;
-   TRY_TEST(profile->Elevation(CComVariant(525),0,&elev),COGO_E_SUPERTRANSITIONERROR);
-}
-
-void TestElevation(IProfile* profile,Float64 offset,Float64 results[],long minStation,long maxStation,long inc)
-{
-   CComPtr<IStation> objStation;
-   objStation.CoCreateInstance(CLSID_Station);
-
    CComPtr<IAlignment> alignment;
    profile->get_Alignment(&alignment);
-
-   CComPtr<IStationEquationCollection> equations;
-   if ( alignment )
-      alignment->get_StationEquations(&equations);
 
    long j = 0;
    for ( long i = minStation; i <= maxStation; i += inc, j++)
    {
       Float64 elev;
       Float64 station = (Float64)i;
-      if ( equations )
-      {
-         equations->ConvertFromNormalizedStation(station,&objStation.p);
-      }
-      else
-      {
-         objStation->SetStation(INVALID_INDEX,station);
-      }
-      profile->Elevation(CComVariant(objStation),offset,&elev);
+      CComPtr<IStation> objStation;
+      alignment->ConvertFromNormalizedStation(station, &objStation);
+      profile->Elevation(surfaceID,CComVariant(objStation),offset,&elev);
       TRY_TEST( IsEqual(elev, results[j],0.001), true );
    }
 }
 
 void TestGrade(IProfile* profile,Float64 results[],long minStation,long maxStation,long inc)
 {
-   CComPtr<IStation> objStation;
-   objStation.CoCreateInstance(CLSID_Station);
-
    CComPtr<IAlignment> alignment;
    profile->get_Alignment(&alignment);
-
-   CComPtr<IStationEquationCollection> equations;
-   if ( alignment )
-      alignment->get_StationEquations(&equations);
 
    long j = 0;
    for ( long i = minStation; i <= maxStation; i += inc, j++)
    {
+      CComPtr<IStation> objStation;
       Float64 grade;
       Float64 station = (Float64)i;
-      if ( equations )
-      {
-         equations->ConvertFromNormalizedStation(station,&objStation.p);
-      }
-      else
-      {
-         objStation->SetStation(INVALID_INDEX,station);
-      }
+      alignment->ConvertFromNormalizedStation(station, &objStation);
       profile->Grade(CComVariant(objStation),&grade);
       TRY_TEST( IsEqual(grade*100, results[j],0.001), true );
    }
@@ -2276,15 +1932,8 @@ void TestGrade(IProfile* profile,Float64 results[],long minStation,long maxStati
 
 void TestCrownSlopes(IProfile* profile,CogoObjectID surfaceID,IndexType ridgePointIdx,Float64 results[][2],long minStation,long maxStation,long inc)
 {
-   CComPtr<IStation> objStation;
-   objStation.CoCreateInstance(CLSID_Station);
-
    CComPtr<IAlignment> alignment;
    profile->get_Alignment(&alignment);
-
-   CComPtr<IStationEquationCollection> equations;
-   if ( alignment )
-      alignment->get_StationEquations(&equations);
 
    IndexType leftSegmentIdx = ridgePointIdx-1;
    IndexType rightSegmentIdx = ridgePointIdx;
@@ -2294,17 +1943,13 @@ void TestCrownSlopes(IProfile* profile,CogoObjectID surfaceID,IndexType ridgePoi
    {
       Float64 left, right;
       Float64 station = (Float64)i;
-      if ( equations )
-      {
-         equations->ConvertFromNormalizedStation(station,&objStation.p);
-      }
-      else
-      {
-         objStation->SetStation(INVALID_INDEX,station);
-      }
+      CComPtr<IStation> objStation;
+      alignment->ConvertFromNormalizedStation(station, &objStation);
 
-      profile->TemplateSegmentSlope(surfaceID,CComVariant(objStation),leftSegmentIdx, &left);
-      profile->TemplateSegmentSlope(surfaceID,CComVariant(objStation),rightSegmentIdx,&right);
+      CComPtr<ISurfaceTemplate> surface_template;
+      profile->CreateSurfaceTemplateSectionCut(surfaceID, CComVariant(objStation), true, &surface_template);
+      surface_template->GetSegmentSlope(leftSegmentIdx, &left);
+      surface_template->GetSegmentSlope(rightSegmentIdx,&right);
 
       TRY_TEST( IsEqual(left,  results[j][0], 0.001), true );
       TRY_TEST( IsEqual(right, results[j][1], 0.001), true );

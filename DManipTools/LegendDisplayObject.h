@@ -201,9 +201,9 @@ private:
    CSize    m_CellSize;
    BOOL     m_IsDraggable;
 
-   typedef CAdapt<CComPtr<iLegendEntry> > ContainerItem;
-   typedef std::vector<ContainerItem>     Container;
-   typedef Container::iterator            ContainerIterator;
+   using ContainerItem = CAdapt<CComPtr<iLegendEntry> >;
+   using Container = std::vector<ContainerItem>;
+   using ContainerIterator = Container::iterator;
    Container m_Container;
 
    CComPtr<iDragData> m_pDragData;

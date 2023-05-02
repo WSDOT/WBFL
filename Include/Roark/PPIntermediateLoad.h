@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -65,10 +65,10 @@ namespace WBFL
          /// Intermediate point load
          Float64 GetW() const;
 
-         virtual void GetReactions(Float64 *pRa,Float64* pRb) const override;
-         virtual void GetMoments(Float64* pMa,Float64* pMb) const override;
-         virtual void GetRotations(Float64* pra,Float64* prb) const override;
-         virtual void GetDeflections(Float64* pYa,Float64* pYb) const override;
+         virtual std::pair<Float64, Float64> GetReactions() const override;
+         virtual std::pair<Float64, Float64> GetMoments() const override;
+         virtual std::pair<Float64, Float64> GetRotations() const override;
+         virtual std::pair<Float64, Float64> GetDeflections() const override;
 
          virtual WBFL::System::SectionValue ComputeShear(Float64 x) const override;
          virtual WBFL::System::SectionValue ComputeMoment(Float64 x) const override;

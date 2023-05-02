@@ -69,7 +69,7 @@ namespace WBFL
          mutable bool m_bDecomposed{false};
 
          // Basic information about the slice shape before processing
-         typedef struct SHAPEINFO
+         struct SHAPEINFO
          {
             IndexType ShapeIdx; // index of the shape in the general section model
             std::shared_ptr<const WBFL::Geometry::Shape> Shape; // shape of the slice
@@ -78,15 +78,16 @@ namespace WBFL
             SHAPEINFO() = default;
             SHAPEINFO(
                IndexType shapeIdx,
-               const std::shared_ptr<const WBFL::Geometry::Shape>& shape, 
-               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fg, 
-               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bg 
-               ) : ShapeIdx(shapeIdx), Shape(shape), FgMaterial(fg), BgMaterial(bg)
+               const std::shared_ptr<const WBFL::Geometry::Shape>& shape,
+               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fg,
+               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bg
+            ) : ShapeIdx(shapeIdx), Shape(shape), FgMaterial(fg), BgMaterial(bg)
             {}
-         } SHAPEINFO;
+         };
+         using SHAPEINFO = SHAPEINFO;
 
          // Slice properties
-         typedef struct SLICEINFO
+         struct SLICEINFO
          {
             IndexType ShapeIdx; // index of the general section shape from which this slice is taken
             Float64 Area; // slice area
@@ -102,7 +103,8 @@ namespace WBFL
             SLICEINFO& operator=(SLICEINFO& other) = default;
 
             bool operator<(const SLICEINFO& other) { return other.pntCG.Y() < pntCG.Y(); }
-         } SLICEINFO;
+         };
+         using SLICEINFO = SLICEINFO;
 
          mutable std::vector<SLICEINFO> m_Slices;
          mutable Float64 m_Angle;

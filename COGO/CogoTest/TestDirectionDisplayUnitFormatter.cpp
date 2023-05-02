@@ -101,7 +101,7 @@ void CTestDirectionDisplayUnitFormatter::Test()
    // use custom annotations
    fmtr->put_CondensedFormat(VARIANT_FALSE);
 
-   TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),COGO_E_BADFORMATTAG);
+   TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),E_INVALIDARG);
 
    TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("d,m,s"),&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("N 45d 00m 00.00s E")), 0);

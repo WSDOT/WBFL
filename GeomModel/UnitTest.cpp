@@ -66,12 +66,6 @@
 #include <GeomModel/CompositeBeam.h>
 #include "MohrCircle.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 bool UnitTest::TestMe(WBFL::Debug::Log& log)

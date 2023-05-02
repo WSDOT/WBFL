@@ -29,12 +29,6 @@
 #include <MathEx.h>
 #include "Helpers.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 NUDeckedIBeam::NUDeckedIBeam() :
@@ -270,13 +264,13 @@ IndexType NUDeckedIBeam::GetTopFlangeCount() const
 
 Float64 NUDeckedIBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetTopFlangeLocation - invalid index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 NUDeckedIBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetTopFlangeWidth - invalid index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopWidth();
 }
 
@@ -287,13 +281,13 @@ IndexType NUDeckedIBeam::GetBottomFlangeCount() const
 
 Float64 NUDeckedIBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetBottomFlangeLocation - invalid index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 NUDeckedIBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetBottomFlangeWidth - invalid index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetBottomWidth();
 }
 
@@ -339,13 +333,13 @@ MatingSurfaceIndexType NUDeckedIBeam::GetMatingSurfaceCount() const
 
 Float64 NUDeckedIBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType idx) const
 {
-   if (0 < idx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetMatingSurfaceWidth - index out of range"));
+   if (0 < idx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopWidth();
 }
 
 Float64 NUDeckedIBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType idx) const
 {
-   if (0 < idx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetMatingSurfaceLocation - index out of range"));
+   if (0 < idx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0;
 }
 
@@ -356,7 +350,7 @@ IndexType NUDeckedIBeam::GetWebCount() const
 
 Plane3d NUDeckedIBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("NUDeckedIBeam::GetWebPlane - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 

@@ -24,12 +24,6 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\RiStyle.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptRiStyle::rptRiStyle()
 {
    Init();
@@ -278,7 +272,7 @@ std::_tstring rptRiStyle::GetColorCode(FontColor color)
    std::_tstring strColor;
    switch(color)
    {
-      case rptRiStyle::Default:   strColor = _T("#ffffff"); ATLASSERT(0)/*probably should not call*/; break;
+      case rptRiStyle::Default:   strColor = _T("#ffffff"); CHECK(0)/*probably should not call*/; break;
 
       // Red colors
       case rptRiStyle::IndianRed:   strColor = _T("#cd5c5c"); break;

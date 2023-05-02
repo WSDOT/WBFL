@@ -23,12 +23,6 @@
 #include <GeomModel/GeomModelLib.h>
 #include "Helpers.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 void WBFL::Geometry::GenerateFillet(std::vector<Point2d>& vPoints, Float64 cx, Float64 cy, Float64 r, Float64 startAngle, Float64 delta, IndexType nSpaces)

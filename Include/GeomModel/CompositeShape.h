@@ -42,7 +42,7 @@ public:
    CompositeShape(const CompositeShape& rOther);
    virtual ~CompositeShape();
 
-   CompositeShape& CompositeShape::operator= (const CompositeShape& rOther);
+   CompositeShape& operator= (const CompositeShape& rOther);
 
    virtual void Offset(const Size2d& delta) override;
    virtual void Rotate(const Point2d& center, Float64 angle) override;

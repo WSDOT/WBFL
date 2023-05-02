@@ -66,7 +66,7 @@ namespace WBFL
          operator std::_tostream&();
 
       private:
-#pragma warning ( disable : 4251 ) // m_os is not accessable to clients
+#pragma warning ( disable : 4251 ) // m_os is not accessible to clients
          std::_tofstream m_os;
       };
    };

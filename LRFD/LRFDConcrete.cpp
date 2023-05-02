@@ -25,13 +25,6 @@
 #include <Lrfd\LRFDConcrete.h>
 #include <Lrfd\VersionMgr.h>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 lrfdLRFDConcrete::lrfdLRFDConcrete(LPCTSTR name) :
    lrfdLRFDConcreteBase(name),
 m_StartTime(0),
@@ -50,7 +43,7 @@ void lrfdLRFDConcrete::SetConcreteModels(const WBFL::Materials::SimpleConcrete& 
    m_FinalConcrete   = final;
    m_90DayConcrete = final;
 
-   ASSERT(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
+   CHECK(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
 
    SetType(m_FinalConcrete.GetType());
    SetStrengthDensity(m_FinalConcrete.GetDensity());
@@ -80,8 +73,8 @@ void lrfdLRFDConcrete::SetLambda(Float64 lambda)
 
 Float64 lrfdLRFDConcrete::GetLambda() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
-   ASSERT(IsEqual(m_InitialConcrete.GetLambda(), __super::GetLambda()));
+   CHECK(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
+   CHECK(IsEqual(m_InitialConcrete.GetLambda(), __super::GetLambda()));
    return __super::GetLambda();
 }
 
@@ -93,7 +86,7 @@ void lrfdLRFDConcrete::SetFirstCrackingStrength(Float64 ffc)
 
 Float64 lrfdLRFDConcrete::GetFirstCrackingStrength() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetFirstCrackingStrength(), m_FinalConcrete.GetFirstCrackingStrength()));
+   CHECK(IsEqual(m_InitialConcrete.GetFirstCrackingStrength(), m_FinalConcrete.GetFirstCrackingStrength()));
    return m_FinalConcrete.GetFirstCrackingStrength();
 }
 
@@ -105,7 +98,7 @@ void lrfdLRFDConcrete::SetPostCrackingTensileStrength(Float64 frr)
 
 Float64 lrfdLRFDConcrete::GetPostCrackingTensileStrength() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
+   CHECK(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
    return m_FinalConcrete.GetPostCrackingTensileStrength();
 }
 
@@ -117,7 +110,7 @@ void lrfdLRFDConcrete::SetAutogenousShrinkage(Float64 as)
 
 Float64 lrfdLRFDConcrete::GetAutogenousShrinkage() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
+   CHECK(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
    return m_FinalConcrete.GetAutogenousShrinkage();
 }
 
@@ -129,7 +122,7 @@ void lrfdLRFDConcrete::SetCompressionResponseReductionFactor(Float64 alpha_u)
 
 Float64 lrfdLRFDConcrete::GetCompressionResponseReductionFactor() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetCompressionResponseReductionFactor(), m_FinalConcrete.GetCompressionResponseReductionFactor()));
+   CHECK(IsEqual(m_InitialConcrete.GetCompressionResponseReductionFactor(), m_FinalConcrete.GetCompressionResponseReductionFactor()));
    return m_FinalConcrete.GetCompressionResponseReductionFactor();
 }
 
@@ -141,7 +134,7 @@ void lrfdLRFDConcrete::SetCompressiveStrainLimit(Float64 ecu)
 
 Float64 lrfdLRFDConcrete::GetCompressiveStrainLimit(bool* pbIsExperimental) const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetCompressiveStrainLimit(pbIsExperimental), m_FinalConcrete.GetCompressiveStrainLimit(pbIsExperimental)));
+   CHECK(IsEqual(m_InitialConcrete.GetCompressiveStrainLimit(pbIsExperimental), m_FinalConcrete.GetCompressiveStrainLimit(pbIsExperimental)));
    return m_FinalConcrete.GetCompressiveStrainLimit(pbIsExperimental);
 }
 
@@ -153,7 +146,7 @@ void lrfdLRFDConcrete::SetElasticTensileStrainLimit(Float64 etcr)
 
 Float64 lrfdLRFDConcrete::GetElasticTensileStrainLimit() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetElasticTensileStrainLimit(), m_FinalConcrete.GetElasticTensileStrainLimit()));
+   CHECK(IsEqual(m_InitialConcrete.GetElasticTensileStrainLimit(), m_FinalConcrete.GetElasticTensileStrainLimit()));
    return m_FinalConcrete.GetElasticTensileStrainLimit();
 }
 
@@ -165,7 +158,7 @@ void lrfdLRFDConcrete::SetInitialEffectiveCrackingStrength(Float64 ft_cri)
 
 Float64 lrfdLRFDConcrete::GetInitialEffectiveCrackingStrength() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetInitialEffectiveCrackingStrength(), m_FinalConcrete.GetInitialEffectiveCrackingStrength()));
+   CHECK(IsEqual(m_InitialConcrete.GetInitialEffectiveCrackingStrength(), m_FinalConcrete.GetInitialEffectiveCrackingStrength()));
    return m_FinalConcrete.GetInitialEffectiveCrackingStrength();
 }
 
@@ -177,7 +170,7 @@ void lrfdLRFDConcrete::SetDesignEffectiveCrackingStrength(Float64 ft_cr)
 
 Float64 lrfdLRFDConcrete::GetDesignEffectiveCrackingStrength() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetDesignEffectiveCrackingStrength(), m_FinalConcrete.GetDesignEffectiveCrackingStrength()));
+   CHECK(IsEqual(m_InitialConcrete.GetDesignEffectiveCrackingStrength(), m_FinalConcrete.GetDesignEffectiveCrackingStrength()));
    return m_FinalConcrete.GetDesignEffectiveCrackingStrength();
 }
 
@@ -189,7 +182,7 @@ void lrfdLRFDConcrete::SetCrackLocalizationStrength(Float64 ft_loc)
 
 Float64 lrfdLRFDConcrete::GetCrackLocalizationStrength() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetCrackLocalizationStrength(), m_FinalConcrete.GetCrackLocalizationStrength()));
+   CHECK(IsEqual(m_InitialConcrete.GetCrackLocalizationStrength(), m_FinalConcrete.GetCrackLocalizationStrength()));
    return m_FinalConcrete.GetCrackLocalizationStrength();
 }
 
@@ -201,7 +194,7 @@ void lrfdLRFDConcrete::SetCrackLocalizationStrain(Float64 et_loc)
 
 Float64 lrfdLRFDConcrete::GetCrackLocalizationStrain() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetCrackLocalizationStrain(), m_FinalConcrete.GetCrackLocalizationStrain()));
+   CHECK(IsEqual(m_InitialConcrete.GetCrackLocalizationStrain(), m_FinalConcrete.GetCrackLocalizationStrain()));
    return m_FinalConcrete.GetCrackLocalizationStrain();
 }
 
@@ -213,7 +206,7 @@ void lrfdLRFDConcrete::SetFiberOrientationReductionFactor(Float64 gamma_u)
 
 Float64 lrfdLRFDConcrete::GetFiberOrientationReductionFactor() const
 {
-   ASSERT(IsEqual(m_InitialConcrete.GetFiberOrientationReductionFactor(), m_FinalConcrete.GetFiberOrientationReductionFactor()));
+   CHECK(IsEqual(m_InitialConcrete.GetFiberOrientationReductionFactor(), m_FinalConcrete.GetFiberOrientationReductionFactor()));
    return m_FinalConcrete.GetFiberOrientationReductionFactor();
 }
 

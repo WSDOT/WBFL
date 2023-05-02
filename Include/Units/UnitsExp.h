@@ -42,5 +42,5 @@
 #define UNITSTPL   extern template class UNITSCLASS
 #endif
 
-#include <WbflAll.h>
 #include <Units\AutoLib.h>
+#include <WbflAll.h>

@@ -27,12 +27,6 @@
 #include <GeomModel/GeomOp2d.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 Vector3d::Vector3d() :
@@ -98,7 +92,7 @@ Float64 Vector3d::AngleBetween(const Vector3d& other) const
    Float64 mag2 = other.GetMagnitude();
 
    if (::IsZero(mag1) || ::IsZero(mag2))
-      THROW_GEOMETRY(_T("Vector3d::AngleBetween - cannot compute angle between with a zero magnitude vector"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
    Float64 x = Dot(other) / (mag1 * mag2);
 
@@ -114,7 +108,7 @@ Float64 Vector3d::AngleBetween(const Vector3d& other) const
 Float64 Vector3d::Projection(const Vector3d& other) const
 {
    if (::IsZero(GetMagnitude()) || ::IsZero(other.GetMagnitude()))
-      THROW_GEOMETRY(_T("Vector3d::Projection - cannot project onto a zero magnitude vector"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
    return Dot(other) / other.GetMagnitude();
 }
@@ -166,7 +160,7 @@ Vector3d& Vector3d::Normalize()
 {
    Float64 mag = GetMagnitude();
    if (::IsZero(mag))
-      THROW_GEOMETRY(_T("Vector3d::Normalize - cannot normalize a zero length vector"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
    m_X /= mag;
    m_Y /= mag;
@@ -213,7 +207,7 @@ Vector3d& Vector3d::SetSize(const Size3d& size)
 Vector3d& Vector3d::SetMagnitude(Float64 magnitude)
 {
    if (magnitude < 0)
-      THROW_GEOMETRY(_T("Vector3d::SetMagnitude - invalid magnitude"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
 
    Normalize();
    m_X *= magnitude;
@@ -277,6 +271,11 @@ Float64 Vector3d::X() const
    return m_X;
 }
 
+void Vector3d::X(Float64 x)
+{
+   m_X = x;
+}
+
 Float64& Vector3d::X()
 {
    return m_X;
@@ -285,6 +284,11 @@ Float64& Vector3d::X()
 Float64 Vector3d::Y() const
 {
    return m_Y;
+}
+
+void Vector3d::Y(Float64 y)
+{
+   m_Y = y;
 }
 
 Float64& Vector3d::Y()
@@ -297,16 +301,19 @@ Float64 Vector3d::Z() const
    return m_Z;
 }
 
+void Vector3d::Z(Float64 z)
+{
+   m_Z = z;
+}
+
 Float64& Vector3d::Z()
 {
    return m_Z;
 }
 
-void Vector3d::GetDimensions(Float64* x, Float64* y, Float64* z) const
+std::tuple<Float64,Float64,Float64> Vector3d::GetDimensions() const
 {
-   *x = m_X;
-   *y = m_Y;
-   *z = m_Z;
+   return std::make_tuple(m_X, m_Y, m_Z);
 }
 
 #if defined _DEBUG

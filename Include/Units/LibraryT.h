@@ -101,7 +101,7 @@ namespace WBFL
 
          V& GetEntry(const K& key)
          {
-            std::map<K,V>::iterator i = m_Map.find( key );
+            auto i = m_Map.find( key );
             if ( i == m_Map.end() )
             {
                throw XEntryNotFoundT<K,V>( key, _T(__FILE__), __LINE__ );
@@ -112,7 +112,7 @@ namespace WBFL
 
          V GetEntry(const K& key) const
          {
-            std::map<K,V>::const_iterator i = m_Map.find( key );
+            auto i = m_Map.find( key );
             if ( i == m_Map.end() )
             {
                throw XEntryNotFoundT<K,V>( key, _T(__FILE__), __LINE__ );
@@ -123,7 +123,7 @@ namespace WBFL
 
          bool Contains(const K& key) const
          {
-            std::map<K,V>::const_iterator i = m_Map.find( key );
+            auto i = m_Map.find( key );
             return ( i == m_Map.end() );
          }
 

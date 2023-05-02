@@ -125,8 +125,8 @@ void CTestGeomUtil::Test2d()
    seg1.CoCreateInstance( CLSID_LineSegment2d );
    p1->Move(-10,-10);
    p2->Move(-20,-20);
-   seg1->putref_StartPoint(p1);
-   seg1->putref_EndPoint(p2);
+   seg1->put_StartPoint(p1);
+   seg1->put_EndPoint(p2);
 
    CComPtr<IPoint2d> p4;
    p4.CoCreateInstance(CLSID_Point2d);
@@ -135,8 +135,8 @@ void CTestGeomUtil::Test2d()
    seg2.CoCreateInstance( CLSID_LineSegment2d );
    p3->Move(  0,-20);
    p4->Move(-20,-40);
-   seg2->putref_StartPoint(p3);
-   seg2->putref_EndPoint(p4);
+   seg2->put_StartPoint(p3);
+   seg2->put_EndPoint(p4);
 
    VARIANT_BOOL bParallel;
    TRY_TEST( util2d->AreLineSegmentsParallel(seg1,nullptr,&bParallel), E_INVALIDARG );
@@ -146,6 +146,7 @@ void CTestGeomUtil::Test2d()
    TRY_TEST( bParallel, VARIANT_TRUE );
 
    p4->Offset(3,5);
+   seg2->put_EndPoint(p4);
    TRY_TEST( util2d->AreLineSegmentsParallel(seg1,seg2,&bParallel), S_OK );
    TRY_TEST( bParallel, VARIANT_FALSE );
 
@@ -462,8 +463,8 @@ void CTestGeomUtil::Test2d()
    //
    p1->Move(0,0);
    p2->Move(10,10);
-   seg1->putref_StartPoint(p1);
-   seg1->putref_EndPoint(p2);
+   seg1->put_StartPoint(p1);
+   seg1->put_EndPoint(p2);
    seg2.Release();
    TRY_TEST( util2d->CreateParallelLineSegment(nullptr,10.0,&seg2), E_INVALIDARG );
    TRY_TEST( util2d->CreateParallelLineSegment(seg1,10.0,nullptr),    E_POINTER );
@@ -612,8 +613,8 @@ void CTestGeomUtil::Test2d()
    p3->Move(10,0);
    p4->Move(0,10);
    l1->ThroughPoints(p1,p2);
-   seg1->putref_StartPoint(p3);
-   seg1->putref_EndPoint(p4);
+   seg1->put_StartPoint(p3);
+   seg1->put_EndPoint(p4);
 
    intersect1.Release();
    TRY_TEST( util2d->IntersectLineWithLineSegment(nullptr,seg1,&intersect1), E_INVALIDARG );
@@ -628,6 +629,7 @@ void CTestGeomUtil::Test2d()
    TRY_TEST( IsEqual(y,5.0), true );
 
    p4->Move(100,100);
+   seg1->put_EndPoint(p4);
    intersect1.Release();
    TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_OK );
    TRY_TEST( intersect1 != nullptr, true );
@@ -638,18 +640,21 @@ void CTestGeomUtil::Test2d()
 
    p3->Move(0,0);
    p4->Move(10,10);
+   seg1->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == nullptr, true );
 
    p3->Move(10,15);
    p4->Move(10,15);
+   seg1->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_FALSE);
    TRY_TEST( intersect1 == nullptr, true );
 
    p3->Move(5,5);
    p4->Move(5,5);
+   seg1->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_OK );
    TRY_TEST( intersect1 != nullptr, true );
@@ -666,8 +671,8 @@ void CTestGeomUtil::Test2d()
    p3->Move(10,0);
    p4->Move(0,10);
    l1->ThroughPoints(p1,p2);
-   seg1->putref_StartPoint(p3);
-   seg1->putref_EndPoint(p4);
+   seg1->put_StartPoint(p3);
+   seg1->put_EndPoint(p4);
 
    TRY_TEST( util2d->IsLineParallelToLineSegment(nullptr,seg1,&bParallel), E_INVALIDARG );
    TRY_TEST( util2d->IsLineParallelToLineSegment(l1,nullptr,&bParallel),   E_INVALIDARG );
@@ -677,6 +682,7 @@ void CTestGeomUtil::Test2d()
 
    p3->Move(0,10);
    p4->Move(10,20);
+   seg1->ThroughPoints(p3, p4);
    TRY_TEST( util2d->IsLineParallelToLineSegment(l1,seg1,&bParallel),   S_OK );
    TRY_TEST( bParallel, VARIANT_TRUE);
 
@@ -894,13 +900,13 @@ void CTestGeomUtil::Test2d()
    //
    p1->Move(10,0);
    p2->Move(10,10);
-   seg1->putref_StartPoint(p1);
-   seg1->putref_EndPoint(p2);
+   seg1->put_StartPoint(p1);
+   seg1->put_EndPoint(p2);
 
    p3->Move(20,0);
    p4->Move(20,10);
-   seg2->putref_StartPoint(p3);
-   seg2->putref_EndPoint(p4);
+   seg2->put_StartPoint(p3);
+   seg2->put_EndPoint(p4);
 
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(nullptr,seg2,&intersect1), E_INVALIDARG );
@@ -912,8 +918,10 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(0,0);
    p2->Move(10,10);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,0);
    p4->Move(0,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
    TRY_TEST( intersect1 != nullptr, true );
@@ -924,16 +932,20 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(0,0);
    p2->Move(0,0);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,0);
    p4->Move(0,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(5,5);
    p2->Move(5,5);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,0);
    p4->Move(0,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
    TRY_TEST( intersect1 != nullptr, true );
@@ -944,16 +956,20 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(0,0);
    p2->Move(10,10);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(0,10);
    p4->Move(0,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(0,0);
    p2->Move(10,10);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(5,5);
    p4->Move(5,5);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
    TRY_TEST( intersect1 != nullptr, true );
@@ -964,16 +980,20 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(5,5);
    p2->Move(5,5);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,10);
    p4->Move(10,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(10,10);
    p2->Move(10,10);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,10);
    p4->Move(10,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
    TRY_TEST( intersect1 != nullptr, true );
@@ -984,16 +1004,20 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(0,0);
    p2->Move(4,4);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(0,10);
    p4->Move(10,0);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(0,0);
    p2->Move(4,4);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(0,10);
    p4->Move(5,4);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
    TRY_TEST( intersect1 == nullptr, true );

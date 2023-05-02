@@ -23,7 +23,5 @@
 
 #pragma once
 
-#include <Private\WBFLPackage.h>
-#include <WBFLDebug.h>
-#include <WBFLTest.h>
+#include <WbflAll.h>
 #include <GeomModel/XGeometry.h>

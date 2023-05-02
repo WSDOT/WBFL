@@ -177,10 +177,10 @@ public:
 
 protected:
    // GROUP: DATA MEMBERS
-   typedef std::shared_ptr<libILibrary> LibraryEntryType;
-   typedef std::vector<LibraryEntryType>  LibraryContainerType;
-   typedef LibraryContainerType::iterator LibraryIterator;
-   typedef LibraryContainerType::const_iterator ConstLibraryIterator;
+   using LibraryEntryType = std::shared_ptr<libILibrary>;
+   using LibraryContainerType = std::vector<LibraryEntryType>;
+   using LibraryIterator = LibraryContainerType::iterator;
+   using ConstLibraryIterator = LibraryContainerType::const_iterator;
    //------------------------------------------------------------------------
    LibraryContainerType m_Libraries;
 

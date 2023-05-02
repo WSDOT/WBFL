@@ -24,12 +24,6 @@
 #include <Math\MathLib.h>
 #include <Math\TrapezoidalRuleIntegrator.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 Float64 TrapezoidalRuleIntegrator::Evaluate(const std::function<Float64(Float64)>& f, Float64 xMin, Float64 xMax, Uint16 nIntervals) const

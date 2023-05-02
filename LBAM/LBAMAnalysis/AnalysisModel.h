@@ -190,12 +190,12 @@ private:
          m_XSect(pxs)
          {;}
    };
-   typedef std::vector<ElementLayout>       ElementLayoutVec;
-   typedef ElementLayoutVec::iterator       ElementLayoutVecIterator;
-   typedef std::vector<ElementLayoutVec>    ElementLayoutGroup;
-   typedef ElementLayoutGroup::iterator     ElementLayoutGroupIterator;
-   typedef std::map<MemberIDType, ElementLayoutVec> ElementLayoutMap;
-   typedef ElementLayoutMap::iterator       ElementLayoutMapIterator;
+   using ElementLayoutVec = std::vector<ElementLayout>;
+   using ElementLayoutVecIterator = ElementLayoutVec::iterator;
+   using ElementLayoutGroup = std::vector<ElementLayoutVec>;
+   using ElementLayoutGroupIterator = ElementLayoutGroup::iterator;
+   using ElementLayoutMap = std::map<MemberIDType, ElementLayoutVec>;
+   using ElementLayoutMapIterator = ElementLayoutMap::iterator;
 
    ElementLayoutGroup   m_SpanElements;
    ElementLayoutGroup   m_SupportElements;
@@ -224,18 +224,18 @@ private:
       CondenseType m_CondenseType;
    };
 
-   typedef std::vector<SsmElementLayoutVec>    SsmElementLayoutGroup;
-   typedef SsmElementLayoutGroup::iterator     SsmElementLayoutGroupIterator;
+   using SsmElementLayoutGroup = std::vector<SsmElementLayoutVec>;
+   using SsmElementLayoutGroupIterator = SsmElementLayoutGroup::iterator;
    SsmElementLayoutGroup   m_SuperstructureMemberElements;
 
 
    // nodes and supports
-   typedef std::vector<IDType>         IdList;
-   typedef IdList::iterator            IdListIterator;
-   typedef std::map<IDType, IDType>    IdMap;
-   typedef IdMap::iterator             IdMapIterator;
-   typedef std::set<IDType>            IdSet;
-   typedef IdSet::iterator             IdSetIterator;
+   using IdList = std::vector<IDType>;
+   using IdListIterator = IdList::iterator;
+   using IdMap = std::map<IDType, IDType>;
+   using IdMapIterator = IdMap::iterator;
+   using IdSet = std::set<IDType>;
+   using IdSetIterator = IdSet::iterator;
 
    IdList    m_SupportNodes;             // nodes at bottoms of supports
    IdMap     m_TemporarySupportNodes;    // nodes at bottoms of temporary supports
@@ -247,7 +247,7 @@ private:
    bool               m_IsPoiMapUpdated;
    PoiMapCollection   m_PoiMap;
    // sorted version of the above collection, but only pois on the superstructure sorted by location
-   typedef std::unique_ptr<SortedPoiMapTracker> PoiTrackerHolder;
+   using PoiTrackerHolder = std::unique_ptr<SortedPoiMapTracker>;
    PoiTrackerHolder m_pPoiTracker;
    // most recently generated fem poi id. this is used in mapping between lbam and fem pois
    PoiIDType m_LastFemPoiID;

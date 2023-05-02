@@ -27,12 +27,6 @@
 #include <Math\XRootFinder.h>
 #include <Math\XFunction.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 Float64 BisectionRootFinder::FindRootInRange(const std::function<Float64(Float64)>& f, Float64 a, Float64 b, Float64 tol) const

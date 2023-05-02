@@ -35,9 +35,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
-#include <Private\WBFLPackage.h>
-
 #include <afxdisp.h>
 
 #include <atlbase.h>

@@ -67,7 +67,7 @@ public:
    STDMETHOD_(CollectionIndexType,Count)() override;
 
 private:
-   typedef std::vector<CComPtr<iDrawLineStrategy> > Strategies;
+   using Strategies = std::vector<CComPtr<iDrawLineStrategy>>;
    Strategies m_Strategies;
 };
 

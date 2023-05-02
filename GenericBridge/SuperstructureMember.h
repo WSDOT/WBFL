@@ -71,7 +71,7 @@ private:
    GirderIDType m_LeftSSMbrID, m_RightSSMbrID;
    IGenericBridge* m_pBridge; // weak referece to bridge
 
-   typedef std::pair<EndType,std::pair<CComBSTR,ReleaseType> > MemberReleaseDataType;
+   using MemberReleaseDataType = std::pair<EndType,std::pair<CComBSTR,ReleaseType>>;
 
    std::vector<CComPtr<ISuperstructureMemberSegment>> m_Segments;
 

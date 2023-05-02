@@ -67,15 +67,14 @@ template <class T, class ItemType, class StoredType, class EnumType, const IID* 
 class  CComKeyedCollection : public T
 {
 protected:
-   typedef typename std::map<IDType, CComPtr<ItemType>> ContainerType;
-   typedef typename ContainerType::iterator     ContainerIteratorType;
-   typedef typename ContainerType::value_type   ContainerValueType;
+   using ContainerType = typename std::map<IDType, CComPtr<ItemType>>;
+   using ContainerIteratorType = typename ContainerType::iterator;
+   using ContainerValueType = typename ContainerType::value_type;
    ContainerType m_coll;
 
-   typedef typename _CopyMapOfCComVariants<ContainerType> CopyVariantType;
-   typedef typename CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyVariantType, ContainerType > MapEnumType;
-
-   typedef typename _CustomCopy<ContainerType, ItemType> CustomCopyType;
+   using CopyVariantType = typename _CopyMapOfCComVariants<ContainerType>;
+   using MapEnumType = typename CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, CopyVariantType, ContainerType >;
+   using CustomCopyType = typename _CustomCopy<ContainerType, ItemType>;
 
 public:
 	CComKeyedCollection()
@@ -189,7 +188,7 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType> MyEnumType;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )

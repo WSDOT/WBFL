@@ -300,7 +300,7 @@ STDMETHODIMP CDisplayUnitGroup::get__EnumDisplayUnits(IEnumDisplayUnits** enumDi
 {
    CHECK_RETOBJ(enumDisplayUnits);
 
-   typedef CComEnumOnSTL<IEnumDisplayUnits,&IID_IEnumDisplayUnits, IDisplayUnit*, _CopyVariantToInterface<IDisplayUnit>, std::vector<CComVariant> > Enum;
+   using Enum = CComEnumOnSTL<IEnumDisplayUnits,&IID_IEnumDisplayUnits, IDisplayUnit*, _CopyVariantToInterface<IDisplayUnit>, std::vector<CComVariant> >;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )

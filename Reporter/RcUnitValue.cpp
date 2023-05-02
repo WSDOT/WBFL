@@ -25,12 +25,6 @@
 #include <Reporter\RcUnitValue.h>
 #include <Reporter\RcVisitor.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptRcUnitValue::rptRcUnitValue(bool bShowUnitTag) :
 rptReportContent(),
 m_bShowUnitTag( bShowUnitTag )

@@ -124,8 +124,8 @@ protected:
       Float64    m_MinFactor;
       Float64    m_MaxFactor;
    };
-   typedef std::vector<LoadCaseFactor>        LoadCaseFactorContainer;
-   typedef LoadCaseFactorContainer::iterator  LoadCaseFactorIterator;
+   using LoadCaseFactorContainer = std::vector<LoadCaseFactor>;
+	using LoadCaseFactorIterator = LoadCaseFactorContainer::iterator;
 
    LoadCaseFactorContainer m_LoadCaseFactors;
 

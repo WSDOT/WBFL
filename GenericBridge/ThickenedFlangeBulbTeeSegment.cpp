@@ -788,7 +788,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IFlangedDecke
 {
    // This method puts pSection in Bridge Section Coordinates
 
-   // Get the point where the girder line is located in bridge section coordiantes
+   // Get the point where the girder line is located in bridge section coordinates
    // This point corresponds to the point on the top of the girder above the CL web
    CComPtr<IPoint2d> pntGirderLine;
    GB_GetSectionLocation(this, Xs, &pntGirderLine);
@@ -798,7 +798,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IFlangedDecke
    // the right location, the entire shape will be moved to the correct location
 
    // the beam hook point is at the bottom CL of the web
-   // Adjust the position of the beam so that the hook point is horizonally aligned with pntGirderLine and
+   // Adjust the position of the beam so that the hook point is horizontally aligned with pntGirderLine and
    // is the CL height below pntGirderLine
 
    CComPtr<IPoint2d> pntBottomCL;
@@ -841,15 +841,18 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
    CComPtr<IPoint2d> leftTop, leftBottom, topCL, topCentral, rightTop, rightBottom;
    flangePoints->GetTopFlangePoints(&leftTop, &leftBottom, &topCL, &topCentral, &rightTop, &rightBottom);
 
-   // Get normal to our girderline
+   // Get normal to our girder line
    CComPtr<IPath> path;
    m_Impl.m_pGirderLine->get_Path(&path);
 
    CComPtr<IPoint2d> pntOnThisSegment;
-   path->LocatePoint(Xs, omtAlongDirection, 0.0, CComVariant(0.0), &pntOnThisSegment);
+   CComQIPtr<IPathElement> element(path);
+   element->LocatePoint(Xs, omtAlongDirection, 0.0, CComVariant(0.0), &pntOnThisSegment);
 
    CComPtr<IDirection> dirNormal;
-   path->Normal(Xs, &dirNormal);
+   element.Release();
+   path.QueryInterface(&element);
+   element->GetNormal(Xs, &dirNormal);
    Float64 normal;
    dirNormal->get_Value(&normal);
 
@@ -857,7 +860,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
    v.CoCreateInstance(CLSID_Vector2d);
    v->put_Direction(normal);
 
-   // create a line normal to our girderline
+   // create a line normal to our girder line
    CComPtr<ILine2d> line;
    line.CoCreateInstance(CLSID_Line2d);
    line->SetExplicit(pntOnThisSegment, v);

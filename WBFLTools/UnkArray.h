@@ -72,9 +72,9 @@ public:
 	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
 	STDMETHOD(get__EnumElements)(struct IEnumUnkArray ** ) override;
 
-   typedef CAdapt<CComPtr<IUnknown> > MemberType;
-   typedef std::vector<MemberType>    ContainerType;
-   typedef ContainerType::iterator    ContainerIterator;
+   using MemberType = CAdapt<CComPtr<IUnknown> >;
+	using ContainerType = std::vector<MemberType>;
+	using ContainerIterator = ContainerType::iterator;
 
 protected:
    ContainerType m_Values;

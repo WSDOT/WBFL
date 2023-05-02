@@ -25,6 +25,7 @@
 #include <RCSection/RCSectionExp.h>
 #include <RCSection/GeneralSection.h>
 #include <RCSection/InteractionCurveSolution.h>
+#include <RCSection/CapacityLimit.h>
 
 namespace WBFL
 {
@@ -59,7 +60,7 @@ namespace WBFL
          void SetSliceGrowthFactor(Float64 sliceGrowthFactor);
          Float64 GetSliceGrowthFactor() const;
 
-         /// Convergance tolerance for axial force equilibrium
+         /// Convergence tolerance for axial force equilibrium
          void SetTolerance(Float64 tolerance);
          Float64 GetTolerance() const;
 
@@ -70,22 +71,12 @@ namespace WBFL
          /// Compression limit
          ///
          /// The compression limit is the force state for the maximum compression force that can be applied to the section
-         void GetCompressionLimit(
-            Float64* Fz, ///< Maximum axial compression force
-            Float64* Mx, ///< Corresponding moment about the X-axis
-            Float64* My, ///< Corresponding moment about the Y-axis
-            Float64* eo ///< Strain at (0,0)
-         ) const;
+         const CapacityLimit& GetCompressionLimit() const;
 
          /// Tension limit
          ///
          /// The tension limit is the force state for the maximum tensile force that can be applied to the section
-         void GetTensionLimit(
-            Float64* Fz, ///< Maximum axial tension force
-            Float64* Mx, ///< Corresponding moment about the X-axis
-            Float64* My, ///< Corresponding moment about the Y-axis
-            Float64* eo ///< Strain at (0,0)
-         ) const;
+         const CapacityLimit& GetTensionLimit() const;
 
          /// Performs the moment interaction analysis.
          ///

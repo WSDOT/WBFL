@@ -39,10 +39,10 @@
 #include "TestAngle.h"
 #include "TestDirection.h"
 #include "TestPoint.h"
-#include "TestPointCollection.h"
-#include "TestLineSegmentCollection.h"
+//#include "TestPointCollection.h"
+//#include "TestLineSegmentCollection.h"
 #include "TestProfilePoint.h"
-#include "TestProfilePointCollection.h"
+//#include "TestProfilePointCollection.h"
 #include "TestCogoModel.h"
 #include "TestLocate.h"
 #include "TestIntersect.h"
@@ -51,20 +51,20 @@
 #include "TestDivide.h"
 #include "TestTangent.h"
 #include "TestVertCurve.h"
-#include "TestVertCurveCollection.h"
+//#include "TestVertCurveCollection.h"
 #include "TestCompoundCurve.h"
-#include "TestCompoundCurveCollection.h"
-#include "TestProfileElement.h"
+//#include "TestCompoundCurveCollection.h"
+//#include "TestProfileElement.h"
 #include "TestProfile.h"
-#include "TestPathElement.h"
-#include "TestPathCollection.h"
+//#include "TestPathElement.h"
+//#include "TestPathCollection.h"
 #include "TestAlignment.h"
-#include "TestAlignmentCollection.h"
+//#include "TestAlignmentCollection.h"
 #include "TestAngleDisplayUnitFormatter.h"
 #include "TestDirectionDisplayUnitFormatter.h"
 #include "TestStation.h"
 #include "TestCubicSpline.h"
-#include "TestStationEquationCollection.h"
+//#include "TestStationEquationCollection.h"
 
 #include "TestWidening.h"
 #include "TestSuperelevation.h"
@@ -92,25 +92,25 @@ int main(int argc, TCHAR* argv[])
    CTestAngle::Test();
    CTestDirection::Test();
    CTestPoint::Test();
-   CTestPointCollection::Test();
-   CTestLineSegmentCollection::Test();
+   //CTestPointCollection::Test();
+   //CTestLineSegmentCollection::Test();
    CTestProfilePoint::Test();
-   CTestProfilePointCollection::Test();
+   //CTestProfilePointCollection::Test();
    CTestVertCurve::Test();
-   CTestVertCurveCollection::Test();
+   //CTestVertCurveCollection::Test();
    CTestCompoundCurve::Test();
-   CTestCompoundCurveCollection::Test();
+   //CTestCompoundCurveCollection::Test();
    CTestCubicSpline::Test();
 
    CTestWidening::Test();
 
-   CTestProfileElement::Test();
+   //CTestProfileElement::Test();
    CTestProfile::Test();
-   CTestPathElement::Test();
-   CTestPathCollection::Test();
+   //CTestPathElement::Test();
+   //CTestPathCollection::Test();
    CTestAlignment::Test();
-   CTestAlignmentCollection::Test();
-   CTestStationEquationCollection::Test();
+   //CTestAlignmentCollection::Test();
+   //CTestStationEquationCollection::Test();
 
    CTestAngleDisplayUnitFormatter::Test();
    CTestDirectionDisplayUnitFormatter::Test();

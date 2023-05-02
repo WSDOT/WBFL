@@ -28,24 +28,8 @@
 #include <Stability/StabilityProblemImp.h>
 #include <Stability/AnalysisPointImp.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Stability;
 
-/****************************************************************************
-CLASS
-   UnitTest
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool bResult = true;

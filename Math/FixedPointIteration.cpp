@@ -25,13 +25,6 @@
 #include <Math\FixedPointIteration.h>
 #include <Math\XFixedPointIteration.h>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 Float64 FixedPointIteration::Solve(const std::function<Float64(Float64)>& f, Float64 xo, Float64 tol, Uint32 maxIter) const

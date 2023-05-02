@@ -38,6 +38,9 @@
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
 
+//#include <WBFLMFC.h>
+#include <WBFLAll.h>
+
 #include "resource.h"
 #include <atlbase.h>
 #include <atlcom.h>
@@ -51,8 +54,6 @@ using namespace ATL;
 #include "BridgeGeometryHelper.h"
 #include <MathEx.h>
 
-#include <WBFLAll.h>
-#include <WBFLDebug.h>
 
 #undef ASSERTVALID
 #if defined _DEBUG

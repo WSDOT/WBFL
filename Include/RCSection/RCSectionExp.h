@@ -42,5 +42,5 @@
 #define RCSTPL   extern template class RCSCLASS
 #endif
 
-#include <WbflAll.h>
 #include <RCSection\AutoLib.h>
+#include <WbflAll.h>

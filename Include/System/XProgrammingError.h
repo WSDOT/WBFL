@@ -36,7 +36,7 @@ namespace WBFL
       public:
          // GROUP: ENUMERATIONS
          enum Reason { CodeFault,        ///< There is an error in the source code,
-                       InvalidValue,     ///< A value is inavlid
+                       InvalidValue,     ///< A value is invalid
                        ValueOutOfRange,  ///< A value was out of a required range
                        NotImplemented,   ///< A code segment is not implemented
                        AssertValidFailed, ///< A call to AssertValid() failed

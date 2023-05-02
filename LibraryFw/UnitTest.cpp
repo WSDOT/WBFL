@@ -33,12 +33,6 @@
 #include <LibraryFw\LibraryManager.h>
 #include ".\UnitTests\ConcreteMaterial.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-//#undef THIS_FILE
-//static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    libUnitTest
@@ -64,7 +58,7 @@ bool TestLib(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Library Persistence");
    // create some libaries, fill them with data to save
-   typedef libLibrary<libConcreteMaterial,0> LibType;
+   using LibType = libLibrary<libConcreteMaterial,0>;
    LibType* psav1 = new LibType(_T("CONC_LIB1"), _T("Concrete Library 1"));
    libConcreteMaterial mat;
    TRY_TESTME(mat.GetRefCount()==0);

@@ -27,12 +27,6 @@
 #include <Units/Convert.h>
 #include <Units/Measure.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Materials;
 
 UnconfinedConcreteModel::UnconfinedConcreteModel(const std::_tstring& strName,Float64 fc) :

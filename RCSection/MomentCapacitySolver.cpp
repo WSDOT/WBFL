@@ -25,12 +25,6 @@
 #include <RCSection\MomentCapacitySolver.h>
 #include "MomentCapacitySolverImpl.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::RCSection;
 
 MomentCapacitySolver::MomentCapacitySolver()
@@ -100,14 +94,14 @@ WBFL::Geometry::Point2d MomentCapacitySolver::GetPlasticCentroid() const
    return m_pImpl->GetPlasticCentroid();
 }
 
-void MomentCapacitySolver::GetCompressionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& MomentCapacitySolver::GetCompressionLimit() const
 {
-   m_pImpl->GetCompressionLimit(Fz, Mx, My, eo);
+   return m_pImpl->GetCompressionLimit();
 }
 
-void MomentCapacitySolver::GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& MomentCapacitySolver::GetTensionLimit() const
 {
-   m_pImpl->GetTensionLimit(Fz, Mx, My, eo);
+   return m_pImpl->GetTensionLimit();
 }
 
 #if defined _UNITTEST

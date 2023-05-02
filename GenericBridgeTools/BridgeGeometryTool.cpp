@@ -195,7 +195,7 @@ STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySegment(IGenericBridge* brid
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);
 
-   alignment->Offset(point,station,offset);
+   alignment->StationAndOffset(point,station,offset);
 
    return S_OK;
 }
@@ -255,15 +255,15 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathPoint(IGenericBridge* bridge,GirderI
    CComPtr<IPoint2d> point_on_alignment;
    alignment->LocatePoint(varStation,omtAlongDirection, 0.00,CComVariant(0.00),&point_on_alignment);
 
-   CComPtr<IDirection> dir;
-   HRESULT hr = cogoUtil::DirectionFromVariant(varDirection,&dir);
+   HRESULT hr;
+   WBFL::COGO::Direction direction;
+   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
    if ( FAILED(hr) )
    {
       ATLASSERT(false);
       return hr;
    }
-   Float64 dirValue;
-   dir->get_Value(&dirValue);
+   Float64 dirValue = direction.GetValue();
 
    CComPtr<ILine2d> cutLine;
    cutLine.CoCreateInstance(CLSID_Line2d);
@@ -305,8 +305,8 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathPoint(IGenericBridge* bridge,GirderI
    {
       CComPtr<ILineSegment2d> gdrLine;
       gdrLine.CoCreateInstance(CLSID_LineSegment2d);
-      gdrLine->putref_StartPoint(p1);
-      gdrLine->putref_EndPoint(p2);
+      gdrLine->put_StartPoint(p1);
+      gdrLine->put_EndPoint(p2);
 
       // Going to use the geometric utility object
       m_GeomUtil->IntersectLineWithLineSegment(cutLine,gdrLine,ppPoint);
@@ -398,8 +398,8 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoints(IGenericBridge* bridge,Directio
    CComPtr<IStation> objFirst_normal_station, objLast_normal_station;
    Float64 offset;
 
-   alignment->Offset(objFirstPoint,&objFirst_normal_station,&offset);
-   alignment->Offset(objLastPoint, &objLast_normal_station, &offset);
+   alignment->StationAndOffset(objFirstPoint,&objFirst_normal_station,&offset);
+   alignment->StationAndOffset(objLastPoint, &objLast_normal_station, &offset);
 
    Float64 first_normal_station, last_normal_station;
    objFirst_normal_station->get_Value(&first_normal_station);
@@ -418,7 +418,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoints(IGenericBridge* bridge,Directio
       {
          // Normal at station
          CComPtr<IDirection> objDirection;
-         alignment->Normal(CComVariant(station), &objDirection);
+         alignment->GetNormal(CComVariant(station), &objDirection);
 
          CComPtr<IPoint2d> p;
          DeckEdgePoint(bridge,station,objDirection,side,&p);
@@ -450,7 +450,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOffset(IGenericBridge* bridge,Float64 stat
    CComPtr<IDirection> objDirection;
    if ( direction == nullptr )
    {
-      alignment->Normal(CComVariant(station),&objDirection);
+      alignment->GetNormal(CComVariant(station),&objDirection);
    }
    else
    {
@@ -464,7 +464,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOffset(IGenericBridge* bridge,Float64 stat
       return hr;
    }
 
-   return alignment->Offset(pntEdge,ppOffsetStation,pOffset);
+   return alignment->StationAndOffset(pntEdge,ppOffsetStation,pOffset);
 }
 
 STDMETHODIMP CBridgeGeometryTool::CurbOffset(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,IStation** ppOffsetStation,Float64* pOffset)
@@ -574,7 +574,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    // if dir is nullptr, use the normal to the alignment
    if ( dir == nullptr )
    {
-      alignment->Normal(CComVariant(station),&dir);
+      alignment->GetNormal(CComVariant(station),&dir);
    }
 
    // Get point on alignment at station
@@ -752,7 +752,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,G
    // if direction is nullptr, use the normal to the alignment
    if ( direction == nullptr )
    {
-      alignment->Normal(CComVariant(objStation),&direction);
+      alignment->GetNormal(CComVariant(objStation),&direction);
    }
 
    // Get point on edge of deck

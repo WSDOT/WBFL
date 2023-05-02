@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "DistributedLoad.h"
 
-typedef CLoadsCollection<IFem2dDistributedLoadCollection, IFem2dDistributedLoad, CDistributedLoad, IFem2dEnumDistributedLoad, &IID_IFem2dEnumDistributedLoad,LoadIDType> DistributedLoadCollImpl;
+using DistributedLoadCollImpl = CLoadsCollection<IFem2dDistributedLoadCollection, IFem2dDistributedLoad, CDistributedLoad, IFem2dEnumDistributedLoad, &IID_IFem2dEnumDistributedLoad,LoadIDType>;
 
 class ModelEvents;
 

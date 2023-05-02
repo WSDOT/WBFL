@@ -3526,7 +3526,7 @@ void SetNodeNumberForSupport(SubNodeLocs* pSnls, JointIDType* pcurrNode)
    // number of top node at support is same as currNode coming in
    // support nodes are ordered from bottom up
    bool first = true;
-   typedef SubNodeLocs::reverse_iterator SnRi;
+   using SnRi = SubNodeLocs::reverse_iterator;
    SnRi ri(pSnls->rbegin());
    SnRi riend(pSnls->rend());
    for ( ; ri!=riend; ri++)

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -25,11 +25,11 @@
 #pragma once
 
 /************************************************************************
-   Refenence:
+   Reference:
    Formulas For Stress and Strain 4th Edition R.J. Roark
    Table III pp 104-113
 
-   Naming Convension:
+   Naming Conversion:
       Class Names -
          Class Names are of the form [C|P|F][C|P|F]{loadtype}
          where :
@@ -79,16 +79,16 @@ namespace WBFL
          virtual std::unique_ptr<RoarkBeam> CreateClone() const = 0;
 
          /// Gets the vertical reactions at the end supports
-         virtual void GetReactions(Float64 *pRa,Float64* pRb) const = 0;
+         virtual std::pair<Float64,Float64> GetReactions() const = 0;
 
          /// Gets the moment reactions at the end supports
-         virtual void GetMoments(Float64* pMa,Float64* pMb) const = 0;
+         virtual std::pair<Float64,Float64> GetMoments() const = 0;
 
          /// Gets the rotation at the end supports
-         virtual void GetRotations(Float64* pra,Float64* prb) const = 0;
+         virtual std::pair<Float64, Float64> GetRotations() const = 0;
 
          /// Gets the deflection at the end supports
-         virtual void GetDeflections(Float64* pYa,Float64* pYb) const = 0;
+         virtual std::pair<Float64, Float64> GetDeflections() const = 0;
 
          /// Computes the shear at a specified point from the left end of the beam
          virtual WBFL::System::SectionValue ComputeShear(Float64 x) const = 0;
@@ -104,7 +104,7 @@ namespace WBFL
 
       protected:
          /// Gets the length and flexural stiffness of the beam
-         void GetProperties(Float64* pL, Float64* pEI) const;
+         std::pair<Float64, Float64> GetProperties() const;
 
       private:
          Float64 L, EI;

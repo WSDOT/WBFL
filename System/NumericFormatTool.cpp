@@ -21,18 +21,13 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <System\SysLib.h>
-#include <System\NumericFormatTool.h>
-#include <System\EngNotation.h>
-#include <System\SectionValue.h>
+#include <System/SysLib.h>
+#include <System/NumericFormatTool.h>
+#include <System/EngNotation.h>
+#include <System/SectionValue.h>
+#include <System/Debug.h>
 #include <sstream>
 #include <MathEx.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::System;
 
@@ -58,7 +53,7 @@ std::_tstring NumericFormatTool::AsString(Float64 value) const
    {
       if ( IsEqual(fabs(value)/Float64_Max,1.0) )
       {
-         if ( value > 0 )
+         if ( 0 < value)
          {
             return _T("INF");
          }

@@ -25,12 +25,6 @@
 #include <Materials/Rebar.h>
 #include <Units\Convert.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Materials;
 
 // -1 means the material is not defined
@@ -133,7 +127,7 @@ int SizeIndex(Rebar::Size size)
    case Rebar::Size::bs14: return 9;
    case Rebar::Size::bs18: return 10;
    default:
-      ASSERT(FALSE);
+      CHECK(FALSE);
       return 0;
    }; 
 
@@ -148,7 +142,7 @@ int TypeIndex(Rebar::Type type)
    case Rebar::Type::A706:  return 1;
    case Rebar::Type::A1035: return 2;
    default:
-      ASSERT(FALSE);
+      CHECK(FALSE);
       return 0;
    }
 
@@ -166,7 +160,7 @@ int GradeIndex(Rebar::Grade grade)
    case Rebar::Grade::Grade100: return 4;
    case Rebar::Grade::Grade120: return 5;
    default:
-      ASSERT(FALSE);
+      CHECK(FALSE);
       return 0;
    }
 
@@ -232,10 +226,10 @@ Float64 Rebar::GetUltimateStrength(Type type,Grade grade)
       break;
 
    default:
-      ATLASSERT(false); // should not get here
+      CHECK(false); // should not get here
    }
 
-   ATLASSERT(0 < value);
+   CHECK(0 < value);
    return value;
 }
 
@@ -270,10 +264,10 @@ Float64 Rebar::GetYieldStrength(Type type,Grade grade)
       break;
 
    default:
-      ATLASSERT(false); // should not get here
+      CHECK(false); // should not get here
    }
 
-   ATLASSERT(0 < value);
+   CHECK(0 < value);
    return value;
 }
 
@@ -308,10 +302,10 @@ Float64 Rebar::GetE(Type type,Grade grade)
       break;
 
    default:
-      ATLASSERT(false); // should not get here
+      CHECK(false); // should not get here
    }
 
-   ATLASSERT(0 < value);
+   CHECK(0 < value);
    return value;
 }
 
@@ -325,17 +319,17 @@ Float64 Rebar::GetElongation(Type type, Grade grade, Size size)
    case Type::A615: e = gs_Elongation_A615[gradeIdx][sizeIdx]; break;
    case Type::A706: e = gs_Elongation_A706[gradeIdx][sizeIdx]; break;
    case Type::A1035: e = gs_Elongation_A1035[gradeIdx][sizeIdx]; break;
-   default: ATLASSERT(false);
+   default: CHECK(false);
    }
 
-   ATLASSERT(e != -1.0);
+   CHECK(e != -1.0);
    return e;
 }
 
 #if defined _DEBUG
 bool Rebar::AssertValid() const
 {
-   if ( m_Fy > m_Fu )
+   if ( m_Fu < m_Fy )
       return false;
 
    if ( m_Dimension <= 0 )

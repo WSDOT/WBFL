@@ -216,7 +216,7 @@ STDMETHODIMP CCastingRegions::FindRegionEx(GirderIDType ssmbrID, SegmentIndexTyp
 
    CComPtr<IStation> station;
    Float64 offset;
-   alignment->Offset(point, &station, &offset); // this is the station of the boundary when measuring normal to alignment
+   alignment->StationAndOffset(point, &station, &offset); // this is the station of the boundary when measuring normal to alignment
 
    // find the closest pier to the point so we can get its direction
    CComPtr<IPierCollection> piers;
@@ -268,7 +268,7 @@ STDMETHODIMP CCastingRegions::FindRegionEx(GirderIDType ssmbrID, SegmentIndexTyp
       alignment->IntersectEx(line, point, VARIANT_TRUE, VARIANT_TRUE, &pntOnAlignment);
 
       station.Release();
-      alignment->Offset(pntOnAlignment, &station, &offset);
+      alignment->StationAndOffset(pntOnAlignment, &station, &offset);
    }
 
    // get the location of the point in bridge coordinates

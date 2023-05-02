@@ -24,16 +24,10 @@
 #include <GeomModel/GeomModelLib.h>
 #include <GeomModel/XGeometry.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
-XGeometry::XGeometry(const std::_tstring& strReason, const std::_tstring& file, Uint32 line) :
-   WBFL::System::XBase(file, line), m_Reason(strReason)
+XGeometry::XGeometry(Int32 reason, const std::_tstring& file, Uint32 line) :
+   WBFL::System::XBase(file, line), m_Reason(reason)
 {
 }
 
@@ -44,7 +38,7 @@ void XGeometry::Throw() const
 
 Int32 XGeometry::GetReason() const noexcept
 {
-   return 0;
+   return m_Reason;
 }
 
 std::_tstring XGeometry::GetErrorMessage() const

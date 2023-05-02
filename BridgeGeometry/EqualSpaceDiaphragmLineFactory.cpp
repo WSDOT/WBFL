@@ -186,7 +186,7 @@ STDMETHODIMP CEqualSpaceDiaphragmLineFactory::Create(IBridgeGeometry* pBridge,IU
       Float64 station = m_StartStation + (m_EndStation - m_StartStation)*i/m_Divisor;
 
       CComPtr<IDirection> normal;
-      alignment->Normal(CComVariant(station),&normal);
+      alignment->GetNormal(CComVariant(station),&normal);
       Float64 dir;
       normal->get_Value(&dir);
 

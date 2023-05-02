@@ -29,12 +29,6 @@
 #include <MathEx.h>
 #include <memory>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 PrecastBeam::PrecastBeam(Float64 w1, Float64 w2, Float64 w3, Float64 w4, Float64 w5,
@@ -317,13 +311,13 @@ IndexType PrecastBeam::GetTopFlangeCount() const
 
 Float64 PrecastBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("PrecastBeam::GetTopFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 PrecastBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("PrecastBeam::GetTopFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopWidth();
 }
 
@@ -334,13 +328,13 @@ IndexType PrecastBeam::GetBottomFlangeCount() const
 
 Float64 PrecastBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("PrecastBeam::GetBottomFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 PrecastBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("PrecastBeam::GetBottomFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetBottomWidth();
 }
 
@@ -361,13 +355,13 @@ MatingSurfaceIndexType PrecastBeam::GetMatingSurfaceCount() const
 
 Float64 PrecastBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("PrecastBeam::GetMatingSurfaceWidth - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopWidth();
 }
 
 Float64 PrecastBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("PrecastBeam::GetMatingSurfaceLocation - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0;
 }
 
@@ -378,7 +372,7 @@ IndexType PrecastBeam::GetWebCount() const
 
 Plane3d PrecastBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("PrecastBeam::GetWebPlane - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 

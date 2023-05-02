@@ -30,7 +30,6 @@
 
 #pragma once
 
-#include <Private\WbflPackage.h>
 
 #include <stdio.h>
 #include <tchar.h>
@@ -42,5 +41,6 @@
 #include <atlstr.h>
 
 #include <WBFLCore.h>
+#include <WBFLTest.h>
 
 // TODO: reference additional headers your program requires here

@@ -25,6 +25,8 @@
 #define INCLUDED_BRIDGEMODELING_HTMLUNITTAGFORMAT_H_
 #pragma once
 
+#include <Reporter\ReporterExp.h> // even though this class isn't exported, we need this to bring in WBFLTypes and other related headers
+
 /// Formats a unit tag.
 ///
 /// Text following ^ are superscripted and text following _ are subscripted.

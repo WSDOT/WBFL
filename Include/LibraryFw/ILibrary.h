@@ -43,8 +43,8 @@ class LIBRARYFWCLASS libLibraryManager;
 
 // MISCELLANEOUS
 //
-#define libKeyListType std::vector< std::_tstring >
-typedef libKeyListType::iterator libKeyListIterator;
+using libKeyListType = std::vector<std::_tstring>;
+using libKeyListIterator = libKeyListType::iterator;
 
 
 /*****************************************************************************
@@ -56,7 +56,7 @@ CLASS
    USAGE NOTES:
    If you want to reference an entry in the library at run time, you should 
    reference it by its pointer, NOT by entry name/key. This is because the 
-   name of an entry can be changed arbitrarly, but its memory address can not.
+   name of an entry can be changed arbitrarily, but its memory address can not.
 
    Conversely, at Storage time you may reference entries by their name/key.
 

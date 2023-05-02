@@ -28,12 +28,6 @@
 #include <GeomModel/GenericShape.h>
 #include <GeomModel/Rectangle.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::RCSection;
 
 std::shared_ptr<GeneralSection> SectionBuilder::RectangularColumn(
@@ -139,7 +133,7 @@ std::shared_ptr<GeneralSection> SectionBuilder::CircularColumn(
    std::vector<WBFL::Geometry::Point2d> points;
    WBFL::Geometry::GeometricOperations::GenerateCircle(Nb, *center, D / 2 - cover, startAngle, &points);
 
-   ASSERT(points.size()  == Nb);
+   CHECK(points.size()  == Nb);
 
    // loop through the points, create new rebars, and add them to the section
    for(const auto& point : points)

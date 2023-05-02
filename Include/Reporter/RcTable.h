@@ -254,8 +254,8 @@ private:
 
    // 2D array of paragraphs - the table data
    // Column Headers are held in row zero
-   typedef std::vector<rptTableCellParagraph>  ColumnVector;
-   typedef std::vector<ColumnVector> TableData;
+   using ColumnVector = std::vector<rptTableCellParagraph>;
+   using TableData = std::vector<ColumnVector>;
    TableData m_TableData;
 
    // width of table column widths in inches

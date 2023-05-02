@@ -25,12 +25,6 @@
 #include <GeomModel/Primitives3d.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 Size3d::Size3d()
@@ -128,6 +122,11 @@ Float64 Size3d::Dx() const
    return m_Dx;
 }
 
+void Size3d::Dx(Float64 dx)
+{
+   m_Dx = dx;
+}
+
 Float64& Size3d::Dx()
 {
    return m_Dx;
@@ -138,6 +137,11 @@ Float64 Size3d::Dy() const
    return m_Dy;
 }
 
+void Size3d::Dy(Float64 dy)
+{
+   m_Dy = dy;
+}
+
 Float64& Size3d::Dy()
 {
    return m_Dy;
@@ -146,6 +150,11 @@ Float64& Size3d::Dy()
 Float64 Size3d::Dz() const
 {
    return m_Dz;
+}
+
+void Size3d::Dz(Float64 dz)
+{
+   m_Dz = dz;
 }
 
 Float64& Size3d::Dz()
@@ -165,11 +174,9 @@ void Size3d::SetDimensions(const Point3d& point)
    SetDimensions(point.X(), point.Y(), point.Z());
 }
 
-void Size3d::GetDimensions(Float64* dx, Float64* dy, Float64* dz) const
+std::tuple<Float64,Float64,Float64> Size3d::GetDimensions() const
 {
-   *dx = m_Dx;
-   *dy = m_Dy;
-   *dz = m_Dz;
+   return std::make_tuple(m_Dx, m_Dy, m_Dz);
 }
 
 #if defined _DEBUG
@@ -326,6 +333,11 @@ Float64 Point3d::X() const
    return m_X;
 }
 
+void Point3d::X(Float64 x)
+{
+   m_X = x;
+}
+
 Float64& Point3d::X()
 {
    return m_X;
@@ -334,6 +346,11 @@ Float64& Point3d::X()
 Float64 Point3d::Y() const
 {
    return m_Y;
+}
+
+void Point3d::Y(Float64 y)
+{
+   m_Y = y;
 }
 
 Float64& Point3d::Y()
@@ -346,16 +363,19 @@ Float64 Point3d::Z() const
    return m_Z;
 }
 
+void Point3d::Z(Float64 z)
+{
+   m_Z = z;
+}
+
 Float64& Point3d::Z()
 {
    return m_Z;
 }
 
-void Point3d::GetLocation(Float64* pX, Float64* pY, Float64* pZ) const
+std::tuple<Float64, Float64, Float64> Point3d::GetLocation() const
 {
-   *pX = m_X;
-   *pY = m_Y;
-   *pZ = m_Z;
+   return std::make_tuple(m_X, m_Y, m_Z);
 }
 
 #if defined _DEBUG

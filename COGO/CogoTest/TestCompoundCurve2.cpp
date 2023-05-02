@@ -59,14 +59,16 @@ void CTestCompoundCurve::Test6()
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
+   CComQIPtr<IPathElement> element(hc);
+
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
-   // PBT = (0,1000)
-   // PI  = (700,1000)
-   // PFT = (1000,700)
-   // R   = 500
-   // Entry Spiral Length = 100
-   // Exit Spiral Length = 200
+   // PBT = (-1000,0)
+   // PI  = (0,0)
+   // PFT = (937.993610303, -346.652545108)
+   // R   = 1000
+   // Entry Spiral Length = 350
+   // Exit Spiral Length = 150
    CComPtr<IPoint2d> pbt, pi, pft;
    pbt.CoCreateInstance(CLSID_Point2d);
    pi.CoCreateInstance(CLSID_Point2d);
@@ -76,9 +78,9 @@ void CTestCompoundCurve::Test6()
    pi->Move(0,0);
    pft->Move(937.993610303,-346.652545108);
 
-   TRY_TEST( hc->putref_PBT(pbt), S_OK );
-   TRY_TEST( hc->putref_PI(pi), S_OK );
-   TRY_TEST( hc->putref_PFT(pft), S_OK );
+   TRY_TEST( hc->put_PBT(pbt), S_OK );
+   TRY_TEST( hc->put_PI(pi), S_OK );
+   TRY_TEST( hc->put_PFT(pft), S_OK );
 
 
    TRY_TEST( hc->put_Radius(1000), S_OK);
@@ -354,7 +356,7 @@ void CTestCompoundCurve::Test6()
 //   //
 //   Float64 px,py;
 //   pnt.Release();
-//   TRY_TEST(hc->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
+//   TRY_TEST(element->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   ts->get_X(&x);
@@ -363,7 +365,7 @@ void CTestCompoundCurve::Test6()
 //   TRY_TEST(IsEqual(y,py),true);
 //
 //   pnt.Release();
-//   TRY_TEST(hc->PointOnCurve(0.0,&pnt),S_OK); // TS
+//   TRY_TEST(element->PointOnCurve(0.0,&pnt),S_OK); // TS
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   ts->get_X(&x);
@@ -372,14 +374,14 @@ void CTestCompoundCurve::Test6()
 //   TRY_TEST(IsEqual(y,py),true);
 //
 //   pnt.Release();
-//   TRY_TEST(hc->PointOnCurve(50.0,&pnt),S_OK); // half-way between TS and SC
+//   TRY_TEST(element->PointOnCurve(50.0,&pnt),S_OK); // half-way between TS and SC
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   TRY_TEST(IsEqual(px,489.03248),true);
 //   TRY_TEST(IsEqual(py,999.58335),true);
 //
 //   pnt.Release();
-//   TRY_TEST(hc->PointOnCurve(100.0,&pnt),S_OK); // SC
+//   TRY_TEST(element->PointOnCurve(100.0,&pnt),S_OK); // SC
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   sc->get_X(&x);
@@ -389,7 +391,7 @@ void CTestCompoundCurve::Test6()
 //
 //   pnt.Release();
 //   hc->get_CurveLength(&val); // length of circular curve
-//   TRY_TEST(hc->PointOnCurve(100.0 + val/2,&pnt),S_OK); // Half-way around the circular curve
+//   TRY_TEST(element->PointOnCurve(100.0 + val/2,&pnt),S_OK); // Half-way around the circular curve
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   TRY_TEST(IsEqual(px,657.03416),true);
@@ -397,7 +399,7 @@ void CTestCompoundCurve::Test6()
 //
 //   pnt.Release();
 //   hc->get_CurveLength(&val); // length of circular curve
-//   TRY_TEST(hc->PointOnCurve(100.0 + val,&pnt),S_OK); // CS
+//   TRY_TEST(element->PointOnCurve(100.0 + val,&pnt),S_OK); // CS
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   cs->get_X(&x);
@@ -407,7 +409,7 @@ void CTestCompoundCurve::Test6()
 //
 //   pnt.Release();
 //   hc->get_CurveLength(&val); // length of circular curve
-//   TRY_TEST(hc->PointOnCurve(100.0 + val + 200./2,&pnt),S_OK); // Half-way along exit spiral
+//   TRY_TEST(element->PointOnCurve(100.0 + val + 200./2,&pnt),S_OK); // Half-way along exit spiral
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   TRY_TEST(IsEqual(px,843.67118),true);
@@ -415,7 +417,7 @@ void CTestCompoundCurve::Test6()
 //
 //   pnt.Release();
 //   hc->get_CurveLength(&val); // length of circular curve
-//   TRY_TEST(hc->PointOnCurve(100.0 + val + 200.,&pnt),S_OK); // ST
+//   TRY_TEST(element->PointOnCurve(100.0 + val + 200.,&pnt),S_OK); // ST
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   st->get_X(&x);
@@ -425,7 +427,7 @@ void CTestCompoundCurve::Test6()
 //
 //   pnt.Release();
 //   hc->get_CurveLength(&val); // length of circular curve
-//   TRY_TEST(hc->PointOnCurve(100.0 + val + 200 + 100,&pnt),S_OK); // 100 past ST
+//   TRY_TEST(element->PointOnCurve(100.0 + val + 200 + 100,&pnt),S_OK); // 100 past ST
 //   pnt->get_X(&px);
 //   pnt->get_Y(&py);
 //   st->get_X(&x);
@@ -565,6 +567,8 @@ void CTestCompoundCurve::Test7()
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
+   CComQIPtr<IPathElement> element(hc);
+
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
    // Spiral lengths overlap
@@ -583,28 +587,13 @@ void CTestCompoundCurve::Test7()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   TRY_TEST( hc->putref_PBT(nullptr), E_INVALIDARG );
-   TRY_TEST( hc->putref_PI(nullptr), E_INVALIDARG );
-   TRY_TEST( hc->putref_PFT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PBT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PI(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PFT(nullptr), E_INVALIDARG );
 
-   TRY_TEST( hc->putref_PBT(pbt), S_OK );
-   TRY_TEST( hc->putref_PI(pi), S_OK );
-   TRY_TEST( hc->putref_PFT(pft), S_OK );
-
-   CComPtr<IPoint2d> pnt;
-   TRY_TEST( hc->get_PBT(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PBT(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pbt), true );
-
-   pnt.Release();
-   TRY_TEST( hc->get_PI(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PI(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pi), true );
-
-   pnt.Release();
-   TRY_TEST( hc->get_PFT(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PFT(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pft), true );
+   TRY_TEST( hc->put_PBT(pbt), S_OK );
+   TRY_TEST( hc->put_PI(pi), S_OK );
+   TRY_TEST( hc->put_PFT(pft), S_OK );
 
    TRY_TEST( hc->put_Radius(-1), E_INVALIDARG);
    TRY_TEST( hc->put_Radius(0),  E_INVALIDARG);
@@ -618,7 +607,7 @@ void CTestCompoundCurve::Test7()
 
    CComPtr<IAngle> angle;
    TRY_TEST( hc->get_CircularCurveAngle(nullptr), E_POINTER );
-   TRY_TEST( hc->get_CircularCurveAngle(&angle), COGO_E_SPIRALSOVERLAP );
+   TRY_TEST( hc->get_CircularCurveAngle(&angle), E_FAIL );
 
    CurveDirectionType type;
    hc->get_Direction(&type);
@@ -629,6 +618,8 @@ void CTestCompoundCurve::Test8a()
 {
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -648,9 +639,9 @@ void CTestCompoundCurve::Test8a()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
 
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,100);
@@ -672,17 +663,20 @@ void CTestCompoundCurve::Test8a()
 
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
+   CComPtr<IPoint2dCollection> points;
+   IndexType nPoints;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr),E_POINTER);
+   TRY_TEST(element->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE, &points), E_INVALIDARG);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -693,10 +687,12 @@ void CTestCompoundCurve::Test8a()
    line->ThroughPoints(cc,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 818.84459859920526),true);
@@ -706,10 +702,12 @@ void CTestCompoundCurve::Test8a()
    line->ThroughPoints(cc,pi);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 684.65428056880842),true);
@@ -719,15 +717,18 @@ void CTestCompoundCurve::Test8a()
    line->ThroughPoints(spi1,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 508.67043163106791),true);
    TRY_TEST(IsEqual(py, 1001.1261389033072),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 809.35182374575743),true);
@@ -736,21 +737,24 @@ void CTestCompoundCurve::Test8a()
    // intersect circular curve in two places
    // first locate two points on the curve
    CComPtr<IPoint2d> cp1, cp2;
-   hc->PointOnCurve(110,&cp1);
-   hc->PointOnCurve(140,&cp2);
+   element->PointOnCurve(110,&cp1);
+   element->PointOnCurve(140,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 548.87503670886008),true);
    TRY_TEST(IsEqual(py, 1004.4287172526595),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 578.53372538212068),true);
@@ -761,21 +765,24 @@ void CTestCompoundCurve::Test8a()
    // first locate two points on the curve
    cp1.Release();
    cp2.Release();
-   hc->PointOnCurve(150,&cp1);
-   hc->PointOnCurve(151,&cp2);
+   element->PointOnCurve(150,&cp1);
+   element->PointOnCurve(151,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 588.35360,0.001),true);
    TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 589.33345,0.001),true);
@@ -783,18 +790,20 @@ void CTestCompoundCurve::Test8a()
 
    //// line tangent to entry spiral
    CComPtr<IPoint2d> POC;
-   hc->PointOnCurve(50,&POC);
+   element->PointOnCurve(50,&POC);
    CComPtr<IDirection> dir;
-   hc->Bearing(50,&dir);
+   element->GetBearing(50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
@@ -806,10 +815,12 @@ void CTestCompoundCurve::Test8a()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
@@ -818,21 +829,24 @@ void CTestCompoundCurve::Test8a()
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(35,&p1);
-   hc->PointOnCurve(45,&p2);
+   element->PointOnCurve(35,&p1);
+   element->PointOnCurve(45,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 474.03507484100646),true);
    TRY_TEST(IsEqual(py, 1000.1429151347374),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 484.03375483745350),true);
@@ -842,18 +856,20 @@ void CTestCompoundCurve::Test8a()
    Float64 length;
    hc->get_TotalLength(&length);
    POC.Release();
-   hc->PointOnCurve(length-50,&POC);
+   element->PointOnCurve(length-50,&POC);
    dir.Release();
-   hc->Bearing(length-50,&dir);
+   element->GetBearing(length-50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419),true);
@@ -865,10 +881,12 @@ void CTestCompoundCurve::Test8a()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419), true);
@@ -878,21 +896,24 @@ void CTestCompoundCurve::Test8a()
    // intersect exit spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(length-45,&p1);
-   hc->PointOnCurve(length-35,&p2);
+   element->PointOnCurve(length-45,&p1);
+   element->PointOnCurve(length-35,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 883.61562936445966),true);
    TRY_TEST(IsEqual(py, 1183.8304112645556),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 890.74331577219289),true);
@@ -901,18 +922,20 @@ void CTestCompoundCurve::Test8a()
 
    // line tangent to circular curve
    POC.Release();
-   hc->PointOnCurve(length/2,&POC);
+   element->PointOnCurve(length/2,&POC);
    dir.Release();
-   hc->Bearing(length/2,&dir);
+   element->GetBearing(length/2,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 703.20889,0.0011),true);
@@ -922,15 +945,18 @@ void CTestCompoundCurve::Test8a()
    line->ThroughPoints(pbt,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
    TRY_TEST(IsEqual(py, 1000.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 813.50118,0.001),true);
@@ -939,10 +965,12 @@ void CTestCompoundCurve::Test8a()
    // again, but don't project back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 813.5011,0.001),true);
@@ -952,15 +980,18 @@ void CTestCompoundCurve::Test8a()
    line->ThroughPoints(spi1,pft);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 507.5005,0.001),true);
    TRY_TEST(IsEqual(py, 1001.07029,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
@@ -969,10 +1000,12 @@ void CTestCompoundCurve::Test8a()
    // again, but don't project ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 507.5005,0.001),true);
@@ -986,9 +1019,10 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,1100);
@@ -997,10 +1031,12 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 787.9642,0.001),true);
@@ -1013,10 +1049,12 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1200.00),true);
@@ -1025,9 +1063,10 @@ void CTestCompoundCurve::Test8a()
    // again, but don't project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -1037,9 +1076,10 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(600,1000);
@@ -1048,10 +1088,12 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 617.6666,0.001),true);
@@ -1064,10 +1106,12 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,  200.00),true);
@@ -1080,9 +1124,10 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,1000);
@@ -1091,22 +1136,26 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
    TRY_TEST(IsEqual(py, 1000.),true);
-   
+
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
@@ -1115,10 +1164,12 @@ void CTestCompoundCurve::Test8a()
    // again, but project only back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -1127,10 +1178,12 @@ void CTestCompoundCurve::Test8a()
    // again, but project only ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
@@ -1143,9 +1196,10 @@ void CTestCompoundCurve::Test8a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 }
 
 void CTestCompoundCurve::Test8b()
@@ -1153,6 +1207,8 @@ void CTestCompoundCurve::Test8b()
    // same as Test8a except the direction of the curve is reverse
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -1172,9 +1228,9 @@ void CTestCompoundCurve::Test8b()
    pi->Move(700,1000);
    pft->Move(0,1000);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
 
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,200);
@@ -1196,17 +1252,19 @@ void CTestCompoundCurve::Test8b()
 
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
+   CComPtr<IPoint2dCollection> points;
+   IndexType nPoints;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr),E_POINTER);
+   TRY_TEST(element->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&points), E_INVALIDARG);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1217,10 +1275,12 @@ void CTestCompoundCurve::Test8b()
    line->ThroughPoints(cc,spi1);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 818.84459859920526),true);
@@ -1230,10 +1290,12 @@ void CTestCompoundCurve::Test8b()
    line->ThroughPoints(cc,pi);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 684.65428056880842),true);
@@ -1243,15 +1305,18 @@ void CTestCompoundCurve::Test8b()
    line->ThroughPoints(spi1,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 809.35182374575743),true);
    TRY_TEST(IsEqual(py, 1116.5668976835791),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 508.67043163106791),true);
@@ -1262,21 +1327,24 @@ void CTestCompoundCurve::Test8b()
    Float64 length;
    hc->get_TotalLength(&length);
    CComPtr<IPoint2d> cp1, cp2;
-   hc->PointOnCurve(length-140,&cp1);
-   hc->PointOnCurve(length-110,&cp2);
+   element->PointOnCurve(length-140,&cp1);
+   element->PointOnCurve(length-110,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 578.53372538212068),true);
    TRY_TEST(IsEqual(py, 1008.9111895010718),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 548.87503670886008),true);
@@ -1287,21 +1355,24 @@ void CTestCompoundCurve::Test8b()
    // first locate two points on the curve
    cp1.Release();
    cp2.Release();
-   hc->PointOnCurve(length-151,&cp1);
-   hc->PointOnCurve(length-150,&cp2);
+   element->PointOnCurve(length-151,&cp1);
+   element->PointOnCurve(length-150,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints,2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 589.33345,0.001),true);
    TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 588.35360,0.001),true);
@@ -1309,18 +1380,20 @@ void CTestCompoundCurve::Test8b()
 
    //// line tangent to exit spiral
    CComPtr<IPoint2d> POC;
-   hc->PointOnCurve(length-50,&POC);
+   element->PointOnCurve(length-50,&POC);
    CComPtr<IDirection> dir;
-   hc->Bearing(length-50,&dir);
+   element->GetBearing(length-50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
@@ -1332,10 +1405,12 @@ void CTestCompoundCurve::Test8b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
@@ -1344,21 +1419,24 @@ void CTestCompoundCurve::Test8b()
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(length-45,&p1);
-   hc->PointOnCurve(length-35,&p2);
+   element->PointOnCurve(length-45,&p1);
+   element->PointOnCurve(length-35,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints,2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 484.03375483745350),true);
    TRY_TEST(IsEqual(py, 1000.3037411037024),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 474.03507484100646),true);
@@ -1366,18 +1444,20 @@ void CTestCompoundCurve::Test8b()
 
    // line tangent to exit spiral
    POC.Release();
-   hc->PointOnCurve(50,&POC);
+   element->PointOnCurve(50,&POC);
    dir.Release();
-   hc->Bearing(50,&dir);
+   element->GetBearing(50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419),true);
@@ -1389,10 +1469,12 @@ void CTestCompoundCurve::Test8b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419), true);
@@ -1401,21 +1483,24 @@ void CTestCompoundCurve::Test8b()
    // intersect exit spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(35,&p1);
-   hc->PointOnCurve(45,&p2);
+   element->PointOnCurve(35,&p1);
+   element->PointOnCurve(45,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 890.74331577219289),true);
    TRY_TEST(IsEqual(py, 1190.8443728455015),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 883.61562929997854),true);
@@ -1424,18 +1509,20 @@ void CTestCompoundCurve::Test8b()
 
    // line tangent to circular curve
    POC.Release();
-   hc->PointOnCurve(length/2,&POC);
+   element->PointOnCurve(length/2,&POC);
    dir.Release();
-   hc->Bearing(length/2,&dir);
+   element->GetBearing(length/2,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 703.20889,0.0011),true);
@@ -1445,15 +1532,18 @@ void CTestCompoundCurve::Test8b()
    line->ThroughPoints(pft,spi1);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 813.50118,0.001),true);
    TRY_TEST(IsEqual(py, 1119.94828,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -1462,10 +1552,12 @@ void CTestCompoundCurve::Test8b()
    // again, but don't project back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 813.5011,0.001),true);
@@ -1475,15 +1567,18 @@ void CTestCompoundCurve::Test8b()
    line->ThroughPoints(spi2,pbt);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
    TRY_TEST(IsEqual(py, 1300.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 507.5005,0.001),true);
@@ -1492,10 +1587,12 @@ void CTestCompoundCurve::Test8b()
    // again, but don't project ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 507.5005,0.001),true);
@@ -1509,9 +1606,10 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,1100);
@@ -1520,10 +1618,12 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 787.9642,0.001),true);
@@ -1536,10 +1636,12 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1200.00),true);
@@ -1548,9 +1650,10 @@ void CTestCompoundCurve::Test8b()
    // again, but don't project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -1560,9 +1663,10 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(600,1000);
@@ -1571,10 +1675,12 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 617.6666,0.001),true);
@@ -1587,10 +1693,12 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,  200.00),true);
@@ -1603,9 +1711,10 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,1000);
@@ -1614,22 +1723,26 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
    TRY_TEST(IsEqual(py, 1300.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -1638,10 +1751,12 @@ void CTestCompoundCurve::Test8b()
    // again, but project only back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -1650,10 +1765,12 @@ void CTestCompoundCurve::Test8b()
    // again, but project only ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
@@ -1666,9 +1783,10 @@ void CTestCompoundCurve::Test8b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 }
 
 
@@ -1677,6 +1795,8 @@ void CTestCompoundCurve::Test9a()
    // This is the same as Test8a except the curve has been mirrored about the Y axis
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -1696,9 +1816,9 @@ void CTestCompoundCurve::Test9a()
    pi->Move(-700,1000);
    pft->Move(-1000,1300);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
 
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,100);
@@ -1720,17 +1840,19 @@ void CTestCompoundCurve::Test9a()
 
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
+   CComPtr<IPoint2dCollection> points;
+   IndexType nPoints;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr),E_POINTER);
+   TRY_TEST(element->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&points), E_INVALIDARG);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1741,10 +1863,12 @@ void CTestCompoundCurve::Test9a()
    line->ThroughPoints(cc,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -818.84459859920526),true);
@@ -1754,10 +1878,12 @@ void CTestCompoundCurve::Test9a()
    line->ThroughPoints(cc,pi);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-684.65428056880842),true);
@@ -1767,15 +1893,18 @@ void CTestCompoundCurve::Test9a()
    line->ThroughPoints(spi1,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -508.67043163106791),true);
    TRY_TEST(IsEqual(py, 1001.1261389033072),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-809.35182374575743),true);
@@ -1784,21 +1913,24 @@ void CTestCompoundCurve::Test9a()
    // intersect circular curve in two places
    // first locate two points on the curve
    CComPtr<IPoint2d> cp1, cp2;
-   hc->PointOnCurve(110,&cp1);
-   hc->PointOnCurve(140,&cp2);
+   element->PointOnCurve(110,&cp1);
+   element->PointOnCurve(140,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-548.87503670886008),true);
    TRY_TEST(IsEqual(py, 1004.4287172526595),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-578.53372538212068),true);
@@ -1809,21 +1941,24 @@ void CTestCompoundCurve::Test9a()
    // first locate two points on the curve
    cp1.Release();
    cp2.Release();
-   hc->PointOnCurve(150,&cp1);
-   hc->PointOnCurve(151,&cp2);
+   element->PointOnCurve(150,&cp1);
+   element->PointOnCurve(151,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-588.35360,0.001),true);
    TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-589.33345,0.001),true);
@@ -1831,18 +1966,20 @@ void CTestCompoundCurve::Test9a()
 
    //// line tangent to entry spiral
    CComPtr<IPoint2d> POC;
-   hc->PointOnCurve(50,&POC);
+   element->PointOnCurve(50,&POC);
    CComPtr<IDirection> dir;
-   hc->Bearing(50,&dir);
+   element->GetBearing(50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-489.03247,0.001),true);
@@ -1854,10 +1991,12 @@ void CTestCompoundCurve::Test9a()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
@@ -1867,21 +2006,24 @@ void CTestCompoundCurve::Test9a()
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(35,&p1);
-   hc->PointOnCurve(45,&p2);
+   element->PointOnCurve(35,&p1);
+   element->PointOnCurve(45,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-474.03507484100646),true);
    TRY_TEST(IsEqual(py, 1000.1429151347374),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-484.03375483745350),true);
@@ -1891,18 +2033,20 @@ void CTestCompoundCurve::Test9a()
    Float64 length;
    hc->get_TotalLength(&length);
    POC.Release();
-   hc->PointOnCurve(length-50,&POC);
+   element->PointOnCurve(length-50,&POC);
    dir.Release();
-   hc->Bearing(length-50,&dir);
+   element->GetBearing(length-50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-880.04038989655419),true);
@@ -1914,10 +2058,12 @@ void CTestCompoundCurve::Test9a()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -880.04038989655419), true);
@@ -1926,21 +2072,24 @@ void CTestCompoundCurve::Test9a()
    // intersect exit spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(length-45,&p1);
-   hc->PointOnCurve(length-35,&p2);
+   element->PointOnCurve(length-45,&p1);
+   element->PointOnCurve(length-35,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -883.61562936445966),true);
    TRY_TEST(IsEqual(py, 1183.8304112645556),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-890.74331577219289),true);
@@ -1949,18 +2098,20 @@ void CTestCompoundCurve::Test9a()
 
    // line tangent to circular curve
    POC.Release();
-   hc->PointOnCurve(length/2,&POC);
+   element->PointOnCurve(length/2,&POC);
    dir.Release();
-   hc->Bearing(length/2,&dir);
+   element->GetBearing(length/2,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-703.20889,0.0011),true);
@@ -1970,15 +2121,18 @@ void CTestCompoundCurve::Test9a()
    line->ThroughPoints(pbt,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
    TRY_TEST(IsEqual(py, 1000.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-813.50118,0.001),true);
@@ -1987,10 +2141,12 @@ void CTestCompoundCurve::Test9a()
    // again, but don't project back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-813.5011,0.001),true);
@@ -2000,15 +2156,18 @@ void CTestCompoundCurve::Test9a()
    line->ThroughPoints(spi1,pft);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-507.5005,0.001),true);
    TRY_TEST(IsEqual(py, 1001.07029,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
@@ -2017,10 +2176,12 @@ void CTestCompoundCurve::Test9a()
    // again, but don't project ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-507.5005,0.001),true);
@@ -2034,9 +2195,10 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,1100);
@@ -2045,10 +2207,12 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-787.9642,0.001),true);
@@ -2061,10 +2225,12 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1200.00),true);
@@ -2073,9 +2239,10 @@ void CTestCompoundCurve::Test9a()
    // again, but don't project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -2085,9 +2252,10 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(-600,1000);
@@ -2096,10 +2264,12 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-617.6666,0.001),true);
@@ -2112,10 +2282,12 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -200.00),true);
@@ -2128,9 +2300,10 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,1000);
@@ -2139,22 +2312,26 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
    TRY_TEST(IsEqual(py, 1000.),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
@@ -2163,10 +2340,12 @@ void CTestCompoundCurve::Test9a()
    // again, but project only back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -2175,10 +2354,12 @@ void CTestCompoundCurve::Test9a()
    // again, but project only ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
@@ -2191,9 +2372,10 @@ void CTestCompoundCurve::Test9a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 }
 
 void CTestCompoundCurve::Test9b()
@@ -2201,6 +2383,8 @@ void CTestCompoundCurve::Test9b()
    // same as Test9a except the direction of the curve is reverse
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -2220,9 +2404,9 @@ void CTestCompoundCurve::Test9b()
    pi->Move(-700,1000);
    pft->Move(0,1000);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
 
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,200);
@@ -2244,17 +2428,19 @@ void CTestCompoundCurve::Test9b()
 
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
+   CComPtr<IPoint2dCollection> points;
+   IndexType nPoints;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr),E_POINTER);
+   TRY_TEST(element->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&points), E_INVALIDARG);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2265,10 +2451,12 @@ void CTestCompoundCurve::Test9b()
    line->ThroughPoints(cc,spi1);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -818.84459859920514),true);
@@ -2278,10 +2466,12 @@ void CTestCompoundCurve::Test9b()
    line->ThroughPoints(cc,pi);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-684.65428056880842),true);
@@ -2291,15 +2481,18 @@ void CTestCompoundCurve::Test9b()
    line->ThroughPoints(spi1,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-809.35182374575743),true);
    TRY_TEST(IsEqual(py, 1116.5668976835791),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, -508.67043163106791),true);
@@ -2310,21 +2503,24 @@ void CTestCompoundCurve::Test9b()
    Float64 length;
    hc->get_TotalLength(&length);
    CComPtr<IPoint2d> cp1, cp2;
-   hc->PointOnCurve(length-140,&cp1);
-   hc->PointOnCurve(length-110,&cp2);
+   element->PointOnCurve(length-140,&cp1);
+   element->PointOnCurve(length-110,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-578.53372538212068),true);
    TRY_TEST(IsEqual(py, 1008.9111895010718),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-548.87503670886008),true);
@@ -2335,21 +2531,24 @@ void CTestCompoundCurve::Test9b()
    // first locate two points on the curve
    cp1.Release();
    cp2.Release();
-   hc->PointOnCurve(length-151,&cp1);
-   hc->PointOnCurve(length-150,&cp2);
+   element->PointOnCurve(length-151,&cp1);
+   element->PointOnCurve(length-150,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-589.33345,0.001),true);
    TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-588.35360,0.001),true);
@@ -2357,18 +2556,20 @@ void CTestCompoundCurve::Test9b()
 
    //// line tangent to exit spiral
    CComPtr<IPoint2d> POC;
-   hc->PointOnCurve(length-50,&POC);
+   element->PointOnCurve(length-50,&POC);
    CComPtr<IDirection> dir;
-   hc->Bearing(length-50,&dir);
+   element->GetBearing(length-50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-489.03247,0.001),true);
@@ -2380,10 +2581,12 @@ void CTestCompoundCurve::Test9b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
@@ -2392,21 +2595,24 @@ void CTestCompoundCurve::Test9b()
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(length-45,&p1);
-   hc->PointOnCurve(length-35,&p2);
+   element->PointOnCurve(length-45,&p1);
+   element->PointOnCurve(length-35,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-484.03375483745350),true);
    TRY_TEST(IsEqual(py, 1000.3037411037024),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-474.03507484100646),true);
@@ -2414,18 +2620,20 @@ void CTestCompoundCurve::Test9b()
 
    // line tangent to exit spiral
    POC.Release();
-   hc->PointOnCurve(50,&POC);
+   element->PointOnCurve(50,&POC);
    dir.Release();
-   hc->Bearing(50,&dir);
+   element->GetBearing(50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-880.04038989655419),true);
@@ -2437,10 +2645,12 @@ void CTestCompoundCurve::Test9b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -880.04038989655419), true);
@@ -2449,21 +2659,24 @@ void CTestCompoundCurve::Test9b()
    // intersect exit spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(35,&p1);
-   hc->PointOnCurve(45,&p2);
+   element->PointOnCurve(35,&p1);
+   element->PointOnCurve(45,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-890.74331577219289),true);
    TRY_TEST(IsEqual(py, 1190.8443728455015),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, -883.61562929997831),true);
@@ -2472,18 +2685,20 @@ void CTestCompoundCurve::Test9b()
 
    // line tangent to circular curve
    POC.Release();
-   hc->PointOnCurve(length/2,&POC);
+   element->PointOnCurve(length/2,&POC);
    dir.Release();
-   hc->Bearing(length/2,&dir);
+   element->GetBearing(length/2,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-703.20889,0.0011),true);
@@ -2493,15 +2708,18 @@ void CTestCompoundCurve::Test9b()
    line->ThroughPoints(pft,spi1);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-813.50118,0.001),true);
    TRY_TEST(IsEqual(py, 1119.94828,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -2510,10 +2728,12 @@ void CTestCompoundCurve::Test9b()
    // again, but don't project back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-813.5011,0.001),true);
@@ -2523,15 +2743,18 @@ void CTestCompoundCurve::Test9b()
    line->ThroughPoints(spi2,pbt);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
    TRY_TEST(IsEqual(py, 1300.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-507.5005,0.001),true);
@@ -2540,10 +2763,12 @@ void CTestCompoundCurve::Test9b()
    // again, but don't project ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-507.5005,0.001),true);
@@ -2557,9 +2782,10 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,1100);
@@ -2568,10 +2794,12 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-787.9642,0.001),true);
@@ -2584,10 +2812,12 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1200.00),true);
@@ -2596,9 +2826,10 @@ void CTestCompoundCurve::Test9b()
    // again, but don't project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -2608,9 +2839,10 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(-600,1000);
@@ -2619,10 +2851,12 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-617.6666,0.001),true);
@@ -2635,10 +2869,12 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -200.00),true);
@@ -2651,9 +2887,10 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,1000);
@@ -2662,22 +2899,26 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
    TRY_TEST(IsEqual(py, 1300.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -2686,10 +2927,12 @@ void CTestCompoundCurve::Test9b()
    // again, but project only back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -2698,10 +2941,12 @@ void CTestCompoundCurve::Test9b()
    // again, but project only ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
@@ -2714,9 +2959,10 @@ void CTestCompoundCurve::Test9b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 }
 
 
@@ -2725,6 +2971,8 @@ void CTestCompoundCurve::Test10a()
    // same as Test8a except curve has been mirrored about the X axis
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -2744,9 +2992,9 @@ void CTestCompoundCurve::Test10a()
    pi->Move(700,-1000);
    pft->Move(1000,-1300);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
 
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,100);
@@ -2768,17 +3016,19 @@ void CTestCompoundCurve::Test10a()
 
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
+   CComPtr<IPoint2dCollection> points;
+   IndexType nPoints;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr),E_POINTER);
+   TRY_TEST(element->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&points), E_INVALIDARG);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2789,10 +3039,12 @@ void CTestCompoundCurve::Test10a()
    line->ThroughPoints(cc,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 818.84459859920514),true);
@@ -2802,10 +3054,12 @@ void CTestCompoundCurve::Test10a()
    line->ThroughPoints(cc,pi);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 684.65428056880842),true);
@@ -2815,15 +3069,18 @@ void CTestCompoundCurve::Test10a()
    line->ThroughPoints(spi1,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 508.67043163106791),true);
    TRY_TEST(IsEqual(py, -1001.1261389033072),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 809.35182374575743),true);
@@ -2832,21 +3089,24 @@ void CTestCompoundCurve::Test10a()
    // intersect circular curve in two places
    // first locate two points on the curve
    CComPtr<IPoint2d> cp1, cp2;
-   hc->PointOnCurve(110,&cp1);
-   hc->PointOnCurve(140,&cp2);
+   element->PointOnCurve(110,&cp1);
+   element->PointOnCurve(140,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 548.87503670886008),true);
    TRY_TEST(IsEqual(py,-1004.4287172526595),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 578.53372538212068),true);
@@ -2857,21 +3117,24 @@ void CTestCompoundCurve::Test10a()
    // first locate two points on the curve
    cp1.Release();
    cp2.Release();
-   hc->PointOnCurve(150,&cp1);
-   hc->PointOnCurve(151,&cp2);
+   element->PointOnCurve(150,&cp1);
+   element->PointOnCurve(151,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 588.35360,0.001),true);
    TRY_TEST(IsEqual(py,-1010.79974,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 589.33345,0.001),true);
@@ -2879,18 +3142,20 @@ void CTestCompoundCurve::Test10a()
 
    //// line tangent to entry spiral
    CComPtr<IPoint2d> POC;
-   hc->PointOnCurve(50,&POC);
+   element->PointOnCurve(50,&POC);
    CComPtr<IDirection> dir;
-   hc->Bearing(50,&dir);
+   element->GetBearing(50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
@@ -2902,10 +3167,12 @@ void CTestCompoundCurve::Test10a()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
@@ -2914,21 +3181,24 @@ void CTestCompoundCurve::Test10a()
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(35,&p1);
-   hc->PointOnCurve(45,&p2);
+   element->PointOnCurve(35,&p1);
+   element->PointOnCurve(45,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 474.03507484100646),true);
    TRY_TEST(IsEqual(py,-1000.1429151347374),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 484.03375483745350),true);
@@ -2938,18 +3208,20 @@ void CTestCompoundCurve::Test10a()
    Float64 length;
    hc->get_TotalLength(&length);
    POC.Release();
-   hc->PointOnCurve(length-50,&POC);
+   element->PointOnCurve(length-50,&POC);
    dir.Release();
-   hc->Bearing(length-50,&dir);
+   element->GetBearing(length-50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419),true);
@@ -2961,10 +3233,12 @@ void CTestCompoundCurve::Test10a()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419), true);
@@ -2973,21 +3247,24 @@ void CTestCompoundCurve::Test10a()
    // intersect exit spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(length-45,&p1);
-   hc->PointOnCurve(length-35,&p2);
+   element->PointOnCurve(length-45,&p1);
+   element->PointOnCurve(length-35,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 883.61562936445955),true);
    TRY_TEST(IsEqual(py, -1183.8304112645556),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 890.74331577219289),true);
@@ -2996,18 +3273,20 @@ void CTestCompoundCurve::Test10a()
 
    // line tangent to circular curve
    POC.Release();
-   hc->PointOnCurve(length/2,&POC);
+   element->PointOnCurve(length/2,&POC);
    dir.Release();
-   hc->Bearing(length/2,&dir);
+   element->GetBearing(length/2,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 703.20889,0.0011),true);
@@ -3017,15 +3296,18 @@ void CTestCompoundCurve::Test10a()
    line->ThroughPoints(pbt,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
    TRY_TEST(IsEqual(py,-1000.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 813.50118,0.001),true);
@@ -3034,10 +3316,12 @@ void CTestCompoundCurve::Test10a()
    // again, but don't project back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 813.5011,0.001),true);
@@ -3047,15 +3331,18 @@ void CTestCompoundCurve::Test10a()
    line->ThroughPoints(spi1,pft);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 507.5005,0.001),true);
    TRY_TEST(IsEqual(py,-1001.07029,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
@@ -3064,10 +3351,12 @@ void CTestCompoundCurve::Test10a()
    // again, but don't project ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 507.5005,0.001),true);
@@ -3081,9 +3370,10 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,-1100);
@@ -3092,10 +3382,12 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 787.9642,0.001),true);
@@ -3108,10 +3400,12 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1200.00),true);
@@ -3120,9 +3414,10 @@ void CTestCompoundCurve::Test10a()
    // again, but don't project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -3132,9 +3427,10 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(600,-1000);
@@ -3143,10 +3439,12 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 617.6666,0.001),true);
@@ -3159,10 +3457,12 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,  200.00),true);
@@ -3175,9 +3475,10 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,-1000);
@@ -3186,22 +3487,26 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
    TRY_TEST(IsEqual(py,-1000.),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
@@ -3210,10 +3515,12 @@ void CTestCompoundCurve::Test10a()
    // again, but project only back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -3222,10 +3529,12 @@ void CTestCompoundCurve::Test10a()
    // again, but project only ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
@@ -3238,9 +3547,10 @@ void CTestCompoundCurve::Test10a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 }
 
 
@@ -3249,6 +3559,8 @@ void CTestCompoundCurve::Test10b()
    // same as Test10a except the direction of the curve is reverse
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -3268,9 +3580,9 @@ void CTestCompoundCurve::Test10b()
    pi->Move(700,-1000);
    pft->Move(0,-1000);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
 
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,200);
@@ -3292,17 +3604,19 @@ void CTestCompoundCurve::Test10b()
 
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
+   CComPtr<IPoint2dCollection> points;
+   IndexType nPoints;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr),E_POINTER);
+   TRY_TEST(element->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&points), E_INVALIDARG);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3313,10 +3627,12 @@ void CTestCompoundCurve::Test10b()
    line->ThroughPoints(cc,spi1);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 818.84459859920514),true);
@@ -3326,10 +3642,12 @@ void CTestCompoundCurve::Test10b()
    line->ThroughPoints(cc,pi);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 684.65428056880842),true);
@@ -3339,15 +3657,18 @@ void CTestCompoundCurve::Test10b()
    line->ThroughPoints(spi1,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 809.35182374575743),true);
    TRY_TEST(IsEqual(py,-1116.5668976835791),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 508.67043163106791),true);
@@ -3358,21 +3679,24 @@ void CTestCompoundCurve::Test10b()
    Float64 length;
    hc->get_TotalLength(&length);
    CComPtr<IPoint2d> cp1, cp2;
-   hc->PointOnCurve(length-140,&cp1);
-   hc->PointOnCurve(length-110,&cp2);
+   element->PointOnCurve(length-140,&cp1);
+   element->PointOnCurve(length-110,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 578.53372538212068),true);
    TRY_TEST(IsEqual(py,-1008.9111895010718),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 548.87503670886008),true);
@@ -3383,21 +3707,24 @@ void CTestCompoundCurve::Test10b()
    // first locate two points on the curve
    cp1.Release();
    cp2.Release();
-   hc->PointOnCurve(length-151,&cp1);
-   hc->PointOnCurve(length-150,&cp2);
+   element->PointOnCurve(length-151,&cp1);
+   element->PointOnCurve(length-150,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 589.33345,0.001),true);
    TRY_TEST(IsEqual(py,-1010.99939,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 588.35360,0.001),true);
@@ -3405,18 +3732,20 @@ void CTestCompoundCurve::Test10b()
 
    //// line tangent to exit spiral
    CComPtr<IPoint2d> POC;
-   hc->PointOnCurve(length-50,&POC);
+   element->PointOnCurve(length-50,&POC);
    CComPtr<IDirection> dir;
-   hc->Bearing(length-50,&dir);
+   element->GetBearing(length-50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247,0.001),true);
@@ -3428,10 +3757,12 @@ void CTestCompoundCurve::Test10b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
@@ -3443,10 +3774,12 @@ void CTestCompoundCurve::Test10b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03247, 0.001), true);
@@ -3455,21 +3788,24 @@ void CTestCompoundCurve::Test10b()
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(length-45,&p1);
-   hc->PointOnCurve(length-35,&p2);
+   element->PointOnCurve(length-45,&p1);
+   element->PointOnCurve(length-35,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 484.03375483745350),true);
    TRY_TEST(IsEqual(py,-1000.3037411037024),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 474.03507484100646),true);
@@ -3477,18 +3813,20 @@ void CTestCompoundCurve::Test10b()
 
    // line tangent to exit spiral
    POC.Release();
-   hc->PointOnCurve(50,&POC);
+   element->PointOnCurve(50,&POC);
    dir.Release();
-   hc->Bearing(50,&dir);
+   element->GetBearing(50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419),true);
@@ -3500,10 +3838,12 @@ void CTestCompoundCurve::Test10b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 880.04038989655419), true);
@@ -3512,21 +3852,24 @@ void CTestCompoundCurve::Test10b()
    // intersect exit spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(35,&p1);
-   hc->PointOnCurve(45,&p2);
+   element->PointOnCurve(35,&p1);
+   element->PointOnCurve(45,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 890.74331577219289),true);
    TRY_TEST(IsEqual(py,-1190.8443728455015),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 883.61562929997842),true);
@@ -3535,18 +3878,20 @@ void CTestCompoundCurve::Test10b()
 
    // line tangent to circular curve
    POC.Release();
-   hc->PointOnCurve(length/2,&POC);
+   element->PointOnCurve(length/2,&POC);
    dir.Release();
-   hc->Bearing(length/2,&dir);
+   element->GetBearing(length/2,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 703.20889,0.0011),true);
@@ -3556,15 +3901,18 @@ void CTestCompoundCurve::Test10b()
    line->ThroughPoints(pft,spi1);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 813.50118,0.001),true);
    TRY_TEST(IsEqual(py,-1119.94828,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -3573,10 +3921,12 @@ void CTestCompoundCurve::Test10b()
    // again, but don't project back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 813.5011,0.001),true);
@@ -3586,15 +3936,18 @@ void CTestCompoundCurve::Test10b()
    line->ThroughPoints(spi2,pbt);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
    TRY_TEST(IsEqual(py,-1300.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 507.5005,0.001),true);
@@ -3603,10 +3956,12 @@ void CTestCompoundCurve::Test10b()
    // again, but don't project ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 507.5005,0.001),true);
@@ -3620,9 +3975,10 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,-1100);
@@ -3631,10 +3987,12 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 787.9642,0.001),true);
@@ -3647,10 +4005,12 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1200.00),true);
@@ -3659,9 +4019,10 @@ void CTestCompoundCurve::Test10b()
    // again, but don't project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -3671,9 +4032,10 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(600,-1000);
@@ -3682,10 +4044,12 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 617.6666,0.001),true);
@@ -3698,10 +4062,12 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,  200.00),true);
@@ -3714,9 +4080,10 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,-1000);
@@ -3725,22 +4092,26 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
    TRY_TEST(IsEqual(py,-1300.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -3749,10 +4120,12 @@ void CTestCompoundCurve::Test10b()
    // again, but project only back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -3761,10 +4134,12 @@ void CTestCompoundCurve::Test10b()
    // again, but project only ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 1000.00),true);
@@ -3777,9 +4152,10 @@ void CTestCompoundCurve::Test10b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 }
 
 void CTestCompoundCurve::Test11a()
@@ -3787,6 +4163,8 @@ void CTestCompoundCurve::Test11a()
    // same as Test8 except curve has been mirrored about the X axis and the Y axis
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -3806,9 +4184,9 @@ void CTestCompoundCurve::Test11a()
    pi->Move(-700,-1000);
    pft->Move(-1000,-1300);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
 
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,100);
@@ -3830,17 +4208,19 @@ void CTestCompoundCurve::Test11a()
 
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
+   CComPtr<IPoint2dCollection> points;
+   IndexType nPoints;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr),E_POINTER);
+   TRY_TEST(element->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&points), E_INVALIDARG);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3851,10 +4231,12 @@ void CTestCompoundCurve::Test11a()
    line->ThroughPoints(cc,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -818.84459859920526),true);
@@ -3864,10 +4246,12 @@ void CTestCompoundCurve::Test11a()
    line->ThroughPoints(cc,pi);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-684.65428056880842),true);
@@ -3877,15 +4261,18 @@ void CTestCompoundCurve::Test11a()
    line->ThroughPoints(spi1,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -508.67043163106791),true);
    TRY_TEST(IsEqual(py, -1001.1261389033072),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-809.35182374575743),true);
@@ -3894,21 +4281,24 @@ void CTestCompoundCurve::Test11a()
    // intersect circular curve in two places
    // first locate two points on the curve
    CComPtr<IPoint2d> cp1, cp2;
-   hc->PointOnCurve(110,&cp1);
-   hc->PointOnCurve(140,&cp2);
+   element->PointOnCurve(110,&cp1);
+   element->PointOnCurve(140,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-548.87503670886008),true);
    TRY_TEST(IsEqual(py,-1004.4287172526595),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-578.53372538212068),true);
@@ -3919,21 +4309,24 @@ void CTestCompoundCurve::Test11a()
    // first locate two points on the curve
    cp1.Release();
    cp2.Release();
-   hc->PointOnCurve(150,&cp1);
-   hc->PointOnCurve(151,&cp2);
+   element->PointOnCurve(150,&cp1);
+   element->PointOnCurve(151,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-588.35360,0.001),true);
    TRY_TEST(IsEqual(py,-1010.79974,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-589.33345,0.001),true);
@@ -3941,18 +4334,20 @@ void CTestCompoundCurve::Test11a()
 
    //// line tangent to entry spiral
    CComPtr<IPoint2d> POC;
-   hc->PointOnCurve(50,&POC);
+   element->PointOnCurve(50,&POC);
    CComPtr<IDirection> dir;
-   hc->Bearing(50,&dir);
+   element->GetBearing(50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-489.03247,0.001),true);
@@ -3964,10 +4359,12 @@ void CTestCompoundCurve::Test11a()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
@@ -3976,21 +4373,24 @@ void CTestCompoundCurve::Test11a()
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(35,&p1);
-   hc->PointOnCurve(45,&p2);
+   element->PointOnCurve(35,&p1);
+   element->PointOnCurve(45,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-474.03507484100646),true);
    TRY_TEST(IsEqual(py,-1000.1429151347374),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-484.03375483745350),true);
@@ -4000,18 +4400,20 @@ void CTestCompoundCurve::Test11a()
    Float64 length;
    hc->get_TotalLength(&length);
    POC.Release();
-   hc->PointOnCurve(length-50,&POC);
+   element->PointOnCurve(length-50,&POC);
    dir.Release();
-   hc->Bearing(length-50,&dir);
+   element->GetBearing(length-50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-880.04038989655419),true);
@@ -4023,10 +4425,12 @@ void CTestCompoundCurve::Test11a()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -880.04038989655419), true);
@@ -4035,21 +4439,24 @@ void CTestCompoundCurve::Test11a()
    // intersect exit spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(length-45,&p1);
-   hc->PointOnCurve(length-35,&p2);
+   element->PointOnCurve(length-45,&p1);
+   element->PointOnCurve(length-35,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -883.61562936445966),true);
    TRY_TEST(IsEqual(py, -1183.8304112645556),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-890.74331577219289),true);
@@ -4058,18 +4465,20 @@ void CTestCompoundCurve::Test11a()
 
    // line tangent to circular curve
    POC.Release();
-   hc->PointOnCurve(length/2,&POC);
+   element->PointOnCurve(length/2,&POC);
    dir.Release();
-   hc->Bearing(length/2,&dir);
+   element->GetBearing(length/2,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-703.20889,0.0011),true);
@@ -4079,15 +4488,18 @@ void CTestCompoundCurve::Test11a()
    line->ThroughPoints(pbt,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
    TRY_TEST(IsEqual(py,-1000.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-813.50118,0.001),true);
@@ -4096,10 +4508,12 @@ void CTestCompoundCurve::Test11a()
    // again, but don't project back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-813.5011,0.001),true);
@@ -4109,15 +4523,18 @@ void CTestCompoundCurve::Test11a()
    line->ThroughPoints(spi1,pft);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-507.5005,0.001),true);
    TRY_TEST(IsEqual(py,-1001.07029,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
@@ -4126,10 +4543,12 @@ void CTestCompoundCurve::Test11a()
    // again, but don't project ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-507.5005,0.001),true);
@@ -4143,9 +4562,10 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,-1100);
@@ -4154,10 +4574,12 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-787.9642,0.001),true);
@@ -4170,10 +4592,12 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1200.00),true);
@@ -4182,9 +4606,10 @@ void CTestCompoundCurve::Test11a()
    // again, but don't project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -4194,9 +4619,10 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(-600,-1000);
@@ -4205,10 +4631,12 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-617.6666,0.001),true);
@@ -4221,10 +4649,12 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -200.00),true);
@@ -4237,9 +4667,10 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,-1000);
@@ -4248,22 +4679,26 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
    TRY_TEST(IsEqual(py,-1000.),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
@@ -4272,10 +4707,12 @@ void CTestCompoundCurve::Test11a()
    // again, but project only back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -4284,10 +4721,12 @@ void CTestCompoundCurve::Test11a()
    // again, but project only ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
@@ -4300,9 +4739,10 @@ void CTestCompoundCurve::Test11a()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 }
 
 void CTestCompoundCurve::Test11b()
@@ -4310,6 +4750,8 @@ void CTestCompoundCurve::Test11b()
    // same as Test10b except the direction of the curve is reverse
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -4329,9 +4771,9 @@ void CTestCompoundCurve::Test11b()
    pi->Move(-700,-1000);
    pft->Move(0,-1000);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
 
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,200);
@@ -4353,17 +4795,19 @@ void CTestCompoundCurve::Test11b()
 
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
+   CComPtr<IPoint2dCollection> points;
+   IndexType nPoints;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr),E_POINTER);
+   TRY_TEST(element->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&points), E_INVALIDARG);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    Float64 px,py;
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4374,10 +4818,12 @@ void CTestCompoundCurve::Test11b()
    line->ThroughPoints(cc,spi1);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -818.84459859920526),true);
@@ -4387,10 +4833,12 @@ void CTestCompoundCurve::Test11b()
    line->ThroughPoints(cc,pi);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-684.65428056880842),true);
@@ -4400,15 +4848,18 @@ void CTestCompoundCurve::Test11b()
    line->ThroughPoints(spi1,spi2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-809.35182374575743),true);
    TRY_TEST(IsEqual(py,-1116.5668976835791),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, -508.67043163106791),true);
@@ -4419,21 +4870,24 @@ void CTestCompoundCurve::Test11b()
    Float64 length;
    hc->get_TotalLength(&length);
    CComPtr<IPoint2d> cp1, cp2;
-   hc->PointOnCurve(length-140,&cp1);
-   hc->PointOnCurve(length-110,&cp2);
+   element->PointOnCurve(length-140,&cp1);
+   element->PointOnCurve(length-110,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-578.53372538212068),true);
    TRY_TEST(IsEqual(py,-1008.9111895010718),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-548.87503670886008),true);
@@ -4444,21 +4898,24 @@ void CTestCompoundCurve::Test11b()
    // first locate two points on the curve
    cp1.Release();
    cp2.Release();
-   hc->PointOnCurve(length-151,&cp1);
-   hc->PointOnCurve(length-150,&cp2);
+   element->PointOnCurve(length-151,&cp1);
+   element->PointOnCurve(length-150,&cp2);
 
    line->ThroughPoints(cp1,cp2);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-589.33345,0.001),true);
    TRY_TEST(IsEqual(py,-1010.99939,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-588.35360,0.001),true);
@@ -4466,18 +4923,20 @@ void CTestCompoundCurve::Test11b()
 
    //// line tangent to exit spiral
    CComPtr<IPoint2d> POC;
-   hc->PointOnCurve(length-50,&POC);
+   element->PointOnCurve(length-50,&POC);
    CComPtr<IDirection> dir;
-   hc->Bearing(length-50,&dir);
+   element->GetBearing(length-50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-489.03247,0.001),true);
@@ -4489,10 +4948,12 @@ void CTestCompoundCurve::Test11b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
@@ -4504,10 +4965,12 @@ void CTestCompoundCurve::Test11b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -489.03247, 0.001), true);
@@ -4516,21 +4979,24 @@ void CTestCompoundCurve::Test11b()
    // intersect entry spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(length-45,&p1);
-   hc->PointOnCurve(length-35,&p2);
+   element->PointOnCurve(length-45,&p1);
+   element->PointOnCurve(length-35,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-484.03375483745350),true);
    TRY_TEST(IsEqual(py,-1000.3037411037024),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-474.03507484100646),true);
@@ -4538,18 +5004,20 @@ void CTestCompoundCurve::Test11b()
 
    // line tangent to exit spiral
    POC.Release();
-   hc->PointOnCurve(50,&POC);
+   element->PointOnCurve(50,&POC);
    dir.Release();
-   hc->Bearing(50,&dir);
+   element->GetBearing(50,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-880.04038989655419),true);
@@ -4561,10 +5029,12 @@ void CTestCompoundCurve::Test11b()
    MakeLine(POC, dir, &line);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &p1, &p2), S_OK);
-   TRY_TEST(p1 != nullptr, true);
-   TRY_TEST(p2 == nullptr, true);
+   points.Release();
+   TRY_TEST(element->Intersect(line, VARIANT_TRUE, VARIANT_TRUE, &points), S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
 
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -880.04038989655419), true);
@@ -4573,21 +5043,24 @@ void CTestCompoundCurve::Test11b()
    // intersect exit spiral in 2 locations
    p1.Release();
    p2.Release();
-   hc->PointOnCurve(35,&p1);
-   hc->PointOnCurve(45,&p2);
+   element->PointOnCurve(35,&p1);
+   element->PointOnCurve(45,&p2);
    line->ThroughPoints(p1,p2);
    
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-890.74331577219289),true);
    TRY_TEST(IsEqual(py,-1190.8443728455015),true);
 
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, -883.61562929997854),true);
@@ -4596,18 +5069,20 @@ void CTestCompoundCurve::Test11b()
 
    // line tangent to circular curve
    POC.Release();
-   hc->PointOnCurve(length/2,&POC);
+   element->PointOnCurve(length/2,&POC);
    dir.Release();
-   hc->Bearing(length/2,&dir);
+   element->GetBearing(length/2,&dir);
    line.Release();
    MakeLine(POC,dir,&line);
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-703.20889,0.0011),true);
@@ -4617,15 +5092,18 @@ void CTestCompoundCurve::Test11b()
    line->ThroughPoints(pft,spi1);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-813.50118,0.001),true);
    TRY_TEST(IsEqual(py,-1119.94828,0.001),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -4634,10 +5112,12 @@ void CTestCompoundCurve::Test11b()
    // again, but don't project back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-813.5011,0.001),true);
@@ -4647,15 +5127,18 @@ void CTestCompoundCurve::Test11b()
    line->ThroughPoints(spi2,pbt);
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
    TRY_TEST(IsEqual(py,-1300.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px,-507.5005,0.001),true);
@@ -4664,10 +5147,12 @@ void CTestCompoundCurve::Test11b()
    // again, but don't project ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-507.5005,0.001),true);
@@ -4681,9 +5166,10 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,-1100);
@@ -4692,10 +5178,12 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-787.9642,0.001),true);
@@ -4708,10 +5196,12 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1200.00),true);
@@ -4720,9 +5210,10 @@ void CTestCompoundCurve::Test11b()
    // again, but don't project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -4732,9 +5223,10 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(-600,-1000);
@@ -4743,10 +5235,12 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-617.6666,0.001),true);
@@ -4759,10 +5253,12 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, -200.00),true);
@@ -4775,9 +5271,10 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,-1000);
@@ -4786,22 +5283,26 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 != nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 2);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
    TRY_TEST(IsEqual(py,-1300.00),true);
    
+   points->get_Item(1, &p2);
    p2->get_X(&px);
    p2->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -4810,10 +5311,12 @@ void CTestCompoundCurve::Test11b()
    // again, but project only back
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px, 0.00),true);
@@ -4822,10 +5325,12 @@ void CTestCompoundCurve::Test11b()
    // again, but project only ahead
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
-   
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&points),S_OK);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 1);
+
+   points->get_Item(0, &p1);
    p1->get_X(&px);
    p1->get_Y(&py);
    TRY_TEST(IsEqual(px,-1000.00),true);
@@ -4838,7 +5343,8 @@ void CTestCompoundCurve::Test11b()
 
    p1.Release();
    p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == nullptr,true);
-   TRY_TEST(p2 == nullptr,true);
+   points.Release();
+   TRY_TEST(element->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&points),S_FALSE);
+   points->get_Count(&nPoints);
+   TRY_TEST(nPoints, 0);
 }

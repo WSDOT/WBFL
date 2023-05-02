@@ -111,7 +111,6 @@ public:
 public:
    STDMETHOD(PointOnLineByPoints)(/*[in]*/ IPoint2d* pnt, /*[in]*/ IPoint2d* start, /*[in]*/ IPoint2d* end, /*[in]*/ Float64 offset,/*[out,retval]*/IPoint2d** point) override;
    STDMETHOD(PointOnLineSegment)(/*[in]*/ IPoint2d* from,/*[in]*/ ILineSegment2d* seg, /*[in]*/ Float64 offset, /*[out,retval]*/ IPoint2d** point) override;
-   STDMETHOD(PointOnCurve)(/*[in]*/ IPoint2d* pnt, /*[in]*/ ICompoundCurve* curve,/*[out,retval]*/ IPoint2d** point) override;
 
 // IDivide2
 public:
@@ -126,10 +125,6 @@ public:
    STDMETHOD(External)(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 radius1,/*[in]*/ IPoint2d* center2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign, /*[out]*/ IPoint2d** t1,/*[out]*/ IPoint2d** t2) override;
    STDMETHOD(Cross)(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 radius1,/*[in]*/ IPoint2d* center2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign, /*[out]*/ IPoint2d** t1,/*[out]*/ IPoint2d** t2) override;
    STDMETHOD(Point)(/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radius,/*[in]*/ IPoint2d* point, /*[in]*/ TangentSignType sign, /*[out]*/ IPoint2d** tangent) override;
-
-private:
-   CComPtr<IGeomUtil2d> m_GeomUtil;
-   HRESULT CreateParallelLine(IPoint2d* pnt,IDirection* objDir,Float64 offset,ILine2d** line);
 };
 
 #endif //__COGOENGINE_H_

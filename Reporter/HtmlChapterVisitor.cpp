@@ -24,12 +24,6 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\HtmlChapterVisitor.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptHtmlChapterVisitor::rptHtmlChapterVisitor(std::_tostream* pMyOstream, 
    const rptHtmlHelper& rmyHelper,
                      Uint32 logPixelsX,Uint32 logPixelsY):

@@ -39,12 +39,6 @@
 #include <system\filestream.h>
 #include <atlbase.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 bool TestStructuredStorage(WBFL::Debug::Log& rlog);
 
 using namespace WBFL::System;
@@ -53,11 +47,12 @@ bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
 {
    bool tst=true;
 
+#if defined _UNITTEST
    tst &= Time::TestMe(rlog);
    tst &= Date::TestMe(rlog);
 
    tst &= TestStructuredStorage(rlog);
-
+#endif
    return tst;
 }
 

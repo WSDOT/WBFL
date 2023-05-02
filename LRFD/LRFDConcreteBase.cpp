@@ -24,13 +24,6 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LRFDConcreteBase.h>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 lrfdLRFDConcreteBase::lrfdLRFDConcreteBase(LPCTSTR name) :
    WBFL::Materials::ConcreteBase(name)
 {

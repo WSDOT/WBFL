@@ -426,8 +426,8 @@ STDMETHODIMP CSuperstructureMember::get__EnumElements(IEnumSegmentItem* *retval)
 {
    CHECK_RETOBJ(retval);
 
-   typedef _CopyInterface<ISegmentItem> mycopy;
-   typedef CComEnumOnSTL<IEnumSegmentItem, &IID_IEnumSegmentItem, ISegmentItem*, mycopy, CSegments> EnumType;
+   using mycopy = _CopyInterface<ISegmentItem>;
+   using EnumType = CComEnumOnSTL<IEnumSegmentItem, &IID_IEnumSegmentItem, ISegmentItem*, mycopy, CSegments>;
 
    CComObject<EnumType>* penum;
    HRESULT hr;

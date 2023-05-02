@@ -42,5 +42,5 @@
 #define SYSTPL   extern template class SYSCLASS
 #endif
 
-#include <WbflAll.h>
 #include <System\AutoLib.h>
+#include <WbflAll.h>

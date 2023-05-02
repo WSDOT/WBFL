@@ -846,14 +846,14 @@ library WBFLGeometry
 		[propget, helpstring("property StartPoint"), helpcontext(IDH_ILineSegment2d_StartPoint)]
       HRESULT StartPoint([out, retval] IPoint2d* *pVal);
 
-		[propputref, helpstring("property StartPoint"), helpcontext(IDH_ILineSegment2d_StartPoint)]
+		[propput, helpstring("property StartPoint"), helpcontext(IDH_ILineSegment2d_StartPoint)]
       HRESULT StartPoint([in] IPoint2d* newVal);
 
       /// The terminating point of the line segment
 		[propget, helpstring("property EndPoint"), helpcontext(IDH_ILineSegment2d_EndPoint)]
       HRESULT EndPoint([out, retval] IPoint2d* *pVal);
 
-		[propputref, helpstring("property EndPoint"), helpcontext(IDH_ILineSegment2d_EndPoint)]
+		[propput, helpstring("property EndPoint"), helpcontext(IDH_ILineSegment2d_EndPoint)]
       HRESULT EndPoint([in] IPoint2d* newVal);
 
       /// Length of the line segment
@@ -1126,14 +1126,14 @@ library WBFLGeometry
       [propget, helpstring("property StartPoint")/*, helpcontext(IDH_ILineSegment2d_StartPoint)*/]
       HRESULT StartPoint([out, retval] IPoint3d* *pVal);
 
-		[propputref, helpstring("property StartPoint")/*, helpcontext(IDH_ILineSegment2d_StartPoint)*/]
+		[propput, helpstring("property StartPoint")/*, helpcontext(IDH_ILineSegment2d_StartPoint)*/]
       HRESULT StartPoint([in] IPoint3d* newVal);
 
       /// The terminating point of the line segment
       [propget, helpstring("property EndPoint")/*, helpcontext(IDH_ILineSegment2d_EndPoint)*/]
       HRESULT EndPoint([out, retval] IPoint3d* *pVal);
 
-		[propputref, helpstring("property EndPoint")/*, helpcontext(IDH_ILineSegment2d_EndPoint)*/]
+		[propput, helpstring("property EndPoint")/*, helpcontext(IDH_ILineSegment2d_EndPoint)*/]
       HRESULT EndPoint([in] IPoint3d* newVal);
 
       /// Length of the line segment

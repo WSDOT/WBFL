@@ -25,12 +25,6 @@
 #include <Materials/ConcreteBase.h>
 #include <Units\Units.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Materials;
 
 ConcreteBase::ConcreteBase(const std::_tstring& name) :
@@ -90,7 +84,7 @@ std::_tstring ConcreteBase::GetTypeName(ConcreteType type,bool bFull)
       return bFull ? _T("Ultra High Performance Concrete (UHPC)") : _T("UHPC");
 
    default:
-      ASSERT(false); // is there a new type?
+      CHECK(false); // is there a new type?
       return bFull ? _T("Normal Weight Concrete") : _T("Normal");
    }
 }
@@ -112,7 +106,7 @@ ConcreteType ConcreteBase::GetTypeFromTypeName(LPCTSTR strName)
    if (std::_tstring(strName) == _T("UHPC"))
       return ConcreteType::UHPC;
 
-   ATLASSERT(false); // invalid name
+   CHECK(false); // invalid name
    return ConcreteType::Normal;
 }
 
@@ -127,7 +121,7 @@ std::_tstring ConcreteBase::GetCuringType(CuringType curingType)
       return _T("Steam");
 
    default:
-      ASSERT(false); // is there a new type?
+      CHECK(false); // is there a new type?
       return _T("Unknown");
    }
 }

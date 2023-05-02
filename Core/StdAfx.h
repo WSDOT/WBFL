@@ -31,7 +31,8 @@
 #define STRICT
 #endif
 
-#include <WBFLVersion.h>
+#include <WBFLMFC.h>
+#include <WBFLAll.h>
 
 #define _ATL_APARTMENT_THREADED
 #define _ATL_NO_AUTOMATIC_NAMESPACE
@@ -51,8 +52,6 @@
 #include <afxcmn.h> // for Animation control
 
 #include <afxmt.h> // for multi-threading
-
-#include <Private\WBFLPackage.h>
 
 
 bool operator<(REFIID a,REFIID b);

@@ -32,7 +32,7 @@
 #include "WBFLComCollections.h"
 
 class CPoint3dCollection;
-typedef CComVectorCollection<IPoint3dCollection,IPoint3d,IEnumPoint3d,&IID_IEnumPoint3d,CollectionIndexType> Point3dVectorImpl;
+using Point3dVectorImpl = CComVectorCollection<IPoint3dCollection,IPoint3d,IEnumPoint3d,&IID_IEnumPoint3d,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPoint3dCollection

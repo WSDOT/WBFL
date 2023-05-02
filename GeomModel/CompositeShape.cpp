@@ -26,18 +26,12 @@
 #include <MathEx.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 template <class T>
-inline bool IsValidIndex(IndexType idx, const T& container)
+inline void ValidateIndex(IndexType idx, const T& container)
 {
-   return idx < container.size();
+   if (container.size() <= idx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 }
 
 CompositeShape::CompositeShape() :
@@ -258,7 +252,7 @@ void CompositeShape::AddShape(const Shape& shape,CompositeShape::ShapeType shape
 void CompositeShape::AddShape(std::unique_ptr<Shape>&& shape, CompositeShape::ShapeType shapeType)
 {
    if (m_Shapes.empty() && shapeType == ShapeType::Void)
-      THROW_GEOMETRY(_T("CompositeShape::AddShape - first shape must be solid"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_SHAPE); // first shape must be solid
 
    m_Shapes.emplace_back(std::move(shape), shapeType);
    SetDirtyFlag();
@@ -266,15 +260,9 @@ void CompositeShape::AddShape(std::unique_ptr<Shape>&& shape, CompositeShape::Sh
 
 void CompositeShape::RemoveShape(IndexType idx)
 {
-   if (IsValidIndex(idx, m_Shapes))
-   {
-      m_Shapes.erase(m_Shapes.begin() + idx);
-      SetDirtyFlag();
-   }
-   else
-   {
-      THROW_GEOMETRY(_T("CompositeShape::RemoveShape - invalid index"));
-   }
+   ValidateIndex(idx, m_Shapes);
+   m_Shapes.erase(m_Shapes.begin() + idx);
+   SetDirtyFlag();
 }
 
 void CompositeShape::Clear()
@@ -285,38 +273,20 @@ void CompositeShape::Clear()
 
 std::shared_ptr<Shape>& CompositeShape::GetShape(IndexType idx)
 {
-   if (IsValidIndex(idx, m_Shapes))
-   {
-      return m_Shapes[idx].first;
-   }
-   else
-   {
-      THROW_GEOMETRY(_T("CompositeShape::GetShape - invalid index"));
-   }
+   ValidateIndex(idx, m_Shapes);
+   return m_Shapes[idx].first;
 }
 
 const std::shared_ptr<Shape>& CompositeShape::GetShape(IndexType idx) const
 {
-   if (IsValidIndex(idx, m_Shapes))
-   {
-      return m_Shapes[idx].first;
-   }
-   else
-   {
-      THROW_GEOMETRY(_T("CompositeShape::GetShape - invalid index"));
-   }
+   ValidateIndex(idx, m_Shapes);
+   return m_Shapes[idx].first;
 }
 
 CompositeShape::ShapeType CompositeShape::GetShapeType(IndexType idx) const
 {
-   if (IsValidIndex(idx, m_Shapes))
-   {
-      return m_Shapes[idx].second;
-   }
-   else
-   {
-      THROW_GEOMETRY(_T("CompositeShape::GetShapeType - invalid index"));
-   }
+   ValidateIndex(idx, m_Shapes);
+   return m_Shapes[idx].second;
 }
 
 bool CompositeShape::IsSolid(IndexType idx) const

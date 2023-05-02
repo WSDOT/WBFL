@@ -38,9 +38,9 @@ class REPORTERCLASS rptChapter : public rptReportLayoutItem
 {
 public:
 
-   typedef std::vector<std::shared_ptr<rptParagraph> > ParagraphVec;
-   typedef ParagraphVec::iterator ChapterParagraphIterator;
-   typedef ParagraphVec::const_iterator ConstChapterParagraphIterator;
+   using ParagraphVec = std::vector<std::shared_ptr<rptParagraph>>;
+   using ChapterParagraphIterator = ParagraphVec::iterator;
+   using ConstChapterParagraphIterator = ParagraphVec::const_iterator;
 
    /// Constructs default chapter with name, style and page layout inherited from the report or to be defined later
    rptChapter();

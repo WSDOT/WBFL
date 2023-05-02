@@ -27,12 +27,6 @@
 #include <algorithm>
 #include <functional>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 CubicSolver::CubicSolver(Float64 a,Float64 b,Float64 c,Float64 d) :

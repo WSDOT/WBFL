@@ -26,14 +26,6 @@
 
 #include <WBFLFem2d_i.c>
 
-#if defined _DEBUG
-#define _DUMP_FEM_MODEL
-#endif
-
-#if defined _DUMP_FEM_MODEL
-#include <WBFLTools_i.c>
-#endif
-
 #include <array>
 #include <algorithm>
 
@@ -46,12 +38,6 @@
 #include <WBFLGenericBridgeTools.h>
 #include <WBFLGenericBridgeTools_i.c>
 #include <WBFLGeometry_i.c>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define LCID_GIRDER 0
 #define LCID_WIND   1
@@ -2645,19 +2631,6 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    fem_results->ComputeReactions(LCID_GIRDER, rightSupportJntID, &Rx, &Rright, &Rz);
    results.Rl = Rleft;
    results.Rr = Rright;
-
-#if defined _DUMP_FEM_MODEL
-   CString strFilename(_T("StabilityModel_Fem2d.xml"));
-
-   CComPtr<IStructuredSave2> save;
-   save.CoCreateInstance(CLSID_StructuredSave2);
-   save->Open(T2BSTR(strFilename));
-
-   CComQIPtr<IStructuredStorage2> storage(*ppModel);
-   storage->Save(save);
-
-   save->Close();
-#endif
 }
 
 Float64 StabilityEngineer::ComputeXcg(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results) const

@@ -41,7 +41,7 @@ public:
 
 private:
 
-   typedef std::map<std::_tstring,CComPtr<IUnknown> > ItemDataCollection;
+   using ItemDataCollection = std::map<std::_tstring,CComPtr<IUnknown>>;
    ItemDataCollection m_Items;
 };
 

@@ -28,12 +28,6 @@
 #include <array>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 BoxBeam::BoxBeam() :
@@ -215,7 +209,7 @@ std::shared_ptr<Shape> BoxBeam::GetBoxShape() const
 std::shared_ptr<Shape> BoxBeam::GetVoidShape(IndexType voidIdx) const
 {
    if (m_nVoids <= voidIdx)
-      THROW_GEOMETRY(_T("BoxBeam::GetVoidShape - invalid index"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    return GetComposite()->GetShape(voidIdx + 1);
 }

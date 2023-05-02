@@ -128,7 +128,8 @@ private:
    static bool    ms_IsDamaged;
 
 public:
-   typedef std::list<lrfrVersionMgrListener*,std::allocator<lrfrVersionMgrListener*>> Listeners;
+   using Listeners = std::list<lrfrVersionMgrListener*,std::allocator<lrfrVersionMgrListener*>>;
+
 private:
    static Listeners ms_Listeners;
 

@@ -26,12 +26,6 @@
 #include <RCSection/XRCSection.h>
 #include <GeomModel/GeomOp2d.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::RCSection;
 
 void MomentCapacitySolverImpl::SetSection(const std::shared_ptr<const IGeneralSection>& section)
@@ -93,20 +87,19 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::Solve(Float64 
    // Get the forces and strains that bound the solution
 
    // Get the maximum tension force and moments at the zero curvature case (pure tension case)
-   Float64 FzT, MxT, MyT, eoT;
-   GetTensionLimit(&FzT, &MxT, &MyT, &eoT);
+   const auto& tension_capacity_limit = GetTensionLimit();
 
    // Get the maximum compression force and moments at the zero curvature case (pure compression case)
-   Float64 FzC, MxC, MyC, eoC;
-   GetCompressionLimit(&FzC, &MxC, &MyC, &eoC);
+   const auto& compression_capacity_limit = GetCompressionLimit();
 
-   if ((IsZero(FzT) && IsZero(MxT) && IsZero(MyT)) || (IsZero(FzC) && IsZero(MxC) && IsZero(MyC)))
+   if ((IsZero(tension_capacity_limit.Fz) && IsZero(tension_capacity_limit.Mx) && IsZero(tension_capacity_limit.My)) || 
+       (IsZero(compression_capacity_limit.Fz) && IsZero(compression_capacity_limit.Mx) && IsZero(compression_capacity_limit.My)))
    {
       // no tension or compression capacity so the capacity is zero
       return CreateMomentCapacitySolution();
    }
 
-   if (IsEqual(Fz, FzC) || IsEqual(Fz, FzT))
+   if (IsEqual(Fz, compression_capacity_limit.Fz) || IsEqual(Fz, tension_capacity_limit.Fz))
    {
       // The axial force is equal to the tension or compression capacity so we have our solution
 
@@ -124,13 +117,13 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::Solve(Float64 
       const auto& incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
       UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
-      if (IsEqual(Fz, FzC))
+      if (IsEqual(Fz, compression_capacity_limit.Fz))
       {
-         solution->InitSolution(FzC, MxC, MyC, incrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_CompressionSolution)));
+         solution->InitSolution(compression_capacity_limit.Fz, compression_capacity_limit.Mx, compression_capacity_limit.My, incrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_CompressionSolution)));
       }
       else
       {
-         solution->InitSolution(FzT, MxT, MyT, incrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_TensionSolution)));
+         solution->InitSolution(tension_capacity_limit.Fz, tension_capacity_limit.Mx, tension_capacity_limit.My, incrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_TensionSolution)));
       }
 
       return solution;
@@ -141,11 +134,10 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::Solve(Float64 
 
 WBFL::Geometry::Point2d MomentCapacitySolverImpl::GetPlasticCentroid() const
 {
-   Float64 P, Mx, My, eo;
-   GetCompressionLimit(&P, &Mx, &My, &eo);
+   const auto& compression_capacity_limit = GetCompressionLimit();
 
-   Float64 x = -My / P;
-   Float64 y = Mx / P;
+   Float64 x = -compression_capacity_limit.My / compression_capacity_limit.Fz;
+   Float64 y =  compression_capacity_limit.Mx / compression_capacity_limit.Fz;
 
    x = IsZero(x) ? 0 : x;
    y = IsZero(y) ? 0 : y;
@@ -178,13 +170,13 @@ void MomentCapacitySolverImpl::UpdateLimits() const
       Float64 min_strain, max_strain;
       material->GetStrainLimits(&min_strain, &max_strain);
       compStrain = Max(min_strain, compStrain);
-      ASSERT(compStrain <= 0);
+      CHECK(compStrain <= 0);
 
       tensStrain = Max(max_strain, tensStrain);
-      ASSERT(0 <= tensStrain);
+      CHECK(0 <= tensStrain);
    }
 
-   m_eoCompressionLimit = compStrain;
+   m_CompressionCapacityLimit.eo = compStrain;
    m_IncrementalStrainPlane.ThroughAltitude(compStrain);
 
    IndexType nSlices = GetSlices();
@@ -194,11 +186,11 @@ void MomentCapacitySolverImpl::UpdateLimits() const
    
    //m_GeneralSolver.SetSlices(nSlices);
 
-   m_FzCompressionLimit = m_CompressionSolution->GetFz();
-   m_MxCompressionLimit = m_CompressionSolution->GetMx();
-   m_MyCompressionLimit = m_CompressionSolution->GetMy();
+   m_CompressionCapacityLimit.Fz = m_CompressionSolution->GetFz();
+   m_CompressionCapacityLimit.Mx = m_CompressionSolution->GetMx();
+   m_CompressionCapacityLimit.My = m_CompressionSolution->GetMy();
 
-   m_eoTensionLimit = tensStrain;
+   m_TensionCapacityLimit.eo = tensStrain;
    m_IncrementalStrainPlane.ThroughAltitude(tensStrain);
 
    //m_GeneralSolver.SetSlices(1);
@@ -207,29 +199,23 @@ void MomentCapacitySolverImpl::UpdateLimits() const
    
    m_GeneralSolver.SetSlices(nSlices);
 
-   m_FzTensionLimit = m_TensionSolution->GetFz();
-   m_MxTensionLimit = m_TensionSolution->GetMx();
-   m_MyTensionLimit = m_TensionSolution->GetMy();
+   m_TensionCapacityLimit.Fz = m_TensionSolution->GetFz();
+   m_TensionCapacityLimit.Mx = m_TensionSolution->GetMx();
+   m_TensionCapacityLimit.My = m_TensionSolution->GetMy();
 
    m_bUpdateLimits = false;
 }
 
-void MomentCapacitySolverImpl::GetCompressionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& MomentCapacitySolverImpl::GetCompressionLimit() const
 {
    UpdateLimits();
-   *Fz = m_FzCompressionLimit;
-   *Mx = m_MxCompressionLimit;
-   *My = m_MyCompressionLimit;
-   *eo = m_eoCompressionLimit;
+   return m_CompressionCapacityLimit;
 }
 
-void MomentCapacitySolverImpl::GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& MomentCapacitySolverImpl::GetTensionLimit() const
 {
    UpdateLimits();
-   *Fz = m_FzTensionLimit;
-   *Mx = m_MxTensionLimit;
-   *My = m_MyTensionLimit;
-   *eo = m_eoTensionLimit;
+   return m_TensionCapacityLimit;
 }
 
 void MomentCapacitySolverImpl::UpdateStrainPlane(Float64 angle, Float64 k_or_ec, Float64 strainLocation, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 eo) const
@@ -275,18 +261,18 @@ void MomentCapacitySolverImpl::UpdateStrainPlane(Float64 angle, Float64 k_or_ec,
 #if defined _DEBUG
       if (solutionMethod == MomentCapacitySolver::SolutionMethod::FixedCompressionStrain)
       {
-         ATLASSERT(ec <= 0); // compression is negative
+         CHECK(ec <= 0); // compression is negative
       }
       else if (solutionMethod == MomentCapacitySolver::SolutionMethod::FixedTensionStrain)
       {
-         ATLASSERT(0 <= ec); // tension is positive
+         CHECK(0 <= ec); // tension is positive
       }
       else if (solutionMethod == MomentCapacitySolver::SolutionMethod::FixedStrain)
       {
       } // do nothing
       else
       {
-         ASSERT(false); // shouldn't get here
+         CHECK(false); // shouldn't get here
       }
 #endif
 
@@ -310,7 +296,7 @@ void MomentCapacitySolverImpl::UpdateStrainPlane(Float64 angle, Float64 k_or_ec,
          else
          {
             Float64 X, Y;
-            m_ControlPoint.GetLocation(&X, &Y);
+            std::tie(X,Y) = m_ControlPoint.GetLocation();
             m_P1.Move(X - d * cos_angle, Y - d * sin_angle, eo);
             m_P2.Move(X + d * cos_angle, Y + d * sin_angle, eo);
          }
@@ -395,7 +381,7 @@ void MomentCapacitySolverImpl::UpdateControlPoints(Float64 angle, MomentCapacity
    switch (solutionMethod)
    {
    case MomentCapacitySolver::SolutionMethod::FixedCurvature:
-      ATLASSERT(false);
+      CHECK(false);
       break;
 
    case MomentCapacitySolver::SolutionMethod::FixedCompressionStrain:
@@ -446,9 +432,14 @@ void MomentCapacitySolverImpl::UpdateControlPoints(Float64 angle, MomentCapacity
 
 void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Float64 strainLocation, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 angle, Float64 Fz, Float64* peo_lower, Float64* peo_upper, Float64* pFz_lower, Float64* pFz_upper) const
 {
-   Float64 FzMax, FzMin, Mx, My;
-   GetTensionLimit(&FzMax, &Mx, &My, peo_upper);
-   GetCompressionLimit(&FzMin, &Mx, &My, peo_lower);
+   const auto& tension_capacity_limit = GetTensionLimit();
+   const auto& compression_capacity_limit = GetCompressionLimit();
+
+   auto FzMax = tension_capacity_limit.Fz;
+   auto FzMin = compression_capacity_limit.Fz;
+
+   *peo_upper = tension_capacity_limit.eo;
+   *peo_lower = compression_capacity_limit.eo;
 
    if (!InRange(FzMin, Fz, FzMax))
    {
@@ -476,8 +467,8 @@ void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Flo
       m_GeneralSolution = std::move(m_GeneralSolver.Solve(m_IncrementalStrainPlane));
 
       Fz_lower = m_GeneralSolution->GetFz();
-      Mx = m_GeneralSolution->GetMx();
-      My = m_GeneralSolution->GetMy();
+      auto Mx = m_GeneralSolution->GetMx();
+      auto My = m_GeneralSolution->GetMy();
 
       Fz_lower -= Fz;
 
@@ -535,7 +526,7 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::AnalyzeSection
    Float64 eo_lower, eo_upper;
    GetNeutralAxisParameterRange(k_or_ec, strainLocation, solutionMethod, angle, Fz, &eo_lower, &eo_upper, &Fz_lower, &Fz_upper);
 
-   ASSERT(eo_lower < eo_upper);
+   CHECK(eo_lower < eo_upper);
 
    Float64 Mx, My;
 
@@ -595,7 +586,7 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::AnalyzeSection
    Float64 C = m_GeneralSolution->GetCompressionResultant();
    Float64 T = m_GeneralSolution->GetTensionResultant();
 
-   ASSERT(IsZero(C + T - Fz, m_AxialTolerance));
+   CHECK(IsZero(C + T - Fz, m_AxialTolerance));
 
    const auto& cgC = m_GeneralSolution->GetCompressionResultantLocation();
    const auto& cgT = m_GeneralSolution->GetTensionResultantLocation();
@@ -616,7 +607,7 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::AnalyzeSection
 #if defined _DEBUG
    if (solutionMethod == MomentCapacitySolver::SolutionMethod::FixedCurvature)
    {
-      ASSERT(IsEqual(k_or_ec, k));
+      CHECK(IsEqual(k_or_ec, k));
    }
 #endif
 

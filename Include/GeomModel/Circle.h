@@ -67,7 +67,7 @@ public:
 
    void SetParameters(const Point2d& center, Float64 radius);
    void SetParameters(std::shared_ptr<Point2d>& center, Float64 radius);
-   void GetParameters(std::shared_ptr<Point2d>* pCenter, Float64* radius) const;
+   std::pair<std::shared_ptr<Point2d>, Float64> GetParameters() const;
 
    void ThroughTwoPoints(const Point2d& p1, const Point2d& p2);
    void ThroughThreePoints(const Point2d& p1, const Point2d& p2, const Point2d& p3);

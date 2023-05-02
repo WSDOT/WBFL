@@ -156,19 +156,12 @@ void CTestSuperelevation::Test()
    TRY_TEST(pSuperelevation->get_PivotPoint(&pivotPnt),S_OK);
    TRY_TEST(pivotPnt,1);
 
-   CComPtr<IStructuredStorage2> ss;
-   TRY_TEST(pSuperelevation->get_StructuredStorage(nullptr),E_POINTER);
-   TRY_TEST(pSuperelevation->get_StructuredStorage(&ss),S_OK);
-   TRY_TEST(ss != nullptr,true);
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pSuperelevation);
    TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISuperelevation ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_Superelevation,IID_ISuperelevation,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Superelevation,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }

@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "Joint.h"
 
-typedef CModelCollection<IFem2dJointCollection, IFem2dJoint, CJoint, IFem2dEnumJoint, &IID_IFem2dEnumJoint,JointIDType> JointCollImpl;
+using JointCollImpl = CModelCollection<IFem2dJointCollection, IFem2dJoint, CJoint, IFem2dEnumJoint, &IID_IFem2dEnumJoint,JointIDType>;
 
 
 /////////////////////////////////////////////////////////////////////////////

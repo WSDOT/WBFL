@@ -2,30 +2,11 @@
 
 The Washington Bridge Foundation Libraries (WBFL) provides a foundation upon which to build bridge engineering software.
 
-The WBFL consists of the Application Services Layer and the Engineering Services Layer.
-
-## Application Services Layer
-The application services layer (ASL) provides libraries for building applications. The libraries include
-* Core - Core features of the Agent/Broker architecture
-* DManip - GUI direct manipulation framework
-* DManipTools - Tools for making use of the DManip library easier
-* EAF - Engineering Application Framework
-* GraphManager - A ready to use graph manager
-* GraphManagerAgent - A wrapper on the GraphManager for use with the Agent/Broker architecture
-* MFCTools - Extensions to the Microsoft Foundation Class (MFC) library
-* \subpage WBFL_Reporter - Report content definition
-* ReportManager - Report management
-* ReportManagerAgent - A wrapper on the ReportManager for use with the Agent/Broker architecture
-* System - Provides common services such as object persistence, string manipulations, debugging and diagnostics.
-* Units - Definition of units of measure
-* UnitMgt and \subpage WBFL_UnitServer - Management of a system of units (SI/US) and indirect display units
-* \subpage WBFL_Tools - Miscellaneous tools such as object persistence, progress monitors, and generic containers
-* Transactions - Support for transactional based actions (Undo, Redo support)
-* Types - System independent data type definitions
+The WBFL consists of the Engineering Services Layer and the Applications Services Layer.
 
 ## Engineering Services Layer
-The engineering services layer (ESL) provides libraries for building engineering applications. The libraries include
-* \subpage WBFL_COGO - Coordinate geometry modeling
+The Engineering Services Layer (ESL) provides libraries for building engineering applications. The libraries include
+* \subpage WBFL_CoordGeom - Coordinate geometry modeling
 * EngTools - Engineering tools such as Mohr's circle and biaxial strain plane modeling
 * Fem2d - 2D, plane frame, finite element analysis
 * GenericBridge - Generic bridge modeling
@@ -39,14 +20,34 @@ The engineering services layer (ESL) provides libraries for building engineering
 * LRFD - Support procedures for the AASHTO LRFD Bridge Design Specification
 * Material - Modeling of engineering materials such as concrete and steel
 * Math - Math routines include equation modeling, root finding, and numerical integration
-* \subpage WBFL_RCCapacity - Nominal flexural capacity calculations for reinforced concrete elements (uniaxial and biaxial analysis)
-* Roark - Closed form beam equations for moment, shear, and deflection based on Roark's Formulas for Stress and Strain
+* \subpage WBFL_RCSection - Nominal flexural capacity calculations for reinforced concrete elements (uniaxial and biaxial analysis)
+* \subpage WBFL_RoarkBeams - Closed form beam equations for moment, shear, and deflection based on Roark's Formulas for Stress and Strain
 * \subpage WBFL_Stability - Stability analysis precast concrete girders
 
-## COM Wrappers
-To enable more widespread usage of the WBFL, some services are implemented with a Component Object Model (COM) wrapper. These libraries include
+## Application Services Layer
+The Application Services Layer (ASL) provides libraries for building applications. The libraries include
+* Core - Core features of the Agent/Broker architecture
+* DManip - Direct manipulation framework for graphical user interfaces
+* DManipTools - Tools for making use of the DManip library easier
+* EAF - Engineering Application Framework: Framework for engineering applications with support for data persistence, reporting, graphing, plug-ins, extensions, Agent/Broker architecture, and more.
+* GraphManager - A ready to use graph manager
+* GraphManagerAgent - A wrapper on the GraphManager for use with the Agent/Broker architecture
+* MFCTools - Extensions to the Microsoft Foundation Class (MFC) library
+* \subpage WBFL_Reporter - Report content definition
+* ReportManager - Report management
+* ReportManagerAgent - A wrapper on the ReportManager for use with the Agent/Broker architecture
+* System - Provides common services such as object persistence, string manipulations, debugging and diagnostics.
+* Units - Definition of units of measure
+* UnitMgt and \subpage WBFL_UnitServer - Management of a system of units (SI/US) and indirect display units
+* \subpage WBFL_Tools - Miscellaneous tools such as object persistence, progress monitors, and generic containers
+* Types - System independent data type definitions
+
+## OLE Automation Compatible Libraries
+To enable more widespread usage of the WBFL, some services are available as OLE Automation compatible libraries. This allows these libraries to be used from a variety of programming systems including Visual Basic for Applications (VBA). The OLE Automation compatible libraries include:
 * \subpage WBFL_Geometry - Geometric primitives such as points, lines, and shapes
-* Sections - Modeling of structural sections comprised of a variety of materials.
+* \subpage WBFL_COGO - Coordinate geometry modeling
+* \subpage WBFL_RCCapacity - Nominal flexural capacity calculations for reinforced concrete elements (uniaxial and biaxial analysis)
+
 
 
 ## Getting Started
@@ -67,7 +68,7 @@ Clone the repository into **drive letter**:/ARP/ and create an environment varia
 WBFL forms the basis of the BridgeLink application suite. If your intent is to build the BridgeLink suite, you will need the Stingray ObjectiveGrid library from Preforce software. If you do not have ObjectiveGrid,
 you can still build the BridgeLink suite by following these steps:
 
-1. Open WBFL/Include/WBFLGrid.h and uncomment the `#define _NOGRID macro'
+1. Open WBFL/Include/WBFLGrid.h and uncomment the `#define _NOGRID macro`
 2. Create a C:/Program Files/Preforce/Stingray Stuido 2021.1/Src folder
 3. Copy the dummy props file WBFL/SS-X64-PropSheet16.props into that folder.
 

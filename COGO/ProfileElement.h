@@ -25,62 +25,68 @@
 
 // ProfileElement.h : Declaration of the CProfileElement
 
-#ifndef __PROFILEELEMENT_H_
-#define __PROFILEELEMENT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
 
-/////////////////////////////////////////////////////////////////////////////
-// CProfileElement
-class ATL_NO_VTABLE CProfileElement : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CProfileElement, &CLSID_ProfileElement>,
-	public ISupportErrorInfo,
-   public IObjectSafetyImpl<CProfileElement,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IProfileElement,
-   public IStructuredStorage2,
-   public IPersistImpl<CProfileElement>
-{
-public:
-	CProfileElement()
-	{
-	}
+//class CProfileElementImp
+//{
+//public:
+//   void SetProfileElement(std::shared_ptr<WBFL::COGO::ProfileElement> pe) { m_ProfileElement = pe; }
+//   std::shared_ptr<WBFL::COGO::ProfileElement> GetProfileElement() { return m_ProfileElement; }
+//
+//private:
+//   std::shared_ptr<WBFL::COGO::ProfileElement> m_ProfileElement;
+//};
 
-   HRESULT FinalConstruct();
-   void FinalRelease();
-
-DECLARE_REGISTRY_RESOURCEID(IDR_PROFILEELEMENT)
-
-DECLARE_PROTECT_FINAL_CONSTRUCT()
-
-BEGIN_COM_MAP(CProfileElement)
-	COM_INTERFACE_ENTRY(IProfileElement)
-   COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(ISupportErrorInfo)
-   COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
-END_COM_MAP()
-
-// ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
-
-// IProfileElement
-public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
-   STDMETHOD(Clone)(/*[out,retval]*/ IProfileElement* *clone) override;
-	STDMETHOD(get_Value)(/*[out, retval]*/ IUnknown** pdispVal) override;
-	STDMETHOD(putref_Value)(/*[in]*/ IUnknown* pdispVal) override;
-	STDMETHOD(get_Type)(/*[out, retval]*/ ProfileElementType *pVal) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-private:
-	ProfileElementType m_Type;
-   CComPtr<IUnknown> m_Value;
-};
-
-#endif //__PROFILEELEMENT_H_
+///////////////////////////////////////////////////////////////////////////////
+//// CProfileElement
+//class ATL_NO_VTABLE CProfileElement : 
+//	public CComObjectRootEx<CComSingleThreadModel>,
+//	public CComCoClass<CProfileElement, &CLSID_ProfileElement>,
+//	public ISupportErrorInfo,
+//   public IObjectSafetyImpl<CProfileElement,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+//   public IProfileElement,
+//   public IStructuredStorage2,
+//   public IPersistImpl<CProfileElement>
+//{
+//public:
+//	CProfileElement()
+//	{
+//	}
+//
+//   HRESULT FinalConstruct();
+//   void FinalRelease();
+//
+//DECLARE_REGISTRY_RESOURCEID(IDR_PROFILEELEMENT)
+//
+//DECLARE_PROTECT_FINAL_CONSTRUCT()
+//
+//BEGIN_COM_MAP(CProfileElement)
+//	COM_INTERFACE_ENTRY(IProfileElement)
+//   COM_INTERFACE_ENTRY(IStructuredStorage2)
+//   COM_INTERFACE_ENTRY(ISupportErrorInfo)
+//   COM_INTERFACE_ENTRY(IObjectSafety)
+//   COM_INTERFACE_ENTRY(IPersist)
+//END_COM_MAP()
+//
+//// ISupportsErrorInfo
+//	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
+//
+//// IProfileElement
+//public:
+//   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+//   STDMETHOD(Clone)(/*[out,retval]*/ IProfileElement* *clone) override;
+//	STDMETHOD(get_Value)(/*[out, retval]*/ IUnknown** pdispVal) override;
+//	STDMETHOD(putref_Value)(/*[in]*/ IUnknown* pdispVal) override;
+//	STDMETHOD(get_Type)(/*[out, retval]*/ ProfileElementType *pVal) override;
+//
+//// IStructuredStorage2
+//public:
+//   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+//   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
+//
+//private:
+//	ProfileElementType m_Type;
+//   CComPtr<IUnknown> m_Value;
+//};

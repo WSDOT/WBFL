@@ -27,12 +27,6 @@
 #include <MathEx.h>
 #include <Units/Units.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Materials;
 
 void ACI209Concrete::GetModelParameters(CuringType cure,CementType cement,Float64* pA,Float64* pB)
@@ -125,7 +119,7 @@ void ACI209Concrete::ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float6
 void ACI209Concrete::SetFc28(Float64 fc,Float64 t)
 {
    Float64 age = GetAge(t);
-   ASSERT(!IsZero(age));
+   CHECK(!IsZero(age));
    m_Fc28 = ComputeFc28(fc,age,m_A,m_Beta);
    m_bIsValid = false;
 }
@@ -166,7 +160,7 @@ Float64 ACI209Concrete::GetEc28() const
 void ACI209Concrete::SetEc28(Float64 Ec,Float64 t)
 {
    Float64 age = GetAge(t);
-   ASSERT(!IsZero(age));
+   CHECK(!IsZero(age));
    m_Ec28 = ComputeEc28(Ec,age,m_A,m_Beta);
    m_bIsValid = false;
 }
@@ -474,7 +468,7 @@ void ACI209Concrete::ValidateCorrectionFactors() const
    }
 
    // V/S ratio correction factor (2.5.5b)
-   ASSERT(0 < m_VS); // did you forget to set V/S ratio?
+   CHECK(0 < m_VS); // did you forget to set V/S ratio?
    Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    m_VSC = (2.0/3.0)*(1.0 + 1.13*exp(-0.54*vs)); // creep (2-21)
    m_VSS = 1.2*exp(-0.12*vs);                    // shrinkage (2-22)

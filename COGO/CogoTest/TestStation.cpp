@@ -82,17 +82,17 @@ void CTestStation::Test()
    CComBSTR usStation("3+34.54");
    TRY_TEST(station->FromString(usStation,umUS),S_OK);
    TRY_TEST(station->get_Value(&value),S_OK);
-   TRY_TEST(IsEqual(value,334.54),true);
+   TRY_TEST(IsEqual(value, 101.967792),true); // SI units, meter
 
    CComBSTR usStation2("-3+34.54");
    TRY_TEST(station->FromString(usStation2,umUS),S_OK);
    TRY_TEST(station->get_Value(&value),S_OK);
-   TRY_TEST(IsEqual(value,-334.54),true);
+   TRY_TEST(IsEqual(value, -101.967792),true); // SI units, meter
 
    CComBSTR usStationWithZone("3+34.54,5");
    TRY_TEST(station->FromString(usStationWithZone,umUS),S_OK);
    TRY_TEST(station->GetStation(&zoneIdx,&value),S_OK);
-   TRY_TEST(IsEqual(value,334.54),true);
+   TRY_TEST(IsEqual(value, 101.967792),true); // SI units, meter
    TRY_TEST(zoneIdx == 4,true);
 
    // Valid SI station
@@ -107,10 +107,10 @@ void CTestStation::Test()
    TRY_TEST(IsEqual(value,-3034.54),true);
 
    // Bad US Station (use the SI station)
-   TRY_TEST(station->FromString(siStation,umUS),COGO_E_BADSTATIONSTRING);
+   TRY_TEST(station->FromString(siStation,umUS), E_INVALIDARG);
 
    // Bad SI Station (use the US station)
-   TRY_TEST(station->FromString(usStation,umSI),COGO_E_BADSTATIONSTRING);
+   TRY_TEST(station->FromString(usStation,umSI), E_INVALIDARG);
 
    station->put_Value(3434.34);
    CComBSTR bstrStation;
@@ -159,5 +159,4 @@ void CTestStation::Test()
    TRY_TEST(bstrStation == CComBSTR("9+999.990,4"),true);
 
    TRY_TEST( TestIObjectSafety(CLSID_Station,IID_IStation,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Station,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }

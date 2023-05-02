@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "Member.h"
 
-typedef CModelCollection<IFem2dMemberCollection, IFem2dMember, CMember, IFem2dEnumMember, &IID_IFem2dEnumMember,MemberIDType> MemberCollImpl;
+using MemberCollImpl = CModelCollection<IFem2dMemberCollection, IFem2dMember, CMember, IFem2dEnumMember, &IID_IFem2dEnumMember,MemberIDType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMemberCollection

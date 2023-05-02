@@ -175,6 +175,90 @@ interface IPierLineCollection : IUnknown
    [helpstring("method FindPierLine")] HRESULT FindPierLine([in] PierIDType pierID, [out, retval] IPierLine* *pVal);
 };
 
+/// Interface for objects that enumerate a collection of IPath objects
+[
+   object,
+   uuid(D5BECD44-9730-4bf4-80B2-8B983C21E110),
+   helpstring("IEnumPaths Interface"),
+   oleautomation,
+   hidden,restricted,
+   pointer_default(unique)
+]
+interface IEnumPaths : IUnknown
+{
+   /// Clone the enumerator
+   [helpstring("Clone")] HRESULT Clone([out] IEnumPaths** ppenum);
+
+   /// Retrieves the next celt items from the enumeration sequence. If there are fewer than the requested number of elements in the sequence, it retrieves the remaining elements. The number of elements actually retrieved is returned through pceltFetched (unless the caller passed in NULL for that parameter).
+   /// Returns S_OK if the number of elements supplied is celt, otherwise S_FALSE
+   [helpstring("Next")]
+   HRESULT Next(
+      [in] ULONG celt, ///< Number of elements being requested
+      [out] IPath** rgelt, ///< Array of size celt (or larger) of elements of interest
+      [in,out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
+   );
+
+   /// Resets the enumeration sequence to the beginning.
+   [helpstring("Reset")] HRESULT Reset();
+   
+   /// Skips over the next specified number of elements in the enumeration sequence.
+   [helpstring("Skip")]
+   HRESULT Skip(
+      [in] ULONG celt ///< Number of elements to skip
+   );
+};
+
+/// Interface for defining a collection of objects implementing the IPath interface.
+[
+   object,
+   uuid(DFDF1C35-39DB-4285-AA38-BE6C189E29E0),
+   oleautomation,
+   //helpcontext(IDH_PathCollection),
+   helpstring("IPathCollection Interface"),
+   pointer_default(unique)
+]
+interface IPathCollection : IUnknown
+{
+   /// Gets an item from the collection using its identifier.
+   [propget, helpstring("property Item")] HRESULT Item([in] CogoObjectID id, [out, retval] IPath* *pVal);
+   
+   /// Replaces an item in the collection
+   [propputref, helpstring("property Item")] HRESULT Item([in] CogoObjectID id, [in] IPath* pVal);
+   
+   /// Returns the number of items in the collection.
+   [propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
+   
+   /// Adds a path to the collection
+     [helpstring("method Add")] HRESULT Add(
+        [in] CogoObjectID id, ///< Unique identifier for the path
+        [in] IPath* newVal ///< A Path Object
+     );
+
+     /// Removes a path from the collection
+     [helpstring("method Remove")] HRESULT Remove([in] CogoObjectID id);
+
+     /// Removes all items from the collection
+     [helpstring("method Clear")] HRESULT Clear();
+
+     /// Searches the collection for a path and returns its identifier
+     [helpstring("method FindID")] HRESULT FindID([in] IPath* path,[out,retval]CogoObjectID* ID);
+
+     /// Returns the ID at a specific location in the collection
+     [helpstring("method ID")] HRESULT ID([in] CollectionIndexType index,[out,retval] CogoObjectID* ID);
+
+     /// Clones the collection making a copy of all the contained objects
+     [helpstring("method Clone")] HRESULT Clone([out, retval] IPathCollection* *clone);
+
+     /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
+     [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);
+
+     /// Returns an IEnumIDs interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
+     //[propget, restricted, helpstring("property _EnumIDs")] HRESULT _EnumIDs([out, retval] IEnumIDs** ppenum);
+
+     /// Returns an IEnumPaths interface. This is a restricted property and is not accessible from Visual Basic. Generally, in C++, it is easier to iterate through a collection using an enumerator than the collection interface.
+     [propget, restricted, helpstring("property _EnumPaths")] HRESULT _EnumPaths([out, retval] IEnumPaths** ppenum);
+};
+
 [
    object,
    uuid(D58BBF23-B486-417E-B55C-63D181068947),
@@ -539,6 +623,11 @@ interface IBridgeGeometry : IUnknown
    [propget,helpstring("property BridgeAlignmentID")] HRESULT BridgeAlignmentID([out,retval] CogoObjectID* ID);
    [propget,helpstring("property BridgeAlignment")] HRESULT BridgeAlignment([out,retval] IAlignment** alignment);
 
+   [propput, helpstring("property ProfileID")] HRESULT ProfileID([in] IDType profileID);
+   [propget, helpstring("property ProfileID")] HRESULT ProfileID([out, retval] IDType* pProfileID);
+   [propput, helpstring("property SurfaceID")] HRESULT SurfaceID([in] IDType surfaceID);
+   [propget, helpstring("property SurfaceID")] HRESULT SurfaceID([out, retval] IDType* pSurfaceID);
+
    [propput,helpstring("property AlignmentOffset")] HRESULT AlignmentOffset([in]Float64 offset);
    [propget,helpstring("property AlignmentOffset")] HRESULT AlignmentOffset([out,retval]Float64* offset);
    [propget,helpstring("property BridgeLine")] HRESULT BridgeLine([out,retval]IPath** bridgeLine);
@@ -602,6 +691,16 @@ library WBFLBridgeGeometry
 	{
 		[default] interface IPierLineCollection;
 	};
+
+   [
+      uuid(BB37DF4F-8AD0-4778-9036-9A340F425A50),
+      helpstring("PathCollection Class")
+   ]
+   coclass PathCollection
+   {
+      [default] interface IPathCollection;
+   };
+
 	[
 		uuid(6B593F0D-688B-48B2-BC03-5399D1BDAA1B),
 		helpstring("AlignmentOffsetLayoutLineFactory Class")

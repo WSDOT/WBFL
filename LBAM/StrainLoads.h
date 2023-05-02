@@ -31,11 +31,11 @@
 #include "LoadCollection.h"
 #include "LBAMUtils.h"
 
-typedef CLoadItem<IStrainLoadItem, IStrainLoad, &IID_IStrainLoadItem> CStrainLoadItem;
+using CStrainLoadItem = CLoadItem<IStrainLoadItem, IStrainLoad, &IID_IStrainLoadItem>;
 class CStrainLoads;
-typedef CLoadCollection<IStrainLoads, &IID_IStrainLoads, CStrainLoads, IStrainLoad, 
+using StrainLoadColl_Impl = CLoadCollection<IStrainLoads, &IID_IStrainLoads, CStrainLoads, IStrainLoad,
                         IStrainLoadItem, CStrainLoadItem, 
-                        IEnumStrainLoad, &IID_IEnumStrainLoad> StrainLoadColl_Impl;
+                        IEnumStrainLoad, &IID_IEnumStrainLoad>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CStrainLoads

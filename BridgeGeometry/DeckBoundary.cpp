@@ -38,8 +38,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-typedef std::map<Float64,CComPtr<IPoint2d>> PathPointCollection;
-typedef std::pair<Float64,CComPtr<IPoint2d>> PathPointEntry;
+using PathPointCollection = std::map<Float64, CComPtr<IPoint2d>>;
+using PathPointEntry = std::pair<Float64,CComPtr<IPoint2d>>;
 
 // CDeckBoundary
 
@@ -114,17 +114,9 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       CComPtr<IPathElement> pathElement;
       end_path->get_Item(0,&pathElement);
 
-      PathElementType peType;
-      pathElement->get_Type(&peType);
-      ATLASSERT( peType == petLineSegment );
-
-      CComPtr<IUnknown> punk;
-      pathElement->get_Value(&punk);
-
-      CComQIPtr<ILineSegment2d> line_segment(punk);
       CComPtr<IPoint2d> start,end;
-      line_segment->get_StartPoint(&start);
-      line_segment->get_EndPoint(&end);
+      pathElement->GetStartPoint(&start);
+      pathElement->GetEndPoint(&end);
 
       end_line.CoCreateInstance(CLSID_Line2d);
       end_line->ThroughPoints(start,end);
@@ -147,9 +139,9 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       m_pBridge->get_BridgeAlignment(&alignment);
 
       CComPtr<IPoint2d> pntOnAlignment;
-      Float64 distFromStart;
+      CComPtr<IStation> station;
       VARIANT_BOOL vbOnProjection;
-      alignment->ProjectPoint(pntEnd2,&pntOnAlignment, &distFromStart, &vbOnProjection);
+      alignment->ProjectPoint(pntEnd2,&pntOnAlignment, &station, &vbOnProjection);
 
       CComPtr<ILine2d> break_line;
       break_line.CoCreateInstance(CLSID_Line2d);
@@ -177,9 +169,9 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       m_pBridge->get_BridgeAlignment(&alignment);
 
       CComPtr<IPoint2d> pntOnAlignment;
-      Float64 distFromStart;
+      CComPtr<IStation> station;
       VARIANT_BOOL vbOnProjection;
-      alignment->ProjectPoint(pntEnd3,&pntOnAlignment, &distFromStart, &vbOnProjection);
+      alignment->ProjectPoint(pntEnd3,&pntOnAlignment, &station, &vbOnProjection);
 
       CComPtr<ILine2d> break_line;
       break_line.CoCreateInstance(CLSID_Line2d);
@@ -222,13 +214,14 @@ HRESULT CDeckBoundary::CreateEdgePath(PathIDType edgePathID, IPoint2d* pntStart,
    // get distance along path to pntStart and pntEnd, then create a sub-path between these two locations
    Float64 offset;
    Float64 distStart, distEnd;
-   edge_path->Offset(pntStart,&distStart,&offset);
+   edge_path->DistanceAndOffset(pntStart,&distStart,&offset);
    ATLASSERT(IsZero(offset));
 
-   edge_path->Offset(pntEnd,&distEnd,&offset);
+   edge_path->DistanceAndOffset(pntEnd,&distEnd,&offset);
    ATLASSERT(IsZero(offset));
 
-   return edge_path->CreateSubPath(distStart,distEnd,pPath);
+   CComQIPtr<IPathElement> element(edge_path);
+   return element->CreateSubpath(distStart,distEnd,pPath);
 }
 
 STDMETHODIMP CDeckBoundary::get_Perimeter(CollectionIndexType nMinPointsPerSide,IPoint2dCollection** pPoints)
@@ -348,7 +341,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          m_pBridge->get_BridgeAlignment(&alignment);
 
          CComPtr<IDirection> normal;
-         alignment->Normal(CComVariant(objStation), &normal);
+         alignment->GetNormal(CComVariant(objStation), &normal);
 
          Float64 value;
          normal->get_Value(&value);
@@ -368,8 +361,8 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       boundaryPoints->Add(pntRight);
 
       Float64 offset;
-      m_EdgePath[stLeft]->Offset( pntLeft,  &left_edge_start,  &offset);
-      m_EdgePath[stRight]->Offset(pntRight, &right_edge_start, &offset);
+      m_EdgePath[stLeft]->DistanceAndOffset( pntLeft,  &left_edge_start,  &offset);
+      m_EdgePath[stRight]->DistanceAndOffset(pntRight, &right_edge_start, &offset);
    }
 
    // determine where to stop dividing the DeckBoundary edge paths
@@ -418,7 +411,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
          m_pBridge->get_BridgeAlignment(&alignment);
 
          CComPtr<IDirection> normal;
-         alignment->Normal(CComVariant(objStation), &normal);
+         alignment->GetNormal(CComVariant(objStation), &normal);
 
          Float64 value;
          normal->get_Value(&value);
@@ -436,81 +429,29 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
 
    // determine where to stop dividing the edge paths
    Float64 left_edge_end, right_edge_end, offset;
-   m_EdgePath[stLeft]->Offset( pntLeftEnd,  &left_edge_end,  &offset);
-   m_EdgePath[stRight]->Offset(pntRightEnd, &right_edge_end, &offset);
+   m_EdgePath[stLeft]->DistanceAndOffset( pntLeftEnd,  &left_edge_end,  &offset);
+   m_EdgePath[stRight]->DistanceAndOffset(pntRightEnd, &right_edge_end, &offset);
 
    PathPointCollection rightPathPoints;
-   CComPtr<IEnumPathElements> enumPathElements;
-   m_EdgePath[stRight]->get__EnumPathElements(&enumPathElements);
-   CComPtr<IPathElement> pathElement;
-   while ( enumPathElements->Next(1,&pathElement,nullptr) != S_FALSE )
+   IndexType nPathElements;
+   m_EdgePath[stRight]->get_Count(&nPathElements);
+   for(IndexType i = 0; i < nPathElements; i++)
    {
-      PathElementType type;
-      pathElement->get_Type(&type);
-      CComPtr<IUnknown> pUnk;
-      pathElement->get_Value(&pUnk);
-      Float64 distance, offset;
-      std::vector<CComPtr<IPoint2d>> points;
-      switch(type)
+      CComPtr<IPathElement> pathElement;
+      m_EdgePath[stRight]->get_Item(i, &pathElement);
+
+      CComPtr<IPoint2dCollection> key_points;
+      pathElement->GetKeyPoints(&key_points);
+
+      IndexType nKeyPoints;
+      key_points->get_Count(&nKeyPoints);
+      for(IndexType i = 0; i < nKeyPoints; i++)
       {
-      case petPoint:
-         {
-            CComQIPtr<IPoint2d> point(pUnk);
-            points.push_back(point);
-         }
-         break;
+         CComPtr<IPoint2d> point;
+         key_points->get_Item(i, &point);
 
-      case petLineSegment:
-         {
-            CComQIPtr<ILineSegment2d> lineSegment(pUnk);
-            CComPtr<IPoint2d> startPoint, endPoint;
-            lineSegment->get_StartPoint(&startPoint);
-            lineSegment->get_EndPoint(&endPoint);
-            points.push_back(startPoint);
-            points.push_back(endPoint);
-         }
-         break;
-
-      case petCompoundCurve:
-         {
-            CComQIPtr<ICompoundCurve> CompoundCurve(pUnk);
-            CComPtr<IPoint2d> pntTS, pntSC, pntCS, pntST;
-            CompoundCurve->get_TS(&pntTS);
-            CompoundCurve->get_SC(&pntSC);
-            CompoundCurve->get_CS(&pntCS);
-            CompoundCurve->get_ST(&pntST);
-            points.push_back(pntTS);
-            points.push_back(pntSC);
-            points.push_back(pntCS);
-            points.push_back(pntST);
-         }
-         break;
-
-      case petCubicSpline:
-         {
-            CComQIPtr<ICubicSpline> spline(pUnk);
-            CComPtr<IPoint2dCollection> splinePoints;
-            spline->get_Points(&splinePoints);
-
-            CComPtr<IPoint2d> point;
-            CComPtr<IEnumPoint2d> enumPoints;
-            splinePoints->get__Enum(&enumPoints);
-            while ( enumPoints->Next(1,&point,nullptr) != S_FALSE )
-            {
-               points.push_back(point);
-               point.Release();
-            }
-         }
-         break;
-
-      default:
-         ATLASSERT(false); // is there a new type?
-      }
-      pathElement.Release();
-
-      for( const auto& point : points)
-      {
-         m_EdgePath[stRight]->Offset(point,&distance,&offset); 
+         Float64 distance, offset;
+         m_EdgePath[stRight]->DistanceAndOffset(point,&distance,&offset);
          if (::InRange(right_edge_start,distance,right_edge_end) )
          {
             rightPathPoints.insert(std::make_pair(distance,point));
@@ -523,7 +464,8 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    {
       Float64 distanceAlongPath = right_edge_start + pathLength*idx/(nMinPointsPerSide-1);
       CComPtr<IPoint2d> point;
-      m_EdgePath[stRight]->LocatePoint(distanceAlongPath,omtAlongDirection,0.0,CComVariant(0),&point);
+      CComQIPtr<IPathElement> element(m_EdgePath[stRight]);
+      element->LocatePoint(distanceAlongPath,omtAlongDirection,0.0,CComVariant(0),&point);
       rightPathPoints.insert(std::make_pair(distanceAlongPath,point));
    }
 
@@ -568,77 +510,24 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
 
    std::map<Float64,CComPtr<IPoint2d>,std::greater<Float64>> leftPathPoints; // sort from greatest to least
 
-   enumPathElements.Release();
-   m_EdgePath[stLeft]->get__EnumPathElements(&enumPathElements);
-   pathElement.Release();
-   while ( enumPathElements->Next(1,&pathElement,nullptr) != S_FALSE )
+   m_EdgePath[stLeft]->get_Count(&nPathElements);
+   for (IndexType i = 0; i < nPathElements; i++)
    {
-      PathElementType type;
-      pathElement->get_Type(&type);
-      CComPtr<IUnknown> pUnk;
-      pathElement->get_Value(&pUnk);
-      Float64 distance, offset;
-      std::vector<CComPtr<IPoint2d>> points;
-      switch(type)
+      CComPtr<IPathElement> pathElement;
+      m_EdgePath[stLeft]->get_Item(i, &pathElement);
+
+      CComPtr<IPoint2dCollection> key_points;
+      pathElement->GetKeyPoints(&key_points);
+
+      IndexType nKeyPoints;
+      key_points->get_Count(&nKeyPoints);
+      for (IndexType i = 0; i < nKeyPoints; i++)
       {
-      case petPoint:
-         {
-            CComQIPtr<IPoint2d> point(pUnk);
-            points.push_back(point);
-         }
-         break;
+         CComPtr<IPoint2d> point;
+         key_points->get_Item(i, &point);
 
-      case petLineSegment:
-         {
-            CComQIPtr<ILineSegment2d> lineSegment(pUnk);
-            CComPtr<IPoint2d> startPoint, endPoint;
-            lineSegment->get_StartPoint(&startPoint);
-            lineSegment->get_EndPoint(&endPoint);
-            points.push_back(startPoint);
-            points.push_back(endPoint);
-         }
-         break;
-
-      case petCompoundCurve:
-         {
-            CComQIPtr<ICompoundCurve> CompoundCurve(pUnk);
-            CComPtr<IPoint2d> pntTS, pntSC, pntCS, pntST;
-            CompoundCurve->get_TS(&pntTS);
-            CompoundCurve->get_SC(&pntSC);
-            CompoundCurve->get_CS(&pntCS);
-            CompoundCurve->get_ST(&pntST);
-            points.push_back(pntTS);
-            points.push_back(pntSC);
-            points.push_back(pntCS);
-            points.push_back(pntST);
-         }
-         break;
-
-      case petCubicSpline:
-         {
-            CComQIPtr<ICubicSpline> spline(pUnk);
-            CComPtr<IPoint2dCollection> splinePoints;
-            spline->get_Points(&splinePoints);
-
-            CComPtr<IPoint2d> point;
-            CComPtr<IEnumPoint2d> enumPoints;
-            splinePoints->get__Enum(&enumPoints);
-            while ( enumPoints->Next(1,&point,nullptr) != S_FALSE )
-            {
-               points.push_back(point);
-               point.Release();
-            }
-         }
-         break;
-
-      default:
-         ATLASSERT(false); // is there a new type?
-      }
-      pathElement.Release();
-
-      for( const auto& point : points)
-      {
-         m_EdgePath[stLeft]->Offset(point,&distance,&offset); 
+         Float64 distance, offset;
+         m_EdgePath[stLeft]->DistanceAndOffset(point,&distance,&offset);
          if (::InRange(left_edge_start,distance,left_edge_end) )
          {
             leftPathPoints.insert(std::make_pair(distance,point));
@@ -651,7 +540,8 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    {
       Float64 distanceAlongPath = left_edge_start + pathLength*idx/(nMinPointsPerSide-1);
       CComPtr<IPoint2d> point;
-      m_EdgePath[stLeft]->LocatePoint(distanceAlongPath,omtAlongDirection,0.0,CComVariant(0),&point);
+      CComQIPtr<IPathElement> element(m_EdgePath[stLeft]);
+      element->LocatePoint(distanceAlongPath,omtAlongDirection,0.0,CComVariant(0),&point);
       leftPathPoints.insert(std::make_pair(distanceAlongPath,point));
    }
 

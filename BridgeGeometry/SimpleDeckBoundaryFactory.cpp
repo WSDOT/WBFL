@@ -128,7 +128,7 @@ STDMETHODIMP CSimpleDeckBoundaryFactory::Create(IBridgeGeometry* pBridge,IDeckBo
 #if defined _DEBUG
       else
       {
-         // Check to see if reference line is defined. It is ok if it is not defined as long as it
+         // Check to see if reference line is defined. It is OK if it is not defined as long as it
          // gets defined before the overall bridge geometry is updated. These asserts are just a 
          // heads-up warning for the developer
          if ( m_TransverseEdgeType[end] == setPier )
@@ -153,7 +153,7 @@ STDMETHODIMP CSimpleDeckBoundaryFactory::Create(IBridgeGeometry* pBridge,IDeckBo
 #if defined _DEBUG
       else
       {
-         // Check to see if reference line is defined. It is ok if it is not defined as long as it
+         // Check to see if reference line is defined. It is OK if it is not defined as long as it
          // gets defined before the overall bridge geometry is updated. These asserts are just a 
          // heads-up warning for the developer
          CComPtr<IPath> path;
@@ -171,7 +171,7 @@ STDMETHODIMP CSimpleDeckBoundaryFactory::Create(IBridgeGeometry* pBridge,IDeckBo
 #if defined _DEBUG
          else
          {
-            // Check to see if reference line is defined. It is ok if it is not defined as long as it
+            // Check to see if reference line is defined. It is OK if it is not defined as long as it
             // gets defined before the overall bridge geometry is updated. These asserts are just a 
             // heads-up warning for the developer
             CComPtr<IPath> path;

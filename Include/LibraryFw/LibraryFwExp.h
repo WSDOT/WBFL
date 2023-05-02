@@ -44,12 +44,7 @@
 #define LIBRARYFWTPL   extern template class LIBRARYFWCLASS
 #endif
 
-#if !defined INCLUDED_WBFLALL_H_
-#include <WbflAll.h>
-#endif
-
-#if !defined INCLUDED_LIBRARYFW_AUTOLIB_H_
 #include <LibraryFw\AutoLib.h>
-#endif
+#include <WbflAll.h>
 
 #endif // INCLUDED_LIBRARYFW_LIBRARYFWEXP_H_

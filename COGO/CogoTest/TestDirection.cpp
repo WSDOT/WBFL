@@ -83,8 +83,8 @@ void CTestDirection::Test()
    // North/South and East/West Direction
    TRY_TEST(dir->get_NSDirection(nullptr),E_POINTER);   
    TRY_TEST(dir->get_EWDirection(nullptr),E_POINTER);   
-   TRY_TEST(dir->put_NSDirection((NSDirectionType)4),COGO_E_BADDIRECTION);
-   TRY_TEST(dir->put_EWDirection((EWDirectionType)4),COGO_E_BADDIRECTION);
+   TRY_TEST(dir->put_NSDirection((NSDirectionType)4), E_INVALIDARG);
+   TRY_TEST(dir->put_EWDirection((EWDirectionType)4), E_INVALIDARG);
 
    dir->put_Value(0.780925757);
    TRY_TEST(dir->get_NSDirection(&nsDir),S_OK);   
@@ -166,9 +166,9 @@ void CTestDirection::Test()
    TRY_TEST(IsEqual(sec,22.5,0.1),true);
 
    // Put Deg,Min,Sec
-   TRY_TEST(dir->put_Degree(100),COGO_E_BADDIRECTION);
-   TRY_TEST(dir->put_Degree(-1),COGO_E_BADDIRECTION);
-   TRY_TEST(dir->put_Degree(90),COGO_E_BADDIRECTION); // Puts total angle > 90
+   TRY_TEST(dir->put_Degree(100), E_INVALIDARG);
+   TRY_TEST(dir->put_Degree(-1), E_INVALIDARG);
+   TRY_TEST(dir->put_Degree(90), E_INVALIDARG); // Puts total angle > 90
    dir->put_Minute(0);
    dir->put_Second(0);
    TRY_TEST(dir->put_Degree(90),S_OK);
@@ -177,17 +177,17 @@ void CTestDirection::Test()
    TRY_TEST(dir->get_Degree(&deg),S_OK);
    TRY_TEST(deg,60);
 
-   TRY_TEST(dir->put_Minute(100),COGO_E_BADDIRECTION);
-   TRY_TEST(dir->put_Minute(-1),COGO_E_BADDIRECTION);
-   TRY_TEST(dir->put_Minute(60),COGO_E_BADDIRECTION);
+   TRY_TEST(dir->put_Minute(100), E_INVALIDARG);
+   TRY_TEST(dir->put_Minute(-1), E_INVALIDARG);
+   TRY_TEST(dir->put_Minute(60), E_INVALIDARG);
    TRY_TEST(dir->put_Minute( 0),S_OK);
    TRY_TEST(dir->put_Minute(30),S_OK);
    TRY_TEST(dir->get_Minute(&min),S_OK);
    TRY_TEST(min,30);
 
-   TRY_TEST(dir->put_Second(100.),COGO_E_BADDIRECTION);
-   TRY_TEST(dir->put_Second(-1.),COGO_E_BADDIRECTION);
-   TRY_TEST(dir->put_Second(60.),COGO_E_BADDIRECTION);
+   TRY_TEST(dir->put_Second(100.), E_INVALIDARG);
+   TRY_TEST(dir->put_Second(-1.), E_INVALIDARG);
+   TRY_TEST(dir->put_Second(60.), E_INVALIDARG);
    TRY_TEST(dir->put_Second( 0.),S_OK);
    TRY_TEST(dir->put_Second(30.),S_OK);
    TRY_TEST(dir->get_Second(&sec),S_OK);
@@ -251,30 +251,30 @@ void CTestDirection::Test()
    TRY_TEST(IsEqual(val,2.0),true);
 
    // Test FromString
-   TRY_TEST(dir->FromString(nullptr),                          E_INVALIDARG);
+   TRY_TEST(dir->FromString(nullptr),                       E_INVALIDARG);
    TRY_TEST(dir->FromString(CComBSTR()),                    E_INVALIDARG);
-   TRY_TEST(dir->FromString(CComBSTR("")),                  COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("         ")),         COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("ABC123")),            COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N")),                 COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N S")),               COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 100 45 12.3 E")),   COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 90 22.5 E")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 15 90.5 E")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("0.76")),              COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("E 45 15 22.5 W")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 15 22.5 N")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("NS 45 15 22.5 E")),   COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 15 22.5 EW")),   COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 0A 15 22.5 E")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N A0 15 22.5 E")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 0A 22.5 E")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 A0 22.5 E")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 15 A0.0 E")),    COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N    45 15 22.5 E")), COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45    15 22.5 E")), COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 15    22.5 E")), COGO_E_BADDIRECTIONSTRING);
-   TRY_TEST(dir->FromString(CComBSTR("N 45 15 22.5    E")), COGO_E_BADDIRECTIONSTRING);
+   TRY_TEST(dir->FromString(CComBSTR("")),                  E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("         ")),         E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("ABC123")),            E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N")),                 E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N S")),               E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 100 45 12.3 E")),   E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 90 22.5 E")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 15 90.5 E")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("0.76")),              E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("E 45 15 22.5 W")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 15 22.5 N")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("NS 45 15 22.5 E")),   E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 15 22.5 EW")),   E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 0A 15 22.5 E")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N A0 15 22.5 E")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 0A 22.5 E")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 A0 22.5 E")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 15 A0.0 E")),    E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N    45 15 22.5 E")), E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45    15 22.5 E")), E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 15    22.5 E")), E_INVALIDARG);
+   TRY_TEST(dir->FromString(CComBSTR("N 45 15 22.5    E")), E_INVALIDARG);
 
    TRY_TEST(dir->FromString(CComBSTR("        N 45 15 22.5 E")),S_OK);
    TRY_TEST(dir->FromString(CComBSTR("N 45 15 22.5 E"        )),S_OK);
@@ -400,14 +400,14 @@ void CTestDirection::Test()
    TRY_TEST(ewDir,ewWest); // east is favored when ambiguous
 
    // Test FromDMS
-   TRY_TEST(dir->FromDMS((NSDirectionType)4,45,15,22.5,ewEast),  COGO_E_BADDIRECTION);
-   TRY_TEST(dir->FromDMS(nsNorth,100,15,22.5,ewEast),            COGO_E_BADDIRECTION);
-   TRY_TEST(dir->FromDMS(nsNorth,-10,15,22.5,ewEast),            COGO_E_BADDIRECTION);
-   TRY_TEST(dir->FromDMS(nsNorth,45,90,22.5,ewEast),             COGO_E_BADDIRECTION);
-   TRY_TEST(dir->FromDMS(nsNorth,45,-1,22.5,ewEast),             COGO_E_BADDIRECTION);
-   TRY_TEST(dir->FromDMS(nsNorth,45,15,122.5,ewEast),            COGO_E_BADDIRECTION);
-   TRY_TEST(dir->FromDMS(nsNorth,45,15,-22.5,ewEast),            COGO_E_BADDIRECTION);
-   TRY_TEST(dir->FromDMS(nsNorth,45,15,22.5,(EWDirectionType)4), COGO_E_BADDIRECTION);
+   TRY_TEST(dir->FromDMS((NSDirectionType)4,45,15,22.5,ewEast),  E_INVALIDARG);
+   TRY_TEST(dir->FromDMS(nsNorth,100,15,22.5,ewEast),            E_INVALIDARG);
+   TRY_TEST(dir->FromDMS(nsNorth,-10,15,22.5,ewEast),            E_INVALIDARG);
+   TRY_TEST(dir->FromDMS(nsNorth,45,90,22.5,ewEast),             E_INVALIDARG);
+   TRY_TEST(dir->FromDMS(nsNorth,45,-1,22.5,ewEast),             E_INVALIDARG);
+   TRY_TEST(dir->FromDMS(nsNorth,45,15,122.5,ewEast),            E_INVALIDARG);
+   TRY_TEST(dir->FromDMS(nsNorth,45,15,-22.5,ewEast),            E_INVALIDARG);
+   TRY_TEST(dir->FromDMS(nsNorth,45,15,22.5,(EWDirectionType)4), E_INVALIDARG);
 
    TRY_TEST(dir->FromDMS(nsNorth,45,15,22.5,ewEast),S_OK);
    dir->get_NSDirection(&nsDir);
@@ -422,16 +422,16 @@ void CTestDirection::Test()
    TRY_TEST(ewDir,ewEast);
 
    // Test FromAzimuth
-   TRY_TEST(dir->FromAzimuthEx(370,15,22.5),  COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(360,15,22.5),  COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(-360,15,22.5), COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(-370,15,22.5), COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(45,60,22.5),   COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(45,90,22.5),   COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(45,-15,22.5),  COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(45,15,60.0),   COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(45,15,90.5),   COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuthEx(45,15,-22.5),  COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(370,15,22.5),  E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(360,15,22.5),  E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(-360,15,22.5), E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(-370,15,22.5), E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(45,60,22.5),   E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(45,90,22.5),   E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(45,-15,22.5),  E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(45,15,60.0),   E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(45,15,90.5),   E_INVALIDARG);
+   TRY_TEST(dir->FromAzimuthEx(45,15,-22.5),  E_INVALIDARG);
 
    TRY_TEST(dir->FromAzimuthEx(45,15,22.5),S_OK);
    dir->get_NSDirection(&nsDir);
@@ -492,12 +492,10 @@ void CTestDirection::Test()
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IDirection ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_Direction,IID_IDirection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Direction,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }

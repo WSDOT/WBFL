@@ -26,6 +26,7 @@
 #include <Units\AutoSystem.h>
 #include <Units\Measure.h>
 #include <Units\System.h>
+#include <Units\StationFormat.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,6 +44,7 @@ bool UnitTest::TestMe(WBFL::Debug::Log& rlog)
    tst &= AutoSystem::TestMe(rlog);
    tst &= Measure::TestMe(rlog);
    tst &= System::TestMe(rlog);
+   tst &= StationFormat::TestMe(rlog);
 #endif
 
    return tst;

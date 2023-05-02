@@ -32,8 +32,8 @@
 #include "LBAMUtils.h"
 
 class CSupports;
-typedef CComSegmentCollection< ISupports, ISupport, IEnumSupport, &IID_IEnumSupport,SupportIndexType > SupportCollImpl;
-typedef CPersistentCollection<CSupports, SupportCollImpl,SupportIndexType> PersistentSupportCollImpl;
+using SupportCollImpl = CComSegmentCollection< ISupports, ISupport, IEnumSupport, &IID_IEnumSupport, SupportIndexType >;
+using PersistentSupportCollImpl = CPersistentCollection<CSupports, SupportCollImpl,SupportIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSupports

@@ -25,12 +25,6 @@
 #include "MohrCircle.h"
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 MohrCircle::MohrCircle() :
    m_Sii(0.0),
    m_Sjj(0.0),

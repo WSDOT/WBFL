@@ -79,7 +79,7 @@ namespace WBFL
       // can be exported
       #define DECLARE_INDIRECT_MEASURE_DATA(u,t) \
          UNITSTPL IndirectMeasureDataT<u>; \
-         typedef IndirectMeasureDataT<u> t;
+         using t = IndirectMeasureDataT<u>;
 
       DECLARE_INDIRECT_MEASURE_DATA( Mass,           MassData           );
       DECLARE_INDIRECT_MEASURE_DATA( MassPerLength,  MassPerLengthData  );
@@ -102,8 +102,8 @@ namespace WBFL
       DECLARE_INDIRECT_MEASURE_DATA( SqrtPressure,   SqrtPressureData   );
       DECLARE_INDIRECT_MEASURE_DATA( Velocity,       VelocityData       );
 
-      typedef PressureData StressData;
-      typedef LengthData   AreaPerLengthData;
+      using StressData = PressureData;
+      using AreaPerLengthData = LengthData;
 
 
       /// An object that defines various indirect units of measure.

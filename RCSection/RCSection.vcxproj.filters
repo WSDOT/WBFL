@@ -171,6 +171,9 @@
     <ClInclude Include="..\Include\RCSection\MomentInteractionCurveSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\RCSection\CapacityLimit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RCSection.def" />

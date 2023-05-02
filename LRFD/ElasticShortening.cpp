@@ -27,13 +27,6 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdElasticShortening
@@ -287,8 +280,8 @@ void lrfdElasticShortening::Update() const
             Float64 Mx = m_P*epsy + m_Mdlg;
             Float64 My = m_P*epsx;
 
-            ATLASSERT(!IsZero(m_Ag));
-            ATLASSERT(!IsZero(D));
+            CHECK(!IsZero(m_Ag));
+            CHECK(!IsZero(D));
 
             if ( IsZero(Ppj) )
             {
@@ -314,7 +307,7 @@ void lrfdElasticShortening::Update() const
             m_dfESPerm = kn * m_FcgpPerm;
 
             iter++;
-            ATLASSERT(iter<100);// if we are taking this long, there is a problem
+            CHECK(iter<100);// if we are taking this long, there is a problem
 
          } while (!IsZero(dfESTemp-m_dfESTemp,0.01) || !IsZero(dfESPerm-m_dfESPerm,0.01));
       }
@@ -385,7 +378,7 @@ void lrfdElasticShortening::Update() const
    }
    else
    {
-      ATLASSERT(false); // new method?
+      CHECK(false); // new method?
    }
 
    m_bUpdate = false;

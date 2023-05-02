@@ -35,9 +35,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
-#include <Private\WBFLPackage.h>
-
 #include <ObjBase.h>
 #include <AtlBase.h>
 
@@ -49,6 +46,7 @@
 #include <WBFLAtlExt.h>
 
 #include <MathEx.h>
+#include <WBFLTest.h>
 
 
 // TODO: reference additional headers your program requires here

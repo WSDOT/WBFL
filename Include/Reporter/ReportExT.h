@@ -135,7 +135,7 @@ private:
 };
 
 REPORTERTPL rptReportExT<WBFL::Units::IndirectMeasure>;
-typedef rptReportExT<WBFL::Units::IndirectMeasure> rptReportEx;
+using rptReportEx = rptReportExT<WBFL::Units::IndirectMeasure>;
 
 
 #endif // INCLUDED_REPORTER_REPORTEXT_H_

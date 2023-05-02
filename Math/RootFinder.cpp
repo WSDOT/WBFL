@@ -26,13 +26,6 @@
 #include <Math\Function.h>
 #include <Math\XRootFinder.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-
 using namespace WBFL::Math;
 
 const int NTRY = 50;

@@ -33,7 +33,7 @@
 
 // Template takes care of all
 class CDeckedSlabBeamVoidSurfaceAreaCalculator;
-typedef TEndBlockSegmentImpl<IDeckedSlabBeamEndBlockSegment, IDeckedSlabBeamSection, IDeckedSlabBeam, &CLSID_DeckedSlabBeamEndBlockSegment, IDR_DECKEDSLABBEAMENDBLOCKSEGMENT, VoidedEndBlock<IDeckedSlabBeam>, CDeckedSlabBeamVoidSurfaceAreaCalculator> CDeckedSlabBeamEndBlockSegment;
+using CDeckedSlabBeamEndBlockSegment = TEndBlockSegmentImpl<IDeckedSlabBeamEndBlockSegment, IDeckedSlabBeamSection, IDeckedSlabBeam, &CLSID_DeckedSlabBeamEndBlockSegment, IDR_DECKEDSLABBEAMENDBLOCKSEGMENT, VoidedEndBlock<IDeckedSlabBeam>, CDeckedSlabBeamVoidSurfaceAreaCalculator>;
 
 class CDeckedSlabBeamVoidSurfaceAreaCalculator
 {

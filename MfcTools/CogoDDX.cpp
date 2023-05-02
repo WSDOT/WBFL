@@ -196,7 +196,7 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const WBFL::Un
 
    int cLength = ::GetWindowTextLength( hWndCtrl ) + 1;
    cLength = (cLength == 1 ? 32 : cLength );
-   LPTSTR lpszBuffer = new TCHAR[cLength];
+   auto lpszBuffer(std::make_unique<TCHAR[]>(cLength));;
 
    CComPtr<IStation> objStation;
    HRESULT hr = objStation.CoCreateInstance(CLSID_Station);
@@ -205,13 +205,11 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const WBFL::Un
 	if (pDX->m_bSaveAndValidate)
 	{
 	   // Transfer data from the control
-	   ::GetWindowText(hWndCtrl, lpszBuffer, cLength);
-      hr = objStation->FromString(CComBSTR(lpszBuffer),unitMode);
+	   ::GetWindowText(hWndCtrl, lpszBuffer.get(), cLength);
+      hr = objStation->FromString(CComBSTR(lpszBuffer.get()),unitMode);
       if ( FAILED(hr) )
       {
          // Fail throws an exception delete lpszBuffer so we don't leak memory.
-         delete[] lpszBuffer;
-         lpszBuffer = 0;
          CString strError;
          if ( unitMode == umUS )
             strError = _T("Invalid station format. Enter the station in the following format: xx+yy.zz");
@@ -224,30 +222,21 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const WBFL::Un
       }
 
       objStation->get_Value(&station);
-      station = WBFL::Units::ConvertToSysUnits( station, displayUnit );
    }
 	else
 	{  
-      station = WBFL::Units::ConvertFromSysUnits( station, displayUnit );
       objStation->put_Value(station);
       CComBSTR bstrStation;
       hr = objStation->AsString(unitMode,VARIANT_FALSE,&bstrStation);
       if ( FAILED(hr) )
       {
          // Something got screwed up!!!
-
-         // Fail throws an exception delete lpszBuffer so we don't leak memory.
-         delete[] lpszBuffer;
-         lpszBuffer = 0;
-
          pDX->Fail();
       }
 
 
 		::SetWindowText(hWndCtrl,CString(bstrStation));
 	}
-
-   delete[] lpszBuffer;
 }
 
 void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI, const WBFL::Units::Length& usDisplayUnit, const WBFL::Units::Length& siDisplayUnit )

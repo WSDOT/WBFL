@@ -60,8 +60,8 @@ namespace WBFL
          /// Defines the plane with the coefficients of the scalar equation of a plane (Ax + By + Cz + D = 0)
          void Init(Float64 a, Float64 b, Float64 c, Float64 d);
 
-         /// Gets the coefficients for the scalar equation of a plane
-         void GetConstants(Float64* pA, Float64* pB, Float64* pC, Float64* pD) const;
+         /// Gets the coefficients for the scalar equation of a plane (A, B, C, D)
+         std::tuple<Float64,Float64,Float64,Float64> GetConstants() const;
 
          /// Defines a plane parallel to the XY plane at the specified altitude.
          void ThroughAltitude(Float64 altitude);

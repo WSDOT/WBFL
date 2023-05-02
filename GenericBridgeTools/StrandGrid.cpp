@@ -1677,7 +1677,7 @@ STDMETHODIMP CStrandGrid::ClearDebonding()
    m_LeftSections.clear();
    m_RightSections.clear();
 
-   typedef std::vector<GridPoint2d> GridCollection;
+   using GridCollection = std::vector<GridPoint2d>;
    GridCollectionIterator begin(m_GridPoints.begin());
    GridCollectionIterator iter(begin);
    GridCollectionIterator end(m_GridPoints.end());

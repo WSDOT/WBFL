@@ -31,12 +31,6 @@
 
 // NOTE: This shape is based on the WBFL::Geometry BulbTee2
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 BulbTee::BulbTee() : FlangedBeam()
@@ -139,13 +133,13 @@ IndexType BulbTee::GetTopFlangeCount() const
 
 Float64 BulbTee::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("BulbTee::GetTopFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 BulbTee::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("BulbTee::GetTopFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopWidth();
 }
 
@@ -156,13 +150,13 @@ IndexType BulbTee::GetBottomFlangeCount() const
 
 Float64 BulbTee::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("BulbTee::GetBottomFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 BulbTee::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("BulbTee::GetBottomFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetBottomWidth();
 }
 
@@ -255,7 +249,7 @@ void BulbTee::GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d*
    if (IsZero(m_C2))
    {
       Float64 x, y;
-      leftTop->GetLocation(&x, &y);
+      std::tie(x,y) = leftTop->GetLocation();
       x += m_W5;
       y += m_W5 * m_N2;
       topCL->Move(x, y);
@@ -263,7 +257,7 @@ void BulbTee::GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d*
    else if (IsEqual(m_C2, m_W5 + m_W6))
    {
       Float64 x, y;
-      leftTop->GetLocation(&x, &y);
+      std::tie(x,y) = leftTop->GetLocation();
       x += m_W5;
       y += m_W5 * m_N1;
       topCL->Move(x, y);
@@ -271,7 +265,7 @@ void BulbTee::GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d*
    else
    {
       Float64 x, y;
-      leftTop->GetLocation(&x, &y);
+      std::tie(x,y) = leftTop->GetLocation();
       x += m_W5;
       if (m_C2 < m_W5)
       {
@@ -357,14 +351,14 @@ MatingSurfaceIndexType BulbTee::GetMatingSurfaceCount() const
 
 Float64 BulbTee::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("BulbTee::GetMatingSurfaceWidth - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    return GetTopWidth();
 }
 
 Float64 BulbTee::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("BulbTee::GetMatingSurfaceWidth - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    
    return 0.0;
 }
@@ -376,7 +370,7 @@ IndexType BulbTee::GetWebCount() const
 
 Plane3d BulbTee::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("BulbTee::GetMatingSurfaceWidth - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 

@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include <System\SysExp.h>
 #include <iostream>
 #include <iomanip>
 
@@ -53,7 +54,7 @@ namespace WBFL
 
 #pragma warning ( disable : 4231 )
 SYSSTRUCTTPL std::_Smanip<WBFL::System::EngNotationFormatSpecification>; // causes the compiler to create an instance of the _Smanip template
-typedef std::_Smanip<WBFL::System::EngNotationFormatSpecification> eng_notation_manip; ///< std stream manipulator for engineering notation
+using eng_notation_manip = std::_Smanip<WBFL::System::EngNotationFormatSpecification>; ///< std stream manipulator for engineering notation
 
 /// Returns a custom stream manipulator for engineering notation
 SYSFUNC eng_notation_manip eng_notation(Float64 value,int nDigits,int sigDigits = 0);

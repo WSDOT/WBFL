@@ -108,8 +108,8 @@ private:
    Float64 m_Disp[NumDof];                 // deflections
    Float64 m_Reaction[NumDof];             // reactions
 
-   typedef std::set<CMember*>               MemberPointerContainer;
-   typedef MemberPointerContainer::iterator MemberPointerIterator;
+   using MemberPointerContainer = std::set<CMember*>;
+   using MemberPointerIterator = MemberPointerContainer::iterator;
 
    MemberPointerContainer m_AttachedMembers;  // reference to all Members attached to this
                                               // joint. 

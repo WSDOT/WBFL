@@ -161,9 +161,9 @@ public:
    long     m_Width;
    PolyLinePointType m_PtType;
 
-   typedef CAdapt<CComPtr<IPoint2d> > ContainerItem;
-   typedef std::vector<ContainerItem> ContainerType;
-   typedef ContainerType::iterator    ContainerIterator;
+   using ContainerItem = CAdapt<CComPtr<IPoint2d> >;
+   using ContainerType = std::vector<ContainerItem>;
+   using ContainerIterator = ContainerType::iterator;
    ContainerType m_Container;
 
 private:

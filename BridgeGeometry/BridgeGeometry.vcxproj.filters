@@ -58,6 +58,9 @@
     <ClCompile Include="UniformSpacingLayoutLineFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PathCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignmentOffsetLayoutLineFactory.h">
@@ -117,6 +120,9 @@
     <ClInclude Include="UniformSpacingLayoutLineFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PathCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BridgeGeometry.def" />
@@ -171,6 +177,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Bridge.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PathCollection.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -19,9 +19,6 @@
     <ClCompile Include="TestAlignment3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestAlignmentCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestAngle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,37 +43,19 @@
     <ClCompile Include="TestIntersect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestLineSegmentCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestLocate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestMeasure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestPathCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestPathElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestPoint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestPointCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestProfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestProfileElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestProfilePoint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestProfilePointCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestProject.cpp">
@@ -85,16 +64,10 @@
     <ClCompile Include="TestStation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestStationEquationCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestTangent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestVertCurve.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestVertCurveCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestWidening.cpp">
@@ -107,9 +80,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestCompoundCurve2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCompoundCurveCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestCircularCurve.cpp">
@@ -162,37 +132,19 @@
     <ClInclude Include="TestIntersect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestLineSegmentCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestLocate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestMeasure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestPathCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestPathElement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestPoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestPointCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestProfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestProfileElement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestProfilePoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestProfilePointCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestProject.h">
@@ -201,16 +153,10 @@
     <ClInclude Include="TestStation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestStationEquationCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestTangent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestVertCurve.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestVertCurveCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestWidening.h">
@@ -222,18 +168,12 @@
     <ClInclude Include="TestCompoundCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestCompoundCurveCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestCircularCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestTransitionCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

@@ -54,7 +54,7 @@ public:
 };
 
 #include <EAF\EAFComponentInfo.h>
-typedef CEAFPluginManagerBase<IEAFComponentInfo,CEAFApp> CEAFComponentInfoManager;
+using CEAFComponentInfoManager = CEAFPluginManagerBase<IEAFComponentInfo,CEAFApp>;
 
 
 class CEAFHelpWindowThread;

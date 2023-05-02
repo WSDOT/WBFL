@@ -24,13 +24,6 @@
 #include <Math\MathLib.h>
 #include <Math\QuadraticSolver.h>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 QuadraticSolver::QuadraticSolver(Float64 a,Float64 b,Float64 c)

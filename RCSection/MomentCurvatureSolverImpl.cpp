@@ -25,12 +25,6 @@
 #include "MomentCurvatureSolverImpl.h"
 #include <RCSection/XRCSection.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #define MAX_FAIL 4
 
 using namespace WBFL::RCSection;
@@ -118,7 +112,7 @@ std::unique_ptr<MomentCurvatureSolution> MomentCurvatureSolverImpl::Solve(Float6
 
 Float64 MomentCurvatureSolverImpl::GetCurvatureIncrement(Uint32 nFail) const
 {
-   ASSERT(0 < m_kInitialStep);
+   CHECK(0 < m_kInitialStep);
    return m_kInitialStep / pow(2., Float64(nFail));
 }
 
@@ -130,7 +124,7 @@ bool MomentCurvatureSolverImpl::AnalyzeSection(Float64 Fz, Float64 angle, Float6
 #if defined _DEBUG
    Float64 Pz = capacity_solution->GetFz();
    Float64 tol = GetTolerance();
-   ASSERT(IsEqual(Fz, Pz, tol));
+   CHECK(IsEqual(Fz, Pz, tol));
 #endif
 
    Float64 Mx = capacity_solution->GetMx();

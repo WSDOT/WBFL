@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "Loading.h"
 
-typedef CModelCollection<IFem2dLoadingCollection, IFem2dLoading, CLoading, IFem2dEnumLoading, &IID_IFem2dEnumLoading,LoadCaseIDType> LoadingCollImpl;
+using LoadingCollImpl = CModelCollection<IFem2dLoadingCollection, IFem2dLoading, CLoading, IFem2dEnumLoading, &IID_IFem2dEnumLoading,LoadCaseIDType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadingCollection

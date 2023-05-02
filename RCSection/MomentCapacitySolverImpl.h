@@ -61,8 +61,8 @@ namespace WBFL
 
          WBFL::Geometry::Point2d GetPlasticCentroid() const;
 
-         void GetCompressionLimit(Float64* Fz,Float64* Mx,Float64* My,Float64* eo) const;
-         void GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const;
+         const CapacityLimit& GetCompressionLimit() const;
+         const CapacityLimit& GetTensionLimit() const;
 
       private:
          mutable GeneralSectionSolver m_GeneralSolver;
@@ -80,8 +80,8 @@ namespace WBFL
          mutable WBFL::Geometry::Point2d m_FixedPoint; // this point is the fixed control point (like the point of -0.003 compression strain at the top of a section)
 
          mutable bool m_bUpdateLimits{true};
-         mutable Float64 m_FzTensionLimit, m_MxTensionLimit, m_MyTensionLimit, m_eoTensionLimit;
-         mutable Float64 m_FzCompressionLimit, m_MxCompressionLimit, m_MyCompressionLimit, m_eoCompressionLimit;
+         mutable CapacityLimit m_TensionCapacityLimit;
+         mutable CapacityLimit m_CompressionCapacityLimit;
          void UpdateLimits() const;
 
          void UpdateStrainPlane(Float64 angle, Float64 k_or_ec, Float64 strainLocation, MomentCapacitySolver::SolutionMethod solutionMethod, Float64 eo) const;

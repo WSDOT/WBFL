@@ -30,12 +30,6 @@
 #include <MathEx.h>
 #include <memory>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 UBeam2::UBeam2()
@@ -265,7 +259,7 @@ Float64 UBeam2::GetT() const
 
 Float64 UBeam2::GetWebLocation(WebIndexType webIdx) const
 {
-   if (2 <= webIdx) THROW_GEOMETRY(_T("UBeam2::GetWebLocation - invalid web index"));
+   if (2 <= webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    GetPolygon(); // causes the shape to be updated, including m_Slope and m_T
 
@@ -282,7 +276,7 @@ Float64 UBeam2::GetWebSpacing() const
 
 Float64 UBeam2::GetSlope(WebIndexType webIdx) const
 {
-   if (2 <= webIdx) THROW_GEOMETRY(_T("UBeam2::GetMatingSurfaceLocation - invalid web index"));
+   if (2 <= webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    GetPolygon(); // causes the slope to be updated
    return (webIdx == 0 ? -1.0 : 1.0) * m_Slope;
@@ -313,7 +307,7 @@ IndexType UBeam2::GetTopFlangeCount() const
 
 Float64 UBeam2::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (1 < flangeIdx) THROW_GEOMETRY(_T("UBeam2::GetTopFlangeLocation - invalid flange index"));
+   if (1 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    Float64 sign = (flangeIdx == 0 ? -1 : 1);
    if (m_bUseOutlineOnly) 
@@ -348,13 +342,13 @@ IndexType UBeam2::GetBottomFlangeCount() const
 
 Float64 UBeam2::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("UBeam2::GetBottomFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 UBeam2::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("UBeam2::GetBottomFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetBottomWidth();
 }
 
@@ -375,13 +369,13 @@ MatingSurfaceIndexType UBeam2::GetMatingSurfaceCount() const
 
 Float64 UBeam2::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam2::GetMatingSurfaceWidth - invalid web index"));
+   if (1 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopFlangeWidth(webIdx);
 }
 
 Float64 UBeam2::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam2::GetMatingSurfaceLocation - invalid web index"));
+   if (1 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopFlangeLocation(webIdx);
 }
 
@@ -392,7 +386,7 @@ IndexType UBeam2::GetWebCount() const
 
 Plane3d UBeam2::GetWebPlane(WebIndexType webIdx) const
 {
-   if (1 < webIdx) THROW_GEOMETRY(_T("UBeam2::GetWebPlane - invalid web index"));
+   if (1 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    GetPolygon(); // causes the shape to be updated, including m_Slope and m_T
 

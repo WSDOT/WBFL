@@ -136,7 +136,7 @@ public:
 private:
    Float64 m_X;
    Float64 m_Y;
-   typedef CComPtr<IPShape> ShapePtr;
+   using ShapePtr = CComPtr<IPShape>;
    std::vector<ShapePtr> m_Shapes;
 // IPersist
 	STDMETHOD(GetClassID)(GUID * pClassID)

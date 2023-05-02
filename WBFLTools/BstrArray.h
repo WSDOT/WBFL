@@ -74,8 +74,8 @@ public:
 	STDMETHOD(get__EnumElements)(struct IEnumBstrArray ** ) override;
 
 protected:
-   typedef std::vector< CAdapt<CComBSTR> >       ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
+   using ContainerType = std::vector< CAdapt<CComBSTR> >;
+	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 
 };

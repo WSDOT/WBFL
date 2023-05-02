@@ -23,10 +23,8 @@
 
 #pragma once
 
-#include <System\SysExp.h>
+#include <System/SysExp.h>
 #include <System/LogContext.h>
-
-class WBFL::System::SectionValue;
 
 namespace WBFL
 {

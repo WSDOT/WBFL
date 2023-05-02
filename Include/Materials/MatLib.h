@@ -36,9 +36,7 @@ DESCRIPTION
    analytical modeling services that can be used to predict their stress-strain
    behavior.
 
-   The sign convension used for the material models is compressive stresses
+   The sign conversion used for the material models is compressive stresses
    and strains are less than zero and tensile stresses and strains are
    greater than zero.
 *****************************************************************************/
-
-#include <Private\WBFLPackage.h>

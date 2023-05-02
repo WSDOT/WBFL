@@ -67,12 +67,12 @@ void CTestAngle::Test()
    TRY_TEST( IsEqual(val,10.0), true);
 
    // Test FromDMS and Degree, Minute, Second properties
-   TRY_TEST( angle->FromDMS(-14,60,13.5),  COGO_E_BADANGLE ); // Invalid minute
-   TRY_TEST( angle->FromDMS(-14,65,13.5),  COGO_E_BADANGLE ); // Invalid minute
-   TRY_TEST( angle->FromDMS(-14,-10,13.5), COGO_E_BADANGLE ); // Invalid minute
-   TRY_TEST( angle->FromDMS(-14,25,60.0),  COGO_E_BADANGLE ); // Invalid second
-   TRY_TEST( angle->FromDMS(-14,25,65.0),  COGO_E_BADANGLE ); // Invalid second
-   TRY_TEST( angle->FromDMS(-14,25,-10.0), COGO_E_BADANGLE ); // Invalid second
+   TRY_TEST( angle->FromDMS(-14,60,13.5), E_INVALIDARG); // Invalid minute
+   TRY_TEST( angle->FromDMS(-14,65,13.5), E_INVALIDARG); // Invalid minute
+   TRY_TEST( angle->FromDMS(-14,-10,13.5), E_INVALIDARG); // Invalid minute
+   TRY_TEST( angle->FromDMS(-14,25,60.0), E_INVALIDARG); // Invalid second
+   TRY_TEST( angle->FromDMS(-14,25,65.0), E_INVALIDARG); // Invalid second
+   TRY_TEST( angle->FromDMS(-14,25,-10.0), E_INVALIDARG); // Invalid second
    TRY_TEST( angle->FromDMS(-14,25,13.5), S_OK);
    long deg,min;
    Float64 sec;
@@ -120,32 +120,32 @@ void CTestAngle::Test()
    TRY_TEST( IsEqual(val,3*PI_OVER_2), true );
 
    // Test FromString
-   TRY_TEST( angle->FromString(nullptr),                       E_INVALIDARG );
-   TRY_TEST( angle->FromString(CComBSTR("")),               COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("        ")),       COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("A")),              COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("+12.5 L")),        COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("-12.5 L")),        COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("+12.5 R")),        COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("-12.5 R")),        COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("x12.5 L")),        COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12.5 LR")),        COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12.5 x")),         COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("DD 13 14.15")),    COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 MM 14.15")),    COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 13 SS.ss")),    COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 -10 14.15")),   COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 60 14.15")),    COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 65 14.15")),    COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 13 -14.15")),   COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 13 60.00")),    COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 13 65.00")),    COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 13 14.15 LR")), COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("12 13 14.15 x")),  COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("-12 13 14.15 L")), COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("+12 13 14.15 L")), COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("-12 13 14.15 R")), COGO_E_BADANGLESTRING );
-   TRY_TEST( angle->FromString(CComBSTR("+12 13 14.15 R")), COGO_E_BADANGLESTRING );
+   TRY_TEST( angle->FromString(nullptr),                    E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("")),               E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("        ")),       E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("A")),              E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("+12.5 L")),        E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("-12.5 L")),        E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("+12.5 R")),        E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("-12.5 R")),        E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("x12.5 L")),        E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12.5 LR")),        E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12.5 x")),         E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("DD 13 14.15")),    E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 MM 14.15")),    E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 13 SS.ss")),    E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 -10 14.15")),   E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 60 14.15")),    E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 65 14.15")),    E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 13 -14.15")),   E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 13 60.00")),    E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 13 65.00")),    E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 13 14.15 LR")), E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("12 13 14.15 x")),  E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("-12 13 14.15 L")), E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("+12 13 14.15 L")), E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("-12 13 14.15 R")), E_INVALIDARG );
+   TRY_TEST( angle->FromString(CComBSTR("+12 13 14.15 R")), E_INVALIDARG );
 
    // This should work!!!
    TRY_TEST( angle->FromString(CComBSTR("12 13 R")), S_OK);
@@ -303,12 +303,10 @@ void CTestAngle::Test()
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IAngle ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_Angle,IID_IAngle,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Angle,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }

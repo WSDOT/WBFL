@@ -27,6 +27,7 @@
 
 #include <GeomModel/GeomModelExp.h>
 #include <GeomModel/Vector2d.h>
+#include <MathEx.h> // for TOLERANCE
 
 namespace WBFL
 {
@@ -37,14 +38,14 @@ namespace WBFL
       class Size2d;
 
       /// Interface defining a directed line of infinite length.
-///
-/// A line is described by its implicit form, its explicit form, or by two points.
-/// The implicit form consists of the shortest distance from the origin to the line and a unit vector normal to the line.
-/// \image html Line2d/Implicit.jpg
-/// The explicit from consists of a point and a unit vector in the direction of the line.
-/// \image html Line2d/Explicit.jpg
-/// The line can also be described as passing through two points.The direction of the line is from the first point, towards the second point.
-/// \image html Line2d/TwoPoints.jpg
+      ///
+      /// A line is described by its implicit form, its explicit form, or by two points.
+      /// The implicit form consists of the shortest distance from the origin to the line and a unit vector normal to the line.
+      /// \image html Line2d/Implicit.jpg
+      /// The explicit from consists of a point and a unit vector in the direction of the line.
+      /// \image html Line2d/Explicit.jpg
+      /// The line can also be described as passing through two points.The direction of the line is from the first point, towards the second point.
+      /// \image html Line2d/TwoPoints.jpg
       class GEOMMODELCLASS Line2d
       {
       public:
@@ -86,7 +87,7 @@ namespace WBFL
 
          /// Returns true if point is contained in the locus of points that define 
          /// this line,  otherwise returns false.
-         bool ContainsPoint(const Point2d& point) const;
+         bool ContainsPoint(const Point2d& point,Float64 tolerance = TOLERANCE) const;
 
          /// Returns the slope of the line.  If the line is vertical and pointing 
          /// upwards,  returns std::numeric_limits<float>::infinity().
@@ -147,13 +148,13 @@ namespace WBFL
          void SetImplicit(Float64 c, const Vector2d& n);
    
          /// get implicit form of line
-         void GetImplicit(Float64* c, Vector2d* n) const;
+         std::pair<Float64,Vector2d> GetImplicit() const;
    
          /// set explicit form of line
          void SetExplicit(const Point2d& u, const Vector2d& v);
    
          /// get explicit form of line
-         void GetExplicit(Point2d* u, Vector2d* v) const;
+         std::pair<Point2d,Vector2d> GetExplicit() const;
 
          /// Sets a line passing through points p1 and p2.
          /// Has the same behavior as the default constructor if the points are 
@@ -174,7 +175,7 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         // line is stored implicitely (refer to Graphics Gems)
+         // line is stored implicitly (refer to Graphics Gems)
          Vector2d m_N; // normal vector *** Must be normalized !!!!
          Float64  m_c{ 0.0 }; // distance from origin
       };

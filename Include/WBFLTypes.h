@@ -77,10 +77,10 @@ public:
    SimplePointT& operator=(const SimplePointT&) = default;
    ~SimplePointT() = default;
 
-   T& X() { return first; }
-   const T& X() const { return first; }
-   T& Y() { return second; }
-   const T& Y() const { return second; }
+   T& X() { return this->first; }
+   const T& X() const { return this->first; }
+   T& Y() { return this->second; }
+   const T& Y() const { return this->second; }
 };
 
 template <class T>
@@ -93,10 +93,10 @@ public:
    SimpleSizeT& operator=(const SimpleSizeT&) = default;
    ~SimpleSizeT() = default;
 
-   T& Dx() { return first; }
-   const T& Dx() const { return first; }
-   T& Dy() { return second; }
-   const T& Dy() const { return second; }
+   T& Dx() { return this->first; }
+   const T& Dx() const { return this->first; }
+   T& Dy() { return this->second; }
+   const T& Dy() const { return this->second; }
 };
 
 template <class T>

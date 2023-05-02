@@ -31,8 +31,8 @@
 #include "WBFLComCollections.h"
 
 class CCastingRegions;
-typedef CComVectorCollection<ICastingRegions,ICastingRegion, IEnumCastingRegions,&IID_IEnumCastingRegions,CollectionIndexType> CastingRegionItemColl;
-typedef CPersistentCollection<CCastingRegions, CastingRegionItemColl,CollectionIndexType> PersistentCastingRegions;
+using CastingRegionItemColl = CComVectorCollection<ICastingRegions, ICastingRegion, IEnumCastingRegions, &IID_IEnumCastingRegions, CollectionIndexType>;
+using PersistentCastingRegions = CPersistentCollection<CCastingRegions, CastingRegionItemColl,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCastingRegions

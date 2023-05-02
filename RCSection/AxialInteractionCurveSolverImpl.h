@@ -25,6 +25,7 @@
 #include <RCSection/RCSectionExp.h>
 #include <RCSection/MomentCapacitySolver.h>
 #include <RCSection/InteractionCurveSolution.h>
+#include <RCSection/CapacityLimit.h>
 
 namespace WBFL
 {
@@ -54,9 +55,9 @@ namespace WBFL
          void SetMaxIterations(IndexType maxIter);
          IndexType GetMaxIterations() const;
 
-         void GetCompressionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const;
+         const CapacityLimit& GetCompressionLimit() const;
 
-         void GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const;
+         const CapacityLimit& GetTensionLimit() const;
 
          std::unique_ptr<InteractionCurveSolution> Solve(Float64 na, IndexType nFzSteps) const;
 

@@ -29,12 +29,6 @@
 #include <MathEx.h>
 #include "Helpers.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 PCIDeckedIBeam::PCIDeckedIBeam() :
@@ -336,13 +330,13 @@ IndexType PCIDeckedIBeam::GetTopFlangeCount() const
 
 Float64 PCIDeckedIBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetTopFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 PCIDeckedIBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetTopFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopWidth();
 }
 
@@ -353,13 +347,13 @@ IndexType PCIDeckedIBeam::GetBottomFlangeCount() const
 
 Float64 PCIDeckedIBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetBottomFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 PCIDeckedIBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetBottomFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetBottomWidth();
 }
 
@@ -405,13 +399,13 @@ MatingSurfaceIndexType PCIDeckedIBeam::GetMatingSurfaceCount() const
 
 Float64 PCIDeckedIBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType idx) const
 {
-   if (0 < idx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetMatingSurfaceWidth - index out of range"));
+   if (0 < idx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopWidth();
 }
 
 Float64 PCIDeckedIBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType idx) const
 {
-   if (0 < idx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetMatingSurfaceLocation - index out of range"));
+   if (0 < idx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0;
 }
 
@@ -422,7 +416,7 @@ IndexType PCIDeckedIBeam::GetWebCount() const
 
 Plane3d PCIDeckedIBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("PCIDeckedIBeam::GetWebPlane - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 

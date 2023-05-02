@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "MemberStrain.h"
 
-typedef CLoadsCollection<IFem2dMemberStrainCollection, IFem2dMemberStrain, CMemberStrain, IFem2dEnumMemberStrain, &IID_IFem2dEnumMemberStrain,LoadIDType> MemberStrainCollImpl;
+using MemberStrainCollImpl = CLoadsCollection<IFem2dMemberStrainCollection, IFem2dMemberStrain, CMemberStrain, IFem2dEnumMemberStrain, &IID_IFem2dEnumMemberStrain,LoadIDType>;
 
 class ModelEvents;
 

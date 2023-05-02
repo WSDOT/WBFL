@@ -24,12 +24,6 @@
 #include <Math\MathLib.h>
 #include <Math\CDRatio.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 Float64 CDRatio::Compute(Float64 capacity,Float64 demand)
@@ -46,11 +40,11 @@ bool CDRatio::IsCDRatioLess(CDRatio::Sense sense, Float64 capacity1, Float64 dem
 #if defined _DEBUG
    if (sense== CDRatio::Sense::Positive)
    {
-      ATLASSERT(capacity1>=0.0 && capacity2>=0.0); // Signs of capacites cannot be different
+      CHECK(capacity1>=0.0 && capacity2>=0.0); // Signs of capacities cannot be different
    }
    else
    {
-      ATLASSERT(capacity1<=0.0 && capacity2<=0.0); // ""
+      CHECK(capacity1<=0.0 && capacity2<=0.0); // ""
    }
 #endif
 

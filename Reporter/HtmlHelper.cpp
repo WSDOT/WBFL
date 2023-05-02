@@ -29,12 +29,6 @@
 #include <ostream>
 #include <vector>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 
 // a mapping list for fonts for html
 // Note: This list is dependent of the order of the enum FontType in 

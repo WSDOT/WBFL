@@ -74,8 +74,8 @@ public:
 	STDMETHOD(get__EnumElements)(struct IEnumDblArray ** ) override;
 
 protected:
-   typedef std::vector<Float64>       ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
+   using ContainerType = std::vector<Float64>;
+	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 };
 

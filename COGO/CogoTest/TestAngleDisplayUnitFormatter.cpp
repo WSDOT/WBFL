@@ -106,7 +106,7 @@ void CTestAngleDisplayUnitFormatter::Test()
    fmtr->put_CondensedFormat(VARIANT_FALSE);
    fmtr->put_Signed(VARIANT_FALSE);
 
-   TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),COGO_E_BADFORMATTAG);
+   TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),E_INVALIDARG);
 
    TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("d,m,s"),&bstrTest),S_OK);
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("45d 00m 00.00s L")), 0);

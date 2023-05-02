@@ -68,7 +68,13 @@ namespace WBFL
 class GEOMMODELCLASS Polygon : public ShapeImpl
 {
 public:
-   enum class Symmetry {None,X,Y};
+   /// @brief Defines the axis of symmetry.
+   enum class Symmetry 
+   {
+      None, ///< No symmetry
+      X, ///< Symmetry is about the horizontal axis
+      Y ///< Symmetry is about the vertical axis
+   };
 
    Polygon() = default;
    Polygon(std::shared_ptr<Point2d>& hookPnt);
@@ -82,11 +88,18 @@ public:
    void SetSymmetry(Symmetry sym,///< type of symmetry
                     Float64 axis=0 ///< location of the axis of symmetry
    );
+
+   /// @brief Returns the type of symmetry
    Symmetry GetSymmetry() const;
+
+   /// @brief Returns the location of the axis of symmetry. The returned value is meaningless if symmetry is Symmetry::None
    Float64 GetSymmetryAxis() const;
 
+   ///{@
+   /// @brief Adds a point to the polygon
    void AddPoint(Float64 x, Float64 y);
    void AddPoint(const Point2d& p);
+   ///@}
 
    /// Adds points to the polygon
    void AddPoints(const std::vector<Point2d>& points);
@@ -136,7 +149,13 @@ public:
    /// Returns the smallest rectangle that bounds the entire shape.
    virtual Rect2d GetBoundingBox() const override;
 
+   /// @brief Returns true if the point is in the shape
+   /// @param p 
+   /// @return 
    virtual bool PointInShape(const Point2d& p) const override;
+
+   /// @brief Returns the perimeter of the shape.
+   /// @return 
    virtual Float64 GetPerimeter() const override;
 
    // Clips this shape against line. Clips away the portion of the shape on the

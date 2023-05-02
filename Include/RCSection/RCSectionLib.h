@@ -23,6 +23,5 @@
 
 #pragma once
 
-#include <Private\WBFLPackage.h>
 #include <MathEx.h>
 

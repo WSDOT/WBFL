@@ -29,7 +29,6 @@
 #define __PCIRCLE_H_
 
 #include "resource.h"       // main symbols
-#include <Private\WbflPackage.h>
 #include <WbflAtlExt.h>
 #include <WBFLTools.h>
 

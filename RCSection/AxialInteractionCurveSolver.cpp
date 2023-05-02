@@ -25,12 +25,6 @@
 #include <RCSection\AxialInteractionCurveSolver.h>
 #include "AxialInteractionCurveSolverImpl.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::RCSection;
 
 AxialInteractionCurveSolver::AxialInteractionCurveSolver()
@@ -90,14 +84,14 @@ IndexType AxialInteractionCurveSolver::GetMaxIterations() const
    return m_pImpl->GetMaxIterations();
 }
 
-void AxialInteractionCurveSolver::GetCompressionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& AxialInteractionCurveSolver::GetCompressionLimit() const
 {
-   return m_pImpl->GetCompressionLimit(Fz, Mx, My, eo);
+   return m_pImpl->GetCompressionLimit();
 }
 
-void AxialInteractionCurveSolver::GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& AxialInteractionCurveSolver::GetTensionLimit() const
 {
-   return m_pImpl->GetTensionLimit(Fz, Mx, My, eo);
+   return m_pImpl->GetTensionLimit();
 }
 
 std::unique_ptr<InteractionCurveSolution> AxialInteractionCurveSolver::Solve(Float64 na, IndexType nFzSteps) const

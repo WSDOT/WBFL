@@ -23,10 +23,12 @@
 
 #pragma once
 
-#include <System\SysExp.h>
-#include <System\IStructuredSave.h>
-#include <System\XStructuredSave.h>
+#include <System/SysExp.h>
+#include <System/IStructuredSave.h>
+#include <System/XStructuredSave.h>
 #include <memory>
+
+#include <System/Debug.h>
 
 struct IStream;
 

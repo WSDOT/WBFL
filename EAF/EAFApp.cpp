@@ -978,7 +978,7 @@ void CEAFApp::InitDisplayUnits()
    WBFL::Units::System::SetMassUnit( WBFL::Units::Measure::Kilogram );
    WBFL::Units::System::SetLengthUnit( WBFL::Units::Measure::Meter );
    WBFL::Units::System::SetTimeUnit( WBFL::Units::Measure::Second );
-   WBFL::Units::System::SetTemperatureUnit( WBFL::Units::Measure::Celcius );
+   WBFL::Units::System::SetTemperatureUnit( WBFL::Units::Measure::Celsius );
    WBFL::Units::System::SetAngleUnit( WBFL::Units::Measure::Radian );
 
    m_UnitLibrary.AddEntry(_T("SI"),      init_si_units());

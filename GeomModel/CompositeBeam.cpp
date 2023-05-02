@@ -26,12 +26,6 @@
 #include <GeomModel/CompositeBeam.h>
 #include <GeomModel/Rectangle.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 // Index of composite section items
 #define BEAM       0
 #define HAUNCH     1

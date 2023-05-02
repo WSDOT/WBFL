@@ -27,10 +27,7 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "CogoModel.h"
-#include "CogoEngine.h"
-#include "PointCollection.h"
-#include "PathCollection.h"
-#include "AlignmentCollection.h"
+#include <WBFLCogo\CogoHelpers.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,114 +35,27 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+
+template <class C>
+IDType CCogoModel::GetID(const C& container, IndexType index)
+{
+   if (container.size() <= index) return INVALID_ID;
+
+   auto iter = container.begin();
+   std::advance(iter, index);
+   return iter->first;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CCogoModel
 HRESULT CCogoModel::FinalConstruct()
 {
-   HRESULT hr;
-
-   // Geometry Utility Object
-   CComObject<CCogoEngine>* pEngine;
-   CComObject<CCogoEngine>::CreateInstance(&pEngine);
-   m_Engine = pEngine;
- 
-   // Points collection
-   CComObject<CPointCollection>* pPoints;
-   CComObject<CPointCollection>::CreateInstance(&pPoints);
-   m_Points = pPoints;
-
-   // Line segment collection
-   hr = m_Lines.CoCreateInstance(CLSID_LineSegmentCollection);
-   if ( FAILED(hr) )
-      return hr;
-
-   // ProfilePoints collection
-   hr = m_ProfilePoints.CoCreateInstance(CLSID_ProfilePointCollection);
-   if ( FAILED(hr) )
-      return hr;
-
-   // VertCurves collection
-   hr = m_VertCurves.CoCreateInstance(CLSID_VertCurveCollection);
-   if ( FAILED(hr) )
-      return hr;
-
-   // CompoundCurves collection
-   hr = m_CompoundCurves.CoCreateInstance(CLSID_CompoundCurveCollection);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Alignments collection
-   CComObject<CAlignmentCollection>* pAlignments;
-   hr = CComObject<CAlignmentCollection>::CreateInstance(&pAlignments);
-   if ( FAILED(hr) )
-      return hr;
-
-   pAlignments->SetCollectionName(CComBSTR("Alignments"));
-   pAlignments->SetItemName(CComBSTR("Alignment"));
-   m_Alignments = pAlignments;
-
-   // Paths collection
-   CComObject<CPathCollection>* pPaths;
-   hr = CComObject<CPathCollection>::CreateInstance(&pPaths);
-   if ( FAILED(hr) )
-      return hr;
-
-   m_Paths = pPaths;
-
+   m_Engine.CoCreateInstance(CLSID_CogoEngine);
    return S_OK;
 }
 
 void CCogoModel::FinalRelease()
 {
-}
-
-HRESULT CCogoModel::put_Alignments(IAlignmentCollection* alignments)
-{
-   m_Alignments = alignments;
-   return S_OK;
-   //return CrAssignPointer(m_Alignments,alignments,this,IID_IAlignmentCollectionEvents,&m_dwAlignmentCookie);
-}
-
-HRESULT CCogoModel::put_Paths(IPathCollection* paths)
-{
-   m_Paths = paths;
-   return S_OK;
-   //return CrAssignPointer(m_Paths,paths,this,IID_IPathCollectionEvents,&m_dwPathCookie);
-}
-
-HRESULT CCogoModel::put_CompoundCurves(ICompoundCurveCollection* compoundCurves)
-{
-   m_CompoundCurves = compoundCurves;
-   return S_OK;
-   //return CrAssignPointer(m_CompoundCurves,compoundCurves,this,IID_ICompoundCurveCollectionEvents,&m_dwCompoundCurvesCookie);
-}
-
-HRESULT CCogoModel::put_Lines(ILineSegmentCollection* lines)
-{
-   m_Lines = lines;
-   return S_OK;
-   //return CrAssignPointer(m_Lines,lines,this,IID_ILineSegmentCollectionEvents,&m_dwLinesCookie);
-}
-
-HRESULT CCogoModel::put_Points(IPointCollection* points)
-{
-   m_Points = points;
-   return S_OK;
-   //return CrAssignPointer(m_Points,points,this,IID_IPointCollectionEvents,&m_dwPointsCookie);
-}
-
-HRESULT CCogoModel::put_ProfilePoints(IProfilePointCollection* profilePoints)
-{
-   m_ProfilePoints = profilePoints;
-   return S_OK;
-   //return CrAssignPointer(m_ProfilePoints,profilePoints,this,IID_IProfilePointCollectionEvents,&m_dwProfilePointsCookie);
-}
-
-HRESULT CCogoModel::put_VertCurves(IVertCurveCollection* vertCurves)
-{
-   m_VertCurves = vertCurves;
-   return S_OK;
-   //return CrAssignPointer(m_VertCurves,vertCurves,this,IID_IVertCurveCollectionEvents,&m_dwVertCurvesCookie);
 }
 
 STDMETHODIMP CCogoModel::InterfaceSupportsErrorInfo(REFIID riid)
@@ -159,7 +69,6 @@ STDMETHODIMP CCogoModel::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IProject,
       &IID_IDivide,
       &IID_ITangent,
-      &IID_IStructuredStorage2,
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -169,79 +78,1442 @@ STDMETHODIMP CCogoModel::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CCogoModel::get_Points(IPointCollection **pVal)
+STDMETHODIMP CCogoModel::StorePoint(IDType id, Float64 x, Float64 y)
 {
-   CHECK_RETOBJ(pVal);
-   *pVal = m_Points;
-   (*pVal)->AddRef();
-
-	return S_OK;
+   return m_Model->StorePoint(id, x, y) ? S_OK : E_FAIL;
 }
 
-STDMETHODIMP CCogoModel::get_LineSegments(ILineSegmentCollection* *pVal)
+STDMETHODIMP CCogoModel::StorePointEx(IDType id, IPoint2d* pPoint)
 {
-   CHECK_RETOBJ(pVal);
-   *pVal = m_Lines;
-   (*pVal)->AddRef();
-   
+   CHECK_IN(pPoint);
+   return m_Model->StorePoint(id, cogoUtil::GetPoint(pPoint)) ? S_OK : E_FAIL;
+}
+
+STDMETHODIMP CCogoModel::StorePoints(IDType firstID, IDType idInc, IPoint2dCollection* pPoints)
+{
+   CHECK_IN(pPoints);
+   IndexType nPoints;
+   pPoints->get_Count(&nPoints);
+   std::vector<WBFL::Geometry::Point2d> vPoints;
+   for (IndexType i = 0; i < nPoints; i++)
+   {
+      CComPtr<IPoint2d> pnt;
+      pPoints->get_Item(i, &pnt);
+      vPoints.emplace_back(cogoUtil::GetPoint(pnt));
+   }
+
+   return m_Model->StorePoints(firstID, idInc, vPoints) ? S_OK : E_FAIL;
+}
+
+STDMETHODIMP CCogoModel::GetPointCount(IndexType* nPoints)
+{
+   CHECK_RETVAL(nPoints);
+   *nPoints = m_Model->GetPoints().size();
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::get_ProfilePoints(IProfilePointCollection* *pVal)
+STDMETHODIMP CCogoModel::GetPointByID(IDType id, IPoint2d** ppPoint)
 {
-   CHECK_RETOBJ(pVal);
-   *pVal = m_ProfilePoints;
-   (*pVal)->AddRef();
+   CHECK_RETOBJ(ppPoint);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& point = m_Model->GetPoint(id);
+      hr = cogoUtil::CreatePoint(point, ppPoint);
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
+}
 
+STDMETHODIMP CCogoModel::GetPointByIndex(IndexType idx, IDType* pID, IPoint2d** ppPoint)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPoints(), idx)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetPointByID(*pID, ppPoint);
+}
+
+STDMETHODIMP CCogoModel::ReplacePointByID(IDType id, Float64 x, Float64 y)
+{
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = m_Model->ReplacePoint(id, x, y);
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::ReplacePointByIDEx(IDType id, IPoint2d* pPoint)
+{
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = m_Model->ReplacePoint(id, cogoUtil::GetPoint(pPoint));
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::ReplacePointByIndex(IndexType idx, Float64 x, Float64 y)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPoints(), idx)) == INVALID_ID) return E_INVALIDARG;
+   return ReplacePointByID(id, x, y);
+}
+
+STDMETHODIMP CCogoModel::ReplacePointByIndexEx(IndexType idx, IPoint2d* pPoint)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPoints(), idx)) == INVALID_ID) return E_INVALIDARG;
+   return ReplacePointByIDEx(id, pPoint);
+}
+
+STDMETHODIMP CCogoModel::RemovePointByID(IDType id)
+{
+   return m_Model->RemovePoint(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemovePointByIndex(IndexType index)
+{
+   IDType id;
+   if((id=GetID(m_Model->GetPoints(),index)) == INVALID_ID) return E_INVALIDARG;
+   return RemovePointByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearPoints()
+{
+   m_Model->ClearPoints();
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::get_VertCurves(IVertCurveCollection* *pVal)
+STDMETHODIMP CCogoModel::StorePathSegment(IDType id, IDType startID, IDType endID)
 {
-   CHECK_RETOBJ(pVal);
-   *pVal = m_VertCurves;
-   (*pVal)->AddRef();
+   return m_Model->StorePathSegment(id, startID, endID) ? S_OK : E_INVALIDARG;
+}
 
+STDMETHODIMP CCogoModel::GetPathSegmentByID(IDType id, IDType* pStartID, IDType* pEndID)
+{
+   CHECK_RETVAL(pStartID);
+   CHECK_RETVAL(pEndID);
+
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& definition = m_Model->GetPathSegment(id);
+      *pStartID = definition.startID;
+      *pEndID = definition.endID;
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::get_CompoundCurves(ICompoundCurveCollection* *pVal)
+STDMETHODIMP CCogoModel::GetPathSegmentByIndex(IndexType idx, IDType* pID, IDType* pStartID, IDType* pEndID)
 {
-   CHECK_RETOBJ(pVal);
-   *pVal = m_CompoundCurves;
-   (*pVal)->AddRef();
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetPathSegments(), idx)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetPathSegmentByID(id, pStartID, pEndID);
+}
 
+STDMETHODIMP CCogoModel::CreatePathSegmentByID(IDType id, IPathSegment** ppSegment)
+{
+   CHECK_RETOBJ(ppSegment);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto path_segment = m_Model->CreatePathSegment(id);
+      hr = cogoUtil::CreatePathSegment(path_segment, ppSegment);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreatePathSegmentByIndex(IndexType idx, IPathSegment** ppSegment)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPathSegments(), idx)) == INVALID_ID) return E_INVALIDARG;
+   return CreatePathSegmentByID(id, ppSegment);
+}
+
+STDMETHODIMP CCogoModel::RemovePathSegmentByID(IDType id)
+{
+   return m_Model->RemovePathSegment(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemovePathSegmentByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPathSegments(), index)) == INVALID_ID) return E_INVALIDARG;
+
+   return RemovePathSegmentByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearPathSegments()
+{
+   m_Model->ClearPathSegments();
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::get_Alignments(IAlignmentCollection* *pVal)
+STDMETHODIMP CCogoModel::StoreCompoundCurve(IDType id, IDType pbtID, IDType piID, IDType pftID, Float64 radius, Float64 lsEntry, TransitionCurveType lsEntryType, Float64 lsExit, TransitionCurveType lsExitType)
 {
-   CHECK_RETOBJ(pVal);
-   *pVal = m_Alignments;
-   (*pVal)->AddRef();
+   return m_Model->StoreCompoundCurve(id, pbtID, piID, pftID, radius, lsEntry, WBFL::COGO::TransitionCurveType(lsEntryType), lsExit, WBFL::COGO::TransitionCurveType(lsExitType)) ? S_OK : E_INVALIDARG;
+}
 
+STDMETHODIMP CCogoModel::GetCompoundCurveCountByID(IDType id, IndexType* nCurves)
+{
+   CHECK_RETVAL(nCurves);
+   *nCurves = m_Model->GetCompoundCurves().size();
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::get_Paths(IPathCollection* *pVal)
+STDMETHODIMP CCogoModel::GetCompoundCurveCountByIndex(IndexType index, IDType* pID, IndexType* nCurves)
 {
-   CHECK_RETOBJ(pVal);
-   *pVal = m_Paths;
-   (*pVal)->AddRef();
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetCompoundCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetCompoundCurveCountByID(id, nCurves);
+}
 
+STDMETHODIMP CCogoModel::GetCompoundCurveByID(IDType id, IDType* pbtID, IDType* piID, IDType* pftID, Float64* pRadius, Float64* pLsEntry, TransitionCurveType* pLsEntryType, Float64* pLsExit, TransitionCurveType* pLsExitType)
+{
+   CHECK_RETVAL(pbtID);
+   CHECK_RETVAL(piID);
+   CHECK_RETVAL(pftID);
+   CHECK_RETVAL(pRadius);
+   CHECK_RETVAL(pLsEntry);
+   CHECK_RETVAL(pLsEntryType);
+   CHECK_RETVAL(pLsExit);
+   CHECK_RETVAL(pLsExitType);
+
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& definition = m_Model->GetCompoundCurve(id);
+      *pbtID = definition.pbtID;
+      *piID = definition.piID;
+      *pftID = definition.pftID;
+      *pRadius = definition.radius;
+      *pLsEntry = definition.entry_spiral_length;
+      *pLsEntryType = TransitionCurveType(definition.entry_spiral_type);
+      *pLsExit = definition.exit_spiral_length;
+      *pLsExitType = TransitionCurveType(definition.exit_spiral_type);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+STDMETHODIMP CCogoModel::GetCompoundCurveByIndex(IndexType idx, IDType* pbtID, IDType* piID, IDType* pftID, Float64* pRadius, Float64* pLsEntry, TransitionCurveType* pLsEntryType, Float64* pLsExit, TransitionCurveType* pLsExitType)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetCompoundCurves(), idx)) == INVALID_ID) return E_INVALIDARG;
+   return GetCompoundCurveByID(id, pbtID, piID, pftID, pRadius, pLsEntry, pLsEntryType, pLsExit, pLsExitType);
+}
+
+STDMETHODIMP CCogoModel::CreateCompoundCurveByID(IDType id, ICompoundCurve** ppCurve)
+{
+   CHECK_RETOBJ(ppCurve);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto curve = m_Model->CreateCompoundCurve(id);
+      hr = cogoUtil::CreateCompoundCurve(curve, ppCurve);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateCompoundCurveByIndex(IndexType idx, ICompoundCurve** ppCurve)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetCompoundCurves(), idx)) == INVALID_ID) return E_INVALIDARG;
+   return CreateCompoundCurveByID(id, ppCurve);
+}
+
+STDMETHODIMP CCogoModel::RemoveCompoundCurveByID(IDType id)
+{
+   return m_Model->RemoveCompoundCurve(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveCompoundCurveByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetCompoundCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveCompoundCurveByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearCompoundCurves()
+{
+   m_Model->ClearCompoundCurves();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreCircularCurve(IDType id, IDType pbtID, IDType piID, IDType pftID, Float64 radius)
+{
+   return m_Model->StoreCircularCurve(id, pbtID, piID, pftID, radius) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetCircularCurveByID(IDType id, IDType* pbtID, IDType* piID, IDType* pftID, Float64* pRadius)
+{
+   CHECK_RETVAL(pbtID);
+   CHECK_RETVAL(piID);
+   CHECK_RETVAL(pftID);
+   CHECK_RETVAL(pRadius);
+
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& definition = m_Model->GetCircularCurve(id);
+      *pbtID = definition.pbtID;
+      *piID = definition.piID;
+      *pftID = definition.pftID;
+      *pRadius = definition.radius;
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetCircularCurveByIndex(IndexType idx, IDType* pID, IDType* pbtID, IDType* piID, IDType* pftID, Float64* pRadius)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetCircularCurves(), idx)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetCircularCurveByID(id,pbtID,piID,pftID,pRadius);
+}
+
+STDMETHODIMP CCogoModel::CreateCircularCurveByID(IDType id, ICircularCurve** ppCurve)
+{
+   CHECK_RETOBJ(ppCurve);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto curve = m_Model->CreateCircularCurve(id);
+      hr = cogoUtil::CreateCircularCurve(curve, ppCurve);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateCircularCurveByIndex(IndexType idx, ICircularCurve** ppCurve)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetCircularCurves(), idx)) == INVALID_ID) return E_INVALIDARG;
+   return CreateCircularCurveByID(id, ppCurve);
+}
+
+STDMETHODIMP CCogoModel::RemoveCircularCurveByID(IDType id)
+{
+   return m_Model->RemoveCircularCurve(id) ? S_OK : E_FAIL;
+}
+
+STDMETHODIMP CCogoModel::RemoveCircularCurveByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetCircularCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveCircularCurveByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearCircularCurves()
+{
+   m_Model->ClearCircularCurves();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreTransitionCurve(IDType id, IDType startID, VARIANT varDirection, Float64 r1, Float64 r2, Float64 L, TransitionCurveType transitionType)
+{
+   auto result = cogoUtil::DirectionFromVariant(varDirection);
+   if (FAILED(result.first)) return result.first;
+   return m_Model->StoreTransitionCurve(id, startID, result.second, r1, r2, L, WBFL::COGO::TransitionCurveType(transitionType)) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetTransitionCurveByID(IDType id, IDType* startID, IDirection** ppDirection, Float64* r1, Float64* r2, Float64* L, TransitionCurveType* transitionType)
+{
+   CHECK_RETVAL(startID);
+   CHECK_RETOBJ(ppDirection);
+   CHECK_RETVAL(r1);
+   CHECK_RETVAL(r2);
+   CHECK_RETVAL(L);
+   CHECK_RETVAL(transitionType);
+
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& definition = m_Model->GetTransitionCurve(id);
+      *startID = definition.startID;
+      *r1 = definition.start_radius;
+      *r2 = definition.end_radius;
+      *L = definition.length;
+      *transitionType = TransitionCurveType(definition.transition_type);
+      hr = cogoUtil::CreateDirection(definition.start_direction, ppDirection);
+   }
+   catch(...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetTransitionCurveByIndex(IndexType index, IDType* pID, IDType* startID, IDirection** ppDirection, Float64* r1, Float64* r2, Float64* L, TransitionCurveType* transitionType)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetTransitionCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetTransitionCurveByID(id, startID, ppDirection, r1, r2, L, transitionType);
+}
+
+STDMETHODIMP CCogoModel::CreateTransitionCurveByID(IDType id, ITransitionCurve** ppCurve)
+{
+   CHECK_RETOBJ(ppCurve);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto curve = m_Model->CreateTransitionCurve(id);
+      hr = cogoUtil::CreateTransitionCurve(curve, ppCurve);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateTransitionCurveByIndex(IndexType index, ITransitionCurve** ppCurve)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetTransitionCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   return CreateTransitionCurveByID(id, ppCurve);
+}
+
+STDMETHODIMP CCogoModel::RemoveTransitionCurveByID(IDType id)
+{
+   return m_Model->RemoveTransitionCurve(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveTransitionCurveByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetTransitionCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveTransitionCurveByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearTransitionCurvese()
+{
+   m_Model->ClearTransitionCurves();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreCubicSpline(IDType id, IIDArray* pIDs)
+{
+   CHECK_IN(pIDs);
+   IndexType nIDs;
+   pIDs->get_Count(&nIDs);
+   std::vector<IDType> vID;
+   for (IndexType i = 0; i < nIDs; i++)
+   {
+      IDType id;
+      pIDs->get_Item(i, &id);
+      vID.emplace_back(id);
+   }
+
+   return m_Model->StoreCubicSpline(id, vID) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetCubicSplineByID(IDType id, IIDArray** ppIDs)
+{
+   CHECK_RETOBJ(ppIDs);
+   CComPtr<IIDArray> idArray;
+   HRESULT hr  = idArray.CoCreateInstance(CLSID_IDArray);
+   if (FAILED(hr)) return hr;
+
+   const auto& vID = m_Model->GetCubicSpline(id);
+   idArray->Reserve(vID.size());
+   for (const auto& id : vID)
+   {
+      idArray->Add(id);
+   }
+
+   return idArray.CopyTo(ppIDs);
+}
+
+STDMETHODIMP CCogoModel::GetCubicSplineByIndex(IndexType index, IDType* pID, IIDArray** ppIDs)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetCubicSplines(), index)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetCubicSplineByID(id,ppIDs);
+}
+
+STDMETHODIMP CCogoModel::CreateCubicSplineByID(IDType id, ICubicSpline** ppCurve)
+{
+   CHECK_RETOBJ(ppCurve);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto spline = m_Model->CreateCubicSpline(id);
+      hr = cogoUtil::CreateCubicSpline(spline, ppCurve);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateCubicSplineByIndex(IndexType index, ICubicSpline** ppCurve)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetCubicSplines(), index)) == INVALID_ID) return E_INVALIDARG;
+   return CreateCubicSplineByID(id, ppCurve);
+}
+
+STDMETHODIMP CCogoModel::RemoveCubicSplineByID(IDType id)
+{
+   return m_Model->RemoveCubicSpline(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveCubicSplineByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetCubicSplines(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveCubicSplineByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearCubicSplines()
+{
+   m_Model->ClearCubicSplines();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreAlignment(IDType id)
+{
+   return m_Model->StoreAlignment(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetAlignmentCount(IndexType* nAlignments)
+{
+   CHECK_RETVAL(nAlignments);
+   *nAlignments = m_Model->GetAlignments().size();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::AddPathElementToAlignmentByID(IDType alignemntID, PathElementType elementType, IDType elementID)
+{
+   return m_Model->AppendElementToAlignment(alignemntID, WBFL::COGO::Model::PathElementType(elementType), elementID) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::AddPathElementToAlignmentByIndex(IndexType alignmentIndex, PathElementType elementType, IDType elementID)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetAlignments(), alignmentIndex)) == INVALID_ID) return E_INVALIDARG;
+   return AddPathElementToAlignmentByID(id, elementType, elementID);
+}
+
+STDMETHODIMP CCogoModel::GetAlignmentPathElementCountByID(IDType alignmentID, IndexType* nElements)
+{
+   CHECK_RETVAL(nElements);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& vAlignmentElements = m_Model->GetAlignment(alignmentID);
+      *nElements = vAlignmentElements.size();
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetAlignmentPathElementCountByIndex(IndexType alignmentIndex, IndexType* nElements)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetAlignments(), alignmentIndex)) == INVALID_ID) return E_INVALIDARG;
+   return GetAlignmentPathElementCountByID(id, nElements);
+}
+
+STDMETHODIMP CCogoModel::GetAlignmentPathElementByID(IDType alignmentID, IndexType elementIndex, PathElementType* pType, IDType* pElementID)
+{
+   CHECK_RETVAL(pType);
+   CHECK_RETVAL(pElementID);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& vAlignmentElements = m_Model->GetAlignment(alignmentID);
+      if (vAlignmentElements.size() <= elementIndex)
+      {
+         hr = E_INVALIDARG;
+      }
+      else
+      {
+         const auto& pair = vAlignmentElements[elementIndex];
+         *pType = PathElementType(pair.first);
+         *pElementID = pair.second;
+         hr = S_OK;
+      }
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetAlignmentPathElementByIndex(IndexType alignmentIndex, IndexType elementIndex, IDType* pID,PathElementType* pType, IDType* pElementID)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetAlignments(), alignmentIndex)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetAlignmentPathElementByID(id, elementIndex, pType, pElementID);
+}
+
+STDMETHODIMP CCogoModel::GetAlignmentID(IndexType alignmentIndex, IDType* pID)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetAlignments(), alignmentIndex)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::CreateAlignmentByID(IDType id, IAlignment** ppAlignment)
+{
+   CHECK_RETOBJ(ppAlignment);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto alignment = m_Model->CreateAlignment(id);
+      hr = cogoUtil::CreateAlignment(alignment, ppAlignment);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateAlignmentByIndex(IndexType alignmentIndex, IAlignment** ppAlignment)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetAlignments(), alignmentIndex)) == INVALID_ID) return E_INVALIDARG;
+   return CreateAlignmentByID(id, ppAlignment);
+}
+
+STDMETHODIMP CCogoModel::RemoveAlignmentByID(IDType id)
+{
+   return m_Model->RemoveAlignment(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveAlignmentByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetAlignments(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveAlignmentByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearAlignments()
+{
+   m_Model->ClearAlignments();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::SetAlignmentReferenceStation(IDType alignmentID, VARIANT varStation)
+{
+   HRESULT hr;
+   WBFL::COGO::Station station;
+   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   if (FAILED(hr)) return hr;
+   return m_Model->SetAlignmentReferneceStation(alignmentID, station) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveAlignmentReferenceStation(IDType alignmentID)
+{
+   return m_Model->RemoveAlignmentReferenceStation(alignmentID) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetAlignmentReferenceStation(IDType alignmentID, IStation** ppStation)
+{
+   CHECK_RETOBJ(ppStation);
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = cogoUtil::CreateStation(m_Model->GetAlignmentReferenceStation(alignmentID), ppStation);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::AddStationEquation(IDType alignmentID, Float64 back, Float64 ahead)
+{
+   return m_Model->AddStationEquation(alignmentID, back, ahead) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetStationEquationCount(IDType alignmentID, IndexType* nEquations)
+{
+   CHECK_RETVAL(nEquations);
+   *nEquations = m_Model->GetStationEquations(alignmentID).size();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::GetStationEquation(IDType alignmentID, IndexType equationIndex, Float64* pBack, Float64* pAhead)
+{
+   CHECK_RETVAL(pBack);
+   CHECK_RETVAL(pAhead);
+   const auto& equations = m_Model->GetStationEquations(alignmentID);
+   if (equations.size() <= equationIndex) return E_INVALIDARG;
+  const auto& equation = equations[equationIndex];
+  *pBack = equation.first;
+  *pAhead = equation.second;
+  return S_OK;
+}
+
+STDMETHODIMP CCogoModel::ClearStationEquations()
+{
+   m_Model->ClearStationEquations();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StorePath(IDType id)
+{
+   return m_Model->StorePath(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetPathCount(IndexType* nPaths)
+{
+   CHECK_RETVAL(nPaths);
+   *nPaths = m_Model->GetPaths().size();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::AddPathElementToPathByID(IDType pathID, PathElementType elementType, IDType elementID)
+{
+   return m_Model->AppendElementToPath(pathID, WBFL::COGO::Model::PathElementType(elementType), elementID) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::AddPathElementToPathByIndex(IndexType pathIndex, PathElementType elementType, IDType elementID)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPaths(), pathIndex)) == INVALID_ID) return E_INVALIDARG;
+   return AddPathElementToPathByID(id, elementType, elementID);
+}
+
+STDMETHODIMP CCogoModel::GetPathElementCountByID(IDType id, IndexType* nElements)
+{
+   CHECK_RETVAL(nElements);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& vPathElements = m_Model->GetPath(id);
+      *nElements = vPathElements.size();
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetPathElementCountByIndex(IndexType index, IndexType* nElements)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPaths(), index)) == INVALID_ID) return E_INVALIDARG;
+   return GetPathElementCountByID(id, nElements);
+}
+
+STDMETHODIMP CCogoModel::GetPathElementByID(IDType pathID, IndexType elementIndex, PathElementType* pType, IDType* pElementID)
+{
+   CHECK_RETVAL(pType);
+   CHECK_RETVAL(pElementID);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& vPathElements = m_Model->GetPath(pathID);
+      if (vPathElements.size() <= elementIndex)
+      {
+         hr = E_INVALIDARG;
+      }
+      else
+      {
+         const auto& pair = vPathElements[elementIndex];
+         *pType = PathElementType(pair.first);
+         *pElementID = pair.second;
+         hr = S_OK;
+      }
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetPathElementByIndex(IndexType pathIndex, IndexType elementIndex, IDType* pID, PathElementType* pType, IDType* pElementID)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetPaths(), pathIndex)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetPathElementByID(id, elementIndex, pType, pElementID);
+}
+
+STDMETHODIMP CCogoModel::GetPathID(IndexType pathIndex, IDType* pID)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetPaths(), pathIndex)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::CreatePathByID(IDType id, IPath** ppPath)
+{
+   CHECK_RETOBJ(ppPath);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto path = m_Model->CreatePath(id);
+      hr = cogoUtil::CreatePath(path, ppPath);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreatePathByIndex(IndexType pathIndex, IPath** ppPath)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPaths(), pathIndex)) == INVALID_ID) return E_INVALIDARG;
+   return CreatePathByID(id, ppPath);
+}
+
+STDMETHODIMP CCogoModel::RemovePathByID(IDType id)
+{
+   return m_Model->RemovePath(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemovePathByIndex(IndexType pathIndex)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetPaths(), pathIndex)) == INVALID_ID) return E_INVALIDARG;
+   return RemovePathByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearPaths()
+{
+   m_Model->ClearPaths();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreProfilePoint(IDType id, VARIANT varStation, Float64 elevation)
+{
+   HRESULT hr;
+   WBFL::COGO::Station station;
+   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   if (FAILED(hr)) return hr;
+   return m_Model->StoreProfilePoint(id, station, elevation) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::StoreProfilePointEx(IDType id, IProfilePoint* pPoint)
+{
+   auto point = cogoUtil::GetProfilePoint(pPoint);
+   return m_Model->StoreProfilePoint(id, point) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetProfilePointCount(IndexType* nPoints)
+{
+   CHECK_RETVAL(nPoints);
+   *nPoints = m_Model->GetProfilePoints().size();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::GetProfilePointByID(IDType id, IProfilePoint** ppPoint)
+{
+   CHECK_RETOBJ(ppPoint);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& point = m_Model->GetProfilePoint(id);
+      hr = cogoUtil::CreateProfilePoint(point, ppPoint);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetProfilePointByIndex(IndexType index, IDType* pID, IProfilePoint** ppPoint)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfilePoints(), index)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetProfilePointByID(*pID, ppPoint);
+}
+
+STDMETHODIMP CCogoModel::RemoveProfilePointByID(IDType id)
+{
+   return m_Model->RemoveProfilePoint(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveProfilePointByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfilePoints(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveProfilePointByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearProfilePoints()
+{
+   m_Model->ClearProfilePoints();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreProfileSegment(IDType id, IDType startID, IDType endID)
+{
+   return m_Model->StoreProfileSegment(id, startID, endID) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetProfileSegmentCount(IndexType* nSegments)
+{
+   CHECK_RETVAL(nSegments);
+   *nSegments = m_Model->GetProfileSegments().size();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::GetProfileSegmentByID(IDType id, IDType* pStartID, IDType* pEndID)
+{
+   CHECK_RETVAL(pStartID);
+   CHECK_RETVAL(pEndID);
+
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& definition = m_Model->GetProfileSegment(id);
+      *pStartID = definition.startID;
+      *pEndID = definition.endID;
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::GetProfileSegmentByIndex(IndexType index, IDType* pID, IDType* pStartID, IDType* pEndID)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetProfileSegments(), index)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetProfileSegmentByID(id, pStartID, pEndID);
+}
+
+STDMETHODIMP CCogoModel::CreateProfileSegmentByID(IDType id, IProfileSegment** ppSegment)
+{
+   CHECK_RETOBJ(ppSegment);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto profile_segment = m_Model->CreateProfileSegment(id);
+      hr = cogoUtil::CreateProfileSegment(profile_segment, ppSegment);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateProfileSegmentByIndex(IndexType index, IProfileSegment** ppSegment)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfileSegments(), index)) == INVALID_ID) return E_INVALIDARG;
+   return CreateProfileSegmentByID(id, ppSegment);
+}
+
+STDMETHODIMP CCogoModel::RemoveProfileSegmentByID(IDType id)
+{
+   return m_Model->RemoveProfileSegment(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveProfileSegmentByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfileSegments(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveProfileSegmentByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearProfileSegments()
+{
+   m_Model->ClearProfileSegments();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreVerticalCurve(IDType id, IDType pbg, IDType pvi, IDType pfg, Float64 l1_or_g1, Float64 l2_or_g2)
+{
+   return m_Model->StoreVerticalCurve(id, pbg, pvi, pfg, l1_or_g1, l2_or_g2) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetVerticalCurveCount(IndexType* nCurves)
+{
+   CHECK_RETVAL(nCurves);
+   *nCurves = m_Model->GetVerticalCurves().size();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::GetVerticalCurveByID(IDType id, IDType* pbg, IDType* pvi, IDType* pfg, Float64* l1_or_g1, Float64* l2_or_g2)
+{
+   CHECK_RETOBJ(pbg);
+   CHECK_RETVAL(pvi);
+   CHECK_RETVAL(pfg);
+   CHECK_RETVAL(l1_or_g1);
+   CHECK_RETVAL(l2_or_g2);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& definition = m_Model->GetVerticalCurve(id);
+      *pbg = definition.pbgID;
+      *pvi = definition.pviID;
+      *pfg = definition.pfgID;
+      *l1_or_g1 = definition.l1_or_g1;
+      *l2_or_g2 = definition.l2_or_g2;
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetVerticalCurveByIndex(IndexType index, IDType* pID, IDType* pbg, IDType* pvi, IDType* pfg, Float64* l1_or_g1, Float64* l2_or_g2)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetVerticalCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetVerticalCurveByID(id, pbg, pvi, pfg, l1_or_g1, l2_or_g2);
+}
+
+STDMETHODIMP CCogoModel::CreateVerticalCurveByID(IDType id, IVerticalCurve** ppVertCurve)
+{
+   CHECK_RETOBJ(ppVertCurve);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto vc = m_Model->CreateVerticalCurve(id);
+      hr = cogoUtil::CreateVerticalCurve(vc, ppVertCurve);
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateVerticalCurveByIndex(IndexType index, IVerticalCurve** ppVertCurve)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetVerticalCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   return CreateVerticalCurveByID(id, ppVertCurve);
+}
+
+STDMETHODIMP CCogoModel::RemoveVerticalCurveByID(IDType id)
+{
+   return m_Model->RemoveVerticalCurve(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveVerticalCurveByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetVerticalCurves(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveVerticalCurveByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearVerticalCurves()
+{
+   m_Model->ClearVerticalCurves();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreProfile(IDType id)
+{
+   return m_Model->StoreProfile(id);
+}
+
+STDMETHODIMP CCogoModel::GetProfileCount(IndexType* nProfiles)
+{
+   CHECK_RETVAL(nProfiles);
+   *nProfiles = m_Model->GetProfiles().size();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::AddProfileElementByID(IDType profileID, ProfileElementType elementType, IDType elementID)
+{
+   return m_Model->AppendElementToProfile(profileID, WBFL::COGO::Model::ProfileElementType(elementType), elementID);
+}
+
+STDMETHODIMP CCogoModel::AddProfileElementByIndex(IndexType profileIndex, ProfileElementType elementType, IDType elementID)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfiles(), profileIndex)) == INVALID_ID) return E_INVALIDARG;
+   return AddProfileElementByID(id, elementType, elementID);
+}
+
+STDMETHODIMP CCogoModel::GetProfileElementCountByID(IDType id, IndexType* nElements)
+{
+   CHECK_RETVAL(nElements);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& vProfileElements = m_Model->GetProfile(id);
+      *nElements = vProfileElements.size();
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetProfileElementCountByIndex(IndexType index, IndexType* nElements)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfiles(), index)) == INVALID_ID) return E_INVALIDARG;
+   return GetProfileElementCountByID(id, nElements);
+}
+
+STDMETHODIMP CCogoModel::GetProfileElementByID(IDType profileID, IndexType elementIndex, ProfileElementType* pType, IDType* pElementID)
+{
+   CHECK_RETVAL(pType);
+   CHECK_RETVAL(pElementID);
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& vProfileElements = m_Model->GetProfile(profileID);
+      if (vProfileElements.size() <= elementIndex)
+      {
+         hr = E_INVALIDARG;
+      }
+      else
+      {
+         const auto& pair = vProfileElements[elementIndex];
+         *pType = ProfileElementType(pair.first);
+         *pElementID = pair.second;
+         hr = S_OK;
+      }
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetProfileElementByIndex(IndexType profileIndex, IndexType elementIndex, ProfileElementType* pType, IDType* pElementID)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfiles(), profileIndex)) == INVALID_ID) return E_INVALIDARG;
+   return GetProfileElementByID(id, elementIndex, pType, pElementID);
+}
+
+STDMETHODIMP CCogoModel::CreateProfileByID(IDType profileID, IProfile** ppProfile)
+{
+   CHECK_RETOBJ(ppProfile);
+   HRESULT hr = S_OK;
+   try
+   {
+      auto profile = m_Model->CreateProfile(profileID);
+      hr = cogoUtil::CreateProfile(profile, ppProfile);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateProfileByIndex(IndexType profileIndex, IProfile** ppProfile)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfiles(), profileIndex)) == INVALID_ID) return E_INVALIDARG;
+   return CreateProfileByID(id, ppProfile);
+}
+
+STDMETHODIMP CCogoModel::RemoveProfileByID(IDType id)
+{
+   return m_Model->RemoveProfile(id) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveProfileByIndex(IndexType index)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetProfiles(), index)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveProfileByID(id);
+}
+
+STDMETHODIMP CCogoModel::ClearProfiles()
+{
+   m_Model->ClearProfiles();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::StoreSurface(IDType surfaceID, IndexType nSegments, IndexType alignmentPointIdx, IndexType profilePointIdx)
+{
+   return m_Model->StoreSurface(surfaceID, nSegments, alignmentPointIdx, profilePointIdx) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::GetSurfaceCount(IndexType* nSurfaces)
+{
+   CHECK_RETOBJ(nSurfaces);
+   *nSurfaces = m_Model->GetSurfaces().size();
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::AddSurfaceTemplate(IDType surfaceID, VARIANT varStation)
+{
+   HRESULT hr;
+   WBFL::COGO::Station station;
+   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   if (FAILED(hr)) return hr;
+   return m_Model->AddSurfaceTemplate(surfaceID, station) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::CopySurfaceTemplateByID(IDType surfaceID, IndexType templateIdx, VARIANT varStation)
+{
+   HRESULT hr;
+   WBFL::COGO::Station station;
+   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   if (FAILED(hr)) return hr;
+   return m_Model->CopySurfaceTemplate(surfaceID, templateIdx, station) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::CopySurfaceTemplateByIndex(IndexType surfaceIndex, IndexType templateIdx, VARIANT varStation)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   return CopySurfaceTemplateByID(id, templateIdx, varStation);
+}
+
+STDMETHODIMP CCogoModel::MoveSurfaceTemplateByID(IDType surfaceID, IndexType templateIdx, VARIANT varNewStation)
+{
+   HRESULT hr;
+   WBFL::COGO::Station station;
+   std::tie(hr, station) = cogoUtil::StationFromVariant(varNewStation);
+   if (FAILED(hr)) return hr;
+   return m_Model->MoveSurfaceTemplate(surfaceID, templateIdx, station);
+}
+
+STDMETHODIMP CCogoModel::MoveSurfaceTemplateByIndex(IndexType surfaceIndex, IndexType templateIdx, VARIANT varNewStation)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   return MoveSurfaceTemplateByID(id, templateIdx, varNewStation);
+}
+
+STDMETHODIMP CCogoModel::GetSurfaceTemplateCountByID(IDType surfaceID, IndexType* nSurfaceTemplates)
+{
+   CHECK_RETVAL(nSurfaceTemplates);
+   *nSurfaceTemplates = m_Model->GetSurfaceTemplateCount(surfaceID);
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::GetSurfaceTemplateCountByIndex(IndexType surfaceIndex, IDType* pID, IndexType* nSurfaceTemplates)
+{
+   CHECK_RETVAL(pID);
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   *pID = id;
+   return GetSurfaceTemplateCountByID(id, nSurfaceTemplates);
+}
+
+STDMETHODIMP CCogoModel::GetSurfaceTemplateLocationByID(IDType surfaceID, IndexType templateIdx, IStation** ppStation)
+{
+   HRESULT hr = S_OK;
+   try
+   {
+      const auto& station = m_Model->GetSurfaceTemplateLocation(surfaceID,templateIdx);
+      hr = cogoUtil::CreateStation(station, ppStation);
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::GetSurfaceTemplateLocationByIndex(IndexType surfaceIndex, IndexType templateIdx, IStation** ppStation)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   return GetSurfaceTemplateLocationByID(id, templateIdx, ppStation);
+}
+
+STDMETHODIMP CCogoModel::UpdateSurfaceTemplateSegmentByID(IDType surfaceID, IndexType templateIndex, IndexType segmentIndex, Float64 width, Float64 slope, TemplateSlopeType slopeType)
+{
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = m_Model->UpdateSurfaceTemplateSegment(surfaceID, templateIndex, segmentIndex, width, slope, WBFL::COGO::SurfaceTemplateSegment::SlopeType(slopeType)) ? S_OK : E_INVALIDARG;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::UpdateSurfaceTemplateSegmentByIndex(IndexType surfaceIndex, IndexType templateIndex, IndexType segmentIndex, Float64 width, Float64 slope, TemplateSlopeType slopeType)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   return UpdateSurfaceTemplateSegmentByID(id, templateIndex, surfaceIndex, width, slope, slopeType);
+}
+
+STDMETHODIMP CCogoModel::RemoveSurfaceByID(IDType surfaceID)
+{
+   return m_Model->RemoveSurface(surfaceID) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::RemoveSurfaceByIndex(IndexType surfaceIndex)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   return RemoveSurfaceByID(id);
+}
+
+STDMETHODIMP CCogoModel::StoreSuperelevationByID(IDType surfaceID, VARIANT varBeginTransitionStation, VARIANT varBeginFullSuperStation, VARIANT varEndFullSuperStation, VARIANT varEndTransitionStation, Float64 rate, IndexType pivotPointIdx, SuperTransitionType beginTransitionType, Float64 beginL1, Float64 beginL2, SuperTransitionType endTransitionType, Float64 endL1, Float64 endL2)
+{
+   HRESULT hr;
+   WBFL::COGO::Station beginTransitionStation, beginFullSuperStation, endFullSuperStation, endTransitionStation;
+   std::tie(hr, beginTransitionStation) = cogoUtil::StationFromVariant(varBeginTransitionStation);
+   if (FAILED(hr)) return hr;
+
+   std::tie(hr, beginFullSuperStation) = cogoUtil::StationFromVariant(varBeginFullSuperStation);
+   if (FAILED(hr)) return hr;
+
+   std::tie(hr, endFullSuperStation) = cogoUtil::StationFromVariant(varEndFullSuperStation);
+   if (FAILED(hr)) return hr;
+
+   std::tie(hr, endTransitionStation) = cogoUtil::StationFromVariant(varEndTransitionStation);
+   if (FAILED(hr)) return hr;
+
+   return m_Model->StoreSuperelevation(surfaceID, beginTransitionStation, beginFullSuperStation, endFullSuperStation, endTransitionStation, rate, pivotPointIdx,
+      WBFL::COGO::Superelevation::TransitionType(beginTransitionType), beginL1, beginL2, WBFL::COGO::Superelevation::TransitionType(endTransitionType), endL1, endL2) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::StoreSuperelevationByIndex(IndexType surfaceIndex, VARIANT varBeginTransitionStation, VARIANT varBeginFullSuperStation, VARIANT varEndFullSuperStation, VARIANT varEndTransitionStation, Float64 rate, IndexType pivotPointIdx, SuperTransitionType beginTransitionType, Float64 beginL1, Float64 beginL2, SuperTransitionType endTransitionType, Float64 endL1, Float64 endL2)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   return StoreSuperelevationByID(id, varBeginTransitionStation, varBeginFullSuperStation, varEndFullSuperStation, varEndTransitionStation, rate, pivotPointIdx, beginTransitionType, beginL1, beginL2, endTransitionType, endL1, endL2);
+}
+
+STDMETHODIMP CCogoModel::StoreWideningByID(IDType surfaceID, VARIANT varBeginTransitionStation, VARIANT varBeginFullWidening, VARIANT varEndFullWidening, VARIANT varEndTransitionStation, Float64 widening, IndexType segment1, IndexType segment2)
+{
+   HRESULT hr;
+   WBFL::COGO::Station beginTransitionStation, beginFullWidening, endFullWidening, endTransitionStation;
+   std::tie(hr, beginTransitionStation) = cogoUtil::StationFromVariant(varBeginTransitionStation);
+   if (FAILED(hr)) return hr;
+
+   std::tie(hr, beginFullWidening) = cogoUtil::StationFromVariant(varBeginFullWidening);
+   if (FAILED(hr)) return hr;
+
+   std::tie(hr, endFullWidening) = cogoUtil::StationFromVariant(varEndFullWidening);
+   if (FAILED(hr)) return hr;
+
+   std::tie(hr, endTransitionStation) = cogoUtil::StationFromVariant(varEndTransitionStation);
+   if (FAILED(hr)) return hr;
+
+   return m_Model->StoreWidening(surfaceID, beginTransitionStation, beginFullWidening, endFullWidening, endTransitionStation, widening, segment1, segment2) ? S_OK : E_INVALIDARG;
+}
+
+STDMETHODIMP CCogoModel::StoreWideningByIndex(IndexType surfaceIndex, VARIANT varBeginTransitionStation, VARIANT varBeginFullWidening, VARIANT varEndFullWidening, VARIANT varEndTransitionStation, Float64 widening, IndexType segment1, IndexType segment2)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   return StoreWideningByID(id, varBeginTransitionStation, varBeginFullWidening, varEndFullWidening, varEndTransitionStation, widening, segment1, segment2);
+}
+
+STDMETHODIMP CCogoModel::CreateSurfaceByID(IDType surfaceID, ISurface** ppSurface)
+{
+   HRESULT hr = S_OK;
+   try
+   {
+      auto surface = m_Model->CreateSurface(surfaceID);
+      hr = cogoUtil::CreateSurface(surface, ppSurface);
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
+}
+
+STDMETHODIMP CCogoModel::CreateSurfaceByIndex(IndexType surfaceIndex, ISurface** ppSurface)
+{
+   IDType id;
+   if ((id = GetID(m_Model->GetSurfaces(), surfaceIndex)) == INVALID_ID) return E_INVALIDARG;
+   return CreateSurfaceByID(id, ppSurface);
+}
+
+STDMETHODIMP CCogoModel::AttachProfileToAlignment(IDType profileID, IDType alignmentID)
+{
+   m_Model->AttachProfileToAlignment(profileID, alignmentID);
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::AttachSurfaceToProfile(IDType surfaceID, IDType profileID)
+{
+   m_Model->AttachSurfaceToProfile(surfaceID, profileID);
    return S_OK;
 }
 
 STDMETHODIMP CCogoModel::Clear()
 {
-   m_Lines->Clear();
-   m_Points->Clear();
-   m_ProfilePoints->Clear();
-   m_VertCurves->Clear();
-   m_CompoundCurves->Clear();
-   m_Alignments->Clear();
-
+   m_Model->Clear();
    return S_OK;
+}
+
+STDMETHODIMP CCogoModel::get_Engine(ICogoEngine** ppEngine)
+{
+   CHECK_RETOBJ(ppEngine);
+   return m_Engine.CopyTo(ppEngine);
 }
 
 STDMETHODIMP CCogoModel::get_Intersect(IIntersect **pVal)
@@ -280,134 +1552,21 @@ STDMETHODIMP CCogoModel::get_Tangent(ITangent **pVal)
    return QueryInterface(IID_ITangent,(void**)pVal);
 }
 
-STDMETHODIMP CCogoModel::putref_ProfilePointFactory(IProfilePointFactory* factory)
-{
-   return m_ProfilePoints->putref_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::get_ProfilePointFactory(IProfilePointFactory** factory)
-{
-   return m_ProfilePoints->get_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::putref_VertCurveFactory(IVertCurveFactory* factory)
-{
-   return m_VertCurves->putref_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::get_VertCurveFactory(IVertCurveFactory** factory)
-{
-   return m_VertCurves->get_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::putref_CompoundCurveFactory(ICompoundCurveFactory* factory)
-{
-   return m_CompoundCurves->putref_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::get_CompoundCurveFactory(ICompoundCurveFactory** factory)
-{
-   return m_CompoundCurves->get_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::putref_AlignmentFactory(IAlignmentFactory* factory)
-{
-   return m_Alignments->putref_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::get_AlignmentFactory(IAlignmentFactory** factory)
-{
-   return m_Alignments->get_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::putref_PathFactory(IPathFactory* factory)
-{
-   return m_Paths->putref_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::get_PathFactory(IPathFactory** factory)
-{
-   return m_Paths->get_Factory(factory);
-}
-
-STDMETHODIMP CCogoModel::get_Engine(ICogoEngine** engine)
-{
-   CHECK_RETOBJ(engine);
-   return m_Engine.CopyTo(engine);
-}
-
-STDMETHODIMP CCogoModel::Clone(ICogoModel* *clone)
-{
-   CHECK_RETOBJ(clone);
-
-   CComObject<CCogoModel>* pClone;
-   CComObject<CCogoModel>::CreateInstance(&pClone);
-
-   (*clone) = pClone;
-   (*clone)->AddRef();
-
-   CComPtr<IAlignmentCollection> cloneAlignments;
-   m_Alignments->Clone(&cloneAlignments);
-   pClone->put_Alignments(cloneAlignments);
-
-   CComPtr<IPathCollection> clonePaths;
-   m_Paths->Clone(&clonePaths);
-   pClone->put_Paths(clonePaths);
-
-   CComPtr<ICompoundCurveCollection> cloneCompoundCurves;
-   m_CompoundCurves->Clone(&cloneCompoundCurves);
-   pClone->put_CompoundCurves(cloneCompoundCurves);
-
-   CComPtr<ILineSegmentCollection> cloneLines;
-   m_Lines->Clone(&cloneLines);
-   pClone->put_Lines(cloneLines);
-
-   CComPtr<IPointCollection> clonePoints;
-   m_Points->Clone(&clonePoints);
-   pClone->put_Points(clonePoints);
-
-   CComPtr<IProfilePointCollection> cloneProfilePoints;
-   m_ProfilePoints->Clone(&cloneProfilePoints);
-   pClone->put_ProfilePoints(cloneProfilePoints);
-
-   CComPtr<IVertCurveCollection> cloneVertCurves;
-   m_VertCurves->Clone(&cloneVertCurves);
-   pClone->put_VertCurves(cloneVertCurves);
-
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
 ///////////////////////////////////////////////////////
 // IMeasure
 STDMETHODIMP CCogoModel::Angle(CogoObjectID fromID, CogoObjectID vertexID, CogoObjectID toID, IAngle** angle)
 {
    CHECK_RETOBJ(angle);
-
-   CComPtr<IPoint2d> from;
-   CComPtr<IPoint2d> vertex;
-   CComPtr<IPoint2d> to;
    HRESULT hr;
-
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(vertexID,&vertex);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComQIPtr<IMeasure2> measure(m_Engine);
-   return measure->Angle(from,vertex,to,angle);
+   try
+   {
+      hr = cogoUtil::CreateAngle(m_Model->MeasureAngle(fromID, vertexID, toID), angle);
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
@@ -418,7 +1577,7 @@ STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
         IDs.vt != (VT_ARRAY | VT_I2)      &&  // VB/C++
         IDs.vt != (VT_ARRAY | VT_I4) )        // VB/C++
    {
-      return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
+      return E_INVALIDARG;
    }
 
    // Extract the SAFEARRAY
@@ -426,7 +1585,7 @@ STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
    if ( IDs.vt & VT_BYREF )
    {
       if ( !(IDs.pvarVal->vt & (VT_BYREF | VT_ARRAY)) )
-         return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
+         return E_INVALIDARG;
 
       pIDs = *(IDs.pvarVal->pparray); // VBScript
    }
@@ -444,20 +1603,17 @@ STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
       return hr;
 
    if ( IDs.vt & VT_BYREF && vt != VT_VARIANT )
-      return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
+      return E_INVALIDARG;
 
    if ( IDs.vt & VT_ARRAY && vt != VT_I4 && vt != VT_I2 )
-      return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
+      return E_INVALIDARG;
 
    // Make sure this is a 1 dimensional array
    if ( SafeArrayGetDim(pIDs) != 1 )
-      return Error(IDS_E_AREA,IID_IMeasure,COGO_E_AREA);
+      return E_INVALIDARG;
 
    // Need a container to hold the points
-   CComPtr<IPoint2dCollection> points;
-   hr = points.CoCreateInstance(CLSID_Point2dCollection);
-   if ( FAILED(hr) )
-      return hr;
+   std::vector<CogoObjectID> vIDs;
 
    // Get the array bounds, loop over the array,
    // find the specified points, and build up the polyshape
@@ -467,7 +1623,7 @@ STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
    if ( (ub - lb + 1) < 3 )
    {
       // Must consist of at least 3 points
-      return Error(IDS_E_THREEPNTSREQD,IID_IMeasure,COGO_E_THREEPNTSREQD);
+      return E_INVALIDARG;
    }
 
    for ( long i = lb; i <= ub; i++ )
@@ -488,19 +1644,17 @@ STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
          ATLASSERT(SUCCEEDED(hr));
       }
 
-      CComPtr<IPoint2d> point;
-      hr = m_Points->get_Item(ID,&point);
-      if ( FAILED(hr) )
-         return hr;
-
-      hr = points->Add(point);
-      ATLASSERT(SUCCEEDED(hr));
+      vIDs.push_back(ID);
    }
 
-   CComQIPtr<IMeasure2> measure(m_Engine);
-   hr = measure->Area(points,area);
-   if ( FAILED(hr) )
-      return hr;
+   try
+   {
+      *area = m_Model->MeasureArea(vIDs);
+   }
+   catch (...)
+   {
+      return E_FAIL;
+   }
 
    return S_OK;
 }
@@ -508,265 +1662,133 @@ STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
 STDMETHODIMP CCogoModel::Distance(CogoObjectID fromID, CogoObjectID toID, Float64* dist)
 {
    CHECK_RETVAL(dist);
-
-   CComPtr<IPoint2d> from;
-   CComPtr<IPoint2d> to;
-   HRESULT hr;
-
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComQIPtr<IMeasure2> measure(m_Engine);
-   return measure->Distance(from,to,dist);
+   try
+   {
+      *dist = m_Model->MeasureDistance(fromID, toID);
+   }
+   catch (...)
+   {
+      return E_FAIL;
+   }
+   return S_OK;
 }
 
 STDMETHODIMP CCogoModel::Direction(CogoObjectID fromID, CogoObjectID toID, IDirection** dir)
 {
    CHECK_RETOBJ(dir);
-
-   CComPtr<IPoint2d> from;
-   CComPtr<IPoint2d> to;
    HRESULT hr;
-
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComQIPtr<IMeasure2> measure(m_Engine);
-   return measure->Direction(from,to,dir);
+   try
+   {
+      hr = cogoUtil::CreateDirection(m_Model->MeasureDirection(fromID, toID), dir);
+   }
+   catch (...)
+   {
+      hr = E_FAIL;
+   }
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::Inverse(CogoObjectID fromID,CogoObjectID toID, Float64* dist, IDirection** dir)
 {
-   CComPtr<IPoint2d> from;
-   CComPtr<IPoint2d> to;
-   HRESULT hr;
-
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComQIPtr<IMeasure2> measure(m_Engine);
-   return measure->Inverse(from,to,dist,dir);
+   CHECK_RETOBJ(dir);
+   WBFL::COGO::Direction direction;
+   std::tie(*dist, direction) = m_Model->ComputeInverse(fromID, toID);
+   return cogoUtil::CreateDirection(direction, dir);
 }
-
 
 ///////////////////////////////////////////////////////
 // ILocate
 STDMETHODIMP CCogoModel::ByDistAngle(CogoObjectID newID,CogoObjectID fromID,CogoObjectID toID,Float64 dist,VARIANT varAngle,Float64 offset)
 {
-   CComPtr<IPoint2d> from;
-   CComPtr<IPoint2d> to;
    HRESULT hr;
+   WBFL::COGO::Angle angle;
+   std::tie(hr, angle) = cogoUtil::AngleFromVariant(varAngle);
+   if (FAILED(hr)) return hr;
+   try
+   {
+      bool bResult = m_Model->LocateByDistanceAndAngle(newID, fromID, toID, dist, angle, offset);
+      hr = bResult ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
 
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComQIPtr<ILocate2> locate(m_Engine);
-   CComPtr<IPoint2d> newPnt;
-   hr = locate->ByDistAngle(from,to,dist,varAngle,offset,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Add the point. If a point with this ID already exists,
-   // this method will fail. Return the error if this happens
-   hr = m_Points->AddEx(newID,newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::ByDistDefAngle(CogoObjectID newID,CogoObjectID fromID,CogoObjectID toID,Float64 dist,VARIANT varDefAngle,Float64 offset)
 {
-   CComPtr<IPoint2d> from;
-   CComPtr<IPoint2d> to;
    HRESULT hr;
+   WBFL::COGO::Angle defAngle;
+   std::tie(hr, defAngle) = cogoUtil::AngleFromVariant(varDefAngle);
+   if (FAILED(hr)) return hr;
+   try
+   {
+      bool bResult = m_Model->LocateByDistanceAndDeflectionAngle(newID, fromID, toID, dist, defAngle, offset);
+      hr = bResult ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
 
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComQIPtr<ILocate2> locate(m_Engine);
-   CComPtr<IPoint2d> newPnt;
-   hr = locate->ByDistDefAngle(from,to,dist,varDefAngle,offset,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Add the point. If a point with this ID already exists,
-   // this method will fail. Return the error if this happens
-   hr = m_Points->AddEx(newID,newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::ByDistDir(CogoObjectID newID,CogoObjectID fromID,Float64 dist,VARIANT varDir,Float64 offset)
 {
-   CComPtr<IPoint2d> from;
    HRESULT hr;
-
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComQIPtr<ILocate2> locate(m_Engine);
-   CComPtr<IPoint2d> point;
-   hr = locate->ByDistDir(from,dist,varDir,offset,&point);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Add the point. If a point with this ID already exists,
-   // this method will fail. Return the error if this happens
-   hr = m_Points->AddEx(newID,point);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   WBFL::COGO::Direction dir;
+   std::tie(hr, dir) = cogoUtil::DirectionFromVariant(varDir);
+   if (FAILED(hr)) return hr;
+  
+   try
+   {
+      bool bResult = m_Model->LocateByDistanceAndDirection(newID, fromID, dist, dir, offset);
+      hr = bResult ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::PointOnLine(CogoObjectID newID, CogoObjectID fromID, CogoObjectID toID, Float64 dist, Float64 offset)
 {
-   CComPtr<IPoint2d> from;
-   CComPtr<IPoint2d> to;
-   HRESULT hr;
-
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> point;
-   CComQIPtr<ILocate2> locate(m_Engine);
-   hr = locate->PointOnLine(from,to,dist,offset,&point);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Add the point. If a point with this ID already exists,
-   // this method will fail. Return the error if this happens
-   hr = m_Points->AddEx(newID,point);
-   if ( FAILED(hr) )
-      return hr;
-
+   m_Model->LocatePointOnLine(newID, fromID, toID, dist, offset);
    return S_OK;
 }
 
 STDMETHODIMP CCogoModel::ParallelLineByPoints(CogoObjectID newFromID, CogoObjectID newToID, CogoObjectID fromID, CogoObjectID toID, Float64 offset)
 {
    HRESULT hr;
-
-   CComPtr<IPoint2d> pnt;
-   hr = m_Points->get_Item(newFromID,&pnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ILocate,COGO_E_POINTALREADYDEFINED);
-
-   pnt.Release();
-   hr = m_Points->get_Item(newToID,&pnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ILocate,COGO_E_POINTALREADYDEFINED);
-
-   CComPtr<IPoint2d> start;
-   hr = m_Points->get_Item(fromID,&start);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> end;
-   hr = m_Points->get_Item(toID,&end);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> lsStartEx, lsEndEx;
-   CComQIPtr<ILocate2> locate(m_Engine);
-   hr = locate->ParallelLineByPoints(start,end,offset,&lsStartEx,&lsEndEx);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->AddEx(newFromID,lsStartEx);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->AddEx(newToID,lsEndEx);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   try
+   {
+      bool bResult = m_Model->LocateParallelLineByPoints(newFromID, newToID, fromID, toID, offset);
+      hr = bResult ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::ParallelLineSegment(CogoObjectID newLineID, CogoObjectID newFromID, CogoObjectID newToID, CogoObjectID lineID, Float64 offset)
 {
-   HRESULT hr;
-   CComPtr<ILineSegment2d> line;
-   hr = m_Lines->get_Item(lineID,&line);
-   if ( FAILED(hr) )
-      return hr;
-
-   // check if we can store the new line segment and end points
-   CComPtr<ILineSegment2d> newLine;
-   hr = m_Lines->get_Item(newLineID,&newLine);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_LINESEGMENTALREADYDEFINED,IID_ILocate,COGO_E_LINESEGMENTALREADYDEFINED);
-
-   CComPtr<IPoint2d> from;
-   hr = m_Points->get_Item(newFromID,&from);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ILocate,COGO_E_POINTALREADYDEFINED);
-
-   CComPtr<IPoint2d> to;
-   hr = m_Points->get_Item(newToID,&to);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ILocate,COGO_E_POINTALREADYDEFINED);
-
-   CComQIPtr<ILocate2> locate(m_Engine);
-   hr = locate->ParallelLineSegment(line,offset,&newLine);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Lines->AddEx(newLineID,newLine);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Add the new end points
-   CComPtr<IPoint2d> lsFrom;
-   newLine->get_StartPoint(&lsFrom);
-   CComQIPtr<IPoint2d> lsFromEx(lsFrom);
-   hr = m_Points->AddEx(newFromID,lsFromEx);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> lsTo;
-   newLine->get_EndPoint(&lsTo);
-   CComQIPtr<IPoint2d> lsToEx(lsTo);
-   hr = m_Points->AddEx(newToID,lsToEx);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   HRESULT hr = S_OK;
+   try
+   {
+      bool bResult = m_Model->LocateParallelLineSegment(newLineID, newFromID, newToID, lineID, offset);
+      hr = bResult ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 ////////////////////////////////////////////////////////
@@ -774,87 +1796,47 @@ STDMETHODIMP CCogoModel::ParallelLineSegment(CogoObjectID newLineID, CogoObjectI
 STDMETHODIMP CCogoModel::Bearings(CogoObjectID newID, CogoObjectID id1, VARIANT varDir1, Float64 offset1, CogoObjectID id2, VARIANT varDir2, Float64 offset2, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
-
-   // Get the input data and validate
-   CComPtr<IPoint2d> pnt[2];
-   HRESULT hr;
-
-   hr = m_Points->get_Item(id1,&pnt[0]);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->get_Item(id2,&pnt[1]);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IIntersect2> intersect(m_Engine);
-   hr = intersect->Bearings(pnt[0],varDir1,offset1,pnt[1],varDir2,offset2,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   if (newPnt == nullptr )
+   HRESULT hr = S_OK;
+   WBFL::COGO::Direction dir1, dir2;
+   std::tie(hr, dir1) = cogoUtil::DirectionFromVariant(varDir1);
+   if (FAILED(hr)) return hr;
+   std::tie(hr, dir2) = cogoUtil::DirectionFromVariant(varDir2);
+   if (FAILED(hr)) return hr;
+   try
    {
-      *bFound = VARIANT_FALSE;
+      bool bResult = m_Model->IntersectBearings(newID, id1, dir1, offset1, id2, dir2, offset2);
+      *bFound = bResult ? VARIANT_TRUE : VARIANT_FALSE;
+      hr = bResult ? S_OK : S_FALSE;
    }
-   else
+   catch (...)
    {
-      *bFound = VARIANT_TRUE;
-
-      // Add the point. If a point with this ID already exists,
-      // this method will fail. Return the error if this happens
-
-      hr = m_Points->AddEx(newID,newPnt);
-      if ( FAILED(hr) )
-         return hr;
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::BearingCircle(CogoObjectID newID, CogoObjectID id1, VARIANT varDir, Float64 offset, CogoObjectID idc, Float64 radius, CogoObjectID idNearest, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
-   if ( radius <= 0.0 )
-      return Error(IDS_E_RADIUS,IID_IIntersect,COGO_E_RADIUS);
+   if (radius <= 0.0)
+      return E_INVALIDARG;
 
-   // Get the input data and validate
-   CComPtr<IPoint2d> pnt1;
-   HRESULT hr;
-
-   hr = m_Points->get_Item(id1,&pnt1);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntCenter;
-   hr = m_Points->get_Item(idc,&pntCenter);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntNearest;
-   hr = m_Points->get_Item(idNearest,&pntNearest);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IIntersect2> intersect(m_Engine);
-   hr = intersect->BearingCircle(pnt1,varDir,offset,pntCenter,radius,pntNearest,&newPnt);
-
-   if ( newPnt == nullptr )
+   HRESULT hr = S_OK;
+   WBFL::COGO::Direction dir;
+   std::tie(hr, dir) = cogoUtil::DirectionFromVariant(varDir);
+   if (FAILED(hr)) return hr;
+   try
    {
-      *bFound = VARIANT_FALSE;
+      bool bResult = m_Model->IntersectBearingAndCircle(newID, id1, dir, offset, idc, radius, idNearest);
+      *bFound = bResult ? VARIANT_TRUE : VARIANT_FALSE;
+      hr = bResult ? S_OK : S_FALSE;
    }
-   else
+   catch (...)
    {
-      hr = m_Points->AddEx(newID,newPnt);
-      if ( FAILED(hr) )
-         return hr;
-
-      *bFound = VARIANT_TRUE;
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::Circles(CogoObjectID newID, CogoObjectID id1, Float64 r1, CogoObjectID id2, Float64 r2, CogoObjectID idNearest, VARIANT_BOOL* bFound)
@@ -862,47 +1844,20 @@ STDMETHODIMP CCogoModel::Circles(CogoObjectID newID, CogoObjectID id1, Float64 r
    CHECK_RETVAL(bFound);
 
    if ( r1 <= 0.0 || r2 <= 0.0 )
-      return Error(IDS_E_RADIUS,IID_IIntersect,COGO_E_RADIUS);
+      return E_INVALIDARG;
 
-   // Get the input data and validate
-   CComPtr<IPoint2d> c1;
-   HRESULT hr;
-
-   hr = m_Points->get_Item(id1,&c1);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> c2;
-   hr = m_Points->get_Item(id2,&c2);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntNearest;
-   hr = m_Points->get_Item(idNearest,&pntNearest);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IIntersect2> intersect(m_Engine);
-   hr = intersect->Circles(c1,r1,c2,r2,pntNearest,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   if ( newPnt == nullptr )
+   HRESULT hr = S_OK;
+   try
    {
-      *bFound = VARIANT_FALSE;
+      bool bResult = m_Model->IntersectCircles(newID, id1, r1, id2, r2, idNearest);
+      *bFound = bResult ? VARIANT_TRUE : VARIANT_FALSE;
+      hr = bResult ? S_OK : S_FALSE;
    }
-   else
+   catch (...)
    {
-      hr = m_Points->AddEx(newID,newPnt);
-      if ( FAILED(hr) )
-         return hr;
-
-      *bFound = VARIANT_TRUE;
+      hr = E_INVALIDARG;
    }
-
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::LineByPointsCircle(CogoObjectID newID, CogoObjectID id1, CogoObjectID id2, Float64 offset, CogoObjectID idc, Float64 radius, CogoObjectID idNearest, VARIANT_BOOL* bFound)
@@ -910,279 +1865,121 @@ STDMETHODIMP CCogoModel::LineByPointsCircle(CogoObjectID newID, CogoObjectID id1
    CHECK_RETVAL(bFound);
 
    if ( radius <= 0.0 )
-      return Error(IDS_E_RADIUS,IID_IIntersect,COGO_E_RADIUS);
+      return E_INVALIDARG;
 
-   // Get the input data and validate
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt1;
-   hr = m_Points->get_Item(id1,&pnt1);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pnt2;
-   hr = m_Points->get_Item(id2,&pnt2);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntCenter;
-   hr = m_Points->get_Item(idc,&pntCenter);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntNearest;
-   hr = m_Points->get_Item(idNearest,&pntNearest);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pnt;
-   CComQIPtr<IIntersect2> intersect(m_Engine);
-   hr = intersect->LineByPointsCircle(pnt1,pnt2,offset,pntCenter,radius,pntNearest,&pnt);
-
-   if ( pnt == nullptr )
+   HRESULT hr = S_OK;
+   try
    {
-      *bFound = VARIANT_FALSE;
+      bool bResult = m_Model->IntersectLineByPointsAndCircle(newID, id1, id2, offset, idc, radius, idNearest);
+      *bFound = bResult ? VARIANT_TRUE : VARIANT_FALSE;
+      hr = bResult ? S_OK : S_FALSE;
    }
-   else
+   catch (...)
    {
-      *bFound = VARIANT_TRUE;
-      hr = m_Points->AddEx(newID,pnt);
-      if ( FAILED(hr) )
-         return hr;
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::LinesByPoints(CogoObjectID newID, CogoObjectID id11, CogoObjectID id12, Float64 offset1, CogoObjectID id21, CogoObjectID id22, Float64 offset2, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
-   // Get the input data and validate
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt11;
-   hr = m_Points->get_Item(id11,&pnt11);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pnt12;
-   hr = m_Points->get_Item(id12,&pnt12);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pnt21;
-   hr = m_Points->get_Item(id21,&pnt21);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pnt22;
-   hr = m_Points->get_Item(id22,&pnt22);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IIntersect2> intersect(m_Engine);
-   hr = intersect->LinesByPoints(pnt11,pnt12,offset1,pnt21,pnt22,offset2,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   if ( newPnt == nullptr )
+   HRESULT hr = S_OK;
+   try
    {
-      *bFound = VARIANT_FALSE;
+      bool bResult = m_Model->IntersectLinesByPoints(newID, id11, id12, offset1, id21, id22, offset2);
+      *bFound = bResult ? VARIANT_TRUE : VARIANT_FALSE;
+      hr = bResult ? S_OK : S_FALSE;
    }
-   else
+   catch (...)
    {
-      hr = m_Points->AddEx(newID,newPnt);
-      if ( FAILED(hr) )
-         return hr;
-
-      *bFound = VARIANT_TRUE;
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::Lines(CogoObjectID newID,CogoObjectID id1,Float64 offset1,CogoObjectID id2,Float64 offset2,VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
-   HRESULT hr;
 
-   // Make sure we will be able to store the new point
-   CComPtr<IPoint2d> testPnt;
-   hr = m_Points->get_Item(newID,&testPnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ILocate,COGO_E_POINTALREADYDEFINED);
-
-   CComPtr<ILineSegment2d> seg1;
-   hr = m_Lines->get_Item(id1,&seg1);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<ILineSegment2d> seg2;
-   hr = m_Lines->get_Item(id2,&seg2);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IIntersect2> intersect(m_Engine);
-   hr = intersect->Lines(seg1,offset1,seg2,offset2,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   if ( newPnt == nullptr )
+   HRESULT hr = S_OK;
+   try
    {
-      *bFound = VARIANT_FALSE;
-      return S_OK;
+      bool bResult = m_Model->IntersectPathSegments(newID, id1, offset1, id2, offset2);
+      *bFound = bResult ? VARIANT_TRUE : VARIANT_FALSE;
+      hr = bResult ? S_OK : S_FALSE;
    }
-
-   *bFound = VARIANT_TRUE;
-
-   hr = m_Points->AddEx(newID,newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::LineSegmentCircle(CogoObjectID newID,CogoObjectID lineID,Float64 offset,CogoObjectID idc,Float64 radius,CogoObjectID idNearest,VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
-   HRESULT hr;
 
-   if ( radius <= 0 )
-      return Error(IDS_E_RADIUS,IID_ILocate,COGO_E_RADIUS);
+   if (radius <= 0)
+      return E_INVALIDARG;
 
-   CComPtr<IPoint2d> testPnt;
-   hr = m_Points->get_Item(newID,&testPnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ILocate,COGO_E_POINTALREADYDEFINED);
-
-   CComPtr<ILineSegment2d> seg;
-   hr = m_Lines->get_Item(lineID,&seg);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntCenter;
-   hr = m_Points->get_Item(idc,&pntCenter);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntNearest;
-   hr = m_Points->get_Item(idNearest,&pntNearest);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IIntersect2> intersect(m_Engine);
-   hr = intersect->LineSegmentCircle(seg,offset,pntCenter,radius,pntNearest,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   if ( newPnt == nullptr )
+   HRESULT hr = S_OK;
+   try
    {
-      *bFound = VARIANT_FALSE;
+      bool bResult = m_Model->IntersectPathSegmentAndCircle(newID, lineID, offset, idc, radius, idNearest);
+      *bFound = bResult ? VARIANT_TRUE : VARIANT_FALSE;
+      hr = bResult ? S_OK : S_FALSE;
    }
-   else
+   catch (...)
    {
-      hr = m_Points->AddEx(newID,newPnt);
-      if ( FAILED(hr) )
-         return hr;
-
-      *bFound = VARIANT_TRUE;
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 ////////////////////////////////////////////////////////
 // IProject
 STDMETHODIMP CCogoModel::PointOnLineByPoints(CogoObjectID newID, CogoObjectID fromID, CogoObjectID startID, CogoObjectID endID, Float64 offset)
 {
-   HRESULT hr;
-   CComPtr<IPoint2d> pntFrom;
-   hr = m_Points->get_Item(fromID,&pntFrom);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntStart;
-   hr = m_Points->get_Item(startID,&pntStart);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> pntEnd;
-   hr = m_Points->get_Item(endID,&pntEnd);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IProject2> project(m_Engine);
-   hr = project->PointOnLineByPoints(pntFrom,pntStart,pntEnd,offset,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->AddEx(newID,newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = m_Model->ProjectPointOnLineByPoints(newID, fromID, startID, endID, offset) ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::PointOnLineSegment(CogoObjectID newID, CogoObjectID fromID, CogoObjectID lineID, Float64 offset)
 {
-   HRESULT hr;
-
-   CComPtr<ILineSegment2d> seg;
-   hr = m_Lines->get_Item(lineID,&seg);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> from;
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IProject2> project(m_Engine);
-   hr = project->PointOnLineSegment(from,seg,offset,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->AddEx(newID,newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = m_Model->ProjectPointOnPathSegment(newID, fromID, lineID, offset) ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::PointOnCurve(CogoObjectID newID, CogoObjectID fromID, CogoObjectID curveID)
 {
-   HRESULT hr;
-
-   CComPtr<IPoint2d> testPnt;
-   hr = m_Points->get_Item(newID,&testPnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_IProject,COGO_E_POINTALREADYDEFINED);
-
-   CComPtr<IPoint2d> fromPnt;
-   hr = m_Points->get_Item(fromID,&fromPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<ICompoundCurve> curve;
-   hr = m_CompoundCurves->get_Item(curveID,&curve);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> newPnt;
-   CComQIPtr<IProject2> project(m_Engine);
-   hr = project->PointOnCurve(fromPnt,curve,&newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   hr = m_Points->AddEx(newID,newPnt);
-   if ( FAILED(hr) )
-      return hr;
-
-   return S_OK;
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = m_Model->ProjectPointOnCompoundCurve(newID, fromID, curveID) ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 ////////////////////////////////////////////////////////
@@ -1195,64 +1992,16 @@ STDMETHODIMP CCogoModel::Arc(CogoObjectID firstID, CogoObjectID idInc, CogoObjec
    if ( idInc == 0 )
       return E_INVALIDARG;
 
-   if ( fromID == vertexID || fromID == toID || vertexID == toID )
+   HRESULT hr = S_OK;
+   try
    {
-      return Error(IDS_E_ANGLE,IID_IDivide,COGO_E_ANGLE);
+      hr = m_Model->DivideArc(firstID, idInc, fromID, vertexID, toID, nParts) ? S_OK : S_FALSE;
    }
-
-   // Check to see if the ID's of the new points are already in use
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt;
-   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
+   catch (...)
    {
-      CogoObjectID id = CogoObjectID(firstID + i*idInc);
-      pnt.Release();
-      hr = m_Points->get_Item(id,&pnt);
-      if ( SUCCEEDED(hr) )
-         return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
+      hr = E_INVALIDARG;
    }
-
-   // Get the 3 points that define the arc
-   CComPtr<IPoint2d> from;
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> vertex;
-   hr = m_Points->get_Item(vertexID,&vertex);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> to;
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Divide the arc
-   CComPtr<IPoint2dCollection> points;
-   CComQIPtr<IDivide2> divide(m_Engine);
-   hr = divide->Arc(from,vertex,to,nParts,&points);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Store the points in the points collection
-   for (CollectionIndexType i = 0; i < nParts-1; i++)
-   {
-      CogoObjectID id = firstID + i*idInc;
-      CComPtr<IPoint2d> p;
-      points->get_Item(i+1,&p); // get the point from the collection
-
-      CComQIPtr<IPoint2d> pEx(p);
-    
-      // m_GeomUtil's factory must create a IPoint2d object.
-      // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != nullptr);
-
-      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
-      ATLASSERT(SUCCEEDED(hr));
-   }
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID fromID, CogoObjectID toID, CollectionIndexType nParts)
@@ -1263,54 +2012,16 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc,
    if ( idInc == 0 )
       return E_INVALIDARG;
 
-   // Check to see if the ID's of the new points are already in use
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt;
-   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
+   HRESULT hr = S_OK;
+   try
    {
-      CogoObjectID id = CogoObjectID(firstID + i*idInc);
-      pnt.Release();
-      hr = m_Points->get_Item(id,&pnt);
-      if ( SUCCEEDED(hr) )
-         return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
+      hr = m_Model->DivideBetweenPoints(firstID, idInc, fromID, toID, nParts) ? S_OK : S_FALSE;
    }
-
-   // Get the points that define the line
-   CComPtr<IPoint2d> from;
-   hr = m_Points->get_Item(fromID,&from);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IPoint2d> to;
-   hr = m_Points->get_Item(toID,&to);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Divide the line
-   CComPtr<IPoint2dCollection> points;
-   CComQIPtr<IDivide2> divide(m_Engine);
-   hr = divide->BetweenPoints(from,to,nParts,&points);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Store the points in the points collection
-   for (CollectionIndexType i = 0; i < nParts-1; i++)
+   catch (...)
    {
-      CogoObjectID id = firstID + i*idInc;
-      CComPtr<IPoint2d> p;
-      points->get_Item(i+1,&p); // get the point from the collection
-
-      CComQIPtr<IPoint2d> pEx(p);
-
-      // m_GeomUtil's factory must create a IPoint2d object.
-      // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != nullptr);
-
-      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
-      ATLASSERT(SUCCEEDED(hr));
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID lineID, CollectionIndexType nParts)
@@ -1321,49 +2032,16 @@ STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, C
    if ( idInc == 0 )
       return E_INVALIDARG;
 
-   // Check to see if the ID's of the new points are already in use
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt;
-   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
+   HRESULT hr = S_OK;
+   try
    {
-      CogoObjectID id = CogoObjectID(firstID + i*idInc);
-      pnt.Release();
-      hr = m_Points->get_Item(id,&pnt);
-      if ( SUCCEEDED(hr) )
-         return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
+      hr = m_Model->DivideLineSegment(firstID, idInc, lineID, nParts) ? S_OK : S_FALSE;
    }
-
-   // Get the line segment
-   CComPtr<ILineSegment2d> seg;
-   hr = m_Lines->get_Item(lineID,&seg);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Divide the line
-   CComPtr<IPoint2dCollection> points;
-   CComQIPtr<IDivide2> divide(m_Engine);
-   hr = divide->LineSegment(seg,nParts,&points);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Store the points in the points collection
-   for (CollectionIndexType i = 0; i < nParts-1; i++)
+   catch (...)
    {
-      CogoObjectID id = firstID + i*idInc;
-      CComPtr<IPoint2d> p;
-      points->get_Item(i+1,&p); // get the point from the collection
-
-      CComQIPtr<IPoint2d> pEx(p);
-
-      // m_GeomUtil's factory must create a IPoint2d object.
-      // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != nullptr);
-
-      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
-      ATLASSERT(SUCCEEDED(hr));
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::CompoundCurve(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID curveID, CollectionIndexType nParts)
@@ -1374,55 +2052,16 @@ STDMETHODIMP CCogoModel::CompoundCurve(CogoObjectID firstID, CogoObjectID idInc,
    if ( idInc == 0 )
       return E_INVALIDARG;
 
-   // Check to see if the ID's of the new points are already in use
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt;
-   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
+   HRESULT hr = S_OK;
+   try
    {
-      CogoObjectID id = firstID + i*idInc;
-      pnt.Release();
-      hr = m_Points->get_Item(id,&pnt);
-      if ( SUCCEEDED(hr) )
-         return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
+      hr = m_Model->DivideCompoundCurve(firstID, idInc, curveID, nParts) ? S_OK : S_FALSE;
    }
-
-   // Get the curve
-   CComPtr<ICompoundCurve> hc;
-   hr = m_CompoundCurves->get_Item(curveID,&hc);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Divide the curve
-   CComPtr<IPoint2dCollection> points;
-   CComQIPtr<IDivide2> divide(m_Engine);
-   hr = divide->CompoundCurve(hc,nParts,&points);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Store the points in the points collection
-   CComPtr<IEnumPoint2d> enum_points;
-   points->get__Enum(&enum_points);
-   CComPtr<IPoint2d> p;
-   CogoObjectID i = 0;
-   while ( enum_points->Next(1,&p,nullptr) != S_FALSE )
+   catch (...)
    {
-      CogoObjectID id = firstID + i*idInc;
-
-      CComQIPtr<IPoint2d> pEx(p);
-
-      // m_GeomUtil's factory must create a IPoint2d object.
-      // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != nullptr);
-
-      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
-      if ( FAILED(hr) )
-         return hr;
-
-      p.Release();
-      i++;
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObjectID pathID,CollectionIndexType nParts,Float64 start,Float64 end)
@@ -1433,55 +2072,16 @@ STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObject
    if ( idInc == 0 )
       return E_INVALIDARG;
 
-   // Check to see if the ID's of the new points are already in use
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt;
-   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
+   HRESULT hr = S_OK;
+   try
    {
-      CogoObjectID id = firstID + i*idInc;
-      pnt.Release();
-      hr = m_Points->get_Item(id,&pnt);
-      if ( SUCCEEDED(hr) )
-         return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
+      hr = m_Model->DividePath(firstID, idInc, pathID, nParts, start, end) ? S_OK : S_FALSE;
    }
-
-   // Get the curve
-   CComPtr<IPath> path;
-   hr = m_Paths->get_Item(pathID,&path);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Divide the path
-   CComPtr<IPoint2dCollection> points;
-   CComQIPtr<IDivide2> divide(m_Engine);
-   hr = divide->Path(path,nParts,start,end,&points);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Store the points in the points collection
-   CComPtr<IEnumPoint2d> enum_points;
-   points->get__Enum(&enum_points);
-   CComPtr<IPoint2d> p;
-   CogoObjectID i = 0;
-   while ( enum_points->Next(1,&p,nullptr) != S_FALSE )
+   catch (...)
    {
-      CogoObjectID id = firstID + i*idInc;
-
-      CComQIPtr<IPoint2d> pEx(p);
-
-      // m_GeomUtil's factory must create a IPoint2d object.
-      // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != nullptr);
-
-      hr = m_Points->AddEx(id,pEx); // add it to the cogo model
-      if ( FAILED(hr) )
-         return hr;
-
-      p.Release();
-      i++;
+      hr = E_INVALIDARG;
    }
-
-   return S_OK;
+   return hr;
 }
 
 ////////////////////////////////////////////////////////
@@ -1490,223 +2090,58 @@ STDMETHODIMP CCogoModel::Cross(CogoObjectID newID1, CogoObjectID idCenter1, Floa
 {
    // Check the radii
    if ( radius1 <= 0.0 )
-      return Error(IDS_E_RADIUS,IID_ITangent,COGO_E_RADIUS);
+      return E_INVALIDARG;
 
    if ( radius2 <= 0.0 )
-      return Error(IDS_E_RADIUS,IID_ITangent,COGO_E_RADIUS);
+      return E_INVALIDARG;
 
-   // Verify newID1 and newID2 are available
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt;
-   hr = m_Points->get_Item(newID1,&pnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ITangent,COGO_E_POINTALREADYDEFINED);
-
-   pnt.Release();
-   hr = m_Points->get_Item(newID2,&pnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ITangent,COGO_E_POINTALREADYDEFINED);
-
-   CComPtr<IPoint2d> A, B; // Center of circle A and B
-   hr = m_Points->get_Item(idCenter1,&A);
-   if ( FAILED(hr) ) // Point doesn't exist in cogo model
-      return hr;
-
-   hr = m_Points->get_Item(idCenter2,&B);
-   if ( FAILED(hr) ) // Point doesn't exist in cogo model
-      return hr;
-
-   CComQIPtr<ITangent2> tangent(m_Engine);
-   CComPtr<IPoint2d> pnt1,pnt2;
-   hr = tangent->Cross(A,radius1,B,radius2,sign,&pnt1,&pnt2);
-   if ( FAILED(hr) )
-      return hr;
-
-   // store the two new points
-   m_Points->AddEx(newID1,pnt1);
-   m_Points->AddEx(newID2,pnt2);
-
-   return S_OK;
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = m_Model->CrossingTangents(newID1, idCenter1, radius1, newID2, idCenter2, radius2, WBFL::COGO::TangentSign(sign)) ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::External(CogoObjectID newID1, CogoObjectID idCenter1, Float64 radius1, CogoObjectID newID2, CogoObjectID idCenter2, Float64 radius2, TangentSignType sign)
 {
    // Check the radii
    if ( radius1 <= 0.0 )
-      return Error(IDS_E_RADIUS,IID_ITangent,COGO_E_RADIUS);
+      return E_INVALIDARG;
 
    if ( radius2 <= 0.0 )
-      return Error(IDS_E_RADIUS,IID_ITangent,COGO_E_RADIUS);
+      return E_INVALIDARG;
 
-   // Verify newID1 and newID2 are available
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt;
-   hr = m_Points->get_Item(newID1,&pnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ITangent,COGO_E_POINTALREADYDEFINED);
-
-   pnt.Release();
-   hr = m_Points->get_Item(newID2,&pnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ITangent,COGO_E_POINTALREADYDEFINED);
-
-   CogoObjectID idA, idB; // ID's of center points of circle A and B. Circle A is the one with the larger radius
-   Float64 Ar, Br; // Radius of circle A and B
-   CogoObjectID idTanA, idTanB; // ID's of tangent points to cirle A and B
-   if ( radius2 <= radius1 )
+   HRESULT hr = S_OK;
+   try
    {
-      idA = idCenter1;
-      Ar = radius1;
-      idTanA = newID1;
-
-      idB = idCenter2;
-      Br = radius2;
-      idTanB = newID2;
+      hr = m_Model->ExternalTangents(newID1, idCenter1, radius1, newID2, idCenter2, radius2, WBFL::COGO::TangentSign(sign)) ? S_OK : S_FALSE;
    }
-   else
+   catch (...)
    {
-      idA = idCenter2;
-      Ar = radius2;
-      idTanA = newID2;
-
-      idB = idCenter1;
-      Br = radius1;
-      idTanB = newID1;
+      hr = E_INVALIDARG;
    }
-
-   CComPtr<IPoint2d> A, B; // Center of circle A and B
-   hr = m_Points->get_Item(idA,&A);
-   if ( FAILED(hr) ) // Point doesn't exist in cogo model
-      return hr;
-
-   hr = m_Points->get_Item(idB,&B);
-   if ( FAILED(hr) ) // Point doesn't exist in cogo model
-      return hr;
-
-   CComQIPtr<ITangent2> tangent(m_Engine);
-   CComPtr<IPoint2d> pnt1,pnt2;
-   hr = tangent->External(A,Ar,B,Br,sign,&pnt1,&pnt2);
-   if ( FAILED(hr) )
-      return hr;
-
-   // store the two new points
-   m_Points->AddEx(idTanA,pnt1);
-   m_Points->AddEx(idTanB,pnt2);
-
-   return S_OK;
+   return hr;
 }
 
 STDMETHODIMP CCogoModel::Point(CogoObjectID newID, CogoObjectID idCenter, Float64 radius,CogoObjectID pointID,TangentSignType sign)
 {
    // Check the radius
    if ( radius <= 0.0 )
-      return Error(IDS_E_RADIUS,IID_ITangent,COGO_E_RADIUS);
+      return E_INVALIDARG;
 
-   // Verify newID is available
-   HRESULT hr;
-   CComPtr<IPoint2d> pnt;
-   hr = m_Points->get_Item(newID,&pnt);
-   if ( SUCCEEDED(hr) )
-      return Error(IDS_E_POINTALREADYDEFINED,IID_ITangent,COGO_E_POINTALREADYDEFINED);
-
-   CComPtr<IPoint2d> A, B; // Center of circle A and B
-   hr = m_Points->get_Item(idCenter,&A);
-   if ( FAILED(hr) ) // Point doesn't exist in cogo model
-      return hr;
-
-   hr = m_Points->get_Item(pointID,&B);
-   if ( FAILED(hr) ) // Point doesn't exist in cogo model
-      return hr;
-
-   CComQIPtr<ITangent2> tangent(m_Engine);
-   CComPtr<IPoint2d> pntTangent;
-   hr = tangent->Point(A,radius,B,sign,&pntTangent);
-   if ( FAILED(hr) )
-      return hr;
-
-   // store the new point
-   m_Points->AddEx(newID,pntTangent);
-
-   return S_OK;
-}
-
-////////////////////////////////////////////////////////
-// IStructuredStorage2
-STDMETHODIMP CCogoModel::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("CogoModel"),1.0);
-
-   //CComPtr<IPoint2dFactory> factory;
-   //m_Engine->get_PointFactory(&factory);
-   //pSave->put_Property(CComBSTR("PointFactory"),CComVariant(factory));
-
-   // Save collections by value (we own them by value here, no one can
-   // give us a collection)
-   CComQIPtr<IStructuredStorage2> ssPoints(m_Points);
-   ssPoints->Save(pSave);
-
-   CComQIPtr<IStructuredStorage2> ssLines(m_Lines);
-   ssLines->Save(pSave);
-
-   CComQIPtr<IStructuredStorage2> ssCompoundCurves(m_CompoundCurves);
-   ssCompoundCurves->Save(pSave);
-
-   CComQIPtr<IStructuredStorage2> ssProfilePoints(m_ProfilePoints);
-   ssProfilePoints->Save(pSave);
-
-   CComQIPtr<IStructuredStorage2> ssVertCurves(m_VertCurves);
-   ssVertCurves->Save(pSave);
-
-   CComQIPtr<IStructuredStorage2> ssAlignments(m_Alignments);
-   ssAlignments->Save(pSave);
-
-   CComQIPtr<IStructuredStorage2> ssPaths(m_Paths);
-   ssPaths->Save(pSave);
-
-   pSave->EndUnit();
-   return S_OK;
-}
-
-STDMETHODIMP CCogoModel::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-
-   pLoad->BeginUnit(CComBSTR("CogoModel"));
-   
-   //pLoad->get_Property(CComBSTR("PointFactory"),&var);
-   //CComPtr<IPoint2dFactory> factory;
-   //_CopyVariantToInterface<IPoint2dFactory>::copy(&factory,&var);
-   //m_Engine->putref_PointFactory(factory);
-
-   // Load collections by value (we own them by value here, no one can
-   // give us a collection)
-   CComQIPtr<IStructuredStorage2> ssPoints(m_Points);
-   ssPoints->Load(pLoad);
-
-   CComQIPtr<IStructuredStorage2> ssLines(m_Lines);
-   ssLines->Load(pLoad);
-
-   CComQIPtr<IStructuredStorage2> ssCompoundCurves(m_CompoundCurves);
-   ssCompoundCurves->Load(pLoad);
-
-   CComQIPtr<IStructuredStorage2> ssProfilePoints(m_ProfilePoints);
-   ssProfilePoints->Load(pLoad);
-
-   CComQIPtr<IStructuredStorage2> ssVertCurves(m_VertCurves);
-   ssVertCurves->Load(pLoad);
-
-   CComQIPtr<IStructuredStorage2> ssAlignments(m_Alignments);
-   ssAlignments->Load(pLoad);
-
-   CComQIPtr<IStructuredStorage2> ssPaths(m_Paths);
-   ssPaths->Load(pLoad);
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   return S_OK;
+   HRESULT hr = S_OK;
+   try
+   {
+      hr = m_Model->TangentPoint(newID, idCenter, radius, pointID, WBFL::COGO::TangentSign(sign)) ? S_OK : S_FALSE;
+   }
+   catch (...)
+   {
+      hr = E_INVALIDARG;
+   }
+   return hr;
 }

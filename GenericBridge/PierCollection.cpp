@@ -118,7 +118,9 @@ bool PierSearch(const PierColl::StoredType& item,const PierColl::StoredType& tes
    CComPtr<IStation> objTestStation;
    testPier->get_Station(&objTestStation);
 
-   return (0 < cogoUtil::Compare(alignment,objStation,objTestStation));
+   Int8 result;
+   alignment->CompareStations(CComVariant(objStation), CComVariant(objTestStation), &result);
+   return (0 < result);
 }
 
 STDMETHODIMP CPierCollection::FindPier(Float64 station,IBridgePier** ppPier)

@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "JointDisplacement.h"
 
-typedef CLoadsCollection<IFem2dJointDeflectionCollection, IFem2dJointDeflection, CJointDeflection, IFem2dEnumJointDeflection, &IID_IFem2dEnumJointDeflection,LoadIDType> JointDeflectionCollImpl;
+using JointDeflectionCollImpl = CLoadsCollection<IFem2dJointDeflectionCollection, IFem2dJointDeflection, CJointDeflection, IFem2dEnumJointDeflection, &IID_IFem2dEnumJointDeflection,LoadIDType>;
 
 class ModelEvents;
 

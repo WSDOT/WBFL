@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BogusCombinationContext", "LBAM\LBAMLoadCombiner\LoadCombinerTest\BogusCombinationContext\BogusCombinationContext.vcxproj", "{01A44D6A-EDF0-4E14-8D05-30277C5D4CE7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLCogo", "COGO\Cogo.vcxproj", "{905D99EA-8BC5-45AB-BD0E-9531BB9D9F95}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C} = {7EA2E3A4-A83A-412C-831A-057E9EC9E73C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CogoTest", "COGO\CogoTest\CogoTest.vcxproj", "{08F43812-A85E-43FE-85F8-6704C21AA7EE}"
 EndProject
@@ -117,6 +120,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitServerTest", "UnitServe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\Unittest.vcxproj", "{098AF20D-E70D-420D-B4E5-5967CFE6D162}"
 	ProjectSection(ProjectDependencies) = postProject
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C} = {7EA2E3A4-A83A-412C-831A-057E9EC9E73C}
 		{9FA6F6BB-4833-4E42-A8FB-2D7AF8E937DA} = {9FA6F6BB-4833-4E42-A8FB-2D7AF8E937DA}
 		{A5617CED-E680-4882-8D42-075EBC75DAB4} = {A5617CED-E680-4882-8D42-075EBC75DAB4}
 		{EB9AD1EC-526F-4375-84B4-AA7BAC67D522} = {EB9AD1EC-526F-4375-84B4-AA7BAC67D522}
@@ -174,6 +178,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLRCSection", "RCSection\
 	ProjectSection(ProjectDependencies) = postProject
 		{3904763E-7A13-445F-8544-260047D333CD} = {3904763E-7A13-445F-8544-260047D333CD}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLCoordGeom", "CoordGeom\CoordGeom.vcxproj", "{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -631,6 +637,14 @@ Global
 		{9FA6F6BB-4833-4E42-A8FB-2D7AF8E937DA}.Release|x64.Build.0 = Release|x64
 		{9FA6F6BB-4833-4E42-A8FB-2D7AF8E937DA}.Release|x86.ActiveCfg = Release|x64
 		{9FA6F6BB-4833-4E42-A8FB-2D7AF8E937DA}.Release|x86.Build.0 = Release|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Debug|x64.ActiveCfg = Debug|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Debug|x64.Build.0 = Debug|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Debug|x86.ActiveCfg = Debug|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Debug|x86.Build.0 = Debug|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Release|x64.ActiveCfg = Release|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Release|x64.Build.0 = Release|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Release|x86.ActiveCfg = Release|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -32,8 +32,8 @@
 #include "LBAMUtils.h"
 
 class CSuperstructureMembers;
-typedef CComSegmentCollection< ISuperstructureMembers, ISuperstructureMember, IEnumSuperstructureMember, &IID_IEnumSuperstructureMember,CollectionIndexType > SuperstructureMemberCollImpl;
-typedef CPersistentCollection<CSuperstructureMembers, SuperstructureMemberCollImpl,CollectionIndexType> PersistentSuperstructureMemberCollImpl;
+using SuperstructureMemberCollImpl = CComSegmentCollection<ISuperstructureMembers, ISuperstructureMember, IEnumSuperstructureMember, &IID_IEnumSuperstructureMember, CollectionIndexType>;
+using PersistentSuperstructureMemberCollImpl = CPersistentCollection<CSuperstructureMembers, SuperstructureMemberCollImpl,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSuperstructureMembers

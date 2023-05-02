@@ -60,7 +60,7 @@ public:
 protected:
    #pragma warning(disable:4251)
    std::_tstring m_Name{ _T("Macro") };
-   typedef std::vector<std::unique_ptr<CEAFTransaction>> TxnContainer;
+   using TxnContainer = std::vector<std::unique_ptr<CEAFTransaction>>;
    TxnContainer m_Transactions;
 
 #if defined _DEBUG

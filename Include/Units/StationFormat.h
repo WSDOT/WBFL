@@ -47,26 +47,23 @@ namespace WBFL
 
          StationFormat& operator=(const StationFormat&) = default;
 
-         /// Returns the station as a floating point number in system units.
-         /// If station is ill-formed, an unitXUnit exception will
-         /// be thrown.
-         Float64 FromString(const std::_tstring& station) const;
+         bool operator==(const StationFormat& other) const;
+         bool operator!=(const StationFormat& other) const;
 
-         /// Returns a string that represents <i>station</i> in station format.
-         std::_tstring AsString(Float64 station) const;
+         /// Returns the station as a pair in the format (StationValue,ZoneIndex)
+         /// If station is ill-formed, an unitXUnit exception will be thrown.
+         std::pair<Float64, ZoneIndexType> FromString(const std::_tstring& station) const;
+
+         /// Returns a string that represents the station.
+         std::_tstring AsString(Float64 station, ZoneIndexType zoneIdx = INVALID_INDEX) const;
 
          void SetUnitOfMeasure(UnitOfMeasure unitOfMeasure);
          UnitOfMeasure GetUnitOfMeasure() const;
 
-         /// Returns <b>true</b> if the string is in a valid format, otherwise
-         /// <b>false</b>.  If the unit of measure is Meter, the string format is
-         /// x+yyy.zzzzzz (there must be at least one digit before the +, exactly
-         /// three digits between the + and the . and any number of digits after
-         /// the decimal point).  If the unit of measure is Feet, the string format
-         /// is x+yy.zzzz (basically the same as for Meter, except the number if
-         /// digits between the + and . is exactly two).  x, y, and z must be
-         /// digits 0-9.
-         bool IsValidString(const std::_tstring& station) const;
+      #if defined _UNITTEST
+         /// A self-test function - returns true if passed.
+         static bool TestMe(WBFL::Debug::Log& rlog);
+      #endif // _UNITTEST
 
       #if defined _DEBUG
          virtual bool AssertValid() const;
@@ -78,7 +75,7 @@ namespace WBFL
       };
 
 
-      /// Encapsulates instatiations of station formats for SI and US unit systems.
+      /// Encapsulates instantiations of station formats for SI and US unit systems.
       class UNITSCLASS StationFormats
       {
       public:

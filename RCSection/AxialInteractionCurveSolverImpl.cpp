@@ -25,12 +25,6 @@
 #include "AxialInteractionCurveSolverImpl.h"
 #include <RCSection/XRCSection.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #define MAX_FAIL 4
 
 using namespace WBFL::RCSection;
@@ -85,24 +79,26 @@ IndexType AxialInteractionCurveSolverImpl::GetMaxIterations() const
    return m_Solver.GetMaxIterations();
 }
 
-void AxialInteractionCurveSolverImpl::GetCompressionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& AxialInteractionCurveSolverImpl::GetCompressionLimit() const
 {
-   m_Solver.GetCompressionLimit(Fz, Mx, My, eo);
+   return m_Solver.GetCompressionLimit();
 }
 
-void AxialInteractionCurveSolverImpl::GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& AxialInteractionCurveSolverImpl::GetTensionLimit() const
 {
-   return m_Solver.GetTensionLimit(Fz, Mx, My, eo);
+   return m_Solver.GetTensionLimit();
 }
 
 std::unique_ptr<InteractionCurveSolution> AxialInteractionCurveSolverImpl::Solve(Float64 na, IndexType nFzSteps) const
 {
    auto solution(std::make_unique<InteractionCurveSolution>());
 
-   Float64 FzMin, FzMax;
-   Float64 Mx, My, eo;
-   GetTensionLimit(&FzMax, &Mx, &My, &eo);
-   GetCompressionLimit(&FzMin, &Mx, &My, &eo);
+   const auto& tension_capacity_limit = GetTensionLimit();
+   const auto& compression_capacity_limit = GetCompressionLimit();
+
+   Float64 FzMin = tension_capacity_limit.Fz;
+   Float64 FzMax = compression_capacity_limit.Fz;
+   Float64 eo = compression_capacity_limit.eo;
 
    if (nFzSteps < 3)
       nFzSteps = 3;

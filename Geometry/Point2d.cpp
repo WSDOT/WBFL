@@ -194,8 +194,7 @@ STDMETHODIMP CPoint2d::Location(Float64* pX,Float64* pY)
    CHECK_RETVAL(pX);
    CHECK_RETVAL(pY);
 
-   m_pPoint->GetLocation(pX, pY);
-
+   std::tie(*pX, *pY) = m_pPoint->GetLocation();
    return S_OK;
 }
 

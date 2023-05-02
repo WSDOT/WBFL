@@ -27,12 +27,6 @@
 #include <GeomModel/GeomOp2d.h>
 #include <GeomModel/Primitives3d.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #if defined _DEBUG_LOGGING
 #include <sstream>
 #include <iomanip>
@@ -90,8 +84,8 @@ Float64 GeneralSectionSolverImpl::GetSliceGrowthFactor() const
 #define COMPRESSION(_f_)  (_f_ < 0 ? 1 : 0)*(_f_)
 #define TENSION(_f_)      (_f_ > 0 ? 1 : 0)*(_f_)
 
-#define COMPRESSION_CG(_p_,_f_,_slice_) {Float64 _Xcg,_Ycg; _slice_.pntCG.GetLocation(&_Xcg,&_Ycg); _p_.Offset( COMPRESSION(_f_)*_Xcg, COMPRESSION(_f_)*_Ycg ); }
-#define TENSION_CG(_p_,_f_,_slice_)     {Float64 _Xcg,_Ycg; _slice_.pntCG.GetLocation(&_Xcg,&_Ycg); _p_.Offset( TENSION(_f_)*_Xcg,     TENSION(_f_)*_Ycg ); }
+#define COMPRESSION_CG(_p_,_f_,_slice_) {Float64 _Xcg,_Ycg; std::tie(_Xcg,_Ycg) = _slice_.pntCG.GetLocation(); _p_.Offset( COMPRESSION(_f_)*_Xcg, COMPRESSION(_f_)*_Ycg ); }
+#define TENSION_CG(_p_,_f_,_slice_)     {Float64 _Xcg,_Ycg; std::tie(_Xcg,_Ycg) = _slice_.pntCG.GetLocation(); _p_.Offset( TENSION(_f_)*_Xcg,     TENSION(_f_)*_Ycg ); }
 
 std::unique_ptr<GeneralSectionSolution> GeneralSectionSolverImpl::Solve(const WBFL::Geometry::Plane3d& incrementalStrainPlane) const
 {
@@ -113,7 +107,7 @@ std::unique_ptr<GeneralSectionSolution> GeneralSectionSolverImpl::Solve(const WB
    // get distance from origin to neutral axis line
    Float64 Yna;
    WBFL::Geometry::Vector2d v;
-   m_NeutralAxis.GetImplicit(&Yna, &v);
+   std::tie(Yna,v) = m_NeutralAxis.GetImplicit();
 
 #if defined _DEBUG_LOGGING
    WBFL::Debug::FileLogContext log(_T("GeneralSectionSolution.log"));
@@ -327,7 +321,7 @@ void GeneralSectionSolverImpl::DecomposeSection(const WBFL::Geometry::Plane3d& i
    // height
    Float64 k;
    Float64 basic_slice_height;
-   ASSERT(0 < m_nSlices);
+   CHECK(0 < m_nSlices);
    if (m_nSlices == 1)
    {
       k = 0;
@@ -526,9 +520,9 @@ void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& 
    // evaluate a point on the left side of the line
    Float64 C;
    WBFL::Geometry::Vector2d vN; // normal vector points to the left hand side of the line
-   line.GetImplicit(&C, &vN);
+   std::tie(C,vN) = line.GetImplicit();
    Float64 dx, dy;
-   vN.GetDimensions(&dx,&dy);
+   std::tie(dx,dy) = vN.GetDimensions();
 
    Float64 Offset = 10; // some offset from the line
    Float64 X = x1 + Offset * dx;
@@ -540,7 +534,7 @@ void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& 
    }
    catch (...)
    {
-      ASSERT(false); // this exception is not expected
+      CHECK(false); // this exception is not expected
    }
 
    if (0 < Z)
@@ -554,7 +548,7 @@ void GeneralSectionSolverImpl::UpdateNeutralAxis(const WBFL::Geometry::Plane3d& 
 void GeneralSectionSolverImpl::AnalyzeSlice(const SLICEINFO& slice, const WBFL::Geometry::Plane3d& incrementalStrainPlane, Float64& P, Float64& Mx, Float64& My, Float64& fg_stress, Float64& bg_stress, Float64& stress, Float64& incrementalStrain, Float64& totalStrain, bool& bExceededStrainLimits) const
 {
    Float64 Xcg, Ycg;
-   slice.pntCG.GetLocation(&Xcg, &Ycg);
+   std::tie(Xcg,Ycg) = slice.pntCG.GetLocation();
    incrementalStrain = incrementalStrainPlane.GetZ(Xcg, Ycg);
 
    incrementalStrain /= slice.Le;
@@ -611,7 +605,7 @@ bool GeneralSectionSolverImpl::SliceShape(const SHAPEINFO& shapeInfo, Float64 an
 
    // compute the initial strain at the CG of the slice using the shape's initial strain plane
    Float64 cgX, cgY;
-   sliceInfo.pntCG.GetLocation(&cgX, &cgY);
+   std::tie(cgX,cgY) = sliceInfo.pntCG.GetLocation();
    
    Float64 ei = shapeInfo.InitialStrain ? shapeInfo.InitialStrain->GetZ(cgX, cgY) : 0.0;
 
@@ -627,6 +621,6 @@ Float64 GeneralSectionSolverImpl::GetNeutralAxisAngle() const
 {
    WBFL::Geometry::Point2d p;
    WBFL::Geometry::Vector2d v;
-   m_NeutralAxis.GetExplicit(&p, &v);
+   std::tie(p,v) = m_NeutralAxis.GetExplicit();
    return v.GetDirection();
 }

@@ -38,7 +38,7 @@ static char THIS_FILE[] = __FILE__;
 using namespace WBFL::Units;
 
 bool contains_alpha(const std::_tstring& s);
-bool parse_station(const std::_tstring& station,Int16 nSepDigits,Float64* pX,Float64* pY,Float64* pZ);
+std::tuple<bool,Float64, IndexType> parse_station(const std::_tstring& station,Int16 nSepDigits);
 
 StationFormat::StationFormat(UnitOfMeasure unitOfMeasure)
 {
@@ -49,61 +49,101 @@ StationFormat::~StationFormat()
 {
 }
 
-Float64 StationFormat::FromString(const std::_tstring& station) const
+bool StationFormat::operator==(const StationFormat& other) const
 {
-   Float64 x,y,z;
-   Int16 nSepDigits = (m_UnitOfMeasure == UnitOfMeasure::Meter) ? 3 : 2;
-   if ( !parse_station(station,nSepDigits,&x,&y,&z) )
-      THROW(XUnit,Reason::BadStationFormat);
-
-   return (x * (m_UnitOfMeasure == UnitOfMeasure::Meter?1000.:100.)) + y + z;
+   return m_UnitOfMeasure == other.m_UnitOfMeasure;
 }
 
-std::_tstring StationFormat::AsString(Float64 station) const
+bool StationFormat::operator!=(const StationFormat& other) const
 {
-   int sign = BinarySign(station);
-   station = fabs(station);
-   Int16 plus_seperator;
-   Int16 num_decimal_places;
-   Float64 value;
+   return !operator==(other);
+}
 
-   // Convert station from system units to meters or feet
-   // Setup the station formatting parameters.
+std::pair<Float64, ZoneIndexType> StationFormat::FromString(const std::_tstring& strStation) const
+{
+   Int16 nSepDigits = (m_UnitOfMeasure == UnitOfMeasure::Meter) ? 3 : 2;
 
-   if ( m_UnitOfMeasure == UnitOfMeasure::Meter )
+   bool bSuccess;
+   Float64 station;
+   ZoneIndexType zoneIdx;
+   std::tie(bSuccess, station, zoneIdx) = parse_station(strStation, nSepDigits);
+   if ( !bSuccess)
+      THROW(XUnit,Reason::BadStationFormat);
+
+   if (m_UnitOfMeasure == UnitOfMeasure::Meter)
    {
-      plus_seperator     = 3;
-      num_decimal_places = 3;
-      value = WBFL::Units::ConvertFromSysUnits( station, Measure::Meter );
+      station = WBFL::Units::ConvertToSysUnits(station, Measure::Meter);
    }
    else
    {
-      plus_seperator     = 2;
-      num_decimal_places = 2;
-      value = WBFL::Units::ConvertFromSysUnits( station, Measure::Feet );
+      station = WBFL::Units::ConvertToSysUnits(station, Measure::Feet);
    }
 
-   TCHAR buffer[65];
-   Float64 shifter = pow(10.0,plus_seperator);
-   Int16   num_full_stations = (Int16)floor(value/shifter);
-   Float64 num_fra_station   = value - num_full_stations*shifter;
+   return std::make_pair(station, zoneIdx);
+}
+
+std::_tstring StationFormat::AsString(Float64 station, ZoneIndexType zoneIdx) const
+{
+   Uint8 plus_seperator;
+   Uint8 num_decimal_places;
+   Float64 value = fabs(station);
+
+   if (m_UnitOfMeasure == UnitOfMeasure::Meter)
+   {
+      plus_seperator = 3;
+      num_decimal_places = 3;
+      value = WBFL::Units::ConvertFromSysUnits(value, Measure::Meter);
+   }
+   else
+   {
+      plus_seperator = 2;
+      num_decimal_places = 2;
+      value = WBFL::Units::ConvertFromSysUnits(value, Measure::Feet);
+   }
+
+   Float64 shifter = pow(10., plus_seperator);
+   int v1 = (int)floor(value / shifter);
+   Float64 v2 = value - v1 * shifter;
 
    // Check to make sure that v2 is not basically the same as shifter
    // If station = 69500.00000, we sometimes get 694+100.00 instead of
    // 695+00.
-   if ( IsZero(num_fra_station-shifter,pow(10.0,-(num_decimal_places+1))) )
+   if (IsZero(v2 - shifter, 5 * pow(10., -(num_decimal_places + 1))))
    {
-      num_fra_station = 0;
-      num_full_stations++;
+      v2 = 0;
+      v1++;
    }
 
+   int width = plus_seperator + num_decimal_places + 1; // add one for the '.'
 
-   CHECK( 0 <= num_fra_station && num_fra_station < shifter );
+   int nChar;
+   nChar = (v1 == 0) ? 1 : (int)log10(fabs((Float64)v1)) + 1;
+   nChar += width; // includes one for the '.'
+   nChar++; // one for the '+'
+   nChar++; // one for the '\n'
+   if (station < 0)
+      nChar++; // for the leading "-" sign
 
-   Int16   width = plus_seperator + num_decimal_places + 1;
+   bool bIncludeZoneIdx = (zoneIdx != INVALID_INDEX);
+   if (bIncludeZoneIdx)
+   {
+      if (zoneIdx == 0)
+         nChar += 2; // ",1" will be added to the station string
+      else
+         nChar += (int)log10((Float64)zoneIdx) + 2; // ",nnn" where nnn is the zone index
+   }
 
-   _stprintf_s(buffer,65,_T("%s%d+%0*.*f"),(sign<0?_T("-"):_T("")),num_full_stations,width,num_decimal_places,num_fra_station);
-   return buffer;
+   auto pBuffer(std::make_unique<TCHAR[]>(nChar));
+   if (bIncludeZoneIdx)
+   {
+      _stprintf_s(pBuffer.get(), nChar, (station < 0 ? _T("-%d+%0*.*f,%d") : _T("%d+%0*.*f,%d")), v1, width, num_decimal_places, v2, zoneIdx + 1);
+   }
+   else
+   {
+      _stprintf_s(pBuffer.get(), nChar, (station < 0 ? _T("-%d+%0*.*f") : _T("%d+%0*.*f")), v1, width, num_decimal_places, v2);
+   }
+   std::_tstring strStation(pBuffer.get());
+   return strStation;
 }
 
 void StationFormat::SetUnitOfMeasure(UnitOfMeasure unitOfMeasure)
@@ -116,12 +156,57 @@ StationFormat::UnitOfMeasure StationFormat::GetUnitOfMeasure() const
    return m_UnitOfMeasure;
 }
 
-bool StationFormat::IsValidString(const std::_tstring& station) const
+#if defined _UNITTEST
+#include <Units\AutoSystem.h>
+bool StationFormat::TestMe(WBFL::Debug::Log& rlog)
 {
-   Float64 x,y,z;
-   Int16 nSepDigits = (m_UnitOfMeasure == UnitOfMeasure::Meter) ? 3 : 2;
-   return parse_station( station, nSepDigits, &x, &y, &z );
+   TESTME_PROLOGUE("StationFormat");
+
+   {
+      auto siFormat = StationFormats::SI;
+
+      // Valid SI station
+      std::_tstring siStation(L"3+034.54");
+      TRY_TESTME(IsEqual(siFormat.FromString(siStation).first, 3034.54));
+
+      std::_tstring siStation2(L"-3+034.54");
+      TRY_TESTME(IsEqual(siFormat.FromString(siStation2).first, -3034.54));
+
+      TRY_TESTME(siFormat.AsString(WBFL::Units::ConvertToSysUnits(9999.99, WBFL::Units::Measure::Meter)) == std::_tstring(L"9+999.990"));
+      TRY_TESTME(siFormat.AsString(WBFL::Units::ConvertToSysUnits(0.45, WBFL::Units::Measure::Meter)) == std::_tstring(L"0+000.450"));
+
+      // Bad SI Station (use the US station)
+      try { siFormat.FromString(L"3+34.54"); }
+      catch (XUnit& e) { TRY_TESTME(e.GetReasonCode() == XUnit::Reason::BadStationFormat); }
+   }
+
+   {
+      // We want to work in feet
+      WBFL::Units::AutoSystem au;
+      WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Feet);
+
+      auto usFormat = StationFormats::US;
+
+      // Valid US station
+      std::_tstring usStation(L"3+34.54");
+      TRY_TESTME(IsEqual(usFormat.FromString(usStation).first, 334.54));
+
+      std::_tstring usStation2(L"-3+34.54");
+      TRY_TESTME(IsEqual(usFormat.FromString(usStation2).first, -334.54));
+
+      TRY_TESTME(usFormat.AsString(WBFL::Units::ConvertToSysUnits(3434.34, WBFL::Units::Measure::Feet)) == std::_tstring(L"34+34.34"));
+      TRY_TESTME(usFormat.AsString(WBFL::Units::ConvertToSysUnits(9999.99, WBFL::Units::Measure::Feet)) == std::_tstring(L"99+99.99"));
+      TRY_TESTME(usFormat.AsString(WBFL::Units::ConvertToSysUnits(-9999.99, WBFL::Units::Measure::Feet)) == std::_tstring(L"-99+99.99"));
+      TRY_TESTME(usFormat.AsString(WBFL::Units::ConvertToSysUnits(0.45, WBFL::Units::Measure::Feet)) == std::_tstring(L"0+00.45"));
+
+      // Bad US Station (use the SI station)
+      try { usFormat.FromString(L"3+034.54"); }
+      catch (XUnit& e) { TRY_TESTME(e.GetReasonCode() == XUnit::Reason::BadStationFormat); }
+   }
+
+   TESTME_EPILOG("StationFormat");
 }
+#endif // _UNITTEST
 
 #if defined _DEBUG
 bool StationFormat::AssertValid() const
@@ -156,78 +241,97 @@ bool contains_alpha(const std::_tstring& s)
    return false;
 }
 
-bool parse_station(const std::_tstring& station,Int16 nSepDigits,Float64* pX,Float64* pY,Float64* pZ)
+std::tuple<bool, Float64, IndexType> parse_station(const std::_tstring& station, Int16 nDigOffset)
 {
-   // Quick check.
-   if ( station.length() == 0 )
-      return false;
+   TCHAR chFirst;
+   Float64 d;
 
-   // The station string is assumed to be in the format x+y.z
-   std::_tstring x;
-   std::_tstring y;
-   std::_tstring z;
+   // Look for the +
+   auto nChar = station.length() + 1;
+   auto pBuffer(std::make_unique<TCHAR[]>(nChar));
+   _tcscpy_s(pBuffer.get(), station.length() + 1, station.c_str());
 
-   //
-   // Get all the characters to the left of the '+' sign
-   //
-   std::_tstring::size_type plus_pos = station.find(_T('+'));
-   if ( plus_pos < 1 || plus_pos == station.npos )
-      return false; // no digits before the + or the + was not found.
-
-   // assign all the characters to the left of the + to x.
-   x.assign( station, 0, plus_pos );
-
-   if ( contains_alpha(x) )
-      return false; // there was a non-numeric digit in x.
-
-   //
-   // Get all the characters between the '+' and the '.'
-   //
-   std::_tstring::size_type dot_pos = station.find('.');
-   if ( dot_pos < plus_pos ||
-        dot_pos == station.length() ||
-        dot_pos == station.npos )
+   LPTSTR pChar = pBuffer.get() + nChar - 2;
+   int idx = (int)(nChar) - 2;
+   while (*pChar != _T(',') && 0 <= idx)
    {
-      // The . was before the +  or
-      // The . was the last character in the string   or
-      // The . was not found
-      return false;
+      pChar--;
+      idx--;
    }
 
-   // assign all the characters between the + and the . to y.
-   y.assign( station, plus_pos+1, dot_pos-plus_pos-1 );
+   IndexType zoneIdx = INVALID_INDEX;
+   if (*pChar == _T(','))
+   {
+      // found a zone index
+      LPTSTR pEnd = pBuffer.get() + nChar - 2;
+      zoneIdx = (IndexType)_tcstol(pChar + 1, &pEnd, 10) - 1;
+      *pChar = _T('\0');
+   }
 
-   if ( contains_alpha(y) )
-      return false; // there was a non-numeric digit in y.
+   pChar = pBuffer.get();
+   while (*pChar != _T('+') && *pChar != _T('\0'))
+   {
+      pChar++;
+   }
 
-   // make sure there is the right number of digits between
-   // the + and the .
-   if ( y.length() != nSepDigits )
-      return false;
+   if (*pChar == _T('+'))
+   {
+      // The + was found
 
-   // 
-   // Get all the characters after the '.'
-   //
-   z.assign( station, dot_pos+1, station.npos-dot_pos-1 );
+      // Verify that the station is not ill-formed
+      // That is, there must be nOffsetDigits between the +
+      // and the decimal point or the end of the string
 
-   if ( contains_alpha(z) )
-      return false;
+      // first, the string must be long enough to hold the correct number of digits
+      IndexType pos = (pChar - pBuffer.get());
+      IndexType min_length = pos + nDigOffset + 2;
+      if (nChar < (int)min_length)
+      {
+         return std::make_tuple(false, 0, INVALID_INDEX);
+      }
 
-   // The string seems to be in proper format... Convert the string
-   // representation of x, y, and z to numbers.
-   std::_tistringstream is_x(x);
-   is_x >> *pX;
+      TCHAR cDecimal = *(pChar + nDigOffset + 1);
+      if (cDecimal != _T('.') && cDecimal != 0 && cDecimal != _T('\n') && !isspace(cDecimal))
+      {
+         return std::make_tuple(false, 0, INVALID_INDEX);
+      }
 
-   std::_tistringstream is_y(y);
-   is_y >> *pY;
 
-   std::_tistringstream is_z(z);
-   is_z >> *pZ;
+      // Remove the + by shifting the remaining characters 1 to the left
+      _tcscpy_s(pChar, nChar - size_t(pChar - pBuffer.get()), pChar + 1);
+   }
+   else
+   {
+      // The + wasn't found, this must be a regular number
+      d = _tstof(pBuffer.get());
+      if (IsZero(d) && pBuffer[0] != _T('0'))
+      {
+         return std::make_tuple(false, 0, INVALID_INDEX);
+      }
 
-   // Z has to be made a decimal
-   *pZ /= pow(10.,(Float64)z.length());
+      return std::make_tuple(true, d, INVALID_INDEX);
+   }
 
-   return true;
+   // Now that the + has been removed, convert the string to a Float64
+   chFirst = pBuffer[0];
+   d = _tcstod(pBuffer.get(), &pChar);
+
+   if (d == 0.0 && chFirst != _T('0'))
+   {
+      // Could not convert
+      return std::make_tuple(false, 0, INVALID_INDEX);
+   }
+
+   while (*pChar == _T(' ') || *pChar == _T('\t'))
+      pChar++;
+
+   if (*pChar != _T('\0'))
+   {
+      // Not terminated properly
+      return std::make_tuple(false, 0, INVALID_INDEX);
+   }
+
+   return std::make_tuple(true, d, zoneIdx);
 }
 
 

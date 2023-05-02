@@ -29,16 +29,29 @@
 
 #define THROW_GEOMETRY(reason) throw WBFL::Geometry::XGeometry(reason,_T(__FILE__),__LINE__)
 
+
 namespace WBFL
 {
    namespace Geometry
    {
-      /// A geometric modeling error has occurred
+      constexpr Int32 WBFL_GEOMETRY_E_INVALIDARG = 1;
+      constexpr Int32 WBFL_GEOMETRY_E_INVALIDINDEX = 2;
+      constexpr Int32 WBFL_GEOMETRY_E_COINCIDENTPOINTS = 3;
+      constexpr Int32 WBFL_GEOMETRY_E_COLINEARLINES = 4;
+      constexpr Int32 WBFL_GEOMETRY_E_RADIUS = 5;
+      constexpr Int32 WBFL_GEOMETRY_E_MIDORDINATE = 6;
+      constexpr Int32 WBFL_GEOMETRY_E_SHAPE = 7;
+      constexpr Int32 WBFL_GEOMETRY_E_DIMENSION = 8;
+      constexpr Int32 WBFL_GEOMETRY_E_ZEROMAGNITUDE = 9;
+      constexpr Int32 WBFL_GEOMETRY_E_NOSOLUTIONS = 10;
+      constexpr Int32 WBFL_GEOMETRY_E_NOTNORMALIZED = 11;
+
+      ///       /// A geometric modeling error has occurred
       class GEOMMODELCLASS XGeometry : public WBFL::System::XBase
       {
       public:
          XGeometry() = delete;
-         XGeometry(const std::_tstring& strReason, const std::_tstring& file, Uint32 line);
+         XGeometry(Int32 reason, const std::_tstring& file, Uint32 line);
          virtual ~XGeometry() = default;
 
          XGeometry& operator=(const XGeometry&) = default;
@@ -48,7 +61,7 @@ namespace WBFL
          virtual std::_tstring GetErrorMessage() const override;
 
       private:
-         std::_tstring m_Reason;
+         Int32 m_Reason;
       };
    }; // Geometry
 }; // WBFL

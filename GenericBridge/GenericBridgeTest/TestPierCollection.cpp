@@ -56,11 +56,24 @@ void CTestPierCollection::Test()
    CComPtr<IGenericBridge> bridge;
    bridge.CoCreateInstance(CLSID_GenericBridge);
 
+   CComPtr<ICogoModel> cogoModel;
+   cogoModel.CoCreateInstance(CLSID_CogoModel);
+
    CComPtr<IBridgeGeometry> bridgeGeometry;
    bridge->get_BridgeGeometry(&bridgeGeometry);
 
-   CogoObjectID alignmentID;
-   bridgeGeometry->get_BridgeAlignmentID(&alignmentID);
+   bridgeGeometry->putref_CogoModel(cogoModel);
+
+   CogoObjectID alignmentID = 0;
+   CogoObjectID profileID = 0;
+   cogoModel->StoreAlignment(alignmentID);
+   cogoModel->StoreProfile(profileID);
+   cogoModel->AttachProfileToAlignment(profileID, alignmentID);
+   CComPtr<IAlignment> alignment;
+   cogoModel->CreateAlignmentByID(alignmentID, &alignment);
+   
+   bridgeGeometry->put_BridgeAlignmentID(alignmentID);
+   bridgeGeometry->putref_Alignment(alignmentID, alignment);
 
    CComPtr<IPierLine> pierLine;
    bridgeGeometry->CreatePierLine(0,alignmentID,CComVariant(0.00),CComBSTR("Normal"),10,-5,&pierLine);

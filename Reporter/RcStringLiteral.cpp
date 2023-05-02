@@ -25,12 +25,6 @@
 #include <Reporter\RcStringLiteral.h>
 #include <string.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptRcStringLiteral::rptRcStringLiteral(LPCTSTR  YourStr,bool bNoWrap) :
 m_TheString( YourStr ),
 m_bNoWrap(bNoWrap)

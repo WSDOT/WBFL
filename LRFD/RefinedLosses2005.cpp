@@ -28,12 +28,6 @@
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdRefinedLosses2005
@@ -703,7 +697,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
       break;
 
    default:
-      ATLASSERT(false); // should never get here
+      CHECK(false); // should never get here
       m_dfpR1 = 0;
    }
 
@@ -982,7 +976,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       break;
 
    default:
-      ATLASSERT(false);
+      CHECK(false);
       m_dfpR1H[TEMPORARY_STRAND] = 0;
       break;
    }
@@ -1018,7 +1012,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
       break;
 
    default:
-      ATLASSERT(false);
+      CHECK(false);
       m_dfpR1H[PERMANENT_STRAND] = 0;
       break;
    }

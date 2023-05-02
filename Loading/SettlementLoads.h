@@ -31,11 +31,11 @@
 #include "LoadCollection.h"
 #include "LoadingUtils.h"
 
-typedef CLoadItem<ldISettlementLoadItem, ldISettlementLoad, &IID_ldISettlementLoadItem> CSettlementLoadItem;
+using CSettlementLoadItem = CLoadItem<ldISettlementLoadItem, ldISettlementLoad, &IID_ldISettlementLoadItem>;
 class CSettlementLoads;
-typedef CLoadCollection<ldISettlementLoads, &IID_ldISettlementLoads, CSettlementLoads, ldISettlementLoad, 
+using SettlementLoadColl_Impl = CLoadCollection<ldISettlementLoads, &IID_ldISettlementLoads, CSettlementLoads, ldISettlementLoad,
                         ldISettlementLoadItem, CSettlementLoadItem, 
-                        ldIEnumSettlementLoad, &IID_ldIEnumSettlementLoad> SettlementLoadColl_Impl;
+                        ldIEnumSettlementLoad, &IID_ldIEnumSettlementLoad>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettlementLoads

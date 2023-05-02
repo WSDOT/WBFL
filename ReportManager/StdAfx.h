@@ -33,7 +33,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <Private\WBFLPackage.h>
+#include <WBFLMFC.h>
+#include <WBFLAll.h>
 
 #ifndef _AFX_NO_OLE_SUPPORT
 #include <afxole.h>         // MFC OLE classes

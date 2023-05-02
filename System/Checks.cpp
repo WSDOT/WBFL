@@ -36,12 +36,6 @@ using namespace WBFL::Debug;
 
 DIAG_DEFINE_GROUP(Def,1,0);
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 bool Diagnostics::bWarnPopup = true;
 
 void Diagnostics::Watch(const std::_tstring& group, const std::_tstring& msg,

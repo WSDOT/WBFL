@@ -29,13 +29,6 @@
 #include <Reporter\RcUnitTag.h>
 #include <Units\PhysicalT.h>
 
-#if defined BUILDREPORTERLIB
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-#endif // BUILDREPORTERLIB
 
 /// Report content for a unit tag.
 ///
@@ -86,7 +79,7 @@ private:
 
 #define DECLARE_RC_UNIT_TAG(u,t) \
    REPORTERTPL rptRcUnitTagT<u>; \
-   typedef rptRcUnitTagT<u> t;
+   using t = rptRcUnitTagT<u>;
 
 DECLARE_RC_UNIT_TAG( WBFL::Units::Mass,           rptMassUnitTag           );
 DECLARE_RC_UNIT_TAG( WBFL::Units::MassPerLength,  rptMassPerLengthUnitTag  );
@@ -105,9 +98,9 @@ DECLARE_RC_UNIT_TAG( WBFL::Units::MomentPerAngle, rptMomentPerAngleUnitTag );
 DECLARE_RC_UNIT_TAG( WBFL::Units::Moment,         rptMomentUnitTag         );
 DECLARE_RC_UNIT_TAG( WBFL::Units::PerLength,      rptPerLengthUnitTag      );
 
-typedef rptPressureUnitTag rptStressUnitTag;
-typedef rptLength2UnitTag  rptAreaUnitTag;
-typedef rptLength3UnitTag  rptVolumeUnitTag;
-typedef rptLengthUnitTag   rptAreaPerLengthUnitTag;
+using rptStressUnitTag = rptPressureUnitTag;
+using rptAreaUnitTag = rptLength2UnitTag;
+using rptVolumeUnitTag = rptLength3UnitTag;
+using rptAreaPerLengthUnitTag = rptLengthUnitTag;
 
 #endif // INCLUDED_REPORTER_RCUNITTAGT_H_

@@ -96,7 +96,7 @@ const Time Measure::Minute (    60.0, _T("min") );
 const Time Measure::Hour   (  3600.0, _T("hr")  );
 const Time Measure::Day    ( 86400.0, _T("day") );
 
-const Temperature Measure::Celcius    ( 0.0, 1.0,  0.0, _T("C") );
+const Temperature Measure::Celsius    ( 0.0, 1.0,  0.0, _T("C") );
 const Temperature Measure::Fahrenheit (-32.0, 5./9., 0.0, _T("F") );
 
 const Angle Measure::Radian ( 1.0,               _T("rad") );
@@ -191,10 +191,10 @@ bool Measure::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( TEST( 1.0, KipPerFeet3, 16018.46337, KgPerMeter3 ));
    TRY_TESTME( TEST( 0.0948, SqrtKSI,  0.2489246, SqrtMPa));
 
-   TRY_TESTME(TEST(100.0, Celcius, 212.0, Fahrenheit));
-   TRY_TESTME(TEST(212.0, Fahrenheit, 100.0, Celcius));
-   TRY_TESTME(TEST(0.0, Celcius, 32.0, Fahrenheit));
-   TRY_TESTME(TEST(32.0, Fahrenheit, 0.0, Celcius));
+   TRY_TESTME(TEST(100.0, Celsius, 212.0, Fahrenheit));
+   TRY_TESTME(TEST(212.0, Fahrenheit, 100.0, Celsius));
+   TRY_TESTME(TEST(0.0, Celsius, 32.0, Fahrenheit));
+   TRY_TESTME(TEST(32.0, Fahrenheit, 0.0, Celsius));
 
    TRY_TESTME( TEST( 1.0, NewtonMeter2,  2.419823, LbfFoot2));
    TRY_TESTME( TEST( 1.0, NewtonMeter2,  348.45452, LbfInch2));

@@ -46,7 +46,7 @@ cpp_quote("#define LOGFILE_E_CANTOPEN           (LOGFILE_E_FIRST+0)")
 cpp_quote("// unable to open the log file")
 cpp_quote("")
 cpp_quote("#define LOGFILE_E_BADWRITE           (LOGFILE_E_FIRST+1)")
-cpp_quote("// error occured while logging message")
+cpp_quote("// error occurred while logging message")
 cpp_quote("")
 cpp_quote("#define LOGFILE_E_NOLOGFILE          (LOGFILE_E_FIRST+2)")
 cpp_quote("// invalid cookie was used")
@@ -70,7 +70,7 @@ cpp_quote("#define STRLOAD_E_FILENOTFOUND       (STRLOAD_E_FIRST+3)")
 cpp_quote("// the specified file was not found")
 cpp_quote("")
 cpp_quote("#define STRLOAD_E_USERDEFINED        (STRLOAD_E_FIRST+4)")
-cpp_quote("// a user defined error occured")
+cpp_quote("// a user defined error occurred")
 cpp_quote("")
 cpp_quote("#define STRLOAD_E_CLASS_NOT_REGISTERED (STRLOAD_E_FIRST+5)")
 cpp_quote("// class was not registered and cannot be created")
@@ -549,8 +549,8 @@ library WBFLTools
          [in] BSTR newVal ///< the new progress message
       );
 
-      /// Returns VARIANT_TRUE if a monitored process was cancelled, otherwise VARIANT_FALSE
-      [propget, helpstring("Check this value to see if process was cancelled")]
+      /// Returns VARIANT_TRUE if a monitored process was canceled, otherwise VARIANT_FALSE
+      [propget, helpstring("Check this value to see if process was canceled")]
       HRESULT WasCancelled([out, retval] VARIANT_BOOL *pVal);
    };
 
@@ -564,10 +564,10 @@ library WBFLTools
    ]
    interface ISupportProgressMonitor : IUnknown
    {
-      /// Initializes the object with a progress monitor and an identifing "cookie".
+      /// Initializes the object with a progress monitor and an identifying "cookie".
       ///
       /// The object calls the methods on IProgressMonitor as it progresses through whatever lengthy process needs monitoring.
-      /// The monitored process must termining if IProgressMonitor::WasCancelled indicates an external event signaled cancellation (such as a button press in the UI)
+      /// The monitored process must terminating if IProgressMonitor::WasCancelled indicates an external event signaled cancellation (such as a button press in the UI)
       [helpstring("Initialize the ProgressMonitor")] HRESULT InitializeProgressMonitor(
          [in]IProgressMonitor* newVal,  ///< The progress monitor that will be providing progress feedback
          [in]long cookie ///< the cookie that must be used when calling methods on the IProgressMonitor interface
@@ -608,7 +608,7 @@ library WBFLTools
 		[helpcontext(IDH_ProgressMonitorWindow_Hide), helpstring("method Hide")] 
       HRESULT Hide();
 
-      /// Close the progress window and causes puts the progress into a Cancelled state
+      /// Close the progress window and causes puts the progress into a Canceled state
 		[helpcontext(IDH_ProgressMonitorWindow_Close), helpstring("method Close")] 
       HRESULT Close();
 	};
@@ -964,7 +964,7 @@ library WBFLTools
       [helpcontext(IDH_LongArray_Assign), helpstring("method Assign")]
       HRESULT Assign(
          [in]CollectionIndexType numElements,  ///< number of elements to assign value
-         [in]IndexType value ///< value to be assined to the first numElements in the array
+         [in]IndexType value ///< value to be assigned to the first numElements in the array
       );
    };
 

@@ -29,12 +29,564 @@
 
 #include "stdafx.h"
 #include "TestAlignment1.h"
+#include <WBFLCogo\CogoHelpers.h>
+#include <CoordGeom/Utilities.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+void AlignmentDump(IAlignment* pAlignment, std::ostream& os)
+{
+   std::vector<Float64> vStations = linspace(0.00, 700.0, 50);
+
+   for (const auto& station : vStations)
+   {
+      CComPtr<IPoint2d> pnt;
+      pAlignment->LocatePoint(CComVariant(station), omtAlongDirection, 0.0, CComVariant(0), &pnt);
+      Float64 x, y;
+      pnt->Location(&x, &y);
+      os << x << ", " << y << std::endl;
+   }
+}
+
+void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
+{
+   //////////////
+   // Bearing, Normal, LocatePoint, Station, and Offset
+   Float64 alignment_offset = (ySign / xSign) * 10;
+   CComPtr<IDirection> dir;
+   Float64 dirVal;
+   CComPtr<IPoint2d> pnt;
+   Float64 x, y;
+   CComPtr<IStation> station;
+   Float64 offset;
+   Float64 stationVal;
+
+   auto AlignmentDirection = [&xSign, &ySign](Float64 dir) {return WBFL::COGO::Utilities::NormalizeAngle(atan2(ySign * tan(dir), xSign)); };
+
+   // Sta 0+00
+   Float64 alignment_direction = AlignmentDirection(0.0);
+   TRY_TEST(alignment->GetBearing(CComVariant(0.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(0.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   pnt.Release();
+
+   TRY_TEST(alignment->LocatePoint(CComVariant(0.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*-100.0), true);
+   TRY_TEST(IsEqual(y, ySign*-10.0), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 0.00), true);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+
+   CComPtr<IPoint2d> newPnt;
+   station.Release();
+   VARIANT_BOOL vbOnProjection;
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 0.00), true);
+   TRY_TEST(IsEqual(x, xSign * -100.0), true);
+   TRY_TEST(IsEqual(y, ySign * 0.0), true);
+   TRY_TEST(vbOnProjection, VARIANT_TRUE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 0.00), true);
+
+
+   // Sta 1+00
+   alignment_direction = AlignmentDirection(0.0);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(100.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(100.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   pnt.Release();
+
+   TRY_TEST(alignment->LocatePoint(CComVariant(100.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*0.0), true);
+   TRY_TEST(IsEqual(y, ySign*-10.0), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 100.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 100.00), true);
+   TRY_TEST(IsEqual(x, xSign * 0.0), true);
+   TRY_TEST(IsEqual(y, ySign * 0.0), true);
+   TRY_TEST(vbOnProjection, VARIANT_FALSE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 100.00), true);
+
+   // Sta 1+25
+   alignment_direction = AlignmentDirection(0.0);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(125.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(125.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(125.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*25.0), true);
+   TRY_TEST(IsEqual(y, ySign*-10.0), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 125.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 125.00), true);
+   TRY_TEST(IsEqual(x, xSign * 25.0), true);
+   TRY_TEST(IsEqual(y, ySign * 0.0), true);
+   TRY_TEST(vbOnProjection, VARIANT_FALSE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 125.00), true);
+
+   // Sta 2+00
+   dir.Release();
+   alignment_direction = AlignmentDirection(M_PI/4);
+   TRY_TEST(alignment->GetBearing(CComVariant(200.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(200.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(200.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*107.0710678), true);
+   TRY_TEST(IsEqual(y, ySign*-7.0710678), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 200.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 200.00), true);
+   TRY_TEST(IsEqual(x, xSign * 100.0), true);
+   TRY_TEST(IsEqual(y, ySign * 0.0), true);
+   TRY_TEST(vbOnProjection, VARIANT_FALSE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 200.00), true);
+
+   // Sta 2+50
+   alignment_direction = AlignmentDirection(M_PI / 4);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(250.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(250.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(250.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*142.4264, 0.001), true);
+   TRY_TEST(IsEqual(y, ySign*28.2843, 0.001), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 250.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 250.0), true);
+   TRY_TEST(IsEqual(x, xSign * 135.35533905932738), true);
+   TRY_TEST(IsEqual(y, ySign * 35.355339059327392), true);
+   TRY_TEST(vbOnProjection, VARIANT_FALSE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 250.00), true);
+
+   // Sta 3+00
+   alignment_direction = AlignmentDirection(5.8195376981787801);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(300.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(300.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3* PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(300.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*171.7250, 0.001), true);
+   TRY_TEST(IsEqual(y, ySign*27.9571, 0.001), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 300.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 300.0), true);
+   TRY_TEST(IsEqual(x, xSign * 176.19716589662397), true);
+   TRY_TEST(IsEqual(y, ySign * 36.901417051688000), true);
+   TRY_TEST(vbOnProjection, VARIANT_FALSE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 300.00), true);
+
+   // Sta 4+90
+   alignment_direction = AlignmentDirection(0.0084083531428916);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(490.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(490.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(490.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*357.5699, 0.001), true);
+   TRY_TEST(IsEqual(y, ySign*-9.9882, 0.001), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 490.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 490.), true);
+   TRY_TEST(IsEqual(x, xSign * 357.48589488932885), true);
+   TRY_TEST(IsEqual(y, ySign * 0.011493657282799078), true);
+   TRY_TEST(vbOnProjection, VARIANT_FALSE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 490.00), true);
+
+   // Sta 5+30
+   alignment_direction = AlignmentDirection(0.39101);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(530.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(530.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(530.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*400.3079, 0.001), true);
+   TRY_TEST(IsEqual(y, ySign*-1.65612, 0.001), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 530.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 530.), true);
+   TRY_TEST(IsEqual(x, xSign * 396.49675804330548), true);
+   TRY_TEST(IsEqual(y, ySign * 7.5891337029933084), true);
+   TRY_TEST(vbOnProjection, VARIANT_FALSE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 530.00), true);
+
+   // Sta 5+65
+   alignment_direction = AlignmentDirection(0.73327699338782193);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(565.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(565.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(565.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*432.5904, 0.001), true);
+   TRY_TEST(IsEqual(y, ySign*18.8222, 0.001), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 565.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 565.0), true);
+   TRY_TEST(IsEqual(x, xSign * 425.89739504565671), true);
+   TRY_TEST(IsEqual(y, ySign * 26.252094830906742), true);
+   TRY_TEST(vbOnProjection, VARIANT_FALSE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 565.00), true);
+
+   // Sta 6+00
+   alignment_direction = AlignmentDirection(M_PI/4);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(600.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(600.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(600.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*457.8918, 0.001), true);
+   TRY_TEST(IsEqual(y, ySign*43.7496, 0.001), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 600.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 600.), true);
+   TRY_TEST(IsEqual(x, xSign * 450.82071075337751), true);
+   TRY_TEST(IsEqual(y, ySign * 50.820710753377611), true);
+   TRY_TEST(vbOnProjection, VARIANT_TRUE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 600.00), true);
+
+   // Sta 7+00
+   alignment_direction = AlignmentDirection(M_PI / 4);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(700.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(700.00), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(700.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*528.6024, 0.001), true);
+   TRY_TEST(IsEqual(y, ySign*114.4603, 0.001), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 700.00), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 700.), true);
+   TRY_TEST(IsEqual(x, xSign * 521.53138887203227), true);
+   TRY_TEST(IsEqual(y, ySign * 121.531388872032281), true);
+   TRY_TEST(vbOnProjection, VARIANT_TRUE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal, 700.00), true);
+
+
+   // Add a station equation
+   alignment->AddStationEquation(650, 800);
+
+   CComPtr<IStation> objStation;
+   alignment->ConvertFromNormalizedStation(700, &objStation);
+
+   ZoneIndexType idx;
+   objStation->GetStation(&idx, &stationVal);
+   TRY_TEST(idx, 1);
+   TRY_TEST(IsEqual(stationVal, 850.0), true);
+
+   // Sta 8+50 (station range 1)
+   alignment_direction = AlignmentDirection(M_PI / 4);
+   dir.Release();
+   TRY_TEST(alignment->GetBearing(CComVariant(objStation), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, alignment_direction), true);
+
+   dir.Release();
+   TRY_TEST(alignment->GetNormal(CComVariant(objStation), &dir), S_OK);
+   dir->get_Value(&dirVal);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+
+   pnt.Release();
+   TRY_TEST(alignment->LocatePoint(CComVariant(objStation), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, xSign*528.6024, 0.001), true);
+   TRY_TEST(IsEqual(y, ySign*114.4603, 0.001), true);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(pnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, alignment_offset), true);
+   station->GetStation(&idx, &stationVal);
+   TRY_TEST(idx, 1);
+   TRY_TEST(IsEqual(stationVal, 850.0), true);
+
+   newPnt.Release();
+   station.Release();
+   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &station, &vbOnProjection), S_OK);
+   newPnt->get_X(&x);
+   newPnt->get_Y(&y);
+   station->GetStation(&idx, &stationVal);
+   TRY_TEST(idx, 1);
+   TRY_TEST(IsEqual(stationVal, 850.0), true);
+   TRY_TEST(IsEqual(x, xSign * 521.53138887203227), true);
+   TRY_TEST(IsEqual(y, ySign * 121.531388872032281), true);
+   TRY_TEST(vbOnProjection, VARIANT_TRUE);
+
+   station.Release();
+   TRY_TEST(alignment->StationAndOffset(newPnt, &station, &offset), S_OK);
+   TRY_TEST(IsEqual(offset, 0.0), true);
+   station->GetStation(&idx, &stationVal);
+   TRY_TEST(idx, 1);
+   TRY_TEST(IsEqual(stationVal, 850.0), true);
+}
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -67,12 +619,16 @@ void CTestAlignment1::Test1()
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
    p1->Move(0,0);
-   alignment->AddEx(p1);
 
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance(CLSID_Point2d);
    p2->Move(100,0);
-   alignment->AddEx(p2);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start;
    start.CoCreateInstance(CLSID_Point2d);
@@ -82,11 +638,12 @@ void CTestAlignment1::Test1()
    end.CoCreateInstance(CLSID_Point2d);
    end->Move(250,0);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> ls;
+   ls.CoCreateInstance(CLSID_PathSegment);
+   ls->ThroughPoints(start,end);
+   element.Release();
+   ls->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> pbt;
    pbt.CoCreateInstance(CLSID_Point2d);
@@ -102,450 +659,36 @@ void CTestAlignment1::Test1()
 
    CComPtr<ICompoundCurve> hc;
    hc.CoCreateInstance(CLSID_CompoundCurve);
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
    hc->put_Radius(100);
    hc->put_SpiralLength(spEntry,10);
    hc->put_SpiralLength(spExit,20);
-   alignment->AddEx(hc);
+   element.Release();
+   hc->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
-   alignment->AddEx(pft);
+   //AlignmentDump(alignment, std::cout);
 
    //////////////
    // Bearing, Normal, LocatePoint, Station, and Offset
    CComPtr<IDirection> dir;
-   Float64 dirVal;
    CComPtr<IPoint2d> pnt;
-   Float64 x,y;
    CComPtr<IStation> station;
    Float64 offset;
-   Float64 stationVal;
 
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),nullptr),E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->GetBearing(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->GetNormal(CComVariant(0.00),nullptr),E_POINTER);
    TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),nullptr),E_POINTER);
-   TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
-   TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
-   TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
+   TRY_TEST(alignment->StationAndOffset(end,&station,nullptr),E_POINTER);
+   TRY_TEST(alignment->StationAndOffset(end,nullptr,&offset),E_POINTER);
+   TRY_TEST(alignment->StationAndOffset(nullptr,&station,&offset),E_INVALIDARG);
    TRY_TEST(alignment->ProjectPoint(end,nullptr,nullptr,nullptr),E_POINTER);
    start.Release();
    TRY_TEST(alignment->ProjectPoint(nullptr,&start,nullptr,nullptr),E_INVALIDARG);
 
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.00),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(0.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-100.0),true);
-   TRY_TEST(IsEqual(y,-10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
-   TRY_TEST(IsEqual(offset,10.0),true);
-
-   CComPtr<IPoint2d> newPnt;
-   Float64 distFromStart;
-   VARIANT_BOOL vbOnProjection;
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt,&distFromStart,&vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
-
-
-   // Sta 1+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(100.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.00),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(100.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(100.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,  0.0),true);
-   TRY_TEST(IsEqual(y,-10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,100.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,100.00),true);
-
-   // Sta 1+25
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(125.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.00),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(125.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(125.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,25.0),true);
-   TRY_TEST(IsEqual(y,-10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,125.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,125.00),true);
-
-   // Sta 2+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(200.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(200.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4 + 3 * PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(200.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,107.0710678),true);
-   TRY_TEST(IsEqual(y,-7.0710678),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,200.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,200.00),true);
-
-   // Sta 2+50
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,142.4264,0.001),true);
-   TRY_TEST(IsEqual(y, 28.2843,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,250.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,250.00),true);
-
-   // Sta 3+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(300.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5.8195,0.001),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(300.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5.8195 - PI_OVER_2,0.001),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(300.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,171.7250,0.001),true);
-   TRY_TEST(IsEqual(y, 27.9571,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,300.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,300.00),true);
-
-   // Sta 4+90
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(490.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.0084083531428916),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(490.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.008408353 + 3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(490.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,357.5699,0.001),true);
-   TRY_TEST(IsEqual(y, -9.9882,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,490.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,490.00),true);
-
-   // Sta 5+30
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(530.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.39101),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(530.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.39101 + 3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(530.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,400.3079,0.001),true);
-   TRY_TEST(IsEqual(y, -1.65612,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,530.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,530.00),true);
-
-   // Sta 5+65
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(565.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.73327),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(565.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.73327 + 3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(565.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,432.5904,0.001),true);
-   TRY_TEST(IsEqual(y, 18.8222,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,565.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,565.00),true);
-
-   // Sta 6+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(600.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(600.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(600.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,457.8918,0.001),true);
-   TRY_TEST(IsEqual(y, 43.7496,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,600.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,600.00),true);
-
-   // Sta 7+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(700.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(700.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(700.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,528.6024,0.001),true);
-   TRY_TEST(IsEqual(y,114.4603,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,700.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,700.00),true);
-
-
-   // Add a station equation
-   CComPtr<IStationEquationCollection> equations;
-   alignment->get_StationEquations(&equations);
-   CComPtr<IStationEquation> equation;
-   equations->Add(650,800,&equation);
-
-   CComPtr<IStation> objStation;
-   equations->ConvertFromNormalizedStation(700,&objStation);
-
-   ZoneIndexType idx;
-   objStation->GetStation(&idx,&stationVal);
-   TRY_TEST(idx,1);
-   TRY_TEST(IsEqual(stationVal,850.0),true);
-
-   // Sta 8+50 (station range 1)
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(objStation),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(objStation),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(objStation),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,528.6024,0.001),true);
-   TRY_TEST(IsEqual(y,114.4603,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->GetStation(&idx,&stationVal);
-   TRY_TEST(idx,1);
-   TRY_TEST(IsEqual(stationVal,850.0),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->GetStation(&idx,&stationVal);
-   TRY_TEST(idx,1);
-   TRY_TEST(IsEqual(stationVal,850.0),true);
+   CommonAlignmentTest(alignment, 1.0, 1.0);
 }
 
 void CTestAlignment1::Test1a()
@@ -559,12 +702,16 @@ void CTestAlignment1::Test1a()
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
    p1->Move(0, 0);
-   alignment->AddEx(p1);
 
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance(CLSID_Point2d);
    p2->Move(100, 0);
-   alignment->AddEx(p2);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start;
    start.CoCreateInstance(CLSID_Point2d);
@@ -574,11 +721,12 @@ void CTestAlignment1::Test1a()
    end.CoCreateInstance(CLSID_Point2d);
    end->Move(250, 0);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> ls;
+   ls.CoCreateInstance(CLSID_PathSegment);
+   ls->ThroughPoints(start, end);
+   element.Release();
+   ls->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start_entry_spiral;
    start_entry_spiral.CoCreateInstance(CLSID_Point2d);
@@ -620,462 +768,33 @@ void CTestAlignment1::Test1a()
 
    CComPtr<ITransitionCurve> entry_transition;
    entry_transition.CoCreateInstance(CLSID_TransitionCurve);
-   entry_transition->Init(start_entry_spiral,start_entry_spiral_direction,0.0,100.0,10, Clothoid);
-   alignment->AddEx(entry_transition);
+   entry_transition->Init(start_entry_spiral,CComVariant(start_entry_spiral_direction),0.0,100.0,10, Clothoid);
+   element.Release();
+   entry_transition->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<ICircularCurve> curve;
    curve.CoCreateInstance(CLSID_CircularCurve);
-   curve->putref_PBT(end_entry_spiral);
-   curve->putref_PI(pi);
-   curve->putref_PFT(start_exit_spiral);
+   curve->put_PBT(end_entry_spiral);
+   curve->put_PI(pi);
+   curve->put_PFT(start_exit_spiral);
    curve->put_Radius(100);
-   alignment->AddEx(curve);
+   element.Release();
+   curve->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<ITransitionCurve> exit_transition;
    exit_transition.CoCreateInstance(CLSID_TransitionCurve);
-   exit_transition->Init(start_exit_spiral, start_exit_spiral_direction, 100.0, 0.0, 20, Clothoid);
-   alignment->AddEx(exit_transition);
+   exit_transition->Init(start_exit_spiral, CComVariant(start_exit_spiral_direction), 100.0, 0.0, 20, Clothoid);
+   element.Release();
+   exit_transition->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
-   CComPtr<IPoint2d> pft;
-   pft.CoCreateInstance(CLSID_Point2d);
-   pft->Move(500, 100);
 
-   alignment->AddEx(pft);
+   //AlignmentDump(alignment, std::cout);
 
-   //////////////
-   // Bearing, Normal, LocatePoint, Station, and Offset
-   CComPtr<IDirection> dir;
-   Float64 dirVal;
-   CComPtr<IPoint2d> pnt;
-   Float64 x, y;
-   CComPtr<IStation> station;
-   Float64 offset;
-   Float64 stationVal;
 
-   TRY_TEST(alignment->Bearing(CComVariant(0.00), nullptr), E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00), nullptr), E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125), omtAlongDirection, 10, CComVariant(PI_OVER_2), nullptr), E_POINTER);
-   TRY_TEST(alignment->Offset(end, &station, nullptr), E_POINTER);
-   TRY_TEST(alignment->Offset(end, nullptr, &offset), E_POINTER);
-   TRY_TEST(alignment->Offset(nullptr, &station, &offset), E_INVALIDARG);
-   TRY_TEST(alignment->ProjectPoint(end, nullptr, nullptr, nullptr), E_POINTER);
-   start.Release();
-   TRY_TEST(alignment->ProjectPoint(nullptr, &start, nullptr, nullptr), E_INVALIDARG);
-
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.00), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3 * PI_OVER_2), true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(0.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -100.0), true);
-   TRY_TEST(IsEqual(y, -10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 0.00), true);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-
-   CComPtr<IPoint2d> newPnt;
-   Float64 distFromStart;
-   VARIANT_BOOL vbOnProjection;
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 0.00), true);
-
-
-   // Sta 1+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(100.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.00), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(100.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3 * PI_OVER_2), true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(100.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 0.0), true);
-   TRY_TEST(IsEqual(y, -10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 100.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 100.00), true);
-
-   // Sta 1+25
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(125.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.00), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(125.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(125.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 25.0), true);
-   TRY_TEST(IsEqual(y, -10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 125.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 125.00), true);
-
-   // Sta 2+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(200.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(200.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(200.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 107.0710678), true);
-   TRY_TEST(IsEqual(y, -7.0710678), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 200.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 200.00), true);
-
-   // Sta 2+50
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 142.4264, 0.001), true);
-   TRY_TEST(IsEqual(y, 28.2843, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 250.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 250.00), true);
-
-   // Sta 3+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(300.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5.8195, 0.001), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(300.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5.8195 - PI_OVER_2, 0.001), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(300.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 171.7250, 0.001), true);
-   TRY_TEST(IsEqual(y, 27.9571, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 300.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 300.00), true);
-
-   // Sta 4+90
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(490.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.0084083531428916), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(490.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.008408353 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(490.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 357.5699, 0.001), true);
-   TRY_TEST(IsEqual(y, -9.9882, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 490.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 490.00), true);
-
-   // Sta 5+30
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(530.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.39101), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(530.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.39101 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(530.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 400.3079, 0.001), true);
-   TRY_TEST(IsEqual(y, -1.65612, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 530.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 530.00), true);
-
-   // Sta 5+65
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(565.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.73327), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(565.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.73327 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(565.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 432.5904, 0.001), true);
-   TRY_TEST(IsEqual(y, 18.8222, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 565.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 565.00), true);
-
-   // Sta 6+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(600.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(600.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(600.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 457.8918, 0.001), true);
-   TRY_TEST(IsEqual(y, 43.7496, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 600.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 600.00), true);
-
-   // Sta 7+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(700.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(700.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(700.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 528.6024, 0.001), true);
-   TRY_TEST(IsEqual(y, 114.4603, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 700.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 700.00), true);
-
-
-   // Add a station equation
-   CComPtr<IStationEquationCollection> equations;
-   alignment->get_StationEquations(&equations);
-   CComPtr<IStationEquation> equation;
-   equations->Add(650, 800, &equation);
-
-   CComPtr<IStation> objStation;
-   equations->ConvertFromNormalizedStation(700, &objStation);
-
-   ZoneIndexType idx;
-   objStation->GetStation(&idx, &stationVal);
-   TRY_TEST(idx, 1);
-   TRY_TEST(IsEqual(stationVal, 850.0), true);
-
-   // Sta 8+50 (station range 1)
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(objStation), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(objStation), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(objStation), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 528.6024, 0.001), true);
-   TRY_TEST(IsEqual(y, 114.4603, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->GetStation(&idx, &stationVal);
-   TRY_TEST(idx, 1);
-   TRY_TEST(IsEqual(stationVal, 850.0), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->GetStation(&idx, &stationVal);
-   TRY_TEST(idx, 1);
-   TRY_TEST(IsEqual(stationVal, 850.0), true);
+   CommonAlignmentTest(alignment, 1.0, 1.0);
 }
 
 void CTestAlignment1::Test2()
@@ -1088,27 +807,32 @@ void CTestAlignment1::Test2()
 
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
-   p1->Move(0,0);
-   alignment->AddEx(p1);
+   p1->Move(0, 0);
 
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance(CLSID_Point2d);
-   p2->Move(100,0);
-   alignment->AddEx(p2);
+   p2->Move(100, 0);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start;
    start.CoCreateInstance(CLSID_Point2d);
-   start->Move(150,-50);
+   start->Move(150, -50);
 
    CComPtr<IPoint2d> end;
    end.CoCreateInstance(CLSID_Point2d);
-   end->Move(250,0);
+   end->Move(250, 0);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> ls;
+   ls.CoCreateInstance(CLSID_PathSegment);
+   ls->ThroughPoints(start, end);
+   element.Release();
+   ls->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> pbt;
    pbt.CoCreateInstance(CLSID_Point2d);
@@ -1124,294 +848,19 @@ void CTestAlignment1::Test2()
 
    CComPtr<ICompoundCurve> hc;
    hc.CoCreateInstance(CLSID_CompoundCurve);
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
    hc->put_Radius(100);
    hc->put_SpiralLength(spEntry,10);
    hc->put_SpiralLength(spExit,20);
-   alignment->AddEx(hc);
+   element.Release();
+   hc->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
-   //////////////
-   // Bearing, Normal, LocatePoint, Station, and Offset
-   CComPtr<IDirection> dir;
-   Float64 dirVal;
-   CComPtr<IPoint2d> pnt;
-   Float64 x,y;
-   CComPtr<IStation> station;
-   Float64 stationVal, offset;
+   //AlignmentDump(alignment, std::cout);
 
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),nullptr),E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00),nullptr),E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),nullptr),E_POINTER);
-   TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
-   TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
-   TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
-
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.00),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(0.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-100.0),true);
-   TRY_TEST(IsEqual(y,-10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
-
-   CComPtr<IPoint2d> newPnt;
-   Float64 distFromStart;
-   VARIANT_BOOL vbOnProjection;
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
-
-   // Sta 1+25
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(125.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.00),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(125.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(125.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,25.0),true);
-   TRY_TEST(IsEqual(y,-10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,125.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,125.00),true);
-
-   // Sta 2+50
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,7*M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,7*M_PI/4 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,128.2843,0.001),true);
-   TRY_TEST(IsEqual(y,-42.4264,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,250.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,250.00),true);
-
-   // Sta 3+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(300.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.46365),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(300.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.46365 + 3*PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(300.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,180.6693,0.001),true);
-   TRY_TEST(IsEqual(y,-45.8457,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,300.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,300.00),true);
-
-   // Sta 4+90
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(490.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,6.27477),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(490.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,6.27477 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(490.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,357.4018,0.001),true);
-   TRY_TEST(IsEqual(y,-10.0111,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,490.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,490.00),true);
-
-   // Sta 5+30
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(530.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5.89218),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(530.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5.89218 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(530.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,392.6856,0.001),true);
-   TRY_TEST(IsEqual(y,-16.8344,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,530.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,530.00),true);
-
-   // Sta 5+65
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(565.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5.5499),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(565.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5.5499 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(565.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,419.2043,0.001),true);
-   TRY_TEST(IsEqual(y,-33.6819,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,565.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,565.00),true);
-
-   // Sta 6+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(600.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,7*M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(600.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,7*M_PI/4 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(600.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,443.7496,0.001),true);
-   TRY_TEST(IsEqual(y,-57.8918,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,600.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,600.00),true);
+   CommonAlignmentTest(alignment, 1.0, -1.0);
 }
 
 void CTestAlignment1::Test2a()
@@ -1425,12 +874,16 @@ void CTestAlignment1::Test2a()
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
    p1->Move(0, 0);
-   alignment->AddEx(p1);
 
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance(CLSID_Point2d);
    p2->Move(100, 0);
-   alignment->AddEx(p2);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start;
    start.CoCreateInstance(CLSID_Point2d);
@@ -1440,11 +893,12 @@ void CTestAlignment1::Test2a()
    end.CoCreateInstance(CLSID_Point2d);
    end->Move(250, 0);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> ls;
+   ls.CoCreateInstance(CLSID_PathSegment);
+   ls->ThroughPoints(start, end);
+   element.Release();
+   ls->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start_entry_spiral;
    start_entry_spiral.CoCreateInstance(CLSID_Point2d);
@@ -1486,308 +940,36 @@ void CTestAlignment1::Test2a()
 
    CComPtr<ITransitionCurve> entry_transition;
    entry_transition.CoCreateInstance(CLSID_TransitionCurve);
-   entry_transition->Init(start_entry_spiral, start_entry_spiral_direction, 0.0, -100.0, 10, Clothoid);
-   alignment->AddEx(entry_transition);
+   entry_transition->Init(start_entry_spiral, CComVariant(start_entry_spiral_direction), 0.0, -100.0, 10, Clothoid);
+   element.Release();
+   entry_transition->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<ICircularCurve> curve;
    curve.CoCreateInstance(CLSID_CircularCurve);
-   curve->putref_PBT(end_entry_spiral);
-   curve->putref_PI(pi);
-   curve->putref_PFT(start_exit_spiral);
+   curve->put_PBT(end_entry_spiral);
+   curve->put_PI(pi);
+   curve->put_PFT(start_exit_spiral);
    curve->put_Radius(100);
-   alignment->AddEx(curve);
+   element.Release();
+   curve->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<ITransitionCurve> exit_transition;
    exit_transition.CoCreateInstance(CLSID_TransitionCurve);
-   exit_transition->Init(start_exit_spiral, start_exit_spiral_direction, -100.0, 0.0, 20, Clothoid);
-   alignment->AddEx(exit_transition);
+   exit_transition->Init(start_exit_spiral, CComVariant(start_exit_spiral_direction), -100.0, 0.0, 20, Clothoid);
+   element.Release();
+   exit_transition->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
-   CComPtr<IPoint2d> pft;
-   pft.CoCreateInstance(CLSID_Point2d);
-   pft->Move(500, -100);
+   //CComPtr<IPoint2d> pft;
+   //pft.CoCreateInstance(CLSID_Point2d);
+   //pft->Move(500, -100);
 
-   alignment->AddEx(pft);
+   //alignment->AddEx(pft);
 
-   //////////////
-   // Bearing, Normal, LocatePoint, Station, and Offset
-   CComPtr<IDirection> dir;
-   Float64 dirVal;
-   CComPtr<IPoint2d> pnt;
-   Float64 x, y;
-   CComPtr<IStation> station;
-   Float64 stationVal, offset;
-
-   TRY_TEST(alignment->Bearing(CComVariant(0.00), nullptr), E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00), nullptr), E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125), omtAlongDirection, 10, CComVariant(PI_OVER_2), nullptr), E_POINTER);
-   TRY_TEST(alignment->Offset(end, &station, nullptr), E_POINTER);
-   TRY_TEST(alignment->Offset(end, nullptr, &offset), E_POINTER);
-   TRY_TEST(alignment->Offset(nullptr, &station, &offset), E_INVALIDARG);
-
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.00), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3 * PI_OVER_2), true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(0.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -100.0), true);
-   TRY_TEST(IsEqual(y, -10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 0.00), true);
-
-   CComPtr<IPoint2d> newPnt;
-   Float64 distFromStart;
-   VARIANT_BOOL vbOnProjection;
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 0.00), true);
-
-   // Sta 1+25
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(125.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.00), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(125.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(125.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 25.0), true);
-   TRY_TEST(IsEqual(y, -10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 125.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 125.00), true);
-
-   // Sta 2+50
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 7 * M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 7 * M_PI / 4 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 128.2843, 0.001), true);
-   TRY_TEST(IsEqual(y, -42.4264, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 250.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 250.00), true);
-
-   // Sta 3+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(300.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.46365), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(300.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 0.46365 + 3 * PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(300.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 180.6693, 0.001), true);
-   TRY_TEST(IsEqual(y, -45.8457, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 300.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 300.00), true);
-
-   // Sta 4+90
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(490.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 6.27477), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(490.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 6.27477 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(490.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 357.4018, 0.001), true);
-   TRY_TEST(IsEqual(y, -10.0111, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 490.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 490.00), true);
-
-   // Sta 5+30
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(530.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5.89218), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(530.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5.89218 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(530.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 392.6856, 0.001), true);
-   TRY_TEST(IsEqual(y, -16.8344, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 530.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 530.00), true);
-
-   // Sta 5+65
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(565.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5.5499), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(565.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5.5499 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(565.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 419.2043, 0.001), true);
-   TRY_TEST(IsEqual(y, -33.6819, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 565.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 565.00), true);
-
-   // Sta 6+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(600.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 7 * M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(600.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 7 * M_PI / 4 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(600.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 443.7496, 0.001), true);
-   TRY_TEST(IsEqual(y, -57.8918, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 600.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 600.00), true);
+   //AlignmentDump(alignment, std::cout);
+   CommonAlignmentTest(alignment, 1.0, -1.0);
 }
 
 void CTestAlignment1::Test3()
@@ -1801,12 +983,16 @@ void CTestAlignment1::Test3()
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
    p1->Move(0,0);
-   alignment->AddEx(p1);
 
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance(CLSID_Point2d);
    p2->Move(-100,0);
-   alignment->AddEx(p2);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start;
    start.CoCreateInstance(CLSID_Point2d);
@@ -1816,11 +1002,12 @@ void CTestAlignment1::Test3()
    end.CoCreateInstance(CLSID_Point2d);
    end->Move(-250,0);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> ls;
+   ls.CoCreateInstance(CLSID_PathSegment);
+   ls->ThroughPoints(start, end);
+   element.Release();
+   ls->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> pbt;
    pbt.CoCreateInstance(CLSID_Point2d);
@@ -1836,294 +1023,17 @@ void CTestAlignment1::Test3()
 
    CComPtr<ICompoundCurve> hc;
    hc.CoCreateInstance(CLSID_CompoundCurve);
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
    hc->put_Radius(100);
    hc->put_SpiralLength(spEntry,10);
    hc->put_SpiralLength(spExit,20);
-   alignment->AddEx(hc);
+   element.Release();
+   hc->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
-   //////////////
-   // Bearing, Normal, LocatePoint, Station, and Offset
-   CComPtr<IDirection> dir;
-   Float64 dirVal;
-   CComPtr<IPoint2d> pnt;
-   Float64 x,y;
-   CComPtr<IStation> station;
-   Float64 stationVal, offset;
-
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),nullptr),E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00),nullptr),E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),nullptr),E_POINTER);
-   TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
-   TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
-   TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
-
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,PI_OVER_2),true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(0.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 100.0),true);
-   TRY_TEST(IsEqual(y, 10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
-
-   CComPtr<IPoint2d> newPnt;
-   Float64 distFromStart;
-   VARIANT_BOOL vbOnProjection;
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
-
-   // Sta 1+25
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(125.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(125.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(125.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-25.0),true);
-   TRY_TEST(IsEqual(y, 10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,125.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,125.00),true);
-
-   // Sta 2+50
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-128.2843,0.001),true);
-   TRY_TEST(IsEqual(y,  42.4264,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,250.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,250.00),true);
-
-   // Sta 3+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(300.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.60524),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(300.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.60524 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(300.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-180.6693,0.001),true);
-   TRY_TEST(IsEqual(y, 45.84569,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,300.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,300.00),true);
-
-   // Sta 4+90
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(490.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.133184),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(490.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.133184 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(490.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-357.4018,0.001),true);
-   TRY_TEST(IsEqual(y,  10.0111,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,490.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,490.00),true);
-
-   // Sta 5+30
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(530.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,2.750584),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(530.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,2.750584 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(530.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-392.6856,0.001),true);
-   TRY_TEST(IsEqual(y,  16.8344,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,530.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,530.00),true);
-
-   // Sta 5+65
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(565.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,2.408316),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(565.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,2.408316 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(565.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-419.2043,0.001),true);
-   TRY_TEST(IsEqual(y,  33.6819,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,565.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,565.00),true);
-
-   // Sta 6+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(600.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(600.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(600.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-443.7496,0.001),true);
-   TRY_TEST(IsEqual(y,  57.8918,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,600.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,600.00),true);
+   CommonAlignmentTest(alignment, -1.0, 1.0);
 }
 
 void CTestAlignment1::Test3a()
@@ -2137,12 +1047,16 @@ void CTestAlignment1::Test3a()
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
    p1->Move(0, 0);
-   alignment->AddEx(p1);
 
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance(CLSID_Point2d);
    p2->Move(-100, 0);
-   alignment->AddEx(p2);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start;
    start.CoCreateInstance(CLSID_Point2d);
@@ -2152,11 +1066,12 @@ void CTestAlignment1::Test3a()
    end.CoCreateInstance(CLSID_Point2d);
    end->Move(-250, 0);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> ls;
+   ls.CoCreateInstance(CLSID_PathSegment);
+   ls->ThroughPoints(start, end);
+   element.Release();
+   ls->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start_entry_spiral;
    start_entry_spiral.CoCreateInstance(CLSID_Point2d);
@@ -2198,308 +1113,35 @@ void CTestAlignment1::Test3a()
 
    CComPtr<ITransitionCurve> entry_transition;
    entry_transition.CoCreateInstance(CLSID_TransitionCurve);
-   entry_transition->Init(start_entry_spiral, start_entry_spiral_direction, 0.0, -100.0, 10, Clothoid);
-   alignment->AddEx(entry_transition);
+   entry_transition->Init(start_entry_spiral, CComVariant(start_entry_spiral_direction), 0.0, -100.0, 10, Clothoid);
+   element.Release();
+   entry_transition->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<ICircularCurve> curve;
    curve.CoCreateInstance(CLSID_CircularCurve);
-   curve->putref_PBT(end_entry_spiral);
-   curve->putref_PI(pi);
-   curve->putref_PFT(start_exit_spiral);
+   curve->put_PBT(end_entry_spiral);
+   curve->put_PI(pi);
+   curve->put_PFT(start_exit_spiral);
    curve->put_Radius(100);
-   alignment->AddEx(curve);
+   element.Release();
+   curve->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<ITransitionCurve> exit_transition;
    exit_transition.CoCreateInstance(CLSID_TransitionCurve);
-   exit_transition->Init(start_exit_spiral, start_exit_spiral_direction, -100.0, 0.0, 20, Clothoid);
-   alignment->AddEx(exit_transition);
+   exit_transition->Init(start_exit_spiral, CComVariant(start_exit_spiral_direction), -100.0, 0.0, 20, Clothoid);
+   element.Release();
+   exit_transition->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
-   CComPtr<IPoint2d> pft;
-   pft.CoCreateInstance(CLSID_Point2d);
-   pft->Move(-500, 100);
+   //CComPtr<IPoint2d> pft;
+   //pft.CoCreateInstance(CLSID_Point2d);
+   //pft->Move(-500, 100);
 
-   alignment->AddEx(pft);
+   //alignment->AddEx(pft);
 
-   //////////////
-   // Bearing, Normal, LocatePoint, Station, and Offset
-   CComPtr<IDirection> dir;
-   Float64 dirVal;
-   CComPtr<IPoint2d> pnt;
-   Float64 x, y;
-   CComPtr<IStation> station;
-   Float64 stationVal, offset;
-
-   TRY_TEST(alignment->Bearing(CComVariant(0.00), nullptr), E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00), nullptr), E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125), omtAlongDirection, 10, CComVariant(PI_OVER_2), nullptr), E_POINTER);
-   TRY_TEST(alignment->Offset(end, &station, nullptr), E_POINTER);
-   TRY_TEST(alignment->Offset(end, nullptr, &offset), E_POINTER);
-   TRY_TEST(alignment->Offset(nullptr, &station, &offset), E_INVALIDARG);
-
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, PI_OVER_2), true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(0.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 100.0), true);
-   TRY_TEST(IsEqual(y, 10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 0.00), true);
-
-   CComPtr<IPoint2d> newPnt;
-   Float64 distFromStart;
-   VARIANT_BOOL vbOnProjection;
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 0.00), true);
-
-   // Sta 1+25
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(125.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(125.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(125.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -25.0), true);
-   TRY_TEST(IsEqual(y, 10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 125.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 125.00), true);
-
-   // Sta 2+50
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3 * M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -128.2843, 0.001), true);
-   TRY_TEST(IsEqual(y, 42.4264, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 250.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 250.00), true);
-
-   // Sta 3+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(300.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.60524), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(300.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.60524 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(300.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -180.6693, 0.001), true);
-   TRY_TEST(IsEqual(y, 45.84569, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 300.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 300.00), true);
-
-   // Sta 4+90
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(490.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.133184), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(490.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.133184 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(490.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -357.4018, 0.001), true);
-   TRY_TEST(IsEqual(y, 10.0111, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 490.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 490.00), true);
-
-   // Sta 5+30
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(530.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 2.750584), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(530.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 2.750584 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(530.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -392.6856, 0.001), true);
-   TRY_TEST(IsEqual(y, 16.8344, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 530.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 530.00), true);
-
-   // Sta 5+65
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(565.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 2.408316), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(565.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 2.408316 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(565.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -419.2043, 0.001), true);
-   TRY_TEST(IsEqual(y, 33.6819, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 565.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 565.00), true);
-
-   // Sta 6+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(600.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3 * M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(600.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI / 4), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(600.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -443.7496, 0.001), true);
-   TRY_TEST(IsEqual(y, 57.8918, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 600.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 600.00), true);
+   CommonAlignmentTest(alignment, -1.0, 1.0);
 }
 
 void CTestAlignment1::Test4()
@@ -2513,12 +1155,16 @@ void CTestAlignment1::Test4()
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
    p1->Move(0,0);
-   alignment->AddEx(p1);
 
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance(CLSID_Point2d);
    p2->Move(-100,0);
-   alignment->AddEx(p2);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start;
    start.CoCreateInstance(CLSID_Point2d);
@@ -2528,11 +1174,12 @@ void CTestAlignment1::Test4()
    end.CoCreateInstance(CLSID_Point2d);
    end->Move(-250,0);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> ls;
+   ls.CoCreateInstance(CLSID_PathSegment);
+   ls->ThroughPoints(start, end);
+   element.Release();
+   ls->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> pbt;
    pbt.CoCreateInstance(CLSID_Point2d);
@@ -2548,294 +1195,17 @@ void CTestAlignment1::Test4()
 
    CComPtr<ICompoundCurve> hc;
    hc.CoCreateInstance(CLSID_CompoundCurve);
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
    hc->put_Radius(100);
    hc->put_SpiralLength(spEntry,10);
    hc->put_SpiralLength(spExit,20);
-   alignment->AddEx(hc);
+   element.Release();
+   hc->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
-   //////////////
-   // Bearing, Normal, LocatePoint, Station, and Offset
-   CComPtr<IDirection> dir;
-   Float64 dirVal;
-   CComPtr<IPoint2d> pnt;
-   Float64 x,y;
-   CComPtr<IStation> station;
-   Float64 stationVal, offset;
-
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),nullptr),E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00),nullptr),E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),nullptr),E_POINTER);
-   TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
-   TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
-   TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
-
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI - PI_OVER_2),true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(0.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 100.0),true);
-   TRY_TEST(IsEqual(y, 10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
-
-   CComPtr<IPoint2d> newPnt;
-   Float64 distFromStart;
-   VARIANT_BOOL vbOnProjection;
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
-
-   // Sta 1+25
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(125.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(125.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,M_PI - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(125.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-25.0),true);
-   TRY_TEST(IsEqual(y, 10.0),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,125.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,125.00),true);
-
-   // Sta 2+50
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5*M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5*M_PI/4 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-142.4264,0.001),true);
-   TRY_TEST(IsEqual(y, -28.2843,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,250.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,250.00),true);
-
-   // Sta 3+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(300.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,2.677945),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(300.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,2.677945 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(300.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-171.7250,0.001),true);
-   TRY_TEST(IsEqual(y, -27.9571,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,300.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,300.00),true);
-
-   // Sta 4+90
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(490.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.1500010067327),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(490.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.1500010067327 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(490.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-357.5699,0.001),true);
-   TRY_TEST(IsEqual(y,   9.9882,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,490.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,490.00),true);
-
-   // Sta 5+30
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(530.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.5326,0.001),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(530.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.5326 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(530.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-400.3079,0.001),true);
-   TRY_TEST(IsEqual(y,   1.65612,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,530.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,530.00),true);
-
-   // Sta 5+65
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(565.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.87487),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(565.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3.87487 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(565.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-432.5904,0.001),true);
-   TRY_TEST(IsEqual(y, -18.8222,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,565.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,565.00),true);
-
-   // Sta 6+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(600.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5*M_PI/4),true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(600.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,5*M_PI/4 - PI_OVER_2),true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(600.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-457.8918,0.001),true);
-   TRY_TEST(IsEqual(y, -43.7496,0.001),true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset, 10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,600.00),true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt,&newPnt, &distFromStart, &vbOnProjection),S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,0.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,600.00),true);
+   CommonAlignmentTest(alignment, -1.0, -1.0);
 }
 
 void CTestAlignment1::Test4a()
@@ -2849,12 +1219,16 @@ void CTestAlignment1::Test4a()
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);
    p1->Move(0, 0);
-   alignment->AddEx(p1);
 
    CComPtr<IPoint2d> p2;
    p2.CoCreateInstance(CLSID_Point2d);
    p2->Move(-100, 0);
-   alignment->AddEx(p2);
+
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start;
    start.CoCreateInstance(CLSID_Point2d);
@@ -2864,11 +1238,12 @@ void CTestAlignment1::Test4a()
    end.CoCreateInstance(CLSID_Point2d);
    end->Move(-250, 0);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> ls;
+   ls.CoCreateInstance(CLSID_PathSegment);
+   ls->ThroughPoints(start, end);
+   element.Release();
+   ls->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<IPoint2d> start_entry_spiral;
    start_entry_spiral.CoCreateInstance(CLSID_Point2d);
@@ -2910,306 +1285,33 @@ void CTestAlignment1::Test4a()
 
    CComPtr<ITransitionCurve> entry_transition;
    entry_transition.CoCreateInstance(CLSID_TransitionCurve);
-   entry_transition->Init(start_entry_spiral, start_entry_spiral_direction, 0.0, 100.0, 10, Clothoid);
-   alignment->AddEx(entry_transition);
+   entry_transition->Init(start_entry_spiral, CComVariant(start_entry_spiral_direction), 0.0, 100.0, 10, Clothoid);
+   element.Release();
+   entry_transition->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<ICircularCurve> curve;
    curve.CoCreateInstance(CLSID_CircularCurve);
-   curve->putref_PBT(end_entry_spiral);
-   curve->putref_PI(pi);
-   curve->putref_PFT(start_exit_spiral);
+   curve->put_PBT(end_entry_spiral);
+   curve->put_PI(pi);
+   curve->put_PFT(start_exit_spiral);
    curve->put_Radius(100);
-   alignment->AddEx(curve);
+   element.Release();
+   curve->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
    CComPtr<ITransitionCurve> exit_transition;
    exit_transition.CoCreateInstance(CLSID_TransitionCurve);
-   exit_transition->Init(start_exit_spiral, start_exit_spiral_direction, 100.0, 0.0, 20, Clothoid);
-   alignment->AddEx(exit_transition);
+   exit_transition->Init(start_exit_spiral, CComVariant(start_exit_spiral_direction), 100.0, 0.0, 20, Clothoid);
+   element.Release();
+   exit_transition->QueryInterface(&element);
+   alignment->AddPathElement(element);
 
-   CComPtr<IPoint2d> pft;
-   pft.CoCreateInstance(CLSID_Point2d);
-   pft->Move(-500, -100);
+   //CComPtr<IPoint2d> pft;
+   //pft.CoCreateInstance(CLSID_Point2d);
+   //pft->Move(-500, -100);
 
-   alignment->AddEx(pft);
+   //alignment->AddEx(pft);
 
-   //////////////
-   // Bearing, Normal, LocatePoint, Station, and Offset
-   CComPtr<IDirection> dir;
-   Float64 dirVal;
-   CComPtr<IPoint2d> pnt;
-   Float64 x, y;
-   CComPtr<IStation> station;
-   Float64 stationVal, offset;
-
-   TRY_TEST(alignment->Bearing(CComVariant(0.00), nullptr), E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00), nullptr), E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125), omtAlongDirection, 10, CComVariant(PI_OVER_2), nullptr), E_POINTER);
-   TRY_TEST(alignment->Offset(end, &station, nullptr), E_POINTER);
-   TRY_TEST(alignment->Offset(end, nullptr, &offset), E_POINTER);
-   TRY_TEST(alignment->Offset(nullptr, &station, &offset), E_INVALIDARG);
-
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI - PI_OVER_2), true);
-   pnt.Release();
-
-   TRY_TEST(alignment->LocatePoint(CComVariant(0.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, 100.0), true);
-   TRY_TEST(IsEqual(y, 10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 0.00), true);
-
-   CComPtr<IPoint2d> newPnt;
-   Float64 distFromStart;
-   VARIANT_BOOL vbOnProjection;
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 0.00), true);
-
-   // Sta 1+25
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(125.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(125.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, M_PI - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(125.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -25.0), true);
-   TRY_TEST(IsEqual(y, 10.0), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 125.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 125.00), true);
-
-   // Sta 2+50
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5 * M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5 * M_PI / 4 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(250.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -142.4264, 0.001), true);
-   TRY_TEST(IsEqual(y, -28.2843, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 250.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 250.00), true);
-
-   // Sta 3+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(300.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 2.677945), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(300.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 2.677945 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(300.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -171.7250, 0.001), true);
-   TRY_TEST(IsEqual(y, -27.9571, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 300.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 300.00), true);
-
-   // Sta 4+90
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(490.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.1500010067327), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(490.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.1500010067327 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(490.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -357.5699, 0.001), true);
-   TRY_TEST(IsEqual(y, 9.9882, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 490.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 490.00), true);
-
-   // Sta 5+30
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(530.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.5326, 0.001), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(530.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.5326 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(530.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -400.3079, 0.001), true);
-   TRY_TEST(IsEqual(y, 1.65612, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 530.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 530.00), true);
-
-   // Sta 5+65
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(565.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.87487), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(565.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 3.87487 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(565.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -432.5904, 0.001), true);
-   TRY_TEST(IsEqual(y, -18.8222, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 565.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 565.00), true);
-
-   // Sta 6+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(600.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5 * M_PI / 4), true);
-
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(600.00), &dir), S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, 5 * M_PI / 4 - PI_OVER_2), true);
-
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(600.00), omtAlongDirection, 10, CComVariant(dirVal), &pnt), S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x, -457.8918, 0.001), true);
-   TRY_TEST(IsEqual(y, -43.7496, 0.001), true);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 10.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 600.00), true);
-
-   newPnt.Release();
-   TRY_TEST(alignment->ProjectPoint(pnt, &newPnt, &distFromStart, &vbOnProjection), S_OK);
-
-   station.Release();
-   TRY_TEST(alignment->Offset(newPnt, &station, &offset), S_OK);
-   TRY_TEST(IsEqual(offset, 0.0), true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal, 600.00), true);
+   CommonAlignmentTest(alignment, -1.0, -1.0);
 }

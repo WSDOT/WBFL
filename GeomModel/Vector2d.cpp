@@ -29,12 +29,6 @@
 #include <MathEx.h>
 #include <iostream>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 Vector2d::Vector2d() : m_X(1.0), m_Y(0.0)
@@ -98,7 +92,7 @@ Float64 Vector2d::AngleBetween(const Vector2d& other) const
    Float64 mag2 = other.GetMagnitude();
 
    if (::IsZero(mag1) || ::IsZero(mag2)) 
-      THROW_GEOMETRY(_T("Vector2d::AngleBetween - cannot compute angle between with a zero magnitude vector"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
    Float64 x = Dot(other)/(mag1*mag2);
    if ( ::IsZero(x-1.0) )
@@ -112,7 +106,7 @@ Float64 Vector2d::AngleBetween(const Vector2d& other) const
 Float64 Vector2d::Projection(const Vector2d& other) const
 {
    if (::IsZero(GetMagnitude()) || ::IsZero(other.GetMagnitude()))
-      THROW_GEOMETRY(_T("Vector2d::Projection - cannot project onto a zero magnitude vector"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
    return Dot(other) / other.GetMagnitude();
 }
@@ -159,7 +153,7 @@ Vector2d& Vector2d::Normalize()
 {
    Float64 mag = GetMagnitude();
    if (::IsZero(mag))
-      THROW_GEOMETRY(_T("Vector2d::Normalize - cannot normalize a zero length vector"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
    m_X /= mag;
    m_Y /= mag;
@@ -247,7 +241,7 @@ Vector2d& Vector2d::SetSize(Float64 x,Float64 y)
 Vector2d& Vector2d::SetMagnitude(Float64 magnitude)
 {
    if (magnitude < 0)
-      THROW_GEOMETRY(_T("Vector2d::SetMagnitude - invalid magnitude"));
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
 
    Normalize();
    m_X *= magnitude;
@@ -310,6 +304,11 @@ Float64 Vector2d::X() const
    return m_X;
 }
 
+void Vector2d::X(Float64 x)
+{
+   m_X = x;
+}
+
 Float64& Vector2d::X()
 {
    return m_X;
@@ -320,15 +319,19 @@ Float64 Vector2d::Y() const
    return m_Y;
 }
 
+void Vector2d::Y(Float64 y)
+{
+   m_Y = y;
+}
+
 Float64& Vector2d::Y()
 {
    return m_Y;
 }         
 
-void Vector2d::GetDimensions(Float64* x, Float64* y) const
+std::pair<Float64,Float64> Vector2d::GetDimensions() const
 {
-   *x = m_X;
-   *y = m_Y;
+   return std::make_pair(m_X, m_Y);
 }
 
 #if defined _DEBUG

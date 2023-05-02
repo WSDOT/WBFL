@@ -130,10 +130,10 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    static lrfdRebarPool* ms_pInstance;
-   typedef std::map<Int32, std::shared_ptr<WBFL::Materials::Rebar> > RebarPool;
+   using RebarPool = std::map<Int32, std::shared_ptr<WBFL::Materials::Rebar>>;
    static RebarPool ms_Rebar;
 
-   typedef WBFL::System::SingletonKiller<lrfdRebarPool> Killer;
+   using Killer = WBFL::System::SingletonKiller<lrfdRebarPool>;
    friend Killer;
    static Killer ms_Killer;
 

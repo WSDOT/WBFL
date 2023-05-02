@@ -184,6 +184,7 @@ void CTestPlane3d::TestPlaneLineIntersect()
    TRY_TEST(IsEqual(z,0.333333),true);
 
    pB->Move(10,10,0);
+   line->put_EndPoint(pB);
    pntIntersect.Release();
    plane->LineSegmentIntersect(line,&pntIntersect);
    pntIntersect->Location(&x,&y,&z);
@@ -192,6 +193,7 @@ void CTestPlane3d::TestPlaneLineIntersect()
    TRY_TEST(IsEqual(z,0.0),true);
 
    pB->Move( 0,10,10);
+   line->put_EndPoint(pB);
    pntIntersect.Release();
    plane->LineSegmentIntersect(line,&pntIntersect);
    pntIntersect->Location(&x,&y,&z);
@@ -200,6 +202,7 @@ void CTestPlane3d::TestPlaneLineIntersect()
    TRY_TEST(IsEqual(z,0.5),true);
 
    pB->Move(10, 0,10);
+   line->put_EndPoint(pB);
    pntIntersect.Release();
    plane->LineSegmentIntersect(line,&pntIntersect);
    pntIntersect->Location(&x,&y,&z);
@@ -214,6 +217,7 @@ void CTestPlane3d::TestPlaneLineIntersect()
    plane->ThroughPoints(p1,p2,p3);
 
    pB->Move(10,0,0);
+   line->put_EndPoint(pB);
    pntIntersect.Release();
    plane->LineSegmentIntersect(line,&pntIntersect);
    pntIntersect->Location(&x,&y,&z);
@@ -223,12 +227,15 @@ void CTestPlane3d::TestPlaneLineIntersect()
 
    // parallel to the plane
    pB->Move(0,10,10);
+   line->put_EndPoint(pB);
    pntIntersect.Release();
    TRY_TEST(plane->LineSegmentIntersect(line,&pntIntersect),GEOMETRY_E_NOSOLUTIONS);
 
    // in the plane
    pA->Move(1,0,0);
    pB->Move(1,10,10);
+   line->put_StartPoint(pA);
+   line->put_EndPoint(pB);
    pntIntersect.Release();
    TRY_TEST(plane->LineSegmentIntersect(line,&pntIntersect),GEOMETRY_E_NOSOLUTIONS);
 }

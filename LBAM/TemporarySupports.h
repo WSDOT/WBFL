@@ -32,8 +32,8 @@
 #include "LBAMUtils.h"
 
 class CTemporarySupports;
-typedef CComVectorCollection<ITemporarySupports, ITemporarySupport, IEnumTemporarySupport, &IID_IEnumTemporarySupport,SupportIndexType> TemporarySupportVectorImpl;
-typedef CPersistentCollection<CTemporarySupports, TemporarySupportVectorImpl,SupportIndexType> PersistentTSCollImpl;
+using TemporarySupportVectorImpl = CComVectorCollection<ITemporarySupports, ITemporarySupport, IEnumTemporarySupport, &IID_IEnumTemporarySupport, SupportIndexType>;
+using PersistentTSCollImpl = CPersistentCollection<CTemporarySupports, TemporarySupportVectorImpl,SupportIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CTemporarySupports

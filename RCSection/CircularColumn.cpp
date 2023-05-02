@@ -24,12 +24,6 @@
 #include <RCSection\RCSectionLib.h>
 #include <RCSection\CircularColumn.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::RCSection;
 
 static void ComputeInteractionCurve(const CircularColumn& column,IndexType nSteps, Float64 ecl, Float64 etl, std::vector<std::pair<Float64, Float64>>* pUnfactored, std::vector<std::pair<Float64, Float64>>* pFactored);

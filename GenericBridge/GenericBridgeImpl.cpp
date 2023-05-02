@@ -99,6 +99,16 @@ STDMETHODIMP CGenericBridge::get_Alignment(IAlignment** ppAlignment)
    return m_BridgeGeometry->get_BridgeAlignment(ppAlignment);
 }
 
+STDMETHODIMP CGenericBridge::get_ProfileID(IDType* pProfileID)
+{
+   return m_BridgeGeometry->get_ProfileID(pProfileID);
+}
+
+STDMETHODIMP CGenericBridge::get_SurfaceID(IDType* pSurfaceID)
+{
+   return m_BridgeGeometry->get_SurfaceID(pSurfaceID);
+}
+
 STDMETHODIMP CGenericBridge::get_Deck(IBridgeDeck** deck)
 {
    CHECK_RETOBJ(deck);
@@ -347,7 +357,7 @@ STDMETHODIMP CGenericBridge::get_SuperstructureMember(GirderIDType id,ISuperstru
 
 STDMETHODIMP CGenericBridge::get__EnumSuperstructureMembers(IEnumSuperstructureMembers* *enumSSMbrs)
 {
-   typedef _CopyInterfacePair<ISuperstructureMember,std::pair<const GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>> _CopyType;
+   using _CopyType = _CopyInterfacePair<ISuperstructureMember,std::pair<const GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>;
 
    CComObject<CComEnumOnSTL<IEnumSuperstructureMembers,&IID_IEnumSuperstructureMembers,ISuperstructureMember*,_CopyType,std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>>* pEnum = nullptr;
    HRESULT hr = CComObject<CComEnumOnSTL<IEnumSuperstructureMembers,&IID_IEnumSuperstructureMembers,ISuperstructureMember*,_CopyType,std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>>::CreateInstance(&pEnum);

@@ -26,15 +26,6 @@
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\ConcreteUtil.h>
 
-#include <MathEx.h>
-#include <Units\Units.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 void lrfdLRFDTimeDependentConcrete::GetModelParameters(WBFL::Materials::CuringType cure,WBFL::Materials::CementType cement,Float64* pA,Float64* pB)
 {
    Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
@@ -138,7 +129,7 @@ void lrfdLRFDTimeDependentConcrete::ComputeParameters(Float64 fc1,Float64 t1,Flo
 void lrfdLRFDTimeDependentConcrete::SetFc28(Float64 fc,Float64 t)
 {
    Float64 age = GetAge(t);
-   ATLASSERT(!IsZero(age));
+   CHECK(!IsZero(age));
    m_Fc28 = ComputeFc28(fc,age,m_A,m_Beta);
    m_bIsValid = false;
 }
@@ -179,7 +170,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetEc28() const
 void lrfdLRFDTimeDependentConcrete::SetEc28(Float64 Ec,Float64 t)
 {
    Float64 age = GetAge(t);
-   ATLASSERT(!IsZero(age));
+   CHECK(!IsZero(age));
    m_Ec28 = ComputeEc28(Ec,age,m_A,m_Beta);
    m_bIsValid = false;
 }
@@ -357,7 +348,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorCreep(Float64 t,Float64 tla)
    Validate();
 
    Float64 ks;
-   ATLASSERT(0 < m_VS); // did you forget to set V/S ratio?
+   CHECK(0 < m_VS); // did you forget to set V/S ratio?
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
       // LRFD 5.4.2.3.2-1
@@ -398,7 +389,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
    Validate();
 
    Float64 ks;
-   ATLASSERT(0 < m_VS); // did you forget to set V/S ratio?
+   CHECK(0 < m_VS); // did you forget to set V/S ratio?
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
       // LRFD C5.4.2.3.3-1
@@ -454,7 +445,7 @@ Float64 lrfdLRFDTimeDependentConcrete::GetConcreteStrengthFactor() const
 {
    // this method is only valid for pre-2005 loss methods
    // 2005 and later, kf is a function of the concrete strength at time of loading
-   ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims);
+   CHECK(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims);
    Validate();
    return m_kf;
 }
@@ -623,7 +614,7 @@ void lrfdLRFDTimeDependentConcrete::Validate() const
       {
          m_khs = 3*(100 - m_RelativeHumidity)/70;
       }
-      ATLASSERT(0 <= m_khs);
+      CHECK(0 <= m_khs);
    }
    else
    {

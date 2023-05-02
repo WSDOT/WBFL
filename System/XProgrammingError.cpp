@@ -24,12 +24,6 @@
 #include <System\SysLib.h>
 #include <System\XProgrammingError.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::System;
 
 XProgrammingError::XProgrammingError(Reason reason, const std::_tstring& file, Uint32 line) :

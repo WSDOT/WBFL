@@ -36,6 +36,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+constexpr IDType ALIGNMENT_ID = 0;
+constexpr IDType PROFILE_ID = 0;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -171,26 +174,24 @@ void CTestGenericBridge::CreateAlignment(IGenericBridge* bridge)
    CComPtr<ICogoModel> cogoModel;
    geometry->get_CogoModel(&cogoModel);
 
-   CComPtr<IAlignmentCollection> alignments;
-   cogoModel->get_Alignments(&alignments);
+   cogoModel->StoreAlignment(ALIGNMENT_ID);
+   //cogoModel->SetAlignmentReferenceStation(ALIGNMENT_ID, CComVariant(0.00));
+   cogoModel->StorePoint(1, 0, 0);
+   cogoModel->StorePoint(2, 100, 0);
+
+   cogoModel->StorePathSegment(1, 1, 2);
+   cogoModel->AddPathElementToAlignmentByID(ALIGNMENT_ID, petPathSegment, 1);
+
+   cogoModel->StoreProfile(PROFILE_ID);
+   cogoModel->AttachProfileToAlignment(PROFILE_ID, ALIGNMENT_ID);
 
    CComPtr<IAlignment> alignment;
-   alignments->Add(0,&alignment);
+   cogoModel->CreateAlignmentByID(ALIGNMENT_ID, &alignment);
+   geometry->putref_Alignment(ALIGNMENT_ID,alignment);
+   geometry->put_BridgeAlignmentID(ALIGNMENT_ID);
 
-   CComPtr<IPoint2d> p1;
-   p1.CoCreateInstance(CLSID_Point2d);
-   p1->Move(0,0);
-
-   CComPtr<IPoint2d> p2;
-   p2.CoCreateInstance(CLSID_Point2d);
-   p2->Move(100,0);
-
-   alignment->put_RefStation(CComVariant(0.00));
-   alignment->AddEx(p1);
-   alignment->AddEx(p2);
-
-   geometry->putref_Alignment(0,alignment);
-   geometry->put_BridgeAlignmentID(0);
+   geometry->put_ProfileID(PROFILE_ID);
+   //geometry->put_SurfaceID(SURFACE_ID);
 }
 
 void CTestGenericBridge::CreatePiers(IGenericBridge* bridge)
@@ -228,7 +229,7 @@ void CTestGenericBridge::CreateGirders(IGenericBridge* bridge)
    factory->put_LayoutLineCount(nGirders);
    factory->put_Offset(offset);
    factory->put_OffsetIncrement(spacing);
-   factory->put_AlignmentID(0);
+   factory->put_AlignmentID(ALIGNMENT_ID);
    geometry->CreateLayoutLines(factory);
 
    //

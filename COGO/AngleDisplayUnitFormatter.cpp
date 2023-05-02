@@ -132,16 +132,15 @@ STDMETHODIMP CAngleDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR* fmt
    {
       std::_tstring strTag = OLE2T(tag);
       if ( FAILED(cogoUtil::ParseAngleTags(strTag,&strDegTag,&strMinTag,&strSecTag)) )
-         return Error(IDS_E_BADFORMATTAG,IID_IAngleDisplayUnitFormatter,COGO_E_BADFORMATTAG);
+         return E_INVALIDARG; // bad format tag
    }
 
-   long deg;
-   long min;
+   short deg;
+   unsigned short min;
    Float64 sec;
+   std::tie(deg, min, sec) = WBFL::COGO::Utilities::ToDMS(val);
    TCHAR dir;
-
    dir = (val < 0) ? 'R' : 'L';
-   cogoUtil::ToDMS( val, &deg, &min, &sec );
 
    std::_tostringstream s;
    s << (m_bSigned == VARIANT_TRUE ? deg : abs(deg));

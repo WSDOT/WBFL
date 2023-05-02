@@ -35,6 +35,4 @@ DESCRIPTION
    Support library that provides library services.
 *****************************************************************************/
 
-#include <Private\WBFLPackage.h>
-
 #endif // INCLUDED_LIBRARYFW_LIBRARYFWLIB_H_

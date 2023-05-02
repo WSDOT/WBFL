@@ -2419,8 +2419,8 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *
    {
       // Plan is walk through all pois and insert pois in superstructure into a vector
       // Then sort the vector.
-      typedef std::vector<PoiLoc> PoiList;
-      typedef PoiList::iterator   PoiListIterator;
+      using PoiList = std::vector<PoiLoc>;
+      using PoiListIterator = PoiList::iterator;
       PoiList poi_list;
 
       CHRException hr;

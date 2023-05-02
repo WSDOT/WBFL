@@ -55,16 +55,6 @@ STDMETHODIMP CLineSegment2d::InterfaceSupportsErrorInfo(REFIID riid)
 
 HRESULT CLineSegment2d::FinalConstruct()
 {
-   CComObject<CPoint2d>* pStart;
-   CComObject<CPoint2d>::CreateInstance(&pStart);
-   pStart->SetPoint(m_LineSegment.GetStartPoint());
-   pStart->QueryInterface(&m_Start);
-
-   CComObject<CPoint2d>* pEnd;
-   CComObject<CPoint2d>::CreateInstance(&pEnd);
-   pEnd->SetPoint(m_LineSegment.GetEndPoint());
-   pEnd->QueryInterface(&m_End);
-
    return S_OK;
 }
 
@@ -75,35 +65,31 @@ void CLineSegment2d::FinalRelease()
 void CLineSegment2d::SetLineSegment(const WBFL::Geometry::LineSegment2d& ls)
 {
    m_LineSegment = ls;
-   dynamic_cast<CPoint2d*>(m_Start.p)->SetPoint(m_LineSegment.GetStartPoint());
-   dynamic_cast<CPoint2d*>(m_End.p)->SetPoint(m_LineSegment.GetEndPoint());
 }
 
 STDMETHODIMP CLineSegment2d::get_StartPoint(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
-   return m_Start.QueryInterface(pVal);
+   return CreatePoint(m_LineSegment.GetStartPoint(), pVal);
 }
 
-STDMETHODIMP CLineSegment2d::putref_StartPoint(IPoint2d *newVal)
+STDMETHODIMP CLineSegment2d::put_StartPoint(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
-   m_Start = newVal;
-   m_LineSegment.SetStartPoint(GetInnerPoint(m_Start));
+   m_LineSegment.SetStartPoint(*GetInnerPoint(newVal));
    return S_OK;
 }
 
 STDMETHODIMP CLineSegment2d::get_EndPoint(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
-   return m_End.QueryInterface(pVal);
-}  
+   return CreatePoint(m_LineSegment.GetEndPoint(), pVal);
+}
 
-STDMETHODIMP CLineSegment2d::putref_EndPoint(IPoint2d *newVal)
+STDMETHODIMP CLineSegment2d::put_EndPoint(IPoint2d *newVal)
 {
    CHECK_IN(newVal);
-   m_End = newVal;
-   m_LineSegment.SetEndPoint(GetInnerPoint(m_End));
+   m_LineSegment.SetEndPoint(*GetInnerPoint(newVal));
    return S_OK;
 }
 
@@ -157,11 +143,7 @@ STDMETHODIMP CLineSegment2d::ThroughPoints(IPoint2d* p1, IPoint2d* p2)
 {
    CHECK_IN(p1);
    CHECK_IN(p2);
-
-   m_Start = p1;
-   m_End = p2;
-   m_LineSegment.ThroughPoints(GetInnerPoint(m_Start), GetInnerPoint(m_End));
-
+   m_LineSegment.ThroughPoints(*GetInnerPoint(p1), *GetInnerPoint(p2));
    return S_OK;
 }
 
@@ -193,12 +175,7 @@ STDMETHODIMP CLineSegment2d::Clone(ILineSegment2d** ppClone)
    CHECK_RETOBJ(ppClone);
    CComObject<CLineSegment2d>* pClone;
    CComObject<CLineSegment2d>::CreateInstance(&pClone);
-
-   pClone->m_Start.Release();
-   m_Start->Clone(&pClone->m_Start);
-   pClone->m_End.Release();
-   m_End->Clone(&pClone->m_End);
-   pClone->m_LineSegment.ThroughPoints(GetInnerPoint(m_Start), GetInnerPoint(m_End));
+   pClone->m_LineSegment = m_LineSegment;
 
    (*ppClone) = pClone;
    (*ppClone)->AddRef();

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -30,12 +30,6 @@
 #include <Roark/PPPartialUniformLoad.h>
 #include <Roark/BeamWithEqualOverhangsUniformLoad.h>
 #include <Roark/BeamWithUnequalOverhangsUniformLoad.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Beams;
 
@@ -114,7 +108,7 @@ bool Test_Numerical(WBFL::Debug::Log& rlog,const WBFL::Beams::RoarkBeam& beam)
    }
 
    Float64 yl, yr;
-   beam.GetDeflections( &yl, &yr );
+   std::tie(yl,yr) = beam.GetDeflections();
    TRY_TESTME( IsZero(yl) );
    TRY_TESTME( IsZero(yr) );
 

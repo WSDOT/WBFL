@@ -33,10 +33,8 @@ DESCRIPTION
    Girder Stability Analysis
 *****************************************************************************/
 
-#include <Private\WBFLPackage.h>
 #include <Math\Math.h>
 #include <MathEx.h>
 #include <Reporter\Reporter.h>
 #include <LRFD\LRFD.h>
-
 #include <Stability/StabilityTypes.h>

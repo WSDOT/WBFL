@@ -76,12 +76,12 @@ namespace WBFL
          Size2d operator-() const;
 
          /// Offset this Size2d object by the give size argument.  This Size2d
-         /// object is chaged to (Dx+size.Dx(),Dy+size.Dy()).  Returns a reference
+         /// object is changed to (Dx+size.Dx(),Dy+size.Dy()).  Returns a reference
          /// to this object.
          Size2d& operator+=(const Size2d& rOther);
 
          /// Negatively offset this Size2d object by the give size argument.  
-         /// This Size2d object is chaged to (Dx+size.Dx(),Dy+size.Dy()).
+         /// This Size2d object is changed to (Dx+size.Dx(),Dy+size.Dy()).
          /// Returns a reference to this object.
          Size2d& operator-= (const Size2d& rOther);
 
@@ -96,21 +96,29 @@ namespace WBFL
 
          /// Returns the size in the x direction.
          Float64 Dx() const;
+         void Dx(Float64 dx);
 
          /// Returns the size in the x direction.
          Float64& Dx();
 
          /// Returns the size in the y direction.
          Float64 Dy() const;
+         void Dy(Float64 dy);
 
          /// Returns the size in the y direction.
          Float64& Dy();
 
+         /// @brief Sets the dimensions of a size
+         /// @param dx Horizontal dimension
+         /// @param dy Vertical dimension
          void SetDimensions(Float64 dx, Float64 dy);
+
+         /// @brief Sets the dimensions of a size
+         /// @param point Dx and Dy are taken to be point.X and point.Y
          void SetDimensions(const Point2d& point);
 
          /// Returns the size dimensions
-         void GetDimensions(Float64* dx, Float64* dy) const;
+         std::pair<Float64,Float64> GetDimensions() const;
 
       #if defined _DEBUG
          /// Dumps the contents of the class to the given stream.
@@ -123,8 +131,8 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         Float64 m_Dx{ 0.0 };
-         Float64 m_Dy{ 0.0 };
+         Float64 m_Dx = 0.0;
+         Float64 m_Dy = 0.0;
       };
 
       inline GEOMMODELFUNC Size2d operator/(Size2d& size, Float64 c)
@@ -222,18 +230,20 @@ namespace WBFL
 
          /// Returns the x coordinate of the point.
          Float64 X() const;
+         void X(Float64 x);
 
          /// Returns the x coordinate of the point.
          Float64& X();
 
          /// Returns the y coordinate of the point.
          Float64 Y() const;
+         void Y(Float64 y);
 
          /// Returns the y coordinate of the point.
          Float64& Y();
 
          /// Returns the coordinate of the point
-         void GetLocation(Float64* x, Float64* y) const;
+         std::pair<Float64,Float64> GetLocation() const;
    
       #if defined _DEBUG
          /// Dumps the contents of the class to the given stream.
@@ -246,8 +256,8 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         Float64 m_X{ 0.0 };
-         Float64 m_Y{ 0.0 };
+         Float64 m_X = 0.0;
+         Float64 m_Y = 0.0;
       };
 
 
@@ -355,12 +365,12 @@ namespace WBFL
 
          /// Inflates a rectangle by the given delta arguments. The top left corner
          /// of the returned rectangle is (left - dx, top + dy), while its bottom
-         /// right corner is (right + dx, bottom - dy). The calling rectagle is unchanged.
+         /// right corner is (right + dx, bottom - dy). The calling rectangle is unchanged.
          Rect2d InflateBy(Float64 dx,Float64 dy) const;
 
          /// Inflates a rectangle by the given delta arguments. The top left corner
          /// of the returned rectangle is (left - size.dx, top + size.dy), while its bottom
-         /// right corner is (right + size.dx, bottom - size.dy). The calling rectagle is unchanged.
+         /// right corner is (right + size.dx, bottom - size.dy). The calling rectangle is unchanged.
          Rect2d InflateBy(const Size2d& size) const;
 
          /// Move the lower left corner of the rectangle to a new location and
@@ -374,7 +384,7 @@ namespace WBFL
          /// Normalizes this rectangle by switching the left and right data member 
          /// values if left > right, and switching the top and bottom data member 
          /// values if top < bottom. Normalize returns the normalized rectangle. A 
-         /// valid but nonnormal rectangle might have left > right or top < bottom 
+         /// valid but non-normal rectangle might have left > right or top < bottom 
          /// or both. In such cases, many manipulations (such as determining width 
          /// and height) become unnecessarily complicated. Normalizing a rectangle 
          /// means interchanging the corner point values so that left < right and 
@@ -385,7 +395,7 @@ namespace WBFL
          /// Returns a normalized rectangle with the top left corner at
          /// (Min(left, right), Max(top, bottom)) and the bottom right corner at 
          /// (Max(left, right), Min(top, bottom)). The calling rectangle object is 
-         /// unchanged. A valid but nonnormal rectangle might have left > right or 
+         /// unchanged. A valid but non-normal rectangle might have left > right or 
          /// top < bottom or both. In such cases, many manipulations (such as 
          /// determining width and height) become unnecessarily complicated. 
          /// Normalizing a rectangle means interchanging the corner point values so 
@@ -419,14 +429,14 @@ namespace WBFL
          /// \image html Rect2d/Union.jpg
          Rect2d UnionBy(const Rect2d& rOther) const;
 
-         /// Changes the dimenstions equal to the intersection of the two rectangles. 
+         /// Changes the dimensions equal to the intersection of the two rectangles. 
          /// The intersection is the largest rectangle contained in both existing rectangles.
          /// Note: Both of the rectangles must be normalized or this function may fail. 
          /// You can call Normalize to normalize the rectangles before calling this function.
          /// \image html Rect2d/Intersect.jpg
          Rect2d& Intersection(const Rect2d& rOther);
 
-         /// Makes a Rect2d with dimenstions equal to the intersection of the two rectangles. 
+         /// Makes a Rect2d with dimensions equal to the intersection of the two rectangles. 
          /// The intersection is the largest rectangle contained in both existing rectangles.
          /// Note: Both of the rectangles must be normalized or this function may fail. 
          /// You can call Normalize to normalize the rectangles before calling this function.
@@ -440,7 +450,7 @@ namespace WBFL
          Rect2d& BoundPoint(const Point2d& rPoint);
          Rect2d& BoundPoint(Float64 x, Float64 y);
 
-         /// Makes a Rect2d with dimenstions so that the rectangle bounds the point creating
+         /// Makes a Rect2d with dimensions so that the rectangle bounds the point creating
          /// the smallest union of the existing rectangle and the point.
          /// Note: Both of the rectangles must be normalized or this function may fail. 
          /// You can call Normalize to normalize the rectangles before calling this function.
@@ -449,24 +459,28 @@ namespace WBFL
 
          /// Returns the x coordinate of the left edge
          Float64 Left() const;
+         void Left(Float64 left);
 
          /// Returns the x coordinate of the left edge
          Float64& Left();
 
          /// Returns the x coordinate of the right edge
          Float64 Right() const;
+         void Right(Float64 right);
 
          /// Returns the x coordinate of the right edge
          Float64& Right();
 
          /// Returns the y coordinate of the top edge
          Float64 Top() const;
+         void Top(Float64 top);
 
          /// Returns the y coordinate of the top edge
          Float64& Top();
 
          /// Returns the y coordinate of the bottom edge
          Float64 Bottom() const;
+         void Bottom(Float64 bottom);
 
          /// Returns the y coordinate of the bottom edge
          Float64& Bottom();
@@ -517,10 +531,10 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         Float64 m_Left{ 0.0 };
-         Float64 m_Bottom{ 0.0 };
-         Float64 m_Right{ 0.0 };
-         Float64 m_Top{ 0.0 };
+         Float64 m_Left = 0.0;
+         Float64 m_Bottom = 0.0;
+         Float64 m_Right = 0.0;
+         Float64 m_Top = 0.0;
       };
    } // namespace Geometry
 } // namespace WBFL

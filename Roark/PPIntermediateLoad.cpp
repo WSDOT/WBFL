@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -24,13 +24,6 @@
 
 #include <Roark/RoarkLib.h>
 #include <Roark/PPIntermediateLoad.h>
-#include <MathEx.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Beams;
 
@@ -72,31 +65,29 @@ Float64 PPIntermediateLoad::GetW() const
    return W;
 }
 
-void PPIntermediateLoad::GetReactions(Float64* pRa,Float64* pRb) const
+std::pair<Float64, Float64> PPIntermediateLoad::GetReactions() const
 {
    Float64 L = GetL();
-   *pRa = -W*b/L;
-   *pRb = -W*a/L;
+   Float64 Ra = -W*b/L;
+   Float64 Rb = -W*a/L;
+   return std::make_pair(Ra, Rb);
 }
 
-void PPIntermediateLoad::GetMoments(Float64* pMa,Float64* pMb) const
+std::pair<Float64, Float64> PPIntermediateLoad::GetMoments() const
 {
-   *pMa = 0;
-   *pMb = 0;
+   return std::make_pair(0.0, 0.0);
 }
 
-void PPIntermediateLoad::GetRotations(Float64* pra,Float64* prb) const
-{
-   Float64 L = GetL();
-   *pra = ComputeRotation(0);
-   *prb = ComputeRotation(L);
-}
-
-void PPIntermediateLoad::GetDeflections(Float64* pYa,Float64* pYb) const
+std::pair<Float64, Float64> PPIntermediateLoad::GetRotations() const
 {
    Float64 L = GetL();
-   *pYa = ComputeDeflection(0);
-   *pYb = ComputeDeflection(L);
+   return std::make_pair(ComputeRotation(0),ComputeRotation(L));
+}
+
+std::pair<Float64, Float64> PPIntermediateLoad::GetDeflections() const
+{
+   Float64 L = GetL();
+   return std::make_pair(ComputeDeflection(0),ComputeDeflection(L));
 }
 
 WBFL::System::SectionValue PPIntermediateLoad::ComputeShear(Float64 x) const
@@ -106,7 +97,7 @@ WBFL::System::SectionValue PPIntermediateLoad::ComputeShear(Float64 x) const
 
    // Compute shear left and right of W
    Float64 Ra, Rb;
-   GetReactions( &Ra, &Rb );
+   std::tie(Ra,Rb) = GetReactions();
    Float64 left  =  Ra;
    Float64 right = -Rb;
 
@@ -172,7 +163,7 @@ Float64 PPIntermediateLoad::ComputeRotation(Float64 x) const
    Float64 r = 0;
 
    Float64 L, EI;
-   GetProperties(&L,&EI);
+   std::tie(L,EI) = GetProperties();
 
    if ( x < a )
    {
@@ -191,7 +182,7 @@ Float64 PPIntermediateLoad::ComputeDeflection(Float64 x) const
    Float64 y = 0;
 
    Float64 L, EI;
-   GetProperties(&L, &EI);
+   std::tie(L,EI) = GetProperties();
 
    if (x < a)
    {
@@ -246,7 +237,7 @@ bool PPIntermediateLoad::TestMe(WBFL::Debug::Log& rlog)
    PPIntermediateLoad beam(w,La,l,ei);
 
    Float64 Ra, Rb;
-   beam.GetReactions( &Ra, &Rb );
+   std::tie(Ra,Rb) = beam.GetReactions();
    TRY_TESTME( IsEqual(Ra,5.0) );
    TRY_TESTME( IsEqual(Rb,5.0) );
 

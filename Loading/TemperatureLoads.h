@@ -31,11 +31,11 @@
 #include "LoadCollection.h"
 #include "LoadingUtils.h"
 
-typedef CLoadItem<ldITemperatureLoadItem, ldITemperatureLoad, &IID_ldITemperatureLoadItem> CTemperatureLoadItem;
+using CTemperatureLoadItem = CLoadItem<ldITemperatureLoadItem, ldITemperatureLoad, &IID_ldITemperatureLoadItem>;
 class CTemperatureLoads;
-typedef CLoadCollection<ldITemperatureLoads, &IID_ldITemperatureLoads, CTemperatureLoads, ldITemperatureLoad, 
+using TemperatureLoadColl_Impl = CLoadCollection<ldITemperatureLoads, &IID_ldITemperatureLoads, CTemperatureLoads, ldITemperatureLoad,
                         ldITemperatureLoadItem, CTemperatureLoadItem, 
-                        ldIEnumTemperatureLoad, &IID_ldIEnumTemperatureLoad> TemperatureLoadColl_Impl;
+                        ldIEnumTemperatureLoad, &IID_ldIEnumTemperatureLoad>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CTemperatureLoads

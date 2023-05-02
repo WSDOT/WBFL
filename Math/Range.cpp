@@ -25,15 +25,7 @@
 #include <Math\Range.h>
 #include <limits>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-
 using namespace WBFL::Math;
-
 
 Range::BoundType intersect_bounds(const Range::BoundType& b1, const Range::BoundType& b2)
 {

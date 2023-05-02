@@ -39,16 +39,16 @@ using namespace WBFL::Graphing;
 // Psuedo-Random (repeatable if using same seed) graph color code inspired by:
 // https://github.com/xuboying/randomcolor-cpp
 //
-typedef std::tuple<Float64, Float64> RangeType;
+using RangeType = std::pair<Float64, Float64>;
 
 int randomWithin(const RangeType & range, int seed) 
 {
    //
    //Seeded random algorithm from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
    //
-   Float64 max   = std::get<1>(range); //||1
-   Float64 min   = std::get<0>(range); //||0
-   min          = min < 0 ? 0 : min;
+   Float64 min = range.first;
+   Float64 max = range.second;
+   min = min < 0 ? 0 : min;
    seed = size_t(seed * 9301 + 49297) % 233280;
    Float64 rnd   = seed / 233280.0;
    auto   r     = floor(min + rnd * (max - min));
@@ -124,6 +124,6 @@ COLORREF GraphColor::GetColor(IndexType graphIndex)
    Float64 hue = pickHue(RangeType(m_MinHue, m_MaxHue), (int)graphIndex*5); // 5 gives a good color distribution (after testing)
 
    BYTE red, green, blue;
-   WBFL::System::ColorConverter::HLStoRGB(hue,lightness,saturation,&red,&green,&blue);
+   std::tie(red,green,blue) = WBFL::System::ColorConverter::HLStoRGB(hue,lightness,saturation);
    return RGB(red,green,blue);
 }

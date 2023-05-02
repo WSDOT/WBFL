@@ -180,7 +180,7 @@ STDMETHODIMP CPoint3d::Location(Float64* pX,Float64* pY,Float64* pZ)
    CHECK_RETVAL(pY);
    CHECK_RETVAL(pZ);
 
-   m_pPoint->GetLocation(pX, pY, pZ);
+   std::tie(*pX,*pY,*pZ) = m_pPoint->GetLocation();
 
    return S_OK;
 }

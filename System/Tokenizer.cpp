@@ -22,6 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
+
 /* tokenizer.cc
    
    Author: Marko Meyer
@@ -39,12 +40,6 @@
 #include <algorithm>
 #include <math.h>
 #include <errno.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::System;
 
@@ -350,6 +345,59 @@ bool Tokenizer::ParseULong(LPCTSTR lpszText, unsigned long* l)
 	return true;
 }
 
+bool Tokenizer::ParseShort(LPCTSTR lpszText, short* l)
+{
+   CHECK(lpszText != 0);
+   while (*lpszText == _T(' ') || *lpszText == _T('\t'))
+      lpszText++;
+
+   TCHAR chFirst = lpszText[0];
+   LPTSTR stopstr;
+   *l = (short)_tcstol(lpszText, &stopstr, 10);
+   if (*l == 0 && chFirst != _T('0'))
+      return false;   // could not convert
+
+   if (*l == SHRT_MAX || *l == SHRT_MIN)
+   {
+      CHECK(0);
+      return false; // overflow or underflow
+   }
+
+   while (*stopstr == _T(' ') || *stopstr == _T('\t'))
+      stopstr++;
+
+   if (*stopstr != _T('\0'))
+      return false;   // not terminated properly
+
+   return true;
+}
+
+bool Tokenizer::ParseUShort(LPCTSTR lpszText, unsigned short* l)
+{
+   CHECK(lpszText != 0);
+   while (*lpszText == _T(' ') || *lpszText == _T('\t'))
+      lpszText++;
+
+   TCHAR chFirst = lpszText[0];
+   LPTSTR stopstr;
+   *l = (short)_tcstoul(lpszText, &stopstr, 10);
+   if (*l == 0 && chFirst != _T('0'))
+      return false;   // could not convert
+
+   if (*l == USHRT_MAX)
+   {
+      CHECK(0);
+      return false; // overflow or underflow
+   }
+
+   while (*stopstr == _T(' ') || *stopstr == _T('\t'))
+      stopstr++;
+
+   if (*stopstr != _T('\0'))
+      return false;   // not terminated properly
+
+   return true;
+}
 
 inline std::_tostream &operator<<(std::_tostream &os, const TString &TS) 
 {

@@ -55,14 +55,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-std::shared_ptr<WBFL::Geometry::Point2d>& GetInnerPoint(IPoint2d* pPoint)
+std::shared_ptr<WBFL::Geometry::Point2d> GetInnerPoint(IPoint2d* pPoint)
 {
    CPoint2d* p = dynamic_cast<CPoint2d*>(pPoint);
    ATLASSERT(p);
    return p->GetPoint();
 }
 
-std::shared_ptr<WBFL::Geometry::Point3d>& GetInnerPoint(IPoint3d* pPoint)
+std::shared_ptr<WBFL::Geometry::Point3d> GetInnerPoint(IPoint3d* pPoint)
 {
    CPoint3d* p = dynamic_cast<CPoint3d*>(pPoint);
    ATLASSERT(p);
@@ -145,6 +145,16 @@ WBFL::Geometry::Circle GetCircle(ICircle* pCircle)
    pCircle->get_Radius(&radius);
 
    return WBFL::Geometry::Circle(GetPoint(center), radius);
+}
+
+WBFL::Geometry::Circle2d GetCircle2d(ICircle* pCircle)
+{
+   CComPtr<IPoint2d> center;
+   pCircle->get_Center(&center);
+   Float64 radius;
+   pCircle->get_Radius(&radius);
+
+   return WBFL::Geometry::Circle2d(GetPoint(center), radius);
 }
 
 HRESULT CopyPoint(IPoint2d* pTo,IPoint2d* pFrom)
@@ -279,9 +289,14 @@ HRESULT CreatePoint(const WBFL::Geometry::Point2d& point, IPoint2d** ppPoint)
    return CreatePoint(point.X(), point.Y(), ppPoint);
 }
 
-HRESULT CreatePoint(const std::shared_ptr<WBFL::Geometry::Point2d>& point, IPoint2d** ppPoint)
+HRESULT CreatePoint(std::shared_ptr<WBFL::Geometry::Point2d>& point, IPoint2d** ppPoint)
 {
-   return CreatePoint(point->X(), point->Y(), ppPoint);
+   CComObject<CPoint2d>* pPoint;
+   CComObject<CPoint2d>::CreateInstance(&pPoint);
+   pPoint->SetPoint(point);
+   (*ppPoint) = pPoint;
+   (*ppPoint)->AddRef();
+   return S_OK;
 }
 
 HRESULT CreatePoint(IPoint2d* pPoint,IPoint2d** ppPoint)
@@ -316,9 +331,14 @@ HRESULT CreatePoint(const WBFL::Geometry::Point3d& point, IPoint3d** ppPoint)
    return CreatePoint(point.X(), point.Y(), point.Z(), ppPoint);
 }
 
-HRESULT CreatePoint(const std::shared_ptr<WBFL::Geometry::Point3d>& point, IPoint3d** ppPoint)
+HRESULT CreatePoint(std::shared_ptr<WBFL::Geometry::Point3d>& point, IPoint3d** ppPoint)
 {
-   return CreatePoint(point->X(), point->Y(), point->Z(), ppPoint);
+   CComObject<CPoint3d>* pPoint;
+   CComObject<CPoint3d>::CreateInstance(&pPoint);
+   pPoint->SetPoint(point);
+   (*ppPoint) = pPoint;
+   (*ppPoint)->AddRef();
+   return S_OK;
 }
 
 HRESULT CreatePoint(IPoint3d* pPoint,IPoint3d** ppPoint)

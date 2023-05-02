@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "JointLoad.h"
 
-typedef CLoadsCollection<IFem2dJointLoadCollection, IFem2dJointLoad, CJointLoad, IFem2dEnumJointLoad, &IID_IFem2dEnumJointLoad, LoadIDType> JointLoadCollImpl;
+using JointLoadCollImpl = CLoadsCollection<IFem2dJointLoadCollection, IFem2dJointLoad, CJointLoad, IFem2dEnumJointLoad, &IID_IFem2dEnumJointLoad, LoadIDType>;
 
 class ModelEvents;
 

@@ -34,8 +34,8 @@
 #include <string>
 #include "WbflUnitServerCP.h"
 
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT,VARIANT,_Copy<VARIANT>, std::vector<CComVariant> > UnitTypeEnum;
-typedef ICollectionOnSTLImpl<IUnitTypes,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,UnitTypeEnum> IUnitTypeCollection;
+using UnitTypeEnum = CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> >;
+using IUnitTypeCollection = ICollectionOnSTLImpl<IUnitTypes,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,UnitTypeEnum>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CUnits

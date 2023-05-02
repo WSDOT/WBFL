@@ -38,9 +38,7 @@ class ATL_NO_VTABLE CSuperelevation :
 	public CComCoClass<CSuperelevation, &CLSID_Superelevation>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CSuperelevation,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public ISuperelevation,
-   public IStructuredStorage2,
-   public IPersistImpl<CSuperelevation>
+   public ISuperelevation
 {
 public:
 	CSuperelevation()
@@ -50,16 +48,17 @@ public:
 	HRESULT FinalConstruct();
    void FinalRelease();
 
+   void SetSuperelevation(std::shared_ptr<WBFL::COGO::Superelevation> super) { m_Superelevation = super; }
+   std::shared_ptr<WBFL::COGO::Superelevation> GetSuperelevation() { return m_Superelevation; }
+
 DECLARE_REGISTRY_RESOURCEID(IDR_SUPERELEVATION)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CSuperelevation)
 	COM_INTERFACE_ENTRY(ISuperelevation)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -68,7 +67,7 @@ public:
 
 // ISuperelevation
 public:
-   STDMETHOD(Init)(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2) override;
+   STDMETHOD(Init)(VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2) override;
    STDMETHOD(get_Surface)(ISurface* *pVal) override;
    STDMETHOD(putref_Surface)(ISurface* newVal) override;
    STDMETHOD(put_BeginTransition)(VARIANT varBeginTransition) override;
@@ -92,30 +91,10 @@ public:
    STDMETHOD(SetEndTransitionParameters)(Float64 L1,Float64 L2) override;
    STDMETHOD(GetEndTransitionParameters)(Float64* L1,Float64* L2) override;
    STDMETHOD(GetSlope)(VARIANT varStation,Float64 templateSlope,Float64* pSlope) override;
-   STDMETHOD(Clone)(ISuperelevation* *clone) override;
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
+   std::shared_ptr<WBFL::COGO::Superelevation> m_Superelevation;
    ISurface* m_pSurface; // weak reference
-   CComPtr<IStation> m_BeginTransition;
-   CComPtr<IStation> m_BeginFullSuper;
-   CComPtr<IStation> m_EndFullSuper;
-   CComPtr<IStation> m_EndTransition;
-   Float64 m_Rate;
-   IndexType m_PivotPoint;
-   SuperTransitionType m_BeginTransitionType;
-   SuperTransitionType m_EndTransitionType;
-   Float64 m_BeginTransitionLength[2]; // L1, L2
-   Float64 m_EndTransitionLength[2]; // L1, L2
 
-   HRESULT ValidateStation(IStation* station);
-   HRESULT ComputeSlopeInBeginTransition(IStation* station,Float64 templateSlope,Float64* pSlope);
-   HRESULT ComputeSlopeInEndTransition(IStation* station,Float64 templateSlope,Float64* pSlope);
-   HRESULT ComputeSlopeInTransition(IStation* pStation,IStation* pStartTransition,IStation* pEndTransition,SuperTransitionType transitionType,Float64 L1,Float64 L2,Float64 startSlope,Float64 endSlope,Float64* pSlope);
-   HRESULT SuperelevationError(UINT nHelpString,HRESULT hRes);
+   HRESULT ValidateStation(const WBFL::COGO::Station& station);
 };

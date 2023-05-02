@@ -44,8 +44,7 @@
 #define MATTPL   extern template class MATCLASS
 #endif
 
-#include <WbflAll.h>
 #include <Materials/AutoLib.h>
-#include <System/Debug.h>
+#include <WbflAll.h>
 
 #endif // INCLUDED_MATERIAL_MATERIALEXP_H_

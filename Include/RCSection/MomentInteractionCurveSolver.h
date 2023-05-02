@@ -25,6 +25,7 @@
 #include <RCSection/RCSectionExp.h>
 #include <RCSection/GeneralSection.h>
 #include <RCSection/InteractionCurveSolution.h>
+#include <RCSection/CapacityLimit.h>
 
 namespace WBFL
 {
@@ -59,7 +60,7 @@ namespace WBFL
          void SetSliceGrowthFactor(Float64 sliceGrowthFactor);
          Float64 GetSliceGrowthFactor() const;
 
-         /// Convergance tolerance for Moment force equilibrium
+         /// Convergence tolerance for Moment force equilibrium
          void SetTolerance(Float64 tolerance);
          Float64 GetTolerance() const;
 
@@ -70,30 +71,20 @@ namespace WBFL
          /// Compression limit
          ///
          /// The compression limit is the force state for the maximum compression force that can be applied to the section
-         void GetCompressionLimit(
-            Float64* Fz, ///< Maximum Moment compression force
-            Float64* Mx, ///< Corresponding moment about the X-axis
-            Float64* My, ///< Corresponding moment about the Y-axis
-            Float64* eo ///< Strain at (0,0)
-         ) const;
+         const CapacityLimit& GetCompressionLimit() const;
 
          /// Tension limit
          ///
          /// The tension limit is the force state for the maximum tensile force that can be applied to the section
-         void GetTensionLimit(
-            Float64* Fz, ///< Maximum Moment tension force
-            Float64* Mx, ///< Corresponding moment about the X-axis
-            Float64* My, ///< Corresponding moment about the Y-axis
-            Float64* eo ///< Strain at (0,0)
-         ) const;
+         const CapacityLimit& GetTensionLimit() const;
 
          /// Performs the moment interaction analysis.
          ///
          /// Note that the solution does not contain a MomentCurvatureSolution for TWO_PI. This is the same solution for an angle of 0.
          std::unique_ptr<InteractionCurveSolution> Solve(
             Float64 Fz, ///< Axial force
-            Float64 startNA, ///< Starting direction of the neutral axis, measures counter-clockwise from the X axis (radiaus)
-            Float64 endNA, ///< Ending direction of the neutral axis, measures counter-clockwise from the X axis (radiaus)
+            Float64 startNA, ///< Starting direction of the neutral axis, measures counter-clockwise from the X axis (radius)
+            Float64 endNA, ///< Ending direction of the neutral axis, measures counter-clockwise from the X axis (radius)
             IndexType nSteps ///< Number of neutral axis increments
             ) const;
 

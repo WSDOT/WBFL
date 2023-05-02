@@ -98,8 +98,8 @@ protected:
    CComBSTR     m_Description;
    CComVariant  m_ItemData;
 
-   typedef std::vector<CComBSTR>        LoadGroupContainer;
-   typedef LoadGroupContainer::iterator LoadGroupIterator;
+   using LoadGroupContainer = std::vector<CComBSTR>;
+	using LoadGroupIterator = LoadGroupContainer::iterator;
 
    LoadGroupContainer m_LoadGroups;
 };

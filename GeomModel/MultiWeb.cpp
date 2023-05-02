@@ -27,12 +27,6 @@
 #include <GeomModel/Polygon.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 MultiWeb::MultiWeb() :
@@ -128,7 +122,7 @@ WebIndexType MultiWeb::GetWebCount() const
 
 Float64 MultiWeb::GetWebLocation(WebIndexType webIdx)
 {
-   if (m_WebCount <= webIdx) THROW_GEOMETRY(_T("MultiWeb::GetWebLocation - invalid web index"));
+   if (m_WebCount <= webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    Float64 W = GetTopFlangeWidth();
 

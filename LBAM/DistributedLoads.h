@@ -31,11 +31,11 @@
 #include "LoadCP.h"
 #include "LBAMUtils.h"
 
-typedef CLoadItem<IDistributedLoadItem, IDistributedLoad, &IID_IDistributedLoadItem> CDistributedLoadItem;
+using CDistributedLoadItem = CLoadItem<IDistributedLoadItem, IDistributedLoad, &IID_IDistributedLoadItem>;
 class CDistributedLoads;
-typedef CLoadCollection<IDistributedLoads, &IID_IDistributedLoads, CDistributedLoads, 
+using DistributedLoadColl_Impl = CLoadCollection<IDistributedLoads, &IID_IDistributedLoads, CDistributedLoads,
                         IDistributedLoad, IDistributedLoadItem, CDistributedLoadItem, 
-                        IEnumDistributedLoad, &IID_IEnumDistributedLoad> DistributedLoadColl_Impl;
+                        IEnumDistributedLoad, &IID_IEnumDistributedLoad>;
 /////////////////////////////////////////////////////////////////////////////
 // CDistributedLoads
 class ATL_NO_VTABLE CDistributedLoads : 

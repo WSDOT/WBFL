@@ -23,13 +23,7 @@
 
 #include <Materials/MatLib.h>
 #include <Materials/PCIUHPCModel.h>
-
 #include <Units/Convert.h>
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Materials;
 
@@ -42,7 +36,7 @@ void PCIUHPCModel::SetFc(Float64 fc)
 {
    PRECONDITION(0 < fc);
    m_fc = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI);
-   ASSERT(17.4 <= m_fc); // 17.4 ksi is the minimum value for f'c, PCI-UHPC GS
+   CHECK(17.4 <= m_fc); // 17.4 ksi is the minimum value for f'c, PCI-UHPC GS
 }
 
 Float64 PCIUHPCModel::GetFc() const

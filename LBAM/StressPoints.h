@@ -35,8 +35,8 @@
 
 class CStressPoints;
 
-typedef CComVectorCollection<IStressPoints, IStressPoint, IEnumStressPoint, &IID_IEnumStressPoint,CollectionIndexType> StressPointVectorImpl;
-typedef CPersistentCollection<CStressPoints, StressPointVectorImpl,CollectionIndexType> PersistentSPCollImpl;
+using StressPointVectorImpl = CComVectorCollection<IStressPoints, IStressPoint, IEnumStressPoint, &IID_IEnumStressPoint, CollectionIndexType>;
+using PersistentSPCollImpl = CPersistentCollection<CStressPoints, StressPointVectorImpl,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CStressPoints

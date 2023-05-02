@@ -25,12 +25,6 @@
 #include <RCSection\MomentInteractionCurveSolver.h>
 #include "MomentInteractionCurveSolverImpl.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::RCSection;
 
 MomentInteractionCurveSolver::MomentInteractionCurveSolver()
@@ -90,14 +84,14 @@ IndexType MomentInteractionCurveSolver::GetMaxIterations() const
    return m_pImpl->GetMaxIterations();
 }
 
-void MomentInteractionCurveSolver::GetCompressionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& MomentInteractionCurveSolver::GetCompressionLimit() const
 {
-   return m_pImpl->GetCompressionLimit(Fz, Mx, My, eo);
+   return m_pImpl->GetCompressionLimit();
 }
 
-void MomentInteractionCurveSolver::GetTensionLimit(Float64* Fz, Float64* Mx, Float64* My, Float64* eo) const
+const CapacityLimit& MomentInteractionCurveSolver::GetTensionLimit() const
 {
-   return m_pImpl->GetTensionLimit(Fz, Mx, My, eo);
+   return m_pImpl->GetTensionLimit();
 }
 
 std::unique_ptr<InteractionCurveSolution> MomentInteractionCurveSolver::Solve(Float64 Fz, Float64 startNA, Float64 endNA, IndexType nSteps) const
@@ -116,7 +110,7 @@ bool MomentInteractionCurveSolver::TestMe(WBFL::Debug::Log& rlog)
 
    // This example is from "Reinforced Concrete Design", 4th Edition, Salmon & Wang
    // Example 13.21.3
-   // See interaction diagram soluion in Figure 13.21.14. Note that the examples X-Y is different than our X-Y
+   // See interaction diagram solution in Figure 13.21.14. Note that the examples X-Y is different than our X-Y
    // See scanned image in Supporting Documents folder
 
    // base units of kip and ksi

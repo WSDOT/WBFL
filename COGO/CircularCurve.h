@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include <Math\Math.h>
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -42,20 +41,18 @@ class ATL_NO_VTABLE CCircularCurve :
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCircularCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
    public ICircularCurve,
-   public IStructuredStorage2,
-   public IPersistImpl<CCircularCurve>
+   public IPathElement // see note on ICompoundCurve interface definition in IDL file
 {
 public:
 	CCircularCurve()
 	{
-      m_Radius = 1000;
 	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   int ProjectionRegion(IPoint2d* pPoint);
-   bool IsPointOnCurve(IPoint2d* pPoint);
+   void SetCurve(std::shared_ptr<WBFL::COGO::CircularCurve> curve) { m_Curve = curve; }
+   std::shared_ptr<WBFL::COGO::CircularCurve> GetCurve() { return m_Curve; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_CIRCULARCURVE)
 
@@ -63,10 +60,9 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CCircularCurve)
 	COM_INTERFACE_ENTRY(ICircularCurve)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
+	COM_INTERFACE_ENTRY(IPathElement)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 
@@ -75,15 +71,7 @@ END_COM_MAP()
 
 // ICircularCurve
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
-   STDMETHOD(Clone)(/*[out,retval]*/ ICircularCurve* *clone) override;
-	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2) override;
-   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point, /*[out]*/ IPoint2d* *newPoint, /*[out]*/ Float64* distFromStart, /*[out]*/ VARIANT_BOOL* pvbOnProjection) override;
-   STDMETHOD(PointOnCurve)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal) override;
-	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
-	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
    STDMETHOD(get_DegreeCurvature)(/*[in]*/ Float64 D,/*[in]*/ DegreeCurvatureType dcMethod,/*[out,retval]*/ IAngle** pDC) override;
-	STDMETHOD(get_Length)(/*[out,retval]*/ Float64* pVal) override;
    STDMETHOD(get_Direction)(/*[out,retval]*/ CurveDirectionType* dir) override;
    STDMETHOD(get_Center)(/*[out, retval]*/ IPoint2d* *pVal) override;
 	STDMETHOD(get_External)(/*[out,retval]*/Float64* external) override;
@@ -99,37 +87,32 @@ public:
 	STDMETHOD(get_Radius)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_Radius)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_PFT)(/*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(putref_PFT)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(put_PFT)(/*[in]*/ IPoint2d* newVal) override;
 	STDMETHOD(get_PI)(/*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(putref_PI)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(put_PI)(/*[in]*/ IPoint2d* newVal) override;
 	STDMETHOD(get_PBT)(/*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(putref_PBT)(/*[in]*/ IPoint2d* newVal) override;
-   STDMETHOD(Offset)(/*[in]*/Float64 dx,/*[in]*/Float64 dy) override;
+	STDMETHOD(put_PBT)(/*[in]*/ IPoint2d* newVal) override;
 
-// IStructuredStorage2
+// IPathElement
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
+   STDMETHOD(Clone)(IPathElement** clone) override;
+   STDMETHOD(Move)(Float64 dist, VARIANT varDirection) override;
+   STDMETHOD(Offset)(Float64 dx, Float64 dy) override;
+   STDMETHOD(PointOnCurve)(Float64 distance, IPoint2d** pVal) override;
+   STDMETHOD(GetStartPoint)(IPoint2d** ppPoint) override;
+   STDMETHOD(GetEndPoint)(IPoint2d** ppPoint) override;
+   STDMETHOD(GetLength)(Float64* pLength) override;
+   STDMETHOD(GetKeyPoints)(IPoint2dCollection** ppPoints) override;
+   STDMETHOD(LocatePoint)(Float64 distFromStart, OffsetMeasureType offsetType, Float64 offset, VARIANT varDirection, IPoint2d** ppPoint) override;
+   STDMETHOD(GetBearing)(Float64 distFromStart, IDirection** ppDirection) override;
+   STDMETHOD(GetNormal)(Float64 distFromStart, IDirection** ppNormal) override;
+   STDMETHOD(ProjectPoint)(IPoint2d* point, IPoint2d** ppProjPoint, Float64* pDistFromStart, VARIANT_BOOL* pvbOnProjection) override;
+   STDMETHOD(Intersect)(ILine2d* pLine, VARIANT_BOOL vbProjectBack, VARIANT_BOOL vbProjectAhead, IPoint2dCollection** ppPoints) override;
+   STDMETHOD(CreateOffsetPath)(Float64 offset, IPath** ppPath) override;
+   STDMETHOD(CreateSubpath)(Float64 start, Float64 end, IPath** ppPath) override;
 
 private:
-   CComPtr<IPoint2d> m_OriginalPI;
-   CComPtr<IPoint2d> m_PBT, m_PI, m_PFT;
-
-   void Validate();
-   CComPtr<IPoint2d> m_PC, m_PT;
-
-   Float64 m_Radius;
-
-   // creates line objects for the curve tangents
-   void GetBkTangentLine(ILine2d** line);
-   void GetFwdTangentLine(ILine2d** line);
-
-   // returns true if line is parallel to tangent and there is no possiblity of an intersection
-   bool LineParallelToTangent(ILine2d* pTangentLine,ILine2d* pLine,IPoint2d* pTangentPoint);
-   //void GetCurveCenterNormalIntersectPoints(IPoint2d** pPOBT,IPoint2d** pPOFT);
-
-   bool IsPointOnLine(ILine2d* pLine,IPoint2d* pPoint);
-   bool TestIntersection(ILine2d* pLine,IPoint2d* pPoint);
+   std::shared_ptr<WBFL::COGO::CircularCurve> m_Curve;
 };
 
 #endif //__CircularCurve_H_

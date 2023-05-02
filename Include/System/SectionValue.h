@@ -67,7 +67,7 @@ namespace WBFL
          /// Returns the value on the right of the section
          const Float64& Right() const;
 
-         /// Returns the value as a string. If the left and right values, the string shows a single value,
+         /// Returns the value as a string. If the left and right values are equal, the string shows a single value,
          /// otherwise the string shows left\\right
          std::_tstring AsString() const;
 

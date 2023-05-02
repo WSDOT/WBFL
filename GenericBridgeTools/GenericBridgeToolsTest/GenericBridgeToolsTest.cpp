@@ -120,26 +120,15 @@ void CreateBasicBridge(IGenericBridge** ppBridge)
    //
    // Create the Alignment
    //
-   CComPtr<IAlignmentCollection> alignments;
-   cogoModel->get_Alignments(&alignments);
+   IDType alignmentID = 0;
+   cogoModel->StoreAlignment(alignmentID);
+   cogoModel->SetAlignmentReferenceStation(alignmentID, CComVariant(0.0));
 
-   CComPtr<IAlignment> alignment;
-   alignments->Add(0,&alignment);
+   cogoModel->StorePoint(1, 0, 0);
+   cogoModel->StorePoint(2, 100, 0);
+   cogoModel->StorePathSegment(1, 1, 2);
 
-   CComPtr<IPoint2d> p1;
-   p1.CoCreateInstance(CLSID_Point2d);
-   p1->Move(0,0);
-
-   CComPtr<IPoint2d> p2;
-   p2.CoCreateInstance(CLSID_Point2d);
-   p2->Move(100,0);
-
-   alignment->put_RefStation(CComVariant(0.00));
-   alignment->AddEx(p1);
-   alignment->AddEx(p2);
-
-   geometry->putref_Alignment(0,alignment);
-   geometry->put_BridgeAlignmentID(0);
+   geometry->put_BridgeAlignmentID(alignmentID);
 
    bridge.CopyTo(ppBridge);
 }
@@ -558,6 +547,7 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
          
          CComPtr<ISplicedGirderSegment> segment;
          TRY_TEST(segment.CoCreateInstance(CLSID_FlangedSplicedGirderSegment),S_OK);
+         TRY_TEST(ssmbr->AddSegment(segment), S_OK);
 
          if ( segIdx == 0 )
          {
@@ -638,8 +628,6 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
 
          strandModel->SetStrandMovers(strandMover,strandMover,strandMover,strandMover);
          item_data->AddItemData(CComBSTR("Precast Girder"),girder);
-
-         TRY_TEST(ssmbr->AddSegment(segment),S_OK);
       }
    }
 

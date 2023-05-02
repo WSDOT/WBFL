@@ -28,12 +28,6 @@
 #include <Lrfd\XCodeVersion.h>
 #include <Math\QuadraticSolver.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdPsStrand
@@ -76,7 +70,7 @@ Float64 lrfdPsStrand::GetUltimateStrength(WBFL::Materials::PsStrand::Grade gr)
    }
    else
    {
-      ATLASSERT(false); // is there a new grade?
+      CHECK(false); // is there a new grade?
    }
 
    return fpu;

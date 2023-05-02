@@ -27,7 +27,8 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "DirectionDisplayUnitFormatter.h"
-#include <WBFLCogo\CogoHelpers.h>
+#include <CoordGeom/Direction.h>
+#include <WBFLCogo/CogoHelpers.h>
 #include <sstream>
 #include <iomanip>
 
@@ -125,7 +126,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    if ( IsZero(val,m_ZeroTolerance) )
       val = 0.0;
 
-   val = cogoUtil::NormalizeAngle(val);
+   val = WBFL::COGO::Utilities::NormalizeAngle(val);
 
    bool bShowTag = (tag == nullptr ? false : true);
    std::_tstring strDegTag, strMinTag, strSecTag;
@@ -133,20 +134,23 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    {
       std::_tstring strTag = OLE2T(tag);
       if ( FAILED(cogoUtil::ParseAngleTags(strTag,&strDegTag,&strMinTag,&strSecTag)) )
-         return Error(IDS_E_BADFORMATTAG,IID_IDirectionDisplayUnitFormatter,COGO_E_BADFORMATTAG);
+         return E_INVALIDARG; // bad format tag
    }
 
    std::_tostringstream s;
 
    if ( m_bBearingFormat )
    {
-      NSDirectionType n;
-      EWDirectionType e;
-      long deg;
-      long min;
+      WBFL::COGO::Direction direction(val);
+      WBFL::COGO::Direction::NSDirection ns;
+      WBFL::COGO::Direction::EWDirection ew;
+      unsigned short deg;
+      unsigned short min;
       Float64 sec;
+      std::tie(ns, deg, min, sec, ew) = direction.GetDMS();
+      NSDirectionType n = NSDirectionType(ns);
+      EWDirectionType e = EWDirectionType(ew);
 
-      cogoUtil::GetBrgParts( val, &n, &deg, &min, &sec, &e );
       sec = IsZero(sec,m_ZeroTolerance) ? 0 : sec;
       s << std::setw(1) << (n == nsNorth ? _T('N') : _T('S') ) << _T(" ") 
         << deg;
@@ -171,11 +175,11 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    else
    {
       // azimuth
-      val = cogoUtil::NormalizeAngle(PI_OVER_2 - val);
-      long deg;
-      long min;
+      val = WBFL::COGO::Utilities::NormalizeAngle(PI_OVER_2 - val);
+      short deg;
+      unsigned short min;
       Float64 sec;
-      cogoUtil::ToDMS(val,&deg,&min,&sec);
+      std::tie(deg, min, sec) = WBFL::COGO::Utilities::ToDMS(val);
 
       sec = IsZero(sec,m_ZeroTolerance) ? 0 : sec;
       s << deg;

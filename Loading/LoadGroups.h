@@ -31,8 +31,8 @@
 #include "ComCollections.h"
 
 class CLoadGroups;
-typedef  CComBSTRKeyedCollection<ldILoadGroups, ldILoadGroup, ldIEnumLoadGroup, &IID_ldIEnumLoadGroup, CollectionIndexType> LoadGroupCollImpl;
-typedef CPersistentCollection<CLoadGroups, LoadGroupCollImpl, CollectionIndexType> PersistentLoadGroupCollImpl;
+using LoadGroupCollImpl = CComBSTRKeyedCollection<ldILoadGroups, ldILoadGroup, ldIEnumLoadGroup, &IID_ldIEnumLoadGroup, CollectionIndexType>;
+using PersistentLoadGroupCollImpl = CPersistentCollection<CLoadGroups, LoadGroupCollImpl, CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadGroups

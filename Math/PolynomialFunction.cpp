@@ -25,12 +25,6 @@
 #include <Math\PolynomialFunction.h>
 #include <Math\XFunction.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 PolynomialFunction::PolynomialFunction(const std::vector<Float64>& coefficients) :
@@ -88,7 +82,7 @@ PolynomialFunction PolynomialFunction::GetDerivative() const
       coefficients.insert( coefficients.begin(), C*K );
    }
 
-   ASSERT(coefficients.size() == m_Coefficients.size()-1);
+   CHECK(coefficients.size() == m_Coefficients.size()-1);
 
    return PolynomialFunction(coefficients);
 }

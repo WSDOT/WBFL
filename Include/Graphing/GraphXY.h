@@ -347,7 +347,7 @@ private:
       COLORREF Color;
    };
 
-   typedef std::vector<Point> DataSeries;
+   using DataSeries = std::vector<Point>;
 
    struct GraphData
    {
@@ -356,7 +356,7 @@ private:
       DataSeries Series;
    };
 
-   typedef std::map<IndexType,GraphData> GraphDataMap;
+   using GraphDataMap = std::map<IndexType,GraphData>;
    GraphDataMap m_GraphDataMap;
 
    Rect m_WorldRect;

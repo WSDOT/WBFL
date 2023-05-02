@@ -29,12 +29,6 @@
 #include <MathEx.h>
 #include "Helpers.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 NUBeam::NUBeam() : FlangedBeam()
@@ -261,13 +255,13 @@ IndexType NUBeam::GetTopFlangeCount() const
 
 Float64 NUBeam::GetTopFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUBeam::GetTopFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 NUBeam::GetTopFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUBeam::GetTopFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return m_W1;
 }
 
@@ -278,13 +272,13 @@ IndexType NUBeam::GetBottomFlangeCount() const
 
 Float64 NUBeam::GetBottomFlangeLocation(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUBeam::GetBottomFlangeLocation - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0.0;
 }
 
 Float64 NUBeam::GetBottomFlangeWidth(IndexType flangeIdx) const
 {
-   if (0 < flangeIdx) THROW_GEOMETRY(_T("NUBeam::GetBottomFlangeWidth - invalid flange index"));
+   if (0 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetBottomWidth();
 }
 
@@ -305,13 +299,13 @@ MatingSurfaceIndexType NUBeam::GetMatingSurfaceCount() const
 
 Float64 NUBeam::GetMatingSurfaceWidth(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("NUBeam::GetMatingSurfaceWidth - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return GetTopWidth();
 }
 
 Float64 NUBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("NUBeam::GetMatingSurfaceLocation - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return 0;
 }
 
@@ -322,7 +316,7 @@ IndexType NUBeam::GetWebCount() const
 
 Plane3d NUBeam::GetWebPlane(WebIndexType webIdx) const
 {
-   if (0 < webIdx) THROW_GEOMETRY(_T("NUBeam::GetWebPlane - index out of range"));
+   if (0 < webIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
    return Plane3d(0, 0, -1, 0); // vertical plane
 }
 

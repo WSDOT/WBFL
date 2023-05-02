@@ -29,12 +29,6 @@
 #include <Lrfd\RebarPool.h>
 #include <Lrfd\ConcreteUtil.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 // precompute conversions
 static const Float64 g_140p0_MPA  = WBFL::Units::ConvertToSysUnits(140.0,WBFL::Units::Measure::MPa);
 
@@ -156,7 +150,7 @@ void lrfdRebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
 
 Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& rebar, Float64 fc)
 {
-   ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
+   CHECK(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
 
    Float64 dl=0.0;
 
@@ -175,7 +169,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& reb
       Float64 db_u = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Millimeter);
       Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
       Float64 fc_u = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa);
-      ATLASSERT(0 < fc_u);
+      CHECK(0 < fc_u);
 
       Float64 dl_u = 0;
 
@@ -195,7 +189,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& reb
       }
       else
       {
-         ATLASSERT(false); // an unknown bar snuck in.
+         CHECK(false); // an unknown bar snuck in.
       }
 
       dl_u = max(dl_u, 305);
@@ -208,7 +202,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& reb
       Float64 db_u = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Inch);
       Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
       Float64 fc_u = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI);
-      ATLASSERT(0 < fc_u);
+      CHECK(0 < fc_u);
 
       Float64 dl_u = 0;
 
@@ -228,7 +222,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& reb
       }
       else
       {
-         ATLASSERT(false); // an unknown bar snuck in.
+         CHECK(false); // an unknown bar snuck in.
       }
 
       dl_u = max(dl_u, 12.0);
@@ -275,14 +269,14 @@ Float64 lrfdRebar::GetHookExtension(WBFL::Materials::Rebar::Size size,Float64 db
    }
    else
    {
-      ATLASSERT(usage == Seismic);
+      CHECK(usage == Seismic);
       if ( hook == hook135 )
       {
          return Max(WBFL::Units::ConvertToSysUnits(3.0,WBFL::Units::Measure::Inch),6*db);
       }
    }
 
-   ATLASSERT(false);
+   CHECK(false);
    // invalid combination of usage and hook type
    // See LRFD 5.10.2.1 for longitudinal standard hooks
    return 0;
@@ -325,7 +319,7 @@ Float64 lrfdRebar::GetBendDiameter(WBFL::Materials::Rebar::Size size,Float64 db,
       break;
 
    default:
-      ATLASSERT(false); // new bar size?
+      CHECK(false); // new bar size?
    }
 
    if ( bFractional )
@@ -350,7 +344,7 @@ Float64 lrfdRebar::GetCompressionControlledStrainLimit(WBFL::Materials::Rebar::G
    }
    else
    {
-      ATLASSERT(grade == WBFL::Materials::Rebar::Grade::Grade75 || grade == WBFL::Materials::Rebar::Grade::Grade80);
+      CHECK(grade == WBFL::Materials::Rebar::Grade::Grade75 || grade == WBFL::Materials::Rebar::Grade::Grade80);
       Float64 fy = (grade == WBFL::Materials::Rebar::Grade::Grade75 ? 75 : 80);
       ecl = ::LinInterp(fy-60.,0.002,0.004,100.-60.);
    }
@@ -371,7 +365,7 @@ Float64 lrfdRebar::GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade
    }
    else
    {
-      ATLASSERT(grade == WBFL::Materials::Rebar::Grade::Grade80);
+      CHECK(grade == WBFL::Materials::Rebar::Grade::Grade80);
       Float64 fy = 80;
       etl = ::LinInterp(fy-75,0.005,0.008,100.-75.);
    }
@@ -471,7 +465,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
          }
          else
          {
-            ASSERT(false); // new type?
+            CHECK(false); // new type?
             details.lambdaLw = 1.0;
          }
 
@@ -502,8 +496,8 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
    else
    {
       // UHPCs depend on LRFD 2020 or later so we should never get here with UHPC concrete
-      ASSERT(type != WBFL::Materials::ConcreteType::PCI_UHPC);
-      ASSERT(type != WBFL::Materials::ConcreteType::UHPC);
+      CHECK(type != WBFL::Materials::ConcreteType::PCI_UHPC);
+      CHECK(type != WBFL::Materials::ConcreteType::UHPC);
 
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
       {
@@ -603,7 +597,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
             }
             else
             {
-               ATLASSERT(false); // new type?
+               CHECK(false); // new type?
                details.factor = 1.0;
             }
          }

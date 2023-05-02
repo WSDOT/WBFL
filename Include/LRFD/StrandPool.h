@@ -128,7 +128,7 @@ private:
    static std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> > ms_USStrand;
    static std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> > ms_SIStrand;
 
-   typedef WBFL::System::SingletonKiller<lrfdStrandPool> Killer;
+   using Killer = WBFL::System::SingletonKiller<lrfdStrandPool>;
    friend Killer;
    static Killer ms_Killer;
 

@@ -35,12 +35,6 @@
 #include <COMDEF.H>
 #include <memory>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -58,7 +52,7 @@ CTestStructuredStorage2::~CTestStructuredStorage2()
 void CTestStructuredStorage2::Test()
 {
    // create a saver, open a file and save ourself
-   typedef std::unique_ptr<CTestStructuredStorage2> MePtr;
+   using MePtr = std::unique_ptr<CTestStructuredStorage2>;
 
    {
       MePtr pSaved;

@@ -94,8 +94,8 @@ protected:
       Float64    m_Factor;
    };
 
-   typedef std::vector<LoadCaseFactor> LcfContainer;
-   typedef LcfContainer::iterator       LcfIterator;
+   using LcfContainer = std::vector<LoadCaseFactor>;
+	using LcfIterator = LcfContainer::iterator;
    LcfContainer m_LoadCaseFactors;
 
    Float64                           m_LiveLoadFactor;

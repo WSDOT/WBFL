@@ -76,7 +76,7 @@ public:
    STDMETHOD(Assign)(/*[in]*/CollectionIndexType numElements, /*[in]*/CollectionIndexType value) override;
 
 protected:
-   typedef std::vector<CollectionIndexType> ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
+   using ContainerType = std::vector<CollectionIndexType>;
+	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 };

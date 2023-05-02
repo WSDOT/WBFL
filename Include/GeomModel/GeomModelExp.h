@@ -44,12 +44,10 @@
 #define GEOMMODELTPL   extern template class GEOMMODELCLASS
 #endif
 
-#if !defined INCLUDED_WBFLALL_H_
-#include <WbflAll.h>
-#endif
-
-#if !defined INCLUDED_GEOMMODEL_AUTOLIB_H_
 #include <GeomModel/AutoLib.h>
+
+#if defined _DEBUG || defined _UNITTEST
+#include <System/Debug.h>
 #endif
 
 #endif // INCLUDED_GEOMMODEL_GEOMMODELEXP_H_

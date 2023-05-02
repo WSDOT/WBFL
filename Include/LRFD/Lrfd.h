@@ -32,6 +32,7 @@
    #error It is for external users only
 #endif
 
+#include <Lrfd\LrfdTypes.h>
 #include <LRFD\AutoVersion.h>
 #include <LRFD\Details.h>
 #include <LRFD\ConcreteUtil.h>

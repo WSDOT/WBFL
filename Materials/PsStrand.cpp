@@ -25,12 +25,6 @@
 #include <Materials/PsStrand.h>
 #include <Units\Convert.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Materials;
 
 // precomputed conversions
@@ -156,14 +150,14 @@ std::_tstring PsStrand::GetGrade(PsStrand::Grade grade, bool bUnitsUS)
       gr = (bUnitsUS ? _T("300") : _T("2070"));
       break;
    default:
-      ASSERT(false);
+      CHECK(false);
    }
    return gr;
 }
 
 std::_tstring PsStrand::GetType(PsStrand::Type type)
 {
-   std::_tstring ty(type == Type::LowRelaxation ? _T("Low Releaxation") : _T("Stress Relieved"));
+   std::_tstring ty(type == Type::LowRelaxation ? _T("Low Relaxation") : _T("Stress Relieved"));
    return ty;
 }
 
@@ -176,7 +170,7 @@ std::_tstring PsStrand::GetCoating(PsStrand::Coating coating)
    case Coating::SmoothEpoxy: c = _T("Smooth"); break;
    case Coating::GritEpoxy: c = _T("GritEpoxy"); break;
    default:
-      ASSERT(false);
+      CHECK(false);
    }
 
    return c;
@@ -224,7 +218,7 @@ std::_tstring PsStrand::GetSize(PsStrand::Size size,bool bUnitsUS)
       break;
 
    default:
-      ASSERT(false); // should never get here (unless there is a new strand type)
+      CHECK(false); // should never get here (unless there is a new strand type)
    }
 
    return sz;
@@ -233,7 +227,7 @@ std::_tstring PsStrand::GetSize(PsStrand::Size size,bool bUnitsUS)
 #if defined _DEBUG
 bool PsStrand::AssertValid() const
 {
-   if ( m_Fpy > m_Fpu )
+   if (m_Fpu < m_Fpy)
       return false;
 
    if ( m_Diameter <= 0 )

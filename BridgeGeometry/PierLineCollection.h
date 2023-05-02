@@ -38,8 +38,8 @@
 
 
 class CPierLineCollection;
-typedef CComVectorCollection<IPierLineCollection,IPierLine,IEnumPierLines,&IID_IEnumPierLines,PierIndexType> PierColl;
-typedef CPersistentCollection<CPierLineCollection,PierColl,PierIndexType> PersistentPierLineCollection;
+using PierColl = CComVectorCollection<IPierLineCollection, IPierLine, IEnumPierLines, &IID_IEnumPierLines, PierIndexType>;
+using PersistentPierLineCollection = CPersistentCollection<CPierLineCollection,PierColl,PierIndexType>;
 
 // CPierCollection
 

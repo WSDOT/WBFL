@@ -159,9 +159,6 @@
     <ClInclude Include="..\Include\WbflAll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Private\WbflPackage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\WbflTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>

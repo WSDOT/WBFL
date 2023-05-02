@@ -35,8 +35,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <Private\WbflPackage.h>
-
+#include <WBFLTest.h>
 
 #include <ObjBase.h>
 #include <AtlBase.h>

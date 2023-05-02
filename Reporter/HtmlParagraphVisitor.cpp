@@ -28,12 +28,6 @@
 #include <Reporter\HtmlRcVisitor.h>
 #include <Reporter\RiStyle.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptHtmlParagraphVisitor::rptHtmlParagraphVisitor(std::_tostream* pMyOstream, 
                                                  const rptPageLayout*   MypPageLayout,
                                                  const rptHtmlHelper&   rmyHelper,

@@ -114,6 +114,6 @@ STDMETHODIMP CSize2d::Dimensions(Float64* pDx,Float64* pDy)
    CHECK_RETVAL(pDx);
    CHECK_RETVAL(pDy);
 
-   m_Size.GetDimensions(pDx, pDy);
+   std::tie(*pDx,*pDy) = m_Size.GetDimensions();
    return S_OK;
 }

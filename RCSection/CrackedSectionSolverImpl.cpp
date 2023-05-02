@@ -25,12 +25,6 @@
 #include "CrackedSectionSolverImpl.h"
 #include <RCSection/XRCSection.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #if defined _DEBUG_LOGGING
 #include <sstream>
 #include <iomanip>
@@ -227,7 +221,7 @@ void CrackedSectionSolverImpl::DecomposeSection() const
    // height
    Float64 k;
    Float64 basic_slice_height;
-   ASSERT(0 < m_nSlices);
+   CHECK(0 < m_nSlices);
    if (m_nSlices == 1)
    {
       k = 0;
@@ -464,7 +458,7 @@ bool CrackedSectionSolverImpl::SliceShape(const SHAPEINFO& shapeInfo, Float64 sl
 
    // compute the initial strain at the CG of the slice using the shape's initial strain plane
    Float64 cgX, cgY;
-   sliceInfo.pntCG.GetLocation(&cgX, &cgY);
+   std::tie(cgX,cgY) = sliceInfo.pntCG.GetLocation();
 
    sliceInfo.FgMaterial = shapeInfo.FgMaterial;
    sliceInfo.BgMaterial = shapeInfo.BgMaterial;

@@ -66,70 +66,84 @@ void CTestCompoundCurve::Test()
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
 
+   CComQIPtr<IPathElement> element(hc);
+
    CComPtr<IPoint2d> pbt, pi, pft;
    pbt.CoCreateInstance(CLSID_Point2d);
    pi.CoCreateInstance(CLSID_Point2d);
    pft.CoCreateInstance(CLSID_Point2d);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
-
    // Back Tangent Bearing = N 45 E
    pbt->Move(0,1000);
    pi->Move(1000,1000);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
 
    CurveDirectionType dir;
 
    // Left Curve
    pft->Move(1000,1500);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdLeft );
 
    // Right
    pft->Move(1000, 500);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
 
    // Back Tangent Bearing = N 45 W
    pbt->Move(0,1000);
    pi->Move(1000,1000);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
 
    // Left Curve
    pft->Move(-1000,1500);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdLeft );
 
    // Right
    pft->Move(-1000, 500);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
 
    // Back Tangent Bearing = S 45 W
    pbt->Move(0,1000);
    pi->Move(-1000,-1000);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
 
    // Left Curve
    pft->Move(-1000,-1500);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdLeft );
 
    // Right
    pft->Move(-1000, -500);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
 
    // Back Tangent Bearing = S 45 E
    pbt->Move(0,1000);
    pi->Move(1000,-1000);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
 
    // Left Curve
    pft->Move(1000,-500);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdLeft );
 
    // Right
    pft->Move(1000, -1500);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
 
@@ -141,6 +155,8 @@ void CTestCompoundCurve::Test1()
 {
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the right
@@ -159,28 +175,13 @@ void CTestCompoundCurve::Test1()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   TRY_TEST( hc->putref_PBT(nullptr), E_INVALIDARG );
-   TRY_TEST( hc->putref_PI(nullptr), E_INVALIDARG );
-   TRY_TEST( hc->putref_PFT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PBT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PI(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PFT(nullptr), E_INVALIDARG );
 
-   TRY_TEST( hc->putref_PBT(pbt), S_OK );
-   TRY_TEST( hc->putref_PI(pi), S_OK );
-   TRY_TEST( hc->putref_PFT(pft), S_OK );
-
-   CComPtr<IPoint2d> pnt;
-   TRY_TEST( hc->get_PBT(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PBT(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pbt), true );
-
-   pnt.Release();
-   TRY_TEST( hc->get_PI(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PI(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pi), true );
-
-   pnt.Release();
-   TRY_TEST( hc->get_PFT(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PFT(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pft), true );
+   TRY_TEST( hc->put_PBT(pbt), S_OK );
+   TRY_TEST( hc->put_PI(pi), S_OK );
+   TRY_TEST( hc->put_PFT(pft), S_OK );
 
    TRY_TEST( hc->put_Radius(-1), E_INVALIDARG);
    TRY_TEST( hc->put_Radius(0),  E_INVALIDARG);
@@ -198,6 +199,7 @@ void CTestCompoundCurve::Test1()
    TRY_TEST( dir, cdLeft );
 
    pft->Move(1000,700);
+   hc->put_PFT(pft);
    TRY_TEST( hc->get_Direction(&dir), S_OK );
    TRY_TEST( dir, cdRight );
 
@@ -448,57 +450,57 @@ void CTestCompoundCurve::Test1()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Bearing(-1,&brg),S_OK);
+   TRY_TEST(element->GetBearing(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetBearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Normal(-1,&brg),S_OK);
+   TRY_TEST(element->GetNormal(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetNormal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
 
    // At SC
    brg.Release();
-   TRY_TEST(hc->Bearing(100.,&brg),S_OK);
+   TRY_TEST(element->GetBearing(100.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,TWO_PI - 0.1), true );
    brg.Release();
-   TRY_TEST(hc->Normal(100.,&brg),S_OK);
+   TRY_TEST(element->GetNormal(100.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,TWO_PI - 0.1 - PI_OVER_2), true );
 
    // At CS
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Bearing(100+val,&brg),S_OK);
+   TRY_TEST(element->GetBearing(100+val,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 + 0.2), true );
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Normal(100+val,&brg),S_OK);
+   TRY_TEST(element->GetNormal(100+val,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 + 0.2 - PI_OVER_2), true );
 
    // Mid-point of exit spiral
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Bearing(100+val+200/2,&brg),S_OK);
+   TRY_TEST(element->GetBearing(100+val+200/2,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 + 0.05), true );
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Normal(100+val+200/2,&brg),S_OK);
+   TRY_TEST(element->GetNormal(100+val+200/2,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 + 0.05 - PI_OVER_2), true );
 
    // Point after curve
    brg.Release();
-   TRY_TEST(hc->Bearing(10000.,&brg),S_OK);
+   TRY_TEST(element->GetBearing(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4), true);
    brg.Release();
-   TRY_TEST(hc->Normal(10000.,&brg),S_OK);
+   TRY_TEST(element->GetNormal(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 - PI_OVER_2), true);
 
@@ -506,11 +508,11 @@ void CTestCompoundCurve::Test1()
    // Test PointOnCurve
    //
    Float64 px,py;
-   pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,nullptr),E_POINTER);
+   CComPtr<IPoint2d> pnt;
+   TRY_TEST(element->PointOnCurve(0.0,nullptr),E_POINTER);
    
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
+   TRY_TEST(element->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -519,7 +521,7 @@ void CTestCompoundCurve::Test1()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,&pnt),S_OK); // TS
+   TRY_TEST(element->PointOnCurve(0.0,&pnt),S_OK); // TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -528,14 +530,14 @@ void CTestCompoundCurve::Test1()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(50.0,&pnt),S_OK); // half-way between TS and SC
+   TRY_TEST(element->PointOnCurve(50.0,&pnt),S_OK); // half-way between TS and SC
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px,489.03248),true);
    TRY_TEST(IsEqual(py,999.58335),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(100.0,&pnt),S_OK); // SC
+   TRY_TEST(element->PointOnCurve(100.0,&pnt),S_OK); // SC
    pnt->get_X(&px);
    pnt->get_Y(&py);
    sc->get_X(&x);
@@ -545,7 +547,7 @@ void CTestCompoundCurve::Test1()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val/2,&pnt),S_OK); // Half-way around the circular curve
+   TRY_TEST(element->PointOnCurve(100.0 + val/2,&pnt),S_OK); // Half-way around the circular curve
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px,657.03416),true);
@@ -553,7 +555,7 @@ void CTestCompoundCurve::Test1()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val,&pnt),S_OK); // CS
+   TRY_TEST(element->PointOnCurve(100.0 + val,&pnt),S_OK); // CS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    cs->get_X(&x);
@@ -563,7 +565,7 @@ void CTestCompoundCurve::Test1()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val + 200./2,&pnt),S_OK); // Half-way along exit spiral
+   TRY_TEST(element->PointOnCurve(100.0 + val + 200./2,&pnt),S_OK); // Half-way along exit spiral
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px,843.67118),true);
@@ -571,7 +573,7 @@ void CTestCompoundCurve::Test1()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val + 200.,&pnt),S_OK); // ST
+   TRY_TEST(element->PointOnCurve(100.0 + val + 200.,&pnt),S_OK); // ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -581,7 +583,7 @@ void CTestCompoundCurve::Test1()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val + 200 + 100,&pnt),S_OK); // 100 past ST
+   TRY_TEST(element->PointOnCurve(100.0 + val + 200 + 100,&pnt),S_OK); // 100 past ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -599,9 +601,9 @@ void CTestCompoundCurve::Test1()
    CComPtr<IPoint2d> prjPoint;
    Float64 distFromStart;
    VARIANT_BOOL vbOnProjection;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(element->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -609,7 +611,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(300,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -617,7 +619,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(500,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 496.65666),true);
@@ -625,7 +627,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(500,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 504.21291),true);
@@ -633,7 +635,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(1000,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 757.96599),true);
@@ -641,7 +643,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(550,700);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 634.29003),true);
@@ -649,7 +651,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(900,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 851.1983,0.001),true);
@@ -657,7 +659,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(800,800);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 846.7079,0.001),true);
@@ -665,7 +667,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(1100,500);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -673,7 +675,7 @@ void CTestCompoundCurve::Test1()
 
    pnt->Move(1200,600);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -683,17 +685,17 @@ void CTestCompoundCurve::Test1()
    // It is nearest the back tangent.
    pnt->Move(200,0);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 200.0),true);
    TRY_TEST(IsEqual(py,1000.0),true);
 
    // This point should project onto both tangents.
-   // It is nearest the foward tangent.
+   // It is nearest the forward tangent.
    pnt->Move(400,0);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1050.0),true);
@@ -703,7 +705,7 @@ void CTestCompoundCurve::Test1()
    // It is nearest the entry spiral.
    pnt->Move(450,430);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,450.78716),true);
@@ -713,7 +715,7 @@ void CTestCompoundCurve::Test1()
    // It is nearest the exit spiral.
    pnt->Move(470,400);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,879.50334),true);
@@ -724,18 +726,18 @@ void CTestCompoundCurve::Test1()
    CComQIPtr<ISupportErrorInfo> eInfo(hc);
    TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICompoundCurve ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_CompoundCurve,IID_ICompoundCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_CompoundCurve,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
 void CTestCompoundCurve::Test2()
 {
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a symmetrical curve to the right
@@ -754,9 +756,9 @@ void CTestCompoundCurve::Test2()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,100);
    hc->put_SpiralLength(spExit,0);
@@ -766,6 +768,7 @@ void CTestCompoundCurve::Test2()
    TRY_TEST( dir, cdLeft );
 
    pft->Move(1000,700);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
 
@@ -975,45 +978,45 @@ void CTestCompoundCurve::Test2()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Bearing(-1,&brg),S_OK);
+   TRY_TEST(element->GetBearing(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetBearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Normal(-1,&brg),S_OK);
+   TRY_TEST(element->GetNormal(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetNormal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
 
    // At SC
    brg.Release();
-   TRY_TEST(hc->Bearing(100.,&brg),S_OK);
+   TRY_TEST(element->GetBearing(100.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,TWO_PI - 0.1), true );
    brg.Release();
-   TRY_TEST(hc->Normal(100.,&brg),S_OK);
+   TRY_TEST(element->GetNormal(100.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,TWO_PI - 0.1 - PI_OVER_2), true );
 
    // At CS
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Bearing(100+val,&brg),S_OK);
+   TRY_TEST(element->GetBearing(100+val,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4), true );
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Normal(100+val,&brg),S_OK);
+   TRY_TEST(element->GetNormal(100+val,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 - PI_OVER_2), true );
 
    // Point after curve
    brg.Release();
-   TRY_TEST(hc->Bearing(10000.,&brg),S_OK);
+   TRY_TEST(element->GetBearing(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4), true);
    brg.Release();
-   TRY_TEST(hc->Normal(10000.,&brg),S_OK);
+   TRY_TEST(element->GetNormal(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 - PI_OVER_2), true);
 
@@ -1024,7 +1027,7 @@ void CTestCompoundCurve::Test2()
    CComPtr<IPoint2d> pnt;
    
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
+   TRY_TEST(element->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -1033,7 +1036,7 @@ void CTestCompoundCurve::Test2()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,&pnt),S_OK); // TS
+   TRY_TEST(element->PointOnCurve(0.0,&pnt),S_OK); // TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -1042,14 +1045,14 @@ void CTestCompoundCurve::Test2()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(50.0,&pnt),S_OK); // half-way between TS and SC
+   TRY_TEST(element->PointOnCurve(50.0,&pnt),S_OK); // half-way between TS and SC
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px,493.73979),true);
    TRY_TEST(IsEqual(py,999.58335),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(100.0,&pnt),S_OK); // SC
+   TRY_TEST(element->PointOnCurve(100.0,&pnt),S_OK); // SC
    pnt->get_X(&px);
    pnt->get_Y(&py);
    sc->get_X(&x);
@@ -1059,7 +1062,7 @@ void CTestCompoundCurve::Test2()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val/2,&pnt),S_OK); // Half-way around the circular curve
+   TRY_TEST(element->PointOnCurve(100.0 + val/2,&pnt),S_OK); // Half-way around the circular curve
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px,707.91621),true);
@@ -1067,7 +1070,7 @@ void CTestCompoundCurve::Test2()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val,&pnt),S_OK); // CS
+   TRY_TEST(element->PointOnCurve(100.0 + val,&pnt),S_OK); // CS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    cs->get_X(&x);
@@ -1077,7 +1080,7 @@ void CTestCompoundCurve::Test2()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val,&pnt),S_OK); // ST
+   TRY_TEST(element->PointOnCurve(100.0 + val,&pnt),S_OK); // ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -1087,7 +1090,7 @@ void CTestCompoundCurve::Test2()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val + 100,&pnt),S_OK); // 100 past ST
+   TRY_TEST(element->PointOnCurve(100.0 + val + 100,&pnt),S_OK); // 100 past ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -1105,9 +1108,9 @@ void CTestCompoundCurve::Test2()
    CComPtr<IPoint2d> prjPoint;
    Float64 distFromStart;
    VARIANT_BOOL vbOnProjection;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(element->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1115,7 +1118,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(300,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1123,7 +1126,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(500,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 497.1337,0.001),true);
@@ -1131,7 +1134,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(500,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 503.5543,0.001),true);
@@ -1139,7 +1142,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(1000,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 760.9055,0.001),true);
@@ -1147,7 +1150,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(550,700);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 628.6312,0.001),true);
@@ -1155,7 +1158,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(900,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 850.0000,0.001),true);
@@ -1163,7 +1166,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(800,800);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 850.0000,0.001),true);
@@ -1171,7 +1174,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(1100,500);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -1179,7 +1182,7 @@ void CTestCompoundCurve::Test2()
 
    pnt->Move(1200,600);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -1190,6 +1193,8 @@ void CTestCompoundCurve::Test3()
 {
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a symmetrical curve to the right
@@ -1208,9 +1213,9 @@ void CTestCompoundCurve::Test3()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,0);
    hc->put_SpiralLength(spExit,200);
@@ -1220,6 +1225,7 @@ void CTestCompoundCurve::Test3()
    TRY_TEST( dir, cdLeft );
 
    pft->Move(1000,700);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
 
@@ -1428,35 +1434,35 @@ void CTestCompoundCurve::Test3()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Bearing(-1,&brg),S_OK);
+   TRY_TEST(element->GetBearing(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetBearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Normal(-1,&brg),S_OK);
+   TRY_TEST(element->GetNormal(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetNormal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
 
    // At CS
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Bearing(val,&brg),S_OK);
+   TRY_TEST(element->GetBearing(val,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 + 0.2), true );
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Normal(val,&brg),S_OK);
+   TRY_TEST(element->GetNormal(val,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 + 0.2 - PI_OVER_2), true );
 
    // Point after curve
    brg.Release();
-   TRY_TEST(hc->Bearing(10000.,&brg),S_OK);
+   TRY_TEST(element->GetBearing(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4), true);
    brg.Release();
-   TRY_TEST(hc->Normal(10000.,&brg),S_OK);
+   TRY_TEST(element->GetNormal(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 - PI_OVER_2), true);
 
@@ -1467,7 +1473,7 @@ void CTestCompoundCurve::Test3()
    CComPtr<IPoint2d> pnt;
    
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
+   TRY_TEST(element->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -1476,7 +1482,7 @@ void CTestCompoundCurve::Test3()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,&pnt),S_OK); // TS
+   TRY_TEST(element->PointOnCurve(0.0,&pnt),S_OK); // TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -1485,7 +1491,7 @@ void CTestCompoundCurve::Test3()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,&pnt),S_OK); // SC
+   TRY_TEST(element->PointOnCurve(0.0,&pnt),S_OK); // SC
    pnt->get_X(&px);
    pnt->get_Y(&py);
    sc->get_X(&x);
@@ -1495,7 +1501,7 @@ void CTestCompoundCurve::Test3()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val/2,&pnt),S_OK); // Half-way around the circular curve
+   TRY_TEST(element->PointOnCurve(val/2,&pnt),S_OK); // Half-way around the circular curve
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px,632.45468),true);
@@ -1503,7 +1509,7 @@ void CTestCompoundCurve::Test3()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val,&pnt),S_OK); // CS
+   TRY_TEST(element->PointOnCurve(val,&pnt),S_OK); // CS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    cs->get_X(&x);
@@ -1513,7 +1519,7 @@ void CTestCompoundCurve::Test3()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val + 200./2,&pnt),S_OK); // Half-way along exit spiral
+   TRY_TEST(element->PointOnCurve(val + 200./2,&pnt),S_OK); // Half-way along exit spiral
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px,842.83815),true);
@@ -1521,7 +1527,7 @@ void CTestCompoundCurve::Test3()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val + 200.,&pnt),S_OK); // ST
+   TRY_TEST(element->PointOnCurve(val + 200.,&pnt),S_OK); // ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -1531,7 +1537,7 @@ void CTestCompoundCurve::Test3()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val + 200 + 100,&pnt),S_OK); // 100 past ST
+   TRY_TEST(element->PointOnCurve(val + 200 + 100,&pnt),S_OK); // 100 past ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -1549,9 +1555,9 @@ void CTestCompoundCurve::Test3()
    CComPtr<IPoint2d> prjPoint;
    Float64 distFromStart;
    VARIANT_BOOL vbOnProjection;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(element->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1559,7 +1565,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(300,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1567,7 +1573,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(500,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 498.0291,0.001),true);
@@ -1575,7 +1581,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(500,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 502.9471,0.001),true);
@@ -1583,7 +1589,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(1000,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 757.6433,0.001),true);
@@ -1591,7 +1597,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(550,700);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 635.8301,0.001),true);
@@ -1599,7 +1605,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(900,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 851.1779,0.001),true);
@@ -1607,7 +1613,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(800,800);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 846.8054,0.001),true);
@@ -1615,7 +1621,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(1100,500);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -1623,7 +1629,7 @@ void CTestCompoundCurve::Test3()
 
    pnt->Move(1200,600);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -1634,6 +1640,8 @@ void CTestCompoundCurve::Test4()
 {
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a symmetrical curve to the right
@@ -1652,9 +1660,9 @@ void CTestCompoundCurve::Test4()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,0);
    hc->put_SpiralLength(spExit,0);
@@ -1664,6 +1672,7 @@ void CTestCompoundCurve::Test4()
    TRY_TEST( dir, cdLeft );
 
    pft->Move(1000,700);
+   hc->put_PFT(pft);
    hc->get_Direction(&dir);
    TRY_TEST( dir, cdRight );
 
@@ -1871,35 +1880,35 @@ void CTestCompoundCurve::Test4()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Bearing(-1,&brg),S_OK);
+   TRY_TEST(element->GetBearing(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetBearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Normal(-1,&brg),S_OK);
+   TRY_TEST(element->GetNormal(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetNormal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
 
    // At mid-point of curve
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Bearing(val/2,&brg),S_OK);
+   TRY_TEST(element->GetBearing(val/2,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 + M_PI/8), true );
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Normal(val/2,&brg),S_OK);
+   TRY_TEST(element->GetNormal(val/2,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 + M_PI/8 - PI_OVER_2), true );
 
    // Point after curve
    brg.Release();
-   TRY_TEST(hc->Bearing(10000.,&brg),S_OK);
+   TRY_TEST(element->GetBearing(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4), true);
    brg.Release();
-   TRY_TEST(hc->Normal(10000.,&brg),S_OK);
+   TRY_TEST(element->GetNormal(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,7*M_PI/4 - PI_OVER_2), true);
 
@@ -1910,7 +1919,7 @@ void CTestCompoundCurve::Test4()
    CComPtr<IPoint2d> pnt;
    
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
+   TRY_TEST(element->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -1919,7 +1928,7 @@ void CTestCompoundCurve::Test4()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,&pnt),S_OK); // TS
+   TRY_TEST(element->PointOnCurve(0.0,&pnt),S_OK); // TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -1928,7 +1937,7 @@ void CTestCompoundCurve::Test4()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,&pnt),S_OK); // SC
+   TRY_TEST(element->PointOnCurve(0.0,&pnt),S_OK); // SC
    pnt->get_X(&px);
    pnt->get_Y(&py);
    sc->get_X(&x);
@@ -1938,7 +1947,7 @@ void CTestCompoundCurve::Test4()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val/2,&pnt),S_OK); // Half-way around the circular curve
+   TRY_TEST(element->PointOnCurve(val/2,&pnt),S_OK); // Half-way around the circular curve
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px,684.23493),true);
@@ -1946,7 +1955,7 @@ void CTestCompoundCurve::Test4()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val,&pnt),S_OK); // CS
+   TRY_TEST(element->PointOnCurve(val,&pnt),S_OK); // CS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    cs->get_X(&x);
@@ -1956,7 +1965,7 @@ void CTestCompoundCurve::Test4()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val,&pnt),S_OK); // ST
+   TRY_TEST(element->PointOnCurve(val,&pnt),S_OK); // ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -1966,7 +1975,7 @@ void CTestCompoundCurve::Test4()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(val + 100,&pnt),S_OK); // 100 past ST
+   TRY_TEST(element->PointOnCurve(val + 100,&pnt),S_OK); // 100 past ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -1983,9 +1992,9 @@ void CTestCompoundCurve::Test4()
    CComPtr<IPoint2d> prjPoint;
    Float64 distFromStart;
    VARIANT_BOOL vbOnProjection;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(element->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -1993,7 +2002,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(300,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 300.0),true);
@@ -2001,7 +2010,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(500,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 498.8151,0.001),true);
@@ -2009,7 +2018,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(500,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 501.7753,0.001),true);
@@ -2017,7 +2026,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(1000,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 760.5851,0.001),true);
@@ -2025,7 +2034,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(550,700);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 630.1736,0.001),true);
@@ -2033,7 +2042,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(900,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 850.0000,0.001),true);
@@ -2041,7 +2050,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(800,800);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 850.0000,0.001),true);
@@ -2049,7 +2058,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(1100,500);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -2057,7 +2066,7 @@ void CTestCompoundCurve::Test4()
 
    pnt->Move(1200,600);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1150.0),true);
@@ -2068,6 +2077,8 @@ void CTestCompoundCurve::Test5()
 {
    CComPtr<ICompoundCurve> hc;
    TRY_TEST(hc.CoCreateInstance(CLSID_CompoundCurve),S_OK);
+
+   CComQIPtr<IPathElement> element(hc);
 
    /////////////////////////////////////////////////////
    // Test a non-symmetrical spiral-curve-spiral to the left
@@ -2086,28 +2097,13 @@ void CTestCompoundCurve::Test5()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   TRY_TEST( hc->putref_PBT(nullptr), E_INVALIDARG );
-   TRY_TEST( hc->putref_PI(nullptr), E_INVALIDARG );
-   TRY_TEST( hc->putref_PFT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PBT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PI(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->put_PFT(nullptr), E_INVALIDARG );
 
-   TRY_TEST( hc->putref_PBT(pbt), S_OK );
-   TRY_TEST( hc->putref_PI(pi), S_OK );
-   TRY_TEST( hc->putref_PFT(pft), S_OK );
-
-   CComPtr<IPoint2d> pnt;
-   TRY_TEST( hc->get_PBT(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PBT(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pbt), true );
-
-   pnt.Release();
-   TRY_TEST( hc->get_PI(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PI(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pi), true );
-
-   pnt.Release();
-   TRY_TEST( hc->get_PFT(nullptr), E_POINTER );
-   TRY_TEST( hc->get_PFT(&pnt), S_OK );
-   TRY_TEST( pnt.IsEqualObject(pft), true );
+   TRY_TEST( hc->put_PBT(pbt), S_OK );
+   TRY_TEST( hc->put_PI(pi), S_OK );
+   TRY_TEST( hc->put_PFT(pft), S_OK );
 
    TRY_TEST( hc->put_Radius(-1), E_INVALIDARG);
    TRY_TEST( hc->put_Radius(0),  E_INVALIDARG);
@@ -2366,57 +2362,57 @@ void CTestCompoundCurve::Test5()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Bearing(-1,&brg),S_OK);
+   TRY_TEST(element->GetBearing(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetBearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
-   TRY_TEST(hc->Normal(-1,&brg),S_OK);
+   TRY_TEST(element->GetNormal(-1,nullptr),E_POINTER);
+   TRY_TEST(element->GetNormal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
 
    // At SC
    brg.Release();
-   TRY_TEST(hc->Bearing(100.,&brg),S_OK);
+   TRY_TEST(element->GetBearing(100.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val, 0.1), true );
    brg.Release();
-   TRY_TEST(hc->Normal(100.,&brg),S_OK);
+   TRY_TEST(element->GetNormal(100.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val, 3*PI_OVER_2 + 0.1), true );
 
    // At CS
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Bearing(100+val,&brg),S_OK);
+   TRY_TEST(element->GetBearing(100+val,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val, M_PI/4 - 0.2), true );
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Normal(100+val,&brg),S_OK);
+   TRY_TEST(element->GetNormal(100+val,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2 + M_PI/4 - 0.2), true );
 
    // Mid-point of exit spiral
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Bearing(100+val+200/2,&brg),S_OK);
+   TRY_TEST(element->GetBearing(100+val+200/2,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val, M_PI/4 - 0.05), true );
    brg.Release();
    hc->get_CurveLength(&val);
-   TRY_TEST(hc->Normal(100+val+200/2,&brg),S_OK);
+   TRY_TEST(element->GetNormal(100+val+200/2,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2 + M_PI/4 - 0.05), true );
 
    // Point after curve
    brg.Release();
-   TRY_TEST(hc->Bearing(10000.,&brg),S_OK);
+   TRY_TEST(element->GetBearing(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,M_PI/4), true);
    brg.Release();
-   TRY_TEST(hc->Normal(10000.,&brg),S_OK);
+   TRY_TEST(element->GetNormal(10000.,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2 + M_PI/4), true);
 
@@ -2424,11 +2420,11 @@ void CTestCompoundCurve::Test5()
    // Test PointOnCurve
    //
    Float64 px,py;
-   pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,nullptr),E_POINTER);
+   CComPtr<IPoint2d> pnt;
+   TRY_TEST(element->PointOnCurve(0.0,nullptr),E_POINTER);
    
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
+   TRY_TEST(element->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -2437,7 +2433,7 @@ void CTestCompoundCurve::Test5()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,&pnt),S_OK); // TS
+   TRY_TEST(element->PointOnCurve(0.0,&pnt),S_OK); // TS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    ts->get_X(&x);
@@ -2446,14 +2442,14 @@ void CTestCompoundCurve::Test5()
    TRY_TEST(IsEqual(y,py),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(50.0,&pnt),S_OK); // half-way between TS and SC
+   TRY_TEST(element->PointOnCurve(50.0,&pnt),S_OK); // half-way between TS and SC
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px, 489.03248),true);
    TRY_TEST(IsEqual(py,1000.41665),true);
 
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(100.0,&pnt),S_OK); // SC
+   TRY_TEST(element->PointOnCurve(100.0,&pnt),S_OK); // SC
    pnt->get_X(&px);
    pnt->get_Y(&py);
    sc->get_X(&x);
@@ -2463,7 +2459,7 @@ void CTestCompoundCurve::Test5()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val/2,&pnt),S_OK); // Half-way around the circular curve
+   TRY_TEST(element->PointOnCurve(100.0 + val/2,&pnt),S_OK); // Half-way around the circular curve
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px, 657.03416),true);
@@ -2471,7 +2467,7 @@ void CTestCompoundCurve::Test5()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val,&pnt),S_OK); // CS
+   TRY_TEST(element->PointOnCurve(100.0 + val,&pnt),S_OK); // CS
    pnt->get_X(&px);
    pnt->get_Y(&py);
    cs->get_X(&x);
@@ -2481,7 +2477,7 @@ void CTestCompoundCurve::Test5()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val + 200./2,&pnt),S_OK); // Half-way along exit spiral
+   TRY_TEST(element->PointOnCurve(100.0 + val + 200./2,&pnt),S_OK); // Half-way along exit spiral
    pnt->get_X(&px);
    pnt->get_Y(&py);
    TRY_TEST(IsEqual(px, 843.67118),true);
@@ -2489,7 +2485,7 @@ void CTestCompoundCurve::Test5()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val + 200.,&pnt),S_OK); // ST
+   TRY_TEST(element->PointOnCurve(100.0 + val + 200.,&pnt),S_OK); // ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -2499,7 +2495,7 @@ void CTestCompoundCurve::Test5()
 
    pnt.Release();
    hc->get_CurveLength(&val); // length of circular curve
-   TRY_TEST(hc->PointOnCurve(100.0 + val + 200 + 100,&pnt),S_OK); // 100 past ST
+   TRY_TEST(element->PointOnCurve(100.0 + val + 200 + 100,&pnt),S_OK); // 100 past ST
    pnt->get_X(&px);
    pnt->get_Y(&py);
    st->get_X(&x);
@@ -2516,9 +2512,9 @@ void CTestCompoundCurve::Test5()
    CComPtr<IPoint2d> prjPoint;
    Float64 distFromStart;
    VARIANT_BOOL vbOnProjection;
-   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(nullptr,&prjPoint, &distFromStart, &vbOnProjection),E_INVALIDARG);
+   TRY_TEST(element->ProjectPoint(pnt,nullptr, &distFromStart, &vbOnProjection),E_POINTER);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 400.0),true);
@@ -2526,7 +2522,7 @@ void CTestCompoundCurve::Test5()
 
    pnt->Move(400,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 400.0),true);
@@ -2534,7 +2530,7 @@ void CTestCompoundCurve::Test5()
 
    pnt->Move(490,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 492.8860,0.001),true);
@@ -2542,7 +2538,7 @@ void CTestCompoundCurve::Test5()
 
    pnt->Move(490,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 487.6289,0.001),true);
@@ -2550,7 +2546,7 @@ void CTestCompoundCurve::Test5()
 
    pnt->Move(650,1100);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 675.3606,0.001),true);
@@ -2558,7 +2554,7 @@ void CTestCompoundCurve::Test5()
 
    pnt->Move(650,900);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 618.4197,0.001),true);
@@ -2566,7 +2562,7 @@ void CTestCompoundCurve::Test5()
 
    pnt->Move(850,1200);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 874.3554,0.001),true);
@@ -2574,7 +2570,7 @@ void CTestCompoundCurve::Test5()
 
    pnt->Move(1050,1000);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px, 877.3483,0.001),true);
@@ -2582,7 +2578,7 @@ void CTestCompoundCurve::Test5()
 
    pnt->Move(1200,1300);
    prjPoint.Release();
-   TRY_TEST(hc->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
+   TRY_TEST(element->ProjectPoint(pnt,&prjPoint, &distFromStart, &vbOnProjection),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
    TRY_TEST(IsEqual(px,1100.0),true);

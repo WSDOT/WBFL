@@ -34,9 +34,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-const CogoObjectID g_AlignmentKey = 0;
-const CogoObjectID g_CLBridgeKey  = 1;
-
 HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal)
 {
    CHECK_RETVAL(pVal);
@@ -112,9 +109,9 @@ HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoObje
 // function to deal with fractional and absolute values
 Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig)
 {
-   ATLASSERT(Length>0.0);
+   ATLASSERT(0.0 < Length);
 
-   if (fracLoc>=0.0)
+   if (0.0 <= fracLoc)
    {
       if (ignoreTooBig || IsLE(fracLoc,Length) )
       {
@@ -127,7 +124,7 @@ Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig)
    }
    else
    {
-      if (fracLoc>=-1.0)
+      if (-1.0 <= fracLoc)
       {
          return -fracLoc*Length;
       }
@@ -156,7 +153,8 @@ HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 dis
    Float64 distAlongPath = distAlongSegment + brgOffset - endDist;
 
    CComPtr<IPoint2d> pnt;
-   gdrPath->LocatePoint(distAlongPath,omtNormal,0.00,CComVariant(0),&pnt);
+   CComQIPtr<IPathElement> element(gdrPath);
+   element->LocatePoint(distAlongPath,omtNormal,0.00,CComVariant(0),&pnt);
    Float64 x,y;
    pnt->Location(&x,&y);
 
@@ -169,15 +167,19 @@ HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 dis
    CComPtr<IAlignment> alignment;
    bridge->get_Alignment(&alignment);
 
+   IDType profileID, surfaceID;
+   bridge->get_ProfileID(&profileID);
+   bridge->get_SurfaceID(&surfaceID);
+
    CComPtr<IStation> station;
    Float64 offset;
-   alignment->Offset(pnt,&station,&offset);
+   alignment->StationAndOffset(pnt,&station,&offset);
 
    CComPtr<IProfile> profile;
-   alignment->get_Profile(&profile);
+   alignment->GetProfile(profileID,&profile);
 
    Float64 elevation;
-   profile->Elevation(CComVariant(station),offset,&elevation);
+   profile->Elevation(surfaceID,CComVariant(station),offset,&elevation);
 
    Float64 elevation_offset = 0;
    CComPtr<IBridgeDeck> deck;

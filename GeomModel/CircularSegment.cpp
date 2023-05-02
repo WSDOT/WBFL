@@ -32,12 +32,6 @@
 #include <MathEx.h>
 #include "MohrCircle.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 CircularSegment::CircularSegment() : ShapeOnAlternativePolygonImpl()
@@ -79,7 +73,7 @@ void CircularSegment::SetCenter(const Point2d& center)
 Point2d CircularSegment::GetCenter() const
 {
    Float64 hx, hy;
-   GetHookPoint()->GetLocation(&hx, &hy);
+   std::tie(hx,hy) = GetHookPoint()->GetLocation();
    Float64 cx = hx - (m_Radius - m_MidOrdinate) * cos(m_Rotation);
    Float64 cy = hy - (m_Radius - m_MidOrdinate) * sin(m_Rotation);
    return Point2d(cx, cy);
@@ -87,13 +81,13 @@ Point2d CircularSegment::GetCenter() const
 
 void CircularSegment::SetRadius(Float64 r)
 {
-   if (r < 0) THROW_GEOMETRY(_T("CircularSegment::SetRadius - invalid radius"));
+   if (r < 0) THROW_GEOMETRY(WBFL_GEOMETRY_E_RADIUS);
 
    Point2d center = GetCenter();
 
    m_Radius = r;
 
-   // If the radius got so small that MO is beyond the boundries
+   // If the radius got so small that MO is beyond the boundaries
    // of the circle, move MO to the edge of the circle
    if (2.0*m_Radius < m_MidOrdinate)
       m_MidOrdinate = 2*m_Radius;
@@ -109,7 +103,7 @@ Float64 CircularSegment::GetRadius() const
 
 void CircularSegment::SetMidOrdinate(Float64 mo)
 {
-   if (!InRange(0.0, mo, 2*m_Radius)) THROW_GEOMETRY(_T("CircularSegment::SetMidOrdinate - midordinte cannot be greater than twice the radius"));
+   if (!InRange(0.0, mo, 2*m_Radius)) THROW_GEOMETRY(WBFL_GEOMETRY_E_MIDORDINATE);
 
    Point2d center = GetCenter();
 
@@ -137,7 +131,7 @@ LineSegment2d CircularSegment::GetChord() const
    }
 
    Float64 cx, cy;
-   center.GetLocation(&cx, &cy);
+   std::tie(cx,cy) = center.GetLocation();
 
    Float64 x1, y1;
    Float64 x2, y2;
@@ -265,31 +259,31 @@ Rect2d CircularSegment::GetBoundingBox() const
    }
 
    LineSegment2d chord = GetChord();
-   auto& p1 = chord.GetStartPoint();
-   auto& p2 = chord.GetEndPoint();
+   const auto& p1 = chord.GetStartPoint();
+   const auto& p2 = chord.GetEndPoint();
 
-   Float64 p1x = p1->X();
-   Float64 p1y = p1->Y();
-   Float64 p2x = p2->X();
-   Float64 p2y = p2->Y();
+   Float64 p1x = p1.X();
+   Float64 p1y = p1.Y();
+   Float64 p2x = p2.X();
+   Float64 p2y = p2.Y();
 
    // Get boundary line
    Line2d line(chord);
 
    Float64 c;
    Vector2d n;
-   line.GetImplicit(&c, &n); // normal to line
+   std::tie(c,n) = line.GetImplicit(); // normal to line
    Float64 nx,ny;
    nx = n.X();
    ny = n.Y();
-   // drown out any noice in the vector
+   // drown out any noise in the vector
    nx = IsZero(nx) ? 0.00 : nx;
    ny = IsZero(ny) ? 0.00 : ny;
 
    // Center of circle
    Float64 cx, cy;
    Point2d center(GetCenter());
-   center.GetLocation(&cx, &cy);
+   std::tie(cx,cy) = center.GetLocation();
 
    // Find sides
    Float64 left, right, top, bottom;
@@ -328,7 +322,7 @@ bool CircularSegment::PointInShape(const Point2d& p) const
    if (!circle.PointInShape(p)) return false;
 
    LineSegment2d chord = GetChord();
-   Line2d line(*chord.GetStartPoint(), *chord.GetEndPoint());
+   Line2d line(chord.GetStartPoint(), chord.GetEndPoint());
    if (line.GetSide(p) == Line2d::Side::Left) return false;
 
    return true;
@@ -357,7 +351,7 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Line2d& line, L
       return nullptr;
 
    LineSegment2d chord(GetChord());
-   if (*chord.GetStartPoint() == *chord.GetEndPoint())
+   if (chord.GetStartPoint() == chord.GetEndPoint())
    {
       CHECK(IsEqual(GetMidOrdinate(), 2.0 * GetRadius()));
       // this "circular segment" is actually a full circle
@@ -410,10 +404,10 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Line2d& line, L
       Line2d normal_line = GeometricOperations::CreateNormalLineThroughPoint(line, GetCenter());
       Float64 c;
       Vector2d v1;
-      clipLine.GetImplicit(&c, &v1); // v1 is normal to line
+      std::tie(c,v1) = clipLine.GetImplicit(); // v1 is normal to line
       Point2d p;
       Vector2d v2;
-      normal_line.GetExplicit(&p, &v2); // v2 is in the direction of normal_line
+      std::tie(p,v2) = normal_line.GetExplicit(); // v2 is in the direction of normal_line
 
       // If v2 and v1 have the same direction their dot product will be > 0
       Float64 dot = v1.Dot(v2);
@@ -442,8 +436,8 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Line2d& line, L
       // edge line intersect on the shape boundary
       Float64 c;
       Vector2d n1,n2;
-      chord_line.GetImplicit(&c, &n1); // normal to chord line
-      clipLine.GetImplicit(&c, &n2); // normal to clipping line
+      std::tie(c,n1) = chord_line.GetImplicit(); // normal to chord line
+      std::tie(c,n2) = clipLine.GetImplicit(); // normal to clipping line
 
       Float64 dot = n1.Dot(n2);
 
@@ -457,7 +451,7 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Line2d& line, L
       else
       {
          // Lines are same direction
-         // Check the interesction point
+         // Check the intersection point
          Point2d is;
          if (GeometricOperations::Intersect(clipLine, chord, &is) == 1)
          {
@@ -470,7 +464,7 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Line2d& line, L
             // resulting shape is a circular segment
             auto clone = std::make_unique<CircularSegment>(*this);
             Float64 nx, ny;
-            n2.GetDimensions(&nx, &ny);
+            std::tie(nx,ny) = n2.GetDimensions();
             Float64 rotation = atan2(-ny, -nx);
             clone->Rotate(GetCenter(),rotation);
 
@@ -492,22 +486,22 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Rect2d& r, Shap
    Line2d line(r.TopLeft(), r.TopRight());
 
    std::unique_ptr<Shape> clip_top = CreateClippedShape(line, Line2d::Side::Left);
-   if (clip_top == nullptr) return std::unique_ptr<Shape>(); // entier shape clipped away
+   if (clip_top == nullptr) return std::unique_ptr<Shape>(); // entire shape clipped away
 
    // Clip using Right edge
    line.ThroughPoints(r.TopRight(), r.BottomRight());
    std::unique_ptr<Shape> clip_right = clip_top->CreateClippedShape(line, Line2d::Side::Left);
-   if (clip_right == nullptr) return std::unique_ptr<Shape>(); // entier shape clipped away
+   if (clip_right == nullptr) return std::unique_ptr<Shape>(); // entire shape clipped away
 
    // Clip using Bottom edge
    line.ThroughPoints(r.BottomRight(), r.BottomLeft());
    std::unique_ptr<Shape> clip_bottom = clip_right->CreateClippedShape(line, Line2d::Side::Left);
-   if (clip_bottom == nullptr) return std::unique_ptr<Shape>(); // entier shape clipped away
+   if (clip_bottom == nullptr) return std::unique_ptr<Shape>(); // entire shape clipped away
 
    // Clip using Left edge
    line.ThroughPoints(r.BottomLeft(), r.TopLeft());
    std::unique_ptr<Shape> clip_left = clip_bottom->CreateClippedShape(line, Line2d::Side::Left);
-   if (clip_left == nullptr) return std::unique_ptr<Shape>(); // entier shape clipped away
+   if (clip_left == nullptr) return std::unique_ptr<Shape>(); // entire shape clipped away
 
    return clip_left;
 }
@@ -528,8 +522,8 @@ void CircularSegment::GetFurthestPoint(const Line2d& line, Line2d::Side side, Po
    Vector2d n1; // normal of boundary line
    Vector2d n2; // normal of input line
 
-   bndLine.GetImplicit(&temp, &n1);
-   line.GetImplicit(&temp, &n2);
+   std::tie(temp,n1) = bndLine.GetImplicit();
+   std::tie(temp,n2) = line.GetImplicit();
 
    Float64 dot;
    dot = n1.Dot(n2);
@@ -545,19 +539,19 @@ void CircularSegment::GetFurthestPoint(const Line2d& line, Line2d::Side side, Po
       //
       // Distance to point returns a negative value if the point is on the right side of the line.
       LineSegment2d chord(GetChord());
-      auto& p1 = chord.GetStartPoint();
-      auto& p2 = chord.GetEndPoint();
-      Float64 d1 = -1.0 * line.DistanceToPoint(*p1);
-      Float64 d2 = -1.0 * line.DistanceToPoint(*p2);
+      const auto& p1 = chord.GetStartPoint();
+      const auto& p2 = chord.GetEndPoint();
+      Float64 d1 = -1.0 * line.DistanceToPoint(p1);
+      Float64 d2 = -1.0 * line.DistanceToPoint(p2);
       if (d1 < d2)
       {
          furthestDistance = d2;
-         furthestPoint = *p2;
+         furthestPoint = p2;
       }
       else
       {
          furthestDistance = d1;
-         furthestPoint = *p1;
+         furthestPoint = p1;
       }
    }
    else
@@ -573,7 +567,7 @@ void CircularSegment::GetFurthestPoint(const Line2d& line, Line2d::Side side, Po
                            // if < 0, circle is to the left of the line
       distToCenter = -1.0 * line.DistanceToPoint(GetCenter());
 
-      ASSERT(IsEqual(furthestDistance, m_Radius + distToCenter));
+      CHECK(IsEqual(furthestDistance, m_Radius + distToCenter));
 #endif
    }
 }
@@ -621,7 +615,8 @@ void CircularSegment::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
    CHECK( IsEqual(cfArea,polyArea) );
 #endif // _DEBUG
 
-   Float64 cx, cy; GetCenter().GetLocation(&cx, &cy);
+   Float64 cx, cy;
+   std::tie(cx,cy) = GetCenter().GetLocation();
 
    Float64 startAngle = m_Rotation - angle;
 
@@ -651,9 +646,6 @@ void CircularSegment::Copy(const CircularSegment& other)
    m_MidOrdinate = other.m_MidOrdinate;
    m_Rotation = other.m_Rotation;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
 
 #if defined _UNITTEST
 #include <GeomModel/Polygon.h>

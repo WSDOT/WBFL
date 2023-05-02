@@ -226,8 +226,8 @@ private:
    MapMode         m_MappingMode;
    MapModeModifier m_MappingModeModifier;
 
-   typedef std::vector<Float64, std::allocator<Float64> > ScaleContainerType;
-   typedef std::vector<Float64, std::allocator<Float64> >::iterator ScaleContainerIteratorType;
+   using ScaleContainerType = std::vector<Float64, std::allocator<Float64>>;
+   using ScaleContainerIteratorType = std::vector<Float64, std::allocator<Float64> >::iterator;
    ScaleContainerType m_Scales;
 
    // GROUP: LIFECYCLE

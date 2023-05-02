@@ -22,7 +22,6 @@
 
 #include <EngTools/EngToolsLib.h>
 #include "FDMeshGenerator.h"
-#include <MathEx.h>
 
 #include <GeomModel/Shape.h>
 #include <GeomModel/Primitives.h>
@@ -31,12 +30,6 @@
 
 #include <vector>
 #include <future>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::EngTools;
 
@@ -89,7 +82,7 @@ std::unique_ptr<UniformFDMesh> FDMeshGenerator::GenerateMesh(const std::unique_p
 
    auto pntTopLeft = bbox.TopLeft();
    Float64 tlx, tly;
-   pntTopLeft.GetLocation(&tlx, &tly);
+   std::tie(tlx,tly) = pntTopLeft.GetLocation();
 
    mesh->AllocateElementRows(Ny); // preallocate the rows so we can add them in any order
 

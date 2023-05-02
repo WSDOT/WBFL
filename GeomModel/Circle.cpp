@@ -29,12 +29,6 @@
 #include <GeomModel/GeomOp2d.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 // number of vertex points used to describe a polyline version of a circle
@@ -104,16 +98,15 @@ void Circle::SetParameters(const Point2d& center, Float64 radius)
    SetDirtyFlag();
 }
 
-void Circle::GetParameters(std::shared_ptr<Point2d>* pCenter, Float64* radius) const
+std::pair<std::shared_ptr<Point2d>, Float64> Circle::GetParameters() const
 {
-   *pCenter = GetHookPoint();
-   *radius = m_Radius;
+   return std::make_pair(GetHookPoint(), m_Radius);
 }
 
 void Circle::ThroughTwoPoints(const Point2d& p1, const Point2d& p2)
 {
    Float64 diameter = p1.Distance(p2);
-   if (IsZero(diameter)) THROW_GEOMETRY(_T("Circle::ThroughtTwoPoints - points are coincident"));
+   if (IsZero(diameter)) THROW_GEOMETRY(WBFL_GEOMETRY_E_COINCIDENTPOINTS);
 
    m_Radius = diameter / 2;
    SetHookPoint((p1+p2)/2);
@@ -123,17 +116,17 @@ void Circle::ThroughTwoPoints(const Point2d& p1, const Point2d& p2)
 
 void Circle::ThroughThreePoints(const Point2d& p1, const Point2d& p2, const Point2d& p3)
 {
-   // Create lines that go between the poinst
+   // Create lines that go between the points
    Line2d line1(p1, p2);
    Line2d line2(p2, p3);
 
    // Determine if the lines are colinear
-   if (line1.IsColinear(line2)) THROW_GEOMETRY(_T("Circle::ThroughThreePoints - lines are colinear."));
+   if (line1.IsColinear(line2)) THROW_GEOMETRY(WBFL_GEOMETRY_E_COLINEARLINES);
 
    // Create lines that are normal to line1 and line2, passing through the midpoint
-   Float64 x1, y1; p1.GetLocation(&x1, &y1);
-   Float64 x2, y2; p2.GetLocation(&x2, &y2);
-   Float64 x3, y3; p3.GetLocation(&x3, &y3);
+   Float64 x1, y1; std::tie(x1,y1) = p1.GetLocation();
+   Float64 x2, y2; std::tie(x2,y2) = p2.GetLocation();
+   Float64 x3, y3; std::tie(x3,y3) = p3.GetLocation();
 
    Float64 mx1 = (x1 + x2) / 2;
    Float64 my1 = (y1 + y2) / 2;
@@ -292,7 +285,7 @@ void Circle::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& fu
 {
    Float64 c;
    Vector2d n;
-   line.GetImplicit(&c, &n);
+   std::tie(c,n) = line.GetImplicit();
    Float64 angle = n.GetDirection();
    if (side == Line2d::Side::Right)
       angle += M_PI;
@@ -301,17 +294,17 @@ void Circle::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& fu
    Float64 y = sin(angle) * m_Radius + GetHookPoint()->Y();
    furthestPoint.Move(x, y);
       
-   ASSERT(IsEqual(m_Radius, furthestPoint.Distance(*GetHookPoint())));
+   CHECK(IsEqual(m_Radius, furthestPoint.Distance(*GetHookPoint())));
 
    furthestDistance = line.DistanceToPoint(furthestPoint);
    if (side == Line2d::Side::Right)
       furthestDistance *= -1;
 
    // check distance from line to center
-   ASSERT(IsEqual(furthestDistance, (side == Line2d::Side::Right ? -1 : 1) * line.DistanceToPoint(*GetHookPoint()) + m_Radius));
+   CHECK(IsEqual(furthestDistance, (side == Line2d::Side::Right ? -1 : 1) * line.DistanceToPoint(*GetHookPoint()) + m_Radius));
 
    // check point is on correct side of line. if furhtestDistance < 0, the correct side is the opposite side than the request
-   ASSERT(line.GetSide(furthestPoint) == (furthestDistance < 0 ? (side == Line2d::Side::Right ? Line2d::Side::Left : Line2d::Side::Right) : side));
+   CHECK(line.GetSide(furthestPoint) == (furthestDistance < 0 ? (side == Line2d::Side::Right ? Line2d::Side::Left : Line2d::Side::Right) : side));
 }
 
 #if defined _DEBUG
@@ -344,7 +337,7 @@ void Circle::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
       (NUM_POINTS * sin(M_PI / NUM_POINTS) * cos(M_PI / NUM_POINTS)));
 
    Float64 cx, cy;
-   GetHookPoint()->GetLocation(&cx, &cy);
+   std::tie(cx,cy) = GetHookPoint()->GetLocation();
    for (Int32 i = 0; i <= NUM_POINTS; i++)
    {
       Float64 a = i * angle_inc;

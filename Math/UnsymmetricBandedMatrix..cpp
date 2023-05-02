@@ -26,12 +26,6 @@
 #include <vector>
 #include <future>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 UnsymmetricBandedMatrix::UnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage) :
@@ -132,7 +126,7 @@ std::unique_ptr<Float64[]> UnsymmetricBandedMatrix::Solve()
          Float64 Aij = ba[m][n];
          Full2Condensed(j, j, half_band_width, m, n);
          Float64 Ajj = ba[m][n];
-         ATLASSERT(!IsZero(Ajj));
+         CHECK(!IsZero(Ajj));
 
          Float64 c = Aij / Ajj;
          IndexType kmin = max(j, j < half_band_width ? 0 : j - half_band_width);

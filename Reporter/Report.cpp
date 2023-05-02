@@ -25,12 +25,6 @@
 #include <Reporter\Report.h>        // class implementation
 #include <Reporter\PageLayout.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptReport::rptReport(const std::_tstring& rReportName):
 rptReportLayoutItem(_T("Default"), rptPageLayout())
 {
@@ -61,7 +55,7 @@ bool rptReport::InsertChapterAt(IndexType location, rptChapter* pChapter)
 {
    if ( m_ChapterVec.size() == 0 )
    {
-      ATLASSERT(location == 0);
+      CHECK(location == 0);
       m_ChapterVec.emplace_back(pChapter);
       m_ChapterVec.back()->SetParent(this);
       return true;

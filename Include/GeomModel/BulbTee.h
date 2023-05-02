@@ -45,7 +45,7 @@ public:
    BulbTee(const BulbTee& rOther) = default;
    virtual ~BulbTee();
 
-   BulbTee& BulbTee::operator= (const BulbTee& rOther) = default;
+   BulbTee& operator= (const BulbTee& rOther) = default;
 
    void SetW1(Float64 w1);
    Float64 GetW1() const;

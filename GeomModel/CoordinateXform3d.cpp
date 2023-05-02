@@ -26,12 +26,6 @@
 #include <GeomModel/GeomOp2d.h>
 #include <stdexcept>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Geometry;
 
 CoordinateXform3d::CoordinateXform3d()
@@ -51,7 +45,7 @@ CoordinateXform3d::~CoordinateXform3d()
 
 void CoordinateXform3d::SetRotationVector(const Vector3d& vector)
 {
-   if (vector.IsZero()) THROW_GEOMETRY(_T("CoordinateXfor3d::SetRotationVector - invalid vector"));
+   if (vector.IsZero()) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
 
    m_RotationVector = vector;
 }

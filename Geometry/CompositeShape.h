@@ -39,12 +39,12 @@
 // 1) If the client creates a new shape that isn't implemented with WBFL::Geometry::Shape, there is no
 // way we can put that shape into the underlying WBFL::Geometry::CompositeShae object, and 2) in order to
 // learn that type of Shape the IShape pointer wraps, we need to do dynamic casts on known types which
-// will break everytime a new shape is added. For these reasons, this object does not use WBFL::Geometry::CompositeShape
+// will break every time a new shape is added. For these reasons, this object does not use WBFL::Geometry::CompositeShape
 // as the underlying implementation
 
 
 class CCompositeShape;
-typedef CComVectorCollectionNoEnum<ICompositeShape,ICompositeShapeItem,CollectionIndexType> CompositeShapeVectorImpl;
+using CompositeShapeVectorImpl = CComVectorCollectionNoEnum<ICompositeShape,ICompositeShapeItem,CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCompositeShape

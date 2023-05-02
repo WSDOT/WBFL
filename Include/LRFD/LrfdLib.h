@@ -36,7 +36,8 @@ DESCRIPTION
    Support library that provides LRFD code equations and procedures
 *****************************************************************************/
 
-#include <Private\WBFLPackage.h>
+
+#include <Lrfd\LrfdTypes.h>
 #include <MathEx.h>
 #include <memory>
 #include <Units\Convert.h>

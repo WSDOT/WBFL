@@ -23,9 +23,6 @@
 
 #pragma once
 
-
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-
 // Make sure compiler settings are correct.
 #if !defined(_DLL)
 	#error Please use the /MD switch for DLL builds (Multithreaded DLL's)
@@ -39,10 +36,11 @@
    #error Please use the /GX switch to enable Exception Handling
 #endif
 
-
-#define RPC_NO_WINDOWS_H // causes WbflTypes.h to not include Windows.h via rpc.h
-                         // mfc must include Windows.h directly
+#include <string>
+#include <tchar.h>
 #include <WBFLTypes.h>
 #include <WBFLVersion.h>
-#include <WbflGrid.h>
+#if !defined BUILDSYSLIB
+#include <WBFLDebug.h>
+#endif
 

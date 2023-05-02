@@ -293,7 +293,7 @@ public:
 protected:
    CATID m_CATID;
    P* m_pParent;
-   typedef std::map<CLSID,CComPtr<T>> Plugins;
+   using Plugins = std::map<CLSID,CComPtr<T>>;
    Plugins m_Plugins;
 
    CEAFAcceleratorTable m_PluginAcceleratorTable;

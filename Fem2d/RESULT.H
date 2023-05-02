@@ -195,9 +195,9 @@ public:
 private:
    ResultArray();
    IDType m_ID; // jnt, mbr, or poi id.
-   typedef std::map<IDType,TResult> ResultVec;
-   typedef typename ResultVec::iterator ResultVecIterator;
-   typedef typename ResultVec::const_iterator ConstResultVecIterator;
+   using ResultVec = std::map<IDType, TResult>;
+   using ResultVecIterator = typename ResultVec::iterator;
+   using ConstResultVecIterator = typename ResultVec::const_iterator;
    ResultVec m_ResultVec;
 };
 

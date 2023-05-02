@@ -83,9 +83,9 @@ private:
    CComVariant m_Long;
    CComVariant m_ULong;
    CComVariant m_UShort;
-   typedef CComPtr<IPShape> ShapePtr;
-   typedef std::vector<ShapePtr> ShapeContainer;
-   typedef ShapeContainer::iterator ShapeIterator;
+   using ShapePtr = CComPtr<IPShape>;
+   using ShapeContainer = std::vector<ShapePtr>;
+   using ShapeIterator = ShapeContainer::iterator;
    ShapeContainer m_TestShapes;
 
    // methods

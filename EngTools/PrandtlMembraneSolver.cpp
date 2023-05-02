@@ -34,13 +34,6 @@
 #include <GeomModel/Vector3d.h>
 #include <Math/UnsymmetricBandedMatrix.h>
 #include "FDMeshGenerator.h"
-#include <MathEx.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::EngTools;
 
@@ -255,7 +248,7 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
    auto nInteriorNodes = std::count_if(pElement->Node.begin(), pElement->Node.end(), [](auto idx) {return idx != INVALID_INDEX; });
    if (nInteriorNodes == 0)
    {
-      ASSERT(false); // not sure if this should ever happen
+      CHECK(false); // not sure if this should ever happen
       return std::tuple<Float64, Float64, WBFL::Geometry::Vector2d>(0, 0, WBFL::Geometry::Vector2d(1, 0));
    }
 
@@ -386,7 +379,6 @@ std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType start
 
 #if defined _UNITTEST
 #include <GeomModel/GeomModel.h>
-#include <MathEx.h>
 bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("PrandtlMembraneSolver");

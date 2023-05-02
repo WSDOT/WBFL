@@ -42,7 +42,7 @@ interface ILogFile;
 
 /// Wrapper class for ILogFile objects
 ///
-/// This impelmentation provides an easy C++-style interface to a COM ILogFile object.
+/// This implementation provides an easy C++-style interface to a COM ILogFile object.
 /// Stream insertion operators are provided for common data types.
 class WBFLTOOLSCLASS LogContext : public WBFL::Debug::LogContext
 {

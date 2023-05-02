@@ -44,7 +44,7 @@ class Beam
 {
 public:
    enum LoadDir {ForceX,ForceY,MomentZ};
-   typedef LoadDir LoadDir;
+   using LoadDir = LoadDir;
 
 // Public Implementation
 public:

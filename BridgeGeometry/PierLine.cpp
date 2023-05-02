@@ -245,7 +245,7 @@ HRESULT CPierLine::UpdateGeometry()
 
    // get the pier normal
    CComPtr<IDirection> normal; // normal to the alignment
-   alignment->Normal(CComVariant(m_Station),&normal);
+   alignment->GetNormal(CComVariant(m_Station),&normal);
    normal->IncrementBy(CComVariant(M_PI)); // We want the normal to the left... Increment by 180 degrees
 
    // Skew angle is the difference between the pier direction and the normal
@@ -277,7 +277,7 @@ HRESULT CPierLine::UpdateGeometry()
 
    m_Centerline->SetExplicit(m_pntAlignment,v);
 
-   // pierline - bridge line intersection point
+   // pier line - bridge line intersection point
    CComPtr<IPath> bridge_line;
    m_pBridge->get_BridgeLine(&bridge_line);
 

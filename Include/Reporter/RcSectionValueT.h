@@ -33,15 +33,6 @@
 #include <MathEx.h>
 
 
-#if defined BUILDREPORTERLIB
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-#endif // BUILDREPORTERLIB
-
-
 /// Template class the implements the rptSectionValue abstract interface.
 template <class T>
 class rptRcSectionValueT : public rptRcSectionValue
@@ -165,7 +156,7 @@ private:
 
 #define DECLARE_RC_SECTION_VALUE(u,t) \
    REPORTERTPL rptRcSectionValueT<u>; \
-   typedef rptRcSectionValueT<u> t;
+   using t = rptRcSectionValueT<u>;
 
 DECLARE_RC_SECTION_VALUE( WBFL::Units::Mass,           rptMassSectionValue           );
 DECLARE_RC_SECTION_VALUE( WBFL::Units::MassPerLength,  rptMassPerLEngthSectionValue  );
@@ -184,8 +175,8 @@ DECLARE_RC_SECTION_VALUE( WBFL::Units::MomentPerAngle, rptMomentPerAngleSectionV
 DECLARE_RC_SECTION_VALUE( WBFL::Units::Moment,         rptMomentSectionValue         );
 DECLARE_RC_SECTION_VALUE( WBFL::Units::SqrtPressure,   rptSqrtPressureValue          );
 
-typedef rptPressureSectionValue rptStressSectionValue;
-typedef rptLength2SectionValue  rptAreaSectionValue;
-typedef rptLength3SectionValue  rptVolumeSectionValue;
+using rptStressSectionValue = rptPressureSectionValue;
+using rptAreaSectionValue = rptLength2SectionValue;
+using rptVolumeSectionValue = rptLength3SectionValue;
 
 #endif // INCLUDED_REPORTER_RCSECTIONVALUET_H_

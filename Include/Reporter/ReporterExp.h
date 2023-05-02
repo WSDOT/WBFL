@@ -44,7 +44,7 @@
 #define REPORTERTPL   extern template class REPORTERCLASS
 #endif
 
-#include <WbflAll.h>
 #include <Reporter\AutoLib.h>
+#include <WbflAll.h>
 
 #endif // INCLUDED_REPORTER_REPORTEREXP_H_

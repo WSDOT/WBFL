@@ -46,7 +46,7 @@ namespace WBFL
    /// 
    /// Specific units of measures, such as Feet, Kips, Newton per square meter, are defined by
    /// their conversion factor and "tag". Conversion factors must convert values to the
-   /// fundamental units KMSCR (Kilogram, Meter, Second, Celcius, Radian)
+   /// fundamental units KMSCR (Kilogram, Meter, Second, Celsius, Radian)
    template <Int16 m, Int16 l, Int16 t, Int16 k, Int16 a>
    class PhysicalT
    {
@@ -136,8 +136,8 @@ namespace WBFL
       {
       }
 
-      virtual Float64 ConvertFrom(Float64 value) const override { return (value + m_PreTerm) * GetConvFactor() + m_PostTerm; }
-      virtual Float64 ConvertTo(Float64 value) const override { return (value - m_PostTerm) / GetConvFactor() - m_PreTerm; }
+      virtual Float64 ConvertFrom(Float64 value) const override { return (value + m_PreTerm) * PhysicalT<m, l, t, k, a>::GetConvFactor() + m_PostTerm; }
+      virtual Float64 ConvertTo(Float64 value) const override { return (value - m_PostTerm) / PhysicalT<m, l, t, k, a>::GetConvFactor() - m_PreTerm; }
 
       /// Returns the pre-addition term.
       Float64 GetPreTerm() const { return m_PreTerm; }
@@ -161,11 +161,11 @@ namespace WBFL
 
    #define DECLARE_PHYSICAL_UNIT(m,l,t,k,a,name) \
       UNITSTPL PhysicalT<m,l,t,k,a>; \
-      typedef PhysicalT<m,l,t,k,a> name
+      using name = PhysicalT<m,l,t,k,a>
 
    #define DECLARE_PHYSICALEX_UNIT(m,l,t,k,a,name) \
       UNITSTPL PhysicalExT<m,l,t,k,a>; \
-      typedef PhysicalExT<m,l,t,k,a> name
+      using name = PhysicalExT<m,l,t,k,a>
 
    // Basic Physical Units
    DECLARE_PHYSICAL_UNIT( 10,  0,  0,  0,  0, Mass );
@@ -193,10 +193,10 @@ namespace WBFL
    DECLARE_PHYSICAL_UNIT(  0, 10,-10,  0,  0, Velocity );
 
    // Other aliases
-   typedef Length2       Area;
-   typedef Length3       Volume;
-   typedef Pressure      Stress;
-   typedef Length        AreaPerLength; // can only have like units for area/length - shear Av/S is an example of this
+   using Area = Length2;
+   using Volume = Length3;
+   using Stress = Pressure;
+   using AreaPerLength = Length; // can only have like units for area/length - shear Av/S is an example of this
 
    };
 };

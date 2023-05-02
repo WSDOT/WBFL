@@ -33,7 +33,7 @@
 
 // Template takes care of all
 class CVoidedSlabVoidSurfaceAreaCalculator;
-typedef TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT, VoidedEndBlock<IVoidedSlab2>, CVoidedSlabVoidSurfaceAreaCalculator> CVoidedSlabEndBlockSegment;
+using CVoidedSlabEndBlockSegment = TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT, VoidedEndBlock<IVoidedSlab2>, CVoidedSlabVoidSurfaceAreaCalculator>;
 
 class CVoidedSlabVoidSurfaceAreaCalculator
 {

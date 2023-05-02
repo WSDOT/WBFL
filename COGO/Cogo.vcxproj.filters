@@ -4,12 +4,6 @@
     <ClCompile Include="Alignment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AlignmentCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AlignmentFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Angle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -40,43 +34,16 @@
     <ClCompile Include="CompoundCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CompoundCurveCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CompoundCurveFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LineSegmentCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Path.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PathCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PathElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PathFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PointCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Profile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProfileElement.cpp">
+    <ClCompile Include="ProfileSegment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ProfilePoint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProfilePointCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProfilePointFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Station.cpp">
@@ -85,22 +52,13 @@
     <ClCompile Include="StationEquation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StationEquationCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StdAfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Superelevation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SuperelevationCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Surface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SurfaceCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SurfacePoint.cpp">
@@ -112,25 +70,13 @@
     <ClCompile Include="SurfaceTemplate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SurfaceTemplateCollection.cpp">
+    <ClCompile Include="SurfaceTemplateSegment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TemplateSegment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertCurve.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertCurveCollection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertCurveFactory.cpp">
+    <ClCompile Include="VerticalCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widening.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WideningCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CircularCurve.cpp">
@@ -139,15 +85,12 @@
     <ClCompile Include="TransitionCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PathSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alignment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AlignmentCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AlignmentFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Angle.h">
@@ -189,28 +132,7 @@
     <ClInclude Include="CompoundCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CompoundCurveCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CompoundCurveFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LineSegmentCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Path.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PathCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PathElement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PathFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PointCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Profile.h">
@@ -222,12 +144,6 @@
     <ClInclude Include="ProfilePoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProfilePointCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfilePointFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -237,22 +153,13 @@
     <ClInclude Include="StationEquation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StationEquationCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StdAfx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Superelevation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SuperelevationCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Surface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SurfaceCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SurfacePoint.h">
@@ -264,31 +171,25 @@
     <ClInclude Include="SurfaceTemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SurfaceTemplateCollection.h">
+    <ClInclude Include="SurfaceTemplateSegment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TemplateSegment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VertCurve.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VertCurveCollection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VertCurveFactory.h">
+    <ClInclude Include="VerticalCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widening.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WideningCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CircularCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TransitionCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileSegment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -298,12 +199,6 @@
   <ItemGroup>
     <None Include="COGO.def" />
     <None Include="Alignment.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="AlignmentCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="AlignmentFactory.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="AngleDisplayUnitFormatter.rgs">
@@ -333,49 +228,19 @@
     <None Include="CompoundCurve.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="CompoundCurveCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="CompoundCurveFactory.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="LineSegmentCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="LineSegmentFactory.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Path.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="PathCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="PathElement.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="PathFactory.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="PointCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="PointFactory.rgs">
+    <None Include="PathSegment.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Profile.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="ProfileElement.rgs">
+    <None Include="ProfileSegment.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ProfilePoint.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ProfilePointCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ProfilePointFactory.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Station.rgs">
@@ -384,19 +249,10 @@
     <None Include="StationEquation.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="StationEquationCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Superelevation.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="SuperelevationCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Surface.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="SurfaceCollection.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="SurfacePoint.rgs">
@@ -408,25 +264,13 @@
     <None Include="SurfaceTemplate.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="SurfaceTemplateCollection.rgs">
+    <None Include="SurfaceTemplateSegment.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="TemplateSegment.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="VertCurve.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="VertCurveCollection.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="VertCurveFactory.rgs">
+    <None Include="VerticalCurve.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Widening.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="WideningCollection.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="CircularCurve.rgs">

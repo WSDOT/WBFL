@@ -29,12 +29,13 @@
 #include <afxcmn.h>
 
 // Structure used to get/set hyperlink colors
-typedef struct MFCTOOLSCLASS tagHYPERLINKCOLORS {
+struct MFCTOOLSCLASS tagHYPERLINKCOLORS {
 	COLORREF	crLink;
 	COLORREF	crActive;
 	COLORREF	crVisited;
 	COLORREF	crHover;
-} HYPERLINKCOLORS;
+};
+using HYPERLINKCOLORS = tagHYPERLINKCOLORS;
 
 
 /////////////////////////////////////////////////////////////////////////////

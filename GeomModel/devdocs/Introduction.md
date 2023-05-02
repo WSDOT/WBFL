@@ -1,5 +1,5 @@
-Introduction {#WBFL_GeomModel}
-================
+Geometric Modeling {#WBFL_GeomModel}
+====================================
 This library provides WBFL Engineering Services Layer geometric modeling services. Geometric modeling services include Geometric Primitives, Shape Modeling, Section Modeling, and Geometric Utilities to facilite basic geometry calculations. This library primarly supports 2D geometry, however there is support for 3D points, lines, and planes.
 
 Geometric Primitives

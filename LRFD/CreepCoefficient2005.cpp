@@ -27,12 +27,6 @@
 #include <Lrfd\XCreepCoefficient.h>
 #include <Lrfd\VersionMgr.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    lrfdCreepCoefficient2005
@@ -155,7 +149,7 @@ Float64 lrfdCreepCoefficient2005::ComputeKvs() const
    if (bSI)
    {
       kvs = Max(kvs_limit, 1.45 - 0.0051 * WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Millimeter));
-      ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
+      CHECK(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {
@@ -177,7 +171,7 @@ Float64 lrfdCreepCoefficient2005::ComputeKf() const
    if (bSI)
    {
       kf = 35.0 / (7.0 + WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::MPa));
-      ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
+      CHECK(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {
@@ -202,7 +196,7 @@ Float64 lrfdCreepCoefficient2005::ComputeKtd(Float64 t) const
    if (bSI)
    {
       ktd = t / (61. - 0.58 * WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::MPa) + t);
-      ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
+      CHECK(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {

@@ -28,15 +28,10 @@
 #include <sstream>
 
 #undef THROW
-#undef THROW_EX
-#if defined _DEBUG
-// debug bug version breaks with an assert before throwing
-#define THROW(ex,code)          {ASSERT(false); throw ex(ex::code, _T(__FILE__), __LINE__ );}
-#define THROW_EX(ex,code,extra) {ASSERT(false); throw ex(ex::code,extra,_T(__FILE__),__LINE__);}
-#else
 #define THROW(ex,code)          {throw ex(ex::code, _T(__FILE__), __LINE__ );}
+
+#undef THROW_EX
 #define THROW_EX(ex,code,extra) {throw ex(ex::code,extra,_T(__FILE__),__LINE__);}
-#endif // _DEBUG
 
 namespace WBFL
 {
@@ -63,7 +58,7 @@ namespace WBFL
          /// object's static type,  thereby slicing the object and losing specific
          /// error information contained within the subclass.
          ///
-         /// All classes derived from sysXBase must implement this method as follows:
+         /// All classes derived from XBase must implement this method as follows:
          /// void myClass::Throw() const { throw *static_cast<const myClass*>(this); }
          virtual void Throw() const = 0;
 
@@ -94,7 +89,8 @@ namespace WBFL
          Uint32 GetLine() const noexcept;
 
        private:
-         std::_tstring m_File{ _T("Unspecified") };
+#pragma warning(disable:4251) // this string is private so it isn't accessible outside the class. this warning doesn't mean much
+          std::_tstring m_File{ _T("Unspecified") };
          Uint32  m_Line{ 0 };
       };
    };

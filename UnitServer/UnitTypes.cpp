@@ -360,7 +360,7 @@ STDMETHODIMP CUnitTypes::get__EnumUnitTypes(IEnumUnitTypes** enumUnitTypes)
 {
    CHECK_RETOBJ(enumUnitTypes);
 
-   typedef CComEnumOnSTL<IEnumUnitTypes,&IID_IEnumUnitTypes, IUnitType*, _CopyVariantToInterface<IUnitType>, std::vector<CComVariant> > Enum;
+   using Enum = CComEnumOnSTL<IEnumUnitTypes,&IID_IEnumUnitTypes, IUnitType*, _CopyVariantToInterface<IUnitType>, std::vector<CComVariant> >;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )

@@ -143,7 +143,7 @@ protected:
    virtual void WriteLogConclusion(std::_tostream& os) const;
 
 protected:
-   typedef std::list<std::unique_ptr<CEAFTransaction>> TxnContainer;
+   using TxnContainer = std::list<std::unique_ptr<CEAFTransaction>>;
 
    TxnContainer m_TxnHistory;   // Txn that have been executed
    TxnContainer m_UndoHistory;  // Txn that have been undone

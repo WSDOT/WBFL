@@ -38,7 +38,7 @@ using namespace WBFL::Units;
 Mass         System::ms_Mass        = Measure::Kilogram;
 Length       System::ms_Length      = Measure::Meter;
 Time         System::ms_Time        = Measure::Second;
-Temperature  System::ms_Temperature = Measure::Celcius;
+Temperature  System::ms_Temperature = Measure::Celsius;
 Angle        System::ms_Angle       = Measure::Radian;
 Float64      System::ms_Gravity     = 9.80665; //; // m/s^2, not 9.81 as we're taught in school
 Acceleration System::ms_GravityUnit = Measure::MeterPerSec2;

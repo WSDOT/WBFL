@@ -24,14 +24,9 @@
 #include <System\StructuredLoadXml.h>
 #include <istream>
 #include <list>
+#include <atlconv.h>
 
 #include "FindReplaceAll.h"
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::System;
 
@@ -93,8 +88,8 @@ namespace WBFL
             MSXML::IXMLDOMNodePtr spCurrentUnit;
             MSXML::IXMLDOMNodePtr spCurrentChild;
          };
-         typedef std::list<ListItem> UnitList;
-         typedef UnitList::const_iterator UnitListConstIterator;
+         using UnitList = std::list<ListItem>;
+         using UnitListConstIterator = UnitList::const_iterator;
          UnitList   m_UnitList; // stack of information about current units.
 
          MSXML::IXMLDOMNodePtr GetCurrentNode(LPCTSTR name);

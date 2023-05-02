@@ -1,4 +1,4 @@
-WBFL Roark Beams {#WBFL_Beams}
+Roark Beams {#WBFL_RoarkBeams}
 ========================
 The WBFL Roark Beams Library provides structural analysis services for simple beams.
 

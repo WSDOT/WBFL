@@ -24,12 +24,6 @@
 #include <RCSection\RCSectionLib.h>
 #include <RCSection\GeneralSectionSolution.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::RCSection;
 
 namespace WBFL
@@ -135,7 +129,7 @@ namespace WBFL
       {
          WBFL::Geometry::Point2d p;
          WBFL::Geometry::Vector2d d;
-         m_NeutralAxis.GetExplicit(&p, &d);
+         std::tie(p,d) = m_NeutralAxis.GetExplicit();
          return d.GetDirection();
       }
 

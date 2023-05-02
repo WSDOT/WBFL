@@ -33,8 +33,8 @@
 //#include "GenericBridgeCP.h"
 
 class CTendon;
-typedef CComVectorCollection<ITendon,ITendonSegment,IEnumTendonSegments,&IID_IEnumTendonSegments,CollectionIndexType> TendonSegmentColl;
-typedef CPersistentCollection<CTendon,TendonSegmentColl, CollectionIndexType> PersistentTendonSegmentCollection;
+using TendonSegmentColl = CComVectorCollection<ITendon, ITendonSegment, IEnumTendonSegments, &IID_IEnumTendonSegments, CollectionIndexType>;
+using PersistentTendonSegmentCollection = CPersistentCollection<CTendon,TendonSegmentColl, CollectionIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CTendon

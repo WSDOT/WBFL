@@ -65,7 +65,7 @@ namespace WBFL
          mutable WBFL::Geometry::Rect2d m_ClippingRect;
 
          // Basic information about the slice shape before processing
-         typedef struct SHAPEINFO
+         struct SHAPEINFO
          {
             IndexType ShapeIdx; // index of the shape in the general section model
             std::shared_ptr<const WBFL::Geometry::Shape> Shape; // shape of the slice
@@ -73,17 +73,18 @@ namespace WBFL
             std::shared_ptr<const WBFL::Materials::StressStrainModel> BgMaterial;
             std::shared_ptr<const WBFL::Geometry::Plane3d> InitialStrain;
             Float64 Le; // elongation length (typically 1 unit, but can be different for unbonded reinforcement elements)
-            SHAPEINFO(IndexType shapeIdx, 
-               const std::shared_ptr<const WBFL::Geometry::Shape>& shape, 
-               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fg, 
-               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bg, 
+            SHAPEINFO(IndexType shapeIdx,
+               const std::shared_ptr<const WBFL::Geometry::Shape>& shape,
+               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fg,
+               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bg,
                const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain,
                Float64 Le) : ShapeIdx(shapeIdx), Shape(shape), FgMaterial(fg), BgMaterial(bg), InitialStrain(initialStrain), Le(Le)
             {}
-         } SHAPEINFO;
+         };
+         using SHAPEINFO = SHAPEINFO;
 
          // Slice properties
-         typedef struct SLICEINFO
+         struct SLICEINFO
          {
             IndexType ShapeIdx; // index of the general section shape from which this slice is taken
             Float64 Area; // slice area
@@ -99,7 +100,8 @@ namespace WBFL
             SLICEINFO() = default;
             SLICEINFO(SLICEINFO& other) = default;
             SLICEINFO& operator=(SLICEINFO& other) = default;
-         } SLICEINFO;
+         };
+         using SLICEINFO = SLICEINFO;
 
          mutable std::vector<SLICEINFO> m_Slices;
 

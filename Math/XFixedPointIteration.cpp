@@ -24,12 +24,6 @@
 #include <Math\MathLib.h>
 #include <Math\XFixedPointIteration.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Math;
 
 XFixedPointIteration::XFixedPointIteration(XFixedPointIteration::Reason reason, Float64 last, const std::_tstring& file, Uint32 line) :
