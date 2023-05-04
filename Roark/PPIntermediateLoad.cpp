@@ -35,9 +35,9 @@ RoarkBeam(l,ei)
    W = w;
 }
 
-std::unique_ptr<RoarkBeam> PPIntermediateLoad::CreateClone() const
+std::shared_ptr<RoarkBeam> PPIntermediateLoad::CreateClone() const
 {
-   return std::make_unique<PPIntermediateLoad>(W,a,GetL(),GetEI());
+   return std::make_shared<PPIntermediateLoad>(W,a,GetL(),GetEI());
 }
 
 void PPIntermediateLoad::SetLa(Float64 la)

@@ -51,7 +51,7 @@ namespace WBFL
          Float64 GetOverhang() const;
          Float64 GetW() const; // load/length
 
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const override;
+         virtual std::shared_ptr<RoarkBeam> CreateClone() const override;
 
          virtual std::pair<Float64, Float64> GetReactions() const;
          virtual std::pair<Float64, Float64> GetMoments() const;

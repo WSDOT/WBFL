@@ -35,9 +35,9 @@ RoarkBeam(l,ei)
    a = La;
 }
 
-std::unique_ptr<RoarkBeam> PPIntermediateCouple::CreateClone() const
+std::shared_ptr<RoarkBeam> PPIntermediateCouple::CreateClone() const
 {
-   return std::make_unique<PPIntermediateCouple>(M,a,GetL(),GetEI());
+   return std::make_shared<PPIntermediateCouple>(M,a,GetL(),GetEI());
 }
 
 void PPIntermediateCouple::SetLa(Float64 la)

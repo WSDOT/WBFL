@@ -47,7 +47,7 @@ namespace WBFL
          PPIntermediateCouple& operator=(const PPIntermediateCouple&) = delete;
 
       public:
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const;
+         virtual std::shared_ptr<RoarkBeam> CreateClone() const;
 
          /// Location of couple from left end of beam
          void SetLa(Float64 la);

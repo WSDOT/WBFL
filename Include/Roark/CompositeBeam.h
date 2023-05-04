@@ -47,18 +47,18 @@ namespace WBFL
          void AddBeam(const RoarkBeam& beam);
 
          /// Adds beam to the composite
-         void AddBeam(std::unique_ptr<RoarkBeam>&& beam);
+         void AddBeam(std::shared_ptr<RoarkBeam> beam);
 
          /// Returns the number of beams in the composite
          CollectionIndexType GetBeamCount() const;
 
          /// Returns a beam
-         const std::unique_ptr<RoarkBeam>& GetBeam(CollectionIndexType index) const;
+         std::shared_ptr<const RoarkBeam> GetBeam(CollectionIndexType index) const;
 
          /// Removes all beams from the composite
          void RemoveAllBeams();
 
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const;
+         virtual std::shared_ptr<RoarkBeam> CreateClone() const;
 
          virtual std::pair<Float64, Float64> GetReactions() const;
          virtual std::pair<Float64, Float64> GetMoments() const;
@@ -71,7 +71,7 @@ namespace WBFL
          virtual Float64 ComputeDeflection(Float64 x) const;
 
       private:
-         std::vector<std::unique_ptr<RoarkBeam>> m_Beams;
+         std::vector<std::shared_ptr<RoarkBeam>> m_Beams;
          
       public:
          #if defined _DEBUG

@@ -76,7 +76,7 @@ namespace WBFL
          Float64 GetEI() const;
 
          /// Returns a copy of the sub-class beam
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const = 0;
+         virtual std::shared_ptr<RoarkBeam> CreateClone() const = 0;
 
          /// Gets the vertical reactions at the end supports
          virtual std::pair<Float64,Float64> GetReactions() const = 0;

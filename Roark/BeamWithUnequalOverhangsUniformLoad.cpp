@@ -48,9 +48,9 @@ BeamWithUnequalOverhangsUniformLoad::~BeamWithUnequalOverhangsUniformLoad()
 {
 }
 
-std::unique_ptr<RoarkBeam> BeamWithUnequalOverhangsUniformLoad::CreateClone() const
+std::shared_ptr<RoarkBeam> BeamWithUnequalOverhangsUniformLoad::CreateClone() const
 {
-   return std::make_unique<BeamWithUnequalOverhangsUniformLoad>(GetL(), m_LeftOverhang, m_RightOverhang, m_W, GetEI());
+   return std::make_shared<BeamWithUnequalOverhangsUniformLoad>(GetL(), m_LeftOverhang, m_RightOverhang, m_W, GetEI());
 }
 
 Float64 BeamWithUnequalOverhangsUniformLoad::GetLeftOverhang() const

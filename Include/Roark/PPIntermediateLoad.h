@@ -48,7 +48,7 @@ namespace WBFL
          PPIntermediateLoad& operator=(const PPIntermediateLoad&) = delete;
 
       public:
-         std::unique_ptr<RoarkBeam> CreateClone() const;
+         std::shared_ptr<RoarkBeam> CreateClone() const;
 
          /// Location of load from left end of beam
          void SetLa(Float64 la);

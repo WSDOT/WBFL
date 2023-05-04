@@ -37,11 +37,11 @@ void CompositeBeam::AddBeam(const RoarkBeam& beam)
    AddBeam(beam.CreateClone());
 }
 
-void CompositeBeam::AddBeam(std::unique_ptr<RoarkBeam>&& beam)
+void CompositeBeam::AddBeam(std::shared_ptr<RoarkBeam> beam)
 {
    PRECONDITION(IsEqual(GetL(), beam->GetL()));
    PRECONDITION(IsEqual(GetEI(), beam->GetEI()));
-   m_Beams.emplace_back(std::move(beam));
+   m_Beams.emplace_back(beam);
 }
 
 CollectionIndexType CompositeBeam::GetBeamCount() const
@@ -49,7 +49,7 @@ CollectionIndexType CompositeBeam::GetBeamCount() const
    return m_Beams.size();
 }
 
-const std::unique_ptr<RoarkBeam>& CompositeBeam::GetBeam(CollectionIndexType index) const
+std::shared_ptr<const RoarkBeam> CompositeBeam::GetBeam(CollectionIndexType index) const
 {
    return m_Beams[index];
 }
@@ -59,9 +59,9 @@ void CompositeBeam::RemoveAllBeams()
    m_Beams.clear();
 }
 
-std::unique_ptr<RoarkBeam> CompositeBeam::CreateClone() const
+std::shared_ptr<RoarkBeam> CompositeBeam::CreateClone() const
 {
-   std::unique_ptr<CompositeBeam> clone(std::make_unique<CompositeBeam>());
+   std::shared_ptr<CompositeBeam> clone(std::make_shared<CompositeBeam>());
    clone->SetL(GetL());
    clone->SetEI(GetEI());
    for (auto& beam : m_Beams)

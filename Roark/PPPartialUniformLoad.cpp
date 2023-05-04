@@ -38,9 +38,9 @@ RoarkBeam(l,ei)
    W = w*c;
 }
 
-std::unique_ptr<RoarkBeam> PPPartialUniformLoad::CreateClone() const
+std::shared_ptr<RoarkBeam> PPPartialUniformLoad::CreateClone() const
 {
-   return std::make_unique<PPPartialUniformLoad>( a, b, GetW(), GetL(), GetEI() );
+   return std::make_shared<PPPartialUniformLoad>( a, b, GetW(), GetL(), GetEI() );
 }
 
 void PPPartialUniformLoad::SetLa(Float64 la)

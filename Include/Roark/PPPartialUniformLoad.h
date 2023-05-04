@@ -51,7 +51,7 @@ namespace WBFL
          PPPartialUniformLoad& operator=(const PPPartialUniformLoad&) = delete;
 
       public:
-         virtual std::unique_ptr<RoarkBeam> CreateClone() const;
+         virtual std::shared_ptr<RoarkBeam> CreateClone() const;
 
          /// Start location of load from left end of beam
          void SetLa(Float64 la);
