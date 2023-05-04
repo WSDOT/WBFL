@@ -304,11 +304,6 @@ Float64 Vector2d::X() const
    return m_X;
 }
 
-void Vector2d::X(Float64 x)
-{
-   m_X = x;
-}
-
 Float64& Vector2d::X()
 {
    return m_X;
@@ -317,11 +312,6 @@ Float64& Vector2d::X()
 Float64 Vector2d::Y() const
 {
    return m_Y;
-}
-
-void Vector2d::Y(Float64 y)
-{
-   m_Y = y;
 }
 
 Float64& Vector2d::Y()

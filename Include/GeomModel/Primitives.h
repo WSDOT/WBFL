@@ -96,14 +96,12 @@ namespace WBFL
 
          /// Returns the size in the x direction.
          Float64 Dx() const;
-         void Dx(Float64 dx);
 
          /// Returns the size in the x direction.
          Float64& Dx();
 
          /// Returns the size in the y direction.
          Float64 Dy() const;
-         void Dy(Float64 dy);
 
          /// Returns the size in the y direction.
          Float64& Dy();
@@ -230,14 +228,12 @@ namespace WBFL
 
          /// Returns the x coordinate of the point.
          Float64 X() const;
-         void X(Float64 x);
 
          /// Returns the x coordinate of the point.
          Float64& X();
 
          /// Returns the y coordinate of the point.
          Float64 Y() const;
-         void Y(Float64 y);
 
          /// Returns the y coordinate of the point.
          Float64& Y();
@@ -459,28 +455,24 @@ namespace WBFL
 
          /// Returns the x coordinate of the left edge
          Float64 Left() const;
-         void Left(Float64 left);
 
          /// Returns the x coordinate of the left edge
          Float64& Left();
 
          /// Returns the x coordinate of the right edge
          Float64 Right() const;
-         void Right(Float64 right);
 
          /// Returns the x coordinate of the right edge
          Float64& Right();
 
          /// Returns the y coordinate of the top edge
          Float64 Top() const;
-         void Top(Float64 top);
 
          /// Returns the y coordinate of the top edge
          Float64& Top();
 
          /// Returns the y coordinate of the bottom edge
          Float64 Bottom() const;
-         void Bottom(Float64 bottom);
 
          /// Returns the y coordinate of the bottom edge
          Float64& Bottom();

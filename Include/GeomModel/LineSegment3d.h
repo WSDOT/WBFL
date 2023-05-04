@@ -62,7 +62,7 @@ namespace WBFL
          void ThroughPoints(const Point3d& start, const Point3d& end);
 
          /// Returns the length of the line segment.
-         Float64 GetLength() const;
+         Float64 Length() const;
 
          /// Sets the start point of the line segment.
          void SetStartPoint(const Point3d& startPoint);

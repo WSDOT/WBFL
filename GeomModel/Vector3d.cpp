@@ -271,11 +271,6 @@ Float64 Vector3d::X() const
    return m_X;
 }
 
-void Vector3d::X(Float64 x)
-{
-   m_X = x;
-}
-
 Float64& Vector3d::X()
 {
    return m_X;
@@ -286,11 +281,6 @@ Float64 Vector3d::Y() const
    return m_Y;
 }
 
-void Vector3d::Y(Float64 y)
-{
-   m_Y = y;
-}
-
 Float64& Vector3d::Y()
 {
    return m_Y;
@@ -299,11 +289,6 @@ Float64& Vector3d::Y()
 Float64 Vector3d::Z() const
 {
    return m_Z;
-}
-
-void Vector3d::Z(Float64 z)
-{
-   m_Z = z;
 }
 
 Float64& Vector3d::Z()

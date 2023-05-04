@@ -201,14 +201,12 @@ namespace WBFL
 
          /// Returns the x component of this vector.
          Float64 X() const;
-         void X(Float64 x);
 
          /// Returns the x component of this vector.
          Float64& X();
 
          /// Returns the y component of this vector.
          Float64 Y() const;
-         void Y(Float64 y);
 
          /// Returns the y component of this vector.
          Float64& Y();

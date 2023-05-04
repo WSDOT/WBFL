@@ -98,21 +98,18 @@ namespace WBFL
 
          /// Returns the size in the x direction.
          Float64 Dx() const;
-         void Dx(Float64 dx);
 
          /// Returns the size in the x direction.
          Float64& Dx();
 
          /// Returns the size in the y direction.
          Float64 Dy() const;
-         void Dy(Float64 dy);
 
          /// Returns the size in the y direction.
          Float64& Dy();
 
          /// Returns the size in the z direction.
          Float64 Dz() const;
-         void Dz(Float64 dz);
 
          /// Returns the size in the z direction.
          Float64& Dz();
@@ -235,21 +232,18 @@ namespace WBFL
 
          /// Returns the x coordinate of the point.
          Float64 X() const;
-         void X(Float64 x);
 
          /// Returns the x coordinate of the point.
          Float64& X();
 
          /// Returns the y coordinate of the point.
          Float64 Y() const;
-         void Y(Float64 y);
 
          /// Returns the y coordinate of the point.
          Float64& Y();
 
          /// Returns the z coordinate of the point.
          Float64 Z() const;
-         void Z(Float64 z);
 
          /// Returns the z coordinate of the point.
          Float64& Z();

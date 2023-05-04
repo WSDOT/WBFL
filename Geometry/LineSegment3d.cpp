@@ -96,7 +96,7 @@ STDMETHODIMP CLineSegment3d::put_EndPoint(IPoint3d *newVal)
 STDMETHODIMP CLineSegment3d::get_Length(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_LineSegment.GetLength();
+   *pVal = m_LineSegment.Length();
    return S_OK;
 }
 

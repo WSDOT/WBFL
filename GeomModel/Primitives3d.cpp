@@ -122,11 +122,6 @@ Float64 Size3d::Dx() const
    return m_Dx;
 }
 
-void Size3d::Dx(Float64 dx)
-{
-   m_Dx = dx;
-}
-
 Float64& Size3d::Dx()
 {
    return m_Dx;
@@ -137,11 +132,6 @@ Float64 Size3d::Dy() const
    return m_Dy;
 }
 
-void Size3d::Dy(Float64 dy)
-{
-   m_Dy = dy;
-}
-
 Float64& Size3d::Dy()
 {
    return m_Dy;
@@ -150,11 +140,6 @@ Float64& Size3d::Dy()
 Float64 Size3d::Dz() const
 {
    return m_Dz;
-}
-
-void Size3d::Dz(Float64 dz)
-{
-   m_Dz = dz;
 }
 
 Float64& Size3d::Dz()
@@ -333,11 +318,6 @@ Float64 Point3d::X() const
    return m_X;
 }
 
-void Point3d::X(Float64 x)
-{
-   m_X = x;
-}
-
 Float64& Point3d::X()
 {
    return m_X;
@@ -348,11 +328,6 @@ Float64 Point3d::Y() const
    return m_Y;
 }
 
-void Point3d::Y(Float64 y)
-{
-   m_Y = y;
-}
-
 Float64& Point3d::Y()
 {
    return m_Y;
@@ -361,11 +336,6 @@ Float64& Point3d::Y()
 Float64 Point3d::Z() const
 {
    return m_Z;
-}
-
-void Point3d::Z(Float64 z)
-{
-   m_Z = z;
 }
 
 Float64& Point3d::Z()

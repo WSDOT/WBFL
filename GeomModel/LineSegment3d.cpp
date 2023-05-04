@@ -63,7 +63,7 @@ void LineSegment3d::ThroughPoints(const Point3d& start, const Point3d& end)
    m_End = end;
 }
 
-Float64 LineSegment3d::GetLength() const
+Float64 LineSegment3d::Length() const
 {
    return m_Start.Distance(m_End);
 }
@@ -170,7 +170,7 @@ bool LineSegment3d::TestMe(WBFL::Debug::Log& rlog)
    // Test Length property
    //
    LineSegment3d seg(10, 10, 10, 20, 20, 20);
-   Float64 length = seg.GetLength();
+   Float64 length = seg.Length();
    TRY_TESTME(IsEqual(length, 17.320508));
 
    //

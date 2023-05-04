@@ -132,11 +132,6 @@ Float64 Size2d::Dx() const
    return m_Dx;
 }
 
-void Size2d::Dx(Float64 dx)
-{
-   m_Dx = dx;
-}
-
 Float64& Size2d::Dx()
 {
    return m_Dx;
@@ -145,11 +140,6 @@ Float64& Size2d::Dx()
 Float64 Size2d::Dy() const
 {
    return m_Dy;
-}
-
-void Size2d::Dy(Float64 dy)
-{
-   m_Dy = dy;
 }
 
 Float64& Size2d::Dy()
@@ -324,11 +314,6 @@ Float64 Point2d::X() const
    return m_X;
 }
 
-void Point2d::X(Float64 x)
-{
-   m_X = x;
-}
-
 Float64& Point2d::X()
 {
    return m_X;
@@ -337,11 +322,6 @@ Float64& Point2d::X()
 Float64 Point2d::Y() const
 {
    return m_Y;
-}
-
-void Point2d::Y(Float64 y)
-{
-   m_Y = y;
 }
 
 Float64& Point2d::Y()
@@ -716,11 +696,6 @@ Float64 Rect2d::Left() const
    return m_Left;
 }
 
-void Rect2d::Left(Float64 left)
-{
-   m_Left = left;
-}
-
 Float64& Rect2d::Left()
 {
    return m_Left;
@@ -729,11 +704,6 @@ Float64& Rect2d::Left()
 Float64 Rect2d::Right() const
 {
    return m_Right;
-}
-
-void Rect2d::Right(Float64 right)
-{
-   m_Right = right;
 }
 
 Float64& Rect2d::Right()
@@ -746,11 +716,6 @@ Float64 Rect2d::Top() const
    return m_Top;
 }
 
-void Rect2d::Top(Float64 top)
-{
-   m_Top = top;
-}
-
 Float64& Rect2d::Top()
 {
    return m_Top;
@@ -759,11 +724,6 @@ Float64& Rect2d::Top()
 Float64 Rect2d::Bottom() const
 {
    return m_Bottom;
-}
-
-void Rect2d::Bottom(Float64 bottom)
-{
-   m_Bottom = bottom;
 }
 
 Float64& Rect2d::Bottom()
