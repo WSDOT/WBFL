@@ -36,6 +36,8 @@
    #error Please use the /GX switch to enable Exception Handling
 #endif
 
+#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 #include <string>
 #include <tchar.h>
 #include <WBFLTypes.h>
