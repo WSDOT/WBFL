@@ -139,6 +139,15 @@ IndexType GraphXY::FindDataSeries(LPCTSTR lpszLabel)
    return INVALID_INDEX;
 }
 
+void GraphXY::SetDataSeriesLabel(IndexType cookie, LPCTSTR lpszLabel)
+{
+   auto found = m_GraphDataMap.find(cookie);
+   if(found != m_GraphDataMap.end())
+   {
+      found->second.Label = lpszLabel;
+   }
+}
+
 std::vector<IndexType> GraphXY::GetCookies() const
 {
     std::vector<IndexType> cookies;

@@ -64,6 +64,11 @@ public:
    /// Find an existing data series and return its cookie. Returns INVALID_INDEX if not found
    IndexType FindDataSeries(LPCTSTR lpszLabel);
 
+   /// @brief  Updates the label for a data series
+   /// @param cookie 
+   /// @param lpszLabel 
+   void SetDataSeriesLabel(IndexType cookie, LPCTSTR lpszLabel);
+
    /// Returns the list of data series cookies
    std::vector<IndexType> GetCookies() const;
 
@@ -153,7 +158,7 @@ public:
    /// Sets size in points of subtitles for x and y axis
    void SetAxisSubtitleSize(LONG size);
 
-   /// Returns tje size in points of subtitles for x and y axis
+   /// Returns the size in points of subtitles for x and y axis
    LONG GetAxisSubtitleSize() const;
 
    /// Sets the title for the X axis
