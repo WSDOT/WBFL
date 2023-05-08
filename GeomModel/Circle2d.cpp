@@ -31,35 +31,9 @@
 
 using namespace WBFL::Geometry;
 
-Circle2d::Circle2d()
-{
-}
-
-Circle2d::Circle2d(const Circle2d& other)
-{
-   m_Radius = other.m_Radius;
-   m_pCenter = std::make_shared<Point2d>(*other.m_pCenter);
-}
-
-Circle2d& Circle2d::operator=(const Circle2d& other)
-{
-   if (this != &other)
-   {
-      m_Radius = other.m_Radius;
-      m_pCenter = std::make_shared<Point2d>(*other.m_pCenter);
-   }
-   return *this;
-}
-
 Circle2d::Circle2d(const Point2d& center, Float64 radius) :
-   m_Radius(radius)
-{
-   m_pCenter->Move(center);
-}
-
-Circle2d::Circle2d(std::shared_ptr<Point2d>& center,Float64 radius) :
-m_Radius(radius),
-m_pCenter(center)
+   m_Radius(radius),
+   m_Center(center)
 {
 }
 
@@ -67,7 +41,7 @@ Circle2d::Circle2d(const Point2d& p1,const Point2d& p2)
 {
    LineSegment2d diameter(p1,p2);
    m_Radius = diameter.Length()/2;
-   m_pCenter = std::make_shared<Point2d>(diameter.GetMidPoint());
+   m_Center.Move(diameter.GetMidPoint());
 }
 
 Circle2d::Circle2d(const Point2d& p1,const Point2d& p2, const Point2d& p3)
@@ -79,7 +53,7 @@ Circle2d::Circle2d(const Point2d& p1,const Point2d& p2, const Point2d& p3)
 
    if ( l1.IsColinear(l2) )
    {
-      m_pCenter = std::make_shared<Point2d>(p2);
+      m_Center = p2;
       m_Radius = 0;
       return;
    }
@@ -92,15 +66,15 @@ Circle2d::Circle2d(const Point2d& p1,const Point2d& p2, const Point2d& p3)
    Line2d nl2 = l2.Normal(mp2);
 
    // Find the intersection of nl1 and nl2.  This is the center point.
-   Int16 nIntersect = GeometricOperations::Intersect(nl1,nl2,m_pCenter.get());
+   Int16 nIntersect = GeometricOperations::Intersect(nl1,nl2,&m_Center);
    CHECK(nIntersect == 1);
 
-   m_Radius = p1.Distance(*m_pCenter);
+   m_Radius = p1.Distance(m_Center);
 }
 
 Circle2d::Circle2d(const Arc& arc)
 {
-   m_pCenter = std::make_shared<Point2d>(arc.GetCenter());
+   m_Center = arc.GetCenter();
    m_Radius = arc.GetRadius();
 }
 
@@ -110,7 +84,7 @@ Circle2d::~Circle2d()
 
 bool Circle2d::operator==(const Circle2d& other) const
 {
-   return IsEqual(m_Radius, other.m_Radius) && (*m_pCenter == *other.m_pCenter);
+   return IsEqual(m_Radius, other.m_Radius) && (m_Center == other.m_Center);
 }
 
 bool Circle2d::operator!=(const Circle2d& other) const
@@ -133,19 +107,19 @@ Float64 Circle2d::GetRadius() const
    return m_Radius;
 }
 
-void Circle2d::SetCenter(std::shared_ptr<Point2d>& center)
+void Circle2d::SetCenter(const Point2d& center)
 {
-   m_pCenter = center;
+   m_Center = center;
 }
 
-std::shared_ptr<Point2d>& Circle2d::GetCenter()
+Point2d& Circle2d::GetCenter()
 {
-   return m_pCenter;
+   return m_Center;
 }
 
-const std::shared_ptr<Point2d>& Circle2d::GetCenter() const
+const Point2d& Circle2d::GetCenter() const
 {
-   return m_pCenter;
+   return m_Center;
 }
 
 Float64 Circle2d::GetPerimeter() const
@@ -155,7 +129,7 @@ Float64 Circle2d::GetPerimeter() const
 
 bool Circle2d::IsPointOnPerimeter(const Point2d& p) const
 {
-   Float64 dist = m_pCenter->Distance(p);
+   Float64 dist = m_Center.Distance(p);
    return IsEqual(dist,m_Radius);
 }
 
@@ -178,7 +152,7 @@ bool Circle2d::TestMe(WBFL::Debug::Log& rlog)
 
    // Valid three point Circle2d
    Circle2d c3p(Point2d(0,0),Point2d(10,0),Point2d(5,5));
-   TRY_TESTME( *c3p.GetCenter() == Point2d(5,0) );
+   TRY_TESTME( c3p.GetCenter() == Point2d(5,0) );
    TRY_TESTME( IsEqual(c3p.GetRadius(),5.0) );
 
    // Invalid three point Circle2d
@@ -194,7 +168,7 @@ bool Circle2d::TestMe(WBFL::Debug::Log& rlog)
 
    // Two point Circle2d
    Circle2d c2p(Point2d(0,0),Point2d(10,0));
-   TRY_TESTME( *c2p.GetCenter() == Point2d(5,0) );
+   TRY_TESTME( c2p.GetCenter() == Point2d(5,0) );
    TRY_TESTME( IsEqual(c2p.GetRadius(),5.0) );
    TRY_TESTME( c2p.IsPointOnPerimeter(Point2d(5,-5)) == true );
 

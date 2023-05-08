@@ -33,6 +33,7 @@
 
 
 #include <GeomModel/GeomModelLib.h>
+#include <GeomModel/Arc.h>
 #include <GeomModel/GeomOp2d.h>
 #include <GeomModel/Primitives.h>
 #include <GeomModel/Primitives3d.h>

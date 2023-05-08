@@ -198,27 +198,27 @@ Float64 ElasticProperties::GetEI12Min() const
 
 void ElasticProperties::SetCoordinateSystem(ElasticProperties::CoordSystemType sys)
 {
-   ShapeProperties::CoordSystemType pct;
+   ShapeProperties::CoordinateSystemType pct;
    switch(sys)
    {
    case CoordSystemType::Centroidal:
       {
-         pct= ShapeProperties::CoordSystemType::Centroidal;
+         pct= ShapeProperties::CoordinateSystemType::Centroidal;
          break;
       }
       case CoordSystemType::Global:
       {
-         pct= ShapeProperties::CoordSystemType::Global;
+         pct= ShapeProperties::CoordinateSystemType::Global;
          break;
       }
       case CoordSystemType::Principal:
       {
-         pct= ShapeProperties::CoordSystemType::Principal;
+         pct= ShapeProperties::CoordinateSystemType::Principal;
          break;
       }
       case CoordSystemType::UserDefined:
       {
-         pct= ShapeProperties::CoordSystemType::UserDefined;
+         pct= ShapeProperties::CoordinateSystemType::UserDefined;
          break;
       }
       default:
@@ -232,25 +232,25 @@ ElasticProperties::CoordSystemType ElasticProperties::GetCoordinateSystem() cons
 {
    ElasticProperties::CoordSystemType epct= CoordSystemType::UserDefined;
 
-   ShapeProperties::CoordSystemType pct = m_Properties.GetCoordinateSystem();
+   ShapeProperties::CoordinateSystemType pct = m_Properties.GetCoordinateSystem();
    switch(pct)
    {
-      case ShapeProperties::CoordSystemType::Centroidal:
+      case ShapeProperties::CoordinateSystemType::Centroidal:
       {
          epct= CoordSystemType::Centroidal;
          break;
       }
-      case ShapeProperties::CoordSystemType::Global:
+      case ShapeProperties::CoordinateSystemType::Global:
       {
          epct= CoordSystemType::Global;
          break;
       }
-      case ShapeProperties::CoordSystemType::Principal:
+      case ShapeProperties::CoordinateSystemType::Principal:
       {
          epct= CoordSystemType::Principal;
          break;
       }
-      case ShapeProperties::CoordSystemType::UserDefined:
+      case ShapeProperties::CoordinateSystemType::UserDefined:
       {
          epct= CoordSystemType::UserDefined;
          break;

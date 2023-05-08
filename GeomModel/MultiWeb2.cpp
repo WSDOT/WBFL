@@ -599,7 +599,7 @@ bool MultiWeb2::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(props.GetIxy(), 0.0));
    TRY_TESTME(IsEqual(props.GetCentroid().X(), 0.0));
    TRY_TESTME(IsEqual(props.GetCentroid().Y(), 20.942837050431994));
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal);
 
    TRY_TESTME(IsEqual(props.GetXleft(), 103.25));
    TRY_TESTME(IsEqual(props.GetXright(), 103.25));

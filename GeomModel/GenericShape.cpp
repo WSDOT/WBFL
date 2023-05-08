@@ -494,7 +494,7 @@ bool GenericShape::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(shape.GetPerimeter(), 10.0));
    TRY_TESTME(*shape.GetCentroid() == Point2d(10, 20));
    TRY_TESTME(*shape.GetHookPoint() == Point2d(10, 20));
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal);
 
    TRY_TESTME(IsEqual(props.GetXleft(), 0.0));
    TRY_TESTME(IsEqual(props.GetXright(), 0.0));

@@ -40,14 +40,13 @@ namespace WBFL
       {
       public:
          /// Default constructor. Circle centered at (0,0) with radius of zero
-         Circle2d();
+         Circle2d() = default;
 
-         Circle2d(const Circle2d&);
-         Circle2d& operator=(const Circle2d&);
+         Circle2d(const Circle2d&) = default;
+         Circle2d& operator=(const Circle2d&) = default;
 
          /// Create a circle from a centerpoint and radius
          Circle2d(const Point2d& center, Float64 radius);
-         Circle2d(std::shared_ptr<Point2d>& center, Float64 radius);
 
          /// Defines a circle with two points on its diameter
          Circle2d(const Point2d& p1,const Point2d& p2);
@@ -68,9 +67,9 @@ namespace WBFL
          Float64& GetRadius();
          Float64 GetRadius() const;
 
-         void SetCenter(std::shared_ptr<Point2d>& center);
-         std::shared_ptr<Point2d>& GetCenter();
-         const std::shared_ptr<Point2d>& GetCenter() const;
+         void SetCenter(const Point2d& center);
+         Point2d& GetCenter();
+         const Point2d& GetCenter() const;
 
          Float64 GetPerimeter() const;
 
@@ -90,7 +89,7 @@ namespace WBFL
       #endif // _UNITTEST
 
       private:
-         std::shared_ptr<Point2d> m_pCenter{ std::make_shared<Point2d>() };
+         Point2d m_Center;
          Float64 m_Radius{ 0.0 };
       };
    }; // Geometry

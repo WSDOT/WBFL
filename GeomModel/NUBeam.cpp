@@ -593,7 +593,7 @@ bool NUBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(props.GetIxy(), 0.0));
    TRY_TESTME(IsEqual(props.GetCentroid().X(), 0.0));
    TRY_TESTME(IsEqual(props.GetCentroid().Y(), 1093.1459162077181));
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal);
 
    TRY_TESTME(IsEqual(props.GetXleft(), 612.5));
    TRY_TESTME(IsEqual(props.GetXright(), 612.5));

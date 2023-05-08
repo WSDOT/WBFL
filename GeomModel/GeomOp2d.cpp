@@ -206,7 +206,7 @@ Int16 GeometricOperations::Intersect(const Line2d& l,const LineSegment2d& ls,Poi
 Int16 GeometricOperations::Intersect(const Line2d& l,const Circle2d& c,Point2d* p1,Point2d* p2)
 {
    // Quick check to see if the line and the circle have a chance of intersecting
-   Point2d center = *c.GetCenter();
+   const auto& center = c.GetCenter();
    Point2d poln = l.PointOnLineNearest( center );
    Float64 radius = c.GetRadius();
    Float64 distance = poln.Distance(center);
@@ -315,15 +315,15 @@ Int16 GeometricOperations::Intersect(const Circle2d& c1, const Circle2d& c2, Poi
    Int16 nIntersect = 0;
 
    // Get center and radius of both circles
-   auto center1 = c1.GetCenter();
+   const auto& center1 = c1.GetCenter();
    auto r1 = c1.GetRadius();
-   auto center2 = c2.GetCenter();
+   const auto& center2 = c2.GetCenter();
    auto r2 = c2.GetRadius();
 
    // If the circles have the same center and the same radius, all points along the
    // circle intersect. Return the special value of 3. If the radii are different, there
    // are no intersection points
-   if (*center1 == *center2)
+   if (center1 == center2)
    {
       // Center is the same
       nIntersect = IsEqual(r1, r2) ? 3 : 0;
@@ -334,8 +334,8 @@ Int16 GeometricOperations::Intersect(const Circle2d& c1, const Circle2d& c2, Poi
    // OK... do the regular intersection calculations
 
    // Compute some constants used in the solution of the quadratic equation
-   Float64 cx1, cy1; std::tie(cx1,cy1) = center1->GetLocation();
-   Float64 cx2, cy2; std::tie(cx2,cy2) = center2->GetLocation();
+   Float64 cx1, cy1; std::tie(cx1,cy1) = center1.GetLocation();
+   Float64 cx2, cy2; std::tie(cx2,cy2) = center2.GetLocation();
 
    Float64 K = (r1 * r1 - r2 * r2) - cx1 * cx1 + cx2 * cx2 - (cy2 - cy1) * (cy2 - cy1);
 

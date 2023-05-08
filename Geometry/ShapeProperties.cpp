@@ -255,14 +255,14 @@ STDMETHODIMP CShapeProperties::put_Orientation(Float64 newVal)
 STDMETHODIMP CShapeProperties::get_CoordinateSystem(CoordinateSystemType *pVal)
 {
    CHECK_RETVAL(pVal);
-   WBFL::Geometry::ShapeProperties::CoordSystemType type = m_Properties.GetCoordinateSystem();
+   WBFL::Geometry::ShapeProperties::CoordinateSystemType type = m_Properties.GetCoordinateSystem();
    *pVal = (CoordinateSystemType)std::underlying_type_t<CoordinateSystemType>(type);
 	return S_OK;
 }
 
 STDMETHODIMP CShapeProperties::put_CoordinateSystem(CoordinateSystemType newVal)
 {
-   m_Properties.SetCoordinateSystem(WBFL::Geometry::ShapeProperties::CoordSystemType(newVal));
+   m_Properties.SetCoordinateSystem(WBFL::Geometry::ShapeProperties::CoordinateSystemType(newVal));
    return S_OK;
 }
 

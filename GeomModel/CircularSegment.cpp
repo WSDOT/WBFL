@@ -665,7 +665,7 @@ bool CircularSegment::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( IsEqual(props.GetIxy(),0.0) );
    TRY_TESTME( IsEqual(props.GetCentroid().X(),4*radius/(3*M_PI)) );
    TRY_TESTME( IsEqual(props.GetCentroid().Y(),0.0) );
-   TRY_TESTME( props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal );
+   TRY_TESTME( props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal );
 
    // rotate 90 deg and check results
    circseg.SetRotation(PI_OVER_2);
@@ -676,7 +676,7 @@ bool CircularSegment::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( IsEqual(props.GetIxy(),0.0) );
    TRY_TESTME( IsEqual(props.GetCentroid().X(),0.0) );
    TRY_TESTME( IsEqual(props.GetCentroid().Y(),4*radius/(3*M_PI)) );
-   TRY_TESTME( props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal );
+   TRY_TESTME( props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal );
 
    circseg.SetRotation(0.0);
    circseg.SetCenter(Point2d(10, 10));

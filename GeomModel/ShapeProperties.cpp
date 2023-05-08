@@ -102,7 +102,7 @@ void ShapeProperties::SetProperties(Float64 area, const Point2d& centroid, Float
    m_Xleft = xLeft;
    m_Xright = xRight;
 
-   m_CoordType = CoordSystemType::Centroidal;
+   m_CoordType = CoordinateSystemType::Centroidal;
    m_Orientation = 0;
 
    UpdateOrientation();
@@ -260,11 +260,11 @@ Float64 ShapeProperties::GetI12Min() const
    return -ms.GetTmax();
 }
 
-void ShapeProperties::SetCoordinateSystem(ShapeProperties::CoordSystemType sys)
+void ShapeProperties::SetCoordinateSystem(ShapeProperties::CoordinateSystemType sys)
 {
    switch(sys)
    {
-   case CoordSystemType::Centroidal:
+   case CoordinateSystemType::Centroidal:
       {
          m_CoordType = sys;
          m_Origin = m_Centroid;
@@ -272,7 +272,7 @@ void ShapeProperties::SetCoordinateSystem(ShapeProperties::CoordSystemType sys)
          UpdateOrientation();
          break;
       }
-      case CoordSystemType::Global:
+      case CoordinateSystemType::Global:
       {
          m_CoordType = sys;
          m_Origin = Point2d(0,0);
@@ -280,16 +280,16 @@ void ShapeProperties::SetCoordinateSystem(ShapeProperties::CoordSystemType sys)
          UpdateOrientation();
          break;
       }
-      case CoordSystemType::Principal:
+      case CoordinateSystemType::Principal:
       {
          // first have to get principal orientation angle
-         SetCoordinateSystem(CoordSystemType::Centroidal);
+         SetCoordinateSystem(CoordinateSystemType::Centroidal);
          m_Orientation = GetPrincipalDirection();
          m_CoordType = sys;
          UpdateOrientation();
          break;
       }
-      case CoordSystemType::UserDefined:
+      case CoordinateSystemType::UserDefined:
       {
          m_CoordType = sys;
          break;
@@ -299,14 +299,14 @@ void ShapeProperties::SetCoordinateSystem(ShapeProperties::CoordSystemType sys)
    }
 }
 
-ShapeProperties::CoordSystemType ShapeProperties::GetCoordinateSystem() const
+ShapeProperties::CoordinateSystemType ShapeProperties::GetCoordinateSystem() const
 {
    return m_CoordType;
 }
 
 void ShapeProperties::SetOrigin(const Point2d& origin)
 {
-      m_CoordType = CoordSystemType::UserDefined;
+      m_CoordType = CoordinateSystemType::UserDefined;
       m_Origin = origin;
       UpdateOrientation();
 }
@@ -318,7 +318,7 @@ const Point2d& ShapeProperties::GetOrigin() const
 
 void ShapeProperties::SetOrientation(Float64 angle)
 {
-      m_CoordType = CoordSystemType::UserDefined;
+      m_CoordType = CoordinateSystemType::UserDefined;
       m_Orientation = angle;
       UpdateOrientation();
 }
@@ -357,7 +357,7 @@ void ShapeProperties::UpdateOrientation()
 {
    switch (m_CoordType)
    {
-   case (CoordSystemType::Centroidal):
+   case (CoordinateSystemType::Centroidal):
       {
          // in centroidal system = just copy values
          m_CurrCentroid = m_Centroid;
@@ -396,9 +396,9 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
    auto currCoordinateSystemType = m_CoordType; // reserve the current coordinate system type
 
    // convert to global coordinates
-   SetCoordinateSystem(CoordSystemType::Global);
+   SetCoordinateSystem(CoordinateSystemType::Global);
    ShapeProperties other(rOther);
-   other.SetCoordinateSystem(CoordSystemType::Global);
+   other.SetCoordinateSystem(CoordinateSystemType::Global);
 
    Float64 ixx = 0, iyy = 0, ixy = 0; // about global axes
    Float64 mxx = 0, myy = 0;        // first moments
@@ -492,7 +492,7 @@ bool Test_AddOperator2(WBFL::Debug::Log& rlog)
 
    ShapeProperties shape1(10,Point2d(10,10),10,10,10,10,10,10,10);
    ShapeProperties shape2(20,Point2d(20,20),20,20,20,20,20,20,20);
-   shape2.SetCoordinateSystem( ShapeProperties::CoordSystemType::Global );
+   shape2.SetCoordinateSystem( ShapeProperties::CoordinateSystemType::Global );
 
    TRY_TESTME( IsEqual(shape2.GetArea(), 20.) );
    TRY_TESTME( IsEqual(shape2.GetIxx(), 8020. ) );
@@ -608,7 +608,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    TESTME_PROLOGUE("ShapeProperties");
    // try a point area
    ShapeProperties a(4., Point2d(0,0), 0., 0., 0, 0,  0,  0, 0);
-   TRY_TESTME(a.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal) ;
+   TRY_TESTME(a.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal) ;
    TRY_TESTME(Point2d(0,0) == a.GetCentroid()) ;
    TRY_TESTME( IsZero(4-a.GetArea())) ;
    TRY_TESTME( IsZero(a.GetI11())) ;
@@ -624,7 +624,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    // move origin
    Point2d orn(4,-2);
    a.SetOrigin(orn);
-   TRY_TESTME( a.GetCoordinateSystem() == ShapeProperties::CoordSystemType::UserDefined) ;
+   TRY_TESTME( a.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::UserDefined) ;
    TRY_TESTME( Point2d(-4,2) == a.GetCentroid()) ;
    TRY_TESTME( IsZero(4-a.GetArea())) ;
    TRY_TESTME( IsZero( -63.43 - ToDegrees(a.GetPrincipalDirection()),.1)) ;
@@ -642,7 +642,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
 
    // rotate 90 deg
    a.SetOrientation(M_PI/2);
-   TRY_TESTME( a.GetCoordinateSystem() == ShapeProperties::CoordSystemType::UserDefined) ;
+   TRY_TESTME( a.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::UserDefined) ;
    TRY_TESTME( Point2d(2,4) == a.GetCentroid()) ;
    TRY_TESTME( IsZero(4-a.GetArea())) ;
    TRY_TESTME( IsZero(64-a.GetIxx())) ;
@@ -680,8 +680,8 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME( IsZero(1-gs2x4.GetXleft())) ;
 
    // move origin back to centroid
-   gs2x4.SetCoordinateSystem(ShapeProperties::CoordSystemType::Centroidal);
-   TRY_TESTME( gs2x4.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal) ;
+   gs2x4.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::Centroidal);
+   TRY_TESTME( gs2x4.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal) ;
    TRY_TESTME( Point2d(0,0) == gs2x4.GetOrigin() );
    TRY_TESTME( IsZero(8-gs2x4.GetArea())) ;
    TRY_TESTME( IsZero(128./12.-gs2x4.GetI11())) ;
@@ -696,8 +696,8 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
 
    // try rotation to principal
    ShapeProperties gsr(4., Point2d(0,0), 16., 64., -32, 1, 2, 1, 2);
-   gsr.SetCoordinateSystem(ShapeProperties::CoordSystemType::Principal);
-   TRY_TESTME(gsr.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Principal);
+   gsr.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::Principal);
+   TRY_TESTME(gsr.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Principal);
    TRY_TESTME(IsZero(4 - gsr.GetArea()));
    TRY_TESTME(IsZero(80. - gsr.GetI11()));
    TRY_TESTME(IsZero(gsr.GetI22()));
@@ -763,7 +763,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(props.GetYtop(), yTop));
    TRY_TESTME(IsEqual(props.GetYbottom(), yBottom));
 
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal);
 
    // Default orientation is 0.0
    TRY_TESTME(IsZero(props.GetOrientation()));
@@ -789,7 +789,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    //
    Point2d pnt(10, 20);
    props.SetOrigin(pnt);
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::UserDefined);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::UserDefined);
    TRY_TESTME(props.GetOrigin() == pnt);
    TRY_TESTME(props.GetCentroid() == Point2d(cgx - 10, cgy - 20));
    TRY_TESTME(IsEqual(props.GetIxx(), ixx + area * (cgy - 20) * (cgy - 20)));
@@ -810,7 +810,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    //
    props.SetOrientation(M_PI);
    TRY_TESTME(IsEqual(props.GetOrientation(), M_PI));
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::UserDefined);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::UserDefined);
 
    TRY_TESTME(IsEqual(props.GetArea(), area));
    TRY_TESTME(IsEqual(props.GetIxx(), ixx + area * cgy * cgy));
@@ -823,8 +823,8 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    //
 
    // global
-   props.SetCoordinateSystem(ShapeProperties::CoordSystemType::Global);
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Global);
+   props.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::Global);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Global);
 
    TRY_TESTME(IsEqual(props.GetIxx(), ixx + area * cgy * cgy));
    TRY_TESTME(IsEqual(props.GetIyy(), iyy + area * cgx * cgx));
@@ -835,8 +835,8 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(props.GetOrigin() == Point2d(0, 0));
 
    // centroidal
-   props.SetCoordinateSystem(ShapeProperties::CoordSystemType::Centroidal);
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal);
+   props.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::Centroidal);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal);
 
    TRY_TESTME(IsEqual(props.GetIxx(), ixx));
    TRY_TESTME(IsEqual(props.GetIyy(), iyy));
@@ -848,8 +848,8 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(props.GetOrigin() == Point2d(cgx, cgy));
 
    // principle
-   props.SetCoordinateSystem(ShapeProperties::CoordSystemType::Principal);
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Principal);
+   props.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::Principal);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Principal);
 
    TRY_TESTME(IsEqual(props.GetIxx(), 30.20176));
    TRY_TESTME(IsEqual(props.GetIyy(), 7.248239));
@@ -861,8 +861,8 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(props.GetOrigin() == Point2d(cgx, cgy));
 
    // user
-   props.SetCoordinateSystem(ShapeProperties::CoordSystemType::UserDefined);
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::UserDefined);
+   props.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::UserDefined);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::UserDefined);
 
    TRY_TESTME(IsEqual(props.GetIxx(), 30.20176));
    TRY_TESTME(IsEqual(props.GetIyy(), 7.248239));
@@ -907,7 +907,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    prop1 += prop2;
 
    // Transform to global coordinates for easier validation
-   prop1.SetCoordinateSystem(ShapeProperties::CoordSystemType::Global);
+   prop1.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::Global);
 
    TRY_TESTME(IsEqual(prop1.GetArea(), 60.));
    TRY_TESTME(IsEqual(prop1.GetIxx(), 21000.));
@@ -928,7 +928,7 @@ bool ShapeProperties::TestMe(WBFL::Debug::Log& rlog)
    // Confirm nothing changed
 
    // Transform to global coordinates for easier validation
-   prop1.SetCoordinateSystem(ShapeProperties::CoordSystemType::Global);
+   prop1.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::Global);
 
    TRY_TESTME(IsEqual(prop1.GetArea(), 60.));
    TRY_TESTME(IsEqual(prop1.GetIxx(), 21000.));

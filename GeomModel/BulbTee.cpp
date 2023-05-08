@@ -573,7 +573,7 @@ bool BulbTee::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(props.GetIxy(), -7399.6791562527796));
    TRY_TESTME(IsEqual(props.GetCentroid().X(), -0.22117344801586084));
    TRY_TESTME(IsEqual(props.GetCentroid().Y(), 39.565942803019738));
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal);
 
    TRY_TESTME(IsEqual(props.GetXleft(), 29.778826551984139));
    TRY_TESTME(IsEqual(props.GetXright(), 30.221173448015861));
@@ -614,7 +614,7 @@ bool BulbTee::TestMe(WBFL::Debug::Log& rlog)
 
    // Get moment of inertia about CG before move
    // These properties should be invariant
-   props.SetCoordinateSystem(ShapeProperties::CoordSystemType::Centroidal);
+   props.SetCoordinateSystem(ShapeProperties::CoordinateSystemType::Centroidal);
    Float64 area = props.GetArea();
    Float64 Ixx = props.GetIxx();
    Float64 Iyy = props.GetIyy();

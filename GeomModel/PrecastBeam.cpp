@@ -582,7 +582,7 @@ bool PrecastBeam::TestMe(WBFL::Debug::Log& rlog)
    TRY_TESTME(IsEqual(props.GetIxy(), 0.0));
    TRY_TESTME(IsEqual(props.GetCentroid().X(), 0.0));
    TRY_TESTME(IsEqual(props.GetCentroid().Y(), 49.889825586808556));
-   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordSystemType::Centroidal);
+   TRY_TESTME(props.GetCoordinateSystem() == ShapeProperties::CoordinateSystemType::Centroidal);
 
    TRY_TESTME(IsEqual(props.GetXleft(), 30.5));
    TRY_TESTME(IsEqual(props.GetXright(), 30.5));

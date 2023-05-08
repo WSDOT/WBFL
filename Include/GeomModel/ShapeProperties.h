@@ -40,13 +40,11 @@ namespace WBFL
 class GEOMMODELCLASS ShapeProperties
 {
 public:
-   enum class CoordSystemType{
- 	         Centroidal,    // Origin at centroid of shape and
- 			                  //   oriented in global coords
- 	         Global,        // Origin at global origin
- 	         Principal,     // Origin at centroid of shape and
-                           //   oriented in principal direction    
- 	         UserDefined};  // Origin and orientation set by user
+   enum class CoordinateSystemType{
+ 	         Centroidal,    ///< Origin at centroid of shape and oriented in global coordinates
+ 	         Global,        ///< Origin at global origin
+ 	         Principal,     ///< Origin at centroid of shape and oriented in principal direction    
+ 	         UserDefined};  ///< Origin and orientation set by user
 
    /// Initializes all the properties to zero.
    /// The origin of the coordinate system is global (0,0) and the 
@@ -55,7 +53,7 @@ public:
 
    /// Explicit constructor.  Initializes the shape properties in the 
    /// Centroidal coordinate system to the given values. 
-   /// If you want to be able to initialize properties in other coord systems, 
+   /// If you want to be able to initialize properties in other coordinate systems, 
    /// you need to add more constructors
    ShapeProperties(Float64 area,
                  const Point2d& centroid,
@@ -70,13 +68,13 @@ public:
    ShapeProperties(const ShapeProperties&) = default;
    ShapeProperties& operator=(const ShapeProperties&) = default;
 
-   // Returns true if this is equalivalent to rhs,  otherwise false.
-   // Equivalent means the the centroid, area, ixx, iyy, ixy and bounding boxes
+   // Returns true if this is equivalent to rhs,  otherwise false.
+   // Equivalent means the centroid, area, ixx, iyy, ixy and bounding boxes
    // are equal, however, the coordinate system orientation angle and origin
    // do not have to be the same.
    bool operator==(const ShapeProperties& rhs) const;
 
-   /// Returns true if this is not equalivalent to rhs,  otherwise false.
+   /// Returns true if this is not equivalent to rhs,  otherwise false.
    bool operator!=(const ShapeProperties& rhs) const;
 
    /// Adds the rhs properties to this (taking parallel axis theorem into
@@ -179,10 +177,10 @@ public:
    // the type specified unless the type is UserDefined. A type of UserDefined 
    // will not move the current coordinate system, but will change the type 
    // returned by GetCoordinateSystem to UserDefined.
-   void SetCoordinateSystem(ShapeProperties::CoordSystemType sys);
+   void SetCoordinateSystem(ShapeProperties::CoordinateSystemType sys);
 
    /// Returns the type of the coordinate system that properties are calculated in.
-   ShapeProperties::CoordSystemType GetCoordinateSystem() const;
+   ShapeProperties::CoordinateSystemType GetCoordinateSystem() const;
 
    /// Gets the current origin of the coordinate system for which the properties 
    /// are defined with respect to. This also sets the coordinate system type to 
@@ -230,11 +228,11 @@ private:
    Float64 m_Ybottom{ 0.0 };
 
    // Current coordinate system
-   CoordSystemType m_CoordType{ CoordSystemType::Centroidal };
+   CoordinateSystemType m_CoordType{ CoordinateSystemType::Centroidal };
    Point2d       m_Origin;
    Float64         m_Orientation{ 0.0 };
 
-   // properties transformed into current coord sys
+   // properties transformed into current coordinate system
    Point2d m_CurrCentroid;
    Float64   m_CurrIxx{ 0.0 };
    Float64   m_CurrIyy{ 0.0 };
