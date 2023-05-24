@@ -94,14 +94,14 @@ STDMETHODIMP CStrandModelBase::GetHarpingPoints(Float64* hp1, Float64* hp2)
 STDMETHODIMP CStrandModelBase::SetEndHarpingPoints(Float64 hp1, Float64 hp2)
 {
    // must be positive values... HarpPointMeasure will indicate if this is fractional
-   if (hp1 < 0 || hp2 < 0)
+   if (IsLT(hp1,0.0) || IsLT(hp2,0.0))
    {
       ATLASSERT(false);
       return E_INVALIDARG;
    }
 
-   m_HPStart = hp1;
-   m_HPEnd = hp2;
+   m_HPStart = IsZero(hp1) ? 0.0 : hp1;
+   m_HPEnd = IsZero(hp2) ? 0.0 : hp2;
 
    m_CGs[Harped].clear();
    return S_OK;
