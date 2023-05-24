@@ -432,6 +432,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    objStation.CoCreateInstance(CLSID_Station);
    objStation->SetStation(INVALID_INDEX,station); // normalized station
 
+   CComPtr<IDirection> alignment_normal;
+   alignment->GetNormal(CComVariant(objStation), &alignment_normal);
+
    CComPtr<IDirection> dirCutLine;
    bool bIsNormal = false;
    if ( pDirection == nullptr )
@@ -563,7 +566,11 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    }
    else
    {
-      surface->CreateSurfaceProfileSectionCut(CComVariant(objStation),CComVariant(dirCutLine),VARIANT_TRUE,&surfaceProfile);
+      CComPtr<IDirection> reverse_alignment_normal;
+      alignment_normal->Increment(CComVariant(M_PI), &reverse_alignment_normal);
+      CComPtr<IAngle> skew_angle;
+      dirCutLine->AngleBetween(reverse_alignment_normal, &skew_angle);
+      surface->CreateSurfaceProfileSectionCut(CComVariant(objStation),CComVariant(skew_angle),VARIANT_TRUE,&surfaceProfile);
       surfaceProfile->get_Count(&nRidgePoints); // this is the number of surface points
       for ( IndexType ridgePointIdx = nRidgePoints-1; ridgePointIdx != INVALID_INDEX; ridgePointIdx-- )
       {
