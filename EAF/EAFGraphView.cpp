@@ -161,6 +161,8 @@ void CEAFGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       return;
    }
 
+   m_bUpdateError = false;
+
    CEAFView::OnUpdate( pSender, lHint, pHint ); // base class
 
    std::unique_ptr<WBFL::Graphing::GraphBuilder>& pBuilder(GetGraphBuilder());

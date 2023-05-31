@@ -37,7 +37,7 @@ namespace WBFL
       class MATHCLASS PiecewiseFunction : public Function
       {
       public:
-         PiecewiseFunction() = default;
+         PiecewiseFunction();
          PiecewiseFunction(const PiecewiseFunction&) = delete;
          PiecewiseFunction(const std::vector<WBFL::Geometry::Point2d>& points);
 
@@ -52,6 +52,16 @@ namespace WBFL
 
          /// Returns the range over which the function is valid.
          Range GetRange() const;
+
+         // Behavior for case when Evaluate is called with an x value that's outside of the function's range 
+         enum OutOfRangeBehavior {
+            orbThrowException,      // Obvious, throw XFunction::Reason::Undefined
+            orbExtendOuterValue,    // Return boundary Y value at edge of range that was violated
+            orbExtrapolate  // Extend endmost line to x value that is out of range
+         };
+
+         void SetOutOfRangeBehavior(OutOfRangeBehavior behavior);
+         OutOfRangeBehavior GetOutOfRangeBehavior() const;
 
          /// Returns the number of points which define the segments of the function.
          IndexType GetPointCount() const;
@@ -105,6 +115,8 @@ namespace WBFL
 
       private:
          std::vector<WBFL::Geometry::Point2d> m_Points;
+
+         OutOfRangeBehavior m_OutOfRangeBehavior;
 
          // Optimize evaluations by assuming that the last segment evaluated was 
          // close the the next evaluation. Segment counting is one-based.

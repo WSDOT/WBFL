@@ -70,6 +70,10 @@ void WBFLGENERICBRIDGEFUNC GetEndBlockWidth(Float64 Xs, Float64 Ls, SectionBias 
 void WBFLGENERICBRIDGEFUNC AdjustForEndBlocks(INUBeam* pBeam, Float64 Web);
 void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(INUBeam* pBeam, Float64 Hg, Float64 Hbf);
 Float64 WBFLGENERICBRIDGEFUNC ComputeTopFlangeThickening(Float64 Xs, Float64 Ls, ThickeningType thickeningType, Float64 tft);
-Float64 WBFLGENERICBRIDGEFUNC ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber);
+Float64 WBFLGENERICBRIDGEFUNC ComputePrecamber(Float64 Xs,Float64 Ls,Float64 precamber);
+
+Float64 WBFLGENERICBRIDGEFUNC ComputeHaunchDepthAlongSegment(Float64 distAlongSegment, Float64 segmentLength, const std::vector<Float64>& vHaunchDepths);
+
+
 
  WBFLGENERICBRIDGEFUNC WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);

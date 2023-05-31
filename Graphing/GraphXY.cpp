@@ -82,7 +82,8 @@ m_MinZoomWidth(DEFAULT_ZOOM),
 m_Xmin(0),
 m_Xmax(1),
 m_Ymin(0),
-m_Ymax(1)
+m_Ymax(1),
+m_bWasMinSet(false)
 {
    // set up the x axis
    m_XAxis.SetNumberOfMinorTics(5);
@@ -269,6 +270,37 @@ void GraphXY::SetOutputRect(const RECT& rOutputRect)
 {
    m_OutputRect = rOutputRect;
    SetBroken();
+}
+
+Rect GraphXY::GetRawWorldRect() const
+{
+   Rect worldRect(DBL_MAX,DBL_MAX,-DBL_MAX,-DBL_MAX);
+
+   IndexType nDataPoints = 0;
+   IndexType nMaxDataPoints = 0;
+   GraphDataMap::const_iterator graphDataIter(m_GraphDataMap.begin());
+   GraphDataMap::const_iterator graphDataIterEnd(m_GraphDataMap.end());
+   for (; graphDataIter != graphDataIterEnd; graphDataIter++)
+   {
+      const GraphData& graphData = graphDataIter->second;
+
+      IndexType nDP = 0;
+      DataSeries::const_iterator dataSeriesIter(graphData.Series.begin());
+      DataSeries::const_iterator dataSeriesIterEnd(graphData.Series.end());
+      for (; dataSeriesIter != dataSeriesIterEnd; dataSeriesIter++)
+      {
+         const Point& p = *dataSeriesIter;
+         worldRect.Left() = min(p.X(),worldRect.Left());
+         worldRect.Right() = max(p.X(),worldRect.Right());
+         worldRect.Top() = max(p.Y(),worldRect.Top());
+         worldRect.Bottom() = min(p.Y(),worldRect.Bottom());
+         nDataPoints++;
+         nDP++;
+      }
+      nMaxDataPoints = max(nMaxDataPoints,nDP);
+   }
+
+   return worldRect;
 }
 
 RECT GraphXY::GetOutputRect() const
@@ -581,6 +613,7 @@ void GraphXY::SetMinimumSize(Float64 Xmin,Float64 Xmax,Float64 Ymin,Float64 Ymax
    m_Xmax = Xmax;
    m_Ymin = Ymin;
    m_Ymax = Ymax;
+   m_bWasMinSet = true;
 }
 
 void GraphXY::GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax) const
@@ -676,15 +709,15 @@ void GraphXY::UpdateGraphMetrics(HDC hDC)
       m_WorldRect.Left()  = cen - m_MinZoomWidth/2.0;
    }
 
-   if ( m_XAxis.GetScale() != AxisXY::AxisScale::Logarithmic )
+   if ( m_XAxis.GetScale() != AxisXY::AxisScale::Logarithmic && m_bWasMinSet)
    {
-      m_WorldRect.Left()   = min(m_WorldRect.Left(),  m_Xmin);
-      m_WorldRect.Right()  = max(m_WorldRect.Right(), m_Xmax);
+      m_WorldRect.Left() = min(m_WorldRect.Left(),m_Xmin);
+      m_WorldRect.Right() = max(m_WorldRect.Right(),m_Xmax);
    }
 
-   if ( m_YAxis.GetScale() != AxisXY::AxisScale::Logarithmic )
+   if ( m_YAxis.GetScale() != AxisXY::AxisScale::Logarithmic && m_bWasMinSet)
    {
-      m_WorldRect.Top()    = max(m_WorldRect.Top(),   m_Ymax);
+      m_WorldRect.Top() = max(m_WorldRect.Top(),m_Ymax);
       m_WorldRect.Bottom() = min(m_WorldRect.Bottom(),m_Ymin);
    }
 

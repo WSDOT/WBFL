@@ -90,9 +90,6 @@ Float64 interpolate(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Poi
    // vertical segments not allowed
    CHECK( !IsEqual(p1.X(),p2.X()) );
    
-   // make sure x is between p1 and p2
-   CHECK(InRange(p1.X(),x,p2.X()));
-
    Float64 a     = x - p1.X();
    Float64 l     = p1.Y();
    Float64 h     = p2.Y();
@@ -105,8 +102,15 @@ bool point_sort(const WBFL::Geometry::Point2d& p1,const WBFL::Geometry::Point2d&
    return p1.X() < p2.X();
 }
 
+PiecewiseFunction::PiecewiseFunction() :
+   m_OutOfRangeBehavior(orbExtendOuterValue)
+{
+   ASSERTVALID;
+}
+
 PiecewiseFunction::PiecewiseFunction(const std::vector<WBFL::Geometry::Point2d>& points) :
-m_Points(points)
+m_Points(points),
+m_OutOfRangeBehavior(orbExtendOuterValue)
 {
    ASSERTVALID;
 }
@@ -117,22 +121,52 @@ Float64 PiecewiseFunction::Evaluate(Float64 x) const
    // first find which segment x lies in
    bool found=false;
 
-   if (m_Points.empty())
+   if (m_Points.size()<2) // a single point or empty collection does not make a line
    {
       // x not in function range - throw
       THROW_FUNCTION(XFunction::Reason::Undefined);
    }
 
    auto range = GetRange();
+
+   // Deal with out of range x's
    if ( x < range.GetLeftBoundLocation() )
    {
-      return m_Points.front().Y();
+      if (m_OutOfRangeBehavior == orbExtendOuterValue)
+      {
+         return m_Points.front().Y();
+      }
+      else if (m_OutOfRangeBehavior == orbExtrapolate)
+      {
+         // interpolate outside of our bounds
+         Float64 yval = interpolate(m_Points[0],m_Points[1],x);
+         return yval;
+      }
+      else // m_OutOfRangeBehavior == orbThrowException
+      {
+         THROW_FUNCTION(XFunction::Reason::Undefined);
+      }
    }
    else if ( range.GetRightBoundLocation() < x )
    {
-      return m_Points.back().Y();
+      if (m_OutOfRangeBehavior == orbExtendOuterValue)
+      {
+         return m_Points.back().Y();
+      }
+      else if (m_OutOfRangeBehavior == orbExtrapolate)
+      {
+         // interpolate outside of our bounds
+         std::size_t lastval = m_Points.size() - 1;
+         Float64 yval = interpolate(m_Points[lastval-1], m_Points[lastval], x);
+         return yval;
+      }
+      else // (m_OutOfRangeBehavior == orbThrowException)
+      {
+         THROW_FUNCTION(XFunction::Reason::Undefined);
+      }
    }
 
+   // We are in range. Go to work
    if (IsEqual(x,m_Points.front().X()))
    {
       // Edge case - no need for interpolation
@@ -166,6 +200,9 @@ Float64 PiecewiseFunction::Evaluate(Float64 x) const
    }
 
    // linear interpolate across segment to find Y
+   // make sure x is between p1 and p2
+   CHECK(InRange(m_Points[m_LastSegment - 1].X(), x, m_Points[m_LastSegment].X()));
+
    Float64 yval = interpolate(m_Points[m_LastSegment-1],m_Points[m_LastSegment],x);
 
    return yval;
@@ -173,7 +210,10 @@ Float64 PiecewiseFunction::Evaluate(Float64 x) const
 
 std::unique_ptr<Function> PiecewiseFunction::Clone() const
 {
-   return std::make_unique<PiecewiseFunction>(m_Points);
+   std::unique_ptr<PiecewiseFunction> pfunc = std::make_unique<PiecewiseFunction>(m_Points);
+   pfunc->m_OutOfRangeBehavior = m_OutOfRangeBehavior;
+
+   return pfunc;
 }
 
 Range PiecewiseFunction::GetRange() const
@@ -188,6 +228,16 @@ Range PiecewiseFunction::GetRange() const
    {
       return Range();
    }
+}
+
+void WBFL::Math::PiecewiseFunction::SetOutOfRangeBehavior(OutOfRangeBehavior behavior)
+{
+   m_OutOfRangeBehavior = behavior;
+}
+
+WBFL::Math::PiecewiseFunction::OutOfRangeBehavior WBFL::Math::PiecewiseFunction::GetOutOfRangeBehavior() const
+{
+   return m_OutOfRangeBehavior;
 }
 
 IndexType PiecewiseFunction::GetPointCount() const

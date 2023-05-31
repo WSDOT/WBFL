@@ -109,6 +109,9 @@ public:
    /// NOTE: This must be called at least once prior to Draw()
    void SetOutputRect(const RECT& rOutputRect);
 
+   // Get raw boundary of data rect. This means that min boundaries and 'Pinned" status are ignored
+   Rect GetRawWorldRect() const; 
+
    /// Draws the graph on the given device context.
    /// This method calls UpdateGraphMetrics, DrawBackground, and DrawDataSeries
    /// You can call these three steps individual if you want to enhance the
@@ -412,6 +415,7 @@ private:
    Float64 m_MinZoomWidth;
 
    Float64 m_Xmin, m_Xmax, m_Ymin, m_Ymax;
+   bool m_bWasMinSet;
 
 
    void DrawCurve(HDC hDC);

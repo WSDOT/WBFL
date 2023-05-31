@@ -83,7 +83,7 @@ library WBFLGenericBridgeTools
    {
       hdmHaunchIsZero,       // girder directly on slab
       hdmHaunchEqualsFillet, // constant depth equal to fillet
-      hdmHaunchIsParabolic   // depth defined by "A" dimensions, roadway, and assumed excess camber
+      hdmDetailedDescription   // depth defined by "A" dimensions, roadway, and assumed excess camber; or by direct haunch input
    } HaunchDepthMethod;
 
    typedef [public,helpstring("enum HarpPointReference"),uuid(9744FFFE-8025-422e-A4C3-9A58B48DD102)] 

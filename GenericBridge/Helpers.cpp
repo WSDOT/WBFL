@@ -741,6 +741,80 @@ Float64 ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber)
    return (4 * precamber / Ls)*Xs*(1 - Xs / Ls);
 }
 
+Float64 WBFLGENERICBRIDGEFUNC ComputeHaunchDepthAlongSegment(Float64 distAlongSegment,Float64 segmentLength,const std::vector<Float64>& vHaunchDepths)
+{
+   // it's not unusual to ask for this value within closures, so the assert below is commented out
+//   ATLASSERT(distAlongSegment >= 0.0 && distAlongSegment <= segmentLength);
+
+   CollectionIndexType nVals = vHaunchDepths.size();
+
+   Float64 haunchDepth;
+   if (0 == nVals)
+   {
+      // called for non-compsite sections among other cases
+      haunchDepth = 0.0;
+   }
+   else if (1 == nVals)
+   {
+      // constant 
+      haunchDepth = vHaunchDepths.front();
+   }
+   else if (3 == nVals)
+   {
+      // Parabolic distribution
+      Float64 startHaunch(vHaunchDepths[0]),midHaunch(vHaunchDepths[1]),endHaunch(vHaunchDepths[2]);
+
+      // Linear portion of haunch based on end values
+      Float64 lin_haunch = ::LinInterp(distAlongSegment,startHaunch,endHaunch,segmentLength);
+
+      // Compute height of bulge at location
+      // Made an OPTIMIZATION here - this function is called many, many times.
+      // Was using GenerateParabola() in MathUtils.h, but calls were costly. Refer to that derivation
+      // for how we got here.
+      Float64 mid_bulge = midHaunch - (startHaunch + endHaunch) / 2.0;
+      Float64 Vx = (segmentLength) / 2.0;   // X ordinate of peak
+                                             // y = Ax^2 + Bx + C
+      Float64 A = -mid_bulge / (Vx * Vx);
+      Float64 B = 2 * mid_bulge / Vx;
+      Float64 para_haunch = A * distAlongSegment * distAlongSegment + B * distAlongSegment;
+
+      haunchDepth = lin_haunch + para_haunch; // haunch is sum of linear part and parabolic sliver
+   }
+   else
+   {
+      // Haunch is piecewise linear based on evenly spaced segments
+      // dist should always be within segment, but make assumptions to avoid a crash
+      if (distAlongSegment <= 0.0)
+      {
+         haunchDepth = vHaunchDepths.front();
+      }
+      else if (distAlongSegment >= segmentLength)
+      {
+         haunchDepth = vHaunchDepths.back();
+      }
+      else
+      {
+         // Use fractional distance along segment to determine indexes of bracketing haunch values
+         Float64 frac = distAlongSegment / segmentLength;
+         Float64 fracIdx = frac * (nVals-1);
+         int floorIdx = (int)floor(fracIdx);
+         int ceilIdx = (int)ceil(fracIdx);
+         if (floorIdx == ceilIdx)
+         {
+            haunchDepth = vHaunchDepths[floorIdx];
+         }
+         else
+         {
+            Float64 fracAlongSeg = fracIdx - floorIdx; // fractional distance along fractional segment
+            Float64 lin_haunch = ::LinInterp(fracAlongSeg, vHaunchDepths[floorIdx], vHaunchDepths[ceilIdx],1.0);
+            haunchDepth = lin_haunch;
+         }
+      }
+   }
+
+   return haunchDepth;
+}
+
 
 // GetGirderProfile, below, caches the profile function in the ItemData of a SuperstructureMember object. ItemData is stashed by an IUnknown
 // pointer of a COM object. The profile function is not a COM object. We create a FunctionHolder object that is a COM object that

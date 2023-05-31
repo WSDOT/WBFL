@@ -144,7 +144,7 @@ inline Float64 ComputeStructuralHaunchDepth(ISuperstructureMemberSegment* segmen
    }
    else
    {
-      ATLASSERT(haunchMethod == hdmHaunchIsParabolic);
+      ATLASSERT(haunchMethod == hdmDetailedDescription);
       Float64 haunch;
       segment->ComputeHaunchDepth(Xs, &haunch);
       haunch = max(0.0, haunch); // don't allow negative haunch
