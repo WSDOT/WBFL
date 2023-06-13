@@ -411,12 +411,6 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    CComPtr<IBridgeGeometry> bridgeGeometry;
    bridge->get_BridgeGeometry(&bridgeGeometry);
 
-   CComPtr<ICogoModel> cogoModel;
-   bridgeGeometry->get_CogoModel(&cogoModel);
-
-   CComPtr<ICogoEngine> cogoEngine;
-   cogoModel->get_Engine(&cogoEngine);
-
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);
 

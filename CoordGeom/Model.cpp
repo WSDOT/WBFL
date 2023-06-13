@@ -23,7 +23,7 @@
 
 #include <CoordGeom/CoordGeomLib.h>
 #include <CoordGeom/Model.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/XCoordGeom.h>
 
 using namespace WBFL::COGO;
@@ -1148,7 +1148,7 @@ Angle Model::MeasureAngle(IDType fromID, IDType vertexID, IDType toID) const
    const auto& vertex = GetPoint(vertexID);
    const auto& to = GetPoint(toID);
 
-   return Utilities::MeasureAngle(from, vertex, to);
+   return COGO::MeasureAngle(from, vertex, to);
 }
 
 
@@ -1160,28 +1160,28 @@ Float64 Model::MeasureArea(const std::vector<IDType>& vIDs) const
       points.emplace_back(GetPoint(id));
    }
 
-   return Utilities::MeasureArea(points);
+   return COGO::MeasureArea(points);
 }
 
 Float64 Model::MeasureDistance(IDType fromID, IDType toID) const
 {
    const auto& from = GetPoint(fromID);
    const auto& to = GetPoint(toID);
-   return Utilities::MeasureDistance(from, to);
+   return COGO::MeasureDistance(from, to);
 }
 
 Direction Model::MeasureDirection(IDType fromID, IDType toID) const
 {
    const auto& from = GetPoint(fromID);
    const auto& to = GetPoint(toID);
-   return Utilities::MeasureDirection(from, to);
+   return COGO::MeasureDirection(from, to);
 }
 
 std::pair<Float64, Direction> Model::ComputeInverse(IDType fromID, IDType toID) const
 {
    const auto& from = GetPoint(fromID);
    const auto& to = GetPoint(toID);
-   return Utilities::ComputeInverse(from, to);
+   return COGO::ComputeInverse(from, to);
 }
 
 bool Model::LocateByDistanceAndAngle(IDType newPointID, IDType fromID, IDType toID, Float64 distance, const Angle& angle, Float64 offset)
@@ -1190,7 +1190,7 @@ bool Model::LocateByDistanceAndAngle(IDType newPointID, IDType fromID, IDType to
    const auto& to = GetPoint(toID);
    try
    {
-      auto point = Utilities::LocateByDistanceAndAngle(from, to, distance, angle, offset);
+      auto point = COGO::LocateByDistanceAndAngle(from, to, distance, angle, offset);
       return StorePoint(newPointID, point);
    }
    catch (...)
@@ -1205,7 +1205,7 @@ bool Model::LocateByDistanceAndDeflectionAngle(IDType newPointID, IDType fromID,
    const auto& to = GetPoint(toID);
    try
    {
-      auto point = Utilities::LocateByDistanceAndDeflectionAngle(from, to, distance, defAngle, offset);
+      auto point = COGO::LocateByDistanceAndDeflectionAngle(from, to, distance, defAngle, offset);
       return StorePoint(newPointID, point);
    }
    catch (...)
@@ -1219,7 +1219,7 @@ bool Model::LocateByDistanceAndDirection(IDType newPointID, IDType fromID, Float
    const auto& from = GetPoint(fromID);
    try
    {
-      auto point = Utilities::LocateByDistanceAndDirection(from, distance, direction, offset);
+      auto point = COGO::LocateByDistanceAndDirection(from, distance, direction, offset);
       return StorePoint(newPointID, point);
    }
    catch (...)
@@ -1234,7 +1234,7 @@ bool Model::LocatePointOnLine(IDType newPointID, IDType fromID, IDType toID, Flo
    const auto& to = GetPoint(toID);
    try
    {
-      auto point = Utilities::LocatePointOnLine(from, to, distance, offset);
+      auto point = COGO::LocatePointOnLine(from, to, distance, offset);
       return StorePoint(newPointID, point);
    }
    catch (...)
@@ -1250,7 +1250,7 @@ bool Model::LocateParallelLineByPoints(IDType newFromID, IDType newToID, IDType 
    try
    {
       WBFL::Geometry::Point2d newFrom, newTo;
-      std::tie(newFrom, newTo) = Utilities::LocateParallelLineByPoints(from, to, offset);
+      std::tie(newFrom, newTo) = COGO::LocateParallelLineByPoints(from, to, offset);
       std::vector<std::pair<IDType, WBFL::Geometry::Point2d>> points;
       points.emplace_back(newFromID, newFrom);
       points.emplace_back(newToID, newTo);
@@ -1265,7 +1265,7 @@ bool Model::LocateParallelLineByPoints(IDType newFromID, IDType newToID, IDType 
 bool Model::LocateParallelLineSegment(IDType newSegmentID, IDType newFromID, IDType newToID, IDType segmentID, Float64 offset)
 {
    auto segment = CreatePathSegment(segmentID);
-   auto newSegment = Utilities::LocateParallelLineSegment(*segment, offset);
+   auto newSegment = COGO::LocateParallelLineSegment(*segment, offset);
 
    bool bFrom = StorePoint(newFromID, newSegment.GetStartPoint());
    bool bTo = StorePoint(newToID, newSegment.GetEndPoint());
@@ -1287,7 +1287,7 @@ bool Model::IntersectBearings(IDType newID, IDType id1, const Direction& dir1, F
    const auto& p2 = GetPoint(id2);
    try
    {
-      auto point = Utilities::IntersectBearings(p1, dir1, offset1, p2, dir2, offset2);
+      auto point = COGO::IntersectBearings(p1, dir1, offset1, p2, dir2, offset2);
       return StorePoint(newID, point);
    }
    catch(...)
@@ -1303,7 +1303,7 @@ bool Model::IntersectBearingAndCircle(IDType newID, IDType startID, const Direct
    const auto& nearest = GetPoint(nearestID);
    try
    {
-      auto point = Utilities::IntersectBearingAndCircle(start, dir, offset, center, radius, nearest);
+      auto point = COGO::IntersectBearingAndCircle(start, dir, offset, center, radius, nearest);
       return StorePoint(newID, point);
    }
    catch (...)
@@ -1319,7 +1319,7 @@ bool Model::IntersectCircles(IDType newID, IDType centerID1, Float64 radius1, ID
    const auto& nearest = GetPoint(nearestID);
    try
    {
-      auto point = Utilities::IntersectCircles(center1, radius1, center2, radius2, nearest);
+      auto point = COGO::IntersectCircles(center1, radius1, center2, radius2, nearest);
       return StorePoint(newID, point);
    }
    catch (...)
@@ -1336,7 +1336,7 @@ bool Model::IntersectLineByPointsAndCircle(IDType newID, IDType startID, IDType 
    const auto& nearest = GetPoint(nearestID);
    try
    {
-      auto point = Utilities::IntersectLineByPointsAndCircle(start, end, offset, center, radius, nearest);
+      auto point = COGO::IntersectLineByPointsAndCircle(start, end, offset, center, radius, nearest);
       return StorePoint(newID, point);
    }
    catch (...)
@@ -1353,7 +1353,7 @@ bool Model::IntersectLinesByPoints(IDType newID, IDType startID1, IDType endID1,
    const auto& end2 = GetPoint(endID2);
    try
    {
-      auto point = Utilities::IntersectLinesByPoints(start1, end1, offset1, start2, end2, offset2);
+      auto point = COGO::IntersectLinesByPoints(start1, end1, offset1, start2, end2, offset2);
       return StorePoint(newID, point);
    }
    catch (...)
@@ -1368,7 +1368,7 @@ bool Model::IntersectPathSegments(IDType newID, IDType lsID1, Float64 offset1, I
    auto ls2 = CreatePathSegment(lsID2);
    try
    {
-      auto point = Utilities::IntersectLineSegments(*ls1, offset1, *ls2, offset2);
+      auto point = COGO::IntersectLineSegments(*ls1, offset1, *ls2, offset2);
       return StorePoint(newID, point);
    }
    catch (...)
@@ -1384,7 +1384,7 @@ bool Model::IntersectPathSegmentAndCircle(IDType newID, IDType lsID, Float64 off
    const auto& nearest = GetPoint(nearestID);
    try
    {
-      auto point = Utilities::IntersectLineSegmentAndCircle(*ls, offset, center, radius, nearest);
+      auto point = COGO::IntersectLineSegmentAndCircle(*ls, offset, center, radius, nearest);
       return StorePoint(newID, point);
    }
    catch (...)
@@ -1490,7 +1490,7 @@ bool Model::ProjectPointOnLineByPoints(IDType newID, IDType fromID, IDType start
    const auto& end = GetPoint(endID);
    try
    {
-      auto point = Utilities::ProjectPointOnLineByPoints(from, start, end, offset);
+      auto point = COGO::ProjectPointOnLineByPoints(from, start, end, offset);
       return StorePoint(newID, point);
    }
    catch (...)
@@ -1505,7 +1505,7 @@ bool Model::ProjectPointOnPathSegment(IDType newID, IDType fromID, IDType lsID, 
    auto ls = CreatePathSegment(lsID);
    try
    {
-      auto point = Utilities::ProjectPointOnLineSegment(from, *ls, offset);
+      auto point = COGO::ProjectPointOnLineSegment(from, *ls, offset);
       return StorePoint(newID, point);
    }
    catch (...)
@@ -1524,7 +1524,7 @@ bool Model::DivideArc(IDType firstID, IDType idInc, IDType fromID, IDType vertex
 
    try
    {
-      auto points = Utilities::DivideArc(from, vertex, to, nParts);
+      auto points = COGO::DivideArc(from, vertex, to, nParts);
       return StorePoints(firstID, idInc, std::next(std::begin(points)), std::prev(std::end(points)));
    }
    catch (...)
@@ -1542,7 +1542,7 @@ bool Model::DivideBetweenPoints(IDType firstID, IDType idInc, IDType fromID, IDT
 
    try
    {
-      auto points = Utilities::DivideBetweenPoints(from, to, nParts);
+      auto points = COGO::DivideBetweenPoints(from, to, nParts);
       return StorePoints(firstID, idInc, std::next(std::begin(points)), std::prev(std::end(points)));
    }
    catch (...)
@@ -1558,7 +1558,7 @@ bool Model::DivideLineSegment(IDType firstID, IDType idInc, IDType lsID, IndexTy
    auto ls = CreatePathSegment(lsID);
    try
    {
-      auto points = Utilities::DivideBetweenPoints(ls->GetStartPoint(), ls->GetEndPoint(), nParts);
+      auto points = COGO::DivideBetweenPoints(ls->GetStartPoint(), ls->GetEndPoint(), nParts);
       return StorePoints(firstID, idInc, std::next(std::begin(points)), std::prev(std::end(points)));
    }
    catch (...)
@@ -1662,7 +1662,7 @@ bool Model::CrossingTangents(IDType newID1, IDType centerID1, Float64 radius1, I
    try
    {
       WBFL::Geometry::Point2d t1, t2;
-      std::tie(t1, t2) = Utilities::CrossingTangents(center1, radius1, center2, radius2, sign);
+      std::tie(t1, t2) = COGO::CrossingTangents(center1, radius1, center2, radius2, sign);
       std::vector<std::pair<IDType, WBFL::Geometry::Point2d>> points;
       points.emplace_back(newID1, t1);
       points.emplace_back(newID2, t2);
@@ -1685,7 +1685,7 @@ bool Model::ExternalTangents(IDType newID1, IDType centerID1, Float64 radius1, I
    try
    {
       WBFL::Geometry::Point2d t1, t2;
-      std::tie(t1, t2) = Utilities::ExternalTangents(center1, radius1, center2, radius2, sign);
+      std::tie(t1, t2) = COGO::ExternalTangents(center1, radius1, center2, radius2, sign);
 
       std::vector<std::pair<IDType, WBFL::Geometry::Point2d>> points;
       points.emplace_back(newID1, t1);
@@ -1705,7 +1705,7 @@ bool Model::TangentPoint(IDType newID, IDType centerID, Float64 radius, IDType p
    const auto& point = GetPoint(pointID);
    try
    {
-      auto newPoint = Utilities::TangentPoint(center, radius, point, sign);
+      auto newPoint = COGO::TangentPoint(center, radius, point, sign);
       return StorePoint(newID, newPoint);
    }
    catch (...)

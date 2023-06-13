@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.SinglePierLineFactory.1 = s 'SinglePierLineFactory Class'
+	{
+		CLSID = s '{ED614FA3-5E15-4428-9B56-2C0C060ABB5B}'
+	}
+	WBFLCogo.SinglePierLineFactory = s 'SinglePierLineFactory Class'
+	{
+		CLSID = s '{ED614FA3-5E15-4428-9B56-2C0C060ABB5B}'
+		CurVer = s 'WBFLCogo.SinglePierLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {ED614FA3-5E15-4428-9B56-2C0C060ABB5B} = s 'SinglePierLineFactory Class'
+		{
+			ProgID = s 'WBFLCogo.SinglePierLineFactory.1'
+			VersionIndependentProgID = s 'WBFLCogo.SinglePierLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

@@ -95,7 +95,7 @@ public:
    /// @brief Returns the location of the axis of symmetry. The returned value is meaningless if symmetry is Symmetry::None
    Float64 GetSymmetryAxis() const;
 
-   ///{@
+   ///@{
    /// @brief Adds a point to the polygon
    void AddPoint(Float64 x, Float64 y);
    void AddPoint(const Point2d& p);

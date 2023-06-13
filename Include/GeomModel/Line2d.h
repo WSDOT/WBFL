@@ -109,6 +109,7 @@ namespace WBFL
          /// arguments. This line is not changed.
          Line2d OffsetBy(Float64 dx, Float64 dy) const;
          Line2d OffsetBy(const Size2d& size) const;
+         Line2d OffsetBy(Float64 offset) const;
 
          /// Returns a point on the line which is nearest to the given point.
          Point2d PointOnLineNearest(const Point2d& point) const;

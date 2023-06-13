@@ -35,9 +35,6 @@
 #include <WBFLGenericBridge.h>
 #include <WBFLGenericBridge_i.c>
 
-#include <WBFLBridgeGeometry.h>
-#include <WBFLBridgeGeometry_i.c>
-
 #include <WBFLGeometry_i.c>
 #include <WBFLCogo_i.c>
 
@@ -88,7 +85,7 @@ bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions)
 }
 
 /////////////////////////////////
-LineIDType GetGirderLayoutLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx)
+IDType GetGirderLayoutLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx)
 {
    ATLASSERT( spanIdx < Int16_Max && gdrIdx < Int16_Max );
    return ::make_Int32((Int16)spanIdx,(Int16)gdrIdx);
@@ -99,7 +96,7 @@ GirderIDType GetGirderLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx)
    return ::GetGirderLayoutLineID(spanIdx,gdrIdx);
 }
 
-LineIDType GetGirderSegmentLineID(GirderIndexType gdrIdx,SegmentIndexType segIdx)
+IDType GetGirderSegmentLineID(GirderIndexType gdrIdx,SegmentIndexType segIdx)
 {
    ATLASSERT( gdrIdx < Int16_Max && segIdx < Int16_Max );
    return ::make_Int32((Int16)gdrIdx,(Int16)segIdx);
@@ -108,26 +105,35 @@ LineIDType GetGirderSegmentLineID(GirderIndexType gdrIdx,SegmentIndexType segIdx
 void CreateBasicBridge(IGenericBridge** ppBridge)
 {
    CComPtr<IGenericBridge> bridge;
-   bridge.CoCreateInstance(CLSID_GenericBridge);
-
-   CComPtr<ICogoModel> cogoModel;
-   cogoModel.CoCreateInstance(CLSID_CogoModel);
+   TRY_TEST(bridge.CoCreateInstance(CLSID_GenericBridge), S_OK);
 
    CComPtr<IBridgeGeometry> geometry;
-   TRY_TEST(bridge->get_BridgeGeometry(&geometry),S_OK);
-   geometry->putref_CogoModel(cogoModel);
+   TRY_TEST(bridge->get_BridgeGeometry(&geometry), S_OK);
 
-   //
-   // Create the Alignment
-   //
    IDType alignmentID = 0;
-   cogoModel->StoreAlignment(alignmentID);
-   cogoModel->SetAlignmentReferenceStation(alignmentID, CComVariant(0.0));
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+   CComPtr<IPoint2d> p1, p2;
+   p1.CoCreateInstance(CLSID_Point2d);
+   p1->Move(0, 0);
+   p2.CoCreateInstance(CLSID_Point2d);
+   p2->Move(100, 0);
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
-   cogoModel->StorePoint(1, 0, 0);
-   cogoModel->StorePoint(2, 100, 0);
-   cogoModel->StorePathSegment(1, 1, 2);
+   geometry->AddAlignment(alignmentID, alignment);
+   geometry->put_BridgeAlignmentID(alignmentID);
 
+   CComPtr<IProfile> profile;
+   profile.CoCreateInstance(CLSID_Profile);
+   alignment->AddProfile(alignmentID, profile);
+   //geometry->put_ProfileID(PROFILE_ID);
+   //geometry->put_SurfaceID(SURFACE_ID);
+
+   geometry->AddAlignment(alignmentID, alignment);
    geometry->put_BridgeAlignmentID(alignmentID);
 
    bridge.CopyTo(ppBridge);
@@ -180,8 +186,15 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
    Float64 station = 0;
    for ( ; spanDefIter != spanDefIterEnd; spanDefIter++ )
    {
-      CComPtr<IPierLine> pierLine;
-      geometry->CreatePierLine(pierID,0,CComVariant(station),bstrOrientation,pierWidth,pierWidth/2,&pierLine);
+      CComPtr<ISinglePierLineFactory> pier_line_factory;
+      pier_line_factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+      pier_line_factory->put_PierLineID(pierID);
+      pier_line_factory->put_AlignmentID(0);
+      pier_line_factory->put_Station(CComVariant(station));
+      pier_line_factory->put_Direction(bstrOrientation);
+      pier_line_factory->put_Length(pierWidth);
+      pier_line_factory->put_Offset(pierWidth / 2);
+      geometry->AddPierLineFactory(pier_line_factory);
 
       const SpanDefinition& spanDef = *spanDefIter;
       station += spanDef.length;
@@ -189,8 +202,15 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
    }
 
    // last pier
-   CComPtr<IPierLine> lastPierLine;
-   geometry->CreatePierLine(pierID,0,CComVariant(station),bstrOrientation,pierWidth,pierWidth/2,&lastPierLine);
+   CComPtr<ISinglePierLineFactory> pier_line_factory;
+   pier_line_factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   pier_line_factory->put_PierLineID(pierID);
+   pier_line_factory->put_AlignmentID(0);
+   pier_line_factory->put_Station(CComVariant(station));
+   pier_line_factory->put_Direction(bstrOrientation);
+   pier_line_factory->put_Length(pierWidth);
+   pier_line_factory->put_Offset(pierWidth / 2);
+   geometry->AddPierLineFactory(pier_line_factory);
 
    //
    // Layout girder lines 
@@ -220,7 +240,7 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
       SpacingIndexType nSpaces = spanDef.girderSpacing.size();
       GirderIndexType nGirders = nSpaces+1;
 
-      LineIDType layoutLineID = ::GetGirderLayoutLineID(spanIdx*nGirders,0);
+      IDType layoutLineID = ::GetGirderLayoutLineID(spanIdx*nGirders,0);
       layoutLineFactory->put_LayoutLineID(layoutLineID);
       layoutLineFactory->put_LayoutLineIDInc(1);
 
@@ -257,19 +277,19 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
       maxWidth = ::Max(maxWidth,startWidth,endWidth);
 
       // create the layout lines
-      geometry->CreateLayoutLines(layoutLineFactory);
+      geometry->AddLayoutLineFactory(layoutLineFactory);
 
       // Generate girder lines
       for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirders; gdrIdx++ )
       {
          GirderIDType gdrLineID  = ::GetGirderLineID(spanIdx,gdrIdx);
-         LineIDType layoutLineID = ::GetGirderLayoutLineID(spanIdx*nGirders,0) + gdrIdx;
+         IDType layoutLineID = ::GetGirderLayoutLineID(spanIdx*nGirders,0) + gdrIdx;
          girderLineFactory->put_GirderLineID( gdrLineID ); // girder line ID
          girderLineFactory->put_LayoutLineID( layoutLineID ); // layout line used to layout this girder line
          girderLineFactory->put_Type(glChord);        // layout as a chord
          girderLineFactory->put_StartPierID(startPierID); 
          girderLineFactory->put_EndPierID(endPierID);
-         geometry->CreateGirderLines(girderLineFactory);
+         geometry->AddGirderLineFactory(girderLineFactory);
       }
 
       // clear the spacing arrays for the next span
@@ -401,8 +421,6 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
    bridge->putref_Deck(deck);
    bridge->put_SacrificialDepth(1./12);
 
-   bridge->UpdateBridgeModel(GF_ALL); // forces the geometry to be up to date
-
    bridge.CopyTo(ppBridge);
 }
 
@@ -427,43 +445,108 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
    //
    // Layout the Piers
    //
-   CComPtr<IPierLine> pierLine;
-   geometry->CreatePierLine(0,0,CComVariant(  0.00),CComBSTR("NORMAL"),width,width/2,&pierLine); // 0+00 permanent pier
-   pierLine.Release();
-   geometry->CreatePierLine(1,0,CComVariant(150.00),CComBSTR("NORMAL"),width,width/2,&pierLine); // 1+50 permanent pier
-   pierLine.Release();
-   geometry->CreatePierLine(2,0,CComVariant(350.00),CComBSTR("NORMAL"),width,width/2,&pierLine); // 3+50 permanent pier
-   pierLine.Release();
-   geometry->CreatePierLine(3,0,CComVariant(500.00),CComBSTR("NORMAL"),width,width/2,&pierLine); // 5+00 permanent pier
+
+   // Permanent piers
+   CComPtr<ISinglePierLineFactory> factory;
+   factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   factory->put_PierLineID(0);
+   factory->put_AlignmentID(0);
+   factory->put_Station(CComVariant(0.0)); // 0+00
+   factory->put_Direction(CComBSTR("NORMAL"));
+   factory->put_Length(width);
+   factory->put_Offset(-width / 2);
+   geometry->AddPierLineFactory(factory);
+
+   factory.Release();
+   factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   factory->put_PierLineID(1);
+   factory->put_AlignmentID(0);
+   factory->put_Station(CComVariant(150.0)); // 1+50
+   factory->put_Direction(CComBSTR("NORMAL"));
+   factory->put_Length(width);
+   factory->put_Offset(-width / 2);
+   geometry->AddPierLineFactory(factory);
+
+   factory.Release();
+   factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   factory->put_PierLineID(2);
+   factory->put_AlignmentID(0);
+   factory->put_Station(CComVariant(350.0)); // 3+50
+   factory->put_Direction(CComBSTR("NORMAL"));
+   factory->put_Length(width);
+   factory->put_Offset(-width / 2);
+   geometry->AddPierLineFactory(factory);
+
+   factory.Release();
+   factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   factory->put_PierLineID(3);
+   factory->put_AlignmentID(0);
+   factory->put_Station(CComVariant(500.0)); // 5+00
+   factory->put_Direction(CComBSTR("NORMAL"));
+   factory->put_Length(width);
+   factory->put_Offset(-width / 2);
+   geometry->AddPierLineFactory(factory);
 
    //
    // Layout the Temporary Supports (these are modeled as piers in the geometry model)
    //
-   pierLine.Release();
-   geometry->CreatePierLine(-1,0,CComVariant(100.00),CComBSTR("NORMAL"),width,width/2,&pierLine); // 1+00 temporary support
-   pierLine.Release();
-   geometry->CreatePierLine(-2,0,CComVariant(200.00),CComBSTR("NORMAL"),width,width/2,&pierLine); // 2+00 temporary support
-   pierLine.Release();
-   geometry->CreatePierLine(-3,0,CComVariant(300.00),CComBSTR("NORMAL"),width,width/2,&pierLine); // 3+00 temporary support
-   pierLine.Release();
-   geometry->CreatePierLine(-4,0,CComVariant(400.00),CComBSTR("NORMAL"),width,width/2,&pierLine); // 4+00 temporary support
+
+   factory.Release();
+   factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   factory->put_PierLineID(-1);
+   factory->put_AlignmentID(0);
+   factory->put_Station(CComVariant(100.0)); // 1+00
+   factory->put_Direction(CComBSTR("NORMAL"));
+   factory->put_Length(width);
+   factory->put_Offset(-width / 2);
+   geometry->AddPierLineFactory(factory);
+
+   factory.Release();
+   factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   factory->put_PierLineID(-2);
+   factory->put_AlignmentID(0);
+   factory->put_Station(CComVariant(200.0)); // 2+00
+   factory->put_Direction(CComBSTR("NORMAL"));
+   factory->put_Length(width);
+   factory->put_Offset(-width / 2);
+   geometry->AddPierLineFactory(factory);
+
+   factory.Release();
+   factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   factory->put_PierLineID(-3);
+   factory->put_AlignmentID(0);
+   factory->put_Station(CComVariant(300.0)); // 3+00
+   factory->put_Direction(CComBSTR("NORMAL"));
+   factory->put_Length(width);
+   factory->put_Offset(-width / 2);
+   geometry->AddPierLineFactory(factory);
+
+   factory.Release();
+   factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   factory->put_PierLineID(-4);
+   factory->put_AlignmentID(0);
+   factory->put_Station(CComVariant(400.0)); // 4+00
+   factory->put_Direction(CComBSTR("NORMAL"));
+   factory->put_Length(width);
+   factory->put_Offset(-width / 2);
+   geometry->AddPierLineFactory(factory);
 
    //
    // Create girder Layout Lines
    //
-   Float64 offset = width/2 + alignmentOffset; // offset from bridge line to left girder line
+   Float64 offset =  alignmentOffset - width/2; // offset from bridge line to left girder line
 
    // Layout lines are parallel to and offset from the alignment
    // Layout line IDs are the girder IDs
    CComPtr<IAlignmentOffsetLayoutLineFactory> layoutLineFactory;
    layoutLineFactory.CoCreateInstance(CLSID_AlignmentOffsetLayoutLineFactory);
    layoutLineFactory->put_LayoutLineID(0); // ID of first layout line
-   layoutLineFactory->put_LayoutLineIDInc(1);
+   layoutLineFactory->put_LayoutLineIDIncrement(1);
    layoutLineFactory->put_LayoutLineCount(nGirders); 
    layoutLineFactory->put_Offset(offset);
-   layoutLineFactory->put_OffsetIncrement(-spacing); // neg spacing because we want to generate parallel lines to the right of the first line
+   layoutLineFactory->put_OffsetIncrement(spacing); // neg spacing because we want to generate parallel lines to the right of the first line
    layoutLineFactory->put_AlignmentID(0);
-   geometry->CreateLayoutLines(layoutLineFactory);
+   geometry->AddLayoutLineFactory(layoutLineFactory);
 
    //
    // Create girder lines
@@ -471,10 +554,11 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
 
    // one line per segment. three segments per girder. continuous over pier 1
    // pier 0 -> pier -1 -> pier -2 -> pier 2
-   CComPtr<ISingleGirderLineFactory> girderLineFactory;
-   girderLineFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
    for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirders; gdrIdx++ )
    {
+      CComPtr<ISingleGirderLineFactory> girderLineFactory;
+      girderLineFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
+
       // Segment 0
       SegmentIDType segID = GetGirderSegmentLineID(gdrIdx,0);
       girderLineFactory->put_GirderLineID(segID); // ID of the girder line that will be created
@@ -482,43 +566,51 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
       girderLineFactory->put_Type(glChord); // use a straight chord
       girderLineFactory->put_StartPierID(0); // first pier
       girderLineFactory->put_EndPierID(-1);  // temporary pier in span 1
-      geometry->CreateGirderLines(girderLineFactory);
+      geometry->AddGirderLineFactory(girderLineFactory);
 
       // Segment 1
+      girderLineFactory.Release();
+      girderLineFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
       segID = GetGirderSegmentLineID(gdrIdx,1);
       girderLineFactory->put_GirderLineID(segID); // ID of the girder line that will be created
       girderLineFactory->put_LayoutLineID(gdrIdx); // ID of the layout line that will provide the geometry
       girderLineFactory->put_Type(glChord); // use a straight chord
       girderLineFactory->put_StartPierID(-1); // temporary pier in span 1
       girderLineFactory->put_EndPierID(-2);  // temporary pier in span 2
-      geometry->CreateGirderLines(girderLineFactory);
+      geometry->AddGirderLineFactory(girderLineFactory);
 
       // Segment 2
+      girderLineFactory.Release();
+      girderLineFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
       segID = GetGirderSegmentLineID(gdrIdx,2);
       girderLineFactory->put_GirderLineID(segID); // ID of the girder line that will be created
       girderLineFactory->put_LayoutLineID(gdrIdx); // ID of the layout line that will provide the geometry
       girderLineFactory->put_Type(glChord); // use a straight chord
       girderLineFactory->put_StartPierID(-2); // temporary pier in span 2
       girderLineFactory->put_EndPierID(-3);  // temporary pier in span 2
-      geometry->CreateGirderLines(girderLineFactory);
+      geometry->AddGirderLineFactory(girderLineFactory);
 
       // Segment 3
+      girderLineFactory.Release();
+      girderLineFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
       segID = GetGirderSegmentLineID(gdrIdx,3);
       girderLineFactory->put_GirderLineID(segID); // ID of the girder line that will be created
       girderLineFactory->put_LayoutLineID(gdrIdx); // ID of the layout line that will provide the geometry
       girderLineFactory->put_Type(glChord); // use a straight chord
       girderLineFactory->put_StartPierID(-3); // temporary pier in span 2
       girderLineFactory->put_EndPierID(-4);  // temporary pier in span 3
-      geometry->CreateGirderLines(girderLineFactory);
+      geometry->AddGirderLineFactory(girderLineFactory);
 
       // Segment 4
+      girderLineFactory.Release();
+      girderLineFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
       segID = GetGirderSegmentLineID(gdrIdx,4);
       girderLineFactory->put_GirderLineID(segID); // ID of the girder line that will be created
       girderLineFactory->put_LayoutLineID(gdrIdx); // ID of the layout line that will provide the geometry
       girderLineFactory->put_Type(glChord); // use a straight chord
       girderLineFactory->put_StartPierID(-4); // temporary pier in span 3
       girderLineFactory->put_EndPierID(3);  // last pier
-      geometry->CreateGirderLines(girderLineFactory);
+      geometry->AddGirderLineFactory(girderLineFactory);
    }
 
    //
@@ -536,54 +628,54 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
    //
    // Create Segments
    //
-   for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirders; gdrIdx++ )
+   for (GirderIndexType gdrIdx = 0; gdrIdx < nGirders; gdrIdx++)
    {
       ssmbr.Release();
-      bridge->get_SuperstructureMember(GirderIDType(gdrIdx),&ssmbr);
+      bridge->get_SuperstructureMember(GirderIDType(gdrIdx), &ssmbr);
 
-      for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
+      for (SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++)
       {
-         SegmentIDType gdrLineID = GetGirderSegmentLineID(gdrIdx,segIdx);
-         
+         SegmentIDType gdrLineID = GetGirderSegmentLineID(gdrIdx, segIdx);
+
          CComPtr<ISplicedGirderSegment> segment;
-         TRY_TEST(segment.CoCreateInstance(CLSID_FlangedSplicedGirderSegment),S_OK);
+         TRY_TEST(segment.CoCreateInstance(CLSID_FlangedSplicedGirderSegment), S_OK);
          TRY_TEST(ssmbr->AddSegment(segment), S_OK);
 
-         if ( segIdx == 0 )
+         if (segIdx == 0)
          {
             segment->put_VariationType(svtParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,50.0,10.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0,11.77777,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic, 50.0, 10.0, 1.0);
+            segment->SetVariationParameters(sztRightPrismatic, 0.0, 11.77777, 1.0);
          }
-         else if ( segIdx == 1 )
+         else if (segIdx == 1)
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11.77777,1.0);
-            segment->SetVariationParameters(sztLeftTapered,25.0,14.0,1.0);
-            segment->SetVariationParameters(sztRightTapered,25.0,14.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0, 11,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic, 0.0, 11.77777, 1.0);
+            segment->SetVariationParameters(sztLeftTapered, 25.0, 14.0, 1.0);
+            segment->SetVariationParameters(sztRightTapered, 25.0, 14.0, 1.0);
+            segment->SetVariationParameters(sztRightPrismatic, 0.0, 11, 1.0);
          }
-         else if ( segIdx == 2 )
+         else if (segIdx == 2)
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11,1.0);
-            segment->SetVariationParameters(sztLeftTapered,25.0,10.0,1.0);
-            segment->SetVariationParameters(sztRightTapered,25.0,10.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0, 11,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic, 0.0, 11, 1.0);
+            segment->SetVariationParameters(sztLeftTapered, 25.0, 10.0, 1.0);
+            segment->SetVariationParameters(sztRightTapered, 25.0, 10.0, 1.0);
+            segment->SetVariationParameters(sztRightPrismatic, 0.0, 11, 1.0);
          }
-         else if ( segIdx == 3 )
+         else if (segIdx == 3)
          {
             segment->put_VariationType(svtDoubleParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11,1.0);
-            segment->SetVariationParameters(sztLeftTapered,25.0,14.0,1.0);
-            segment->SetVariationParameters(sztRightTapered,25.0,14.0,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,0.0, 11.77777,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic, 0.0, 11, 1.0);
+            segment->SetVariationParameters(sztLeftTapered, 25.0, 14.0, 1.0);
+            segment->SetVariationParameters(sztRightTapered, 25.0, 14.0, 1.0);
+            segment->SetVariationParameters(sztRightPrismatic, 0.0, 11.77777, 1.0);
          }
-         else if ( segIdx == 4 )
+         else if (segIdx == 4)
          {
             segment->put_VariationType(svtParabolic);
-            segment->SetVariationParameters(sztLeftPrismatic,0.0, 11.77777,1.0);
-            segment->SetVariationParameters(sztRightPrismatic,50.0,10.0,1.0);
+            segment->SetVariationParameters(sztLeftPrismatic, 0.0, 11.77777, 1.0);
+            segment->SetVariationParameters(sztRightPrismatic, 50.0, 10.0, 1.0);
          }
          else
          {
@@ -599,19 +691,33 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
          // segment material
          CComPtr<IMaterial> material;
          material.CoCreateInstance(CLSID_Material);
-         for ( int i = 0; i < 7; i++ )
+         for (int i = 0; i < 7; i++)
          {
-            material->put_E(i,604800.);     // 4200 ksi = 604800 ksf
-            material->put_Density(i,160.0); //  160 kcf
+            material->put_E(i, 604800.);     // 4200 ksi = 604800 ksf
+            material->put_Density(i, 160.0); //  160 kcf
          }
 
-         segment->AddShape(shape,material,nullptr);
+         segment->AddShape(shape, material, nullptr);
 
          // segment geometry
          CComPtr<IGirderLine> girderline;
-         geometry->FindGirderLine(gdrLineID,&girderline);
-         TRY_TEST(girderline != nullptr,true);
+         geometry->FindGirderLine(gdrLineID, &girderline);
+         TRY_TEST(girderline != nullptr, true);
          segment->putref_GirderLine(girderline);
+      }
+   }
+
+   for (GirderIndexType gdrIdx = 0; gdrIdx < nGirders; gdrIdx++)
+   {
+      ssmbr.Release();
+      bridge->get_SuperstructureMember(GirderIDType(gdrIdx), &ssmbr);
+
+      for (SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++)
+      {
+         SegmentIDType gdrLineID = GetGirderSegmentLineID(gdrIdx, segIdx);
+
+         CComPtr<ISuperstructureMemberSegment> segment;
+         ssmbr->get_Segment(segIdx, &segment);
 
          // item data specific for precast girder bridges
          CComQIPtr<IItemData> item_data(segment);
@@ -676,23 +782,22 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
    bridge->putref_Deck(deck);
    bridge->put_SacrificialDepth(1./12);
 
-   bridge->UpdateBridgeModel(GF_ALL); // forces the geometry to be up to date
    bridge.CopyTo(ppBridge);
 }
 
-void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* geometry,CogoObjectID alignmentID,PierIDType backPierID,PierIDType forwardPierID,IBridgeDeck** deck)
+void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* geometry,IDType alignmentID,PierIDType backPierID,PierIDType forwardPierID,IBridgeDeck** deck)
 {
    // create layout lines for the bridge deck boundary
    CComPtr<IAlignmentOffsetLayoutLineFactory> layoutLineFactory;
    layoutLineFactory.CoCreateInstance(CLSID_AlignmentOffsetLayoutLineFactory);
 
    layoutLineFactory->put_LayoutLineID(-500); // ID of first layout line (left deck edge)
-   layoutLineFactory->put_LayoutLineIDInc(-1); // increment by -1 for right deck edge
+   layoutLineFactory->put_LayoutLineIDIncrement(-1); // increment by -1 for right deck edge
    layoutLineFactory->put_LayoutLineCount(2);  // 2 deck edges
-   layoutLineFactory->put_Offset(maxWidth/2+overhang); // + is left of alignment 
-   layoutLineFactory->put_OffsetIncrement(-(maxWidth+2*overhang)); // - offsets next line toward the right
+   layoutLineFactory->put_Offset(-maxWidth/2-overhang); // - is left of alignment 
+   layoutLineFactory->put_OffsetIncrement((maxWidth+2*overhang)); // offsets next line toward the right
    layoutLineFactory->put_AlignmentID(alignmentID);
-   geometry->CreateLayoutLines(layoutLineFactory);
+   geometry->AddLayoutLineFactory(layoutLineFactory);
 
    // create the bridge deck boundary
    CComPtr<ISimpleDeckBoundaryFactory> deckBoundaryFactory;
@@ -703,7 +808,7 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
    deckBoundaryFactory->put_TransverseEdgeType(etEnd, setPier);
    deckBoundaryFactory->put_EdgeID(stLeft,-500); // left edge of slab (layout line 1000)
    deckBoundaryFactory->put_EdgeID(stRight,-501); // right edge of slab (layout line 2000)
-   geometry->CreateDeckBoundary(deckBoundaryFactory); 
+   geometry->AddDeckBoundaryFactory(deckBoundaryFactory); 
 
    // get the deck boundary
    CComPtr<IDeckBoundary> deckBoundary;

@@ -1554,7 +1554,7 @@ STDMETHODIMP CCogoModel::get_Tangent(ITangent **pVal)
 
 ///////////////////////////////////////////////////////
 // IMeasure
-STDMETHODIMP CCogoModel::Angle(CogoObjectID fromID, CogoObjectID vertexID, CogoObjectID toID, IAngle** angle)
+STDMETHODIMP CCogoModel::Angle(IDType fromID, IDType vertexID, IDType toID, IAngle** angle)
 {
    CHECK_RETOBJ(angle);
    HRESULT hr;
@@ -1613,7 +1613,7 @@ STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
       return E_INVALIDARG;
 
    // Need a container to hold the points
-   std::vector<CogoObjectID> vIDs;
+   std::vector<IDType> vIDs;
 
    // Get the array bounds, loop over the array,
    // find the specified points, and build up the polyshape
@@ -1659,7 +1659,7 @@ STDMETHODIMP CCogoModel::Area(VARIANT IDs,Float64* area)
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::Distance(CogoObjectID fromID, CogoObjectID toID, Float64* dist)
+STDMETHODIMP CCogoModel::Distance(IDType fromID, IDType toID, Float64* dist)
 {
    CHECK_RETVAL(dist);
    try
@@ -1673,7 +1673,7 @@ STDMETHODIMP CCogoModel::Distance(CogoObjectID fromID, CogoObjectID toID, Float6
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::Direction(CogoObjectID fromID, CogoObjectID toID, IDirection** dir)
+STDMETHODIMP CCogoModel::Direction(IDType fromID, IDType toID, IDirection** dir)
 {
    CHECK_RETOBJ(dir);
    HRESULT hr;
@@ -1688,7 +1688,7 @@ STDMETHODIMP CCogoModel::Direction(CogoObjectID fromID, CogoObjectID toID, IDire
    return hr;
 }
 
-STDMETHODIMP CCogoModel::Inverse(CogoObjectID fromID,CogoObjectID toID, Float64* dist, IDirection** dir)
+STDMETHODIMP CCogoModel::Inverse(IDType fromID,IDType toID, Float64* dist, IDirection** dir)
 {
    CHECK_RETOBJ(dir);
    WBFL::COGO::Direction direction;
@@ -1698,7 +1698,7 @@ STDMETHODIMP CCogoModel::Inverse(CogoObjectID fromID,CogoObjectID toID, Float64*
 
 ///////////////////////////////////////////////////////
 // ILocate
-STDMETHODIMP CCogoModel::ByDistAngle(CogoObjectID newID,CogoObjectID fromID,CogoObjectID toID,Float64 dist,VARIANT varAngle,Float64 offset)
+STDMETHODIMP CCogoModel::ByDistAngle(IDType newID,IDType fromID,IDType toID,Float64 dist,VARIANT varAngle,Float64 offset)
 {
    HRESULT hr;
    WBFL::COGO::Angle angle;
@@ -1717,7 +1717,7 @@ STDMETHODIMP CCogoModel::ByDistAngle(CogoObjectID newID,CogoObjectID fromID,Cogo
    return hr;
 }
 
-STDMETHODIMP CCogoModel::ByDistDefAngle(CogoObjectID newID,CogoObjectID fromID,CogoObjectID toID,Float64 dist,VARIANT varDefAngle,Float64 offset)
+STDMETHODIMP CCogoModel::ByDistDefAngle(IDType newID,IDType fromID,IDType toID,Float64 dist,VARIANT varDefAngle,Float64 offset)
 {
    HRESULT hr;
    WBFL::COGO::Angle defAngle;
@@ -1736,7 +1736,7 @@ STDMETHODIMP CCogoModel::ByDistDefAngle(CogoObjectID newID,CogoObjectID fromID,C
    return hr;
 }
 
-STDMETHODIMP CCogoModel::ByDistDir(CogoObjectID newID,CogoObjectID fromID,Float64 dist,VARIANT varDir,Float64 offset)
+STDMETHODIMP CCogoModel::ByDistDir(IDType newID,IDType fromID,Float64 dist,VARIANT varDir,Float64 offset)
 {
    HRESULT hr;
    WBFL::COGO::Direction dir;
@@ -1755,13 +1755,13 @@ STDMETHODIMP CCogoModel::ByDistDir(CogoObjectID newID,CogoObjectID fromID,Float6
    return hr;
 }
 
-STDMETHODIMP CCogoModel::PointOnLine(CogoObjectID newID, CogoObjectID fromID, CogoObjectID toID, Float64 dist, Float64 offset)
+STDMETHODIMP CCogoModel::PointOnLine(IDType newID, IDType fromID, IDType toID, Float64 dist, Float64 offset)
 {
    m_Model->LocatePointOnLine(newID, fromID, toID, dist, offset);
    return S_OK;
 }
 
-STDMETHODIMP CCogoModel::ParallelLineByPoints(CogoObjectID newFromID, CogoObjectID newToID, CogoObjectID fromID, CogoObjectID toID, Float64 offset)
+STDMETHODIMP CCogoModel::ParallelLineByPoints(IDType newFromID, IDType newToID, IDType fromID, IDType toID, Float64 offset)
 {
    HRESULT hr;
    try
@@ -1776,7 +1776,7 @@ STDMETHODIMP CCogoModel::ParallelLineByPoints(CogoObjectID newFromID, CogoObject
    return hr;
 }
 
-STDMETHODIMP CCogoModel::ParallelLineSegment(CogoObjectID newLineID, CogoObjectID newFromID, CogoObjectID newToID, CogoObjectID lineID, Float64 offset)
+STDMETHODIMP CCogoModel::ParallelLineSegment(IDType newLineID, IDType newFromID, IDType newToID, IDType lineID, Float64 offset)
 {
    HRESULT hr = S_OK;
    try
@@ -1793,7 +1793,7 @@ STDMETHODIMP CCogoModel::ParallelLineSegment(CogoObjectID newLineID, CogoObjectI
 
 ////////////////////////////////////////////////////////
 // IIntersect
-STDMETHODIMP CCogoModel::Bearings(CogoObjectID newID, CogoObjectID id1, VARIANT varDir1, Float64 offset1, CogoObjectID id2, VARIANT varDir2, Float64 offset2, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::Bearings(IDType newID, IDType id1, VARIANT varDir1, Float64 offset1, IDType id2, VARIANT varDir2, Float64 offset2, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
    HRESULT hr = S_OK;
@@ -1815,7 +1815,7 @@ STDMETHODIMP CCogoModel::Bearings(CogoObjectID newID, CogoObjectID id1, VARIANT 
    return hr;
 }
 
-STDMETHODIMP CCogoModel::BearingCircle(CogoObjectID newID, CogoObjectID id1, VARIANT varDir, Float64 offset, CogoObjectID idc, Float64 radius, CogoObjectID idNearest, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::BearingCircle(IDType newID, IDType id1, VARIANT varDir, Float64 offset, IDType idc, Float64 radius, IDType idNearest, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -1839,7 +1839,7 @@ STDMETHODIMP CCogoModel::BearingCircle(CogoObjectID newID, CogoObjectID id1, VAR
    return hr;
 }
 
-STDMETHODIMP CCogoModel::Circles(CogoObjectID newID, CogoObjectID id1, Float64 r1, CogoObjectID id2, Float64 r2, CogoObjectID idNearest, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::Circles(IDType newID, IDType id1, Float64 r1, IDType id2, Float64 r2, IDType idNearest, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -1860,7 +1860,7 @@ STDMETHODIMP CCogoModel::Circles(CogoObjectID newID, CogoObjectID id1, Float64 r
    return hr;
 }
 
-STDMETHODIMP CCogoModel::LineByPointsCircle(CogoObjectID newID, CogoObjectID id1, CogoObjectID id2, Float64 offset, CogoObjectID idc, Float64 radius, CogoObjectID idNearest, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::LineByPointsCircle(IDType newID, IDType id1, IDType id2, Float64 offset, IDType idc, Float64 radius, IDType idNearest, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -1881,7 +1881,7 @@ STDMETHODIMP CCogoModel::LineByPointsCircle(CogoObjectID newID, CogoObjectID id1
    return hr;
 }
 
-STDMETHODIMP CCogoModel::LinesByPoints(CogoObjectID newID, CogoObjectID id11, CogoObjectID id12, Float64 offset1, CogoObjectID id21, CogoObjectID id22, Float64 offset2, VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::LinesByPoints(IDType newID, IDType id11, IDType id12, Float64 offset1, IDType id21, IDType id22, Float64 offset2, VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -1899,7 +1899,7 @@ STDMETHODIMP CCogoModel::LinesByPoints(CogoObjectID newID, CogoObjectID id11, Co
    return hr;
 }
 
-STDMETHODIMP CCogoModel::Lines(CogoObjectID newID,CogoObjectID id1,Float64 offset1,CogoObjectID id2,Float64 offset2,VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::Lines(IDType newID,IDType id1,Float64 offset1,IDType id2,Float64 offset2,VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -1917,7 +1917,7 @@ STDMETHODIMP CCogoModel::Lines(CogoObjectID newID,CogoObjectID id1,Float64 offse
    return hr;
 }
 
-STDMETHODIMP CCogoModel::LineSegmentCircle(CogoObjectID newID,CogoObjectID lineID,Float64 offset,CogoObjectID idc,Float64 radius,CogoObjectID idNearest,VARIANT_BOOL* bFound)
+STDMETHODIMP CCogoModel::LineSegmentCircle(IDType newID,IDType lineID,Float64 offset,IDType idc,Float64 radius,IDType idNearest,VARIANT_BOOL* bFound)
 {
    CHECK_RETVAL(bFound);
 
@@ -1940,7 +1940,7 @@ STDMETHODIMP CCogoModel::LineSegmentCircle(CogoObjectID newID,CogoObjectID lineI
 
 ////////////////////////////////////////////////////////
 // IProject
-STDMETHODIMP CCogoModel::PointOnLineByPoints(CogoObjectID newID, CogoObjectID fromID, CogoObjectID startID, CogoObjectID endID, Float64 offset)
+STDMETHODIMP CCogoModel::PointOnLineByPoints(IDType newID, IDType fromID, IDType startID, IDType endID, Float64 offset)
 {
    HRESULT hr = S_OK;
    try
@@ -1954,7 +1954,7 @@ STDMETHODIMP CCogoModel::PointOnLineByPoints(CogoObjectID newID, CogoObjectID fr
    return hr;
 }
 
-STDMETHODIMP CCogoModel::PointOnLineSegment(CogoObjectID newID, CogoObjectID fromID, CogoObjectID lineID, Float64 offset)
+STDMETHODIMP CCogoModel::PointOnLineSegment(IDType newID, IDType fromID, IDType lineID, Float64 offset)
 {
    HRESULT hr = S_OK;
    try
@@ -1968,7 +1968,7 @@ STDMETHODIMP CCogoModel::PointOnLineSegment(CogoObjectID newID, CogoObjectID fro
    return hr;
 }
 
-STDMETHODIMP CCogoModel::PointOnCurve(CogoObjectID newID, CogoObjectID fromID, CogoObjectID curveID)
+STDMETHODIMP CCogoModel::PointOnCurve(IDType newID, IDType fromID, IDType curveID)
 {
    HRESULT hr = S_OK;
    try
@@ -1984,7 +1984,7 @@ STDMETHODIMP CCogoModel::PointOnCurve(CogoObjectID newID, CogoObjectID fromID, C
 
 ////////////////////////////////////////////////////////
 // IDivide
-STDMETHODIMP CCogoModel::Arc(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID fromID, CogoObjectID vertexID, CogoObjectID toID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::Arc(IDType firstID, IDType idInc, IDType fromID, IDType vertexID, IDType toID, CollectionIndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
@@ -2004,7 +2004,7 @@ STDMETHODIMP CCogoModel::Arc(CogoObjectID firstID, CogoObjectID idInc, CogoObjec
    return hr;
 }
 
-STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID fromID, CogoObjectID toID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::BetweenPoints(IDType firstID, IDType idInc, IDType fromID, IDType toID, CollectionIndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
@@ -2024,7 +2024,7 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc,
    return hr;
 }
 
-STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID lineID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::LineSegment(IDType firstID, IDType idInc, IDType lineID, CollectionIndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
@@ -2044,7 +2044,7 @@ STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, C
    return hr;
 }
 
-STDMETHODIMP CCogoModel::CompoundCurve(CogoObjectID firstID, CogoObjectID idInc, CogoObjectID curveID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::CompoundCurve(IDType firstID, IDType idInc, IDType curveID, CollectionIndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX)
       return E_INVALIDARG;
@@ -2064,7 +2064,7 @@ STDMETHODIMP CCogoModel::CompoundCurve(CogoObjectID firstID, CogoObjectID idInc,
    return hr;
 }
 
-STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObjectID pathID,CollectionIndexType nParts,Float64 start,Float64 end)
+STDMETHODIMP CCogoModel::Path(IDType firstID,IDType idInc,IDType pathID,CollectionIndexType nParts,Float64 start,Float64 end)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX)
       return E_INVALIDARG;
@@ -2086,7 +2086,7 @@ STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObject
 
 ////////////////////////////////////////////////////////
 // ITangent
-STDMETHODIMP CCogoModel::Cross(CogoObjectID newID1, CogoObjectID idCenter1, Float64 radius1, CogoObjectID newID2, CogoObjectID idCenter2, Float64 radius2, TangentSignType sign)
+STDMETHODIMP CCogoModel::Cross(IDType newID1, IDType idCenter1, Float64 radius1, IDType newID2, IDType idCenter2, Float64 radius2, TangentSignType sign)
 {
    // Check the radii
    if ( radius1 <= 0.0 )
@@ -2107,7 +2107,7 @@ STDMETHODIMP CCogoModel::Cross(CogoObjectID newID1, CogoObjectID idCenter1, Floa
    return hr;
 }
 
-STDMETHODIMP CCogoModel::External(CogoObjectID newID1, CogoObjectID idCenter1, Float64 radius1, CogoObjectID newID2, CogoObjectID idCenter2, Float64 radius2, TangentSignType sign)
+STDMETHODIMP CCogoModel::External(IDType newID1, IDType idCenter1, Float64 radius1, IDType newID2, IDType idCenter2, Float64 radius2, TangentSignType sign)
 {
    // Check the radii
    if ( radius1 <= 0.0 )
@@ -2128,7 +2128,7 @@ STDMETHODIMP CCogoModel::External(CogoObjectID newID1, CogoObjectID idCenter1, F
    return hr;
 }
 
-STDMETHODIMP CCogoModel::Point(CogoObjectID newID, CogoObjectID idCenter, Float64 radius,CogoObjectID pointID,TangentSignType sign)
+STDMETHODIMP CCogoModel::Point(IDType newID, IDType idCenter, Float64 radius,IDType pointID,TangentSignType sign)
 {
    // Check the radius
    if ( radius <= 0.0 )

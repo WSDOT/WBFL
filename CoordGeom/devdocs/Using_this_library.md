@@ -1,6 +1,6 @@
 # Using this library{#WBFL_COGO_Using_this_library}
 
-The WBFL COGO library has two functional areas: Coordinate Geometry Modeling and Roadway Geometrics. Each will be explained with brief examples below.
+The WBFL COGO library has three functional areas: Coordinate Geometry Modeling, Roadway Geometrics and Bridge Framing Geometry. Each will be explained with brief examples below.
 
 First, there are some general concepts that are applicable to the entire library.
 
@@ -43,7 +43,7 @@ Point2d p0(0,0);
 Point2d p1(10,0);
 
 Angle angle(ToRadian(45.0));
-auto p2 = Utilities::LocateByDistanceAndAngle(p0,p1,20.0,angle,0.0);
+auto p2 = COGO::LocateByDistanceAndAngle(p0,p1,20.0,angle,0.0);
 std::cout << p2.X() << ", " << p2.Y();
 ~~~
 
@@ -166,6 +166,68 @@ template1->UpdateSegmentParameters(1,20.0,-0.02,SurfaceTemplateSegment::SlopeTyp
 
 template2->UpdateSegmentParameters(0,20.0,0.06,SurfaceTemplateSegment::SlopeType::Horizontal);
 template2->UpdateSegmentParameters(1,20.0,0.06,SurfaceTemplateSegment::SlopeType::Horizontal);
+~~~
+
+## Bridge Framing Geometry
+The bridge framing geometry features are used to layout the plan view framing of a bridge model. The bridge framing model consists of pier lines, girder lines, and a deck boundary. A pier line defines the location of a pier along an alignment, the centerline of the pier, and geometric properties defining the location of bearings and the end geometry of beams framing into the pier. Girder lines define the centerline of a girder. The deck boundary defines the transverse edges the ends of the deck) and the side edges of a deck.
+
+The girder lines and deck boundary lines can be defined using layout lines. 
+
+Pier lines, layout lines, girder lines, diaphragm lines, and deck boundaries are created using factory objects. 
+
+The following example creates a framing model for three span bridge.
+
+~~~
+   // Create an alignment
+   auto alignment = Alignment::Create();
+   Float64 segment_length = 100000;
+   auto path_segment = PathSegment::Create(WBFL::Geometry::Point2d(0, 0), WBFL::Geometry::Size2d(segment_length, 0.0));
+   alignment->AddPathElement(path_segment);
+   alignment->SetReferenceStation(0.0);
+   
+   IDType alignmentID = 999;
+   
+   // Create a bridge geometry object
+   auto framing = BridgeFramingGeometry::Create(alignmentID,alignment);
+   
+   // Create a factory for the pier lines
+   for(int i = 0; i < 4; i++)
+   {
+      ConnectionGeometry back, ahead; // default values are used for this example
+	  Float64 station = i*100;
+	  IDType id = (IDType)(i);
+	  
+	  // factory that creates a single pier line
+	  auto pier_line_factory = std::make_shared<SinglePierLineFactory>(id,alignmentID,station,_T("Normal"),pier_length, -pier_length/2, back, ahead);
+	  framing->AddPierLineFactory(pier_line_factory);
+   }
+   
+   // create a layout line to aid in defining the girder lines
+   // layout line is parallel to and offset from the alignment
+   auto layout_line_factory = std::make_shared<AlignmentOffsetLayoutLineFactory>();
+   layout_line_factory->SetAlignmentID(alignmentID);
+   layout_line_factory->SetLayoutLineID(100);
+   layout_line_factory->SetLayoutLineIDIncrement(1);
+   layout_line_factory->SetLayoutLineCount(5); // create 5 layout lines
+   layout_line_factory->SetOffset(-10.0); // offset from alignment (10 ft left)
+   layout_line_factory->SetOffsetIncrement(5.0); // each subsequent layout line is 5 ft to the right of the previous
+   framing->AddLayoutLineFactory(layout_line_factory);
+
+   // Create girder lines
+   auto girder_line_factory = std::make_shared<SimpleGirderLineFactory>();
+   girder_line_factory->SetGirderLineID(500); // left most girder line has ID 500
+   girder_line_factory->SetGirderLineIDIncrement(1); // girder line ID increments by 1
+   girder_line_factory->SetLayoutLineID(SideType::Left, 100); // layout line used to locate the left girder line
+   girder_line_factory->SetLayoutLineID(SideType::Right, 104); // layout line used to location the right girder line
+   girder_line_factory->SetLayoutLineIDIncrement(1);
+   girder_line_factory->SetGirderLineType(GirderLineType::Chord); // layout as a chord
+   girder_line_factory->SetPierID(EndType::Start, 0); // layout girders between pier line ID = 0 and ...
+   girder_line_factory->SetPierID(EndType::End, 4); // ... pier line ID = 4
+   girder_line_factory->SetPierIDIncrement(1);
+   girder_line_factory->IsContinuous(false); // girder lines not continuous so 5 girder lines are created in each span
+   framing->AddGirderLineFactory(girder_line_factory);
+   
+   auto nGirderLines = framing->GetGirderLineCount(); // should be 15
 ~~~
 
 ## Additional Examples

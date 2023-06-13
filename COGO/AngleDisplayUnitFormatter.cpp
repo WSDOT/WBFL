@@ -138,7 +138,7 @@ STDMETHODIMP CAngleDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR* fmt
    short deg;
    unsigned short min;
    Float64 sec;
-   std::tie(deg, min, sec) = WBFL::COGO::Utilities::ToDMS(val);
+   std::tie(deg, min, sec) = WBFL::COGO::COGO::ToDMS(val);
    TCHAR dir;
    dir = (val < 0) ? 'R' : 'L';
 

@@ -165,7 +165,7 @@ void CTestMeasure::Test()
    keys = SafeArrayCreate(VT_I4,1,&bounds);
    for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
+      IDType key = IDType(i - bounds.lLbound + 1);
       SafeArrayPutElement(keys,&i,&key);
    }
 
@@ -182,7 +182,7 @@ void CTestMeasure::Test()
    keys = SafeArrayCreate(VT_I4,1,&bounds);
    for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
+      IDType key = IDType(i - bounds.lLbound + 1);
       if ( (i-bounds.lLbound) == 2 )
          key = 400;
 
@@ -198,7 +198,7 @@ void CTestMeasure::Test()
    keys = SafeArrayCreate(VT_I4,1,&bounds);
    for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
+      IDType key = IDType(i - bounds.lLbound + 1);
       SafeArrayPutElement(keys,&i,&key);
    }
    varKeys.vt = VT_ARRAY | VT_I4;

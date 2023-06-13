@@ -204,10 +204,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BridgeGeometry\BridgeGeometry.vcxproj">
-      <Project>{02ab2465-2aa0-45db-b083-cbf7f55c9722}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\COGO\Cogo.vcxproj">
       <Project>{905d99ea-8bc5-45ab-bd0e-9531bb9d9f95}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>

@@ -25,7 +25,7 @@
 #include "SurfaceImpl.h"
 #include <CoordGeom/Alignment.h>
 #include <CoordGeom/Profile.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/XCoordGeom.h>
 
 
@@ -396,7 +396,7 @@ void SurfaceImpl::AddSuperelevation(std::shared_ptr<Superelevation> superelevati
    std::sort(m_Superelevations.begin(), m_Superelevations.end(), 
       [&alignment](const auto& se1, const auto& se2) 
       {
-         return 0 < (alignment ? alignment->CompareStations(se1->GetBeginTransition(), se2->GetBeginTransition()) : Utilities::CompareNormalizedStations(se1->GetBeginTransition(), se2->GetBeginTransition()));
+         return 0 < (alignment ? alignment->CompareStations(se1->GetBeginTransition(), se2->GetBeginTransition()) : COGO::CompareNormalizedStations(se1->GetBeginTransition(), se2->GetBeginTransition()));
       }
    );
 }
@@ -430,7 +430,7 @@ void SurfaceImpl::AddWidening(std::shared_ptr<Widening> widening)
    std::sort(m_Widenings.begin(), m_Widenings.end(),
       [&alignment](const auto& se1, const auto& se2)
       {
-         return 0 < (alignment ? alignment->CompareStations(se1->GetBeginTransition(), se2->GetBeginTransition()) : Utilities::CompareNormalizedStations(se1->GetBeginTransition(), se2->GetBeginTransition()));
+         return 0 < (alignment ? alignment->CompareStations(se1->GetBeginTransition(), se2->GetBeginTransition()) : COGO::CompareNormalizedStations(se1->GetBeginTransition(), se2->GetBeginTransition()));
       }
    );
 }
@@ -601,7 +601,7 @@ void SurfaceImpl::SortSurfaceTemplates()
    std::sort(m_SurfaceTemplates.begin(), m_SurfaceTemplates.end(),
       [&alignment](const auto& t1, const auto& t2)
       {
-         return 0 < (alignment ? alignment->CompareStations(t1->GetStation(), t2->GetStation()) : Utilities::CompareNormalizedStations(t1->GetStation(), t2->GetStation()));
+         return 0 < (alignment ? alignment->CompareStations(t1->GetStation(), t2->GetStation()) : COGO::CompareNormalizedStations(t1->GetStation(), t2->GetStation()));
       }
    );
 }

@@ -109,7 +109,7 @@ STDMETHODIMP CCogoEngine::Angle(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* verte
    auto pntFrom = cogoUtil::GetPoint(from);
    auto pntVertex = cogoUtil::GetPoint(vertex);
    auto pntTo = cogoUtil::GetPoint(to);
-   return cogoUtil::CreateAngle(WBFL::COGO::Utilities::MeasureAngle(pntFrom, pntVertex, pntTo), angle);
+   return cogoUtil::CreateAngle(WBFL::COGO::COGO::MeasureAngle(pntFrom, pntVertex, pntTo), angle);
 }
 
 STDMETHODIMP CCogoEngine::Area(/*[in]*/ IPoint2dCollection* points,/*[out,retval]*/ Float64* area)
@@ -128,7 +128,7 @@ STDMETHODIMP CCogoEngine::Area(/*[in]*/ IPoint2dCollection* points,/*[out,retval
       vPoints.emplace_back(point);
    }
 
-   *area = WBFL::COGO::Utilities::MeasureArea(vPoints);
+   *area = WBFL::COGO::COGO::MeasureArea(vPoints);
    return S_OK;
 }
 
@@ -140,7 +140,7 @@ STDMETHODIMP CCogoEngine::Distance(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* to
 
    auto pntFrom = cogoUtil::GetPoint(from);
    auto pntTo = cogoUtil::GetPoint(to);
-   *dist = WBFL::COGO::Utilities::MeasureDistance(pntFrom, pntTo);
+   *dist = WBFL::COGO::COGO::MeasureDistance(pntFrom, pntTo);
    return S_OK;
 }
 
@@ -149,7 +149,7 @@ STDMETHODIMP CCogoEngine::Direction(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* t
    CHECK_RETOBJ(dir);
    auto pntFrom = cogoUtil::GetPoint(from);
    auto pntTo = cogoUtil::GetPoint(to);
-   return cogoUtil::CreateDirection(WBFL::COGO::Utilities::MeasureDirection(pntFrom, pntTo), dir);
+   return cogoUtil::CreateDirection(WBFL::COGO::COGO::MeasureDirection(pntFrom, pntTo), dir);
 }
 
 STDMETHODIMP CCogoEngine::Inverse(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* to,/*[out]*/ Float64* dist,/*[out]*/ IDirection** dir)
@@ -163,7 +163,7 @@ STDMETHODIMP CCogoEngine::Inverse(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* to,
    auto pntTo = cogoUtil::GetPoint(to);
 
    WBFL::COGO::Direction direction;
-   std::tie(*dist, direction) = WBFL::COGO::Utilities::ComputeInverse(pntFrom, pntTo);
+   std::tie(*dist, direction) = WBFL::COGO::COGO::ComputeInverse(pntFrom, pntTo);
    return cogoUtil::CreateDirection(direction, dir);
 }
 
@@ -187,7 +187,7 @@ STDMETHODIMP CCogoEngine::ByDistAngle(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d*
    WBFL::COGO::Angle angle;
    std::tie(hr, angle) = cogoUtil::AngleFromVariant(varAngle);
    if (FAILED(hr)) return hr;
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::LocateByDistanceAndAngle(pntFrom, pntTo, dist, angle, offset), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::LocateByDistanceAndAngle(pntFrom, pntTo, dist, angle, offset), point);
 }
 
 STDMETHODIMP CCogoEngine::ByDistDefAngle(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDefAngle, /*[in]*/ Float64 offset, /*[out,retval]*/ IPoint2d** point)
@@ -210,7 +210,7 @@ STDMETHODIMP CCogoEngine::ByDistDefAngle(/*[in]*/ IPoint2d* from, /*[in]*/ IPoin
    WBFL::COGO::Angle defAngle;
    std::tie(hr, defAngle) = cogoUtil::AngleFromVariant(varDefAngle);
    if (FAILED(hr)) return hr;
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::LocateByDistanceAndDeflectionAngle(pntFrom, pntTo, dist, defAngle, offset), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::LocateByDistanceAndDeflectionAngle(pntFrom, pntTo, dist, defAngle, offset), point);
 }
 
 STDMETHODIMP CCogoEngine::ByDistDir(/*[in]*/ IPoint2d* from, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset,/*[out,retval]*/ IPoint2d** point)
@@ -224,7 +224,7 @@ STDMETHODIMP CCogoEngine::ByDistDir(/*[in]*/ IPoint2d* from, /*[in]*/ Float64 di
    WBFL::COGO::Direction direction;
    std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDir);
    if (FAILED(hr)) return hr;
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::LocateByDistanceAndDirection(pntFrom, dist, direction, offset), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::LocateByDistanceAndDirection(pntFrom, dist, direction, offset), point);
 }
 
 STDMETHODIMP CCogoEngine::PointOnLine(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to, /*[in]*/ Float64 dist, /*[in]*/ Float64 offset,/*[out,retval]*/ IPoint2d** point)
@@ -235,7 +235,7 @@ STDMETHODIMP CCogoEngine::PointOnLine(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d
 
    auto pntFrom = cogoUtil::GetPoint(from);
    auto pntTo = cogoUtil::GetPoint(to);
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::LocatePointOnLine(pntFrom, pntTo, dist, offset), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::LocatePointOnLine(pntFrom, pntTo, dist, offset), point);
 }
 
 STDMETHODIMP CCogoEngine::ParallelLineByPoints(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d* to, /*[in]*/ Float64 offset,/*[out]*/IPoint2d** p1,/*[out]*/IPoint2d** p2)
@@ -249,7 +249,7 @@ STDMETHODIMP CCogoEngine::ParallelLineByPoints(/*[in]*/ IPoint2d* from,/*[in]*/ 
    auto pntTo = cogoUtil::GetPoint(to);
 
    WBFL::Geometry::Point2d pnt1, pnt2;
-   std::tie(pnt1, pnt2) = WBFL::COGO::Utilities::LocateParallelLineByPoints(pntFrom, pntTo, offset);
+   std::tie(pnt1, pnt2) = WBFL::COGO::COGO::LocateParallelLineByPoints(pntFrom, pntTo, offset);
    HRESULT hr1 = cogoUtil::CreatePoint(pnt1, p1);
    HRESULT hr2 = cogoUtil::CreatePoint(pnt2, p2);
    return (FAILED(hr1) || FAILED(hr2) ? E_FAIL : S_OK);
@@ -261,7 +261,7 @@ STDMETHODIMP CCogoEngine::ParallelLineSegment(/*[in]*/ ILineSegment2d* line,/*[i
    CHECK_RETOBJ(linesegment);
 
    auto ls = cogoUtil::GetLineSegment(line);
-   return cogoUtil::CreateLineSegment(WBFL::COGO::Utilities::LocateParallelLineSegment(ls, offset), linesegment);
+   return cogoUtil::CreateLineSegment(WBFL::COGO::COGO::LocateParallelLineSegment(ls, offset), linesegment);
 }
 
 STDMETHODIMP CCogoEngine::Bearings(/*[in]*/ IPoint2d* p1, /*[in]*/ VARIANT varDir1, /*[in]*/ Float64 offset1,/*[in]*/ IPoint2d* p2, /*[in]*/ VARIANT varDir2, /*[in]*/ Float64 offset2, /*[out,retval]*/ IPoint2d** point)
@@ -279,7 +279,7 @@ STDMETHODIMP CCogoEngine::Bearings(/*[in]*/ IPoint2d* p1, /*[in]*/ VARIANT varDi
    std::tie(hr, dir2) = cogoUtil::DirectionFromVariant(varDir2);
    if (FAILED(hr)) return hr;
 
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::IntersectBearings(pnt1, dir1, offset1, pnt2, dir2, offset2), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::IntersectBearings(pnt1, dir1, offset1, pnt2, dir2, offset2), point);
 }
 
 STDMETHODIMP CCogoEngine::BearingCircle(/*[in]*/ IPoint2d* pnt1, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset,/*[in]*/ IPoint2d* pntCenter, /*[in]*/ Float64 radius, /*[in]*/ IPoint2d* pntNearest, /*[out,retval]*/ IPoint2d** point)
@@ -301,7 +301,7 @@ STDMETHODIMP CCogoEngine::BearingCircle(/*[in]*/ IPoint2d* pnt1, /*[in]*/ VARIAN
    auto pC = cogoUtil::GetPoint(pntCenter);
    auto pN = cogoUtil::GetPoint(pntNearest);
 
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::IntersectBearingAndCircle(p1, direction, offset, pC, radius, pN), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::IntersectBearingAndCircle(p1, direction, offset, pC, radius, pN), point);
 }
 
 STDMETHODIMP CCogoEngine::Circles(/*[in]*/ IPoint2d* c1, /*[in]*/ Float64 r1, /*[in]*/ IPoint2d* c2, /*[in]*/ Float64 r2, /*[in]*/ IPoint2d* nearest, /*[out,retval]*/ IPoint2d** point)
@@ -318,7 +318,7 @@ STDMETHODIMP CCogoEngine::Circles(/*[in]*/ IPoint2d* c1, /*[in]*/ Float64 r1, /*
    auto center2 = cogoUtil::GetPoint(c2);
    auto pntNearest = cogoUtil::GetPoint(nearest);
 
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::IntersectCircles(center1, r1, center2, r2, pntNearest), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::IntersectCircles(center1, r1, center2, r2, pntNearest), point);
 }
 
 STDMETHODIMP CCogoEngine::LineByPointsCircle(/*[in]*/ IPoint2d* pnt1, /*[in]*/ IPoint2d* pnt2, /*[in]*/ Float64 offset,/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radius, /*[in]*/ IPoint2d* nearest, /*[out,retval]*/ IPoint2d** point)
@@ -336,7 +336,7 @@ STDMETHODIMP CCogoEngine::LineByPointsCircle(/*[in]*/ IPoint2d* pnt1, /*[in]*/ I
    auto p2 = cogoUtil::GetPoint(pnt2);
    auto c = cogoUtil::GetPoint(center);
    auto n = cogoUtil::GetPoint(nearest);
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::IntersectLineByPointsAndCircle(p1, p2, offset, c, radius, n), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::IntersectLineByPointsAndCircle(p1, p2, offset, c, radius, n), point);
 }
 
 STDMETHODIMP CCogoEngine::LinesByPoints(/*[in]*/ IPoint2d* p11, /*[in]*/ IPoint2d* p12, /*[in]*/ Float64 offset1,/*[in]*/ IPoint2d* p21, /*[in]*/ IPoint2d* p22, /*[in]*/ Float64 offset2, /*[out,retval]*/ IPoint2d** point)
@@ -352,7 +352,7 @@ STDMETHODIMP CCogoEngine::LinesByPoints(/*[in]*/ IPoint2d* p11, /*[in]*/ IPoint2
    auto pnt21 = cogoUtil::GetPoint(p21);
    auto pnt22 = cogoUtil::GetPoint(p22);
 
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::IntersectLinesByPoints(pnt11, pnt12, offset1, pnt21, pnt11, offset2), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::IntersectLinesByPoints(pnt11, pnt12, offset1, pnt21, pnt11, offset2), point);
 }
 
 STDMETHODIMP CCogoEngine::Lines(/*[in]*/ILineSegment2d* l1,/*[in]*/Float64 offset1,/*[in]*/ILineSegment2d* l2,/*[in]*/Float64 offset2,/*[out,retval]*/ IPoint2d** point)
@@ -363,7 +363,7 @@ STDMETHODIMP CCogoEngine::Lines(/*[in]*/ILineSegment2d* l1,/*[in]*/Float64 offse
 
    auto ls1 = cogoUtil::GetLineSegment(l1);
    auto ls2 = cogoUtil::GetLineSegment(l2);
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::IntersectLineSegments(ls1, offset1, ls2, offset2), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::IntersectLineSegments(ls1, offset1, ls2, offset2), point);
 }
 
 STDMETHODIMP CCogoEngine::LineSegmentCircle(/*[in]*/ ILineSegment2d* seg, /*[in]*/ Float64 offset,/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radius, /*[in]*/ IPoint2d* nearest, /*[out,retval]*/ IPoint2d** point)
@@ -380,7 +380,7 @@ STDMETHODIMP CCogoEngine::LineSegmentCircle(/*[in]*/ ILineSegment2d* seg, /*[in]
    auto c = cogoUtil::GetPoint(center);
    auto n = cogoUtil::GetPoint(nearest);
 
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::IntersectLineSegmentAndCircle(ls, offset, c, radius, n), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::IntersectLineSegmentAndCircle(ls, offset, c, radius, n), point);
 }
 
 STDMETHODIMP CCogoEngine::PointOnLineByPoints(/*[in]*/ IPoint2d* pnt, /*[in]*/ IPoint2d* start, /*[in]*/ IPoint2d* end, /*[in]*/ Float64 offset,/*[out,retval]*/IPoint2d** point)
@@ -393,7 +393,7 @@ STDMETHODIMP CCogoEngine::PointOnLineByPoints(/*[in]*/ IPoint2d* pnt, /*[in]*/ I
    auto p = cogoUtil::GetPoint(pnt);
    auto s = cogoUtil::GetPoint(start);
    auto e = cogoUtil::GetPoint(end);
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::ProjectPointOnLineByPoints(p, s, e, offset), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::ProjectPointOnLineByPoints(p, s, e, offset), point);
 }
 
 STDMETHODIMP CCogoEngine::PointOnLineSegment(/*[in]*/ IPoint2d* from,/*[in]*/ ILineSegment2d* seg, /*[in]*/ Float64 offset, /*[out,retval]*/ IPoint2d** point)
@@ -404,7 +404,7 @@ STDMETHODIMP CCogoEngine::PointOnLineSegment(/*[in]*/ IPoint2d* from,/*[in]*/ IL
 
    auto f = cogoUtil::GetPoint(from);
    auto ls = cogoUtil::GetLineSegment(seg);
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::ProjectPointOnLineSegment(f, ls, offset), point);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::ProjectPointOnLineSegment(f, ls, offset), point);
 }
 
 STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
@@ -421,7 +421,7 @@ STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex
    auto v = cogoUtil::GetPoint(vertex);
    auto t = cogoUtil::GetPoint(to);
 
-   auto vPoints = WBFL::COGO::Utilities::DivideArc(f, v, t, nParts);
+   auto vPoints = WBFL::COGO::COGO::DivideArc(f, v, t, nParts);
 
    CComPtr<IPoint2dCollection> pnts;
    pnts.CoCreateInstance(CLSID_Point2dCollection);
@@ -445,7 +445,7 @@ STDMETHODIMP CCogoEngine::BetweenPoints(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint
 
    auto f = cogoUtil::GetPoint(from);
    auto t = cogoUtil::GetPoint(to);
-   auto vPoints = WBFL::COGO::Utilities::DivideBetweenPoints(f, t, nParts);
+   auto vPoints = WBFL::COGO::COGO::DivideBetweenPoints(f, t, nParts);
 
    CComPtr<IPoint2dCollection> pnts;
    pnts.CoCreateInstance(CLSID_Point2dCollection);
@@ -553,7 +553,7 @@ STDMETHODIMP CCogoEngine::External(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 
    auto c1 = cogoUtil::GetPoint(center1);
    auto c2 = cogoUtil::GetPoint(center2);
    WBFL::Geometry::Point2d pnt1, pnt2;
-   std::tie(pnt1, pnt2) = WBFL::COGO::Utilities::ExternalTangents(c1, radius1, c2, radius2, WBFL::COGO::TangentSign(sign));
+   std::tie(pnt1, pnt2) = WBFL::COGO::COGO::ExternalTangents(c1, radius1, c2, radius2, WBFL::COGO::TangentSign(sign));
    HRESULT hr1 = cogoUtil::CreatePoint(pnt1, t1);
    HRESULT hr2 = cogoUtil::CreatePoint(pnt2, t2);
    return (FAILED(hr1) || FAILED(hr2) ? E_FAIL : S_OK);
@@ -576,7 +576,7 @@ STDMETHODIMP CCogoEngine::Cross(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 rad
    auto c1 = cogoUtil::GetPoint(center1);
    auto c2 = cogoUtil::GetPoint(center2);
    WBFL::Geometry::Point2d pnt1, pnt2;
-   std::tie(pnt1, pnt2) = WBFL::COGO::Utilities::CrossingTangents(c1, radius1, c2, radius2, WBFL::COGO::TangentSign(sign));
+   std::tie(pnt1, pnt2) = WBFL::COGO::COGO::CrossingTangents(c1, radius1, c2, radius2, WBFL::COGO::TangentSign(sign));
    HRESULT hr1 = cogoUtil::CreatePoint(pnt1, t1);
    HRESULT hr2 = cogoUtil::CreatePoint(pnt2, t2);
    return (FAILED(hr1) || FAILED(hr2) ? E_FAIL : S_OK);
@@ -595,7 +595,7 @@ STDMETHODIMP CCogoEngine::Point(/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radi
    auto c = cogoUtil::GetPoint(center);
    auto p = cogoUtil::GetPoint(point);
 
-   return cogoUtil::CreatePoint(WBFL::COGO::Utilities::TangentPoint(c, radius, p, WBFL::COGO::TangentSign(sign)), tangent);
+   return cogoUtil::CreatePoint(WBFL::COGO::COGO::TangentPoint(c, radius, p, WBFL::COGO::TangentSign(sign)), tangent);
 }
 
 

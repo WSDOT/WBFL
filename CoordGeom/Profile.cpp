@@ -1632,7 +1632,7 @@ bool Profile::Test15(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("Profile::Test15");
 }
 
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/CircularCurve.h>
 #include <CoordGeom/PathSegment.h>
 bool Profile::Test16(WBFL::Debug::Log& rlog)
@@ -1644,9 +1644,9 @@ bool Profile::Test16(WBFL::Debug::Log& rlog)
    auto alignment = Alignment::Create();
    auto pbt = WBFL::Geometry::Point2d(2451859.110, 1005078.896);
    Direction bkTangent(_T("N 02 06 34 E"));
-   auto pi = Utilities::LocateByDistanceAndDirection(pbt, (2587.80 - refStation.GetValue()), bkTangent, 0.0);
+   auto pi = COGO::LocateByDistanceAndDirection(pbt, (2587.80 - refStation.GetValue()), bkTangent, 0.0);
    Direction fwdTangent = bkTangent - Angle(_T("10 01 30 R"));
-   auto pft = Utilities::LocateByDistanceAndDirection(pi, 5000.0, fwdTangent, 0.0);
+   auto pft = COGO::LocateByDistanceAndDirection(pi, 5000.0, fwdTangent, 0.0);
    auto curve = CircularCurve::Create(pbt, pi, pft, 2864.79);
    auto pc = curve->GetPC();
    auto back_tangent_segment = PathSegment::Create(pbt, pc);

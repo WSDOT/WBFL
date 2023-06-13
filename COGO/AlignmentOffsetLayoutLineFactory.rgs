@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.AlignmentOffsetLayoutLineFactory.1 = s 'AlignmentOffsetLayoutLineFactory Class'
+	{
+		CLSID = s '{6B593F0D-688B-48B2-BC03-5399D1BDAA1B}'
+	}
+	WBFLCogo.AlignmentOffsetLayoutLineFactory = s 'AlignmentOffsetLayoutLineFactory Class'
+	{
+		CLSID = s '{6B593F0D-688B-48B2-BC03-5399D1BDAA1B}'
+		CurVer = s 'WBFLCogo.AlignmentOffsetLayoutLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6B593F0D-688B-48B2-BC03-5399D1BDAA1B} = s 'AlignmentOffsetLayoutLineFactory Class'
+		{
+			ProgID = s 'WBFLCogo.AlignmentOffsetLayoutLineFactory.1'
+			VersionIndependentProgID = s 'WBFLCogo.AlignmentOffsetLayoutLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

@@ -189,6 +189,11 @@ Line2d Line2d::OffsetBy(const Size2d& size) const
    return OffsetBy(size.Dx(), size.Dy());
 }
 
+Line2d Line2d::OffsetBy(Float64 offset) const
+{
+   Line2d t(*this);
+   return t.Offset(offset);
+}
 
 Point2d Line2d::PointOnLineNearest(const Point2d& point) const
 {

@@ -26,7 +26,7 @@
 #include <CoordGeom/XCoordGeom.h>
 #include <CoordGeom/Profile.h>
 #include <CoordGeom/PathSegment.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 
 using namespace WBFL::COGO;
 
@@ -238,7 +238,7 @@ Int8 Alignment::CompareStations(const Station& s1, const Station& s2) const
 {
    auto ns1 = ConvertToNormalizedStation(s1);
    auto ns2 = ConvertToNormalizedStation(s2);
-   return Utilities::CompareNormalizedStations(ns1, ns2);
+   return COGO::CompareNormalizedStations(ns1, ns2);
 }
 
 void Alignment::AddProfile(IDType id,std::shared_ptr<Profile> profile)

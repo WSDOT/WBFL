@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.SingleDiaphragmLineFactory.1 = s 'SingleDiaphragmLineFactory Class'
+	{
+		CLSID = s '{17FE1E15-7E72-4F4E-AC48-37E1497D0806}'
+	}
+	WBFLCogo.SingleDiaphragmLineFactory = s 'SingleDiaphragmLineFactory Class'
+	{
+		CLSID = s '{17FE1E15-7E72-4F4E-AC48-37E1497D0806}'
+		CurVer = s 'WBFLCogo.SingleDiaphragmLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {17FE1E15-7E72-4F4E-AC48-37E1497D0806} = s 'SingleDiaphragmLineFactory Class'
+		{
+			ProgID = s 'WBFLCogo.SingleDiaphragmLineFactory.1'
+			VersionIndependentProgID = s 'WBFLCogo.SingleDiaphragmLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

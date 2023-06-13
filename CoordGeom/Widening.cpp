@@ -27,7 +27,7 @@
 #include <CoordGeom/Surface.h>
 #include <CoordGeom/Profile.h>
 #include <CoordGeom/Alignment.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/XCoordGeom.h>
 
 using namespace WBFL::COGO;
@@ -145,18 +145,18 @@ Float64 Widening::GetWidening(const Station& station, IndexType surfaceTemplateS
    auto alignment = GetAlignment();
 
    Float64 widening = 0;
-   if (0 < Utilities::CompareStations(alignment,station, m_BeginTransition) ||
-      0 < Utilities::CompareStations(alignment,m_EndTransition, station))
+   if (0 < COGO::CompareStations(alignment,station, m_BeginTransition) ||
+      0 < COGO::CompareStations(alignment,m_EndTransition, station))
    {
       // station is not in the widening area
    }
-   else if (0 <= Utilities::CompareStations(alignment, m_BeginTransition, station) &&
-       0 <= Utilities::CompareStations(alignment, station, m_BeginFullWidening))
+   else if (0 <= COGO::CompareStations(alignment, m_BeginTransition, station) &&
+       0 <= COGO::CompareStations(alignment, station, m_BeginFullWidening))
    {
       // In begin transition
-      Float64 sta = Utilities::ConvertToNormalizedStation(alignment,station);
-      Float64 begin = Utilities::ConvertToNormalizedStation(alignment, m_BeginTransition);
-      Float64 full = Utilities::ConvertToNormalizedStation(alignment, m_BeginFullWidening);
+      Float64 sta = COGO::ConvertToNormalizedStation(alignment,station);
+      Float64 begin = COGO::ConvertToNormalizedStation(alignment, m_BeginTransition);
+      Float64 full = COGO::ConvertToNormalizedStation(alignment, m_BeginFullWidening);
       if (IsEqual(begin, full))
       {
          widening = m_Widening;
@@ -166,13 +166,13 @@ Float64 Widening::GetWidening(const Station& station, IndexType surfaceTemplateS
          widening  = ::LinInterp(sta - begin, 0.0, m_Widening, full - begin);
       }
    }
-   else if (0 <= Utilities::CompareStations(alignment, m_EndFullWidening, station) &&
-            0 <= Utilities::CompareStations(alignment, station, m_EndTransition))
+   else if (0 <= COGO::CompareStations(alignment, m_EndFullWidening, station) &&
+            0 <= COGO::CompareStations(alignment, station, m_EndTransition))
    {
       // In end transition
-      Float64 sta  = Utilities::ConvertToNormalizedStation(alignment, station);
-      Float64 full = Utilities::ConvertToNormalizedStation(alignment, m_EndFullWidening);
-      Float64 end  = Utilities::ConvertToNormalizedStation(alignment, m_EndTransition);
+      Float64 sta  = COGO::ConvertToNormalizedStation(alignment, station);
+      Float64 full = COGO::ConvertToNormalizedStation(alignment, m_EndFullWidening);
+      Float64 end  = COGO::ConvertToNormalizedStation(alignment, m_EndTransition);
       if (IsEqual(full, end))
       {
          widening = m_Widening;

@@ -223,7 +223,7 @@
 		}
    };
 
-//using MyMap = std::map<CogoObjectID,CComVariant>;
+//using MyMap = std::map<IDType,CComVariant>;
 //using MapEnum = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, MapCopy<std::map<IDType,Iitem>,VARIANT>, std::map<IDType,Iitem> >;
 
 template <class T,class Icoll,const IID* piid,typename IDType,class Iitem>

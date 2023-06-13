@@ -619,7 +619,7 @@ HRESULT geomUtil::CreateParallelLine(ILine2d* pLine,Float64 dist, ILine2d** ppLi
 
    c -= dist;
 
-   CreateLine(ppLine);
+   ::CreateLine(ppLine);
    (*ppLine)->SetImplicit(c,pNormal);
 
    return S_OK;
@@ -636,7 +636,7 @@ HRESULT geomUtil::CreateParallelLineThroughPoint(ILine2d* pLine,IPoint2d* pPoint
 
    pLine->GetExplicit(&pU,&pDir);
 
-   CreateLine(ppLine);
+   ::CreateLine(ppLine);
    (*ppLine)->SetExplicit(pPoint,pDir);
 
    return S_OK;
@@ -696,7 +696,7 @@ HRESULT geomUtil::CreateNormalLineThroughPoint(ILine2d* pLine, IPoint2d* pPoint,
       CComPtr<IVector2d> pN;
       pV->Normal(&pN);
 
-      CreateLine(ppLine);
+      ::CreateLine(ppLine);
       (*ppLine)->SetExplicit(pPoint,pN);
    }
 
@@ -1275,6 +1275,21 @@ WBFL::Geometry::Circle2d geomUtil::GetCircle2d(ICircle* pCircle)
 HRESULT geomUtil::CreateLineSegment(const WBFL::Geometry::LineSegment2d& ls, ILineSegment2d** ppLineSegment)
 {
    return ::CreateLineSegment(ls, ppLineSegment);
+}
+
+HRESULT geomUtil::CreateLine(const WBFL::Geometry::Line2d& line, ILine2d** ppLine)
+{
+   return ::CreateLine(line, ppLine);
+}
+
+HRESULT geomUtil::CreateLine(IPoint2d* pStart, IPoint2d* pEnd, ILine2d** ppLine)
+{
+   return ::CreateLine(pStart, pEnd, ppLine);
+}
+
+HRESULT geomUtil::CreateLine(ILineSegment2d* pSeg, ILine2d** ppLine)
+{
+   return ::CreateLine(pSeg, ppLine);
 }
 
 HRESULT geomUtil::CreatePointCollection(const std::vector<WBFL::Geometry::Point2d>& vPoints, IPoint2dCollection** ppPoints)

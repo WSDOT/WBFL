@@ -95,14 +95,14 @@ public:
    STDMETHOD(CrossSlope)(/*[in]*/IDType surfaceID,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope) override;
 
    //STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone) override;
-   STDMETHOD(SurfaceTemplateSegmentSlope)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope) override;
+   STDMETHOD(SurfaceTemplateSegmentSlope)(/*[in]*/IDType id,/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope) override;
    //STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval) override;
    //STDMETHOD(get_Surfaces)(/*[out,retval]*/ISurfaceCollection** ppSurfaces) override;
    //STDMETHOD(putref_Surfaces)(/*[in]*/ISurfaceCollection* pSurfaces) override;
    STDMETHOD(GetSurfaceContainingStation)(VARIANT varStation,IDType* pID,ISurface** ppSurface) override;
-   STDMETHOD(GetRidgePointOffset)(CogoObjectID id,VARIANT varStation,IndexType ridgePoint1Idx,IndexType ridgePoint2dIdx,Float64* pOffset) override;
-   STDMETHOD(GetRidgePointElevation)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,Float64* pElev) override;
-   STDMETHOD(GetRidgePointOffsetAndElevation)(CogoObjectID id, VARIANT varStation, IndexType ridgePoint1Idx, IndexType ridgePoint2Idx,Float64* pOffset, Float64* pElev) override;
+   STDMETHOD(GetRidgePointOffset)(IDType id,VARIANT varStation,IndexType ridgePoint1Idx,IndexType ridgePoint2dIdx,Float64* pOffset) override;
+   STDMETHOD(GetRidgePointElevation)(IDType id,VARIANT varStation,IndexType ridgePointIdx,Float64* pElev) override;
+   STDMETHOD(GetRidgePointOffsetAndElevation)(IDType id, VARIANT varStation, IndexType ridgePoint1Idx, IndexType ridgePoint2Idx,Float64* pOffset, Float64* pElev) override;
 
 private:
    std::shared_ptr<WBFL::COGO::Profile> m_Profile;

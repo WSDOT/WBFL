@@ -50,12 +50,6 @@ void CTestSuperelevation::Test()
    CComPtr<ISuperelevation> pSuperelevation;
    TRY_TEST(pSuperelevation.CoCreateInstance(CLSID_Superelevation),S_OK);
 
-#pragma Reminder("UPDATE: methods that are not tested")
-      //[helpstring("method Init")] HRESULT Init([in]IProfile* pProfile,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 Superelevation,[in]IndexType pnt1,[in]IndexType pnt2);
-      //[propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      //[propput, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
-      //[helpstring("method Clone")] HRESULT Clone([out,retval]ISuperelevation** ppClone);
-
    CComPtr<IStation> objStation;
    Float64 station;
    ZoneIndexType zoneIdx;

@@ -29,6 +29,20 @@ namespace WBFL
 {
    namespace Geometry
    {
+      /// @brief A structure containing shape property parameters
+      struct GEOMMODELCLASS ShapePropertyParameters
+      {
+         Float64 area{ 0.0 };
+         Point2d centroid;
+         Float64 ixx{0.0};
+         Float64 iyy{0.0};
+         Float64 ixy{0.0};
+         Float64 xLeft{0.0};
+         Float64 yBottom{0.0};
+         Float64 xRight{0.0};
+         Float64 yTop{ 0.0 };
+      };
+
 /// This class encapsulates the geometric properties of a shape and provides
 /// property transformation services.
 ///
@@ -40,16 +54,18 @@ namespace WBFL
 class GEOMMODELCLASS ShapeProperties
 {
 public:
-   enum class CoordinateSystemType{
- 	         Centroidal,    ///< Origin at centroid of shape and oriented in global coordinates
- 	         Global,        ///< Origin at global origin
- 	         Principal,     ///< Origin at centroid of shape and oriented in principal direction    
- 	         UserDefined};  ///< Origin and orientation set by user
+   enum class CoordinateSystemType
+   {
+      Centroidal,    ///< Origin at centroid of shape and oriented in global coordinates
+      Global,        ///< Origin at global origin
+      Principal,     ///< Origin at centroid of shape and oriented in principal direction    
+      UserDefined    ///< Origin and orientation set by user
+   };
 
    /// Initializes all the properties to zero.
    /// The origin of the coordinate system is global (0,0) and the 
    /// orientation angle is zero.
-   ShapeProperties();
+   ShapeProperties() = default;
 
    /// Explicit constructor.  Initializes the shape properties in the 
    /// Centroidal coordinate system to the given values. 
@@ -60,6 +76,8 @@ public:
                  Float64 ixx, Float64 iyy, Float64 ixy,
                  Float64 xLeft, Float64 yBottom,
                  Float64 xRight, Float64 yTop);
+
+   ShapeProperties(const ShapePropertyParameters& parameters);
 
    /// This destructor is not virtual. It is not envisioned that this class 
    /// will be extended through inheritance.
@@ -87,8 +105,9 @@ public:
    ShapeProperties& operator+= (const ShapeProperties& rhs);
    ShapeProperties& operator-= (const ShapeProperties& rhs);
 
-   void SetProperties(Float64 area,const Point2d& centroid,Float64 ixx, Float64 iyy, Float64 ixy, Float64 xLeft,Float64 yBottom, Float64 xRight, Float64 yTop);
-   void GetProperties(Float64* area, Point2d* centroid, Float64* ixx, Float64* iyy, Float64* ixy,  Float64* xLeft, Float64* yBottom, Float64* xRight,Float64* yTop) const;
+   void SetProperties(Float64 area, const Point2d& centroid, Float64 ixx, Float64 iyy, Float64 ixy, Float64 xLeft, Float64 yBottom, Float64 xRight, Float64 yTop);
+   void SetProperties(const ShapePropertyParameters& properties);
+   const ShapePropertyParameters& GetProperties() const;
 
    /// Sets all properties to 0.0
    void Clear();
@@ -217,15 +236,7 @@ public:
 
 private:
    // properties about centroidal axis
-   Float64   m_Area{ 0.0 };
-   Point2d m_Centroid;
-   Float64   m_Ixx{ 0.0 };
-   Float64   m_Iyy{ 0.0 };
-   Float64   m_Ixy{ 0.0 };
-   Float64 m_Xleft{ 0.0 };
-   Float64 m_Xright{ 0.0 };
-   Float64 m_Ytop{ 0.0 };
-   Float64 m_Ybottom{ 0.0 };
+   ShapePropertyParameters m_Properties;
 
    // Current coordinate system
    CoordinateSystemType m_CoordType{ CoordinateSystemType::Centroidal };

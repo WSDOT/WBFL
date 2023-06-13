@@ -63,7 +63,7 @@ private:
 
    CComPtr<ICastingRegions> m_CastingRegions;
 
-   IDeckBoundary* m_pDeckBoundary; // weak reference
+   CComPtr<IDeckBoundary> m_pDeckBoundary;
 
 public:
 DECLARE_REGISTRY_RESOURCEID(IDR_CASTSLAB)

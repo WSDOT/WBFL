@@ -242,50 +242,50 @@ public:
 
 // IMeasure
 public:
-  	STDMETHOD(Angle)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID vertexID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ IAngle** angle) override;
+  	STDMETHOD(Angle)(/*[in]*/ IDType fromID,/*[in]*/ IDType vertexID,/*[in]*/ IDType toID,/*[out,retval]*/ IAngle** angle) override;
 	STDMETHOD(Area)(/*[in]*/ VARIANT IDs,/*[out,retval]*/ Float64* area) override;
-	STDMETHOD(Distance)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ Float64* dist) override;
-	STDMETHOD(Direction)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ IDirection** dir) override;
-   STDMETHOD(Inverse)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out]*/ Float64* dist,/*[out]*/ IDirection** dir) override;
+	STDMETHOD(Distance)(/*[in]*/ IDType fromID,/*[in]*/ IDType toID,/*[out,retval]*/ Float64* dist) override;
+	STDMETHOD(Direction)(/*[in]*/ IDType fromID,/*[in]*/ IDType toID,/*[out,retval]*/ IDirection** dir) override;
+   STDMETHOD(Inverse)(/*[in]*/ IDType fromID,/*[in]*/ IDType toID,/*[out]*/ Float64* dist,/*[out]*/ IDirection** dir) override;
 
 // ILocate
 public:
-   STDMETHOD(ParallelLineSegment)(/*[in]*/ CogoObjectID newLineID,/*[in]*/ CogoObjectID newFromID,/*[in]*/ CogoObjectID newToID,/*[in]*/ CogoObjectID lineID, /*[in]*/ Float64 offset) override;
-   STDMETHOD(ParallelLineByPoints)(/*[in]*/ CogoObjectID newFromID,/*[in]*/ CogoObjectID newToID,/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID, /*[in]*/ Float64 offset) override;
-	STDMETHOD(ByDistAngle)(/*[in]*/ CogoObjectID newID,/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varAngle, /*[in]*/ Float64 offset) override;
-	STDMETHOD(ByDistDefAngle)(/*[in]*/ CogoObjectID newID,/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDefAngle, /*[in]*/ Float64 offset) override;
-	STDMETHOD(ByDistDir)(/*[in]*/ CogoObjectID newID,/*[in]*/ CogoObjectID fromID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset) override;
-	STDMETHOD(PointOnLine)(/*[in]*/ CogoObjectID newID,/*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID toID, /*[in]*/ Float64 dist, /*[in]*/ Float64 offset) override;
-   STDMETHOD(LinesByPoints)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id11, /*[in]*/ CogoObjectID id12, /*[in]*/ Float64 offset1,/*[in]*/ CogoObjectID id21, /*[in]*/ CogoObjectID id22, /*[in]*/ Float64 offset2, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
+   STDMETHOD(ParallelLineSegment)(/*[in]*/ IDType newLineID,/*[in]*/ IDType newFromID,/*[in]*/ IDType newToID,/*[in]*/ IDType lineID, /*[in]*/ Float64 offset) override;
+   STDMETHOD(ParallelLineByPoints)(/*[in]*/ IDType newFromID,/*[in]*/ IDType newToID,/*[in]*/ IDType fromID,/*[in]*/ IDType toID, /*[in]*/ Float64 offset) override;
+	STDMETHOD(ByDistAngle)(/*[in]*/ IDType newID,/*[in]*/ IDType fromID,/*[in]*/ IDType toID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varAngle, /*[in]*/ Float64 offset) override;
+	STDMETHOD(ByDistDefAngle)(/*[in]*/ IDType newID,/*[in]*/ IDType fromID,/*[in]*/ IDType toID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDefAngle, /*[in]*/ Float64 offset) override;
+	STDMETHOD(ByDistDir)(/*[in]*/ IDType newID,/*[in]*/ IDType fromID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset) override;
+	STDMETHOD(PointOnLine)(/*[in]*/ IDType newID,/*[in]*/ IDType fromID, /*[in]*/ IDType toID, /*[in]*/ Float64 dist, /*[in]*/ Float64 offset) override;
+   STDMETHOD(LinesByPoints)(/*[in]*/IDType newID,/*[in]*/ IDType id11, /*[in]*/ IDType id12, /*[in]*/ Float64 offset1,/*[in]*/ IDType id21, /*[in]*/ IDType id22, /*[in]*/ Float64 offset2, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
 
 // IIntersect
 public:
-   STDMETHOD(Bearings)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id1, /*[in]*/ VARIANT varDir1, /*[in]*/ Float64 offset1,/*[in]*/ CogoObjectID id2, /*[in]*/ VARIANT varDir2, /*[in]*/ Float64 offset2,/*[out,retval]*/ VARIANT_BOOL* bFound) override;
-   STDMETHOD(BearingCircle)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id1, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset,/*[in]*/ CogoObjectID idc, /*[in]*/ Float64 radius, /*[in]*/ CogoObjectID idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
-   STDMETHOD(Circles)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id1, /*[in]*/ Float64 r1, /*[in]*/ CogoObjectID id2, /*[in]*/ Float64 r2, /*[in]*/ CogoObjectID idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
-   STDMETHOD(LineByPointsCircle)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id1, /*[in]*/ CogoObjectID id2, /*[in]*/ Float64 offset,/*[in]*/ CogoObjectID idc, /*[in]*/ Float64 radius, /*[in]*/ CogoObjectID idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
-   STDMETHOD(Lines)(/*[in]*/CogoObjectID newID,/*[in]*/CogoObjectID id1,/*[in]*/Float64 offset1,/*[in]*/CogoObjectID id2,/*[in]*/Float64 offset2,/*[out,retval]*/VARIANT_BOOL* bFound) override;
-   STDMETHOD(LineSegmentCircle)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID lineID, /*[in]*/ Float64 offset,/*[in]*/ CogoObjectID idc, /*[in]*/ Float64 radius, /*[in]*/ CogoObjectID idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
+   STDMETHOD(Bearings)(/*[in]*/IDType newID,/*[in]*/ IDType id1, /*[in]*/ VARIANT varDir1, /*[in]*/ Float64 offset1,/*[in]*/ IDType id2, /*[in]*/ VARIANT varDir2, /*[in]*/ Float64 offset2,/*[out,retval]*/ VARIANT_BOOL* bFound) override;
+   STDMETHOD(BearingCircle)(/*[in]*/IDType newID,/*[in]*/ IDType id1, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset,/*[in]*/ IDType idc, /*[in]*/ Float64 radius, /*[in]*/ IDType idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
+   STDMETHOD(Circles)(/*[in]*/IDType newID,/*[in]*/ IDType id1, /*[in]*/ Float64 r1, /*[in]*/ IDType id2, /*[in]*/ Float64 r2, /*[in]*/ IDType idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
+   STDMETHOD(LineByPointsCircle)(/*[in]*/IDType newID,/*[in]*/ IDType id1, /*[in]*/ IDType id2, /*[in]*/ Float64 offset,/*[in]*/ IDType idc, /*[in]*/ Float64 radius, /*[in]*/ IDType idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
+   STDMETHOD(Lines)(/*[in]*/IDType newID,/*[in]*/IDType id1,/*[in]*/Float64 offset1,/*[in]*/IDType id2,/*[in]*/Float64 offset2,/*[out,retval]*/VARIANT_BOOL* bFound) override;
+   STDMETHOD(LineSegmentCircle)(/*[in]*/IDType newID,/*[in]*/ IDType lineID, /*[in]*/ Float64 offset,/*[in]*/ IDType idc, /*[in]*/ Float64 radius, /*[in]*/ IDType idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound) override;
 
 // IProject
 public:
-   STDMETHOD(PointOnCurve)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID fromID, /*[in]*/CogoObjectID curveID) override;
-   STDMETHOD(PointOnLineByPoints)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID startID, /*[in]*/ CogoObjectID endID, /*[in]*/ Float64 offset) override;
-   STDMETHOD(PointOnLineSegment)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID lineID, /*[in]*/ Float64 offset) override;
+   STDMETHOD(PointOnCurve)(/*[in]*/IDType newID,/*[in]*/ IDType fromID, /*[in]*/IDType curveID) override;
+   STDMETHOD(PointOnLineByPoints)(/*[in]*/IDType newID,/*[in]*/ IDType fromID, /*[in]*/ IDType startID, /*[in]*/ IDType endID, /*[in]*/ Float64 offset) override;
+   STDMETHOD(PointOnLineSegment)(/*[in]*/IDType newID,/*[in]*/ IDType fromID,/*[in]*/ IDType lineID, /*[in]*/ Float64 offset) override;
 
 // IDivide
 public:
-   STDMETHOD(Arc)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID HorzexID, /*[in]*/ CogoObjectID toID,/*[in]*/ CollectionIndexType nParts) override;
-   STDMETHOD(BetweenPoints)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID toID,/*[in]*/ CollectionIndexType nParts) override;
-   STDMETHOD(LineSegment)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID lineID,/*[in]*/ CollectionIndexType nParts) override;
-	STDMETHOD(CompoundCurve)(/*[in]*/ CogoObjectID firstID, /*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID curveID, /*[in]*/ CollectionIndexType nParts) override;
-   STDMETHOD(Path)(/*[in]*/CogoObjectID firstID,/*[in]*/CogoObjectID idInc,/*[in]*/CogoObjectID pathID,/*[in]*/ CollectionIndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end) override;
+   STDMETHOD(Arc)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType fromID, /*[in]*/ IDType HorzexID, /*[in]*/ IDType toID,/*[in]*/ CollectionIndexType nParts) override;
+   STDMETHOD(BetweenPoints)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType fromID, /*[in]*/ IDType toID,/*[in]*/ CollectionIndexType nParts) override;
+   STDMETHOD(LineSegment)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType lineID,/*[in]*/ CollectionIndexType nParts) override;
+	STDMETHOD(CompoundCurve)(/*[in]*/ IDType firstID, /*[in]*/ IDType idInc, /*[in]*/ IDType curveID, /*[in]*/ CollectionIndexType nParts) override;
+   STDMETHOD(Path)(/*[in]*/IDType firstID,/*[in]*/IDType idInc,/*[in]*/IDType pathID,/*[in]*/ CollectionIndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end) override;
 
 // ITangent
 public:
-   STDMETHOD(External)(/*[in]*/ CogoObjectID newID1, /*[in]*/ CogoObjectID idCenter1, /*[in]*/ Float64 radius1,/*[in]*/ CogoObjectID newID2,/*[in]*/ CogoObjectID idCenter2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign) override;
-   STDMETHOD(Cross)(/*[in]*/ CogoObjectID newID1, /*[in]*/ CogoObjectID idCenter1, /*[in]*/ Float64 radius1,/*[in]*/ CogoObjectID newID2,/*[in]*/ CogoObjectID idCenter2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign) override;
-   STDMETHOD(Point)(/*[in]*/ CogoObjectID newID, /*[in]*/ CogoObjectID idCenter, /*[in]*/ Float64 radius,/*[in]*/ CogoObjectID pointID,/*[in]*/ TangentSignType sign) override;
+   STDMETHOD(External)(/*[in]*/ IDType newID1, /*[in]*/ IDType idCenter1, /*[in]*/ Float64 radius1,/*[in]*/ IDType newID2,/*[in]*/ IDType idCenter2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign) override;
+   STDMETHOD(Cross)(/*[in]*/ IDType newID1, /*[in]*/ IDType idCenter1, /*[in]*/ Float64 radius1,/*[in]*/ IDType newID2,/*[in]*/ IDType idCenter2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign) override;
+   STDMETHOD(Point)(/*[in]*/ IDType newID, /*[in]*/ IDType idCenter, /*[in]*/ Float64 radius,/*[in]*/ IDType pointID,/*[in]*/ TangentSignType sign) override;
 
 private:
    std::shared_ptr<WBFL::COGO::Model> m_Model{ std::make_shared<WBFL::COGO::Model>() };

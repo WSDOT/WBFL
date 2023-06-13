@@ -87,6 +87,9 @@ public:
    static WBFL::Geometry::Circle2d GetCircle2d(ICircle* pCircle);
 
    static HRESULT CreateLineSegment(const WBFL::Geometry::LineSegment2d& ls, ILineSegment2d** ppLineSegment);
+   static HRESULT CreateLine(const WBFL::Geometry::Line2d& line, ILine2d** ppLine);
+   static HRESULT CreateLine(IPoint2d* pStart, IPoint2d* pEnd, ILine2d** ppLine);
+   static HRESULT CreateLine(ILineSegment2d* pSeg, ILine2d** ppLine);
    static HRESULT CreatePointCollection(const std::vector<WBFL::Geometry::Point2d>& vPoints, IPoint2dCollection** ppPoints);
 
 private:

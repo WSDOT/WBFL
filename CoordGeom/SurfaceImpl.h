@@ -40,7 +40,6 @@ namespace WBFL
    {
       class Profile; // Forward declaration
 
-      /// @todo Document Surface
       class COORDGEOMCLASS SurfaceImpl
       {
       public:

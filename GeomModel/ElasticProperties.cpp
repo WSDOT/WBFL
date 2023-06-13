@@ -196,27 +196,27 @@ Float64 ElasticProperties::GetEI12Min() const
    return m_Properties.GetI12Min();
 }
 
-void ElasticProperties::SetCoordinateSystem(ElasticProperties::CoordSystemType sys)
+void ElasticProperties::SetCoordinateSystem(ElasticProperties::CoordinateSystemType sys)
 {
    ShapeProperties::CoordinateSystemType pct;
    switch(sys)
    {
-   case CoordSystemType::Centroidal:
+   case CoordinateSystemType::Centroidal:
       {
          pct= ShapeProperties::CoordinateSystemType::Centroidal;
          break;
       }
-      case CoordSystemType::Global:
+      case CoordinateSystemType::Global:
       {
          pct= ShapeProperties::CoordinateSystemType::Global;
          break;
       }
-      case CoordSystemType::Principal:
+      case CoordinateSystemType::Principal:
       {
          pct= ShapeProperties::CoordinateSystemType::Principal;
          break;
       }
-      case CoordSystemType::UserDefined:
+      case CoordinateSystemType::UserDefined:
       {
          pct= ShapeProperties::CoordinateSystemType::UserDefined;
          break;
@@ -228,31 +228,31 @@ void ElasticProperties::SetCoordinateSystem(ElasticProperties::CoordSystemType s
    m_Properties.SetCoordinateSystem(pct);
 }
 
-ElasticProperties::CoordSystemType ElasticProperties::GetCoordinateSystem() const
+ElasticProperties::CoordinateSystemType ElasticProperties::GetCoordinateSystem() const
 {
-   ElasticProperties::CoordSystemType epct= CoordSystemType::UserDefined;
+   ElasticProperties::CoordinateSystemType epct= CoordinateSystemType::UserDefined;
 
    ShapeProperties::CoordinateSystemType pct = m_Properties.GetCoordinateSystem();
    switch(pct)
    {
       case ShapeProperties::CoordinateSystemType::Centroidal:
       {
-         epct= CoordSystemType::Centroidal;
+         epct= CoordinateSystemType::Centroidal;
          break;
       }
       case ShapeProperties::CoordinateSystemType::Global:
       {
-         epct= CoordSystemType::Global;
+         epct= CoordinateSystemType::Global;
          break;
       }
       case ShapeProperties::CoordinateSystemType::Principal:
       {
-         epct= CoordSystemType::Principal;
+         epct= CoordinateSystemType::Principal;
          break;
       }
       case ShapeProperties::CoordinateSystemType::UserDefined:
       {
-         epct= CoordSystemType::UserDefined;
+         epct= CoordinateSystemType::UserDefined;
          break;
       }
       default:
@@ -319,7 +319,7 @@ bool ElasticProperties::TestMe(WBFL::Debug::Log& rlog)
 
    // try a point area
       ElasticProperties gpa(4., Point2d(0,0), 0., 0., 0, 0,  0,  0, 0);
-      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordSystemType::Centroidal ) ;
+      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordinateSystemType::Centroidal ) ;
       TRY_TESTME( Point2d(0,0) == gpa.GetCentroid() ) ;
       TRY_TESTME( IsZero(4-gpa.GetEA()) ) ;
       TRY_TESTME( IsZero(gpa.GetEI11()) ) ;
@@ -335,7 +335,7 @@ bool ElasticProperties::TestMe(WBFL::Debug::Log& rlog)
       // move origin
       Point2d orn(4,-2);
       gpa.SetOrigin(orn);
-      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordSystemType::UserDefined ) ;
+      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordinateSystemType::UserDefined ) ;
       TRY_TESTME( Point2d(-4,2) == gpa.GetCentroid() ) ;
       TRY_TESTME( IsZero(4-gpa.GetEA())) ;
       TRY_TESTME( IsZero( -63.43 - ToDegrees(gpa.GetPrincipalDirection()),.1)) ;
@@ -353,7 +353,7 @@ bool ElasticProperties::TestMe(WBFL::Debug::Log& rlog)
 
       // rotate 90 deg
       gpa.SetOrientation(M_PI/2);
-      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordSystemType::UserDefined) ;
+      TRY_TESTME( gpa.GetCoordinateSystem() == ElasticProperties::CoordinateSystemType::UserDefined) ;
       TRY_TESTME( Point2d(2,4) == gpa.GetCentroid()) ;
       TRY_TESTME( IsZero(4-gpa.GetEA())) ;
       TRY_TESTME( IsZero(64-gpa.GetEIxx())) ;
@@ -391,8 +391,8 @@ bool ElasticProperties::TestMe(WBFL::Debug::Log& rlog)
       TRY_TESTME( IsZero(1-gs2x4.GetXleft())) ;
 
    // move origin back to centroid
-      gs2x4.SetCoordinateSystem(ElasticProperties::CoordSystemType::Centroidal);
-      TRY_TESTME( gs2x4.GetCoordinateSystem() == ElasticProperties::CoordSystemType::Centroidal) ;
+      gs2x4.SetCoordinateSystem(ElasticProperties::CoordinateSystemType::Centroidal);
+      TRY_TESTME( gs2x4.GetCoordinateSystem() == ElasticProperties::CoordinateSystemType::Centroidal) ;
       TRY_TESTME( IsZero(8-gs2x4.GetEA())) ;
       TRY_TESTME( IsZero(128./12.-gs2x4.GetEI11())) ;
       TRY_TESTME( IsZero(32./12-gs2x4.GetEI22())) ;
@@ -406,8 +406,8 @@ bool ElasticProperties::TestMe(WBFL::Debug::Log& rlog)
 
    // try rotation to principal
       ElasticProperties gsr(4., Point2d(0,0), 16., 64., -32, 1,2,1,2);
-      gsr.SetCoordinateSystem(ElasticProperties::CoordSystemType::Principal);
-      TRY_TESTME( gsr.GetCoordinateSystem() == ElasticProperties::CoordSystemType::Principal) ;
+      gsr.SetCoordinateSystem(ElasticProperties::CoordinateSystemType::Principal);
+      TRY_TESTME( gsr.GetCoordinateSystem() == ElasticProperties::CoordinateSystemType::Principal) ;
       TRY_TESTME( IsZero(4-gsr.GetEA())) ;
       TRY_TESTME( IsZero(80.-gsr.GetEI11())) ;
       TRY_TESTME( IsZero(gsr.GetEI22())) ;

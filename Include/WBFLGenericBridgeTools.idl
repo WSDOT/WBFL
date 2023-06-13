@@ -36,7 +36,6 @@ import "WBFLTools.idl";
 import "WBFLUnitServer.idl";
 import "WBFLGeometry.idl";
 import "WBFLCogo.idl";
-import "WBFLBridgeGeometry.idl";
 import "WBFLGenericBridge.idl";
 
 cpp_quote("#define GBMT_E_UNKNOWNDECKTYPE             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")

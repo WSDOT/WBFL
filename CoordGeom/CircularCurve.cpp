@@ -23,7 +23,7 @@
 
 #include <CoordGeom/CoordGeomLib.h>
 #include <CoordGeom/CircularCurve.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/PathSegment.h>
 
 #include <GeomModel/GeomOp2d.h>
@@ -113,24 +113,24 @@ WBFL::Geometry::Point2d CircularCurve::GetPC() const
    auto bkTangentBearing = GetBackTangentBearing();
    bkTangentBearing.Increment(M_PI); // reverse the bearing (PI to PBT);
    auto T = GetTangent();
-   return Utilities::LocateByDistanceAndDirection(m_PI, T, bkTangentBearing, 0.0);
+   return COGO::LocateByDistanceAndDirection(m_PI, T, bkTangentBearing, 0.0);
 }
 
 WBFL::Geometry::Point2d CircularCurve::GetPT() const
 {
    auto fwdTangentBearing = GetForwardTangentBearing();
    auto T = GetTangent();
-   return Utilities::LocateByDistanceAndDirection(m_PI, T, fwdTangentBearing, 0.0);
+   return COGO::LocateByDistanceAndDirection(m_PI, T, fwdTangentBearing, 0.0);
 }
 
 Direction CircularCurve::GetForwardTangentBearing() const
 {
-   return Utilities::MeasureDirection(m_PI, m_PFT);
+   return COGO::MeasureDirection(m_PI, m_PFT);
 }
 
 Direction CircularCurve::GetBackTangentBearing() const
 {
-   return Utilities::MeasureDirection(m_PBT, m_PI);
+   return COGO::MeasureDirection(m_PBT, m_PI);
 }
 
 Angle CircularCurve::GetAngle() const
@@ -251,14 +251,14 @@ WBFL::Geometry::Point2d CircularCurve::PointOnCurve(Float64 distFromStart) const
       // Before curve
       auto bkTangentBrg = GetBackTangentBearing();
       auto pc = GetPC();
-      return Utilities::LocateByDistanceAndDirection(pc, distFromStart, bkTangentBrg, 0.0);
+      return COGO::LocateByDistanceAndDirection(pc, distFromStart, bkTangentBrg, 0.0);
    }
    else if (l <= distFromStart)
    {
       // After curve
       auto fwdTangentBrg = GetForwardTangentBearing();
       auto pt = GetPT();
-      return Utilities::LocateByDistanceAndDirection(pt, distFromStart - l, fwdTangentBrg, 0.0);
+      return COGO::LocateByDistanceAndDirection(pt, distFromStart - l, fwdTangentBrg, 0.0);
    }
    else
    {
@@ -352,7 +352,7 @@ WBFL::Geometry::Point2d CircularCurve::LocatePoint(Float64 distFromStart, Offset
    if (!IsZero(offset))
    {
 
-      point = Utilities::LocateByDistanceAndDirection(point, offset, direction, 0.0);
+      point = COGO::LocateByDistanceAndDirection(point, offset, direction, 0.0);
    }
 
    return point;
@@ -425,7 +425,7 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool>  CircularCurve::ProjectPoint(
 
       auto PC = GetPC();
 
-      WBFL::Geometry::Point2d i1 = Utilities::IntersectLineAndCircle(line, circle, point);
+      WBFL::Geometry::Point2d i1 = COGO::IntersectLineAndCircle(line, circle, point);
       curvePoint = std::make_unique<WBFL::Geometry::Point2d>(i1);
 
       auto dir = GetCurveDirection();
@@ -596,7 +596,7 @@ std::vector<WBFL::Geometry::Point2d> CircularCurve::Intersect(const WBFL::Geomet
 
          // if there was an intersection point and the point is not before the start of the TS-PI line
          // then this isn't an intersection on the back tangent projection 
-         if (bkTangentPoint && !Utilities::IsPointBeforeStart(pc, pi, *bkTangentPoint))
+         if (bkTangentPoint && !COGO::IsPointBeforeStart(pc, pi, *bkTangentPoint))
             bkTangentPoint = nullptr;
       }
 
@@ -611,7 +611,7 @@ std::vector<WBFL::Geometry::Point2d> CircularCurve::Intersect(const WBFL::Geomet
 
          // if there was an intersection point and the point is not after the end of the PI-ST line
          // then this isn't an intersection on the forward tangent projection 
-         if (fwdTangentPoint && !Utilities::IsPointAfterEnd(pi, pt, *fwdTangentPoint))
+         if (fwdTangentPoint && !COGO::IsPointAfterEnd(pi, pt, *fwdTangentPoint))
             fwdTangentPoint = nullptr;
       }
 
@@ -744,7 +744,7 @@ std::vector<std::shared_ptr<PathElement>> CircularCurve::CreateSubpath(Float64 s
       auto fwdTangentBrg = GetBearing(end);
 
       // PI is at the intersection of the tangents
-      auto pi = Utilities::IntersectBearings(pbt, bkTangentBrg, 0.0, pft, fwdTangentBrg, 0.0);
+      auto pi = COGO::IntersectBearings(pbt, bkTangentBrg, 0.0, pft, fwdTangentBrg, 0.0);
 
       vElements.emplace_back(CircularCurve::Create(pbt, pi, pft, m_Radius));
    }

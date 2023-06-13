@@ -182,11 +182,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Alignment.cpp" />
+    <ClCompile Include="AlignmentOffsetLayoutLineFactory.cpp" />
     <ClCompile Include="Angle.cpp" />
+    <ClCompile Include="BridgeFramingGeometry.cpp" />
     <ClCompile Include="CircularCurve.cpp" />
+    <ClCompile Include="CompositeDiaphragmLineFactory.cpp" />
+    <ClCompile Include="CompositePierLineFactory.cpp" />
     <ClCompile Include="CompoundCurve.cpp" />
+    <ClCompile Include="CompositeGirderLineFactory.cpp" />
+    <ClCompile Include="CompositeLayoutLineFactory.cpp" />
     <ClCompile Include="CubicSpline.cpp" />
+    <ClCompile Include="DeckBoundary.cpp" />
+    <ClCompile Include="DiaphragmLine.cpp" />
     <ClCompile Include="Direction.cpp" />
+    <ClCompile Include="EqualSpacingDiaphragmLineFactory.cpp" />
+    <ClCompile Include="GirderLine.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -194,12 +204,19 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PathElement.cpp" />
+    <ClCompile Include="PierLine.cpp" />
     <ClCompile Include="Profile.cpp" />
     <ClCompile Include="ProfileElement.cpp" />
     <ClCompile Include="ProfileImpl.cpp" />
     <ClCompile Include="ProfilePoint.cpp" />
     <ClCompile Include="ProfileSegment.cpp" />
     <ClCompile Include="PathSegment.cpp" />
+    <ClCompile Include="SimpleDeckBoundaryFactory.cpp" />
+    <ClCompile Include="SimpleGirderLineFactory.cpp" />
+    <ClCompile Include="SimpleLayoutLineFactory.cpp" />
+    <ClCompile Include="SingleDiaphragmLineFactory.cpp" />
+    <ClCompile Include="SingleGirderLineFactory.cpp" />
+    <ClCompile Include="SinglePierLineFactory.cpp" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="StationEquation.cpp" />
     <ClCompile Include="Superelevation.cpp" />
@@ -214,32 +231,58 @@
     <ClCompile Include="Testing\TestAlignment1.cpp" />
     <ClCompile Include="Testing\TestAlignment2.cpp" />
     <ClCompile Include="Testing\TestAlignment3.cpp" />
+    <ClCompile Include="Testing\TestBridgeFramingGeometry.cpp" />
+    <ClCompile Include="ThroughPointDiaphragmLineFactory.cpp" />
     <ClCompile Include="TransitionCurve.cpp" />
+    <ClCompile Include="UniformSpacingLayoutLineFactory.cpp" />
     <ClCompile Include="UnitTest.cpp" />
-    <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="COGO.cpp" />
     <ClCompile Include="VerticalCurve.cpp" />
     <ClCompile Include="Widening.cpp" />
     <ClCompile Include="XCoordGeom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\CoordGeom\Alignment.h" />
+    <ClInclude Include="..\Include\CoordGeom\AlignmentOffsetLayoutLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\Angle.h" />
+    <ClInclude Include="..\Include\CoordGeom\BridgeFramingGeometry.h" />
     <ClInclude Include="..\Include\CoordGeom\CircularCurve.h" />
+    <ClInclude Include="..\Include\CoordGeom\CompositeDiaphragmLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\CompositeGirderLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\CompositePierLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\CompoundCurve.h" />
+    <ClInclude Include="..\Include\CoordGeom\CompositeLayoutLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\ConnectionGeometry.h" />
     <ClInclude Include="..\Include\CoordGeom\CoordGeom.h" />
     <ClInclude Include="..\Include\CoordGeom\CoordGeomExp.h" />
     <ClInclude Include="..\Include\CoordGeom\CoordGeomLib.h" />
     <ClInclude Include="..\Include\CoordGeom\CoordGeomTypes.h" />
     <ClInclude Include="..\Include\CoordGeom\CubicSpline.h" />
+    <ClInclude Include="..\Include\CoordGeom\DeckBoundary.h" />
+    <ClInclude Include="..\Include\CoordGeom\DeckBoundaryFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\DiaphragmLine.h" />
+    <ClInclude Include="..\Include\CoordGeom\DiaphragmLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\Direction.h" />
+    <ClInclude Include="..\Include\CoordGeom\EqualSpacingDiaphragmLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\GirderLine.h" />
+    <ClInclude Include="..\Include\CoordGeom\GirderLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\LayoutLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\Model.h" />
     <ClInclude Include="..\Include\CoordGeom\Path.h" />
     <ClInclude Include="..\Include\CoordGeom\PathElement.h" />
+    <ClInclude Include="..\Include\CoordGeom\PierLine.h" />
+    <ClInclude Include="..\Include\CoordGeom\PierLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\Profile.h" />
     <ClInclude Include="..\Include\CoordGeom\ProfileElement.h" />
     <ClInclude Include="..\Include\CoordGeom\ProfilePoint.h" />
     <ClInclude Include="..\Include\CoordGeom\ProfileSegment.h" />
     <ClInclude Include="..\Include\CoordGeom\PathSegment.h" />
+    <ClInclude Include="..\Include\CoordGeom\SimpleDeckBoundaryFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\SimpleGirderLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\SimpleLayoutLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\SingleDiaphragmLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\SingleGirderLineFactory.h" />
+    <ClInclude Include="..\Include\CoordGeom\SinglePierLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\Station.h" />
     <ClInclude Include="..\Include\CoordGeom\StationEquation.h" />
     <ClInclude Include="..\Include\CoordGeom\Superelevation.h" />
@@ -248,9 +291,11 @@
     <ClInclude Include="..\Include\CoordGeom\SurfaceProfile.h" />
     <ClInclude Include="..\Include\CoordGeom\SurfaceTemplate.h" />
     <ClInclude Include="..\Include\CoordGeom\SurfaceTemplateSegment.h" />
+    <ClInclude Include="..\Include\CoordGeom\ThroughPointDiaphragmLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\TransitionCurve.h" />
+    <ClInclude Include="..\Include\CoordGeom\UniformSpacingLayoutLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\UnitTest.h" />
-    <ClInclude Include="..\Include\CoordGeom\Utilities.h" />
+    <ClInclude Include="..\Include\CoordGeom\COGO.h" />
     <ClInclude Include="..\Include\CoordGeom\VerticalCurve.h" />
     <ClInclude Include="..\Include\CoordGeom\Widening.h" />
     <ClInclude Include="..\Include\CoordGeom\XCoordGeom.h" />
@@ -261,6 +306,7 @@
     <ClInclude Include="Testing\TestAlignment1.h" />
     <ClInclude Include="Testing\TestAlignment2.h" />
     <ClInclude Include="Testing\TestAlignment3.h" />
+    <ClInclude Include="Testing\TestBridgeFramingGeometry.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="CoordGeom.def" />

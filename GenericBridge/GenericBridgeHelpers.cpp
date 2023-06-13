@@ -34,7 +34,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal)
+HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,IDType* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -47,7 +47,7 @@ HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,Pos
    return S_OK;
 }
 
-HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal)
+HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,IDType* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -60,7 +60,7 @@ HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,
    return S_OK;
 }
 
-HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoObjectID* pVal)
+HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,IDType* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -69,14 +69,14 @@ HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoObjectID* pVal)
    return S_OK;
 }
 
-HRESULT GB_GetTemporarySupportAlignmentPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,CogoObjectID* pVal)
+HRESULT GB_GetTemporarySupportAlignmentPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,IDType* pVal)
 {
    CHECK_RETVAL(pVal);
    (*pVal) = -1*( (spanIdx+1)*TS_ID_OFFSET + (tsIdx+1)*TS_ID_OFFSET/100 );
    return S_OK;
 }
 
-HRESULT GB_GetTemporarySupportGirderPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal)
+HRESULT GB_GetTemporarySupportGirderPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,GirderIndexType gdrIdx,PositionType posType,IDType* pVal)
 {
    CHECK_RETVAL(pVal);
    (*pVal) = -1*( (spanIdx+1)*TS_ID_OFFSET 
@@ -88,7 +88,7 @@ HRESULT GB_GetTemporarySupportGirderPointId(SpanIndexType spanIdx,SupportIndexTy
    return S_OK;
 }
 
-HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoObjectID* pVal)
+HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,IDType* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -97,7 +97,7 @@ HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoObjectID* pVal)
    return S_OK;
 }
 
-HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoObjectID* pVal)
+HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,IDType* pVal)
 {
    *pVal = -1*( (spanIdx+1)*PIER_ID_OFFSET 
                +(gdrIdx+1)*GIRDER_ID_OFFSET

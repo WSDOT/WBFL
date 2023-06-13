@@ -126,7 +126,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    if ( IsZero(val,m_ZeroTolerance) )
       val = 0.0;
 
-   val = WBFL::COGO::Utilities::NormalizeAngle(val);
+   val = WBFL::COGO::COGO::NormalizeAngle(val);
 
    bool bShowTag = (tag == nullptr ? false : true);
    std::_tstring strDegTag, strMinTag, strSecTag;
@@ -175,11 +175,11 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    else
    {
       // azimuth
-      val = WBFL::COGO::Utilities::NormalizeAngle(PI_OVER_2 - val);
+      val = WBFL::COGO::COGO::NormalizeAngle(PI_OVER_2 - val);
       short deg;
       unsigned short min;
       Float64 sec;
-      std::tie(deg, min, sec) = WBFL::COGO::Utilities::ToDMS(val);
+      std::tie(deg, min, sec) = WBFL::COGO::COGO::ToDMS(val);
 
       sec = IsZero(sec,m_ZeroTolerance) ? 0 : sec;
       s << deg;

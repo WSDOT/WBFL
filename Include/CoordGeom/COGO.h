@@ -41,12 +41,12 @@ namespace WBFL
 {
    namespace COGO
    {
-      /// @brief Class that implements a variety of useful utility functions.
-      class COORDGEOMCLASS Utilities
+      /// @brief Class that implements coordinate geometry calculations
+      class COORDGEOMCLASS COGO
       {
       public:
-         Utilities() = delete;
-         Utilities(const Utilities& ) = delete;
+         COGO() = delete;
+         COGO(const COGO& ) = delete;
 
          /// @brief Parses a comma delimited format string for angular measure and returns the individual tags
          static std::tuple<std::_tstring, std::_tstring, std::_tstring> ParseAngleTags(const std::_tstring& strFormat);
@@ -250,6 +250,12 @@ namespace WBFL
          /// @param nearest Point that will be nearest the solution point in the event two intersection points are found
          /// @return Intersection point
          static WBFL::Geometry::Point2d IntersectLineAndCircle(const WBFL::Geometry::Line2d& line,const WBFL::Geometry::Circle2d& circle,const WBFL::Geometry::Point2d& nearest);
+
+         /// @brief Intersections two lines
+         /// @param line1 First line
+         /// @param line2 Second line
+         /// @return Intersection point
+         static WBFL::Geometry::Point2d IntersectLines(const WBFL::Geometry::Line2d& line1, const WBFL::Geometry::Line2d& line2);
 
          //
          // Project Functions

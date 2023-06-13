@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.EqualSpaceDiaphragmLineFactory.1 = s 'EqualSpaceDiaphragmLineFactory Class'
+	{
+		CLSID = s '{FF0B7F56-329E-4DB3-BF9C-E076555C1EEE}'
+	}
+	WBFLCogo.EqualSpaceDiaphragmLineFactory = s 'EqualSpaceDiaphragmLineFactory Class'
+	{
+		CLSID = s '{FF0B7F56-329E-4DB3-BF9C-E076555C1EEE}'
+		CurVer = s 'WBFLCogo.EqualSpaceDiaphragmLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FF0B7F56-329E-4DB3-BF9C-E076555C1EEE} = s 'EqualSpaceDiaphragmLineFactory Class'
+		{
+			ProgID = s 'WBFLCogo.EqualSpaceDiaphragmLineFactory.1'
+			VersionIndependentProgID = s 'WBFLCogo.EqualSpaceDiaphragmLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

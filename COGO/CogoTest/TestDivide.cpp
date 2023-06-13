@@ -113,7 +113,7 @@ void CTestDivide::Test()
    TRY_TEST(divide->BetweenPoints(1,1,1,2,10), S_FALSE);
 
    TRY_TEST(divide->BetweenPoints(3,1,1,2,10),S_OK);
-   for ( CogoObjectID i = 3; i <= 11; i++ )
+   for ( IDType i = 3; i <= 11; i++ )
    {
       pnt.Release();
       TRY_TEST(model->GetPointByID(i,&pnt),S_OK);

@@ -82,11 +82,6 @@ CPierCollection* CGenericBridge::GetPierCollection()
 
 /////////////////////////////////////////////////////
 // IGenericBridge implementation
-STDMETHODIMP CGenericBridge::UpdateBridgeModel(long flags)
-{
-   DoUpdateBridgeModel(flags);
-   return S_OK;
-}
 
 STDMETHODIMP CGenericBridge::get_BridgeGeometry(IBridgeGeometry** bridgeGeometry)
 {
@@ -133,7 +128,7 @@ STDMETHODIMP CGenericBridge::putref_Deck(IBridgeDeck* deck)
 STDMETHODIMP CGenericBridge::get_Piers(IPierCollection* *piers)
 {
    CHECK_RETOBJ(piers);
-
+   UpdatePiers();
    (*piers) = m_Piers;
    (*piers)->AddRef();
 
@@ -143,6 +138,8 @@ STDMETHODIMP CGenericBridge::get_Piers(IPierCollection* *piers)
 STDMETHODIMP CGenericBridge::get_Length(Float64* length)
 {
    CHECK_RETVAL(length);
+
+   UpdatePiers();
    PierIndexType nPiers;
    m_Piers->get_Count(&nPiers);
    CComPtr<IBridgePier> objFirstPier, objLastPier;
@@ -168,6 +165,8 @@ STDMETHODIMP CGenericBridge::get_Length(Float64* length)
 STDMETHODIMP CGenericBridge::get_SpanLength(SpanIndexType spanIdx,Float64* length)
 {
    CHECK_RETVAL(length);
+   UpdatePiers();
+
    PierIndexType startPierIdx = (PierIndexType)spanIdx;
    PierIndexType endPierIdx = startPierIdx + 1;
 
@@ -194,7 +193,6 @@ STDMETHODIMP CGenericBridge::get_SpanLength(SpanIndexType spanIdx,Float64* lengt
 }
 
 STDMETHODIMP CGenericBridge::get_LeftBarrier(ISidewalkBarrier** barrier)
-
 {
    CHECK_RETOBJ(barrier);
    (*barrier) = m_LeftBarrier;
@@ -519,15 +517,10 @@ STDMETHODIMP CGenericBridge::Save(IStructuredSave2* save)
 //}
 //#endif // _DEBUG
 
-void CGenericBridge::DoUpdateBridgeModel(long flags)
+void CGenericBridge::UpdatePiers()
 {
-   m_BridgeGeometry->UpdateGeometry(flags);
-
-   if (flags & BGF_PIERS)
+   if (m_bDirtyPiers)
    {
-      ////////////////////////////////
-      // Create Pier Objects
-      ////////////////////////////////
       CPierCollection* pPiers = GetPierCollection();
       pPiers->Clear();
 
@@ -538,6 +531,12 @@ void CGenericBridge::DoUpdateBridgeModel(long flags)
          CComPtr<IPierLine> pierLine;
          m_BridgeGeometry->GetPierLine(pierIdx, &pierLine);
 
+#if defined _DEBUG
+         IndexType idx;
+         pierLine->get_Index(&idx);
+         ATLASSERT(idx == pierIdx);
+#endif
+
          CComObject<CBridgePier>* pPier;
          CComObject<CBridgePier>::CreateInstance(&pPier);
 
@@ -547,5 +546,6 @@ void CGenericBridge::DoUpdateBridgeModel(long flags)
          pier = pPier;
          pPiers->Add(pier);
       }
+      m_bDirtyPiers = false;
    }
 }

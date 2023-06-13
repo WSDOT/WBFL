@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <CoordGeom/CoordGeomLib.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/CompoundCurve.h>
 #include <CoordGeom/XCoordGeom.h>
 #include <CoordGeom/Alignment.h>
@@ -35,7 +35,7 @@
 using namespace WBFL::COGO;
 
 
-std::tuple<std::_tstring, std::_tstring, std::_tstring> Utilities::ParseAngleTags(const std::_tstring& strFormat)
+std::tuple<std::_tstring, std::_tstring, std::_tstring> COGO::ParseAngleTags(const std::_tstring& strFormat)
 {
    std::_tstring::size_type posFirst = strFormat.find(_T(","));
    std::_tstring::size_type posSecond = strFormat.find(_T(","), posFirst + 1);
@@ -54,7 +54,7 @@ std::tuple<std::_tstring, std::_tstring, std::_tstring> Utilities::ParseAngleTag
 }
 
 
-std::tuple<short,unsigned short,Float64> Utilities::ToDMS(Float64 value)
+std::tuple<short,unsigned short,Float64> COGO::ToDMS(Float64 value)
 {
    value = ToDegrees(value);
 
@@ -85,7 +85,7 @@ std::tuple<short,unsigned short,Float64> Utilities::ToDMS(Float64 value)
    return std::make_tuple(deg, min, sec);
 }
 
-Float64 Utilities::FromDMS(short deg, unsigned short min, Float64 sec)
+Float64 COGO::FromDMS(short deg, unsigned short min, Float64 sec)
 {
    if ((min < 0 || 60 <= min) || (sec < 0.0 || 60.0 <= sec))
       THROW_COGO(WBFL_COGO_E_ANGLE);
@@ -99,12 +99,12 @@ Float64 Utilities::FromDMS(short deg, unsigned short min, Float64 sec)
    return angle;
 }
 
-Float64 Utilities::NormalizeAngle(Float64 angle)
+Float64 COGO::NormalizeAngle(Float64 angle)
 {
    return WBFL::Geometry::GeometricOperations::NormalizeAngle(angle);
 }
 
-bool Utilities::IsPointBeforeStart(const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end, const WBFL::Geometry::Point2d& point)
+bool COGO::IsPointBeforeStart(const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end, const WBFL::Geometry::Point2d& point)
 {
    Float64 distance;
    Direction direction;
@@ -115,7 +115,7 @@ bool Utilities::IsPointBeforeStart(const WBFL::Geometry::Point2d& start, const W
    return newPoint.X() < 0 ? true : false;
 }
 
-bool Utilities::IsPointAfterEnd(const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end, const WBFL::Geometry::Point2d& point)
+bool COGO::IsPointAfterEnd(const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end, const WBFL::Geometry::Point2d& point)
 {
    Float64 distance;
    Direction direction;
@@ -126,7 +126,7 @@ bool Utilities::IsPointAfterEnd(const WBFL::Geometry::Point2d& start, const WBFL
    return 0 < newPoint.X() ? true : false;
 }
 
-WBFL::Geometry::Line2d Utilities::CreateParallelLine(const WBFL::Geometry::Point2d& p, const Direction& direction, Float64 offset)
+WBFL::Geometry::Line2d COGO::CreateParallelLine(const WBFL::Geometry::Point2d& p, const Direction& direction, Float64 offset)
 {
    Float64 dir = direction.GetValue();
    Float64 normal = dir - PI_OVER_2; // normal to the line, in the direction of offset
@@ -138,24 +138,24 @@ WBFL::Geometry::Line2d Utilities::CreateParallelLine(const WBFL::Geometry::Point
 }
 
 
-WBFL::COGO::Angle Utilities::MeasureAngle(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& vertex, const WBFL::Geometry::Point2d& to)
+WBFL::COGO::Angle COGO::MeasureAngle(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& vertex, const WBFL::Geometry::Point2d& to)
 {
    return WBFL::Geometry::GeometricOperations::Angle(from, vertex, to);
 }
 
-Float64 Utilities::MeasureArea(std::vector<WBFL::Geometry::Point2d>& vPoints)
+Float64 COGO::MeasureArea(std::vector<WBFL::Geometry::Point2d>& vPoints)
 {
    WBFL::Geometry::Polygon shape;
    shape.AddPoints(vPoints);
    return shape.GetProperties().GetArea();
 }
 
-Float64 Utilities::MeasureDistance(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2)
+Float64 COGO::MeasureDistance(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2)
 {
    return p1.Distance(p2);
 }
 
-WBFL::COGO::Direction Utilities::MeasureDirection(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2)
+WBFL::COGO::Direction COGO::MeasureDirection(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2)
 {
    Float64 distance;
    WBFL::COGO::Direction direction;
@@ -163,7 +163,7 @@ WBFL::COGO::Direction Utilities::MeasureDirection(const WBFL::Geometry::Point2d&
    return direction;
 }
 
-std::pair<Float64,WBFL::COGO::Direction> Utilities::ComputeInverse(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2)
+std::pair<Float64,WBFL::COGO::Direction> COGO::ComputeInverse(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2)
 {
    auto size = p2 - p1;
 
@@ -180,7 +180,7 @@ std::pair<Float64,WBFL::COGO::Direction> Utilities::ComputeInverse(const WBFL::G
    return std::make_pair(size.Magnitude(), dir);
 }
 
-WBFL::Geometry::Point2d Utilities::LocateByDistanceAndAngle(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, Float64 distance, const WBFL::COGO::Angle& angle, Float64 offset)
+WBFL::Geometry::Point2d COGO::LocateByDistanceAndAngle(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, Float64 distance, const WBFL::COGO::Angle& angle, Float64 offset)
 {
    // Get the back sight direction
    auto back_sight = MeasureDirection(to, from);
@@ -195,7 +195,7 @@ WBFL::Geometry::Point2d Utilities::LocateByDistanceAndAngle(const WBFL::Geometry
    return point;
 }
 
-WBFL::Geometry::Point2d Utilities::LocateByDistanceAndDeflectionAngle(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, Float64 distance, const Angle& defAngle, Float64 offset)
+WBFL::Geometry::Point2d COGO::LocateByDistanceAndDeflectionAngle(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, Float64 distance, const Angle& defAngle, Float64 offset)
 {
    // Get the back sight direction
    auto back_sight = MeasureDirection(to, from);
@@ -212,7 +212,7 @@ WBFL::Geometry::Point2d Utilities::LocateByDistanceAndDeflectionAngle(const WBFL
    return point;
 }
 
-WBFL::Geometry::Point2d Utilities::LocateByDistanceAndDirection(const WBFL::Geometry::Point2d& from, Float64 distance, const Direction& direction, Float64 offset)
+WBFL::Geometry::Point2d COGO::LocateByDistanceAndDirection(const WBFL::Geometry::Point2d& from, Float64 distance, const Direction& direction, Float64 offset)
 {
    Float64 x, y; std::tie(x,y) = from.GetLocation();
    Float64 dir = direction.GetValue();
@@ -234,7 +234,7 @@ WBFL::Geometry::Point2d Utilities::LocateByDistanceAndDirection(const WBFL::Geom
    return WBFL::Geometry::Point2d(x, y);
 }
 
-WBFL::Geometry::Point2d Utilities::LocatePointOnLine(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, Float64 distance, Float64 offset)
+WBFL::Geometry::Point2d COGO::LocatePointOnLine(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, Float64 distance, Float64 offset)
 {
    // Get the direction of the line going from "from" to "to"
    auto line_direction = MeasureDirection(from, to);
@@ -248,19 +248,19 @@ WBFL::Geometry::Point2d Utilities::LocatePointOnLine(const WBFL::Geometry::Point
    return point;
 }
 
-std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d>  Utilities::LocateParallelLineByPoints(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, Float64 offset)
+std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d>  COGO::LocateParallelLineByPoints(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, Float64 offset)
 {
    WBFL::Geometry::LineSegment2d ls(from, to);
    auto newLS = WBFL::Geometry::GeometricOperations::CreateParallelLineSegment(ls, offset);
    return std::make_pair(newLS.GetStartPoint(), newLS.GetEndPoint());
 }
 
-WBFL::Geometry::LineSegment2d Utilities::LocateParallelLineSegment(const WBFL::Geometry::LineSegment2d& ls, Float64 offset)
+WBFL::Geometry::LineSegment2d COGO::LocateParallelLineSegment(const WBFL::Geometry::LineSegment2d& ls, Float64 offset)
 {
    return WBFL::Geometry::GeometricOperations::CreateParallelLineSegment(ls, offset);
 }
 
-WBFL::Geometry::Point2d Utilities::IntersectBearings(const WBFL::Geometry::Point2d& p1, const Direction& dir1, Float64 offset1, const WBFL::Geometry::Point2d& p2, const Direction& dir2, Float64 offset2)
+WBFL::Geometry::Point2d COGO::IntersectBearings(const WBFL::Geometry::Point2d& p1, const Direction& dir1, Float64 offset1, const WBFL::Geometry::Point2d& p2, const Direction& dir2, Float64 offset2)
 {
    auto line1 = CreateParallelLine(p1, dir1, offset1);
    auto line2 = CreateParallelLine(p2, dir2, offset2);
@@ -275,7 +275,7 @@ WBFL::Geometry::Point2d Utilities::IntersectBearings(const WBFL::Geometry::Point
    return point;
 }
 
-WBFL::Geometry::Point2d Utilities::IntersectBearingAndCircle(const WBFL::Geometry::Point2d& p1, const Direction& dir1, Float64 offset1, const WBFL::Geometry::Point2d& center, Float64 radius, const WBFL::Geometry::Point2d& nearest)
+WBFL::Geometry::Point2d COGO::IntersectBearingAndCircle(const WBFL::Geometry::Point2d& p1, const Direction& dir1, Float64 offset1, const WBFL::Geometry::Point2d& center, Float64 radius, const WBFL::Geometry::Point2d& nearest)
 {
    PRECONDITION(0.0 < radius);
 
@@ -312,7 +312,7 @@ WBFL::Geometry::Point2d Utilities::IntersectBearingAndCircle(const WBFL::Geometr
    return point;
 }
 
-WBFL::Geometry::Point2d Utilities::IntersectCircles(const WBFL::Geometry::Point2d& center1, Float64 radius1, const WBFL::Geometry::Point2d& center2, Float64 radius2, const WBFL::Geometry::Point2d& nearest)
+WBFL::Geometry::Point2d COGO::IntersectCircles(const WBFL::Geometry::Point2d& center1, Float64 radius1, const WBFL::Geometry::Point2d& center2, Float64 radius2, const WBFL::Geometry::Point2d& nearest)
 {
    PRECONDITION(0.0 < radius1);
    PRECONDITION(0.0 < radius2);
@@ -349,7 +349,7 @@ WBFL::Geometry::Point2d Utilities::IntersectCircles(const WBFL::Geometry::Point2
    return point;
 }
 
-WBFL::Geometry::Point2d Utilities::IntersectLineByPointsAndCircle(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2, Float64 offset, const WBFL::Geometry::Point2d& center, Float64 radius, const WBFL::Geometry::Point2d& nearest)
+WBFL::Geometry::Point2d COGO::IntersectLineByPointsAndCircle(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2, Float64 offset, const WBFL::Geometry::Point2d& center, Float64 radius, const WBFL::Geometry::Point2d& nearest)
 {
    PRECONDITION(0.0 < radius);
 
@@ -387,7 +387,7 @@ WBFL::Geometry::Point2d Utilities::IntersectLineByPointsAndCircle(const WBFL::Ge
    return point;
 }
 
-WBFL::Geometry::Point2d Utilities::IntersectLinesByPoints(const WBFL::Geometry::Point2d& p11, const WBFL::Geometry::Point2d& p12, Float64 offset1, const WBFL::Geometry::Point2d& p21, const WBFL::Geometry::Point2d& p22, Float64 offset2)
+WBFL::Geometry::Point2d COGO::IntersectLinesByPoints(const WBFL::Geometry::Point2d& p11, const WBFL::Geometry::Point2d& p12, Float64 offset1, const WBFL::Geometry::Point2d& p21, const WBFL::Geometry::Point2d& p22, Float64 offset2)
 {
    WBFL::Geometry::Line2d l1(p11, p12);
    auto offset_line_1 = WBFL::Geometry::GeometricOperations::CreateParallelLine(l1, offset1);
@@ -405,12 +405,12 @@ WBFL::Geometry::Point2d Utilities::IntersectLinesByPoints(const WBFL::Geometry::
    return point;
 }
 
-WBFL::Geometry::Point2d Utilities::IntersectLineSegments(const WBFL::Geometry::LineSegment2d& ls1, Float64 offset1, const WBFL::Geometry::LineSegment2d& ls2, Float64 offset2)
+WBFL::Geometry::Point2d COGO::IntersectLineSegments(const WBFL::Geometry::LineSegment2d& ls1, Float64 offset1, const WBFL::Geometry::LineSegment2d& ls2, Float64 offset2)
 {
    return IntersectLinesByPoints(ls1.GetStartPoint(), ls1.GetEndPoint(), offset1, ls2.GetStartPoint(), ls2.GetEndPoint(), offset2);
 }
 
-WBFL::Geometry::Point2d Utilities::IntersectLineSegmentAndCircle(const WBFL::Geometry::LineSegment2d& ls, Float64 offset, const WBFL::Geometry::Point2d& center, Float64 radius, const WBFL::Geometry::Point2d& nearest)
+WBFL::Geometry::Point2d COGO::IntersectLineSegmentAndCircle(const WBFL::Geometry::LineSegment2d& ls, Float64 offset, const WBFL::Geometry::Point2d& center, Float64 radius, const WBFL::Geometry::Point2d& nearest)
 {
    PRECONDITION(0 < radius);
 
@@ -448,7 +448,7 @@ WBFL::Geometry::Point2d Utilities::IntersectLineSegmentAndCircle(const WBFL::Geo
    return point;
 }
 
-WBFL::Geometry::Point2d Utilities::IntersectLineAndCircle(const WBFL::Geometry::Line2d& line, const WBFL::Geometry::Circle2d& circle, const WBFL::Geometry::Point2d& nearest)
+WBFL::Geometry::Point2d COGO::IntersectLineAndCircle(const WBFL::Geometry::Line2d& line, const WBFL::Geometry::Circle2d& circle, const WBFL::Geometry::Point2d& nearest)
 {
    WBFL::Geometry::Point2d p1, p2;
    auto nIntersections = WBFL::Geometry::GeometricOperations::Intersect(line, circle, &p1, &p2);
@@ -478,33 +478,45 @@ WBFL::Geometry::Point2d Utilities::IntersectLineAndCircle(const WBFL::Geometry::
    }
 }
 
-WBFL::Geometry::Point2d Utilities::ProjectPointOnLineByPoints(const WBFL::Geometry::Point2d& point, const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end, Float64 offset)
+WBFL::Geometry::Point2d COGO::IntersectLines(const WBFL::Geometry::Line2d& line1, const WBFL::Geometry::Line2d& line2)
+{
+   WBFL::Geometry::Point2d point;
+   auto nIntersections = WBFL::Geometry::GeometricOperations::Intersect(line1, line2, &point);
+   if (nIntersections <= 0)
+   {
+      THROW_COGO(WBFL_COGO_E_NOINTERSECTION);
+   }
+   CHECK(nIntersections == 1);
+   return point;
+}
+
+WBFL::Geometry::Point2d COGO::ProjectPointOnLineByPoints(const WBFL::Geometry::Point2d& point, const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end, Float64 offset)
 {
    WBFL::Geometry::Line2d line(start, end);
    auto offset_line = WBFL::Geometry::GeometricOperations::CreateParallelLine(line, offset);
    return WBFL::Geometry::GeometricOperations::PointOnLineNearest(offset_line, point);
 }
 
-WBFL::Geometry::Point2d Utilities::ProjectPointOnLineSegment(const WBFL::Geometry::Point2d& point, const WBFL::Geometry::LineSegment2d& segment, Float64 offset)
+WBFL::Geometry::Point2d COGO::ProjectPointOnLineSegment(const WBFL::Geometry::Point2d& point, const WBFL::Geometry::LineSegment2d& segment, Float64 offset)
 {
    WBFL::Geometry::Line2d line(segment.GetStartPoint(), segment.GetEndPoint());
    auto offset_line = WBFL::Geometry::GeometricOperations::CreateParallelLine(line, offset);
    return WBFL::Geometry::GeometricOperations::PointOnLineNearest(offset_line, point);
 }
 
-std::vector<WBFL::Geometry::Point2d> Utilities::DivideArc(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& vertex, const WBFL::Geometry::Point2d& to, IndexType nParts)
+std::vector<WBFL::Geometry::Point2d> COGO::DivideArc(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& vertex, const WBFL::Geometry::Point2d& to, IndexType nParts)
 {
    WBFL::Geometry::Arc arc(from, vertex, to);
    return arc.Divide(nParts);
 }
 
-std::vector<WBFL::Geometry::Point2d> Utilities::DivideBetweenPoints(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, IndexType nParts)
+std::vector<WBFL::Geometry::Point2d> COGO::DivideBetweenPoints(const WBFL::Geometry::Point2d& from, const WBFL::Geometry::Point2d& to, IndexType nParts)
 {
    WBFL::Geometry::LineSegment2d segment(from, to);
    return segment.Divide(nParts);
 }
 
-std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d> Utilities::CrossingTangents(const WBFL::Geometry::Point2d& center1, Float64 radius1, const WBFL::Geometry::Point2d& center2, Float64 radius2, TangentSign sign)
+std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d> COGO::CrossingTangents(const WBFL::Geometry::Point2d& center1, Float64 radius1, const WBFL::Geometry::Point2d& center2, Float64 radius2, TangentSign sign)
 {
    PRECONDITION(0 < radius1);
    PRECONDITION(0 < radius2);
@@ -555,7 +567,7 @@ std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d> Utilities::CrossingT
    return std::make_pair(WBFL::Geometry::Point2d(Gx, Gy), WBFL::Geometry::Point2d(Hx, Hy));
 }
 
-std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d> Utilities::ExternalTangents(const WBFL::Geometry::Point2d& center1, Float64 radius1, const WBFL::Geometry::Point2d& center2, Float64 radius2, TangentSign sign)
+std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d> COGO::ExternalTangents(const WBFL::Geometry::Point2d& center1, Float64 radius1, const WBFL::Geometry::Point2d& center2, Float64 radius2, TangentSign sign)
 {
    PRECONDITION(0 < radius1);
    PRECONDITION(0 < radius2);
@@ -630,7 +642,7 @@ std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d> Utilities::ExternalT
    return std::make_pair(t1, t2);
 }
 
-WBFL::Geometry::Point2d Utilities::TangentPoint(const WBFL::Geometry::Point2d& center, Float64 radius, const WBFL::Geometry::Point2d& point, TangentSign sign)
+WBFL::Geometry::Point2d COGO::TangentPoint(const WBFL::Geometry::Point2d& center, Float64 radius, const WBFL::Geometry::Point2d& point, TangentSign sign)
 {
    PRECONDITION(0 < radius);
 
@@ -675,7 +687,7 @@ WBFL::Geometry::Point2d Utilities::TangentPoint(const WBFL::Geometry::Point2d& c
    return WBFL::Geometry::Point2d(Gx, Gy);
 }
 
-Int8 Utilities::CompareStations(std::shared_ptr<const Alignment> alignment, const Station& s1, const Station& s2)
+Int8 COGO::CompareStations(std::shared_ptr<const Alignment> alignment, const Station& s1, const Station& s2)
 {
    if (alignment)
    {
@@ -687,7 +699,7 @@ Int8 Utilities::CompareStations(std::shared_ptr<const Alignment> alignment, cons
    }
 }
 
-Int8 Utilities::CompareNormalizedStations(const Station& s1, const Station& s2)
+Int8 COGO::CompareNormalizedStations(const Station& s1, const Station& s2)
 {
    if (s1.IsNormalized() && s2.IsNormalized())
       return ::Sign(s2.GetValue() - s1.GetValue()); // return 0, 1, or -1
@@ -695,7 +707,7 @@ Int8 Utilities::CompareNormalizedStations(const Station& s1, const Station& s2)
       THROW_COGO(WBFL_COGO_E_STATION);
 }
 
-Float64 Utilities::ConvertToNormalizedStation(std::shared_ptr<const Alignment> alignment, const Station& s)
+Float64 COGO::ConvertToNormalizedStation(std::shared_ptr<const Alignment> alignment, const Station& s)
 {
    if (alignment)
       return alignment->ConvertToNormalizedStation(s).GetValue();
@@ -708,7 +720,7 @@ Float64 Utilities::ConvertToNormalizedStation(std::shared_ptr<const Alignment> a
    }
 }
 
-Station Utilities::ConvertFromNormalizedStation(std::shared_ptr<const Alignment> alignment, Float64 normalizedStation)
+Station COGO::ConvertFromNormalizedStation(std::shared_ptr<const Alignment> alignment, Float64 normalizedStation)
 {
    if (alignment)
       return alignment->ConvertFromNormalizedStation(normalizedStation);
@@ -716,7 +728,7 @@ Station Utilities::ConvertFromNormalizedStation(std::shared_ptr<const Alignment>
       return normalizedStation;
 }
 
-Station Utilities::ConvertFromNormalizedStation(std::shared_ptr<const Alignment> alignment, const Station& station)
+Station COGO::ConvertFromNormalizedStation(std::shared_ptr<const Alignment> alignment, const Station& station)
 {
    if (station.IsNormalized())
       return ConvertFromNormalizedStation(alignment, station.GetValue());
@@ -724,7 +736,7 @@ Station Utilities::ConvertFromNormalizedStation(std::shared_ptr<const Alignment>
       THROW_COGO(WBFL_COGO_E_STATION);
 }
 
-Float64 Utilities::DistanceBetweenStations(std::shared_ptr<const Alignment> alignment, const Station& s1, const Station& s2)
+Float64 COGO::DistanceBetweenStations(std::shared_ptr<const Alignment> alignment, const Station& s1, const Station& s2)
 {
    if (alignment)
       return alignment->DistanceBetweenStations(s1, s2);
@@ -737,7 +749,7 @@ Float64 Utilities::DistanceBetweenStations(std::shared_ptr<const Alignment> alig
    }
 }
 
-Station& Utilities::IncrementStation(std::shared_ptr<const Alignment> alignment, Station& station, Float64 distance)
+Station& COGO::IncrementStation(std::shared_ptr<const Alignment> alignment, Station& station, Float64 distance)
 {
    if (alignment)
       return alignment->IncrementStation(station, distance);
@@ -755,7 +767,7 @@ Station& Utilities::IncrementStation(std::shared_ptr<const Alignment> alignment,
    }
 }
 
-Station Utilities::IncrementStationBy(std::shared_ptr<const Alignment> alignment, const Station& station, Float64 distance)
+Station COGO::IncrementStationBy(std::shared_ptr<const Alignment> alignment, const Station& station, Float64 distance)
 {
    if (alignment)
       return alignment->IncrementStationBy(station, distance);
@@ -774,7 +786,7 @@ Station Utilities::IncrementStationBy(std::shared_ptr<const Alignment> alignment
 }
 
 #if defined _UNITTEST
-bool Utilities::TestMe(WBFL::Debug::Log& rlog)
+bool COGO::TestMe(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Utilities");
    TRY_TESTME(Measure(rlog));
@@ -786,7 +798,7 @@ bool Utilities::TestMe(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("Utilities");
 }
 
-bool Utilities::Measure(WBFL::Debug::Log& rlog)
+bool COGO::Measure(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Utilities::Measure");
    
@@ -812,7 +824,7 @@ bool Utilities::Measure(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("Utilities::Measure");
 }
 
-bool Utilities::Locate(WBFL::Debug::Log& rlog)
+bool COGO::Locate(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Utilities::Locate");
 
@@ -869,7 +881,7 @@ bool Utilities::Locate(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("Utilities::Locate");
 }
 
-bool Utilities::Intersect(WBFL::Debug::Log& rlog)
+bool COGO::Intersect(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Utilities::Intersect");
 
@@ -939,7 +951,7 @@ bool Utilities::Intersect(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("Utilities::Intersect");
 }
 
-bool Utilities::Project(WBFL::Debug::Log& rlog)
+bool COGO::Project(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Utilities::Project");
 
@@ -959,7 +971,7 @@ bool Utilities::Project(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("Utilities::Project");
 }
 
-bool Utilities::Divide(WBFL::Debug::Log& rlog)
+bool COGO::Divide(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Utilities::Divide");
 
@@ -989,7 +1001,7 @@ bool Utilities::Divide(WBFL::Debug::Log& rlog)
    TESTME_EPILOG("Utilities::Divide");
 }
 
-bool Utilities::Tangent(WBFL::Debug::Log& rlog)
+bool COGO::Tangent(WBFL::Debug::Log& rlog)
 {
    TESTME_PROLOGUE("Utilities::Tangent");
 

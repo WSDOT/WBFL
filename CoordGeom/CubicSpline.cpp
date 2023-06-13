@@ -23,7 +23,7 @@
 
 #include <CoordGeom/CoordGeomLib.h>
 #include <CoordGeom/CubicSpline.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/XCoordGeom.h>
 
 #include <GeomModel/CoordinateXform2d.h>
@@ -314,7 +314,7 @@ WBFL::Geometry::Point2d CubicSpline::LocatePoint(Float64 distFromStart, OffsetTy
    if (!IsZero(offset))
    {
 
-      point = Utilities::LocateByDistanceAndDirection(point, offset, direction, 0.0);
+      point = COGO::LocateByDistanceAndDirection(point, offset, direction, 0.0);
    }
 
    return point;
@@ -374,7 +374,7 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> CubicSpline::ProjectPoint(con
    const auto& p0 = GetStartPoint();
    const auto& pn = GetEndPoint();
 
-   auto dir = Utilities::MeasureDirection(p0, pn);
+   auto dir = COGO::MeasureDirection(p0, pn);
 
    xfrm.SetNewOrigin(p0);
    xfrm.SetRotationAngle(dir);
@@ -579,7 +579,7 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::Intersect(const WBFL::Geometry
          // that isn't what we are looking for
          Float64 dist;
          Direction dir;
-         std::tie(dist,dir) = Utilities::ComputeInverse(pntStart, bkTangentPoint);
+         std::tie(dist,dir) = COGO::ComputeInverse(pntStart, bkTangentPoint);
 
          if (m_StartDirection != dir)
          {
@@ -640,7 +640,7 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::Intersect(const WBFL::Geometry
          // that is what we are looking for
          Float64 dist;
          Direction dir;
-         std::tie(dist,dir) = Utilities::ComputeInverse(endPoint, aheadTangentPoint);
+         std::tie(dist,dir) = COGO::ComputeInverse(endPoint, aheadTangentPoint);
 
          if (m_EndDirection == dir)
          {
@@ -665,7 +665,7 @@ std::vector<std::shared_ptr<PathElement>> CubicSpline::CreateOffsetPath(Float64 
    for (const auto& point : m_vPoints)
    {
       auto direction = GetBearingAtPoint(pntIdx++);
-      auto offset_point = Utilities::LocateByDistanceAndDirection(point, 0.0, direction, offset);
+      auto offset_point = COGO::LocateByDistanceAndDirection(point, 0.0, direction, offset);
       vOffsetPoints.emplace_back(offset_point);
    }
 
@@ -872,7 +872,7 @@ void CubicSpline::CreateSplineSegments() const
 
    Float64 distance;
    Direction direction;
-   std::tie(distance,direction) = Utilities::ComputeInverse(p0, pn);
+   std::tie(distance,direction) = COGO::ComputeInverse(p0, pn);
 
    m_RotationAngle = direction.GetValue();
 

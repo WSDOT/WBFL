@@ -41,12 +41,11 @@ import "WBFLUnitServer.idl";
 
 cpp_quote("#include <WBFLUnitServer.h>")
 
-typedef IDType CogoObjectID;
-
 interface IProfile;
 interface IPath;
 interface IAlignment;
 interface ISurface;
+interface IBridgeGeometry;
 
 /// Coordinate Geometry and Roadway Geometrics Modeling Library
 [
@@ -164,6 +163,58 @@ library WBFLCogo
        tsFixedHorizontal, ///< measured as rise over 1 and is not changed by superelevations
        tsFixedVertical    ///< measured as 1 over run and is not changed by superelevations
     } TemplateSlopeType;
+
+
+    typedef [public, helpstring("enum GirderLineType"), uuid(621DA6BE-19C3-49FE-9227-95F988D8A6BF)]
+       enum
+    {
+       glChord = 0, // straight line chord
+       glPath = 1  // finite length path (curved)
+    } GirderLineType;
+
+    // un-comment after GenericBridge becomes obsolete
+    typedef [public, helpstring("enum PierFaceType"), uuid(FC45D43A-BE9D-4725-8913-E2B2947CEC73)]
+       enum
+    {
+       pfBack = 0,
+       pfAhead = 1
+    } PierFaceType;
+
+    typedef [public, helpstring("enum DeckBoundaryEdgeType"), uuid(45561BA8-9178-4AEF-8B2B-C25BA2D09E1B)]
+       enum
+    {
+       setPier, // DeckBoundary edge defined by pier CL
+       setLayout // DeckBoundary edge defined by layout line
+    } DeckBoundaryEdgeType;
+
+    typedef [public, helpstring("enum MeasurementType"), uuid(A8F6552D-A5A9-40DB-9562-B33623CC9C31)]
+       enum
+    {
+       mtAlongItem = 0,
+       mtNormal = 1
+    } MeasurementType;
+
+    typedef [public, helpstring("enum MeasurementLocation"), uuid(A884BF5A-0C8F-4D89-BDA7-114E6944A9D0)]
+       enum
+    {
+       mlPierLine = 0,
+       mlCenterlineBearing = 1
+    } MeasurementLocation;
+
+    typedef [public, helpstring("enum EndType"), uuid(834FAD6D-79ED-4253-A49C-8B3CB270C899)]
+       enum
+    {
+       etStart = 0,
+       etEnd = 1
+    } EndType;
+
+    typedef [public, helpstring("enum SideType"), uuid(73C1F1F8-36DE-4042-A9A5-A1CC07F1C323)]
+       enum
+    {
+       stLeft = 0,
+       stRight = 1
+    } SideType;
+
 
     /// Interface for objects that represents an angle. 
     /// Counter-clockwise angles (Left) angles have positive values
@@ -1555,7 +1606,7 @@ library WBFLCogo
       /// Returns a surface template slope with respect to the horizontal
       [helpstring("method SurfaceTemplateSegmentSlope")] 
       HRESULT SurfaceTemplateSegmentSlope(
-         [in]CogoObjectID surfaceID, ///< ID of a Surface object
+         [in]IDType surfaceID, ///< ID of a Surface object
          [in]VARIANT varStation, ///< Station where a SurfaceTemplate is created
          [in]CollectionIndexType templateSegmentIdx, ///< Index of the SurfaceTemplateSegment from which the slope is returned
          [out,retval]Float64* pSlope ///< The SurfaceTemplateSegment slope
@@ -1564,13 +1615,13 @@ library WBFLCogo
       /// Returns the Surface identified by surfaceID and containing the specified station.
       [helpstring("method GetSurfaceContainingStation")] HRESULT GetSurfaceContainingStation(
          [in]VARIANT varStation, ///< The station
-         [out]CogoObjectID* pSurfaceID,///< ID of a Surface object
+         [out]IDType* pSurfaceID,///< ID of a Surface object
          [out,retval]ISurface** ppSurface ///< The Surface object
       );
 
       /// Returns the offset of a ridge point relative to another ridge point.
       [helpstring("method GetRidgePointOffset")] HRESULT GetRidgePointOffset(
-         [in]CogoObjectID surfaceID, ///< ID of a Surface object
+         [in]IDType surfaceID, ///< ID of a Surface object
          [in]VARIANT varStation, ///< Station where a SurfaceTemplate is created
          [in]IndexType ridgePoint1Idx, ///< The first ridge point
          [in]IndexType ridgePoint2Idx, ///< The second ridge point
@@ -1579,7 +1630,7 @@ library WBFLCogo
 
       /// Returns the elevation of a ridge point.
       [helpstring("method GetRidgePointElevation")] HRESULT GetRidgePointElevation(
-         [in]CogoObjectID surfaceID, ///< ID of a Surface object
+         [in]IDType surfaceID, ///< ID of a Surface object
          [in]VARIANT varStation, ///< Station where a SurfaceTemplate is created
          [in]IndexType ridgePointIdx, ///< The ridge point index
          [out]Float64* pElev ///< The elevation of the ridge point
@@ -1587,7 +1638,7 @@ library WBFLCogo
 
       /// Returns the offset and elevation of a ridge point relative to a reference ridge point.
       [helpstring("method GetRidgePointOffsetAndElevation")] HRESULT GetRidgePointOffsetAndElevation(
-         [in]CogoObjectID surfaceID, ///< ID of a Surface object
+         [in]IDType surfaceID, ///< ID of a Surface object
          [in]VARIANT varStation, ///< Station where a SurfaceTemplate is created
          [in]IndexType ridgePoint1Idx, ///< The ridge point index
          [in]IndexType ridgePoint2Idx, ///< The reference point index
@@ -1954,9 +2005,9 @@ library WBFLCogo
        ///
        /// \image html /Measure/Angle.jpg
         [helpstring("method Angle"),helpcontext(IDH_IMeasure_Angle)] HRESULT Angle(
-           [in] CogoObjectID fromID, ///< ID of the point the angle is measured from
-           [in] CogoObjectID vertexID, ///< ID of the point at the vertex of the angle
-           [in] CogoObjectID toID, ///< ID of the point the angle is measured to
+           [in] IDType fromID, ///< ID of the point the angle is measured from
+           [in] IDType vertexID, ///< ID of the point at the vertex of the angle
+           [in] IDType toID, ///< ID of the point the angle is measured to
            [out,retval] IAngle** angle ///< The angle
         );
 
@@ -1975,8 +2026,8 @@ library WBFLCogo
         ///
         /// \image html /Measure/Distance.jpg
         [helpstring("method Distance"),helpcontext(IDH_IMeasure_Distance)] HRESULT Distance(
-           [in] CogoObjectID fromID, ///< ID of the first point
-           [in] CogoObjectID toID, ///< ID of the second point
+           [in] IDType fromID, ///< ID of the first point
+           [in] IDType toID, ///< ID of the second point
            [out,retval] Float64* dist ///< Distance between the points
         );
 
@@ -1984,8 +2035,8 @@ library WBFLCogo
         ///
         /// \image html /Measure/Direction.jpg
         [helpstring("method Direction"),helpcontext(IDH_IMeasure_Direction)] HRESULT Direction(
-           [in] CogoObjectID fromID, ///< ID of the first point
-           [in] CogoObjectID toID, ///< ID of the second point
+           [in] IDType fromID, ///< ID of the first point
+           [in] IDType toID, ///< ID of the second point
            [out,retval] IDirection** dir ///< Direction of the line from the first to second point
         );
 
@@ -1993,8 +2044,8 @@ library WBFLCogo
         ///
         /// \image html /Measure/Direction.jpg
         [helpstring("method Inverse"),helpcontext(IDH_IMeasure_Inverse)] HRESULT Inverse(
-           [in] CogoObjectID fromID, ///< ID of the first point
-           [in] CogoObjectID toID, ///< ID of the second point
+           [in] IDType fromID, ///< ID of the first point
+           [in] IDType toID, ///< ID of the second point
            [out] Float64* dist, ///< Distance between the points
            [out] IDirection** dir ///< Direction of the line from the first to second point
         );
@@ -2074,9 +2125,9 @@ library WBFLCogo
        /// Locates a point by distance and angle
        /// \image html /Locate/ByDistAngle.jpg
         [helpstring("method ByDistAngle"),helpcontext(IDH_ILocate_ByDistAngle)] HRESULT ByDistAngle(
-           [in] CogoObjectID newID, ///< ID for storing the new point
-           [in] CogoObjectID fromID, ///< ID of the first point
-           [in] CogoObjectID toID,  ///< ID of the second point
+           [in] IDType newID, ///< ID for storing the new point
+           [in] IDType fromID, ///< ID of the first point
+           [in] IDType toID,  ///< ID of the second point
            [in] Float64 dist,  ///< Distance from the second point where the new point is located
            [in] VARIANT varAngle,  ///< Angle from the line between the first and second point at which to locate the new point
            [in] Float64 offset ///< Offset from the line between the first and second point.
@@ -2085,9 +2136,9 @@ library WBFLCogo
         /// Locates a point by distance and deflection angle
         /// \image html /Locate/ByDistDefAngle.jpg
         [helpstring("method ByDistDefAngle"),helpcontext(IDH_ILocate_ByDistDefAngle)] HRESULT ByDistDefAngle(
-           [in] CogoObjectID newID, ///< ID for storing the new point
-           [in] CogoObjectID fromID, ///< ID of the first point
-           [in] CogoObjectID toID,  ///< ID of the second point
+           [in] IDType newID, ///< ID for storing the new point
+           [in] IDType fromID, ///< ID of the first point
+           [in] IDType toID,  ///< ID of the second point
            [in] Float64 dist,  ///< Distance from the second point where the new point is located
            [in] VARIANT varDefAngle, ///< Deflection angle the line between the first and second point at which to locate the point
            [in] Float64 offset ///< Offset from the line between the first and second point.
@@ -2096,8 +2147,8 @@ library WBFLCogo
         /// Locates a point by distance and direction
         /// \image html /Locate/ByDistDir.jpg
         [helpstring("method ByDistDir"),helpcontext(IDH_ILocate_ByDistDir)] HRESULT ByDistDir(
-           [in] CogoObjectID newID, ///< ID for storing the new point
-           [in] CogoObjectID fromID, ///< ID of the point the new point is located from
+           [in] IDType newID, ///< ID for storing the new point
+           [in] IDType fromID, ///< ID of the point the new point is located from
            [in] Float64 dist, ///< Distance from the point to the new point
            [in] VARIANT varDir,  ///< Direction at which to locate the point
            [in] Float64 offset ///< Offset from the line defined by the point and direction
@@ -2106,9 +2157,9 @@ library WBFLCogo
         /// Locates a point on a line
         /// \image html /Locate/PointOnLine.jpg
         [helpstring("method PointOnLine"),helpcontext(IDH_ILocate_PointOnLine)] HRESULT PointOnLine(
-           [in] CogoObjectID newID, ///< ID for storing the new point
-           [in] CogoObjectID fromID,  ///< ID of the point the new point is located from
-           [in] CogoObjectID toID,   ///< ID of the second point
+           [in] IDType newID, ///< ID for storing the new point
+           [in] IDType fromID,  ///< ID of the point the new point is located from
+           [in] IDType toID,   ///< ID of the second point
            [in] Float64 dist, ///< Distance from the first point to the new point. If a negative value is used, the new point will be located before the start point.
            [in] Float64 offset ///< Offset from the line between the first and second point to the new point.
         );
@@ -2116,20 +2167,20 @@ library WBFLCogo
         /// Locates a line parallel to a line defined by two points.
         /// \image html /Locate/ParallelLineByPoints.jpg
         [helpstring("method ParallelLineByPoints"),helpcontext(IDH_ILocate_ParallelLineByPoints)] HRESULT ParallelLineByPoints(
-           [in] CogoObjectID newFromID, ///< ID for storing the new line start point
-           [in] CogoObjectID newToID, ///< ID for storing the new line end point
-           [in] CogoObjectID fromID, ///< ID of the start point of the line
-           [in] CogoObjectID toID,  ///< ID of the end point of the line
+           [in] IDType newFromID, ///< ID for storing the new line start point
+           [in] IDType newToID, ///< ID for storing the new line end point
+           [in] IDType fromID, ///< ID of the start point of the line
+           [in] IDType toID,  ///< ID of the end point of the line
            [in] Float64 offset ///< Offset from the source line to the new line.
         );
 
         /// Locates a parallel line segment.
         /// \image html /Locate/ParallelLineSegment.jpg
         [helpstring("method ParallelLineSegment"),helpcontext(IDH_ILocate_ParallelLineSegment)] HRESULT ParallelLineSegment(
-           [in] CogoObjectID newLineID, ///< ID for storing the new line
-           [in] CogoObjectID newFromID, ///< ID for storing the start point for the new line segment
-           [in] CogoObjectID newToID, ///< ID for storing the end point for the new line segment
-           [in] CogoObjectID lineID, ///< ID of the source line segment
+           [in] IDType newLineID, ///< ID for storing the new line
+           [in] IDType newFromID, ///< ID for storing the start point for the new line segment
+           [in] IDType newToID, ///< ID for storing the end point for the new line segment
+           [in] IDType lineID, ///< ID of the source line segment
            [in] Float64 offset ///< Offset from the source line segment
         );
     };
@@ -2220,11 +2271,11 @@ library WBFLCogo
        /// Intersects two lines defined by point and direction.
        /// \image html /Intersect/Bearings.jpg
       [helpstring("method Bearings"),helpcontext(IDH_IIntersect_Bearings)] HRESULT Bearings(
-         [in] CogoObjectID newID, ///< ID for storing the new point
-         [in] CogoObjectID id1, ///< ID of a point on the first line
+         [in] IDType newID, ///< ID for storing the new point
+         [in] IDType id1, ///< ID of a point on the first line
          [in] VARIANT varDir1,  ///< Direction of the first line
          [in] Float64 offset1, ///< Offset from the first line
-         [in] CogoObjectID id2,  ///< ID of a point on the second line
+         [in] IDType id2,  ///< ID of a point on the second line
          [in] VARIANT varDir2, ///< Direction of the second line
          [in] Float64 offset2,  ///< Offset from the second line
          [out,retval] VARIANT_BOOL* bFound ///< Set to VARIANT_TRUE if an intersection is found
@@ -2233,13 +2284,13 @@ library WBFLCogo
       /// Intersects a line defined by a point and direction with a circle.
       /// \image html /Intersect/BearingCircle.jpg
       [helpstring("method BearingCircle"),helpcontext(IDH_IIntersect_BearingCircle)] HRESULT BearingCircle(
-         [in]CogoObjectID newID, ///< ID for storing the new point
-         [in] CogoObjectID id1,  ///< ID of a point on the line
+         [in]IDType newID, ///< ID for storing the new point
+         [in] IDType id1,  ///< ID of a point on the line
          [in] VARIANT varDir, ///< Direction of the line
          [in] Float64 offset, ///< Offset from the line
-         [in] CogoObjectID idc,  ///< ID of the circle center point 
+         [in] IDType idc,  ///< ID of the circle center point 
          [in] Float64 radius,  ///< Circle radius
-         [in] CogoObjectID idNearest,  ///< ID of a point that will be nearest the solution point in the event two intersection points are found
+         [in] IDType idNearest,  ///< ID of a point that will be nearest the solution point in the event two intersection points are found
          [out,retval] VARIANT_BOOL* bFound ///< Set to VARIANT_TRUE if an intersection is found
       );
 
@@ -2247,37 +2298,37 @@ library WBFLCogo
       /// Intersects two circles
       /// \image html /Intersect/Circles.jpg
       [helpstring("method Circles"),helpcontext(IDH_IIntersect_Circles)] HRESULT Circles(
-         [in]CogoObjectID newID, ///< ID for storing the new point
-         [in] CogoObjectID id1,  ///< ID of the first circle center point
+         [in]IDType newID, ///< ID for storing the new point
+         [in] IDType id1,  ///< ID of the first circle center point
          [in] Float64 r1,  ///< Radius of the first circle
-         [in] CogoObjectID id2,  ///< ID of the second circle center point
+         [in] IDType id2,  ///< ID of the second circle center point
          [in] Float64 r2,  ///< Radius of the second circle
-         [in] CogoObjectID idNearest,  ///< ID of a point that will be nearest the solution point in the event two intersection points are found 
+         [in] IDType idNearest,  ///< ID of a point that will be nearest the solution point in the event two intersection points are found 
          [out,retval] VARIANT_BOOL* bFound ///< Set to VARIANT_TRUE if an intersection is found
       );
 
       /// Intersects a line defined by two points with a circle.
       /// \image html /Intersect/LineByPointsCircle.jpg
       [helpstring("method LineByPointsCircle"),helpcontext(IDH_IIntersect_LineByPointsCircle)] HRESULT LineByPointsCircle(
-         [in]CogoObjectID newID, ///< ID for storing the new point
-         [in] CogoObjectID id1, ///< ID of first point on the line
-         [in] CogoObjectID id2,  ///< ID of the second point on the line
+         [in]IDType newID, ///< ID for storing the new point
+         [in] IDType id1, ///< ID of first point on the line
+         [in] IDType id2,  ///< ID of the second point on the line
          [in] Float64 offset, ///< Offset from the line
-         [in] CogoObjectID idc,  ///< ID of the circle center point
+         [in] IDType idc,  ///< ID of the circle center point
          [in] Float64 radius, ///< Circle radius
-         [in] CogoObjectID idNearest,  ///< ID of a point that will be nearest the solution point in the event two intersection points are found 
+         [in] IDType idNearest,  ///< ID of a point that will be nearest the solution point in the event two intersection points are found 
          [out,retval] VARIANT_BOOL* bFound ///< Set to VARIANT_TRUE if an intersection is found
       );
 
       /// Intersects two lines defined by points.
       /// \image html /Intersect/LinesByPoints.jpg
       [helpstring("method LinesByPoints"),helpcontext(IDH_IIntersect_LinesByPoints)] HRESULT LinesByPoints(
-         [in]CogoObjectID newID, ///< ID for storing the new point
-         [in] CogoObjectID id11, ///< ID of first point through which the first line passes
-         [in] CogoObjectID id12,  ///< ID of second point through which the first line passes
+         [in]IDType newID, ///< ID for storing the new point
+         [in] IDType id11, ///< ID of first point through which the first line passes
+         [in] IDType id12,  ///< ID of second point through which the first line passes
          [in] Float64 offset1, ///< Offset from first line
-         [in] CogoObjectID id21, ///< ID of first point through which the second line passes
-         [in] CogoObjectID id22, ///< ID of second point through which the second line passes
+         [in] IDType id21, ///< ID of first point through which the second line passes
+         [in] IDType id22, ///< ID of second point through which the second line passes
          [in] Float64 offset2, ///< Offset from second line
          [out,retval] VARIANT_BOOL* bFound ///< Set to VARIANT_TRUE if an intersection is found
       );
@@ -2285,10 +2336,10 @@ library WBFLCogo
       /// Intersects two line segments.
       /// \image html /Intersect/Lines.jpg
       [helpstring("method Lines"),helpcontext(IDH_IIntersect_Lines)] HRESULT Lines(
-         [in]CogoObjectID newID, ///< ID for storing the new point
-         [in]CogoObjectID id1, ///< ID of first line segment
+         [in]IDType newID, ///< ID for storing the new point
+         [in]IDType id1, ///< ID of first line segment
          [in]Float64 offset1, ///< Offset from first line segment
-         [in]CogoObjectID id2, ///< ID of second line segment
+         [in]IDType id2, ///< ID of second line segment
          [in]Float64 offset2, ///< Offset from second line segment
          [out,retval]VARIANT_BOOL* bFound ///< Set to VARIANT_TRUE if an intersection is found
       );
@@ -2296,12 +2347,12 @@ library WBFLCogo
       /// Intersects a line segment and a circle
       /// \image html /Intersect/LineSegmentCircle.jpg
       [helpstring("method LineSegmentCircle"),helpcontext(IDH_IIntersect_LineSegmentCircle)] HRESULT LineSegmentCircle(
-         [in]CogoObjectID newID, ///< ID for storing the new point
-         [in] CogoObjectID lineID, ///< ID of the line segment
+         [in]IDType newID, ///< ID for storing the new point
+         [in] IDType lineID, ///< ID of the line segment
          [in] Float64 offset, ///< Offset from the line segment
-         [in] CogoObjectID idc,  ///< ID of the circle center point
+         [in] IDType idc,  ///< ID of the circle center point
          [in] Float64 radius,  ///< Circle radius
-         [in] CogoObjectID idNearest,  ///< ID of a point that will be nearest the solution point in the event two intersection points are found 
+         [in] IDType idNearest,  ///< ID of a point that will be nearest the solution point in the event two intersection points are found 
          [out,retval] VARIANT_BOOL* bFound ///< Set to VARIANT_TRUE if an intersection is found
       );
     };
@@ -2412,27 +2463,27 @@ library WBFLCogo
        /// Projects a point onto a CompoundCurve. If the point projects before or after the TS or ST point on the curve, the projected point will be on the Back or Forward Tangent, respectively.
        /// \image html /Project/PointOnCurve.jpg
        [helpstring("method PointOnCurve"), helpcontext(IDH_IProject_PointOnCurve)] HRESULT PointOnCurve(
-          [in]CogoObjectID newID,  ///< ID for storing the new point
-          [in] CogoObjectID fromID, ///< ID of the point to project
-          [in]CogoObjectID curveID ///< ID of the curve
+          [in]IDType newID,  ///< ID for storing the new point
+          [in] IDType fromID, ///< ID of the point to project
+          [in]IDType curveID ///< ID of the curve
        );
 
        /// Projects a point onto a line defined by two points.
        /// \image html /Project/PointOnLineByPoints.jpg
        [helpstring("method PointOnLineByPoints"),helpcontext(IDH_IProject_PointOnLineByPoints)] HRESULT PointOnLineByPoints(
-          [in] CogoObjectID newID, ///< ID for storing the new point
-          [in] CogoObjectID fromID, ///< ID of the point to be projected
-          [in] CogoObjectID startID,  ///< ID of first point on the line
-          [in] CogoObjectID endID, ///< ID of second point on the line
+          [in] IDType newID, ///< ID for storing the new point
+          [in] IDType fromID, ///< ID of the point to be projected
+          [in] IDType startID,  ///< ID of first point on the line
+          [in] IDType endID, ///< ID of second point on the line
           [in] Float64 offset ///< Offset from the line
        );
 
        /// Projects a point onto a line segment.
        /// \image html /Project/PointOnLneSegment.jpg
        [helpstring("method PointOnLineSegment"),helpcontext(IDH_IProject_PointOnLineSegment)] HRESULT PointOnLineSegment(
-          [in]CogoObjectID newID, ///< ID for storing the new point
-          [in]CogoObjectID fromID, ///< ID of the point to be projected
-          [in] CogoObjectID lineID, ///< ID of the line segment
+          [in]IDType newID, ///< ID for storing the new point
+          [in]IDType fromID, ///< ID of the point to be projected
+          [in] IDType lineID, ///< ID of the line segment
           [in] Float64 offset ///< Offset from the line segment
        );
     };
@@ -2483,11 +2534,11 @@ library WBFLCogo
       /// This method will divide an arc into nParts equally spaced points. nParts-2 points will be created. The end points of the arc are not duplicated. Points will not be generated if points with the same ID already exist in the CogoModel.
       /// \image html /Divide/DivideArc.jpg
       [helpstring("method Arc"),helpcontext(IDH_IDivide_Arc)] HRESULT Arc(
-         [in]CogoObjectID firstID, ///< ID of the first new point
-         [in] CogoObjectID idInc, ///< Point ID increment
-         [in] CogoObjectID fromID,  ///< ID of the point the arc is measured from
-         [in] CogoObjectID vertexID,  ///< ID of the vertex point
-         [in] CogoObjectID toID, ///< ID of the point the arc is measured to
+         [in]IDType firstID, ///< ID of the first new point
+         [in] IDType idInc, ///< Point ID increment
+         [in] IDType fromID,  ///< ID of the point the arc is measured from
+         [in] IDType vertexID,  ///< ID of the vertex point
+         [in] IDType toID, ///< ID of the point the arc is measured to
          [in] CollectionIndexType nParts ///< Number of parts to divide the arc into.
       );
 
@@ -2495,10 +2546,10 @@ library WBFLCogo
       /// This method will divide a line segment defined by two points into nParts equally spaced points. nParts-2 points will be created. The end points of the line segment are not duplicated. Points will not be generated if points with the same ID already exist in the CogoModel.
       /// \image html /Divide/DivideBetweenPoints.jpg
       [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints(
-         [in]CogoObjectID firstID, ///< ID of the first new point
-         [in] CogoObjectID idInc, ///< Point ID increment
-         [in] CogoObjectID fromID,  ///< ID of the start line segment point
-         [in] CogoObjectID toID, ///< ID of the end line segment point
+         [in]IDType firstID, ///< ID of the first new point
+         [in] IDType idInc, ///< Point ID increment
+         [in] IDType fromID,  ///< ID of the start line segment point
+         [in] IDType toID, ///< ID of the end line segment point
          [in] CollectionIndexType nParts ///< Number of parts to divide the line segment into.
       );
 
@@ -2506,9 +2557,9 @@ library WBFLCogo
       /// This method will divide a line segment into nParts equally spaced points. nParts-2 points will be created. The end points of the line segment are not duplicated. Points will not be generated if points with the same ID already exist in the CogoModel.
       /// \image html /Divide/DivideLineSegment.jpg
       [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment(
-         [in]CogoObjectID firstID, ///< ID of the first new point
-         [in] CogoObjectID idInc,  ///< Point ID increment
-         [in] CogoObjectID lineID, ///< ID of the line segment
+         [in]IDType firstID, ///< ID of the first new point
+         [in] IDType idInc,  ///< Point ID increment
+         [in] IDType lineID, ///< ID of the line segment
          [in] CollectionIndexType nParts ///< Number of parts to divide the line segment into.
       );
 
@@ -2516,9 +2567,9 @@ library WBFLCogo
       /// This method will divide a horizontal curve into nParts equally spaced points. nParts-2 points will be created. The end points of the horizontal curve (TS and ST) are not duplicated. Points will not be generated if points with the same ID already exist in the CogoModel.
       /// \image html /Divide/DivideCompoundCurve.jpg
       [helpstring("method CompoundCurve"),helpcontext(IDH_IDivide_CompoundCurve)] HRESULT CompoundCurve(
-         [in]CogoObjectID firstID,  ///< ID of the first new point
-         [in] CogoObjectID idInc,  ///< Point ID increment
-         [in] CogoObjectID curveID, ///< ID of the CompoundCurve
+         [in]IDType firstID,  ///< ID of the first new point
+         [in] IDType idInc,  ///< Point ID increment
+         [in] IDType curveID, ///< ID of the CompoundCurve
          [in] CollectionIndexType nParts ///< Number of parts to divide the CompoundCurve into.
       );
 
@@ -2526,9 +2577,9 @@ library WBFLCogo
       /// This method will divide a path into nParts equally spaced points. nParts+1 points will be created. Points will not be generated if points with the same ID already exist in the CogoModel.
       /// \image html /Divide/DividePath.png
       [helpstring("method Path"),helpcontext(IDH_IDivide_Path)] HRESULT Path(
-         [in]CogoObjectID firstID,///< ID of the first new point
-         [in]CogoObjectID idInc,///< Point ID increment
-         [in] CogoObjectID pathID, ///< ID of the Path
+         [in]IDType firstID,///< ID of the first new point
+         [in]IDType idInc,///< Point ID increment
+         [in] IDType pathID, ///< ID of the Path
          [in] CollectionIndexType nParts, ///< Number of parts to divide the Path into.
          [in] Float64 start, ///< Distance from the start of the path to the start of the divided range
          [in] Float64 end ///< Distance from the start of the path to the end of the divided range
@@ -2612,11 +2663,11 @@ library WBFLCogo
       /// If tangent is tsCW then the points indicated in the figure are located. If tangent is tsCCW, then the tangent points on the opposite tangent are located.
       /// \image html /Tangent/Cross.gif
       [helpstring("method Cross"),helpcontext(IDH_ITangent_Cross)] HRESULT Cross(
-         [in] CogoObjectID newID1,  ///< ID of the new point on the first circle
-         [in] CogoObjectID idCenter1,  ///< ID of the second circle center point
+         [in] IDType newID1,  ///< ID of the new point on the first circle
+         [in] IDType idCenter1,  ///< ID of the second circle center point
          [in] Float64 radius1, ///< First circle radius
-         [in] CogoObjectID newID2, ///< ID of the new point on the second circle
-         [in] CogoObjectID idCenter2,  ///< ID of the second circle center point
+         [in] IDType newID2, ///< ID of the new point on the second circle
+         [in] IDType idCenter2,  ///< ID of the second circle center point
          [in] Float64 radius2,  ///< Second circle radius
          [in] TangentSignType tangent ///< Indicates which of the two tangent lines to use to locate the tangent points
       );
@@ -2625,11 +2676,11 @@ library WBFLCogo
       /// If tangent is tsCW then the points indicated in the figure are located. If tangent is tsCCW, then the tangent points on the opposite tangent are located.
       /// \image html /Tangent/External.gif
       [helpstring("method External"), helpcontext(IDH_ITangent_External)] HRESULT External(
-         [in] CogoObjectID newID1,  ///< ID of the new point on the first circle
-         [in] CogoObjectID idCenter1,  ///< ID of first circle center point
+         [in] IDType newID1,  ///< ID of the new point on the first circle
+         [in] IDType idCenter1,  ///< ID of first circle center point
          [in] Float64 radius1, ///< First circle radius
-         [in] CogoObjectID newID2, ///< ID of the new point on the second circle
-         [in] CogoObjectID idCenter2,  ///< ID of the second circle center point
+         [in] IDType newID2, ///< ID of the new point on the second circle
+         [in] IDType idCenter2,  ///< ID of the second circle center point
          [in] Float64 radius2,  ///< Second circle radius
          [in] TangentSignType tangent ///< Indicates which of the two tangent lines to use to locate the tangent points
       );
@@ -2638,10 +2689,10 @@ library WBFLCogo
       /// If tangent is tsCW then the points indicated in the figure are located. If tangent is tsCCW, then the tangent points on the opposite tangent are located.
       /// \image html /Tangent/Point.gif
       [helpstring("method Point"),helpcontext(IDH_ITangent_Point)] HRESULT Point(
-         [in] CogoObjectID newID,  ///< ID of the new point
-         [in] CogoObjectID idCenter,  ///< ID of the circle center point
+         [in] IDType newID,  ///< ID of the new point
+         [in] IDType idCenter,  ///< ID of the circle center point
          [in] Float64 radius, ///< Circle radius
-         [in] CogoObjectID pointID, ///< ID of the point forming a line passing through the circle center point
+         [in] IDType pointID, ///< ID of the point forming a line passing through the circle center point
          [in] TangentSignType tangent ///< Indicates which of the two tangent lines to use to locate the tangent points
       );
    };
@@ -2930,6 +2981,489 @@ library WBFLCogo
 
       /// Provides access to the underlying CogoEngine object
       [propget, helpstring("property Engine")] HRESULT Engine([out, retval]ICogoEngine** engine);
+   };
+
+
+   [
+      object,
+      uuid(04086070-2A58-4557-A320-649C615652FA),
+      oleautomation,
+      nonextensible,
+      helpstring("IPierLine Interface"),
+      pointer_default(unique)
+   ]
+   interface IPierLine : IUnknown
+   {
+      [propget, helpstring("property AlignmentID")] HRESULT AlignmentID([out, retval] IDType* ID);
+      [propget, helpstring("property Station")] HRESULT Station([out, retval] IStation** pVal);
+      [propget, helpstring("property Direction")] HRESULT Direction([out, retval] IDirection** pVal);
+      [propget, helpstring("property Normal")] HRESULT Normal([out, retval] IDirection** pVal);
+      [propget, helpstring("property Skew")] HRESULT Skew([out, retval] IAngle** pVal);
+      [propget, helpstring("property ID")] HRESULT ID([out, retval] IDType* pVal);
+      [propget, helpstring("property Index")] HRESULT Index([out, retval]IndexType* pVal);
+
+      [propget, helpstring("property BearingOffset")] HRESULT BearingOffset([in]PierFaceType pierFace, [out, retval] Float64* brgOffset);
+      [propput, helpstring("property BearingOffset")] HRESULT BearingOffset([in]PierFaceType pierFace, [in] Float64 brgOffset);
+      [propget, helpstring("property BearingOffsetMeasurementType")] HRESULT BearingOffsetMeasurementType([in]PierFaceType pierFace, [out, retval] MeasurementType* measure);
+      [propput, helpstring("property BearingOffsetMeasurementType")] HRESULT BearingOffsetMeasurementType([in]PierFaceType pierFace, [in] MeasurementType measure);
+      [propget, helpstring("property EndDistance")] HRESULT EndDistance([in]PierFaceType pierFace, [out, retval] Float64* endDist);
+      [propput, helpstring("property EndDistance")] HRESULT EndDistance([in]PierFaceType pierFace, [in] Float64 endDist);
+      [propget, helpstring("property EndDistanceMeasurementType")] HRESULT EndDistanceMeasurementType([in]PierFaceType pierFace, [out, retval] MeasurementType* measure);
+      [propput, helpstring("property EndDistanceMeasurementType")] HRESULT EndDistanceMeasurementType([in]PierFaceType pierFace, [in] MeasurementType measure);
+      [propget, helpstring("property EndDistanceMeasurementLocation")] HRESULT EndDistanceMeasurementLocation([in]PierFaceType pierFace, [out, retval] MeasurementLocation* measure);
+      [propput, helpstring("property EndDistanceMeasurementLocation")] HRESULT EndDistanceMeasurementLocation([in]PierFaceType pierFace, [in] MeasurementLocation measure);
+
+      [propget, helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([out, retval] IPoint2d** ppPoint);
+      [propget, helpstring("property BridgePoint")] HRESULT BridgePoint([out, retval] IPoint2d** ppPoint);
+      [propget, helpstring("property LeftPoint")] HRESULT LeftPoint([out, retval] IPoint2d** ppPoint);
+      [propget, helpstring("property RightPoint")] HRESULT RightPoint([out, retval] IPoint2d** ppPoint);
+      [propget, helpstring("property Centerline")] HRESULT Centerline([out, retval]ILine2d** ppLine);
+
+      [helpstring("method GetBearingOffset")] HRESULT GetBearingOffset([in]PierFaceType pierFace, [in]IDirection* direction, [out, retval] Float64* brgOffset);
+   };
+
+   [
+      object,
+      uuid(EDD54A64-4F63-4DC0-B605-DAA4C63BDA64),
+      helpstring("IGirderLine Interface"),
+      pointer_default(unique)
+   ]
+   interface IGirderLine : IUnknown
+   {
+      [propget, helpstring("property ID")] HRESULT ID([out, retval] IDType* pVal);
+      [propget, helpstring("property StartPier")] HRESULT StartPier([out, retval] IPierLine** pVal);
+      [propget, helpstring("property EndPier")] HRESULT EndPier([out, retval] IPierLine** pVal);
+      [propget, helpstring("property GirderLength")] HRESULT GirderLength([out, retval]Float64* pLength);
+      [propget, helpstring("property SpanLength")] HRESULT SpanLength([out, retval]Float64* pLength);
+      [propget, helpstring("property LayoutLength")] HRESULT LayoutLength([out, retval]Float64* pLength);
+      [propget, helpstring("property PierPoint")] HRESULT PierPoint([in]EndType endType, [out, retval]IPoint2d** ppPoint);
+      [propget, helpstring("property BearingPoint")] HRESULT BearingPoint([in]EndType endType, [out, retval]IPoint2d** ppPoint);
+      [propget, helpstring("property EndPoint")] HRESULT EndPoint([in]EndType endType, [out, retval]IPoint2d** ppPoint);
+      [helpstring("method GetEndPoints")] HRESULT GetEndPoints([out]IPoint2d** pntPier1, [out]IPoint2d** pntEnd1, [out]IPoint2d** pntBrg1, [out]IPoint2d** pntBrg2, [out]IPoint2d** pntEnd2, [out]IPoint2d** pntPier2);
+      [propget, helpstring("property Path")] HRESULT Path([out, retval]IPath** pVal);
+      [propget, helpstring("property Direction")] HRESULT Direction([out, retval]IDirection** ppDirection);
+      [propget, helpstring("property BearingOffset")] HRESULT BearingOffset([in]EndType endType, [out, retval]Float64* pBrgOffset);
+      [propget, helpstring("property EndDistance")] HRESULT EndDistance([in]EndType endType, [out, retval]Float64* pEndDist);
+   };
+
+   [
+      object,
+      uuid(24885559-FABB-4327-B30D-B2EE5C95C5C1),
+      helpstring("IDiaphragmLine Interface"),
+      pointer_default(unique)
+   ]
+   interface IDiaphragmLine : IUnknown
+   {
+      [propget, helpstring("property ID")] HRESULT ID([out, retval]IDType* pVal);
+      [propget, helpstring("property Length")] HRESULT Length([in]IDType gdrLineID, [out, retval]Float64* pLength);
+      [propget, helpstring("property Point")] HRESULT Point([in]IDType gdrLineID, [in]EndType endType, [out, retval]IPoint2d** ppPoint);
+   };
+
+   [
+      object,
+      uuid(8FC6DE2C-969D-4F74-BD77-9355C1C4BEB6),
+      helpstring("IDeckBoundary Interface"),
+      pointer_default(unique)
+   ]
+   interface IDeckBoundary : IUnknown
+   {
+      // Returns a collection of points that represents the perimeter of the deck. The perimeter will be approximated with
+      // nMinPointsPerSide. Control points for the elements that make up the edge paths will be included in the perimeter
+      [propget, helpstring("property Perimeter")] HRESULT Perimeter([in] IndexType nMinPointsPerSide, [out, retval] IPoint2dCollection** points);
+
+      // Returns a collection of points that represents the perimeter of the deck between two piers. The perimeter will be approximated with
+      // nMinPointsPerSide. Control points for the elements that make up the edge paths will be included in the perimeter
+      [propget, helpstring("property PerimeterEx")] HRESULT PerimeterEx([in] IndexType nMinPointsPerSide, [in] IDType startPierID, [in]Float64 Xstart, [in] IDType endPierID, [in]Float64 Xend, [in]VARIANT_BOOL bParallelToPiers, [out, retval] IPoint2dCollection** points);
+
+      // Returns the transverse deck edge points
+      [propget, helpstring("property TransverseEdgePoints")] HRESULT TransverseEdgePoints([in] EndType endType, [out]IPoint2d** ppLeft, [out]IPoint2d** ppLeftBreak, [out]IPoint2d** ppRightBreak, [out]IPoint2d** ppRight);
+
+      // Returns a deck edge path. If vbLayoutPath is VARIANT_TRUE, the path used to layout the deck is returned (this is basically a construction line)
+      // otherwise the actual edge path is returned.
+      [propget, helpstring("property EdgePath")] HRESULT EdgePath([in]SideType side, [in]VARIANT_BOOL vbLayoutPath, [out, retval]IPath** path);
+   };
+
+   [
+      object,
+      uuid(892B79C7-8CAA-4E0A-A4F4-1B6868F8D369),
+      oleautomation,
+      pointer_default(unique)
+   ]
+   interface IPierLineFactory : IUnknown
+   {
+   };
+
+   [
+      object,
+      uuid(E0F10472-2F28-47EC-BC17-813353709C5D),
+      oleautomation,
+      pointer_default(unique)
+   ]
+   interface ISinglePierLineFactory : IPierLineFactory
+   {
+      [propput] HRESULT PierLineID([in]IDType id);
+      [propget] HRESULT PierLineID([out, retval]IDType* pID);
+
+      [propput] HRESULT AlignmentID([in]IDType id);
+      [propget] HRESULT AlignmentID([out,retval]IDType* pID);
+
+      [propput] HRESULT Station([in]VARIANT varStation);
+      [propget] HRESULT Station([out, retval]IStation** ppStation);
+
+      [propput] HRESULT Direction([in]BSTR direction);
+      [propget] HRESULT Direction([out, retval]BSTR* direction);
+
+      [propput] HRESULT Length([in]Float64 length);
+      [propget] HRESULT Length([out, retval]Float64* pLength);
+
+      [propput] HRESULT Offset([in]Float64 offset);
+      [propget] HRESULT Offset([out, retval]Float64* pOffset);
+
+      [propput] HRESULT BearingOffset([in]PierFaceType pierFace, [in]Float64 brgOffset);
+      [propget] HRESULT BearingOffset([in]PierFaceType pierFace, [out, retval]Float64* pBrgOffset);
+
+      [propput] HRESULT BearingOffsetMeasurementType([in]PierFaceType pierFace, [in]MeasurementType measure);
+      [propget] HRESULT BearingOffsetMeasurementType([in]PierFaceType pierFace, [out, retval]MeasurementType* pMeasure);
+
+      [propput] HRESULT EndDistance([in]PierFaceType pierFace, [in]Float64 endDist);
+      [propget] HRESULT EndDistance([in]PierFaceType pierFace, [out, retval]Float64* pEndDist);
+
+      [propput] HRESULT EndDistanceMeasurementType([in]PierFaceType pierFace, [in]MeasurementType measure);
+      [propget] HRESULT EndDistanceMeasurementType([in]PierFaceType pierFace, [out, retval]MeasurementType* pMeasure);
+
+      [propput] HRESULT EndDistanceMeasurementLocation([in]PierFaceType pierFace, [in]MeasurementLocation measure);
+      [propget] HRESULT EndDistanceMeasurementLocation([in]PierFaceType pierFace, [out, retval]MeasurementLocation* pMeasure);
+   };
+
+   [
+      object,
+      uuid(A9A91ECA-A914-434B-AD13-21A5EC634B0C),
+      oleautomation,
+      pointer_default(unique)
+   ]
+   interface ILayoutLineFactory : IUnknown
+   {
+   };
+
+   [
+      object,
+      uuid(368661E7-290B-4FA1-9C55-8C88934EC61E),
+      oleautomation,
+      pointer_default(unique)
+   ]
+   interface IAlignmentOffsetLayoutLineFactory : ILayoutLineFactory
+   {
+      [propput] HRESULT AlignmentID([in]IDType id);
+      [propget] HRESULT AlignmentID([out, retval]IDType* pID);
+
+      [propput] HRESULT LayoutLineID([in]IDType id);
+      [propget] HRESULT LayoutLineID([out, retval]IDType* pID);
+
+      [propput] HRESULT LayoutLineIDIncrement([in]IDType idInc);
+      [propget] HRESULT LayoutLineIDIncrement([out, retval]IDType* pIDInc);
+
+      [propput] HRESULT LayoutLineCount([in]IndexType nLayoutLines);
+      [propget] HRESULT LayoutLineCount([out, retval]IndexType* pnLayoutLines);
+
+      [propput] HRESULT Offset([in]Float64 offset);
+      [propget] HRESULT Offset([out, retval]Float64* pOffset);
+
+      [propput] HRESULT OffsetIncrement([in]Float64 offsetInc);
+      [propget] HRESULT OffsetIncrement([out, retval]Float64* pOffsetInc);
+   };
+
+
+   [
+      object,
+      uuid(64CC0388-9A1C-41D3-8324-D3EA44DC6CFF),
+      helpstring("ISimpleLayoutLineFactory Interface"),
+      pointer_default(unique)
+   ]
+   interface ISimpleLayoutLineFactory : ILayoutLineFactory
+   {
+      [helpstring("method AddPath")] HRESULT AddPath([in]IDType ID, [in]IPath* path);
+   };
+
+   [
+      object,
+      uuid(B34A9D24-9551-490A-A3C2-3C7CF6803D4C),
+      helpstring("IUniformSpacingLayoutLineFactory Interface"),
+      pointer_default(unique)
+   ]
+   interface IUniformSpacingLayoutLineFactory : ILayoutLineFactory
+   {
+      [propget, helpstring("AlignmentID")] HRESULT AlignmentID([out, retval]IDType* ID);
+      [propput, helpstring("AlignmentID")] HRESULT AlignmentID([in]IDType ID);
+      [propget, helpstring("property StartPierID")] HRESULT StartPierID([out, retval] IDType* pVal);
+      [propput, helpstring("property StartPierID")] HRESULT StartPierID([in] IDType newVal);
+      [propget, helpstring("property EndPierID")] HRESULT EndPierID([out, retval] IDType* pVal);
+      [propput, helpstring("property EndPierID")] HRESULT EndPierID([in] IDType newVal);
+      [propget, helpstring("property PierIDInc")] HRESULT PierIDInc([out, retval] IDType* pVal);
+      [propput, helpstring("property PierIDInc")] HRESULT PierIDInc([in] IDType newVal);
+      [propget, helpstring("property StartSpacingOffset")] HRESULT StartSpacingOffset([out, retval] Float64* pVal);
+      [propput, helpstring("property StartSpacingOffset")] HRESULT StartSpacingOffset([in] Float64 newVal);
+      [propget, helpstring("property EndSpacingOffset")] HRESULT EndSpacingOffset([out, retval] Float64* pVal);
+      [propput, helpstring("property EndSpacingOffset")] HRESULT EndSpacingOffset([in] Float64 newVal);
+      [propget, helpstring("property StartSpacing")] HRESULT StartSpacing([out, retval] IDblArray** pVal);
+      [propput, helpstring("property StartSpacing")] HRESULT StartSpacing([in] IDblArray* newVal);
+      [propget, helpstring("property EndSpacing")] HRESULT EndSpacing([out, retval] IDblArray** pVal);
+      [propput, helpstring("property EndSpacing")] HRESULT EndSpacing([in] IDblArray* newVal);
+      [propput, helpstring("property LayoutLineID")] HRESULT LayoutLineID([in]IDType ID);
+      [propget, helpstring("property LayoutLineID")] HRESULT LayoutLineID([out, retval]IDType* ID);
+      [propput, helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([in]IDType inc);
+      [propget, helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([out, retval]IDType* inc);
+   };
+
+
+   [
+      object,
+      uuid(F7A4B484-4C6B-4A36-B62C-FC216F09F033),
+      helpstring("IGirderLineFactory"),
+      pointer_default(unique)
+   ]
+   interface IGirderLineFactory : IUnknown
+   {
+   };
+
+   [
+      object,
+      uuid(9BE02875-99F1-4529-B7F7-1235DF2FC010),
+      helpstring("ISingleGirderLineFactory Interface"),
+      pointer_default(unique)
+   ]
+   interface ISingleGirderLineFactory : IGirderLineFactory
+   {
+      [propget, helpstring("property GirderLineID")] HRESULT GirderLineID([out, retval] IDType* pVal);
+      [propput, helpstring("property GirderLineID")] HRESULT GirderLineID([in] IDType newVal);
+      [propget, helpstring("property LayoutLineID")] HRESULT LayoutLineID([out, retval] IDType* pVal);
+      [propput, helpstring("property LayoutLineID")] HRESULT LayoutLineID([in] IDType newVal);
+      [propget, helpstring("property Type")] HRESULT Type([out, retval] GirderLineType* pVal);
+      [propput, helpstring("property Type")] HRESULT Type([in] GirderLineType newVal);
+      [propget, helpstring("property StartPierID")] HRESULT StartPierID([out, retval] IDType* pVal);
+      [propput, helpstring("property StartPierID")] HRESULT StartPierID([in] IDType newVal);
+      [propget, helpstring("property EndPierID")] HRESULT EndPierID([out, retval] IDType* pVal);
+      [propput, helpstring("property EndPierID")] HRESULT EndPierID([in] IDType newVal);
+      [propget, helpstring("property StartMeasurementType")] HRESULT StartMeasurementType([out, retval]MeasurementType* pVal);
+      [propput, helpstring("property StartMeasurementType")] HRESULT StartMeasurementType([in]MeasurementType newVal);
+      [propget, helpstring("property StartMeasurementLocation")] HRESULT StartMeasurementLocation([out, retval]MeasurementLocation* pVal);
+      [propput, helpstring("property StartMeasurementLocation")] HRESULT StartMeasurementLocation([in]MeasurementLocation newVal);
+      [propget, helpstring("property EndMeasurementType")] HRESULT EndMeasurementType([out, retval]MeasurementType* pVal);
+      [propput, helpstring("property EndMeasurementType")] HRESULT EndMeasurementType([in]MeasurementType newVal);
+      [propget, helpstring("property EndMeasurementLocation")] HRESULT EndMeasurementLocation([out, retval]MeasurementLocation* pVal);
+      [propput, helpstring("property EndMeasurementLocation")] HRESULT EndMeasurementLocation([in]MeasurementLocation newVal);
+   };
+
+   [
+      object,
+      uuid(4DCF9E5C-3035-4150-882E-7084796B93B5),
+      helpstring("ISimpleGirderLineFactory Interface"),
+      pointer_default(unique)
+   ]
+   interface ISimpleGirderLineFactory : IGirderLineFactory
+   {
+      [propget, helpstring("property GirderLineID")] HRESULT GirderLineID([out, retval] IDType* pVal);
+      [propput, helpstring("property GirderLineID")] HRESULT GirderLineID([in] IDType newVal);
+      [propget, helpstring("property GirderLineIDInc")] HRESULT GirderLineIDInc([out, retval] IDType* pVal);
+      [propput, helpstring("property GirderLineIDInc")] HRESULT GirderLineIDInc([in] IDType newVal);
+      [propget, helpstring("property LeftLayoutLineID")] HRESULT LeftLayoutLineID([out, retval] IDType* pVal);
+      [propput, helpstring("property LeftLayoutLineID")] HRESULT LeftLayoutLineID([in] IDType newVal);
+      [propget, helpstring("property RightLayoutLineID")] HRESULT RightLayoutLineID([out, retval] IDType* pVal);
+      [propput, helpstring("property RightLayoutLineID")] HRESULT RightLayoutLineID([in] IDType newVal);
+      [propget, helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([out, retval] IDType* pVal);
+      [propput, helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([in] IDType newVal);
+      [propget, helpstring("property Type")] HRESULT Type([out, retval] GirderLineType* pVal);
+      [propput, helpstring("property Type")] HRESULT Type([in] GirderLineType newVal);
+
+      // PierID where a GirderLines starts
+      [propget, helpstring("property StartPierID")] HRESULT StartPierID([out, retval] IDType* pVal);
+      [propput, helpstring("property StartPierID")] HRESULT StartPierID([in] IDType newVal);
+
+      // PierID where the GirderLines end
+      [propget, helpstring("property EndPierID")] HRESULT EndPierID([out, retval] IDType* pVal);
+      [propput, helpstring("property EndPierID")] HRESULT EndPierID([in] IDType newVal);
+
+      // PierID increment. Non-continuous girder lines go from StartPierID to StartPierID+PierIDInc
+      // until the end pier is reached
+      [propget, helpstring("property PierIDInc")] HRESULT PierIDInc([out, retval] IDType* pVal);
+      [propput, helpstring("property PierIDInc")] HRESULT PierIDInc([in] IDType newVal);
+
+      // Continuous = GirderLine is continuous from StartPier to EndPier (PierIDInc is ignored)
+      [propget, helpstring("property Continuous")] HRESULT Continuous([out, retval] VARIANT_BOOL* pbContinuous);
+      [propput, helpstring("property Continuous")] HRESULT Continuous([in] VARIANT_BOOL bContinuous);
+
+      [propget, helpstring("property StartMeasurementType")] HRESULT StartMeasurementType([out, retval]MeasurementType* pVal);
+      [propput, helpstring("property StartMeasurementType")] HRESULT StartMeasurementType([in]MeasurementType newVal);
+      [propget, helpstring("property StartMeasurementLocation")] HRESULT StartMeasurementLocation([out, retval]MeasurementLocation* pVal);
+      [propput, helpstring("property StartMeasurementLocation")] HRESULT StartMeasurementLocation([in]MeasurementLocation newVal);
+
+      [propget, helpstring("property EndMeasurementType")] HRESULT EndMeasurementType([out, retval]MeasurementType* pVal);
+      [propput, helpstring("property EndMeasurementType")] HRESULT EndMeasurementType([in]MeasurementType newVal);
+      [propget, helpstring("property EndMeasurementLocation")] HRESULT EndMeasurementLocation([out, retval]MeasurementLocation* pVal);
+      [propput, helpstring("property EndMeasurementLocation")] HRESULT EndMeasurementLocation([in]MeasurementLocation newVal);
+   };
+
+
+   [
+      object,
+      uuid(B3979762-E72A-401B-AC03-28E953A222C2),
+      helpstring("IDiaphragmLineFactory"),
+      pointer_default(unique)
+   ]
+   interface IDiaphragmLineFactory : IUnknown
+   {
+   };
+
+   [
+      object,
+      uuid(56FB1927-B2C5-46AB-ABCC-DF68C619160C),
+      helpstring("ISingleDiaphragmLineFactory"),
+      pointer_default(unique)
+   ]
+   interface ISingleDiaphragmLineFactory : IDiaphragmLineFactory
+   {
+      [propput, helpstring("property AlignmentID")] HRESULT AlignmentID([in] IDType ID);
+      [propget, helpstring("property AlignmentID")] HRESULT AlignmentID([out, retval] IDType* ID);
+      [propput, helpstring("property Station")] HRESULT Station([in]VARIANT varStation);
+      [propget, helpstring("property Station")] HRESULT Station([out, retval]IStation** ppStation);
+      [propput, helpstring("property Orientation")] HRESULT Orientation([in] BSTR orientation);
+      [propget, helpstring("property Orientation")] HRESULT Orientation([out, retval] BSTR* orientation);
+      [propget, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([out, retval] IDType* pVal);
+      [propput, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([in] IDType newVal);
+      [propput, helpstring("property Staggered")] HRESULT Staggered([in] VARIANT_BOOL bStaggered);
+      [propget, helpstring("property Staggered")] HRESULT Staggered([out, retval] VARIANT_BOOL* bStaggered);
+      [propput, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([in] IDType ID);
+      [propget, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([out, retval] IDType* ID);
+      [propput, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([in] IDType ID);
+      [propget, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([out, retval] IDType* ID);
+   };
+
+   [
+      object,
+      uuid(E479B523-613F-4383-B555-2E749CAFABE8),
+      helpstring("IThroughPointDiaphragmLineFactory"),
+      pointer_default(unique)
+   ]
+   interface IThroughPointDiaphragmLineFactory : IDiaphragmLineFactory
+   {
+      [propput, helpstring("property Point")] HRESULT Point([in] IPoint2d* point);
+      [propget, helpstring("property Point")] HRESULT Point([out, retval] IPoint2d** point);
+      [propput, helpstring("property Direction")] HRESULT Direction([in]VARIANT varDirection);
+      [propget, helpstring("property Direction")] HRESULT Direction([out, retval]IDirection** direction);
+      [propget, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([out, retval] IDType* pVal);
+      [propput, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([in] IDType newVal);
+      [propput, helpstring("property Staggered")] HRESULT Staggered([in] VARIANT_BOOL bStaggered);
+      [propget, helpstring("property Staggered")] HRESULT Staggered([out, retval] VARIANT_BOOL* bStaggered);
+      [propput, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([in] IDType ID);
+      [propget, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([out, retval] IDType* ID);
+      [propput, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([in] IDType ID);
+      [propget, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([out, retval] IDType* ID);
+   };
+
+   [
+      object,
+      uuid(FD9086BA-9DEA-4AF0-BDF9-5E67E7E0A1D0),
+      helpstring("IEqualSpacingDiaphragmLineFactory"),
+      pointer_default(unique)
+   ]
+   interface IEqualSpacingDiaphragmLineFactory : IDiaphragmLineFactory
+   {
+      [propput, helpstring("property AlignmentID")] HRESULT AlignmentID([in] IDType ID);
+      [propget, helpstring("property AlignmentID")] HRESULT AlignmentID([out, retval] IDType* ID);
+      [] HRESULT SetStationRange([in]VARIANT varStartStation, [in]VARIANT varEndStation);
+      [] HRESULT GetStationRange([out]IStation** ppStartStation, [out]IStation** ppEndStation);
+      [propget, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([out, retval] IDType* pVal);
+      [propput, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([in] IDType newVal);
+      [propget, helpstring("property DiaphragmLineIDInc")] HRESULT DiaphragmLineIDInc([out, retval] IDType* pVal);
+      [propput, helpstring("property DiaphragmLineIDInc")] HRESULT DiaphragmLineIDInc([in] IDType newVal);
+      [propput, helpstring("property Divisor")] HRESULT Divisor([in] Uint16 divisor);
+      [propget, helpstring("property Divisor")] HRESULT Divisor([out, retval] Uint16* divisor);
+      [propput, helpstring("property Staggered")] HRESULT Staggered([in] VARIANT_BOOL bStaggered);
+      [propget, helpstring("property Staggered")] HRESULT Staggered([out, retval] VARIANT_BOOL* bStaggered);
+      [propput, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([in] IDType ID);
+      [propget, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([out, retval] IDType* ID);
+      [propput, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([in] IDType ID);
+      [propget, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([out, retval] IDType* ID);
+   };
+
+   [
+      object,
+      uuid(F89D246A-8F7D-4A27-A27E-DD73BE332087),
+      helpstring("IDeckBoundaryFactory Interface"),
+      pointer_default(unique)
+   ]
+   interface IDeckBoundaryFactory : IUnknown
+   {
+   };
+
+   [
+      object,
+      uuid(AA59EF93-7A3C-493A-BF37-B38B3644A653),
+      helpstring("ISimpleDeckBoundaryFactory Interface"),
+      pointer_default(unique)
+   ]
+   interface ISimpleDeckBoundaryFactory : IDeckBoundaryFactory
+   {
+      [propput, helpstring("property TransverseEdgeID")] HRESULT TransverseEdgeID([in]EndType end, [in] IDType ID);
+      [propget, helpstring("property TransverseEdgeID")] HRESULT TransverseEdgeID([in]EndType end, [out, retval] IDType* ID);
+      [propput, helpstring("property TransverseEdgeType")] HRESULT TransverseEdgeType([in]EndType end, [in] DeckBoundaryEdgeType edgeType);
+      [propget, helpstring("property TransverseEdgeType")] HRESULT TransverseEdgeType([in]EndType end, [out, retval] DeckBoundaryEdgeType* edgeType);
+
+      [propput, helpstring("property EdgeID")] HRESULT EdgeID([in]SideType side, [in] IDType ID);
+      [propget, helpstring("property EdgeID")] HRESULT EdgeID([in]SideType side, [out, retval] IDType* ID);
+      [propput, helpstring("property EdgeBreakID")] HRESULT EdgeBreakID([in]SideType side, [in] IDType ID);
+      [propget, helpstring("property EdgeBreakID")] HRESULT EdgeBreakID([in]SideType side, [out, retval] IDType* ID);
+
+      [propput, helpstring("property BreakEdge")] HRESULT BreakEdge([in] EndType end, [in]SideType side, [in] VARIANT_BOOL bBreak);
+      [propget, helpstring("property BreakEdge")] HRESULT BreakEdge([in] EndType end, [in]SideType side, [out, retval] VARIANT_BOOL* bBreak);
+   };
+
+   [
+      object,
+      uuid(CF09FA44-1095-4F63-B3DB-C4BA8617A98E),
+      oleautomation,
+      nonextensible,
+      helpstring("IBridgeGeometry Interface"),
+      pointer_default(unique)
+   ]
+   interface IBridgeGeometry : IUnknown
+   {
+      [helpstring("property AddAlignment")] HRESULT AddAlignment([in]IDType ID, [in]IAlignment* pAligment);
+      [helpstring("property Alignment")] HRESULT GetAlignment([in]IDType ID, [out, retval]IAlignment** pAlignment);
+      [propput, helpstring("property BridgeAlignmentID")] HRESULT BridgeAlignmentID([in] IDType ID);
+      [propget, helpstring("property BridgeAlignmentID")] HRESULT BridgeAlignmentID([out, retval] IDType* ID);
+      [propget, helpstring("property BridgeAlignment")] HRESULT BridgeAlignment([out, retval] IAlignment** alignment);
+
+      [propput, helpstring("property ProfileID")] HRESULT ProfileID([in] IDType profileID);
+      [propget, helpstring("property ProfileID")] HRESULT ProfileID([out, retval] IDType* pProfileID);
+      [propput, helpstring("property SurfaceID")] HRESULT SurfaceID([in] IDType surfaceID);
+      [propget, helpstring("property SurfaceID")] HRESULT SurfaceID([out, retval] IDType* pSurfaceID);
+
+      [propput, helpstring("property BridgeLineOffset")] HRESULT BridgeLineOffset([in]Float64 offset);
+      [propget, helpstring("property BridgeLineOffset")] HRESULT BridgeLineOffset([out, retval]Float64* offset);
+      [propget, helpstring("property BridgeLine")] HRESULT BridgeLine([out, retval]IPath** bridgeLine);
+
+      [] HRESULT AddPierLineFactory(IPierLineFactory* pFactory);
+      [helpstring("method GetPierLine")] HRESULT GetPierLine([in] IndexType idx, [out, retval]IPierLine** ppPier);
+      [helpstring("method FindPierLine")] HRESULT FindPierLine([in] IDType ID, [out, retval]IPierLine** ppPier);
+      [propget, helpstring("property PierLineCount")] HRESULT PierLineCount([out, retval]PierIndexType* pVal);
+       
+      [] HRESULT AddLayoutLineFactory(ILayoutLineFactory* pFactory);
+      [helpstring("method GetLayoutLine")] HRESULT GetLayoutLine([in] IndexType idx, [out, retval]IPath** path);
+      [helpstring("method FindLayoutLine")] HRESULT FindLayoutLine([in]IDType ID, [out, retval]IPath** path);
+      [propget, helpstring("property LayoutLineCount")] HRESULT LayoutLineCount([out, retval]IndexType* pVal);
+
+      [] HRESULT AddGirderLineFactory(IGirderLineFactory* pFactory);
+      [helpstring("method GetGirderLine")] HRESULT GetGirderLine([in] IndexType idx, [out, retval]IGirderLine** ppGirderLine);
+      [helpstring("method FindGirderLine")] HRESULT FindGirderLine([in]IDType ID, [out, retval]IGirderLine** ppGirderLine);
+      [propget, helpstring("property GirderLineCount")] HRESULT GirderLineCount([out, retval]IndexType* pVal);
+
+      [] HRESULT AddDiaphragmLineFactory(IDiaphragmLineFactory* pFactory);
+      [helpstring("method GetDiaphragmLine")] HRESULT GetDiaphragmLine([in] IndexType idx, [out, retval]IDiaphragmLine** ppDiaphragmLine);
+      [helpstring("method FindDiaphragmLine")] HRESULT FindDiaphragmLine([in] IDType ID, [out, retval]IDiaphragmLine** ppDiaphragmLine);
+      [propget, helpstring("property DiaphragmLineCount")] HRESULT DiaphragmLineCount([out, retval]IndexType* pVal);
+
+      [] HRESULT AddDeckBoundaryFactory(IDeckBoundaryFactory* pFactory);
+      [propget, helpstring("property DeckBoundary")] HRESULT DeckBoundary([out, retval]IDeckBoundary** ppDeckBoundary);
    };
 
 
@@ -3316,4 +3850,132 @@ library WBFLCogo
    {
       [default] interface ISurfaceProfile;
    };
+
+   [
+      uuid(9865B17B-5E4C-430B-9020-A5D5EC999858),
+      noncreatable,
+      hidden,
+      helpstring("PierLine Class")
+   ]
+   coclass PierLine
+   {
+      [default] interface IPierLine;
+   };
+   [
+      uuid(189665C5-3B81-405B-B011-B78FF2036467),
+      noncreatable,
+      helpstring("GirderLine Class")
+   ]
+   coclass GirderLine
+   {
+      [default] interface IGirderLine;
+   };
+   [
+      uuid(3F5A914A-73B6-43F6-A12B-D545B6B829CE),
+      noncreatable,
+      helpstring("DiaphragmLine Class")
+   ]
+   coclass DiaphragmLine
+   {
+      [default] interface IDiaphragmLine;
+   };
+   [
+      uuid(E66BB224-9C23-47FE-836A-A59945BB46DE),
+      noncreatable,
+      helpstring("DeckBoundary Class")
+   ]
+   coclass DeckBoundary
+   {
+      [default] interface IDeckBoundary;
+   };
+   
+   [
+      uuid(ED614FA3-5E15-4428-9B56-2C0C060ABB5B),
+      helpstring("SinglePierLineFactory Class")
+   ]
+   coclass SinglePierLineFactory
+   {
+      [default] interface ISinglePierLineFactory;
+   };
+
+   [
+      uuid(6B593F0D-688B-48B2-BC03-5399D1BDAA1B),
+      helpstring("AlignmentOffsetLayoutLineFactory Class")
+   ]
+   coclass AlignmentOffsetLayoutLineFactory
+   {
+      [default] interface IAlignmentOffsetLayoutLineFactory;
+   };
+   [
+      uuid(71E25E05-E16B-415C-9812-9A2F1EFD9A4B),
+      helpstring("SimpleLayoutLineFactory Class")
+   ]
+   coclass SimpleLayoutLineFactory
+   {
+      [default] interface ISimpleLayoutLineFactory;
+   };
+   [
+      uuid(4FA7EC00-ADFB-4F50-A9E6-0A3142090639),
+      helpstring("UniformSpacingLayoutLineFactory Class")
+   ]
+   coclass UniformSpacingLayoutLineFactory
+   {
+      [default] interface IUniformSpacingLayoutLineFactory;
+   };
+   [
+      uuid(FF6273A8-1037-4CCE-B494-F43459E65800),
+      helpstring("SingleGirderLineFactory Class")
+   ]
+   coclass SingleGirderLineFactory
+   {
+      [default] interface ISingleGirderLineFactory;
+   };
+   [
+      uuid(055CA73B-DD1F-4BC0-A6E5-C13729C16243),
+      helpstring("SimpleGirderLineFactory Class")
+   ]
+   coclass SimpleGirderLineFactory
+   {
+      [default] interface ISimpleGirderLineFactory;
+   };
+   [
+      uuid(FF0B7F56-329E-4DB3-BF9C-E076555C1EEE),
+      helpstring("EqualSpaceDiaphragmLineFactory Class")
+   ]
+   coclass EqualSpacingDiaphragmLineFactory
+   {
+      [default] interface IEqualSpacingDiaphragmLineFactory;
+   };
+   [
+      uuid(17FE1E15-7E72-4F4E-AC48-37E1497D0806),
+      helpstring("SingleDiaphramgLineFactory Class")
+   ]
+   coclass SingleDiaphragmLineFactory
+   {
+      [default] interface ISingleDiaphragmLineFactory;
+   };
+   [
+      uuid(F95676E6-9741-49C0-A3A4-15D9627BDCD8),
+      helpstring("ThroughPointDiaphramgLineFactory Class")
+   ]
+   coclass ThroughPointDiaphragmLineFactory
+   {
+      [default] interface IThroughPointDiaphragmLineFactory;
+   };
+   [
+      uuid(132789EE-9C31-4D4D-8129-AD733BFA215B),
+      helpstring("SimpleDeckBoundaryFactory Class")
+   ]
+   coclass SimpleDeckBoundaryFactory
+   {
+      [default] interface ISimpleDeckBoundaryFactory;
+   };
+   [
+      uuid(24D75303-8425-4590-913E-FF2908F65BD1),
+      helpstring("BridgeGeometry Class")
+   ]
+   coclass BridgeGeometry
+   {
+      [default] interface IBridgeGeometry;
+   }; 
 };

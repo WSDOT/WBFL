@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.DeckBoundary.1 = s 'DeckBoundary Class'
+	{
+		CLSID = s '{E66BB224-9C23-47FE-836A-A59945BB46DE}'
+	}
+	WBFLCogo.DeckBoundary = s 'DeckBoundary Class'
+	{
+		CLSID = s '{E66BB224-9C23-47FE-836A-A59945BB46DE}'
+		CurVer = s 'WBFLCogo.DeckBoundary.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E66BB224-9C23-47FE-836A-A59945BB46DE} = s 'DeckBoundary Class'
+		{
+			ProgID = s 'WBFLCogo.DeckBoundary.1'
+			VersionIndependentProgID = s 'WBFLCogo.DeckBoundary'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

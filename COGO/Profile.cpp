@@ -255,7 +255,7 @@ STDMETHODIMP CProfile::CreateSurfaceTemplateSectionCutEx(ISurface* pSurface, VAR
 }
 
 
-STDMETHODIMP CProfile::GetSurfaceContainingStation(VARIANT varStation, CogoObjectID* pID, ISurface** ppSurface)
+STDMETHODIMP CProfile::GetSurfaceContainingStation(VARIANT varStation, IDType* pID, ISurface** ppSurface)
 {
    CHECK_RETOBJ(ppSurface);
    VALIDATE;
@@ -322,7 +322,7 @@ STDMETHODIMP CProfile::CrossSlope(IDType surfaceID, VARIANT varStation, Float64 
    return S_OK;
 }
 
-STDMETHODIMP CProfile::SurfaceTemplateSegmentSlope(CogoObjectID surfaceID,VARIANT varStation,CollectionIndexType templateSegmentIdx,Float64* pSlope)
+STDMETHODIMP CProfile::SurfaceTemplateSegmentSlope(IDType surfaceID,VARIANT varStation,CollectionIndexType templateSegmentIdx,Float64* pSlope)
 {
    CHECK_RETVAL(pSlope);
    VALIDATE;
@@ -336,7 +336,7 @@ STDMETHODIMP CProfile::SurfaceTemplateSegmentSlope(CogoObjectID surfaceID,VARIAN
    return S_OK;
 }
 
-STDMETHODIMP CProfile::GetRidgePointOffset(CogoObjectID surfaceID,VARIANT varStation,IndexType ridgePoint1Idx,IndexType ridgePoint2Idx,Float64* pOffset)
+STDMETHODIMP CProfile::GetRidgePointOffset(IDType surfaceID,VARIANT varStation,IndexType ridgePoint1Idx,IndexType ridgePoint2Idx,Float64* pOffset)
 {
    CHECK_RETVAL(pOffset);
    VALIDATE;
@@ -358,7 +358,7 @@ STDMETHODIMP CProfile::GetRidgePointOffset(CogoObjectID surfaceID,VARIANT varSta
    return hr;
 }
 
-STDMETHODIMP CProfile::GetRidgePointElevation(CogoObjectID surfaceID, VARIANT varStation, IndexType ridgePointIdx, Float64* pElev)
+STDMETHODIMP CProfile::GetRidgePointElevation(IDType surfaceID, VARIANT varStation, IndexType ridgePointIdx, Float64* pElev)
 {
    CHECK_RETVAL(pElev);
    VALIDATE;
@@ -380,7 +380,7 @@ STDMETHODIMP CProfile::GetRidgePointElevation(CogoObjectID surfaceID, VARIANT va
    return hr;
 }
 
-STDMETHODIMP CProfile::GetRidgePointOffsetAndElevation(CogoObjectID surfaceID, VARIANT varStation, IndexType ridgePoint1Idx, IndexType ridgePoint2Idx, Float64* pOffset, Float64* pElev)
+STDMETHODIMP CProfile::GetRidgePointOffsetAndElevation(IDType surfaceID, VARIANT varStation, IndexType ridgePoint1Idx, IndexType ridgePoint2Idx, Float64* pOffset, Float64* pElev)
 {
    CHECK_RETVAL(pOffset);
    CHECK_RETVAL(pElev);

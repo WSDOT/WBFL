@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.PierLine.1 = s 'PierLine Class'
+	{
+		CLSID = s '{9865B17B-5E4C-430B-9020-A5D5EC999858}'
+	}
+	WBFLCogo.PierLine = s 'PierLine Class'
+	{
+		CLSID = s '{9865B17B-5E4C-430B-9020-A5D5EC999858}'
+		CurVer = s 'WBFLCogo.PierLine.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9865B17B-5E4C-430B-9020-A5D5EC999858} = s 'PierLine Class'
+		{
+			ProgID = s 'WBFLCogo.PierLine.1'
+			VersionIndependentProgID = s 'WBFLCogo.PierLine'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

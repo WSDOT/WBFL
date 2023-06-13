@@ -23,7 +23,7 @@
 
 #include <CoordGeom/CoordGeomLib.h>
 #include <CoordGeom/Direction.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/XCoordGeom.h>
 
 #include <sstream>
@@ -68,7 +68,7 @@ Direction& Direction::operator-=(const Angle& angle)
 
 void Direction::SetValue(Float64 direction)
 {
-   m_Direction = Utilities::NormalizeAngle(direction);
+   m_Direction = COGO::NormalizeAngle(direction);
 }
 
 Float64 Direction::GetValue() const
@@ -81,7 +81,7 @@ void Direction::SetAzimuth(Float64 azimuth)
    if (::IsLE(azimuth, -TWO_PI) || ::IsLE(TWO_PI, azimuth))
       BadAzimuth();
 
-   m_Direction = Utilities::NormalizeAngle(PI_OVER_2 - azimuth);
+   m_Direction = COGO::NormalizeAngle(PI_OVER_2 - azimuth);
 }
 
 void Direction::SetAzimuth(short deg, unsigned short min, Float64 sec)
@@ -89,7 +89,7 @@ void Direction::SetAzimuth(short deg, unsigned short min, Float64 sec)
    if ( (deg <= -360 || 360 <= deg) || (min < 0 || 60 <= min) || (sec < 0.0 || 60.0 <= sec))
       BadAzimuth();
 
-   Float64 azimuth = Utilities::FromDMS(deg, min, sec);
+   Float64 azimuth = COGO::FromDMS(deg, min, sec);
    CHECK(-TWO_PI < azimuth && azimuth < TWO_PI);
 
    SetAzimuth(azimuth);
@@ -97,7 +97,7 @@ void Direction::SetAzimuth(short deg, unsigned short min, Float64 sec)
 
 Float64 Direction::GetAzimuth() const
 {
-   return Utilities::NormalizeAngle(PI_OVER_2 - m_Direction);
+   return COGO::NormalizeAngle(PI_OVER_2 - m_Direction);
 }
 
 void Direction::SetDMS(NSDirection ns, unsigned short deg, unsigned short min, Float64 sec, EWDirection ew)
@@ -138,7 +138,7 @@ void Direction::SetDMS(NSDirection ns, unsigned short deg, unsigned short min, F
       CHECK(false);
    }
 
-   angle += sign * Utilities::FromDMS(deg, min, sec);
+   angle += sign * COGO::FromDMS(deg, min, sec);
 
    if (::IsEqual(angle, TWO_PI))
    {
@@ -175,7 +175,7 @@ std::tuple<Direction::NSDirection, unsigned short, unsigned short, Float64, Dire
    short deg;
    unsigned short min;
    Float64 sec;
-   std::tie(deg,min,sec) = Utilities::ToDMS(dir);
+   std::tie(deg,min,sec) = COGO::ToDMS(dir);
    return std::make_tuple(ns, deg, min, sec, ew);
 }
 
@@ -291,10 +291,10 @@ std::_tstring Direction::AsString(const std::_tstring& strFormat, bool bAsBearin
    Float64 value = m_Direction;
    if (IsZero(value)) value = 0.0;
 
-   value = Utilities::NormalizeAngle(value);
+   value = COGO::NormalizeAngle(value);
 
    std::_tstring strDegTag, strMinTag, strSecTag;
-   std::tie(strDegTag, strMinTag, strSecTag) = Utilities::ParseAngleTags(strFormat);
+   std::tie(strDegTag, strMinTag, strSecTag) = COGO::ParseAngleTags(strFormat);
 
    std::_tostringstream os;
    if (bAsBearing)
@@ -321,11 +321,11 @@ std::_tstring Direction::AsString(const std::_tstring& strFormat, bool bAsBearin
    else
    {
       // azimuth
-      value = Utilities::NormalizeAngle(PI_OVER_2 - value);
+      value = COGO::NormalizeAngle(PI_OVER_2 - value);
       short deg;
       unsigned short min;
       Float64 sec;
-      std::tie(deg, min, sec) = WBFL::COGO::Utilities::ToDMS(value);
+      std::tie(deg, min, sec) = WBFL::COGO::COGO::ToDMS(value);
 
       sec = IsZero(sec) ? 0.0 : sec;
 
@@ -346,14 +346,14 @@ std::_tstring Direction::AsString(const std::_tstring& strFormat, bool bAsBearin
 Direction& Direction::Increment(const Angle& increment)
 {
    m_Direction += increment.GetValue();
-   m_Direction = Utilities::NormalizeAngle(m_Direction);
+   m_Direction = COGO::NormalizeAngle(m_Direction);
    return *this;
 }
 
 Direction Direction::IncrementBy(const Angle& increment) const
 {
    Float64 dir = m_Direction + increment.GetValue();
-   dir = Utilities::NormalizeAngle(dir);
+   dir = COGO::NormalizeAngle(dir);
    return Direction(dir);
 }
 

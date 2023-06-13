@@ -23,7 +23,7 @@
 
 #include <CoordGeom/CoordGeomLib.h>
 #include <CoordGeom/TransitionCurve.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/PathSegment.h>
 #include <CoordGeom/CubicSpline.h>
 
@@ -169,7 +169,7 @@ void TransitionCurve::Init(const WBFL::Geometry::Point2d& start, const Direction
    m_EndPoint = PointOnCurve(m_L);
    m_EndDirection = m_StartDirection + m_Sign * m_SpiralAngle;
 
-   m_PI = Utilities::IntersectBearings(m_StartPoint, m_StartDirection, 0.0, m_EndPoint, m_EndDirection, 0.0);
+   m_PI = COGO::IntersectBearings(m_StartPoint, m_StartDirection, 0.0, m_EndPoint, m_EndDirection, 0.0);
 
    auto d1 = m_StartPoint.Distance(m_PI);
    auto d2 = m_EndPoint.Distance(m_PI);
@@ -273,12 +273,12 @@ WBFL::Geometry::Point2d TransitionCurve::PointOnCurve(Float64 distFromStart) con
    if (distFromStart < 0)
    {
       // want point before curve, so use the back tangent
-      pnt = Utilities::LocateByDistanceAndDirection(GetStartPoint(), distFromStart, m_StartDirection, 0.0);
+      pnt = COGO::LocateByDistanceAndDirection(GetStartPoint(), distFromStart, m_StartDirection, 0.0);
    }
    else if (m_Ls < distFromStart)
    {
       // want point after curve, so use the ahead tangent
-      pnt = Utilities::LocateByDistanceAndDirection(GetEndPoint(), distFromStart - m_Ls, m_EndDirection, 0.0);
+      pnt = COGO::LocateByDistanceAndDirection(GetEndPoint(), distFromStart - m_Ls, m_EndDirection, 0.0);
    }
    else
    {
@@ -374,7 +374,7 @@ WBFL::Geometry::Point2d TransitionCurve::LocatePoint(Float64 distFromStart, Offs
    if (!IsZero(offset))
    {
 
-      point = Utilities::LocateByDistanceAndDirection(point, offset, direction, 0.0);
+      point = COGO::LocateByDistanceAndDirection(point, offset, direction, 0.0);
    }
 
    return point;
@@ -606,7 +606,7 @@ std::vector<WBFL::Geometry::Point2d> TransitionCurve::Intersect(const WBFL::Geom
 
       // if there was an intersection point and the point is before the start of the Start-SPI line
       // then this is an intersection on the back tangent projection 
-      if (0 < WBFL::Geometry::GeometricOperations::Intersect(line, bkTangentLine, &pnt) && Utilities::IsPointBeforeStart(m_StartPoint, m_PI, pnt))
+      if (0 < WBFL::Geometry::GeometricOperations::Intersect(line, bkTangentLine, &pnt) && COGO::IsPointBeforeStart(m_StartPoint, m_PI, pnt))
       {
          vPoints.emplace_back(pnt);
       }
@@ -619,7 +619,7 @@ std::vector<WBFL::Geometry::Point2d> TransitionCurve::Intersect(const WBFL::Geom
       WBFL::Geometry::Point2d pnt;
       // if there was an intersection point and the point is after the end of the SPI-End line
       // then this is an intersection on the forward tangent projection 
-      if (0 < WBFL::Geometry::GeometricOperations::Intersect(line, fwdTangentLine, &pnt) && Utilities::IsPointAfterEnd(m_PI, m_EndPoint, pnt))
+      if (0 < WBFL::Geometry::GeometricOperations::Intersect(line, fwdTangentLine, &pnt) && COGO::IsPointAfterEnd(m_PI, m_EndPoint, pnt))
       {
          vPoints.emplace_back(pnt);
       }

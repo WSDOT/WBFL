@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.SimpleGirderLineFactory.1 = s 'SimpleGirderLineFactory Class'
+	{
+		CLSID = s '{055CA73B-DD1F-4BC0-A6E5-C13729C16243}'
+	}
+	WBFLCogo.SimpleGirderLineFactory = s 'SimpleGirderLineFactory Class'
+	{
+		CLSID = s '{055CA73B-DD1F-4BC0-A6E5-C13729C16243}'
+		CurVer = s 'WBFLCogo.SimpleGirderLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {055CA73B-DD1F-4BC0-A6E5-C13729C16243} = s 'SimpleGirderLineFactory Class'
+		{
+			ProgID = s 'WBFLCogo.SimpleGirderLineFactory.1'
+			VersionIndependentProgID = s 'WBFLCogo.SimpleGirderLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

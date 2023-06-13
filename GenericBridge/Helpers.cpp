@@ -855,6 +855,13 @@ protected:
    std::unique_ptr<WBFL::Math::CompositeFunction> m_pFunction;
 };
 
+void WBFLGENERICBRIDGEFUNC ClearGirderProfile(ISuperstructureMember* pSSMbr)
+{
+   CComQIPtr<IItemData> itemData(pSSMbr);
+   itemData->RemoveItemData(CComBSTR("GirderProfileFunction"));
+   itemData->RemoveItemData(CComBSTR("BottomFlangeFunction"));
+}
+
 WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile)
 {
    // The profile function is cached as item data on the superstructure member object

@@ -30,7 +30,7 @@
 #include "stdafx.h"
 #include "TestAlignment1.h"
 #include <WBFLCogo\CogoHelpers.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,7 +65,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    Float64 offset;
    Float64 stationVal;
 
-   auto AlignmentDirection = [&xSign, &ySign](Float64 dir) {return WBFL::COGO::Utilities::NormalizeAngle(atan2(ySign * tan(dir), xSign)); };
+   auto AlignmentDirection = [&xSign, &ySign](Float64 dir) {return WBFL::COGO::COGO::NormalizeAngle(atan2(ySign * tan(dir), xSign)); };
 
    // Sta 0+00
    Float64 alignment_direction = AlignmentDirection(0.0);
@@ -76,7 +76,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(0.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
    pnt.Release();
 
    TRY_TEST(alignment->LocatePoint(CComVariant(0.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -120,7 +120,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(100.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
    pnt.Release();
 
    TRY_TEST(alignment->LocatePoint(CComVariant(100.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -162,7 +162,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(125.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(125.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -204,7 +204,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(200.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(200.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -246,7 +246,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(250.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(250.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -288,7 +288,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(300.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3* PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3* PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(300.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -330,7 +330,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(490.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(490.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -372,7 +372,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(530.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(530.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -414,7 +414,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(565.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(565.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -456,7 +456,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(600.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(600.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -498,7 +498,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(700.00), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(700.00), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);
@@ -552,7 +552,7 @@ void CommonAlignmentTest(IAlignment* alignment,Float64 xSign,Float64 ySign)
    dir.Release();
    TRY_TEST(alignment->GetNormal(CComVariant(objStation), &dir), S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal, WBFL::COGO::Utilities::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
+   TRY_TEST(IsEqual(dirVal, WBFL::COGO::COGO::NormalizeAngle(alignment_direction + 3 * PI_OVER_2)), true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(objStation), omtAlongDirection, alignment_offset, CComVariant(dirVal), &pnt), S_OK);

@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 void TestGrade(IProfile* profile,Float64 results[],long minStation=440,long maxStation=1560,long inc=160);
-void TestCrownSlopes(IProfile* profile,CogoObjectID surfaceID,IndexType ridgePointIdx,Float64 results[][2],long minStation=440,long maxStation=1560,long inc=160);
+void TestCrownSlopes(IProfile* profile,IDType surfaceID,IndexType ridgePointIdx,Float64 results[][2],long minStation=440,long maxStation=1560,long inc=160);
 void TestElevation(IProfile* profile,IDType surfaceID,Float64 offset,Float64 results[],long minStation=440,long maxStation=1560,long inc=160);
 
 CTestProfile::CTestProfile()
@@ -1930,7 +1930,7 @@ void TestGrade(IProfile* profile,Float64 results[],long minStation,long maxStati
    }
 }
 
-void TestCrownSlopes(IProfile* profile,CogoObjectID surfaceID,IndexType ridgePointIdx,Float64 results[][2],long minStation,long maxStation,long inc)
+void TestCrownSlopes(IProfile* profile,IDType surfaceID,IndexType ridgePointIdx,Float64 results[][2],long minStation,long maxStation,long inc)
 {
    CComPtr<IAlignment> alignment;
    profile->get_Alignment(&alignment);

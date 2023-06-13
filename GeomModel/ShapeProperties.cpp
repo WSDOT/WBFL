@@ -30,18 +30,27 @@
 
 using namespace WBFL::Geometry;
 
-ShapeProperties::ShapeProperties()
-{
-   SetProperties(0, Point2d(0,0), 0, 0, 0, 0, 0, 0, 0);
-}
-
 ShapeProperties::ShapeProperties(Float64 area,
    const Point2d& centroid,
    Float64 ixx, Float64 iyy, Float64 ixy,
    Float64 xLeft, Float64 yBottom,
    Float64 xRight, Float64 yTop)
 {
-   SetProperties(area, centroid, ixx, iyy, ixy, xLeft, yBottom,xRight,yTop);
+   m_Properties.area = area;
+   m_Properties.centroid = centroid;
+   m_Properties.ixx = ixx;
+   m_Properties.iyy = iyy;
+   m_Properties.ixy = ixy;
+   m_Properties.xLeft = xLeft;
+   m_Properties.xRight = xRight;
+   m_Properties.yTop = yTop;
+   m_Properties.yBottom = yBottom;
+   SetProperties(m_Properties); // causes the coordinate system and orientation to be set
+}
+
+ShapeProperties::ShapeProperties(const ShapePropertyParameters& properties)
+{
+   SetProperties(m_Properties); // causes the coordinate system and orientation to be set
 }
 
 ShapeProperties::~ShapeProperties()
@@ -50,15 +59,15 @@ ShapeProperties::~ShapeProperties()
 
 bool ShapeProperties::operator==(const ShapeProperties& rhs) const
 {
-   return IsEqual(m_Area, rhs.m_Area) &&
-      m_Centroid == rhs.m_Centroid &&
-      IsEqual(m_Ixx, rhs.m_Ixx) &&
-      IsEqual(m_Iyy, rhs.m_Iyy) &&
-      IsEqual(m_Ixy, rhs.m_Ixy) &&
-      IsEqual(m_Xleft,rhs.m_Xleft) &&
-      IsEqual(m_Xright,rhs.m_Xright) &&
-      IsEqual(m_Ytop,rhs.m_Ytop) &&
-      IsEqual(m_Ybottom,rhs.m_Ybottom);
+   return IsEqual(m_Properties.area, rhs.m_Properties.area) &&
+      m_Properties.centroid == rhs.m_Properties.centroid &&
+      IsEqual(m_Properties.ixx, rhs.m_Properties.ixx) &&
+      IsEqual(m_Properties.iyy, rhs.m_Properties.iyy) &&
+      IsEqual(m_Properties.ixy, rhs.m_Properties.ixy) &&
+      IsEqual(m_Properties.xLeft,rhs.m_Properties.xLeft) &&
+      IsEqual(m_Properties.xRight,rhs.m_Properties.xRight) &&
+      IsEqual(m_Properties.yTop,rhs.m_Properties.yTop) &&
+      IsEqual(m_Properties.yBottom,rhs.m_Properties.yBottom);
 }
 
 bool ShapeProperties::operator!=(const ShapeProperties& rhs) const
@@ -90,17 +99,22 @@ ShapeProperties& ShapeProperties::operator-= (const ShapeProperties& rhs)
 
 void ShapeProperties::SetProperties(Float64 area, const Point2d& centroid, Float64 ixx, Float64 iyy, Float64 ixy, Float64 xLeft, Float64 yBottom, Float64 xRight, Float64 yTop)
 {
-   PRECONDITION(0 <= xLeft && 0 <= yBottom && 0 <= xRight && 0 <= yTop);
-   m_Area = area;
-   m_Centroid = centroid;
-   m_Ixx = ixx;
-   m_Iyy = iyy;
-   m_Ixy = ixy;
+   m_Properties.area = area;
+   m_Properties.centroid = centroid;
+   m_Properties.ixx = ixx;
+   m_Properties.iyy = iyy;
+   m_Properties.ixy = ixy;
+   m_Properties.xLeft = xLeft;
+   m_Properties.xRight = xRight;
+   m_Properties.yTop = yTop;
+   m_Properties.yBottom = yBottom;
+   SetProperties(m_Properties);
+}
 
-   m_Ytop = yTop;
-   m_Ybottom = yBottom;
-   m_Xleft = xLeft;
-   m_Xright = xRight;
+void ShapeProperties::SetProperties(const ShapePropertyParameters& properties)
+{
+   PRECONDITION(0 <= properties.xLeft && 0 <= properties.yBottom && 0 <= properties.xRight && 0 <= properties.yTop);
+   m_Properties = properties;
 
    m_CoordType = CoordinateSystemType::Centroidal;
    m_Orientation = 0;
@@ -108,37 +122,29 @@ void ShapeProperties::SetProperties(Float64 area, const Point2d& centroid, Float
    UpdateOrientation();
 }
 
-void ShapeProperties::GetProperties(Float64* area, Point2d* centroid, Float64* ixx, Float64* iyy, Float64* ixy, Float64* xLeft, Float64* yBottom, Float64* xRight, Float64* yTop) const
+const ShapePropertyParameters& ShapeProperties::GetProperties() const
 {
-   *area = m_Area;
-   *centroid = m_Centroid;
-   *ixx = m_Ixx;
-   *iyy = m_Iyy;
-   *ixy = m_Ixy;
-   *yTop = m_Ytop;
-   *yBottom = m_Ybottom;
-   *xLeft = m_Xleft;
-   *xRight = m_Xright;
+   return m_Properties;
 }
 
 void ShapeProperties::Clear()
 {
-   SetProperties(0, Point2d(0,0), 0, 0, 0, 0, 0, 0, 0);
+   m_Properties = ShapePropertyParameters();
 }
 
 void ShapeProperties::SetArea(Float64 area)
 {
-   m_Area = area;
+   m_Properties.area = area;
 }
 
 Float64 ShapeProperties::GetArea() const
 {
-   return m_Area;
+   return m_Properties.area;
 }
 
-void ShapeProperties::SetCentroid(const Point2d& cent)
+void ShapeProperties::SetCentroid(const Point2d& centroid)
 {
-   m_Centroid = cent;
+   m_Properties.centroid = centroid;
    UpdateOrientation();
 }
 
@@ -149,7 +155,7 @@ const Point2d& ShapeProperties::GetCentroid() const
 
 void ShapeProperties::SetIxx(Float64 ixx)
 {
-   m_Ixx = ixx;
+   m_Properties.ixx = ixx;
    UpdateOrientation();
 }
 
@@ -160,7 +166,7 @@ Float64 ShapeProperties::GetIxx() const
 
 void ShapeProperties::SetIyy(Float64 iyy)
 {
-   m_Iyy = iyy;
+   m_Properties.iyy = iyy;
    UpdateOrientation();
 }
 
@@ -171,7 +177,7 @@ Float64 ShapeProperties::GetIyy() const
 
 void ShapeProperties::SetIxy(Float64 ixy)
 {
-   m_Ixy = ixy;
+   m_Properties.ixy = ixy;
    UpdateOrientation();
 }
 
@@ -183,45 +189,45 @@ Float64 ShapeProperties::GetIxy() const
 void ShapeProperties::SetYtop(Float64 yTop)
 {
    PRECONDITION(0 <= yTop);
-   m_Ytop = yTop;
+   m_Properties.yTop = yTop;
 }
 
 Float64 ShapeProperties::GetYtop() const
 {
-   return m_Ytop;
+   return m_Properties.yTop;
 }
 
 void ShapeProperties::SetYbottom(Float64 yBottom)
 {
    PRECONDITION(0 <= yBottom);
-   m_Ybottom = yBottom;
+   m_Properties.yBottom = yBottom;
 }
 
 Float64 ShapeProperties::GetYbottom() const
 {
-   return m_Ybottom;
+   return m_Properties.yBottom;
 }
 
 void ShapeProperties::SetXleft(Float64 xLeft)
 {
    PRECONDITION(0 <= xLeft);
-   m_Xleft = xLeft;
+   m_Properties.xLeft = xLeft;
 }
 
 Float64 ShapeProperties::GetXleft() const
 {
-   return m_Xleft;
+   return m_Properties.xLeft;
 }
 
 void ShapeProperties::SetXright(Float64 xRight)
 {
    PRECONDITION(0 <= xRight);
-   m_Xright = xRight;
+   m_Properties.xRight = xRight;
 }
 
 Float64 ShapeProperties::GetXright() const
 {
-   return m_Xright;
+   return m_Properties.xRight;
 }
 
 Float64 ShapeProperties::GetI11() const
@@ -267,7 +273,7 @@ void ShapeProperties::SetCoordinateSystem(ShapeProperties::CoordinateSystemType 
    case CoordinateSystemType::Centroidal:
       {
          m_CoordType = sys;
-         m_Origin = m_Centroid;
+         m_Origin = m_Properties.centroid;
          m_Orientation = 0;
          UpdateOrientation();
          break;
@@ -337,11 +343,11 @@ bool ShapeProperties::AssertValid() const
 void ShapeProperties::Dump(WBFL::Debug::LogContext& os) const
 {
    os << _T("Dump for ShapeProperties") << WBFL::Debug::endl;
-   os << _T("   m_Area         = ")<< m_Area << WBFL::Debug::endl;
-   os << _T("   m_Centroid     = (")<< m_Centroid.X()<<_T(", ")<<m_Centroid.Y()<<_T(")")<< WBFL::Debug::endl;
-   os << _T("   m_Ixx          = ")<< m_Ixx << WBFL::Debug::endl;         
-   os << _T("   m_Iyy          = ")<< m_Iyy << WBFL::Debug::endl;          
-   os << _T("   m_Ixy          = ")<< m_Ixy << WBFL::Debug::endl;         
+   os << _T("   m_Area         = ")<< m_Properties.area << WBFL::Debug::endl;
+   os << _T("   m_Centroid     = (")<< m_Properties.centroid.X()<<_T(", ")<<m_Properties.centroid.Y()<<_T(")")<< WBFL::Debug::endl;
+   os << _T("   m_Ixx          = ")<< m_Properties.ixx << WBFL::Debug::endl;         
+   os << _T("   m_Iyy          = ")<< m_Properties.iyy << WBFL::Debug::endl;          
+   os << _T("   m_Ixy          = ")<< m_Properties.ixy << WBFL::Debug::endl;         
    os << _T("   m_CoordType    = ")<< (int)m_CoordType << WBFL::Debug::endl;   
    os << _T("   m_Origin       = (")<<m_Origin.X()<<_T(", ")<<m_Origin.Y()<<_T(")") << WBFL::Debug::endl;
    os << _T("   m_Orientation  = ")<< m_Orientation << WBFL::Debug::endl;
@@ -360,10 +366,10 @@ void ShapeProperties::UpdateOrientation()
    case (CoordinateSystemType::Centroidal):
       {
          // in centroidal system = just copy values
-         m_CurrCentroid = m_Centroid;
-         m_CurrIxx      = m_Ixx;
-         m_CurrIyy      = m_Iyy;
-         m_CurrIxy      = m_Ixy;
+         m_CurrCentroid = m_Properties.centroid;
+         m_CurrIxx      = m_Properties.ixx;
+         m_CurrIyy      = m_Properties.iyy;
+         m_CurrIxy      = m_Properties.ixy;
          break;
       }
    default:
@@ -371,11 +377,11 @@ void ShapeProperties::UpdateOrientation()
          // not centroidal - need to rotate into orientation
          // first rotate about centroid
          Float64 ixx, iyy, ixy;
-         MohrCircle ms(m_Ixx, m_Iyy, m_Ixy);
+         MohrCircle ms(m_Properties.ixx, m_Properties.iyy, m_Properties.ixy);
          ms.ComputeState(m_Orientation,ixx, iyy, ixy);
 
-         // next need to transform into origin coord's
-         Point2d delta( m_Centroid.X() - m_Origin.X(), m_Centroid.Y() - m_Origin.Y());
+         // next need to transform into origin coordinates
+         Point2d delta( m_Properties.centroid.X() - m_Origin.X(), m_Properties.centroid.Y() - m_Origin.Y());
          delta.Rotate(Point2d(0,0), -m_Orientation);
 
          Float64 dx = delta.X();
@@ -383,9 +389,9 @@ void ShapeProperties::UpdateOrientation()
 
          // use parallel axis theorem to put properties into new system
          m_CurrCentroid = delta;
-         m_CurrIxx      = ixx + m_Area * dy * dy;
-         m_CurrIyy      = iyy + m_Area * dx * dx;
-         m_CurrIxy      = ixy + m_Area * dx * dy;
+         m_CurrIxx      = ixx + m_Properties.area * dy * dy;
+         m_CurrIyy      = iyy + m_Properties.area * dx * dx;
+         m_CurrIxy      = ixy + m_Properties.area * dx * dy;
          break;
       }
    }
@@ -404,35 +410,35 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
    Float64 mxx = 0, myy = 0;        // first moments
 
    Float64 cx1, cy1;
-   std::tie(cx1,cy1) = m_Centroid.GetLocation();
+   std::tie(cx1,cy1) = m_Properties.centroid.GetLocation();
 
    Float64 cx2, cy2;
    std::tie(cx2,cy2) = other.GetCentroid().GetLocation();
 
-   mxx = m_Area * m_Centroid.Y() + scale* other.m_Area * other.m_Centroid.Y();
-   myy = m_Area * m_Centroid.X() + scale * other.m_Area * other.m_Centroid.X();
+   mxx = m_Properties.area * m_Properties.centroid.Y() + scale* other.m_Properties.area * other.m_Properties.centroid.Y();
+   myy = m_Properties.area * m_Properties.centroid.X() + scale * other.m_Properties.area * other.m_Properties.centroid.X();
 
    // Get centroidal I for each shape and transform it to the global axes
-   ixx = (m_Ixx + m_Area * m_Centroid.Y() * m_Centroid.Y() +
-      scale * other.m_Ixx + scale * other.m_Area * other.m_Centroid.Y() * other.m_Centroid.Y());
+   ixx = (m_Properties.ixx + m_Properties.area * m_Properties.centroid.Y() * m_Properties.centroid.Y() +
+      scale * other.m_Properties.ixx + scale * other.m_Properties.area * other.m_Properties.centroid.Y() * other.m_Properties.centroid.Y());
 
-   iyy = (m_Iyy + m_Area * m_Centroid.X() * m_Centroid.X() +
-      scale * other.m_Iyy + scale * other.m_Area * other.m_Centroid.X() * other.m_Centroid.X());
+   iyy = (m_Properties.iyy + m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.X() +
+      scale * other.m_Properties.iyy + scale * other.m_Properties.area * other.m_Properties.centroid.X() * other.m_Properties.centroid.X());
 
-   ixy = (m_Ixy + m_Area * m_Centroid.X() * m_Centroid.Y() +
-      scale * other.m_Ixy + scale * other.m_Area * other.m_Centroid.X() * other.m_Centroid.Y());
+   ixy = (m_Properties.ixy + m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.Y() +
+      scale * other.m_Properties.ixy + scale * other.m_Properties.area * other.m_Properties.centroid.X() * other.m_Properties.centroid.Y());
 
-   m_Area += scale * other.m_Area;
+   m_Properties.area += scale * other.m_Properties.area;
 
-   m_Centroid.Y() = mxx / m_Area;
-   m_Centroid.X() = myy / m_Area;
+   m_Properties.centroid.Y() = mxx / m_Properties.area;
+   m_Properties.centroid.X() = myy / m_Properties.area;
 
    Float64 cgx, cgy;
-   std::tie(cgx,cgy) = m_Centroid.GetLocation();
+   std::tie(cgx,cgy) = m_Properties.centroid.GetLocation();
 
-   m_Ixx = ixx - m_Area * m_Centroid.Y() * m_Centroid.Y();
-   m_Iyy = iyy - m_Area * m_Centroid.X() * m_Centroid.X();
-   m_Ixy = ixy - m_Area * m_Centroid.X() * m_Centroid.Y();
+   m_Properties.ixx = ixx - m_Properties.area * m_Properties.centroid.Y() * m_Properties.centroid.Y();
+   m_Properties.iyy = iyy - m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.X();
+   m_Properties.ixy = ixy - m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.Y();
 
    // Update the distance from the edges to the centroid
    Float64 l2 = other.GetXleft();
@@ -441,15 +447,15 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
    Float64 b2 = other.GetYbottom();
 
    Float64 l, r, t, b; // distance from the global axes to the extreme edges
-   l = Min(cx1 - m_Xleft, cx2 - l2);
-   r = Max(cx1 + m_Xright, cx2 + r2);
-   t = Max(cy1 + m_Ytop, cy2 + t2);
-   b = Min(cy1 - m_Ybottom, cy2 - b2);
+   l = Min(cx1 - m_Properties.xLeft, cx2 - l2);
+   r = Max(cx1 + m_Properties.xRight, cx2 + r2);
+   t = Max(cy1 + m_Properties.yTop, cy2 + t2);
+   b = Min(cy1 - m_Properties.yBottom, cy2 - b2);
 
-   m_Xleft = cgx - l;
-   m_Xright = r - cgx;
-   m_Ytop = t - cgy;
-   m_Ybottom = cgy - b;
+   m_Properties.xLeft = cgx - l;
+   m_Properties.xRight = r - cgx;
+   m_Properties.yTop = t - cgy;
+   m_Properties.yBottom = cgy - b;
 
    UpdateOrientation();
 

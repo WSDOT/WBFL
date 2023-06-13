@@ -124,6 +124,7 @@ public:
    static WBFL::Geometry::Circle GetCircle(ICircle* pCircle);
    static WBFL::Geometry::Circle2d GetCircle2d(ICircle* pCircle);
    static HRESULT CreateLineSegment(const WBFL::Geometry::LineSegment2d& ls, ILineSegment2d** ppLineSegment);
+   static HRESULT CreateLine(const WBFL::Geometry::Line2d& line, ILine2d** ppLine);
 
    static HRESULT CreatePoints(const std::vector<WBFL::Geometry::Point2d>& points, IPoint2dCollection** ppPoints);
 
@@ -140,6 +141,19 @@ public:
    // Solves the inverse problem for points (x1,y1) and (x2,y2);
    static void Inverse(IPoint2d* p1, IPoint2d* p2, Float64* pDist, IDirection** ppDir); 
    static HRESULT ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,std::_tstring* strMinTag,std::_tstring* strSecTag);
+
+   static HRESULT CreateArray(const std::vector<Float64>& values, IDblArray** ppArray);
+   static std::vector<Float64> GetArray(IDblArray* pArray);
+
+   static std::shared_ptr<WBFL::COGO::LayoutLineFactory> GetInnerFactory(ILayoutLineFactory* pFactory);
+   static std::shared_ptr<WBFL::COGO::PierLineFactory> GetInnerFactory(IPierLineFactory* pFactory);
+   static std::shared_ptr<WBFL::COGO::GirderLineFactory> GetInnerFactory(IGirderLineFactory* pFactory);
+   static std::shared_ptr<WBFL::COGO::DiaphragmLineFactory> GetInnerFactory(IDiaphragmLineFactory* pFactory);
+   static std::shared_ptr<WBFL::COGO::DeckBoundaryFactory> GetInnerFactory(IDeckBoundaryFactory* pFactory);
+   static HRESULT CreatePierLine(std::shared_ptr<WBFL::COGO::PierLine> pierLine, IPierLine** ppPierLine);
+   static HRESULT CreateGirderLine(std::shared_ptr<WBFL::COGO::GirderLine> girderLine, IGirderLine** ppGirderLine);
+   static HRESULT CreateDiaphragmLine(std::shared_ptr<WBFL::COGO::DiaphragmLine> diaphragmLine, IDiaphragmLine** ppDiaphragmLine);
+   static HRESULT CreateDeckBoundary(std::shared_ptr<WBFL::COGO::DeckBoundary> deckBoundary, IDeckBoundary** ppDeckBoundary);
 
 private:
    cogoUtil() = delete;

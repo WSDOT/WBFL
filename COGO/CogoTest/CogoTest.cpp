@@ -69,6 +69,8 @@
 #include "TestWidening.h"
 #include "TestSuperelevation.h"
 
+#include "TestBridgeGeometry.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -124,6 +126,8 @@ int main(int argc, TCHAR* argv[])
    CTestProject::Test();
    CTestDivide::Test();
    CTestTangent::Test();
+
+   CTestBridgeFramingGeometry::Test();
 
    ::CoUninitialize();
 

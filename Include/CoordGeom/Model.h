@@ -29,7 +29,7 @@
 #include <CoordGeom/CircularCurve.h>
 #include <CoordGeom/TransitionCurve.h>
 #include <CoordGeom/Path.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/Alignment.h>
 #include <CoordGeom/ProfileSegment.h>
 #include <CoordGeom/VerticalCurve.h>

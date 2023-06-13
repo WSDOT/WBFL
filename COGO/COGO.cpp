@@ -67,6 +67,26 @@
 #include "TransitionCurve.h"
 #include "CircularCurve.h"
 
+#include "PierLine.h"
+#include "GirderLine.h"
+
+#include "SinglePierLineFactory.h"
+
+#include "AlignmentOffsetLayoutLineFactory.h"
+#include "SimpleLayoutLineFactory.h"
+#include "UniformSpacingLayoutLineFactory.h"
+
+#include "SingleGirderLineFactory.h"
+#include "SimpleGirderLineFactory.h"
+
+#include "EqualSpacingDiaphragmLineFactory.h"
+#include "SingleDiaphragmLineFactory.h"
+#include "ThroughPointDiaphragmLineFactory.h"
+
+#include "SimpleDeckBoundaryFactory.h"
+
+#include "BridgeGeometry.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -102,6 +122,26 @@ OBJECT_ENTRY(CLSID_SurfacePoint, CSurfacePoint)
 OBJECT_ENTRY(CLSID_SurfaceProfile, CSurfaceProfile)
 OBJECT_ENTRY(CLSID_TransitionCurve, CTransitionCurve)
 OBJECT_ENTRY(CLSID_CircularCurve, CCircularCurve)
+
+OBJECT_ENTRY_NON_CREATEABLE(CPierLine)
+OBJECT_ENTRY_NON_CREATEABLE(CGirderLine)
+
+OBJECT_ENTRY(CLSID_SinglePierLineFactory,CSinglePierLineFactory)
+
+OBJECT_ENTRY(CLSID_AlignmentOffsetLayoutLineFactory,CAlignmentOffsetLayoutLineFactory)
+OBJECT_ENTRY(CLSID_SimpleLayoutLineFactory,CSimpleLayoutLineFactory)
+OBJECT_ENTRY(CLSID_UniformSpacingLayoutLineFactory,CUniformSpacingLayoutLineFactory)
+
+OBJECT_ENTRY(CLSID_SingleGirderLineFactory,CSingleGirderLineFactory)
+OBJECT_ENTRY(CLSID_SimpleGirderLineFactory,CSimpleGirderLineFactory)
+
+OBJECT_ENTRY(CLSID_EqualSpacingDiaphragmLineFactory,CEqualSpacingDiaphragmLineFactory)
+OBJECT_ENTRY(CLSID_SingleDiaphragmLineFactory,CSingleDiaphragmLineFactory)
+OBJECT_ENTRY(CLSID_ThroughPointDiaphragmLineFactory,CThroughPointDiaphragmLineFactory)
+
+OBJECT_ENTRY(CLSID_SimpleDeckBoundaryFactory,CSimpleDeckBoundaryFactory)
+
+OBJECT_ENTRY(CLSID_BridgeGeometry,CBridgeGeometry)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

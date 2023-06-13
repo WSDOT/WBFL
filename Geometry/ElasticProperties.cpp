@@ -238,7 +238,7 @@ STDMETHODIMP CElasticProperties::get_CoordinateSystem(CoordinateSystemType *pVal
 
 STDMETHODIMP CElasticProperties::put_CoordinateSystem(CoordinateSystemType newVal)
 {
-   m_Props.SetCoordinateSystem(WBFL::Geometry::ElasticProperties::CoordSystemType(newVal));
+   m_Props.SetCoordinateSystem(WBFL::Geometry::ElasticProperties::CoordinateSystemType(newVal));
    return S_OK;
 }
 

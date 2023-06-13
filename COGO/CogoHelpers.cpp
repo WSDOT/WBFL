@@ -50,6 +50,16 @@
 #include "Superelevation.h"
 #include "Widening.h"
 
+#include "GirderLineFactory.h"
+#include "DiaphragmLineFactory.h"
+#include "LayoutLineFactory.h"
+#include "PierLineFactory.h"
+#include "PierLine.h"
+#include "GirderLine.h"
+#include "DiaphragmLine.h"
+#include "DeckBoundary.h"
+#include "DeckBoundaryFactory.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -62,7 +72,7 @@ void cogoUtil::Inverse(IPoint2d* p1, IPoint2d* p2, Float64* pDist, IDirection** 
    auto pnt1 = cogoUtil::GetInnerPoint(p1);
    auto pnt2 = cogoUtil::GetInnerPoint(p2);
    WBFL::COGO::Direction direction;
-   std::tie(*pDist, direction) = WBFL::COGO::Utilities::ComputeInverse(*pnt1, *pnt2);
+   std::tie(*pDist, direction) = WBFL::COGO::COGO::ComputeInverse(*pnt1, *pnt2);
    CreateDirection(direction, ppDir);
 }
 
@@ -138,6 +148,11 @@ WBFL::Geometry::Circle2d cogoUtil::GetCircle2d(ICircle* pCircle)
 HRESULT cogoUtil::CreateLineSegment(const WBFL::Geometry::LineSegment2d& ls, ILineSegment2d** ppLineSegment)
 {
    return geomUtil::CreateLineSegment(ls, ppLineSegment);
+}
+
+HRESULT cogoUtil::CreateLine(const WBFL::Geometry::Line2d& line, ILine2d** ppLine)
+{
+   return geomUtil::CreateLine(line, ppLine);
 }
 
 HRESULT cogoUtil::CreatePoints(const std::vector<WBFL::Geometry::Point2d>& points, IPoint2dCollection** ppPoints)
@@ -891,7 +906,7 @@ bool cogoUtil::IsPointBeforeStart(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoi
    auto start = GetPoint(pStart);
    auto end = GetPoint(pEnd);
    auto point = GetPoint(pPoint);
-   return WBFL::COGO::Utilities::IsPointBeforeStart(start, end, point);
+   return WBFL::COGO::COGO::IsPointBeforeStart(start, end, point);
 }
 
 bool cogoUtil::IsPointAfterEnd(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoint)
@@ -899,7 +914,7 @@ bool cogoUtil::IsPointAfterEnd(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoint)
    auto start = GetPoint(pStart);
    auto end = GetPoint(pEnd);
    auto point = GetPoint(pPoint);
-   return WBFL::COGO::Utilities::IsPointAfterEnd(start, end, point);
+   return WBFL::COGO::COGO::IsPointAfterEnd(start, end, point);
 }
 
 bool cogoUtil::IsEqual(IPoint2d* p1,IPoint2d* p2)
@@ -927,7 +942,7 @@ HRESULT cogoUtil::LocateByDistDir(IPoint2d* pFrom,Float64 dist,IDirection* objDi
    auto from = GetPoint(pFrom);
    Float64 direction;
    objDir->get_Value(&direction);
-   auto point = WBFL::COGO::Utilities::LocateByDistanceAndDirection(from, dist, direction, offset);
+   auto point = WBFL::COGO::COGO::LocateByDistanceAndDirection(from, dist, direction, offset);
    return CreatePoint(point, ppPoint);
 }
 
@@ -936,7 +951,7 @@ HRESULT cogoUtil::LineCircleIntersect(ILine2d* pLine,ICircle* pCircle,IPoint2d* 
    auto line = GetLine(pLine);
    auto circle = GetCircle2d(pCircle);
    auto nearest = GetPoint(pntNearest);
-   auto point = WBFL::COGO::Utilities::IntersectLineAndCircle(line, circle, nearest);
+   auto point = WBFL::COGO::COGO::IntersectLineAndCircle(line, circle, nearest);
    return CreatePoint(point, newPnt);
 }
 
@@ -944,11 +959,127 @@ HRESULT cogoUtil::ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,
 {
    try
    {
-      std::tie(*strDegTag, *strMinTag, *strSecTag) = WBFL::COGO::Utilities::ParseAngleTags(strTag);
+      std::tie(*strDegTag, *strMinTag, *strSecTag) = WBFL::COGO::COGO::ParseAngleTags(strTag);
    }
    catch (...)
    {
       return E_INVALIDARG;
    }
    return S_OK;
+}
+
+HRESULT cogoUtil::CreateArray(const std::vector<Float64>& values, IDblArray** ppArray)
+{
+   CComPtr<IDblArray> array;
+   array.CoCreateInstance(CLSID_DblArray);
+   for (const auto& value : values)
+   {
+      array->Add(value);
+   }
+
+   return array.CopyTo(ppArray);
+}
+
+std::vector<Float64> cogoUtil::GetArray(IDblArray* pArray)
+{
+   IndexType nItems;
+   pArray->get_Count(&nItems);
+   std::vector<Float64> vValues;
+   vValues.reserve(nItems);
+   for (IndexType i = 0; i < nItems; i++)
+   {
+      Float64 value;
+      pArray->get_Item(i, &value);
+      vValues.push_back(value);
+   }
+
+   return vValues;
+
+}
+
+std::shared_ptr<WBFL::COGO::GirderLineFactory> cogoUtil::GetInnerFactory(IGirderLineFactory* pFactory)
+{
+   CGirderLineFactory* p = dynamic_cast<CGirderLineFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
+}
+
+std::shared_ptr<WBFL::COGO::DiaphragmLineFactory> cogoUtil::GetInnerFactory(IDiaphragmLineFactory* pFactory)
+{
+   CDiaphragmLineFactory* p = dynamic_cast<CDiaphragmLineFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
+}
+
+std::shared_ptr<WBFL::COGO::LayoutLineFactory> cogoUtil::GetInnerFactory(ILayoutLineFactory* pFactory)
+{
+   CLayoutLineFactory* p = dynamic_cast<CLayoutLineFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
+}
+
+std::shared_ptr<WBFL::COGO::PierLineFactory> cogoUtil::GetInnerFactory(IPierLineFactory* pFactory)
+{
+   CPierLineFactory* p = dynamic_cast<CPierLineFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
+}
+
+std::shared_ptr<WBFL::COGO::DeckBoundaryFactory> cogoUtil::GetInnerFactory(IDeckBoundaryFactory* pFactory)
+{
+   CDeckBoundaryFactory* p = dynamic_cast<CDeckBoundaryFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
+}
+
+HRESULT cogoUtil::CreatePierLine(std::shared_ptr<WBFL::COGO::PierLine> pierLine, IPierLine** ppPierLine)
+{
+   CComObject<CPierLine>* pPierLine;
+   HRESULT hr = CComObject<CPierLine>::CreateInstance(&pPierLine);
+   if (SUCCEEDED(hr))
+   {
+      *ppPierLine = pPierLine;
+      (*ppPierLine)->AddRef();
+      pPierLine->SetPierLine(pierLine);
+   }
+   return hr;
+}
+
+HRESULT cogoUtil::CreateGirderLine(std::shared_ptr<WBFL::COGO::GirderLine> girderLine, IGirderLine** ppGirderLine)
+{
+   CComObject<CGirderLine>* pGirderLine;
+   HRESULT hr = CComObject<CGirderLine>::CreateInstance(&pGirderLine);
+   if (SUCCEEDED(hr))
+   {
+      *ppGirderLine = pGirderLine;
+      (*ppGirderLine)->AddRef();
+      pGirderLine->SetGirderLine(girderLine);
+   }
+   return hr;
+}
+
+HRESULT cogoUtil::CreateDiaphragmLine(std::shared_ptr<WBFL::COGO::DiaphragmLine> diaphragmLine, IDiaphragmLine** ppDiaphragmLine)
+{
+   CComObject<CDiaphragmLine>* pDiaphragmLine;
+   HRESULT hr = CComObject<CDiaphragmLine>::CreateInstance(&pDiaphragmLine);
+   if (SUCCEEDED(hr))
+   {
+      *ppDiaphragmLine = pDiaphragmLine;
+      (*ppDiaphragmLine)->AddRef();
+      pDiaphragmLine->SetDiaphragmLine(diaphragmLine);
+   }
+   return hr;
+}
+
+HRESULT cogoUtil::CreateDeckBoundary(std::shared_ptr<WBFL::COGO::DeckBoundary> deckBoundary, IDeckBoundary** ppDeckBoundary)
+{
+   CComObject<CDeckBoundary>* pDeckBoundary;
+   HRESULT hr = CComObject<CDeckBoundary>::CreateInstance(&pDeckBoundary);
+   if (SUCCEEDED(hr))
+   {
+      *ppDeckBoundary = pDeckBoundary;
+      (*ppDeckBoundary)->AddRef();
+      pDeckBoundary->SetDeckBoundary(deckBoundary);
+   }
+   return hr;
 }

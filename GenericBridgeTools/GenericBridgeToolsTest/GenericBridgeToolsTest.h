@@ -45,13 +45,13 @@ struct SpanDefinition
 void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<Float64>& spanLengths,Float64 gdrSpacing,GirderIndexType nGirderLines,IShape* shape,Float64 overhang,int deckType,bool bCompositeDeck,IGenericBridge** ppBridge);
 void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDefinition>& spanDefinitions,IShape* shape,Float64 overhang,int deckType,bool bCompositeDeck,IGenericBridge** ppBridge);
 void CreateSplicedGirderBridge(IGenericBridge** ppBridge);
-void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* geometry,CogoObjectID alignmentID,PierIDType backPierID,PierIDType forwardPierID,IBridgeDeck** deck);
+void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* geometry,IDType alignmentID,PierIDType backPierID,PierIDType forwardPierID,IBridgeDeck** deck);
 void DimensionWFG(IFlangedGirderSection* fgs);
 void DimensionNUG(INUGirderSection* ngs);
 void DimensionUG(IUGirderSection* ngs);
 
-LineIDType GetGirderLayoutLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx);
-GirderIDType GetGirderLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx);
-LineIDType GetGirderSegmentLineID(GirderIndexType gdrIdx,SegmentIndexType segIdx);
+IDType GetGirderLayoutLineID(IndexType spanIdx,IndexType gdrIdx);
+IDType GetGirderLineID(IndexType spanIdx,IndexType gdrIdx);
+IDType GetGirderSegmentLineID(IndexType gdrIdx,IndexType segIdx);
 
 #endif // INCLUDED_GENERICBRIDGETOOLSTEST_H_

@@ -56,31 +56,35 @@ void CTestPierCollection::Test()
    CComPtr<IGenericBridge> bridge;
    bridge.CoCreateInstance(CLSID_GenericBridge);
 
-   CComPtr<ICogoModel> cogoModel;
-   cogoModel.CoCreateInstance(CLSID_CogoModel);
-
    CComPtr<IBridgeGeometry> bridgeGeometry;
    bridge->get_BridgeGeometry(&bridgeGeometry);
 
-   bridgeGeometry->putref_CogoModel(cogoModel);
+   IDType alignmentID = 0;
+   IDType profileID = 0;
 
-   CogoObjectID alignmentID = 0;
-   CogoObjectID profileID = 0;
-   cogoModel->StoreAlignment(alignmentID);
-   cogoModel->StoreProfile(profileID);
-   cogoModel->AttachProfileToAlignment(profileID, alignmentID);
    CComPtr<IAlignment> alignment;
-   cogoModel->CreateAlignmentByID(alignmentID, &alignment);
+   alignment.CoCreateInstance(CLSID_Alignment);
    
+   bridgeGeometry->AddAlignment(alignmentID, alignment);
    bridgeGeometry->put_BridgeAlignmentID(alignmentID);
-   bridgeGeometry->putref_Alignment(alignmentID, alignment);
 
-   CComPtr<IPierLine> pierLine;
-   bridgeGeometry->CreatePierLine(0,alignmentID,CComVariant(0.00),CComBSTR("Normal"),10,-5,&pierLine);
-   pierLine.Release();
-   bridgeGeometry->CreatePierLine(1,alignmentID,CComVariant(100.00),CComBSTR("Normal"),10,-5,&pierLine);
+   CComPtr<ISinglePierLineFactory> pier_1_factory;
+   pier_1_factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   pier_1_factory->put_AlignmentID(alignmentID);
+   pier_1_factory->put_Station(CComVariant(0.0));
+   pier_1_factory->put_Direction(CComBSTR("NORMAL"));
+   pier_1_factory->put_Length(10);
+   pier_1_factory->put_Offset(-5);
+   bridgeGeometry->AddPierLineFactory(pier_1_factory);
 
-   bridge->UpdateBridgeModel(GF_ALL);
+   CComPtr<ISinglePierLineFactory> pier_2_factory;
+   pier_2_factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   pier_2_factory->put_AlignmentID(alignmentID);
+   pier_2_factory->put_Station(CComVariant(100.0));
+   pier_2_factory->put_Direction(CComBSTR("NORMAL"));
+   pier_2_factory->put_Length(10);
+   pier_2_factory->put_Offset(-5);
+   bridgeGeometry->AddPierLineFactory(pier_2_factory);
 
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);

@@ -23,7 +23,7 @@
 
 #include <CoordGeom/CoordGeomLib.h>
 #include <CoordGeom/Angle.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/XCoordGeom.h>
 
 #include <System\Tokenizer.h>
@@ -40,7 +40,7 @@ Angle::Angle(Float64 angle) : m_Angle(angle)
 
 Angle::Angle(short deg, unsigned short min, Float64 sec)
 {
-   m_Angle = Utilities::FromDMS(deg, min, sec);
+   m_Angle = COGO::FromDMS(deg, min, sec);
 }
 
 Angle::Angle(const std::_tstring& strAngle)
@@ -70,12 +70,12 @@ Float64 Angle::GetValue() const
 
 void Angle::SetDMS(short deg, unsigned short min, Float64 sec)
 {
-   m_Angle = Utilities::FromDMS(deg, min, sec);
+   m_Angle = COGO::FromDMS(deg, min, sec);
 }
 
 std::tuple<short,unsigned short,Float64> Angle::GetDMS() const
 {
-   return Utilities::ToDMS(m_Angle);
+   return COGO::ToDMS(m_Angle);
 }
 
 void Angle::FromString(const std::_tstring& strAngle)
@@ -223,15 +223,15 @@ std::_tstring Angle::AsString(const std::_tstring& strFormat, bool bSigned, bool
    Float64 value = m_Angle;
    if (IsZero(value))  value = 0.0;
 
-   value = Utilities::NormalizeAngle(value);
+   value = COGO::NormalizeAngle(value);
 
    std::_tstring strDegTag, strMinTag, strSecTag;
-   std::tie(strDegTag,strMinTag,strSecTag) = Utilities::ParseAngleTags(strFormat);
+   std::tie(strDegTag,strMinTag,strSecTag) = COGO::ParseAngleTags(strFormat);
 
    short deg;
    unsigned short min;
    Float64 sec;
-   std::tie(deg, min, sec) = Utilities::ToDMS(value);
+   std::tie(deg, min, sec) = COGO::ToDMS(value);
 
    std::_tostringstream os;
    os << (bSigned ? deg : abs(deg)) << strDegTag;
@@ -267,7 +267,7 @@ Angle Angle::IncrementBy(const Angle& increment) const
 
 void Angle::Normalize()
 {
-   m_Angle = Utilities::NormalizeAngle(m_Angle);
+   m_Angle = COGO::NormalizeAngle(m_Angle);
 }
 
 

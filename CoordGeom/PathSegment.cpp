@@ -23,7 +23,7 @@
 
 #include <CoordGeom/CoordGeomLib.h>
 #include <CoordGeom/PathSegment.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 
 #include <GeomModel/GeomOp2d.h>
 
@@ -84,7 +84,7 @@ const WBFL::Geometry::Point2d& PathSegment::GetEndPoint() const
 
 WBFL::Geometry::Point2d PathSegment::PointOnCurve(Float64 distFromStart) const
 {
-   return Utilities::LocateByDistanceAndAngle(m_Segment.GetStartPoint(), m_Segment.GetEndPoint(), distFromStart, 0.0, 0.0);
+   return COGO::LocateByDistanceAndAngle(m_Segment.GetStartPoint(), m_Segment.GetEndPoint(), distFromStart, 0.0, 0.0);
 }
 
 void PathSegment::ThroughPoints(const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end)
@@ -137,18 +137,18 @@ WBFL::Geometry::Point2d PathSegment::LocatePoint(Float64 distFromStart, OffsetTy
 {
    offset = PathElement::AdjustOffset(distFromStart, offsetType, offset, direction); // offset is now along direction
 
-   auto line_direction = Utilities::MeasureDirection(GetStartPoint(), GetEndPoint());
-   auto point = Utilities::LocateByDistanceAndDirection(GetStartPoint(), distFromStart, line_direction, 0.0);
+   auto line_direction = COGO::MeasureDirection(GetStartPoint(), GetEndPoint());
+   auto point = COGO::LocateByDistanceAndDirection(GetStartPoint(), distFromStart, line_direction, 0.0);
    if (!IsZero(offset))
    {
-      point = Utilities::LocateByDistanceAndDirection(point, offset, direction, 0.0);
+      point = COGO::LocateByDistanceAndDirection(point, offset, direction, 0.0);
    }
    return point;
 }
 
 Direction PathSegment::GetBearing(Float64 distFromStart) const
 {
-   return Utilities::MeasureDirection(GetStartPoint(), GetEndPoint());
+   return COGO::MeasureDirection(GetStartPoint(), GetEndPoint());
 }
 
 std::tuple<WBFL::Geometry::Point2d, Float64, bool> PathSegment::ProjectPoint(const WBFL::Geometry::Point2d& point) const
@@ -174,8 +174,8 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> PathSegment::ProjectPoint(con
 
       distFromStart = start.Distance(p);
 
-      bool bBeforeStart = Utilities::IsPointBeforeStart(start,end, p);
-      bool bAfterEnd = Utilities::IsPointAfterEnd(start, end, p);
+      bool bBeforeStart = COGO::IsPointBeforeStart(start,end, p);
+      bool bAfterEnd = COGO::IsPointAfterEnd(start, end, p);
       if (bBeforeStart)
       {
          distFromStart *= -1; // negative because it is before start (but distance is always an absolute value)
@@ -231,8 +231,8 @@ std::vector<WBFL::Geometry::Point2d> PathSegment::Intersect(const WBFL::Geometry
       auto nIntersections = WBFL::Geometry::GeometricOperations::Intersect(line, thisLine, &point);
       if (0 < nIntersections)
       {
-         bool bBeforeStart = Utilities::IsPointBeforeStart(start, end, point);
-         bool bAfterEnd = Utilities::IsPointAfterEnd(start, end, point);
+         bool bBeforeStart = COGO::IsPointBeforeStart(start, end, point);
+         bool bAfterEnd = COGO::IsPointAfterEnd(start, end, point);
          if (start == point  || // point is at start of segment
             end == point || // point is at end of segment
             (bBeforeStart && bProjectBack) || // point is before start and projection on back tangent is permitted
@@ -295,7 +295,7 @@ std::vector<std::shared_ptr<PathElement>> PathSegment::CreateSubpath(Float64 sta
       {
          // start of sub-path is after the start of this segment
          // locate point where the sub-path starts
-         subpath_start_point = Utilities::LocatePointOnLine(startPoint, endPoint, start, 0.0);
+         subpath_start_point = COGO::LocatePointOnLine(startPoint, endPoint, start, 0.0);
       }
       else
       {
@@ -312,7 +312,7 @@ std::vector<std::shared_ptr<PathElement>> PathSegment::CreateSubpath(Float64 sta
       {
          // end of sub-path is before end of this segment
          // locate point where sub-path ends;
-         subpath_end_point = Utilities::LocatePointOnLine(startPoint, endPoint, end, 0.0);
+         subpath_end_point = COGO::LocatePointOnLine(startPoint, endPoint, end, 0.0);
       }
 
       subpath->ThroughPoints(subpath_start_point, subpath_end_point);

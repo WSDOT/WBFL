@@ -76,4 +76,5 @@ Float64 WBFLGENERICBRIDGEFUNC ComputeHaunchDepthAlongSegment(Float64 distAlongSe
 
 
 
- WBFLGENERICBRIDGEFUNC WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);
+void WBFLGENERICBRIDGEFUNC ClearGirderProfile(ISuperstructureMember* pSSMbr);
+WBFLGENERICBRIDGEFUNC WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, bool bGirderProfile);

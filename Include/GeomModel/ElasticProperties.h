@@ -45,13 +45,13 @@ class GEOMMODELCLASS ElasticProperties
 {
 public:
    /// Enum which defines the currently set coordinate system.
-   enum class CoordSystemType{
- 	         Centroidal,    // Origin at centroid of shape and
- 			                  //   oriented in global coords
- 	         Global,        // Origin at global origin
- 	         Principal,     // Origin at centroid of shape and
-                           //   oriented in principal direction    
- 	         UserDefined};  // Origin and orientation set by user
+   enum class CoordinateSystemType
+   {
+      Centroidal,    ///< Origin at centroid of shape and oriented in global coordinates
+      Global,        ///< Origin at global origin
+      Principal,     ///< Origin at centroid of shape and oriented in principal direction    
+      UserDefined    ///< Origin and orientation set by user
+   };  
 
    /// Initializes all the properties to zero.
    /// The origin of the coordinate system is global (0,0) and the 
@@ -60,7 +60,7 @@ public:
 
    /// Explicit constructor.  Initializes the shape properties in the 
    /// Centroidal coordinate system to the given values. 
-   /// If you want to be able to initialize properties in other coord systems, 
+   /// If you want to be able to initialize properties in other coordinate systems, 
    /// you need to add more constructors
    ElasticProperties(Float64 eArea,
                  const Point2d& centroid,
@@ -74,13 +74,13 @@ public:
    ElasticProperties(const ElasticProperties&) = default;
    ElasticProperties& operator=(const ElasticProperties&) = default;
 
-   /// Returns true if lhs is equalivalent to rhs,  otherwise false.
-   /// Equivalent means the the centroid, area, ixx, iyy, ixy and bounding boxes
+   /// Returns true if lhs is equivalent to rhs,  otherwise false.
+   /// Equivalent means the centroid, area, ixx, iyy, ixy and bounding boxes
    /// are equal, however, the coordinate system orientation angle and origin
    /// do not have to be the same.
    bool operator==(const ElasticProperties& rhs) const;
 
-   /// Returns true if lhs is not equalivalent to rhs,  otherwise false.
+   /// Returns true if lhs is not equivalent to rhs,  otherwise false.
    bool operator!=(const ElasticProperties& rhs) const;
 
 
@@ -157,10 +157,10 @@ public:
    /// the type specified unless the type is UserDefined. A type of UserDefined 
    /// will not move the current coordinate system, but will change the type 
    /// returned by GetCoordinateSystem to UserDefined.
-   void SetCoordinateSystem(ElasticProperties::CoordSystemType sys);
+   void SetCoordinateSystem(ElasticProperties::CoordinateSystemType sys);
 
    /// Returns the type of the coordinate system that properties are calculated in.
-   ElasticProperties::CoordSystemType GetCoordinateSystem() const;
+   ElasticProperties::CoordinateSystemType GetCoordinateSystem() const;
 
    /// Gets the current origin of the coordinate system for which the properties 
    /// are defined with respect to. This also sets the coordinate system type to 

@@ -23,7 +23,7 @@
 
 #include <CoordGeom/CoordGeomLib.h>
 #include "ProfileImpl.h"
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/Alignment.h>
 #include <CoordGeom/Surface.h>
 #include <CoordGeom/ProfileSegment.h>

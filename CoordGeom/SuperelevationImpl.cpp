@@ -27,7 +27,7 @@
 #include <CoordGeom/Surface.h>
 #include <CoordGeom/Profile.h>
 #include <CoordGeom/Alignment.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/XCoordGeom.h>
 
 using namespace WBFL::COGO;
@@ -175,20 +175,20 @@ Float64 SuperelevationImpl::GetSlope(const Station& station, Float64 templateSlo
    auto alignment = GetAlignment();
 
    Float64 slope = 0;
-   if (0 < Utilities::CompareStations(alignment, station, m_BeginTransition) ||
-       0 < Utilities::CompareStations(alignment, m_EndTransition, station))
+   if (0 < COGO::CompareStations(alignment, station, m_BeginTransition) ||
+       0 < COGO::CompareStations(alignment, m_EndTransition, station))
    {
       // station is not in the supertransition area
       slope = templateSlope;
    }
-   else if (0 <= Utilities::CompareStations(alignment, m_BeginTransition,station) &&
-            0 <= Utilities::CompareStations(alignment, station,m_BeginFullSuper))
+   else if (0 <= COGO::CompareStations(alignment, m_BeginTransition,station) &&
+            0 <= COGO::CompareStations(alignment, station,m_BeginFullSuper))
    {
       // In begin transition
       slope = ComputeSlopeInBeginTransition(station, templateSlope);
    }
-   else if (0 <= Utilities::CompareStations(alignment, m_EndFullSuper, station) &&
-            0 <= Utilities::CompareStations(alignment, station, m_EndTransition))
+   else if (0 <= COGO::CompareStations(alignment, m_EndFullSuper, station) &&
+            0 <= COGO::CompareStations(alignment, station, m_EndTransition))
    {
       // In end transition
       slope = ComputeSlopeInEndTransition(station, templateSlope);
@@ -216,9 +216,9 @@ Float64 SuperelevationImpl::ComputeSlopeInTransition(const Station& station, con
 {
    auto alignment = GetAlignment();
 
-   Float64 sta   = Utilities::ConvertToNormalizedStation(alignment, station);
-   Float64 start = Utilities::ConvertToNormalizedStation(alignment, startTransition);
-   Float64 end   = Utilities::ConvertToNormalizedStation(alignment, endTransition);
+   Float64 sta   = COGO::ConvertToNormalizedStation(alignment, station);
+   Float64 start = COGO::ConvertToNormalizedStation(alignment, startTransition);
+   Float64 end   = COGO::ConvertToNormalizedStation(alignment, endTransition);
 
    Float64 slope = 0.0;
    if (IsEqual(start, end))

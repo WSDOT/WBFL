@@ -25,7 +25,7 @@
 #include <CoordGeom/CoordGeomTypes.h>
 #include <CoordGeom/CompoundCurve.h>
 #include <CoordGeom/CircularCurve.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/XCoordGeom.h>
 #include <CoordGeom/PathSegment.h>
 #include <CoordGeom/CubicSpline.h>
@@ -241,12 +241,12 @@ Float64 CompoundCurve::GetT(SpiralLocation location) const
 
 Direction CompoundCurve::GetForwardTangentBearing() const
 {
-   return Utilities::MeasureDirection(m_PI, m_PFT);
+   return COGO::MeasureDirection(m_PI, m_PFT);
 }
 
 Direction CompoundCurve::GetBackTangentBearing() const
 {
-   return Utilities::MeasureDirection(m_PBT, m_PI);
+   return COGO::MeasureDirection(m_PBT, m_PI);
 }
 
 Float64 CompoundCurve::GetForwardTangentLength() const
@@ -345,7 +345,7 @@ Direction CompoundCurve::GetCurveForwardTangentBearing() const
       // Exit Spiral
       auto CS = GetCS();
       auto SPI = GetSPI(SpiralLocation::Exit);
-      return Utilities::MeasureDirection(CS, SPI);
+      return COGO::MeasureDirection(CS, SPI);
    }
 }
 
@@ -363,7 +363,7 @@ Direction CompoundCurve::GetCurveBackTangentBearing() const
       auto SPI = GetSPI(SpiralLocation::Entry);
       auto SC = GetSC();
 
-      d = Utilities::MeasureDirection(SPI, SC);
+      d = COGO::MeasureDirection(SPI, SC);
    }
    return d;
 }
@@ -450,7 +450,7 @@ WBFL::Geometry::Point2d CompoundCurve::GetSPI(SpiralLocation location) const
       // Transform SC into the global coordinate system
       auto TS = GetTS();
 
-      auto direction = Utilities::MeasureDirection(TS, m_PI);
+      auto direction = COGO::MeasureDirection(TS, m_PI);
 
       SPI.Move(X, -Y);
       SPI = WBFL::Geometry::GeometricOperations::LocalToGlobal(TS, direction, SPI);
@@ -462,7 +462,7 @@ WBFL::Geometry::Point2d CompoundCurve::GetSPI(SpiralLocation location) const
       // Transform CS into the global coordinate system
       auto ST = GetST();
 
-      auto direction = Utilities::MeasureDirection(ST, m_PI);
+      auto direction = COGO::MeasureDirection(ST, m_PI);
 
       SPI.Move(X, Y);
       SPI = WBFL::Geometry::GeometricOperations::LocalToGlobal(ST, direction, SPI);
@@ -539,7 +539,7 @@ WBFL::Geometry::Point2d CompoundCurve::GetTS() const
 
    auto T = GetBackTangentLength();
 
-   auto pnt = Utilities::LocateByDistanceAndDirection(m_PI, T, bkTanBrg, 0.0);
+   auto pnt = COGO::LocateByDistanceAndDirection(m_PI, T, bkTanBrg, 0.0);
 
    return pnt;
 }
@@ -549,7 +549,7 @@ WBFL::Geometry::Point2d CompoundCurve::GetST() const
    auto fwdTanBrg = GetForwardTangentBearing();
    auto T = GetForwardTangentLength();
 
-   auto pnt = Utilities::LocateByDistanceAndDirection(m_PI, T, fwdTanBrg, 0.0);
+   auto pnt = COGO::LocateByDistanceAndDirection(m_PI, T, fwdTanBrg, 0.0);
 
    return pnt;
 }
@@ -629,7 +629,7 @@ Angle CompoundCurve::GetDH(SpiralLocation location) const
    WBFL::COGO::Angle angle;
    try
    {
-      angle = Utilities::MeasureAngle(from, vertex, to);
+      angle = COGO::MeasureAngle(from, vertex, to);
    }
    catch(...)
    {
@@ -680,7 +680,7 @@ Angle CompoundCurve::GetDF(SpiralLocation location) const
    WBFL::COGO::Angle angle;
    try
    {
-      angle = Utilities::MeasureAngle(from, vertex, to);
+      angle = COGO::MeasureAngle(from, vertex, to);
    }
    catch (...)
    {
@@ -771,14 +771,14 @@ WBFL::Geometry::Point2d CompoundCurve::PointOnCurve(Float64 distFromStart) const
       // Before curve
       auto bkTanBrg = GetBackTangentBearing();
       auto TS = GetTS();
-      return Utilities::LocateByDistanceAndDirection(TS, distFromStart, bkTanBrg, 0.0);
+      return COGO::LocateByDistanceAndDirection(TS, distFromStart, bkTanBrg, 0.0);
    }
    else if (Lt <= distFromStart)
    {
       // After curve
       auto fwdTanBrg = GetForwardTangentBearing();
       auto ST = GetST();
-      return Utilities::LocateByDistanceAndDirection(ST, distFromStart - Lt, fwdTanBrg, 0.0);
+      return COGO::LocateByDistanceAndDirection(ST, distFromStart - Lt, fwdTanBrg, 0.0);
    }
    else
    {
@@ -883,7 +883,7 @@ WBFL::Geometry::Point2d CompoundCurve::LocatePoint(Float64 distFromStart, Offset
    if (!IsZero(offset))
    {
 
-      point = Utilities::LocateByDistanceAndDirection(point, offset, direction, 0.0);
+      point = COGO::LocateByDistanceAndDirection(point, offset, direction, 0.0);
    }
 
    return point;
@@ -1007,7 +1007,7 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> CompoundCurve::ProjectPoint(c
 
       auto sc = GetSC();
 
-      curvePoint = std::make_unique<WBFL::Geometry::Point2d>(Utilities::IntersectLineAndCircle(line, circle, point));
+      curvePoint = std::make_unique<WBFL::Geometry::Point2d>(COGO::IntersectLineAndCircle(line, circle, point));
 
       auto dir = GetCurveDirection();
       Float64 angle;
@@ -1454,7 +1454,7 @@ std::vector<WBFL::Geometry::Point2d> CompoundCurve::Intersect(const WBFL::Geomet
 
          // if there was an intersection point and the point is not before the start of the TS-PI line
          // then this isn't an intersection on the back tangent projection 
-         if (bkTangentPoint && !Utilities::IsPointBeforeStart(TS, PI, *bkTangentPoint))
+         if (bkTangentPoint && !COGO::IsPointBeforeStart(TS, PI, *bkTangentPoint))
             bkTangentPoint = nullptr;
       }
 
@@ -1469,7 +1469,7 @@ std::vector<WBFL::Geometry::Point2d> CompoundCurve::Intersect(const WBFL::Geomet
 
          // if there was an intersection point and the point is not after the end of the PI-ST line
          // then this isn't an intersection on the forward tangent projection 
-         if (fwdTangentPoint && !Utilities::IsPointAfterEnd(PI, ST, *fwdTangentPoint))
+         if (fwdTangentPoint && !COGO::IsPointAfterEnd(PI, ST, *fwdTangentPoint))
             fwdTangentPoint = nullptr;
       }
 
@@ -1840,7 +1840,7 @@ std::vector<std::shared_ptr<PathElement>> CompoundCurve::CreateSubpath(Float64 s
          }
 
          // PI is at the intersection of the tangents
-         pi = Utilities::IntersectBearings(pbt, dirBack, 0.0, pft, dirAhead, 0.0);
+         pi = COGO::IntersectBearings(pbt, dirBack, 0.0, pft, dirAhead, 0.0);
          auto compound_curve = CompoundCurve::Create();
          compound_curve->SetPBT(pbt);
          compound_curve->SetPI(pi);
@@ -1888,7 +1888,7 @@ WBFL::Geometry::Point2d CompoundCurve::PointOnEntrySpiral(Float64 x, Float64 y) 
    // Transform SC into the global coordinate system
    auto TS = GetTS();
 
-   auto direction = Utilities::MeasureDirection(TS, m_PI);
+   auto direction = COGO::MeasureDirection(TS, m_PI);
 
    auto cd = GetCurveDirection();
    Float64 k = (cd == CurveDirection::Left ? 1 : -1);
@@ -1906,7 +1906,7 @@ WBFL::Geometry::Point2d CompoundCurve::PointOnExitSpiral(Float64 x, Float64 y) c
    // Transform CS into the global coordinate system
    auto ST = GetST();
 
-   auto direction = Utilities::MeasureDirection(ST, m_PI);
+   auto direction = COGO::MeasureDirection(ST, m_PI);
 
    auto cd = GetCurveDirection();
    Float64 k = (cd == CurveDirection::Left ? -1 : 1);

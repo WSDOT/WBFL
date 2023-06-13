@@ -62,7 +62,7 @@ public:
    STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber);
 
 public:
-   IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
+   CComPtr<IGirderLine> m_pGirderLine;
    ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
    ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
    ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment

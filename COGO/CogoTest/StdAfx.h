@@ -50,6 +50,7 @@ extern CComModule _Module;
 #include <WBFLTools.h>
 #include <WBFLGeometry.h>
 #include <WBFLCogo.h>
+#include <WBFLDebug.h>
 #include <MathEx.h>
 #include "CogoTest.h"
 

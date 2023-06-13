@@ -28,6 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "SuperstructureMember.h"
 #include "Segment.h"
+#include <GenericBridge\Helpers.h>
 #include <ComException.h>
 #include <MathEx.h>
 
@@ -101,6 +102,8 @@ STDMETHODIMP CSuperstructureMember::AddSegment(ISuperstructureMemberSegment* seg
       m_Segments[nSegments-1]->putref_PrevSegment(m_Segments[nSegments-2].p);
       m_Segments[nSegments-2]->putref_NextSegment(m_Segments[nSegments-1].p);
    }
+
+   ClearGirderProfile(this);
 
    return S_OK;
 }

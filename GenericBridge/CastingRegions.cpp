@@ -197,12 +197,8 @@ STDMETHODIMP CCastingRegions::FindRegionEx(GirderIDType ssmbrID, SegmentIndexTyp
    girderLine->get_Direction(&direction); // segment direction
 
    // locate a point Xs from pntStart
-   CComPtr<IBridgeGeometry> geometry;
-   m_pBridge->get_BridgeGeometry(&geometry);
-   CComPtr<ICogoModel> cogoModel;
-   geometry->get_CogoModel(&cogoModel);
    CComPtr<ICogoEngine> cogoEngine;
-   cogoModel->get_Engine(&cogoEngine);
+   cogoEngine.CoCreateInstance(CLSID_CogoEngine);
 
    CComPtr<ILocate2> locate;
    cogoEngine->get_Locate(&locate);

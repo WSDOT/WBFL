@@ -10,7 +10,7 @@
     <ClCompile Include="Angle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Utilities.cpp">
+    <ClCompile Include="COGO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XCoordGeom.cpp">
@@ -109,6 +109,66 @@
     <ClCompile Include="PathElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PierLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BridgeFramingGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AlignmentOffsetLayoutLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleLayoutLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UniformSpacingLayoutLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GirderLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleGirderLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleGirderLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DiaphragmLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleDiaphragmLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThroughPointDiaphragmLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EqualSpacingDiaphragmLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeckBoundary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleDeckBoundaryFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Testing\TestBridgeFramingGeometry.cpp">
+      <Filter>Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeGirderLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeLayoutLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeDiaphragmLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SinglePierLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositePierLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\CoordGeom\CoordGeom.h">
@@ -126,7 +186,7 @@
     <ClInclude Include="..\Include\CoordGeom\Angle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\CoordGeom\Utilities.h">
+    <ClInclude Include="..\Include\CoordGeom\COGO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\CoordGeom\XCoordGeom.h">
@@ -226,6 +286,84 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SurfaceTemplateImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\PierLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\BridgeFramingGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\LayoutLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\AlignmentOffsetLayoutLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\SimpleLayoutLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\UniformSpacingLayoutLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\GirderLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\GirderLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\SimpleGirderLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\DiaphragmLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\SingleGirderLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\SingleDiaphragmLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\ThroughPointDiaphragmLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\EqualSpacingDiaphragmLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\DeckBoundary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\DeckBoundaryFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\SimpleDeckBoundaryFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\DiaphragmLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Testing\TestBridgeFramingGeometry.h">
+      <Filter>Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\ConnectionGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\CompositeLayoutLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\CompositeGirderLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\CompositeDiaphragmLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\PierLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\SinglePierLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\CoordGeom\CompositePierLineFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

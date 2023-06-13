@@ -25,7 +25,7 @@
 #include <CoordGeom/VerticalCurve.h>
 #include <CoordGeom/Alignment.h>
 #include <CoordGeom/XCoordGeom.h>
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 
 using namespace WBFL::COGO;
 
@@ -212,8 +212,8 @@ ProfilePoint VerticalCurve::GetHighPoint() const
 
       auto alignment = GetAlignment();
       // High point on left curve
-      Float64 bvcValue   = Utilities::ConvertToNormalizedStation(alignment,bvc.GetStation());
-      Float64 transValue = Utilities::ConvertToNormalizedStation(alignment,staTrans);
+      Float64 bvcValue   = COGO::ConvertToNormalizedStation(alignment,bvc.GetStation());
+      Float64 transValue = COGO::ConvertToNormalizedStation(alignment,staTrans);
       Float64 xLeft = -g1 * m_L1 / (gTrans - g1) + bvcValue;
       Float64 yLeft;
       if (bvcValue < xLeft && xLeft < transValue)
@@ -237,7 +237,7 @@ ProfilePoint VerticalCurve::GetHighPoint() const
       }
 
       // High point on right curve
-      Float64 evcValue = Utilities::ConvertToNormalizedStation(alignment, evc.GetStation());
+      Float64 evcValue = COGO::ConvertToNormalizedStation(alignment, evc.GetStation());
       Float64 xRight = -gTrans * m_L2 / (g2 - gTrans) + transValue;
       Float64 yRight;
       if (transValue < xRight && xRight < evcValue)
@@ -262,12 +262,12 @@ ProfilePoint VerticalCurve::GetHighPoint() const
 
       if (yRight <= yLeft)
       {
-         auto station = Utilities::ConvertFromNormalizedStation(alignment, xLeft);
+         auto station = COGO::ConvertFromNormalizedStation(alignment, xLeft);
          high_point.Move(station, yLeft);
       }
       else
       {
-         auto station = Utilities::ConvertFromNormalizedStation(alignment, xRight);
+         auto station = COGO::ConvertFromNormalizedStation(alignment, xRight);
          high_point.Move(station, yRight);
       }
    }
@@ -301,8 +301,8 @@ ProfilePoint VerticalCurve::GetLowPoint() const
       auto alignment = GetAlignment();
 
       // Low point on left curve
-      Float64 bvcValue = Utilities::ConvertToNormalizedStation(alignment, bvc.GetStation());
-      Float64 transValue = Utilities::ConvertToNormalizedStation(alignment,staTrans);
+      Float64 bvcValue = COGO::ConvertToNormalizedStation(alignment, bvc.GetStation());
+      Float64 transValue = COGO::ConvertToNormalizedStation(alignment,staTrans);
       Float64 xLeft = -g1 * m_L1 / (gTrans - g1) + bvcValue;
       Float64 yLeft;
       if (bvcValue < xLeft && xLeft < transValue)
@@ -326,7 +326,7 @@ ProfilePoint VerticalCurve::GetLowPoint() const
       }
 
       // Low point on right curve
-      Float64 evcValue = Utilities::ConvertToNormalizedStation(alignment,evc.GetStation());
+      Float64 evcValue = COGO::ConvertToNormalizedStation(alignment,evc.GetStation());
       Float64 xRight = -gTrans * m_L2 / (g2 - gTrans) + transValue;
       Float64 yRight;
       if (transValue < xRight && xRight < evcValue)
@@ -351,12 +351,12 @@ ProfilePoint VerticalCurve::GetLowPoint() const
 
       if (yLeft < yRight)
       {
-         auto station = Utilities::ConvertFromNormalizedStation(alignment, xLeft);
+         auto station = COGO::ConvertFromNormalizedStation(alignment, xLeft);
          low_point.Move(station, yLeft);
       }
       else
       {
-         auto station = Utilities::ConvertFromNormalizedStation(alignment, xRight);
+         auto station = COGO::ConvertFromNormalizedStation(alignment, xRight);
          low_point.Move(station, yRight);
       }
    }
@@ -378,7 +378,7 @@ Float64 VerticalCurve::GetGrade(const Station& station) const
    if (IsZero(m_L1) && IsZero(m_L2))
    {
       // this curve is has no length so it is just a profile point
-      auto result = Utilities::CompareStations(alignment,station, m_PVI.GetStation());
+      auto result = COGO::CompareStations(alignment,station, m_PVI.GetStation());
       if (0 < result)
       {
          // Before curve
@@ -400,12 +400,12 @@ Float64 VerticalCurve::GetGrade(const Station& station) const
       auto bvc = GetBVC();
       auto evc = GetEVC();
 
-      if (0 < Utilities::CompareStations(alignment,station,bvc.GetStation()))
+      if (0 < COGO::CompareStations(alignment,station,bvc.GetStation()))
       {
          // Before curve
          grade = g1;
       }
-      else if (0 < Utilities::CompareStations(alignment,evc.GetStation(),station))
+      else if (0 < COGO::CompareStations(alignment,evc.GetStation(),station))
       {
          // After curve
          grade = g2;
@@ -418,19 +418,19 @@ Float64 VerticalCurve::GetGrade(const Station& station) const
          std::tie(staTrans, elevTrans, gTrans) = TransitionPoint();
 
 
-         if (0 < Utilities::CompareStations(alignment,station,staTrans))
+         if (0 < COGO::CompareStations(alignment,station,staTrans))
          {
             // station is left of PVI
-            Float64 x = Utilities::DistanceBetweenStations(alignment,bvc.GetStation(),station);
-            Float64 L = Utilities::DistanceBetweenStations(alignment,bvc.GetStation(), staTrans);
+            Float64 x = COGO::DistanceBetweenStations(alignment,bvc.GetStation(),station);
+            Float64 L = COGO::DistanceBetweenStations(alignment,bvc.GetStation(), staTrans);
             Float64 g = (gTrans - g1) * x / L + g1;
             grade = g;
          }
          else
          {
             // station is right of PVI
-            Float64 x = Utilities::DistanceBetweenStations(alignment,staTrans, station);
-            Float64 L = Utilities::DistanceBetweenStations(alignment,staTrans, evc.GetStation());
+            Float64 x = COGO::DistanceBetweenStations(alignment,staTrans, station);
+            Float64 L = COGO::DistanceBetweenStations(alignment,staTrans, evc.GetStation());
             Float64 g = (g2 - gTrans) * x / L + gTrans;
             grade = g;
          }
@@ -443,7 +443,7 @@ Float64 VerticalCurve::GetElevation(const Station& station) const
 {
    UpdateCurve();
 
-   Float64 staValue = Utilities::ConvertToNormalizedStation(GetAlignment(),station);
+   Float64 staValue = COGO::ConvertToNormalizedStation(GetAlignment(),station);
 
    auto g1 = GetEntryGrade();
    auto g2 = GetExitGrade();
@@ -457,7 +457,7 @@ Float64 VerticalCurve::GetElevation(const Station& station) const
       Float64 elevPVI;
       std::tie(staPVI,elevPVI) = m_PVI.GetLocation();
 
-      Float64 pviValue = Utilities::ConvertToNormalizedStation(GetAlignment(),staPVI);
+      Float64 pviValue = COGO::ConvertToNormalizedStation(GetAlignment(),staPVI);
 
       if (IsEqual(pviValue, staValue))
       {
@@ -485,14 +485,14 @@ Float64 VerticalCurve::GetElevation(const Station& station) const
       Float64 elevBVC;
       std::tie(staBVC,elevBVC) = bvc.GetLocation();
       
-      Float64 bvcValue = Utilities::ConvertToNormalizedStation(GetAlignment(),staBVC);
+      Float64 bvcValue = COGO::ConvertToNormalizedStation(GetAlignment(),staBVC);
 
       auto evc = GetEVC(); // can we use m_EVC directly?
 
       Station staEVC;
       Float64 elevEVC;
       std::tie(staEVC,elevEVC) = evc.GetLocation();
-      Float64 evcValue = Utilities::ConvertToNormalizedStation(GetAlignment(),staEVC);
+      Float64 evcValue = COGO::ConvertToNormalizedStation(GetAlignment(),staEVC);
 
       if (staValue < bvcValue)
       {
@@ -510,7 +510,7 @@ Float64 VerticalCurve::GetElevation(const Station& station) const
          Station staTrans;
          Float64 elevTrans, gradeTrans; // transition point
          std::tie(staTrans,elevTrans,gradeTrans) = TransitionPoint();
-         Float64 transValue = Utilities::ConvertToNormalizedStation(GetAlignment(), staTrans);
+         Float64 transValue = COGO::ConvertToNormalizedStation(GetAlignment(), staTrans);
 
          if (staValue < transValue)
          {
@@ -702,8 +702,8 @@ bool VerticalCurve::IsValid() const
          Float64 pbg, pfg;
          try
          {
-            pbg = Utilities::ConvertToNormalizedStation(alignment, m_PBG.GetStation());
-            pfg = Utilities::ConvertToNormalizedStation(alignment, m_PFG.GetStation());
+            pbg = COGO::ConvertToNormalizedStation(alignment, m_PBG.GetStation());
+            pfg = COGO::ConvertToNormalizedStation(alignment, m_PFG.GetStation());
          }
          catch (...)
          {
@@ -735,9 +735,9 @@ bool VerticalCurve::IsValid() const
       Float64 pbg, pvi, pfg;
       try
       {
-         pbg = Utilities::ConvertToNormalizedStation(alignment, m_PBG.GetStation());
-         pvi = Utilities::ConvertToNormalizedStation(alignment, m_PVI.GetStation());
-         pfg = Utilities::ConvertToNormalizedStation(alignment, m_PFG.GetStation());
+         pbg = COGO::ConvertToNormalizedStation(alignment, m_PBG.GetStation());
+         pvi = COGO::ConvertToNormalizedStation(alignment, m_PVI.GetStation());
+         pfg = COGO::ConvertToNormalizedStation(alignment, m_PFG.GetStation());
       }
       catch (...)
       {
@@ -771,8 +771,8 @@ void VerticalCurve::UpdateCurve() const
          m_BVC.Move(m_PBG.GetStation(), m_PBG.GetElevation());
          m_EVC.Move(m_PFG.GetStation(), m_PFG.GetElevation());
 
-         Float64 staBVC = Utilities::ConvertToNormalizedStation(alignment, m_BVC.GetStation());
-         Float64 staEVC = Utilities::ConvertToNormalizedStation(alignment, m_EVC.GetStation());
+         Float64 staBVC = COGO::ConvertToNormalizedStation(alignment, m_BVC.GetStation());
+         Float64 staEVC = COGO::ConvertToNormalizedStation(alignment, m_EVC.GetStation());
          Float64 elevBVC = m_BVC.GetElevation();
          Float64 elevEVC = m_EVC.GetElevation();
 
@@ -794,7 +794,7 @@ void VerticalCurve::UpdateCurve() const
          // we need to be concerned with station equations so we just can't add m_L1 to
          // the BVC station... make PVI be a copy of BVC and then use the IncrementStationBy
          // method to compute the station of the PVI taking into account station equations
-         Station pviStation = Utilities::IncrementStationBy(alignment, m_BVC.GetStation(), m_L1);
+         Station pviStation = COGO::IncrementStationBy(alignment, m_BVC.GetStation(), m_L1);
 
          // compute the PVI elevation
          Float64 elevPVI = elevBVC + m_L1 * m_g1;
@@ -821,18 +821,18 @@ void VerticalCurve::UpdateCurve() const
          Float64 elevPVI = m_PVI.GetElevation();
          Float64 elevPFG = m_PFG.GetElevation();
 
-         Float64 dx = Utilities::DistanceBetweenStations(alignment, staPBG, staPVI);
+         Float64 dx = COGO::DistanceBetweenStations(alignment, staPBG, staPVI);
          Float64 dy = elevPVI - elevPBG;
 
          m_g1 = IsZero(dx) ? 0 : dy / dx;
 
-         dx = Utilities::DistanceBetweenStations(alignment, staPVI, staPFG);
+         dx = COGO::DistanceBetweenStations(alignment, staPVI, staPFG);
          dy = elevPFG - elevPVI;
 
          m_g2 = IsZero(dx) ? 0 : dy / dx;
 
          // Compute BVC and EVC
-         Float64 staPVIValue = Utilities::ConvertToNormalizedStation(alignment, staPVI);
+         Float64 staPVIValue = COGO::ConvertToNormalizedStation(alignment, staPVI);
 
          Float64 l1 = m_L1;
          Float64 l2 = m_L2;

@@ -24,7 +24,7 @@
 #include <CoordGeom/CoordGeomLib.h>
 #include <CoordGeom/UnitTest.h>
 
-#include <CoordGeom/Utilities.h>
+#include <CoordGeom/COGO.h>
 #include <CoordGeom/Angle.h>
 #include <CoordGeom/Direction.h>
 #include <CoordGeom/Model.h>
@@ -49,6 +49,22 @@
 #include <CoordGeom/Widening.h>
 #include <CoordGeom/Surface.h>
 
+#include <CoordGeom/AlignmentOffsetLayoutLineFactory.h>
+#include <CoordGeom/BridgeFramingGeometry.h>
+#include <CoordGeom/DeckBoundary.h>
+#include <CoordGeom/DiaphragmLine.h>
+#include <CoordGeom/EqualSpacingDiaphragmLineFactory.h>
+#include <CoordGeom/GirderLine.h>
+#include <CoordGeom/PierLine.h>
+#include <CoordGeom/SimpleDeckBoundaryFactory.h>
+#include <CoordGeom/SimpleGirderLineFactory.h>
+#include <CoordGeom/SimpleLayoutLineFactory.h>
+#include <CoordGeom/SingleDiaphragmLineFactory.h>
+#include <CoordGeom/SingleGirderLineFactory.h>
+#include <CoordGeom/ThroughPointDiaphragmLineFactory.h>
+#include <CoordGeom/UniformSpacingLayoutLineFactory.h>
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -60,7 +76,7 @@ bool WBFL::COGO::UnitTest::TestMe(WBFL::Debug::Log& rlog)
    bool tst = true;
 
 #if defined _UNITTEST
-   tst &= Utilities::TestMe(rlog);
+   tst &= COGO::TestMe(rlog);
    tst &= Angle::TestMe(rlog);
    tst &= Direction::TestMe(rlog);
    tst &= Model::TestMe(rlog);
@@ -86,6 +102,22 @@ bool WBFL::COGO::UnitTest::TestMe(WBFL::Debug::Log& rlog)
    tst &= Superelevation::TestMe(rlog);
    tst &= Widening::TestMe(rlog);
    tst &= Surface::TestMe(rlog);
+
+   tst &= AlignmentOffsetLayoutLineFactory::TestMe(rlog);
+   tst &= BridgeFramingGeometry::TestMe(rlog);
+   tst &= DeckBoundary::TestMe(rlog);
+   tst &= DiaphragmLine::TestMe(rlog);
+   tst &= EqualSpacingDiaphragmLineFactory::TestMe(rlog);
+   tst &= GirderLine::TestMe(rlog);
+   tst &= PierLine::TestMe(rlog);
+   tst &= SimpleDeckBoundaryFactory::TestMe(rlog);
+   tst &= SimpleGirderLineFactory::TestMe(rlog);
+   tst &= SimpleLayoutLineFactory::TestMe(rlog);
+   tst &= SingleDiaphragmLineFactory::TestMe(rlog);
+   tst &= SingleGirderLineFactory::TestMe(rlog);
+   tst &= ThroughPointDiaphragmLineFactory::TestMe(rlog);
+   tst &= UniformSpacingLayoutLineFactory::TestMe(rlog);
+
 
 #endif
 

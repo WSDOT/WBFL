@@ -88,6 +88,9 @@
     <ClCompile Include="TestTransitionCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestBridgeGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CogoTest.h">
@@ -172,6 +175,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestTransitionCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestBridgeGeometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
