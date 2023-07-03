@@ -27,8 +27,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,1,0,1
- PRODUCTVERSION 7,1,0,1
+ FILEVERSION 8,0,0,1
+ PRODUCTVERSION 8,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -46,12 +46,12 @@ BEGIN
             VALUE "Comments", "A member of Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "Girder Stability Analysis"
-            VALUE "FileVersion", "7.1.0.1"
+            VALUE "FileVersion", "8.0.0.1"
             VALUE "InternalName", "Stability"
             VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLStability.dll"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "7.1.0.1"
+            VALUE "ProductVersion", "8.0.0.1"
         END
     END
     BLOCK "VarFileInfo"
