@@ -73,3 +73,6 @@ EAFFUNC CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDo
 // Causes the specified documentation map file to be loaded and fills topicMap with the help topic ID mapping 
 // returns TRUE if successful
 EAFFUNC BOOL EAFLoadDocumentationMap(LPCTSTR lpszDocMapFile,std::map<UINT,CString>& topicMap);
+
+// Returns true if more than one instance of BridgeLink is running. This is a bad condition for updating configurations
+EAFFUNC bool EAFAreOtherBridgeLinksRunning();

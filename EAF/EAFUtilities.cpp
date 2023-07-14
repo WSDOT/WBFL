@@ -31,6 +31,7 @@
 #include "UIHintsDlg.h"
 
 #include <AfxInet.h>
+#include <psapi.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -490,4 +491,66 @@ CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentat
       return str;
    }
 
+}
+
+inline CString GetProcessName(DWORD pid)
+{
+   // Get a handle to the process.
+   HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION |
+      PROCESS_VM_READ,
+      FALSE,pid);
+
+   // Get the process name.
+   TCHAR szProcessName[MAX_PATH] = TEXT("<unknown>");
+   if (NULL != hProcess)
+   {
+      HMODULE hMod;
+      DWORD cbNeeded;
+
+      if (EnumProcessModules(hProcess,&hMod,sizeof(hMod),
+         &cbNeeded))
+      {
+         GetModuleBaseName(hProcess,hMod,szProcessName,
+            sizeof(szProcessName) / sizeof(TCHAR));
+      }
+   }
+
+   return CString(szProcessName);
+}
+
+bool EAFAreOtherBridgeLinksRunning()
+{
+   // First get name and process id of current instance
+   DWORD  currentPid = GetCurrentProcessId();
+   CString currentPName = GetProcessName(currentPid);
+
+   // Get the list of process identifiers for all running processes
+   DWORD aProcesses[2048],cbNeeded;
+   if (!EnumProcesses(aProcesses,sizeof(aProcesses),&cbNeeded))
+   {
+      ASSERT(0);
+      return false;
+   }
+
+   // Calculate how many process identifiers were returned.
+   DWORD cProcesses = cbNeeded / sizeof(DWORD);
+   for (unsigned int i = 0; i < cProcesses; i++)
+   {
+      if (aProcesses[i] != 0)
+      {
+         DWORD processID = aProcesses[i];
+
+         if (processID != currentPid)
+         {
+            CString PName = GetProcessName(processID);
+
+            if (PName == currentPName)
+            {
+               return true;
+            }
+         }
+      }
+   }
+
+   return false;
 }
