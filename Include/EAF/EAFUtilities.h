@@ -74,5 +74,5 @@ EAFFUNC CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDo
 // returns TRUE if successful
 EAFFUNC BOOL EAFLoadDocumentationMap(LPCTSTR lpszDocMapFile,std::map<UINT,CString>& topicMap);
 
-// Returns true if more than one instance of BridgeLink is running. This is a bad condition for updating configurations
-EAFFUNC bool EAFAreOtherBridgeLinksRunning();
+// Returns true if more than one instance of the current program is running. This is a bad condition for updating configurations
+EAFFUNC bool EAFAreOtherProgramInstancesRunning();

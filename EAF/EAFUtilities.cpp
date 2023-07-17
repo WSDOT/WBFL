@@ -518,7 +518,7 @@ inline CString GetProcessName(DWORD pid)
    return CString(szProcessName);
 }
 
-bool EAFAreOtherBridgeLinksRunning()
+bool EAFAreOtherProgramInstancesRunning()
 {
    // First get name and process id of current instance
    DWORD  currentPid = GetCurrentProcessId();
