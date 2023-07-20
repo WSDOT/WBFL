@@ -22,107 +22,36 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_XCREEPCOEFFICIENT_H_
-#define INCLUDED_LRFD_XCREEPCOEFFICIENT_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <System\Exception.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdXCreepCoefficient
-
-   Exception object thrown when the lrfdCreepCoefficient class can't compute
-   the creep coefficient.
-
-
-DESCRIPTION
-   Exception object thrown when the lrfdCreepCoefficient class can't compute
-   the creep coefficient.  This will only occur when the V/S ratio exceeds the
-   limit specified in the LRFD specification;
-
-LOG
-   rab : 03.16.1999 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdXCreepCoefficient : public WBFL::System::XBase
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATION
-   enum Reason { VSRatio, Specification };
+   namespace LRFD
+   {
+      /// @brief Exception object thrown when the lrfdCreepCoefficient class can't compute
+      /// the creep coefficient.  This will only occur when the V/S ratio exceeds the
+      /// limit specified in the LRFD specification;
+      class LRFDCLASS XCreepCoefficient : public WBFL::System::XBase
+      {
+      public:
+         enum class Reason { VSRatio, Specification };
 
-   // GROUP: LIFECYCLE
+         XCreepCoefficient() = delete;
+         XCreepCoefficient(Reason reason, LPCTSTR file, Uint32 line);
+         XCreepCoefficient(const XCreepCoefficient&) = default;
+         virtual ~XCreepCoefficient() override = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdXCreepCoefficient(Reason reason,
-                    LPCTSTR file,
-                    Int16 line);
+         XCreepCoefficient& operator=(const XCreepCoefficient&) = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdXCreepCoefficient(const lrfdXCreepCoefficient& rOther) = default;
+         virtual void Throw() const override;
+         virtual Int32 GetReason() const noexcept override;
+         Reason GetReasonCode() const noexcept;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdXCreepCoefficient() override;
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdXCreepCoefficient& operator = (const lrfdXCreepCoefficient& rOther) = default;
-
-   // GROUP: OPERATIONS
-   virtual void Throw() const override;
-   virtual Int32 GetReason() const noexcept override;
-   Reason GetReasonCode() const noexcept;
-
-   // GROUP: ACCESS
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      private:
+         Reason m_Reason;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_XCREEPCOEFFICIENT_H_

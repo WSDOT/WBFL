@@ -67,6 +67,9 @@ namespace WBFL
          /// Resultant moment about the vertical centroidal axis
          Float64 GetMy() const;
 
+         /// Resultant moment about the centroidal axis
+         Float64 GetM() const;
+
          /// Line2d object representing the neutral axis
          const WBFL::Geometry::Line2d& GetNeutralAxis() const;
 
@@ -85,11 +88,14 @@ namespace WBFL
          /// Location of the resultant tension force
          const WBFL::Geometry::Point2d& GetTensionResultantLocation() const;
 
+         /// Moment arm, distance between compression and tension resultants
+         Float64 GetMomentArm() const;
+
          /// Number of slices
          IndexType GetSliceCount() const;
 
          /// Returns a slice
-         const std::unique_ptr<GeneralSectionSlice>& GetSlice(IndexType sliceIdx) const;
+         const GeneralSectionSlice& GetSlice(IndexType sliceIdx) const;
 
          /// Returns a collection of GeneralSectionSlice objects for a specific shape in the GeneralSection model
          std::vector<const GeneralSectionSlice*> FindSlices(IndexType shapeIdx) const;
@@ -99,11 +105,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<GeneralSectionSolutionImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

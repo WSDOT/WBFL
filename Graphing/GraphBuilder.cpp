@@ -36,25 +36,10 @@ static char THIS_FILE[]=__FILE__;
 
 using namespace WBFL::Graphing;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-GraphBuilder::GraphBuilder()
+GraphBuilder::GraphBuilder(LPCTSTR name) : 
+   m_strName(name) 
 {
-   m_pBitmap = nullptr;
-   m_nHelpID = 0;
-}
-
-GraphBuilder::~GraphBuilder()
-{
-}
-
-bool GraphBuilder::operator==(const GraphBuilder& other) const
-{
-   // equivalence is based on name only for sorting purposes
-   return m_strName == other.m_strName;
-}
+};
 
 void GraphBuilder::SetName(LPCTSTR strName)
 {

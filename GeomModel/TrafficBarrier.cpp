@@ -240,30 +240,3 @@ void TrafficBarrier::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
    polygon->Move(Point2d(0, 0), *GetHookPoint());
 }
-
-#if defined _DEBUG
-bool TrafficBarrier::AssertValid() const
-{
-   return ShapeImpl::AssertValid();
-}
-
-void TrafficBarrier::Dump(WBFL::Debug::LogContext& os) const
-{
-   ShapeImpl::Dump( os );
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include <GeomModel/UnitTest.h>
-bool TrafficBarrier::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("TrafficBarrier");
-
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for TrafficBarrier");
-
-   // Test hook point behavior
-   //TRY_TESTME(UnitTest::TestHookPoint(anglep) == true);
-
-   TESTME_EPILOG("TrafficBarrier");
-}
-#endif // _UNITTEST

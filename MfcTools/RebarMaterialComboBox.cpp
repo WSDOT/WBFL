@@ -68,18 +68,18 @@ void CRebarMaterialComboBox::Initialize(bool bFilterBySpec)
 {
    ResetContent();
 
-   AddString( lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade40).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade75).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade80).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade80).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade40).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade75).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade80).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade80).c_str()  );
 
    if ( bFilterBySpec )
    {
-      if ( lrfdVersionMgr::SixthEditionWith2013Interims <= lrfdVersionMgr::GetVersion() )
+      if (WBFL::LRFD::LRFDVersionMgr::Version::SixthEditionWith2013Interims <= WBFL::LRFD::LRFDVersionMgr::GetVersion() )
       {
-         AddString( lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A1035, WBFL::Materials::Rebar::Grade::Grade100).c_str() );
+         AddString(WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A1035, WBFL::Materials::Rebar::Grade::Grade100).c_str() );
       }
    }
 }

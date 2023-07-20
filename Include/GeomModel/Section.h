@@ -78,7 +78,7 @@ namespace WBFL
          /// To model shapes that represent voids, use set fgModE and fgDensity to zero and provide the modulus of elasticity and density of
          /// the component the shape makes in void in, in the bgModE and bgDensity parameters
          void AddComponent(const Shape& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType);
-         void AddComponent(std::unique_ptr<Shape>&& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType);
+         void AddComponent(std::shared_ptr<Shape> shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType);
 
          const SectionComponent& GetComponent(IndexType idx) const;
          SectionComponent& GetComponent(IndexType idx);
@@ -86,63 +86,42 @@ namespace WBFL
 
          void RemoveComponent(IndexType idx);
 
-         //------------------------------------------------------------------------
-         // Removes all of the components from this section.
+         /// Removes all of the components from this section.
          void Clear();
 
-         //------------------------------------------------------------------------
-         // GetElasticProperties
-         // Assigns the elastic properties of the section to the gmElasticProperties 
-         // object pointed to by pProperties.
+         /// Assigns the elastic properties of the section to the gmElasticProperties 
+         /// object pointed to by pProperties.
          ElasticProperties GetElasticProperties() const;
 
-         //------------------------------------------------------------------------
-         // GetMassProperties
-         // Assigns the mass properties of the section to the gmMassProperties 
-         // object pointed to by pProperties.
+         /// Assigns the mass properties of the section to the gmMassProperties 
+         /// object pointed to by pProperties.
          MassProperties GetMassProperties() const;
 
-         //------------------------------------------------------------------------
-         // GetBoundingBox
-         // Returns the smallest rectangle that bounds the entire section.  If 
-         // bExcludeNonstructualComponents is true,  the bounding box is the 
-         // smallest rectangle that bounds all of the structural components.
+         /// Returns the smallest rectangle that bounds the entire section.  If 
+         /// bExcludeNonstructuralComponents is true,  the bounding box is the 
+         /// smallest rectangle that bounds all of the structural components.
          Rect2d GetBoundingBox(bool bExcludeNonstructuralComponents=true) const;
 
-         //------------------------------------------------------------------------
-         // CreateClippedSection
-         // Clips this section against line.  Clips away the portion of the shape 
-         // on the side of the line defined by side.  This is a factory method.  
-         // You are responsible for freeing the memory allocated by this method. 
-         // If shape s lies entire on the clipping side of the line 0 is returned.
-         // Any listeners to the original section are not transferred to this new 
-         // section.
+         /// Clips this section against line.  Clips away the portion of the shape 
+         /// on the side of the line defined by side.  This is a factory method.  
+         /// You are responsible for freeing the memory allocated by this method. 
+         /// If shape s lies entire on the clipping side of the line 0 is returned.
+         /// Any listeners to the original section are not transferred to this new 
+         /// section.
          std::unique_ptr<Section> CreateClippedSection(const Line2d& line,Line2d::Side side) const;
 
-         //------------------------------------------------------------------------
-         // CreateClippedSection
-         // Clips this section against rectangle r.  Clips in or out of the 
-         // rectangle as specified by region.  This is a factory method.  You 
-         // are responsible for freeing memory allocated by this method.  This method
-         // returns 0 if, the shape lies entirely within the clipping rectangle and 
-         // region is set to clip out, or the shape and the rectangle do not 
-         // intersection and region is to clip in. Any listeners to the original 
-         // section are not transferred to this new section.
+         /// Clips this section against rectangle r.  Clips in or out of the 
+         /// rectangle as specified by region.  This is a factory method.  You 
+         /// are responsible for freeing memory allocated by this method.  This method
+         /// returns 0 if, the shape lies entirely within the clipping rectangle and 
+         /// region is set to clip out, or the shape and the rectangle do not 
+         /// intersection and region is to clip in. Any listeners to the original 
+         /// section are not transferred to this new section.
          std::unique_ptr<Section> CreateClippedSection(const Rect2d& r,Section::ClipRegion region) const;
-
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          std::vector<SectionComponent> m_Components;
          std::shared_ptr<Point2d> m_DummyHookPoint{ nullptr };
-         void Copy(const Section& other);
       };
 
    }; // Geometry

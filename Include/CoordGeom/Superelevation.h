@@ -187,12 +187,6 @@ namespace WBFL
          /// @return The roadway cross slope
          Float64 GetSlope(const Station& station, Float64 templateSlope) const;
 
-
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          std::unique_ptr<SuperelevationImpl> m_pImpl;
       };

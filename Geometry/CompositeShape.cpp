@@ -87,18 +87,18 @@ STDMETHODIMP CCompositeShape::AddShape(IShape* shape, VARIANT_BOOL bVoid)
    return AddShapeEx(item);
 }
 
-STDMETHODIMP CCompositeShape::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CCompositeShape::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
-   if ( idx < 0 || (CollectionIndexType)m_coll.size() <= idx )
+   if ( idx < 0 || (IndexType)m_coll.size() <= idx )
       return E_INVALIDARG;
 
    m_coll[idx].second.m_T = pShapeItem;
    return S_OK;
 }
 
-STDMETHODIMP CCompositeShape::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CCompositeShape::Replace(IndexType idx,IShape* pShape)
 {
-   if ( idx < 0 || (CollectionIndexType)m_coll.size() <= idx )
+   if ( idx < 0 || (IndexType)m_coll.size() <= idx )
       return E_INVALIDARG;
 
    CComPtr<ICompositeShapeItem> shapeItem = m_coll[idx].second.m_T;

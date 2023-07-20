@@ -50,14 +50,3 @@ Float64 StationEquation::GetNormalizedStation() const
 {
    return m_NormalizedStation;
 }
-
-
-#if defined _UNITTEST
-bool StationEquation::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("StationEquation");
-   TESTME_EPILOG("StationEquation");
-}
-#endif // _UNITTEST
-
-

@@ -78,12 +78,12 @@ END_CONNECTION_POINT_MAP()
 
 // ldILoadCase
 public:
-	STDMETHOD(get_LoadGroupCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_LoadGroupCount)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Clone)(/*[out,retval]*/ldILoadCase** clone) override;
-	STDMETHOD(RemoveLoadGroupByIndex)(/*[in]*/CollectionIndexType index) override;
+	STDMETHOD(RemoveLoadGroupByIndex)(/*[in]*/IndexType index) override;
 	STDMETHOD(RemoveLoadGroup)(/*[in]*/BSTR loadGroupName) override;
-	STDMETHOD(SetLoadGroup)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR newName) override;
-	STDMETHOD(GetLoadGroup)(/*[in]*/CollectionIndexType index, /*[out]*/BSTR* loadGroupName) override;
+	STDMETHOD(SetLoadGroup)(/*[in]*/IndexType index, /*[in]*/BSTR newName) override;
+	STDMETHOD(GetLoadGroup)(/*[in]*/IndexType index, /*[out]*/BSTR* loadGroupName) override;
 	STDMETHOD(AddLoadGroup)(/*[in]*/BSTR loadGroupName) override;
 	STDMETHOD(Clear)() override;
 	STDMETHOD(get_ItemData)(/*[out, retval]*/ VARIANT *pVal) override;

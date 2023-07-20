@@ -74,11 +74,11 @@ public:
    STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point) override;
    STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point) override;
    STDMETHOD(DistanceAndOffset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset) override;
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IPathElement* *pVal) override;
-	STDMETHOD(put_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement *pVal) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ IndexType idx,/*[out, retval]*/ IPathElement* *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/ IndexType idx,/*[in]*/ IPathElement *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Add)(/*[in]*/ IPathElement* element) override;
-	STDMETHOD(Insert)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement* element) override;
+	STDMETHOD(Insert)(/*[in]*/ IndexType idx,/*[in]*/ IPathElement* element) override;
 	STDMETHOD(Clear)() override;
 
 // IPathElement

@@ -48,49 +48,6 @@ LONG round_to_nearest_whole_number(Float64 x)
    return  LONG((x - LONG(x)) > 0.5) ? (LONG)ceil(x) : (LONG)floor(x);
 } // round_to_nearest_whole_number
 
-//======================== LIFECYCLE  =======================================
-
-PointMapper::PointMapper()
-{
-   m_WorldExtentX = 0.;
-   m_WorldExtentY = 0.;
-   m_WorldOriginX = 0.;
-   m_WorldOriginY = 0.;
-
-   m_DeviceExtentX = 1;
-   m_DeviceExtentY = 1;
-   m_DeviceOriginX = 1;
-   m_DeviceOriginY = 1;
-   m_OriginalDeviceExtentX = 1;
-   m_OriginalDeviceExtentY = 1;
-
-   m_MappingMode = MapMode::Anisotropic;
-   m_MappingModeModifier = MapModeModifier::NoFit;
-
-   m_PixelDensityX = 1.0;
-   m_PixelDensityY = 1.0;
-} // PointMapper
-
-PointMapper::PointMapper(const PointMapper& mapper)
-{
-   MakeCopy(mapper);
-} // PointMapper
-
-PointMapper::~PointMapper()
-{
-} // ~PointMapper
-
-//======================== OPERATORS  =======================================
-
-PointMapper& PointMapper::operator = (const PointMapper& mapper)
-{
-   if ( this != &mapper )
-      MakeAssignment( mapper ); 
-
-   return *this;
-} // operator =
-
-//======================== OPERATIONS =======================================
 
 void PointMapper::WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const
 {
@@ -126,7 +83,7 @@ void PointMapper::WPtoDP(Float64 wx,Float64 wy,LONG* dx,LONG* dy) const
 
       *dy = round_to_nearest_whole_number(y);
    }
-} // WPtoDP
+}
 
 void PointMapper::WPtoDP(const Point& p,LONG* dx,LONG* dy) const
 {
@@ -160,7 +117,7 @@ void PointMapper::DPtoWP(LONG dx,LONG dy,Float64* wx,Float64* wy) const
       *wy = (dy - m_DeviceOriginY) * (-m_WorldExtentY / (Float64)m_DeviceExtentY)
            + m_WorldOriginY;
    }
-} // DPtoWP
+}
 
 Point PointMapper::DPtoWP(LONG dx,LONG dy) const
 {
@@ -183,14 +140,12 @@ void PointMapper::AddScale(Float64 scale)
       if ( m_MappingModeModifier != MapModeModifier::NoFit )
          UpdateDeviceExtents();
    }
-} // AddScale
+}
 
 void PointMapper::ClearScales()
 {
    m_Scales.clear();
-} // ClearScales
-
-//======================== ACCESS     =======================================
+}
 
 void PointMapper::SetWorldExt(Float64 wx,Float64 wy)
 {
@@ -198,7 +153,7 @@ void PointMapper::SetWorldExt(Float64 wx,Float64 wy)
    m_WorldExtentY = wy;
 
    UpdateDeviceExtents();
-} // SetWorldExt
+}
 
 void PointMapper::SetWorldExt(const Size& wExt)
 {
@@ -209,7 +164,7 @@ void PointMapper::GetWorldExt(Float64* wx,Float64* wy) const
 {
    *wx = m_WorldExtentX;
    *wy = m_WorldExtentY;
-} // GetWorldExt
+}
 
 Size PointMapper::GetWorldExt() const
 {
@@ -220,7 +175,7 @@ void PointMapper::SetWorldOrg(Float64 wx,Float64 wy)
 {
    m_WorldOriginX = wx;
    m_WorldOriginY = wy;
-} // SetWorldOrg
+}
 
 void PointMapper::SetWorldOrg(const Point& wOrg)
 {
@@ -231,7 +186,7 @@ void PointMapper::GetWorldOrg(Float64* wx,Float64* wy) const
 {
    *wx = m_WorldOriginX;
    *wy = m_WorldOriginY;
-} // GetWorldOrg
+}
 
 Point PointMapper::GetWorldOrg() const
 {
@@ -244,42 +199,42 @@ void PointMapper::SetDeviceExt(LONG dx,LONG dy)
    m_OriginalDeviceExtentY = dy;
 
    UpdateDeviceExtents();
-} // SetDeviceExt
+}
 
 void PointMapper::GetDeviceExt(LONG* dx,LONG* dy) const
 {
    *dx = m_OriginalDeviceExtentX;
    *dy = m_OriginalDeviceExtentY;
-} // GetDeviceExt
+}
 
 void PointMapper::GetAdjustedDeviceExt(LONG* dx,LONG* dy) const
 {
    *dx = m_DeviceExtentX;
    *dy = m_DeviceExtentY;
-} // GetAdjustedDeviceExt
+}
 
 void PointMapper::SetDeviceOrg(LONG dx,LONG dy)
 {
    m_DeviceOriginX = dx;
    m_DeviceOriginY = dy;
-} // SetDeviceOrg
+}
 
 void PointMapper::GetDeviceOrg(LONG* dx,LONG* dy) const
 {
    *dx = m_DeviceOriginX;
    *dy = m_DeviceOriginY;
-} // GetDeviceOrg
+}
 
 void PointMapper::SetMappingMode(PointMapper::MapMode mm)
 {
    m_MappingMode = mm;
    UpdateDeviceExtents();
-} // SetMappingMode
+}
 
 PointMapper::MapMode PointMapper::GetMappingMode() const
 {
    return m_MappingMode;
-} // GetMappingMode
+}
 
 void PointMapper::SetMappingModeModifier(PointMapper::MapModeModifier mmm)
 {
@@ -298,15 +253,14 @@ void PointMapper::SetPixelDensity(Float64 pdx,Float64 pdy)
    m_PixelDensityY = pdy;
 
    UpdateDeviceExtents();
-} // SetPixelDensity
+}
 
 void PointMapper::GetPixelDensity(Float64* pdx,Float64* pdy) const
 {
    *pdx = m_PixelDensityX;
    *pdy = m_PixelDensityY;
-} // GetPixelDensity
+}
 
-//======================== INQUIRY    =======================================
 Float64 PointMapper::GetScaleX() const
 {
    Float64 scale;
@@ -317,7 +271,7 @@ Float64 PointMapper::GetScaleX() const
       scale = fabs(m_WorldExtentX * m_PixelDensityX / m_DeviceExtentX);
 
    return scale;
-} // GetScaleX
+}
 
 Float64 PointMapper::GetScaleY() const
 {
@@ -329,47 +283,7 @@ Float64 PointMapper::GetScaleY() const
       scale = fabs(m_WorldExtentY * m_PixelDensityY / m_DeviceExtentY);
 
    return scale;
-} // GetScaleY
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-
-void PointMapper::MakeCopy(const PointMapper& rOther)
-{
-   m_WorldExtentX          = rOther.m_WorldExtentX;
-   m_WorldExtentY          = rOther.m_WorldExtentY;         
-   m_WorldOriginX          = rOther.m_WorldOriginX;         
-   m_WorldOriginY          = rOther.m_WorldOriginY;         
-   m_DeviceExtentX         = rOther.m_DeviceExtentX;        
-   m_DeviceExtentY         = rOther.m_DeviceExtentY;        
-   m_OriginalDeviceExtentX = rOther.m_OriginalDeviceExtentX;
-   m_OriginalDeviceExtentY = rOther.m_OriginalDeviceExtentY;
-   m_DeviceOriginX         = rOther.m_DeviceOriginX;        
-   m_DeviceOriginY         = rOther.m_DeviceOriginY;        
-   m_PixelDensityX         = rOther.m_PixelDensityX;        
-   m_PixelDensityY         = rOther.m_PixelDensityY;        
-   m_Scales                = rOther.m_Scales;               
-   m_MappingMode           = rOther.m_MappingMode;          
-   m_MappingModeModifier   = rOther.m_MappingModeModifier;
 }
-
-void PointMapper::MakeAssignment(const PointMapper& rOther)
-{
-   MakeCopy(rOther);
-}
-
 
 void PointMapper::UpdateDeviceExtents()
 {
@@ -477,7 +391,7 @@ void PointMapper::UpdateDeviceExtents()
    // Be sure to put back signs
    m_DeviceExtentX = (m_OriginalDeviceExtentX < 0 ? -1 : 1) * ns_device_ext_x;
    m_DeviceExtentY = (m_OriginalDeviceExtentY < 0 ? -1 : 1) * ns_device_ext_y;
-} // UpdateDeviceExtents
+}
 
 Float64 PointMapper::GetBestFitScale(Float64 refScale)
 {
@@ -507,7 +421,7 @@ Float64 PointMapper::GetBestFitScale(Float64 refScale)
    // find the best fit scale from the available scales
    // assume scales are sorted from least to most
    // best fitting scale is the first one >= norm_ref_scale
-   ScaleContainerIteratorType iter = m_Scales.begin();
+   auto iter = m_Scales.begin();
    while (iter != m_Scales.end())
    {
       norm_best_fit_scale = *iter++;
@@ -520,20 +434,5 @@ Float64 PointMapper::GetBestFitScale(Float64 refScale)
    best_fit_scale = norm_best_fit_scale * pow(10.,exp);
 
    return best_fit_scale;
-} // GetBestFitScale
-
-//======================== ACCESS     =======================================
-//======================== INQUERY ==========================================
-
-
-#if defined _UNITTEST
-bool PointMapper::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("PointMapper");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for PointMapper");
-   TESTME_EPILOG("PointMapper");
 }
-#endif // _UNITTEST
-
-
 

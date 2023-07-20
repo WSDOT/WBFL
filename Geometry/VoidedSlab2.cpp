@@ -280,7 +280,7 @@ STDMETHODIMP CVoidedSlab2::put_InteriorVoidElevation(Float64 newVal)
    return S_OK;
 }
 
-STDMETHODIMP CVoidedSlab2::get_VoidCount(CollectionIndexType *pVal)
+STDMETHODIMP CVoidedSlab2::get_VoidCount(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -288,7 +288,7 @@ STDMETHODIMP CVoidedSlab2::get_VoidCount(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CVoidedSlab2::put_VoidCount(CollectionIndexType newVal)
+STDMETHODIMP CVoidedSlab2::put_VoidCount(IndexType newVal)
 {
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_IVoidedSlab2,GEOMETRY_E_DIMENSION);

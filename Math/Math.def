@@ -1,2 +1,1 @@
 LIBRARY        WBFLMath.dll
-EXPORTS  UnitTest @1

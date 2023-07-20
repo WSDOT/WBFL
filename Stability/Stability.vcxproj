@@ -223,7 +223,6 @@
     <ClCompile Include="StabilityEngineer.cpp" />
     <ClCompile Include="StabilityProblemImp.cpp" />
     <ClCompile Include="LiftingTensionStressLimit.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Stability\AnalysisPoint.h" />
@@ -253,7 +252,6 @@
     <ClInclude Include="..\Include\Stability\StabilityProblemImp.h" />
     <ClInclude Include="..\Include\Stability\StabilityTypes.h" />
     <ClInclude Include="..\Include\Stability\LiftingTensionStressLimit.h" />
-    <ClInclude Include="..\Include\Stability\UnitTest.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

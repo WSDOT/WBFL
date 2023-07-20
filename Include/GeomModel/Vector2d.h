@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_VECTOR2D_H_
-#define INCLUDED_GEOMETRY_VECTOR2D_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -213,19 +211,6 @@ namespace WBFL
 
          /// Returns the dimensions of this vector
          std::pair<Float64,Float64> GetDimensions() const;
-   
-      #if defined _DEBUG
-         /// Returns true if the class is in a valid state, otherwise returns false
-         bool AssertValid() const;
-
-         /// Dumps the contents of the class to the given stream.
-         void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          Float64 m_X{ 1.0 };
@@ -241,6 +226,3 @@ namespace WBFL
 
    }
 }
-
-
-#endif // INCLUDED_GEOMETRY_VECTOR2D_H_

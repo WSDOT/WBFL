@@ -22,114 +22,51 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_XRANGEOFAPPLICABILITY_H_
-#define INCLUDED_LRFD_XRANGEOFAPPLICABILITY_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <System\Exception.h>
 
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdXRangeOfApplicability
-
-   Range of applicability errors.
-
-
-DESCRIPTION
-   Range of applicability errors. Exception that is thrown when the range of
-   applicability of live load distribution factors is violated.
-
-LOG
-   rab : 08.25.1997 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdXRangeOfApplicability : public WBFL::System::XBase
+namespace WBFL
 {
-public:
-   // GROUP: DATA MEMBERS
-
-   //------------------------------------------------------------------------
-   // Range of applicability error types
-   enum Reason
+   namespace LRFD
    {
-      Spacing,        // Girder spacing (S)
-      SlabDepth,      // Slab depth (ts)
-      SpanLength,     // Span length (L)
-      NumGirders,     // Number of girders (Nb)
-      CurbLineOffset, // de
-      LongStiffness,  // Kg
-      SkewAngle,      // Excessive Skew Angle
-      SkewAngleDiff,   // Difference in skew angles between adjacent piers
-      GirderDepth,    // Girder depth (d)
-      NumLanes,         // Number of lanes (Nl)
-      TorsionalConstant, // J
-      MomentOfInertia, // I
-      BeamWidth // b
+      /// @brief Range of applicability errors. Exception that is thrown when the range of applicability of live load distribution factors is violated.
+      class LRFDCLASS XRangeOfApplicability : public WBFL::System::XBase
+      {
+      public:
+         enum class Reason
+         {
+            Spacing,        // Girder spacing (S)
+            SlabDepth,      // Slab depth (ts)
+            SpanLength,     // Span length (L)
+            NumGirders,     // Number of girders (Nb)
+            CurbLineOffset, // de
+            LongStiffness,  // Kg
+            SkewAngle,      // Excessive Skew Angle
+            SkewAngleDiff,   // Difference in skew angles between adjacent piers
+            GirderDepth,    // Girder depth (d)
+            NumLanes,         // Number of lanes (Nl)
+            TorsionalConstant, // J
+            MomentOfInertia, // I
+            BeamWidth // b
+         };
+
+         XRangeOfApplicability() = delete;
+         XRangeOfApplicability(Reason reason, LPCTSTR msg, LPCTSTR file, Uint32 line);
+         XRangeOfApplicability(const XRangeOfApplicability&) = default;
+         virtual ~XRangeOfApplicability() = default;
+
+         XRangeOfApplicability& operator=(const XRangeOfApplicability&) = default;
+
+         virtual void Throw() const override { throw *static_cast<const XRangeOfApplicability*>(this); }
+         virtual Int32 GetReason() const noexcept override { return (Int32)m_Reason; }
+         XRangeOfApplicability::Reason GetReasonCode() const noexcept { return m_Reason; }
+         virtual std::_tstring GetErrorMessage() const override;
+
+      private:
+         Reason m_Reason;
+         std::_tstring m_Message;
+      };
    };
-
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdXRangeOfApplicability(Reason reason,LPCTSTR msg,LPCTSTR file, long line);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdXRangeOfApplicability(const lrfdXRangeOfApplicability& rOther) = default;
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdXRangeOfApplicability() = default;
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   //
-   // Returns reference to itself
-   lrfdXRangeOfApplicability& operator = (const lrfdXRangeOfApplicability& rOther) = default;
-
-   // GROUP: OPERATIONS
-   virtual void Throw() const override { throw *static_cast<const lrfdXRangeOfApplicability*>(this); }
-   virtual Int32 GetReason() const noexcept override { return (Int32)m_Reason; }
-   lrfdXRangeOfApplicability::Reason GetReasonCode() const noexcept { return m_Reason; }
-   virtual std::_tstring GetErrorMessage() const override;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-   std::_tstring m_Message;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_XRANGEOFAPPLICABILITY_H_
-

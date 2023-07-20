@@ -44,12 +44,6 @@ namespace WBFL
 
          virtual std::vector<std::shared_ptr<PierLine>> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const override;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          std::vector<std::shared_ptr<PierLineFactory>> m_Factories;
       };

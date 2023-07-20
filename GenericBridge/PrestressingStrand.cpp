@@ -66,7 +66,7 @@ STDMETHODIMP CPrestressingStrand::InterfaceSupportsErrorInfo(REFIID riid)
 
 const WBFL::Materials::PsStrand* CPrestressingStrand::GetStrand()
 {
-   lrfdStrandPool* pStrandPool = lrfdStrandPool::GetInstance();
+   const auto* pStrandPool = WBFL::LRFD::StrandPool::GetInstance();
    const WBFL::Materials::PsStrand* pStrand = pStrandPool->GetStrand((WBFL::Materials::PsStrand::Grade)m_Grade,
                                                        (WBFL::Materials::PsStrand::Type)m_Type,
                                                        (WBFL::Materials::PsStrand::Coating)m_Coating,

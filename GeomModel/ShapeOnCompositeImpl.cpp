@@ -146,7 +146,6 @@ bool ShapeOnCompositeImpl::IsDirty() const
 
 void ShapeOnCompositeImpl::UpdateComposite() const
 {
-   ASSERTVALID;
    if (!m_bIsDirty && !IsHookPointChanged()) return;
    if (m_Composite == nullptr) m_Composite = std::make_unique<CompositeShape>();
    m_Composite->Clear();

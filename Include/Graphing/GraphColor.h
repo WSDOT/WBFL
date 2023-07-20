@@ -29,34 +29,32 @@ namespace WBFL
 {
    namespace Graphing
    {
+      /// Class that implements a Hue-Saturation-Lightness (HSL) color model and returns a randomized graph color.
+      /// Inspired by https://github.com/xuboying/randomcolor-cpp
+      class GRAPHINGCLASS GraphColor
+      {
+      public:
+         GraphColor();
 
-/// Class that implements a Hue-Saturation-Lightness (HSL) color model and returns a randomized graph color.
-/// Inspired by https://github.com/xuboying/randomcolor-cpp
-class GRAPHINGCLASS GraphColor
-{
-public:
-   GraphColor();
+         /// Sets the hue range. Enter values between 0 and 360
+         void SetHueRange(Float64 minHue,Float64 maxHue);
 
-   /// Sets the hue range. Enter values between 0 and 360
-   void SetHueRange(Float64 minHue,Float64 maxHue);
+         /// Sets the saturation range. Enter values between 0 and 1
+         void SetSaturationRange(Float64 minSaturation, Float64 maxSaturation);
 
-   /// Sets the saturation range. Enter values between 0 and 1
-   void SetSaturationRange(Float64 minSaturation, Float64 maxSaturation);
+         /// Sets the lightness range. Enter values between 0 and 1
+         void SetLightnessRange(Float64 minLightness,Float64 maxLightness);
 
-   /// Sets the lightness range. Enter values between 0 and 1
-   void SetLightnessRange(Float64 minLightness,Float64 maxLightness);
+         /// Returns randomized color based on seed
+         COLORREF GetColor(IndexType index);
 
-   /// Returns randomized color based on seed
-   COLORREF GetColor(IndexType index);
+         /// Reset defaults
+         void Init();
+      private:
 
-   /// Reset defaults
-   void Init();
-private:
-
-   Float64 m_MinHue, m_MaxHue;
-   Float64 m_MinSaturation, m_MaxSaturation;
-   Float64 m_MinLightness, m_MaxLightness;
-};
-
+         Float64 m_MinHue, m_MaxHue;
+         Float64 m_MinSaturation, m_MaxSaturation;
+         Float64 m_MinLightness, m_MaxLightness;
+      };
    }; // Graphing
 }; // WBFL

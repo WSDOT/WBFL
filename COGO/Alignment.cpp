@@ -131,7 +131,7 @@ STDMETHODIMP CAlignment::AddPathElement(IPathElement* element)
    return S_OK;
 }
 
-STDMETHODIMP CAlignment::InsertPathElement(CollectionIndexType idx, IPathElement* element)
+STDMETHODIMP CAlignment::InsertPathElement(IndexType idx, IPathElement* element)
 {
    CHECK_IN(element);
    m_Alignment->InsertPathElement(idx, cogoUtil::GetInnerPathElement(element));
@@ -148,7 +148,7 @@ STDMETHODIMP CAlignment::ClearPathElements()
    return S_OK;
 }
 
-STDMETHODIMP CAlignment::get_Item(CollectionIndexType idx,IPathElement** pVal)  
+STDMETHODIMP CAlignment::get_Item(IndexType idx,IPathElement** pVal)  
 { 
    CHECK_RETOBJ(pVal);
    VALIDATE;
@@ -158,7 +158,7 @@ STDMETHODIMP CAlignment::get_Item(CollectionIndexType idx,IPathElement** pVal)
    return path_element.CopyTo(pVal);
 }
 
-STDMETHODIMP CAlignment::get_Count(CollectionIndexType* pVal)
+STDMETHODIMP CAlignment::get_Count(IndexType* pVal)
 {
    CHECK_RETVAL(pVal);
    VALIDATE;

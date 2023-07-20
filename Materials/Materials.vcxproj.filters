@@ -22,9 +22,6 @@
     <ClCompile Include="Rebar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StressStrainModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -85,9 +82,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Materials\Rebar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Materials\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Materials\StressStrainModel.h">

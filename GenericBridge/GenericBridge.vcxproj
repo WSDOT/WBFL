@@ -214,6 +214,9 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\Loading\Loading.vcxproj">
+      <Project>{a5617ced-e680-4882-8d42-075ebc75dab4}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\LRFD\LRFD.vcxproj">
       <Project>{262ce7a1-072b-4578-b45c-75546fa4c384}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

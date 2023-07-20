@@ -80,7 +80,7 @@ bool CVoidedSlabSection::ValidateWebIndex(WebIndexType idx)
 void CVoidedSlabSection::GetWebs(Float64* pIntWeb,Float64* pExtWeb)
 {
    Float64 S, D, W;
-   CollectionIndexType N;
+   IndexType N;
    m_Beam->get_VoidSpacing(&S);
    m_Beam->get_VoidDiameter(&D);
    m_Beam->get_Width(&W);
@@ -206,7 +206,7 @@ STDMETHODIMP CVoidedSlabSection::get_WebLocation(WebIndexType idx,Float64* locat
    CHECK_RETVAL(location);
 
    Float64 S, D, W;
-   CollectionIndexType N;
+   IndexType N;
    m_Beam->get_VoidSpacing(&S);
    m_Beam->get_VoidDiameter(&D);
    m_Beam->get_Width(&W);
@@ -255,7 +255,7 @@ STDMETHODIMP CVoidedSlabSection::get_WebThickness(WebIndexType idx,Float64* tWeb
 
    CHECK_RETVAL(tWeb);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -284,7 +284,7 @@ STDMETHODIMP CVoidedSlabSection::get_MinWebThickness(Float64* tWeb)
 {
    CHECK_RETVAL(tWeb);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -463,7 +463,7 @@ STDMETHODIMP CVoidedSlabSection::get_ShearWidth(Float64* shearwidth)
 {
    CHECK_RETVAL(shearwidth);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -769,7 +769,7 @@ STDMETHODIMP CVoidedSlabSection::get_XYPosition(IXYPosition **pVal)
    return this->QueryInterface(IID_IXYPosition, (void**)pVal);
 }
 
-STDMETHODIMP CVoidedSlabSection::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)
+STDMETHODIMP CVoidedSlabSection::get_Item(IndexType idx,ICompositeShapeItem* *pVal)
 {
    CComPtr<ICompositeShape> compShape;
    compShape.CoCreateInstance(CLSID_CompositeShape);
@@ -797,7 +797,7 @@ STDMETHODIMP CVoidedSlabSection::get__NewEnum(IUnknown* *pVal)
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CVoidedSlabSection::get_Count(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    IndexType nVoids;
@@ -806,7 +806,7 @@ STDMETHODIMP CVoidedSlabSection::get_Count(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CVoidedSlabSection::Remove(CollectionIndexType idx)
+STDMETHODIMP CVoidedSlabSection::Remove(IndexType idx)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;
@@ -818,13 +818,13 @@ STDMETHODIMP CVoidedSlabSection::Clear()
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CVoidedSlabSection::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CVoidedSlabSection::Replace(IndexType idx,IShape* pShape)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;

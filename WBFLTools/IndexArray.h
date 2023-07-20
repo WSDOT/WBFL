@@ -60,23 +60,23 @@ END_COM_MAP()
 
 // IIndexArray
 public:
-	STDMETHOD(Find)(/*[in]*/CollectionIndexType value, /*[out,retval]*/CollectionIndexType* fndIndex) override;
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Find)(/*[in]*/IndexType value, /*[out,retval]*/IndexType* fndIndex) override;
+	STDMETHOD(ReDim)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clone)(/*[out,retval]*/IIndexArray* *clone) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/CollectionIndexType item) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
-	STDMETHOD(Add)(/*[in]*/CollectionIndexType item) override;
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ CollectionIndexType newVal) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/IndexType relPosition, /*[in]*/IndexType item) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType relPosition) override;
+	STDMETHOD(Add)(/*[in]*/IndexType item) override;
+	STDMETHOD(get_Item)(/*[in]*/IndexType relPosition, /*[out, retval]*/ IndexType *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/IndexType relPosition, /*[in]*/ IndexType newVal) override;
 	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
 	STDMETHOD(get__EnumElements)(struct IEnumIndexArray ** ) override;
-   STDMETHOD(Assign)(/*[in]*/CollectionIndexType numElements, /*[in]*/CollectionIndexType value) override;
+   STDMETHOD(Assign)(/*[in]*/IndexType numElements, /*[in]*/IndexType value) override;
 
 protected:
-   using ContainerType = std::vector<CollectionIndexType>;
+   using ContainerType = std::vector<IndexType>;
 	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 };

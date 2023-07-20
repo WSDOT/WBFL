@@ -99,26 +99,3 @@ Float64 RambergOsgoodModel::GetStrainAtPeakStress() const
 {
    return -0.003;
 }
-
-
-#if defined _DEBUG
-bool RambergOsgoodModel::AssertValid() const
-{
-   return true;
-}
-
-void RambergOsgoodModel::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for RambergOsgoodModel")         << WBFL::Debug::endl;
-   os << _T("====================")         << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool RambergOsgoodModel::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("RambergOsgoodModel");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for RambergOsgoodModel");
-   TESTME_EPILOG("RambergOsgoodModel");
-}
-#endif // _UNITTEST

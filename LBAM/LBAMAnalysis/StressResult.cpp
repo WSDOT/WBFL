@@ -50,7 +50,7 @@ STDMETHODIMP CStressResult::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CStressResult::get_Count(/*[out,retval]*/ CollectionIndexType *pVal)
+STDMETHODIMP CStressResult::get_Count(/*[out,retval]*/ IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_Results.size();
@@ -63,7 +63,7 @@ STDMETHODIMP CStressResult::AddResult(/*[in]*/ Float64 newVal)
    return S_OK;
 }
 
-STDMETHODIMP CStressResult::SetResult(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal)
+STDMETHODIMP CStressResult::SetResult(/*[in]*/IndexType index, /*[in]*/ Float64 newVal)
 {
    try
    {
@@ -78,7 +78,7 @@ STDMETHODIMP CStressResult::SetResult(/*[in]*/CollectionIndexType index, /*[in]*
    return S_OK;
 }
 
-STDMETHODIMP CStressResult::GetResult(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal)
+STDMETHODIMP CStressResult::GetResult(/*[in]*/IndexType index, /*[out,retval]*/ Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
    try
@@ -99,7 +99,7 @@ STDMETHODIMP CStressResult::FactorAndSum(IStressResult *incRes, Float64 Factor)
    try
    {
 	   HRESULT hr;
-      CollectionIndexType cnt;
+      IndexType cnt;
       hr = incRes->get_Count(&cnt);
       if (FAILED(hr))
          return hr;
@@ -109,7 +109,7 @@ STDMETHODIMP CStressResult::FactorAndSum(IStressResult *incRes, Float64 Factor)
          THROW_LBAMA(INCOMP_STRESSRESULTS);
 
       // perform summations
-      for (CollectionIndexType i = 0; i<cnt; i++)
+      for (IndexType i = 0; i<cnt; i++)
       {
          Float64& rd = m_Results[i];
 
@@ -210,12 +210,12 @@ STDMETHODIMP CStressResult::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      CollectionIndexType cnt = m_Results.size();
+      IndexType cnt = m_Results.size();
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType i = 0; i<cnt; i++)
+      for (IndexType i = 0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("Val"),_variant_t(m_Results[i]));
          if (FAILED(hr))
@@ -227,12 +227,12 @@ STDMETHODIMP CStressResult::Save(IStructuredSave2 * psave)
    return hr;
 }
 
-STDMETHODIMP CStressResult::HpSumResults(/*[in]*/CollectionIndexType Num, /*[in]*/Float64* Vals)
+STDMETHODIMP CStressResult::HpSumResults(/*[in]*/IndexType Num, /*[in]*/Float64* Vals)
 {
    CHECK_IN(Vals);
 
    // left
-   CollectionIndexType size = m_Results.size();
+   IndexType size = m_Results.size();
    if (Num!=size)
       return E_INVALIDARG;
 
@@ -246,7 +246,7 @@ STDMETHODIMP CStressResult::HpSumResults(/*[in]*/CollectionIndexType Num, /*[in]
    return S_OK;
 }
 
-STDMETHODIMP CStressResult::HpSetResults(/*[in]*/CollectionIndexType Num, /*[in]*/Float64* Vals)
+STDMETHODIMP CStressResult::HpSetResults(/*[in]*/IndexType Num, /*[in]*/Float64* Vals)
 {
    CHECK_IN(Vals);
 

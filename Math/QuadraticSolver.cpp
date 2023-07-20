@@ -109,37 +109,3 @@ Uint8 QuadraticSolver::Solve(Float64* x1, Float64* x2) const
 
    return 2;
 }
-
-#if defined _UNITTEST
-bool QuadraticSolver::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("QuadraticSolver");
-
-   QuadraticSolver solver( 10, 10, 10 );
-   Float64 x1, x2;
-
-   TRY_TESTME( solver.Solve( &x1, &x2 ) == 0 );
-
-   solver.SetA( 1.0 );
-   solver.SetB( 9.0 );
-   solver.SetC( -2.0 );
-   TRY_TESTME( solver.Solve( &x1, &x2 ) == 2 );
-   TRY_TESTME( IsEqual( x1,  0.21699056605 ) );
-   TRY_TESTME( IsEqual( x2, -9.21699056605 ) );
-
-   solver.SetA( 1.0 );
-   solver.SetB( 0 );
-   solver.SetC( -25 );
-   TRY_TESTME( solver.Solve( &x1, &x2 ) == 2 );
-   TRY_TESTME( IsEqual( x1,  5.0 ) );
-   TRY_TESTME( IsEqual( x2, -5.0 ) );
-
-   solver.SetA( 0 );
-   solver.SetB( 10 );
-   solver.SetC( -25 );
-   TRY_TESTME( solver.Solve( &x1, &x2 ) == 1 );
-   TRY_TESTME( IsEqual( x1, 2.5 ) );
-
-   TESTME_EPILOG("QuadraticSolver");
-}
-#endif // _UNITTEST

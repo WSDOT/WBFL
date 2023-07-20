@@ -56,7 +56,7 @@ STDMETHODIMP CLoadCombinationStressResults::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationStressResults::Reserve(CollectionIndexType size)
+STDMETHODIMP CLoadCombinationStressResults::Reserve(IndexType size)
 {
    if (size<0)
       return E_INVALIDARG;
@@ -66,7 +66,7 @@ STDMETHODIMP CLoadCombinationStressResults::Reserve(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationStressResults::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CLoadCombinationStressResults::get_Count(IndexType *pVal)
 {
 	CHECK_RETVAL(pVal);
 
@@ -85,9 +85,9 @@ STDMETHODIMP CLoadCombinationStressResults::Add(IStressResult* leftResult, ILoad
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationStressResults::SetResult(CollectionIndexType index, IStressResult* leftResult, ILoadCombinationResultConfiguration *leftConfig, IStressResult* rightResult, ILoadCombinationResultConfiguration *rightConfig)
+STDMETHODIMP CLoadCombinationStressResults::SetResult(IndexType index, IStressResult* leftResult, ILoadCombinationResultConfiguration *leftConfig, IStressResult* rightResult, ILoadCombinationResultConfiguration *rightConfig)
 {
-   if (index < 0 || (CollectionIndexType)m_ComboResults.size() <= index)
+   if (index < 0 || (IndexType)m_ComboResults.size() <= index)
       return E_INVALIDARG;
 
 	CHECK_IN(leftResult);
@@ -103,9 +103,9 @@ STDMETHODIMP CLoadCombinationStressResults::SetResult(CollectionIndexType index,
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationStressResults::GetResult(CollectionIndexType index, IStressResult** leftResult, ILoadCombinationResultConfiguration **leftConfig, IStressResult** rightResult, ILoadCombinationResultConfiguration **rightConfig)
+STDMETHODIMP CLoadCombinationStressResults::GetResult(IndexType index, IStressResult** leftResult, ILoadCombinationResultConfiguration **leftConfig, IStressResult** rightResult, ILoadCombinationResultConfiguration **rightConfig)
 {
-   if (index < 0 || (CollectionIndexType)m_ComboResults.size() <= index)
+   if (index < 0 || (IndexType)m_ComboResults.size() <= index)
       return E_INVALIDARG;
 
 	CHECK_RETOBJ(leftResult);
@@ -267,13 +267,13 @@ STDMETHODIMP CLoadCombinationStressResults::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      CollectionIndexType cnt = m_ComboResults.size();
+      IndexType cnt = m_ComboResults.size();
 
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic = 0; ic<cnt; ic++)
+      for (IndexType ic = 0; ic<cnt; ic++)
       {
          const ComboRes& llres = m_ComboResults[ic];
 

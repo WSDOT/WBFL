@@ -134,7 +134,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDSYSLIB;_WINDOWS;_AFXDLL;_DEBUG;WIN32;_UNITTEST;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDSYSLIB;_WINDOWS;_AFXDLL;_DEBUG;WIN32;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -209,7 +209,6 @@
     <ClCompile Include="Threads.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="XProgrammingError.cpp" />
     <ClCompile Include="XStructuredLoad.cpp" />
     <ClCompile Include="XStructuredSave.cpp" />
@@ -252,7 +251,6 @@
     <ClInclude Include="..\Include\System\Threads.h" />
     <ClInclude Include="..\Include\System\Time.h" />
     <ClInclude Include="..\Include\System\tokenizer.h" />
-    <ClInclude Include="..\Include\System\UnitTest.h" />
     <ClInclude Include="..\Include\System\XProgrammingError.h" />
     <ClInclude Include="..\Include\System\XStructuredLoad.h" />
     <ClInclude Include="..\Include\System\XStructuredSave.h" />

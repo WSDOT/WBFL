@@ -169,13 +169,13 @@ bool CEAFReportView::InitReport(std::shared_ptr<WBFL::Reporting::ReportSpecifica
    return true;
 }
 
-bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,BOOL bPromptForSpec)
+bool CEAFReportView::CreateReport(IndexType rptIdx,BOOL bPromptForSpec)
 {
    CreateReportSpecification(rptIdx,bPromptForSpec);
    return CreateReport(rptIdx,m_pReportSpec,m_pRptSpecBuilder);
 }
 
-bool CEAFReportView::CreateReport(CollectionIndexType rptIdx, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder)
+bool CEAFReportView::CreateReport(IndexType rptIdx, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder)
 {
    if ( !InitReport(pSpec,pSpecBuilder) )
       return false;
@@ -186,7 +186,7 @@ bool CEAFReportView::CreateReport(CollectionIndexType rptIdx, std::shared_ptr<WB
    return false;
 }
 
-void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,BOOL bPromptForSpec)
+void CEAFReportView::CreateReportSpecification(IndexType rptIdx,BOOL bPromptForSpec)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    std::vector<std::_tstring> rptNames = GetReportNames();
@@ -237,7 +237,7 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,BOOL b
    }
    else
    {
-      ATLASSERT( 0 <= rptIdx && rptIdx < (CollectionIndexType)rptNames.size() );
+      ATLASSERT( 0 <= rptIdx && rptIdx < (IndexType)rptNames.size() );
       rptName = rptNames[rptIdx];
    }
 
@@ -564,7 +564,7 @@ void CEAFReportView::OnInitialUpdate()
       m_pRptMgr = pCreateData->m_pRptMgr;
       ATLASSERT(m_pReportBuilderMgr != nullptr || m_pRptMgr != nullptr); // one of these should not be nullptr
 
-      CollectionIndexType rptIdx = pCreateData->m_RptIdx;
+      IndexType rptIdx = pCreateData->m_RptIdx;
       if ( pCreateData->m_pRptSpecification )
       {
          if ( pCreateData->m_bInitializeOnly )

@@ -77,12 +77,3 @@ void CoordMapper1d::SetMapSameScale(Float64 d, bool bIsSameDirection)
    else
       m_c = -1;
 }
-
-#if defined _UNITTEST
-bool CoordMapper1d::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CoordMapper1d");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for CoordMapper1d");
-   TESTME_EPILOG("CoordMapper1d");
-}
-#endif

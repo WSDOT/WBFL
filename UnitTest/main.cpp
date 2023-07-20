@@ -33,27 +33,52 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// DLLs using this unit test framework must
+// 1) Add "EXPORTS UnitTest @1" to their .def file
+// 2) Implement the UnitTest method (typically done in main)
+// 
+// #include <System/dllTest.h>
+// #include <Header_for_class_to_be_tested.h>
+// bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
+// {
+//    bool tst = true;
+//    tst &= Class_to_be_tested::TestMe(rlog);
+//    return tst;
+// }
+// 
+// 3) Implement TestMe static methods on each class
+// 
+// #if defined _UNITTEST
+// bool Class_to_be_tested::TestMe(WBFL::Debug::Log& rlog)
+// {
+//    TESTME_PROLOGUE("Class_to_be_tested");
+// 
+//    TRY_TESTME(IsZero(0.0));
+// 
+//    TESTME_EPILOG("Class_to_be_tested");
+// }
+// #endif // _UNITTEST
 
 bool TestDll(LPCTSTR plibname, WBFL::Debug::Log& rlog);
 
 // put names of all dll's to be tested here:
-static LPCTSTR lib_list[] = {
-                                 _T("WBFLRCSection.dll"),
-                                 _T("WBFLStability.dll"),
-                                 _T("WBFLSystem.dll"),
-                                 _T("WBFLRoark.dll"),
-                                 _T("WBFLGraphing.dll"),
-                                 _T("WBFLGeomModel.dll"),
-                                 _T("WBFLLibraryFw.dll"),
-                                 _T("WBFLLrfd.dll"),
-                                 _T("WBFLMaterials.dll"),
-                                 _T("WBFLMath.dll"),
-                                 _T("WBFLUnits.dll"),
-                                 _T("WBFLEAF.dll"),
-                                 _T("WBFLEngTools.dll"),
-                                 _T("WBFLCoordGeom.dll")
-                                 //_T("WBFLBridgeAnalysis.dll"),
-                                 //_T("WBFLBridgeModeling.dll")
+static LPCTSTR lib_list[] = { _T("Dummy.dll") // the initializer list needs at least one entry
+                                 //_T("WBFLRCSection.dll"), // converted to VS unit test framework
+                                 //_T("WBFLStability.dll"), // converted to VS unit test framework
+                                 //_T("WBFLSystem.dll"),// converted to VS unit test framework
+                                 // _T("WBFLRoark.dll"), // converted to VS unit test framework
+                                 //_T("WBFLGraphing.dll"),// converted to VS unit test framework
+                                 //_T("WBFLGeomModel.dll"), // converted to VS unit test framework
+                                 //_T("WBFLLibraryFw.dll"), // converted to VS unit test framework
+                                 //_T("WBFLLrfd.dll"), // converted to VS unit test framework
+                                 //_T("WBFLMaterials.dll"), // converted to VS unit test framework
+                                 //_T("WBFLMath.dll"), // converted to VS unit test framework
+                                 //_T("WBFLUnits.dll"), // converted to VS unit test framework
+                                 //_T("WBFLEAF.dll"), // converted to VS unit test framework
+                                 //_T("WBFLEngTools.dll"), // converted to VS unit test framework
+                                 //_T("WBFLCoordGeom.dll") //converted to VS unit test framework
+                                 //_T("WBFLBridgeAnalysis.dll"), // not implemented - just stub code
+                                 //_T("WBFLBridgeModeling.dll") // not implemented - just stub code
                                 };
 
 int main()

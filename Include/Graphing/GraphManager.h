@@ -39,66 +39,66 @@ namespace WBFL
 {
    namespace Graphing
    {
+      /// Class to manage graph builders for an application
+      class GRAPHINGCLASS GraphManager
+      {
+      public:
+         GraphManager(bool bSortByName = true);
+	      virtual ~GraphManager() = default;
 
-/// Class to manage graph builders for an application
-class GRAPHINGCLASS GraphManager
-{
-public:
-   GraphManager(bool bShortByName = true);
-	virtual ~GraphManager();
+         GraphManager(const GraphManager&) = delete; // no reason not to have these, just didn't have a real need to spend the time to write them
+         GraphManager operator=(GraphManager&) = delete;
 
-   /// Causes the list of graphs names to be sorted
-   void SortByName(bool bSort);
+         /// Causes the list of graphs names to be sorted
+         void SortByName(bool bSort);
 
-   /// Returns true if graph names are sorted
-   bool SortByName() const;
+         /// Returns true if graph names are sorted
+         bool SortByName() const;
 
-   /// Adds a graph builder to the manager. Makes a clone of the graph builder
-   bool AddGraphBuilder(const GraphBuilder& graphBuilder);
+         /// Adds a graph builder to the manager. Makes a clone of the graph builder
+         bool AddGraphBuilder(const GraphBuilder& graphBuilder);
 
-   /// Adds a graph builder to the manager.
-   bool AddGraphBuilder(std::unique_ptr<GraphBuilder>&& pGraphBuilder);
+         /// Adds a graph builder to the manager.
+         bool AddGraphBuilder(std::unique_ptr<GraphBuilder>&& pGraphBuilder);
 
-   /// Returns the number of builders
-   IndexType GetGraphBuilderCount() const;
+         /// Returns the number of builders
+         IndexType GetGraphBuilderCount() const;
 
-   /// Returns a graph builder by index
-   std::unique_ptr<GraphBuilder>& GetGraphBuilder(IndexType index);
+         /// Returns a graph builder by index
+         GraphBuilder& GetGraphBuilder(IndexType index);
 
-   /// Returns a graph builder by name
-   std::unique_ptr<GraphBuilder>& GetGraphBuilder(LPCTSTR strGraphName);
+         /// Returns a graph builder by name
+         GraphBuilder& GetGraphBuilder(LPCTSTR strGraphName);
 
-   /// Returns a graph builder by name
-   std::unique_ptr<GraphBuilder>& GetGraphBuilder(const std::_tstring& strGraphName);
+         /// Returns a graph builder by name
+         GraphBuilder& GetGraphBuilder(const std::_tstring& strGraphName);
 
-   /// Removes a graph builder by index
-   std::unique_ptr<GraphBuilder> RemoveGraphBuilder(IndexType index);
+         /// Removes a graph builder by index
+         std::unique_ptr<GraphBuilder> RemoveGraphBuilder(IndexType index);
 
-   /// Removes a graph builder by name
-   std::unique_ptr<GraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName);
+         /// Removes a graph builder by name
+         std::unique_ptr<GraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName);
 
-   /// Removes a graph builder by name
-   std::unique_ptr<GraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName);
+         /// Removes a graph builder by name
+         std::unique_ptr<GraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName);
 
-   /// Clears all graph builders
-   virtual void ClearAll();
+         /// Clears all graph builders
+         virtual void ClearAll();
 
-   /// Returns a list of graph builder names
-   std::vector<std::_tstring> GetGraphNames() const;
+         /// Returns a list of graph builder names
+         std::vector<std::_tstring> GetGraphNames() const;
 
-   /// Gets a bitmap that represents the graph
-   const CBitmap* GetMenuBitmap(LPCTSTR strReportName);
+         /// Gets a bitmap that represents the graph
+         const CBitmap* GetMenuBitmap(LPCTSTR strReportName);
 
-   /// Gets a bitmap that represents the graph
-   const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
+         /// Gets a bitmap that represents the graph
+         const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
 
-private:
-   std::vector<std::unique_ptr<GraphBuilder>> m_GraphBuilders;
-   bool m_bSort{true};
-   std::unique_ptr<GraphBuilder> m_Nullptr;
+      private:
+         std::vector<std::unique_ptr<GraphBuilder>> m_GraphBuilders;
+         bool m_bSort{true};
    
-   void Sort();
-};
-
+         void Sort();
+      };
    }; // Graphing
 }; // WBFL

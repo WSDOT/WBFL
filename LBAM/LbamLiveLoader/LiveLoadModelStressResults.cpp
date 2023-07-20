@@ -56,7 +56,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelStressResults::Reserve(CollectionIndexType size)
+STDMETHODIMP CLiveLoadModelStressResults::Reserve(IndexType size)
 {
 	if (size>=0)
       m_Results.reserve(size);
@@ -66,7 +66,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Reserve(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelStressResults::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CLiveLoadModelStressResults::get_Count(IndexType *pVal)
 {
 	CHECK_RETVAL(pVal);
 
@@ -85,11 +85,11 @@ STDMETHODIMP CLiveLoadModelStressResults::Add(IStressResult *leftResult, ILiveLo
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelStressResults::GetResult(CollectionIndexType index, IStressResult **leftResult, ILiveLoadConfiguration **leftConfig, IStressResult **rightResult, ILiveLoadConfiguration **rightConfig)
+STDMETHODIMP CLiveLoadModelStressResults::GetResult(IndexType index, IStressResult **leftResult, ILiveLoadConfiguration **leftConfig, IStressResult **rightResult, ILiveLoadConfiguration **rightConfig)
 {
 
    HRESULT hr;
-	if (0 <= index && index < (CollectionIndexType)m_Results.size())
+	if (0 <= index && index < (IndexType)m_Results.size())
    {
       LlmResults& rresult = m_Results[index];
 
@@ -121,12 +121,12 @@ STDMETHODIMP CLiveLoadModelStressResults::GetResult(CollectionIndexType index, I
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelStressResults::SetResult(CollectionIndexType index, IStressResult *leftResult, ILiveLoadConfiguration *leftConfig, IStressResult *rightResult, ILiveLoadConfiguration *rightConfig)
+STDMETHODIMP CLiveLoadModelStressResults::SetResult(IndexType index, IStressResult *leftResult, ILiveLoadConfiguration *leftConfig, IStressResult *rightResult, ILiveLoadConfiguration *rightConfig)
 {
    CHECK_IN(leftResult);
    CHECK_IN(rightResult);
 
-	if (0 <= index && index < (CollectionIndexType)m_Results.size())
+	if (0 <= index && index < (IndexType)m_Results.size())
    {
       LlmResults& rresult = m_Results[index];
       rresult.m_LeftResult  = leftResult;
@@ -270,13 +270,13 @@ STDMETHODIMP CLiveLoadModelStressResults::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      CollectionIndexType cnt = m_Results.size();
+      IndexType cnt = m_Results.size();
 
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic = 0; ic<cnt; ic++)
+      for (IndexType ic = 0; ic<cnt; ic++)
       {
          const LlmResults& llres = m_Results[ic];
 

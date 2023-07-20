@@ -309,8 +309,8 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
 void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
 {
    CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
-   CollectionIndexType nPlugins = pPluginMgr->GetPluginCount();
-   for (CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+   IndexType nPlugins = pPluginMgr->GetPluginCount();
+   for (IndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFDocumentPlugin> plugin;
       pPluginMgr->GetPlugin(idx,&plugin);
@@ -321,8 +321,8 @@ void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
 BOOL CEAFDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
 {
    CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
-   CollectionIndexType nPlugins = pPluginMgr->GetPluginCount();
-   for (CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+   IndexType nPlugins = pPluginMgr->GetPluginCount();
+   for (IndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFDocumentPlugin> plugin;
       pPluginMgr->GetPlugin(idx,&plugin);
@@ -1293,8 +1293,8 @@ eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UI
    {
       // check to see of the help topic and documentation set belongs to one of our plug-ins
       CEAFDocPluginManager* pDocPluginMgr = GetDocPluginManager();
-      CollectionIndexType nPlugins = pDocPluginMgr->GetPluginCount();
-      for ( CollectionIndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
+      IndexType nPlugins = pDocPluginMgr->GetPluginCount();
+      for ( IndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
       {
          CComPtr<IEAFDocumentPlugin> pDocPlugin;
          HRESULT hr = pDocPluginMgr->GetPlugin(pluginIdx,&pDocPlugin);
@@ -1374,71 +1374,71 @@ void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
 void CEAFDocument::Execute(CEAFTransaction& rTxn)
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance()->Execute(rTxn);
+   CEAFTxnManager::GetInstance().Execute(rTxn);
 }
 
 void CEAFDocument::Execute(std::unique_ptr<CEAFTransaction>&& pTxn)
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance()->Execute(std::move(pTxn));
+   CEAFTxnManager::GetInstance().Execute(std::move(pTxn));
 }
 
 void CEAFDocument::Undo()
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance()->Undo();
+   CEAFTxnManager::GetInstance().Undo();
 }
 
 void CEAFDocument::Redo()
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance()->Redo();
+   CEAFTxnManager::GetInstance().Redo();
 }
 
 void CEAFDocument::Repeat()
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance()->Repeat();
+   CEAFTxnManager::GetInstance().Repeat();
 }
 
 bool CEAFDocument::CanUndo() const
 {
-   return CEAFTxnManager::GetInstance()->CanUndo();
+   return CEAFTxnManager::GetInstance().CanUndo();
 }
 
 bool CEAFDocument::CanRedo() const
 {
-   return CEAFTxnManager::GetInstance()->CanRedo();
+   return CEAFTxnManager::GetInstance().CanRedo();
 }
 
 bool CEAFDocument::CanRepeat() const
 {
-   return CEAFTxnManager::GetInstance()->CanRepeat();
+   return CEAFTxnManager::GetInstance().CanRepeat();
 }
 
 std::_tstring CEAFDocument::UndoName() const
 {
-   return CEAFTxnManager::GetInstance()->UndoName();
+   return CEAFTxnManager::GetInstance().UndoName();
 }
 
 std::_tstring CEAFDocument::RedoName() const
 {
-   return CEAFTxnManager::GetInstance()->RedoName();
+   return CEAFTxnManager::GetInstance().RedoName();
 }
 
 std::_tstring CEAFDocument::RepeatName() const
 {
-   return CEAFTxnManager::GetInstance()->RepeatName();
+   return CEAFTxnManager::GetInstance().RepeatName();
 }
 
 IndexType CEAFDocument::GetTxnCount() const
 {
-   return CEAFTxnManager::GetInstance()->GetTxnCount();
+   return CEAFTxnManager::GetInstance().GetTxnCount();
 }
 
 IndexType CEAFDocument::GetUndoCount() const
 {
-   return CEAFTxnManager::GetInstance()->GetUndoCount();
+   return CEAFTxnManager::GetInstance().GetUndoCount();
 }
 
 void CEAFDocument::OnUndo() 

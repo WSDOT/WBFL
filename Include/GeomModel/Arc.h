@@ -82,18 +82,6 @@ public:
    /// \image html Arc/DivideArc.jpg
    std::vector<Point2d> Divide(IndexType nSpaces) const;
 
-#if defined _DEBUG
-   /// Returns true if the class is in a valid state, otherwise returns false
-   bool AssertValid() const;
-
-   /// Dumps the contents of the class to the given stream.
-   void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   /// A self-test function - returns true if passed.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
 private:
    Point2d m_Start;
    Point2d m_Center;

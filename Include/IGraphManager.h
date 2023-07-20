@@ -35,9 +35,9 @@ interface IGraphManager : IUnknown
    virtual bool AddGraphBuilder(const WBFL::Graphing::GraphBuilder& pRptBuilder) = 0;
    virtual bool AddGraphBuilder(std::unique_ptr<WBFL::Graphing::GraphBuilder>&& pGraphBuilder) = 0;
    virtual IndexType GetGraphBuilderCount() const = 0;
-   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(IndexType index) = 0;
-   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(LPCTSTR strGraphName) = 0;
-   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(const std::_tstring& strGraphName) = 0;
+   virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(IndexType index) = 0;
+   virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(LPCTSTR strGraphName) = 0;
+   virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(const std::_tstring& strGraphName) = 0;
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) = 0;
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) = 0;
    virtual std::vector<std::_tstring> GetGraphNames() const = 0;

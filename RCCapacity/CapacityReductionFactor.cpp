@@ -63,7 +63,7 @@ void CCapacityReductionFactor::FinalRelease()
 {
 }
 
-STDMETHODIMP CCapacityReductionFactor::Compute(IGeneralSection* section,CollectionIndexType nConcShapes,ILine2d* neutralAxis,Float64 ppr,Float64* c,Float64* dt,Float64* phi)
+STDMETHODIMP CCapacityReductionFactor::Compute(IGeneralSection* section,IndexType nConcShapes,ILine2d* neutralAxis,Float64 ppr,Float64* c,Float64* dt,Float64* phi)
 {
    CHECK_IN(section);
 
@@ -73,10 +73,10 @@ STDMETHODIMP CCapacityReductionFactor::Compute(IGeneralSection* section,Collecti
    arrConcrete.CoCreateInstance(CLSID_UnkArray);
    arrReinf.CoCreateInstance(CLSID_UnkArray);
 
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    section->get_ShapeCount(&nShapes);
 
-   for ( CollectionIndexType i = 0; i < nShapes; i++ )
+   for ( IndexType i = 0; i < nShapes; i++ )
    {
       CComPtr<IShape> shape;
       section->get_Shape(i,&shape);
@@ -138,9 +138,9 @@ HRESULT CCapacityReductionFactor::ComputeC(IUnkArray* pConcShapes,ILine2d* neutr
 
    Float64 max_distance = -999999;
 
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    pConcShapes->get_Count(&nShapes);
-   for ( CollectionIndexType i = 0; i < nShapes; i++ )
+   for ( IndexType i = 0; i < nShapes; i++ )
    {
       CComPtr<IUnknown> punk;
       pConcShapes->get_Item(i,&punk);
@@ -170,9 +170,9 @@ HRESULT CCapacityReductionFactor::ComputeDt(IUnkArray* pReinfShapes,ILine2d* neu
 
    Float64 max_distance = -99999;
 
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    pReinfShapes->get_Count(&nShapes);
-   for ( CollectionIndexType i = 0; i < nShapes; i++ )
+   for ( IndexType i = 0; i < nShapes; i++ )
    {
       CComPtr<IUnknown> punk;
       pReinfShapes->get_Item(i,&punk);

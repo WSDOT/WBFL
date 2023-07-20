@@ -22,277 +22,127 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_REBARPOOL_H_
-#define INCLUDED_LRFD_REBARPOOL_H_
 #pragma once
-
-// SYSTEM INCLUDES
-//
 
 #include <Lrfd\LrfdExp.h>
 #include <Materials/Rebar.h>
 #include <map>
 #include <System\SingletonKiller.h>
 
-
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-class lrfdRebarIter;
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdRebarPool
-
-   Flyweight pool for mild steel reinforcement bars.
-
-
-DESCRIPTION
-   Flyweight pool for mild steel reinforcement bars.  All of the bars described in
-   AASHTO M31 are stored in this flyweight pool.
-
-   All rebar are Grade 60.
-
-LOG
-   rab : 07.10.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdRebarPool
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
+   namespace LRFD
+   {
+      class RebarIter;
 
-   //------------------------------------------------------------------------
-   // Returns a pointer to an instance of the rebar pool.
-   static lrfdRebarPool* GetInstance();
+      ///@ brief Flyweight pool for mild steel reinforcement bars.  All of the bars described in AASHTO M31 are stored in this flyweight pool.
+      class LRFDCLASS RebarPool
+      {
+      public:
+         RebarPool(const RebarPool&) = delete;
+         RebarPool& operator=(const RebarPool&) = delete;
 
+         // Returns a pointer to an instance of the rebar pool.
+         static const RebarPool* GetInstance();
 
-   //------------------------------------------------------------------------
-   const WBFL::Materials::Rebar* GetRebar(Int32 key);
+         //------------------------------------------------------------------------
+         const WBFL::Materials::Rebar* GetRebar(Int32 key) const;
 
-   //------------------------------------------------------------------------
-   const WBFL::Materials::Rebar* GetRebar(WBFL::Materials::Rebar::Type type,
-                                WBFL::Materials::Rebar::Grade grade,
-                                WBFL::Materials::Rebar::Size size );
+         //------------------------------------------------------------------------
+         const WBFL::Materials::Rebar* GetRebar(WBFL::Materials::Rebar::Type type,
+                                      WBFL::Materials::Rebar::Grade grade,
+                                      WBFL::Materials::Rebar::Size size ) const;
 
-   //------------------------------------------------------------------------
-   // Returns the lookup key for pRebar.  If pRebar is not a member of
-   // the rebar pool, returns -1
-   Int32 GetRebarKey(const WBFL::Materials::Rebar* pRebar);
+         //------------------------------------------------------------------------
+         // Returns the lookup key for pRebar.  If pRebar is not a member of
+         // the rebar pool, returns -1
+         Int32 GetRebarKey(const WBFL::Materials::Rebar* pRebar) const;
 
-   static bool MapOldRebarKey(Int32 oldKey,WBFL::Materials::Rebar::Grade& grade,WBFL::Materials::Rebar::Type& type,WBFL::Materials::Rebar::Size& size);
+         static bool MapOldRebarKey(Int32 oldKey,WBFL::Materials::Rebar::Grade& grade,WBFL::Materials::Rebar::Type& type,WBFL::Materials::Rebar::Size& size);
 
-   static std::_tstring GetMaterialName(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade);
-   static std::_tstring GetBarSize(WBFL::Materials::Rebar::Size size);
-   static WBFL::Materials::Rebar::Size GetBarSize(LPCTSTR strSize);
+         static std::_tstring GetMaterialName(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade);
+         static std::_tstring GetBarSize(WBFL::Materials::Rebar::Size size);
+         static WBFL::Materials::Rebar::Size GetBarSize(LPCTSTR strSize);
 
-   static void GetBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize);
-   static void GetTransverseBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize);
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
+         static void GetBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize);
+         static void GetTransverseBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize);
 
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      private:
+         RebarPool();
+         virtual ~RebarPool() = default;
 
-private:
-   // GROUP: DATA MEMBERS
-   static lrfdRebarPool* ms_pInstance;
-   using RebarPool = std::map<Int32, std::shared_ptr<WBFL::Materials::Rebar>>;
-   static RebarPool ms_Rebar;
+         static RebarPool* ms_pInstance;
+         using Pool = std::map<Int32, std::shared_ptr<WBFL::Materials::Rebar>>;
+         static Pool ms_Rebar;
 
-   using Killer = WBFL::System::SingletonKiller<lrfdRebarPool>;
-   friend Killer;
-   static Killer ms_Killer;
+         using Killer = WBFL::System::SingletonKiller<RebarPool>;
+         friend Killer;
+         static Killer ms_Killer;
 
-   // GROUP: LIFECYCLE
+         friend RebarIter;
+      };
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdRebarPool();
+      /// @brief Iterates over the various rebar sizes stored in RebarPool.
+      class LRFDCLASS RebarIter
+      {
+      public:
+         RebarIter(WBFL::Materials::Rebar::Type type = WBFL::Materials::Rebar::Type::A615,WBFL::Materials::Rebar::Grade grade = WBFL::Materials::Rebar::Grade::Grade60,bool bTransverseBarsOnly=false);
+         RebarIter(const RebarIter& rOther) = default;
+         ~RebarIter() = default;
+         RebarIter& operator=(const RebarIter& rOther) = default;
 
-   // Prevent accidental copying and assignment
-   lrfdRebarPool(const lrfdRebarPool&);
-   lrfdRebarPool& operator=(const lrfdRebarPool&) = delete;
+         //------------------------------------------------------------------------
+         virtual void Begin();
 
-   //------------------------------------------------------------------------
-   virtual ~lrfdRebarPool();
+         //------------------------------------------------------------------------
+         virtual void End();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         //------------------------------------------------------------------------
+         virtual void Next();
 
-   friend lrfdRebarIter;
+         //------------------------------------------------------------------------
+         virtual void Move(Int32 pos);
+
+         //------------------------------------------------------------------------
+         virtual void MoveBy(Int32 dPos);
+
+         //------------------------------------------------------------------------
+         operator void*() const;
+
+         //------------------------------------------------------------------------
+         const WBFL::Materials::Rebar* GetCurrentRebar() const;
+
+         //------------------------------------------------------------------------
+         // Sets the grade of prestress steel for which the available sizes will
+         // be iterated over. Sets the iterator to the first element in the
+         // iteration sequence.
+         void SetGrade(WBFL::Materials::Rebar::Grade grade);
+
+         //------------------------------------------------------------------------
+         // Returns the grade of prestress steel for which the available sizes
+         // are being iterated over.
+         WBFL::Materials::Rebar::Grade GetGrade() const;
+
+         //------------------------------------------------------------------------
+         // Sets the type of prestress steel for which the available sizes will
+         // be iterated over. Sets the iterator to the first element in the
+         // iteration sequence.
+         void SetType(WBFL::Materials::Rebar::Type type);
+
+         //------------------------------------------------------------------------
+         // Returns the type of prestress steel for which the available sizes
+         // are being iterated over.
+         WBFL::Materials::Rebar::Type GetType() const;
+
+      private:
+         std::vector< const WBFL::Materials::Rebar* > m_Bars;
+         std::vector< const WBFL::Materials::Rebar* >::iterator m_Begin;
+         std::vector< const WBFL::Materials::Rebar* >::iterator m_End;
+         std::vector< const WBFL::Materials::Rebar* >::iterator m_Current;
+         WBFL::Materials::Rebar::Grade m_Grade;
+         WBFL::Materials::Rebar::Type m_Type;
+         bool m_bTransverseBarsOnly;
+      };
+   };
 };
-
-
-/*****************************************************************************
-CLASS 
-   lrfdRebarIter
-
-   Iterates over the various rebar sizes stored in lrfdRebarPool.
-
-
-DESCRIPTION
-   Iterates over the various rebar sizes stored in lrfdRebarPool.
-
-LOG
-   rab : 07.10.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdRebarIter
-{
-public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdRebarIter(WBFL::Materials::Rebar::Type type = WBFL::Materials::Rebar::Type::A615,WBFL::Materials::Rebar::Grade grade = WBFL::Materials::Rebar::Grade::Grade60,bool bTransverseBarsOnly=false);
-
-   //------------------------------------------------------------------------
-   lrfdRebarIter(const lrfdRebarIter& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   ~lrfdRebarIter();
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   lrfdRebarIter& operator=(const lrfdRebarIter& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   virtual void Begin();
-
-   //------------------------------------------------------------------------
-   virtual void End();
-
-   //------------------------------------------------------------------------
-   virtual void Next();
-
-   //------------------------------------------------------------------------
-   virtual void Move(Int32 pos);
-
-   //------------------------------------------------------------------------
-   virtual void MoveBy(Int32 dPos);
-
-   //------------------------------------------------------------------------
-   operator void*() const;
-
-   //------------------------------------------------------------------------
-   const WBFL::Materials::Rebar* GetCurrentRebar() const;
-
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Sets the grade of prestress steel for which the available sizes will
-   // be iterated over. Sets the iterator to the first element in the
-   // iteration sequence.
-   void SetGrade(WBFL::Materials::Rebar::Grade grade);
-
-   //------------------------------------------------------------------------
-   // Returns the grade of prestress steel for which the available sizes
-   // are being iterated over.
-   WBFL::Materials::Rebar::Grade GetGrade() const;
-
-   //------------------------------------------------------------------------
-   // Sets the type of prestress steel for which the available sizes will
-   // be iterated over. Sets the iterator to the first element in the
-   // iteration sequence.
-   void SetType(WBFL::Materials::Rebar::Type type);
-
-   //------------------------------------------------------------------------
-   // Returns the type of prestress steel for which the available sizes
-   // are being iterated over.
-   WBFL::Materials::Rebar::Type GetType() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void MakeAssignment(const lrfdRebarIter& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   std::vector< const WBFL::Materials::Rebar* > m_Bars;
-   std::vector< const WBFL::Materials::Rebar* >::iterator m_Begin;
-   std::vector< const WBFL::Materials::Rebar* >::iterator m_End;
-   std::vector< const WBFL::Materials::Rebar* >::iterator m_Current;
-   WBFL::Materials::Rebar::Grade m_Grade;
-   WBFL::Materials::Rebar::Type m_Type;
-   bool m_bTransverseBarsOnly;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void SetRange();
-   void MakeCopy(const lrfdRebarIter& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_REBARPOOL_H_

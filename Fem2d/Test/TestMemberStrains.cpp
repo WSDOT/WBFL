@@ -102,7 +102,7 @@ void CTestMemberStrains::TestGeneral()
    TRY_TEST(pMemberStrains->Create(0, 0, 0, 0.0, -1.0, 0, &pPl),FEM2D_E_MEMBER_STRAIN_WITH_ID_ALREADY_EXISTS);
    TRY_TEST_HR(pMemberStrains->Create(3, 5, 0.0, -1.0, 33.0, 44.0, &pMemberStrain3));
 
-   CollectionIndexType num;
+   IndexType num;
    TRY_TEST_HR(pMemberStrains->get_Count(&num));
    TRY_TEST(num, 2);
 

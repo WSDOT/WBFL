@@ -41,14 +41,3 @@ std::vector<std::pair<IDType, std::shared_ptr<Path>>> CompositeLayoutLineFactory
    }
    return layout_lines;
 }
-
-#if defined _UNITTEST
-bool CompositeLayoutLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CompositeLayoutLineFactory");
-
-   TESTME_EPILOG("CompositeLayoutLineFactory");
-}
-#endif // _UNITTEST
-
-

@@ -89,7 +89,7 @@ STDMETHODIMP CGeneralSection::AddShape(BSTR bstrName,IShape* pShape,IStressStrai
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::get_ShapeCount(CollectionIndexType* nShapes)
+STDMETHODIMP CGeneralSection::get_ShapeCount(IndexType* nShapes)
 {
    CHECK_RETVAL(nShapes);
    *nShapes = m_SectionItems.size();
@@ -113,7 +113,7 @@ STDMETHODIMP CGeneralSection::get_PrimaryShapeIndex(IndexType* pShapeIdx)
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::put_Name(CollectionIndexType shapeIdx, BSTR bstrName)
+STDMETHODIMP CGeneralSection::put_Name(IndexType shapeIdx, BSTR bstrName)
 {
    CHECK_IN(bstrName);
 
@@ -125,7 +125,7 @@ STDMETHODIMP CGeneralSection::put_Name(CollectionIndexType shapeIdx, BSTR bstrNa
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::get_Name(CollectionIndexType shapeIdx, BSTR* pbstrName)
+STDMETHODIMP CGeneralSection::get_Name(IndexType shapeIdx, BSTR* pbstrName)
 {
    CHECK_RETSTRING(pbstrName);
    if (m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX)
@@ -134,7 +134,7 @@ STDMETHODIMP CGeneralSection::get_Name(CollectionIndexType shapeIdx, BSTR* pbstr
    return m_SectionItems[shapeIdx].bstrName.CopyTo(pbstrName);
 }
 
-STDMETHODIMP CGeneralSection::get_Shape(CollectionIndexType shapeIdx,IShape** pShape)
+STDMETHODIMP CGeneralSection::get_Shape(IndexType shapeIdx,IShape** pShape)
 {
    CHECK_RETOBJ(pShape);
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
@@ -146,7 +146,7 @@ STDMETHODIMP CGeneralSection::get_Shape(CollectionIndexType shapeIdx,IShape** pS
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::putref_Shape(CollectionIndexType shapeIdx,IShape* pShape)
+STDMETHODIMP CGeneralSection::putref_Shape(IndexType shapeIdx,IShape* pShape)
 {
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
       return E_INVALIDARG;
@@ -159,7 +159,7 @@ STDMETHODIMP CGeneralSection::putref_Shape(CollectionIndexType shapeIdx,IShape* 
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::get_ForegroundMaterial(CollectionIndexType shapeIdx,IStressStrain** pMaterial)
+STDMETHODIMP CGeneralSection::get_ForegroundMaterial(IndexType shapeIdx,IStressStrain** pMaterial)
 {
    CHECK_RETOBJ(pMaterial);
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
@@ -173,7 +173,7 @@ STDMETHODIMP CGeneralSection::get_ForegroundMaterial(CollectionIndexType shapeId
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::putref_ForegroundMaterial(CollectionIndexType shapeIdx,IStressStrain* pMaterial)
+STDMETHODIMP CGeneralSection::putref_ForegroundMaterial(IndexType shapeIdx,IStressStrain* pMaterial)
 {
    CHECK_IN(pMaterial);
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
@@ -185,7 +185,7 @@ STDMETHODIMP CGeneralSection::putref_ForegroundMaterial(CollectionIndexType shap
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::get_BackgroundMaterial(CollectionIndexType shapeIdx,IStressStrain** pMaterial)
+STDMETHODIMP CGeneralSection::get_BackgroundMaterial(IndexType shapeIdx,IStressStrain** pMaterial)
 {
    CHECK_RETOBJ(pMaterial);
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
@@ -199,7 +199,7 @@ STDMETHODIMP CGeneralSection::get_BackgroundMaterial(CollectionIndexType shapeId
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::putref_BackgroundMaterial(CollectionIndexType shapeIdx,IStressStrain* pMaterial)
+STDMETHODIMP CGeneralSection::putref_BackgroundMaterial(IndexType shapeIdx,IStressStrain* pMaterial)
 {
    CHECK_IN(pMaterial);
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
@@ -211,7 +211,7 @@ STDMETHODIMP CGeneralSection::putref_BackgroundMaterial(CollectionIndexType shap
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::get_InitialStrain(CollectionIndexType shapeIdx,IPlane3d** pStrainPlane)
+STDMETHODIMP CGeneralSection::get_InitialStrain(IndexType shapeIdx,IPlane3d** pStrainPlane)
 {
    CHECK_RETOBJ(pStrainPlane);
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
@@ -220,7 +220,7 @@ STDMETHODIMP CGeneralSection::get_InitialStrain(CollectionIndexType shapeIdx,IPl
    return m_SectionItems[shapeIdx].initialStrain.CopyTo(pStrainPlane);
 }
 
-STDMETHODIMP CGeneralSection::putref_InitialStrain(CollectionIndexType shapeIdx,IPlane3d* pStrainPlane)
+STDMETHODIMP CGeneralSection::putref_InitialStrain(IndexType shapeIdx,IPlane3d* pStrainPlane)
 {
    if ( m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX )
       return E_INVALIDARG;
@@ -234,7 +234,7 @@ STDMETHODIMP CGeneralSection::putref_InitialStrain(CollectionIndexType shapeIdx,
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::get_ElongationLength(CollectionIndexType shapeIdx, Float64* Le)
+STDMETHODIMP CGeneralSection::get_ElongationLength(IndexType shapeIdx, Float64* Le)
 {
    CHECK_RETVAL(Le);
 
@@ -246,7 +246,7 @@ STDMETHODIMP CGeneralSection::get_ElongationLength(CollectionIndexType shapeIdx,
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSection::put_ElongationLength(CollectionIndexType shapeIdx, Float64 Le)
+STDMETHODIMP CGeneralSection::put_ElongationLength(IndexType shapeIdx, Float64 Le)
 {
    if (m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX)
       return E_INVALIDARG;

@@ -31,6 +31,7 @@ Range::BoundType intersect_bounds(const Range::BoundType& b1, const Range::Bound
 {
    return (b1!=b2)? Range::BoundType::Limit : b1;
 }
+
 Range::BoundType union_bounds(const Range::BoundType& b1, const Range::BoundType& b2)
 {
    return (b1!=b2)? Range::BoundType::Bound : b1;
@@ -238,52 +239,9 @@ Range Range::Union(const Range& rOther) const
 #if defined _DEBUG
 bool Range::AssertValid() const
 {
-   if (m_LeftLocation>m_RightLocation)
+   if (m_RightLocation < m_LeftLocation)
       return false;
 
    return true;
 }
-
-void Range::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for Range" << WBFL::Debug::endl;
-   os << "m_LeftLocation:  " << m_LeftLocation << WBFL::Debug::endl;
-   os << "m_LeftBound:     " << (m_LeftBound == BoundType::Bound ? "Bound" : "Limit") << WBFL::Debug::endl;
-   os << "m_RightLocation: " << m_RightLocation << WBFL::Debug::endl;
-   os << "m_RightBound:    " << (m_RightBound == BoundType::Bound ? "Bound" : "Limit") << WBFL::Debug::endl;
-}
 #endif // _DEBUG
-
-#if defined _UNITTEST
-bool Range::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Range");
-   Range r1;
-   TRY_TESTME(r1.IsNull());
-   r1.Set(10,Range::BoundType::Bound, 150, Range::BoundType::Bound);
-   Range r2(-220,Range::BoundType::Bound, 100, Range::BoundType::Limit);
-   Range r3 = r1.Intersection(r2);
-   Range r4 = r2.Intersection(r1);
-   TRY_TESTME(r3==r4);
-   Range r5;
-   r5.SetLeftBoundLocation(10);
-   r5.SetRightBoundLocation(100);
-   r5.SetLeftBoundType(Range::BoundType::Bound);
-   r5.SetRightBoundType(Range::BoundType::Limit);
-   TRY_TESTME(r5==r4);
-   r4 = r2.Union(r1);
-   r5.SetLeftBoundLocation(-220);
-   r5.SetRightBoundLocation(150);
-   r5.SetLeftBoundType(Range::BoundType::Bound);
-   r5.SetRightBoundType(Range::BoundType::Bound);
-   TRY_TESTME(r5==r4);
-   TRY_TESTME(r5.GetLeftBoundLocation()==-220);
-   TRY_TESTME(r5.GetRightBoundLocation()==150);
-   TRY_TESTME(r5.GetLeftBoundType()==Range::BoundType::Bound);
-   TRY_TESTME(r5.GetRightBoundType()==Range::BoundType::Bound);
-   r5.SetNull();
-   TRY_TESTME(r5.IsNull());
-
-   TESTME_EPILOG("Range");
-}
-#endif // _UNITTEST

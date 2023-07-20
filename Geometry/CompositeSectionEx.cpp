@@ -91,7 +91,7 @@ STDMETHODIMP CCompositeSectionEx::AddSection(IShape* shape, Float64 Efg,Float64 
 //	return S_OK;
 //}
 //
-STDMETHODIMP CCompositeSectionEx::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CCompositeSectionEx::get_Count(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_coll.size();

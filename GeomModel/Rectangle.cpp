@@ -116,24 +116,6 @@ std::unique_ptr<Shape> Rectangle::CreateClone() const
    return std::make_unique<Rectangle>(*this);
 }
 
-#if defined _DEBUG
-bool Rectangle::AssertValid() const
-{
-   if (m_Width<0) return false;
-   if (m_Height<0) return false;
-   return __super::AssertValid();
-}
-
-void Rectangle::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("*** Dump for Rectangle ***")<< WBFL::Debug::endl;
-   __super::Dump( os );
-   os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<< WBFL::Debug::endl;
-   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
-   os << _T("  Rotation        =  ")<<m_Rotation<< WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
 void Rectangle::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 {
    Float64 cx = GetHookPoint()->X();
@@ -166,58 +148,3 @@ void Rectangle::Copy(const Rectangle& other)
    m_Width = other.m_Width;
    m_Rotation = other.m_Rotation;
 }
-
-#if defined _UNITTEST
-#include <GeomModel/UnitTest.h>
-bool Rectangle::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Rectangle");
-
-   Rectangle rt(Point2d(1, 2),2,4);
-   TRY_TESTME( IsEqual(2., rt.GetWidth())) ;
-   TRY_TESTME( IsEqual(4., rt.GetHeight())) ;
-   TRY_TESTME( Point2d(1,2) == *rt.GetHookPoint()); 
-   ShapeProperties aprops = rt.GetProperties();
-   TRY_TESTME ( IsEqual(aprops.GetArea(), 8.)) ;
-   TRY_TESTME ( IsEqual(aprops.GetIxx(),  10.66, .1)) ;
-   TRY_TESTME ( IsEqual(aprops.GetIyy(),   2.66, .1)) ;
-   TRY_TESTME ( IsEqual(aprops.GetIxy(),   0.00, .001)) ;
-   TRY_TESTME ( rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
-
-   rt.SetHookPoint(Point2d(0,0));
-   TRY_TESTME (rt.GetBoundingBox() == Rect2d(-1,-2,1,2)) ;
-   rt.Move(Shape::LocatorPoint::CenterCenter, Point2d(1,2));
-   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
-
-   Float64 ang = atan(.5);
-   Float64 dis = 2*cos(ang);
-   rt.Rotate(Point2d(0,0),ang);
-   TRY_TESTME (rt.GetBoundingBox() == Rect2d(-dis,0,dis,sqrt(20.))) ;
-   rt.Rotate(Point2d(0,0),-ang);
-
-   // resize rectangle and clip it into a triangle
-   rt.SetWidth(40);
-   rt.SetHeight(50);
-   rt.SetHookPoint(Point2d(20,25));
-   Line2d up_left(Point2d(0,0), Vector2d(Size2d(1,1)));
-   Line2d up_rgt(Point2d(40,0), Vector2d(Size2d(-3,5)));
-   std::unique_ptr<Shape> pfirst(rt.CreateClippedShape(up_left, Line2d::Side::Left));
-   std::unique_ptr<Shape> ptriang(pfirst->CreateClippedShape(up_rgt, Line2d::Side::Right));
-   aprops = ptriang->GetProperties();
-   TRY_TESTME ( IsEqual(aprops.GetArea(), 500.)) ;
-   TRY_TESTME ( ptriang->GetBoundingBox() == Rect2d(0,0,40,25)) ;
-
-#if defined _DEBUG
-   rt.Dump(rlog.GetLogContext());
-#endif
-
-   // Test hook point behavior
-   TRY_TESTME(UnitTest::TestHookPoint(rt) == true);
-
-   TESTME_EPILOG("Rectangle");
-}
-
-#endif // _UNITTEST
-
-
-

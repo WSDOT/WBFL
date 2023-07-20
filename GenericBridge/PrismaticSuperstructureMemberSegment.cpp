@@ -462,7 +462,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }

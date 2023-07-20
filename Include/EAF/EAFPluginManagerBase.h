@@ -228,7 +228,7 @@ public:
       }
    }
 
-   CollectionIndexType GetPluginCount() const
+   IndexType GetPluginCount() const
    {
       return m_Plugins.size();
    }
@@ -247,7 +247,7 @@ public:
       return E_FAIL;
    }
 
-   HRESULT GetPlugin(CollectionIndexType idx,T** ppPlugin)
+   HRESULT GetPlugin(IndexType idx,T** ppPlugin)
    {
       if (m_Plugins.size() <= idx)
       {
@@ -255,7 +255,7 @@ public:
       }
 
       auto iter = m_Plugins.begin();
-      for (CollectionIndexType i = 0; i < idx; i++)
+      for (IndexType i = 0; i < idx; i++)
       {
          iter++;
       }

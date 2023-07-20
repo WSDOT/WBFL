@@ -22,9 +22,6 @@
     <ClCompile Include="UniformFDMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\EngTools\AutoLib.h">
@@ -55,9 +52,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FDMeshGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\EngTools\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

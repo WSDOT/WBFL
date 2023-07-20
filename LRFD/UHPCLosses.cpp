@@ -25,15 +25,12 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\UHPCLosses.h>
 
-//======================== LIFECYCLE  =======================================
-lrfdUHPCLosses::lrfdUHPCLosses()
-{
-}
+using namespace WBFL::LRFD;
 
-lrfdUHPCLosses::lrfdUHPCLosses(
+UHPCLosses::UHPCLosses(
                          Float64 x,
                          Float64 Lg,
-                         lrfdLosses::SectionPropertiesType sectionProperties,
+                         Losses::SectionPropertiesType sectionProperties,
                          WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
                          WBFL::Materials::PsStrand::Type typePerm, // strand type
                          WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
@@ -45,10 +42,10 @@ lrfdUHPCLosses::lrfdUHPCLosses(
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,   // area of TTS 
                          Float64 aps,      // area of one temp strand
-                         const WBFL::Geometry::Point2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermRelease, // eccentricity of permanent ps strands with respect to CG of girder
                          const WBFL::Geometry::Point2d& epermFinal,
-                         const WBFL::Geometry::Point2d& etemp, // eccentricty of temporary strands with respect to CG of girder
-                         lrfdLosses::TempStrandUsage usage,
+                         const WBFL::Geometry::Point2d& etemp, // eccentricity of temporary strands with respect to CG of girder
+                         Losses::TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,
                          Float64 friction,
@@ -105,10 +102,10 @@ lrfdUHPCLosses::lrfdUHPCLosses(
                          bool bIgnoreInitialRelaxation,
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod,
-                         std::shared_ptr<const lrfdCreepCoefficient2005>& pGirderCreep,
-                         std::shared_ptr<const lrfdCreepCoefficient2005>& pDeckCreep
+                         std::shared_ptr<const CreepCoefficient2005>& pGirderCreep,
+                         std::shared_ptr<const CreepCoefficient2005>& pDeckCreep
                          ) :
-lrfdRefinedLosses2005(x, Lg, sectionProperties, gradePerm, typePerm, coatingPerm, gradeTemp, typeTemp, coatingTemp, fpjPerm, fpjTemp, ApsPerm, ApsTemp, aps, epermRelease, epermFinal, etemp, usage, anchorSet, wobble, friction, angleChange, ShrinkageK1, ShrinkageK2,  DeckShrinkageK1, DeckShrinkageK2, 
+RefinedLosses2005(x, Lg, sectionProperties, gradePerm, typePerm, coatingPerm, gradeTemp, typeTemp, coatingTemp, fpjPerm, fpjTemp, ApsPerm, ApsTemp, aps, epermRelease, epermFinal, etemp, usage, anchorSet, wobble, friction, angleChange, ShrinkageK1, ShrinkageK2,  DeckShrinkageK1, DeckShrinkageK2, 
    Fc, Fci,FcSlab, Ec, Eci, Ecd, 
    Ag,Ixx, Iyy, Ixy, Ybg, Ac1, Ic1, Ybc1, Ac2, Ic2, Ybc2,
    An, Ixxn, Iyyn, Ixyn, Ybn, Acn, Icn, Ybcn,
@@ -119,193 +116,12 @@ lrfdRefinedLosses2005(x, Lg, sectionProperties, gradePerm, typePerm, coatingPerm
 {
 }
 
-lrfdUHPCLosses::~lrfdUHPCLosses()
-{
-}
-
-Float64 lrfdUHPCLosses::GetShrinkageHumidityFactor_Girder() const
+Float64 UHPCLosses::GetShrinkageHumidityFactor_Girder() const
 {
    return 1.5 - 0.01*m_H;
 }
 
-Float64 lrfdUHPCLosses::GetShrinkageStrain_Girder() const
+Float64 UHPCLosses::GetShrinkageStrain_Girder() const
 {
    return 0.6e-03;
 }
-
-#if defined _UNITTEST
-#include <Lrfd\AutoVersion.h>
-bool lrfdUHPCLosses::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdUHPCLosses");
-
-   lrfdAutoVersion av;
-
-   std::shared_ptr<lrfdUHPCCreepCoefficient> pGirderCreep = std::make_shared<lrfdUHPCCreepCoefficient>();
-   pGirderCreep->SetFci(WBFL::Units::ConvertToSysUnits(14.0,WBFL::Units::Measure::KSI));
-   pGirderCreep->SetRelHumidity(73);
-   pGirderCreep->SetK1(0.62);
-
-   std::shared_ptr<lrfdCreepCoefficient2005> pDeckCreep = std::make_shared<lrfdCreepCoefficient2005>();
-   pDeckCreep->SetCuringMethod(lrfdCreepCoefficient2005::Normal);
-   pDeckCreep->SetCuringMethodTimeAdjustmentFactor(WBFL::Units::ConvertToSysUnits(7, WBFL::Units::Measure::Day));
-   pDeckCreep->SetFci(0.8 * WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::KSI)); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
-   pDeckCreep->SetRelHumidity(73);
-   pDeckCreep->SetSurfaceArea(1.0);
-   pDeckCreep->SetVolume(WBFL::Units::ConvertToSysUnits(3.940,WBFL::Units::Measure::Inch));
-   pDeckCreep->SetK1(1.0);
-   pDeckCreep->SetK2(1.0);
-
-   lrfdUHPCLosses loss(19.5072, // location along girder where losses are computed
-                         39.0144,    // girder length
-                         sptGross,
-                         WBFL::Materials::PsStrand::Grade::Gr1860,
-                         WBFL::Materials::PsStrand::Type::LowRelaxation,
-                         WBFL::Materials::PsStrand::Coating::None,
-                         WBFL::Materials::PsStrand::Grade::Gr1860,
-                         WBFL::Materials::PsStrand::Type::LowRelaxation,
-                         WBFL::Materials::PsStrand::Coating::None,
-                         1396186227.0505831, // fpj permanent strands
-                         1396188385.8038988, // fpj of temporary strands
-                         0.0051799896399999995,  // area of permanent strand
-                         0.00055999887999999998,  // area of TTS 
-                         0.00013999972000000000,      // area of one strand
-                         WBFL::Geometry::Point2d(0,0.73344249937779116), // eccentricty of permanent ps strands with respect to CG of girder
-                         WBFL::Geometry::Point2d(0,0.73344249937779116), // eccentricty of permanent ps strands with respect to CG of girder
-                         WBFL::Geometry::Point2d(0,-0.81870344656815441), // eccentricty of temporary strands with respect to CG of girder
-                         
-                         tsPretensioned, // temporary strand usage
-
-                         0.0095250000000000005, // anchor set
-                         0.00065616797900200005, // wobble
-                         0.25000000000000000, // friction
-                         0, // angle change
-
-                         0.41,1, // K for girder
-                         1,1, // K fog slab
-
-                         41368543.759020001,   // 28 day strength of girder concrete
-                         35852736.609413415,  // Release strength
-                         27579029.172680002,   
-                         35668801112.349388,   // Modulus of elasticity of girder
-                         33205846111.428368,  // Modulus of elasticity of girder at transfer
-                         29123454154.024353,  // Modulus of elasticity of deck
-                         
-                         // Gross
-                         0.56485774124999988,   // area of girder
-                         0.23197765412628035,   // moment of inertia of girder Ixx
-                         0.23197765412628035,   // moment of inertia of girder Iyy
-                         0.0, // Ixy
-                         0.80689655343184530,  // Centroid of girder measured from bottom
-                         0.83035029207347855,   // area of composite girder
-                         0.39856959307884982,   // moment of inertia of composite
-                         1.1133322567444859,  // Centroid of composite measured from bottom
-                         0.83035029207347855,   // area of composite girder
-                         0.39856959307884982,   // moment of inertia of composite
-                         1.1133322567444859,  // Centroid of composite measured from bottom
-
-                         // Net
-                         0.56485774124999988,   // area of girder
-                         0.23197765412628035,   // moment of inertia of girder
-                         0.23197765412628035,   // moment of inertia of girder Iyy
-                         0.0, // Ixy
-                         0.80689655343184530,  // Centroid of girder measured from bottom
-                         0.83035029207347855,   // area of composite girder
-                         0.39856959307884982,   // moment of inertia of composite
-                         1.1133322567444859,  // Centroid of composite measured from bottom
-
-                         0.34838640001448046,   // area of deck
-                         -0.65196774325551399,   // eccentricity of deck CG with respect to CG of composite
-                         1.0,
-                         
-                         2701223.1744837998,  // Dead load moment of girder only
-                         std::vector<std::pair<Float64, Float64>>{std::make_pair(2144430.8154568151, 1.0)},  // Additional dead load on girder section
-                         std::vector<std::pair<Float64, Float64>>{std::make_pair(0, 1.0)},
-                         std::vector<std::pair<Float64, Float64>>{std::make_pair(494526.00384487113, 1.0)}, // Superimposed dead loads
-
-                         75,  // Relative humidity [0,100]
-                         86400.000000000000,   // Time until prestress transfer
-                         864000.00000000000,   // Time at hauling
-                         10368000.000000000,   // Time to deck placement
-                         172800000.00000000,   // Final time
-                         false,true,Refined,
-                         std::shared_ptr<const lrfdCreepCoefficient2005>(std::dynamic_pointer_cast<const lrfdCreepCoefficient2005>(pGirderCreep)),
-                         std::shared_ptr<const lrfdCreepCoefficient2005>(pDeckCreep)
-                         );
-
-   lrfdVersionMgr::RegisterListener( &loss );
-   lrfdVersionMgr::SetVersion( lrfdVersionMgr::NinthEdition2020);
-   lrfdVersionMgr::SetUnits( lrfdVersionMgr::US );
-
-   Float64 value;
-
-   // permanent strands
-   value = loss.PermanentStrand_BeforeTransfer();
-   TRY_TESTME( IsEqual(value, 13649748.378800517) );
-
-   value = loss.PermanentStrand_AfterTransfer();
-   TRY_TESTME( IsEqual(value, 13649748.378800517) );
-
-   value = loss.PermanentStrand_AfterTemporaryStrandInstallation();
-   TRY_TESTME( IsEqual(value, 13649748.378800517) );
-
-   value = loss.PermanentStrand_AtLifting();
-   TRY_TESTME( IsEqual(value, 13649748.378800517) );
-
-   value = loss.PermanentStrand_AtShipping();
-   TRY_TESTME( IsEqual(value, 81340582.966499269) );
-
-   value = loss.PermanentStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 81340582.966499269) );
-
-   value = loss.PermanentStrand_AfterTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 81340582.966499269) );
-
-   value = loss.PermanentStrand_AfterDeckPlacement();
-   TRY_TESTME( IsEqual(value, 139856443.92492411) );
-
-   value = loss.PermanentStrand_AfterSIDL();
-   TRY_TESTME( IsEqual(value, 139856443.92492411) );
-
-   value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value, 140798870.67772746) );
-
-   // temporary strands
-   value = loss.TemporaryStrand_BeforeTransfer();
-   TRY_TESTME( IsEqual(value, 13649831.557409566) );
-
-   value = loss.TemporaryStrand_AfterTransfer();
-   TRY_TESTME( IsEqual(value, 13649831.557409566) );
-
-   value = loss.TemporaryStrand_AfterTemporaryStrandInstallation();
-   TRY_TESTME( IsEqual(value, 13649831.557409566) );
-
-   value = loss.TemporaryStrand_AtLifting();
-   TRY_TESTME( IsEqual(value, 13649831.557409566) );
-
-   value = loss.TemporaryStrand_AtShipping();
-   TRY_TESTME( IsEqual(value, 70200702.851341456) );
-
-   value = loss.TemporaryStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value, 70200702.851341456) );
-
-   value = loss.TemporaryStrand_AfterTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value,0.) );
-
-   value = loss.TemporaryStrand_AfterDeckPlacement();
-   TRY_TESTME( IsEqual(value,0.) );
-
-   value = loss.TemporaryStrand_AfterSIDL();
-   TRY_TESTME( IsEqual(value,0.) );
-
-   value = loss.TemporaryStrand_Final();
-   TRY_TESTME( IsEqual(value,0.) );
-
-   lrfdVersionMgr::UnregisterListener( &loss );
-
-   TESTME_EPILOG("lrfdUHPCLosses");
-}
-
-#endif // _UNITTEST
-
-

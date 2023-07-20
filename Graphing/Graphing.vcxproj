@@ -133,7 +133,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="Graphing.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,17 +140,16 @@
     <ClInclude Include="..\Include\Graphing\AxisXY.h" />
     <ClInclude Include="..\Include\Graphing\GraphBuilder.h" />
     <ClInclude Include="..\Include\Graphing\GraphColor.h" />
+    <ClInclude Include="..\Include\Graphing\Graphing.h" />
     <ClInclude Include="..\Include\Graphing\GraphingTypes.h" />
     <ClInclude Include="..\Include\Graphing\GraphManager.h" />
     <ClInclude Include="..\Include\Graphing\GraphingExp.h" />
     <ClInclude Include="..\Include\Graphing\GraphXY.h" />
     <ClInclude Include="..\Include\Graphing\Label.h" />
     <ClInclude Include="..\Include\Graphing\PointMapper.h" />
-    <ClInclude Include="..\Include\Graphing\UnitTest.h" />
     <ClInclude Include="GraphTool.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Graphing.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Graphing.rc" />

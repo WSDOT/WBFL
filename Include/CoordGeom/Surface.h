@@ -158,15 +158,6 @@ namespace WBFL
          /// @return 
          std::shared_ptr<SurfaceProfile> CreateSurfaceProfileSectionCut(const Station& station, const Angle& skewAngle, bool bApplyModifiers) const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         static bool TestBasicSurface(WBFL::Debug::Log& rlog);
-         static bool TestWidenedSurface(WBFL::Debug::Log& rlog);
-         static bool TestSuperelevatedSurface(WBFL::Debug::Log& rlog);
-
-#endif // _UNITTEST
-
       private:
          std::unique_ptr<SurfaceImpl> m_pImpl;
       };

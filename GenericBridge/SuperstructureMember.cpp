@@ -96,7 +96,7 @@ STDMETHODIMP CSuperstructureMember::AddSegment(ISuperstructureMemberSegment* seg
 
    m_Segments.back()->putref_SuperstructureMember(this);
 
-   CollectionIndexType nSegments = m_Segments.size();
+   IndexType nSegments = m_Segments.size();
    if ( 1 < nSegments )
    {
       m_Segments[nSegments-1]->putref_PrevSegment(m_Segments[nSegments-2].p);
@@ -408,7 +408,7 @@ STDMETHODIMP CSuperstructureMember::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CSuperstructureMember::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CSuperstructureMember::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }

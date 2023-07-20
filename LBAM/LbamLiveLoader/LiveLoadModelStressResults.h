@@ -65,11 +65,11 @@ END_COM_MAP()
 
 // ILiveLoadModelStressResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/IStressResult* *leftResult, /*[out]*/ILiveLoadConfiguration* *leftConfig, /*[out]*/IStressResult* *rightResult, /*[out]*/ILiveLoadConfiguration* *rightConfig) override;
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/IStressResult* leftResult, /*[in]*/ILiveLoadConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILiveLoadConfiguration* rightConfig) override;
+	STDMETHOD(GetResult)(/*[in]*/IndexType index, /*[out]*/IStressResult* *leftResult, /*[out]*/ILiveLoadConfiguration* *leftConfig, /*[out]*/IStressResult* *rightResult, /*[out]*/ILiveLoadConfiguration* *rightConfig) override;
+	STDMETHOD(SetResult)(/*[in]*/IndexType index, /*[in]*/IStressResult* leftResult, /*[in]*/ILiveLoadConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILiveLoadConfiguration* rightConfig) override;
 	STDMETHOD(Add)(/*[in]*/IStressResult* leftResult, /*[in]*/ILiveLoadConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILiveLoadConfiguration* rightConfig) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clear)() override;
 
 private:

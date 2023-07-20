@@ -29,26 +29,13 @@
 #include <set>
 #include <algorithm>
 
-static const Float64 g_600_MM  = WBFL::Units::ConvertToSysUnits( 600.0, WBFL::Units::Measure::Millimeter );
-static const Float64 g_1800_MM = WBFL::Units::ConvertToSysUnits( 1800.0, WBFL::Units::Measure::Millimeter );
-static const Float64 g_3000_MM = WBFL::Units::ConvertToSysUnits( 3000.0, WBFL::Units::Measure::Millimeter );
-
-static const Float64 g_2_FT  = WBFL::Units::ConvertToSysUnits(2.0, WBFL::Units::Measure::Feet);
-static const Float64 g_6_FT  = WBFL::Units::ConvertToSysUnits(6.0, WBFL::Units::Measure::Feet);
-static const Float64 g_10_FT = WBFL::Units::ConvertToSysUnits(10.0, WBFL::Units::Measure::Feet);
-
-
-/****************************************************************************
-CLASS
-   lrfdLiveLoadDistributionFactorBase
-****************************************************************************/
-
+using namespace WBFL::LRFD;
 
 // Local function for negating multiple presence factors. 
 // Used to compute fatigue factor from strength
-static void NegateMpf(lrfdILiveLoadDistributionFactor::DFResult& g)
+static void NegateMpf(ILiveLoadDistributionFactor::DFResult& g)
 {
-   // Some methods compute mpf explicitely, equation method will not
+   // Some methods compute mpf explicitly, equation method will not
    if (g.LeverRuleData.bWasUsed)
    {
       Float64 mpf =  g.LeverRuleData.m;
@@ -88,13 +75,13 @@ static void NegateMpf(lrfdILiveLoadDistributionFactor::DFResult& g)
    // Check if equation method controlled
    if (g.ControllingMethod & SPEC_EQN)
    {
-      Float64 mpf = lrfdUtility::GetMultiplePresenceFactor(1);
+      Float64 mpf = Utility::GetMultiplePresenceFactor(1);
       g.mg /= mpf;
    }
 }
 
 
-// Local Class for mazimizing land/truck placement for the lever rule for
+// Local Class for maximizing land/truck placement for the lever rule for
 // interior beams. This assumes that the maximum condition will occur when
 // an axle is directly over the beam being investigated. However, there are four
 // configurations that must be computed.
@@ -126,7 +113,7 @@ public:
    }
 
    Float64 ComputeMaxFactor(IndexType nL, bool applyMpf, ControllingStrategy* pControl); // compute factor only for Nl, return max strategy
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod ComputeLrd(IndexType nL, bool applyMpf, ControllingStrategy strategy); // return filled in class
+   ILiveLoadDistributionFactor::LeverRuleMethod ComputeLeverRuleDistribution(IndexType nL, bool applyMpf, ControllingStrategy strategy); // return filled in class
 
 private:
    Float64 m_Sleft;      // girder spacing to left and right of our beam
@@ -161,7 +148,7 @@ private:
          // TRICKY: The whole reason we are using a set here is to sort the lanes by their maximum effectiveness.
          //         This means that we want the lanes with the largest applied lever to be first in the list.
          //         Hence that greater than's
-         if ( !(*this==rOther)) // small chance that left and right placments could have same LeverForce
+         if ( !(*this==rOther)) // small chance that left and right placements could have same LeverForce
          {
             return LeftAxleLeverForce+RightAxleLeverForce > rOther.LeftAxleLeverForce+rOther.RightAxleLeverForce; 
          }
@@ -356,7 +343,7 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, bool applyMp
       }
    }
 
-   gsum *= (applyMpf ? lrfdUtility::GetMultiplePresenceFactor(nl_used) : 1.0);
+   gsum *= (applyMpf ? Utility::GetMultiplePresenceFactor(nl_used) : 1.0);
    if (gmax < gsum)
    {
       gmax = gsum;
@@ -378,7 +365,7 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, bool applyMp
       }
    }
 
-   gsum *= (applyMpf ? lrfdUtility::GetMultiplePresenceFactor(nl_used) : 1.0);
+   gsum *= (applyMpf ? Utility::GetMultiplePresenceFactor(nl_used) : 1.0);
    if (gmax < gsum)
    {
       gmax = gsum;
@@ -400,7 +387,7 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, bool applyMp
       }
    }
 
-   gsum *= (applyMpf ? lrfdUtility::GetMultiplePresenceFactor(nl_used) : 1.0);
+   gsum *= (applyMpf ? Utility::GetMultiplePresenceFactor(nl_used) : 1.0);
    if (gmax < gsum)
    {
       gmax = gsum;
@@ -422,7 +409,7 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, bool applyMp
       }
    }
 
-   gsum *= (applyMpf ? lrfdUtility::GetMultiplePresenceFactor(nl_used) : 1.0);
+   gsum *= (applyMpf ? Utility::GetMultiplePresenceFactor(nl_used) : 1.0);
    if (gmax < gsum)
    {
       gmax = gsum;
@@ -432,11 +419,11 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, bool applyMp
    return gmax;
 }
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::ComputeLrd(IndexType nL, bool applyMpf, ControllingStrategy strategy)
+ILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::ComputeLeverRuleDistribution(IndexType nL, bool applyMpf, ControllingStrategy strategy)
 {
    Compute();
 
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod lrd;
+   ILiveLoadDistributionFactor::LeverRuleMethod lrd;
 
    // get controlling location strategy
    LaneSet* pLaneSet = 0;
@@ -485,7 +472,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::Co
    }
 
    // can only partially fill lrd
-   lrd.m = (applyMpf ? lrfdUtility::GetMultiplePresenceFactor(nl_used) : 1.0);
+   lrd.m = (applyMpf ? Utility::GetMultiplePresenceFactor(nl_used) : 1.0);
    lrd.mg = gsum * lrd.m;
    lrd.nLanesUsed = nl_used;
    lrd.bWasUsed = true;
@@ -493,12 +480,11 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::Co
    return lrd;
 }
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
+//////////////////////////
 
-//======================== LIFECYCLE  =======================================
-lrfdLiveLoadDistributionFactorBase::lrfdLiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
+LiveLoadDistributionFactorBase::LiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
                                       Float64 leftOverhang,Float64 rightOverhang,
-                                      CollectionIndexType Nl, Float64 wLane,
+                                      IndexType Nl, Float64 wLane,
                                       bool bSkewMoment,bool bSkewShear):
  m_GdrNum(gdr),
  m_Spacings(gdrSpacings),
@@ -514,109 +500,88 @@ lrfdLiveLoadDistributionFactorBase::lrfdLiveLoadDistributionFactorBase(GirderInd
     m_Nb = gdrSpacings.size()+1;
 
     // Compute which side our girder is on. Center leans to Left
-    m_Side = (gdr <= m_Nb/2) ? LeftSide : RightSide;
+    m_Side = (gdr <= m_Nb/2) ? DfSide::LeftSide : DfSide::RightSide;
 }
 
-lrfdLiveLoadDistributionFactorBase::lrfdLiveLoadDistributionFactorBase(const lrfdLiveLoadDistributionFactorBase& rOther)
+Float64 LiveLoadDistributionFactorBase::MomentDF(Location loc,NumLoadedLanes numLanes,LimitState ls) const
 {
-   MakeCopy(rOther);
-}
-
-lrfdLiveLoadDistributionFactorBase::~lrfdLiveLoadDistributionFactorBase()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdLiveLoadDistributionFactorBase& lrfdLiveLoadDistributionFactorBase::operator= (const lrfdLiveLoadDistributionFactorBase& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-Float64 lrfdLiveLoadDistributionFactorBase::MomentDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const
-{
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    g = MomentDFEx(loc, numLanes, ls);
    return g.mg;
 }
 
-Float64 lrfdLiveLoadDistributionFactorBase::ShearDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const
+Float64 LiveLoadDistributionFactorBase::ShearDF(Location loc,NumLoadedLanes numLanes,LimitState ls) const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    g = ShearDFEx(loc, numLanes, ls);
    return g.mg;
 }
 
-Float64 lrfdLiveLoadDistributionFactorBase::ReactionDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const
+Float64 LiveLoadDistributionFactorBase::ReactionDF(Location loc,NumLoadedLanes numLanes,LimitState ls) const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    g = ReactionDFEx(loc, numLanes, ls);
    return g.mg;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::MomentDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::MomentDFEx(Location loc,NumLoadedLanes numLanes,LimitState ls) const
 {
    TestRangeOfApplicability(loc);
 
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
    switch(loc)
-      {
-      case IntGirder:
+   {
+   case Location::IntGirder:
            switch(numLanes)
               {
-              case OneLoadedLane:
+              case NumLoadedLanes::One:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetMomentDF_Int_1_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            g = GetMomentDF_Int_Fatigue();
                            break;
                       }
                    break;
 
-              case TwoOrMoreLoadedLanes:
+              case NumLoadedLanes::TwoOrMore:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetMomentDF_Int_2_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            // throw an exception
                            break;
                       }
@@ -624,56 +589,56 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Mo
               }
            break;
 
-      case ExtGirder:
+      case Location::ExtGirder:
            switch(numLanes)
               {
-              case OneLoadedLane:
+              case NumLoadedLanes::One:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetMomentDF_Ext_1_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            g = GetMomentDF_Ext_Fatigue();
                            break;
                       }
                    break;
 
-              case TwoOrMoreLoadedLanes:
+              case NumLoadedLanes::TwoOrMore:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetMomentDF_Ext_2_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            // throw an exception
                            break;
                       }
@@ -685,64 +650,64 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Mo
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::ShearDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::ShearDFEx(Location loc,NumLoadedLanes numLanes,LimitState ls) const
 {
    TestRangeOfApplicability(loc);
 
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
    switch(loc)
       {
-      case IntGirder:
+      case Location::IntGirder:
            switch(numLanes)
               {
-              case OneLoadedLane:
+              case NumLoadedLanes::One:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetShearDF_Int_1_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            g = GetShearDF_Int_Fatigue();
                            break;
                       }
                    break;
 
-              case TwoOrMoreLoadedLanes:
+              case NumLoadedLanes::TwoOrMore:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetShearDF_Int_2_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            // throw an exception
                            break;
                       }
@@ -750,56 +715,56 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Sh
               }
            break;
 
-      case ExtGirder:
+      case Location::ExtGirder:
            switch(numLanes)
               {
-              case OneLoadedLane:
+              case NumLoadedLanes::One:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetShearDF_Ext_1_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            g = GetShearDF_Ext_Fatigue();
                            break;
                       }
                    break;
 
-              case TwoOrMoreLoadedLanes:
+              case NumLoadedLanes::TwoOrMore:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetShearDF_Ext_2_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            // throw an exception
                            break;
                       }
@@ -811,64 +776,64 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Sh
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::ReactionDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::ReactionDFEx(Location loc,NumLoadedLanes numLanes,LimitState ls) const
 {
    TestRangeOfApplicability(loc);
 
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
    switch(loc)
       {
-      case IntGirder:
+      case Location::IntGirder:
            switch(numLanes)
               {
-              case OneLoadedLane:
+              case NumLoadedLanes::One:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetReactionDF_Int_1_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            g = GetReactionDF_Int_Fatigue();
                            break;
                       }
                    break;
 
-              case TwoOrMoreLoadedLanes:
+              case NumLoadedLanes::TwoOrMore:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetReactionDF_Int_2_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            // throw an exception
                            break;
                       }
@@ -876,56 +841,56 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Re
               }
            break;
 
-      case ExtGirder:
+      case Location::ExtGirder:
            switch(numLanes)
               {
-              case OneLoadedLane:
+              case NumLoadedLanes::One:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetReactionDF_Ext_1_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            g = GetReactionDF_Ext_Fatigue();
                            break;
                       }
                    break;
 
-              case TwoOrMoreLoadedLanes:
+              case NumLoadedLanes::TwoOrMore:
                    switch(ls)
                       {
-                      case lrfdTypes::StrengthI:
-                      case lrfdTypes::StrengthII:
-                      case lrfdTypes::StrengthIII:
-                      case lrfdTypes::StrengthIV:
-                      case lrfdTypes::StrengthV:
-                      case lrfdTypes::ExtremeEventI:
-                      case lrfdTypes::ExtremeEventII_IC:
-                      case lrfdTypes::ExtremeEventII_CV:
-                      case lrfdTypes::ExtremeEventII_CT:
-                      case lrfdTypes::ServiceI:
-                      case lrfdTypes::ServiceIA:
-                      case lrfdTypes::ServiceII:
-                      case lrfdTypes::ServiceIII:
+                      case LimitState::StrengthI:
+                      case LimitState::StrengthII:
+                      case LimitState::StrengthIII:
+                      case LimitState::StrengthIV:
+                      case LimitState::StrengthV:
+                      case LimitState::ExtremeEventI:
+                      case LimitState::ExtremeEventII_IC:
+                      case LimitState::ExtremeEventII_CV:
+                      case LimitState::ExtremeEventII_CT:
+                      case LimitState::ServiceI:
+                      case LimitState::ServiceIA:
+                      case LimitState::ServiceII:
+                      case LimitState::ServiceIII:
                            g = GetReactionDF_Ext_2_Strength();
                            break;
 
-                     case lrfdTypes::FatigueI:
-                     case lrfdTypes::FatigueII:
+                     case LimitState::FatigueI:
+                     case LimitState::FatigueII:
                            // throw an exception
                            break;
                       }
@@ -937,72 +902,40 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Re
    return g;
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdLiveLoadDistributionFactorBase::MakeCopy(const lrfdLiveLoadDistributionFactorBase& rOther)
-{
-   m_GdrNum        = rOther.m_GdrNum;
-   m_Spacings      = rOther.m_Spacings;
-   m_Savg          = rOther.m_Savg;
-   m_LeftCurbOverhang  = rOther.m_LeftCurbOverhang;
-   m_RightCurbOverhang = rOther.m_RightCurbOverhang;
-   m_Nl            = rOther.m_Nl;
-   m_wLane         = rOther.m_wLane;
-   m_Side          = rOther.m_Side;
-
-   m_bSkewMoment = rOther.m_bSkewMoment;
-   m_bSkewShear  = rOther.m_bSkewShear;
-
-   m_Nb            = rOther.m_Nb;
-}
-
-void lrfdLiveLoadDistributionFactorBase::MakeAssignment(const lrfdLiveLoadDistributionFactorBase& rOther)
-{
-   lrfdLiveLoadDistributionFactorMixin::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetReactionDF_Int_1_Strength() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetReactionDF_Int_1_Strength() const
 {
    return GetShearDF_Int_1_Strength();
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetReactionDF_Int_2_Strength() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetReactionDF_Int_2_Strength() const
 {
    return GetShearDF_Int_2_Strength();
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetReactionDF_Int_Fatigue() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetReactionDF_Int_Fatigue() const
 {
    return GetShearDF_Int_Fatigue();
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetReactionDF_Ext_1_Strength() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetReactionDF_Ext_1_Strength() const
 {
    return GetShearDF_Ext_1_Strength();
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetReactionDF_Ext_2_Strength() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetReactionDF_Ext_2_Strength() const
 {
    return GetShearDF_Ext_2_Strength();
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetReactionDF_Ext_Fatigue() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetReactionDF_Ext_Fatigue() const
 {
    return GetShearDF_Ext_Fatigue();
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetMomentDF_Int_Fatigue() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetMomentDF_Int_Fatigue() const
 {
 
- lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
+ ILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
  
  // negate multiple presence factor;
  NegateMpf( g );
@@ -1010,10 +943,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Ge
  return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetMomentDF_Ext_Fatigue() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetMomentDF_Ext_Fatigue() const
 {
 
- lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
+ ILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
  
  // negate multiple presence factor;
  NegateMpf( g );
@@ -1021,10 +954,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Ge
  return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetShearDF_Int_Fatigue() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetShearDF_Int_Fatigue() const
 {
 
- lrfdILiveLoadDistributionFactor::DFResult g = GetShearDF_Int_1_Strength();
+ ILiveLoadDistributionFactor::DFResult g = GetShearDF_Int_1_Strength();
  
  // negate multiple presence factor;
  NegateMpf( g );
@@ -1032,10 +965,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Ge
  return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::GetShearDF_Ext_Fatigue() const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::GetShearDF_Ext_Fatigue() const
 {
 
- lrfdILiveLoadDistributionFactor::DFResult g = GetShearDF_Ext_1_Strength();
+ ILiveLoadDistributionFactor::DFResult g = GetShearDF_Ext_1_Strength();
  
  // negate multiple presence factor;
  NegateMpf( g );
@@ -1046,43 +979,43 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Ge
 
 
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorBase::DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes, bool applyMpf) const
+ILiveLoadDistributionFactor::LeverRuleMethod LiveLoadDistributionFactorBase::DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes, bool applyMpf) const
 {
-   GirderIndexType nl = (numLanes==TwoOrMoreLoadedLanes) ? m_Nl : 1;
+   GirderIndexType nl = (numLanes==NumLoadedLanes::TwoOrMore) ? m_Nl : 1;
 
    // Pick adjacent girder if needed
    GirderIndexType gdr = m_GdrNum;
 
-   GirderIndexType nb1 = this->GetNb()-1; // id of right-most girder
-   if (nb1>0)
+   GirderIndexType nb1 = GetNb()-1; // id of right-most girder
+   if (0 < nb1)
    {
-      if (loc==IntGirder)
+      if (loc==Location::IntGirder)
       {
          if (m_GdrNum==0 || m_GdrNum==nb1)
          {
             // Looking for interior factor, and current girder is exterior; get adjacent on correct side
-            gdr = m_Side==LeftSide ? 1 : nb1-1;
+            gdr = m_Side == DfSide::LeftSide ? 1 : nb1-1;
          }
       }
       else
       {
          if (0 < m_GdrNum || m_GdrNum!=nb1)
          {
-            // Looking for extterior factor, and current girder is interior; get adjacent on correct side
-            gdr = m_Side==LeftSide ? 0 : nb1;
+            // Looking for exterior factor, and current girder is interior; get adjacent on correct side
+            gdr = m_Side == DfSide::LeftSide ? 0 : nb1;
          }
       }
    }
 
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod g;
+   ILiveLoadDistributionFactor::LeverRuleMethod g;
    g = DistributeByLeverRule(gdr, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, nl, applyMpf);
 
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    g.ControllingMethod = LEVER_RULE;
    g.LeverRuleData = DistributeByLeverRuleEx(loc, numLanes, applyMpf);
    g.mg = g.LeverRuleData.mg;
@@ -1099,9 +1032,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Di
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    g.ControllingMethod = LEVER_RULE;
    g.LeverRuleData = DistributeByLeverRuleEx(loc, numLanes, applyMpf);
    g.mg = g.LeverRuleData.mg;
@@ -1118,91 +1051,34 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Di
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const
 {
    return DistributeShearByLeverRule(loc, numLanes, applyMpf);
 }
 
-
-//======================== ACCESS     =======================================
-void lrfdLiveLoadDistributionFactorBase::SetRangeOfApplicabilityAction(LldfRangeOfApplicabilityAction action)
+void LiveLoadDistributionFactorBase::SetRangeOfApplicabilityAction(RangeOfApplicabilityAction action)
 {
    m_RangeOfApplicabilityAction = action;
 }
 
-LldfRangeOfApplicabilityAction lrfdLiveLoadDistributionFactorBase::GetRangeOfApplicabilityAction() const
+RangeOfApplicabilityAction LiveLoadDistributionFactorBase::GetRangeOfApplicabilityAction() const
 {
    return m_RangeOfApplicabilityAction;
 }
 
-//======================== INQUIRY    =======================================
+//////////////////////////
 
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdLiveLoadDistributionFactorBase::AssertValid() const
-{
-   return true;
-}
-
-void lrfdLiveLoadDistributionFactorBase::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdLiveLoadDistributionFactorBase" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool lrfdLiveLoadDistributionFactorBase::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdLiveLoadDistributionFactorBase");
-
-   TESTME_EPILOG("lrfdLiveLoadDistributionFactorBase");
-}
-#endif // _UNITTEST
-
-
-/****************************************************************************
-CLASS
-   lrfdLiveLoadDistributionFactorMixin
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdLiveLoadDistributionFactorMixin::lrfdLiveLoadDistributionFactorMixin():
-m_IgnoreMpfForLeverRuleSingleLane(false)
-{
-}
-
-void lrfdLiveLoadDistributionFactorMixin::MakeCopy(const lrfdLiveLoadDistributionFactorMixin& rOther)
-{
-   m_IgnoreMpfForLeverRuleSingleLane = rOther.m_IgnoreMpfForLeverRuleSingleLane;
-}
-
-void lrfdLiveLoadDistributionFactorMixin::MakeAssignment(const lrfdLiveLoadDistributionFactorMixin& rOther)
-{
-   MakeCopy( rOther );
-}
-
-void lrfdLiveLoadDistributionFactorMixin::IgnoreMpfLeverRule(bool doIgnore)
+void LiveLoadDistributionFactorMixin::IgnoreMpfLeverRule(bool doIgnore)
 {
    m_IgnoreMpfForLeverRuleSingleLane = doIgnore;
 }
 
-bool lrfdLiveLoadDistributionFactorMixin::IgnoreMpfLeverRule() const
+bool LiveLoadDistributionFactorMixin::IgnoreMpfLeverRule() const
 {
    return m_IgnoreMpfForLeverRuleSingleLane;
 }
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorMixin::DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,
+ILiveLoadDistributionFactor::LeverRuleMethod LiveLoadDistributionFactorMixin::DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,
                                                                                                             Float64 wLane,IndexType Nl, bool applyMpf) const
 {
    // control loop
@@ -1214,7 +1090,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
       topL = Nl+1;
    }
 
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod lrd;
+   ILiveLoadDistributionFactor::LeverRuleMethod lrd;
 
    GirderIndexType nb = Spacings.size()+1;
    bool bExteriorBeam = beamNum==0 || beamNum==nb-1;
@@ -1229,7 +1105,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
          Float64 mfmpf_max = 0.0;
          for (IndexType i = firstL; i < topL; i++)
          {
-            Float64 nfmpf = Nl * lrfdUtility::GetMultiplePresenceFactor(i);
+            Float64 nfmpf = Nl * Utility::GetMultiplePresenceFactor(i);
             if (mfmpf_max < nfmpf)
             {
                mfmpf_max = nfmpf;
@@ -1239,7 +1115,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 
          lrd.mg = mfmpf_max;
          lrd.nLanesUsed = nl_at_max;
-         lrd.m = lrfdUtility::GetMultiplePresenceFactor(nl_at_max);
+         lrd.m = Utility::GetMultiplePresenceFactor(nl_at_max);
       }
       else
       {
@@ -1273,7 +1149,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
       // Get max for all lane combinations
       for ( IndexType i = firstL; i < topL; i++ )
       {
-         lrfdILiveLoadDistributionFactor::LeverRuleMethod currLRD = DistributeByLeverRulePerLaneExterior(nb, S, curbOverhang, wLane, i, applyMpf);
+         ILiveLoadDistributionFactor::LeverRuleMethod currLRD = DistributeByLeverRulePerLaneExterior(nb, S, curbOverhang, wLane, i, applyMpf);
          if ( lrd.mg < currLRD.mg )
          {
             lrd = currLRD;
@@ -1322,7 +1198,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
       }
 
       // now get max factor, mpf, lanes used, and axle information
-      lrd = strategy.ComputeLrd(idx_max, applyMpf, strat_max);
+      lrd = strategy.ComputeLeverRuleDistribution(idx_max, applyMpf, strat_max);
 
       // fill rest of lr data
       lrd.bWasUsed = true;
@@ -1337,9 +1213,9 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 }
 
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorMixin::DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang,Float64 wLane,IndexType Nl, bool applyMpf) const
+ILiveLoadDistributionFactor::LeverRuleMethod LiveLoadDistributionFactorMixin::DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang,Float64 wLane,IndexType Nl, bool applyMpf) const
 {
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod lrData;     // distribution factor
+   ILiveLoadDistributionFactor::LeverRuleMethod lrData;     // distribution factor
    lrData.bWasUsed = true;
    lrData.bWasExterior = true;
    lrData.Nb = Nb;
@@ -1354,7 +1230,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 
    // To maximize the reaction at the first interior girder, position the lanes
    // as far to the left as possible and axles within lanes to left as far as possible
-   Float64 cummd = 0;  // cummulative distance from first interior
+   Float64 cummd = 0;  // cumulative distance from first interior
                      // girder to axle under consideration
    IndexType nLanesUsed = 0;
 
@@ -1401,7 +1277,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
    }
    else
    {
-      lrData.m = lrfdUtility::GetMultiplePresenceFactor(nLanesUsed);
+      lrData.m = Utility::GetMultiplePresenceFactor(nLanesUsed);
    }
 
    lrData.mg = lrData.m * cummd/(2*S); // per lanes (includes multiple presence factor)
@@ -1410,12 +1286,12 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 }
 
 
-lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin::DistributeByStaticalMethod(
-      lrfdILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& rSpacings, 
+ILiveLoadDistributionFactor::RigidMethod LiveLoadDistributionFactorMixin::DistributeByRigidMethod(
+      ILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& rSpacings, 
       Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType firstLoadedLane,IndexType lastLoadedLane, bool applyMpf) const
 {
    // See Section 4.6.2.2.2d
-   lrfdILiveLoadDistributionFactor::RigidMethod rmData;
+   ILiveLoadDistributionFactor::RigidMethod rmData;
    rmData.bWasUsed = true;
 
    Float64 Xext;  // horizontal distance from the center of gravity of the
@@ -1435,7 +1311,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
    Float64 overhang;
    std::vector<Float64> lr_spacings(rSpacings.size());
 
-   if (side==lrfdILiveLoadDistributionFactor::LeftSide)
+   if (side==ILiveLoadDistributionFactor::DfSide::LeftSide)
    {
       overhang = leftOverhang;
       std::copy(rSpacings.begin(),rSpacings.end(),lr_spacings.begin());
@@ -1487,7 +1363,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
          sume += e;
       }
 
-      sume *= (applyMpf ? lrfdUtility::GetMultiplePresenceFactor(cur_nl) : 1.0);
+      sume *= (applyMpf ? Utility::GetMultiplePresenceFactor(cur_nl) : 1.0);
 
       if (sume_max < sume )
       {
@@ -1506,7 +1382,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
       rmData.e.push_back(e);
    }
 
-   rmData.m = (applyMpf ? lrfdUtility::GetMultiplePresenceFactor(ln_ctrl) : 1.0);
+   rmData.m = (applyMpf ? Utility::GetMultiplePresenceFactor(ln_ctrl) : 1.0);
    rmData.mg = rmData.m * (((Float64)ln_ctrl)/((Float64)nb) + Xext*sume/sumx2);
    rmData.Nb = (Float64)nb;
    rmData.Nl = (Float64)ln_ctrl;
@@ -1515,56 +1391,56 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
 }
 
 
-Float64 lrfdLiveLoadDistributionFactorMixin::GetShyDistance() const
+Float64 LiveLoadDistributionFactorMixin::GetShyDistance() const
 {
    // LRFD 3.6.1.3.1
    Float64 shy;
 
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
-      shy = g_600_MM;
+      shy = WBFL::Units::ConvertToSysUnits(600.0, WBFL::Units::Measure::Millimeter);
    }
    else
    {
-      shy = g_2_FT;
+      shy = WBFL::Units::ConvertToSysUnits(2.0, WBFL::Units::Measure::Feet);
    }
 
    return shy;
 }
 
-Float64 lrfdLiveLoadDistributionFactorMixin::GetWheelLineSpacing() const
+Float64 LiveLoadDistributionFactorMixin::GetWheelLineSpacing() const
 {
    // LRFD Figure 3.6.1.2.2-1
    Float64 space;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
-      space = g_1800_MM;
+      space = WBFL::Units::ConvertToSysUnits(1800.0, WBFL::Units::Measure::Millimeter);
    }
    else
    {
-      space = g_6_FT;
+      space = WBFL::Units::ConvertToSysUnits(6.0, WBFL::Units::Measure::Feet);
    }
 
    return space;
 }
 
-Float64 lrfdLiveLoadDistributionFactorMixin::GetTruckWidth() const
+Float64 LiveLoadDistributionFactorMixin::GetTruckWidth() const
 {
    // LRFD 3.6.1.2.1
    Float64 width;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
-      width = g_3000_MM;
+      width = WBFL::Units::ConvertToSysUnits(3000.0, WBFL::Units::Measure::Millimeter);
    }
    else
    {
-      width = g_10_FT;
+      width = WBFL::Units::ConvertToSysUnits(10.0, WBFL::Units::Measure::Feet);
    }
 
    return width;
 }
 
-Float64 lrfdLiveLoadDistributionFactorMixin::GetDistanceToAxle(Float64 S,Float64 overhang,Float64 wLane,GirderIndexType nbeam,AxleIndexType nWheelLine,bool bAlignLeft) const
+Float64 LiveLoadDistributionFactorMixin::GetDistanceToAxle(Float64 S,Float64 overhang,Float64 wLane,GirderIndexType nbeam,AxleIndexType nWheelLine,bool bAlignLeft) const
 {
    // nbeam and naxle are zero-based beam and axle indices, respectively,
    // counted from the left side of the cross-section, looking ahead on
@@ -1611,9 +1487,9 @@ Float64 lrfdLiveLoadDistributionFactorMixin::GetDistanceToAxle(Float64 S,Float64
    return d;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorMixin::GetLanesBeamsMethod(IndexType Nl,GirderIndexType Nb, bool applyMpf) const
+ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorMixin::GetLanesBeamsMethod(IndexType Nl,GirderIndexType Nb, bool applyMpf) const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
    g.ControllingMethod = LANES_DIV_BEAMS;
    g.LanesBeamsData.bWasUsed = true;
@@ -1621,7 +1497,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorMixin::G
    g.LanesBeamsData.Nl = Nl;
    g.LanesBeamsData.mg = (Float64)Nl/(Float64)Nb;
 
-   Float64 m = (applyMpf ? lrfdUtility::GetMultiplePresenceFactor(Nl) : 1.0);
+   Float64 m = (applyMpf ? Utility::GetMultiplePresenceFactor(Nl) : 1.0);
    g.LanesBeamsData.m = m;
 
    g.LanesBeamsData.mg *= m;

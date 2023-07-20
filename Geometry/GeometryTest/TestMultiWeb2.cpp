@@ -67,7 +67,7 @@ void CTestMultiWeb2::TestIMultiWeb2()
    // Verify initialization. All dimensions should be zero.
    // Hook point (bottom center) should be zero.
    Float64 val;
-   CollectionIndexType lval;
+   IndexType lval;
    CComPtr<IPoint2d> pntVal;
 
    TRY_TEST( beam->get_H1(nullptr), E_POINTER );
@@ -308,7 +308,7 @@ void CTestMultiWeb2::TestIShape()
    // Bounding Box
    //
    Float64 val;
-   CollectionIndexType lval;
+   IndexType lval;
    CComPtr<IRect2d> box;
    TRY_TEST( shape->get_BoundingBox(nullptr), E_POINTER );
    TRY_TEST( shape->get_BoundingBox(&box), S_OK );

@@ -44,8 +44,8 @@ namespace WBFL
             Float64 total_strain, ///< Total strain at CG of slice
             Float64 fgStress, ///< Foreground stress at the slice centroid
             Float64 bgStress, ///< Background stress at the slice centroid
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial, ///< Foreground material stress-strain model
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial, ///< Background material stress-strain model
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial, ///< Foreground material stress-strain model
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial, ///< Background material stress-strain model
             bool bExceededStrainLimit ///< Indicates if total_strain exceeds the strain limits of this slice
          );
          GeneralSectionSliceImpl(const GeneralSectionSliceImpl& other) = default;
@@ -219,7 +219,7 @@ GeneralSectionSlice::GeneralSectionSlice(const GeneralSectionSlice& other)
 
 GeneralSectionSlice& GeneralSectionSlice::operator=(const GeneralSectionSlice& other)
 {
-   InitSlice(other.GetShapeIndex(), other.GetShape(), other.GetArea(), other.GetCentroid(), other.GetInitialStrain(), other.GetIncrementalStrain(), other.GetTotalStrain(),
+   InitSlice(other.GetShapeIndex(), other.m_pImpl->GetShape(), other.GetArea(), other.GetCentroid(), other.GetInitialStrain(), other.GetIncrementalStrain(), other.GetTotalStrain(),
       other.GetForegroundStress(), other.GetBackgroundStress(), other.GetForegroundMaterial(), other.GetBackgroundMaterial(), other.ExceededStrainLimit());
 
    return *this;
@@ -250,9 +250,9 @@ IndexType GeneralSectionSlice::GetShapeIndex() const
    return m_pImpl->GetShapeIndex();
 }
 
-const std::shared_ptr<const WBFL::Geometry::Shape>& GeneralSectionSlice::GetShape() const
+const WBFL::Geometry::Shape& GeneralSectionSlice::GetShape() const
 {
-   return m_pImpl->GetShape();
+   return *m_pImpl->GetShape();
 }
 
 Float64 GeneralSectionSlice::GetArea() const
@@ -304,15 +304,3 @@ bool GeneralSectionSlice::ExceededStrainLimit() const
 {
    return m_pImpl->ExceededStrainLimit();
 }
-
-#if defined _UNITTEST
-bool GeneralSectionSlice::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("GeneralSectionSlice");
-
-   // there really isn't much to test here
-   //TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for GeneralSectionSlice");
-
-   TESTME_EPILOG("GeneralSectionSlice");
-}
-#endif // _UNITTEST

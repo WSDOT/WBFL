@@ -41,14 +41,3 @@ std::vector<std::shared_ptr<PierLine>> CompositePierLineFactory::Create(std::sha
    }
    return pier_lines;
 }
-
-#if defined _UNITTEST
-bool CompositePierLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CompositePierLineFactory");
-
-   TESTME_EPILOG("CompositePierLineFactory");
-}
-#endif // _UNITTEST
-
-

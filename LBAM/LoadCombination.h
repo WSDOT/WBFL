@@ -87,20 +87,20 @@ public:
 	STDMETHOD(get_ItemData)(/*[out, retval]*/ VARIANT *pVal) override;
 	STDMETHOD(put_ItemData)(/*[in]*/ VARIANT newVal) override;
 	STDMETHOD(Clone)(/*[out,retval]*/ILoadCombination* *lone) override;
-	STDMETHOD(RemoveLoadCaseFactor)(/*[in]*/CollectionIndexType index) override;
+	STDMETHOD(RemoveLoadCaseFactor)(/*[in]*/IndexType index) override;
 	STDMETHOD(Clear)() override;
 	STDMETHOD(FindLoadCaseFactor)(/*[in]*/BSTR loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor) override;
-	STDMETHOD(GetLoadCaseFactor)(/*[in]*/CollectionIndexType index,  /*[out]*/BSTR* loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor) override;
+	STDMETHOD(GetLoadCaseFactor)(/*[in]*/IndexType index,  /*[out]*/BSTR* loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor) override;
 	STDMETHOD(AddLoadCaseFactor)( /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor) override;
-	STDMETHOD(SetLoadCaseFactor)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor) override;
-	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(SetLoadCaseFactor)(/*[in]*/IndexType index, /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor) override;
+	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(get_LiveLoadFactor)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_LiveLoadFactor)(/*[in]*/ Float64 newVal) override;
 	
-   STDMETHOD(GetLiveLoadModelCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-   STDMETHOD(GetLiveLoadModel)(/*[in]*/CollectionIndexType index,/*[out, retval]*/ LiveLoadModelType *pVal) override;
+   STDMETHOD(GetLiveLoadModelCount)(/*[out, retval]*/ IndexType *pVal) override;
+   STDMETHOD(GetLiveLoadModel)(/*[in]*/IndexType index,/*[out, retval]*/ LiveLoadModelType *pVal) override;
 	STDMETHOD(AddLiveLoadModel)(/*[in]*/ LiveLoadModelType newVal) override;
-   STDMETHOD(RemoveLiveLoadModel)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(RemoveLiveLoadModel)(/*[in]*/IndexType index) override;
    STDMETHOD(ClearLiveLoadModel)() override;
 
 	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal) override;

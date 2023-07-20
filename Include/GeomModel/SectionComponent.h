@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_SECTIONCOMPONENT_H_
-#define INCLUDED_GEOMMODEL_SECTIONCOMPONENT_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -35,84 +33,74 @@ namespace WBFL
    {
       class Shape;
 
-/// A SectionComponent groups together the shape, material 
-/// properties, and structural properties of a component in a Section.
-class GEOMMODELCLASS SectionComponent
-{
-public:
-   enum class ComponentType 
-   { 
-      Structural, ///< Designations a component as structural. Structural components contribute to the elastic and mass properties of the Section
-      Nonstructural ///< Designations a component as notstructural. Nonstructural componenets contribute to mass, but not structural, properties of the Section
-   };
+      /// A SectionComponent groups together the shape, material 
+      /// properties, and structural properties of a component in a Section.
+      class GEOMMODELCLASS SectionComponent
+      {
+      public:
+         enum class ComponentType 
+         { 
+            Structural, ///< Designations a component as structural. Structural components contribute to the elastic and mass properties of the Section
+            Nonstructural ///< Designations a component as nonstructural. Nonstructural components contribute to mass, but not structural, properties of the Section
+         };
 
-   SectionComponent() = delete;
+         SectionComponent() = delete;
 
-   SectionComponent(const Shape& shape,Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity,ComponentType componentType);
-   SectionComponent(std::unique_ptr<Shape>&& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, ComponentType componentType);
+         SectionComponent(std::shared_ptr<Shape> shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, ComponentType componentType);
 
-   SectionComponent(const SectionComponent& rOther);
-   SectionComponent& operator=(const SectionComponent& rOther);
+         SectionComponent(const SectionComponent& rOther) = default;
+         SectionComponent& operator=(const SectionComponent& rOther) = default;
 
-   ~SectionComponent();
+         ~SectionComponent() = default;
 
-   std::unique_ptr<SectionComponent> CreateClone() const;
+         /// @brief Sets the component shape.
+         /// @param shape 
+         void SetShape(std::shared_ptr<Shape> shape);
 
-   void SetShape(const Shape& shape);
-   void SetShape(std::unique_ptr<Shape>&& shape);
-   const Shape& GetShape() const;
-   Shape& GetShape();
+         /// @brief Returns the component shape.
+         const Shape& GetShape() const;
 
-   /// Sets the modulus of elasticity of the material.
-   void SetForegroundModE(Float64 modE);
+         /// @brief Returns the component shape.
+         Shape& GetShape();
 
-   /// Returns the modulus of elasticity of the material.
-   Float64 GetForegroundModE() const;
+         /// Sets the modulus of elasticity of the material.
+         void SetForegroundModE(Float64 modE);
 
-   /// Sets the density of the material. Returns the old density.
-   void SetForegroundDensity(Float64 density);
+         /// Returns the modulus of elasticity of the material.
+         Float64 GetForegroundModE() const;
 
-   /// Returns the density of the material.
-   Float64 GetForegroundDensity() const;
+         /// Sets the density of the material. Returns the old density.
+         void SetForegroundDensity(Float64 density);
 
-   /// Sets the modulus of elasticity of the material.
-   void SetBackgroundModE(Float64 modE);
+         /// Returns the density of the material.
+         Float64 GetForegroundDensity() const;
 
-   /// Returns the modulus of elasticity of the material.
-   Float64 GetBackgroundModE() const;
+         /// Sets the modulus of elasticity of the material.
+         void SetBackgroundModE(Float64 modE);
 
-   /// Sets the density of the material. Returns the old density.
-   void SetBackgroundDensity(Float64 density);
+         /// Returns the modulus of elasticity of the material.
+         Float64 GetBackgroundModE() const;
 
-   /// Returns the density of the material.
-   Float64 GetBackgroundDensity() const;
+         /// Sets the density of the material. Returns the old density.
+         void SetBackgroundDensity(Float64 density);
 
-   void SetComponentType(ComponentType componentType);
-   ComponentType GetComponentType() const;
+         /// Returns the density of the material.
+         Float64 GetBackgroundDensity() const;
 
+         /// @brief Sets the component type as structural or nonstructural.
+         /// @param componentType 
+         void SetComponentType(ComponentType componentType);
 
-#if defined _DEBUG
-   virtual bool AssertValid() const;
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
+         /// @brief Returns the component type
+         ComponentType GetComponentType() const;
 
-#if defined _UNITTEST
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-private:
-   std::unique_ptr<Shape> m_Shape;
-   Float64    m_fgModE{ 1.0 };
-   Float64    m_fgDensity{ 0.0 };
-   Float64    m_bgModE{ 0.0 };
-   Float64    m_bgDensity{ 0.0 };
-   ComponentType m_ComponentType{ ComponentType::Structural };
-
-   void Copy(const SectionComponent& other);
-};
-
+      private:
+         std::shared_ptr<Shape> m_Shape;
+         Float64    m_fgModE{ 1.0 };
+         Float64    m_fgDensity{ 0.0 };
+         Float64    m_bgModE{ 0.0 };
+         Float64    m_bgDensity{ 0.0 };
+         ComponentType m_ComponentType{ ComponentType::Structural };
+      };
    }; // Geometry
 }; // WBFL
-
-
-#endif // INCLUDED_GEOMMODEL_SECTIONCOMPONENT_H_

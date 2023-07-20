@@ -1,2 +1,2 @@
 LIBRARY        WBFLSystem.dll
-EXPORTS  UnitTest @1
+;EXPORTS  UnitTest @1

@@ -686,13 +686,13 @@ library WBFLTools
       /// \param index index of the item to retrieve
       /// \param item the item
 		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType index, [out, retval] LONG *item);
+      HRESULT Item([in]IndexType index, [out, retval] LONG *item);
       
       /// Item at the specified position in the array
       /// \param index index of the item to retrieve
       /// \param item the item
       [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [in] LONG item);
+      HRESULT Item([in]IndexType index, [in] LONG item);
 
       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
       [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
@@ -708,7 +708,7 @@ library WBFLTools
 
       /// Number of items in the array
 		[propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       /// Clones the array
 		[helpcontext(IDH_LongArray_Clone), helpstring("method Clone")] 
@@ -716,13 +716,13 @@ library WBFLTools
 
       // Redimensions the size of the array, filling new elements with the default item
 		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
-      HRESULT ReDim([in]CollectionIndexType size);
+      HRESULT ReDim([in]IndexType size);
 
       /// Searches the array for the specified item and retrieves its index
       ///
       /// Returns S_OK if successful, otherwise E_FAIL
 		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
-      HRESULT Find([in]LONG value, [out,retval]CollectionIndexType* fndIndex);
+      HRESULT Find([in]LONG value, [out,retval]IndexType* fndIndex);
 
       /// Adds an item to the array
 		[helpcontext(IDH_LongArray_Add), helpstring("method Add")] 
@@ -730,18 +730,18 @@ library WBFLTools
 
       /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
 		[helpcontext(IDH_LongArray_Remove), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType index);
+      HRESULT Remove([in]IndexType index);
 
       /// Inserts an item into the array at the specified index.
 		[helpcontext(IDH_LongArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType index, [in]LONG item);
+      HRESULT Insert([in]IndexType index, [in]LONG item);
 
       /// Reserves space for a specified number of items.
       ///
       /// Reserving space does not create new items in the array. It only allocates space for them.
       /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
 		[helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")] 
-      HRESULT Reserve([in]CollectionIndexType count);
+      HRESULT Reserve([in]IndexType count);
 	};
 
    /// Interface used to enumerate values in a container
@@ -794,13 +794,13 @@ library WBFLTools
       /// \param index index of the item to retrieve
       /// \param item the item
       [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [out, retval] IDType *item);
+      HRESULT Item([in]IndexType index, [out, retval] IDType *item);
 
       /// Item at the specified position in the array
       /// \param index index of the item to retrieve
       /// \param item the item
       [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [in] IDType item);
+      HRESULT Item([in]IndexType index, [in] IDType item);
 
       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
       [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
@@ -816,7 +816,7 @@ library WBFLTools
 
       /// Number of items in the array
       [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       /// Clones the array
       [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
@@ -824,13 +824,13 @@ library WBFLTools
 
       // Redimensions the size of the array, filling new elements with the default item
       [helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")]
-      HRESULT ReDim([in]CollectionIndexType size);
+      HRESULT ReDim([in]IndexType size);
 
       /// Searches the array for the specified item and retrieves its index
       ///
       /// Returns S_OK if successful, otherwise E_FAIL
       [helpcontext(IDH_LongArray_Find), helpstring("method Find")]
-      HRESULT Find([in]IDType value, [out, retval]CollectionIndexType* fndIndex);
+      HRESULT Find([in]IDType value, [out, retval]IndexType* fndIndex);
 
       /// Adds an item to the array
       [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
@@ -838,18 +838,18 @@ library WBFLTools
 
       /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
       [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
-      HRESULT Remove([in]CollectionIndexType index);
+      HRESULT Remove([in]IndexType index);
 
       /// Inserts an item into the array at the specified index.
       [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
-      HRESULT Insert([in]CollectionIndexType index, [in]IDType item);
+      HRESULT Insert([in]IndexType index, [in]IDType item);
 
       /// Reserves space for a specified number of items.
       ///
       /// Reserving space does not create new items in the array. It only allocates space for them.
       /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
       [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
-      HRESULT Reserve([in]CollectionIndexType count);
+      HRESULT Reserve([in]IndexType count);
 	};
 
 
@@ -873,7 +873,7 @@ library WBFLTools
       [helpstring("Next")]
       HRESULT Next(
          [in] ULONG celt, ///< Number of elements being requested
-         [out] CollectionIndexType* rgelt, ///< Array of size celt (or larger) of elements of interest
+         [out] IndexType* rgelt, ///< Array of size celt (or larger) of elements of interest
          [in, out] ULONG* pceltFetched ///< Pointer to the number of elements actually supplied in rgelt. Can be nullptr if celt is 1.
       );
 
@@ -903,13 +903,13 @@ library WBFLTools
       /// \param index index of the item to retrieve
       /// \param item the item
       [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [out, retval] IndexType *item);
+      HRESULT Item([in]IndexType index, [out, retval] IndexType *item);
 
       /// Item at the specified position in the array
       /// \param index index of the item to retrieve
       /// \param item the item
       [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [in] IndexType item);
+      HRESULT Item([in]IndexType index, [in] IndexType item);
 
       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
       [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
@@ -925,7 +925,7 @@ library WBFLTools
 
       /// Number of items in the array
       [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       /// Clones the array
       [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
@@ -933,13 +933,13 @@ library WBFLTools
 
       // Redimensions the size of the array, filling new elements with the default item
       [helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")]
-      HRESULT ReDim([in]CollectionIndexType size);
+      HRESULT ReDim([in]IndexType size);
 
       /// Searches the array for the specified item and retrieves its index
       ///
       /// Returns S_OK if successful, otherwise E_FAIL
       [helpcontext(IDH_LongArray_Find), helpstring("method Find")]
-      HRESULT Find([in]IndexType value, [out, retval]CollectionIndexType* fndIndex);
+      HRESULT Find([in]IndexType value, [out, retval]IndexType* fndIndex);
 
       /// Adds an item to the array
       [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
@@ -947,23 +947,23 @@ library WBFLTools
 
       /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
       [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
-      HRESULT Remove([in]CollectionIndexType index);
+      HRESULT Remove([in]IndexType index);
 
       /// Inserts an item into the array at the specified index.
       [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
-      HRESULT Insert([in]CollectionIndexType index, [in]IndexType item);
+      HRESULT Insert([in]IndexType index, [in]IndexType item);
 
       /// Reserves space for a specified number of items.
       ///
       /// Reserving space does not create new items in the array. It only allocates space for them.
       /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
       [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
-      HRESULT Reserve([in]CollectionIndexType count);
+      HRESULT Reserve([in]IndexType count);
 
       /// Clears the array and assigns a value to the first numElements in the array
       [helpcontext(IDH_LongArray_Assign), helpstring("method Assign")]
       HRESULT Assign(
-         [in]CollectionIndexType numElements,  ///< number of elements to assign value
+         [in]IndexType numElements,  ///< number of elements to assign value
          [in]IndexType value ///< value to be assigned to the first numElements in the array
       );
    };
@@ -1019,13 +1019,13 @@ library WBFLTools
       /// \param index index of the item to retrieve
       /// \param item the item
       [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [out, retval] Float64 *item);
+      HRESULT Item([in]IndexType index, [out, retval] Float64 *item);
 
       /// Item at the specified position in the array
       /// \param index index of the item to retrieve
       /// \param item the item
       [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [in] Float64 item);
+      HRESULT Item([in]IndexType index, [in] Float64 item);
 
       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
       [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
@@ -1041,7 +1041,7 @@ library WBFLTools
 
       /// Number of items in the array
       [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       /// Clones the array
       [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
@@ -1049,7 +1049,7 @@ library WBFLTools
 
       // Redimensions the size of the array, filling new elements with the default item
       [helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")]
-      HRESULT ReDim([in]CollectionIndexType size);
+      HRESULT ReDim([in]IndexType size);
 
       /// Adds an item to the array
       [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
@@ -1057,18 +1057,18 @@ library WBFLTools
 
       /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
       [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
-      HRESULT Remove([in]CollectionIndexType index);
+      HRESULT Remove([in]IndexType index);
 
       /// Inserts an item into the array at the specified index.
       [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
-      HRESULT Insert([in]CollectionIndexType index, [in]Float64 item);
+      HRESULT Insert([in]IndexType index, [in]Float64 item);
 
       /// Reserves space for a specified number of items.
       ///
       /// Reserving space does not create new items in the array. It only allocates space for them.
       /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
       [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
-      HRESULT Reserve([in]CollectionIndexType count);
+      HRESULT Reserve([in]IndexType count);
    };
 
    /// Interface used to enumerate values in a container
@@ -1121,13 +1121,13 @@ library WBFLTools
       /// \param index index of the item to retrieve
       /// \param item the item
       [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [out, retval] BSTR *item);
+      HRESULT Item([in]IndexType index, [out, retval] BSTR *item);
 
       /// Item at the specified position in the array
       /// \param index index of the item to retrieve
       /// \param item the item
       [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [in] BSTR item);
+      HRESULT Item([in]IndexType index, [in] BSTR item);
 
       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
       [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
@@ -1143,7 +1143,7 @@ library WBFLTools
 
       /// Number of items in the array
       [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       /// Clones the array
       [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
@@ -1151,13 +1151,13 @@ library WBFLTools
 
       // Redimensions the size of the array, filling new elements with the default item
       [helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")]
-      HRESULT ReDim([in]CollectionIndexType size);
+      HRESULT ReDim([in]IndexType size);
 
       /// Searches the array for the specified item and retrieves its index
       ///
       /// Returns S_OK if successful, otherwise E_FAIL
       [helpcontext(IDH_LongArray_Find), helpstring("method Find")]
-      HRESULT Find([in]BSTR value, [out, retval]CollectionIndexType* fndIndex);
+      HRESULT Find([in]BSTR value, [out, retval]IndexType* fndIndex);
 
       /// Adds an item to the array
       [helpcontext(IDH_LongArray_Add), helpstring("method Add")]
@@ -1165,18 +1165,18 @@ library WBFLTools
 
       /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
       [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
-      HRESULT Remove([in]CollectionIndexType index);
+      HRESULT Remove([in]IndexType index);
 
       /// Inserts an item into the array at the specified index.
       [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
-      HRESULT Insert([in]CollectionIndexType index, [in]BSTR item);
+      HRESULT Insert([in]IndexType index, [in]BSTR item);
 
       /// Reserves space for a specified number of items.
       ///
       /// Reserving space does not create new items in the array. It only allocates space for them.
       /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
       [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
-      HRESULT Reserve([in]CollectionIndexType count);
+      HRESULT Reserve([in]IndexType count);
    };
 
    /// Interface used to enumerate values in a container
@@ -1230,13 +1230,13 @@ library WBFLTools
       /// \param index index of the item to retrieve
       /// \param item the item
       [propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [out, retval] IUnknown* *item);
+      HRESULT Item([in]IndexType index, [out, retval] IUnknown* *item);
 
       /// Item at the specified position in the array
       /// \param index index of the item to retrieve
       /// \param item the item
       [propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")]
-      HRESULT Item([in]CollectionIndexType index, [in] IUnknown* item);
+      HRESULT Item([in]IndexType index, [in] IUnknown* item);
 
       /// Returns the IUnknown pointer of a generic enumerator. This is a restricted property and is used by Visual Basic to enumerator collections.
       [propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
@@ -1252,7 +1252,7 @@ library WBFLTools
 
       /// Number of items in the array
       [propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")]
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       /// Clones the array
       [helpcontext(IDH_LongArray_Clone), helpstring("method Clone")]
@@ -1264,18 +1264,18 @@ library WBFLTools
 
       /// Removes an item from the array at the specified index. All items beyond the index are moved up one position.
       [helpcontext(IDH_LongArray_Remove), helpstring("method Remove")]
-      HRESULT Remove([in]CollectionIndexType index);
+      HRESULT Remove([in]IndexType index);
 
       /// Inserts an item into the array at the specified index.
       [helpcontext(IDH_LongArray_Insert), helpstring("method Insert")]
-      HRESULT Insert([in]CollectionIndexType index, [in]IUnknown* item);
+      HRESULT Insert([in]IndexType index, [in]IUnknown* item);
 
       /// Reserves space for a specified number of items.
       ///
       /// Reserving space does not create new items in the array. It only allocates space for them.
       /// This method can be called with the number of items to be inserted into the array is known in advance, making calls to Add faster.
       [helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")]
-      HRESULT Reserve([in]CollectionIndexType count);
+      HRESULT Reserve([in]IndexType count);
    };
 
 

@@ -54,10 +54,10 @@ public:
    STDMETHOD(OnSuperstructureMemberChanged)(ISuperstructureMember* SuperstructureMember, BSTR stage, ChangeType change);
 
    STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* SuperstructureMember, BSTR stage, ChangeType change);
-   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType idx);
-   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType idx);
-	STDMETHOD(OnSuperstructureMembersMoveTo)(CollectionIndexType from, CollectionIndexType to);
-	STDMETHOD(OnSuperstructureMembersCopyTo)(CollectionIndexType from, CollectionIndexType to);
+   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, IndexType idx);
+   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, IndexType idx);
+	STDMETHOD(OnSuperstructureMembersMoveTo)(IndexType from, IndexType to);
+	STDMETHOD(OnSuperstructureMembersCopyTo)(IndexType from, IndexType to);
 	STDMETHOD(OnSuperstructureMembersReverse)();
 	STDMETHOD(OnSuperstructureMembersOffset)();
 

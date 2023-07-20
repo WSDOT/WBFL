@@ -62,9 +62,9 @@ public:
 // iCompoundPointDrawStrategy
 public:
    STDMETHOD_(void,AddStrategy)(iDrawPointStrategy* pStrategy) override;
-   STDMETHOD_(void,RemoveStrategy)(CollectionIndexType index) override;
-   STDMETHOD_(void, GetStrategy)(CollectionIndexType index, iDrawPointStrategy** ppStrategy) override;
-   STDMETHOD_(CollectionIndexType,Count)() override;
+   STDMETHOD_(void,RemoveStrategy)(IndexType index) override;
+   STDMETHOD_(void, GetStrategy)(IndexType index, iDrawPointStrategy** ppStrategy) override;
+   STDMETHOD_(IndexType,Count)() override;
 
 private:
    using Strategies = std::vector<CComPtr<iDrawPointStrategy>>;

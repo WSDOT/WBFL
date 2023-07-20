@@ -42,7 +42,7 @@ namespace WBFL
          void AddSolutionPoint(std::unique_ptr<MomentCapacitySolution>&& capacity);
          Float64 GetNeutralAxisDirection(IndexType index) const;
          Float64 GetFz(IndexType index) const;
-         const std::unique_ptr<MomentCapacitySolution>& GetSolutionPoint(IndexType index) const;
+         const MomentCapacitySolution& GetSolutionPoint(IndexType index) const;
          IndexType GetSolutionPointCount() const;
          void SortByFz();
          void SortByNeutralAxisDirection();
@@ -68,10 +68,10 @@ namespace WBFL
          return m_vCapacity[index]->GetNeutralAxisDirection();
       }
 
-      const std::unique_ptr<MomentCapacitySolution>& InteractionCurveSolutionImpl::GetSolutionPoint(IndexType index) const
+      const MomentCapacitySolution& InteractionCurveSolutionImpl::GetSolutionPoint(IndexType index) const
       {
          PRECONDITION(index < m_vCapacity.size());
-         return m_vCapacity[index];
+         return *m_vCapacity[index];
       }
 
       IndexType InteractionCurveSolutionImpl::GetSolutionPointCount() const
@@ -114,7 +114,7 @@ Float64 InteractionCurveSolution::GetNeutralAxisDirection(IndexType index) const
    return m_pImpl->GetNeutralAxisDirection(index);
 }
 
-const std::unique_ptr<MomentCapacitySolution>& InteractionCurveSolution::GetSolutionPoint(IndexType index) const
+const MomentCapacitySolution& InteractionCurveSolution::GetSolutionPoint(IndexType index) const
 {
    return m_pImpl->GetSolutionPoint(index);
 }
@@ -133,16 +133,3 @@ void InteractionCurveSolution::SortByNeutralAxisDirection()
 {
    m_pImpl->SortByNeutralAxisDirection();
 }
-
-
-#if defined _UNITTEST
-bool InteractionCurveSolution::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("InteractionCurveSolution");
-
-   //TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for InteractionCurveSolution");
-   // not much to test here
-
-   TESTME_EPILOG("InteractionCurveSolution");
-}
-#endif // _UNITTEST

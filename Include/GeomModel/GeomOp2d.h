@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_GEOMOP2D_H_
-#define INCLUDED_GEOMETRY_GEOMOP2D_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -210,21 +208,6 @@ namespace WBFL
 
          /// Returns true if p is in the triangle formed by verties A, B, and C
          static bool IsPointInTriangle(const Point2d& p, const Point2d& A, const Point2d& B, const Point2d& C);
-
-      #if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
-      #if defined _DEBUG
-         // Returns true if the class is in a valid state, otherwise returns false
-         bool AssertValid() const;
-
-         /// Dumps the contents of the class to the given stream.
-         void Dump(WBFL::Debug::LogContext& dc) const;
-      #endif // _DEBUG
       };
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMETRY_GEOMOP2D_H_

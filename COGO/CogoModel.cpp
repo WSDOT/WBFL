@@ -1984,7 +1984,7 @@ STDMETHODIMP CCogoModel::PointOnCurve(IDType newID, IDType fromID, IDType curveI
 
 ////////////////////////////////////////////////////////
 // IDivide
-STDMETHODIMP CCogoModel::Arc(IDType firstID, IDType idInc, IDType fromID, IDType vertexID, IDType toID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::Arc(IDType firstID, IDType idInc, IDType fromID, IDType vertexID, IDType toID, IndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
@@ -2004,7 +2004,7 @@ STDMETHODIMP CCogoModel::Arc(IDType firstID, IDType idInc, IDType fromID, IDType
    return hr;
 }
 
-STDMETHODIMP CCogoModel::BetweenPoints(IDType firstID, IDType idInc, IDType fromID, IDType toID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::BetweenPoints(IDType firstID, IDType idInc, IDType fromID, IDType toID, IndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
@@ -2024,7 +2024,7 @@ STDMETHODIMP CCogoModel::BetweenPoints(IDType firstID, IDType idInc, IDType from
    return hr;
 }
 
-STDMETHODIMP CCogoModel::LineSegment(IDType firstID, IDType idInc, IDType lineID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::LineSegment(IDType firstID, IDType idInc, IDType lineID, IndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX )
       return E_INVALIDARG;
@@ -2044,7 +2044,7 @@ STDMETHODIMP CCogoModel::LineSegment(IDType firstID, IDType idInc, IDType lineID
    return hr;
 }
 
-STDMETHODIMP CCogoModel::CompoundCurve(IDType firstID, IDType idInc, IDType curveID, CollectionIndexType nParts)
+STDMETHODIMP CCogoModel::CompoundCurve(IDType firstID, IDType idInc, IDType curveID, IndexType nParts)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX)
       return E_INVALIDARG;
@@ -2064,7 +2064,7 @@ STDMETHODIMP CCogoModel::CompoundCurve(IDType firstID, IDType idInc, IDType curv
    return hr;
 }
 
-STDMETHODIMP CCogoModel::Path(IDType firstID,IDType idInc,IDType pathID,CollectionIndexType nParts,Float64 start,Float64 end)
+STDMETHODIMP CCogoModel::Path(IDType firstID,IDType idInc,IDType pathID,IndexType nParts,Float64 start,Float64 end)
 {
    if ( nParts <= 1 || nParts == INVALID_INDEX)
       return E_INVALIDARG;

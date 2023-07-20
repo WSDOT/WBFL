@@ -118,36 +118,10 @@ bool ShapeOnAlternativePolygonImpl::IsDirty() const
 
 void ShapeOnAlternativePolygonImpl::UpdatePolygon() const
 {
-   ASSERTVALID;
    if (!m_bIsDirty && !IsHookPointChanged()) return;
    if (m_Polygon == nullptr) m_Polygon = std::make_unique<Polygon>();
    m_Polygon->Clear();
    OnUpdatePolygon(m_Polygon);
    ShapeCurrentWithHookPoint();
    m_bIsDirty = false;
-   ASSERTVALID;
 }
-
-#if defined _DEBUG
-bool ShapeOnAlternativePolygonImpl::AssertValid() const
-{
-   return __super::AssertValid();
-}
-
-void ShapeOnAlternativePolygonImpl::Dump(WBFL::Debug::LogContext& os) const
-{
-   ASSERTVALID;
-   os << _T("Dump for ShapeOnAlternativePolygonImpl") << WBFL::Debug::endl;
-   __super::Dump(os);
-}
-#endif // _DEBUG
-
-
-#if defined _UNITTEST
-bool ShapeOnAlternativePolygonImpl::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("ShapeOnAlternativePolygonImpl");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented");
-   TESTME_EPILOG("ShapeOnAlternativePolygonImpl");
-}
-#endif // _UNITTEST

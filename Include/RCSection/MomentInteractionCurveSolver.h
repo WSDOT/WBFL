@@ -90,11 +90,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<MomentInteractionCurveSolverImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

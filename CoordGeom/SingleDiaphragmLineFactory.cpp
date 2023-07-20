@@ -104,14 +104,3 @@ std::vector<std::shared_ptr<DiaphragmLine>> SingleDiaphragmLineFactory::Create(s
    diaphragm_lines.emplace_back(diaphragm_line);
    return diaphragm_lines;
 }
-
-#if defined _UNITTEST
-bool SingleDiaphragmLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SingleDiaphragmLineFactory");
-
-   TESTME_EPILOG("SingleDiaphragmLineFactory");
-}
-#endif // _UNITTEST
-
-

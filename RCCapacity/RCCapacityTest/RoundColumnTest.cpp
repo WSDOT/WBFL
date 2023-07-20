@@ -108,11 +108,11 @@ void CRoundColumnTest::Test()
       {-14368.98471, 1099.813739}
    };
 
-   CollectionIndexType count;
+   IndexType count;
 	points->get_Count(&count);
 	TRY_TEST( count, 37);
 
-	for ( CollectionIndexType i = 0; i < count; i++ )
+	for ( IndexType i = 0; i < count; i++ )
 	{
 		CComPtr<IPoint2d> point;
 		points->get_Item(i,&point);

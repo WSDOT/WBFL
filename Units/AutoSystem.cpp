@@ -49,24 +49,3 @@ AutoSystem::~AutoSystem()
    System::SetTemperatureUnit( m_Temperature );
    System::SetAngleUnit( m_Angle );
 }
-
-#if defined _DEBUG
-bool AutoSystem::AssertValid() const
-{
-   return true;
-}
-
-void AutoSystem::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for AutoSystem" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool AutoSystem::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("AutoSystem");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for AutoSystem");
-   TESTME_EPILOG("AutoSystem");
-}
-#endif

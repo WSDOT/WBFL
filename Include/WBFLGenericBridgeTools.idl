@@ -615,7 +615,7 @@ library WBFLGenericBridgeTools
 	   [helpstring("method GirderPathOffset")] HRESULT GirderPathOffset([in] IGenericBridge* bridge,[in] GirderIDType ssMbrID, [in] SegmentIndexType segIdx,[in] VARIANT varStation, [out,retval] Float64* offset);
       [helpstring("method GirderPathPoint")] HRESULT GirderPathPoint([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx, [in]VARIANT varStation,[in]VARIANT varDirection,[in]VARIANT_BOOL vbProject,[out,retval]IPoint2d** ppPoint);
 	   [helpstring("method DeckEdgePoint")] HRESULT DeckEdgePoint([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out,retval] IPoint2d** point);
-	   [helpstring("method DeckEdgePoints")] HRESULT DeckEdgePoints([in] IGenericBridge* bridge,[in] DirectionType side,[in] CollectionIndexType nPoints,[out,retval] IPoint2dCollection** points);
+	   [helpstring("method DeckEdgePoints")] HRESULT DeckEdgePoints([in] IGenericBridge* bridge,[in] DirectionType side,[in] IndexType nPoints,[out,retval] IPoint2dCollection** points);
 	   [helpstring("method CurbOffset")] HRESULT CurbOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out]IStation** ppOffsetStation,[out] Float64* pOffset);
 	   [helpstring("method DeckOffset")] HRESULT DeckOffset([in] IGenericBridge* bridge,[in] Float64 station,[in] IDirection* direction,[in] DirectionType side,[out]IStation** ppOffsetStation,[out] Float64* pOffset);
       [helpstring("method DeckOverhang")] HRESULT DeckOverhang([in] IGenericBridge* bridge,[in] Float64 station, [in]GirderIDType ssMbrID,[in] IDirection* direction,[in] DirectionType side,[out,retval] Float64* pOverhang);

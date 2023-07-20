@@ -163,14 +163,3 @@ std::vector<std::shared_ptr<GirderLine>> SimpleGirderLineFactory::Create(std::sh
 
    return girder_lines;
 }
-
-#if defined _UNITTEST
-bool SimpleGirderLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SimpleGirderLineFactory");
-
-   TESTME_EPILOG("SimpleGirderLineFactory");
-}
-#endif // _UNITTEST
-
-

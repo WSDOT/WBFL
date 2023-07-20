@@ -136,12 +136,6 @@ namespace WBFL
          virtual std::vector<std::shared_ptr<PathElement>> CreateOffsetPath(Float64 offset) const override;
          virtual std::vector<std::shared_ptr<PathElement>> CreateSubpath(Float64 start, Float64 end) const override;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          // These are the basic spline input parameters
          std::vector<WBFL::Geometry::Point2d> m_vPoints;

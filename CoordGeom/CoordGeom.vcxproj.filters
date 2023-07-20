@@ -4,9 +4,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Angle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,15 +51,6 @@
     </ClCompile>
     <ClCompile Include="Alignment.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Testing\TestAlignment1.cpp">
-      <Filter>Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="Testing\TestAlignment2.cpp">
-      <Filter>Testing</Filter>
-    </ClCompile>
-    <ClCompile Include="Testing\TestAlignment3.cpp">
-      <Filter>Testing</Filter>
     </ClCompile>
     <ClCompile Include="Profile.cpp">
       <Filter>Source Files</Filter>
@@ -151,9 +139,6 @@
     <ClCompile Include="SimpleDeckBoundaryFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Testing\TestBridgeFramingGeometry.cpp">
-      <Filter>Testing</Filter>
-    </ClCompile>
     <ClCompile Include="CompositeGirderLineFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -175,9 +160,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\CoordGeom\CoordGeomLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\CoordGeom\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\CoordGeom\CoordGeomExp.h">
@@ -236,15 +218,6 @@
     </ClInclude>
     <ClInclude Include="..\Include\CoordGeom\Alignment.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Testing\TestAlignment1.h">
-      <Filter>Testing</Filter>
-    </ClInclude>
-    <ClInclude Include="Testing\TestAlignment2.h">
-      <Filter>Testing</Filter>
-    </ClInclude>
-    <ClInclude Include="Testing\TestAlignment3.h">
-      <Filter>Testing</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\CoordGeom\Profile.h">
       <Filter>Header Files</Filter>
@@ -342,9 +315,6 @@
     <ClInclude Include="..\Include\CoordGeom\DiaphragmLineFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Testing\TestBridgeFramingGeometry.h">
-      <Filter>Testing</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\CoordGeom\ConnectionGeometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -382,9 +352,6 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{20f1648c-6fe9-495c-b562-571af42fad7e}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
-    </Filter>
-    <Filter Include="Testing">
-      <UniqueIdentifier>{2b9a8d93-b67a-4325-a47d-fc03608d6711}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

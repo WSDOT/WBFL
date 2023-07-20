@@ -36,7 +36,7 @@ namespace WBFL
       class ROARKCLASS CompositeBeam : public RoarkBeam
       {
       public:
-         CompositeBeam();
+         CompositeBeam(Float64 length, Float64 ei);
          CompositeBeam(const CompositeBeam& other) = delete;
          virtual ~CompositeBeam() {}
 
@@ -50,10 +50,10 @@ namespace WBFL
          void AddBeam(std::shared_ptr<RoarkBeam> beam);
 
          /// Returns the number of beams in the composite
-         CollectionIndexType GetBeamCount() const;
+         IndexType GetBeamCount() const;
 
          /// Returns a beam
-         std::shared_ptr<const RoarkBeam> GetBeam(CollectionIndexType index) const;
+         std::shared_ptr<const RoarkBeam> GetBeam(IndexType index) const;
 
          /// Removes all beams from the composite
          void RemoveAllBeams();
@@ -72,16 +72,6 @@ namespace WBFL
 
       private:
          std::vector<std::shared_ptr<RoarkBeam>> m_Beams;
-         
-      public:
-         #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-         #endif // _DEBUG
-
-         #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         #endif // _UNITTEST
       };
    };
 };

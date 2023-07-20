@@ -122,7 +122,7 @@ void StabilityEngineer::PrepareResults(const IGirder* pGirder,const IStabilityPr
    {
       Float64 span_ratio = results.Ls / Lg;
       Float64 Fo = (span_ratio) * (span_ratio)-1. / 3.;
-      ATLASSERT(IsEqual(results.OffsetFactor, Fo));
+      CHECK(IsEqual(results.OffsetFactor, Fo));
    }
 #endif
 
@@ -255,7 +255,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
       results.AssumedTiltDirection = GirderSide::Right;
    }
 
-   ATLASSERT( !IsZero(pStabilityProblem->GetLiftAngle()) );
+   CHECK( !IsZero(pStabilityProblem->GetLiftAngle()) );
    for ( IndexType i = 0; i < 3; i++ )
    {
       ImpactDirection impact = (ImpactDirection)i;
@@ -341,8 +341,8 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
          if (results.EccLateralSweep[+impact] + windSign*results.ZoWind[+impact] < windSign*results.EccWind[+impact])
          {
             // wind is great enough to reverse rotation
-            ATLASSERT(wind == WindDirection::Left); // this case can only happen for left wind (reducing rotation)
-            ATLASSERT(results.ThetaEq[+impact][+wind] < 0);
+            CHECK(wind == WindDirection::Left); // this case can only happen for left wind (reducing rotation)
+            CHECK(results.ThetaEq[+impact][+wind] < 0);
          }
 #endif
       } // next wind direction
@@ -397,12 +397,12 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
       // Get forces from external loads
       Float64 fx,fy,mz;
       femResults->ComputePOIForces(LCID_GIRDER,poiID,mftLeft,lotMember,&fx,&fy,&mz);
-      ATLASSERT(IsZero(fx));
+      CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mg = mz;
 
       femResults->ComputePOIForces(LCID_WIND,poiID,mftLeft,lotMember,&fx,&fy,&mz);
-      ATLASSERT(IsZero(fx));
+      CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mw = mz;
 
@@ -624,7 +624,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
                   Float64 fscr = 0;
                   if (results.ThetaEq[+impact][+wind] < 0)
                   {
-                     ATLASSERT(wind == WindDirection::Left);
+                     CHECK(wind == WindDirection::Left);
                      if (theta_crack < 0)
                      {
                         Float64 Mr = results.EccLateralSweep[+impact] + results.ZoWind[+impact] + (results.Zo[+impact] - results.Dra[+impact])*theta_crack;
@@ -758,15 +758,15 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
 
             if (results.ThetaEq[+impact][+wind] < 0)
             {
-               ATLASSERT(wind == WindDirection::Left);
+               CHECK(wind == WindDirection::Left);
                results.ThetaMax[+impact][+wind] = (results.Zo[+impact] - results.Dra[+impact] - windSign*2.5*results.ZoWind[+impact] ) / (5 * results.Zo[+impact]);
-               ATLASSERT(results.ThetaMax[+impact][+wind] <= 0);
+               CHECK(results.ThetaMax[+impact][+wind] <= 0);
             }
             else
             {
                Float64 S = results.EccLateralSweep[+impact] + windSign*(results.ZoWind[+impact] - results.EccWind[+impact]);
                S /= 2.5*results.Zo[+impact];
-               ATLASSERT(0 <= S);
+               CHECK(0 <= S);
                results.ThetaMax[+impact][+wind] = sqrt(S);
             }
             results.ThetaMax[+impact][+wind] = ::ForceIntoRange(-THETA_MAX, results.ThetaMax[+impact][+wind], THETA_MAX);
@@ -774,7 +774,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
             Float64 FSf = 0;
             if (results.ThetaEq[+impact][+wind] < 0)
             {
-               ATLASSERT(wind == WindDirection::Left);
+               CHECK(wind == WindDirection::Left);
                Float64 Mr = results.EccLateralSweep[+impact] - results.Dra[+impact] * results.ThetaMax[+impact][+wind] + (results.ZoWind[+impact] + results.Zo[+impact] * results.ThetaMax[+impact][+wind]) * (1 - 2.5*results.ThetaMax[+impact][+wind]);
                Float64 Ma = results.EccWind[+impact];
                FSf = IsZero(Ma) ? Float64_Max : Mr / Ma;
@@ -978,17 +978,17 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
       // Get forces from external loads
       Float64 fx, fy, mz;
       femResults->ComputePOIForces(LCID_GIRDER, poiID, mftLeft, lotMember, &fx, &fy, &mz);
-      ATLASSERT(IsZero(fx));
+      CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mg = mz;
 
       femResults->ComputePOIForces(LCID_WIND, poiID, mftLeft, lotMember, &fx, &fy, &mz);
-      ATLASSERT(IsZero(fx));
+      CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mw = mz;
 
       femResults->ComputePOIForces(LCID_CF, poiID, mftLeft, lotMember, &fx, &fy, &mz);
-      ATLASSERT(IsZero(fx));
+      CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mcf = mz;
 
@@ -1271,7 +1271,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
 
    // reaction at seated end
    Float64 Rseat = (pStabilityProblem->GetSeatedEnd() == GirderSide::Left ? results.Rl : results.Rr);
-   ATLASSERT(IsEqual(Rseat,Wg * Lb / Ls));
+   CHECK(IsEqual(Rseat,Wg * Lb / Ls));
 
    for (int i = 0; i < 3; i++)
    {
@@ -1327,12 +1327,12 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
                   Float64 Z = Zt + ei + Mot / (im * Wg) + (im * results.Zo[+ImpactDirection::NoImpact] + results.Dra[+ImpactDirection::NoImpact] + sign * 2.5 * Zt) * alpha;
                   Float64 S = alpha * alpha + sign * Z / (2.5 * im * results.Zo[+ImpactDirection::NoImpact]);
 
-                  ATLASSERT(0 <= S);
+                  CHECK(0 <= S);
                   theta_max = alpha + sign * sqrt(S);
                }
                theta_max = ::ForceIntoRange(-THETA_MAX, theta_max, THETA_MAX);
                results.ThetaMax[+impact][+wind] = theta_max;
-               ATLASSERT(::BinarySign(results.ThetaEq[+impact][+wind]) == ::BinarySign(theta_max));
+               CHECK(::BinarySign(results.ThetaEq[+impact][+wind]) == ::BinarySign(theta_max));
 
                Float64 Mr = Ktheta * (theta_max - alpha); // resisting moment
                Float64 Ma = im * Wg * ((im * results.Zo[+ImpactDirection::NoImpact] * theta_max + Zt) * (1 + 2.5 * fabs(theta_max)) + results.Dra[+ImpactDirection::NoImpact] * theta_max + ei) + Mot; // acting moment
@@ -1374,7 +1374,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
                Float64 Ma = mr - ma;
                Float64 theta_roll = sign * Ma / Ktheta + alpha;
                results.ThetaRollover[+impact][+wind] = theta_roll;
-               ATLASSERT(::BinarySign(results.ThetaEq[+impact][+wind]) == ::BinarySign(theta_roll));
+               CHECK(::BinarySign(results.ThetaEq[+impact][+wind]) == ::BinarySign(theta_roll));
 
                Float64 Mr = Ktheta * (theta_roll - alpha);
                Ma = im * Wg * ((Zt + im * results.Zo[+ImpactDirection::NoImpact] * theta_roll) * (1 + 2.5 * fabs(theta_roll)) + results.Dra[+ImpactDirection::NoImpact] * theta_roll + ei) + Mot;
@@ -1544,17 +1544,17 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
       // Get forces from external loads
       Float64 fx,fy,mz;
       femResults->ComputePOIForces(LCID_GIRDER,poiID,mftLeft,lotMember,&fx,&fy,&mz);
-      ATLASSERT(IsZero(fx));
+      CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mg = mz;
 
       femResults->ComputePOIForces(LCID_WIND,poiID,mftLeft,lotMember,&fx,&fy,&mz);
-      ATLASSERT(IsZero(fx));
+      CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mw = mz;
 
       femResults->ComputePOIForces(LCID_CF,poiID,mftLeft,lotMember,&fx,&fy,&mz);
-      ATLASSERT(IsZero(fx));
+      CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mcf = mz;
 
@@ -1932,12 +1932,12 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                      Float64 Z = Zt + ei + Mot / (im*Wg) + (im*results.Zo[+ImpactDirection::NoImpact] + results.Dra[+ImpactDirection::NoImpact] + sign*2.5*Zt)*alpha;
                      Float64 S = alpha*alpha + sign*Z / (2.5 * im*results.Zo[+ImpactDirection::NoImpact]);
 
-                     ATLASSERT(0 <= S);
+                     CHECK(0 <= S);
                      theta_max = alpha + sign*sqrt(S);
                   }
                   theta_max = ::ForceIntoRange(-THETA_MAX, theta_max, THETA_MAX);
                   results.ThetaMax[+slope][+impact][+wind] = theta_max;
-                  ATLASSERT(::BinarySign(results.ThetaEq[+slope][+impact][+wind]) == ::BinarySign(theta_max));
+                  CHECK(::BinarySign(results.ThetaEq[+slope][+impact][+wind]) == ::BinarySign(theta_max));
 
                   Float64 Mr = Ktheta*(theta_max - alpha); // resisting moment
                   Float64 Ma = im*Wg*((im*results.Zo[+ImpactDirection::NoImpact] * theta_max + Zt)*(1 + 2.5*fabs(theta_max)) + results.Dra[+ImpactDirection::NoImpact] * theta_max + ei) + Mot; // acting moment
@@ -1982,7 +1982,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                   Float64 Ma = mr - ma;
                   Float64 theta_roll = sign*Ma / Ktheta + alpha;
                   results.ThetaRollover[+slope][+impact][+wind] = theta_roll;
-                  ATLASSERT(::BinarySign(results.ThetaEq[+slope][+impact][+wind]) == ::BinarySign(theta_roll));
+                  CHECK(::BinarySign(results.ThetaEq[+slope][+impact][+wind]) == ::BinarySign(theta_roll));
 
                   Float64 Mr = Ktheta*(theta_roll - alpha);
                   Ma = im*Wg*((Zt + im*results.Zo[+ImpactDirection::NoImpact] * theta_roll)*(1 + 2.5*fabs(theta_roll)) + results.Dra[+ImpactDirection::NoImpact] * theta_roll + ei) + Mot;
@@ -2041,7 +2041,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    Float64 X = 0;
    std::vector<Float64> vX;
    IndexType nSections = pGirder->GetSectionCount();
-   ATLASSERT(0 < nSections);
+   CHECK(0 < nSections);
    for ( IndexType sectIdx = 0; sectIdx < nSections; sectIdx++ )
    {
       Float64 L = pGirder->GetSectionLength(sectIdx);
@@ -2129,7 +2129,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       jntID++;
    }
 
-   ATLASSERT(leftSupportJntID != INVALID_ID && rightSupportJntID != INVALID_ID); // missing support. we will crash
+   CHECK(leftSupportJntID != INVALID_ID && rightSupportJntID != INVALID_ID); // missing support. we will crash
                                                                                  
    // Create FEM members
 
@@ -2219,7 +2219,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    {
       Float64 V = pHaulingProblem->GetVelocity();
       Float64 R = pHaulingProblem->GetTurningRadius();
-      ATLASSERT(R != 0.0);
+      CHECK(R != 0.0);
       CFfactor = (V*V)/(g*R);
    }
 
@@ -2410,7 +2410,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    if (pHaulingProblem)
    {
       HaulingResults* pHaulingResults = static_cast<HaulingResults*>(&results);
-      ATLASSERT(pHaulingResults != nullptr);
+      CHECK(pHaulingResults != nullptr);
       pHaulingResults->Wcf = Wcf / 2;
    }
 
@@ -2555,7 +2555,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       pois->Create(poiID++,mbrID,Xmbr,&poi);
    }
 
-   ATLASSERT(m_MidSpanPoi != INVALID_ID);
+   CHECK(m_MidSpanPoi != INVALID_ID);
 
    GetZoComputationMethod(pGirder,pStabilityProblem,*ppModel,results);
    if ( results.ZoMethod == CalculationMethod::Approximate )
@@ -2749,13 +2749,13 @@ Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProb
       if (IsEqual(a, b))
       {
          Float64 _zo = (W/(12*EI*Lg*Lg))*(l*l*l*l*l/10. - a*a*l*l*l + 3.*a*a*a*a*l + 6.*a*a*a*a*a/5.); // equal overhangs
-         ATLASSERT(IsEqual(Zo, _zo));
+         CHECK(IsEqual(Zo, _zo));
       }
 #endif
    }
    else
    {
-      ATLASSERT(m_FirstPoi - m_LastPoi + 1 == m_vPoi.size());
+      CHECK(m_FirstPoi - m_LastPoi + 1 == m_vPoi.size());
       CComQIPtr<IFem2dModelResults> femResults(pModel);
       Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
 
@@ -2795,7 +2795,7 @@ Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProb
          Zo += zo;
       }
 
-      ATLASSERT(poiID1 == m_LastPoi);
+      CHECK(poiID1 == m_LastPoi);
 
       Float64 Wg = results.Wg;
       Zo /= -Wg;
@@ -2807,7 +2807,7 @@ void StabilityEngineer::GetRebarLayout(const IGirder* pGirder,IRebarLayout** ppR
 {
    CComPtr<ISegment> segment;
    pGirder->GetSegment(&segment);
-   ATLASSERT(segment);
+   CHECK(segment);
 
    CComQIPtr<IItemData> itemData(segment);
    CComPtr<IUnknown> punk;
@@ -2831,7 +2831,7 @@ void StabilityEngineer::FindMember(IFem2dModel* pModel, Float64 distFromStartOfM
    CComPtr<IFem2dMemberCollection> members;
    pModel->get_Members(&members);
 
-   CollectionIndexType mbrcnt;
+   IndexType mbrcnt;
    members->get_Count(&mbrcnt);
 
    CComPtr<IFem2dJointCollection> joints;
@@ -2840,7 +2840,7 @@ void StabilityEngineer::FindMember(IFem2dModel* pModel, Float64 distFromStartOfM
    CComPtr<IFem2dEnumMember> enumMembers;
    members->get__EnumElements(&enumMembers);
 
-   CollectionIndexType idx = 0;
+   IndexType idx = 0;
    CComPtr<IFem2dJoint> j1, j2;
    CComPtr<IFem2dMember> mbr;
    while (enumMembers->Next(1, &mbr, nullptr) != S_FALSE)
@@ -2881,5 +2881,5 @@ void StabilityEngineer::FindMember(IFem2dModel* pModel, Float64 distFromStartOfM
       idx++;
    }
 
-   ATLASSERT(false); // didn't find a solution
+   CHECK(false); // didn't find a solution
 }

@@ -219,10 +219,6 @@ namespace WBFL
          std::shared_ptr<const DeckBoundary> GetDeckBoundary() const;
          /// @}
 
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          std::map<IDType, std::shared_ptr<const Alignment>> m_Alignments;
          IDType m_BridgeAlignmentID = INVALID_ID;

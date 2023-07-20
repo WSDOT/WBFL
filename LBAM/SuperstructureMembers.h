@@ -32,8 +32,8 @@
 #include "LBAMUtils.h"
 
 class CSuperstructureMembers;
-using SuperstructureMemberCollImpl = CComSegmentCollection<ISuperstructureMembers, ISuperstructureMember, IEnumSuperstructureMember, &IID_IEnumSuperstructureMember, CollectionIndexType>;
-using PersistentSuperstructureMemberCollImpl = CPersistentCollection<CSuperstructureMembers, SuperstructureMemberCollImpl,CollectionIndexType>;
+using SuperstructureMemberCollImpl = CComSegmentCollection<ISuperstructureMembers, ISuperstructureMember, IEnumSuperstructureMember, &IID_IEnumSuperstructureMember, IndexType>;
+using PersistentSuperstructureMemberCollImpl = CPersistentCollection<CSuperstructureMembers, SuperstructureMemberCollImpl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSuperstructureMembers
@@ -109,12 +109,12 @@ private:
       return S_OK;
    }
 
-   virtual HRESULT OnAfterAdd( StoredType* pVal, CollectionIndexType idx)
+   virtual HRESULT OnAfterAdd( StoredType* pVal, IndexType idx)
    {
       Fire_OnSuperstructureMembersAdded(pVal->second.m_T, idx);
       return S_OK;
    }
-   virtual HRESULT OnBeforeRemove( StoredType* pVal, CollectionIndexType idx)
+   virtual HRESULT OnBeforeRemove( StoredType* pVal, IndexType idx)
    {
       try
       {
@@ -135,16 +135,16 @@ private:
       return S_OK;
    }
 
-   virtual HRESULT OnAfterRemove( CollectionIndexType idx)
+   virtual HRESULT OnAfterRemove( IndexType idx)
    {
       return S_OK; 
    }
-   virtual HRESULT OnAfterMoveTo( CollectionIndexType from, CollectionIndexType to)
+   virtual HRESULT OnAfterMoveTo( IndexType from, IndexType to)
    {
       Fire_OnSuperstructureMembersMoveTo (from, to);
       return S_OK;
    }
-   virtual HRESULT OnAfterCopyTo( CollectionIndexType from, CollectionIndexType to)
+   virtual HRESULT OnAfterCopyTo( IndexType from, IndexType to)
    {
       Fire_OnSuperstructureMembersCopyTo(from, to);
       return S_OK;
@@ -159,7 +159,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      CollectionIndexType cnt = 0;
+      IndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

@@ -82,11 +82,11 @@ namespace WBFL
          bool RemoveChapterBuilder(LPCTSTR strKey);
 
          /// Number of chapter builders
-         CollectionIndexType GetChapterBuilderCount() const;
+         IndexType GetChapterBuilderCount() const;
 
          /// Returns a chapter builder at the specified index
-         std::shared_ptr<ChapterBuilder> GetChapterBuilder(CollectionIndexType idx);
-         std::shared_ptr<const ChapterBuilder> GetChapterBuilder(CollectionIndexType idx) const;
+         std::shared_ptr<ChapterBuilder> GetChapterBuilder(IndexType idx);
+         std::shared_ptr<const ChapterBuilder> GetChapterBuilder(IndexType idx) const;
 
          /// Returns a chapter builder with the specified key
          std::shared_ptr<ChapterBuilder> GetChapterBuilder(LPCTSTR strKey);

@@ -47,7 +47,7 @@ namespace WBFL
 
          const WBFL::Geometry::Point2d& GetCentroid() const;
          IndexType GetSliceCount() const;
-         const std::unique_ptr<CrackedSectionSlice>& GetSlice(IndexType sliceIdx) const;
+         const CrackedSectionSlice& GetSlice(IndexType sliceIdx) const;
          WBFL::Geometry::ElasticProperties GetElasticProperties() const;
 
       private:
@@ -75,10 +75,10 @@ namespace WBFL
          return m_vSlices.size();
       }
 
-      const std::unique_ptr<CrackedSectionSlice>& CrackedSectionSolutionImpl::GetSlice(IndexType sliceIdx) const
+      const CrackedSectionSlice& CrackedSectionSolutionImpl::GetSlice(IndexType sliceIdx) const
       {
          PRECONDITION(sliceIdx < m_vSlices.size());
-         return m_vSlices[sliceIdx];
+         return *m_vSlices[sliceIdx];
       }
 
       WBFL::Geometry::ElasticProperties CrackedSectionSolutionImpl::GetElasticProperties() const
@@ -95,14 +95,13 @@ namespace WBFL
             
             if (!IsZero(Efg))
             {
-#pragma Reminder("WORKING HERE - Modernization - section.AddComponent creates a clone because section tries to own the shapes - reimplement section using shared_ptrs")
                // only add slices that aren't cracked
-               section.AddComponent(*shape, Efg, 0.0, 0.0, 0.0, WBFL::Geometry::SectionComponent::ComponentType::Structural);
+               section.AddComponent(shape, Efg, 0.0, 0.0, 0.0, WBFL::Geometry::SectionComponent::ComponentType::Structural);
 
                if (!IsZero(Ebg))
                {
                   // add the void
-                  section.AddComponent(*shape, 0.0, Ebg, 0.0, 0.0, WBFL::Geometry::SectionComponent::ComponentType::Nonstructural);
+                  section.AddComponent(shape, 0.0, Ebg, 0.0, 0.0, WBFL::Geometry::SectionComponent::ComponentType::Nonstructural);
                }
             }
          }
@@ -148,7 +147,7 @@ IndexType CrackedSectionSolution::GetSliceCount() const
    return m_pImpl->GetSliceCount();
 }
 
-const std::unique_ptr<CrackedSectionSlice>& CrackedSectionSolution::GetSlice(IndexType sliceIdx) const
+const CrackedSectionSlice& CrackedSectionSolution::GetSlice(IndexType sliceIdx) const
 {
    return m_pImpl->GetSlice(sliceIdx);
 }
@@ -157,15 +156,3 @@ WBFL::Geometry::ElasticProperties CrackedSectionSolution::GetElasticProperties()
 {
    return m_pImpl->GetElasticProperties();
 }
-
-#if defined _UNITTEST
-bool CrackedSectionSolution::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CrackedSectionSolution");
-
-   //TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for CrackedSectionSolution");
-   // not much to test here
-
-   TESTME_EPILOG("CrackedSectionSolution");
-}
-#endif // _UNITTEST

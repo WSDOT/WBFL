@@ -92,7 +92,7 @@ public:
 	}
 
    // from atl
-	STDMETHOD(get_Count)(CollectionIndexType* pcount)
+	STDMETHOD(get_Count)(IndexType* pcount)
 	{
 		if (pcount == nullptr)
 			return E_POINTER;
@@ -120,7 +120,7 @@ public:
 	}
 
 public:
-   STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out]*/IDType* pid)
+   STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out]*/IDType* pid)
    {
       CHECK_RETVAL(pid);
 
@@ -143,9 +143,9 @@ public:
       {
          // erase by index
          ATLASSERT(IDorIndex>=0);
-         ATLASSERT(IDorIndex < (CollectionIndexType)m_coll.size());
+         ATLASSERT(IDorIndex < (IndexType)m_coll.size());
 
-         if (IDorIndex<0 || (CollectionIndexType)m_coll.size()<=IDorIndex)
+         if (IDorIndex<0 || (IndexType)m_coll.size()<=IDorIndex)
          {
             return E_INVALIDARG;
          }
@@ -153,7 +153,7 @@ public:
          {
             // zero-based access
             ContainerType::iterator it(m_coll.begin());
-            for (CollectionIndexType i = 0; i<IDorIndex; i++)
+            for (IndexType i = 0; i<IDorIndex; i++)
             {
                it++;
             }
@@ -204,13 +204,13 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_Item)(CollectionIndexType idx, /*[out, retval]*/ ItemType* *pVal)
+   STDMETHOD(get_Item)(IndexType idx, /*[out, retval]*/ ItemType* *pVal)
    {
       CHECK_RETOBJ(pVal);
 
 		HRESULT hr = E_FAIL;
 
-      if (idx<0 || (CollectionIndexType)m_coll.size()<=idx)
+      if (idx<0 || (IndexType)m_coll.size()<=idx)
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access

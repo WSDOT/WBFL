@@ -82,17 +82,17 @@ STDMETHODIMP CTendon::AddSegment(ITendonSegment* segment)
    return PersistentTendonSegmentCollection::Add(segment);
 }
 
-STDMETHODIMP CTendon::get_Segment(CollectionIndexType index,ITendonSegment** segment)
+STDMETHODIMP CTendon::get_Segment(IndexType index,ITendonSegment** segment)
 {
    return PersistentTendonSegmentCollection::get_Item(index,segment);
 }
 
-STDMETHODIMP CTendon::get_Count(CollectionIndexType* count)
+STDMETHODIMP CTendon::get_Count(IndexType* count)
 {
    return PersistentTendonSegmentCollection::get_Count(count);
 }
 
-STDMETHODIMP CTendon::RemoveSegment(CollectionIndexType index)
+STDMETHODIMP CTendon::RemoveSegment(IndexType index)
 {
    return PersistentTendonSegmentCollection::Remove(index);
 }

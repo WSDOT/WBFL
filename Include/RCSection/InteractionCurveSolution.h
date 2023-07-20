@@ -52,7 +52,7 @@ namespace WBFL
          Float64 GetFz(IndexType index) const;
 
          /// MomentCapacitySolution for an interaction point
-         const std::unique_ptr<MomentCapacitySolution>& GetSolutionPoint(IndexType index) const;
+         const MomentCapacitySolution& GetSolutionPoint(IndexType index) const;
 
          /// Number of solution points
          IndexType GetSolutionPointCount() const;
@@ -65,11 +65,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<InteractionCurveSolutionImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

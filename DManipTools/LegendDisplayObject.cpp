@@ -209,7 +209,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::get_Font(LOGFONT* pFont)
    *pFont = m_Font;
 }
 
-STDMETHODIMP_(void) CLegendDisplayObject::get_NumEntries(CollectionIndexType* count)
+STDMETHODIMP_(void) CLegendDisplayObject::get_NumEntries(IndexType* count)
 {
    *count = m_Container.size();
 }
@@ -219,7 +219,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::AddEntry(iLegendEntry* entry)
    m_Container.emplace_back(entry);
 }
 
-STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(CollectionIndexType index, iLegendEntry* entry)
+STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(IndexType index, iLegendEntry* entry)
 {
    if (index<0 || index>m_Container.size()+1)
       return E_INVALIDARG;
@@ -237,7 +237,7 @@ STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(CollectionIndexType ind
    return S_OK;
 }
 
-STDMETHODIMP_(HRESULT) CLegendDisplayObject::get_Entry(CollectionIndexType index, iLegendEntry* *entry)
+STDMETHODIMP_(HRESULT) CLegendDisplayObject::get_Entry(IndexType index, iLegendEntry* *entry)
 {
    (*entry) = 0;
    if ( index < 0 || m_Container.size() <= index )
@@ -247,7 +247,7 @@ STDMETHODIMP_(HRESULT) CLegendDisplayObject::get_Entry(CollectionIndexType index
    return ppt.m_T.CopyTo(entry);
 }
 
-STDMETHODIMP_(HRESULT) CLegendDisplayObject::RemoveEntry(CollectionIndexType index)
+STDMETHODIMP_(HRESULT) CLegendDisplayObject::RemoveEntry(IndexType index)
 {
    if (index<0 || index>m_Container.size()-1)
       return E_INVALIDARG;
@@ -264,12 +264,12 @@ STDMETHODIMP_(void) CLegendDisplayObject::ClearEntries()
    m_Container.clear();
 }
 
-STDMETHODIMP_(void) CLegendDisplayObject::get_NumRows(CollectionIndexType* count)
+STDMETHODIMP_(void) CLegendDisplayObject::get_NumRows(IndexType* count)
 {
    *count = m_NumRows;
 }
 
-STDMETHODIMP_(void) CLegendDisplayObject::put_NumRows(CollectionIndexType count)
+STDMETHODIMP_(void) CLegendDisplayObject::put_NumRows(IndexType count)
 {
    if (count>0 && m_NumRows!=count)
    {
@@ -466,7 +466,7 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
    LONG lcheight = LONG(csize_twips.cy * ly_per_twip);
 
    // total width and height of legend box in logical coords
-   CollectionIndexType num_entries = m_Container.size();
+   IndexType num_entries = m_Container.size();
    ColumnIndexType num_cols = GetNumCols(m_NumRows, num_entries);
 
    LONG lwidth  = (LONG)(num_cols  * lcwidth);
@@ -698,8 +698,8 @@ STDMETHODIMP_(void) CLegendDisplayObject::PrepareDrag(iDragDataSink* pSink)
    pSink->Write(ms_cfFormat,&y,sizeof(Float64));
 
    // Title. Strings are tricky
-   CollectionIndexType len = m_Title.Length();
-   pSink->Write(ms_cfFormat,&len,sizeof(CollectionIndexType));
+   IndexType len = m_Title.Length();
+   pSink->Write(ms_cfFormat,&len,sizeof(IndexType));
    if (len>0)
    {
       BSTR tstr = m_Title.m_str;
@@ -715,7 +715,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::PrepareDrag(iDragDataSink* pSink)
 
    // legend items are polymorphic
    len = m_Container.size();
-   pSink->Write(ms_cfFormat,&len,sizeof(CollectionIndexType));
+   pSink->Write(ms_cfFormat,&len,sizeof(IndexType));
    for (ContainerIterator it = m_Container.begin(); it!=m_Container.end(); it++)
    {
       ContainerItem item = *it;

@@ -32,7 +32,7 @@
 #include "WBFLComCollections.h"
 
 class CPoint2dCollection;
-using Point2dVectorImpl= CComVectorCollection<IPoint2dCollection,IPoint2d,IEnumPoint2d,&IID_IEnumPoint2d,CollectionIndexType>;
+using Point2dVectorImpl= CComVectorCollection<IPoint2dCollection,IPoint2d,IEnumPoint2d,&IID_IEnumPoint2d,IndexType>;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -68,10 +68,10 @@ public:
    STDMETHOD(Clone)(/*[out,retval]*/IPoint2dCollection** clone) override;
    STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumPoint2d** ppenum) override;
    STDMETHOD(Clear)() override;
-//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index) override;
+//	STDMETHOD(Remove)(/*[in]*/ IndexType Index) override;
 //	STDMETHOD(Add)(/*[in]*/ IPoint2d* pPoint) override;
-//	STDMETHOD(get_Item)(CollectionIndexType Index, IPoint2d** pPoint) override;
-//	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+//	STDMETHOD(get_Item)(IndexType Index, IPoint2d** pPoint) override;
+//	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 //	STDMETHOD(get__NewEnum)(IUnknown** retval) override;
    STDMETHOD(Offset)(Float64 dx,Float64 dy) override;
    STDMETHOD(OffsetEx)(ISize2d* size) override;

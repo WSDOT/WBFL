@@ -25,62 +25,62 @@
 #pragma once
 
 #include <Lrfd\LrfdExp.h>
-
 #include <Materials/SimpleConcrete.h>
 #include <MathEx.h>
 
-struct LRFDCLASS lrfdUHPCShearData
+namespace WBFL
 {
-   // Input Parameters
-   Float64 Mu{ 0.0 };
-   Float64 Nu{ 0.0 };
-   Float64 Vu{ 0.0 };
-   Float64 phi{ 0.0 };
-   Float64 Vp{ 0.0 };
-   Float64 dv{ 0.0 }; // dv for longitudinal strain and longitudinal tension tie
-   Float64 dv_uhpc{ Float64_Max }; // dv for use in Vuhpc and shear stress calculations, but not more than dv
-   Float64 bv{ 0.0 };
-   Float64 Es{ 0.0 };
-   Float64 As{ 0.0 };
-   Float64 Eps{ 0.0 };
-   Float64 Aps{ 0.0 };
-   Float64 Ec{ 0.0 };
-   Float64 Ac{ 0.0 };
-   Float64 fpo{ 0.0 };
-   Float64 ft{ 0.0 };
-   Float64 ftloc{ 0.0 };
-   Float64 etloc{ 0.0 };
-   Float64 etcr{ 0.0 };
-   Float64 alpha{ PI_OVER_2 };
-   Float64 gamma_u{ 0.0 };
+   namespace LRFD
+   {
+      struct LRFDCLASS UHPCShearData
+      {
+         // Input Parameters
+         Float64 Mu{ 0.0 };
+         Float64 Nu{ 0.0 };
+         Float64 Vu{ 0.0 };
+         Float64 phi{ 0.0 };
+         Float64 Vp{ 0.0 };
+         Float64 dv{ 0.0 }; // dv for longitudinal strain and longitudinal tension tie
+         Float64 dv_uhpc{ Float64_Max }; // dv for use in Vuhpc and shear stress calculations, but not more than dv
+         Float64 bv{ 0.0 };
+         Float64 Es{ 0.0 };
+         Float64 As{ 0.0 };
+         Float64 Eps{ 0.0 };
+         Float64 Aps{ 0.0 };
+         Float64 Ec{ 0.0 };
+         Float64 Ac{ 0.0 };
+         Float64 fpo{ 0.0 };
+         Float64 ft{ 0.0 };
+         Float64 ftloc{ 0.0 };
+         Float64 etloc{ 0.0 };
+         Float64 etcr{ 0.0 };
+         Float64 alpha{ PI_OVER_2 };
+         Float64 gamma_u{ 0.0 };
 
-   Float64 fy{ 0.0 };
-   Float64 AvS{ 0.0 }; // Av/s per 5.8.2.5 (equation 5.8.2.5-1)
+         Float64 fy{ 0.0 };
+         Float64 AvS{ 0.0 }; // Av/s per 5.8.2.5 (equation 5.8.2.5-1)
 
-   // Output Parameters
-   Float64 fv{ 0.0 };
-   Float64 Theta{ 0.0 };
-   Float64 rho{ 0.0 };
-   Float64 es{ 0.0 };
-   Float64 e2{ 0.0 };
-   Float64 ev{ 0.0 };
+         // Output Parameters
+         Float64 fv{ 0.0 };
+         Float64 Theta{ 0.0 };
+         Float64 rho{ 0.0 };
+         Float64 es{ 0.0 };
+         Float64 e2{ 0.0 };
+         Float64 ev{ 0.0 };
 
-   Float64 dv_per_1_7_2_8() const { return Min(dv, dv_uhpc); }
-};
+         Float64 dv_per_1_7_2_8() const { return Min(dv, dv_uhpc); }
+      };
 
-class LRFDCLASS lrfdUHPCShear
-{
-public:
-   lrfdUHPCShear() = delete;
-    ~lrfdUHPCShear() = delete;
+      class LRFDCLASS UHPCShear
+      {
+      public:
+         UHPCShear() = delete;
+         UHPCShear(const UHPCShear&) = delete;
+          ~UHPCShear() = delete;
 
-   static bool ComputeShearResistanceParameters(lrfdUHPCShearData* pData);
+          UHPCShear& operator=(const UHPCShear&) = delete;
 
-#if defined _UNITTEST
-public:
-   static bool TestMe(WBFL::Debug::Log& rlog);
-private:
-   static bool TestCase1(WBFL::Debug::Log& rlog);
-   static bool TestCase2(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
+         static bool ComputeShearResistanceParameters(UHPCShearData* pData);
+      };
+   };
 };

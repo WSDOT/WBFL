@@ -1,2 +1,1 @@
 LIBRARY        WBFLMaterials.dll
-EXPORTS  UnitTest @1

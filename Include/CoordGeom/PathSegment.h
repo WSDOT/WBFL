@@ -102,11 +102,6 @@ namespace WBFL
          /// @brief Type conversion operator allowing a PathSegment to be converted to a LineSegment2d
          operator WBFL::Geometry::LineSegment2d const() { return m_Segment; }
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          WBFL::Geometry::LineSegment2d m_Segment;
       };

@@ -308,13 +308,13 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
 
          CComBSTR name;
          rebar->get_Name(&name);
-         WBFL::Materials::Rebar::Size size = lrfdRebarPool::GetBarSize(OLE2CT(name));
+         WBFL::Materials::Rebar::Size size = WBFL::LRFD::RebarPool::GetBarSize(OLE2CT(name));
 
          Float64 dev_length_factor = 1.0;
          if (pRequirements->bAdjustForDevelopmentLength)
          {
             // Adjust bar area for development
-            REBARDEVLENGTHDETAILS devLengthDetails = lrfdRebar::GetRebarDevelopmentLengthDetails(size, Ab, db, pRequirements->fy, pRequirements->concreteType, pRequirements->fc, pRequirements->bHasFct, pRequirements->Fct, pRequirements->density,false,false,true);
+            auto devLengthDetails = WBFL::LRFD::Rebar::GetRebarDevelopmentLengthDetails(size, Ab, db, pRequirements->fy, pRequirements->concreteType, pRequirements->fc, pRequirements->bHasFct, pRequirements->Fct, pRequirements->density,false,false,true);
 
             // Get distances from section cut to ends of bar
             Float64 start, end;

@@ -119,12 +119,6 @@ namespace WBFL
          /// @return The computed widening. If the specified SurfaceTemplateSegment is not widened the computed widening is zero.
          Float64 GetWidening(const Station& station,IndexType surfaceTemplateSegmentIndex) const;
 
-
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          std::weak_ptr<const Surface> m_Surface;
          Station m_BeginTransition;

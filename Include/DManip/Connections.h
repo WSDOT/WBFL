@@ -81,7 +81,7 @@ public:
    STDMETHOD_(void,AddSocket)(IDType id,IPoint2d* pos,iSocket** socket) PURE;
    STDMETHOD_(void,GetSocket)(IDType key,AccessType access,iSocket** socket) PURE;
    STDMETHOD_(void,FindSocket)(IRect2d* rect,iSocket** socket) PURE;
-   STDMETHOD_(CollectionIndexType,GetSocketCount)() PURE;
+   STDMETHOD_(IndexType,GetSocketCount)() PURE;
    STDMETHOD_(void,RemoveSocket)(IDType key,AccessType access) PURE;
    STDMETHOD_(void,RemoveAllSockets)() PURE;
 

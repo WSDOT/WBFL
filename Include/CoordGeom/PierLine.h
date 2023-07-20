@@ -128,10 +128,6 @@ namespace WBFL
          /// @return 
          Float64 GetBearingOffset(PierFaceType pierFace, const Direction& direction) const;
 
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          std::weak_ptr<const BridgeFramingGeometry> m_pBridge;
          IDType m_ID = INVALID_ID;

@@ -114,17 +114,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<MomentCapacitySolverImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      private:
-         static bool Test1(WBFL::Debug::Log& rlog);
-         static bool Test2(WBFL::Debug::Log& rlog);
-         static bool Test3(WBFL::Debug::Log& rlog);
-         static bool Test4(WBFL::Debug::Log& rlog);
-         static bool Test5(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

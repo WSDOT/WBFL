@@ -35,7 +35,7 @@ namespace WBFL
       {
       public:
          // GROUP: ENUMERATIONS
-         enum Reason { CodeFault,        ///< There is an error in the source code,
+         enum Reason { Precondition,     ///< A precondition was not satisfied
                        InvalidValue,     ///< A value is invalid
                        ValueOutOfRange,  ///< A value was out of a required range
                        NotImplemented,   ///< A code segment is not implemented

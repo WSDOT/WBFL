@@ -101,7 +101,7 @@ STDMETHODIMP CDistributedLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/M
 	return hr;
 }
 
-STDMETHODIMP CDistributedLoadCollection::Remove(CollectionIndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
+STDMETHODIMP CDistributedLoadCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
 {
    HRESULT hr = DistributedLoadCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))

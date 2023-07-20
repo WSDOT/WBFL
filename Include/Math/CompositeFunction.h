@@ -59,7 +59,7 @@ namespace WBFL
 
          virtual std::unique_ptr<Function> Clone() const override;
 
-         // Removes all functions from this composite
+         /// Removes all functions from this composite
          void Clear();
 
       private:
@@ -74,11 +74,6 @@ namespace WBFL
          };
 
          std::vector<Segment> m_Segments;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

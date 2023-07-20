@@ -242,28 +242,28 @@ library WBFLRCCapacity
       );
 
       /// Number of mild steel reinforcement layers
-		[propget, helpcontext(IDH_IRCBeam2_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out,retval] CollectionIndexType * count);
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out,retval] IndexType * count);
 
       /// Depth to a mild steel reinforcement layer
-		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * ds);
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] IndexType index,[out,retval] Float64 * ds);
 
       /// Area of steel in a mild reinforcement layer
-		[propget, helpcontext(IDH_IRCBeam2_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * As);
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] IndexType index,[out,retval] Float64 * As);
 
       /// Development length factor for a mild reinforcement layer
-		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] IndexType index,[out,retval] Float64 * devFactor);
 
       /// Retrieves information about a mild steel reinforcement layer
 		[helpcontext(IDH_IRCBeam2_GetRebarLayer), helpstring("method GetRebarLayer")] 
       HRESULT GetRebarLayer(
-         [in] CollectionIndexType index, ///< index of the layer
+         [in] IndexType index, ///< index of the layer
          [out] Float64 * ds,  ///< depth to the reinforcement
          [out] Float64 * As, ///< area of reinforcement
          [out] Float64* devFactor ///< development length factor
       );
 
       /// Removes a layer of mild steel reinforcement from the model
-      [helpcontext(IDH_IRCBeam2_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] CollectionIndexType index);
+      [helpcontext(IDH_IRCBeam2_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] IndexType index);
 
       /// Removes all mild steel reinforcement from the model.
 		[helpcontext(IDH_IRCBeam2_ClearRebarLayers), helpstring("method ClearRebarLayers")] HRESULT ClearRebarLayers();
@@ -272,28 +272,28 @@ library WBFLRCCapacity
 		[helpcontext(IDH_IRCBeam2_AddStrandLayer), helpstring("method AddStrandLayer")] HRESULT AddStrandLayer([in] Float64 dps,[in] Float64 Aps,[in] Float64 devFactor);
 
       /// Number of prestress reinforcement layers
-		[propget, helpcontext(IDH_IRCBeam2_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out,retval] CollectionIndexType * count);
+		[propget, helpcontext(IDH_IRCBeam2_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out,retval] IndexType * count);
 
       /// Depth to a prestress reinforcement layer
-		[propget, helpcontext(IDH_IRCBeam2_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] CollectionIndexType index,[out,retval] Float64 * dps);
+		[propget, helpcontext(IDH_IRCBeam2_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] IndexType index,[out,retval] Float64 * dps);
 
       /// Area of steel in a prestress reinforcement layer
-		[propget, helpcontext(IDH_IRCBeam2_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] CollectionIndexType index,[out,retval] Float64 * Aps);
+		[propget, helpcontext(IDH_IRCBeam2_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] IndexType index,[out,retval] Float64 * Aps);
 
       /// Development length factor for a prestress reinforcement layer
-		[propget, helpcontext(IDH_IRCBeam2_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] CollectionIndexType index,[out,retval] Float64 * devFactor);
+		[propget, helpcontext(IDH_IRCBeam2_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] IndexType index,[out,retval] Float64 * devFactor);
 
       /// Retrieves information about a prestress reinforcement layer
 		[helpcontext(IDH_IRCBeam2_GetStrandLayer), helpstring("method GetStrandLayer")] 
       HRESULT GetStrandLayer(
-         [in] CollectionIndexType index, ///< index of the layer
+         [in] IndexType index, ///< index of the layer
          [out] Float64 * dps,  ///< depth to the reinforcement
          [out] Float64 * Aps, ///< area of reinforcement
          [out] Float64* devFactor /// development length factor
       );
 
       /// Removes a layer of prestress reinforcement from the model.
-		[helpcontext(IDH_IRCBeam2_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] CollectionIndexType index);
+		[helpcontext(IDH_IRCBeam2_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] IndexType index);
 
       /// Removes all prestress reinforcement from the model.
 		[helpcontext(IDH_IRCBeam2_ClearStrandLayers), helpstring("method ClearStrandLayers")] HRESULT ClearStrandLayers();
@@ -365,28 +365,28 @@ library WBFLRCCapacity
       );
 
       /// Number of mild steel reinforcement layers
-      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out, retval] CollectionIndexType * count);
+      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerCount), helpstring("property RebarLayerCount")] HRESULT RebarLayerCount([out, retval] IndexType * count);
 
       /// Depth to a mild steel reinforcement layer
-      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] CollectionIndexType index, [out, retval] Float64 * ds);
+      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDepth), helpstring("property RebarLayerDepth")] HRESULT RebarLayerDepth([in] IndexType index, [out, retval] Float64 * ds);
 
       /// Area of steel in a mild reinforcement layer
-      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] CollectionIndexType index, [out, retval] Float64 * As);
+      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] IndexType index, [out, retval] Float64 * As);
 
       /// Development length factor for a mild reinforcement layer
-      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] CollectionIndexType index, [out, retval] Float64 * devFactor);
+      [propget, helpcontext(IDH_IRCBeam2Ex_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] IndexType index, [out, retval] Float64 * devFactor);
 
       /// Retrieves information about a mild steel reinforcement layer
       [helpcontext(IDH_IRCBeam2Ex_GetRebarLayer), helpstring("method GetRebarLayer")]
       HRESULT GetRebarLayer(
-         [in] CollectionIndexType index, ///< index of the layer
+         [in] IndexType index, ///< index of the layer
          [out] Float64 * ds,  ///< depth to the reinforcement
          [out] Float64 * As, ///< area of reinforcement
          [out] Float64* devFactor ///< development length factor
       );
 
       /// Removes a layer of mild steel reinforcement from the model
-      [helpcontext(IDH_IRCBeam2Ex_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] CollectionIndexType index);
+      [helpcontext(IDH_IRCBeam2Ex_RemoveRebarLayer), helpstring("method RemoveRebarLayer")] HRESULT RemoveRebarLayer([in] IndexType index);
 
       /// Removes all mild steel reinforcement from the model.
       [helpcontext(IDH_IRCBeam2Ex_ClearRebarLayers), helpstring("method ClearRebarLayers")] HRESULT ClearRebarLayers();
@@ -395,28 +395,28 @@ library WBFLRCCapacity
       [helpcontext(IDH_IRCBeam2Ex_AddStrandLayer), helpstring("method AddStrandLayer")] HRESULT AddStrandLayer([in] Float64 dps, [in] Float64 Aps, [in] Float64 devFactor);
 
       /// Number of prestress reinforcement layers
-      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out, retval] CollectionIndexType * count);
+      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerCount), helpstring("property StrandLayerCount")] HRESULT StrandLayerCount([out, retval] IndexType * count);
 
       /// Depth to a prestress reinforcement layer
-      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] CollectionIndexType index, [out, retval] Float64 * dps);
+      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDepth), helpstring("property StrandLayerDepth")] HRESULT StrandLayerDepth([in] IndexType index, [out, retval] Float64 * dps);
 
       /// Area of steel in a prestress reinforcement layer
-      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] CollectionIndexType index, [out, retval] Float64 * Aps);
+      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerSteel), helpstring("property StrandLayerSteel")] HRESULT StrandLayerSteel([in] IndexType index, [out, retval] Float64 * Aps);
 
       /// Development length factor for a prestress reinforcement layer
-      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] CollectionIndexType index, [out, retval] Float64 * devFactor);
+      [propget, helpcontext(IDH_IRCBeam2Ex_StrandLayerDevFactor), helpstring("property StrandLayerDevFactor")] HRESULT StrandLayerDevFactor([in] IndexType index, [out, retval] Float64 * devFactor);
 
       /// Retrieves information about a prestress reinforcement layer
       [helpcontext(IDH_IRCBeam2Ex_GetStrandLayer), helpstring("method GetStrandLayer")]
       HRESULT GetStrandLayer(
-         [in] CollectionIndexType index, ///< index of the layer
+         [in] IndexType index, ///< index of the layer
          [out] Float64 * dps,  ///< depth to the reinforcement
          [out] Float64 * Aps, ///< area of reinforcement
          [out] Float64* devFactor /// development length factor
       );
 
       /// Removes a layer of prestress reinforcement from the model.
-      [helpcontext(IDH_IRCBeam2Ex_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] CollectionIndexType index);
+      [helpcontext(IDH_IRCBeam2Ex_RemoveStrandLayer), helpstring("method RemoveStrandLayer")] HRESULT RemoveStrandLayer([in] IndexType index);
 
       /// Removes all prestress reinforcement from the model.
       [helpcontext(IDH_IRCBeam2Ex_ClearStrandLayers), helpstring("method ClearStrandLayers")] HRESULT ClearStrandLayers();
@@ -1239,39 +1239,39 @@ library WBFLRCCapacity
       );
 
       /// Number of shapes in the cross section
-		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]CollectionIndexType* nShapes);
+		[propget,helpcontext(IDH_IGeneralSection_ShapeCount),helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* nShapes);
 
       /// Index of the primary shape
       [propput, helpstring("property PrimaryShapeIndex")] HRESULT PrimaryShapeIndex([in]IndexType shapeIdx);
       [propget, helpstring("property PrimaryShapeIndex")] HRESULT PrimaryShapeIndex([out, retval]IndexType* pShapeIdx);
 
       /// Name of the shape
-      [propput, helpstring("property Name")] HRESULT Name([in]CollectionIndexType shapeIdx, [in]BSTR bstrName);
-      [propget, helpstring("property Name")] HRESULT Name([in]CollectionIndexType shapeIdx, [out, retval]BSTR* pbstrName);
+      [propput, helpstring("property Name")] HRESULT Name([in]IndexType shapeIdx, [in]BSTR bstrName);
+      [propget, helpstring("property Name")] HRESULT Name([in]IndexType shapeIdx, [out, retval]BSTR* pbstrName);
 
       /// The shape of an element of the cross section
-		[propget,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[out,retval]IShape** pShape);
-		[propputref,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]CollectionIndexType shapeIdx,[in]IShape* pShape);
+		[propget,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]IndexType shapeIdx,[out,retval]IShape** pShape);
+		[propputref,helpcontext(IDH_IGeneralSection_Shape),helpstring("property Shape")] HRESULT Shape([in]IndexType shapeIdx,[in]IShape* pShape);
 
       /// The foreground material.
       ///
       /// This material provides the stress-strain model for solid elements of the cross section such as concrete or steel.
-		[propget,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
-		[propputref,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
+		[propget,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
+		[propputref,helpcontext(IDH_IGeneralSection_ForegroundMaterial),helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType shapeIdx,[in]IStressStrain* pMaterial);
 
       /// The background material.
       ///
       /// This material provides the stress-strain model for voids in elements of the cross section such as holes or "negative" areas in a soild area representing holes where reinforcement is located.
-      [propget,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
-		[propputref,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]CollectionIndexType shapeIdx,[in]IStressStrain* pMaterial);
+      [propget,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType shapeIdx,[out,retval]IStressStrain** pMaterial);
+		[propputref,helpcontext(IDH_IGeneralSection_BackgroundMaterial),helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType shapeIdx,[in]IStressStrain* pMaterial);
 
       /// Initial strain at the top of the shape
-      [propget, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [out, retval]IPlane3d** pStrainPlane);
-      [propputref, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]CollectionIndexType shapeIdx, [in]IPlane3d* strainPlane);
+      [propget, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]IndexType shapeIdx, [out, retval]IPlane3d** pStrainPlane);
+      [propputref, helpcontext(IDH_IGeneralSection_InitialStrain), helpstring("property InitialStrain")] HRESULT InitialStrain([in]IndexType shapeIdx, [in]IPlane3d* strainPlane);
 
       /// Strain elongation length (typically 0.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
-      [propget, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElongationLength")] HRESULT ElongationLength([in]CollectionIndexType shapeIdx, [out, retval]Float64* Le);
-      [propput, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElonationLength")] HRESULT ElongationLength([in]CollectionIndexType shapeIdx, [in]Float64 Le);
+      [propget, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElongationLength")] HRESULT ElongationLength([in]IndexType shapeIdx, [out, retval]Float64* Le);
+      [propput, /*helpcontext(IDH_IGeneralSection_InitialStrain),*/ helpstring("property ElonationLength")] HRESULT ElongationLength([in]IndexType shapeIdx, [in]Float64 Le);
    };
 
    /// Interface representing a "slice" in a fiber based discretization of a GeneralSection cross section object. 
@@ -1394,10 +1394,10 @@ library WBFLRCCapacity
       [propget,helpcontext(IDH_IGeneralSectionSolution_TensionResultantLocation),helpstring("property TensionResultantLocation")] HRESULT TensionResultantLocation([out,retval]IPoint2d** cgT);
 
       /// Number of slices
-		[propget,helpcontext(IDH_IGeneralSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]CollectionIndexType* nSlices);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]IndexType* nSlices);
 
       /// Returns a slice
-		[propget,helpcontext(IDH_IGeneralSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] CollectionIndexType sliceIdx,[out,retval]IGeneralSectionSlice** pSlice);
+		[propget,helpcontext(IDH_IGeneralSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] IndexType sliceIdx,[out,retval]IGeneralSectionSlice** pSlice);
 
       /// Returns a collection of IGeneralSectionSlice objects for a specific shape in the IGeneralSection model
       [helpstring("FindSlices")] HRESULT FindSlices([in]IndexType shapeIdx, [out, retval]IUnkArray** ppSlices);
@@ -1466,19 +1466,19 @@ library WBFLRCCapacity
       );
 
       /// Moment at a solution step
-		[propget,helpcontext(IDH_IMomentCurvatureSolution_Moment),helpstring("property Moment")] HRESULT Moment([in]CollectionIndexType idx,[out,retval]Float64* Mmax);
+		[propget,helpcontext(IDH_IMomentCurvatureSolution_Moment),helpstring("property Moment")] HRESULT Moment([in]IndexType idx,[out,retval]Float64* Mmax);
 
       /// Curvature at a solution step
-		[propget,helpcontext(IDH_IMomentCurvatureSolution_Curvature),helpstring("property Curvature")] HRESULT Curvature([in]CollectionIndexType idx,[out,retval]Float64* k);
+		[propget,helpcontext(IDH_IMomentCurvatureSolution_Curvature),helpstring("property Curvature")] HRESULT Curvature([in]IndexType idx,[out,retval]Float64* k);
 
       /// Incremental strain plane at a solution step
-      [propget, helpcontext(IDH_IMomentCurvatureSolution_StrainPlane), helpstring("property IncrementalStrainPlane")] HRESULT IncrementalStrainPlane([in]CollectionIndexType idx, [out, retval]IPlane3d** StrainPlane);
+      [propget, helpcontext(IDH_IMomentCurvatureSolution_StrainPlane), helpstring("property IncrementalStrainPlane")] HRESULT IncrementalStrainPlane([in]IndexType idx, [out, retval]IPlane3d** StrainPlane);
 
       /// MomentCapacitySolution object at a solution step
-      [propget, /*helpcontext(IDH_IMomentCurvatureSolution_StrainPlane),*/ helpstring("property CapacitySolution")] HRESULT CapacitySolution([in]CollectionIndexType idx, [out, retval]IMomentCapacitySolution** solution);
+      [propget, /*helpcontext(IDH_IMomentCurvatureSolution_StrainPlane),*/ helpstring("property CapacitySolution")] HRESULT CapacitySolution([in]IndexType idx, [out, retval]IMomentCapacitySolution** solution);
 
       /// Number of solution steps
-      [propget,helpcontext(IDH_IMomentCurvatureSolution_PointCount),helpstring("property PointCount")] HRESULT PointCount([out,retval]CollectionIndexType* nPoints);
+      [propget,helpcontext(IDH_IMomentCurvatureSolution_PointCount),helpstring("property PointCount")] HRESULT PointCount([out,retval]IndexType* nPoints);
 	};
 
    /// Interface implemented by objects that perform a fiber based strain compatibility moment curvature analysis on GeneralSection objects.
@@ -1709,16 +1709,16 @@ library WBFLRCCapacity
 	interface IInteractionCurveSolution : IUnknown
 	{
       /// Neutral axis direction for an analysis point
-		[propget,helpcontext(IDH_IInteractionCurveSolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([in]CollectionIndexType index,[out,retval]Float64* angle);
+		[propget,helpcontext(IDH_IInteractionCurveSolution_NeutralAxisDirection),helpstring("property NeutralAxisDirection")] HRESULT NeutralAxisDirection([in]IndexType index,[out,retval]Float64* angle);
 
       /// MomentCurvatureSolution for an interaction point
-		[propget,helpcontext(IDH_IInteractionCurveSolution_MomentCurvatureSolution),helpstring("property MomentCurvatureSolution")] HRESULT MomentCurvatureSolution([in]CollectionIndexType index,[out,retval]IMomentCurvatureSolution** solution);
+		[propget,helpcontext(IDH_IInteractionCurveSolution_MomentCurvatureSolution),helpstring("property MomentCurvatureSolution")] HRESULT MomentCurvatureSolution([in]IndexType index,[out,retval]IMomentCurvatureSolution** solution);
 
       /// Adds a MomentCurvatureSolution interaction point
 		[helpcontext(IDH_IInteractionCurveSolution_AddSolutionPoint),helpstring("method AddSolutionPoint")] HRESULT AddSolutionPoint([in]Float64 angle,[in]IMomentCurvatureSolution* solution);
 
       /// Number of solution points
-      [propget,helpcontext(IDH_IInteractionCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]CollectionIndexType* nPoints);
+      [propget,helpcontext(IDH_IInteractionCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]IndexType* nPoints);
 	};
 
    /// Interface defining moment curvature solver.
@@ -1779,13 +1779,13 @@ library WBFLRCCapacity
 	interface IInteractionCapacityCurveSolution : IUnknown
 	{
       /// MomentCapacitySolution for a specified analysis point
-		[propget,helpcontext(IDH_IInteractionCapacityCurveSolution_MomentCapacitySolution),helpstring("property MomentCapacitySolution")] HRESULT MomentCapacitySolution([in]CollectionIndexType index,[out,retval]IMomentCapacitySolution** solution);
+		[propget,helpcontext(IDH_IInteractionCapacityCurveSolution_MomentCapacitySolution),helpstring("property MomentCapacitySolution")] HRESULT MomentCapacitySolution([in]IndexType index,[out,retval]IMomentCapacitySolution** solution);
 
       /// Adds MomentCapacitySolution to the overall interaction solution
 		[helpcontext(IDH_IInteractionCapacityCurveSolution_AddSolutionPoint),helpstring("method AddSolutionPoint")] HRESULT AddSolutionPoint([in]IMomentCapacitySolution* solution);
 
       /// Number of solution points
-		[propget,helpcontext(IDH_IInteractionCapacityCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]CollectionIndexType* nPoints);
+		[propget,helpcontext(IDH_IInteractionCapacityCurveSolution_SolutionPointCount),helpstring("property SolutionPointCount")] HRESULT SolutionPointCount([out,retval]IndexType* nPoints);
 	};
 
    /// Interface implemented by objects that compute P-M interaction diagrams for GeneralSection objects. 
@@ -1973,10 +1973,10 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_ICrackedSectionSolution_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pntCG);
 
       /// Number of slices
-		[propget,helpcontext(IDH_ICrackedSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]CollectionIndexType* nSlices);
+		[propget,helpcontext(IDH_ICrackedSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]IndexType* nSlices);
 
       /// A slice in the solution space
-		[propget,helpcontext(IDH_ICrackedSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] CollectionIndexType sliceIdx,[out,retval]ICrackedSectionSlice** pSlice);
+		[propget,helpcontext(IDH_ICrackedSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] IndexType sliceIdx,[out,retval]ICrackedSectionSlice** pSlice);
 
       /// Elastic properties of the cracked section
       [propget,helpcontext(IDH_ICrackedSectionSolution_ElasticProperties),helpstring("property ElasticProperties")] HRESULT ElasticProperties([out,retval]IElasticProperties** ppProps);
@@ -2261,7 +2261,7 @@ library WBFLRCCapacity
 		[helpcontext(IDH_ICapacityReductionFactor_Compute),helpstring("method Compute")] 
       HRESULT Compute(
          [in]IGeneralSection* section, ///< A GeneralSection assumed to be a reinforced concrete section
-         [in]CollectionIndexType nConcShapes, ///< Number of concrete elements in the GeneralSection. Concrete elements must be defined first.
+         [in]IndexType nConcShapes, ///< Number of concrete elements in the GeneralSection. Concrete elements must be defined first.
          [in]ILine2d* neutralAxis, ///< WBFLGeometry::Line2d object representing the neutral axis
          [in]Float64 ppr, ///< The partial prestress ratio
          [out]Float64* c, ///< Depth to neutral axis

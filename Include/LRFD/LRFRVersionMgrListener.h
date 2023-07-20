@@ -26,60 +26,30 @@
 
 #include <Lrfd\LrfdExp.h>
 
-
-/*****************************************************************************
-CLASS 
-   lrfrVersionMgrListener
-
-   Listener class for lrfrVersionMgr.
-
-
-DESCRIPTION
-   Listener class for lrfrVersionMgr.
-
-LOG
-   rab : 12.07.2009 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfrVersionMgrListener
+namespace WBFL
 {
-public:
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfrVersionMgrListener();
+   namespace LRFD
+   {
+      /// @brief Base class for LRFRVersionMgr listener objects
+      /// Create subclasses and override the virtual callback methods to
+      /// be notified when the version manager changes.
+      class LRFDCLASS LRFRVersionMgrListener
+      {
+      public:
+         LRFRVersionMgrListener() = default;
+         LRFRVersionMgrListener(const LRFRVersionMgrListener& rOther) = default;
+         virtual ~LRFRVersionMgrListener() = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfrVersionMgrListener(const lrfrVersionMgrListener& rOther);
+         LRFRVersionMgrListener& operator=(const LRFRVersionMgrListener& rOther) = default;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfrVersionMgrListener();
+         /// @brief Called by LRFRVersionMgr after a listener is registered
+         virtual void OnRegistered();
 
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfrVersionMgrListener& operator = (const lrfrVersionMgrListener& rOther);
+         /// @brief Called by LRFRVersionMgr before a listener is unregistered
+         virtual void OnUnregistered();
 
-   //------------------------------------------------------------------------
-   virtual void OnRegistered();
-
-   //------------------------------------------------------------------------
-   virtual void OnUnregistered();
-
-   //------------------------------------------------------------------------
-   virtual void OnUpdate();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
+         /// @brief Called by LRFRVersionMgr whenever it is updated
+         virtual void OnUpdate();
+      };
+   };
 };

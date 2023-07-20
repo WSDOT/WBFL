@@ -52,7 +52,7 @@ STDMETHODIMP CStressPoints::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CStressPoints::OnStressPointChanged(/*[in]*/IStressPoint* pStressPoint)
 {
    // find stress point in our collection - will only fire on first found
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    iterator it( begin() );
    iterator itend( end() );
    for (; it != itend; it++)

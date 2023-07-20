@@ -293,7 +293,6 @@
     </ClCompile>
     <ClCompile Include="TipDlg.cpp" />
     <ClCompile Include="ToolBarDlg.cpp" />
-    <ClCompile Include="TxnTestClass.cpp" />
     <ClCompile Include="UIHintsDlg.cpp" />
     <ClCompile Include="UnitsDlg.cpp" />
     <ClCompile Include="webbrowser.cpp" />
@@ -406,7 +405,6 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="TipDlg.h" />
     <ClInclude Include="ToolBarDlg.h" />
-    <ClInclude Include="TxnTestClass.h" />
     <ClInclude Include="UIHintsDlg.h" />
     <ClInclude Include="UnitsDlg.h" />
     <ClInclude Include="WBCmdGroup.h" />

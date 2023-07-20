@@ -24,57 +24,55 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LRFDConcreteBase.h>
 
-lrfdLRFDConcreteBase::lrfdLRFDConcreteBase(LPCTSTR name) :
+using namespace WBFL::LRFD;
+
+LRFDConcreteBase::LRFDConcreteBase(LPCTSTR name) :
    WBFL::Materials::ConcreteBase(name)
 {
 }
 
-lrfdLRFDConcreteBase::~lrfdLRFDConcreteBase()
-{
-}
-
-void lrfdLRFDConcreteBase::SetEcCorrectionFactors(Float64 K1,Float64 K2)
+void LRFDConcreteBase::SetEcCorrectionFactors(Float64 K1,Float64 K2)
 {
    m_EcK1 = K1;
    m_EcK2 = K2;
 }
 
-void lrfdLRFDConcreteBase::GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const
+void LRFDConcreteBase::GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const
 {
    *pK1 = m_EcK1;
    *pK2 = m_EcK2;
 }
 
-void lrfdLRFDConcreteBase::SetCreepCorrectionFactors(Float64 K1,Float64 K2)
+void LRFDConcreteBase::SetCreepCorrectionFactors(Float64 K1,Float64 K2)
 {
    m_CreepK1 = K1;
    m_CreepK2 = K2;
 }
 
-void lrfdLRFDConcreteBase::GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const
+void LRFDConcreteBase::GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const
 {
    *pK1 = m_CreepK1;
    *pK2 = m_CreepK2;
 }
 
-void lrfdLRFDConcreteBase::SetShrinkageCorrectionFactors(Float64 K1,Float64 K2)
+void LRFDConcreteBase::SetShrinkageCorrectionFactors(Float64 K1,Float64 K2)
 {
    m_ShrinkageK1 = K1;
    m_ShrinkageK2 = K2;
 }
 
-void lrfdLRFDConcreteBase::GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const
+void LRFDConcreteBase::GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const
 {
    *pK1 = m_ShrinkageK1;
    *pK2 = m_ShrinkageK2;
 }
 
-void lrfdLRFDConcreteBase::SetLambda(Float64 lambda)
+void LRFDConcreteBase::SetLambda(Float64 lambda)
 {
    m_Lambda = lambda;
 }
 
-Float64 lrfdLRFDConcreteBase::GetLambda() const
+Float64 LRFDConcreteBase::GetLambda() const
 {
    return m_Lambda;
 }

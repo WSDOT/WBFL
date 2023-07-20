@@ -103,17 +103,17 @@ IndexType CGraphManagerAgent::GetGraphBuilderCount() const
    return m_GraphManager.GetGraphBuilderCount();
 }
 
-std::unique_ptr<WBFL::Graphing::GraphBuilder>& CGraphManagerAgent::GetGraphBuilder(LPCTSTR strGraphName)
+WBFL::Graphing::GraphBuilder& CGraphManagerAgent::GetGraphBuilder(LPCTSTR strGraphName)
 {
    return m_GraphManager.GetGraphBuilder(strGraphName);
 }
 
-std::unique_ptr<WBFL::Graphing::GraphBuilder>& CGraphManagerAgent::GetGraphBuilder(CollectionIndexType index)
+WBFL::Graphing::GraphBuilder& CGraphManagerAgent::GetGraphBuilder(IndexType index)
 {
    return m_GraphManager.GetGraphBuilder(index);
 }
 
-std::unique_ptr<WBFL::Graphing::GraphBuilder>& CGraphManagerAgent::GetGraphBuilder(const std::_tstring& strGraphName)
+WBFL::Graphing::GraphBuilder& CGraphManagerAgent::GetGraphBuilder(const std::_tstring& strGraphName)
 {
    return m_GraphManager.GetGraphBuilder(strGraphName);
 }

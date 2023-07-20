@@ -98,12 +98,6 @@ namespace WBFL
          /// @return 
          bool IsNormalized() const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          Float64 m_Value{ 0.0 };
          ZoneIndexType m_ZoneIndex{ INVALID_INDEX };

@@ -59,7 +59,7 @@ public:
    /// It will also try to shrink the bounds of the interval if the original max or
    /// min only slightly intrude into the outer bands.
    static void CalculateNiceRange(const Float64 originalMin, const Float64 originalMax, bool bOffsetZero,
-                                  CollectionIndexType& numberOfSegments, 
+                                  IndexType& numberOfSegments, 
                                   Float64& niceMin, Float64& niceMax, 
                                   Float64& niceIncrement);
 

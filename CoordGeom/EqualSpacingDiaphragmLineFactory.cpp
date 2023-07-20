@@ -71,7 +71,6 @@ IDType EqualSpacingDiaphragmLineFactory::GetDiaphragmLineIDIncrement() const
 
 void EqualSpacingDiaphragmLineFactory::SetDivisor(Uint16 divisor)
 {
-   PRECONDITION(0 < divisor);
    m_Divisor = divisor;
 }
 
@@ -125,14 +124,3 @@ std::vector<std::shared_ptr<DiaphragmLine>> EqualSpacingDiaphragmLineFactory::Cr
 
    return diaphragm_lines;
 }
-
-#if defined _UNITTEST
-bool EqualSpacingDiaphragmLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("EqualSpacingDiaphragmLineFactory");
-
-   TESTME_EPILOG("EqualSpacingDiaphragmLineFactory");
-}
-#endif // _UNITTEST
-
-

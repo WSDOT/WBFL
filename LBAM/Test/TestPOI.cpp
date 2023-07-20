@@ -97,7 +97,7 @@ void CTestPOI::Test()
    TRY_TEST( ppoi->get_MemberID(&i), S_OK );
    TRY_TEST( i, -1 );
 
-   CollectionIndexType count;
+   IndexType count;
    CComPtr<IPOIStressPoints> poisps;
    TRY_TEST( ppoi->get_POIStressPoints(&poisps), S_OK );
    TRY_TEST( poisps->get_Count(&count), S_OK );

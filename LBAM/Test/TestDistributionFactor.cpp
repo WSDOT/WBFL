@@ -104,7 +104,7 @@ void CTestDistributionFactor::TestDfCollection()
    TRY_TEST( pss_fr->Add(pssf6), S_OK);
    TRY_TEST( pss_fr->Add(pss2), S_OK);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST( pss_ts->get_Count(&cnt), S_OK);
    TRY_TEST( cnt, 2);
    TRY_TEST( pss_tl->get_Count(&cnt), S_OK);

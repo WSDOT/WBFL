@@ -103,18 +103,6 @@ namespace WBFL
          std::shared_ptr<Shape> GetSlabShape() const;
          std::shared_ptr<Shape> GetVoidShape(IndexType voidIdx) const;
 
-#if defined _DEBUG
-         /// Returns true if the class is in a valid state, otherwise returns false
-         virtual bool AssertValid() const override;
-
-         /// Dumps the contents of the class to the given stream.
-         virtual void Dump(WBFL::Debug::LogContext& os) const override;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-         // Self-diagnostic test function
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif _UNITTEST
       protected:
          virtual void OnUpdateComposite(std::unique_ptr<CompositeShape>& composite) const override;
 

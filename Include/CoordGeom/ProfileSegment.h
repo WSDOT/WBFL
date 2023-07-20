@@ -75,11 +75,6 @@ namespace WBFL
          virtual Float64 GetLength() const override;
          virtual std::pair<Float64, Float64> ComputeGradeAndElevation(const Station& station) const override;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          ProfilePoint m_Start, m_End;
       };

@@ -176,7 +176,7 @@ STDMETHODIMP CBridgeGeometry::FindLayoutLine(IDType ID,IPath** ppPath)
    return cogoUtil::CreatePath(WBFL::COGO::Path::Create(*path), ppPath);
 }
 
-STDMETHODIMP CBridgeGeometry::get_LayoutLineCount(CollectionIndexType* pVal)
+STDMETHODIMP CBridgeGeometry::get_LayoutLineCount(IndexType* pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_Bridge->GetLayoutLineCount();
@@ -270,10 +270,10 @@ STDMETHODIMP CBridgeGeometry::get_DeckBoundary(IDeckBoundary** ppDeckBoundary)
 //      return hr;
 //   }
 //
-//   CollectionIndexType nItems;
+//   IndexType nItems;
 //   arrUnks->get_Count(&nItems);
 //
-//   for (CollectionIndexType idx = 0; idx < nItems; idx++ )
+//   for (IndexType idx = 0; idx < nItems; idx++ )
 //   {
 //      CComPtr<IUnknown> pUnk;
 //      arrUnks->get_Item(idx,&pUnk);
@@ -313,7 +313,7 @@ STDMETHODIMP CBridgeGeometry::get_DeckBoundary(IDeckBoundary** ppDeckBoundary)
 //   return found->second.CopyTo(ppGirderLine);
 //}
 //
-//STDMETHODIMP CBridgeGeometry::get_GirderLineCount(CollectionIndexType* pVal)
+//STDMETHODIMP CBridgeGeometry::get_GirderLineCount(IndexType* pVal)
 //{
 //   CHECK_RETVAL(pVal);
 //   *pVal = m_GirderLines.size();
@@ -331,10 +331,10 @@ STDMETHODIMP CBridgeGeometry::get_DeckBoundary(IDeckBoundary** ppDeckBoundary)
 //      return hr;
 //   }
 //
-//   CollectionIndexType nItems;
+//   IndexType nItems;
 //   arrUnks->get_Count(&nItems);
 //
-//   for (CollectionIndexType idx = 0; idx < nItems; idx++ )
+//   for (IndexType idx = 0; idx < nItems; idx++ )
 //   {
 //      CComPtr<IUnknown> pUnk;
 //      arrUnks->get_Item(idx,&pUnk);
@@ -374,7 +374,7 @@ STDMETHODIMP CBridgeGeometry::get_DeckBoundary(IDeckBoundary** ppDeckBoundary)
 //   return found->second.CopyTo(ppDiaphragmLine);
 //}
 //
-//STDMETHODIMP CBridgeGeometry::get_DiaphragmLineCount(CollectionIndexType* pVal)
+//STDMETHODIMP CBridgeGeometry::get_DiaphragmLineCount(IndexType* pVal)
 //{
 //   CHECK_RETVAL(pVal);
 //   *pVal = m_DiaphragmLines.size();

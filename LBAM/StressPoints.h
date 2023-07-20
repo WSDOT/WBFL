@@ -35,8 +35,8 @@
 
 class CStressPoints;
 
-using StressPointVectorImpl = CComVectorCollection<IStressPoints, IStressPoint, IEnumStressPoint, &IID_IEnumStressPoint, CollectionIndexType>;
-using PersistentSPCollImpl = CPersistentCollection<CStressPoints, StressPointVectorImpl,CollectionIndexType>;
+using StressPointVectorImpl = CComVectorCollection<IStressPoints, IStressPoint, IEnumStressPoint, &IID_IEnumStressPoint, IndexType>;
+using PersistentSPCollImpl = CPersistentCollection<CStressPoints, StressPointVectorImpl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CStressPoints
@@ -104,7 +104,7 @@ private:
       return S_OK;
    }
 
-   virtual HRESULT OnBeforeRemove ( StressPointVectorImpl::StoredType* pVal, CollectionIndexType idx)
+   virtual HRESULT OnBeforeRemove ( StressPointVectorImpl::StoredType* pVal, IndexType idx)
    {
       try
       {
@@ -123,13 +123,13 @@ private:
       return S_OK;
    }
 
-   virtual HRESULT OnAfterRemove ( CollectionIndexType idx)
+   virtual HRESULT OnAfterRemove ( IndexType idx)
    {
       Fire_OnStressPointsRemoved(idx);
       return S_OK;
    }
 
-   virtual HRESULT OnAfterAdd ( StressPointVectorImpl::StoredType* pVal, CollectionIndexType idx)
+   virtual HRESULT OnAfterAdd ( StressPointVectorImpl::StoredType* pVal, IndexType idx)
    {
       Fire_OnStressPointsAdded(idx);
       return S_OK;
@@ -139,7 +139,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      CollectionIndexType cnt = 0;
+      IndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

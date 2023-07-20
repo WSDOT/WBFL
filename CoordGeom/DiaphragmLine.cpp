@@ -152,14 +152,3 @@ void DiaphragmLine::LocatePoints()
       left_path = next_path;
    }
 }
-
-#if defined _UNITTEST
-bool DiaphragmLine::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("DiaphragmLine");
-
-   TESTME_EPILOG("DiaphragmLine");
-}
-#endif // _UNITTEST
-
-

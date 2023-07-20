@@ -80,14 +80,3 @@ std::shared_ptr<DeckBoundary> SimpleDeckBoundaryFactory::Create(std::shared_ptr<
 {
    return DeckBoundary::Create(bridge, m_TransverseEdgeID, m_TransverseEdgeType, m_EdgeID, m_EdgeBreakID, m_bBreakEdge);
 }
-
-#if defined _UNITTEST
-bool SimpleDeckBoundaryFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SimpleDeckBoundaryFactory");
-
-   TESTME_EPILOG("SimpleDeckBoundaryFactory");
-}
-#endif // _UNITTEST
-
-

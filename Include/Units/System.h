@@ -79,10 +79,6 @@ namespace WBFL
          /// Returns the gravitational acceleration for this unit system
          static Float64 GetGravitationalAcceleration();
 
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
       private:
          static Mass        ms_Mass;
          static Length      ms_Length;

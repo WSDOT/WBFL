@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_LINESEGMENT2D_H_
-#define INCLUDED_GEOMETRY_LINESEGMENT2D_H_
 #pragma once
 
 #include <vector>
@@ -121,19 +119,6 @@ namespace WBFL
          /// a vector containing the coordinate of each point, including the line segment end points.
         /// \image html LineSegment2d/DivideLineSegment.jpg
          std::vector<Point2d> Divide(IndexType nSpaces) const;
-  
-      #if defined _DEBUG
-         /// Returns true if the class is in a valid state, otherwise returns false
-         bool AssertValid() const;
-
-         /// Dumps the contents of the class to the given stream.
-         void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         /// Self-Test function. Returns true if successful.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          Point2d m_Start;
@@ -141,5 +126,3 @@ namespace WBFL
       };
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMETRY_LINESEGMENT2D_H_

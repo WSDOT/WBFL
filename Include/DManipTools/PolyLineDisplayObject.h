@@ -42,12 +42,12 @@ struct __declspec(uuid("{4B929127-C494-44af-B4A6-1DB9A3143067}")) iPolyLineDispl
 interface iPolyLineDisplayObject : public iDisplayObject
 {
    STDMETHOD_(void,Commit)() PURE;
-   STDMETHOD_(CollectionIndexType,get_NumberOfPoints)() PURE;
+   STDMETHOD_(IndexType,get_NumberOfPoints)() PURE;
    STDMETHOD_(void,AddPoints)(IPoint2dCollection* points) PURE;
    STDMETHOD_(void,AddPoint)(IPoint2d* point) PURE;
-   STDMETHOD_(HRESULT,InsertPoint)(CollectionIndexType idx, IPoint2d* point) PURE;
-   STDMETHOD_(HRESULT,GetPoint)(CollectionIndexType idx, IPoint2d* *point) PURE;
-   STDMETHOD_(HRESULT,RemovePoint)(CollectionIndexType idx) PURE;
+   STDMETHOD_(HRESULT,InsertPoint)(IndexType idx, IPoint2d* point) PURE;
+   STDMETHOD_(HRESULT,GetPoint)(IndexType idx, IPoint2d* *point) PURE;
+   STDMETHOD_(HRESULT,RemovePoint)(IndexType idx) PURE;
    STDMETHOD_(void,ClearPoints)() PURE;
    STDMETHOD_(void,put_Color)(COLORREF color) PURE;
    STDMETHOD_(void,get_Color)(COLORREF* color) PURE;

@@ -583,7 +583,7 @@ STDMETHODIMP CTaperedGirderSegment::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CTaperedGirderSegment::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CTaperedGirderSegment::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }

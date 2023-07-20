@@ -57,7 +57,7 @@ namespace WBFL
 
          /// Returns the stress at a given level of strain
          /// 
-         /// \return a pair that contains the stress level for the strain and a boolean that indicates if the strain is within the material limits
+         /// @return a pair that contains the stress level for the strain and a boolean that indicates if the strain is within the material limits
          virtual std::pair<Float64,bool> ComputeStress(Float64 strain) const = 0;
 
          /// Returns the range of strain values applicable to the model
@@ -65,15 +65,6 @@ namespace WBFL
 
          /// Returns the strain that corresponds to the peak stress
          virtual Float64 GetStrainAtPeakStress() const = 0;
-
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          std::_tstring m_Name{_T("Unknown")};

@@ -283,13 +283,13 @@ library WBFLFem2d
    interface IFem2dJointCollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dJointCollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dJoint** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dJoint** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dJointCollection_Count), helpstring("property Count - Number of Joints in collection")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumJoint* *pVal);
@@ -301,7 +301,7 @@ library WBFLFem2d
 	   HRESULT Create([in]JointIDType ID, [in]Float64 fltX, [in]Float64 fltY, [out, retval] IFem2dJoint* *pVal);
 
 	   [helpcontext(IDH_IFem2dJointCollection_Remove), helpstring("method Remove - Remove a particular joint using ID or index")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod,[out,retval]JointIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod,[out,retval]JointIDType* pid);
 
 	   [helpcontext(IDH_IFem2dJointCollection_Clear), helpstring("method Clear - Remove all joints")] HRESULT Clear();
    };
@@ -375,13 +375,13 @@ library WBFLFem2d
    interface IFem2dMemberCollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dMemberCollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dMember** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dMember** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dMemberCollection_Count), helpstring("property Count")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumMember* *pVal);
@@ -393,7 +393,7 @@ library WBFLFem2d
 	   HRESULT Create([in]MemberIDType ID, [in]JointIDType startJoint, [in]JointIDType EndJoint, [in]Float64 EA, [in]Float64 EI, [out, retval] IFem2dMember* *pVal);
 
 	   [helpcontext(IDH_IFem2dMemberCollection_Remove), helpstring("Remove a particular member by ID or index")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]MemberIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]MemberIDType* pid);
 
 	   [helpcontext(IDH_IFem2dMemberCollection_Clear), helpstring("method Clear - Remove all members")] HRESULT Clear();
    };
@@ -467,13 +467,13 @@ library WBFLFem2d
    interface IFem2dJointLoadCollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dJointLoadCollection_ID), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dJointLoad** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dJointLoad** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dJointLoadCollection_Count), helpstring("property Count")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumJointLoad* *pVal);
@@ -485,7 +485,7 @@ library WBFLFem2d
 	   HRESULT Create([in]LoadIDType ID, [in]JointIDType joint, [in]Float64 Fx, [in]Float64 Fy, [in]Float64 Mz, [out, retval] IFem2dJointLoad** pVal);
 
 	   [helpcontext(IDH_IFem2dJointLoadCollection_Remove), helpstring("method Remove - remove a specific JointLoad")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
 
 	   [helpcontext(IDH_IFem2dJointLoadCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
 
@@ -549,13 +549,13 @@ library WBFLFem2d
    interface IFem2dJointDeflectionCollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dJointDeflectionCollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dJointDeflection** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dJointDeflection** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dJointDeflectionCollection_Count), helpstring("property Count")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumJointDeflection* *pVal);
@@ -567,7 +567,7 @@ library WBFLFem2d
 	   HRESULT Create([in]LoadIDType ID, [in]JointIDType joint, [in]Float64 Dx, [in]Float64 Dy, [in]Float64 Rz, [out, retval] IFem2dJointDeflection** pVal);
 
 	   [helpcontext(IDH_IFem2dJointDeflectionCollection_Remove), helpstring("method Remove - Remove a particular JointDeflection by ID or index")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
 
 	   [helpcontext(IDH_IFem2dJointDeflectionCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
    };
@@ -650,13 +650,13 @@ library WBFLFem2d
    interface IFem2dPointLoadCollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dPointLoadCollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dPointLoad** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dPointLoad** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dPointLoadCollection_Count), helpstring("property Count")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumPointLoad* *pVal);
@@ -668,7 +668,7 @@ library WBFLFem2d
 	   HRESULT Create([in]LoadIDType ID, [in]MemberIDType memberID, [in]Float64 location, [in]Float64 Fx, [in]Float64 Fy, [in]Float64 Mz, [in] Fem2dLoadOrientation orientation, [out, retval] IFem2dPointLoad** pVal);
 
 	   [helpcontext(IDH_IFem2dPointLoadCollection_Remove), helpstring("method Remove - Remove a particular PointLoad by ID or index")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
 
 	   [helpcontext(IDH_IFem2dPointLoadCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
    };
@@ -751,13 +751,13 @@ library WBFLFem2d
    interface IFem2dDistributedLoadCollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dDistributedLoadCollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dDistributedLoad** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dDistributedLoad** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dDistributedLoadCollection_Count), helpstring("property Count")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumDistributedLoad* *pVal);
@@ -769,7 +769,7 @@ library WBFLFem2d
 	   HRESULT Create([in]LoadIDType ID, [in]MemberIDType memberID, [in]Fem2dLoadDirection direction, [in]Float64 startLocation,[in]Float64 endLocation, [in]Float64 Wstart, [in]Float64 Wend, [in] Fem2dLoadOrientation orientation, [out, retval] IFem2dDistributedLoad** pVal);
 
 	   [helpcontext(IDH_IFem2dDistributedLoadCollection_Remove), helpstring("method Remove - Remove a particular DistributedLoad by ID or index")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
 
 	   [helpcontext(IDH_IFem2dDistributedLoadCollection_Clear), helpstring("method Clear - Remove all loads")] 
        HRESULT Clear();
@@ -833,13 +833,13 @@ library WBFLFem2d
    interface IFem2dMemberStrainCollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dMemberStrainCollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dMemberStrain** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dMemberStrain** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dMemberStrainCollection_Count), helpstring("property Count")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumMemberStrain* *pVal);
@@ -851,7 +851,7 @@ library WBFLFem2d
 	   HRESULT Create([in]LoadIDType ID, [in]MemberIDType member, [in]Float64 start,[in] Float64 end,[in]Float64 axialStrain, [in]Float64 curvatureStrain, [out, retval] IFem2dMemberStrain** pVal);
 
 	   [helpcontext(IDH_IFem2dMemberStrainCollection_Remove), helpstring("method Remove - Remove a particular load by ID or index")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
 
 	   [helpcontext(IDH_IFem2dMemberStrainCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
    };
@@ -914,13 +914,13 @@ library WBFLFem2d
    interface IFem2dLoadingCollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dLoadingCollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dLoading** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dLoading** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dLoadingCollection_Count), helpstring("property Count")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumLoading* *pVal);
@@ -932,7 +932,7 @@ library WBFLFem2d
 	   HRESULT Create([in]LoadCaseIDType ID, [out,retval]IFem2dLoading* *ppLoading);
 
 	   [helpcontext(IDH_IFem2dLoadingCollection_Remove), helpstring("method Remove")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadCaseIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadCaseIDType* pid);
 
       // Remove if ID is less than given
 	   [helpcontext(IDH_IFem2dLoadingCollection_Remove), helpstring("method Remove")] 
@@ -992,13 +992,13 @@ library WBFLFem2d
    interface IFem2dPOICollection : IUnknown
    {
 	   [propget, helpcontext(IDH_IFem2dPOICollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dPOI** pVal);
+	   HRESULT Item([in]IndexType idx, [out, retval] IFem2dPOI** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 	   [propget, helpcontext(IDH_IFem2dPOICollection_Count), helpstring("property Count")] 
-	   HRESULT Count([out, retval] CollectionIndexType *pVal);
+	   HRESULT Count([out, retval] IndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
 	   HRESULT _EnumElements([out, retval] IFem2dEnumPOI* *pVal);
@@ -1010,7 +1010,7 @@ library WBFLFem2d
 	   HRESULT Create([in]PoiIDType ID, [in]MemberIDType memberID, [in]Float64 location, [out, retval] IFem2dPOI* *pVal);
 
 	   [helpcontext(IDH_IFem2dPOICollection_Remove), helpstring("method Remove - Remove a particular POI by ID or index")] 
-	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod,[out,retval]PoiIDType* pid);
+	   HRESULT Remove([in]IndexType IDorIndex, [in]Fem2dAccessType AccessMethod,[out,retval]PoiIDType* pid);
 
 	   [helpcontext(IDH_IFem2dPOICollection_Clear), helpstring("method Clear - Remove all POI's")] HRESULT Clear();
    };

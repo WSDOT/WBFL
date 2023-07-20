@@ -31,18 +31,8 @@
 
 using namespace WBFL::Geometry;
 
-SectionComponent::SectionComponent(const Shape& shape,  Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, ComponentType componentType) :
-   m_fgDensity(fgDensity),
-   m_fgModE(fgModE),
-   m_bgDensity(bgDensity),
-   m_bgModE(bgModE),
-   m_ComponentType(componentType)
-{
-   m_Shape = shape.CreateClone();
-}
-
-SectionComponent::SectionComponent(std::unique_ptr<Shape>&& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, ComponentType componentType) :
-   m_Shape(std::move(shape)),
+SectionComponent::SectionComponent(std::shared_ptr<Shape> shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, ComponentType componentType) :
+   m_Shape(shape),
    m_fgDensity(fgDensity),
    m_fgModE(fgModE),
    m_bgDensity(bgDensity),
@@ -51,37 +41,9 @@ SectionComponent::SectionComponent(std::unique_ptr<Shape>&& shape, Float64 fgMod
 {
 }
 
-SectionComponent::SectionComponent(const SectionComponent& other)
+void SectionComponent::SetShape(std::shared_ptr<Shape> shape)
 {
-   Copy(other);
-}
-
-SectionComponent& SectionComponent::operator=(const SectionComponent& other)
-{
-   if (this != &other)
-   {
-      Copy(other);
-   }
-   return *this;
-}
-
-SectionComponent::~SectionComponent()
-{
-}
-
-std::unique_ptr<SectionComponent> SectionComponent::CreateClone() const
-{
-   return std::make_unique<SectionComponent>(m_Shape->CreateClone(),m_fgModE,m_fgDensity,m_bgModE,m_bgDensity,m_ComponentType);
-}
-
-void SectionComponent::SetShape(const Shape& shape)
-{
-   SetShape(shape.CreateClone());
-}
-
-void SectionComponent::SetShape(std::unique_ptr<Shape>&& shape)
-{
-   m_Shape = std::move(shape);
+   m_Shape = shape;
 }
 
 const Shape& SectionComponent::GetShape() const
@@ -143,35 +105,3 @@ SectionComponent::ComponentType SectionComponent::GetComponentType() const
 {
    return m_ComponentType;
 }
-
-void SectionComponent::Copy(const SectionComponent& other)
-{
-   m_fgModE = other.m_fgModE;
-   m_fgDensity = other.m_fgDensity;
-   m_bgModE = other.m_bgModE;
-   m_bgDensity = other.m_bgDensity;
-   m_ComponentType = other.m_ComponentType;
-   m_Shape = other.m_Shape->CreateClone();
-}
-
-#if defined _DEBUG
-bool SectionComponent::AssertValid() const
-{
-   return true;
-}
-
-void SectionComponent::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Begin Dump for SectionComponent" << WBFL::Debug::endl;
-   m_Shape->Dump(os);
-   os << "end Dump for SectionComponent" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool SectionComponent::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SectionComponent");
-   TESTME_EPILOG("SectionComponent");
-}
-#endif // _UNITTEST

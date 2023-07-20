@@ -407,7 +407,7 @@ STDMETHODIMP CCogoEngine::PointOnLineSegment(/*[in]*/ IPoint2d* from,/*[in]*/ IL
    return cogoUtil::CreatePoint(WBFL::COGO::COGO::ProjectPointOnLineSegment(f, ls, offset), point);
 }
 
-STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(from);
    CHECK_IN(vertex);
@@ -434,7 +434,7 @@ STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex
    return pnts.CopyTo(points);
 }
 
-STDMETHODIMP CCogoEngine::BetweenPoints(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::BetweenPoints(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(from);
    CHECK_IN(to);
@@ -458,7 +458,7 @@ STDMETHODIMP CCogoEngine::BetweenPoints(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint
    return pnts.CopyTo(points);
 }
 
-STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(seg);
    CHECK_RETOBJ(points);
@@ -478,7 +478,7 @@ STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ Coll
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::CompoundCurve(/*[in]*/ ICompoundCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::CompoundCurve(/*[in]*/ ICompoundCurve* curve, /*[in]*/ IndexType nParts, /*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(curve);
    CHECK_RETOBJ(points);
@@ -499,7 +499,7 @@ STDMETHODIMP CCogoEngine::CompoundCurve(/*[in]*/ ICompoundCurve* curve, /*[in]*/
 
    Float64 stepSize = Lt/nParts;
    Float64 currDist = stepSize;
-   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
+   for ( IndexType i = 0; i < nParts-1; i++ )
    {
       CComPtr<IPoint2d> point;
       element->PointOnCurve(currDist,&point);
@@ -512,7 +512,7 @@ STDMETHODIMP CCogoEngine::CompoundCurve(/*[in]*/ ICompoundCurve* curve, /*[in]*/
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::Path(IPath* pPath,CollectionIndexType nParts,Float64 start,Float64 end,IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::Path(IPath* pPath,IndexType nParts,Float64 start,Float64 end,IPoint2dCollection** points)
 {
    CHECK_IN(pPath);
    CHECK_RETOBJ(points);
@@ -528,7 +528,7 @@ STDMETHODIMP CCogoEngine::Path(IPath* pPath,CollectionIndexType nParts,Float64 s
    Float64 distance = end - start;
    Float64 stepSize = distance/nParts;
    Float64 location = stepSize + start;
-   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
+   for ( IndexType i = 0; i < nParts-1; i++ )
    {
       CComPtr<IPoint2d> point;
       path_element->LocatePoint(location,omtNormal,0.0,CComVariant(0.00),&point);

@@ -76,11 +76,6 @@ namespace WBFL
          /// @return A pair of the format (Grade,Elevation)
          virtual std::pair<Float64,Float64> ComputeGradeAndElevation(const Station& station) const = 0;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         //static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       protected:
          /// @brief Subclasses should call this method whenever their data changes in such a way
          /// to modify the layout of the profile.

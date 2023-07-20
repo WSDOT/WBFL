@@ -63,7 +63,7 @@ END_COM_MAP()
 
 private:
    CComPtr<IRebar> m_Rebar;
-   CollectionIndexType m_Count;
+   IndexType m_Count;
    Float64 m_Spacing;
    Float64 m_Cover;
    CrossBeamRebarDatum m_Datum;
@@ -83,8 +83,8 @@ public:
    STDMETHOD(putref_RebarLayoutItem)(/*[in]*/IRebarLayoutItem* rebarLayoutItem) override;
    STDMETHOD(put_Hook)(/*[in]*/DirectionType side,/*[in]*/HookType hook) override;
    STDMETHOD(get_Hook)(/*[in]*/DirectionType side,/*[out,retval]*/HookType* hook) override;
-	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count) override;
-	STDMETHOD(get_Location)(/*[in]*/Float64 distFromStartOfPattern,/*[in]*/CollectionIndexType barIdx,/*[out,retval]*/IPoint2d** location) override;
+	STDMETHOD(get_Count)(/*[out,retval]*/IndexType* count) override;
+	STDMETHOD(get_Location)(/*[in]*/Float64 distFromStartOfPattern,/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2d** location) override;
    STDMETHOD(get_Profile)(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile) override;
 
 // ICrossBeamRebarPattern

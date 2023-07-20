@@ -73,7 +73,7 @@ void TestResults::TestLiveLoadModelResults()
 
    TRY_TEST(presult->Reserve(2), S_OK);
    TRY_TEST(presult->Add(1.2, config), S_OK);
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 1);
 
@@ -115,7 +115,7 @@ void TestResults::TestLiveLoadModelSectionResults()
 
    TRY_TEST(presult->Reserve(2), S_OK);
    TRY_TEST(presult->Add(1.2, config1, 2.2, config2), S_OK);
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 1);
 
@@ -173,7 +173,7 @@ void TestResults::TestLiveLoadModelStressResults()
 
    TRY_TEST(presult->Reserve(2), S_OK);
    TRY_TEST(presult->Add(stressr1, config1, stressr2, config2), S_OK);
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 1);
 

@@ -107,17 +107,7 @@ namespace WBFL
          std::pair<Float64, Float64> GetProperties() const;
 
       private:
-         Float64 L, EI;
-
-      public:
-         #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-         #endif // _DEBUG
-
-         #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         #endif // _UNITTEST
+         Float64 L{ 1.0 }, EI{ 1.0 };
       };
    };
 };

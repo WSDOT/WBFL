@@ -681,7 +681,7 @@ public:
       return m_ItemDataMgr.RemoveItemData(name);
    }
 
-   STDMETHOD(GetItemDataCount)(CollectionIndexType* count) override
+   STDMETHOD(GetItemDataCount)(IndexType* count) override
    {
       return m_ItemDataMgr.GetItemDataCount(count);
    }

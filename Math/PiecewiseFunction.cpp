@@ -33,7 +33,7 @@ using namespace WBFL::Math;
 static const Float64 FLT_TOLER=1.0e-06; // close enough
 
 // free functions
-void seek_right(const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, CollectionIndexType* segment)
+void seek_right(const std::vector<WBFL::Geometry::Point2d>& points, Float64 x, IndexType* segment)
 {
    PRECONDITION(segment!=nullptr);
    std::vector<WBFL::Geometry::Point2d>::size_type siz = points.size();
@@ -95,11 +95,6 @@ Float64 interpolate(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Poi
    Float64 h     = p2.Y();
    Float64 delta = p2.X()-p1.X();
    return LinInterp( a, l, h, delta);
-}
-
-bool point_sort(const WBFL::Geometry::Point2d& p1,const WBFL::Geometry::Point2d& p2)
-{
-   return p1.X() < p2.X();
 }
 
 PiecewiseFunction::PiecewiseFunction() :
@@ -262,7 +257,7 @@ void PiecewiseFunction::SetPoints(const std::vector<WBFL::Geometry::Point2d>& po
 {
    ASSERTVALID;
    m_Points = points;
-   std::sort(m_Points.begin(),m_Points.end(),point_sort);
+   std::sort(m_Points.begin(), m_Points.end(), [](const auto& p1, const auto& p2) {return p1.X() < p2.X(); });
 
    auto size = m_Points.size();
    if (size < m_LastSegment)
@@ -276,7 +271,7 @@ IndexType PiecewiseFunction::AddPoint(const WBFL::Geometry::Point2d& point)
 {
    ASSERTVALID;
    m_Points.push_back(point);
-   std::sort(m_Points.begin(),m_Points.end(),point_sort);
+   std::sort(m_Points.begin(),m_Points.end(), [](const auto& p1, const auto& p2) {return p1.X() < p2.X(); });
    ASSERTVALID;
    return m_Points.size();
 }
@@ -284,6 +279,15 @@ IndexType PiecewiseFunction::AddPoint(const WBFL::Geometry::Point2d& point)
 IndexType PiecewiseFunction::AddPoint(Float64 X,Float64 Y)
 {
    return AddPoint(WBFL::Geometry::Point2d(X,Y));
+}
+
+IndexType PiecewiseFunction::AddPoints(std::vector<WBFL::Geometry::Point2d>& points)
+{
+   ASSERTVALID;
+   m_Points.insert(m_Points.end(),points.begin(), points.end());
+   std::sort(m_Points.begin(), m_Points.end(), [](const auto& p1, const auto& p2) {return p1.X() < p2.X(); });
+   ASSERTVALID;
+   return m_Points.size();
 }
 
 void PiecewiseFunction::Clear()
@@ -514,131 +518,4 @@ bool PiecewiseFunction::AssertValid() const
 
    return true;
 }
-
-void PiecewiseFunction::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Start Dump for PiecewiseFunction") << WBFL::Debug::endl;
-   IndexType siz = m_Points.size();
-   os << _T("Number of Points = ") <<siz<< WBFL::Debug::endl;
-   for (IndexType i = 0; i<siz; i++)
-   {
-      os <<i<<_T("  (")<< m_Points[i].X()<<_T(", ")<<m_Points[i].Y()<<_T(")")<< WBFL::Debug::endl;
-   }
-   os << _T("m_LastSegment = ")<< m_LastSegment << WBFL::Debug::endl;
-   os << _T("End Dump for PiecewiseFunction")<< WBFL::Debug::endl;
-}
 #endif // _DEBUG
-
-#if defined _UNITTEST
-bool PiecewiseFunction::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("PiecewiseFunction");
-
-   // create a function
-   PiecewiseFunction fun1;
-   TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d(-4,-2))==1);
-   TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d(-3,-1))==2);
-   TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d( 1, 2))==3);
-   TRY_TESTME(fun1.AddPoint(WBFL::Geometry::Point2d( 3,-1))==4);
-   TRY_TESTME(fun1.GetRange()==Range(-4,Range::BoundType::Bound,3,Range::BoundType::Bound));
-   TRY_TESTME(fun1.GetPointCount()==4);
-   TRY_TESTME(fun1.Evaluate(-4)==-2);
-   TRY_TESTME(fun1.Evaluate(-3)==-1);
-   TRY_TESTME(fun1.Evaluate( 1)==2);
-   TRY_TESTME(fun1.Evaluate( 3)==-1);
-   TRY_TESTME(fun1.Evaluate(-5./3.)==0.0);
-   TRY_TESTME(fun1.Evaluate( 7./3.)==0.0);
-   TRY_TESTME(fun1.Evaluate(0.0)==1.25);
-   TRY_TESTME(fun1.GetPoint(1)== WBFL::Geometry::Point2d(-3,-1));
-
-   // create another function
-   std::vector<WBFL::Geometry::Point2d> pvec;
-   pvec.emplace_back(-5,1);
-   pvec.emplace_back(-4.1,1);
-   pvec.emplace_back(-3.4,1);
-   pvec.emplace_back( 0.0,1);
-   pvec.emplace_back( 2.2,1);
-   pvec.emplace_back( 5,1);
-   PiecewiseFunction fun2(pvec);
-   TRY_TESTME(fun2.GetPoints()==pvec);
-   TRY_TESTME(fun2.Evaluate(0.0)==1);
-   TRY_TESTME(fun2.Evaluate(3.0)==1);
-   try
-   {
-      fun2.Evaluate(-7); // out of bounds
-   }
-   catch (XFunction& e)
-   {
-      TRY_TESTME(e.GetReasonCode()==XFunction::Reason::Undefined);
-   }
-   // intersection
-   WBFL::Geometry::Point2d ip1,ip2;
-   Range r(-3.5,Range::BoundType::Bound,.9,Range::BoundType::Bound);
-   TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==1);
-   TRY_TESTME(ip1== WBFL::Geometry::Point2d(-1./3.,1));
-   TRY_TESTME(fun2.Intersect(fun1,r,&ip2)==1);
-   TRY_TESTME(ip1==ip2);
-
-   r.SetLeftBoundLocation(1);
-   r.SetRightBoundLocation(250);
-   TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==1);
-   TRY_TESTME(fun2.Intersect(fun1,r,&ip2)==1);
-   TRY_TESTME(ip1== WBFL::Geometry::Point2d(5./3.,1));
-   TRY_TESTME(ip1==ip2);
-
-   // set where an intersection does not occur
-   r.SetLeftBoundLocation(0.9);
-   r.SetRightBoundLocation(1.1);
-   TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==0);
-   TRY_TESTME(fun2.Intersect(fun1,r,&ip2)==0);
-
-   r.SetLeftBoundLocation(-100);
-   r.SetRightBoundLocation(-50);
-   TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==0);
-   TRY_TESTME(fun2.Intersect(fun1,r,&ip1)==0);
-
-   r.SetLeftBoundLocation(100);
-   r.SetRightBoundLocation(250);
-   TRY_TESTME(fun1.Intersect(fun2,r,&ip1)==0);
-   TRY_TESTME(fun2.Intersect(fun1,r,&ip1)==0);
-
-   // GetMaximumsInRange
-   Float64 fmin, fmax;
-   r.SetLeftBoundLocation(-3.5);
-   r.SetRightBoundLocation(1.0);
-   fun1.GetMaximumsInRange(r, &fmin, &fmax);
-   TRY_TESTME(fmin==-1.5);
-   TRY_TESTME(fmax==2.0);
-
-   r.SetLeftBoundLocation(-4.0);
-   r.SetRightBoundLocation(3.0);
-   fun1.GetMaximumsInRange(r, &fmin, &fmax);
-   TRY_TESTME(fmin==-2.0);
-   TRY_TESTME(fmax==2.0);
-
-   r.SetLeftBoundLocation(2.0);
-   r.SetRightBoundLocation(2.5);
-   fun1.GetMaximumsInRange(r, &fmin, &fmax);
-   TRY_TESTME(fmin==-0.25);
-   TRY_TESTME(fmax==0.5);
-
-   try
-   {
-      r.SetLeftBoundLocation(2.0);
-      r.SetRightBoundLocation(5.0);
-      fun1.GetMaximumsInRange(r, &fmin, &fmax);
-   }
-   catch (XFunction& e)
-   {
-      TRY_TESTME(e.GetReasonCode()==XFunction::Reason::Undefined);
-   }
- 
-
-#ifdef _DEBUG
-   fun2.Dump(rlog.GetLogContext());
-#endif
-
-
-   TESTME_EPILOG("PiecewiseFunction");
-}
-#endif // _UNITTEST

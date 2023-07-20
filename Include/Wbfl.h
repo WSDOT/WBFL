@@ -46,13 +46,13 @@
 
 #include <EngTools\EngTools.h>
 #include <GeomModel/GeomModel.h>
-#include <GeomModel\GeomModel.h>
-#include <GraphicsLib\GraphicsLib.h>
+#include <CoordGeom\CoordGeom.h>
+#include <Graphing\Graphing.h>
 #include <LibraryFw\LibraryFw.h>
 #include <LRFD\LRFD.h>
-#include <Materials/Material.h>
+#include <Materials/Materials.h>
 #include <Math\Math.h>
-#include <ReinforcedConcrete\ReinforcedConcrete.h>
+#include <RCSection\RCSection.h>
 #include <Reporter\Reporter.h>
 #include <Units\Units.h>
 

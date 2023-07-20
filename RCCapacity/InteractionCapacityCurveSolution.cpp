@@ -53,7 +53,7 @@ STDMETHODIMP CInteractionCapacityCurveSolution::InterfaceSupportsErrorInfo(REFII
 	return S_FALSE;
 }
 
-STDMETHODIMP CInteractionCapacityCurveSolution::get_MomentCapacitySolution(CollectionIndexType index,IMomentCapacitySolution** solution)
+STDMETHODIMP CInteractionCapacityCurveSolution::get_MomentCapacitySolution(IndexType index,IMomentCapacitySolution** solution)
 {
    CHECK_RETOBJ(solution);
    *solution = m_CapacityInfo[index].Capacity;
@@ -73,7 +73,7 @@ STDMETHODIMP CInteractionCapacityCurveSolution::AddSolutionPoint(IMomentCapacity
    return S_OK;
 }
 
-STDMETHODIMP CInteractionCapacityCurveSolution::get_SolutionPointCount(CollectionIndexType* nPoints)
+STDMETHODIMP CInteractionCapacityCurveSolution::get_SolutionPointCount(IndexType* nPoints)
 {
    CHECK_RETVAL(nPoints);
    *nPoints = m_CapacityInfo.size();

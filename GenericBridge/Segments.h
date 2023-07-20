@@ -98,13 +98,13 @@ public:
 	HRESULT GetDistanceFromStartOfSegment(/*[in]*/Float64 Length, /*[in]*/VARIANT_BOOL isSymmetrical, /*[in]*/Float64 location, /*[out]*/ Float64* dist,/*[out]*/ISegmentItem** ppSeg);
 	HRESULT Reverse();
    HRESULT RemoveSegments();
-	HRESULT Remove(/*[in]*/CollectionIndexType index);
-	HRESULT CopyTo(/*[in]*/CollectionIndexType fromIndex, /*[in]*/CollectionIndexType toIndex);
-	HRESULT MoveTo(/*[in]*/CollectionIndexType fromIndex, /*[in]*/CollectionIndexType toIndex);
-	HRESULT Insert(/*[in]*/CollectionIndexType relPosition, /*[in]*/ISegment* segment);
+	HRESULT Remove(/*[in]*/IndexType index);
+	HRESULT CopyTo(/*[in]*/IndexType fromIndex, /*[in]*/IndexType toIndex);
+	HRESULT MoveTo(/*[in]*/IndexType fromIndex, /*[in]*/IndexType toIndex);
+	HRESULT Insert(/*[in]*/IndexType relPosition, /*[in]*/ISegment* segment);
 	HRESULT Add(/*[in]*/ISegment* segment);
-	HRESULT get_Segment(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ ISegment* *pVal);
-	HRESULT get_Count(/*[out, retval]*/ CollectionIndexType *pVal);
+	HRESULT get_Segment(/*[in]*/IndexType relPosition, /*[out, retval]*/ ISegment* *pVal);
+	HRESULT get_Count(/*[out, retval]*/ IndexType *pVal);
 	HRESULT get_Length(/*[out, retval]*/ Float64 *pVal);
 
    void Clear();

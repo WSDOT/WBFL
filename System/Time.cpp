@@ -219,8 +219,7 @@ Date::Date( const Time  & t )
 
 Int16 Time::CompareTo( const Time  &t ) const
 {
-    ClockTy diff = Sec - t.Sec;
-    return diff==0 ? 0 : diff>0 ? 1 : -1;
+    return Sec == t.Sec ? 0 : Sec>t.Sec ? 1 : -1;
 }
 
 //
@@ -353,18 +352,3 @@ SYSCLASS std::_tostream& WBFL::System::operator<<(std::_tostream& s, const Time&
    s << out.str();
    return s;
 }
-
-#if defined _UNITTEST
-#include <iostream>
-bool Time::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Time");
-
-   Time now;
-   rlog << _T("The current time is ")<< now.AsString() << WBFL::Debug::endl;
-
-   TESTME_EPILOG("Time");
-}
-#endif // _UNITTEST
-
-

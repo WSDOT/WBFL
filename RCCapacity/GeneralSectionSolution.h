@@ -93,8 +93,8 @@ public:
 	STDMETHOD(get_TensionResultantLocation)(/*[out,retval]*/IPoint2d** cgT) override;
 	STDMETHOD(get_ExceededStrainLimits)(/*[out,retval]*/VARIANT_BOOL* pbExceededStrainLimits) override;
 
-   STDMETHOD(get_SliceCount)(/*[out,retval]*/CollectionIndexType* nSlices) override;
-	STDMETHOD(get_Slice)(/*[in]*/ CollectionIndexType sliceIdx,/*[out,retval]*/IGeneralSectionSlice** pSlice) override;
+   STDMETHOD(get_SliceCount)(/*[out,retval]*/IndexType* nSlices) override;
+	STDMETHOD(get_Slice)(/*[in]*/ IndexType sliceIdx,/*[out,retval]*/IGeneralSectionSlice** pSlice) override;
 
 	STDMETHOD(FindSlices)(/*[in]*/IndexType shapeIdx, /*[out, retval]*/IUnkArray** ppSlices) override;
 };

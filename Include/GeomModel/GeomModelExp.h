@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_GEOMMODELEXP_H_
-#define INCLUDED_GEOMMODEL_GEOMMODELEXP_H_
 #pragma once
 
 // Define BUILDGEOMMODELLIB when building this library
@@ -46,8 +44,6 @@
 
 #include <GeomModel/AutoLib.h>
 
-#if defined _DEBUG || defined _UNITTEST
+#if defined _DEBUG
 #include <System/Debug.h>
 #endif
-
-#endif // INCLUDED_GEOMMODEL_GEOMMODELEXP_H_

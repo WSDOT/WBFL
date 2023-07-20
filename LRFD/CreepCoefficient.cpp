@@ -27,28 +27,11 @@
 #include <Lrfd\XCreepCoefficient.h>
 #include <Lrfd\VersionMgr.h>
 
-/****************************************************************************
-CLASS
-   lrfdCreepCoefficient
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdCreepCoefficient::lrfdCreepCoefficient()
+Float64 CreepCoefficient::ComputeKtd(Float64 t) const
 {
-   m_CuringMethodTimeAdjustmentFactor = WBFL::Units::ConvertToSysUnits(7.0,WBFL::Units::Measure::Day);
-   m_bUpdate = true;
-}
-
-lrfdCreepCoefficient::~lrfdCreepCoefficient()
-{
-}
-
-Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
-{
-    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+    bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
 
     // Check volume to surface ratio
     Float64 VS = m_V / m_S;
@@ -63,6 +46,8 @@ Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
         VS = WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Inch);
         VSMax = 6.0; // inches
     }
+
+    VS = Min(VS, VSMax);
 
     // Compute Kc
     Float64 a, b, c;
@@ -89,7 +74,7 @@ Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
     return ktd; // this is really Kc
 }
 
-Float64 lrfdCreepCoefficient::GetCreepCoefficient(Float64 t, Float64 ti) const
+Float64 CreepCoefficient::GetCreepCoefficient(Float64 t, Float64 ti) const
 {
     if (m_bUpdate)
         Update();
@@ -113,55 +98,55 @@ Float64 lrfdCreepCoefficient::GetCreepCoefficient(Float64 t, Float64 ti) const
 
     return Ct;
 }
-//======================== ACCESS     =======================================
-void lrfdCreepCoefficient::SetRelHumidity(Float64 H)
+
+void CreepCoefficient::SetRelHumidity(Float64 H)
 {
    m_H = H;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetRelHumidity() const
+Float64 CreepCoefficient::GetRelHumidity() const
 {
    return m_H;
 }
 
-void lrfdCreepCoefficient::SetFci(Float64 fci)
+void CreepCoefficient::SetFci(Float64 fci)
 {
    m_Fci = fci;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetFci() const
+Float64 CreepCoefficient::GetFci() const
 {
    return m_Fci;
 }
 
-void lrfdCreepCoefficient::SetVolume(Float64 V)
+void CreepCoefficient::SetVolume(Float64 V)
 {
    m_V = V;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetVolume() const
+Float64 CreepCoefficient::GetVolume() const
 {
    return m_V;
 }
 
-void lrfdCreepCoefficient::SetSurfaceArea(Float64 S)
+void CreepCoefficient::SetSurfaceArea(Float64 S)
 {
    m_S = S;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetSurfaceArea() const
+Float64 CreepCoefficient::GetSurfaceArea() const
 {
    return m_S;
 }
 
-Float64 lrfdCreepCoefficient::GetAdjustedInitialAge(Float64 ti) const
+Float64 CreepCoefficient::GetAdjustedInitialAge(Float64 ti) const
 {
     Float64 tiAdjusted = ti;
-    if (m_CuringMethod == Accelerated && ti < WBFL::Units::ConvertToSysUnits(7.0,WBFL::Units::Measure::Day))
+    if (m_CuringMethod == CuringMethod::Accelerated && ti < WBFL::Units::ConvertToSysUnits(7.0,WBFL::Units::Measure::Day))
     {
         // NCHRP 496...
         // ti = age of concrete, in days, when load is initially applied
@@ -173,29 +158,29 @@ Float64 lrfdCreepCoefficient::GetAdjustedInitialAge(Float64 ti) const
     return tiAdjusted;
 }
 
-void lrfdCreepCoefficient::SetCuringMethod(lrfdCreepCoefficient::CuringMethod method)
+void CreepCoefficient::SetCuringMethod(CreepCoefficient::CuringMethod method)
 {
    m_CuringMethod = method;
    m_bUpdate = true;
 }
 
-lrfdCreepCoefficient::CuringMethod lrfdCreepCoefficient::GetCuringMethod() const
+CreepCoefficient::CuringMethod CreepCoefficient::GetCuringMethod() const
 {
    return m_CuringMethod;
 }
 
-void lrfdCreepCoefficient::SetCuringMethodTimeAdjustmentFactor(Float64 f)
+void CreepCoefficient::SetCuringMethodTimeAdjustmentFactor(Float64 f)
 {
    m_CuringMethodTimeAdjustmentFactor = f;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetCuringMethodTimeAdjustmentFactor() const
+Float64 CreepCoefficient::GetCuringMethodTimeAdjustmentFactor() const
 {
    return m_CuringMethodTimeAdjustmentFactor;
 }
 
-Float64 lrfdCreepCoefficient::GetKf() const
+Float64 CreepCoefficient::GetKf() const
 {
    if ( m_bUpdate )
    {
@@ -205,15 +190,15 @@ Float64 lrfdCreepCoefficient::GetKf() const
    return m_kf;
 }
 
-Float64 lrfdCreepCoefficient::GetKtd(Float64 t) const
+Float64 CreepCoefficient::GetKtd(Float64 t) const
 {
     // this is really Kc
     return ComputeKtd(t);
 }
 
-Float64 lrfdCreepCoefficient::ComputeKf() const
+Float64 CreepCoefficient::ComputeKf() const
 {
-    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+    bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
     Float64 kf;
     if (bSI)
     {
@@ -227,40 +212,15 @@ Float64 lrfdCreepCoefficient::ComputeKf() const
     return kf;
 }
 
-void lrfdCreepCoefficient::Update() const
+void CreepCoefficient::Update() const
 {
    // need to make sure spec version is ok
-   if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+   if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
    {
-      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::Specification,_T(__FILE__),__LINE__);
+      WBFL_LRFD_THROW(XCreepCoefficient,Specification);
    }
 
    m_kf = ComputeKf();
 
    m_bUpdate = false;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdCreepCoefficient::AssertValid() const
-{
-   return true;
-}
-
-void lrfdCreepCoefficient::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdCreepCoefficient" << WBFL::Debug::endl;
-                                                                                                                             }
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool lrfdCreepCoefficient::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdCreepCoefficient");
-
-   TESTME_EPILOG("lrfdCreepCoefficient");
-}
-#endif // _UNITTEST

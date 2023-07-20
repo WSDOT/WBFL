@@ -154,7 +154,7 @@ public:
    void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      CollectionIndexType cnt = 0;
+      IndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

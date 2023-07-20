@@ -394,17 +394,6 @@ namespace WBFL
          /// @param distance Distance to move the station
          /// @return A new station object offset from the original station
          static Station IncrementStationBy(std::shared_ptr<const Alignment> alignment, const Station& station, Float64 distance);
-
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         static bool Measure(WBFL::Debug::Log& rlog);
-         static bool Locate(WBFL::Debug::Log& rlog);
-         static bool Intersect(WBFL::Debug::Log& rlog);
-         static bool Project(WBFL::Debug::Log& rlog);
-         static bool Divide(WBFL::Debug::Log& rlog);
-         static bool Tangent(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

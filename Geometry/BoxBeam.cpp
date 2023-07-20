@@ -303,7 +303,7 @@ STDMETHODIMP CBoxBeam::put_C1(Float64 newVal)
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeam::get_VoidCount(CollectionIndexType *pVal)
+STDMETHODIMP CBoxBeam::get_VoidCount(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -311,7 +311,7 @@ STDMETHODIMP CBoxBeam::get_VoidCount(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeam::put_VoidCount(CollectionIndexType newVal)
+STDMETHODIMP CBoxBeam::put_VoidCount(IndexType newVal)
 {
    // can only have 0 or 1 void
    if ( newVal < 0 || newVal>1)

@@ -27,49 +27,32 @@
 #include <Lrfd\LRFRVersionMgrListener.h>
 #include <algorithm>
 
-/****************************************************************************
-CLASS
-   lrfrVersionMgr
-****************************************************************************/
+using namespace WBFL::LRFD;
 
 // Make the default, the most current version
-lrfrVersionMgr::Version lrfrVersionMgr::ms_Version = (lrfrVersionMgr::Version)((int)lrfrVersionMgr::LastVersion-1);
-bool lrfrVersionMgr::ms_IsDamaged = false;
+LRFRVersionMgr::Version LRFRVersionMgr::ms_Version = LRFRVersionMgr::GetLatestVersion();
+bool LRFRVersionMgr::ms_IsDamaged = false;
 
-lrfrVersionMgr::Listeners lrfrVersionMgr::ms_Listeners;
-
-void notify_listeners(lrfrVersionMgr::Listeners& rList)
-{
-   lrfrVersionMgr::Listeners::iterator iter;
-   for ( iter = rList.begin(); iter != rList.end(); iter++ )
-   {
-      (*iter)->OnUpdate();
-   }
-}
+LRFRVersionMgr::Listeners LRFRVersionMgr::ms_Listeners;
 
 
-lrfrVersionMgr::~lrfrVersionMgr()
-{
-}
-
-void lrfrVersionMgr::BeginDamage()
+void LRFRVersionMgr::BeginDamage()
 {
    ms_IsDamaged = true;
 }
 
-void lrfrVersionMgr::EndDamage()
+void LRFRVersionMgr::EndDamage()
 {
    ms_IsDamaged = false;
    NotifyAllListeners();
 }
 
-bool lrfrVersionMgr::IsDamaged()
+bool LRFRVersionMgr::IsDamaged()
 {
    return ms_IsDamaged;
 }
 
-//======================== ACCESS     =======================================
-lrfrVersionMgr::Version lrfrVersionMgr::SetVersion(Version version)
+LRFRVersionMgr::Version LRFRVersionMgr::SetVersion(Version version)
 {
    if ( version == ms_Version )
       return ms_Version;
@@ -80,54 +63,62 @@ lrfrVersionMgr::Version lrfrVersionMgr::SetVersion(Version version)
    return temp;
 }
 
-lrfrVersionMgr::Version lrfrVersionMgr::GetVersion()
+LRFRVersionMgr::Version LRFRVersionMgr::GetVersion()
 {
    return ms_Version;
 }
 
-LPCTSTR lrfrVersionMgr::GetCodeString()
+LRFRVersionMgr::Version LRFRVersionMgr::GetLatestVersion()
+{
+   return (LRFRVersionMgr::Version)(std::underlying_type<LRFRVersionMgr::Version>::type(Version::LastVersion) - 1);
+}
+
+LPCTSTR LRFRVersionMgr::GetCodeString()
 {
    return _T("The Manual for Bridge Evaluation");
 }
 
-LPCTSTR lrfrVersionMgr::GetVersionString(bool bAbbreviated)
+LPCTSTR LRFRVersionMgr::GetVersionString(bool bAbbreviated)
 {
    return GetVersionString(ms_Version,bAbbreviated);
 }
 
-LPCTSTR lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version,bool bAbbreviated)
+LPCTSTR LRFRVersionMgr::GetVersionString(LRFRVersionMgr::Version version,bool bAbbreviated)
 {
    switch( version )
    {
-   case FirstEdition2008:
+   case Version::FirstEdition2008:
       return (bAbbreviated ? _T("LRFR2008") : _T("First Edition 2008"));
 
-   case FirstEditionWith2010Interims:
+   case Version::FirstEditionWith2010Interims:
       return (bAbbreviated ? _T("LRFR2010") : _T("First Edition 2008, with 2010 interim provisions"));
 
-   case SecondEdition2011:
+   case Version::SecondEdition2011:
       return (bAbbreviated ? _T("LRFR2011") : _T("Second Edition 2011"));
       
-   case SecondEditionWith2011Interims:
+   case Version::SecondEditionWith2011Interims:
       return (bAbbreviated ? _T("LRFR2011i") : _T("Second Edition 2011, with 2011 interim provisions"));
 
-   case SecondEditionWith2013Interims:
+   case Version::SecondEditionWith2013Interims:
       return (bAbbreviated ? _T("LRFR2013") : _T("Second Edition 2011, with 2011-2013 interim provisions"));
 
-   case SecondEditionWith2014Interims:
+   case Version::SecondEditionWith2014Interims:
       return (bAbbreviated ? _T("LRFR2015") : _T("Second Edition 2011, with 2011-2014 interim provisions"));
 
-   case SecondEditionWith2015Interims:
+   case Version::SecondEditionWith2015Interims:
       return (bAbbreviated ? _T("LRFR2015") : _T("Second Edition 2011, with 2011-2015 interim provisions"));
    
-   case SecondEditionWith2016Interims:
+   case Version::SecondEditionWith2016Interims:
       return (bAbbreviated ? _T("LRFR2016") : _T("Second Edition 2011, with 2011-2016 interim provisions"));
 
-   case ThirdEdition2018:
+   case Version::ThirdEdition2018:
       return (bAbbreviated ? _T("LRFR2018") : _T("Third Edition 2018"));
 
-   case ThirdEditionWith2020Interims:
+   case Version::ThirdEditionWith2020Interims:
       return (bAbbreviated ? _T("LRFR2020") : _T("Third Edition 2018, with 2020 interim provisions"));
+
+   case Version::LastVersion:
+      return GetVersionString(GetLatestVersion(), bAbbreviated);
 
    default:
       CHECK(false);
@@ -135,63 +126,64 @@ LPCTSTR lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version,bool bA
    }
 }
 
-lrfrVersionMgr::Version lrfrVersionMgr::GetVersion(LPCTSTR strAbbrev)
+LRFRVersionMgr::Version LRFRVersionMgr::GetVersion(LPCTSTR strAbbrev)
 {
    std::_tstring strSpecVersion(strAbbrev);
    if(strSpecVersion == _T("LRFR2008"))
    {
-      return lrfrVersionMgr::FirstEdition2008;
+      return Version::FirstEdition2008;
    }
    else if(strSpecVersion == _T("LRFR2010"))
    {
-      return lrfrVersionMgr::FirstEditionWith2010Interims;
+      return Version::FirstEditionWith2010Interims;
    }
    else if (strSpecVersion == _T("LRFR2011"))
    {
-      return lrfrVersionMgr::SecondEdition2011;
+      return Version::SecondEdition2011;
    }
    else if (strSpecVersion == _T("LRFR2011i"))
    {
-      return lrfrVersionMgr::SecondEditionWith2011Interims;
+      return Version::SecondEditionWith2011Interims;
    }
    else if (strSpecVersion == _T("LRFR2013"))
    {
-      return lrfrVersionMgr::SecondEditionWith2013Interims;
+      return Version::SecondEditionWith2013Interims;
    }
    else if (strSpecVersion == _T("LRFR2014"))
    {
-      return lrfrVersionMgr::SecondEditionWith2014Interims;
+      return Version::SecondEditionWith2014Interims;
    }
    else if (strSpecVersion == _T("LRFR2015"))
    {
-      return lrfrVersionMgr::SecondEditionWith2015Interims;
+      return Version::SecondEditionWith2015Interims;
    }
    else if (strSpecVersion == _T("LRFR2016"))
    {
-      return lrfrVersionMgr::SecondEditionWith2016Interims;
+      return Version::SecondEditionWith2016Interims;
    }
    else if (strSpecVersion == _T("LRFR2018"))
    {
-      return lrfrVersionMgr::ThirdEdition2018;
+      return Version::ThirdEdition2018;
    }
    else if (strSpecVersion == _T("LRFR2020"))
    {
-      return lrfrVersionMgr::ThirdEditionWith2020Interims;
+      return Version::ThirdEditionWith2020Interims;
    }
    else
    {
       CHECK(false);
-      throw 0;
+      throw std::invalid_argument("Invalid specification identifier");
    }
 }
 
-void lrfrVersionMgr::RegisterListener(lrfrVersionMgrListener* pListener)
+void LRFRVersionMgr::RegisterListener(LRFRVersionMgrListener* pListener)
 {
+   PRECONDITION(pListener != nullptr);
    ms_Listeners.push_back( pListener );
    pListener->OnRegistered();
 }
 
-void lrfrVersionMgr::UnregisterListener(lrfrVersionMgrListener* pListener)
+void LRFRVersionMgr::UnregisterListener(LRFRVersionMgrListener* pListener)
 {
    Listeners::iterator found;
    found = std::find( ms_Listeners.begin(), ms_Listeners.end(), pListener );
@@ -200,35 +192,24 @@ void lrfrVersionMgr::UnregisterListener(lrfrVersionMgrListener* pListener)
       pListener->OnUnregistered();
       ms_Listeners.erase( found );
    }
+   else
+   {
+      throw std::invalid_argument("Invalid listener or listener not registered");
+   }
 }
 
-CollectionIndexType lrfrVersionMgr::ListenerCount()
+IndexType LRFRVersionMgr::ListenerCount()
 {
    return ms_Listeners.size();
 }
 
-#if defined _DEBUG
-bool lrfrVersionMgr::AssertValid()
-{
-   return true;
-}
-
-void lrfrVersionMgr::Dump(WBFL::Debug::LogContext& os)
-{
-   os << GetVersionString(false) << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-#if defined _UNITTEST
-bool lrfrVersionMgr::TestMe(WBFL::Debug::Log& rlog)
-{
-   return true;
-}
-#endif // _UNITTEST
-
-void lrfrVersionMgr::NotifyAllListeners()
+void LRFRVersionMgr::NotifyAllListeners()
 {
    if ( !IsDamaged() )
    {
-      notify_listeners( ms_Listeners );
+      for (auto* listener : ms_Listeners)
+      {
+         listener->OnUpdate();
+      }
    }
 }

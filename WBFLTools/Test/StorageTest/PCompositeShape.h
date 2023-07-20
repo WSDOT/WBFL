@@ -102,7 +102,7 @@ public:
       *pVal = TRUE;
 		return S_OK;
 	}
-	STDMETHOD(get_Count)(CollectionIndexType * pVal)
+	STDMETHOD(get_Count)(IndexType * pVal)
 	{
 		if (pVal == nullptr)
 			return E_POINTER;
@@ -111,7 +111,7 @@ public:
 
 		return S_OK;
 	}
-	STDMETHOD(get_Item)(CollectionIndexType index, IPShape * * pVal)
+	STDMETHOD(get_Item)(IndexType index, IPShape * * pVal)
 	{
 		if (pVal == nullptr)
 			return E_POINTER;
@@ -203,11 +203,11 @@ private:
       hr = pSave->put_Property(OLESTR("Y"), CComVariant(m_Y));
       if (FAILED(hr)) return hr;
 
-      CollectionIndexType cnt = m_Shapes.size();
+      IndexType cnt = m_Shapes.size();
       hr = pSave->put_Property(OLESTR("Count"), CComVariant(cnt));
       if (FAILED(hr)) return hr;
 
-      for (CollectionIndexType i = 0; i<cnt; i++)
+      for (IndexType i = 0; i<cnt; i++)
       {
          hr = pSave->put_Property(OLESTR("Shape"), CComVariant(m_Shapes[i]));
          if (FAILED(hr)) return hr;

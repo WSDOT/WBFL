@@ -55,25 +55,3 @@ bool CEAFTransaction::IsRepeatable() const
 {
    return false;
 }
-
-#if defined _DEBUG
-bool CEAFTransaction::AssertValid() const
-{
-   return true;
-}
-
-void CEAFTransaction::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for CEAFTransaction" << WBFL::Debug::endl;
-   os << Name();
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool CEAFTransaction::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CEAFTransaction");
-   TRY_TESTME( true ); // This is an Abstract base class,  nothing to test here
-   TESTME_EPILOG("CEAFTransaction");
-}
-#endif // _UNITTEST

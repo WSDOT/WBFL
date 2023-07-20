@@ -194,7 +194,6 @@
     <ClCompile Include="StationFormat.cpp" />
     <ClCompile Include="Convert.cpp" />
     <ClCompile Include="System.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="UnitValueNumericalFormatTools.cpp" />
     <ClCompile Include="XUnit.cpp" />
   </ItemGroup>
@@ -212,7 +211,6 @@
     <ClInclude Include="..\Include\Units\Units.h" />
     <ClInclude Include="..\Include\Units\UnitsExp.h" />
     <ClInclude Include="..\Include\Units\UnitsLib.h" />
-    <ClInclude Include="..\Include\Units\UnitTest.h" />
     <ClInclude Include="..\Include\Units\UnitValueNumericalFormatTools.h" />
     <ClInclude Include="..\Include\Units\XUnit.h" />
     <ClInclude Include="resource.h" />

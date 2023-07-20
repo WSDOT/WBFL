@@ -200,15 +200,6 @@ namespace WBFL
          virtual Float64 GetLength() const override;
          virtual std::pair<Float64, Float64> ComputeGradeAndElevation(const Station& station) const override;
 
-
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         static bool Test1(WBFL::Debug::Log& rlog, bool bStandAlone);
-         static bool Test2(WBFL::Debug::Log& rlog);
-         static bool Test3(WBFL::Debug::Log& rlog, bool bStandAlone);
-#endif // _UNITTEST
-
       private:
          // if true, L1, L2, BVC, PVI, and EVC are computed from PBG, PFG, g1, and g2
          // assuming BVC=PBG and EVC=PFG

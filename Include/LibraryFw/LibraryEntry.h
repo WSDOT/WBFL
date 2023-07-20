@@ -21,20 +21,10 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LIBRARY_LIBRARYENTRY_H_
-#define INCLUDED_LIBRARY_LIBRARYENTRY_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <LibraryFw\LibraryFwExp.h>
-
-// FORWARD DECLARATIONS
-//
-class libILibrary;
+#include <LibraryFw/LibraryHints.h>
 
 namespace WBFL
 {
@@ -43,159 +33,78 @@ namespace WBFL
       class IStructuredSave;
       class IStructuredLoad;
    };
+
+   namespace Library
+   {
+      class ILibrary;
+
+      /// @brief abstract base class for library entries. 
+      /// this class provides a base implementation for library entries.
+      class LIBRARYFWCLASS LibraryEntry
+      {
+      public:
+         LibraryEntry() = default;
+         LibraryEntry(const LibraryEntry& rOther);
+
+         virtual ~LibraryEntry();
+
+         LibraryEntry& operator=(const LibraryEntry& rOther);
+
+         /// @brief Edit the entry. if allowEditing is false, the entry may be viewed,
+         /// but values may not be changed.
+         /// Return true if edit is to be accepted, false if edit is cancelled.
+         /// It is up to the implementer of this class to insure that the entry
+         /// is not changed if the edit is cancelled.
+         virtual bool Edit(bool allowEditing, int nPage = 0) = 0;
+
+         /// @brief Change the name of the entry
+         void SetName(LPCTSTR name);
+
+         /// @brief Get the name of the entry
+         const std::_tstring& GetName() const;
+
+         /// @brief Set a pointer back to our library
+         void SetLibrary(const ILibrary* pLibrary);
+
+         /// @brief Return a pointer to our library
+         const ILibrary* GetLibrary() const;
+
+         /// @brief Increment the reference count by one
+         Uint32 AddRef() const;
+
+         /// @brief Decrement the reference count by one
+         /// This routine DOES NOT delete the entry when the count goes to zero. That
+         /// is the job of higher sources (e.g., the Library).
+         Uint32 Release() const;
+
+         /// @brief Get the number of references to this entry
+         Uint32 GetRefCount() const;
+
+         /// @brief Returns true if the entry can be edited.
+         bool IsEditingEnabled() const;
+
+         /// @brief Enables or disables editing of entries
+         void EnableEditing(bool enable);
+
+         void EnableCopying(bool bEnable);
+         bool IsCopyingEnabled() const;
+
+         /// @brief Save to structured storage
+         virtual bool SaveMe(WBFL::System::IStructuredSave* pSave) = 0;
+
+         /// @brief Load from structured storage
+         virtual bool LoadMe(WBFL::System::IStructuredLoad* pLoad) = 0;
+
+      protected:
+         void CopyValuesAndAttributes(const LibraryEntry& rOther);
+
+      private:
+         std::_tstring       m_Name;
+         const ILibrary* m_pLibrary = nullptr;
+         mutable Uint32 m_RefCnt = 0;
+         bool              m_IsEditingEnabled = true;
+         bool m_bCanCopy = true;
+
+      };
+   };
 };
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   libLibraryEntry
-
-   abstract base class for library entries
-
-
-DESCRIPTION
-   this class provides a base implementation for library entries.
-
-LOG
-   rdp : 07.09.1998 : Created file
-*****************************************************************************/
-
-class LIBRARYFWCLASS libLibraryEntry
-{
-public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   libLibraryEntry();
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   libLibraryEntry(const libLibraryEntry& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~libLibraryEntry();
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   libLibraryEntry& operator = (const libLibraryEntry& rOther);
-
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Edit the entry. if allowEditing is false, the entry may be viewed,
-   // but values may not be changed.
-   // Return true if edit is to be accepted, false if edit is cancelled.
-   // It is up to the implementer of this class to insure that the entry
-   // is not changed if the edit is cancelled.
-   virtual bool Edit(bool allowEditing,int nPage=0) = 0;
-
-   //------------------------------------------------------------------------
-   // Change the name of the entry
-   void SetName(LPCTSTR name);
-
-   //------------------------------------------------------------------------
-   // Get the name of the entry
-   const std::_tstring& GetName() const;
-
-   //------------------------------------------------------------------------
-   // Set a pointer back to our library
-   void SetLibrary(const libILibrary* pLibrary);
-
-   //------------------------------------------------------------------------
-   // Return a pointer to our library
-   const libILibrary* GetLibrary() const;
-
-   //------------------------------------------------------------------------
-   // Increment the reference count by one
-   Uint32 AddRef() const;
-
-   //------------------------------------------------------------------------
-   // Decrement the reference count by one
-   // This routine DOES NOT delete the entry when the count goes to zero. That
-   // is the job of higher sources (e.g., the Library).
-   Uint32 Release() const;
-
-   //------------------------------------------------------------------------
-   // Get the number of references to this entry
-   Uint32 GetRefCount() const;
-
-   //------------------------------------------------------------------------
-   // Returns true if the entry can be edited.
-   bool IsEditingEnabled() const;
-
-   //------------------------------------------------------------------------
-   // Enables or disables editing of entries
-   void EnableEditing(bool enable);
-
-   void EnableCopying(bool bEnable);
-   bool IsCopyingEnabled() const;
-
-   //------------------------------------------------------------------------
-   // Save to structured storage
-   virtual bool SaveMe(WBFL::System::IStructuredSave* pSave) = 0;
-
-   //------------------------------------------------------------------------
-   // Load from structured storage
-   virtual bool LoadMe(WBFL::System::IStructuredLoad* pLoad) = 0;
-
-   // ACCESS
-   
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const libLibraryEntry& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const libLibraryEntry& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   std::_tstring       m_Name;
-   const libILibrary* m_pLibrary;
-   mutable Uint32 m_RefCnt;
-   bool              m_IsEditingEnabled;
-   bool m_bCanCopy;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-   void Clean();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-   #endif // _DEBUG
-
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LIBRARY_LIBRARYENTRY_H_

@@ -72,7 +72,7 @@ public:
 // IReportManager
 public:
    virtual void AddReportBuilder(std::shared_ptr<WBFL::Reporting::ReportBuilder>& pReportBuilder) override;
-   virtual CollectionIndexType GetReportBuilderCount(bool bIncludeHidden) const override;
+   virtual IndexType GetReportBuilderCount(bool bIncludeHidden) const override;
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(LPCTSTR strReportName) override;
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(const std::_tstring& strReportName) override;
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) override;

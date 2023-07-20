@@ -122,12 +122,7 @@ namespace WBFL
 
       #if defined _DEBUG
          bool AssertValid() const;
-         void Dump(WBFL::Debug::LogContext& os) const;
       #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          std::_tstring m_Name;

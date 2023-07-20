@@ -22,108 +22,34 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_VERSIONMGRLISTENER_H_
-#define INCLUDED_LRFD_VERSIONMGRLISTENER_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdVersionMgrListener
-
-   Listener class for lrfdVersionMgr.
-
-
-DESCRIPTION
-   Listener class for lrfdVersionMgr.
-
-LOG
-   rab : 12.09.1997 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdVersionMgrListener
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace LRFD
+   {
+      /// @brief Base class for LRFDVersionMgr listener objects
+      /// Create subclasses and override the virtual callback methods to
+      /// be notified when the version manager changes.
+      class LRFDCLASS LRFDVersionMgrListener
+      {
+      public:
+         LRFDVersionMgrListener() = default;
+         LRFDVersionMgrListener(const LRFDVersionMgrListener&) = default;
+         virtual ~LRFDVersionMgrListener() = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdVersionMgrListener();
+         LRFDVersionMgrListener& operator=(const LRFDVersionMgrListener&) = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdVersionMgrListener(const lrfdVersionMgrListener& rOther);
+         /// @brief Called by LRFDVersionMgr after a listener is registered
+         virtual void OnRegistered();
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdVersionMgrListener();
+         /// @brief Called by LRFDVersionMgr before a listener is unregistered
+         virtual void OnUnregistered();
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdVersionMgrListener& operator = (const lrfdVersionMgrListener& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   virtual void OnRegistered();
-
-   //------------------------------------------------------------------------
-   virtual void OnUnregistered();
-
-   //------------------------------------------------------------------------
-   virtual void OnUpdate();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         /// @brief Called by LRFDVersionMgr whenever it is updated
+         virtual void OnUpdate();
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_VERSIONMGRLISTENER_H_

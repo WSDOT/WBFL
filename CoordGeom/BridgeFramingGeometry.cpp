@@ -347,15 +347,3 @@ void BridgeFramingGeometry::UpdateBridgeLine() const
    auto alignment = GetBridgeAlignment();
    m_BridgeLine = alignment->CreateOffsetPath(m_BridgeLineOffset);
 }
-
-#if defined _UNITTEST
-#include "Testing/TestBridgeFramingGeometry.h"
-bool BridgeFramingGeometry::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("BridgeFramingGeometry");
-   TRY_TESTME(CTestBridgeFramingGeometry::Test(rlog));
-   TESTME_EPILOG("BridgeFramingGeometry");
-}
-#endif // _UNITTEST
-
-

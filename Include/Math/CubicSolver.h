@@ -44,8 +44,11 @@ namespace WBFL
 
          CubicSolver& operator=(const CubicSolver&) = default;
 
+         /// @{
+         /// @brief coefficients of a quadratic equation in the form ax^3 + bx^2 + cx + d = 0
          void SetCoefficients(Float64 a, Float64 b, Float64 c,Float64 d);
          void GetCoefficients(Float64* a, Float64* b, Float64* c,Float64* d) const;
+         /// @}
 
          /// Sets the coefficient a
          void SetA(Float64 a);
@@ -71,10 +74,11 @@ namespace WBFL
          /// Gets the coefficient d
          Float64 GetD() const;
 
-         /// Solves the cubic equation.  Returns number of roots found
-         /// \param[out] x1 first root
-         /// \param[out] x2 second root
-         /// \param[out] x3 third root
+         /// Solves the cubic equation.
+         /// @param[out] x1 first root
+         /// @param[out] x2 second root
+         /// @param[out] x3 third root
+         /// @return Number of roots found
          Uint8 Solve(Float64* x1, Float64* x2, Float64* x3) const;
 
       private:
@@ -82,11 +86,6 @@ namespace WBFL
          Float64 m_B{ 0.0 };
          Float64 m_C{ 0.0 };
          Float64 m_D{ 0.0 };
-
-      #if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
       };
    };
 };

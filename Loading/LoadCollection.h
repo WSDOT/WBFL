@@ -267,7 +267,7 @@ public:
       m_Version = 1.0;
    }
 
-   STDMETHOD(get_Count)(CollectionIndexType *pVal)
+   STDMETHOD(get_Count)(IndexType *pVal)
    {
 	   CHECK_RETVAL(pVal);
 
@@ -276,7 +276,7 @@ public:
 	   return S_OK;
    }
 
-   STDMETHOD(get_Item)(CollectionIndexType index, IItemType **pVal)
+   STDMETHOD(get_Item)(IndexType index, IItemType **pVal)
    {
 	   CHECK_RETOBJ(pVal);
 
@@ -284,7 +284,7 @@ public:
          return E_INVALIDARG;
 
       ContainerIteratorType it = m_Container.begin();
-      for (CollectionIndexType i = 0; i<index; i++)
+      for (IndexType i = 0; i<index; i++)
          it++;
 
       if (it != m_Container.end())
@@ -423,7 +423,7 @@ public:
       return hr;
    }
 
-   STDMETHOD(RemoveByIndex)(CollectionIndexType index)
+   STDMETHOD(RemoveByIndex)(IndexType index)
    {
       // NOTE: If this is undone, the item will be put back in the container,
       //       but its index will change.
@@ -432,7 +432,7 @@ public:
 
       // run the iterator throught the container
       ContainerIteratorType iter = m_Container.begin();
-      for (CollectionIndexType i = 0; i<index; i++, iter++)
+      for (IndexType i = 0; i<index; i++, iter++)
       ;
    
       ATLASSERT(iter != m_Container.end()); // should be past at end because of check on index above
@@ -687,9 +687,9 @@ public:
       if (FAILED(hr))
          return hr;
 
-      CollectionIndexType count = varlong.iVal;
+      IndexType count = varlong.iVal;
       m_LastUniqueKey = 1;
-      for (CollectionIndexType i = 0; i<count; i++)
+      for (IndexType i = 0; i<count; i++)
       {
 
          // items are not creatable, so we need to create and load manually
@@ -751,7 +751,7 @@ public:
          return hr;
 
       // save out count
-      CollectionIndexType count;
+      IndexType count;
       this->get_Count(&count);
       hr = save->put_Property(CComBSTR("Count"),CComVariant(count));
       if (FAILED(hr))

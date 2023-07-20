@@ -46,9 +46,6 @@
     <ClCompile Include="Triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -211,9 +208,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\GeomModel\Triangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\GeomModel\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\GeomModel\SectionComponent.h">

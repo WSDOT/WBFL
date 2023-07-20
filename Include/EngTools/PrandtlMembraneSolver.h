@@ -60,7 +60,7 @@ namespace WBFL
          /// @brief Solves the governing equation for the shape provided. The shape must be symmetric about the Y-axis
          /// @param shape shape of the section to be analyzed
          /// @return Returns a PrandtlMembraneSolution object
-         PrandtlMembraneSolution Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape) const;
+         PrandtlMembraneSolution Solve(const WBFL::Geometry::Shape* shape) const;
 
          /// @brief  the governing equation for the shape provided. The shape must be symmetric about the Y-axis
          /// @param shape shape of the section to be analyzed
@@ -68,24 +68,19 @@ namespace WBFL
          /// @param dyMin minimum size of a finite difference grid element in the Y-direction
          /// @param bIgnoreSymmetry if true, the symmetry of the cross section is ignored and the full grid is used for analysis
          /// @return Returns a PrandtlMembraneSolution object
-         static PrandtlMembraneSolution Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape, Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry = false);
+         static PrandtlMembraneSolution Solve(const WBFL::Geometry::Shape* shape, Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry = false);
 
          /// @brief Computes the volume, maximum slope, and direction of maximum slope for a solution element
          /// @param elementIndex Index of the element
          /// @param mesh The finite difference mesh
          /// @param meshValues The finite difference solution values
          /// @return A tuple containing Element Volume, Maximum Slope of Membrane Surface, Direction of Maximum Slope
-         static std::tuple<Float64,Float64,WBFL::Geometry::Vector2d> GetElementVolumeAndMaxSlope(IndexType elementIndex, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
+         static std::tuple<Float64,Float64,WBFL::Geometry::Vector2d> GetElementVolumeAndMaxSlope(IndexType elementIndex, const UniformFDMesh* mesh, const std::vector<Float64>& meshValues);
 
       private:
          Float64 m_DxMin{ 1 };
          Float64 m_DyMin{ 1 };
          bool m_bIgnoreSymmetry{ false };
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST      };
       };
    };
 };

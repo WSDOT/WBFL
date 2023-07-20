@@ -67,7 +67,7 @@ namespace WBFL
          IndexType GetPointCount() const;
 
          /// Returns the ith point. (zero-based)
-         const WBFL::Geometry::Point2d& GetPoint(CollectionIndexType idx) const;
+         const WBFL::Geometry::Point2d& GetPoint(IndexType idx) const;
 
          /// Returns all points for the line segments which make up the function.
          const std::vector<WBFL::Geometry::Point2d>& GetPoints() const;
@@ -122,24 +122,9 @@ namespace WBFL
          // close the the next evaluation. Segment counting is one-based.
          mutable IndexType m_LastSegment{0};
 
-      public:
-         // GROUP: DEBUG
-         #if defined _DEBUG
-         //------------------------------------------------------------------------
-         // Returns true if the object is in a valid state, otherwise returns false.
+      #if defined _DEBUG
          bool AssertValid() const;
-
-         //------------------------------------------------------------------------
-         // Dumps the contents of the object to the given dump context.
-         void Dump(WBFL::Debug::LogContext& os) const;
-         #endif // _DEBUG
-
-         #if defined _UNITTEST
-         //------------------------------------------------------------------------
-         // Runs a self-diagnostic test.  Returns true if the test passed,
-         // otherwise false.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         #endif // _UNITTEST
+      #endif // _DEBUG
       };
    };
 };

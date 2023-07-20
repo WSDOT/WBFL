@@ -120,7 +120,7 @@ STDMETHODIMP_(void) CPolyLineDisplayObjectImpl::put_Width(long width)
 }
 
 
-STDMETHODIMP CPolyLineDisplayObjectImpl::GetPoint(CollectionIndexType index, IPoint2d** pVal)
+STDMETHODIMP CPolyLineDisplayObjectImpl::GetPoint(IndexType index, IPoint2d** pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -133,7 +133,7 @@ STDMETHODIMP CPolyLineDisplayObjectImpl::GetPoint(CollectionIndexType index, IPo
 
 }
 
-STDMETHODIMP_(CollectionIndexType) CPolyLineDisplayObjectImpl::get_NumberOfPoints()
+STDMETHODIMP_(IndexType) CPolyLineDisplayObjectImpl::get_NumberOfPoints()
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -159,7 +159,7 @@ STDMETHODIMP_(void) CPolyLineDisplayObjectImpl::AddPoint(IPoint2d *pVal)
    m_Container.emplace_back(pVal);
 }
 
-STDMETHODIMP CPolyLineDisplayObjectImpl::InsertPoint(CollectionIndexType index, IPoint2d *pVal)
+STDMETHODIMP CPolyLineDisplayObjectImpl::InsertPoint(IndexType index, IPoint2d *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -179,7 +179,7 @@ STDMETHODIMP CPolyLineDisplayObjectImpl::InsertPoint(CollectionIndexType index, 
    return S_OK;
 }
 
-STDMETHODIMP CPolyLineDisplayObjectImpl::RemovePoint(CollectionIndexType index)
+STDMETHODIMP CPolyLineDisplayObjectImpl::RemovePoint(IndexType index)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -257,8 +257,8 @@ void CPolyLineDisplayObjectImpl::ClearDisplayObjects()
    if (m_NumDos>0)
    {
       // first go through all connectable display objects and disconnect sockets
-      CollectionIndexType cnt =  m_pDisplayObject->GetDisplayObjectCount();
-      for (CollectionIndexType ic = 0; ic<cnt; ic++)
+      IndexType cnt =  m_pDisplayObject->GetDisplayObjectCount();
+      for (IndexType ic = 0; ic<cnt; ic++)
       {
          CComPtr<iDisplayObject> pdo;
          m_pDisplayObject->GetDisplayObject(ic,atByIndex,&pdo);

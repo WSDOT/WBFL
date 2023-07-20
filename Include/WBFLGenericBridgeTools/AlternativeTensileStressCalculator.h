@@ -29,7 +29,7 @@
 #include <WBFLGeometry.h>
 #include <GeomModel/Primitives3d.h>
 #include <WBFLGenericBridge.h>
-
+#include <GeomModel/Shape.h>
 #include <WBFLRCCapacity.h> // for IGeneralSectionSolution
 
 /*****************************************************************************
@@ -60,7 +60,7 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    CComPtr<IRebarSection> rebarSection; // longitudinal rebar in the girder (in Section coordinates)
    Float64 Ytg; // Ytop of Girder... added to Y location of rebar to convert it into centroidal coordinates
    
-   // coordindate and stress on top and bottom, left and right of girder section
+   // coordinate and stress on top and bottom, left and right of girder section
    // Z = stress
    WBFL::Geometry::Point3d pntTopLeft;
    WBFL::Geometry::Point3d pntTopRight;

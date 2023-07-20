@@ -131,17 +131,17 @@ STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::AddStrategy(iDrawPointStrate
    m_Strategies.push_back(CComPtr<iDrawPointStrategy>(pStrategy));
 }
 
-STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::RemoveStrategy(CollectionIndexType index)
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::RemoveStrategy(IndexType index)
 {
    m_Strategies.erase(m_Strategies.begin() + index);
 }
 
-STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::GetStrategy(CollectionIndexType index, iDrawPointStrategy** ppStrategy)
+STDMETHODIMP_(void) CCompoundDrawPointStrategyImpl::GetStrategy(IndexType index, iDrawPointStrategy** ppStrategy)
 {
    m_Strategies[index].CopyTo(ppStrategy);
 }
 
-STDMETHODIMP_(CollectionIndexType) CCompoundDrawPointStrategyImpl::Count()
+STDMETHODIMP_(IndexType) CCompoundDrawPointStrategyImpl::Count()
 {
    return m_Strategies.size();
 }

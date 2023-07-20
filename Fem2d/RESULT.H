@@ -180,9 +180,9 @@ public:
 
    // Remove
    // returns number removed
-   CollectionIndexType Remove(IDType resultID)
+   IndexType Remove(IDType resultID)
    {
-      CollectionIndexType n = m_ResultVec.erase(resultID);
+      IndexType n = m_ResultVec.erase(resultID);
       return n;
    }
 

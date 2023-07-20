@@ -25,49 +25,25 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\XCodeVersion.h>
 
-/****************************************************************************
-CLASS
-   lrfdXCodeVersion
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXCodeVersion::lrfdXCodeVersion(Reason reason,
-                                   LPCTSTR file,
-                                   Int16 line) :
+XCodeVersion::XCodeVersion(Reason reason, LPCTSTR file, Uint32 line) :
    WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-//======================== OPERATIONS =======================================
-void lrfdXCodeVersion::Throw() const
+void XCodeVersion::Throw() const
 {
-   throw *static_cast<const lrfdXCodeVersion*>(this);
+   throw *static_cast<const XCodeVersion*>(this);
 }
 
-Int32 lrfdXCodeVersion::GetReason() const noexcept
+Int32 XCodeVersion::GetReason() const noexcept
+{
+   return (Int32)m_Reason;
+}
+
+XCodeVersion::Reason XCodeVersion::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-lrfdXCodeVersion::Reason lrfdXCodeVersion::GetReasonCode() const noexcept
-{
-   return m_Reason;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdXCodeVersion::AssertValid() const
-{
-   return true;
-}
-
-void lrfdXCodeVersion::Dump(WBFL::Debug::LogContext& os) const
-{
-}
-#endif // _DEBUG

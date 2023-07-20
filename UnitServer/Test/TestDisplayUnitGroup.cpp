@@ -126,7 +126,7 @@ void CTestDisplayUnitGroup::Test()
    // ****************************************************
    // * Test Count and Clear
    // ****************************************************
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST( pGroup->get_Count(nullptr), E_POINTER );
    TRY_TEST( pGroup->get_Count(&count), S_OK );
    TRY_TEST( count, 3 );

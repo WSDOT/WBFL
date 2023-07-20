@@ -39,13 +39,13 @@ namespace WBFL
 
          MomentCurvatureSolutionImpl& operator=(const MomentCurvatureSolutionImpl& other) = default;
 
-         void AddPoint(Float64 M, Float64 k, std::unique_ptr<MomentCapacitySolution>&& capacitySolution);
+         void AddPoint(std::unique_ptr<MomentCapacitySolution>&& capacitySolution);
             
          Float64 GetMaxMoment() const;
 
          Float64 GetMaxMomentCurvature() const;
 
-         void GetPeakCapacity(Float64& Mmax, Float64& k);
+         std::pair<Float64,Float64> GetPeakCapacity() const;
 
          Float64 GetMoment(IndexType idx) const;
 
@@ -53,7 +53,7 @@ namespace WBFL
 
          const WBFL::Geometry::Plane3d& GetIncrementalStrainPlane(IndexType idx) const;
 
-         const std::unique_ptr<MomentCapacitySolution>& GetCapacitySolution(IndexType idx) const;
+         const MomentCapacitySolution& GetCapacitySolution(IndexType idx) const;
 
          IndexType GetPointCount() const;
 
@@ -73,31 +73,37 @@ namespace WBFL
             bool operator<(const CurvaturePoint& other) const { return k < other.k; }
          };
          std::vector<CurvaturePoint> m_CurvaturePoints;
+
+         std::vector<MomentCurvatureSolutionImpl::CurvaturePoint>::const_iterator GetElementWithMaxMoment() const;
       };
 
-      void MomentCurvatureSolutionImpl::AddPoint(Float64 M, Float64 k, std::unique_ptr<MomentCapacitySolution>&& capacitySolution)
+      void MomentCurvatureSolutionImpl::AddPoint(std::unique_ptr<MomentCapacitySolution>&& capacitySolution)
       {
-         m_CurvaturePoints.emplace_back(M, k, std::move(capacitySolution));
+         m_CurvaturePoints.emplace_back(capacitySolution->GetM(),capacitySolution->GetCurvature(),std::move(capacitySolution));
          std::sort(m_CurvaturePoints.begin(), m_CurvaturePoints.end());
+      }
+
+      std::vector<MomentCurvatureSolutionImpl::CurvaturePoint>::const_iterator MomentCurvatureSolutionImpl::GetElementWithMaxMoment() const
+      {
+         return std::max_element(m_CurvaturePoints.cbegin(), m_CurvaturePoints.cend(), [](const auto& v1, const auto& v2) {return v1.M < v2.M; });
       }
 
       Float64 MomentCurvatureSolutionImpl::GetMaxMoment() const
       {
-         auto iter = std::max_element(m_CurvaturePoints.cbegin(), m_CurvaturePoints.cend());
+         auto iter = GetElementWithMaxMoment();
          return (*iter).M;
       }
 
       Float64 MomentCurvatureSolutionImpl::GetMaxMomentCurvature() const
       {
-         auto iter = std::max_element(m_CurvaturePoints.cbegin(), m_CurvaturePoints.cend());
+         auto iter = GetElementWithMaxMoment();
          return (*iter).k;
       }
 
-      void MomentCurvatureSolutionImpl::GetPeakCapacity(Float64& Mmax, Float64& k)
+      std::pair<Float64, Float64> MomentCurvatureSolutionImpl::GetPeakCapacity() const
       {
-         auto iter = std::max_element(m_CurvaturePoints.cbegin(), m_CurvaturePoints.cend());
-         Mmax = (*iter).M;
-         k = (*iter).k;
+         auto iter = GetElementWithMaxMoment();
+         return std::make_pair(iter->M, iter->k);
       }
 
       Float64 MomentCurvatureSolutionImpl::GetMoment(IndexType idx) const
@@ -118,10 +124,10 @@ namespace WBFL
          return m_CurvaturePoints[idx].Solution->GetIncrementalStrainPlane();
       }
 
-      const std::unique_ptr<MomentCapacitySolution>& MomentCurvatureSolutionImpl::GetCapacitySolution(IndexType idx) const
+      const MomentCapacitySolution& MomentCurvatureSolutionImpl::GetCapacitySolution(IndexType idx) const
       {
          PRECONDITION(idx < m_CurvaturePoints.size());
-         return m_CurvaturePoints[idx].Solution;
+         return *m_CurvaturePoints[idx].Solution;
       }
 
       IndexType MomentCurvatureSolutionImpl::GetPointCount() const
@@ -139,9 +145,9 @@ MomentCurvatureSolution::MomentCurvatureSolution()
 
 MomentCurvatureSolution::~MomentCurvatureSolution() = default;
 
-void MomentCurvatureSolution::AddPoint(Float64 M, Float64 k, std::unique_ptr<MomentCapacitySolution>&& capacitySolution)
+void MomentCurvatureSolution::AddPoint(std::unique_ptr<MomentCapacitySolution>&& capacitySolution)
 {
-   m_pImpl->AddPoint(M, k, std::move(capacitySolution));
+   m_pImpl->AddPoint(std::move(capacitySolution));
 }
 
 Float64 MomentCurvatureSolution::GetMaxMoment() const
@@ -154,9 +160,9 @@ Float64 MomentCurvatureSolution::GetMaxMomentCurvature() const
    return m_pImpl->GetMaxMomentCurvature();
 }
 
-void MomentCurvatureSolution::GetPeakCapacity(Float64& Mmax, Float64& k)
+std::pair<Float64, Float64> MomentCurvatureSolution::GetPeakCapacity() const
 {
-   m_pImpl->GetPeakCapacity(Mmax, k);
+   return m_pImpl->GetPeakCapacity();
 }
 
 Float64 MomentCurvatureSolution::GetMoment(IndexType idx) const
@@ -174,7 +180,7 @@ const WBFL::Geometry::Plane3d& MomentCurvatureSolution::GetIncrementalStrainPlan
    return m_pImpl->GetIncrementalStrainPlane(idx);
 }
 
-const std::unique_ptr<MomentCapacitySolution>& MomentCurvatureSolution::GetCapacitySolution(IndexType idx) const
+const MomentCapacitySolution& MomentCurvatureSolution::GetCapacitySolution(IndexType idx) const
 {
    return m_pImpl->GetCapacitySolution(idx);
 }
@@ -183,16 +189,3 @@ IndexType MomentCurvatureSolution::GetPointCount() const
 {
    return m_pImpl->GetPointCount();
 }
-
-
-#if defined _UNITTEST
-bool MomentCurvatureSolution::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("MomentCurvatureSolution");
-
-   //TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for MomentCurvatureSolution");
-   // not much to test here
-
-   TESTME_EPILOG("MomentCurvatureSolution");
-}
-#endif // _UNITTEST

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_MASSPROPERTIES_H_
-#define INCLUDED_GEOMMODEL_MASSPROPERTIES_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -31,47 +29,33 @@ namespace WBFL
 {
    namespace Geometry
    {
+      /// This class encapsulates the mass properties of a section.
+      class GEOMMODELCLASS MassProperties
+      {
+      public:
+         MassProperties() = default;
 
-/// This class encapsulates the mass properties of a section.
-class GEOMMODELCLASS MassProperties
-{
-public:
-   MassProperties();
+         MassProperties(Float64 mpl);
 
-   MassProperties(Float64 mpl);
+         ~MassProperties() = default;
 
-   /// This destructor is not virtual. It is not envisioned that this class will be extended through inheritance.
-   ~MassProperties();
+         MassProperties(const MassProperties&) = default;
+         MassProperties& operator=(const MassProperties&) = default;
 
-   MassProperties(const MassProperties&) = default;
-   MassProperties& operator=(const MassProperties&) = default;
+         MassProperties operator+(const MassProperties& other);
+         MassProperties operator-(const MassProperties& other);
 
-   MassProperties operator+(const MassProperties& other);
-   MassProperties operator-(const MassProperties& other);
+         MassProperties& operator+=(const MassProperties& other);
+         MassProperties& operator-=(const MassProperties& other);
 
-   MassProperties& operator+=(const MassProperties& other);
-   MassProperties& operator-=(const MassProperties& other);
-
-   /// Sets the mass per length of the section.
-   void SetMassPerLength(Float64 mpl);
+         /// Sets the mass per length of the section.
+         void SetMassPerLength(Float64 mpl);
    
-   /// Returns the mass per length of the section.
-   Float64 GetMassPerLength() const;
+         /// Returns the mass per length of the section.
+         Float64 GetMassPerLength() const;
 
-#if defined _DEBUG
-   virtual bool AssertValid() const;
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-private:
-   Float64  m_Mpl{ 0.0 };
-};
-
+      private:
+         Float64  m_Mpl{ 0.0 };
+      };
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMMODEL_MASSPROPERTIES_H_

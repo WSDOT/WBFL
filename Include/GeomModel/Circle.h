@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_CIRCLE_H_
-#define INCLUDED_GEOMMODEL_CIRCLE_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -115,19 +113,6 @@ public:
    /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
    virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
 
-#if defined _DEBUG
-   /// Returns true if the class is in a valid state, otherwise returns false
-   virtual bool AssertValid() const override;
-
-   /// Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const override;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   // Self-diagnostic test function.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
 protected:
    virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
 
@@ -138,5 +123,3 @@ private:
 
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMMODEL_CIRCLE_H_

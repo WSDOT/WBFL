@@ -119,14 +119,14 @@ CEAFTemplateGroup* CEAFTemplateGroup::Clone() const
    return pGroup;
 }
 
-CollectionIndexType CEAFTemplateGroup::GetTemplateCount() const
+IndexType CEAFTemplateGroup::GetTemplateCount() const
 {
    return DeepCount(this);
 }
 
-CollectionIndexType CEAFTemplateGroup::DeepCount(const CEAFTemplateGroup* pGroup) const
+IndexType CEAFTemplateGroup::DeepCount(const CEAFTemplateGroup* pGroup) const
 {
-   CollectionIndexType nTemplates = 0;
+   IndexType nTemplates = 0;
    for (const auto* pSubgroup : pGroup->m_Groups)
    {
       nTemplates += DeepCount(pSubgroup);
@@ -273,22 +273,22 @@ void CEAFTemplateGroup::AddItem(CEAFTemplateItem* pItem)
    m_Items.push_back(pItem);
 }
 
-CollectionIndexType CEAFTemplateGroup::GetItemCount() const
+IndexType CEAFTemplateGroup::GetItemCount() const
 {
-   return (CollectionIndexType)m_Items.size();
+   return (IndexType)m_Items.size();
 }
 
-const CEAFTemplateItem* CEAFTemplateGroup::GetItem(CollectionIndexType itemIdx) const
-{
-   return m_Items[itemIdx];
-}
-
-CEAFTemplateItem* CEAFTemplateGroup::GetItem(CollectionIndexType itemIdx)
+const CEAFTemplateItem* CEAFTemplateGroup::GetItem(IndexType itemIdx) const
 {
    return m_Items[itemIdx];
 }
 
-void CEAFTemplateGroup::RemoveItem(CollectionIndexType itemIdx)
+CEAFTemplateItem* CEAFTemplateGroup::GetItem(IndexType itemIdx)
+{
+   return m_Items[itemIdx];
+}
+
+void CEAFTemplateGroup::RemoveItem(IndexType itemIdx)
 {
    CEAFTemplateItem* pItem = m_Items[itemIdx];
    delete pItem;

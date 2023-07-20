@@ -32,23 +32,20 @@ namespace WBFL
       class BridgeFramingGeometry;
 
       /// @brief Abstract base class for girder line factories. A girder line factory creates girder lines
-      /// for a BridgeFramingGeometry model.
+      /// for a BridgeFramingGeometry model. GirderLineFactory objects do not store girder lines in the bridge framing model.
+      /// Add GirderLineFactory objects to the BridgeFramingGeometry, then the BridgeFramingGeometry object will call
+      /// the factory Create method when girder lines are needed. It is the responsibility of the BridgeFramingGeometry object
+      /// to store the girder lines.
       class COORDGEOMCLASS GirderLineFactory
       {
       public:
          virtual ~GirderLineFactory() = default;
 
-         /// @brief Creates girder lines. This method is called by a BridgeFramingGeometry object when creation of girder lines
-         /// are needed. The owning BridgeFramingGeometry object stores the girder lines created
+         /// @brief Creates girder lines. This method is typically called by a BridgeFramingGeometry object when creation of girder lines
+         /// is needed. Implementations of this method do not store girder lines in the bridge framing model.
          /// @param bridge The bridge geometry object that is creating the girder lines
          /// @return The girder lines
          virtual std::vector<std::shared_ptr<GirderLine>> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const = 0;
-
-#if defined _UNITTEST
-         //static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-      private:
       };
    };
 };

@@ -132,46 +132,37 @@ namespace WBFL
 
          virtual std::unique_ptr<SimpleConcrete> CreateClone() const;
 
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
       private:
          // GROUP: DATA MEMBERS
-         ConcreteType  m_Type;
-         Float64     m_Fct;
-         bool        m_bHasFct;
-         std::_tstring m_Name;
-         Float64     m_Fc;
-         Float64     m_Density;
-         Float64 m_WeightDensity;
-         Float64 m_FrShear;
-         Float64 m_FrFlexure;
-         Float64     m_ModE;
-         Float64     m_MaxAggregateSize;
-         Float64     m_FiberLength;
-         Float64     m_Lambda;
+         ConcreteType  m_Type = ConcreteType::Normal;
+         Float64     m_Fct = 0.0;
+         bool        m_bHasFct = false;
+         std::_tstring m_Name = _T("Unknown");
+         Float64     m_Fc = 0.0;
+         Float64     m_Density = 0.0;
+         Float64 m_WeightDensity = 0.0;
+         Float64 m_FrShear = 0.0;
+         Float64 m_FrFlexure = 0.0;
+         Float64     m_ModE = 0.0;
+         Float64     m_MaxAggregateSize = 0.0;
+         Float64     m_FiberLength = 0.0;
+         Float64     m_Lambda = 0.0;
 
          // PCI UHPC
-         Float64 m_ffc;
-         Float64 m_frr;
-         Float64 m_AutogenousShrinkage;
+         Float64 m_ffc = 0.0;
+         Float64 m_frr = 0.0;
+         Float64 m_AutogenousShrinkage = 0.0;
 
          // UHPC
-         Float64 m_alpha_u;
-         Float64 m_ecu;
-         Float64 m_etcr;
-         Float64 m_ftcri;
-         Float64 m_ftcr;
-         Float64 m_ftloc;
-         Float64 m_etloc;
-         Float64 m_gamma_u;
-         bool m_bExperimental_ecu;
+         Float64 m_alpha_u = 0.0;
+         Float64 m_ecu = 0.0;
+         Float64 m_etcr = 0.0;
+         Float64 m_ftcri = 0.0;
+         Float64 m_ftcr = 0.0;
+         Float64 m_ftloc = 0.0;
+         Float64 m_etloc = 0.0;
+         Float64 m_gamma_u = 0.0;
+         bool m_bExperimental_ecu = false;
       };
    };
 };

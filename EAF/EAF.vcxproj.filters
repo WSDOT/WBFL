@@ -235,9 +235,6 @@
     <ClCompile Include="EAFTxnManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TxnTestClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\AgentTools.h">
@@ -550,9 +547,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFTxnManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TxnTestClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -63,12 +63,6 @@ namespace WBFL
          /// @return 
          Float64 GetNormalizedStation() const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          Float64 m_Back{ 0.0 }; // back station
          Float64 m_Ahead{ 0.0 }; // ahead station

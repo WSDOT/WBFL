@@ -164,7 +164,7 @@ void CopySolution(IRCSolutionEx* solution_ex,IRCSolution** solution)
    CComPtr<IDblArray> arrFps;
    solution_ex->get_fps(&arrFps);
 
-   CollectionIndexType count;
+   IndexType count;
    arrFps->get_Count(&count);
 
    Float64 fps = 0;
@@ -263,18 +263,18 @@ void RCBeam2ToRCBeam2Ex(IRCBeam2* rcbeam,IRCBeam2Ex** rcbeam2)
    Float64 fcSlab, fcBeam;
    Float64 b,bw,hf,h;
 
-   CollectionIndexType nRebarLayers;
+   IndexType nRebarLayers;
    rcbeam->get_RebarLayerCount(&nRebarLayers);
-   for ( CollectionIndexType rebar = 0; rebar < nRebarLayers; rebar++ )
+   for ( IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
    {
       Float64 ds,As,devFactor;
       rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
       (*rcbeam2)->AddRebarLayer(ds,As,devFactor);
    }
 
-   CollectionIndexType nStrandLayers;
+   IndexType nStrandLayers;
    rcbeam->get_StrandLayerCount(&nStrandLayers);
-   for ( CollectionIndexType strand = 0; strand < nStrandLayers; strand++ )
+   for ( IndexType strand = 0; strand < nStrandLayers; strand++ )
    {
       Float64 dps, Aps, devFactor;
       rcbeam->GetStrandLayer(strand,&dps,&Aps,&devFactor);

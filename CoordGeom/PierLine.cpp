@@ -185,14 +185,3 @@ void PierLine::UpdateGeometry()
    // create normal to the pier
    m_Normal = m_Direction.IncrementBy(-PI_OVER_2);
 }
-
-#if defined _UNITTEST
-bool PierLine::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("PierLine");
-
-   TESTME_EPILOG("PierLine");
-}
-#endif // _UNITTEST
-
-

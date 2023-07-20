@@ -98,7 +98,7 @@ STDMETHODIMP CLoadingCollection::Create(/*[in]*/LoadCaseIDType id,IFem2dLoading*
 	return hr;
 }
 
-STDMETHODIMP CLoadingCollection::Remove(CollectionIndexType IDorIndex, Fem2dAccessType AccessMethod, LoadCaseIDType* pid)
+STDMETHODIMP CLoadingCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadCaseIDType* pid)
 {
    HRESULT hr = LoadingCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))

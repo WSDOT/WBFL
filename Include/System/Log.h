@@ -31,14 +31,22 @@
 #include <vector>
 #include <tchar.h>
 
-// Test macros
+/// @def TESTME_PROLOGUE(className) 
+/// @brief Prologue code for a unit test method
+/// @remark This macro is obsolete
 #define TESTME_PROLOGUE(className) bool bpf=true; \
                                    std::_tostringstream erro; \
                                    rlog <<WBFL::Debug::endl<< _T("Begin Testing class ")<<_T(className)<<_T(" at ")<<__LINE__<<_T(" in ")<<_T(__FILE__)<<WBFL::Debug::endl;
 
+/// @def TESTME_EPILOG(className)
+/// @brief Epilog code for a unit test method
+/// @remark This macro is obsolete
 #define TESTME_EPILOG(className)   rlog<<_T("End Testing class ")<<_T(className)<<_T(" at ")<<__LINE__<<_T(" in ")<<_T(__FILE__)<<WBFL::Debug::endl; \
                                    return bpf;
 
+/// @def TEST_FAIL
+/// @brief Logs a failed unit test
+/// @remark This macro is obsolete
 #define TEST_FAIL       {bpf = false; \
                          erro.flush(); \
                          erro.seekp(std::ios_base::beg); \
@@ -47,6 +55,9 @@
                          rlog.LogTestResult(erro.str(), WBFL::Debug::Log::TestResult::Failed); \
                          rlog << erro.str();} 
 
+/// @def TEST_PASS
+/// @brief Logs a successful unit test
+/// @remark This macro is obsolete
 #define TEST_PASS       {erro.flush(); \
                          erro.seekp(std::ios_base::beg); \
                          erro.clear(); \
@@ -54,6 +65,9 @@
                          rlog.LogTestResult(erro.str(), WBFL::Debug::Log::TestResult::Passed); \
                          rlog << erro.str();}
 
+/// @def TEST_NOT_IMPLEMENTED(msg)
+/// @brief Logs a unit these that is not implemented. This helps to identify code blocks that need to be revisited and completed
+/// @remark This macro is obsolete
 #define TEST_NOT_IMPLEMENTED(msg) {erro.flush(); \
                                    erro.seekp(std::ios_base::beg); \
                                    erro.clear(); \
@@ -62,6 +76,9 @@
                                    rlog.LogTestResult(erro.str(), WBFL::Debug::Log::TestResult::NotImplemented); \
                                    rlog << erro.str();}
 
+/// @def TRY_TESTME(pf)
+/// @brief Logs a unit test
+/// @remark This macro is obsolete
 #define TRY_TESTME(pf)    {if ((pf)) \
                         { \
                            TEST_PASS \
@@ -73,14 +90,26 @@
                            rlog << WBFL::Debug::endl; \
                         }}
 
+/// @def TRY_TESTME_CATCH(pf)
+/// @brief Logs a unit test expected to throw an exception
+/// @remark This macro is obsolete
 #define TRY_TESTME_CATCH(pf) {try{if((pf)) TRY_TESTME(false);}catch(...){TRY_TESTME(true);}}
 
+/// @def TEST_FAIL_EX(msg)
+/// @brief Logs a failed unit test with a custom message
+/// @remark This macro is obsolete
 #define TEST_FAIL_EX(msg) TEST_FAIL \
                           rlog <<_T(" ")<< msg <<WBFL::Debug::endl;
                             
+/// @def TEST_PASS_EX(msg)
+/// @brief Logs a successful unit test with a custom message
+/// @remark This macro is obsolete
 #define TEST_PASS_EX(msg) TEST_PASS \
                           rlog<<_T(" ")<< msg <<WBFL::Debug::endl;
 
+/// @def 
+/// @brief Logs a unit test with a custom message
+/// @remark This macro is obsolete
 #define TRY_TESTME_EX(pf,msg) if ((pf)) \
                             { \
                               TEST_PASS_EX(msg) \
@@ -95,6 +124,7 @@ namespace WBFL
    namespace Debug
    {
       /// Logs unit tests results to a LogContext
+      /// @remark This class is obsolete
       class SYSCLASS Log
       {
       public:
@@ -113,7 +143,7 @@ namespace WBFL
          Log& operator=(const Log&) = delete;
 
          /// Add an entry to the error log.
-         void LogTestResult(std::_tstring& msg, TestResult type);
+         void LogTestResult(const std::_tstring& msg, TestResult type);
 
          /// Get total number of entries in log
          size_t GetNumEntries() const;

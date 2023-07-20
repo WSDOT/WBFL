@@ -55,11 +55,6 @@ namespace WBFL
          Float64 m_Fc2{ 15 };
          Float64 m_Fc{ 0 };
          Float64 m_Beta1{ 0.85 };
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

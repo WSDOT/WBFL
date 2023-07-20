@@ -221,10 +221,10 @@ public:
 // ISuperstructureMembersEvents
 public:
    STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* item, BSTR stage, ChangeType change) override;
-   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType index) override;
-   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType index) override;
-	STDMETHOD(OnSuperstructureMembersMoveTo)(CollectionIndexType from, CollectionIndexType to) override;
-	STDMETHOD(OnSuperstructureMembersCopyTo)(CollectionIndexType from, CollectionIndexType to) override;
+   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, IndexType index) override;
+   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, IndexType index) override;
+	STDMETHOD(OnSuperstructureMembersMoveTo)(IndexType from, IndexType to) override;
+	STDMETHOD(OnSuperstructureMembersCopyTo)(IndexType from, IndexType to) override;
 	STDMETHOD(OnSuperstructureMembersReverse)() override;
 	STDMETHOD(OnSuperstructureMembersOffset)() override;
 
@@ -327,10 +327,10 @@ public:
       // Provides different ways to iterate through loadgroups
       // Note that fem load case id's are incremented by 10,000 for each loadgroup. This
       // is done to allow room for load cases created for up to 10,000 temporary supports
-      CollectionIndexType LoadGroupCount();
-      CComBSTR LoadGroup(CollectionIndexType index);
+      IndexType LoadGroupCount();
+      CComBSTR LoadGroup(IndexType index);
       void GetLoadGroupInfo(BSTR LoadGroup, LoadGroupIDType* femLgId, bool* isTransient);
-      void GetLoadGroupInfoByIndex(CollectionIndexType index, LoadGroupIDType* femLgId, bool* isTransient);
+      void GetLoadGroupInfoByIndex(IndexType index, LoadGroupIDType* femLgId, bool* isTransient);
 
       // functions to determine whether loads were ever actually applied in a load group
       void SetLoadGroupAsActive(BSTR LoadGroup);

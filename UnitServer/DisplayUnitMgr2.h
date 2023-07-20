@@ -92,7 +92,7 @@ public:
 public:
    STDMETHOD(get_Item)(/*[in]*/ BSTR bstrGroup, /*[out, retval]*/ IDisplayUnitGroup** retval) override;
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ IndexType* retval) override;
    STDMETHOD(Add)(/*[in]*/BSTR bstrGroup,/*[in]*/ BSTR bstrUnitType,/*[out,retval]*/ IDisplayUnitGroup** newGroup) override;
    STDMETHOD(Clear)() override;
    STDMETHOD(Remove)(BSTR bstrGroup) override;

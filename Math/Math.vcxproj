@@ -199,7 +199,6 @@
     <ClCompile Include="QuadraticSolver.cpp" />
     <ClCompile Include="RootFinder.cpp" />
     <ClCompile Include="TrapezoidalRuleIntegrator.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="UnsymmetricBandedMatrix..cpp" />
     <ClCompile Include="XFixedPointIteration.cpp" />
     <ClCompile Include="XFunction.cpp" />
@@ -229,7 +228,6 @@
     <ClInclude Include="..\Include\Math\QuadraticSolver.h" />
     <ClInclude Include="..\Include\Math\RootFinder.h" />
     <ClInclude Include="..\Include\Math\TrapezoidalRuleIntegrator.h" />
-    <ClInclude Include="..\Include\Math\UnitTest.h" />
     <ClInclude Include="..\Include\Math\UnsymmetricBandedMatrix.h" />
     <ClInclude Include="..\Include\Math\XFixedPointIteration.h" />
     <ClInclude Include="..\Include\Math\XFunction.h" />

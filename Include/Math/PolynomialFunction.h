@@ -31,7 +31,7 @@ namespace WBFL
 {
    namespace Math
    {
-      /// Defines a polynomial function
+      /// Defines a polynomial function of the form K1*x^n + K2*x^(n-1) + ... + Kn-1*x + Kn = 0;
       class MATHCLASS PolynomialFunction : public Function
       {
       public:
@@ -42,21 +42,19 @@ namespace WBFL
 
          PolynomialFunction& operator=(const PolynomialFunction&) = default;
 
+         /// @brief Sets the coefficients of the polynomial
+         /// @param coefficients 
          void SetCoefficients(const std::vector<Float64>& coefficients);
          const std::vector<Float64>& GetCoefficients() const;
    
          virtual Float64 Evaluate(Float64 x) const override;
          virtual std::unique_ptr<Function> Clone() const override;
 
+         /// @brief Returns a polynomial function that is the derivative of this function.
          PolynomialFunction GetDerivative() const;
 
       private:
          std::vector<Float64> m_Coefficients;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

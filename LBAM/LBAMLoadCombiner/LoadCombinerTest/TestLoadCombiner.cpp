@@ -164,7 +164,7 @@ void TestLoadCombiner::Test()
       // Forces
       CComPtr<ISectionResult3Ds> results;
       TRY_TEST(lc_response->ComputeForces(CComBSTR("DC"), poi_ids, CComBSTR("Stage 1"), roGlobal, rsIncremental, &results), S_OK);
-      CollectionIndexType cnt;
+      IndexType cnt;
       TRY_TEST(results->get_Count(&cnt), S_OK);
       TRY_TEST(cnt, 2);
 
@@ -220,7 +220,7 @@ void TestLoadCombiner::Test()
       // Deflections
       CComPtr<ISectionResult3Ds> results;
       TRY_TEST(lc_response->ComputeDeflections(CComBSTR("DC"), poi_ids, CComBSTR("Stage 1"), rsIncremental, &results), S_OK);
-      CollectionIndexType cnt;
+      IndexType cnt;
       TRY_TEST(results->get_Count(&cnt), S_OK);
       TRY_TEST(cnt, 2);
 
@@ -281,7 +281,7 @@ void TestLoadCombiner::Test()
 
       CComPtr<IResult3Ds> results;
       TRY_TEST(lc_response->ComputeReactions(CComBSTR("DC"), spt_ids, CComBSTR("Stage 1"), rsIncremental, &results), S_OK);
-      CollectionIndexType cnt;
+      IndexType cnt;
       TRY_TEST(results->get_Count(&cnt), S_OK);
       TRY_TEST(cnt, 3);
 

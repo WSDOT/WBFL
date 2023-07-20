@@ -134,7 +134,7 @@ STDMETHODIMP CManderModel::GetConcreteParameters(Float64* pfr, Float64* pfcc, Fl
    CHECK_RETVAL(pfcc);
    CHECK_RETVAL(pecc);
 
-   m_Model.ComputeConcreteProperties(pfr, pfcc, pecc);
+   std::tie(*pfr,*pfcc,*pecc) = m_Model.ComputeConcreteProperties();
 
    return S_OK;
 }

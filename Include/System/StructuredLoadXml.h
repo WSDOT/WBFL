@@ -128,16 +128,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<StructuredLoadXml_Impl> m_pImp;
-
-      public:
-#if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

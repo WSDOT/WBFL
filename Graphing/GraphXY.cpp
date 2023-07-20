@@ -28,62 +28,11 @@
 #include <float.h>
 #include <algorithm>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Graphing;
 
-/****************************************************************************
-CLASS
-   GraphXY
-****************************************************************************/
-static const Float64 DEFAULT_ZOOM=1.0e-06;
+const Float64 GraphXY::m_RightBorderFraction = .05;
 
-// Predicate function object used for sorting points based on their
-// X coordinate.
-class PointSorter
-{
-public:
-   bool operator()(const Point& p1, const Point& p2) const;
-};
-
-bool PointSorter::operator()(const Point& p1,const Point& p2) const
-{
-   return p1.X() < p2.X();
-}
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-GraphXY::GraphXY(WBFL::System::NumericFormatTool& rXAxisFormat, WBFL::System::NumericFormatTool& rYAxisFormat) :
-m_WorldRect( DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX ),
-m_XAxis(AxisXY::AxisOrientation::X, rXAxisFormat),
-m_YAxis(AxisXY::AxisOrientation::Y, rYAxisFormat),
-m_GraphTitleSize(14),
-m_GraphSubtitleSize(10),
-m_LegendFontSize(8),
-m_ClientAreaColor(RGB(240,240,240)),
-m_DoDrawAxis(true),
-m_DoDrawGrid(true),
-m_bDrawLegend(true),
-m_LegendBorderStyle(Style::Checker),
-m_XAxisRangeForced(false),
-m_XAxisNiceRange(true),
-m_YAxisNiceRange(true),
-m_PinYAxisAtZero(true),
-m_bIsotropicAxes(false),
-m_bHorizontalControlLine(true),
-m_MinZoomHeight(DEFAULT_ZOOM),
-m_MinZoomWidth(DEFAULT_ZOOM),
-m_Xmin(0),
-m_Xmax(1),
-m_Ymin(0),
-m_Ymax(1),
-m_bWasMinSet(false)
+GraphXY::GraphXY(WBFL::System::NumericFormatTool* pXAxisFormat, WBFL::System::NumericFormatTool* pYAxisFormat)
 {
    // set up the x axis
    m_XAxis.SetNumberOfMinorTics(5);
@@ -94,14 +43,6 @@ m_bWasMinSet(false)
    m_YAxis.SetTicLocation(AxisXY::TicLocation::Below);
    m_YAxis.SetTextLocation(AxisXY::TextLocation::Above);
    m_YAxis.SetNumberOfMinorTics(5);
-
-   m_GridPenData.Style = PS_SOLID;
-   m_GridPenData.Color = RGB(0,0,0);
-   m_GridPenData.Width = 1;
-
-   m_HorzControlLinePenData.Style = PS_SOLID;
-   m_HorzControlLinePenData.Color = RGB(0, 0, 0);
-   m_HorzControlLinePenData.Width = 2;
 }
 
 GraphXY::~GraphXY()
@@ -180,7 +121,7 @@ void GraphXY::GetDataSeriesData(IndexType cookie, std::_tstring* pLabel, int* pP
    }
 }
 
-void GraphXY::GetDataSeriesPoints(IndexType cookie, std::vector<Point>* pvPoints) const
+void GraphXY::GetDataSeriesPoints(IndexType cookie, DataSeries* pvPoints) const
 {
    GraphDataMap::const_iterator found = m_GraphDataMap.find(cookie);
    if (found != m_GraphDataMap.end())
@@ -200,29 +141,26 @@ void GraphXY::AddPoint(IndexType cookie,const Point& rPoint)
    {
       GraphData& gd = (*found).second;
       gd.Series.push_back(rPoint);
-      SetBroken();
    }
 }
 
-void GraphXY::AddPoints(IndexType cookie,const std::vector<Point>& vPoints)
+void GraphXY::AddPoints(IndexType cookie,const DataSeries& vPoints)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
    {
       GraphData& gd = (*found).second;
       gd.Series.insert(gd.Series.end(),vPoints.begin(),vPoints.end());
-      SetBroken();
    }
 }
 
-void GraphXY::SetPoints(IndexType cookie, const std::vector<Point>& vPoints)
+void GraphXY::SetPoints(IndexType cookie, const DataSeries& vPoints)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if (found != m_GraphDataMap.end())
    {
       GraphData& gd = (*found).second;
       gd.Series = vPoints;
-      SetBroken();
    }
 }
 
@@ -233,7 +171,6 @@ void GraphXY::ClearPoints(IndexType cookie)
    {
       GraphData& gd = (*found).second;
       gd.Series.clear();
-      SetBroken();
    }
 }
 
@@ -241,7 +178,6 @@ void GraphXY::ClearData()
 {
    m_GraphDataMap.clear();
 }
-
 
 IndexType GraphXY::GetPointCount(IndexType cookie) const
 {
@@ -258,7 +194,6 @@ IndexType GraphXY::GetPointCount(IndexType cookie) const
 void GraphXY::RemoveDataSeries(IndexType cookie)
 {
    m_GraphDataMap.erase( cookie );
-   SetBroken();
 }
 
 IndexType GraphXY::GetDataSeriesCount() const
@@ -269,12 +204,11 @@ IndexType GraphXY::GetDataSeriesCount() const
 void GraphXY::SetOutputRect(const RECT& rOutputRect)
 {
    m_OutputRect = rOutputRect;
-   SetBroken();
 }
 
 Rect GraphXY::GetRawWorldRect() const
 {
-   Rect worldRect(DBL_MAX,DBL_MAX,-DBL_MAX,-DBL_MAX);
+   Rect worldRect(Float64_Max, Float64_Max,-Float64_Max,-Float64_Max);
 
    IndexType nDataPoints = 0;
    IndexType nMaxDataPoints = 0;
@@ -362,8 +296,6 @@ void GraphXY::DrawDataSeries(HDC hDC)
 {
    DrawCurve( hDC );
 }
-
-//======================== ACCESS     =======================================
 
 LPCTSTR GraphXY::GetTitle() const
 {
@@ -508,9 +440,9 @@ void GraphXY::SetYAxisNumberOfMinorTics(LONG num)
    m_YAxis.SetNumberOfMinorTics(num);
 }
 
-void GraphXY::SetXAxisValueFormat(WBFL::System::NumericFormatTool& format)
+void GraphXY::SetXAxisValueFormat(WBFL::System::NumericFormatTool* pFormat)
 {
-   m_XAxis.SetValueFormat(format);
+   m_XAxis.SetValueFormat(pFormat);
 }
 
 const WBFL::System::NumericFormatTool* GraphXY::GetXAxisValueFormat() const
@@ -546,9 +478,9 @@ AxisXY::AxisScale GraphXY::GetYAxisScale() const
    return m_YAxis.GetScale();
 }
 
-void GraphXY::SetYAxisValueFormat(WBFL::System::NumericFormatTool& format)
+void GraphXY::SetYAxisValueFormat(WBFL::System::NumericFormatTool* pFormat)
 {
-   m_YAxis.SetValueFormat(format);
+   m_YAxis.SetValueFormat(pFormat);
 }
 
 const WBFL::System::NumericFormatTool* GraphXY::GetYAxisValueFormat() const
@@ -600,8 +532,8 @@ void GraphXY::GetMinimumZoomBounds(Float64* pHeight, Float64* pWidth) const
 
 void GraphXY::SetMinimumZoomBounds(Float64 Height, Float64 Width)
 {
-   CHECK(Height>0); // this will cause numeric problems
-   CHECK(Width>0); // this will cause numeric problems
+   PRECONDITION(0 < Height); // this will cause numeric problems
+   PRECONDITION(0 < Width); // this will cause numeric problems
 
    m_MinZoomHeight = Height;
    m_MinZoomWidth  = Width;
@@ -634,8 +566,6 @@ GraphXY::Style GraphXY::GetLegendBorderStyle() const
    return m_LegendBorderStyle;
 }
 
-//======================== INQUIRY    =======================================
-
 const PointMapper& GraphXY::GetClientAreaPointMapper(HDC hDC)
 {
    // set up the graph layout
@@ -644,12 +574,6 @@ const PointMapper& GraphXY::GetClientAreaPointMapper(HDC hDC)
    return m_PointMapper;
 }
 
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 void GraphXY::UpdateGraphMetrics(HDC hDC)
 {
    m_WorldRect.Set(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
@@ -938,9 +862,6 @@ void GraphXY::UpdateGraphMetrics(HDC hDC)
    center.x = device_client_rect.left + width/2;
    center.y = device_client_rect.top + height/2;
    m_PointMapper.SetDeviceOrg( center.x, center.y );
-
-   // ready to draw
-   SetFixed();
 }
 
 void GraphXY::DrawCurve(HDC hDC)
@@ -949,10 +870,9 @@ void GraphXY::DrawCurve(HDC hDC)
    AxisXY::AxisScale scaleY = m_YAxis.GetScale();
 
    // draw curve in color
-   GraphDataMap::iterator map_iter;
-   for ( map_iter = m_GraphDataMap.begin(); map_iter != m_GraphDataMap.end(); map_iter++ )
+   for(const auto& graphDataRecord : m_GraphDataMap)
    {
-      GraphData& gd = (*map_iter).second;
+      const GraphData& gd = graphDataRecord.second;
 
       LOGBRUSH logBrush;
       logBrush.lbColor = gd.Pen.Color;
@@ -962,14 +882,12 @@ void GraphXY::DrawCurve(HDC hDC)
       HPEN hPen = ::ExtCreatePen(PS_GEOMETRIC | gd.Pen.Style, gd.Pen.Width, &logBrush, 0, nullptr);
       HGDIOBJ hOldPen = ::SelectObject(hDC,hPen);
 
-      DataSeries& ds = gd.Series;
-      POINT* p_points = new POINT[ ds.size() ];
+      const DataSeries& ds = gd.Series;
+      auto p_points = std::make_unique<POINT[]>(ds.size());
 
       Int16 count = 0;
-      DataSeries::iterator ds_iter;
-      for ( ds_iter = gd.Series.begin(); ds_iter != gd.Series.end(); ds_iter++ )
+      for(auto p : gd.Series)
       {
-         Point p = *ds_iter;
          if ( scaleX == AxisXY::AxisScale::Integral )
          {
             p.X() = count+1;
@@ -988,9 +906,7 @@ void GraphXY::DrawCurve(HDC hDC)
          p_points[count++] = dp;
       }
 
-      ::Polyline(hDC, p_points, count );
-
-      delete[] p_points;
+      ::Polyline(hDC, p_points.get(), count);
 
       ::SelectObject(hDC,hOldPen);
       ::DeleteObject(hPen);
@@ -1185,18 +1101,6 @@ void GraphXY::DrawLegend(HDC hDC)
    ::SetTextAlign(hDC,textAlign);
 }
 
-void GraphXY::SetBroken()
-{
-   m_IsBroken = true;
-}
-
-void GraphXY::SetFixed()
-{
-   m_IsBroken = false;
-}
-
-//======================== ACCESS     =======================================
-
 LONG GraphXY::GetXAxisNumberOfMajorTics() const
 {
    return m_XAxis.GetNumberOfMajorTics();
@@ -1327,37 +1231,3 @@ int GraphXY::UpdateLegendMetrics(HDC hDC)
 
    return nItems;
 }
-
-//======================== INQUERY    =======================================
-bool GraphXY::IsBroken()
-{
-   return m_IsBroken;
-}
-
-const Float64 GraphXY::m_RightBorderFraction = .05;
-
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool GraphXY::AssertValid() const
-{
-   return true;
-}
-
-void GraphXY::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for GraphXY" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool GraphXY::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("GraphXY");
-
-   // tough class to test since it's graphical. must manually use a project.
-
-   TESTME_EPILOG("GraphXY");
-}
-#endif // _UNITTEST
-

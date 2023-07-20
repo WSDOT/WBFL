@@ -48,7 +48,7 @@ void FDMeshGenerator::Initialize(Float64 dxMax, Float64 dyMax)
    m_DyMax = dyMax;
 }
 
-std::unique_ptr<UniformFDMesh> FDMeshGenerator::GenerateMesh(const std::unique_ptr<WBFL::Geometry::Shape>& shape, bool bIgnoreSymmetry) const
+std::unique_ptr<UniformFDMesh> FDMeshGenerator::GenerateMesh(const WBFL::Geometry::Shape* shape, bool bIgnoreSymmetry) const
 {
    std::unique_ptr<UniformFDMesh> mesh = std::make_unique<UniformFDMesh>();
 
@@ -93,7 +93,7 @@ std::unique_ptr<UniformFDMesh> FDMeshGenerator::GenerateMesh(const std::unique_p
    for (IndexType t = 0; t < nWorkerThreads; t++)
    {
       IndexType rowEnd = rowStart + nElementsPerThread;
-      vFutures.emplace_back(std::async(&FDMeshGenerator::GenerateMeshRows, rowStart, rowEnd, Nx, Dx, Dy, tlx, tly, std::ref(shape), std::ref(mesh)));
+      vFutures.emplace_back(std::async(&FDMeshGenerator::GenerateMeshRows, rowStart, rowEnd, Nx, Dx, Dy, tlx, tly, shape, std::ref(mesh)));
       rowStart = rowEnd;
    }
    GenerateMeshRows(rowStart, Ny, Nx, Dx, Dy, tlx, tly, shape, mesh);
@@ -106,7 +106,7 @@ std::unique_ptr<UniformFDMesh> FDMeshGenerator::GenerateMesh(const std::unique_p
    return mesh;
 }
 
-void FDMeshGenerator::GenerateMeshRows(IndexType rowStart, IndexType rowEnd, IndexType Nx, Float64 dx, Float64 dy, Float64 tlx, Float64 tly, const std::unique_ptr<WBFL::Geometry::Shape>& shape, std::unique_ptr<UniformFDMesh>& mesh)
+void FDMeshGenerator::GenerateMeshRows(IndexType rowStart, IndexType rowEnd, IndexType Nx, Float64 dx, Float64 dy, Float64 tlx, Float64 tly, const WBFL::Geometry::Shape* shape, std::unique_ptr<UniformFDMesh>& mesh)
 {
    for (IndexType row = rowStart; row < rowEnd; row++)
    {
@@ -114,7 +114,7 @@ void FDMeshGenerator::GenerateMeshRows(IndexType rowStart, IndexType rowEnd, Ind
    }
 }
 
-void FDMeshGenerator::GenerateMeshRow(IndexType row, IndexType Nx, Float64 dx, Float64 dy, Float64 tlx, Float64 tly, const std::unique_ptr<WBFL::Geometry::Shape>& shape, std::unique_ptr<UniformFDMesh>& mesh)
+void FDMeshGenerator::GenerateMeshRow(IndexType row, IndexType Nx, Float64 dx, Float64 dy, Float64 tlx, Float64 tly, const WBFL::Geometry::Shape* shape, std::unique_ptr<UniformFDMesh>& mesh)
 {
    Float64 cy = tly - row * dy - dy / 2;
 

@@ -26,22 +26,30 @@
 
 #include <Lrfd\LrfdExp.h>
 
-struct LRFDCLASS REBARDEVLENGTHDETAILS
+namespace WBFL
 {
-   Float64 Ab;
-   Float64 fy;
-   Float64 fc;
-   Float64 db;
-   Float64 lambdaRl;  // Reinforcement location factor
-   Float64 lambdaLw;  // Lightweight concrete modification factor or density modification factor
-   Float64 lambdaCf; // Coating factor
-   Float64 factor; // Total Factor applied to equation
+   namespace LRFD
+   {
+      /// @brief Struct containing details of rebar development length calculations
+      struct LRFDCLASS REBARDEVLENGTHDETAILS
+      {
+         Float64 Ab; ///< Area of bar
+         Float64 db; ///< diameter of bar
+         Float64 fy; ///< yield strength
+         Float64 fc; ///< concrete strength
+         Float64 lambdaRl;  ///< Reinforcement location factor
+         Float64 lambdaLw;  ///< Lightweight concrete modification factor or density modification factor
+         Float64 lambdaCf; ///< Coating factor
+         Float64 factor; ///< Total Factor applied to equation
 
-   bool bRlCfLimit; // if true, lambdaRl*lambdaCf was limited to 1.7
+         bool bRlCfLimit; ///< if true, lambdaRl*lambdaCf was limited to 1.7
 
-   // Two equations for #11 or smaller (before 2015)
-   Float64 ldb1;
-   Float64 ldb2;
-   Float64 ldb; // controlling value
-   Float64 ld; // factor*ldb
+         // Two equations for #11 or smaller (before 2015)
+         Float64 ldb1; ///< Result of first equation
+         Float64 ldb2; ///< Result of second equation
+         Float64 ldb; ///< controlling value
+         Float64 ld; ///< factor*ldb = development length
+      };
+   };
 };
+

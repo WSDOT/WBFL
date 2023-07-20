@@ -24,54 +24,33 @@
 
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <LRFD\LrfdExp.h>
 #include <LRFD\CreepCoefficient2005.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdPCIUHPCCreepCoefficient
-
-   Computes the creep coefficient per PCI UHPC Structure Design Guidance 4.3.2
-*****************************************************************************/
-
-class LRFDCLASS lrfdPCIUHPCCreepCoefficient : public lrfdCreepCoefficient2005
+namespace WBFL
 {
-public:
-   lrfdPCIUHPCCreepCoefficient();
-   virtual ~lrfdPCIUHPCCreepCoefficient();
+   namespace LRFD
+   {
+      /// @brief Computes the creep coefficient per PCI UHPC Structure Design Guidance 4.3.2
+      class LRFDCLASS PCIUHPCCreepCoefficient : public CreepCoefficient2005
+      {
+      public:
+         PCIUHPCCreepCoefficient() = default;
+         virtual ~PCIUHPCCreepCoefficient() = default;
 
-   bool PostCureThermalTreatment() const { return m_bPCTT; }
-   void PostCureThermalTreatment(bool bPCTT) { m_bPCTT = bPCTT; m_bUpdate = true; }
+         bool PostCureThermalTreatment() const { return m_bPCTT; }
+         void PostCureThermalTreatment(bool bPCTT) { m_bPCTT = bPCTT; m_bUpdate = true; }
 
-protected:
-   virtual Float64 GetUltimateCreep() const override;
-   virtual Float64 ComputeKvs() const override;
-   virtual Float64 ComputeKhc() const override;
-   virtual Float64 ComputeKf() const override;
-   virtual Float64 ComputeKtd(Float64 t) const override;
+      protected:
+         virtual Float64 GetUltimateCreep() const override;
+         virtual Float64 ComputeKvs() const override;
+         virtual Float64 ComputeKhc() const override;
+         virtual Float64 ComputeKf() const override;
+         virtual Float64 ComputeKtd(Float64 t) const override;
 
-private:
-   bool m_bPCTT;
+      private:
+         bool m_bPCTT = false;
 
-#if defined _UNITTEST
-public:
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
+      };
+   };
 };

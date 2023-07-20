@@ -106,7 +106,7 @@ STDMETHODIMP CMemberCollection::Create(MemberIDType id, JointIDType startJoint, 
 	return S_OK;
 }
 
-STDMETHODIMP CMemberCollection::Remove(CollectionIndexType IDorIndex, Fem2dAccessType AccessMethod, MemberIDType* pid)
+STDMETHODIMP CMemberCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, MemberIDType* pid)
 {
    HRESULT hr = MemberCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))

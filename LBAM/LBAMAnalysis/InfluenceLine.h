@@ -93,10 +93,10 @@ END_COM_MAP()
 public:
    STDMETHOD(get_Location)(/*[out,retval]*/Float64* location) override;
    STDMETHOD(get_POI)(/*[out,retval]*/PoiIDType* poi) override;
-   STDMETHOD(Item)(/*[in]*/CollectionIndexType idx, /*[in]*/InfluenceSideType side, /*[out]*/ Float64* value, /*[out]*/InfluenceLocationType* locationType, /*[out]*/Float64* location) override;
-   STDMETHOD(get_Count)( /*[in]*/InfluenceSideType side, /*[out,retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(Item)(/*[in]*/IndexType idx, /*[in]*/InfluenceSideType side, /*[out]*/ Float64* value, /*[out]*/InfluenceLocationType* locationType, /*[out]*/Float64* location) override;
+   STDMETHOD(get_Count)( /*[in]*/InfluenceSideType side, /*[out,retval]*/ IndexType *pVal) override;
    STDMETHOD(Add)(/*[in]*/InfluenceLocationType locationType, /*[in]*/Float64 location, /*[in]*/Float64 value) override;
-   STDMETHOD(Remove)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(Remove)(/*[in]*/IndexType index) override;
    STDMETHOD(Clear)() override;
    STDMETHOD(Clone)(/*[out,retval]*/IInfluenceLine** clone) override;
    STDMETHOD(Bounds)(/*[out]*/Float64* start, Float64* end) override;
@@ -111,7 +111,7 @@ public:
 public:
    // C++ public
    // pre-allocate some space
-   HRESULT Reserve(CollectionIndexType n);
+   HRESULT Reserve(IndexType n);
    // set up tolerancing - this should only be done once at initialization
    HRESULT GetZeroTolerance(/*[out,retval]*/ Float64 *pVal);
    HRESULT SetZeroTolerance(/*[in]*/ Float64 Val);
@@ -235,7 +235,7 @@ protected:
    ProcessingType m_ProcessingType;
 
    // cached values
-   CollectionIndexType m_LastFound[3];
+   IndexType m_LastFound[3];
    Float64 m_StartBound;
    Float64 m_EndBound;
 

@@ -70,9 +70,9 @@ public:
 
    // Display List Management
    STDMETHOD_(void,AddDisplayList)(iDisplayList* pDL) override;
-   STDMETHOD_(void,GetDisplayList)(CollectionIndexType idx,iDisplayList** list) override;
+   STDMETHOD_(void,GetDisplayList)(IndexType idx,iDisplayList** list) override;
    STDMETHOD_(void,FindDisplayList)(IDType id,iDisplayList** list) override;
-   STDMETHOD_(CollectionIndexType,GetDisplayListCount)() override;
+   STDMETHOD_(IndexType,GetDisplayListCount)() override;
    STDMETHOD_(void,RemoveDisplayList)(IDType key,AccessType access) override;
    STDMETHOD_(void,ClearDisplayLists)() override;
 
@@ -85,10 +85,10 @@ public:
    STDMETHOD_(void,RemoveDisplayObject)(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess) override;
    STDMETHOD_(void,ClearDisplayObjects)() override;
    STDMETHOD_(void,ClearDisplayObjects)(IDType key,AccessType access) override;
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() override;
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectFactoryCount)() override;
+   STDMETHOD_(IndexType,GetDisplayObjectCount)() override;
+   STDMETHOD_(IndexType,GetDisplayObjectFactoryCount)() override;
    STDMETHOD_(void,AddDisplayObjectFactory)(iDisplayObjectFactory* factory) override;
-   STDMETHOD_(void,GetDisplayObjectFactory)(CollectionIndexType idx, iDisplayObjectFactory** factory) override;
+   STDMETHOD_(void,GetDisplayObjectFactory)(IndexType idx, iDisplayObjectFactory** factory) override;
 
    STDMETHOD_(void,SelectObject)(iDisplayObject* pDO,BOOL bClearSelection) override;
    STDMETHOD_(void,SelectObjects)(CRect r) override;

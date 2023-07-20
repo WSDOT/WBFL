@@ -30,7 +30,7 @@
 
 class CEAFTxnManager;
 
-/// Abstract interface for a transaction manager factory. 
+/// @brief Abstract interface for a transaction manager factory. 
 /// Implementations of this interface use the abstract factory pattern
 /// to create application specific transcation managers
 class EAFCLASS CEAFTxnManagerFactory
@@ -39,7 +39,7 @@ public:
    virtual std::unique_ptr<CEAFTxnManager> CreateTransactionManager() = 0;
 };
 
-/// Manages transactions.  A transaction is a unit of change to an object.
+/// @brief Manages transactions.  A transaction is a unit of change to an object.
 /// See The Windows Interface Guidelines for Software Design pg 64.
 ///
 /// This class is responsible for maintaining a transaction and undo history,
@@ -47,6 +47,11 @@ public:
 ///
 /// An application should have only one Transaction Manager. The Singleton
 /// pattern is used to manage this.
+/// 
+/// A customized transaction manager may be define through inheritance. The transaction manager
+/// is a global resource object and the EAF framework gains access to it by calling CEAFTxnManager::GetInstance().
+/// CEAFTxnManager::SetTransactionManagerFactory() must be called prior to the first call to CEAFTxnManager::GetInstance()
+/// for your custom transaction manager to be instantiated.
 class EAFCLASS CEAFTxnManager
 {
 public:
@@ -56,75 +61,75 @@ public:
    CEAFTxnManager(const CEAFTxnManager&) = delete;
    CEAFTxnManager& operator=(const CEAFTxnManager&) = delete;
 
-   /// Executes a transaction.
+   /// @brief Executes a transaction.
    /// A copy of this transaction is made using CreateClone()
    /// The cloned transaction is maintained in the transaction history
    /// and will be used for Undo/Redo/Repeat if permitted
    virtual void Execute(CEAFTransaction& rTxn);
 
-   /// Executes a transaction.
+   /// @brief Executes a transaction.
    /// The transaction is maintained in the transaction history
    /// and will be used for Undo/Redo/Repeat if permitted
    virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn);
 
-   /// Undoes the last undoable transaction
+   ///@brief  Undoes the last undoable transaction
    virtual void Undo();
 
-   /// Executes the last undone transaction
+   /// @brief Executes the last undone transaction
    virtual void Redo();
 
-   /// Repeats the last transaction
+   /// @brief Repeats the last transaction
    virtual void Repeat();
 
-   /// Returns true if there is a transaction to be undone
+   /// @brief Returns true if there is a transaction to be undone
    virtual bool CanUndo() const;
 
-   /// Returns true if there is a transaction to be redone
+   /// @brief Returns true if there is a transaction to be redone
    virtual bool CanRedo() const;
 
-   /// Returns true if there is a transaction to be repeated
+   /// @brief Returns true if there is a transaction to be repeated
    virtual bool CanRepeat() const;
 
-   /// Returns the name of the transaction to be undone
+   /// @brief Returns the name of the transaction to be undone
    virtual std::_tstring UndoName() const;
 
-   /// Returns the name of the transaction to be redone
+   /// @brief Returns the name of the transaction to be redone
    virtual std::_tstring RedoName() const;
 
-   /// Returns the name of the transaction to be repeated
+   /// @brief Returns the name of the transaction to be repeated
    virtual std::_tstring RepeatName() const;
 
-   /// Returns the number of executed transactions
+   /// @brief Returns the number of executed transactions
    virtual IndexType GetTxnCount() const;
 
-   /// Returns the number of transactions that have been undone.
+   /// @brief Returns the number of transactions that have been undone.
    virtual IndexType GetUndoCount() const;
 
-   /// Writes a log of all the transactions that have been done to a standard ostream.
+   /// @brief Writes a log of all the transactions that have been done to a standard ostream.
    virtual void WriteTransactionLog(std::_tostream& os) const;
 
-   /// Clears the list of all transactions that have been done
+   /// @brief Clears the list of all transactions that have been done
    virtual void ClearTxnHistory();
 
-   /// Clears the list of all transactions that have been undone
+   /// @brief Clears the list of all transactions that have been undone
    virtual void ClearUndoHistory();
 
-   /// Clears both the transaction and undo histories.
+   /// @brief Clears both the transaction and undo histories.
    virtual void Clear();
 
-   /// Sets the transaction manager factory. Call this before any calls
+   /// @brief Sets the transaction manager factory. Call this before any calls
    /// to GetInstance to create a custom transaction manager
    static void SetTransactionManagerFactory(std::unique_ptr<CEAFTxnManagerFactory>&& pFactory);
 
-   /// Returns a pointer to the only instance of the transaction manager
-   static std::unique_ptr<CEAFTxnManager>& GetInstance();
+   /// @brief Returns the only instance of the transaction manager
+   static CEAFTxnManager& GetInstance();
 
-   /// Returns true if the Transaction manager is in report mode.  It is
+   /// @brief Returns true if the Transaction manager is in repeat mode.  It is
    /// useful to know this mode so the Repeat/Redo item on the edit menu
    /// can have the correct text.
    virtual bool IsRepeatMode() const {return m_Mode == Mode::Repeat;}
 
-   /// Returns true if the Transaction manager is in redo mode.  It is
+   /// @brief Returns true if the Transaction manager is in redo mode.  It is
    /// useful to know this mode so the Repeat/Redo item on the edit menu
    /// can have the correct text.
    virtual bool IsRedoMode()   const {return m_Mode == Mode::Redo;  }
@@ -132,12 +137,12 @@ public:
 protected:
    enum class Mode { Repeat, Redo };
 
-   /// Called by WriteTransactionLog() just before the log is written. This
+   /// @brief Called by WriteTransactionLog() just before the log is written. This
    /// method does nothing by default.  Derived classes can override this
    /// to provide application specific information.
    virtual void WriteLogIntroduction(std::_tostream& os) const;
 
-   /// Called by WriteTransactionLog() immediatly after the log is written.
+   /// @brief Called by WriteTransactionLog() immediately after the log is written.
    /// This method does nothing by default.  Derived classes can override this
    /// to provide application specific information.
    virtual void WriteLogConclusion(std::_tostream& os) const;
@@ -155,15 +160,4 @@ protected:
 
    TxnContainer::iterator FindFirstUndoableTxn();
    TxnContainer::const_iterator FindFirstUndoableTxn() const;
-
-#if defined _DEBUG
-public:
-   bool AssertValid() const;
-   void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-public:
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
 };

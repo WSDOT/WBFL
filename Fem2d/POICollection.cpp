@@ -99,7 +99,7 @@ STDMETHODIMP CPOICollection::Create(PoiIDType id, MemberIDType memberID, Float64
 	return hr;
 }
 
-STDMETHODIMP CPOICollection::Remove(CollectionIndexType IDorIndex, Fem2dAccessType AccessMethod, PoiIDType* pid)
+STDMETHODIMP CPOICollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, PoiIDType* pid)
 {
    HRESULT hr = POICollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))

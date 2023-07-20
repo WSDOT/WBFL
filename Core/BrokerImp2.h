@@ -115,10 +115,10 @@ public:
 
 // IManageAgents
 public:
-   STDMETHOD(get_AgentCount)(/*[out,retval]*/CollectionIndexType* nAgents) override;
-   STDMETHOD(get_Agent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
-   STDMETHOD(get_ExtensionAgentCount)(/*[out,retval]*/CollectionIndexType* nAgents) override;
-   STDMETHOD(get_ExtensionAgent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
+   STDMETHOD(get_AgentCount)(/*[out,retval]*/IndexType* nAgents) override;
+   STDMETHOD(get_Agent)(/*[in]*/IndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
+   STDMETHOD(get_ExtensionAgentCount)(/*[out,retval]*/IndexType* nAgents) override;
+   STDMETHOD(get_ExtensionAgent)(/*[in]*/IndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
 
 private:
    using Interfaces = std::set<InterfaceItem>;

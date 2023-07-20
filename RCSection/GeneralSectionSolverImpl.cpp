@@ -286,7 +286,7 @@ void GeneralSectionSolverImpl::DecomposeSection(const WBFL::Geometry::Plane3d& i
       Float64 Le = m_Section->GetElongationLength(shapeIdx);
 
       // make a clone of the original shape so it can be altered
-      std::unique_ptr<WBFL::Geometry::Shape> shape = original_shape->CreateClone();
+      auto shape = original_shape.CreateClone();
 
       // rotate the shape so that its primary axes are aligned with the neutral axis
       // we need to clip parallel to the neutral axis

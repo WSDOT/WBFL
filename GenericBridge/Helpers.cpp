@@ -746,7 +746,7 @@ Float64 WBFLGENERICBRIDGEFUNC ComputeHaunchDepthAlongSegment(Float64 distAlongSe
    // it's not unusual to ask for this value within closures, so the assert below is commented out
 //   ATLASSERT(distAlongSegment >= 0.0 && distAlongSegment <= segmentLength);
 
-   CollectionIndexType nVals = vHaunchDepths.size();
+   IndexType nVals = vHaunchDepths.size();
 
    Float64 haunchDepth;
    if (0 == nVals)

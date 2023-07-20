@@ -76,7 +76,7 @@ public:
 public:
    STDMETHOD(GetRange)(/*[out]*/Float64* pXbStart, /*[out]*/Float64* pXbEnd) override;
    STDMETHOD(ContainsPoint)(/*[in]*/ Float64 Xb, /*[out, retval]*/VARIANT_BOOL* pvbContainsPoint) override;
-   STDMETHOD(Perimeter)(/*[in]*/CollectionIndexType nMinPointsPerSide,/*[out]*/IPoint2dCollection** ppPoints) override;
+   STDMETHOD(Perimeter)(/*[in]*/IndexType nMinPointsPerSide,/*[out]*/IPoint2dCollection** ppPoints) override;
    STDMETHOD(putref_Material)(/*[in]*/IMaterial* pMaterial) override;
    STDMETHOD(get_Material)(/*[out, retval]*/IMaterial** ppMaterial) override;
 

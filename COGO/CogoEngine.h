@@ -114,11 +114,11 @@ public:
 
 // IDivide2
 public:
-   STDMETHOD(Arc)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
-   STDMETHOD(BetweenPoints)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
-   STDMETHOD(LineSegment)(/*[in]*/ ILineSegment2d* seg,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
-	STDMETHOD(CompoundCurve)(/*[in]*/ ICompoundCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points) override;
-   STDMETHOD(Path)(/*[in]*/IPath* pPath,/*[in]*/ CollectionIndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end,/*[out,retval]*/IPoint2dCollection** points) override;
+   STDMETHOD(Arc)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
+   STDMETHOD(BetweenPoints)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
+   STDMETHOD(LineSegment)(/*[in]*/ ILineSegment2d* seg,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
+	STDMETHOD(CompoundCurve)(/*[in]*/ ICompoundCurve* curve, /*[in]*/ IndexType nParts, /*[out,retval]*/ IPoint2dCollection** points) override;
+   STDMETHOD(Path)(/*[in]*/IPath* pPath,/*[in]*/ IndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end,/*[out,retval]*/IPoint2dCollection** points) override;
 
 // ITangent2
 public:

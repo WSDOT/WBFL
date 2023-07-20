@@ -102,30 +102,3 @@ std::pair<Float64, Float64> ProfileSegment::ComputeGradeAndElevation(const Stati
 
    return std::make_pair(grade, elevation);
 }
-
-
-#if defined _UNITTEST
-bool ProfileSegment::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("ProfileSegment");
-
-   auto alignment = Alignment::Create();
-   auto profile = Profile::Create();
-   alignment->AddProfile(1, profile);
-
-   auto segment = ProfileSegment::Create(ProfilePoint(100, 100), ProfilePoint(200, 200));
-   profile->AddProfileElement(segment);
-
-   TRY_TESTME(IsEqual(segment->GetLength(), 100.0));
-
-   Float64 grade, elevation;
-   std::tie(grade,elevation) = segment->ComputeGradeAndElevation(150);
-   TRY_TESTME(IsEqual(grade, tan(M_PI / 4)));
-   TRY_TESTME(IsEqual(elevation, 150.0));
-
-   TESTME_EPILOG("ProfileSegment");
-}
-
-#endif // _UNITTEST
-
-

@@ -24,8 +24,10 @@
 #include <System\SysLib.h>
 #include <System\StructuredSaveXml.h>
 #include <System\XStructuredSave.h>
+#include <System\XProgrammingError.h>
 #include <istream>
 #include <iomanip>
+#include <cctype>
 #include "FindReplaceAll.h"
 
 #include <list>
@@ -81,16 +83,6 @@ namespace WBFL
 
 
          MSXML::IXMLDOMNodePtr MakeChildNode(LPCTSTR name, Float64 vers=0.0);
-
-      public:
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
       };
    };
 };
@@ -204,29 +196,6 @@ void StructuredSaveXml::PutUnit(LPCTSTR xml)
 {
    m_pImp->PutUnit(xml);
 }
-
-#if defined _DEBUG
-bool StructuredSaveXml::AssertValid() const
-{
-   return m_pImp->AssertValid();
-}
-
-void StructuredSaveXml::Dump(WBFL::Debug::LogContext& os) const
-{
-   m_pImp->Dump(os);
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool StructuredSaveXml::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("StructuredSaveXml");
-
-   // Tests in main unit testing routine
-
-   TESTME_EPILOG("StructuredSaveXmlPrs");
-}
-#endif // _UNITTEST
 
 
 StructuredSaveXml_Impl::StructuredSaveXml_Impl():
@@ -632,47 +601,17 @@ void StructuredSaveXml_Impl::PutUnit(LPCTSTR xml)
    m_spCurrentUnit->appendChild(pNewNode);
 }
 
-
-#if defined _DEBUG
-bool StructuredSaveXml_Impl::AssertValid() const
-{
-   // cannot have negative levels
-   if (m_Level<0) 
-      return false;
-
-   if (m_pOStream==0) // must have happy stream
-      return false;
-
-   return true;
-}
-
-void StructuredSaveXml_Impl::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for StructuredSaveXml_Impl" << WBFL::Debug::endl;
-   os << "  Level: " << m_Level << WBFL::Debug::endl;
-   os << "  Units: <name, version> " << WBFL::Debug::endl;
-   for (UnitListConstIterator it=m_UnitList.begin(); it!=m_UnitList.end(); it++)
-      os <<"    <"<<(*it).first<<", "<<(*it).second<<">"<< WBFL::Debug::endl;
-
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool StructuredSaveXml_Impl::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("StructuredSaveXml_Impl");
-
-   // Tests in main unit testing routine
-
-   TESTME_EPILOG("StructuredSaveXmlPrs");
-}
-#endif // _UNITTEST
-
 ////////////////////////////////////////////////////////////////////////////
 // Helper function: Make a named child node
 ////////////////////////////////////////////////////////////////////////////
 MSXML::IXMLDOMNodePtr StructuredSaveXml_Impl::MakeChildNode(LPCTSTR name, Float64 vers)
 {
+   std::_tstring strName(name);
+   if (std::find_if(strName.begin(), strName.end(), [](auto& t) {return std::isspace(t) != 0;}) != strName.end())
+   {
+      WBFL::Debug::Message::Precondition(_T("Node names cannot contain spaces"), _T(__FILE__), __LINE__);
+   }
+
    ASSERTVALID;
 
    MSXML::IXMLDOMNodePtr pchild;

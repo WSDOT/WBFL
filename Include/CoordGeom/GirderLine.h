@@ -90,6 +90,10 @@ namespace WBFL
          /// @return 
          IDType GetID() const;
 
+         /// @brief Returns the identifier of the layout line used to define this girder line
+         /// @return 
+         IDType GetLayoutLineID() const;
+
          /// @brief Returns the PierLine object at the specified end of the girder line
          /// @param endType 
          /// @return 
@@ -143,10 +147,6 @@ namespace WBFL
          /// @param endType 
          /// @return 
          Float64 GetEndDistance(EndType endType) const;
-
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
 
       private:
          IDType m_ID = INVALID_ID;

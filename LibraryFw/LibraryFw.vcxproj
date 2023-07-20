@@ -187,8 +187,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp" />
-    <ClCompile Include="UnitTests\ConcreteMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\LibraryFw\AutoLib.h" />
@@ -199,9 +197,7 @@
     <ClInclude Include="..\Include\LibraryFw\LibraryFwExp.h" />
     <ClInclude Include="..\Include\LibraryFw\LibraryFwLib.h" />
     <ClInclude Include="..\Include\LibraryFw\LibraryManager.h" />
-    <ClInclude Include="..\Include\LibraryFw\UnitTest.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="UnitTests\ConcreteMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="LibraryFw.def" />

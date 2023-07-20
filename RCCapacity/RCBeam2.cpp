@@ -306,14 +306,14 @@ STDMETHODIMP CRCBeam2::AddRebarLayer(Float64 ds,Float64 As,Float64 devFactor)
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_RebarLayerCount(CollectionIndexType * count)
+STDMETHODIMP CRCBeam2::get_RebarLayerCount(IndexType * count)
 {
    CHECK_RETVAL(count);
    *count = m_Rebar.size();
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_RebarLayerDepth(CollectionIndexType index,Float64 * ds)
+STDMETHODIMP CRCBeam2::get_RebarLayerDepth(IndexType index,Float64 * ds)
 {
    CHECK_RETVAL(ds);
    if ( !IsValidIndex(index,m_Rebar) )
@@ -324,7 +324,7 @@ STDMETHODIMP CRCBeam2::get_RebarLayerDepth(CollectionIndexType index,Float64 * d
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_RebarLayerSteel(CollectionIndexType index,Float64 * As)
+STDMETHODIMP CRCBeam2::get_RebarLayerSteel(IndexType index,Float64 * As)
 {
    CHECK_RETVAL(As);
    if ( !IsValidIndex(index,m_Rebar) )
@@ -335,7 +335,7 @@ STDMETHODIMP CRCBeam2::get_RebarLayerSteel(CollectionIndexType index,Float64 * A
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_RebarLayerDevFactor(CollectionIndexType index,Float64 * devFactor)
+STDMETHODIMP CRCBeam2::get_RebarLayerDevFactor(IndexType index,Float64 * devFactor)
 {
    CHECK_RETVAL(devFactor);
    if ( !IsValidIndex(index,m_Rebar) )
@@ -346,7 +346,7 @@ STDMETHODIMP CRCBeam2::get_RebarLayerDevFactor(CollectionIndexType index,Float64
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::GetRebarLayer(CollectionIndexType index,Float64 * ds,Float64 * As,Float64 * devFactor)
+STDMETHODIMP CRCBeam2::GetRebarLayer(IndexType index,Float64 * ds,Float64 * As,Float64 * devFactor)
 {
    CHECK_RETVAL(ds);
    CHECK_RETVAL(As);
@@ -362,7 +362,7 @@ STDMETHODIMP CRCBeam2::GetRebarLayer(CollectionIndexType index,Float64 * ds,Floa
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::RemoveRebarLayer(CollectionIndexType index)
+STDMETHODIMP CRCBeam2::RemoveRebarLayer(IndexType index)
 {
    if ( !IsValidIndex(index,m_Rebar) )
       return E_INVALIDARG;
@@ -394,14 +394,14 @@ STDMETHODIMP CRCBeam2::AddStrandLayer(Float64 dps,Float64 Aps,Float64 devFactor)
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_StrandLayerCount(CollectionIndexType * count)
+STDMETHODIMP CRCBeam2::get_StrandLayerCount(IndexType * count)
 {
    CHECK_RETVAL(count);
    *count = m_Strands.size();
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_StrandLayerDepth(CollectionIndexType index,Float64 * dps)
+STDMETHODIMP CRCBeam2::get_StrandLayerDepth(IndexType index,Float64 * dps)
 {
    CHECK_RETVAL(dps);
    if ( !IsValidIndex(index,m_Strands) )
@@ -412,7 +412,7 @@ STDMETHODIMP CRCBeam2::get_StrandLayerDepth(CollectionIndexType index,Float64 * 
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_StrandLayerSteel(CollectionIndexType index,Float64 * Aps)
+STDMETHODIMP CRCBeam2::get_StrandLayerSteel(IndexType index,Float64 * Aps)
 {
    CHECK_RETVAL(Aps);
 
@@ -424,7 +424,7 @@ STDMETHODIMP CRCBeam2::get_StrandLayerSteel(CollectionIndexType index,Float64 * 
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_StrandLayerDevFactor(CollectionIndexType index,Float64 * devFactor)
+STDMETHODIMP CRCBeam2::get_StrandLayerDevFactor(IndexType index,Float64 * devFactor)
 {
    CHECK_RETVAL(devFactor);
 
@@ -436,7 +436,7 @@ STDMETHODIMP CRCBeam2::get_StrandLayerDevFactor(CollectionIndexType index,Float6
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::GetStrandLayer(CollectionIndexType index,Float64 * dps,Float64 * Aps,Float64* devFactor)
+STDMETHODIMP CRCBeam2::GetStrandLayer(IndexType index,Float64 * dps,Float64 * Aps,Float64* devFactor)
 {
    CHECK_RETVAL(dps);
    CHECK_RETVAL(Aps);
@@ -452,7 +452,7 @@ STDMETHODIMP CRCBeam2::GetStrandLayer(CollectionIndexType index,Float64 * dps,Fl
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::RemoveStrandLayer(CollectionIndexType index)
+STDMETHODIMP CRCBeam2::RemoveStrandLayer(IndexType index)
 {
    if ( !IsValidIndex(index,m_Strands) )
       return E_INVALIDARG;
@@ -565,12 +565,12 @@ STDMETHODIMP CRCBeam2::Load(IStructuredLoad2* pLoad)
    m_Rebar.clear();
    pLoad->BeginUnit(CComBSTR("Rebar"));
 
-   CollectionIndexType nRebarLayers;
+   IndexType nRebarLayers;
    if ( FAILED(pLoad->get_Property(CComBSTR("Count"),&var) ) )
       return STRLOAD_E_INVALIDFORMAT;
    nRebarLayers = var.iVal;
 
-   for ( CollectionIndexType rebar = 0; rebar < nRebarLayers; rebar++ )
+   for ( IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
    {
       Float64 ds, As, DevFactor;
       if ( FAILED(pLoad->get_Property(CComBSTR("ds"),&var) ) )
@@ -596,12 +596,12 @@ STDMETHODIMP CRCBeam2::Load(IStructuredLoad2* pLoad)
    m_Strands.clear();
    pLoad->BeginUnit(CComBSTR("Strand"));
 
-   CollectionIndexType nStrandLayers;
+   IndexType nStrandLayers;
    if ( FAILED(pLoad->get_Property(CComBSTR("Count"),&var) ) )
       return STRLOAD_E_INVALIDFORMAT;
    nStrandLayers = var.iVal;
 
-   for ( CollectionIndexType strand = 0; strand < nStrandLayers; strand++ )
+   for ( IndexType strand = 0; strand < nStrandLayers; strand++ )
    {
       Float64 dps, Aps, DevFactor;
       if ( FAILED(pLoad->get_Property(CComBSTR("dps"),&var) ) )

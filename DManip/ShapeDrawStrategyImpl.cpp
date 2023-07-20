@@ -250,14 +250,14 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::GetBoundingBox(iPointDisplayObject* 
       CComPtr<IPoint2dCollection> points;
       GetPointsInWorldSpace(pDO,m_Shape,&points);
 
-      CollectionIndexType nPoints;
+      IndexType nPoints;
       points->get_Count(&nPoints);
       Float64 left = DBL_MAX;
       Float64 right = -DBL_MAX;
       Float64 top = -DBL_MAX;
       Float64 bottom = DBL_MAX;
 
-      for ( CollectionIndexType i = 0; i < nPoints; i++ )
+      for ( IndexType i = 0; i < nPoints; i++ )
       {
          CComPtr<IPoint2d> point;
          points->get_Item(i,&point);
@@ -315,11 +315,11 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::GetGravityWell(iDisplayObject* pDO, 
    CComPtr<IPoint2dCollection> polypoints;
    GetPointsInWorldSpace(pDO, pShape, &polypoints);
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    polypoints->get_Count(&nPoints);
 
    CPoint* points = new CPoint[nPoints];
-   for (CollectionIndexType i = 0; i < nPoints; i++)
+   for (IndexType i = 0; i < nPoints; i++)
    {
       CComPtr<IPoint2d> point;
       polypoints->get_Item(i, &point);
@@ -411,9 +411,9 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
 
 void CShapeDrawStrategyImpl::DrawShape(iDisplayObject* pDO,CDC* pDC,ICompositeShape* pCompositeShape,CPen& solidPen,CBrush& solidBrush,CPen& voidPen,CBrush& voidBrush)
 {
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    pCompositeShape->get_Count(&nShapes);
-   for ( CollectionIndexType idx = 0; idx < nShapes; idx++ )
+   for ( IndexType idx = 0; idx < nShapes; idx++ )
    {
       CComPtr<ICompositeShapeItem> item;
       pCompositeShape->get_Item(idx,&item);
@@ -468,11 +468,11 @@ void CShapeDrawStrategyImpl::DrawShape(iDisplayObject* pDO,CDC* pDC,IShape* pSha
    CComPtr<IPoint2dCollection> polypoints;
    GetPointsInWorldSpace(pDO,pShape,&polypoints);
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    polypoints->get_Count(&nPoints);
 
    CPoint* points = new CPoint[nPoints];
-   for ( CollectionIndexType i = 0; i < nPoints; i++ )
+   for ( IndexType i = 0; i < nPoints; i++ )
    {
       CComPtr<IPoint2d> point;
       polypoints->get_Item(i,&point);
@@ -501,10 +501,10 @@ void CShapeDrawStrategyImpl::GetPointsInWorldSpace(iDisplayObject* pDO,IShape* p
    CComPtr<IPoint2dCollection> polypoints;
    pShape->get_PolyPoints(&polypoints);
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    polypoints->get_Count(&nPoints);
 
-   for ( CollectionIndexType i = 0; i < nPoints; i++ )
+   for ( IndexType i = 0; i < nPoints; i++ )
    {
       CComPtr<IPoint2d> point;
       polypoints->get_Item(i,&point);
@@ -761,14 +761,14 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl2::GetBoundingBox(iPointDisplayObject*
       CComPtr<IPoint2dCollection> points;
       GetPointsInWorldSpace(pDO, m_Shape, &points);
 
-      CollectionIndexType nPoints;
+      IndexType nPoints;
       points->get_Count(&nPoints);
       Float64 left = DBL_MAX;
       Float64 right = -DBL_MAX;
       Float64 top = -DBL_MAX;
       Float64 bottom = DBL_MAX;
 
-      for (CollectionIndexType i = 0; i < nPoints; i++)
+      for (IndexType i = 0; i < nPoints; i++)
       {
          CComPtr<IPoint2d> point;
          points->get_Item(i, &point);
@@ -829,11 +829,11 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl2::GetGravityWell(iDisplayObject* pDO,
    CComPtr<IPoint2dCollection> polypoints;
    GetPointsInWorldSpace(pDO, shape, &polypoints);
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    polypoints->get_Count(&nPoints);
 
    CPoint* points = new CPoint[nPoints];
-   for (CollectionIndexType i = 0; i < nPoints; i++)
+   for (IndexType i = 0; i < nPoints; i++)
    {
       CComPtr<IPoint2d> point;
       polypoints->get_Item(i, &point);
@@ -925,8 +925,8 @@ void CShapeDrawStrategyImpl2::DrawMe(iPointDisplayObject* pDO, CDC* pDC, BOOL bH
 
 void CShapeDrawStrategyImpl2::DrawShape(iDisplayObject* pDO, CDC* pDC, const std::shared_ptr<const WBFL::Geometry::CompositeShape>& compositeShape, CPen& solidPen, CBrush& solidBrush, CPen& voidPen, CBrush& voidBrush)
 {
-   CollectionIndexType nShapes = compositeShape->GetShapeCount();
-   for (CollectionIndexType idx = 0; idx < nShapes; idx++)
+   IndexType nShapes = compositeShape->GetShapeCount();
+   for (IndexType idx = 0; idx < nShapes; idx++)
    {
       const auto& shape = compositeShape->GetShape(idx);
 
@@ -974,11 +974,11 @@ void CShapeDrawStrategyImpl2::DrawShape(iDisplayObject* pDO, CDC* pDC, const std
    CComPtr<IPoint2dCollection> polypoints;
    GetPointsInWorldSpace(pDO, shape, &polypoints);
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    polypoints->get_Count(&nPoints);
 
    CPoint* points = new CPoint[nPoints];
-   for (CollectionIndexType i = 0; i < nPoints; i++)
+   for (IndexType i = 0; i < nPoints; i++)
    {
       CComPtr<IPoint2d> point;
       polypoints->get_Item(i, &point);

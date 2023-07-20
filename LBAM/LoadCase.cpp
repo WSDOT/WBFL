@@ -135,7 +135,7 @@ STDMETHODIMP CLoadCase::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCase::get_LoadGroupCount(CollectionIndexType *pVal)
+STDMETHODIMP CLoadCase::get_LoadGroupCount(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
 	
@@ -167,7 +167,7 @@ STDMETHODIMP CLoadCase::AddLoadGroup(BSTR loadGroupName)
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCase::GetLoadGroup(CollectionIndexType index, BSTR *loadGroupName)
+STDMETHODIMP CLoadCase::GetLoadGroup(IndexType index, BSTR *loadGroupName)
 {
    CHECK_RETOBJ(loadGroupName);
 
@@ -179,7 +179,7 @@ STDMETHODIMP CLoadCase::GetLoadGroup(CollectionIndexType index, BSTR *loadGroupN
       return E_INVALIDARG;
 }
 
-STDMETHODIMP CLoadCase::SetLoadGroup(CollectionIndexType index, BSTR newName)
+STDMETHODIMP CLoadCase::SetLoadGroup(IndexType index, BSTR newName)
 {
    CHECK_IN(newName);
 
@@ -240,7 +240,7 @@ STDMETHODIMP CLoadCase::RemoveLoadGroup(BSTR loadGroupName)
    }
 }
 
-STDMETHODIMP CLoadCase::RemoveLoadGroupByIndex(CollectionIndexType index)
+STDMETHODIMP CLoadCase::RemoveLoadGroupByIndex(IndexType index)
 {
    try
    {
@@ -328,10 +328,10 @@ STDMETHODIMP CLoadCase::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      CollectionIndexType count = var;
+      IndexType count = var;
       m_LoadGroups.clear();
       m_LoadGroups.reserve(count);
-      for (CollectionIndexType i = 0; i<count; i++)
+      for (IndexType i = 0; i<count; i++)
       {
          var.Clear();
          hr = pload->get_Property(_bstr_t("LoadGroup"),&var);
@@ -365,10 +365,10 @@ STDMETHODIMP CLoadCase::Save(IStructuredSave2 * psave)
       hr = psave->put_Property(CComBSTR("Description"),_variant_t(m_Description));
       hr = psave->put_Property(CComBSTR("ItemData"), m_ItemData);
 
-      CollectionIndexType count = m_LoadGroups.size();
+      IndexType count = m_LoadGroups.size();
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(count));
 
-      for (CollectionIndexType i = 0; i<count; i++)
+      for (IndexType i = 0; i<count; i++)
       {
          hr = psave->put_Property(CComBSTR("LoadGroup"),_variant_t(m_LoadGroups[i]));
       }

@@ -25,111 +25,32 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\AutoVersion.h>
 
-/****************************************************************************
-CLASS
-   lrfdAutoVersion
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdAutoVersion::lrfdAutoVersion()
+LRFDAutoVersion::LRFDAutoVersion()
 {
-   m_Version = lrfdVersionMgr::GetVersion();
-   m_Units   = lrfdVersionMgr::GetUnits();
+   m_Version = LRFDVersionMgr::GetVersion();
+   m_Units   = LRFDVersionMgr::GetUnits();
 }
 
-lrfdAutoVersion::lrfdAutoVersion(lrfdVersionMgr::Version v, lrfdVersionMgr::Units u)
+LRFDAutoVersion::~LRFDAutoVersion()
 {
-   m_Version = v;
-   m_Units   = u;
+   LRFDVersionMgr::BeginDamage();
+   LRFDVersionMgr::SetUnits( m_Units );
+   LRFDVersionMgr::SetVersion(m_Version);
+   LRFDVersionMgr::EndDamage();
 }
 
-lrfdAutoVersion::lrfdAutoVersion(const lrfdAutoVersion& rOther)
+/////////////////
+
+LRFRAutoVersion::LRFRAutoVersion()
 {
-   MakeCopy(rOther);
+   m_Version = LRFRVersionMgr::GetVersion();
 }
 
-lrfdAutoVersion::~lrfdAutoVersion()
+LRFRAutoVersion::~LRFRAutoVersion()
 {
-   lrfdVersionMgr::BeginDamage();
-   lrfdVersionMgr::SetVersion( m_Version );
-   lrfdVersionMgr::SetUnits( m_Units );
-   lrfdVersionMgr::EndDamage();
+   LRFRVersionMgr::BeginDamage();
+   LRFRVersionMgr::SetVersion(m_Version);
+   LRFRVersionMgr::EndDamage();
 }
-
-//======================== OPERATORS  =======================================
-lrfdAutoVersion& lrfdAutoVersion::operator= (const lrfdAutoVersion& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-void lrfdAutoVersion::SetVersion(lrfdVersionMgr::Version v)
-{
-   m_Version = v;
-}
-
-void lrfdAutoVersion::SetUnits(lrfdVersionMgr::Units u)
-{
-   m_Units = u;
-}
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdAutoVersion::AssertValid() const
-{
-   return true;
-}
-
-void lrfdAutoVersion::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdAutoVersion" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool lrfdAutoVersion::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdAutoVersion");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for lrfdAutoVersion");
-   TESTME_EPILOG("lrfdAutoVersion");
-}
-#endif // _UNITTEST
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdAutoVersion::MakeCopy(const lrfdAutoVersion& rOther)
-{
-   m_Version = rOther.m_Version;
-   m_Units   = rOther.m_Units;
-}
-
-void lrfdAutoVersion::MakeAssignment(const lrfdAutoVersion& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

@@ -84,6 +84,11 @@ IDType GirderLine::GetID() const
    return m_ID;
 }
 
+IDType GirderLine::GetLayoutLineID() const
+{
+   return m_LayoutLineID;
+}
+
 std::shared_ptr<const PierLine> GirderLine::GetPierLine(EndType endType) const
 {
    return m_PierLine[+endType];
@@ -522,14 +527,3 @@ WBFL::Geometry::Line2d GirderLine::GetGirderSpacingLine(EndType endType)
 
    return girder_spacing_line;
 }
-
-#if defined _UNITTEST
-bool GirderLine::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("GirderLine");
-
-   TESTME_EPILOG("GirderLine");
-}
-#endif // _UNITTEST
-
-

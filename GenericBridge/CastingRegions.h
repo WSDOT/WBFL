@@ -31,8 +31,8 @@
 #include "WBFLComCollections.h"
 
 class CCastingRegions;
-using CastingRegionItemColl = CComVectorCollection<ICastingRegions, ICastingRegion, IEnumCastingRegions, &IID_IEnumCastingRegions, CollectionIndexType>;
-using PersistentCastingRegions = CPersistentCollection<CCastingRegions, CastingRegionItemColl,CollectionIndexType>;
+using CastingRegionItemColl = CComVectorCollection<ICastingRegions, ICastingRegion, IEnumCastingRegions, &IID_IEnumCastingRegions, IndexType>;
+using PersistentCastingRegions = CPersistentCollection<CCastingRegions, CastingRegionItemColl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCastingRegions
@@ -86,8 +86,8 @@ public:
    STDMETHOD(CreateRegion)(/*[in]*/PierIDType startPierID, /*[in]*/Float64 Xstart, /*[in]*/PierIDType endPierID,/*[in]*/Float64 Xend, /*[in]*/IMaterial* pMaterial, /*[out, retval]*/ICastingRegion** ppRegion) override;
    STDMETHOD(FindRegion)(/*[in]*/Float64 Xb, /*[in]*/SectionBias bias, /*[out]*/IndexType* pIndex,/*[out]*/ICastingRegion** ppRegion) override;
    STDMETHOD(FindRegionEx)(/*[in]*/GirderIDType ssmbrID, /*[in]*/SegmentIndexType segIdx, /*[in]*/Float64 Xs, /*[in]*/SectionBias bias,/*[out]*/IndexType* pIndex,/*[out]*/ICastingRegion** ppRegion) override;
-   //STDMETHOD(get_Item)(/*[in]*/CollectionIndexType idx, /*[out, retval]*/ICastingRegion** ppRegion) override;
-   //STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* count) override;
+   //STDMETHOD(get_Item)(/*[in]*/IndexType idx, /*[out, retval]*/ICastingRegion** ppRegion) override;
+   //STDMETHOD(get_Count)(/*[out, retval]*/ IndexType* count) override;
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;
    STDMETHOD(get__EnumCastingRegions)(/*[out, retval]*/IEnumCastingRegions** ppEnumCastingRegions) override;
 };

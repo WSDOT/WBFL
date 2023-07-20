@@ -51,14 +51,14 @@ void ReportBuilderManager::AddReportBuilder(std::shared_ptr<ReportBuilder>& pRpt
    m_RptBuilders.insert( std::make_pair( strName, pRptBuilder ) );
 }
 
-CollectionIndexType ReportBuilderManager::GetReportBuilderCount(bool bIncludeHidden) const
+IndexType ReportBuilderManager::GetReportBuilderCount(bool bIncludeHidden) const
 {
    if ( bIncludeHidden )
    {
       return m_RptBuilders.size();
    }
 
-   CollectionIndexType nReportBuilders = 0;
+   IndexType nReportBuilders = 0;
    for(const auto& entry : m_RptBuilders)
    {
       if ( !entry.second->Hidden() )

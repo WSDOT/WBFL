@@ -100,12 +100,6 @@ namespace WBFL
          /// @return 
          std::shared_ptr<const Path> GetEdgePath(SideType side, bool bReturnLayoutPath) const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          std::weak_ptr<const BridgeFramingGeometry> m_pBridge;
 

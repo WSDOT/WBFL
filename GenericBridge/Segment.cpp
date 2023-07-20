@@ -291,7 +291,7 @@ STDMETHODIMP CSegment::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CSegment::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CSegment::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }

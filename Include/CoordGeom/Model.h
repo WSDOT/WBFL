@@ -1273,17 +1273,6 @@ namespace WBFL
 
          ///@}
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         static bool Measure(WBFL::Debug::Log& rlog);
-         static bool Locate(WBFL::Debug::Log& rlog);
-         static bool Intersect(WBFL::Debug::Log& rlog);
-         static bool Project(WBFL::Debug::Log& rlog);
-         static bool Divide(WBFL::Debug::Log& rlog);
-         static bool Tangent(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          // Storage of basic model items
          // The map key is the ID of the item begin stored (eg, point ID, segment ID, etc).

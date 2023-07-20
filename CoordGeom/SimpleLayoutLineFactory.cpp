@@ -35,14 +35,3 @@ std::vector<std::pair<IDType,std::shared_ptr<Path>>> SimpleLayoutLineFactory::Cr
 {
    return m_Paths;
 }
-
-#if defined _UNITTEST
-bool SimpleLayoutLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SimpleLayoutLineFactory");
-
-   TESTME_EPILOG("SimpleLayoutLineFactory");
-}
-#endif // _UNITTEST
-
-

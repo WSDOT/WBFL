@@ -297,7 +297,7 @@ HRESULT CUnitTypes::InitDefaultUnits()
 //      // Implemented by ICollectionOnSTLImpl
 //}
 
-STDMETHODIMP::CUnitTypes::get_Count(CollectionIndexType* retval)
+STDMETHODIMP::CUnitTypes::get_Count(IndexType* retval)
 {
    CHECK_RETVAL(retval);
    long count;

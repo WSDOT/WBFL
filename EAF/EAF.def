@@ -1,5 +1,3 @@
 ; EAF.def : Declares the module parameters for the DLL.
 
 LIBRARY      "WBFLEAF.dll"
-
-EXPORTS  UnitTest @1

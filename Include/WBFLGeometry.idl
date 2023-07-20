@@ -762,12 +762,12 @@ library WBFLGeometry
    {
       /// Number of items in the collection
       [propget, helpstring("property Count"), helpcontext(IDH_IPoint2dCollection_Count)]
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       /// Returns a point from the collection
       [propget, helpstring("Given an index, returns an item in the collection."),helpcontext(IDH_IPoint2dCollection_Item)]
       HRESULT Item(
-         [in] CollectionIndexType index, ///< index of the point to be retreived 
+         [in] IndexType index, ///< index of the point to be retreived 
          [out, retval] IPoint2d** pPoint ///< an object implementing the IPoint2d interface
       );
 
@@ -784,7 +784,7 @@ library WBFLGeometry
      /// All points beyond the specified index are moved up one position
       [helpstring("method Remove"),helpcontext(IDH_IPoint2dCollection_Remove)]
 	  HRESULT Remove(
-        [in] CollectionIndexType Index ///< index of the point to be removed
+        [in] IndexType Index ///< index of the point to be removed
      );
 
      /// Removes all items from the collection.
@@ -802,7 +802,7 @@ library WBFLGeometry
       /// Inserts a point into the collection at the specified index
       [helpstring("method Insert")]
       HRESULT Insert(
-         [in]CollectionIndexType index, ///< location to insert the point
+         [in]IndexType index, ///< location to insert the point
          [in]IPoint2d* pPoint ///< the point being inserted
       );
 
@@ -1520,7 +1520,7 @@ library WBFLGeometry
 	{
       /// Number of items in the collection
       [propget, helpstring("property Count"),helpcontext(IDH_IPoint3dCollection_Count)]
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 
       /// Adds a reference to a Point3d object to the collection.
       [helpstring("method Add"),helpcontext(IDH_IPoint3dCollection_Add)]
@@ -1529,7 +1529,7 @@ library WBFLGeometry
       /// Removes a point from the collection. All points beyond the specified index are moved up one position
       [helpstring("method Remove"),helpcontext(IDH_IPoint3dCollection_Remove)]
       HRESULT Remove(
-         [in] CollectionIndexType Index ///< index of the point to be removed
+         [in] IndexType Index ///< index of the point to be removed
       );
 
       /// Removes all items from the collection.
@@ -1547,7 +1547,7 @@ library WBFLGeometry
       /// Returns a point from the collection
       [propget, helpstring("property Item"),helpcontext(IDH_IPoint3dCollection_Item)]
 		HRESULT Item(
-         [in] CollectionIndexType index, ///< index of the point to be retreived 
+         [in] IndexType index, ///< index of the point to be retreived 
          [out, retval] IPoint3d** pPoint ///< an object implementing the IPoint3d interface
       );
 
@@ -1558,7 +1558,7 @@ library WBFLGeometry
       /// Inserts a point into the collection at the specified index
       [helpstring("method Insert")]
       HRESULT Insert(
-         [in]CollectionIndexType index, ///< location to insert the point
+         [in]IndexType index, ///< location to insert the point
          [in]IPoint3d* pPoint ///< the point being inserted
       );
 
@@ -2037,20 +2037,20 @@ library WBFLGeometry
       /// Removes a point from the polygon
 		[helpstring("method RemovePoint"),helpcontext(IDH_IPolyShape_RemovePoint)]
 		HRESULT RemovePoint(
-         [in] CollectionIndexType index ///< index of the point to be removed
+         [in] IndexType index ///< index of the point to be removed
       );
 
       /// Changes the location of a point
       [helpstring("method ChangePoint"), helpcontext(IDH_IPolyShape_ChangePoint)]
-      HRESULT ChangePoint([in] CollectionIndexType index, [in] Float64 x, [in] Float64 y);
+      HRESULT ChangePoint([in] IndexType index, [in] Float64 x, [in] Float64 y);
 
       /// Changes the location of a point
       [helpstring("method ChangePointEx"), helpcontext(IDH_IPolyShape_ChangePointEx)]
-      HRESULT ChangePointEx([in] CollectionIndexType index, [in] IPoint2d* pPoint);
+      HRESULT ChangePointEx([in] IndexType index, [in] IPoint2d* pPoint);
 
       /// Returns the number of points in the polygon
       [propget, helpstring("property Count"), helpcontext(IDH_IPolyShape_Count)]
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       /// Hook point is the first point in the shape
       [propget, helpstring("property HookPoint")]
@@ -2071,13 +2071,13 @@ library WBFLGeometry
       /// Returns the specified point
 		[propget, helpstring("property Point"),helpcontext(IDH_IPolyShape_Point)]
 		HRESULT Point(
-         [in] CollectionIndexType index,  ///< index of the point to be returned
+         [in] IndexType index,  ///< index of the point to be returned
          [out, retval] IPoint2d* *pVal ///< the point
       );
 
       /// Gets the location of a point
       [helpstring("property GetPoint"), helpcontext(IDH_IPolyShape_Point)]
-      HRESULT GetPoint([in] CollectionIndexType index, [out] Float64* pX, [out] Float64* pY);
+      HRESULT GetPoint([in] IndexType index, [out] Float64* pX, [out] Float64* pY);
 
       /// Removes all points from the polygon
 		[helpstring("method Clear"),helpcontext(IDH_IPolyShape_Clear)]
@@ -4551,7 +4551,7 @@ library WBFLGeometry
          /// Returns a CompositeShapeItem object
 		   [propget, helpstring("property Item")/*,helpcontext(IDH_ICompositeShape_Item)*/]
          HRESULT Item(
-            [in] CollectionIndexType idx,  ///< index of the item to be returned
+            [in] IndexType idx,  ///< index of the item to be returned
             [out, retval] ICompositeShapeItem* *pVal ///< the CompositeShapeItem
          );
 
@@ -4569,21 +4569,21 @@ library WBFLGeometry
          /// Replaces the shape associated with a composite shape item
          [helpstring("method Replace")/*,helpcontext(IDH_ICompsiteShape_Replace)*/]
          HRESULT Replace(
-            [in]CollectionIndexType idx, ///< index of the item
+            [in]IndexType idx, ///< index of the item
             [in]IShape* pShape ///< the replacement shape
          );
 
          /// Replaces a CompositeShapeItem
          [helpstring("method ReplaceEx")/*,helpcontext(IDH_ICompsiteShape_ReplaceEx)*/]
          HRESULT ReplaceEx(
-            [in]CollectionIndexType idx, ///< index of the item
+            [in]IndexType idx, ///< index of the item
             [in]ICompositeShapeItem* pShapeItem ///< the replacement CompositeShapeItem
          );
 
          /// Removes a CompositeShapeItem from the composite
 		   [helpstring("method Remove")/*,helpcontext(IDH_ICompositeShape_Remove)*/]
          HRESULT Remove(
-            [in] CollectionIndexType idx ///< index of the CompositeShapeItem to be removed
+            [in] IndexType idx ///< index of the CompositeShapeItem to be removed
          );
 
          /// Removes all CompositeShapeItem objects
@@ -4592,7 +4592,7 @@ library WBFLGeometry
 
          /// Number of CompositeShapeItem objects in this composite
 		   [propget, helpstring("property Count")/*,helpcontext(IDH_ICompositeShape_Count)*/]
-         HRESULT Count([out, retval] CollectionIndexType *pVal);
+         HRESULT Count([out, retval] IndexType *pVal);
 
          /// The Shape property
          [propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShape_Shape)*/]
@@ -4646,10 +4646,10 @@ library WBFLGeometry
 
       /// Number of voids
       [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
-      HRESULT VoidCount([in]CollectionIndexType nv);
+      HRESULT VoidCount([in]IndexType nv);
 
       [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
-      HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+      HRESULT VoidCount([out,retval]IndexType* nv);
 
       /// Hook point is at bottom centerline of the shape
       [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
@@ -4780,10 +4780,10 @@ library WBFLGeometry
 
       /// Total number of voids
       [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
-      HRESULT VoidCount([in]CollectionIndexType nv);
+      HRESULT VoidCount([in]IndexType nv);
 
       [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
-      HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+      HRESULT VoidCount([out,retval]IndexType* nv);
 
       /// Hook point is at bottom centerline of the shape
       [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
@@ -4922,10 +4922,10 @@ library WBFLGeometry
       /// If VoidCount is set to zero, the shape consists of only the outline.
       /// 0 and 1 are the only valid values for VoidCount.
       [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IBoxBeam_VoidCount)*/]
-      HRESULT VoidCount([in]CollectionIndexType nv);
+      HRESULT VoidCount([in]IndexType nv);
 
       [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IBoxBeam_VoidCount)*/]
-      HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+      HRESULT VoidCount([out,retval]IndexType* nv);
 
       /// Hook point is at bottom centerline of the shape
       [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IBoxBeam_HookPoint)*/]
@@ -5079,10 +5079,10 @@ library WBFLGeometry
       /// If VoidCount is set to zero, the shape consists of only the outline.
       /// 0 and 1 are the only valid values for VoidCount.     
       [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IDeckedSlabBeam_VoidCount)*/]
-      HRESULT VoidCount([in]CollectionIndexType nv);
+      HRESULT VoidCount([in]IndexType nv);
 
       [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IDeckedSlabBeam_VoidCount)*/]
-      HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+      HRESULT VoidCount([out,retval]IndexType* nv);
 
       /// Overall height of the shape
       [propget,helpstring("property Height")]
@@ -5436,7 +5436,7 @@ library WBFLGeometry
       HRESULT _NewEnum([out, retval] IUnknown** pVal);
 
       [propget, helpstring("property Item"), helpcontext(IDH_ICompositeSectionEx_Item)]
-      HRESULT Item([in] CollectionIndexType idx, [out, retval] ICompositeSectionItemEx** pVal);
+      HRESULT Item([in] IndexType idx, [out, retval] ICompositeSectionItemEx** pVal);
 
       [helpstring("method AddSection"), helpcontext(IDH_ICompositeSectionEx_AddSection)]
       HRESULT AddSection([in] IShape* shape, [in] Float64 Efg, [in] Float64 Ebg, [in] Float64 Dfg, [in]Float64 Dbg, [in] VARIANT_BOOL bStructural);
@@ -5445,10 +5445,10 @@ library WBFLGeometry
       HRESULT AddSectionEx([in] ICompositeSectionItemEx* sectionItem);
 
       [helpstring("method Remove"), helpcontext(IDH_ICompositeSectionEx_Remove)]
-      HRESULT Remove([in] CollectionIndexType idx);
+      HRESULT Remove([in] IndexType idx);
 
       [propget, helpstring("property Count"), helpcontext(IDH_ICompositeSectionEx_Count)]
-      HRESULT Count([out, retval] CollectionIndexType* pVal);
+      HRESULT Count([out, retval] IndexType* pVal);
 
       [propget, helpstring("property Section"), helpcontext(IDH_ICompositeSectionEx_Section)]
       HRESULT Section([out, retval] ISection** pVal);

@@ -31,55 +31,42 @@ namespace WBFL
 {
    namespace Geometry
    {
+      /// Partial implementation of the Shape class for shapes that generally have closed form solutions, but still need to create
+      /// and alternative polygon representation. A shape may need an alternative polygon representation for PolyPoints and Clipping
+      class GEOMMODELCLASS ShapeOnAlternativePolygonImpl : public ShapeImpl
+      {
+      public:
+         ShapeOnAlternativePolygonImpl();
+         ShapeOnAlternativePolygonImpl(std::shared_ptr<Point2d>& hookPnt);
+         ShapeOnAlternativePolygonImpl(const Point2d& hookPnt);
+         ShapeOnAlternativePolygonImpl(const ShapeOnAlternativePolygonImpl&);
 
-/// Partial implementation of the Shape class for shapes that generally have closed form solutions, but still need to create
-/// and alternative polygon representation. A shape may need an alternative polygon representation for PolyPoints and Clipping
-class GEOMMODELCLASS ShapeOnAlternativePolygonImpl : public ShapeImpl
-{
-public:
-   ShapeOnAlternativePolygonImpl();
-   ShapeOnAlternativePolygonImpl(std::shared_ptr<Point2d>& hookPnt);
-   ShapeOnAlternativePolygonImpl(const Point2d& hookPnt);
-   ShapeOnAlternativePolygonImpl(const ShapeOnAlternativePolygonImpl&);
+         virtual ~ShapeOnAlternativePolygonImpl();
 
-   virtual ~ShapeOnAlternativePolygonImpl();
+         ShapeOnAlternativePolygonImpl& operator=(const ShapeOnAlternativePolygonImpl&);
 
-   ShapeOnAlternativePolygonImpl& operator=(const ShapeOnAlternativePolygonImpl&);
+         virtual std::vector<Point2d> GetPolyPoints() const override;
 
-   virtual std::vector<Point2d> GetPolyPoints() const override;
+         virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) override;
+         virtual void SetHookPoint(const Point2d& hookPnt) override;
 
-   virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) override;
-   virtual void SetHookPoint(const Point2d& hookPnt) override;
+         virtual void Offset(const Size2d& delta) override;
+         virtual void Rotate(const Point2d& center, Float64 angle) override;
+         virtual void Reflect(const Line2d& line) override;
 
-   virtual void Offset(const Size2d& delta) override;
-   virtual void Rotate(const Point2d& center, Float64 angle) override;
-   virtual void Reflect(const Line2d& line) override;
+      protected:
+         virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const = 0;
 
-#if defined _DEBUG
-   /// Returns true if the class is in a valid state, otherwise returns false
-   virtual bool AssertValid() const override;
+         /// Retrieves the polygon representation. DO NOT CALL THIS FROM OnUpdatePolygon.
+         std::unique_ptr<Polygon>& GetPolygon() const;
+         void SetDirtyFlag(bool bFlag = true);
+         bool IsDirty() const;
 
-   /// Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const override;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   /// Self-diagnostic test function.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-protected:
-   virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const = 0;
-
-   /// Retrieves the polygon representation. DO NOT CALL THIS FROM OnUpdatePolygon.
-   std::unique_ptr<Polygon>& GetPolygon() const;
-   void SetDirtyFlag(bool bFlag = true);
-   bool IsDirty() const;
-
-private:
-   void Copy(const ShapeOnAlternativePolygonImpl& other);
-   void UpdatePolygon() const;
-   mutable bool m_bIsDirty{ true };
-   mutable std::unique_ptr<Polygon> m_Polygon;
-};
+      private:
+         void Copy(const ShapeOnAlternativePolygonImpl& other);
+         void UpdatePolygon() const;
+         mutable bool m_bIsDirty{ true };
+         mutable std::unique_ptr<Polygon> m_Polygon;
+      };
    }; // Geometry
 }; // WBFL

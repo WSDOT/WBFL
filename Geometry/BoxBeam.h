@@ -101,8 +101,8 @@ public:
    STDMETHOD(put_F2)(/*[in]*/ Float64 newVal) override;
    STDMETHOD(get_C1)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(put_C1)(/*[in]*/ Float64 newVal) override;
-   STDMETHOD(put_VoidCount)(/*[in]*/CollectionIndexType nv) override;
-   STDMETHOD(get_VoidCount)(/*[out,retval]*/CollectionIndexType* nv) override;
+   STDMETHOD(put_VoidCount)(/*[in]*/IndexType nv) override;
+   STDMETHOD(get_VoidCount)(/*[out,retval]*/IndexType* nv) override;
    STDMETHOD(get_HookPoint)(/*[out,retval]*/ IPoint2d** hookPnt) override;
    STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt) override;
    STDMETHOD(get_WebWidth)(/*[out, retval]*/ Float64 *pVal) override;

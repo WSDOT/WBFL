@@ -25,10 +25,6 @@
 #include <EAF\EAFTxnManager.h>
 #include <algorithm>
 
-#if defined _UNITTEST
-#include "TxnTestClass.h"
-#endif // _UNITTEST
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -63,15 +59,15 @@ void CEAFTxnManager::Undo()
 
    // move the unique pointer of of m_TxnHistory so it isn't deleted when remove the transaction from the container
    // this method know owns the transaction.
-   std::unique_ptr<CEAFTransaction> CEAF(std::move(*iter));
+   std::unique_ptr<CEAFTransaction> txn(std::move(*iter));
    m_TxnHistory.erase(iter);
 
    // undo the transaction
-   CEAF->Undo();
+   txn->Undo();
 
-   // put the trasaction into the undo history
+   // put the transaction into the undo history
    // m_UndoHistory now owns the transaction
-   m_UndoHistory.emplace_back( std::move(CEAF) );
+   m_UndoHistory.emplace_back( std::move(txn) );
    m_Mode = Mode::Redo;
 }
 
@@ -82,7 +78,7 @@ void CEAFTxnManager::Redo()
    if (m_UndoHistory.empty()) return;
    
    // Move the unique_ptr so the CEAF isn't deleted when pop_back is called.
-   // The transation is now owned in the local scope of this method
+   // The transaction is now owned in the local scope of this method
    auto txn = std::move(m_UndoHistory.back());
    m_UndoHistory.pop_back();
 
@@ -235,11 +231,11 @@ void CEAFTxnManager::SetTransactionManagerFactory(std::unique_ptr<CEAFTxnManager
    ms_pFactory = std::move(pFactory);
 }
 
-std::unique_ptr<CEAFTxnManager>& CEAFTxnManager::GetInstance()
+CEAFTxnManager& CEAFTxnManager::GetInstance()
 {
    if ( ms_pInstance == nullptr )
    {
-      // we don't have an instace of the transaction manager, create one
+      // we don't have an instance of the transaction manager, create one
       if (ms_pFactory == nullptr)
       {
          // we don't have a transcation manager factory so just create the default CEAF mgr.
@@ -252,7 +248,7 @@ std::unique_ptr<CEAFTxnManager>& CEAFTxnManager::GetInstance()
       }
    }
 
-   return ms_pInstance;
+   return *ms_pInstance;
 }
 
 void CEAFTxnManager::WriteLogIntroduction(std::_tostream& /*os*/) const
@@ -267,7 +263,7 @@ void CEAFTxnManager::WriteLogConclusion(std::_tostream& /*os*/) const
 
 CEAFTxnManager::TxnContainer::iterator CEAFTxnManager::FindFirstUndoableTxn()
 {
-   // want the first unduable transcation from the end of the list so we need to search backward using reverse iterators
+   // want the first undoable transcation from the end of the list so we need to search backward using reverse iterators
    auto result = std::find_if(std::rbegin(m_TxnHistory), std::rend(m_TxnHistory), [](auto& CEAF) {return CEAF->IsUndoable(); });
 
    // we need to return a forward iterator, if nothing was found, return the end iterator, otherwise
@@ -279,186 +275,6 @@ CEAFTxnManager::TxnContainer::iterator CEAFTxnManager::FindFirstUndoableTxn()
 
 CEAFTxnManager::TxnContainer::const_iterator CEAFTxnManager::FindFirstUndoableTxn() const
 {
-   auto result = std::find_if(std::rbegin(m_TxnHistory), std::rend(m_TxnHistory), [](const auto& CEAF) {return CEAF->IsUndoable(); });
+   auto result = std::find_if(std::rbegin(m_TxnHistory), std::rend(m_TxnHistory), [](const auto& txn) {return txn->IsUndoable(); });
    return result == std::rend(m_TxnHistory) ? std::end(m_TxnHistory) : --result.base();
 }
-
-#if defined _DEBUG
-bool CEAFTxnManager::AssertValid() const
-{
-   return true;
-}
-
-void CEAFTxnManager::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for CEAFTxnManager" << WBFL::Debug::endl;
-   std::for_each(std::begin(m_TxnHistory), std::end(m_TxnHistory), [&os](auto& CEAF) {CEAF->Dump(os); os << WBFL::Debug::endl; });
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool CEAFTxnManager::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CEAFTxnManger");
-
-   testUndoableTxn txn1;
-   testNotRepeatableTxn txn2;
-   testNotUndoableTxn txn3;
-
-   std::unique_ptr<CEAFTxnManager>& pMgr = CEAFTxnManager::GetInstance();
-
-   // Test the start up state
-   TRY_TESTME( pMgr->CanUndo()      == false );
-   TRY_TESTME( pMgr->CanRedo()      == false );
-   TRY_TESTME( pMgr->CanRepeat()    == false );
-   TRY_TESTME( pMgr->GetTxnCount()  == 0 );
-   TRY_TESTME( pMgr->GetUndoCount() == 0 );
-   TRY_TESTME( pMgr->IsRedoMode()   == false );
-   TRY_TESTME( pMgr->IsRepeatMode() == true );
-
-   // Add a couple of non-repeatable transactions
-   pMgr->Execute( txn2 );
-   pMgr->Execute( txn2 );
-   TRY_TESTME( pMgr->CanRepeat()    == false ); // there are no repeatable CEAF's
-   TRY_TESTME( pMgr->IsRedoMode()   == false );
-   TRY_TESTME( pMgr->IsRepeatMode() == true );
-
-   // Add a repeatable CEAF
-   pMgr->Execute(txn1 );
-   TRY_TESTME( pMgr->CanRepeat()    == true ); // now there is one repeatable CEAF
-   TRY_TESTME( pMgr->RepeatName()   == std::_tstring(_T("Undoable Txn")) );
-   TRY_TESTME( pMgr->IsRedoMode()   == false );
-   TRY_TESTME( pMgr->IsRepeatMode() == true );
-
-   // Repeat the last CEAF
-   pMgr->Repeat();
-   TRY_TESTME( pMgr->CanRepeat()    == true );
-   TRY_TESTME( pMgr->RepeatName()   == std::_tstring(_T("Undoable Txn")) );
-   TRY_TESTME( pMgr->GetTxnCount()  == 4 );
-   TRY_TESTME( pMgr->GetUndoCount() == 0 );
-   TRY_TESTME( pMgr->IsRedoMode()   == false );
-   TRY_TESTME( pMgr->IsRepeatMode() == true );
-   
-   // At this point, we can undo txn1, txn1, txn2, txn2 or we can repeat txn1
-   TRY_TESTME( pMgr->CanUndo()   == true );
-   TRY_TESTME( pMgr->CanRedo()   == false );
-   TRY_TESTME( pMgr->CanRepeat() == true );
-
-   // Undo the last txn
-   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
-   pMgr->Undo();
-   pMgr->Undo();
-   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Not Repeatable Txn")) );
-   TRY_TESTME( pMgr->CanUndo()      == true );
-   TRY_TESTME( pMgr->CanRedo()      == true );
-   TRY_TESTME( pMgr->CanRepeat()    == false );
-   TRY_TESTME( pMgr->GetTxnCount()  == 2 );
-   TRY_TESTME( pMgr->GetUndoCount() == 2 );
-   TRY_TESTME( pMgr->IsRedoMode()   == true );
-   TRY_TESTME( pMgr->IsRepeatMode() == false );
-
-   // Redo the last undo
-   TRY_TESTME( pMgr->RedoName()     == std::_tstring(_T("Undoable Txn")) );
-   pMgr->Redo();
-   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
-   TRY_TESTME( pMgr->CanUndo()      == true );
-   TRY_TESTME( pMgr->CanRedo()      == true );
-   TRY_TESTME( pMgr->CanRepeat()    == false );
-   TRY_TESTME( pMgr->GetTxnCount()  == 3 );
-   TRY_TESTME( pMgr->GetUndoCount() == 1 );
-   TRY_TESTME( pMgr->IsRedoMode()   == true );
-   TRY_TESTME( pMgr->IsRepeatMode() == false );
-
-   // Add a non-undoable txn followed by an undoable txn
-   pMgr->Execute(txn3 );
-   pMgr->Execute(txn1 );
-   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
-   TRY_TESTME( pMgr->CanUndo()      == true );
-   TRY_TESTME( pMgr->CanRedo()      == false );
-   TRY_TESTME( pMgr->CanRepeat()    == true );
-   TRY_TESTME( pMgr->GetTxnCount()  == 5 );
-   TRY_TESTME( pMgr->GetUndoCount() == 1 );
-   TRY_TESTME( pMgr->IsRedoMode()   == false );
-   TRY_TESTME( pMgr->IsRepeatMode() == true );
-
-   // Undo the last txn, the next txn is not-undoable, but there is another
-   // undoable one farther up the stack so undo should be enabled.
-   pMgr->Undo();
-   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
-   TRY_TESTME( pMgr->CanUndo()      == true );
-   TRY_TESTME( pMgr->CanRedo()      == true );
-   TRY_TESTME( pMgr->CanRepeat()    == false );
-   TRY_TESTME( pMgr->GetTxnCount()  == 4 );
-   TRY_TESTME( pMgr->GetUndoCount() == 2 );
-   TRY_TESTME( pMgr->IsRedoMode()   == true );
-   TRY_TESTME( pMgr->IsRepeatMode() == false );
-
-   // Undo all that we can (should be 3 times)
-   pMgr->Undo();
-   pMgr->Undo();
-   pMgr->Undo();
-   TRY_TESTME( pMgr->CanUndo()      == false );
-   TRY_TESTME( pMgr->CanRedo()      == true );
-   TRY_TESTME( pMgr->CanRepeat()    == false );
-   TRY_TESTME( pMgr->GetTxnCount()  == 1 );
-   TRY_TESTME( pMgr->GetUndoCount() == 5 );
-   TRY_TESTME( pMgr->IsRedoMode()   == true );
-   TRY_TESTME( pMgr->IsRepeatMode() == false );
-
-   // Clear the txn history, but keep the undo history
-   pMgr->ClearTxnHistory();
-   TRY_TESTME( pMgr->CanUndo()      == false );
-   TRY_TESTME( pMgr->CanRedo()      == true );
-   TRY_TESTME( pMgr->CanRepeat()    == false );
-   TRY_TESTME( pMgr->GetTxnCount()  == 0 );
-   TRY_TESTME( pMgr->GetUndoCount() == 5 );
-   TRY_TESTME( pMgr->IsRedoMode()   == true );
-   TRY_TESTME( pMgr->IsRepeatMode() == false );
-
-   // Add a few txns back
-   pMgr->Execute(txn1 );
-   pMgr->Execute(txn1 );
-   pMgr->Execute(txn1 );
-   TRY_TESTME( pMgr->CanUndo()      == true );
-   TRY_TESTME( pMgr->CanRedo()      == false );
-   TRY_TESTME( pMgr->CanRepeat()    == true );
-   TRY_TESTME( pMgr->GetTxnCount()  == 3 );
-   TRY_TESTME( pMgr->GetUndoCount() == 5 );
-   TRY_TESTME( pMgr->IsRedoMode()   == false );
-   TRY_TESTME( pMgr->IsRepeatMode() == true );
-   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
-
-   // Clear the undo history, but keep the txn history
-   pMgr->ClearUndoHistory();
-   TRY_TESTME( pMgr->CanUndo()      == true );
-   TRY_TESTME( pMgr->CanRedo()      == false );
-   TRY_TESTME( pMgr->CanRepeat()    == true );
-   TRY_TESTME( pMgr->GetTxnCount()  == 3 );
-   TRY_TESTME( pMgr->GetUndoCount() == 0 );
-   TRY_TESTME( pMgr->IsRedoMode()   == false );
-   TRY_TESTME( pMgr->IsRepeatMode() == true );
-
-   // Undo one CEAF just so there is something in m_UndoHistory
-   pMgr->Undo();
-   TRY_TESTME( pMgr->CanUndo()      == true );
-   TRY_TESTME( pMgr->CanRedo()      == true );
-   TRY_TESTME( pMgr->CanRepeat()    == false );
-   TRY_TESTME( pMgr->GetTxnCount()  == 2 );
-   TRY_TESTME( pMgr->GetUndoCount() == 1 );
-   TRY_TESTME( pMgr->IsRedoMode()   == true );
-   TRY_TESTME( pMgr->IsRepeatMode() == false );
-   TRY_TESTME( pMgr->RedoName()     == std::_tstring(_T("Undoable Txn")) );
-
-   // Clear everything out
-   pMgr->Clear();
-   TRY_TESTME( pMgr->CanUndo()      == false );
-   TRY_TESTME( pMgr->CanRedo()      == false );
-   TRY_TESTME( pMgr->CanRepeat()    == false );
-   TRY_TESTME( pMgr->GetTxnCount()  == 0 );
-   TRY_TESTME( pMgr->GetUndoCount() == 0 );
-   TRY_TESTME( pMgr->IsRedoMode()   == false );
-   TRY_TESTME( pMgr->IsRepeatMode() == true );
-
-   TESTME_EPILOG("CEAFTxnManger");
-}
-#endif // _UNITTEST

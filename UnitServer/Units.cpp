@@ -146,7 +146,7 @@ STDMETHODIMP CUnits::Clear()
    return S_OK;
 }
 
-STDMETHODIMP CUnits::get_Count(CollectionIndexType* retval)
+STDMETHODIMP CUnits::get_Count(IndexType* retval)
 {
    CHECK_RETVAL(retval);
    long count;

@@ -37,8 +37,8 @@ std::shared_ptr<GeneralSection> SectionBuilder::RectangularColumn(
    IndexType Nh, ///< Number of bars over the height of the section (N2)
    IndexType Nw, ///< Number of bars over the width of the section (N1)
    Float64 As, ///< Area of one reinforcing bar
-   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& concrete, ///< Constituative model for concrete
-   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& rebar, ///< Constituative model for reinforcing bars
+   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& concrete, ///< Constitutive model for concrete
+   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& rebar, ///< Constitutive model for reinforcing bars
    bool bModelBarsAsGenericShape ///< If true, bars are modeled as a generic shape, otherwise they are modeled as a circle
 )
 {
@@ -112,8 +112,8 @@ std::shared_ptr<GeneralSection> SectionBuilder::CircularColumn(
    IndexType Nb, ///< Number of reinforcing bars
    Float64 As, ///< Area of one reinforcing bar
    Float64 startAngle,
-   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& concrete, ///< Constituative model for concrete
-   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& rebar, ///< Constituative model for reinforcing bars
+   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& concrete, ///< Constitutive model for concrete
+   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& rebar, ///< Constitutive model for reinforcing bars
    bool bModelBarsAsGenericShape ///< If true, bars are modeled as a generic shape, otherwise they are modeled as a circle
 )
 {
@@ -152,12 +152,3 @@ std::shared_ptr<GeneralSection> SectionBuilder::CircularColumn(
 
    return section;
 }
-
-#if defined _UNITTEST
-bool SectionBuilder::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SectionBuilder");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for SectionBuilder");
-   TESTME_EPILOG("SectionBuilder");
-}
-#endif // _UNITTEST

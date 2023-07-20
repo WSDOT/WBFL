@@ -33,7 +33,7 @@ namespace WBFL
    {
       class GeneralSectionSliceImpl;
 
-      /// A "slice" in a fiber based discritization of a GeneralSection cross section object. 
+      /// A "slice" in a fiber based discretization of a GeneralSection cross section object. 
       /// GeneralSectionSlice objects are created the GeneralSectionSolver, as part of a section analysis and 
       /// are obtained through the solution object GeneralSectionSolution. These objects have fiber level state of stress information 
       /// for the related section analysis solution.
@@ -80,7 +80,7 @@ namespace WBFL
          IndexType GetShapeIndex() const;
 
          /// Shape of the slice
-         const std::shared_ptr<const WBFL::Geometry::Shape>& GetShape() const;
+         const WBFL::Geometry::Shape& GetShape() const;
 
          /// Area of slice
          Float64 GetArea() const;
@@ -114,11 +114,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<GeneralSectionSliceImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

@@ -24,16 +24,6 @@
 #include "stdafx.h"
 #include <EAF\EAFMacroTxn.h>
 
-#if defined _UNITTEST
-#include "TxnTestClass.h"
-#endif
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 bool CEAFMacroTxn::Execute()
 {
    // Execute every transaction in the list, starting with the first one
@@ -44,8 +34,8 @@ bool CEAFMacroTxn::Execute()
 
    for ( ; iter != end; iter++ )
    {
-      auto& CEAF(*iter);
-      if (!CEAF->Execute())
+      auto& txn(*iter);
+      if (!txn->Execute())
       {
          // this transaction failed... roll back
          break;
@@ -58,9 +48,9 @@ bool CEAFMacroTxn::Execute()
       iter--; // back up one
       do
       {
-         auto& CEAF(*iter);
-         ASSERT(CEAF->IsUndoable()); // there isn't goig to be a full rollback
-         CEAF->Undo();
+         auto& txn(*iter);
+         ASSERT(txn->IsUndoable()); // there isn't going to be a full rollback
+         txn->Undo();
          iter--;
       } while (iter != begin);
 
@@ -73,9 +63,9 @@ bool CEAFMacroTxn::Execute()
 void CEAFMacroTxn::Undo()
 {
    // Undo every transaction in the list
-   // Traverse the list backwards so that the last CEAF 
+   // Traverse the list backwards so that the last transaction 
    // executed is the first one undone.
-   std::for_each(std::rbegin(m_Transactions), std::rend(m_Transactions), [](auto& CEAF) {CEAF->Undo(); });
+   std::for_each(std::rbegin(m_Transactions), std::rend(m_Transactions), [](auto& txn) {txn->Undo(); });
 }
 
 std::_tstring CEAFMacroTxn::Name() const
@@ -94,7 +84,7 @@ std::unique_ptr<CEAFTransaction> CEAFMacroTxn::CreateClone() const
    pClone->Name(m_Name);
 
    // use the reference version of AddTransaction so the individual transactions are cloned
-   std::for_each(std::begin(m_Transactions), std::end(m_Transactions), [&pClone](auto& CEAF) {pClone->AddTransaction(*CEAF); });
+   std::for_each(std::begin(m_Transactions), std::end(m_Transactions), [&pClone](auto& txn) {pClone->AddTransaction(*txn); });
 
    return pClone;
 }
@@ -113,9 +103,9 @@ void CEAFMacroTxn::Log(std::_tostream& os) const
    }
 }
 
-void CEAFMacroTxn::AddTransaction(CEAFTransaction& CEAF)
+void CEAFMacroTxn::AddTransaction(CEAFTransaction& txn)
 {
-   m_Transactions.emplace_back(CEAF.CreateClone());
+   m_Transactions.emplace_back(txn.CreateClone());
 }
 
 void CEAFMacroTxn::AddTransaction(std::unique_ptr<CEAFTransaction>&& pTxn)
@@ -171,53 +161,3 @@ IndexType CEAFMacroTxn::GetTxnCount() const
 {
    return m_Transactions.size();
 }
-
-#if defined _DEBUG
-bool CEAFMacroTxn::AssertValid() const
-{
-   return true;
-}
-
-void CEAFMacroTxn::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for CEAFMacroTxn" << WBFL::Debug::endl;
-   os << Name() << ": ";
-   auto begin = m_Transactions.begin();
-   auto end   = m_Transactions.end();
-   while ( begin != end )
-   {
-      auto& pTxn = *begin++;
-      pTxn->Dump(os);
-
-      if (begin != end)
-         os << ", ";
-   }
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool CEAFMacroTxn::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CEAFMacroTxn");
-   testUndoableTxn      CEAF1;
-   testNotUndoableTxn   CEAF2;
-   testNotRepeatableTxn CEAF3;
-
-   CEAFMacroTxn macro;
-   macro.AddTransaction( CEAF1 );
-   macro.AddTransaction( CEAF1 );
-   macro.AddTransaction( CEAF1 );
-   TRY_TESTME( macro.IsUndoable()   == true );
-   TRY_TESTME( macro.IsRepeatable() == true );
-
-   macro.AddTransaction( CEAF2 );
-   TRY_TESTME( macro.IsUndoable()   == false );
-   TRY_TESTME( macro.IsRepeatable() == true );
-
-   macro.AddTransaction( CEAF3 );
-   TRY_TESTME( macro.IsUndoable()   == false );
-   TRY_TESTME( macro.IsRepeatable() == false );
-
-   TESTME_EPILOG("CEAFMacroTxn");
-}
-#endif // _UNITTEST

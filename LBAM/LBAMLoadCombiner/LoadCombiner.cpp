@@ -361,7 +361,7 @@ void CLoadCombiner::ValidateLoadCases()
    hr = palg->GetActiveLoadGroups(&blgs);
 
    // Get LoadCases and set up data structures so they only refer to active loadgroups
-   CollectionIndexType lc_cnt;
+   IndexType lc_cnt;
 
    CComQIPtr<ILoadCases> load_cases(m_Context);
    if (load_cases==nullptr)
@@ -372,7 +372,7 @@ void CLoadCombiner::ValidateLoadCases()
 
    hr = load_cases->get_Count(&lc_cnt);
 
-   for (CollectionIndexType ilc = 0; ilc<lc_cnt; ilc++)
+   for (IndexType ilc = 0; ilc<lc_cnt; ilc++)
    {
       CComPtr<ILoadCase> load_case;
       hr = load_cases->get_Item(ilc, &load_case);
@@ -392,16 +392,16 @@ void CLoadCombiner::ValidateLoadCases()
       // latch on to current vector of loadgroups for this load case
       NameVec& rloadgroups = insit.first->second;
 
-      CollectionIndexType lg_cnt;
+      IndexType lg_cnt;
       hr = load_case->get_LoadGroupCount(&lg_cnt);
 
-      for (CollectionIndexType ilg = 0; ilg<lg_cnt; ilg++)
+      for (IndexType ilg = 0; ilg<lg_cnt; ilg++)
       {
          CComBSTR lg_name;
          hr = load_case->GetLoadGroup(ilg, &lg_name);
 
          // see if loadgroup is in active list and add it to this load case if it is
-         CollectionIndexType fidx;
+         IndexType fidx;
          if (SUCCEEDED(blgs->Find(lg_name, &fidx)))
          {
             rloadgroups.push_back(lg_name);
@@ -423,10 +423,10 @@ void CLoadCombiner::ValidateLoadCombinations()
       THROW_LBAMC(INVALID_LC_CONTEXT);
    }
 
-   CollectionIndexType lc_cnt;
+   IndexType lc_cnt;
    hr = load_combos->get_Count(&lc_cnt);
 
-   for (CollectionIndexType ilc = 0; ilc<lc_cnt; ilc++)
+   for (IndexType ilc = 0; ilc<lc_cnt; ilc++)
    {
       CComPtr<ILoadCombination> load_combo;
       hr = load_combos->get_Item(ilc, &load_combo);
@@ -455,9 +455,9 @@ void CLoadCombiner::ValidateLoadCombinations()
       // live load model application type
       hr = load_combo->get_LiveLoadModelApplicationType(&(rcombo_data.m_LiveLoadModelApplicationType));
 
-      CollectionIndexType count;
+      IndexType count;
       hr = load_combo->GetLiveLoadModelCount(&count);
-      for ( CollectionIndexType i = 0; i < count; i++ )
+      for ( IndexType i = 0; i < count; i++ )
       {
          LiveLoadModelType llt;
          hr = load_combo->GetLiveLoadModel(i,&llt);
@@ -465,12 +465,12 @@ void CLoadCombiner::ValidateLoadCombinations()
       }
 
       // get loadcase factors and keep only those load cases that have loadgroups associated
-      CollectionIndexType lcf_cnt;
+      IndexType lcf_cnt;
       hr = load_combo->get_LoadCaseFactorCount(&lcf_cnt);
 
       LoadCaseIterator lc_it_end( m_LoadCases.end());
 
-      for (CollectionIndexType ilcf = 0; ilcf<lcf_cnt; ilcf++)
+      for (IndexType ilcf = 0; ilcf<lcf_cnt; ilcf++)
       {
          CComBSTR lcs_name;
          Float64 min_factor, max_factor;

@@ -45,7 +45,6 @@
 #include <CoordGeom/SurfaceTemplate.h>
 #include <CoordGeom/SurfaceTemplateSegment.h>
 #include <CoordGeom/TransitionCurve.h>
-#include <CoordGeom/UnitTest.h>
 #include <CoordGeom/VerticalCurve.h>
 #include <CoordGeom/Widening.h>
 #include <CoordGeom/XCoordGeom.h>

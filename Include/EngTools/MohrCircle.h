@@ -85,12 +85,7 @@ namespace WBFL
 
 #if defined _DEBUG
          bool AssertValid() const;
-         void Dump(WBFL::Debug::LogContext& os) const;
 #endif // _DEBUG
-
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
 
       private:
          Float64 m_Sii;  // input variables

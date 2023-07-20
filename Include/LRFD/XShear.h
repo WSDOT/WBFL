@@ -22,112 +22,37 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_XSHEAR_H_
-#define INCLUDED_LRFD_XSHEAR_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <System\Exception.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdXShear
-
-   Exception object thrown when the lrfdShear class encounters an exceptional
-   condition.
-
-
-DESCRIPTION
-   Exception object thrown when the lrfdShear class encounters an exceptional
-   condition.
-
-LOG
-   rab : 02.04.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdXShear : public WBFL::System::XBase
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATION
-   enum Reason { vfcOutOfRange,  // v/fc > 0.25. A bigger section is needed
-                 MaxIterExceeded, // The maximum number of iterations was
-                                  // exceeded before a solution was found
-                 StrainOutOfRange // The strain computed by eq'n 5.8.3.4.2-2, 
-                                  // adjusted by eq'n 5.8.3.4.2-3, is out of 
-                                  // the range supported by Figure 5.8.3.4.2-1
-                                  // and Table 5.8.3.4.2-1
+   namespace LRFD
+   {
+      /// @brief Exception object thrown when the Shear class encounters an exceptional condition.
+      class LRFDCLASS XShear : public WBFL::System::XBase
+      {
+      public:
+         enum class Reason { vfcOutOfRange,  // v/fc > 0.25. A bigger section is needed
+                       MaxIterExceeded, // The maximum number of iterations was exceeded before a solution was found
+                       StrainOutOfRange // The strain computed by eq'n 5.8.3.4.2-2, adjusted by eq'n 5.8.3.4.2-3, is out of the range supported by Figure 5.8.3.4.2-1 and Table 5.8.3.4.2-1
+         };
+
+         XShear() = delete;
+         XShear(Reason reason, LPCTSTR file, Uint32 line);
+         XShear(const XShear&) = default;
+         virtual ~XShear() = default;
+
+         XShear& operator=(const XShear&) = default;
+
+         virtual void Throw() const override;
+         virtual Int32 GetReason() const noexcept override;
+         Reason GetReasonCode() const noexcept;
+
+      private:
+         Reason m_Reason;
+      };
    };
-
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdXShear(Reason reason,
-              LPCTSTR file,
-              Int16 line);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdXShear(const lrfdXShear& rOther) = default;
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdXShear() = default;
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdXShear& operator = (const lrfdXShear& rOther) = default;
-
-   // GROUP: OPERATIONS
-   virtual void Throw() const override;
-   virtual Int32 GetReason() const noexcept override;
-   Reason GetReasonCode() const noexcept;
-
-   // GROUP: ACCESS
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_XSHEAR_H_

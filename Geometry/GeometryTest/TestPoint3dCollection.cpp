@@ -55,7 +55,7 @@ void CTestPoint3dCollection::Test()
    CComPtr<IPoint3dCollection> pColl;
    TRY_TEST(pColl.CoCreateInstance( CLSID_Point3dCollection ), S_OK);
 
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);

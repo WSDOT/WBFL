@@ -197,9 +197,9 @@ protected:
 
    /// populates a menu with the names of the reports
    void PopulateReportMenu(CEAFMenu* pReportMenu);
-   UINT GetReportCommand(CollectionIndexType rptIdx,BOOL bQuickReport) const;
-   CollectionIndexType GetReportIndex(UINT nID,BOOL bQuickReport) const;
-   virtual void CreateReportView(CollectionIndexType rptIdx,BOOL bPrompt); // does nothing by default
+   UINT GetReportCommand(IndexType rptIdx,BOOL bQuickReport) const;
+   IndexType GetReportIndex(UINT nID,BOOL bQuickReport) const;
+   virtual void CreateReportView(IndexType rptIdx,BOOL bPrompt); // does nothing by default
    void OnReport(UINT nID);
    void OnQuickReport(UINT nID);
 
@@ -216,10 +216,10 @@ protected:
    void IntegrateCustomReports(bool bFirst=false);
 
    void PopulateGraphMenu(CEAFMenu* pGraphMenu);
-   UINT GetGraphCommand(CollectionIndexType graphIdx) const;
-   CollectionIndexType GetGraphIndex(UINT nID) const;
+   UINT GetGraphCommand(IndexType graphIdx) const;
+   IndexType GetGraphIndex(UINT nID) const;
    void OnGraph(UINT nID);
-   virtual void CreateGraphView(CollectionIndexType graphIdx); // does nothing by default
+   virtual void CreateGraphView(IndexType graphIdx); // does nothing by default
 
    virtual void OnUpdateAllViews(CView* pSender, LPARAM lHint = 0L,CObject* pHint = nullptr) override;
 

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{2281A9DC-55E7-4344-993F-2379E508E72A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>CoordGeomUnitTest</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectSubType>NativeUnitTestProject</ProjectSubType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(ARPDIR)\WBFL\WBFL.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(ARPDIR)\WBFL\WBFL.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <UseFullPaths>true</UseFullPaths>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <UseFullPaths>true</UseFullPaths>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="TestAlignment.cpp" />
+    <ClCompile Include="TestAlignmentOffsetLayoutLineFactory.cpp" />
+    <ClCompile Include="TestAngle.cpp" />
+    <ClCompile Include="TestBridgeFramingGeometry.cpp" />
+    <ClCompile Include="TestCircularCurve.cpp" />
+    <ClCompile Include="TestCOGO.cpp" />
+    <ClCompile Include="TestCompositeDiaphragmLineFactory.cpp" />
+    <ClCompile Include="TestCompositeGirderLineFactory.cpp" />
+    <ClCompile Include="TestCompositeLayoutLineFactory.cpp" />
+    <ClCompile Include="TestCompositePierLineFactory.cpp" />
+    <ClCompile Include="TestCompoundCurve.cpp" />
+    <ClCompile Include="TestCubicSpline.cpp" />
+    <ClCompile Include="TestDeckBoundary.cpp" />
+    <ClCompile Include="TestDiaphragmLine.cpp" />
+    <ClCompile Include="TestDirection.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TestEqualSpacingDiaphragmLineFactory.cpp" />
+    <ClCompile Include="TestGirderLine.cpp" />
+    <ClCompile Include="TestModel.cpp" />
+    <ClCompile Include="TestPath.cpp" />
+    <ClCompile Include="TestPathSegment.cpp" />
+    <ClCompile Include="TestPierLine.cpp" />
+    <ClCompile Include="TestProfile.cpp" />
+    <ClCompile Include="TestProfilePoint.cpp" />
+    <ClCompile Include="TestProfileSegment.cpp" />
+    <ClCompile Include="TestSimpleDeckBoundaryFactory.cpp" />
+    <ClCompile Include="TestSimpleGirderLineFactory.cpp" />
+    <ClCompile Include="TestSimpleLayoutLineFactory.cpp" />
+    <ClCompile Include="TestSingleDiaphragmLineFactory.cpp" />
+    <ClCompile Include="TestSingleGirderLineFactory.cpp" />
+    <ClCompile Include="TestSinglePierLineFactory.cpp" />
+    <ClCompile Include="TestStation.cpp" />
+    <ClCompile Include="TestStationEquation.cpp" />
+    <ClCompile Include="TestSuperelevation.cpp" />
+    <ClCompile Include="TestSurface.cpp" />
+    <ClCompile Include="TestSurfacePoint.cpp" />
+    <ClCompile Include="TestSurfaceProfile.cpp" />
+    <ClCompile Include="TestSurfaceTemplate.cpp" />
+    <ClCompile Include="TestSurfaceTemplateSegment.cpp" />
+    <ClCompile Include="TestThroughPointDiaphragmLineFactory.cpp" />
+    <ClCompile Include="TestUniformSpacingLayoutLineFactory.cpp" />
+    <ClCompile Include="TestVerticalCurve.cpp" />
+    <ClCompile Include="TestWidening.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="TestHelpers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CoordGeom.vcxproj">
+      <Project>{7ea2e3a4-a83a-412c-831a-057e9ec9e73c}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -67,6 +67,8 @@
 #include <algorithm>
 #include <utility>
 #include <tuple>
+
+/// @brief Template for a lightweight Point class. This can be used when there isn't otherwise a need to depend on the full WBFLGeomModel library.
 template <class T>
 class SimplePointT : private std::pair<T, T>
 {
@@ -77,12 +79,16 @@ public:
    SimplePointT& operator=(const SimplePointT&) = default;
    ~SimplePointT() = default;
 
+   bool operator==(const SimplePointT& other) { return X() == other.X() && Y() == other.Y(); }
+   bool operator!=(const SimplePointT& other) { return !operator==(other); }
+
    T& X() { return this->first; }
    const T& X() const { return this->first; }
    T& Y() { return this->second; }
    const T& Y() const { return this->second; }
 };
 
+/// @brief Template for a lightweight Size class. This can be used when there isn't otherwise a need to depend on the full WBFLGeomModel library.
 template <class T>
 class SimpleSizeT : private std::pair<T, T>
 {
@@ -93,12 +99,16 @@ public:
    SimpleSizeT& operator=(const SimpleSizeT&) = default;
    ~SimpleSizeT() = default;
 
+   bool operator==(const SimpleSizeT& other) { return Dx() == other.Dx() && Dy() == other.Dy(); }
+   bool operator!=(const SimpleSizeT& other) { return !operator==(other); }
+
    T& Dx() { return this->first; }
    const T& Dx() const { return this->first; }
    T& Dy() { return this->second; }
    const T& Dy() const { return this->second; }
 };
 
+/// @brief Template for a lightweight Rect class. This can be used when there isn't otherwise a need to depend on the full WBFLGeomModel library.
 template <class T>
 class SimpleRectT : private std::tuple<T, T, T, T>
 {
@@ -108,6 +118,9 @@ public:
    SimpleRectT(const SimpleRectT&) = default;
    SimpleRectT& operator=(const SimpleRectT&) = default;
    ~SimpleRectT() = default;
+
+   bool operator==(const SimpleRectT& other) { return Left() == other.Left() && Right() == other.Right() && Top() == other.Top() && Bottom() == other.Bottom(); }
+   bool operator!=(const SimpleRectT& other) { return !operator==(other); }
 
    void Set(const T& left, const T& bottom, const T& right, const T& top) { Left() = left; Bottom() = bottom; Right() = right; Top() = top; }
    T& Left() { return std::get<0>(*this); }

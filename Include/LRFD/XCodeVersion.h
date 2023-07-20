@@ -22,105 +22,34 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_XCODEVERSION_H_
-#define INCLUDED_LRFD_XCODEVERSION_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <System\Exception.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdXCodeVersion
-
-   Exception object thrown when the current code version is not supprted by a
-   function or a class.
-
-
-DESCRIPTION
-   Exception object thrown when the current code version is not supprted by a
-   function or a class.
-
-LOG
-   rab : 11.14.1997 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdXCodeVersion : public WBFL::System::XBase
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATION
-   enum Reason { BadVersion };
+   namespace LRFD
+   {
+      /// @brief Exception object thrown when the current code version is not supported by a function or a class.
+      class LRFDCLASS XCodeVersion : public WBFL::System::XBase
+      {
+      public:
+         enum class Reason { BadVersion };
 
-   // GROUP: LIFECYCLE
+         XCodeVersion() = delete;
+         XCodeVersion(Reason reason, LPCTSTR file, Uint32 line);
+         XCodeVersion(const XCodeVersion& rOther) = default;
+         virtual ~XCodeVersion() = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdXCodeVersion(Reason reason,
-                    LPCTSTR file,
-                    Int16 line);
+         XCodeVersion& operator=(const XCodeVersion& rOther) = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdXCodeVersion(const lrfdXCodeVersion& rOther) = default;
+         virtual void Throw() const override;
+         virtual Int32 GetReason() const noexcept override;
+         Reason GetReasonCode() const noexcept;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdXCodeVersion() = default;
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdXCodeVersion& operator = (const lrfdXCodeVersion& rOther) = default;
-
-   // GROUP: OPERATIONS
-   virtual void Throw() const override;
-   virtual Int32 GetReason() const noexcept override;
-   Reason GetReasonCode() const noexcept;
-
-   // GROUP: ACCESS
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      private:
+         Reason m_Reason;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_XCODEVERSION_H_

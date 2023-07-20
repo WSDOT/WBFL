@@ -43,12 +43,6 @@ namespace WBFL
          /// @param bridge The bridge geometry object that is creating the layout lines
          /// @return The pier lines
          virtual std::vector<std::shared_ptr<PierLine>> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const = 0;
-
-#if defined _UNITTEST
-         //static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-      private:
       };
    };
 };

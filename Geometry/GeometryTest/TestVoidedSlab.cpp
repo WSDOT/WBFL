@@ -67,7 +67,7 @@ void CTestVoidedSlab::TestIVoidedSlab()
    // Verify initialization. All dimensions should be zero.
    // Hook point (bottom center) should be zero.
    Float64 val;
-   CollectionIndexType lval;
+   IndexType lval;
    CComPtr<IPoint2d> pntVal;
 
    TRY_TEST( beam->get_Height(nullptr), E_POINTER );
@@ -258,7 +258,7 @@ void CTestVoidedSlab::TestIShape()
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
    TRY_TEST( cPoints, 4 );
 
@@ -309,7 +309,7 @@ void CTestVoidedSlab::TestIShape()
    beamClone->get_VoidSpacing(&val);
    TRY_TEST( IsEqual(val,12.5), true);
 
-   CollectionIndexType lval;
+   IndexType lval;
    beamClone->get_VoidCount(&lval);
    TRY_TEST( lval, 3);
 
@@ -458,7 +458,7 @@ void CTestVoidedSlab::TestIShape()
    ATLTRACE("Trace of Points for VoidedSlab - count = %d \n", cPoints);
    ATLTRACE("  pt         X         Y\n");
    ATLTRACE("---------------------------------\n");
-   for (CollectionIndexType ip = 0; ip<cPoints; ip++)
+   for (IndexType ip = 0; ip<cPoints; ip++)
    {
       CComPtr<IPoint2d> pnt;
       coll->get_Item(ip, &pnt);
@@ -540,7 +540,7 @@ void CTestVoidedSlab::TestIXYPosition()
    CComPtr<IPoint2dCollection> coll;
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
    TRY_TEST( cPoints,4);
 

@@ -126,23 +126,6 @@ std::unique_ptr<Shape> Triangle::CreateClone() const
    return std::make_unique<Triangle>(*this);
 }
 
-#if defined _DEBUG
-bool Triangle::AssertValid() const
-{
-   return __super::AssertValid();
-}
-
-void Triangle::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("*** Dump for Triangle ***")<< WBFL::Debug::endl;
-   __super::Dump(os);
-   os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<< WBFL::Debug::endl;
-   os << _T("  Hook Point      = (")<<GetHookPoint()->X()<<_T(", ")<<GetHookPoint()->Y()<<_T(")")<< WBFL::Debug::endl;
-   os << _T("  Offset          =  ")<<m_Offset<< WBFL::Debug::endl;
-   os << _T("  Rotation        =  ")<<m_Rotation<< WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
 void Triangle::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 {
    // create polygon geometry
@@ -169,49 +152,3 @@ void Triangle::Copy(const Triangle& other)
    m_Offset = other.m_Offset;
    m_Rotation = other.m_Rotation;
 }
-
-#if defined _UNITTEST
-#include <GeomModel/UnitTest.h>
-bool Triangle::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Triangle");
-
-   Triangle rt(Point2d(1,2),4,2,1);
-   TRY_TESTME( IsEqual(2., rt.GetWidth())) ;
-   TRY_TESTME( IsEqual(4., rt.GetHeight())) ;
-   TRY_TESTME( IsEqual(1., rt.GetOffset())) ;
-   TRY_TESTME( Point2d(1,2) == *rt.GetHookPoint()); 
-   ShapeProperties aprops = rt.GetProperties();
-   TRY_TESTME ( IsEqual(aprops.GetArea(), 4.)) ;
-   TRY_TESTME ( IsEqual(aprops.GetIxx(),   3.55, .1)) ;
-   TRY_TESTME ( IsEqual(aprops.GetIyy(),   0.67, .1)) ;
-   TRY_TESTME ( IsEqual(aprops.GetIxy(),   0.00, .001)) ;
-   TRY_TESTME (rt.GetBoundingBox() == Rect2d(1,2,3,6)) ;
-
-   rt.SetHookPoint(Point2d(0,0));
-   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
-   rt.Move(Shape::LocatorPoint::CenterCenter, Point2d(0,0));
-   TRY_TESTME (rt.GetBoundingBox() == Rect2d(-1,-2,1,2)) ;
-
-   Float64 ang = atan(.25);
-   Float64 cosa = cos(ang);
-   rt.SetHookPoint(Point2d(0,0));
-   rt.Rotate(Point2d(0,0),ang);
-   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2*cosa,4/cosa)) ;
-   rt.SetRotationAngle(0);
-   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
-
-#if defined _DEBUG
-   rt.Dump(rlog.GetLogContext());
-#endif
-
-
-   // Test hook point behavior
-   TRY_TESTME(UnitTest::TestHookPoint(rt) == true);
-
-   TESTME_EPILOG("Triangle");
-}
-#endif // _UNITTEST
-
-
-

@@ -35,7 +35,6 @@
 #include <EAF\EAFUIIntegration.h>
 #include <EAF\EAFDisplayUnits.h>
 #include <EAF\EAFStatusCenter.h>
-#include <EAF\EAFTransactions.h>
 #include <EAF\EAFViewController.h>
 #include <IReportManager.h>
 #include <IGraphManager.h>
@@ -95,16 +94,4 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 		AfxTermExtensionModule(EAFDLL);
 	}
 	return 1;   // ok
-}
-
-#include <System/dllTest.h>
-#include <EAF\EAFTxnManager.h>
-#include <EAF\EAFMacroTxn.h>
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-	bool tst = true;
-	tst &= CEAFTxnManager::TestMe(rlog);
-	tst &= CEAFTransaction::TestMe(rlog);
-	tst &= CEAFMacroTxn::TestMe(rlog);
-	return tst;
 }

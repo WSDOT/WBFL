@@ -56,7 +56,7 @@ namespace WBFL
             Float64 Ebg
          );
          IndexType GetShapeIndex() const;
-         const std::shared_ptr<const WBFL::Geometry::Shape>& GetShape() const;
+         const WBFL::Geometry::Shape& GetShape() const;
          const WBFL::Geometry::Point2d& GetCentroid() const;
          Float64 GetForegroundE() const;
          Float64 GetBackgroundE() const;
@@ -105,9 +105,9 @@ namespace WBFL
          return m_ShapeIdx;
       }
 
-      const std::shared_ptr<const WBFL::Geometry::Shape>& CrackedSectionSliceImpl::GetShape() const
+      const WBFL::Geometry::Shape& CrackedSectionSliceImpl::GetShape() const
       {
-         return m_Shape;
+         return *m_Shape;
       }
 
       const WBFL::Geometry::Point2d& CrackedSectionSliceImpl::GetCentroid() const
@@ -158,7 +158,7 @@ IndexType CrackedSectionSlice::GetShapeIndex() const
    return m_pImpl->GetShapeIndex();
 }
 
-const std::shared_ptr<const WBFL::Geometry::Shape>& CrackedSectionSlice::GetShape() const
+const WBFL::Geometry::Shape& CrackedSectionSlice::GetShape() const
 {
    return m_pImpl->GetShape();
 }
@@ -177,15 +177,3 @@ Float64 CrackedSectionSlice::GetBackgroundE() const
 {
    return m_pImpl->GetBackgroundE();
 }
-
-#if defined _UNITTEST
-bool CrackedSectionSlice::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CrackedSectionSlice");
-
-   // there really isn't much to test here
-   //TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for CrackedSectionSlice");
-
-   TESTME_EPILOG("CrackedSectionSlice");
-}
-#endif // _UNITTEST

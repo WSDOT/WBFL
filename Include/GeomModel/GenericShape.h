@@ -218,19 +218,6 @@ namespace WBFL
          /// Creates a clone of this shape.
          virtual std::unique_ptr<Shape> CreateClone() const override;
 
-      #if defined _DEBUG
-         /// Returns true if the class is in a valid state, otherwise returns false
-         bool AssertValid() const;
-
-         /// Dumps the contents of the class to the given stream.
-         void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         /// Self-diagnostic test function.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
       private:
          Float64 m_Area{ 0.0 };
          std::shared_ptr<Point2d> m_pCentroid{ std::make_shared<Point2d>() };

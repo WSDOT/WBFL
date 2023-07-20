@@ -22,129 +22,55 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_UTILITY_H_
-#define INCLUDED_LRFD_UTILITY_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdUtility
-
-   Utility class for miscellaneous LRFD formulations.
-
-
-DESCRIPTION
-   Utility class for miscellaneous LRFD formulations.
-
-LOG
-   rab : 10.18.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdUtility
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATIONS
-   enum GirderPosition{ LeftExterior, Interior, RightExterior};
+   namespace LRFD
+   {
+      /// @brief Utility class for miscellaneous LRFD formulations.
+      class LRFDCLASS Utility
+      {
+      public:
+         enum class GirderPosition{ LeftExterior, Interior, RightExterior};
 
-   // GROUP: LIFECYCLE
+         Utility() = delete;
+         Utility(const Utility&) = delete;
+         ~Utility() = delete;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   ~lrfdUtility();
+         Utility& operator=(const Utility&) = delete;
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+         /// @brief Computes the effective slab width of a slab on IBeam section.
+         /// Code Reference: 1st Edition Article 4.6.2.6
+         /// Units: Consistant Length Units
+         /// 
+         /// @param effLength        Effective Span Length
+         /// @param leftSpacing      Spacing to girder left of this one or distance to edge of slab if left exterior girder.
+         /// @param rightSpacing     Spacing to girder right of this one or distance to edge of slab if right exterior girder
+         /// @param tSlab            Structural depth of the slab
+         /// @param tWeb             Thickness of the I-beam web
+         /// @param tWeb             Thickness of the I-beam web
+         /// wTopFlange       Width of the I-beam top flange
+         /// @param tWeb             Thickness of the I-beam web
+         /// pos              Position of this girder in the cross section
+         static Float64 IbeamEffFlangeWidth(Float64 effSpanLength,
+                                            Float64 leftSpacing,
+                                            Float64 rightSpacing,
+                                            Float64 tSlab,
+                                            Float64 tWeb,
+                                            Float64 wTopFlange,
+                                            GirderPosition position);
 
-   //------------------------------------------------------------------------
-   // Computes the effective slab width of a slab on IBeam section.
-   // Code Reference: 1st Edition Article 4.6.2.6
-   // Units: Consistant Length Units
-   // 
-   // effLength        Effective Span Length
-   // leftSpacing      Spacing to girder left of this one or distance to
-   //                  edge of slab if left exterior girder.
-   // rightSpacing     Spacing to girder right of this one or distance to
-   //                  edge of slab if right exterior girder
-   // tSlab            Structural depth of the slab
-   // tWeb             Thickness of the I-beam web
-   // wTopFlange       Width of the I-beam top flange
-   // pos              Position of this girder in the cross section
-   static Float64 IbeamEffFlangeWidth(Float64 effSpanLength,
-                                      Float64 leftSpacing,
-                                      Float64 rightSpacing,
-                                      Float64 tSlab,
-                                      Float64 tWeb,
-                                      Float64 wTopFlange,
-                                      GirderPosition position);
+         /// @brief Returns the multiple presence factor the the specified number of loaded lanes. Article 3.6.1.1.2
+         static Float64 GetMultiplePresenceFactor(IndexType nLanesLoaded);
 
-   //------------------------------------------------------------------------
-   // Returns the multiple presence factor the the specified number of
-   // loaded lanes. Article 3.6.1.1.2
-   static Float64 GetMultiplePresenceFactor(IndexType nLanesLoaded);
+         /// @brief Returns the width of a single design lane, given the curb to curb width of the driving surface. Article 3.6.1.1.1
+         static Float64 GetDesignLaneWidth(Float64 wCurbToCurb);
 
-   //------------------------------------------------------------------------
-   // Returns the width of a single design lane, given the curb to curb width
-   // of the driving surface.  Article 3.6.1.1.1
-   static Float64 GetDesignLaneWidth(Float64 wCurbToCurb);
-
-   //------------------------------------------------------------------------
-   // Returns the number of design lanes, given the curb to curb width
-   // of the driving surface.  Article 3.6.1.1.1
-   static Uint16 GetNumDesignLanes(Float64 wCurbToCurb);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _UNITTEST
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdUtility();
-
-   // Prevent accidental copying and assignment
-   lrfdUtility(const lrfdUtility&);
-   lrfdUtility& operator=(const lrfdUtility&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         /// @brief Returns the number of design lanes, given the curb to curb width of the driving surface. Article 3.6.1.1.1
+         static Uint16 GetNumDesignLanes(Float64 wCurbToCurb);
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_UTILITY_H_

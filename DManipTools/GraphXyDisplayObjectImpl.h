@@ -70,13 +70,13 @@ public:
    STDMETHOD_(void,put_GraphBounds)(IRect2d* newVal) override;
    STDMETHOD_(void,get_Title)(BSTR *pVal) override;
    STDMETHOD_(void,put_Title)(BSTR newVal) override;
-   STDMETHOD_(void,DataCount)(CollectionIndexType *pVal) override;
+   STDMETHOD_(void,DataCount)(IndexType *pVal) override;
    STDMETHOD_(void,AddData)(iGraphXyDataProvider* dataSet) override;
-   STDMETHOD_(HRESULT,GetData)(CollectionIndexType idx, iGraphXyDataProvider** dataSet) override;
+   STDMETHOD_(HRESULT,GetData)(IndexType idx, iGraphXyDataProvider** dataSet) override;
    STDMETHOD_(HRESULT,Commit)() override;
    STDMETHOD_(HRESULT,ClearData)() override;
-   STDMETHOD_(void,get_NumberOfMajorIncrements)(CollectionIndexType *pVal) override;
-   STDMETHOD_(HRESULT,put_NumberOfMajorIncrements)(CollectionIndexType newVal) override;
+   STDMETHOD_(void,get_NumberOfMajorIncrements)(IndexType *pVal) override;
+   STDMETHOD_(HRESULT,put_NumberOfMajorIncrements)(IndexType newVal) override;
    STDMETHOD_(void,get_DoDisplayAxisValues)(BOOL *pVal) override;
    STDMETHOD_(void,put_DoDisplayAxisValues)(BOOL newVal) override;
    STDMETHOD_(void,get_DoDisplayGrid)(BOOL *pVal) override;
@@ -92,7 +92,7 @@ public:
    CComBSTR         m_Title;
    BOOL     m_DoDisplayAxisValues;
    BOOL     m_DoDisplayGrid;
-   CollectionIndexType m_NumberOfMajorIncrements;
+   IndexType m_NumberOfMajorIncrements;
 
    using DataSetHolder = CComPtr<iGraphXyDataProvider>;
    using DataSetCollection = std::vector< DataSetHolder >;

@@ -63,7 +63,7 @@ void CTestCompositeSectionEx::TestICompositeSection()
    TRY_TEST(compSect.CoCreateInstance(CLSID_CompositeSectionEx),S_OK);
 
    // Test container property initialization
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(compSect->get_Count(nullptr),E_POINTER);
    TRY_TEST(compSect->get_Count(&count),S_OK);
    TRY_TEST(count,0);
@@ -271,7 +271,7 @@ void CTestCompositeSectionEx::TestISection()
 
    CComQIPtr<ICompositeSectionEx> compSectClone(clone);
    TRY_TEST(compSectClone != nullptr,true);
-   CollectionIndexType count;
+   IndexType count;
    compSectClone->get_Count(&count);
    TRY_TEST(count,2);
 
@@ -538,7 +538,7 @@ void CTestCompositeSectionEx::TestIXYPosition()
    CComPtr<IPoint2dCollection> coll;
    CComQIPtr<IShape> shape(rect);
    shape->get_PolyPoints(&coll);
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
    TRY_TEST( cPoints,4 );
    

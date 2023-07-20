@@ -414,9 +414,9 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* incrementalStrainPlane)
    std::vector< SHAPEINFO > shapes;
 
    // Rotate the shapes and determine the overall size of the section (bounding box)
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    m_Section->get_ShapeCount(&nShapes);
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
    {
       CComPtr<IShape> original_shape;
       m_Section->get_Shape(shapeIdx,&original_shape);
@@ -497,7 +497,7 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* incrementalStrainPlane)
    // Slice each shape
    m_Slices.clear();
    nShapes = shapes.size();
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
    {
       // get shape and related information
       SHAPEINFO& shape_info = shapes[shapeIdx];

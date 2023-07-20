@@ -69,7 +69,7 @@ public:
             events->OnSuperstructureMembersChanged(SuperstructureMember,Stage,change);
 		}
 	}
-	VOID Fire_OnSuperstructureMembersAdded(ISuperstructureMember * SuperstructureMember, CollectionIndexType index)
+	VOID Fire_OnSuperstructureMembersAdded(ISuperstructureMember * SuperstructureMember, IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -85,7 +85,7 @@ public:
             events->OnSuperstructureMembersAdded(SuperstructureMember,index);
 		}
 	}
-	VOID Fire_OnSuperstructureMembersBeforeRemove(ISuperstructureMember * SuperstructureMember, CollectionIndexType index)
+	VOID Fire_OnSuperstructureMembersBeforeRemove(ISuperstructureMember * SuperstructureMember, IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -101,7 +101,7 @@ public:
             events->OnSuperstructureMembersBeforeRemove(SuperstructureMember,index);
 		}
 	}
-	VOID Fire_OnSuperstructureMembersMoveTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnSuperstructureMembersMoveTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -117,7 +117,7 @@ public:
             events->OnSuperstructureMembersMoveTo(from,to);
 		}
 	}
-	VOID Fire_OnSuperstructureMembersCopyTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnSuperstructureMembersCopyTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;

@@ -52,7 +52,7 @@ STDMETHODIMP CBstrArray::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CBstrArray::get_Item(CollectionIndexType relPosition, BSTR *pVal)
+STDMETHODIMP CBstrArray::get_Item(IndexType relPosition, BSTR *pVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -70,7 +70,7 @@ STDMETHODIMP CBstrArray::get_Item(CollectionIndexType relPosition, BSTR *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CBstrArray::put_Item(CollectionIndexType relPosition, BSTR newVal)
+STDMETHODIMP CBstrArray::put_Item(IndexType relPosition, BSTR newVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -102,7 +102,7 @@ STDMETHODIMP CBstrArray::Add(BSTR item)
 	return S_OK;
 }
 
-STDMETHODIMP CBstrArray::Remove(CollectionIndexType relPosition)
+STDMETHODIMP CBstrArray::Remove(IndexType relPosition)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -123,7 +123,7 @@ STDMETHODIMP CBstrArray::Remove(CollectionIndexType relPosition)
 	return S_OK;
 }
 
-STDMETHODIMP CBstrArray::Insert(CollectionIndexType relPosition, BSTR item)
+STDMETHODIMP CBstrArray::Insert(IndexType relPosition, BSTR item)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -144,7 +144,7 @@ STDMETHODIMP CBstrArray::Insert(CollectionIndexType relPosition, BSTR item)
 	return S_OK;
 }
 
-STDMETHODIMP CBstrArray::Reserve(CollectionIndexType count)
+STDMETHODIMP CBstrArray::Reserve(IndexType count)
 {
    if (count<0)
       return E_INVALIDARG;
@@ -245,7 +245,7 @@ STDMETHODIMP CBstrArray::get__EnumElements(/*[out, retval]*/ IEnumBstrArray* *pp
    return S_OK;
 }
 
-STDMETHODIMP CBstrArray::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CBstrArray::get_Count(IndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -277,7 +277,7 @@ STDMETHODIMP CBstrArray::Clone(IBstrArray **clone)
 	return S_OK;
 }
 
-STDMETHODIMP CBstrArray::ReDim(CollectionIndexType size)
+STDMETHODIMP CBstrArray::ReDim(IndexType size)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -293,11 +293,11 @@ STDMETHODIMP CBstrArray::ReDim(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CBstrArray::Find(BSTR value, CollectionIndexType *fndIndex)
+STDMETHODIMP CBstrArray::Find(BSTR value, IndexType *fndIndex)
 {
    HRESULT hr = E_FAIL;
 
-   CollectionIndexType idx = 0;
+   IndexType idx = 0;
    for(ContainerIterator it=m_Values.begin(); it!=m_Values.end(); it++)
    {
       if(*it == value)

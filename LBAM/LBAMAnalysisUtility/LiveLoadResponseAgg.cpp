@@ -86,7 +86,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeForces(IIDArray* pois, BSTR stage, Liv
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -95,7 +95,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeForces(IIDArray* pois, BSTR stage, Liv
       std::vector< CAdapt< CComPtr<ILiveLoadModelSectionResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -115,14 +115,14 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeForces(IIDArray* pois, BSTR stage, Liv
       }
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = pois->get_Count(&poi_cnt);
       m_ControllingEngine.clear();
       m_ControllingEngine.resize(poi_cnt);
 
       // now that we have all results from all engines, envelope them
       // max results are place in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLiveLoadSectionResults(result_vec[0].m_T,result_vec[ieng].m_T,computePlacement,env_optimization,true,ieng);
       }
@@ -154,7 +154,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeDeflections(IIDArray* pois, BSTR stage
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -163,7 +163,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeDeflections(IIDArray* pois, BSTR stage
       std::vector< CAdapt< CComPtr<ILiveLoadModelSectionResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -185,13 +185,13 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeDeflections(IIDArray* pois, BSTR stage
       // max results are place in the first member of the vector
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = pois->get_Count(&poi_cnt);
       m_ControllingEngine.clear();
       m_ControllingEngine.resize(poi_cnt);
 
 
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLiveLoadSectionResults(result_vec[0].m_T,result_vec[ieng].m_T,computePlacement,optimization,false,ieng);
       }
@@ -222,7 +222,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeReactions(IIDArray* supports, BSTR sta
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -231,7 +231,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeReactions(IIDArray* supports, BSTR sta
       std::vector< CAdapt< CComPtr<ILiveLoadModelResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -250,7 +250,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeReactions(IIDArray* supports, BSTR sta
 
       // now that we have all results from all engines, envelope them
       // max results are place in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLiveLoadResults(result_vec[0].m_T, result_vec[ieng].m_T,computePlacement, optimization);
       }
@@ -281,7 +281,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeSupportDeflections(IIDArray* supports,
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -290,7 +290,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeSupportDeflections(IIDArray* supports,
       std::vector< CAdapt< CComPtr<ILiveLoadModelResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -309,7 +309,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeSupportDeflections(IIDArray* supports,
 
       // now that we have all results from all engines, envelope them
       // max results are place in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLiveLoadResults(result_vec[0].m_T, result_vec[ieng].m_T,computePlacement, optimization);
       }
@@ -346,7 +346,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeStresses(IIDArray* pois, BSTR stage, L
       CComPtr<ILiveLoadModelStressResults> results;
       hr = results.CoCreateInstance(CLSID_LiveLoadModelStressResults);
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = force_res->get_Count(&num_pois);
       hr = results->Reserve(num_pois);
 
@@ -356,7 +356,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeStresses(IIDArray* pois, BSTR stage, L
       hr = single_poi->ReDim(1);
 
       // loop over all pois and compute stresses due to optimization at that poi for the correct model
-      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+      for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          // use configuration object from force results to compute stresses
          // get left and right config objects
@@ -365,8 +365,8 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeStresses(IIDArray* pois, BSTR stage, L
          hr = force_res->GetResult(ipoi, &left_force, &left_config, &right_force, &right_config);
 
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         CollectionIndexType left_engine_idx  = m_ControllingEngine[ipoi].Left;
-         CollectionIndexType right_engine_idx = m_ControllingEngine[ipoi].Right;
+         IndexType left_engine_idx  = m_ControllingEngine[ipoi].Left;
+         IndexType right_engine_idx = m_ControllingEngine[ipoi].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
          m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
@@ -409,7 +409,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeStresses(IIDArray* pois, BSTR stage, L
 
 // Make sure maximum value is in res1
 void CLiveLoadResponseAgg::EnvelopeLiveLoadSectionResults(ILiveLoadModelSectionResults* res1, ILiveLoadModelSectionResults* res2,
-                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, CollectionIndexType engineIdx)
+                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, IndexType engineIdx)
 {
    // res1 contains the current controlling value
 
@@ -439,10 +439,10 @@ void CLiveLoadResponseAgg::EnvelopeLiveLoadSectionResults(ILiveLoadModelSectionR
    }
 
    // loop over all pois and replace res1 with optmized results from res2 if needed.
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+   for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ILiveLoadConfiguration> lconf1, lconf2, rconf1, rconf2;
       Float64 lval1, lval2, rval1, rval2;
@@ -500,10 +500,10 @@ void CLiveLoadResponseAgg::EnvelopeLiveLoadResults(ILiveLoadModelResults* res1, 
    }
 
    // loop over all pois and replace res1 with optmized results from res2 if needed.
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+   for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ILiveLoadConfiguration> conf1, conf2;
       Float64 val1, val2;

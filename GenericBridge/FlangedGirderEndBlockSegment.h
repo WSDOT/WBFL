@@ -161,7 +161,7 @@ public:
    STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override;
    STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data) override;
    STDMETHOD(RemoveItemData)(/*[in]*/BSTR name) override;
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override;
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/IndexType* count) override;
 
 // IStructuredStorage2
 public:

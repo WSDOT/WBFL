@@ -1,2 +1,1 @@
 LIBRARY        WBFLCoordGeom.dll
-EXPORTS  UnitTest @1

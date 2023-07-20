@@ -67,7 +67,7 @@ void CTestPolyShape::TestIPolyShape()
    CComPtr<IPolyShape> polyShape;
    TRY_TEST( polyShape.CoCreateInstance( CLSID_PolyShape ), S_OK );
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    TRY_TEST( polyShape->get_Count(nullptr), E_POINTER );
    TRY_TEST( polyShape->get_Count(&nPoints), S_OK );
    TRY_TEST( nPoints, 0 );
@@ -474,7 +474,7 @@ void CTestPolyShape::TestIShapeOpen()
 
    coll.Release();
    clip->get_PolyPoints(&coll);
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    coll->get_Count(&nPoints);
    TRY_TEST( nPoints, 4 );
 

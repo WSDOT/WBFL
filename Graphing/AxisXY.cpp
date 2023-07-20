@@ -30,36 +30,23 @@
 
 #include <boost\algorithm\string\trim.hpp>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Graphing;
 
 
-//======================== LifECYCLE  =======================================
-AxisXY::AxisXY(AxisOrientation orientation, WBFL::System::NumericFormatTool& rFormat):
-m_pValueFormat(&rFormat)
+AxisXY::AxisXY(AxisOrientation orientation, WBFL::System::NumericFormatTool* pFormat):
+m_pValueFormat(pFormat)
 {
-   Init();
+   PRECONDITION(pFormat != nullptr);
    SetOrientation(orientation, 0, 1, 0);
 }
 
-AxisXY::AxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue,WBFL::System::NumericFormatTool& rFormat):
-m_pValueFormat(&rFormat)
+AxisXY::AxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue,WBFL::System::NumericFormatTool* pFormat):
+m_pValueFormat(pFormat)
 {
-   CHECK(AxMin<AxMax);
-   Init();
+   PRECONDITION(pFormat != nullptr);
+   PRECONDITION(AxMin<AxMax);
    SetOrientation(orientation, AxMin, AxMax, AyValue);
 }
-
-AxisXY::~AxisXY()
-{
-}
-
 
 void AxisXY::SetOrientation(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue)
 {
@@ -72,15 +59,16 @@ void AxisXY::SetOrientation(AxisOrientation orientation, Int32 AxMin, Int32 AxMa
    m_YLocation   = AyValue;
 }
 
-
 void AxisXY::Draw(HDC hDC)
 {
+   PRECONDITION(m_pValueFormat != nullptr); // did you forget to call SetValueFormat?
+
    // set up a pen to draw axis with.
    HPEN my_hpen   = ::CreatePen(PS_SOLID, 2, RGB(0,0,0) );
    HGDIOBJ old_hpen = ::SelectObject (hDC, my_hpen);
    int old_bk = ::SetBkMode(hDC,TRANSPARENT);
 
-   // set text alignement for axis value labels
+   // set text alignment for axis value labels
    if ( m_ValueAngle == 0 )
    {
       ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
@@ -194,7 +182,7 @@ void AxisXY::Draw(HDC hDC)
             }
 
             // minor tics
-            if (i>0 && m_NumberOfMinorTics>1)
+            if (0 < i && m_NumberOfMinorTics>1)
             {
                Float64 minor_tic_inc = (tic_value-tic_prev)/m_NumberOfMinorTics;
                Float64 minor_tic_l = tic_prev;
@@ -365,7 +353,7 @@ void AxisXY::SetNiceAxisRange(Float64 leftVal, Float64 rightVal,bool bOffsetZero
 
    if ( m_Scale == AxisScale::Linear )
    {
-      CollectionIndexType num_tic = m_NumberOfMajorTics;
+      IndexType num_tic = m_NumberOfMajorTics;
       GraphTool::CalculateNiceRange(leftVal, rightVal, bOffsetZero, num_tic, m_LeftAxisValue, 
                                       m_RightAxisValue, m_AxisIncrement);
    }
@@ -416,7 +404,7 @@ void AxisXY::GetAxisRange(Float64* pLeftVal, Float64* pRightVal, Float64* pIncre
 
 void AxisXY::SetTitleFontSize(Int32 fontSize)
 {
-   CHECK(0 < fontSize);
+   PRECONDITION(0 < fontSize);
 
    // set metrics dirty
    m_MetricsDirtyFlag = true;
@@ -431,7 +419,7 @@ Int32 AxisXY::GetTitleFontSize() const
 
 void AxisXY::SetSubtitleFontSize(Int32 fontSize)
 {
-   CHECK(0 < fontSize);
+   PRECONDITION(0 < fontSize);
 
    // set metrics dirty
    m_MetricsDirtyFlag = true;
@@ -446,7 +434,7 @@ Int32 AxisXY::GetSubtitleFontSize() const
 
 void AxisXY::SetValueFontSize(Int32 fontSize)
 {
-   CHECK(0 < fontSize);
+   PRECONDITION(0 < fontSize);
 
    // set metrics dirty
    m_MetricsDirtyFlag = true;
@@ -469,9 +457,10 @@ LONG AxisXY::GetValueAngle() const
    return m_ValueAngle;
 }
 
-void AxisXY::SetValueFormat(WBFL::System::NumericFormatTool& format)
+void AxisXY::SetValueFormat(WBFL::System::NumericFormatTool* pFormat)
 {
-   m_pValueFormat = &format;
+   PRECONDITION(pFormat != nullptr);
+   m_pValueFormat = pFormat;
 }
 
 const WBFL::System::NumericFormatTool* AxisXY::GetValueFormat() const
@@ -609,6 +598,8 @@ AxisXY::AxisScale AxisXY::GetScale() const
 
 void AxisXY::UpdateAxisMetrics(HDC hDC)
 {
+   PRECONDITION(m_pValueFormat != nullptr); // did you forget to call SetValueFormat?
+
    // most metrics are based on font sizes. get sizes for title and subtitle
    HFONT titfont = GraphTool::CreateRotatedFont(hDC, 0, m_AxisTitleSize);
    HGDIOBJ old_font = ::SelectObject(hDC, titfont);
@@ -652,8 +643,6 @@ void AxisXY::UpdateAxisMetrics(HDC hDC)
 
       curr_value += m_AxisIncrement;
    }
-   //max_value_width  = (Int32)(Float64(max_value_width)*1.1);        // a little more space
-   //max_value_height = (Int32)(Float64(max_value_height)*1.1);        // a little more space
 
    // clean up
    ::SelectObject(hDC, old_font);
@@ -790,71 +779,3 @@ void AxisXY::UpdateAxisMetrics(HDC hDC)
    // metrics are now up to date
    m_MetricsDirtyFlag = false;
 }
-
-void AxisXY::Init()
-{
-   // set up some defaults
-   m_Orientation = AxisOrientation::X;
-   m_MinLocation = 0;
-   m_MaxLocation = 100;
-   m_YLocation   = 0;
-
-   m_ValueAngle = 0;
-
-   m_LeftAxisValue  = 0;
-   m_RightAxisValue = 1;
-   m_AxisIncrement  = 0.1;
-   m_NumberOfMajorTics = 7;
-   m_NumberOfMinorTics = 0;
-   m_TicLocation = TicLocation::Below;
-   m_TextLocation = TextLocation::Below;
-   m_DoShowText   = true;
-   m_DoShowTics   = true;
-
-   m_AxisTitleSize    = 12;
-   m_AxisSubtitleSize = 10;
-   m_AxisValueSize    = 10;
-   m_MetricsDirtyFlag = true;
-
-   m_Scale = AxisScale::Linear;
-}
-
-AxisXY::AxisMetrics::AxisMetrics()
-{
-   TicSize = 0;
-   MajorTicBottom = 0;
-   MajorTicTop = 0;
-   MinorTicBottom = 0;
-   MinorTicTop = 0;
-   ValueTextLoc = 0;
-   TitleTextLoc = 0;
-   SubtitleTextLoc = 0;
-}
-
-AxisXY::AxisMetrics::~AxisMetrics()
-{
-}
-
-#if defined _DEBUG
-bool AxisXY::AssertValid() const
-{
-   return true;
-}
-
-void AxisXY::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for AxisXY" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool AxisXY::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("AxisXY");
-
-   // tough class to test since it's graphical. must manually use a project.
-
-   TESTME_EPILOG("AxisXY");
-}
-#endif // _UNITTEST
-

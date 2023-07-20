@@ -23,58 +23,27 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Lrfd\LrfdLib.h>
-
 #include <Lrfd\XCreepCoefficient.h>
 
-/****************************************************************************
-CLASS
-   lrfdXCreepCoefficient
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXCreepCoefficient::lrfdXCreepCoefficient(Reason reason,
-                                             LPCTSTR file,
-                                             Int16 line) :
+XCreepCoefficient::XCreepCoefficient(Reason reason, LPCTSTR file, Uint32 line) :
    WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-
-lrfdXCreepCoefficient::~lrfdXCreepCoefficient()
+void XCreepCoefficient::Throw() const
 {
+   throw *static_cast<const XCreepCoefficient*>(this);
 }
 
-
-//======================== OPERATIONS =======================================
-void lrfdXCreepCoefficient::Throw() const
+Int32 XCreepCoefficient::GetReason() const noexcept
 {
-   throw *static_cast<const lrfdXCreepCoefficient*>(this);
+   return (Int32)m_Reason;
 }
 
-Int32 lrfdXCreepCoefficient::GetReason() const noexcept
+XCreepCoefficient::Reason XCreepCoefficient::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-lrfdXCreepCoefficient::Reason lrfdXCreepCoefficient::GetReasonCode() const noexcept
-{
-   return m_Reason;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdXCreepCoefficient::AssertValid() const
-{
-   return true;
-}
-
-void lrfdXCreepCoefficient::Dump(WBFL::Debug::LogContext& os) const
-{
-}
-#endif // _DEBUG
-

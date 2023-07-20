@@ -32,8 +32,8 @@
 #include "WBFLComCollections.h"
 
 class CRebarSection;
-using RSIColl = CComVectorCollection<IRebarSection, IRebarSectionItem, IEnumRebarSectionItem, &IID_IEnumRebarSectionItem, CollectionIndexType>;
-using PersistentRebarSection = CPersistentCollection<CRebarSection,RSIColl,CollectionIndexType>;
+using RSIColl = CComVectorCollection<IRebarSection, IRebarSectionItem, IEnumRebarSectionItem, &IID_IEnumRebarSectionItem, IndexType>;
+using PersistentRebarSection = CPersistentCollection<CRebarSection,RSIColl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CRebarSection

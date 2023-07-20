@@ -199,7 +199,6 @@
     <ClCompile Include="RoarkBeam.cpp" />
     <ClCompile Include="PPIntermediateLoad.cpp" />
     <ClCompile Include="PPPartialUniformLoad.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Roark\AutoLib.h" />
@@ -213,8 +212,6 @@
     <ClInclude Include="..\Include\Roark\RoarkBeam.h" />
     <ClInclude Include="..\Include\Roark\RoarkExp.h" />
     <ClInclude Include="..\Include\Roark\RoarkLib.h" />
-    <ClInclude Include="..\Include\Roark\UnitTest.h" />
-    <ClInclude Include="Private.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

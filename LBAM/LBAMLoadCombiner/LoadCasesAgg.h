@@ -62,14 +62,14 @@ END_CONNECTION_POINT_MAP()
 // ILoadCasesAgg
 public:
 // ILoadCases
-   STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCase* *pVal) override;
+   STDMETHOD(get_Item)(/*[in]*/IndexType index, /*[out,retval]*/ ILoadCase* *pVal) override;
    STDMETHOD(get__NewEnum)(/*[out,retval]*/ IUnknown** retval) override;  
-   STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(get_Count)(/*[out,retval]*/ IndexType *pVal) override;
    STDMETHOD(get__EnumElements)(/*[out,retval]*/ IEnumLoadCase* *pVal) override;
    STDMETHOD(Find)(/*[in]*/BSTR name, /*[out,retval]*/ILoadCase**) override;
    STDMETHOD(Add)(/*[in]*/ILoadCase*) override;
    STDMETHOD(RemoveByName)(/*[in]*/BSTR name) override;
-   STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name) override;
+   STDMETHOD(RemoveByIndex)(/*[in]*/IndexType index, /*[out,retval]*/BSTR* name) override;
    STDMETHOD(Clone)(/*[out,retval]*/ILoadCases**) override;
    STDMETHOD(Clear)() override;
 

@@ -41,6 +41,16 @@ std::shared_ptr<Path> Path::Create(const Path& path)
    return std::shared_ptr<Path>(new Path(path));
 }
 
+std::shared_ptr<Path> Path::Create(const std::vector<std::shared_ptr<PathElement>>& vElements)
+{
+   auto path = Path::Create();
+   for (auto element : vElements)
+   {
+      path->AddPathElement(element);
+   }
+   return path;
+}
+
 Path::Path(const Path& other)
 {
    for (const auto& pathElement : other.m_Elements)
@@ -382,12 +392,31 @@ std::vector<std::shared_ptr<PathElement>> Path::CreateSubpath(Float64 start, Flo
 
    // if none of the elements contribute to the sub-path, create a sub-path with
    // a point at the start and end of the sub-path range.
+   auto pntStart = LocatePoint(start, OffsetType::Normal, 0.0, 0.0);
    if (subpath_elements.empty())
    {
-      auto p1 = LocatePoint(start, OffsetType::Normal, 0.0, 0.0);
-      auto p2 = LocatePoint(end, OffsetType::Normal, 0.0, 0.0);
-      subpath_elements.emplace_back(PathSegment::Create(p1, p2));
+      auto pntEnd = LocatePoint(end, OffsetType::Normal, 0.0, 0.0);
+      subpath_elements.emplace_back(PathSegment::Create(pntStart, pntEnd));
    }
+   else
+   {
+      // make straight element at start of path
+      auto element = subpath_elements.front();
+      auto pntEnd = element->GetStartPoint();
+      auto segment = PathSegment::Create(pntStart, pntEnd);
+      if(!IsZero(segment->GetLength()))
+         subpath_elements.insert(subpath_elements.begin(),segment);
+
+      // make straight segment at end of path
+      element = subpath_elements.back();
+      pntStart = element->GetEndPoint();
+      pntEnd = LocatePoint(end, OffsetType::Normal, 0.0, 0.0);
+      segment = PathSegment::Create(pntStart, pntEnd);
+      if (!IsZero(segment->GetLength()))
+         subpath_elements.emplace_back(segment);
+   }
+
+
 
    return subpath_elements;
 }
@@ -498,15 +527,3 @@ void Path::OnPathChanged()
    // the path was changed so clear out the cached data
    m_ConnectedPathElements.clear();
 }
-
-
-#if defined _UNITTEST
-bool Path::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Path");
-
-   TESTME_EPILOG("Path");
-}
-#endif // _UNITTEST
-
-

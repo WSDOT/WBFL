@@ -22,21 +22,4 @@
 ///////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-/*****************************************************************************
-LIBRARY
-   Material
-
-   The material modeling package provides product and analytical modeling
-   services for common civil engineering materials.
-
-DESCRIPTION
-   The material modeling package provides product models for common civil
-   engineering materials like concrete and steel.  The package also provides
-   analytical modeling services that can be used to predict their stress-strain
-   behavior.
-
-   The sign conversion used for the material models is compressive stresses
-   and strains are less than zero and tensile stresses and strains are
-   greater than zero.
-*****************************************************************************/
+#include <WBFLTypes.h>

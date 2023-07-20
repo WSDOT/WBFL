@@ -27,7 +27,7 @@
 #include <EAF\EAFTransaction.h>
 #include <memory>
 
-/// A macro transaction is a collection of other transactions.
+/// @brief A macro transaction is a collection of other transactions.
 class EAFCLASS CEAFMacroTxn : public CEAFTransaction
 {
 public:
@@ -45,32 +45,20 @@ public:
    virtual bool IsUndoable() const override;
    virtual bool IsRepeatable() const override;
    
-   /// Sets the transactions name
+   /// @brief Sets the transactions name
    void Name(const std::_tstring& name);
    
-   /// Adds a transaction to this macro. The transcation will be cloned.
+   /// @brief Adds a transaction to this macro. The transcation will be cloned.
    void AddTransaction(CEAFTransaction& rTxn);
 
-   /// Adds a transaction to this macro.
+   /// @brief Adds a transaction to this macro.
    void AddTransaction(std::unique_ptr<CEAFTransaction>&& pTxn);
 
-   /// Returns the number of transactions in this macro.
+   /// @brief Returns the number of transactions in this macro.
    IndexType GetTxnCount() const;
 
 protected:
-   #pragma warning(disable:4251)
    std::_tstring m_Name{ _T("Macro") };
    using TxnContainer = std::vector<std::unique_ptr<CEAFTransaction>>;
    TxnContainer m_Transactions;
-
-#if defined _DEBUG
-public:
-   bool AssertValid() const;
-   void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-public:
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
 };

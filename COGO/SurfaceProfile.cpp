@@ -101,20 +101,20 @@ STDMETHODIMP CSurfaceProfile::get_SkewAngle(IAngle** skewAngle)
    return cogoUtil::CreateAngle(m_SurfaceProfile->GetSkewAngle(), skewAngle);
 }
 
-STDMETHODIMP CSurfaceProfile::get_Count(CollectionIndexType* count)
+STDMETHODIMP CSurfaceProfile::get_Count(IndexType* count)
 {
    CHECK_RETVAL(count);
    *count = m_SurfaceProfile->GetSurfacePointCount();
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceProfile::get_Item(CollectionIndexType idx,ISurfacePoint** point)
+STDMETHODIMP CSurfaceProfile::get_Item(IndexType idx,ISurfacePoint** point)
 {
    CHECK_RETOBJ(point);
    return cogoUtil::CreateSurfacePoint(m_SurfaceProfile->GetSurfacePoint(idx), point);
 }
 
-STDMETHODIMP CSurfaceProfile::GetSurfacePointElevationChange(CollectionIndexType surfacePoint1Idx,CollectionIndexType surfacePoint2Idx,Float64* deltaElevation)
+STDMETHODIMP CSurfaceProfile::GetSurfacePointElevationChange(IndexType surfacePoint1Idx,IndexType surfacePoint2Idx,Float64* deltaElevation)
 {
    // computes the change in elevation between two surface points
    CHECK_RETVAL(deltaElevation);
@@ -122,7 +122,7 @@ STDMETHODIMP CSurfaceProfile::GetSurfacePointElevationChange(CollectionIndexType
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceProfile::GetElevationChange(CollectionIndexType surfacePointIdx,Float64 offset,Float64* deltaElevation)
+STDMETHODIMP CSurfaceProfile::GetElevationChange(IndexType surfacePointIdx,Float64 offset,Float64* deltaElevation)
 {
    // Computes the change in elevation between a surface point and an offset measured from the surface point
    CHECK_RETVAL(deltaElevation);
@@ -130,14 +130,14 @@ STDMETHODIMP CSurfaceProfile::GetElevationChange(CollectionIndexType surfacePoin
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceProfile::GetSlope(CollectionIndexType surfacePointIdx,Float64 offset,Float64* pSlope)
+STDMETHODIMP CSurfaceProfile::GetSlope(IndexType surfacePointIdx,Float64 offset,Float64* pSlope)
 {
    CHECK_RETVAL(pSlope);
    *pSlope = m_SurfaceProfile->GetSlope(surfacePointIdx, offset);
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceProfile::GetSegmentSlope(CollectionIndexType segmentIdx,Float64* pSlope)
+STDMETHODIMP CSurfaceProfile::GetSegmentSlope(IndexType segmentIdx,Float64* pSlope)
 {
    CHECK_RETVAL(pSlope);
    *pSlope = m_SurfaceProfile->GetSegmentSlope(segmentIdx);

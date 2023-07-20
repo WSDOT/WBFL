@@ -46,6 +46,7 @@ namespace WBFL
       public:
          static std::shared_ptr<Path> Create();
          static std::shared_ptr<Path> Create(const Path& path);
+         static std::shared_ptr<Path> Create(const std::vector<std::shared_ptr<PathElement>>& vElements);
 
          ~Path() = default;
 
@@ -122,12 +123,6 @@ namespace WBFL
          virtual std::vector<WBFL::Geometry::Point2d> Intersect(const WBFL::Geometry::Line2d& line, bool bProjectBack, bool bProjectAhead) const override;
          virtual std::vector<std::shared_ptr<PathElement>> CreateOffsetPath(Float64 offset) const override;
          virtual std::vector<std::shared_ptr<PathElement>> CreateSubpath(Float64 start, Float64 end) const override;
-
-
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
 
       private:
          std::vector<std::shared_ptr<PathElement>> m_Elements; // These are the input elements, there could be gaps between elements

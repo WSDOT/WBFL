@@ -50,7 +50,7 @@ STDMETHODIMP CLoadCombinationsAgg::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CLoadCombinationsAgg::get_Item(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCombination* *pVal)
+STDMETHODIMP CLoadCombinationsAgg::get_Item(/*[in]*/IndexType index, /*[out,retval]*/ ILoadCombination* *pVal)
 {
    ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->get_Item( index, pVal);
@@ -62,7 +62,7 @@ STDMETHODIMP CLoadCombinationsAgg::get__NewEnum(/*[out,retval]*/ IUnknown** retv
    return m_LoadCombinations->get__NewEnum(retval);
 }
 
-STDMETHODIMP CLoadCombinationsAgg::get_Count(/*[out,retval]*/ CollectionIndexType *pVal)
+STDMETHODIMP CLoadCombinationsAgg::get_Count(/*[out,retval]*/ IndexType *pVal)
 {
    ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->get_Count(pVal);
@@ -92,7 +92,7 @@ STDMETHODIMP CLoadCombinationsAgg::RemoveByName(/*[in]*/BSTR name)
    return m_LoadCombinations->RemoveByName(name);
 }
 
-STDMETHODIMP CLoadCombinationsAgg::RemoveByIndex(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name)
+STDMETHODIMP CLoadCombinationsAgg::RemoveByIndex(/*[in]*/IndexType index, /*[out,retval]*/BSTR* name)
 {
    ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->RemoveByIndex(index, name);

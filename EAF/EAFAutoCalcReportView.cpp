@@ -86,7 +86,7 @@ void CEAFAutoCalcReportView::OnInitialUpdate()
       m_pRptMgr = pCreateData->m_pRptMgr;
       ATLASSERT(m_pReportBuilderMgr != nullptr || m_pRptMgr != nullptr); // one of these should not be nullptr
 
-      CollectionIndexType rptIdx = pCreateData->m_RptIdx;
+      IndexType rptIdx = pCreateData->m_RptIdx;
       BOOL bPromptForSpec = pCreateData->m_bPromptForSpec;
 
       CreateReportSpecification(rptIdx,bPromptForSpec);

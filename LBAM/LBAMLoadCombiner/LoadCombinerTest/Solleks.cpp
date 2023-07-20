@@ -82,10 +82,10 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const CollectionIndexType NUMPOIS=10;
+   const IndexType NUMPOIS=10;
    CComPtr<IIDArray> apois;
    apois.CoCreateInstance(CLSID_IDArray);
-   for (CollectionIndexType i = 0; i<NUMPOIS; i++)
+   for (IndexType i = 0; i<NUMPOIS; i++)
    {
       apois->Add((PoiIDType)i);
    }
@@ -100,7 +100,7 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
    apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j = 0; j<NUMPOIS; j++)
+   for (IndexType j = 0; j<NUMPOIS; j++)
    {
       apoi->put_Item(0,(PoiIDType)j);
 
@@ -170,10 +170,10 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const CollectionIndexType NUMPOIS=10;
+   const IndexType NUMPOIS=10;
    CComPtr<IIDArray> apois;
    apois.CoCreateInstance(CLSID_IDArray);
-   for (CollectionIndexType i = 0; i<NUMPOIS; i++)
+   for (IndexType i = 0; i<NUMPOIS; i++)
    {
       apois->Add((PoiIDType)i);
    }
@@ -188,7 +188,7 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
    apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j = 0; j<NUMPOIS; j++)
+   for (IndexType j = 0; j<NUMPOIS; j++)
    {
       apoi->put_Item(0,(PoiIDType)j);
 
@@ -270,7 +270,7 @@ inline void CompareCmbReactionResults(ILBAMModel* Model, BSTR loadCombination, B
    hr = gen_util->GetSupportIDsForStage(Model, Stage, &support_ids);
    ATLASSERT(SUCCEEDED(hr));
 
-   CollectionIndexType num_supports;
+   IndexType num_supports;
    support_ids->get_Count(&num_supports);
 
    // compute enveloped results for all pois
@@ -283,7 +283,7 @@ inline void CompareCmbReactionResults(ILBAMModel* Model, BSTR loadCombination, B
    asup.CoCreateInstance(CLSID_IDArray);
    asup->ReDim(1);
 
-   for (CollectionIndexType j = 0; j<num_supports; j++)
+   for (IndexType j = 0; j<num_supports; j++)
    {
       asup->put_Item(0,(SupportIDType)j);
 
@@ -343,7 +343,7 @@ inline void CompareCmbSupportDeflectionResults(ILBAMModel* Model, BSTR loadCombi
    hr = gen_util->GetSupportIDsForStage(Model, Stage, &support_ids);
    ATLASSERT(SUCCEEDED(hr));
 
-   CollectionIndexType num_supports;
+   IndexType num_supports;
    support_ids->get_Count(&num_supports);
 
    // compute enveloped results for all pois
@@ -356,7 +356,7 @@ inline void CompareCmbSupportDeflectionResults(ILBAMModel* Model, BSTR loadCombi
    asup.CoCreateInstance(CLSID_IDArray);
    asup->ReDim(1);
 
-   for (CollectionIndexType j = 0; j<num_supports; j++)
+   for (IndexType j = 0; j<num_supports; j++)
    {
       asup->put_Item(0,(SupportIDType)j);
 

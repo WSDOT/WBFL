@@ -93,14 +93,14 @@ STDMETHODIMP CPath::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CPath::get_Item(CollectionIndexType idx, IPathElement* *pVal)
+STDMETHODIMP CPath::get_Item(IndexType idx, IPathElement* *pVal)
 {
    CHECK_RETOBJ(pVal);
    VALIDATE;
    return cogoUtil::CreatePathElement(m_Path->GetPathElement(idx), pVal);
 }
 
-STDMETHODIMP CPath::put_Item(CollectionIndexType idx, IPathElement *pVal)
+STDMETHODIMP CPath::put_Item(IndexType idx, IPathElement *pVal)
 {
    CHECK_IN(pVal);
    m_Path->InsertPathElement(idx, cogoUtil::GetInnerPathElement(pVal));
@@ -108,7 +108,7 @@ STDMETHODIMP CPath::put_Item(CollectionIndexType idx, IPathElement *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CPath::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CPath::get_Count(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    VALIDATE;
@@ -124,7 +124,7 @@ STDMETHODIMP CPath::Add(IPathElement* element)
    return S_OK;
 }
 
-STDMETHODIMP CPath::Insert(CollectionIndexType idx, IPathElement* element)
+STDMETHODIMP CPath::Insert(IndexType idx, IPathElement* element)
 {
    CHECK_IN(element);
    m_Path->InsertPathElement(idx, cogoUtil::GetInnerPathElement(element));

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_GEOMMODEL_H_
-#define INCLUDED_GEOMMODEL_GEOMMODEL_H_
 #pragma once
 
 // This is a master include file for the Geometric Modeling Package
@@ -45,6 +43,7 @@
 #include <GeomModel/Circle.h>
 #include <GeomModel/CircularSegment.h>
 #include <GeomModel/CompositeShape.h>
+#include <GeomModel/CompositeBeam.h>
 #include <GeomModel/ElasticProperties.h>
 #include <GeomModel/Shape.h>
 #include <GeomModel/FlangedBeam.h>
@@ -74,5 +73,3 @@
 #include <GeomModel/DeckedSlabBeam.h>
 #include <GeomModel/GenericShape.h>
 #include <GeomModel/GeomOp2d.h>
-
-#endif // INCLUDED_GEOMMODEL_GEOMMODEL_H_

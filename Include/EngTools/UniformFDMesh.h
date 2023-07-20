@@ -101,7 +101,9 @@ namespace WBFL
             IndexType elementIdx /**< index of the element within the row, starting from the left edge of the mesh*/
          ) const;
 
-         void GetGridSize(IndexType* pNx, IndexType* pNy) const; ///< Returns the size of the overall mesh.
+         /// @brief Returns the overall size of the mesh
+         /// @return Pair in the form of (Nx,Ny)
+         std::pair<IndexType, IndexType> GetGridSize() const;
 
 #if defined _DEBUG
          void Dump(WBFL::Debug::LogContext& os) const;

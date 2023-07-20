@@ -113,12 +113,6 @@ namespace WBFL
          /// @return 
          Angle AngleBetween(const Direction& dir) const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          Float64 m_Direction{ 0.0 }; // Zero is East and increases in a CCW direction
 

@@ -65,11 +65,11 @@ END_CONNECTION_POINT_MAP()
 
 // IDataSet2d
 public:
-   STDMETHOD_(HRESULT,get_Item)(CollectionIndexType idx, IPoint2d** pVal) override;
-   STDMETHOD_(void,get_Count)(CollectionIndexType *pVal) override;
+   STDMETHOD_(HRESULT,get_Item)(IndexType idx, IPoint2d** pVal) override;
+   STDMETHOD_(void,get_Count)(IndexType *pVal) override;
    STDMETHOD_(void,Add)(IPoint2d *pVal) override;
-   STDMETHOD_(HRESULT,Insert)(CollectionIndexType index, IPoint2d *pVal) override;
-   STDMETHOD_(HRESULT,Remove)(CollectionIndexType index) override;
+   STDMETHOD_(HRESULT,Insert)(IndexType index, IPoint2d *pVal) override;
+   STDMETHOD_(HRESULT,Remove)(IndexType index) override;
    STDMETHOD_(void,Clear)() override;
 
 protected:

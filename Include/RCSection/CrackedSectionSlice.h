@@ -33,7 +33,7 @@ namespace WBFL
    {
       class CrackedSectionSliceImpl;
 
-      /// A "slice" in a fiber based discritization of a GeneralSection cross section object. 
+      /// A "slice" in a fiber based discretization of a GeneralSection cross section object. 
       /// CrackedSectionSlice objects are created by the CrackedSectionSolver, as part of a section analysis and 
       /// are obtained through the solution object CrackedSectionSolution. These objects have fiber level state of stress information 
       /// for the related section analysis solution.
@@ -68,7 +68,7 @@ namespace WBFL
          IndexType GetShapeIndex() const;
 
          /// Shape of the slice
-         const std::shared_ptr<const WBFL::Geometry::Shape>& GetShape() const;
+         const WBFL::Geometry::Shape& GetShape() const;
 
          /// Centroid of the slice
          const WBFL::Geometry::Point2d& GetCentroid() const;
@@ -81,11 +81,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<CrackedSectionSliceImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

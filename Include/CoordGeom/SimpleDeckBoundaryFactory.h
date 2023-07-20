@@ -72,12 +72,6 @@ namespace WBFL
 
          virtual std::shared_ptr<DeckBoundary> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const override;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          // Use the EndType enum to access these arrays
          std::array<IDType, 2> m_TransverseEdgeID; // ID of the path that defines the transverse edge of the deck

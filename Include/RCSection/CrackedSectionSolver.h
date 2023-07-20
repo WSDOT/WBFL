@@ -61,7 +61,7 @@ namespace WBFL
          void SetSliceGrowthFactor(Float64 sliceGrowthFactor);
          Float64 GetSliceGrowthFactor() const;
 
-         /// Convergance tolerance for centroid
+         /// Convergence tolerance for centroid
          void SetTolerance(Float64 tolerance);
          Float64 GetTolerance() const;
 
@@ -76,16 +76,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<CrackedSectionSolverImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      private:
-         static bool TestRectangularBeam(WBFL::Debug::Log& rlog);
-         static bool TestTeeBeam1(WBFL::Debug::Log& rlog);
-         static bool TestTeeBeam2(WBFL::Debug::Log& rlog);
-         static bool TestTeeBeam3(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

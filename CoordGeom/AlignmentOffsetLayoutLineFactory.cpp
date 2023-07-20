@@ -127,14 +127,3 @@ std::vector<std::pair<IDType,std::shared_ptr<Path>>> AlignmentOffsetLayoutLineFa
 
    return vPaths;
 }
-
-#if defined _UNITTEST
-bool AlignmentOffsetLayoutLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("AlignmentOffsetLayoutLineFactory");
-
-   TESTME_EPILOG("AlignmentOffsetLayoutLineFactory");
-}
-#endif // _UNITTEST
-
-

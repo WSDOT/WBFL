@@ -42,12 +42,6 @@ namespace WBFL
          /// @param bridge The bridge geometry object that is creating the deck boundary
          /// @return The deck boundary
          virtual std::shared_ptr<DeckBoundary> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const = 0;
-
-#if defined _UNITTEST
-         //static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-      private:
       };
    };
 };

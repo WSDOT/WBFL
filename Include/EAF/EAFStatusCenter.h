@@ -45,12 +45,12 @@ interface IEAFStatusCenter : IUnknown
    virtual StatusGroupIDType CreateStatusGroupID() = 0;
    virtual StatusItemIDType Add(CEAFStatusItem* pItem) = 0;
    virtual bool RemoveByID(StatusItemIDType id) = 0;
-   virtual bool RemoveByIndex(CollectionIndexType index) = 0;
+   virtual bool RemoveByIndex(IndexType index) = 0;
    virtual bool RemoveByStatusGroupID(StatusGroupIDType statusGroupID) = 0;
    virtual CEAFStatusItem* GetByID(StatusItemIDType id) = 0;
-   virtual CEAFStatusItem* GetByIndex(CollectionIndexType index) = 0;
+   virtual CEAFStatusItem* GetByIndex(IndexType index) = 0;
    virtual eafTypes::StatusSeverityType GetSeverity(const CEAFStatusItem* pItem) = 0;
    virtual eafTypes::StatusSeverityType GetSeverity() = 0;
-   virtual CollectionIndexType Count() = 0;
+   virtual IndexType Count() = 0;
    virtual StatusCallbackIDType RegisterCallback(iStatusCallback* pCallback) = 0;
 };

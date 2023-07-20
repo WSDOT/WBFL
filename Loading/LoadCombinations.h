@@ -31,8 +31,8 @@
 #include "ComCollections.h"
 
 class CLoadCombinations;
-using LoadCombinationCollImpl = CComBSTRKeyedCollection<ldILoadCombinations, ldILoadCombination, ldIEnumLoadCombination, &IID_ldIEnumLoadCombination, CollectionIndexType>;
-using PersistentLoadCombinationCollImpl = CPersistentCollection<CLoadCombinations, LoadCombinationCollImpl, CollectionIndexType>;
+using LoadCombinationCollImpl = CComBSTRKeyedCollection<ldILoadCombinations, ldILoadCombination, ldIEnumLoadCombination, &IID_ldIEnumLoadCombination, IndexType>;
+using PersistentLoadCombinationCollImpl = CPersistentCollection<CLoadCombinations, LoadCombinationCollImpl, IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadCombinations

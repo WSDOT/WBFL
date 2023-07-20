@@ -275,11 +275,11 @@ public:
 
 // IDivide
 public:
-   STDMETHOD(Arc)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType fromID, /*[in]*/ IDType HorzexID, /*[in]*/ IDType toID,/*[in]*/ CollectionIndexType nParts) override;
-   STDMETHOD(BetweenPoints)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType fromID, /*[in]*/ IDType toID,/*[in]*/ CollectionIndexType nParts) override;
-   STDMETHOD(LineSegment)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType lineID,/*[in]*/ CollectionIndexType nParts) override;
-	STDMETHOD(CompoundCurve)(/*[in]*/ IDType firstID, /*[in]*/ IDType idInc, /*[in]*/ IDType curveID, /*[in]*/ CollectionIndexType nParts) override;
-   STDMETHOD(Path)(/*[in]*/IDType firstID,/*[in]*/IDType idInc,/*[in]*/IDType pathID,/*[in]*/ CollectionIndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end) override;
+   STDMETHOD(Arc)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType fromID, /*[in]*/ IDType HorzexID, /*[in]*/ IDType toID,/*[in]*/ IndexType nParts) override;
+   STDMETHOD(BetweenPoints)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType fromID, /*[in]*/ IDType toID,/*[in]*/ IndexType nParts) override;
+   STDMETHOD(LineSegment)(/*[in]*/IDType firstID,/*[in]*/ IDType idInc, /*[in]*/ IDType lineID,/*[in]*/ IndexType nParts) override;
+	STDMETHOD(CompoundCurve)(/*[in]*/ IDType firstID, /*[in]*/ IDType idInc, /*[in]*/ IDType curveID, /*[in]*/ IndexType nParts) override;
+   STDMETHOD(Path)(/*[in]*/IDType firstID,/*[in]*/IDType idInc,/*[in]*/IDType pathID,/*[in]*/ IndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end) override;
 
 // ITangent
 public:

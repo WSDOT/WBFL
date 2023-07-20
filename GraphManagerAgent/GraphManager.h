@@ -73,9 +73,9 @@ public:
    virtual bool AddGraphBuilder(const WBFL::Graphing::GraphBuilder& graphBuilder) override;
    virtual bool AddGraphBuilder(std::unique_ptr<WBFL::Graphing::GraphBuilder>&& pGraphBuilder) override;
    virtual IndexType GetGraphBuilderCount() const override;
-   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(IndexType index) override;
-   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(LPCTSTR strGraphName) override;
-   virtual std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(const std::_tstring& strGraphName) override;
+   virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(IndexType index) override;
+   virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(LPCTSTR strGraphName) override;
+   virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(const std::_tstring& strGraphName) override;
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) override;
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) override;
    virtual std::vector<std::_tstring> GetGraphNames() const override;

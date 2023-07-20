@@ -69,8 +69,8 @@ public:
 public:
    STDMETHOD(InitSolution)(/*[in]*/IPoint2d* pntCG,/*[in]*/IUnkArray* slices) override;
    STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pntCG) override;
-   STDMETHOD(get_SliceCount)(/*[out,retval]*/CollectionIndexType* nSlices) override;
-	STDMETHOD(get_Slice)(/*[in]*/ CollectionIndexType sliceIdx,/*[out,retval]*/ICrackedSectionSlice** pSlice) override;
+   STDMETHOD(get_SliceCount)(/*[out,retval]*/IndexType* nSlices) override;
+	STDMETHOD(get_Slice)(/*[in]*/ IndexType sliceIdx,/*[out,retval]*/ICrackedSectionSlice** pSlice) override;
    STDMETHOD(get_ElasticProperties)(/*[out,retval]*/IElasticProperties** ppProps) override;
 };
 

@@ -27,116 +27,90 @@
 #include <Lrfd\LrfdExp.h>
 #include <list>
 
-class lrfrVersionMgrListener;
-
-/*****************************************************************************
-CLASS 
-   lrfrVersionMgr
-
-   LRFR Specification version manager.
-
-
-DESCRIPTION
-   LRFR Specification version manager.  This class controls the version of
-   the LRFR specification currently in use.
-
-LOG
-   rab : 12.07.2009 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfrVersionMgr
+namespace WBFL
 {
-public:
-   enum Version { FirstEdition2008              = 1,
-                  // no interims in 2009
-                  FirstEditionWith2010Interims  = 2,
-                  SecondEdition2011             = 3, // Is this 2010 or 2011... Original document says 2011, interims say 2010... very confusion
-                  SecondEditionWith2011Interims = 4,
-                  SecondEditionWith2013Interims = 5,
-                  SecondEditionWith2014Interims = 6,
-                  SecondEditionWith2015Interims = 7,
-                  SecondEditionWith2016Interims = 8,
-                  ThirdEdition2018              = 9,
-                  ThirdEditionWith2020Interims = 10,
-                  LastVersion
-};
+   namespace LRFD
+   {
+      class LRFRVersionMgrListener;
 
-   ~lrfrVersionMgr();
+      /// @brief LRFR specification manager. This class is a global manager of the
+      /// LRFR specification currently in use. LRFRVersionMgrListener objects may
+      /// be registered and will receive notifications when the specification changes
+      class LRFDCLASS LRFRVersionMgr
+      {
+      public:
+         /// @brief Identifies the specification edition
+         enum class Version { FirstEdition2008              = 1,
+                        // no interims in 2009
+                        FirstEditionWith2010Interims  = 2,
+                        SecondEdition2011             = 3, // Is this 2010 or 2011... Original document says 2011, interims say 2010... very confusion
+                        SecondEditionWith2011Interims = 4,
+                        SecondEditionWith2013Interims = 5,
+                        SecondEditionWith2014Interims = 6,
+                        SecondEditionWith2015Interims = 7,
+                        SecondEditionWith2016Interims = 8,
+                        ThirdEdition2018              = 9,
+                        ThirdEditionWith2020Interims = 10,
+                        LastVersion
+      };
 
-   static void BeginDamage();
-   static void EndDamage();
-   static bool IsDamaged();
+         LRFRVersionMgr() = delete;
+         LRFRVersionMgr(const LRFRVersionMgr&) = delete;
+         LRFRVersionMgr& operator=(const LRFRVersionMgr&) = delete;
+         ~LRFRVersionMgr() = delete;
 
-   static void RegisterListener(lrfrVersionMgrListener* pListener);
+         /// @brief Sets the version manager into damage state. In damage state listeners are not notified of 
+         /// changes until EndDamage is called
+         static void BeginDamage();
 
-   static void UnregisterListener(lrfrVersionMgrListener* pListener);
+         /// @brief Ends teh damaged state and notifies listeners of changes
+         static void EndDamage();
 
-   static CollectionIndexType ListenerCount();
+         /// @brief Returns true if in the damaged stage
+         static bool IsDamaged();
 
-   //------------------------------------------------------------------------
-   // Sets the current version of the LRFR specification.  Returns the prevous
-   // version.
-   static Version SetVersion(Version version);
+         /// @brief Registers a callback listener.
+         static void RegisterListener(LRFRVersionMgrListener* pListener);
 
-   //------------------------------------------------------------------------
-   // Returns the current version of the specification.
-   static Version GetVersion();
+         /// @brief Unregisters a callback listener.
+         static void UnregisterListener(LRFRVersionMgrListener* pListener);
 
-   //------------------------------------------------------------------------
-   // Returns "The Manual for Bridge Evaluation"
-   static LPCTSTR GetCodeString();
+         /// @brief Returns the listener count
+         static IndexType ListenerCount();
 
-   //------------------------------------------------------------------------
-   // Returns the current version of the specification as a string.
-   static LPCTSTR GetVersionString(bool bAbbreviated=false);
+         /// @brief Sets the current version of the LRFR specification.  Returns the previous version.
+         static Version SetVersion(Version version);
 
-   //------------------------------------------------------------------------
-   // Returns the current version of the specification as a string.
-   static LPCTSTR GetVersionString(lrfrVersionMgr::Version version,bool bAbbreviated=false);
+         /// @brief Returns the current version of the specification.
+         static Version GetVersion();
 
-   //------------------------------------------------------------------------
-   // returns the version enum value from the abbreviated version string
-   static Version GetVersion(LPCTSTR strAbbrev);
+         /// @brief Returns the must recent version
+         static Version GetLatestVersion();
 
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   static bool AssertValid();
+         /// @brief Returns the name of the specification - "The Manual for Bridge Evaluation"
+         static LPCTSTR GetCodeString();
 
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   static void Dump(WBFL::Debug::LogContext& os);
-#endif // _DEBUG
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
+         /// @brief Returns the current version of the specification as a string.
+         /// @param bAbbreviated If true, an abbreviated version is returned. The abbreviated version
+         /// is a single word useful as a key
+         static LPCTSTR GetVersionString(bool bAbbreviated=false);
 
-protected:
+         /// @brief Returns the specified version of the specification as a string.
+         /// @param version The version for which a string is returned
+         /// @param bAbbreviated If true, an abbreviated version is returned. The abbreviated version
+         /// is a single word useful as a key
+         static LPCTSTR GetVersionString(LRFRVersionMgr::Version version,bool bAbbreviated=false);
 
-   //------------------------------------------------------------------------
-   static void NotifyAllListeners();
+         /// @brief Returns the version from the abbreviated version string
+         static Version GetVersion(LPCTSTR strAbbrev);
 
-private:
-   // GROUP: DATA MEMBERS
-   static Version ms_Version;
-   static bool    ms_IsDamaged;
+      private:
+         static Version ms_Version;
+         static bool    ms_IsDamaged;
+         using Listeners = std::list<LRFRVersionMgrListener*,std::allocator<LRFRVersionMgrListener*>>;
+         static Listeners ms_Listeners;
 
-public:
-   using Listeners = std::list<lrfrVersionMgrListener*,std::allocator<lrfrVersionMgrListener*>>;
-
-private:
-   static Listeners ms_Listeners;
-
-   // Default constructor
-   lrfrVersionMgr();
-
-   // Prevent accidental copying and assignment
-   lrfrVersionMgr(const lrfrVersionMgr&);
-   lrfrVersionMgr& operator=(const lrfrVersionMgr&) = delete;
+         static void NotifyAllListeners();
+      };
+   };
 };

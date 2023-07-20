@@ -30,10 +30,12 @@
 #include <functional>
 #include <System\AutoVariable.h>
 
+using namespace WBFL::LRFD;
+
 class theta_equation
 {
 public:
-   theta_equation(lrfdUHPCShearData* pData,Float64 fv) :
+   theta_equation(UHPCShearData* pData,Float64 fv) :
       m_pData(pData), m_fv(fv)
    {
       m_Alpha = WBFL::Units::ConvertFromSysUnits(pData->alpha, WBFL::Units::Measure::Radian);
@@ -67,14 +69,14 @@ public:
    }
 
 private:
-   lrfdUHPCShearData* m_pData;
+   UHPCShearData* m_pData;
    Float64 m_fv;
    Float64 m_Alpha;
    Float64 m_cot_alpha;
    Float64 m_sin_alpha;
 };
 
-Float64 SolveForTheta(lrfdUHPCShearData* pData,Float64 fv)
+Float64 SolveForTheta(UHPCShearData* pData,Float64 fv)
 {
    std::function<Float64(Float64)> fn(theta_equation(pData,fv));
    WBFL::Math::BrentsRootFinder root_finder;
@@ -86,7 +88,7 @@ Float64 SolveForTheta(lrfdUHPCShearData* pData,Float64 fv)
 class fv_equation
 {
 public:
-   fv_equation(lrfdUHPCShearData* pData) : m_pData(pData)
+   fv_equation(UHPCShearData* pData) : m_pData(pData)
    {
    }
 
@@ -116,16 +118,16 @@ public:
    }
 
 private:
-   lrfdUHPCShearData* m_pData;
+   UHPCShearData* m_pData;
 };
 
-void Solve(lrfdUHPCShearData* pData)
+void Solve(UHPCShearData* pData)
 {
    WBFL::Math::FixedPointIteration fpi;
    pData->fv = fpi.Solve(std::function<Float64(Float64)>(fv_equation(pData)), IsZero(pData->AvS) ? 0.0 : pData->fy, 0.001, 100000);
 }
 
-bool lrfdUHPCShear::ComputeShearResistanceParameters(lrfdUHPCShearData* pData)
+bool UHPCShear::ComputeShearResistanceParameters(UHPCShearData* pData)
 {
    Float64 Mu = pData->Mu;
    Float64 Nu = pData->Nu;
@@ -190,122 +192,3 @@ bool lrfdUHPCShear::ComputeShearResistanceParameters(lrfdUHPCShearData* pData)
 
    return true;
 }
-
-#if defined _UNITTEST
-bool lrfdUHPCShear::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdUHPCShear");
-   TRY_TESTME(TestCase1(rlog));
-   TRY_TESTME(TestCase2(rlog));
-   TESTME_EPILOG("lrfdUHPCShear");
-}
-
-bool lrfdUHPCShear::TestCase1(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdUHPCShear::Case1");
-   // Test case based on FHWA Prestressed Concrete Design Example
-   lrfdUHPCShearData data;
-   data.Mu = 1402.3*12;
-   data.Nu = 0;
-   data.Vu = 377.3;
-   data.Vp = 0;
-   data.Aps = 10;
-   data.fpo = 189;
-   data.ft = 0.85 * 1.2;
-   data.Ac = 362.61;
-   data.Eps = 28500;
-   data.Es = 29000;
-   data.Ec = 6933;
-   data.AvS = 0.20 / 6;
-   data.bv = 3.5;
-   data.dv = 4.24*12;
-   data.fy = 60.0;
-   data.ftloc = 1.2;
-   data.etloc = 0.004;
-   data.etcr = 0.001;
-   data.gamma_u = 1.0;
-
-   lrfdUHPCShear::ComputeShearResistanceParameters(&data);
-
-   TRY_TESTME(IsEqual(data.fv, 60.0));
-
-   Float64 theta = WBFL::Units::ConvertFromSysUnits(data.Theta, WBFL::Units::Measure::Degree); // convert to degrees
-   TRY_TESTME(IsEqual(theta, 30.34975)); // FHWA Example 30.35
-
-   TRY_TESTME(IsEqual(data.es, -0.0004223));
-   TRY_TESTME(IsEqual(data.e2, -0.0016554));
-   TRY_TESTME(IsEqual(data.ev, 0.0025557));
-
-   // Test zero reinforcement case
-   data.AvS = 0;
-
-   lrfdUHPCShear::ComputeShearResistanceParameters(&data);
-
-   TRY_TESTME(IsEqual(data.fv, 0.0));
-
-   theta = WBFL::Units::ConvertFromSysUnits(data.Theta, WBFL::Units::Measure::Degree); // convert to degrees
-   TRY_TESTME(IsEqual(theta, 27.13625)); // FHWA Example 30.35
-
-   TRY_TESTME(IsEqual(data.es, -0.0004223));
-   TRY_TESTME(IsEqual(data.e2, -0.0013178));
-   TRY_TESTME(IsEqual(data.ev,  0.0028933));
-   TESTME_EPILOG("lrfdUHPCShear::Case1");
-}
-
-
-bool lrfdUHPCShear::TestCase2(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdUHPCShear::Case2");
-   // Test case based on FHWA Reinforced Concrete Example
-   lrfdUHPCShearData data;
-   data.Mu = 100.4 * 12;
-   data.Nu = 0;
-   data.Vu = 61.4;
-   data.Vp = 0;
-   data.Aps = 0;
-   data.As = 14.04;
-   data.fpo = 0;
-   data.ft = 0.85 * 1.2;
-   data.Ac = 139.32;
-   data.Eps = 28500;  
-   data.Es = 29000;
-   data.Ec = 6933;
-   data.AvS = 2 * 0.20 / 6;
-   data.bv = 12;
-   data.dv = 1.64 * 12;
-   data.fy = 60.0;
-   data.ftloc = 1.2;
-   data.etloc = 0.003;
-   data.etcr = 0.001;
-   data.gamma_u = 1.0;
-
-   lrfdUHPCShear::ComputeShearResistanceParameters(&data);
-
-   // Note FHWA example has some rounding that we don't do here
-
-   TRY_TESTME(IsEqual(data.fv, 52.386743)); // FHWA Example 54.2
-
-   Float64 theta = WBFL::Units::ConvertFromSysUnits(data.Theta, WBFL::Units::Measure::Degree); // convert to degrees
-   TRY_TESTME(IsEqual(theta, 32.437149)); // FHWA Example 31.72
-
-   TRY_TESTME(IsEqual(data.es, 0.0000893));
-   TRY_TESTME(IsEqual(data.e2, -0.00115));
-   TRY_TESTME(IsEqual(data.ev, 0.001806));
-
-   // Test zero reinforcement case
-   data.AvS = 0;
-
-   lrfdUHPCShear::ComputeShearResistanceParameters(&data);
-
-   TRY_TESTME(IsEqual(data.fv, 0.0));
-
-   theta = WBFL::Units::ConvertFromSysUnits(data.Theta, WBFL::Units::Measure::Degree); // convert to degrees
-   TRY_TESTME(IsEqual(theta, 30.60244)); // FHWA Example 30.35
-
-   TRY_TESTME(IsEqual(data.es,  0.0000893));
-   TRY_TESTME(IsEqual(data.e2, -0.0009896));
-   TRY_TESTME(IsEqual(data.ev,  0.0019658));
-
-   TESTME_EPILOG("lrfdUHPCShear::Case2");
-}
-#endif // _UNITTEST#endif // _UNITTEST

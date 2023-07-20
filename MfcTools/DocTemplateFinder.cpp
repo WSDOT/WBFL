@@ -304,15 +304,6 @@ void mfcDocTemplateFinder::BuildTabList(TabList& tab_list)
 
 //======================== DEBUG      =======================================
 
-#if defined _UNITTEST
-bool mfcDocTemplateFinder::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("mfcDocTemplateFinder");
-   // due to lack of a gui testing tool, this one must be tested by hand
-   TESTME_EPILOG("GetNewFileName");
-}
-#endif // _UNITTEST
-
 void TerminateDirList(std::vector<std::_tstring>* list)
 {
    for (std::vector<std::_tstring>::iterator it=list->begin(); 

@@ -107,12 +107,13 @@ void Section::SetLocatorPoint(Shape::LocatorPoint lp, Point2d& position)
 
 void Section::AddComponent(const Shape& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType)
 {
-   AddComponent(shape.CreateClone(), fgModE, fgDensity, bgModE, bgDensity, componentType);
+   std::shared_ptr<Shape> clone_shape(shape.CreateClone().release());
+   AddComponent(clone_shape, fgModE, fgDensity, bgModE, bgDensity, componentType);
 }
 
-void Section::AddComponent(std::unique_ptr<Shape>&& shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType)
+void Section::AddComponent(std::shared_ptr<Shape> shape, Float64 fgModE, Float64 fgDensity, Float64 bgModE, Float64 bgDensity, SectionComponent::ComponentType componentType)
 {
-   m_Components.emplace_back(std::move(shape), fgModE, fgDensity, bgModE, bgDensity, componentType);
+   m_Components.emplace_back(shape, fgModE, fgDensity, bgModE, bgDensity, componentType);
 }
 
 const SectionComponent& Section::GetComponent(IndexType idx) const
@@ -215,110 +216,12 @@ std::unique_ptr<Section> Section::CreateClippedSection(const Rect2d& r, Section:
    return clipped;
 }
 
-#if defined _DEBUG
-bool Section::AssertValid() const
-{
-   return true;
-}
-
-void Section::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for Section" << WBFL::Debug::endl;
-   os << "  Component Container has "<< m_Components.size()<< WBFL::Debug::endl;
-   std::for_each(std::cbegin(m_Components), std::cend(m_Components), [&](const auto& component) {component.Dump(os); });
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include <GeomModel/Rectangle.h>
-#include <MathEx.h>
-bool Section::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Section");
-
-   // Test to verify non-structural components are not included in elastic properties,
-   // but are included in mass properties
-   Rectangle rect1( Point2d(0,0), 20, 10 );
-   Rectangle rect2( Point2d(0,0), 20, 10 );
-   rect2.Move( Shape::LocatorPoint::BottomCenter, rect1.GetLocatorPoint( Shape::LocatorPoint::TopCenter ) );
-   Section section;
-   section.AddComponent( rect1, 1, 1, 0, 0, SectionComponent::ComponentType::Structural);
-   section.AddComponent( rect2, 1, 2, 0, 0, SectionComponent::ComponentType::Nonstructural);
-   MassProperties mProp = section.GetMassProperties();
-   TRY_TESTME( IsEqual( mProp.GetMassPerLength(), 600. ) );
-
-   ElasticProperties eProp = section.GetElasticProperties();
-   TRY_TESTME( IsEqual( eProp.GetEA(), 200. ) );
-
-
-   // Create a hollow box and check the properties
-   //             10
-   //   +------------------------+
-   //   |           8            |
-   //   |  +------------------+  |       EA   = 40.0
-   //   |  |                  |  |       EIxx = 343.33333
-   //   |  |                  |  |       EIyy = 453.33333
-   //   |  |                  |5 | 8     EIxy = 0.0
-   //   |  |                  |  |       cg   = (5,4)
-   //   |  |                  |  |
-   //   |  +------------------+  |
-   //   |                        |
-   //   +------------------------+
-   //
-   section.Clear();
-
-   Rectangle outerRect(Point2d(5, 4), 10, 8);;
-   Rectangle innerRect(Point2d(5, 4), 8, 5);
-
-   section.AddComponent(outerRect, 1.0, 1.0, 0.0, 0.0, SectionComponent::ComponentType::Structural);
-   section.AddComponent(innerRect, 0.0, 0.0, 1.0, 1.0, SectionComponent::ComponentType::Structural);
-   
-   ElasticProperties props = section.GetElasticProperties();
-   TRY_TESTME(IsEqual(props.GetEA(), 40.0));
-   TRY_TESTME(IsEqual(props.GetEIxx(), 343.33333));
-   TRY_TESTME(IsEqual(props.GetEIxy(), 0.00000));
-   TRY_TESTME(IsEqual(props.GetEIyy(), 453.33333));
-   TRY_TESTME(IsEqual(props.GetCentroid().X(), 5.0));
-   TRY_TESTME(IsEqual(props.GetCentroid().Y(), 4.0));
-
-   MassProperties mprops = section.GetMassProperties();
-   TRY_TESTME(IsEqual(mprops.GetMassPerLength(), 40.0));
-
-   Rect2d box = section.GetBoundingBox();
-   TRY_TESTME(IsEqual(box.Left(), 0.0));
-   TRY_TESTME(IsEqual(box.Right(), 10.0));
-   TRY_TESTME(IsEqual(box.Bottom(), 0.0));
-   TRY_TESTME(IsEqual(box.Top(), 8.0));
-
-   // tweak the bounding box and use it for a clipping rectangle
-   // Cover the top portion just above the void and clip.
-   // Area should be 10x1.5 = 15
-   box.Left() = -100;
-   box.Right() = 100;
-   box.Bottom() = 6.5;
-   box.Top() = 100;
-
-   auto clip = section.CreateClippedSection(box, Section::ClipRegion::In);
-   props = clip->GetElasticProperties();
-   TRY_TESTME(IsEqual(props.GetEA(), 15.0));
-
-   // Clip with line... Use the bottom of the clipping rect.
-   Line2d clipLine(box.BottomRight(), box.BottomLeft());
-   clip = section.CreateClippedSection(clipLine, Line2d::Side::Left);
-   props = clip->GetElasticProperties();
-   TRY_TESTME(IsEqual(props.GetEA(), 15.0));
-
-
-   TESTME_EPILOG("Section");
-}
-#endif // _UNITTEST
-
 ElasticProperties make_elastic_properties(const SectionComponent& rCmp)
 {
    const Shape& rs = rCmp.GetShape();
-   Float64 e       = rCmp.GetForegroundModE() - rCmp.GetBackgroundModE();
+   Float64 e = rCmp.GetForegroundModE() - rCmp.GetBackgroundModE();
    ShapeProperties gp = rs.GetProperties();
 
-   return ElasticProperties(e * gp.GetArea(), gp.GetCentroid(), e * gp.GetIxx(), e * gp.GetIyy(), e * gp.GetIxy(), gp.GetXleft(),gp.GetYbottom(),gp.GetXright(),gp.GetYtop());
+   return ElasticProperties(e * gp.GetArea(), gp.GetCentroid(), e * gp.GetIxx(), e * gp.GetIyy(), e * gp.GetIxy(), gp.GetXleft(), gp.GetYbottom(), gp.GetXright(), gp.GetYtop());
 }
 

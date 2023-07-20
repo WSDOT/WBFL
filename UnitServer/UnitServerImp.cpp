@@ -99,9 +99,9 @@ HRESULT CUnitServerImp::GetUnit(BSTR bstrTag,IUnit** ppUnit)
 {
    HRESULT hr;
 
-   CollectionIndexType cUnitTypes;
+   IndexType cUnitTypes;
    m_pUnitTypes->get_Count( &cUnitTypes );
-   for (CollectionIndexType i = 0; i < cUnitTypes; i++)
+   for (IndexType i = 0; i < cUnitTypes; i++)
    {
       CComPtr<IUnitType> pUnitType;
       hr = m_pUnitTypes->get_Item(CComVariant(i),&pUnitType);

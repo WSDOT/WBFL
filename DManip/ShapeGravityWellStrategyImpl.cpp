@@ -83,7 +83,7 @@ STDMETHODIMP_(void) CShapeGravityWellStrategyImpl::GetGravityWell(iDisplayObject
       CComPtr<IPoint2dCollection> points;
       m_Shape->get_PolyPoints(&points);
 
-      CollectionIndexType nPoints;
+      IndexType nPoints;
       points->get_Count(&nPoints);
 
       POINT* logical_points = new POINT[nPoints];
@@ -91,7 +91,7 @@ STDMETHODIMP_(void) CShapeGravityWellStrategyImpl::GetGravityWell(iDisplayObject
       CComPtr<IEnumPoint2d> enum_points;
       points->get__Enum(&enum_points);
       CComPtr<IPoint2d> point;
-      CollectionIndexType i = 0;
+      IndexType i = 0;
       while( enum_points->Next(1,&point,nullptr) != S_FALSE )
       {
          POINT p;

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_MOHRCIRCLE_H_
-#define INCLUDED_GEOMETRY_MOHRCIRCLE_H_
 #pragma once
 
 /// Mohr's Circle.
@@ -47,7 +45,8 @@ public:
    /// Computes the state of strains/stresses/etc. on a plane defined by
    /// angle. Angle is in radians and measured
    /// counterclockwise from the global X direction.
-   void ComputeState(Float64 angle,Float64& sii, Float64& sjj, Float64& sij) const;
+   /// Returns tuple of the form Sii, Sjj, Sij
+   std::tuple<Float64,Float64,Float64> ComputeState(Float64 angle) const;
 
    void SetSii(Float64 sii);
    Float64 GetSii() const { return m_Sii; }
@@ -77,15 +76,6 @@ public:
    /// Returns the radius of the mohr's circle.
    Float64 GetRadius() const;
 
-#if defined _DEBUG
-   bool AssertValid() const;
-   void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
 private:
    Float64 m_Sii;  // input variables
    Float64 m_Sjj;
@@ -99,7 +89,8 @@ private:
    Float64 m_Center;
 
    void Init();
+
+#if defined _DEBUG
+   bool AssertValid() const;
+#endif // _DEBUG
 };
-
-#endif // INCLUDED_GEOMETRY_MOHRCIRCLE_H_
-

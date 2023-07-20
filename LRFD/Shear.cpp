@@ -30,23 +30,19 @@
 #include <MathEx.h>
 #include <Units\Units.h>
 #include <GeomModel/GeomModel.h>
-#include <assert.h>
 
-/****************************************************************************
-CLASS
-   lrfdShear
-****************************************************************************/
+using namespace WBFL::LRFD;
 
 
 // Helper functions
-void compute_theta_and_beta1(lrfdShearData* pData);
-void compute_theta_and_beta2(lrfdShearData* pData);
-void compute_theta_and_beta3(lrfdShearData* pData,bool bWSDOT);
-void compute_theta_and_beta3_tbl1(lrfdShearData* pData,bool bWSDOT);
-void compute_theta_and_beta3_tbl2(lrfdShearData* pData,bool bWSDOT);
-void compute_theta_and_beta4(lrfdShearData* pData); // WSDOT method per June 18, 2001 Design Memo (7-2001)
-void compute_theta_and_beta5(lrfdShearData* pData);
-Float64 compute_strain(lrfdShearData* pData,Float64 theta);
+void compute_theta_and_beta1(ShearData* pData);
+void compute_theta_and_beta2(ShearData* pData);
+void compute_theta_and_beta3(ShearData* pData,bool bWSDOT);
+void compute_theta_and_beta3_tbl1(ShearData* pData,bool bWSDOT);
+void compute_theta_and_beta3_tbl2(ShearData* pData,bool bWSDOT);
+void compute_theta_and_beta4(ShearData* pData); // WSDOT method per June 18, 2001 Design Memo (7-2001)
+void compute_theta_and_beta5(ShearData* pData);
+Float64 compute_strain(ShearData* pData,Float64 theta);
 Float64 get_theta(Float64 vfc,Float64 ex);
 Float64 get_beta(Float64 vfc,Float64 ex);
 Float64 get_ex(Float64 vfc,Float64 theta);
@@ -77,12 +73,12 @@ static const Int16 gs_ex_count_2003 = sizeof(gs_ex_2003)/sizeof(Float64);
 
 Float64 get_vfc(Int16 row)
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
+   if ( version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
    {
       return gs_vfc[row];  // 1994 to 1999
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
    {
       return gs_vfc_2000[row]; // 2000-2002
    }
@@ -94,12 +90,12 @@ Float64 get_vfc(Int16 row)
 
 Int16 get_vfc_count()
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
+   if ( version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
    {
       return gs_vfc_count;  // 1994 to 1999
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
    {
       return gs_vfc_count_2000; // 2000-2002
    }
@@ -111,12 +107,12 @@ Int16 get_vfc_count()
 
 Float64 get_ex(Int16 col)
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
+   if ( version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
    {
       return gs_ex[col];  // 1994 to 1999
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
    {
       return gs_ex_2000[col]; // 2000-2002
    }
@@ -128,12 +124,12 @@ Float64 get_ex(Int16 col)
 
 Int16 get_ex_count()
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
+   if ( version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
    {
       return gs_ex_count;  // 1994 to 1999
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
    {
       return gs_ex_count_2000; // 2000-2002
    }
@@ -201,17 +197,17 @@ static const BT gs_Data_2003_interims[gs_vfc_count_2003][gs_ex_count_2003] =
 
 BT get_beta_theta(Int16 row,Int16 col)
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::FirstEditionWith1997Interims )
+   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
+   if ( version < LRFDVersionMgr::Version::FirstEditionWith1997Interims )
    {
       return gs_Data_pre_97_interims[row][col];  // 1994 to 1996
    }
-   else if ( lrfdVersionMgr::FirstEditionWith1997Interims <= version && // 1997 - 1999
-             version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   else if ( LRFDVersionMgr::Version::FirstEditionWith1997Interims <= version && // 1997 - 1999
+             version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
    {
       return gs_Data_97_interims[row][col];
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
    {
       return gs_Data_2000_interims[row][col]; // 2000-2002
    }
@@ -266,32 +262,23 @@ BT get_beta_theta_mtr(Int16 row,Int16 col)
 
 void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2);
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdShear::~lrfdShear()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdShear::ComputeThetaAndBeta(lrfdShearData* pData, lrfdShear::Method method )
+void Shear::ComputeThetaAndBeta(ShearData* pData, Shear::Method method )
 {
    // if 4th or before, method must be tables
-   CHECK( (lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::FourthEdition2007 && method == lrfdShear::Tables) ||
-      lrfdVersionMgr::FourthEdition2007 < lrfdVersionMgr::GetVersion() );
+   PRECONDITION( (LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::FourthEdition2007 && method == Method::Tables) ||
+      LRFDVersionMgr::Version::FourthEdition2007 < LRFDVersionMgr::GetVersion() );
 
-   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SecondEditionWith1999Interims )
+   if ( LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::SecondEditionWith1999Interims )
    {
       compute_theta_and_beta2( pData );
    }
-   else if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
+   else if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007 )
    {
       compute_theta_and_beta3( pData, false );
    }
    else
    {
-      method == lrfdShear::Tables ? compute_theta_and_beta3(pData,false) : compute_theta_and_beta5( pData );
+      method == Method::Tables ? compute_theta_and_beta3(pData,false) : compute_theta_and_beta5( pData );
    }
 
 
@@ -300,16 +287,15 @@ void lrfdShear::ComputeThetaAndBeta(lrfdShearData* pData, lrfdShear::Method meth
 //   {
 //      compute_theta_and_beta1( pData );
 //   }
-//   catch( lrfdXShear& )
+//   catch( XShear& )
 //   {
 //      compute_theta_and_beta2( pData );
 //   }
 }
 
-void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
+void Shear::ComputeVciVcw(ShearData* pData)
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007   ||
-        lrfdVersionMgr::GetVersion() >= lrfdVersionMgr::EighthEdition2017)
+   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007 || LRFDVersionMgr::Version::EighthEdition2017 <= LRFDVersionMgr::GetVersion())
    {
       // Vci/Vcw wasn't in LRFD before 4th edition, and was removed in the 8th... 
       // set values to zero
@@ -319,7 +305,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       pData->Vcw     = 0;
 
       // and throw an exception
-      THROW(lrfdXCodeVersion,BadVersion);
+      WBFL_LRFD_THROW(XCodeVersion,BadVersion);
       return;
    }
 
@@ -343,7 +329,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    const WBFL::Units::Force* p_force_unit;
 
    Float64 K1, K2, Kfct;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
       fc   = WBFL::Units::ConvertFromSysUnits(fc,   WBFL::Units::Measure::MPa);
       fct  = WBFL::Units::ConvertFromSysUnits(fct,  WBFL::Units::Measure::MPa);
@@ -386,7 +372,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    }
 
    Float64 sqrt_fc;
-   if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() )
+   if ( LRFDVersionMgr::Version::SeventhEditionWith2016Interims <= LRFDVersionMgr::GetVersion() )
    {
       sqrt_fc = lambda*sqrt(fc);
    }
@@ -408,13 +394,13 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       {
          sqrt_fc = 0.85*sqrt(fc);
       }
-      else if (pData->ConcreteType == WBFL::Materials::ConcreteType::PCI_UHPC)
+      else if (pData->ConcreteType == WBFL::Materials::ConcreteType::PCI_UHPC || pData->ConcreteType == WBFL::Materials::ConcreteType::UHPC)
       {
-         ATLASSERT(false); // Vci/Vcw doesn't support PCI UHPC
+         CHECK(false); // Vci/Vcw doesn't support PCI UHPC or UHPC
       }
       else
       {
-         ATLASSERT(false); // is there a new concrete type?
+         CHECK(false); // is there a new concrete type?
       }
    }
 
@@ -431,11 +417,11 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    pData->Vcw     = WBFL::Units::ConvertToSysUnits(Vcw,     *p_force_unit);
 }
 
-Float64  lrfdShear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 bv, Float64 dv)
+Float64 Shear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 bv, Float64 dv)
 {
    Float64 vu;
 
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
+   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007 )
    {
       vu = (Vu - phi*Vp)/(phi*bv*dv);
    }
@@ -447,55 +433,13 @@ Float64  lrfdShear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Floa
    return vu;
 }
 
+//////////////////////////////////////////////////////
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdShear::AssertValid() const
+void WsdotShear::ComputeThetaAndBeta(ShearData* pData,bool bEndRegion)
 {
-   return true;
-}
-
-void lrfdShear::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdShear" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdWsdotShear::~lrfdWsdotShear()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdWsdotShear::ComputeThetaAndBeta(lrfdShearData* pData,bool bEndRegion)
-{
-   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SecondEditionWith1999Interims )
+   if ( LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::SecondEditionWith1999Interims )
    {
-      lrfdShear::ComputeThetaAndBeta(pData);
+      Shear::ComputeThetaAndBeta(pData);
    }
    else
    {
@@ -503,42 +447,7 @@ void lrfdWsdotShear::ComputeThetaAndBeta(lrfdShearData* pData,bool bEndRegion)
    }
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdWsdotShear::AssertValid() const
-{
-   return true;
-}
-
-void lrfdWsdotShear::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdWsdotShear" << WBFL::Debug::endl;
-   lrfdShear::Dump(os);
-}
-#endif // _DEBUG
-
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-////////////////////////////////////////////////////////////////
-void compute_theta_and_beta1(lrfdShearData* pData)
+void compute_theta_and_beta1(ShearData* pData)
 {
    // Copy input data (this will make life a little easier)
    Float64 Mu  = pData->Mu;
@@ -574,7 +483,7 @@ void compute_theta_and_beta1(lrfdShearData* pData)
 
    if ( get_vfc(get_vfc_count()-1) < vfc )
    {
-      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
+      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(XShear,vfcOutOfRange);
       WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
    }
 
@@ -636,7 +545,7 @@ void compute_theta_and_beta1(lrfdShearData* pData)
 
    if ( max_iter <= cIter )
    {
-      THROW(lrfdXShear,MaxIterExceeded);
+      WBFL_LRFD_THROW(XShear,MaxIterExceeded);
    }
 
    CHECK( IsEqual( theta, theta_guess, theta_tol ) );
@@ -649,7 +558,7 @@ void compute_theta_and_beta1(lrfdShearData* pData)
    pData->ex    = ex;
 }
 
-void compute_theta_and_beta2(lrfdShearData* pData)
+void compute_theta_and_beta2(ShearData* pData)
 {
    // Copy input data (this will make life a little easier)
    Float64 Mu  = pData->Mu;
@@ -685,7 +594,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
 
    if ( get_vfc(get_vfc_count()-1) < vfc )
    {
-      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
+      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(XShear,vfcOutOfRange);
       WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
    }
 
@@ -761,7 +670,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
 
    if ( !bFoundSolution )
    {
-      THROW(lrfdXShear,MaxIterExceeded);
+      WBFL_LRFD_THROW(XShear,MaxIterExceeded);
    }
 
    if (pData->bLimitNetTensionStrainToPositiveValues && ex < 0)
@@ -792,7 +701,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
 // Method from LRFD 2nd Edition, 2000 interims and later.
 // All we have to do is find the "box" from table 5.8.3.4.2-1 
 // There is no need to interpolate between rows and columns as in version 2 of this method
-void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
+void compute_theta_and_beta3(ShearData* pData, bool bWSDOT)
 {
    Float64 bv  = pData->bv;
    Float64 fc  = pData->fc;
@@ -804,7 +713,7 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
 
    // Determine whether we meet minimum steel requirements - then we can choose equations and tables
    Float64 minSteel;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
       minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
       minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
@@ -825,9 +734,9 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
    }
 }
 
-void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
+void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
 {
-   // Compute beta and theta for case where steel meets min steel requirments
+   // Compute beta and theta for case where steel meets min steel requirements
    Float64 Mu  = pData->Mu;
    Float64 Nu  = pData->Nu;
    Float64 Vu  = pData->Vu;
@@ -864,7 +773,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    // Bound vc
    if ( get_vfc(get_vfc_count()-1) < vfc )
    {
-      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
+      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(XShear,vfcOutOfRange);
       WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
    }
 
@@ -907,7 +816,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -917,7 +826,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
             }
          }
 
-         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+         if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEditionWith2003Interims )
          {
             ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
          }
@@ -937,7 +846,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -962,7 +871,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
             // Eqn 5.8.3.4.2-3
             pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-            if (lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion())
+            if (LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion())
             {
                ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -975,7 +884,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
 
       if ( col == get_ex_count()-1 )
       {
-         // first time through loop, initiliaze with current values
+         // first time through loop, initialize with current values
          ex_last = ex_calc;
          eq_last = pData->Eqn;
       }
@@ -1017,12 +926,12 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    pData->ex_tbl = get_ex(col);
    pData->Beta = bt.Beta;
    pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
-   pData->Fe = -1; // Not appicable
+   pData->Fe = -1; // Not applicable
 }
 
-void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
+void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
 {
-   // Compute beta and theta for case min steel requirments are not met
+   // Compute beta and theta for case min steel requirements are not met
    Float64 Mu  = pData->Mu;
    Float64 Nu  = pData->Nu;
    Float64 Vu  = pData->Vu;
@@ -1094,7 +1003,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1104,7 +1013,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
             }
          }
 
-         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+         if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEditionWith2003Interims )
          {
             ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
          }
@@ -1124,7 +1033,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1149,7 +1058,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
             // Eqn 5.8.3.4.2-3
             pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-            if (lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion())
+            if (LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion())
             {
                ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1204,11 +1113,11 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
    pData->ex_tbl = get_ex_mtr(col);
    pData->Beta = bt.Beta;
    pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
-   pData->Fe = -1; // Not appicable
+   pData->Fe = -1; // Not applicable
 }
 
 
-void compute_theta_and_beta4(lrfdShearData* pData)
+void compute_theta_and_beta4(ShearData* pData)
 {
    // LRFD Shear 2001 Interims, modified by WSDOT Design Memo 7-2001... Dated June 18, 2001
 
@@ -1242,7 +1151,7 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    Float64 minSteel;
    Int16 eqn;
 
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
       minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
       minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
@@ -1273,8 +1182,8 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    // Bound vc
    if ( get_vfc(get_vfc_count()-1) < vfc )
    {
-      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
-      WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
+      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(XShear,vfcOutOfRange);
+      WARN(true,"v/fc > 0.25 - Setting to 0.25 in WBFL::LRFD::Shear");
    }
 
    if ( vfc < get_vfc(0) )
@@ -1300,7 +1209,7 @@ void compute_theta_and_beta4(lrfdShearData* pData)
          ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
       }
 
-      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+      if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEditionWith2003Interims )
       {
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
       }
@@ -1338,7 +1247,7 @@ void compute_theta_and_beta4(lrfdShearData* pData)
          // Eqn 5.8.3.4.2-3
          pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-         ATLASSERT(!IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder)); // should be able to get here if zero
+         CHECK(!IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder)); // should be able to get here if zero
          ex_calc = (Mu / dv + 0.5*Nu + fabs(Vu - Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
       }
    }
@@ -1367,7 +1276,7 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       pData->vufc_tbl = get_vfc(row);
       pData->Beta = bt.Beta;
       pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
-      pData->Fe = -1; // Not appicable
+      pData->Fe = -1; // Not applicable
    }
    else
    {
@@ -1433,11 +1342,11 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       pData->ex_tbl = get_ex_mtr(col);
       pData->Beta = bt.Beta;
       pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
-      pData->Fe = -1; // Not appicable
+      pData->Fe = -1; // Not applicable
    }
 }
 
-void compute_theta_and_beta5(lrfdShearData* pData)
+void compute_theta_and_beta5(ShearData* pData)
 {
    // LRFD 2008 - Beta and Theta by equations
 
@@ -1500,7 +1409,7 @@ void compute_theta_and_beta5(lrfdShearData* pData)
 
    // Get Beta/Theta;
    Float64 minSteel;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
       minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
       minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
@@ -1535,10 +1444,10 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    pData->vufc = v/fc;
    pData->vufc_tbl = -1; // Not applicable
    pData->Theta = WBFL::Units::ConvertToSysUnits(29+3500*ex_calc,WBFL::Units::Measure::Degree);
-   pData->Fe = -1; // Not appicable
+   pData->Fe = -1; // Not applicable
 }
 
-Float64 compute_strain(lrfdShearData* pData,Float64 theta)
+Float64 compute_strain(ShearData* pData,Float64 theta)
 {
    // Copy input data (this will make life a little easier)
    Float64 Mu  = pData->Mu;
@@ -1724,7 +1633,7 @@ void get_row_index(Float64 vfc,Int16* pr1,Int16* pr2)
    //
 
    // vfc > 0.25 is not allowed. This condition should
-   // have been trapped long before reacing this point
+   // have been trapped long before reaching this point
    CHECK( IsLE(vfc,get_vfc(get_vfc_count()-1)) );
 
    // Don't pass nullptr pointers
@@ -1794,7 +1703,7 @@ void get_col_index(Int16 row,Float64 theta,Int16* pc1,Int16* pc2)
    // There are no lrfd provisions describing what to do when ex < -0.002
    if ( *pc1 < 0 || *pc2 < 0 )
    {
-      THROW(lrfdXShear,StrainOutOfRange);
+      WBFL_LRFD_THROW(XShear,StrainOutOfRange);
    }
 }
 
@@ -1832,7 +1741,7 @@ void get_col_index(Float64 ex,Int16* pc1,Int16* pc2)
    // There are no lrfd provisions describing what to do when ex < -0.002
    if ( *pc1 < 0 || *pc2 < 0 )
    {
-      THROW(lrfdXShear,StrainOutOfRange);
+      WBFL_LRFD_THROW(XShear,StrainOutOfRange);
    }
 }
 
@@ -1880,15 +1789,3 @@ void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2)
    // We should always get valid row indices
    CHECK( *pr1 != -1 && *pr2 != -1 );
 }
-
-
-#if defined _UNITTEST
-bool lrfdShear::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdShear");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for lrfdShear");
-   TESTME_EPILOG("lrfdShear");
-}
-#endif // _UNITTEST
-
-

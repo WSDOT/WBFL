@@ -178,10 +178,6 @@ namespace WBFL
          static const Velocity MeterPerSecond;
          static const Velocity MilePerHour;
          static const Velocity FeetPerSecond;
-
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

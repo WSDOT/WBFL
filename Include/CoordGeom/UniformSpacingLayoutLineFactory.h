@@ -90,12 +90,6 @@ namespace WBFL
 
          virtual std::vector<std::pair<IDType, std::shared_ptr<Path>>> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const override;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          IDType m_AlignmentID = INVALID_ID;
          IDType m_StartPierLineID = INVALID_ID;

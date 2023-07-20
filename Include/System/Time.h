@@ -124,10 +124,6 @@ namespace WBFL
           static bool PrintDate( bool );
           static bool PrintDate();
 
-      #if defined _UNITTEST
-          static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
       protected:
 
           static bool AssertDate( const Date  & );

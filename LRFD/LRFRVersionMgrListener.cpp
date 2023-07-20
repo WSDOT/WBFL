@@ -25,51 +25,19 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LRFRVersionMgrListener.h>
 
-/****************************************************************************
-CLASS
-   lrfrVersionMgrListener
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-lrfrVersionMgrListener::lrfrVersionMgrListener()
-{
-}
-
-lrfrVersionMgrListener::lrfrVersionMgrListener(const lrfrVersionMgrListener& rOther)
-{
-}
-
-lrfrVersionMgrListener::~lrfrVersionMgrListener()
-{
-}
-
-lrfrVersionMgrListener& lrfrVersionMgrListener::operator= (const lrfrVersionMgrListener& rOther)
-{
-   return *this;
-}
-
-void lrfrVersionMgrListener::OnRegistered()
+void LRFRVersionMgrListener::OnRegistered()
 {
    // Do nothing
 }
 
-void lrfrVersionMgrListener::OnUnregistered()
+void LRFRVersionMgrListener::OnUnregistered()
 {
    // Do nothing
 }
 
-void lrfrVersionMgrListener::OnUpdate()
+void LRFRVersionMgrListener::OnUpdate()
 {
    // Do nothing
 }
-
-#if defined _DEBUG
-bool lrfrVersionMgrListener::AssertValid() const
-{
-   return true;
-}
-
-void lrfrVersionMgrListener::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfrVersionMgrListener" << WBFL::Debug::endl;
-}
-#endif // _DEBUG

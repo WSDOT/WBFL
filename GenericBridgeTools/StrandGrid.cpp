@@ -108,14 +108,14 @@ STDMETHODIMP CStrandGrid::AddGridPoints(/*[in]*/IPoint2dCollection* points)
 {
    CHECK_IN(points);
 
-   CollectionIndexType cur_cnt = m_GridPoints.size();
+   IndexType cur_cnt = m_GridPoints.size();
    
-   CollectionIndexType cnt;
+   IndexType cnt;
    points->get_Count(&cnt);
 
    m_GridPoints.reserve(cur_cnt + cnt);
 
-   for (CollectionIndexType i = 0; i<cnt; i++)
+   for (IndexType i = 0; i<cnt; i++)
    {
       CComPtr<IPoint2d> point;
       points->get_Item(i, &point);
@@ -252,7 +252,7 @@ STDMETHODIMP CStrandGrid::putref_StrandFill(/*[in]*/IIndexArray* fill)
    InvalidateFill();
 
    // fill size does not have to match grid size
-   CollectionIndexType nGridPoints;
+   IndexType nGridPoints;
    fill->get_Count(&nGridPoints);
 
    GridIndexType gridPointIdx = 0;
@@ -436,7 +436,7 @@ STDMETHODIMP CStrandGrid::GridIndexToStrandIndex(/*[in]*/GridIndexType gridIndex
 {
   CComPtr<IIndexArray> maxFill;
   GetMaxStrandFill(&maxFill);
-  CollectionIndexType grcnt;
+  IndexType grcnt;
   maxFill->get_Count(&grcnt);
 
   if (grcnt==0)
@@ -453,7 +453,7 @@ STDMETHODIMP CStrandGrid::GridIndexToStrandIndex(/*[in]*/GridIndexType gridIndex
 
   StrandIndexType idx = 0;
   StrandIndexType fll;
-  for (CollectionIndexType gridx = 0; gridx<=gridIndex; gridx++)
+  for (IndexType gridx = 0; gridx<=gridIndex; gridx++)
   {
      maxFill->get_Item(gridx, &fll);
 
@@ -494,7 +494,7 @@ STDMETHODIMP CStrandGrid::StrandIndexToGridIndexEx(/*[in]*/IIndexArray* fill, /*
    GridIndexType nGridPoints = m_GridPoints.size();
 
    // get number of points in the fill sequence
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    // limit the loop to the min of these
@@ -660,7 +660,7 @@ STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/IIndexArray* fill, /*[o
    ValidateGrid(); // only need to validate grid since fill is external
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
@@ -697,7 +697,7 @@ STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/IIndexArray* fill, /*[out,ret
 
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);
@@ -731,7 +731,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
       return hr;
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);
@@ -791,7 +791,7 @@ STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/IIndexArray* fill, /*[out]*/Float64* 
    ValidateGrid(); // only need to validate grid since fill is external
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
@@ -861,7 +861,7 @@ STDMETHODIMP CStrandGrid::get_StrandBoundingBoxEx(/*[in]*/IIndexArray* fill, /*[
        return hr;
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);

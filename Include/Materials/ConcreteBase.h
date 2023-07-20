@@ -128,7 +128,7 @@ namespace WBFL
          /// t occurs before the time at casting, zero is returned.
          virtual Float64 GetFlexureFr(Float64 t) const = 0;
 
-         /// Returns the total free shrinkage that has occured from time at casting
+         /// Returns the total free shrinkage that has occurred from time at casting
          /// to the time specified
          virtual Float64 GetFreeShrinkageStrain(Float64 t) const = 0;
          virtual std::unique_ptr<ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const = 0;
@@ -141,7 +141,7 @@ namespace WBFL
          virtual std::unique_ptr<ConcreteBase> CreateClone() const = 0;
 
       protected:
-         /// Called when the concrete is changed. The default implemention does nothing.
+         /// Called when the concrete is changed. The default implementation does nothing.
          virtual void OnChanged();
 
          /// Subclasses can call this to initialize the base class details for shrinkage. The parameters that get 
@@ -153,7 +153,7 @@ namespace WBFL
          void InitializeCreepDetails(Float64 t,Float64 tla,ConcreteBaseCreepDetails* pDetails) const;
 
       protected:
-         ConcreteType   m_Type;
+         ConcreteType   m_Type = ConcreteType::Normal;
          std::_tstring m_Name{_T("Unknown")};
          bool        m_bHasFct; // has aggregate splitting strength
          Float64     m_Fct;     // aggregate splitting strength
@@ -161,12 +161,12 @@ namespace WBFL
          Float64     m_FiberLength;
          Float64     m_StrengthDensity;
          Float64     m_WeightDensity;
-         Float64     m_RelativeHumidity;
-         Float64     m_VS; // V/S ratio
-         Float64     m_TimeAtCasting; // time at casting... days
-         Float64     m_AgeAtInitialLoading; // days
-         Float64     m_CureTime; // duration of time that the concrete is cured
-         CuringType  m_CuringType;
+         Float64     m_RelativeHumidity = 0.0;
+         Float64     m_VS = 0.0; // V/S ratio
+         Float64     m_TimeAtCasting = 0.0; // time at casting... days
+         Float64     m_AgeAtInitialLoading = 0.0; // days
+         Float64     m_CureTime = 0.0; // duration of time that the concrete is cured
+         CuringType  m_CuringType = CuringType::Steam;
       };
 
       /// Base class for shrinkage strain calculation details. Subclasses extend this to provide additional parameters.

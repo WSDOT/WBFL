@@ -156,78 +156,8 @@ StationFormat::UnitOfMeasure StationFormat::GetUnitOfMeasure() const
    return m_UnitOfMeasure;
 }
 
-#if defined _UNITTEST
-#include <Units\AutoSystem.h>
-bool StationFormat::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("StationFormat");
-
-   {
-      auto siFormat = StationFormats::SI;
-
-      // Valid SI station
-      std::_tstring siStation(L"3+034.54");
-      TRY_TESTME(IsEqual(siFormat.FromString(siStation).first, 3034.54));
-
-      std::_tstring siStation2(L"-3+034.54");
-      TRY_TESTME(IsEqual(siFormat.FromString(siStation2).first, -3034.54));
-
-      TRY_TESTME(siFormat.AsString(WBFL::Units::ConvertToSysUnits(9999.99, WBFL::Units::Measure::Meter)) == std::_tstring(L"9+999.990"));
-      TRY_TESTME(siFormat.AsString(WBFL::Units::ConvertToSysUnits(0.45, WBFL::Units::Measure::Meter)) == std::_tstring(L"0+000.450"));
-
-      // Bad SI Station (use the US station)
-      try { siFormat.FromString(L"3+34.54"); }
-      catch (XUnit& e) { TRY_TESTME(e.GetReasonCode() == XUnit::Reason::BadStationFormat); }
-   }
-
-   {
-      // We want to work in feet
-      WBFL::Units::AutoSystem au;
-      WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Feet);
-
-      auto usFormat = StationFormats::US;
-
-      // Valid US station
-      std::_tstring usStation(L"3+34.54");
-      TRY_TESTME(IsEqual(usFormat.FromString(usStation).first, 334.54));
-
-      std::_tstring usStation2(L"-3+34.54");
-      TRY_TESTME(IsEqual(usFormat.FromString(usStation2).first, -334.54));
-
-      TRY_TESTME(usFormat.AsString(WBFL::Units::ConvertToSysUnits(3434.34, WBFL::Units::Measure::Feet)) == std::_tstring(L"34+34.34"));
-      TRY_TESTME(usFormat.AsString(WBFL::Units::ConvertToSysUnits(9999.99, WBFL::Units::Measure::Feet)) == std::_tstring(L"99+99.99"));
-      TRY_TESTME(usFormat.AsString(WBFL::Units::ConvertToSysUnits(-9999.99, WBFL::Units::Measure::Feet)) == std::_tstring(L"-99+99.99"));
-      TRY_TESTME(usFormat.AsString(WBFL::Units::ConvertToSysUnits(0.45, WBFL::Units::Measure::Feet)) == std::_tstring(L"0+00.45"));
-
-      // Bad US Station (use the SI station)
-      try { usFormat.FromString(L"3+034.54"); }
-      catch (XUnit& e) { TRY_TESTME(e.GetReasonCode() == XUnit::Reason::BadStationFormat); }
-   }
-
-   TESTME_EPILOG("StationFormat");
-}
-#endif // _UNITTEST
-
-#if defined _DEBUG
-bool StationFormat::AssertValid() const
-{
-   return true;
-}
-
-void StationFormat::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for StationFormat") << WBFL::Debug::endl;
-   os << _T("Unit of Measure = ") << ((m_UnitOfMeasure == UnitOfMeasure::Meter) ? _T("meter") : _T("feet"))
-      << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
 const StationFormat StationFormats::SI(StationFormat::UnitOfMeasure::Meter);
 const StationFormat StationFormats::US(StationFormat::UnitOfMeasure::Feet);
-
-StationFormats::~StationFormats()
-{
-}
 
 bool contains_alpha(const std::_tstring& s)
 {

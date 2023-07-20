@@ -41,26 +41,3 @@ std::_tstring StressStrainModel::GetName() const
 {
    return m_Name;
 }
-
-#if defined _DEBUG
-bool StressStrainModel::AssertValid() const
-{
-   return true;
-}
-
-void StressStrainModel::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for StressStrainModel")         << WBFL::Debug::endl;
-   os << _T("====================")         << WBFL::Debug::endl;
-   os << _T("Name    : ") << m_Name.c_str() << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool StressStrainModel::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("StressStrainModel");
-   TRY_TESTME(true);
-   TESTME_EPILOG("StressStrainModel");
-}
-#endif // _UNITTEST

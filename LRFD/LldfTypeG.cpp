@@ -29,22 +29,16 @@
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\Utility.h>
 
-/****************************************************************************
-CLASS
-   lrfdLldfTypeG
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdLldfTypeG::lrfdLldfTypeG(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+LldfTypeG::LldfTypeG(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
                              Uint32 Nl, Float64 wLane,
                              Float64 L,Float64 W,Float64 I,Float64 J,Float64 b,Float64 d,
                              Float64 leftDe,Float64 rightDe,
                              Float64 PossionRatio, 
                              Float64 skewAngle1, Float64 skewAngle2,
                              bool bMomentSkew, bool bShearSkew) :
-lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,bMomentSkew,bShearSkew)
+LiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,bMomentSkew,bShearSkew)
 {
    m_L           = L;
    m_W           = W;
@@ -59,72 +53,20 @@ lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverha
    m_SkewAngle2  = skewAngle2;
 }
 
-lrfdLldfTypeG::lrfdLldfTypeG(const lrfdLldfTypeG& rOther) :
-lrfdLiveLoadDistributionFactorBase(rOther)
-{
-   MakeCopy(rOther);
-}
-
-lrfdLldfTypeG::~lrfdLldfTypeG()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdLldfTypeG& lrfdLldfTypeG::operator= (const lrfdLldfTypeG& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdLldfTypeG::MakeCopy(const lrfdLldfTypeG& rOther)
-{
-   m_L           = rOther.m_L;
-   m_W           = rOther.m_W;
-   m_I           = rOther.m_I;
-   m_J           = rOther.m_J;
-   m_b           = rOther.m_b;
-   m_d           = rOther.m_d;
-   m_PoissonRatio = rOther.m_PoissonRatio;
-   m_LeftDe      = rOther.m_LeftDe;
-   m_RightDe     = rOther.m_RightDe;
-   m_SkewAngle1  = rOther.m_SkewAngle1;
-   m_SkewAngle2  = rOther.m_SkewAngle2;
-}
-
-void lrfdLldfTypeG::MakeAssignment(const lrfdLldfTypeG& rOther)
-{
-   lrfdLiveLoadDistributionFactorBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-
-bool lrfdLldfTypeG::TestRangeOfApplicability(Location loc) const
+bool LldfTypeG::TestRangeOfApplicability(Location loc) const
 {
    if (!DoCheckApplicablity())
       return true;
 
    bool doThrow=true;
-   bool bSISpec = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
    ExteriorMomentEquationRule(bSISpec, true);
 
    // This is not an out of range of applicability case... skew adjustment simply isn't applied in this case
    //Float64 skew_delta_max = WBFL::Units::ConvertToSysUnits( 10.0, WBFL::Units::Measure::Degree );
    //if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
-   //   THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
+   //   THROW_DF( XRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
 
 
    if ( (m_bSkewMoment || m_bSkewShear) && (!IsZero(m_SkewAngle1) || !IsZero(m_SkewAngle2)) )
@@ -134,54 +76,54 @@ bool lrfdLldfTypeG::TestRangeOfApplicability(Location loc) const
       Float64 Lmax = bSISpec ? 37000 : 120;
       Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
       if ( L < Lmin || Lmax < L )
-         THROW_DF(lrfdXRangeOfApplicability, SpanLength, _T("Span Length (L) is out of range. See Table 4.6.2.2.3c-1"));
+         THROW_DF(XRangeOfApplicability, SpanLength, _T("Span Length (L) is out of range. See Table 4.6.2.2.3c-1"));
 
       Float64 dMin = bSISpec ?  430 : 17;
       Float64 dMax = bSISpec ? 1500 : 60;
       Float64 d = WBFL::Units::ConvertFromSysUnits(m_d,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
       if ( d < dMin || dMax < d )
-         THROW_DF(lrfdXRangeOfApplicability, GirderDepth, _T("Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1"));
+         THROW_DF(XRangeOfApplicability, GirderDepth, _T("Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1"));
 
       Float64 bMin = bSISpec ?  900 : 35;
       Float64 bMax = bSISpec ? 1500 : 60;
       Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
       if ( b < bMin || bMax < b )
-         THROW_DF(lrfdXRangeOfApplicability, BeamWidth, _T("Width (b), of beam is out of range. See Table 4.6.2.2.3c-1"));
+         THROW_DF(XRangeOfApplicability, BeamWidth, _T("Width (b), of beam is out of range. See Table 4.6.2.2.3c-1"));
    }
 
    return true;
 }
 
-bool lrfdLldfTypeG::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
+bool LldfTypeG::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 {
    if ( 6 < m_Nl )
-      THROW_DF( lrfdXRangeOfApplicability, NumLanes, _T("Excessive number of lanes. See Table 4.6.2.2.2b-1"));
+      THROW_DF( XRangeOfApplicability, NumLanes, _T("Excessive number of lanes. See Table 4.6.2.2.2b-1"));
 
    if ( GetNb() < 4 )
-      THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. Must be >=4, see 4.6.2.2.1"));
+      THROW_DF( XRangeOfApplicability, NumGirders, _T("Number of girders is out of range. Must be >=4, see 4.6.2.2.1"));
 
    Float64 skew_max = WBFL::Units::ConvertToSysUnits( 45.0, WBFL::Units::Measure::Degree );
    if ( m_bSkewMoment && (!IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max)) )
-      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2b-1"));
+      THROW_DF( XRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2b-1"));
 
    return true;
 }
 
-bool lrfdLldfTypeG::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const
+bool LldfTypeG::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 {
    if (!InteriorMomentEquationRule(bSISpec, doThrow))
       return false;
 
    Float64 de_max = bSISpec ? WBFL::Units::ConvertToSysUnits(600.,WBFL::Units::Measure::Millimeter) : WBFL::Units::ConvertToSysUnits(2.0,WBFL::Units::Measure::Feet);
-   Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+   Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
 
    if ( de_max+1.0e-06 < de_raw )
-         THROW_DF( lrfdXRangeOfApplicability, CurbLineOffset, _T("Curb offset (de) is out of range. See Table 4.6.2.2.2d-1"));
+         THROW_DF( XRangeOfApplicability, CurbLineOffset, _T("Curb offset (de) is out of range. See Table 4.6.2.2.2d-1"));
 
    return true;
 }
 
-bool lrfdLldfTypeG::InteriorShearEquationRule(bool bSISpec) const
+bool LldfTypeG::InteriorShearEquationRule(bool bSISpec) const
 {
    Float64 bMin = bSISpec ?  900 : 35;
    Float64 bMax = bSISpec ? 1500 : 60;
@@ -208,13 +150,13 @@ bool lrfdLldfTypeG::InteriorShearEquationRule(bool bSISpec) const
    return true;
 }
 
-bool lrfdLldfTypeG::ExteriorShearEquationRule(bool bSISpec) const
+bool LldfTypeG::ExteriorShearEquationRule(bool bSISpec) const
 {
    if ( !InteriorShearEquationRule(bSISpec) )
       return false;
 
    Float64 de_max = bSISpec ? WBFL::Units::ConvertToSysUnits(600.,WBFL::Units::Measure::Millimeter) : WBFL::Units::ConvertToSysUnits(2.0,WBFL::Units::Measure::Feet);
-   Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+   Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
 
    if ( de_max < de_raw )
          return false;
@@ -222,7 +164,7 @@ bool lrfdLldfTypeG::ExteriorShearEquationRule(bool bSISpec) const
    return true;
 }
 
-bool lrfdLldfTypeG::IandJOutOfRangeRule(bool bSISpec) const
+bool LldfTypeG::IandJOutOfRangeRule(bool bSISpec) const
 {
    Float64 Jmin = bSISpec ? 1.0e10 : 25000;
    Float64 Jmax = bSISpec ? 2.5e11 : 610000;
@@ -239,13 +181,13 @@ bool lrfdLldfTypeG::IandJOutOfRangeRule(bool bSISpec) const
    return false;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Int_1_Strength() const
+ILiveLoadDistributionFactor::DFResult LldfTypeG::GetMomentDF_Int_1_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
 
-   if(m_RangeOfApplicabilityAction==roaIgnore || InteriorMomentEquationRule(bSISpec, false) )
+   if(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || InteriorMomentEquationRule(bSISpec, false) )
    {
       // S/D method
       Float64 J, I, W, S, L;
@@ -291,15 +233,15 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Int_1_Stren
       g.EqnData.C = C;
       g.EqnData.K = K;
       g.EqnData.mg = S/D;
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+      g.EqnData.m = Utility::GetMultiplePresenceFactor(1);
       g.mg = g.EqnData.mg;
    }
    else
    {
       // lever rule
-      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      CHECK(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::IgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane,true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::IntGirder, NumLoadedLanes::One,true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -314,23 +256,23 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Int_1_Stren
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Int_2_Strength() const
+ILiveLoadDistributionFactor::DFResult LldfTypeG::GetMomentDF_Int_2_Strength() const
 {
    return GetMomentDF_Int_1_Strength();
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_1_Strength() const
+ILiveLoadDistributionFactor::DFResult LldfTypeG::GetMomentDF_Ext_1_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
    
-   if(m_RangeOfApplicabilityAction==roaIgnore || ExteriorMomentEquationRule(bSISpec, false) )
+   if(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || ExteriorMomentEquationRule(bSISpec, false) )
    {
       g = GetMomentDF_Int_1_Strength();
 
       Float64 A = (bSISpec ? 9100 : 30);
-      Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+      Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
       Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
 
       Float64 e = 1.125 + de/A;
@@ -344,9 +286,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_1_Stren
    else
    {
       // lever rule
-      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      CHECK(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::IgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane,true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::ExtGirder, NumLoadedLanes::One,true);
       g.mg = g.LeverRuleData.mg;
 
       g.EqnData.e = 1.0;
@@ -362,20 +304,20 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_1_Stren
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_2_Strength() const
+ILiveLoadDistributionFactor::DFResult LldfTypeG::GetMomentDF_Ext_2_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
    
-   if(m_RangeOfApplicabilityAction==roaIgnore || ExteriorMomentEquationRule(bSISpec, false) )
+   if(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || ExteriorMomentEquationRule(bSISpec, false) )
    {
       g = GetMomentDF_Int_2_Strength();
 
-      bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+      bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
       Float64 A = (bSISpec ? 7600 : 25);
 
-      Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+      Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
       Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
 
       Float64 e = 1.04 + de/A;
@@ -389,9 +331,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_2_Stren
    else
    {
       // lever rule
-      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      CHECK(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::IgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes,true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::ExtGirder, NumLoadedLanes::TwoOrMore,true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
@@ -406,11 +348,11 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Ext_2_Stren
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Int_1_Strength() const
+ILiveLoadDistributionFactor::DFResult LldfTypeG::GetShearDF_Int_1_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
    if ( InteriorShearEquationRule(bSISpec) )
    {
@@ -429,7 +371,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Int_1_Streng
 
          g.EqnData.mg = K1*pow( b/(K2*L), 0.15) * pow( I/J, 0.05 );
          g.EqnData.e = 1.0;
-         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+         g.EqnData.m = Utility::GetMultiplePresenceFactor(1);
          g.mg = g.EqnData.mg;
       }
       else
@@ -449,7 +391,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Int_1_Streng
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::IntGirder, NumLoadedLanes::One, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -464,11 +406,11 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Int_1_Streng
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeG::GetShearDF_Int_2_Strength() const
+ILiveLoadDistributionFactor::DFResult  LldfTypeG::GetShearDF_Int_2_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
    if ( InteriorShearEquationRule(bSISpec) )
    {
@@ -492,7 +434,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeG::GetShearDF_Int_2_Stren
 
          g.EqnData.mg = pow(b/K1,0.4) * pow(b/(K2*L),0.1) * pow(I/J,0.05) * K4;
          g.EqnData.e = 1.0;
-         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
+         g.EqnData.m = Utility::GetMultiplePresenceFactor(2);
          g.mg = g.EqnData.mg;
       }
       else
@@ -512,7 +454,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeG::GetShearDF_Int_2_Stren
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::IntGirder, NumLoadedLanes::TwoOrMore, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -527,11 +469,11 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeG::GetShearDF_Int_2_Stren
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_1_Strength() const
+ILiveLoadDistributionFactor::DFResult LldfTypeG::GetShearDF_Ext_1_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
@@ -540,8 +482,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_1_Streng
       if (g.ControllingMethod & SPEC_EQN)
       {
          // only apply e factor to equation method
-         bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-         Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+         bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+         Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
          Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
          Float64 K = (bSISpec ? 6100 : 20);
 
@@ -555,14 +497,14 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_1_Streng
       }
       else
       {
-         assert(0); // should always be using equation unless rules are screwed up.
+         CHECK(0); // should always be using equation unless rules are screwed up.
       }
    }
    else
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::ExtGirder, NumLoadedLanes::One, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -577,11 +519,11 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_1_Streng
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Strength() const
+ILiveLoadDistributionFactor::DFResult LldfTypeG::GetShearDF_Ext_2_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
@@ -590,9 +532,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Streng
       if (g.ControllingMethod & SPEC_EQN)
       {
          // only use e factor for equation methods
-         bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+         bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
-         Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+         Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
          Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
 
          Float64 b  = WBFL::Units::ConvertFromSysUnits(m_b, bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
@@ -626,14 +568,14 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Streng
       }
       else
       {
-         assert(0); // rules messed up?
+         CHECK(0); // rules messed up?
       }
    }
    else
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::ExtGirder, NumLoadedLanes::TwoOrMore, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -648,7 +590,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Streng
    return g;
 }
 
-Float64 lrfdLldfTypeG::MomentSkewCorrectionFactor() const
+Float64 LldfTypeG::MomentSkewCorrectionFactor() const
 {
    if ( !m_bSkewMoment )
    {
@@ -674,7 +616,7 @@ Float64 lrfdLldfTypeG::MomentSkewCorrectionFactor() const
    return skew;
 }
 
-Float64 lrfdLldfTypeG::ShearSkewCorrectionFactor() const
+Float64 LldfTypeG::ShearSkewCorrectionFactor() const
 {
    if ( !m_bSkewShear )
    {
@@ -706,142 +648,37 @@ Float64 lrfdLldfTypeG::ShearSkewCorrectionFactor() const
 //======================== INQUERY    =======================================
 
 //======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdLldfTypeG::AssertValid() const
-{
-   return lrfdLiveLoadDistributionFactorBase::AssertValid();
-}
-
-void lrfdLldfTypeG::Dump(WBFL::Debug::LogContext& os) const
-{
-   lrfdLiveLoadDistributionFactorBase::Dump( os );
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include <LRFD\AutoVersion.h>
-bool lrfdLldfTypeG::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdLldfTypeG");
-
-   lrfdAutoVersion av;
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
-
-   Int16 Nb = 5;
-   Float64 S = WBFL::Units::ConvertToSysUnits( 6, WBFL::Units::Measure::Feet );
-   std::vector<Float64> spacings;
-   spacings.assign(Nb-1,S);
-   Float64 L = WBFL::Units::ConvertToSysUnits( 120.25, WBFL::Units::Measure::Feet );
-   Float64 W = S*Nb;
-   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
-   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
-   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
-   Float64 b = S;
-   Float64 d = WBFL::Units::ConvertToSysUnits(18.0,WBFL::Units::Measure::Inch);
-   Float64 de = WBFL::Units::ConvertToSysUnits( -10.5, WBFL::Units::Measure::Inch );
-
-   lrfdLldfTypeG df(1,S,spacings,de,de,
-                    Nl,wLane,
-                    L,W,I,J,b,d,
-                    de,de,0.2,
-                    0.0,0.0,true,true);
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.5523, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.5523, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.6051, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.5550, 0.001) );
-   
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.600, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.6667, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.3125, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.3125, 0.001) );
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.4601, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.5043, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI),  0.5000, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.2604, 0.001) );
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.4601, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.5043, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII),  0.5000, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2604, 0.001) );
-
-   TESTME_EPILOG("lrfdLldfTypeG");
-}
-#endif // _UNITTEST
 
 
 /****************************************************************************
 CLASS
-   lrfdLldfTypeF
+   LldfTypeF
 ****************************************************************************/
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-lrfdLldfTypeF::lrfdLldfTypeF(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+LldfTypeF::LldfTypeF(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
                              Uint32 Nl, Float64 wLane,
                              Float64 L,Float64 W,Float64 I,Float64 J,Float64 b,Float64 d,
                              Float64 leftDe,Float64 rightDe,
                              Float64 PossionRatio, 
                              Float64 skewAngle1, Float64 skewAngle2,
                              bool bMomentSkew, bool bShearSkew) :
-lrfdLldfTypeG(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,
+LldfTypeG(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,
               L,W,I,J,b,d,leftDe,rightDe,PossionRatio, 
               skewAngle1, skewAngle2,
               bMomentSkew, bShearSkew)
 {
 }
 
-lrfdLldfTypeF::lrfdLldfTypeF(const lrfdLldfTypeF& rOther) :
-lrfdLldfTypeG(rOther)
+ILiveLoadDistributionFactor::DFResult LldfTypeF::GetMomentDF_Int_1_Strength() const
 {
-   MakeCopy(rOther);
-}
+   ILiveLoadDistributionFactor::DFResult g;
 
-lrfdLldfTypeF::~lrfdLldfTypeF()
-{
-}
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
-//======================== OPERATORS  =======================================
-lrfdLldfTypeF& lrfdLldfTypeF::operator= (const lrfdLldfTypeF& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdLldfTypeF::MakeCopy(const lrfdLldfTypeF& rOther)
-{
-   lrfdLldfTypeG::MakeCopy(rOther);
-}
-
-void lrfdLldfTypeF::MakeAssignment(const lrfdLldfTypeF& rOther)
-{
-   lrfdLldfTypeG::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_1_Strength() const
-{
-   lrfdILiveLoadDistributionFactor::DFResult g;
-
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-
-   if ( m_RangeOfApplicabilityAction==roaIgnore || InteriorMomentEquationRule(bSISpec,false) )
+   if ( m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || InteriorMomentEquationRule(bSISpec,false) )
    {
       Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec ? WBFL::Units::Measure::Millimeter  : WBFL::Units::Measure::Inch);
       Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec ? WBFL::Units::Measure::Millimeter  : WBFL::Units::Measure::Feet);
@@ -859,16 +696,16 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_1_Stren
       g.ControllingMethod = SPEC_EQN;
       g.EqnData.bWasUsed = true;
       g.EqnData.e = 1.0;
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+      g.EqnData.m = Utility::GetMultiplePresenceFactor(1);
       g.EqnData.mg = mg;
       g.mg = g.EqnData.mg;
    }
    else
    {
       // lever rule
-      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      CHECK(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::IgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::IntGirder, NumLoadedLanes::One, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -883,13 +720,13 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_1_Stren
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_2_Strength() const
+ILiveLoadDistributionFactor::DFResult LldfTypeF::GetMomentDF_Int_2_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
-   if ( m_RangeOfApplicabilityAction==roaIgnore || InteriorMomentEquationRule(bSISpec,false) )
+   if ( m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || InteriorMomentEquationRule(bSISpec,false) )
    {
       Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec ? WBFL::Units::Measure::Millimeter  : WBFL::Units::Measure::Inch);
       Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec ? WBFL::Units::Measure::Millimeter  : WBFL::Units::Measure::Feet);
@@ -908,16 +745,16 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_2_Stren
       g.ControllingMethod = SPEC_EQN;
       g.EqnData.e = 1.0;
       g.EqnData.bWasUsed = true;
-      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
+      g.EqnData.m = Utility::GetMultiplePresenceFactor(2);
       g.EqnData.mg = mg;
       g.mg = mg;
    }
    else
    {
       // lever rule
-      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      CHECK(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::IgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::IntGirder, NumLoadedLanes::TwoOrMore, true);
       g.mg = g.LeverRuleData.mg;
    }
 
@@ -932,12 +769,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_2_Stren
    return g;
 }
 
-bool lrfdLldfTypeF::TestRangeOfApplicability(Location loc) const
+bool LldfTypeF::TestRangeOfApplicability(Location loc) const
 {
    if (!DoCheckApplicablity())
       return true;
 
-   bool bSISpec = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
    bool doThrow=true;
 
    // most rules are for exterior moment
@@ -948,195 +785,102 @@ bool lrfdLldfTypeF::TestRangeOfApplicability(Location loc) const
    {
       Float64 skew_max = WBFL::Units::ConvertToSysUnits( 60.0, WBFL::Units::Measure::Degree );
       if ( !IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max) )
-         THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.3c-1"));
+         THROW_DF( XRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.3c-1"));
 
       Float64 skew_delta_max = WBFL::Units::ConvertToSysUnits( 10.0, WBFL::Units::Measure::Degree );
       if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
-         THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, _T("Excessive difference in skew angles. See Article 4.6.2.2.2e"));
+         THROW_DF( XRangeOfApplicability, SkewAngleDiff, _T("Excessive difference in skew angles. See Article 4.6.2.2.2e"));
 
       // the depth range is only appicable if Table 4.6.2.2.3c-1 is used
       Float64 dMin = bSISpec ?  430 : 17;
       Float64 dMax = bSISpec ? 1500 : 60;
       Float64 d = WBFL::Units::ConvertFromSysUnits(m_d,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
       if ( d < dMin || dMax < d )
-         THROW_DF(lrfdXRangeOfApplicability, GirderDepth, _T("Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1"));
+         THROW_DF(XRangeOfApplicability, GirderDepth, _T("Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1"));
    }
    
    return true;
 }
 
-bool lrfdLldfTypeF::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
+bool LldfTypeF::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 {
    Float64 bMin = bSISpec ?  900 : 35;
    Float64 bMax = bSISpec ? 1500 : 60;
    Float64 b = WBFL::Units::ConvertFromSysUnits(m_b,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
    if ( b < bMin || bMax < b )
-      THROW_DF(lrfdXRangeOfApplicability, BeamWidth, _T("Width (b), of beam is out of range. See Table 4.6.2.2.3a-1"));
+      THROW_DF(XRangeOfApplicability, BeamWidth, _T("Width (b), of beam is out of range. See Table 4.6.2.2.3a-1"));
 
    Float64 Lmin = bSISpec ?  6000 :  20;
    Float64 Lmax = bSISpec ? 37000 : 120;
    Float64 L = WBFL::Units::ConvertFromSysUnits(m_L,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
    if ( L < Lmin || Lmax < L )
-      THROW_DF(lrfdXRangeOfApplicability, SpanLength, _T("Span Length (L) is out of range. See Table 4.6.2.2.3a-1"));
+      THROW_DF(XRangeOfApplicability, SpanLength, _T("Span Length (L) is out of range. See Table 4.6.2.2.3a-1"));
 
    GirderIndexType nb = GetNb();
    if ( nb < 5 || 20 < nb )
-      THROW_DF(lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range (5<=Ng<=20). See Table 4.6.2.2.3a-1"));
+      THROW_DF(XRangeOfApplicability, NumGirders, _T("Number of girders is out of range (5<=Ng<=20). See Table 4.6.2.2.3a-1"));
 
    return true;
 }
 
 //======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdLldfTypeF::AssertValid() const
-{
-   return lrfdLldfTypeG::AssertValid();
-}
-
-void lrfdLldfTypeF::Dump(WBFL::Debug::LogContext& os) const
-{
-   lrfdLldfTypeG::Dump( os );
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include <LRFD\AutoVersion.h>
-bool lrfdLldfTypeF::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdLldfTypeF");
-
-   lrfdAutoVersion av;
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
-
-   Int16 Nb = 5;
-   Float64 S = WBFL::Units::ConvertToSysUnits( 4, WBFL::Units::Measure::Feet );
-   std::vector<Float64> spacings;
-   spacings.assign(Nb-1,S);
-   Float64 L = WBFL::Units::ConvertToSysUnits( 115, WBFL::Units::Measure::Feet );
-   Float64 W = S*Nb;
-   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
-   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
-   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
-   Float64 b = S;
-   Float64 d = WBFL::Units::ConvertToSysUnits(18.0,WBFL::Units::Measure::Inch);
-   Float64 de = WBFL::Units::ConvertToSysUnits( -10.5, WBFL::Units::Measure::Inch );
-
-   lrfdLldfTypeF df(1,S,spacings,de,de,Nl,wLane,
-                    L,W,I,J,b,d,
-                    de,de,0.2,0.0,0.0,true,true);
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.4114, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.3616, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.4508, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.363454, 0.001) );
-   
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.4869, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.5138, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.5873, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.6000, 0.001) );
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.3428, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.3757, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.4057, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.4894, 0.001) );
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.3428, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.3757, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.4057, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.4894, 0.001) );
-
-   TESTME_EPILOG("lrfdLldfTypeF");
-}
-#endif // _UNITTEST
 
 /****************************************************************************
 CLASS
-   lrfdTxdotVoidedSlab
+   TxdotVoidedSlab
 ****************************************************************************/
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-lrfdTxdotVoidedSlab::lrfdTxdotVoidedSlab(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+TxdotVoidedSlab::TxdotVoidedSlab(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
                  Uint32 Nl, Float64 wLane,
                  Float64 L,Float64 W,Float64 I,Float64 J,Float64 b,Float64 d,
                  Float64 leftDe,Float64 rightDe,
                  Float64 PossionRatio,
                  Float64 skewAngle1, Float64 skewAngle2):
 // Txdot ignores skew
-lrfdLldfTypeG(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,
+LldfTypeG(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,
               L,W,I,J,b,d,leftDe,rightDe,PossionRatio, 
               skewAngle1, skewAngle2, false, false)
 {
 }
 
-lrfdTxdotVoidedSlab::lrfdTxdotVoidedSlab(const lrfdTxdotVoidedSlab& rOther) :
-lrfdLldfTypeG(rOther)
-{
-   MakeCopy(rOther);
-}
-
-lrfdTxdotVoidedSlab::~lrfdTxdotVoidedSlab()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdTxdotVoidedSlab& lrfdTxdotVoidedSlab::operator= (const lrfdTxdotVoidedSlab& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-Float64 lrfdTxdotVoidedSlab::MomentSkewCorrectionFactor() const
+Float64 TxdotVoidedSlab::MomentSkewCorrectionFactor() const
 {
    // for Txdot we don't correct for skew
    return 1.0; 
 }
 
-Float64 lrfdTxdotVoidedSlab::ShearSkewCorrectionFactor() const
+Float64 TxdotVoidedSlab::ShearSkewCorrectionFactor() const
 {
    // for Txdot we don't correct for skew
    return 1.0; 
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetMomentDF_Int_2_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetMomentDF_Int_2_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
 
-   g = lrfdLldfTypeG::GetMomentDF_Int_1_Strength();
+   g = LldfTypeG::GetMomentDF_Int_1_Strength();
 
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetMomentDF_Ext_1_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetMomentDF_Ext_1_Strength() const
 {
-   lrfdILiveLoadDistributionFactor::DFResult g;
-   bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+   ILiveLoadDistributionFactor::DFResult g;
+   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
 
    // Lever rule must be applied at this level if ROA exceeded
    bool brule = ExteriorMomentEquationRule(bSISpec, false);
 
-   if(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule && !brule)
+   if(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::IgnoreUseLeverRule && !brule)
    {
       // lever rule
-      assert(m_RangeOfApplicabilityAction==roaIgnoreUseLeverRule); // only way we should ever get here
+      CHECK(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::IgnoreUseLeverRule); // only way we should ever get here
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::ExtGirder, NumLoadedLanes::One, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
@@ -1150,248 +894,121 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetMomentDF_Ext_1
    else
    {
       // Use interior rule if within
-      g = lrfdLldfTypeG::GetMomentDF_Int_1_Strength();
+      g = LldfTypeG::GetMomentDF_Int_1_Strength();
    }
 
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetMomentDF_Ext_2_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetMomentDF_Ext_2_Strength() const
 {
 
    // Txdot uses single lane exterior moment for all 
-   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
+   ILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetShearDF_Int_1_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetShearDF_Int_1_Strength() const
 {
    // Txdot uses single lane exterior moment for all 
-   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
+   ILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetShearDF_Int_2_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetShearDF_Int_2_Strength() const
 {
    // Txdot uses single lane exterior moment for all 
-   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
+   ILiveLoadDistributionFactor::DFResult g = GetMomentDF_Int_1_Strength();
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetShearDF_Ext_1_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetShearDF_Ext_1_Strength() const
 {
    // Txdot uses single lane exterior moment for all 
-   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
+   ILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetShearDF_Ext_2_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetShearDF_Ext_2_Strength() const
 {
    // Txdot uses single lane exterior moment for all 
-   lrfdILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
+   ILiveLoadDistributionFactor::DFResult g = GetMomentDF_Ext_1_Strength();
    return g;
 }
 
-bool lrfdTxdotVoidedSlab::TestRangeOfApplicability(Location loc) const
+bool TxdotVoidedSlab::TestRangeOfApplicability(Location loc) const
 {
    if (!DoCheckApplicablity())
       return true;
 
    bool doThrow=true;
    Float64 w2 = m_b/2.0; // half of girder width
-   if (LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
-       RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
+   if (DfSide::LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
+       DfSide::RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
    {
-      THROW_DF(lrfdXRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
+      THROW_DF(XRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
    }
 
-   return lrfdLldfTypeG::TestRangeOfApplicability(loc);
+   return LldfTypeG::TestRangeOfApplicability(loc);
 }
 
-bool lrfdTxdotVoidedSlab::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
+bool TxdotVoidedSlab::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 {
-   if (!lrfdLldfTypeG::InteriorMomentEquationRule(bSISpec, doThrow))
+   if (!LldfTypeG::InteriorMomentEquationRule(bSISpec, doThrow))
       return false;
 
    Float64 w2 = m_b/2.0; // half of girder width
-   if (LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
-       RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
+   if (DfSide::LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
+       DfSide::RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
    {
-      THROW_DF(lrfdXRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
+      THROW_DF(XRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
    }
 
    return true;
 }
 
-bool lrfdTxdotVoidedSlab::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const
+bool TxdotVoidedSlab::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 {
-   if (!lrfdLldfTypeG::ExteriorMomentEquationRule(bSISpec, doThrow))
+   if (!LldfTypeG::ExteriorMomentEquationRule(bSISpec, doThrow))
       return false;
 
    Float64 w2 = m_b/2.0; // half of girder width
-   if (LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
-       RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
+   if (DfSide::LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
+       DfSide::RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
    {
-      THROW_DF(lrfdXRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
+      THROW_DF(XRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
    }
 
    return true;
 }
 
+////////////////////////////////////////////////
 
-
-
-void lrfdTxdotVoidedSlab::MakeCopy(const lrfdTxdotVoidedSlab& rOther)
-{
-   lrfdLldfTypeG::MakeCopy(rOther);
-}
-
-void lrfdTxdotVoidedSlab::MakeAssignment(const lrfdTxdotVoidedSlab& rOther)
-{
-   lrfdLldfTypeG::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdTxdotVoidedSlab::AssertValid() const
-{
-   return lrfdLldfTypeG::AssertValid();
-}
-
-void lrfdTxdotVoidedSlab::Dump(WBFL::Debug::LogContext& os) const
-{
-   lrfdLldfTypeG::Dump( os );
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include <LRFD\AutoVersion.h>
-bool lrfdTxdotVoidedSlab::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdTxdotVoidedSlab");
- 
-   lrfdAutoVersion av;
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
-
-   Int16 Nb = 5;
-   Float64 S = WBFL::Units::ConvertToSysUnits( 4, WBFL::Units::Measure::Feet );
-   std::vector<Float64> spacings;
-   spacings.assign(Nb-1,S);
-   Float64 L = WBFL::Units::ConvertToSysUnits( 115., WBFL::Units::Measure::Feet );
-   Float64 W = S*Nb;
-   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
-   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
-   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
-   Float64 b = S;
-   Float64 de = WBFL::Units::ConvertToSysUnits( -10.5, WBFL::Units::Measure::Inch );
-   Float64 d = WBFL::Units::ConvertToSysUnits(18.0,WBFL::Units::Measure::Inch);
-
-   lrfdTxdotVoidedSlab df(1,S,spacings,de,de,Nl,wLane,
-                          L,W,I,J,b,d,
-                          de,de,0.2,0.0,0.0);
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.3484, 0.001) );
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.2903, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.2903, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.2903, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.2903, 0.001) );
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2903, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2903, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2903, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2903, 0.001) );
-
-   TESTME_EPILOG("lrfdTxdotVoidedSlab");
-}
-#endif // _UNITTEST
-
-
-/****************************************************************************
-CLASS
-   lrfdTxdotLldfAdjacentBox
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdTxdotLldfAdjacentBox::lrfdTxdotLldfAdjacentBox(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+TxdotLldfAdjacentBox::TxdotLldfAdjacentBox(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
                             Uint32 Nl, Float64 wLane,
                             Float64 L,Float64 W,Float64 I,Float64 J,Float64 b,Float64 d,
                             Float64 leftDe,Float64 rightDe,
                             Float64 PossionRatio,
                             Float64 skewAngle1, Float64 skewAngle2):
-lrfdLldfTypeF(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,
+LldfTypeF(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,
               Nl,wLane,L,W,I,J,b,d,
               leftDe,rightDe,PossionRatio,
               skewAngle1,skewAngle2,true,true)
 {
 }
 
-lrfdTxdotLldfAdjacentBox::lrfdTxdotLldfAdjacentBox(const lrfdTxdotLldfAdjacentBox& rOther) :
-lrfdLldfTypeF(rOther)
-{
-   MakeCopy(rOther);
-}
-
-lrfdTxdotLldfAdjacentBox::~lrfdTxdotLldfAdjacentBox()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdTxdotLldfAdjacentBox& lrfdTxdotLldfAdjacentBox::operator= (const lrfdTxdotLldfAdjacentBox& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-Float64 lrfdTxdotLldfAdjacentBox::MomentSkewCorrectionFactor() const
+Float64 TxdotLldfAdjacentBox::MomentSkewCorrectionFactor() const
 {
    // for Txdot we don't correct for skew
    return 1.0; 
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetMomentDF_Ext_1_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetMomentDF_Ext_1_Strength() const
 {
    // always connected as unit (type f)
-   lrfdILiveLoadDistributionFactor::DFResult gext = lrfdLldfTypeF::GetMomentDF_Ext_1_Strength();
+   ILiveLoadDistributionFactor::DFResult gext = LldfTypeF::GetMomentDF_Ext_1_Strength();
 
-   lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeF::GetMomentDF_Int_1_Strength();
+   ILiveLoadDistributionFactor::DFResult gint = LldfTypeF::GetMomentDF_Int_1_Strength();
    if (gext.mg < gint.mg)
    {
       // exterior cannot exceed interior
@@ -1402,12 +1019,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetMomentDF_
    return gext;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetMomentDF_Ext_2_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetMomentDF_Ext_2_Strength() const
 {
    // always connected as unit (type f)
-   lrfdILiveLoadDistributionFactor::DFResult gext = lrfdLldfTypeF::GetMomentDF_Ext_2_Strength();
+   ILiveLoadDistributionFactor::DFResult gext = LldfTypeF::GetMomentDF_Ext_2_Strength();
 
-   lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeF::GetMomentDF_Int_2_Strength();
+   ILiveLoadDistributionFactor::DFResult gint = LldfTypeF::GetMomentDF_Int_2_Strength();
    if (gext.mg < gint.mg)
    {
       // exterior cannot exceed interior
@@ -1418,15 +1035,15 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetMomentDF_
    return gext;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShearDF_Ext_1_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetBaseShearDF_Ext_1_Strength() const
 {
-   // NOTE: WSDOT changed lrfdLldfTypeG::GetShearDF_Ext_1_Strength() to better match the common interpretation of AASHTO.
-   // This returned a different results than previous versions, as such lrfdTxdotLldfAdjacentBox::GetShearDF_Ext_1_Strength()
-   // could no longer call that method to get the LLDF. This function is a copy of the old lrfdLldfTypeG::GetShearDF_Ext_1_Strength()
+   // NOTE: WSDOT changed LldfTypeG::GetShearDF_Ext_1_Strength() to better match the common interpretation of AASHTO.
+   // This returned a different results than previous versions, as such TxdotLldfAdjacentBox::GetShearDF_Ext_1_Strength()
+   // could no longer call that method to get the LLDF. This function is a copy of the old LldfTypeG::GetShearDF_Ext_1_Strength()
    // so the TxDOT interpretation does not change
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
@@ -1437,8 +1054,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
          if (g.ControllingMethod & SPEC_EQN)
          {
             // only apply e factor to equation method
-            bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-            Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+            bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+            Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
             Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
             Float64 K = (bSISpec ? 6100 : 20);
 
@@ -1452,7 +1069,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
          }
          else
          {
-            assert(0); // should always be using equation unless rules are screwed up.
+            CHECK(0); // should always be using equation unless rules are screwed up.
          }
       }
       else
@@ -1480,7 +1097,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::ExtGirder, NumLoadedLanes::One, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -1495,12 +1112,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetShearDF_Ext_1_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetShearDF_Ext_1_Strength() const
 {
    // always connected as unit (type f)
-   lrfdILiveLoadDistributionFactor::DFResult gext = GetBaseShearDF_Ext_1_Strength();
+   ILiveLoadDistributionFactor::DFResult gext = GetBaseShearDF_Ext_1_Strength();
 
-   lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeF::GetShearDF_Int_1_Strength();
+   ILiveLoadDistributionFactor::DFResult gint = LldfTypeF::GetShearDF_Int_1_Strength();
    if (gext.mg < gint.mg)
    {
       // exterior cannot exceed interior
@@ -1511,15 +1128,15 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetShearDF_E
    return gext;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShearDF_Ext_2_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetBaseShearDF_Ext_2_Strength() const
 {
-   // NOTE: WSDOT changed lrfdLldfTypeG::GetShearDF_Ext_2_Strength() to better match the common interpretation of AASHTO.
-   // This returned a different results than previous versions, as such lrfdTxdotLldfAdjacentBox::GetShearDF_Ext_2_Strength()
-   // could no longer call that method to get the LLDF. This function is a copy of the old lrfdLldfTypeG::GetShearDF_Ext_2_Strength()
+   // NOTE: WSDOT changed LldfTypeG::GetShearDF_Ext_2_Strength() to better match the common interpretation of AASHTO.
+   // This returned a different results than previous versions, as such TxdotLldfAdjacentBox::GetShearDF_Ext_2_Strength()
+   // could no longer call that method to get the LLDF. This function is a copy of the old LldfTypeG::GetShearDF_Ext_2_Strength()
    // so the TxDOT interpretation does not change
-   lrfdILiveLoadDistributionFactor::DFResult g;
+   ILiveLoadDistributionFactor::DFResult g;
    
-   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
@@ -1532,9 +1149,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
          if (g.ControllingMethod & SPEC_EQN)
          {
             // only use e factor for equation methods
-            bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+            bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
-            Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+            Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
             Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
 
             Float64 b  = WBFL::Units::ConvertFromSysUnits(m_b, bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Inch);
@@ -1568,7 +1185,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
          }
          else
          {
-            assert(0); // rules messed up?
+            CHECK(0); // rules messed up?
          }
       }
       else
@@ -1596,7 +1213,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
    {
       // default to lever rule
       g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes, true);
+      g.LeverRuleData = DistributeByLeverRuleEx(Location::ExtGirder, NumLoadedLanes::TwoOrMore, true);
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
@@ -1611,12 +1228,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShear
    return g;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetShearDF_Ext_2_Strength() const
+ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetShearDF_Ext_2_Strength() const
 {
    // always connected as unit (type f)
-   lrfdILiveLoadDistributionFactor::DFResult gext = GetBaseShearDF_Ext_2_Strength();
+   ILiveLoadDistributionFactor::DFResult gext = GetBaseShearDF_Ext_2_Strength();
 
-   lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeF::GetShearDF_Int_2_Strength();
+   ILiveLoadDistributionFactor::DFResult gint = LldfTypeF::GetShearDF_Int_2_Strength();
    if (gext.mg < gint.mg)
    {
       // exterior cannot exceed interior
@@ -1626,92 +1243,3 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetShearDF_E
 
    return gext;
 }
-
-void lrfdTxdotLldfAdjacentBox::MakeCopy(const lrfdTxdotLldfAdjacentBox& rOther)
-{
-   lrfdLldfTypeG::MakeCopy(rOther);
-}
-
-void lrfdTxdotLldfAdjacentBox::MakeAssignment(const lrfdTxdotLldfAdjacentBox& rOther)
-{
-   lrfdLldfTypeG::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdTxdotLldfAdjacentBox::AssertValid() const
-{
-   return lrfdLldfTypeG::AssertValid();
-}
-
-void lrfdTxdotLldfAdjacentBox::Dump(WBFL::Debug::LogContext& os) const
-{
-   lrfdLldfTypeG::Dump( os );
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool lrfdTxdotLldfAdjacentBox::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdTxdotLldfAdjacentBox");
-
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
-
-   Int16 Nb = 5;
-   Float64 S = WBFL::Units::ConvertToSysUnits( 4, WBFL::Units::Measure::Feet );
-   std::vector<Float64> spacings;
-   spacings.assign(Nb-1,S);
-   Float64 L = WBFL::Units::ConvertToSysUnits( 115., WBFL::Units::Measure::Feet );
-   Float64 W = S*Nb;
-   Float64 I = WBFL::Units::ConvertToSysUnits(559367.214,WBFL::Units::Measure::Inch4);
-   Float64 J = WBFL::Units::ConvertToSysUnits( 33064.695,WBFL::Units::Measure::Inch4);
-   Float64 wLane = WBFL::Units::ConvertToSysUnits( 12.0, WBFL::Units::Measure::Feet );
-   Int16 Nl = Int16((wLane*(Nb-1))/WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet) );
-   Float64 b = S;
-   Float64 de = WBFL::Units::ConvertToSysUnits( -10.5, WBFL::Units::Measure::Inch );
-   Float64 d = WBFL::Units::ConvertToSysUnits(18.0,WBFL::Units::Measure::Inch);
-
-   lrfdTxdotLldfAdjacentBox df(1,S,spacings,de,de,Nl,wLane,
-                               L,W,I,J,b,d,
-                               de,de,0.2,
-                               0.0,0.0);
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.3484, 0.001) );
-   
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.4869, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.5138, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.4869, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.5138, 0.001) );
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.4869, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.4869, 0.001) );
-
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.3484, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.4869, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.4869, 0.001) );
-
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
-
-   TESTME_EPILOG("lrfdTxdotLldfAdjacentBox");
-}
-#endif // _UNITTEST
-
-

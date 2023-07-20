@@ -163,7 +163,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayList(iDisplayList* pDL)
    InternalRelease();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayList(CollectionIndexType idx,iDisplayList** list)
+STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayList(IndexType idx,iDisplayList** list)
 {
    if ( idx < 0 || m_DisplayLists.size() <= idx )
       return; // Index is out of range
@@ -191,7 +191,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayList(IDType id,iDisplayList** li
    return;
 }
 
-STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayListCount()
+STDMETHODIMP_(IndexType) CDisplayMgrImpl::GetDisplayListCount()
 {
    return m_DisplayLists.size();
 }
@@ -360,8 +360,8 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SelectAll(BOOL bSelect)
    for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
    {
       CComPtr<iDisplayList> pDL = *iter;
-      CollectionIndexType nDO = pDL->GetDisplayObjectCount();
-      for ( CollectionIndexType i = 0; i < nDO; i++ )
+      IndexType nDO = pDL->GetDisplayObjectCount();
+      for ( IndexType i = 0; i < nDO; i++ )
       {
          CComPtr<iDisplayObject> pDO;
          pDL->GetDisplayObject(i,&pDO);
@@ -1100,8 +1100,8 @@ void FindToolTipDisplayObject(CPoint point,iDisplayObject* pDO,iDisplayObject** 
       CComQIPtr<iCompositeDisplayObject> compDO(pDO);
       if (compDO)
       {
-         CollectionIndexType nDO = compDO->GetDisplayObjectCount();
-         for (CollectionIndexType doIdx = 0; doIdx < nDO; doIdx++)
+         IndexType nDO = compDO->GetDisplayObjectCount();
+         for (IndexType doIdx = 0; doIdx < nDO; doIdx++)
          {
             CComPtr<iDisplayObject> pSubDO;
             compDO->GetDisplayObject(doIdx, atByIndex, &pSubDO);
@@ -1287,8 +1287,8 @@ STDMETHODIMP_(void) CDisplayMgrImpl::DrawDragObjects(const CPoint& dragStart, co
    CComPtr<iCoordinateMap> pMap;
    m_pView->GetCoordinateMap(&pMap);
 
-   CollectionIndexType count = m_DragList.size();
-   for ( CollectionIndexType i = 0; i < count; i++ )
+   IndexType count = m_DragList.size();
+   for ( IndexType i = 0; i < count; i++ )
    {
       CComPtr<iDisplayObject> pDO;
       m_DragList[i].m_T->DrawDragImage(&dc, pMap, dragStart, dragPoint);
@@ -1409,7 +1409,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(CRect rect,DisplayObject
    dispObjs->erase(std::unique(dispObjs->begin(), dispObjs->end()), dispObjs->end());
 }
 
-STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayObjectCount()
+STDMETHODIMP_(IndexType) CDisplayMgrImpl::GetDisplayObjectCount()
 {
    SIZE_T count = 0;
    DisplayListContainer::iterator iter;
@@ -1421,7 +1421,7 @@ STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayObjectCount()
    return count;
 }
 
-STDMETHODIMP_(CollectionIndexType) CDisplayMgrImpl::GetDisplayObjectFactoryCount()
+STDMETHODIMP_(IndexType) CDisplayMgrImpl::GetDisplayObjectFactoryCount()
 {
    return m_pDisplayObjectFactories.size();
 }
@@ -1431,7 +1431,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayObjectFactory(iDisplayObjectFacto
    m_pDisplayObjectFactories.emplace_back(factory);
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayObjectFactory(CollectionIndexType idx, iDisplayObjectFactory** factory)
+STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayObjectFactory(IndexType idx, iDisplayObjectFactory** factory)
 {
    if (idx>=0 && idx<GetDisplayObjectFactoryCount())
    {
@@ -1485,8 +1485,8 @@ void CDisplayMgrImpl::GetBoundingBox(bool boundOrigin, IRect2d** pRect)
    bool bHasDO = false;
    for ( auto& pDL : m_DisplayLists )
    {
-      CollectionIndexType nDisplayObjects = pDL->GetDisplayObjectCount();
-      for ( CollectionIndexType i = 0; i < nDisplayObjects; i++ )
+      IndexType nDisplayObjects = pDL->GetDisplayObjectCount();
+      for ( IndexType i = 0; i < nDisplayObjects; i++ )
       {
          bHasDO = true;
 
@@ -1540,8 +1540,8 @@ std::vector<CComPtr<iDisplayObject> > CDisplayMgrImpl::FindAllDisplayObjects(CPo
       CComPtr<iDisplayList> pDL = *iter;
 
       CComPtr<iDisplayObject> dispObj;
-      CollectionIndexType doCount = pDL->GetDisplayObjectCount();
-      for ( CollectionIndexType i = 0; i < doCount; i++ )
+      IndexType doCount = pDL->GetDisplayObjectCount();
+      for ( IndexType i = 0; i < doCount; i++ )
       {
          dispObj.Release();
          pDL->GetDisplayObject(i,&dispObj);
@@ -1563,8 +1563,8 @@ std::vector<CComPtr<iDisplayObject> > CDisplayMgrImpl::FindAllSelectableDisplayO
       CComPtr<iDisplayList> pDL = *iter;
 
       CComPtr<iDisplayObject> dispObj;
-      CollectionIndexType doCount = pDL->GetDisplayObjectCount();
-      for ( CollectionIndexType i = 0; i < doCount; i++ )
+      IndexType doCount = pDL->GetDisplayObjectCount();
+      for ( IndexType i = 0; i < doCount; i++ )
       {
          dispObj.Release();
          pDL->GetDisplayObject(i,&dispObj);

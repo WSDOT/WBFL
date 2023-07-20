@@ -195,9 +195,9 @@ HRESULT CopyPoints(IPoint2dCollection* pTo,IPoint2dCollection* pFrom)
 
    pTo->Clear();
 
-   CollectionIndexType cPoint;
+   IndexType cPoint;
    pFrom->get_Count(&cPoint);
-   for ( CollectionIndexType idx = 0; idx < cPoint; idx++ )
+   for ( IndexType idx = 0; idx < cPoint; idx++ )
    {
       CComPtr<IPoint2d> pPoint;
       pFrom->get_Item(idx,&pPoint);

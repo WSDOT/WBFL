@@ -231,7 +231,7 @@ void Girder::GetSectionProperties(IndexType sectIdx,Section section,Float64* pAg
 
 void Girder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
 {
-   ATLASSERT(m_vSectionProperties.size() != 0);
+   CHECK(m_vSectionProperties.size() != 0);
 
    if ( m_vSectionProperties.size() == 1 )
    {
@@ -268,7 +268,7 @@ void Girder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* 
       Xstart = Xend;
    }
 
-   ATLASSERT(false); // should never get here.... is X out of range?
+   CHECK(false); // should never get here.... is X out of range?
 }
 
 void Girder::GetStressPoints(IndexType sectIdx, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const
@@ -307,7 +307,7 @@ void Girder::GetStressPoints(Float64 X, Point* pTL, Point* pTR, Point* pBL, Poin
       }
       Xstart = Xend;
    }
-   ATLASSERT(false); // should never get here... is X out of range?
+   CHECK(false); // should never get here... is X out of range?
 }
 
 void Girder::SetAdditionalLoads(const std::vector<std::pair<Float64,Float64>>& vLoads)
@@ -557,11 +557,11 @@ bool StabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Floa
    if (idx == INVALID_INDEX)
    {
       // strName is not in the container
-      ATLASSERT(false);
+      CHECK(false);
       return false;
    }
 
-   ATLASSERT(fpeIdx < m_vFpe[idx].second.size());
+   CHECK(fpeIdx < m_vFpe[idx].second.size());
 
    auto iter(m_vFpe[idx].second.begin());
    for ( IndexType i = 0; i < fpeIdx; i++)
@@ -587,7 +587,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Fl
    if (idx == INVALID_INDEX)
    {
       // strName is not in the container
-      ATLASSERT(false);
+      CHECK(false);
       *pX = 0;
       *pFpe = 0;
       *pXps = 0;
@@ -595,7 +595,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Fl
       return false;
    }
 
-   ATLASSERT(fpeIdx < m_vFpe[idx].second.size());
+   CHECK(fpeIdx < m_vFpe[idx].second.size());
 
    auto iter(m_vFpe[idx].second.begin());
    for (IndexType i = 0; i < fpeIdx; i++)
@@ -730,7 +730,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64
    if (idx == INVALID_INDEX)
    {
       // strName is not in the container
-      ATLASSERT(false);
+      CHECK(false);
       *pFpe = 0;
       *pXps = 0;
       *pYps = 0;
@@ -780,7 +780,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64
    }
 
    // somewhere in the middle
-   ATLASSERT(2 <= m_vFpe[idx].second.size());
+   CHECK(2 <= m_vFpe[idx].second.size());
    std::set<Fpe>::const_iterator iter1(m_vFpe[idx].second.begin());
    std::set<Fpe>::const_iterator iter2(iter1);
    iter2++;
@@ -813,7 +813,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64
       }
    }
 
-   ATLASSERT(false); // should never get here
+   CHECK(false); // should never get here
    return false;
 }
 

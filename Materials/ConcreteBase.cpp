@@ -323,6 +323,7 @@ void ConcreteBase::InitializeCreepDetails(Float64 t,Float64 tla,ConcreteBaseCree
 {
    pDetails->age = GetAge(t);
    pDetails->age_at_loading = GetAge(tla);
+   pDetails->fci = GetFc(tla);
 }
 
 Float64 ConcreteBase::GetAge(Float64 t) const

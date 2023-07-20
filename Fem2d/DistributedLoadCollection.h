@@ -75,7 +75,7 @@ END_COM_MAP()
 // IFem2dDistributedLoadCollection
 public:
 	STDMETHOD(Create)(/*[in]*/LoadIDType ID, /*[in]*/MemberIDType memberID, /*[in]*/Fem2dLoadDirection direction, /*[in]*/Float64 startLocation,/*[in]*/Float64 endLocation, /*[in]*/Float64 Wstart, /*[in]*/Float64 Wend, /*[in,optional,defaultvalue(lotMember)]*/ Fem2dLoadOrientation orientation, /*[out, retval]*/ IFem2dDistributedLoad** pVal) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid) override;
 	STDMETHOD(Clear)() override;
 };
 

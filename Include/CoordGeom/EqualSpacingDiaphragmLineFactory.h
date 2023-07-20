@@ -85,20 +85,14 @@ namespace WBFL
 
          virtual std::vector<std::shared_ptr<DiaphragmLine>> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const override;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          IDType m_ID = INVALID_ID;
          IDType m_IDIncrement = 1;
          IDType m_AlignmentID = INVALID_ID;
-         Station m_StartStation, m_EndStation;
-         Uint16 m_Divisor = 2;
-         bool m_bIsStaggered;
-         std::array<IDType, 2> m_GirderLineID;
+         Station m_StartStation{ 0.0 }, m_EndStation{ 0.0 };
+         Uint16 m_Divisor = 0;
+         bool m_bIsStaggered = false;
+         std::array<IDType, 2> m_GirderLineID{INVALID_ID, INVALID_ID};
       };
    };
 };

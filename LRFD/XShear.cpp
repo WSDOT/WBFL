@@ -25,49 +25,25 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\XShear.h>
 
-/****************************************************************************
-CLASS
-   lrfdXShear
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXShear::lrfdXShear(Reason reason,
-                       LPCTSTR file,
-                       Int16 line) :
+XShear::XShear(Reason reason, LPCTSTR file, Uint32 line) :
    WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-//======================== OPERATIONS =======================================
-void lrfdXShear::Throw() const
+void XShear::Throw() const
 {
-   throw *static_cast<const lrfdXShear*>(this);
+   throw *static_cast<const XShear*>(this);
 }
 
-Int32 lrfdXShear::GetReason() const noexcept
+Int32 XShear::GetReason() const noexcept
+{
+   return (Int32)m_Reason;
+}
+
+XShear::Reason XShear::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-lrfdXShear::Reason lrfdXShear::GetReasonCode() const noexcept
-{
-   return m_Reason;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdXShear::AssertValid() const
-{
-   return true;
-}
-
-void lrfdXShear::Dump(WBFL::Debug::LogContext& os) const
-{
-}
-#endif // _DEBUG

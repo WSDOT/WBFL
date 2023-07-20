@@ -43,7 +43,7 @@ namespace WBFL
 
          IGeneralSection& operator=(const IGeneralSection& other) = delete; // can't assign
 
-         /// Number of shapes in the cross setion
+         /// Number of shapes in the cross section
          virtual IndexType GetShapeCount() const = 0;
 
          /// Index of the primary shape. 
@@ -51,7 +51,7 @@ namespace WBFL
          virtual IndexType GetPrimaryShapeIndex() const = 0;
 
          /// The shape of an element of the cross section
-         virtual const std::unique_ptr<WBFL::Geometry::Shape>& GetShape(IndexType shapeIdx) const = 0;
+         virtual const WBFL::Geometry::Shape& GetShape(IndexType shapeIdx) const = 0;
 
          /// The foreground material.
          ///
@@ -60,7 +60,7 @@ namespace WBFL
 
          /// The background material.
          ///
-         /// This material provides the stress-strain model for voids in elements of the cross section such as holes or "negative" areas in a soild area representing holes where reinforcement is located.
+         /// This material provides the stress-strain model for voids in elements of the cross section such as holes or "negative" areas in a solid area representing holes where reinforcement is located.
          virtual const std::shared_ptr<const WBFL::Materials::StressStrainModel>& GetBackgroundMaterial(IndexType shapeIdx) const = 0;
 
          /// Initial state of strain of a shape
@@ -80,35 +80,35 @@ namespace WBFL
          
          GeneralSection& operator=(const GeneralSection& other) = delete; // can't assign
 
-         /// Adds a shape, it's constituative models, and initial strain state to the section model
+         /// Adds a shape, it's constitutive models, and initial strain state to the section model
          ///
          /// A linear variation of the initial strain is assumed over the depth of the shape.
          /// Incremental strains due to imposed section curvature are divided by Le to get the net strain.
          void AddShape(
             LPCTSTR name, ///< Name that identifies the shape (eg Deck, Girder, Rebar, etc)
             std::unique_ptr<WBFL::Geometry::Shape>&& shape, ///< The shape of a component of the cross section
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,   ///< The foreground material constituative model
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial, ///< The background material constituative model
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,   ///< The foreground material constitutive model
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial, ///< The background material constitutive model
             const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain, ///< Initial strain. This parameter can be set to Nothing (nullptr) if there is not initial strains
             Float64 Le,///< Strain elongation length (typically 1.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
             bool bIsPrimaryShape = false  ///< Indicates if this is the primary shape of the section. Initial strains of the primary shape are combined with the incremental solution strains to form the solution strain plane. The last shape to be designated as the primary shape will be considered the one and only primary shape
          );
 
-         /// Adds a shape, it's constituative models, and initial strain state to the section model
+         /// Adds a shape, it's constitutive models, and initial strain state to the section model
          ///
          /// A linear variation of the initial strain is assumed over the depth of the shape.
          /// Incremental strains due to imposed section curvature are divided by Le to get the net strain.
          void AddShape(
             LPCTSTR name, ///< Name that identifies the shape (eg Deck, Girder, Rebar, etc)
             const WBFL::Geometry::Shape& shape, ///< The shape of a component of the cross section. This shape is cloned
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,   ///< The foreground material constituative model
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial, ///< The background material constituative model
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,   ///< The foreground material constitutive model
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial, ///< The background material constitutive model
             const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain, ///< Initial strain. This parameter can be set to Nothing (nullptr) if there is not initial strains
             Float64 Le,///< Strain elongation length (typically 1.0 for strain compatibility with other materials in the section, but a finite length for unbonded elements such as post-tensioning tendons)
             bool bIsPrimaryShape = false  ///< Indicates if this is the primary shape of the section. Initial strains of the primary shape are combined with the incremental solution strains to form the solution strain plane. The last shape to be designated as the primary shape will be considered the one and only primary shape
          );
 
-         /// Number of shapes in the cross setion
+         /// Number of shapes in the cross section
          virtual IndexType GetShapeCount() const override;
 
          /// Index of the primary shape
@@ -121,8 +121,8 @@ namespace WBFL
          const std::_tstring& GetName(IndexType shapeIdx) const;
 
          /// The shape of an element of the cross section
-         void SetShape(IndexType shapeIdx, std::unique_ptr < WBFL::Geometry::Shape>&& shape);
-         virtual const std::unique_ptr<WBFL::Geometry::Shape>& GetShape(IndexType shapeIdx) const override;
+         void SetShape(IndexType shapeIdx, std::unique_ptr<WBFL::Geometry::Shape>&& shape);
+         virtual const WBFL::Geometry::Shape& GetShape(IndexType shapeIdx) const override;
 
          /// The foreground material.
          ///
@@ -132,7 +132,7 @@ namespace WBFL
 
          /// The background material.
          ///
-         /// This material provides the stress-strain model for voids in elements of the cross section such as holes or "negative" areas in a soild area representing holes where reinforcement is located.
+         /// This material provides the stress-strain model for voids in elements of the cross section such as holes or "negative" areas in a solid area representing holes where reinforcement is located.
          void SetBackgroundMaterial(IndexType shapeIdx,const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial);
          virtual const std::shared_ptr<const WBFL::Materials::StressStrainModel>& GetBackgroundMaterial(IndexType shapeIdx) const override;
 
@@ -146,11 +146,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<GeneralSectionImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

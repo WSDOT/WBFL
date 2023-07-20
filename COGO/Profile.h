@@ -81,8 +81,8 @@ public:
    STDMETHOD(put_Alignment)(/*[in]*/IAlignment* ppAlignment) override;
    STDMETHOD(get_Alignment)(/*[out,retval]*/IAlignment** ppAlignment) override;
    STDMETHOD(AddProfileElement)(/*[in]*/ IProfileElement* element) override;
-   STDMETHOD(get_ProfileElementCount)(/*[out, retval]*/ CollectionIndexType* pVal) override;
-   STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IProfileElement** pVal) override;
+   STDMETHOD(get_ProfileElementCount)(/*[out, retval]*/ IndexType* pVal) override;
+   STDMETHOD(get_Item)(/*[in]*/ IndexType idx,/*[out, retval]*/ IProfileElement** pVal) override;
    STDMETHOD(ClearProfileElements)() override;
    STDMETHOD(AddSurface)(IDType id, ISurface* pSurface) override;
    STDMETHOD(GetSurface)(IDType id, ISurface** ppSurface) override;
@@ -95,7 +95,7 @@ public:
    STDMETHOD(CrossSlope)(/*[in]*/IDType surfaceID,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope) override;
 
    //STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone) override;
-   STDMETHOD(SurfaceTemplateSegmentSlope)(/*[in]*/IDType id,/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope) override;
+   STDMETHOD(SurfaceTemplateSegmentSlope)(/*[in]*/IDType id,/*[in]*/VARIANT varStation,/*[in]*/IndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope) override;
    //STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval) override;
    //STDMETHOD(get_Surfaces)(/*[out,retval]*/ISurfaceCollection** ppSurfaces) override;
    //STDMETHOD(putref_Surfaces)(/*[in]*/ISurfaceCollection* pSurfaces) override;

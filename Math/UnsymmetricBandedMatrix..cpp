@@ -31,50 +31,32 @@ using namespace WBFL::Math;
 UnsymmetricBandedMatrix::UnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage) :
    N(N), BW(BW), storage(storage)
 {
-   ba = nullptr;
-   b = nullptr;
    Initialize(N, BW);
-}
-
-UnsymmetricBandedMatrix::UnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage, Float64** ba, Float64* b) :
-   N(N), BW(BW), storage(storage), ba(ba), b(b)
-{
-   half_band_width = BW / 2;
-}
-
-UnsymmetricBandedMatrix::~UnsymmetricBandedMatrix()
-{
-   Clear();
 }
 
 void UnsymmetricBandedMatrix::Initialize(IndexType n, IndexType bw)
 {
-   Clear();
+   b.clear();
+   ba.clear();
+
    N = n;
    BW = bw;
    half_band_width = BW / 2;
 
    if (storage == Storage::Column)
    {
-      ba = new Float64 * [N];
-      for (IndexType i = 0; i < N; i++)
-      {
-         ba[i] = new Float64[BW];
-         memset((void*)ba[i], 0, BW * sizeof(Float64));
-      }
+      std::vector<Float64> z;
+      z.resize(BW, 0.0);
+      ba.resize(N, z);
    }
    else
    {
-      ba = new Float64 * [BW];
-      for (IndexType i = 0; i < BW; i++)
-      {
-         ba[i] = new Float64[N];
-         memset((void*)ba[i], 0, N * sizeof(Float64));
-      }
+      std::vector<Float64> z;
+      z.resize(N, 0.0);
+      ba.resize(BW, z);
    }
 
-   b = new Float64[N];
-   memset((void*)b, 0, N * sizeof(Float64));
+   b.resize(N, 0.0);
 }
 
 IndexType UnsymmetricBandedMatrix::GetSize() const
@@ -94,26 +76,27 @@ void UnsymmetricBandedMatrix::SetCoefficient(IndexType i, IndexType j, Float64 a
    ba[m][n] = aij;
 }
 
-Float64 UnsymmetricBandedMatrix::GetCoefficient(IndexType i, IndexType j)
+Float64 UnsymmetricBandedMatrix::GetCoefficient(IndexType i, IndexType j) const
 {
    IndexType m, n;
    Full2Condensed(i, j, half_band_width, m, n);
-   return ba[m][n];
+   return (BW <= n ? 0 : ba[m][n]);
 }
 
-void UnsymmetricBandedMatrix::SetB(IndexType i, Float64 bi)
+void UnsymmetricBandedMatrix::SetC(IndexType i, Float64 bi)
 {
    b[i] = bi;
 }
 
-Float64 UnsymmetricBandedMatrix::GetB(IndexType i) const
+Float64 UnsymmetricBandedMatrix::GetC(IndexType i) const
 {
    return b[i];
 }
 
-std::unique_ptr<Float64[]> UnsymmetricBandedMatrix::Solve()
+std::vector<Float64> UnsymmetricBandedMatrix::Solve()
 {
-   std::unique_ptr<Float64[]> x = std::make_unique<Float64[]>(N);
+   std::vector<Float64> x;
+   x.resize(N, 0.0);
 
    // Gaussian elimination phase
    for (IndexType j = 0; j < N; j++)
@@ -153,7 +136,7 @@ std::unique_ptr<Float64[]> UnsymmetricBandedMatrix::Solve()
       }
    }
 
-   // Backsubstitution phase
+   // Back substitution phase
    IndexType m, n;
    Full2Condensed(N - 1, N - 1, half_band_width, m, n);
    Float64 Ann = ba[m][n];
@@ -203,46 +186,14 @@ void UnsymmetricBandedMatrix::ReduceRow(Float64 c, IndexType i, IndexType j, Ind
    }
 }
 
-Float64& UnsymmetricBandedMatrix::operator()(IndexType i, IndexType j)
+Float64 UnsymmetricBandedMatrix::operator()(IndexType i, IndexType j) const
 {
-   IndexType m, n;
-   Full2Condensed(i, j, half_band_width, m, n);
-   return ba[m][n];
+   return GetCoefficient(i, j);
 }
 
-Float64& UnsymmetricBandedMatrix::operator[](IndexType i)
+Float64 UnsymmetricBandedMatrix::operator[](IndexType i) const
 {
-   return b[i];
-}
-
-void UnsymmetricBandedMatrix::Clear()
-{
-   if (b)
-   {
-      delete[] b;
-      b = nullptr;
-   }
-
-   if (ba)
-   {
-      if (storage == Storage::Column)
-      {
-         for (IndexType i = 0; i < N; i++)
-         {
-            delete[] ba[i];
-         }
-      }
-      else
-      {
-         for (IndexType i = 0; i < BW; i++)
-         {
-            delete[] ba[i];
-         }
-      }
-
-      delete[] ba;
-      ba = nullptr;
-   }
+   return GetC(i);
 }
 
 void UnsymmetricBandedMatrix::Dump(std::ostream& os, bool bFull) const
@@ -278,7 +229,7 @@ void UnsymmetricBandedMatrix::DumpFull(std::ostream& os) const
       {
          IndexType m, n;
          Full2Condensed(i, j, half_band_width, m, n);
-         Float64 value = (BW < n ? 0 : ba[m][n]);
+         Float64 value = GetCoefficient(i, j); // (BW < n ? 0 : ba[m][n]);
          os << value << " ";
       }
       os << "]" << std::endl;

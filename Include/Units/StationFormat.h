@@ -60,16 +60,6 @@ namespace WBFL
          void SetUnitOfMeasure(UnitOfMeasure unitOfMeasure);
          UnitOfMeasure GetUnitOfMeasure() const;
 
-      #if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
       private:
          UnitOfMeasure m_UnitOfMeasure{ UnitOfMeasure::Meter };
       };
@@ -80,7 +70,7 @@ namespace WBFL
       {
       public:
          StationFormats() = delete;
-         ~StationFormats();
+         ~StationFormats() = delete;
 
          static const StationFormat SI;
          static const StationFormat US;

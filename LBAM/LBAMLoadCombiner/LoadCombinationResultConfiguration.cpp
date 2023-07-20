@@ -49,7 +49,7 @@ STDMETHODIMP CLoadCombinationResultConfiguration::InterfaceSupportsErrorInfo(REF
 	return S_FALSE;
 }
 
-STDMETHODIMP CLoadCombinationResultConfiguration::get_LoadCaseFactorCount(CollectionIndexType *pVal)
+STDMETHODIMP CLoadCombinationResultConfiguration::get_LoadCaseFactorCount(IndexType *pVal)
 {
 	CHECK_RETVAL(pVal);
 
@@ -58,12 +58,12 @@ STDMETHODIMP CLoadCombinationResultConfiguration::get_LoadCaseFactorCount(Collec
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResultConfiguration::GetLoadCaseFactor(CollectionIndexType index, BSTR *loadCase, Float64 *factor)
+STDMETHODIMP CLoadCombinationResultConfiguration::GetLoadCaseFactor(IndexType index, BSTR *loadCase, Float64 *factor)
 {
    CHECK_RETSTRING(loadCase);
    CHECK_RETVAL(factor);
 
-	if (index < 0 || (CollectionIndexType)m_LoadCaseFactors.size() <= index)
+	if (index < 0 || (IndexType)m_LoadCaseFactors.size() <= index)
       return E_INVALIDARG;
 
    LoadCaseFactor& rcf = m_LoadCaseFactors[index];
@@ -107,9 +107,9 @@ STDMETHODIMP CLoadCombinationResultConfiguration::AddLiveLoadConfiguration(ILive
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResultConfiguration::GetLiveLoadConfiguration(CollectionIndexType index,ILiveLoadConfiguration **Config)
+STDMETHODIMP CLoadCombinationResultConfiguration::GetLiveLoadConfiguration(IndexType index,ILiveLoadConfiguration **Config)
 {
-   if ( index < 0 || (CollectionIndexType)m_LLConfig.size() <= index )
+   if ( index < 0 || (IndexType)m_LLConfig.size() <= index )
       return E_INVALIDARG;
 
 	CHECK_RETOBJ(Config);
@@ -117,7 +117,7 @@ STDMETHODIMP CLoadCombinationResultConfiguration::GetLiveLoadConfiguration(Colle
    return m_LLConfig[index].CopyTo(Config);
 }
 
-STDMETHODIMP CLoadCombinationResultConfiguration::GetLiveLoadConfigurationCount(CollectionIndexType* count)
+STDMETHODIMP CLoadCombinationResultConfiguration::GetLiveLoadConfigurationCount(IndexType* count)
 {
    CHECK_RETVAL(count);
    *count = m_LLConfig.size();

@@ -27,50 +27,13 @@
 #include <Lrfd\VersionMgr.h>
 #include <System\XProgrammingError.h>
 #include <array>
- 
-static const Float64 g_p7_MPA    = WBFL::Units::ConvertToSysUnits(0.7,WBFL::Units::Measure::MPa);
-static const Float64 g_p52_MPA   = WBFL::Units::ConvertToSysUnits(0.52,WBFL::Units::Measure::MPa);
-static const Float64 g_1p9_MPA   = WBFL::Units::ConvertToSysUnits(1.9,WBFL::Units::Measure::MPa);
-static const Float64 g_5p5_MPA   = WBFL::Units::ConvertToSysUnits(5.5,WBFL::Units::Measure::MPa);
-static const Float64 g_9p0_MPA   = WBFL::Units::ConvertToSysUnits(9.0,WBFL::Units::Measure::MPa);
-static const Float64 g_12p4_MPA  = WBFL::Units::ConvertToSysUnits(12.4,WBFL::Units::Measure::MPa);
-static const Float64 g_14p0_MPA  = WBFL::Units::ConvertToSysUnits(14.0,WBFL::Units::Measure::MPa);
 
-static const Float64 g_p1_KSI    = WBFL::Units::ConvertToSysUnits(0.100,WBFL::Units::Measure::KSI);
-static const Float64 g_p2_KSI = WBFL::Units::ConvertToSysUnits(0.200, WBFL::Units::Measure::KSI);
-static const Float64 g_p5_KSI = WBFL::Units::ConvertToSysUnits(0.500, WBFL::Units::Measure::KSI);
-static const Float64 g_p210_KSI  = WBFL::Units::ConvertToSysUnits(0.210,WBFL::Units::Measure::KSI);
-static const Float64 g_p240_KSI = WBFL::Units::ConvertToSysUnits(0.240, WBFL::Units::Measure::KSI);
-static const Float64 g_p280_KSI  = WBFL::Units::ConvertToSysUnits(0.280,WBFL::Units::Measure::KSI);
-static const Float64 g_p025_KSI = WBFL::Units::ConvertToSysUnits(0.025, WBFL::Units::Measure::KSI);
-static const Float64 g_p075_KSI = WBFL::Units::ConvertToSysUnits(0.075, WBFL::Units::Measure::KSI);
-static const Float64 g_p8_KSI    = WBFL::Units::ConvertToSysUnits(0.8,WBFL::Units::Measure::KSI);
-static const Float64 g_1p3_KSI = WBFL::Units::ConvertToSysUnits(1.3, WBFL::Units::Measure::KSI);
-static const Float64 g_1p5_KSI = WBFL::Units::ConvertToSysUnits(1.5, WBFL::Units::Measure::KSI);
-static const Float64 g_1p8_KSI   = WBFL::Units::ConvertToSysUnits(1.8,WBFL::Units::Measure::KSI);
-static const Float64 g_3p6_KSI = WBFL::Units::ConvertToSysUnits(3.6, WBFL::Units::Measure::KSI);
-static const Float64 g_60_KSI    = WBFL::Units::ConvertToSysUnits(60.0,WBFL::Units::Measure::KSI);
+using namespace WBFL::LRFD;
 
-static const Float64 g_0p6_M = WBFL::Units::ConvertToSysUnits(0.6, WBFL::Units::Measure::Meter);
-static const Float64 g_0p9_M = WBFL::Units::ConvertToSysUnits(0.9, WBFL::Units::Measure::Meter);
-
-static const Float64 g_48_IN = WBFL::Units::ConvertToSysUnits(48.0, WBFL::Units::Measure::Inch);
-static const Float64 g_36_IN = WBFL::Units::ConvertToSysUnits(36.0, WBFL::Units::Measure::Inch);
-static const Float64 g_24_IN = WBFL::Units::ConvertToSysUnits(24.0, WBFL::Units::Measure::Inch);
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdConcreteUtil::~lrfdConcreteUtil()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-Float64 lrfdConcreteUtil::GetNWCDensityLimit()
+Float64 ConcreteUtil::GetNWCDensityLimit()
 {
    Float64 limit;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::US )
    {
       limit = WBFL::Units::ConvertToSysUnits(135.0,WBFL::Units::Measure::LbfPerFeet3);
    }
@@ -82,12 +45,12 @@ Float64 lrfdConcreteUtil::GetNWCDensityLimit()
    return limit;
 }
 
-Float64 lrfdConcreteUtil::GetLWCDensityLimit()
+Float64 ConcreteUtil::GetLWCDensityLimit()
 {
    Float64 limit;
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims )
+   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2016Interims )
    {
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::US )
       {
          limit = WBFL::Units::ConvertToSysUnits(120.0,WBFL::Units::Measure::LbfPerFeet3);
       }
@@ -98,13 +61,13 @@ Float64 lrfdConcreteUtil::GetLWCDensityLimit()
    }
    else
    {
-      limit = lrfdConcreteUtil::GetNWCDensityLimit();
+      limit = ConcreteUtil::GetNWCDensityLimit();
    }
 
    return limit;
 }
 
-void lrfdConcreteUtil::GetPCIUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax)
+void ConcreteUtil::GetPCIUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax)
 {
    // See "Compression Response of a Rapid-Strengthening Ultra-High Performance Concrete Formulation"
    // FHWA Publication FHWA-HRT-12-964
@@ -117,7 +80,7 @@ void lrfdConcreteUtil::GetPCIUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax)
    *pFcMax = WBFL::Units::ConvertToSysUnits(99999.0, WBFL::Units::Measure::KSI);
 }
 
-void lrfdConcreteUtil::GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, Float64* pfpeak, Float64* pfrr)
+void ConcreteUtil::GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, Float64* pfpeak, Float64* pfrr)
 {
    Float64 fcMax;
    GetPCIUHPCStrengthRange(pfcMin, &fcMax);
@@ -126,7 +89,7 @@ void lrfdConcreteUtil::GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, F
    *pfrr = WBFL::Units::ConvertToSysUnits(0.75, WBFL::Units::Measure::KSI);
 }
 
-Float64 lrfdConcreteUtil::ModE(WBFL::Materials::ConcreteType type,Float64 fc,Float64 density,bool bCheckRange)
+Float64 ConcreteUtil::ModE(WBFL::Materials::ConcreteType type,Float64 fc,Float64 density,bool bCheckRange)
 {
    Float64 e;  // modulus of elasticity in System Units
    if (type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::UHPC)
@@ -149,7 +112,7 @@ Float64 lrfdConcreteUtil::ModE(WBFL::Materials::ConcreteType type,Float64 fc,Flo
       const WBFL::Units::Density* p_density_unit;
       const WBFL::Units::Stress*  p_E_unit;
 
-      if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI)
+      if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
       {
          p_fc_unit = &WBFL::Units::Measure::MPa;
          p_density_unit = &WBFL::Units::Measure::KgPerMeter3;
@@ -167,7 +130,7 @@ Float64 lrfdConcreteUtil::ModE(WBFL::Materials::ConcreteType type,Float64 fc,Flo
          p_density_unit = &WBFL::Units::Measure::KipPerFeet3;
          p_E_unit = &WBFL::Units::Measure::KSI;
 
-         if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
+         if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims)
          {
             k = 33000.;
          }
@@ -188,15 +151,13 @@ Float64 lrfdConcreteUtil::ModE(WBFL::Materials::ConcreteType type,Float64 fc,Flo
       // Make sure the density range hasn't been violated.
       if (bCheckRange)
       {
-         min_density = WBFL::Units::ConvertToSysUnits(min_density, *p_density_unit);
-         max_density = WBFL::Units::ConvertToSysUnits(max_density, *p_density_unit);
-         if (!InRange(min_density, density, max_density))
+         if (!InRange(min_density, Density, max_density))
          {
             THROW(WBFL::System::XProgrammingError, ValueOutOfRange);
          }
       }
 
-      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
+      if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims)
       {
          E = k * pow(Density, 1.5) * sqrt(Fc);
       }
@@ -212,7 +173,7 @@ Float64 lrfdConcreteUtil::ModE(WBFL::Materials::ConcreteType type,Float64 fc,Flo
    return e;
 }
 
-Float64 lrfdConcreteUtil::FcFromEc(WBFL::Materials::ConcreteType type, Float64 ec,Float64 density)
+Float64 ConcreteUtil::FcFromEc(WBFL::Materials::ConcreteType type, Float64 ec,Float64 density)
 {
    Float64 fc;          // fc in system units
 
@@ -234,7 +195,7 @@ Float64 lrfdConcreteUtil::FcFromEc(WBFL::Materials::ConcreteType type, Float64 e
       const WBFL::Units::Density* p_density_unit;
       const WBFL::Units::Stress*  p_E_unit;
 
-      if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI)
+      if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
       {
          p_fc_unit = &WBFL::Units::Measure::MPa;
          p_density_unit = &WBFL::Units::Measure::KgPerMeter3;
@@ -249,7 +210,7 @@ Float64 lrfdConcreteUtil::FcFromEc(WBFL::Materials::ConcreteType type, Float64 e
          p_density_unit = &WBFL::Units::Measure::KipPerFeet3;
          p_E_unit = &WBFL::Units::Measure::KSI;
 
-         if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
+         if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims)
          {
             k = 33000.;
          }
@@ -263,7 +224,7 @@ Float64 lrfdConcreteUtil::FcFromEc(WBFL::Materials::ConcreteType type, Float64 e
       Ec = WBFL::Units::ConvertFromSysUnits(ec, *p_E_unit);
       Density = WBFL::Units::ConvertFromSysUnits(density, *p_density_unit);
 
-      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims)
+      if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims)
       {
          Fc = pow(Ec / (k*pow(Density, 1.5)), 2);
       }
@@ -279,23 +240,23 @@ Float64 lrfdConcreteUtil::FcFromEc(WBFL::Materials::ConcreteType type, Float64 e
    return fc;
 }
 
-Float64 lrfdConcreteUtil::ModRupture(Float64 fc, Float64 k)
+Float64 ConcreteUtil::ModRupture(Float64 fc, Float64 k)
 {
-   return lrfdConcreteUtil::ModRupture(fc, WBFL::Materials::ConcreteType::Normal,k);
+   return ConcreteUtil::ModRupture(fc, WBFL::Materials::ConcreteType::Normal,k);
 }
 
-Float64 lrfdConcreteUtil::ModRupture(Float64 fc, WBFL::Materials::ConcreteType concType)
+Float64 ConcreteUtil::ModRupture(Float64 fc, WBFL::Materials::ConcreteType concType)
 {
-   return lrfdConcreteUtil::ModRupture(fc,concType,-1);
+   return ConcreteUtil::ModRupture(fc,concType,-1);
 }
 
-Float64 lrfdConcreteUtil::ModRupture(Float64 fc, WBFL::Materials::ConcreteType concType,Float64 k)
+Float64 ConcreteUtil::ModRupture(Float64 fc, WBFL::Materials::ConcreteType concType,Float64 k)
 {
    const WBFL::Units::Stress* p_fc_unit;
    const WBFL::Units::Stress* p_fr_unit;
    const WBFL::Units::SqrtPressure* p_coefficient_unit;
 
-   bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+   bool is_si = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
 
    if ( is_si )
    {
@@ -311,7 +272,7 @@ Float64 lrfdConcreteUtil::ModRupture(Float64 fc, WBFL::Materials::ConcreteType c
    }
       
 
-   bool bAfter2004 = (lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion());
+   bool bAfter2004 = (LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion());
    if ( k <= 0 )
    {
       switch( concType )
@@ -355,13 +316,13 @@ Float64 lrfdConcreteUtil::ModRupture(Float64 fc, WBFL::Materials::ConcreteType c
    return fr;
 }
 
-Float64 lrfdConcreteUtil::Beta1(Float64 fc)
+Float64 ConcreteUtil::Beta1(Float64 fc)
 {
    const WBFL::Units::Stress* p_fc_unit;
    Float64 fc_limit;
    Float64 fc_step;
 
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
       p_fc_unit = &WBFL::Units::Measure::MPa;
       fc_limit = 28.; // MPa
@@ -391,25 +352,25 @@ Float64 lrfdConcreteUtil::Beta1(Float64 fc)
    return beta1;
 }
 
-void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Materials::ConcreteType girderConcType, WBFL::Materials::ConcreteType deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2)
+void ConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Materials::ConcreteType girderConcType, WBFL::Materials::ConcreteType deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2)
 {
    if (girderConcType == WBFL::Materials::ConcreteType::PCI_UHPC)
    {
       if (deckConcType == WBFL::Materials::ConcreteType::PCI_UHPC)
       {
          // UHPC deck on UHPC girder, PCI SDG Table 7.4.3-1 Case 8 and 9
-         *pC = (isRoughened ? g_p5_KSI : g_p2_KSI);
+         *pC = WBFL::Units::ConvertToSysUnits(isRoughened ? 0.5 : 0.2, WBFL::Units::Measure::KSI);
          *pU = (isRoughened ? 1.4 : 0.6);
          *pK1 = (isRoughened ? 0.3 : 0.2);
-         *pK2 = (isRoughened ? g_3p6_KSI : g_3p6_KSI);
+         *pK2 = WBFL::Units::ConvertToSysUnits(isRoughened ? 3.6 : 3.6, WBFL::Units::Measure::KSI);
       }
       else
       {
          // conventional deck concrete on UHPC girder, PCI SDG Table 7.4.3-1 Case 4 and 6
-         *pC = (isRoughened ? g_p240_KSI : g_p025_KSI);
+         *pC = WBFL::Units::ConvertToSysUnits(isRoughened ? 0.24 : 0.025, WBFL::Units::Measure::KSI);
          *pU = (isRoughened ? 1.0 : 0.7);
          *pK1 = (isRoughened ? 0.25 : 0.20);
-         *pK2 = (isRoughened ? g_1p5_KSI : g_p8_KSI);
+         *pK2 = WBFL::Units::ConvertToSysUnits(isRoughened ? 1.5 : 0.8, WBFL::Units::Measure::KSI);
       }
    }
    else if (girderConcType == WBFL::Materials::ConcreteType::UHPC)
@@ -418,18 +379,18 @@ void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Material
       if (deckConcType == WBFL::Materials::ConcreteType::UHPC)
       {
          // UHPC deck on UHPC girder, Case 3 and 4
-         *pC = (isRoughened ? g_p5_KSI : g_p025_KSI);
+         *pC = WBFL::Units::ConvertToSysUnits(isRoughened ? 0.5 : 0.025, WBFL::Units::Measure::KSI);
          *pU = (isRoughened ? 1.0 : 0.6);
          *pK1 = 99999999; // want this value super high so K1*f'c*Acf never controls
-         *pK2 = (isRoughened ? g_1p8_KSI : g_p8_KSI);
+         *pK2 = WBFL::Units::ConvertToSysUnits(isRoughened ? 1.8 : 0.8, WBFL::Units::Measure::KSI);
       }
       else
       {
          // conventional deck concrete on UHPC girder, PCI SDG Table 7.4.3-1 Case 7 and 8
-         *pC = (isRoughened ? g_p240_KSI : g_p025_KSI);
+         *pC = WBFL::Units::ConvertToSysUnits(isRoughened ? 0.24 : 0.025, WBFL::Units::Measure::KSI);
          *pU = (isRoughened ? 1.0 : 0.6);
          *pK1 = 99999999; // want this value super high so K1*f'c*Acf never controls
-         *pK2 = (isRoughened ? g_1p8_KSI : g_p8_KSI);
+         *pK2 = WBFL::Units::ConvertToSysUnits(isRoughened ? 1.8 : 0.8, WBFL::Units::Measure::KSI);
       }
    }
    else
@@ -437,27 +398,27 @@ void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Material
       // conventional concrete girder
 
       // C
-      if (lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::ThirdEditionWith2006Interims)
+      if (LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::ThirdEditionWith2006Interims)
       {
-         if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI)
+         if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
          {
-            *pC = (isRoughened ? g_p7_MPA : g_p52_MPA);
+            *pC = WBFL::Units::ConvertToSysUnits(isRoughened ? 0.7 : 0.52, WBFL::Units::Measure::MPa);
          }
          else
          {
-            *pC = (isRoughened ? g_p1_KSI : g_p075_KSI);
+            *pC = WBFL::Units::ConvertToSysUnits(isRoughened ? 0.1 : 0.075, WBFL::Units::Measure::KSI);
          }
       }
       else
       {
          // LRFD 2007 or later
-         if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US)
+         if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
          {
-            *pC = (isRoughened ? g_p280_KSI : g_p075_KSI);
+            *pC = WBFL::Units::ConvertToSysUnits(isRoughened ? 1.9 : 0.52, WBFL::Units::Measure::MPa);
          }
          else
          {
-            *pC = (isRoughened ? g_1p9_MPA : g_p52_MPA);
+            *pC = WBFL::Units::ConvertToSysUnits(isRoughened ? 0.28 : 0.075, WBFL::Units::Measure::KSI);
          }
       }
 
@@ -471,15 +432,15 @@ void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Material
          *pU = 0.6; // concrete placed against clean, hardened concrete with surface NOT intentionally roughened
       }
 
-      if (lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::ThirdEditionWith2006Interims)
+      if (LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::ThirdEditionWith2006Interims)
       {
-         std::array<Float64, 4> Lamda{ 1.0, 0.85, 0.75, 1.0 };
-         Float64 lambda = min(Lamda[+girderConcType], Lamda[+deckConcType]);
+         std::array<Float64, 4> Lambda{ 1.0, 0.85, 0.75, 1.0 };
+         Float64 lambda = min(Lambda[+girderConcType], Lambda[+deckConcType]);
          *pU *= lambda;
       }
 
       // K1
-      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007)
+      if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007)
       {
          *pK1 = 0.2;
       }
@@ -489,48 +450,51 @@ void lrfdConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Material
       }
 
       // K2
-      if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007)
+      if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007)
       {
-         *pK2 = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? g_5p5_MPA : g_p8_KSI;
+         if(LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
+            *pK2 = WBFL::Units::ConvertToSysUnits(5.5, WBFL::Units::Measure::MPa);
+         else
+            *pK2 = WBFL::Units::ConvertToSysUnits(0.8, WBFL::Units::Measure::KSI);
       }
       else
       {
          bool bIsNWC = (girderConcType == WBFL::Materials::ConcreteType::Normal && deckConcType == WBFL::Materials::ConcreteType::Normal);
-         if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US)
+         if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::US)
          {
             if (isRoughened)
             {
-               *pK2 = (bIsNWC ? g_1p8_KSI : g_1p3_KSI);
+               *pK2 = WBFL::Units::ConvertToSysUnits(bIsNWC ? 1.8 : 1.3, WBFL::Units::Measure::KSI);
             }
             else
             {
-               *pK2 = g_p8_KSI;
+               *pK2 = WBFL::Units::ConvertToSysUnits(0.8, WBFL::Units::Measure::KSI);
             }
          }
          else
          {
             if (isRoughened)
             {
-               *pK2 = (bIsNWC ? g_12p4_MPA : g_9p0_MPA);
+               *pK2 = WBFL::Units::ConvertToSysUnits(bIsNWC ? 12.4 : 9.0 , WBFL::Units::Measure::MPa);
             }
             else
             {
-               *pK2 = g_5p5_MPA;
+               *pK2 = WBFL::Units::ConvertToSysUnits(5.5, WBFL::Units::Measure::MPa);
             }
          }
       }
    }
 }
 
-void lrfdConcreteUtil::InterfaceShearResistances(Float64 c, Float64 u, Float64 K1, Float64 K2,
+void ConcreteUtil::InterfaceShearResistances(Float64 c, Float64 u, Float64 K1, Float64 K2,
                                                   Float64 Acv, Float64 Avf, Float64 Pc,
                                                   Float64 fc, Float64 fy,
                                                   Float64* penqn1, Float64* penqn2, Float64* penqn3)
 {
    // nominal shear capacity 5.8.4.1-1,2
-   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SixthEditionWith2013Interims )
+   if ( LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::SixthEditionWith2013Interims )
    {
-      fy = min(fy,g_60_KSI);
+      fy = min(fy, WBFL::Units::ConvertToSysUnits(60.0, WBFL::Units::Measure::KSI));
    }
 
    Float64 Vn1 = c*Acv + u*(Avf * fy + Pc);
@@ -543,20 +507,20 @@ void lrfdConcreteUtil::InterfaceShearResistances(Float64 c, Float64 u, Float64 K
    *penqn3 = K2*Acv;
 }
 
-Float64 lrfdConcreteUtil::LowerLimitOfShearStrength(bool isRoughened, bool doAllStirrupsEngageDeck)
+Float64 ConcreteUtil::LowerLimitOfShearStrength(bool isRoughened, bool doAllStirrupsEngageDeck)
 {
-   if ( lrfdVersionMgr::FourthEdition2007 <= lrfdVersionMgr::GetVersion() )
+   if ( LRFDVersionMgr::Version::FourthEdition2007 <= LRFDVersionMgr::GetVersion() )
    {
       // 4th edition or later
       if (isRoughened && doAllStirrupsEngageDeck)
       {
-         if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+         if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
          {
-            return g_14p0_MPA;
+            return WBFL::Units::ConvertToSysUnits(14.0, WBFL::Units::Measure::MPa);
          }
          else
          {
-            return g_p210_KSI;
+            return WBFL::Units::ConvertToSysUnits(0.210, WBFL::Units::Measure::KSI);
          }
       }
       else
@@ -564,18 +528,18 @@ Float64 lrfdConcreteUtil::LowerLimitOfShearStrength(bool isRoughened, bool doAll
          return 0.0;
       }
    }
-   else if (lrfdVersionMgr::SecondEdition1998 <= lrfdVersionMgr::GetVersion())
+   else if (LRFDVersionMgr::Version::SecondEdition1998 <= LRFDVersionMgr::GetVersion())
    {
       // 2nd edition or later (but not 4th or later)
 
       // 2nd to 4th it didn't matter if surface was roughened
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
       {
-         return g_p7_MPA;
+         return WBFL::Units::ConvertToSysUnits(0.7, WBFL::Units::Measure::MPa);
       }
       else
       {
-         return g_p1_KSI;
+         return WBFL::Units::ConvertToSysUnits(0.100, WBFL::Units::Measure::KSI);
       }
    }
    else
@@ -585,18 +549,18 @@ Float64 lrfdConcreteUtil::LowerLimitOfShearStrength(bool isRoughened, bool doAll
    }
 }
 
-Float64 lrfdConcreteUtil::UpperLimitForBv()
+Float64 ConcreteUtil::UpperLimitForBv()
 {
-   if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEdition1998)
+   if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEdition1998)
    {
       // This requirement was removed in the 1998 Section Edition
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
       {
-         return g_0p9_M;
+         return WBFL::Units::ConvertToSysUnits(0.9, WBFL::Units::Measure::Meter);
       }
       else
       {
-         return g_36_IN;
+         return WBFL::Units::ConvertToSysUnits(36.0, WBFL::Units::Measure::Inch);
       }
    }
    else
@@ -606,10 +570,14 @@ Float64 lrfdConcreteUtil::UpperLimitForBv()
    }
 }
 
-Uint16 lrfdConcreteUtil::MinLegsForBv(Float64 bv)
+Uint16 ConcreteUtil::MinLegsForBv(Float64 bv)
 {
+   // This requirement was removed in the 1998 Section Edition so the minimum is 1
+   if (LRFDVersionMgr::Version::SecondEdition1998 <= LRFDVersionMgr::GetVersion())
+      return 1;
+
    Float64 upper_bv = UpperLimitForBv();
-   if (bv >= upper_bv)
+   if (upper_bv <= bv)
    {
       return 4;
    }
@@ -619,18 +587,18 @@ Uint16 lrfdConcreteUtil::MinLegsForBv(Float64 bv)
    }
 }
 
-lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const WBFL::System::SectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc)
+ConcreteUtil::HsAvfOverSMinType ConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const WBFL::System::SectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc)
 {
-   CHECK(fy>0.0);
+   PRECONDITION(0.0 < fy);
 
    HsAvfOverSMinType hsAvfOverSMin;
 
    // All spec versions evaluate 5.8.4.4-1
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
    {
       Float64 bv_used = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Millimeter);
       Float64 fy_used = WBFL::Units::ConvertFromSysUnits(fy, WBFL::Units::Measure::MPa);
-      if (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994)
+      if (LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEdition1994)
       {
          bv_used = min(bv_used, 900.0);
       }
@@ -646,7 +614,7 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
    {
       Float64 bv_used = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Inch);
       Float64 fy_used = WBFL::Units::ConvertFromSysUnits(fy, WBFL::Units::Measure::KSI);
-      if (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994)
+      if (LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEdition1994)
       {
          bv_used = min(bv_used, 36.0);
       }
@@ -659,10 +627,10 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
       hsAvfOverSMin.AvfOverSMin  = avf_min;
    }
 
-   if ( lrfdVersionMgr::FourthEdition2007 <= lrfdVersionMgr::GetVersion() )
+   if ( LRFDVersionMgr::Version::FourthEdition2007 <= LRFDVersionMgr::GetVersion() )
    {
       // Addition requirements added in 4th edition
-      hsAvfOverSMin.ValidEqns = HsAvfOverSMinType::eqBoth;
+      hsAvfOverSMin.ValidEqns = HsAvfOverSMinType::ValidEqnsType::eqBoth;
 
       Float64 vuh = max(Vuh.Left(),Vuh.Right());
 
@@ -686,31 +654,36 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
    return hsAvfOverSMin;
 }
 
-Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz(Float64 Hg)
+Float64 ConcreteUtil::MaxStirrupSpacingForHoriz(Float64 Hg)
 {
-   if ( lrfdVersionMgr::SeventhEdition2014 <= lrfdVersionMgr::GetVersion() )
+   if ( LRFDVersionMgr::Version::SeventhEdition2014 <= LRFDVersionMgr::GetVersion() )
    {
-      CHECK(lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US);
-      return min(Hg,g_48_IN);
+      CHECK(LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::US);
+      return min(Hg, WBFL::Units::ConvertToSysUnits(48.0, WBFL::Units::Measure::Inch));
    }
    else
    {
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
       {
-         return g_0p6_M;
+         return WBFL::Units::ConvertToSysUnits(0.6, WBFL::Units::Measure::Meter);
       }
       else
       {
-         return g_24_IN;
+         return WBFL::Units::ConvertToSysUnits(24.0, WBFL::Units::Measure::Inch);
       }
    }
 }
 
-Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const WBFL::System::SectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
+Float64 ConcreteUtil::AvfRequiredForHoriz(const WBFL::System::SectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
                                               Float64 c, Float64 u, Float64 K1, Float64 K2,
                                               Float64 bv, Float64 Acv, Float64 Avf, Float64 Pc, 
                                               Float64 fc, Float64 fy)
 {
+   PRECONDITION(0 < phi);
+   PRECONDITION(0 < fc);
+   PRECONDITION(0 < fy);
+   PRECONDITION(0 < u);
+
    Float64 vuh = max(Vuh.Left(),Vuh.Right());
 
    // Use existing function to get non-rebar related resistance values
@@ -733,9 +706,9 @@ Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const WBFL::System::SectionValue& 
    }
 }
 
-Float64 lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(WBFL::Materials::ConcreteType type,Float64 density,bool bHasFct,Float64 fct,Float64 fc)
+Float64 ConcreteUtil::ComputeConcreteDensityModificationFactor(WBFL::Materials::ConcreteType type,Float64 density,bool bHasFct,Float64 fct,Float64 fc)
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims || type == WBFL::Materials::ConcreteType::Normal || type == WBFL::Materials::ConcreteType::PCI_UHPC)
+   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2016Interims || type == WBFL::Materials::ConcreteType::Normal || type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::UHPC)
    {
       return 1.0;
    }
@@ -758,7 +731,7 @@ Float64 lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(WBFL::Materia
 }
 
 
-std::_tstring lrfdConcreteUtil::GetTypeName(WBFL::Materials::ConcreteType type,bool bFull)
+std::_tstring ConcreteUtil::GetTypeName(WBFL::Materials::ConcreteType type,bool bFull)
 {
    switch(type)
    {
@@ -768,7 +741,7 @@ std::_tstring lrfdConcreteUtil::GetTypeName(WBFL::Materials::ConcreteType type,b
    case WBFL::Materials::ConcreteType::AllLightweight:
       if ( bFull )
       {
-         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims )
+         if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2016Interims )
          {
             return _T("All Lightweight Concrete");
          }
@@ -785,7 +758,7 @@ std::_tstring lrfdConcreteUtil::GetTypeName(WBFL::Materials::ConcreteType type,b
    case WBFL::Materials::ConcreteType::SandLightweight:
       if ( bFull )
       {
-         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims )
+         if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2016Interims )
          {
             return _T("Sand Lightweight Concrete");
          }
@@ -811,7 +784,7 @@ std::_tstring lrfdConcreteUtil::GetTypeName(WBFL::Materials::ConcreteType type,b
    }
 }
 
-WBFL::Materials::ConcreteType lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strName)
+WBFL::Materials::ConcreteType ConcreteUtil::GetTypeFromTypeName(LPCTSTR strName)
 {
    WBFL::Materials::ConcreteType type;
    if ( std::_tstring(strName) == _T("Normal") )
@@ -840,7 +813,7 @@ WBFL::Materials::ConcreteType lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strN
       type = WBFL::Materials::ConcreteType::Normal;
    }
 
-   if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() && type == WBFL::Materials::ConcreteType::AllLightweight )
+   if ( LRFDVersionMgr::Version::SeventhEditionWith2016Interims <= LRFDVersionMgr::GetVersion() && type == WBFL::Materials::ConcreteType::AllLightweight )
    {
       // LRFD 2016 removed the distinction between Sand and All lightweight concrete. For a consistent application of the
       // concrete type, we will use SandLightweight to mean "Lightweight" for all lightweight cases
@@ -849,95 +822,3 @@ WBFL::Materials::ConcreteType lrfdConcreteUtil::GetTypeFromTypeName(LPCTSTR strN
 
    return type;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-#if defined _UNITTEST
-#include <Lrfd\AutoVersion.h>
-#include <Units\AutoSystem.h>
-bool lrfdConcreteUtil::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdConcreteUtil");
-
-   // Before we do any testing, get the current code version and units
-   lrfdAutoVersion av;
-   WBFL::Units::AutoSystem au;
-
-   lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
-
-   // We want to work in kg,m,s,C,rad
-   WBFL::Units::System::SetMassUnit( WBFL::Units::Measure::Kilogram );
-   WBFL::Units::System::SetLengthUnit( WBFL::Units::Measure::Meter );
-   WBFL::Units::System::SetTimeUnit( WBFL::Units::Measure::Second );
-   WBFL::Units::System::SetTemperatureUnit( WBFL::Units::Measure::Celsius );
-   WBFL::Units::System::SetAngleUnit( WBFL::Units::Measure::Radian );
-
-   //
-   // Test Beta1
-   //
-   TRY_TESTME (  IsEqual( Beta1(0.1), 0.85 ) );
-
-   lrfdVersionMgr::SetUnits( lrfdVersionMgr::SI );
-   TRY_TESTME (  IsEqual( Beta1(60e6), 0.65 ) );
-
-   lrfdVersionMgr::SetUnits( lrfdVersionMgr::US );
-   TRY_TESTME (  IsEqual( Beta1(60e6), 0.65 ) );
-
-   //
-   // Test ModRupture
-   //
-   Float64 fc = 50e6; // 50 MPa
-   lrfdVersionMgr::SetUnits( lrfdVersionMgr::SI );
-   TRY_TESTME (  IsEqual(ModRupture( fc, WBFL::Materials::ConcreteType::Normal ), 4.45477272148e6, 0.1 ) );
-   TRY_TESTME (  IsEqual(ModRupture( fc, WBFL::Materials::ConcreteType::SandLightweight ), 3.67695526217e6, 0.1 ) );
-   TRY_TESTME (  IsEqual(ModRupture( fc, WBFL::Materials::ConcreteType::AllLightweight ), 3.18198051534e6, 0.1 ) );
-
-   //
-   // Test ModE
-   //
-   lrfdVersionMgr::SetUnits( lrfdVersionMgr::SI );
-   Float64 density = 2450.; // kg/m^3
-   try
-   {
-      TRY_TESTME (  IsEqual( ModE(WBFL::Materials::ConcreteType::Normal, fc,density), 36872.5e6, 1. ) );
-   }
-   catch (...)
-   {
-      // An exception should not be thrown
-      TRY_TESTME(false);
-   }
-
-   density = 2560.; // this will cause an exception to be thrown
-   try 
-   {
-      ModE(WBFL::Materials::ConcreteType::Normal, fc,density);
-      ; // We shouldn't hit this code
-   }
-   catch(const WBFL::System::XProgrammingError& e)
-   {
-      // Do nothing
-      TRY_TESTME(e.GetReasonCode() == WBFL::System::XProgrammingError::ValueOutOfRange);
-   }
-   
-   TESTME_EPILOG("lrfdConcreteUtil");
-}
-#endif // _UNITTEST
-
-

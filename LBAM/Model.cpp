@@ -1230,22 +1230,22 @@ STDMETHODIMP CModel::OnSuperstructureMembersChanged(ISuperstructureMember* item,
    FireModelChanged(change);
    return S_OK;
 }
-STDMETHODIMP CModel::OnSuperstructureMembersAdded(ISuperstructureMember* item, CollectionIndexType index)
+STDMETHODIMP CModel::OnSuperstructureMembersAdded(ISuperstructureMember* item, IndexType index)
 {
    FireModelChanged(cgtStiffness);
    return S_OK;
 }
-STDMETHODIMP CModel::OnSuperstructureMembersBeforeRemove(ISuperstructureMember* item, CollectionIndexType index)
+STDMETHODIMP CModel::OnSuperstructureMembersBeforeRemove(ISuperstructureMember* item, IndexType index)
 {
    FireModelChanged(cgtStiffness);
    return S_OK;
 }
-STDMETHODIMP CModel::OnSuperstructureMembersMoveTo(CollectionIndexType from, CollectionIndexType to)
+STDMETHODIMP CModel::OnSuperstructureMembersMoveTo(IndexType from, IndexType to)
 {
    FireModelChanged(cgtStiffness);
    return S_OK;
 }
-STDMETHODIMP CModel::OnSuperstructureMembersCopyTo(CollectionIndexType from, CollectionIndexType to)
+STDMETHODIMP CModel::OnSuperstructureMembersCopyTo(IndexType from, IndexType to)
 {
    FireModelChanged(cgtStiffness);
    return S_OK;
@@ -1538,22 +1538,22 @@ STDMETHODIMP CModel::OnDistributionFactorsChanged()
    FireModelChanged(cgtDistributionFactor);
    return S_OK;
 }
-STDMETHODIMP CModel::OnDistributionFactorsAdded(IDistributionFactorSegment* item, CollectionIndexType idx)
+STDMETHODIMP CModel::OnDistributionFactorsAdded(IDistributionFactorSegment* item, IndexType idx)
 {
    FireModelChanged(cgtStiffness);
    return S_OK;
 }
-STDMETHODIMP CModel::OnDistributionFactorsBeforeRemove(IDistributionFactorSegment* item, CollectionIndexType idx)
+STDMETHODIMP CModel::OnDistributionFactorsBeforeRemove(IDistributionFactorSegment* item, IndexType idx)
 {
    FireModelChanged(cgtStiffness);
    return S_OK;
 }
-STDMETHODIMP CModel::OnDistributionFactorsMoveTo(CollectionIndexType from, CollectionIndexType to)
+STDMETHODIMP CModel::OnDistributionFactorsMoveTo(IndexType from, IndexType to)
 {
    FireModelChanged(cgtStiffness);
    return S_OK;
 }
-STDMETHODIMP CModel::OnDistributionFactorsCopyTo(CollectionIndexType from, CollectionIndexType to)
+STDMETHODIMP CModel::OnDistributionFactorsCopyTo(IndexType from, IndexType to)
 {
    FireModelChanged(cgtStiffness);
    return S_OK;
@@ -1808,12 +1808,12 @@ STDMETHODIMP CModel::RemoveStage(BSTR stage)
    }
 
    // SuperstructureMembers
-   CollectionIndexType nSSMbrs;
+   IndexType nSSMbrs;
    hr = m_SuperstructureMembers->get_Count(&nSSMbrs);
    if (FAILED(hr))
       return hr;
 
-   for (CollectionIndexType ssmbrIdx = 0; ssmbrIdx < nSSMbrs; ssmbrIdx++)
+   for (IndexType ssmbrIdx = 0; ssmbrIdx < nSSMbrs; ssmbrIdx++)
    {
       CComPtr<ISuperstructureMember> its;
       hr = m_SuperstructureMembers->get_Item(ssmbrIdx, &its);
@@ -2112,7 +2112,7 @@ void CModel::LocationCache::Validate()
    CComPtr<ISuperstructureMembers> ssms;
    hr = m_pModel->get_SuperstructureMembers(&ssms);
 
-   CollectionIndexType ssm_cnt;
+   IndexType ssm_cnt;
    hr = ssms->get_Count(&ssm_cnt);
 
    if (ssm_cnt<=0)
@@ -2124,7 +2124,7 @@ void CModel::LocationCache::Validate()
    m_SsmEnds.push_back(-overhang); // start of first ssm is at - overhang
 
    Float64 ssmlen=-overhang;
-   for (CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
+   for (IndexType issm = 0; issm<ssm_cnt; issm++)
    {
       Float64 length;
       CComPtr<ISuperstructureMember> ssm;
@@ -2219,7 +2219,7 @@ void CModel::LocationCache::ComputeLocation(MemberIDType mbrId, MemberType mbrTy
 
    case mtSuperstructureMember:
       {
-         CollectionIndexType num_ssms = m_SsmEnds.size()-1;
+         IndexType num_ssms = m_SsmEnds.size()-1;
          if (mbrId < 0 || MemberIDType(num_ssms) <= mbrId)
          {
             CComBSTR msg =CreateErrorMsg1L(IDS_E_SSM_NOT_EXIST, mbrId);

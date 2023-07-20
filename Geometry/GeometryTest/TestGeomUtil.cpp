@@ -516,7 +516,7 @@ void CTestGeomUtil::Test2d()
 
    TRY_TEST( util2d->DivideArc(p1,p2,p3,0,&points),   E_INVALIDARG );
    TRY_TEST( util2d->DivideArc(p1,p2,p3,1,&points),   S_OK );
-   CollectionIndexType count;
+   IndexType count;
    points->get_Count(&count);
    TRY_TEST( count, 2 );
 

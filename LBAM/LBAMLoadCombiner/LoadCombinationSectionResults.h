@@ -66,19 +66,19 @@ END_COM_MAP()
 
 // ILoadCombinationSectionResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* leftResult, /*[out]*/ILoadCombinationResultConfiguration** leftConfig, /*[out]*/Float64* rightResult, /*[out]*/ILoadCombinationResultConfiguration** rightConfig) override;
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/Float64 rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
+	STDMETHOD(GetResult)(/*[in]*/IndexType index, /*[out]*/Float64* leftResult, /*[out]*/ILoadCombinationResultConfiguration** leftConfig, /*[out]*/Float64* rightResult, /*[out]*/ILoadCombinationResultConfiguration** rightConfig) override;
+	STDMETHOD(SetResult)(/*[in]*/IndexType index, /*[in]*/Float64 leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/Float64 rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
 	STDMETHOD(Add)(/*[in]*/Float64 leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/Float64 rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clear)() override;
 
 // functions available to non-com pals
 public:
-   HRESULT AllocateResults(CollectionIndexType size, bool createConfig, ResultsSummationType summ);
-   HRESULT SumResultNoConfig(CollectionIndexType index, Float64 leftResult, Float64 rightResult);
-	HRESULT SumResult(CollectionIndexType index, BSTR loadCase, Float64 leftResult, Float64 leftFactor, Float64 rightResult, Float64 rightFactor);
-	HRESULT SumLLResult(CollectionIndexType index, Float64 leftResult, ILiveLoadConfiguration* leftConfig, Float64 rightResult, ILiveLoadConfiguration* rightConfig, Float64 Factor);
+   HRESULT AllocateResults(IndexType size, bool createConfig, ResultsSummationType summ);
+   HRESULT SumResultNoConfig(IndexType index, Float64 leftResult, Float64 rightResult);
+	HRESULT SumResult(IndexType index, BSTR loadCase, Float64 leftResult, Float64 leftFactor, Float64 rightResult, Float64 rightFactor);
+	HRESULT SumLLResult(IndexType index, Float64 leftResult, ILiveLoadConfiguration* leftConfig, Float64 rightResult, ILiveLoadConfiguration* rightConfig, Float64 Factor);
 
 private:
    struct ComboRes

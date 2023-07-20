@@ -30,88 +30,69 @@ namespace WBFL
    namespace Geometry
    {
 
-/// Object representing a built-up steel plate girder
-///
-/// \image html PlateGirder/PlateGirder.jpg
-class GEOMMODELCLASS PlateGirder : public ShapeOnPolygonImpl
-{
-public:
-   /// Default constructor.  Creates a Triangle with height and width equal 
-   /// to zero,  with its hook point at (0,0).
-   PlateGirder();
+      /// Object representing a built-up steel plate girder
+      ///
+      /// \image html PlateGirder/PlateGirder.jpg
+      class GEOMMODELCLASS PlateGirder : public ShapeOnPolygonImpl
+      {
+      public:
+         PlateGirder();
+         PlateGirder(std::shared_ptr<Point2d>& hookPnt, Float64 tfw, Float64 tft, Float64 bfw, Float64 bft, Float64 hWeb, Float64 wWeb, Float64 rotAngle = 0.);
+         PlateGirder(const Point2d& hookPnt, Float64 tfw, Float64 tft, Float64 bfw, Float64 bft, Float64 hWeb, Float64 wWeb, Float64 rotAngle = 0.);
 
-   /// Explicit constructor.  Explicit constructor.  Creates a triangle with 
-   /// height h, width w, and offset c.  The hook point is positioned at 
-   /// hookPnt.  The triangle can be rotated by rotAngle..
-   PlateGirder(std::shared_ptr<Point2d>& hookPnt, Float64 tfw, Float64 tft, Float64 bfw, Float64 bft, Float64 hWeb, Float64 wWeb, Float64 rotAngle = 0.);
-   PlateGirder(const Point2d& hookPnt, Float64 tfw, Float64 tft, Float64 bfw, Float64 bft, Float64 hWeb, Float64 wWeb, Float64 rotAngle = 0.);
+         PlateGirder(const PlateGirder& other) = default;
+         PlateGirder& operator=(const PlateGirder& other) = default;
 
-   PlateGirder(const PlateGirder& other) = default;
-   PlateGirder& operator=(const PlateGirder& other) = default;
+         virtual ~PlateGirder();
 
-   virtual ~PlateGirder();
+         void SetTopFlangeWidth(Float64 wtf);
+         Float64 GetTopFlangeWidth() const;
 
-   void SetTopFlangeWidth(Float64 wtf);
-   Float64 GetTopFlangeWidth() const;
+         void SetTopFlangeThickness(Float64 ttf);
+         Float64 GetTopFlangeThickness() const;
 
-   void SetTopFlangeThickness(Float64 ttf);
-   Float64 GetTopFlangeThickness() const;
+         void SetBottomFlangeWidth(Float64 wbf);
+         Float64 GetBottomFlangeWidth() const;
 
-   void SetBottomFlangeWidth(Float64 wbf);
-   Float64 GetBottomFlangeWidth() const;
+         void SetBottomFlangeThickness(Float64 tbf);
+         Float64 GetBottomFlangeThickness() const;
 
-   void SetBottomFlangeThickness(Float64 tbf);
-   Float64 GetBottomFlangeThickness() const;
+         void SetWebHeight(Float64 tWeb);
+         Float64 GetWebHeight() const;
 
-   void SetWebHeight(Float64 tWeb);
-   Float64 GetWebHeight() const;
+         void SetWebWidth(Float64 wWeb);
+         Float64 GetWebWidth() const;
 
-   void SetWebWidth(Float64 wWeb);
-   Float64 GetWebWidth() const;
+         Float64 GetHeight() const;
 
-   Float64 GetHeight() const;
+         /// First moment of area of the top flange
+         Float64 GetQTopFlange() const;
 
-   /// First moment of area of the top flange
-   Float64 GetQTopFlange() const;
+         /// First moment of area of the bottom flange
+         Float64 GetQBottomFlange() const;
 
-   /// First moment of area of the bottom flange
-   Float64 GetQBottomFlange() const;
+         /// Translates a shape by a delta amount.
+         virtual void DoOffset(const Size2d& delta) override;
 
-   /// Translates a shape by a delta amount.
-   virtual void DoOffset(const Size2d& delta) override;
+         /// Rotates a shape.  The rotation is centered about point center.  The 
+         /// rotation angle is measured in radians counter clockwise.
+         virtual void DoRotate(const Point2d& center, Float64 angle) override;
 
-   /// Rotates a shape.  The rotation is centered about point center.  The 
-   /// rotation angle is measured in radians counter clockwise.
-   virtual void DoRotate(const Point2d& center, Float64 angle) override;
+         /// Creates a clone.
+         virtual std::unique_ptr<Shape> CreateClone() const override;
 
-   /// Creates a clone.
-   virtual std::unique_ptr<Shape> CreateClone() const override;
+      protected:
+         virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
 
-#if defined _DEBUG
-   /// Returns true if the class is in a valid state, otherwise returns false
-   virtual bool AssertValid() const override;
-
-   /// Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const override;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   /// Self-diagnostic test function.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-protected:
-   virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
-
-private:
-   Float64 m_webWidth{ 0 };
-   Float64 m_webHeight{ 0 };
-   Float64 m_bfThickness{ 0 };
-   Float64 m_bfWidth{ 0 };
-   Float64 m_tfThickness{ 0 };
-   Float64 m_tfWidth{ 0 };
-   Float64 m_Rotation{ 0 };
-};
+      private:
+         Float64 m_webWidth{ 0 };
+         Float64 m_webHeight{ 0 };
+         Float64 m_bfThickness{ 0 };
+         Float64 m_bfWidth{ 0 };
+         Float64 m_tfThickness{ 0 };
+         Float64 m_tfWidth{ 0 };
+         Float64 m_Rotation{ 0 };
+      };
 
    }; // Geometry
 }; // WBFL

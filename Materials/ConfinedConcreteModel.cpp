@@ -74,7 +74,7 @@ Float64 ConfinedConcreteModel::GetR() const
    return m_R;
 }
 
-void ConfinedConcreteModel::ComputeConcreteProperties(Float64* pfr, Float64* pfcc, Float64* pecc) const
+std::tuple<Float64, Float64, Float64> ConfinedConcreteModel::ComputeConcreteProperties() const
 {
    Float64 ke = m_Section->GetConfinementEffectivenessCoefficient();
    Float64 ps = m_Section->GetTransvReinforcementRatio();
@@ -89,9 +89,7 @@ void ConfinedConcreteModel::ComputeConcreteProperties(Float64* pfr, Float64* pfc
    fr = WBFL::Units::ConvertToSysUnits(fr, WBFL::Units::Measure::PSI);
    fcc = WBFL::Units::ConvertToSysUnits(fcc, WBFL::Units::Measure::PSI);
 
-   *pfr = fr;
-   *pfcc = fcc;
-   *pecc = ecc;
+   return std::make_tuple(fr, fcc, ecc);
 }
 
 std::unique_ptr<StressStrainModel> ConfinedConcreteModel::Clone() const
@@ -125,7 +123,7 @@ std::pair<Float64, bool> ConfinedConcreteModel::ComputeStress(Float64 strain) co
 
    Float64 Ec = GetEc();
    Float64 fr, fcc, ecc;
-   ComputeConcreteProperties(&fr, &fcc, &ecc);
+   std::tie(fr,fcc,ecc) = ComputeConcreteProperties();
 
    fr = WBFL::Units::ConvertFromSysUnits(fr, WBFL::Units::Measure::PSI);
    fcc = WBFL::Units::ConvertFromSysUnits(fcc, WBFL::Units::Measure::PSI);
@@ -152,7 +150,7 @@ void ConfinedConcreteModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxSt
    PRECONDITION(pMaxStrain != nullptr);
 
    Float64 fr, fcc, ecc;
-   ComputeConcreteProperties(&fr, &fcc, &ecc);
+   std::tie(fr,fcc,ecc) = ComputeConcreteProperties();
 
    fr = WBFL::Units::ConvertFromSysUnits(fr, WBFL::Units::Measure::PSI);
    fcc = WBFL::Units::ConvertFromSysUnits(fcc, WBFL::Units::Measure::PSI);
@@ -173,7 +171,7 @@ void ConfinedConcreteModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxSt
 Float64 ConfinedConcreteModel::GetStrainAtPeakStress() const
 {
    Float64 fr, fcc, ecc;
-   ComputeConcreteProperties(&fr, &fcc, &ecc);
+   std::tie(fr,fcc,ecc) = ComputeConcreteProperties();
    return -ecc;
 }
 
@@ -183,27 +181,3 @@ Float64 ConfinedConcreteModel::GetEc() const
    Es = WBFL::Units::ConvertToSysUnits(Es, WBFL::Units::Measure::PSI);
    return Es;
 }
-
-#if defined _DEBUG
-bool ConfinedConcreteModel::AssertValid() const
-{
-   return true;
-}
-
-void ConfinedConcreteModel::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for ConfinedConcreteModel")         << WBFL::Debug::endl;
-   os << _T("====================")         << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool ConfinedConcreteModel::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("ConfinedConcreteModel");
-
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for ConfinedConcreteModel");
-
-   TESTME_EPILOG("ConfinedConcreteModel");
-}
-#endif // _UNITTEST

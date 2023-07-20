@@ -134,35 +134,3 @@ Float64 UnconfinedConcreteModel::GetEc() const
 {
    return (40.000 * sqrt(m_Fc * 1000) + 1000.000);
 }
-
-
-#if defined _DEBUG
-bool UnconfinedConcreteModel::AssertValid() const
-{
-   return true;
-}
-
-void UnconfinedConcreteModel::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for UnconfinedConcreteModel")         << WBFL::Debug::endl;
-   os << _T("====================")         << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool UnconfinedConcreteModel::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("UnconfinedConcreteModel");
-
-   UnconfinedConcreteModel model;
-
-   model.SetFc(89631844.81);
-   TRY_TESTME(IsEqual(model.GetFc(), 89631844.810000));
-
-   TRY_TESTME(model.ComputeStress(0.00764) == std::make_pair(0.00, true));
-   TRY_TESTME(model.ComputeStress(-0.00764) == std::make_pair(-78333650.161053866, false)); // false: strain is not within strain limits
-   TRY_TESTME(model.ComputeStress(-0.00245) == std::make_pair(-86277115.080388337, true)); // true: strain is within strain limits
-
-   TESTME_EPILOG("UnconfinedConcreteModel");
-}
-#endif // _UNITTEST

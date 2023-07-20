@@ -61,17 +61,17 @@ END_COM_MAP()
 
 // ILngArray
 public:
-	STDMETHOD(Find)(/*[in]*/LONG value, /*[out,retval]*/CollectionIndexType* fndIndex) override;
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Find)(/*[in]*/LONG value, /*[out,retval]*/IndexType* fndIndex) override;
+	STDMETHOD(ReDim)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clone)(/*[out,retval]*/ILongArray* *clone) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/LONG item) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/IndexType relPosition, /*[in]*/LONG item) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType relPosition) override;
 	STDMETHOD(Add)(/*[in]*/LONG item) override;
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ LONG *pVal) override;
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ LONG newVal) override;
+	STDMETHOD(get_Item)(/*[in]*/IndexType relPosition, /*[out, retval]*/ LONG *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/IndexType relPosition, /*[in]*/ LONG newVal) override;
 	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
 	STDMETHOD(get__EnumElements)(struct IEnumLongArray ** ) override;
 

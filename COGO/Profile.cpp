@@ -162,7 +162,7 @@ STDMETHODIMP CProfile::AddProfileElement(IProfileElement* element)
    return S_OK;
 }
 
-STDMETHODIMP CProfile::get_Item(CollectionIndexType idx,IProfileElement **pVal)
+STDMETHODIMP CProfile::get_Item(IndexType idx,IProfileElement **pVal)
 {
    CHECK_RETOBJ(pVal);
    VALIDATE;
@@ -171,7 +171,7 @@ STDMETHODIMP CProfile::get_Item(CollectionIndexType idx,IProfileElement **pVal)
    return profile_element.CopyTo(pVal);
 }
 
-STDMETHODIMP CProfile::get_ProfileElementCount(CollectionIndexType *pVal)
+STDMETHODIMP CProfile::get_ProfileElementCount(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    VALIDATE;
@@ -322,7 +322,7 @@ STDMETHODIMP CProfile::CrossSlope(IDType surfaceID, VARIANT varStation, Float64 
    return S_OK;
 }
 
-STDMETHODIMP CProfile::SurfaceTemplateSegmentSlope(IDType surfaceID,VARIANT varStation,CollectionIndexType templateSegmentIdx,Float64* pSlope)
+STDMETHODIMP CProfile::SurfaceTemplateSegmentSlope(IDType surfaceID,VARIANT varStation,IndexType templateSegmentIdx,Float64* pSlope)
 {
    CHECK_RETVAL(pSlope);
    VALIDATE;

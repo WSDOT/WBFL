@@ -71,9 +71,9 @@ STDMETHODIMP CCubicSpline::AddPoints(IPoint2dCollection* points)
 {
    CHECK_IN(points);
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    points->get_Count(&nPoints);
-   for ( CollectionIndexType i = 0; i < nPoints; i++ )
+   for ( IndexType i = 0; i < nPoints; i++ )
    {
       CComPtr<IPoint2d> p;
       points->get_Item(i,&p);
@@ -101,14 +101,14 @@ STDMETHODIMP CCubicSpline::AddPointEx(IPoint2d* point)
    return S_OK;
 }
 
-STDMETHODIMP CCubicSpline::get_PointCount(CollectionIndexType* nPoints)
+STDMETHODIMP CCubicSpline::get_PointCount(IndexType* nPoints)
 {
    CHECK_RETVAL(nPoints);
    *nPoints = m_Curve->GetPointCount();
    return S_OK;
 }
 
-STDMETHODIMP CCubicSpline::get_Point(CollectionIndexType idx,IPoint2d** point)
+STDMETHODIMP CCubicSpline::get_Point(IndexType idx,IPoint2d** point)
 {
    return cogoUtil::CreatePoint(m_Curve->GetPoint(idx), point);
 }
@@ -172,19 +172,19 @@ STDMETHODIMP CCubicSpline::get_EndDirection(IDirection** dir)
    return cogoUtil::CreateDirection(m_Curve->GetEndDirection(), dir);
 }
 
-STDMETHODIMP CCubicSpline::BearingAtPoint(CollectionIndexType idx,IDirection** pDir)
+STDMETHODIMP CCubicSpline::BearingAtPoint(IndexType idx,IDirection** pDir)
 {
    CHECK_RETVAL(pDir);
    return cogoUtil::CreateDirection(m_Curve->GetBearingAtPoint(idx), pDir);
 }
 
-STDMETHODIMP CCubicSpline::NormalAtPoint(CollectionIndexType idx,IDirection** pDir)
+STDMETHODIMP CCubicSpline::NormalAtPoint(IndexType idx,IDirection** pDir)
 {
    CHECK_RETVAL(pDir);
    return cogoUtil::CreateDirection(m_Curve->GetNormalAtPoint(idx), pDir);
 }
 
-STDMETHODIMP CCubicSpline::DistanceFromStartAtPoint(CollectionIndexType idx,Float64* dist)
+STDMETHODIMP CCubicSpline::DistanceFromStartAtPoint(IndexType idx,Float64* dist)
 {
    CHECK_RETVAL(dist);
    *dist = m_Curve->DistanceFromStartAtPoint(idx);

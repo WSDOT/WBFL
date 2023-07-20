@@ -164,8 +164,8 @@ std::vector<std::pair<IDType,std::shared_ptr<Path>>> UniformSpacingLayoutLineFac
       CHECK(bSuccess);
 
       // Locate start and end point of layout lines
-      auto start_point = COGO::LocateByDistanceAndDirection(alignment_start_point, m_StartOffset, prev_pier_direction, 0.0);
-      auto end_point = COGO::LocateByDistanceAndDirection(alignment_end_point, m_EndOffset, next_pier_direction, 0.0);
+      auto start_point = COGO::LocateByDistanceAndDirection(alignment_start_point, -m_StartOffset, prev_pier_direction, 0.0);
+      auto end_point = COGO::LocateByDistanceAndDirection(alignment_end_point, -m_EndOffset, next_pier_direction, 0.0);
 
       // Create first layout line
       auto layout_line = PathSegment::Create(start_point, end_point);
@@ -176,8 +176,8 @@ std::vector<std::pair<IDType,std::shared_ptr<Path>>> UniformSpacingLayoutLineFac
       layout_line_id += m_LayoutLineIDInc;
 
       // Loop over spaces and create the other layout lines
-      Float64 start_offset = m_StartOffset;
-      Float64 end_offset = m_EndOffset;
+      Float64 start_offset = -m_StartOffset;
+      Float64 end_offset = -m_EndOffset;
       auto start_spacing_iter = m_StartSpacing.begin();
       auto start_spacing_end = m_StartSpacing.end();
       auto end_spacing_iter = m_EndSpacing.begin();
@@ -202,14 +202,3 @@ std::vector<std::pair<IDType,std::shared_ptr<Path>>> UniformSpacingLayoutLineFac
 
    return vPaths;
 }
-
-#if defined _UNITTEST
-bool UniformSpacingLayoutLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("UniformSpacingLayoutLineFactory");
-
-   TESTME_EPILOG("UniformSpacingLayoutLineFactory");
-}
-#endif // _UNITTEST
-
-

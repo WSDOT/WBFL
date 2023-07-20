@@ -571,7 +571,7 @@ bool CEAFDocProxyAgent::RemoveByID(StatusItemIDType id)
    return m_pDoc->GetStatusCenter().RemoveByID(id);
 }
 
-bool CEAFDocProxyAgent::RemoveByIndex(CollectionIndexType index)
+bool CEAFDocProxyAgent::RemoveByIndex(IndexType index)
 {
    return m_pDoc->GetStatusCenter().RemoveByIndex(index);
 }
@@ -586,7 +586,7 @@ CEAFStatusItem* CEAFDocProxyAgent::GetByID(StatusItemIDType id)
    return m_pDoc->GetStatusCenter().GetByID(id);
 }
 
-CEAFStatusItem* CEAFDocProxyAgent::GetByIndex(CollectionIndexType index)
+CEAFStatusItem* CEAFDocProxyAgent::GetByIndex(IndexType index)
 {
    return m_pDoc->GetStatusCenter().GetByIndex(index);
 }
@@ -601,7 +601,7 @@ eafTypes::StatusSeverityType CEAFDocProxyAgent::GetSeverity()
    return m_pDoc->GetStatusCenter().GetSeverity();
 }
 
-CollectionIndexType CEAFDocProxyAgent::Count()
+IndexType CEAFDocProxyAgent::Count()
 {
    return m_pDoc->GetStatusCenter().Count();
 }

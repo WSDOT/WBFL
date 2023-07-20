@@ -23,8 +23,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Roark/RoarkLib.h>
-#include <System\dllTest.h>
-#include <Roark/UnitTest.h>
 
 
 // Every DLL has an entry point DllEntryPoint
@@ -33,10 +31,4 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
                            LPVOID    /*plvReserved*/)
 {
     return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-   return WBFL::Beams::UnitTest::TestMe(rlog);
 }

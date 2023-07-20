@@ -75,7 +75,7 @@ HRESULT CItemDataManager::RemoveItemData(BSTR name)
    return S_OK;
 }
 
-HRESULT CItemDataManager::GetItemDataCount(CollectionIndexType* count)
+HRESULT CItemDataManager::GetItemDataCount(IndexType* count)
 {
    CHECK_RETVAL(count);
 

@@ -27,63 +27,25 @@
 #include <Lrfd\VersionMgr.h>
 #include <MathEx.h>
 
-/****************************************************************************
-CLASS
-   lrfdLoadModifier
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdLoadModifier::lrfdLoadModifier()
-{
-   m_Ductility  = 1.0;
-   m_Redundancy = 1.0;
-   m_Importance = 1.0;
-   m_DuctilityLevel = Normal;
-   m_ImportanceLevel = Normal;
-   m_RedundancyLevel = Normal;
-}
-
-lrfdLoadModifier::lrfdLoadModifier(const lrfdLoadModifier& rOther)
-{
-   MakeCopy(rOther);
-}
-
-lrfdLoadModifier::~lrfdLoadModifier()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdLoadModifier& lrfdLoadModifier::operator= (const lrfdLoadModifier& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-Float64 lrfdLoadModifier::LoadModifier(lrfdTypes::LimitState ls,lrfdTypes::Optimization opt) const
+Float64 LoadModifier::GetLoadModifier(LimitState ls,Optimization opt) const
 {
    Float64 n;
-   if ( ls == lrfdTypes::StrengthI   ||
-        ls == lrfdTypes::StrengthII  ||
-        ls == lrfdTypes::StrengthIII ||
-        ls == lrfdTypes::StrengthIV )
+   if ( ls == LimitState::StrengthI   ||
+        ls == LimitState::StrengthII  ||
+        ls == LimitState::StrengthIII ||
+        ls == LimitState::StrengthIV )
    {
       n = m_Ductility * m_Importance * m_Redundancy;
 
-      if ( lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994 )
+      if ( LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEdition1994 )
       {
          n = max(n,0.95);
       }
       else
       {
-         if ( opt == lrfdTypes::Max )
+         if ( opt == Optimization::Max )
          {
             n = max(n,0.95);
          }
@@ -102,10 +64,9 @@ Float64 lrfdLoadModifier::LoadModifier(lrfdTypes::LimitState ls,lrfdTypes::Optim
    return n;
 }
 
-//======================== ACCESS     =======================================
-void set_load_modifiers(lrfdLoadModifier::Level level,Float64 np,Float64* pn)
+void set_load_modifiers(LoadModifier::Level level,Float64 np,Float64* pn)
 {
-   if ( level == lrfdLoadModifier::Normal )
+   if ( level == LoadModifier::Level::Normal )
    {
       *pn = 1.0;
    }
@@ -113,7 +74,7 @@ void set_load_modifiers(lrfdLoadModifier::Level level,Float64 np,Float64* pn)
    {
       if ( IsZero(np) )
       {
-         if ( level == lrfdLoadModifier::High )
+         if ( level == LoadModifier::Level::High )
             *pn = 1.05;
          else
             *pn = 0.95;
@@ -125,108 +86,73 @@ void set_load_modifiers(lrfdLoadModifier::Level level,Float64 np,Float64* pn)
    }
 }
 
-void lrfdLoadModifier::SetDuctilityFactor(Level level,Float64 nd)
+void LoadModifier::SetDuctilityFactor(Level level,Float64 nd)
 {
    m_DuctilityLevel = level;
    set_load_modifiers(level,nd,&m_Ductility);
    ASSERTVALID;
 }
 
-Float64 lrfdLoadModifier::GetDuctilityFactor() const
+Float64 LoadModifier::GetDuctilityFactor() const
 {
    return m_Ductility;
 }
 
-lrfdLoadModifier::Level lrfdLoadModifier::GetDuctilityLevel() const
+LoadModifier::Level LoadModifier::GetDuctilityLevel() const
 {
    return m_DuctilityLevel;
 }
 
-void lrfdLoadModifier::SetImportanceFactor(Level level,Float64 ni)
+void LoadModifier::SetImportanceFactor(Level level,Float64 ni)
 {
    m_ImportanceLevel = level;
    set_load_modifiers(level,ni,&m_Importance);
    ASSERTVALID;
 }
 
-Float64 lrfdLoadModifier::GetImportanceFactor() const
+Float64 LoadModifier::GetImportanceFactor() const
 {
    return m_Importance;
 }
 
-lrfdLoadModifier::Level lrfdLoadModifier::GetImportanceLevel() const
+LoadModifier::Level LoadModifier::GetImportanceLevel() const
 {
    return m_ImportanceLevel;
 }
 
-void lrfdLoadModifier::SetRedundancyFactor(Level level,Float64 nr)
+void LoadModifier::SetRedundancyFactor(Level level,Float64 nr)
 {
    m_RedundancyLevel = level;
    set_load_modifiers(level,nr,&m_Redundancy);
    ASSERTVALID;
 }
 
-Float64 lrfdLoadModifier::GetRedundancyFactor() const
+Float64 LoadModifier::GetRedundancyFactor() const
 {
    return m_Redundancy;
 }
 
-lrfdLoadModifier::Level lrfdLoadModifier::GetRedundancyLevel() const
+LoadModifier::Level LoadModifier::GetRedundancyLevel() const
 {
    return m_RedundancyLevel;
 }
 
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdLoadModifier::MakeCopy(const lrfdLoadModifier& rOther)
-{
-   // Add copy code here...
-   m_Ductility  = rOther.m_Ductility;
-   m_Redundancy = rOther.m_Redundancy;
-   m_Importance = rOther.m_Importance;
-   m_DuctilityLevel  = rOther.m_DuctilityLevel;
-   m_ImportanceLevel = rOther.m_ImportanceLevel;
-   m_RedundancyLevel = rOther.m_RedundancyLevel;
-}
-
-void lrfdLoadModifier::MakeAssignment(const lrfdLoadModifier& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool is_valid(lrfdLoadModifier::Level level,Float64 n)
+bool is_valid(LoadModifier::Level level,Float64 n)
 {
-   if ( level == lrfdLoadModifier::Normal && IsEqual(n,1.0) )
+   if ( level == LoadModifier::Level::Normal && IsEqual(n,1.0) )
       return true;
 
-   if ( level == lrfdLoadModifier::Low && !(n < 0.95) )
+   if ( level == LoadModifier::Level::Low && !(n < 0.95) )
       return true;
 
-   if ( level == lrfdLoadModifier::High && !(n < 1.05) )
+   if ( level == LoadModifier::Level::High && !(n < 1.05) )
       return true;
 
    return false;
 }
 
-bool lrfdLoadModifier::AssertValid() const
+bool LoadModifier::AssertValid() const
 {
    if ( !is_valid(m_DuctilityLevel,m_Ductility) )
       return false;
@@ -239,166 +165,4 @@ bool lrfdLoadModifier::AssertValid() const
 
    return true;
 }
-
-void lrfdLoadModifier::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdLoadModifier" << WBFL::Debug::endl;
-   os << "m_Ductility  = " << m_Ductility << WBFL::Debug::endl;
-   os << "m_Redundancy = " << m_Redundancy << WBFL::Debug::endl;
-   os << "m_Importance = " << m_Importance << WBFL::Debug::endl;
-   os << "m_DuctilityLevel  = " << m_DuctilityLevel << WBFL::Debug::endl;
-   os << "m_ImportanceLevel = " << m_ImportanceLevel << WBFL::Debug::endl;
-   os << "m_RedundancyLevel = " << m_RedundancyLevel << WBFL::Debug::endl;
-}
 #endif // _DEBUG
-
-#if defined _UNITTEST
-#include <Lrfd\AutoVersion.h>
-bool lrfdLoadModifier::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdLoadModifier");
-
-   lrfdAutoVersion av;
-
-   lrfdLoadModifier lm;
-
-   // Test First Edition Implementation
-   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition1994 );
-   lm.SetDuctilityFactor( lrfdLoadModifier::High );
-   lm.SetImportanceFactor( lrfdLoadModifier::High );
-   lm.SetRedundancyFactor( lrfdLoadModifier::High );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI), 1.157625 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Min), 1.157625 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueII,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Max), 1.157625 ) );
-
-   lm.SetDuctilityFactor( lrfdLoadModifier::Normal );
-   lm.SetImportanceFactor( lrfdLoadModifier::Normal );
-   lm.SetRedundancyFactor( lrfdLoadModifier::Normal );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI), 1.0 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Min), 1.0 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Max), 1.0 ) );
-
-   lm.SetDuctilityFactor( lrfdLoadModifier::Low );
-   lm.SetImportanceFactor( lrfdLoadModifier::Low );
-   lm.SetRedundancyFactor( lrfdLoadModifier::Low );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI), 0.95 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Min), 0.95 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Max), 0.95 ) );
-
-   lm.SetDuctilityFactor( lrfdLoadModifier::Low, 0.98 );
-   lm.SetImportanceFactor( lrfdLoadModifier::Low, 0.98 );
-   lm.SetRedundancyFactor( lrfdLoadModifier::Normal, 10.0 ); // Should ignore the 10.0
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI), 0.9604 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Min), 0.9604 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Max), 0.9604 ) );
-
-
-   // Test First Edition + 1996, 1997 Interims and Second Edition Implementation
-   lrfdVersionMgr::SetVersion( lrfdVersionMgr::SecondEdition1998 );
-   lm.SetDuctilityFactor( lrfdLoadModifier::High );
-   lm.SetImportanceFactor( lrfdLoadModifier::High );
-   lm.SetRedundancyFactor( lrfdLoadModifier::High );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Min), 0.863837598531 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Max), 1.157625 ) );
-
-   lm.SetDuctilityFactor( lrfdLoadModifier::Normal );
-   lm.SetImportanceFactor( lrfdLoadModifier::Normal );
-   lm.SetRedundancyFactor( lrfdLoadModifier::Normal );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Min), 1.0 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Max), 1.0 ) );
-
-   lm.SetDuctilityFactor( lrfdLoadModifier::Low );
-   lm.SetImportanceFactor( lrfdLoadModifier::Low );
-   lm.SetRedundancyFactor( lrfdLoadModifier::Low );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Min), 1.0 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Max), 0.95 ) );
-
-   lm.SetDuctilityFactor( lrfdLoadModifier::Low, 0.98 );
-   lm.SetImportanceFactor( lrfdLoadModifier::Low, 0.98 );
-   lm.SetRedundancyFactor( lrfdLoadModifier::Normal, 10.0 ); // Should ignore the 10.0
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Min), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Min), 1.0 ) );
-
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ServiceI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::ExtremeEventI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::FatigueI,lrfdTypes::Max), 1.0 ) );
-   TRY_TESTME( IsEqual( lm.LoadModifier(lrfdTypes::StrengthI,lrfdTypes::Max), 0.9604 ) );
-
-   TESTME_EPILOG("LoadModifier");
-}
-#endif // _UNITTEST

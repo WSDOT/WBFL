@@ -64,7 +64,7 @@ HRESULT CSegmentItem::PutRefSegment(ISegment *newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CSegmentItem::get_RelPosition(CollectionIndexType *pVal)
+STDMETHODIMP CSegmentItem::get_RelPosition(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_RelPosition;

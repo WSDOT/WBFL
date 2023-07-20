@@ -758,7 +758,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
       *pPara << _T("Impact applied to crown slope and superelevation analysis") << rptNewLine;
       break;
    default:
-      ATLASSERT(false); // is there a new type?
+      CHECK(false); // is there a new type?
    }
 
    if (pDisplayUnits->ComponentDim.UnitOfMeasure.UnitTag() == WBFL::Units::Measure::Inch.UnitTag())
@@ -1316,8 +1316,8 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fps[+Corner::TopLeft], sectionResult.fps[+Corner::TopRight],0.001));
-         ATLASSERT(IsEqual(sectionResult.fps[+Corner::BottomLeft], sectionResult.fps[+Corner::BottomRight], 0.001));
+         CHECK(IsEqual(sectionResult.fps[+Corner::TopLeft], sectionResult.fps[+Corner::TopRight], 0.001));
+         CHECK(IsEqual(sectionResult.fps[+Corner::BottomLeft], sectionResult.fps[+Corner::BottomRight], 0.001));
          (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::TopLeft]);
          (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::BottomLeft]);
       }
@@ -1427,8 +1427,8 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fg[+Corner::TopLeft], sectionResult.fg[+Corner::TopRight]));
-         ATLASSERT(IsEqual(sectionResult.fg[+Corner::BottomLeft], sectionResult.fg[+Corner::BottomRight]));
+         CHECK(IsEqual(sectionResult.fg[+Corner::TopLeft], sectionResult.fg[+Corner::TopRight]));
+         CHECK(IsEqual(sectionResult.fg[+Corner::BottomLeft], sectionResult.fg[+Corner::BottomRight]));
          (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::TopLeft]);
          (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::BottomLeft]);
       }
@@ -2270,7 +2270,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             }
             else
             {
-               ATLASSERT(0 <= pResults->ThetaEq[+slope][+impactDir[impactCase]][+wind]); // no lateral loads, theta_eq always > 0
+               CHECK(0 <= pResults->ThetaEq[+slope][+impactDir[impactCase]][+wind]); // no lateral loads, theta_eq always > 0
                if (pResults->bRolloverStability[+slope][+impactDir[impactCase]][+wind])
                {
                   *pPara << THETA_ROLLOVER << _T(" = [");
@@ -2329,7 +2329,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             }
             else
             {
-               ATLASSERT(IsZero(pResults->FsRollover[+slope][+impactDir[impactCase]][+wind]));
+               CHECK(IsZero(pResults->FsRollover[+slope][+impactDir[impactCase]][+wind]));
                *pPara << FS_R << _T(" = ") << scalar.SetValue(pResults->FsRollover[+slope][+impactDir[impactCase]][+wind]) << rptNewLine;
             }
 
@@ -2357,7 +2357,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
          if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
          {
             rptRcTable* pRebarTable = nullptr;
-            std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
+            std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(WBFL::LRFD::LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
             ColumnIndexType nColumns = (bSimpleFormat ? 8 : 19);
             if (bReportTensileForceDetails)
             {

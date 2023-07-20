@@ -120,11 +120,6 @@ namespace WBFL
          /// @return Returns a pair in the format (Offset,Elevation). Offset is the offset from the Alignment in the plane of this SurfaceProfile. Elevation is the elevation of the SurfacePoint
          std::pair<Float64,Float64> GetSurfacePointOffsetAndElevation(IndexType surfacePointIdx) const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          std::weak_ptr<const Surface> m_Surface;
          Station m_Station;

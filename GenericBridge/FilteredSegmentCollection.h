@@ -31,7 +31,7 @@
 #include "WBFLComCollections.h"
 #include "resource.h"       // main symbols
 
-using VectorImpl = CComVectorCollection<IFilteredSegmentCollection, ISegment, IEnumSegment, &IID_IEnumSegment,CollectionIndexType>;
+using VectorImpl = CComVectorCollection<IFilteredSegmentCollection, ISegment, IEnumSegment, &IID_IEnumSegment,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFilteredSegmentCollection

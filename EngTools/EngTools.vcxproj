@@ -191,7 +191,6 @@
     <ClCompile Include="PrandtlMembraneSolution.cpp" />
     <ClCompile Include="PrandtlMembraneSolver.cpp" />
     <ClCompile Include="UniformFDMesh.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\EngTools\AutoLib.h" />
@@ -203,7 +202,6 @@
     <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolution.h" />
     <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolver.h" />
     <ClInclude Include="..\Include\EngTools\UniformFDMesh.h" />
-    <ClInclude Include="..\Include\EngTools\UnitTest.h" />
     <ClInclude Include="FDMeshGenerator.h" />
   </ItemGroup>
   <ItemGroup>

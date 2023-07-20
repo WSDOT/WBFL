@@ -615,7 +615,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CFlangedGirderEndBlockSegment::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CFlangedGirderEndBlockSegment::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }

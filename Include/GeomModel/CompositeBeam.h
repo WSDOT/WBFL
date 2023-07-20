@@ -34,87 +34,90 @@ namespace WBFL
 {
    namespace Geometry
    {
-/// A slab-on-girder composite beam
+      /// A slab-on-girder composite beam
       /// \image html CompositeBeam/CompositeBeam.gif
-class GEOMMODELCLASS CompositeBeam
-{
-public:
-   CompositeBeam();
-   CompositeBeam(const CompositeBeam& other);
-   virtual ~CompositeBeam();
+      class GEOMMODELCLASS CompositeBeam
+      {
+      public:
+         CompositeBeam();
+         CompositeBeam(const CompositeBeam& other);
+         virtual ~CompositeBeam();
 
-   CompositeBeam& operator=(const CompositeBeam& other);
+         CompositeBeam& operator=(const CompositeBeam& other);
 
-   void SetBeam(Shape& beam);
-   void SetBeam(std::unique_ptr<Shape>&& beam);
-   Shape& GetBeam();
-   const Shape& GetBeam() const;
+         void SetBeam(const Shape& beam);
+         void SetBeam(std::unique_ptr<Shape>&& beam);
+         Shape& GetBeam();
+         const Shape& GetBeam() const;
 
-   void SetEffectiveSlabWidth(Float64 wEff);
-   Float64 GetEffectiveSlabWidth() const;
+         /// @brief Sets the effective slab width used when computing section properties
+         /// @param wEff 
+         void SetEffectiveSlabWidth(Float64 wEff);
+         Float64 GetEffectiveSlabWidth() const;
 
-   void SetTributarySlabWidth(Float64 wTrib);
-   Float64 GetTributarySlabWidth() const;
+         /// @brief Sets the tributary slab width used when computing mass properties
+         /// @param wTrib 
+         void SetTributarySlabWidth(Float64 wTrib);
+         Float64 GetTributarySlabWidth() const;
 
-   void SetGrossSlabDepth(Float64 tSlab);
-   Float64 GetGrossSlabDepth() const;
+         /// @brief Sets the total cast depth of the slab, used when computing mass properties
+         /// @param tSlab 
+         void SetGrossSlabDepth(Float64 tSlab);
+         Float64 GetGrossSlabDepth() const;
 
-   void SetSacrificialDepth(Float64 tSac);
-   Float64 GetSacrificialDepth() const;
+         /// @brief Sets the sacrificial depth that is deducted from the gross depth to yield the structural depth. THe structural depth is used when computing section properties.
+         /// @param tSac 
+         void SetSacrificialDepth(Float64 tSac);
+         Float64 GetSacrificialDepth() const;
 
-   void SetHaunchDepth(Float64 tHaunch);
-   Float64 GetHaunchDepth() const;
+         void SetHaunchDepth(Float64 tHaunch);
+         Float64 GetHaunchDepth() const;
 
-   void SetHaunchWidth(Float64 wHaunch);
-   Float64 GetHaunchWidth() const;
+         void SetHaunchWidth(Float64 wHaunch);
+         Float64 GetHaunchWidth() const;
 
-   void SetSlabE(Float64 modE);
-   Float64 GetSlabE() const;
+         void SetSlabE(Float64 modE);
+         Float64 GetSlabE() const;
 
-   void SetSlabDensity(Float64 d);
-   Float64 GetSlabDensity() const;
+         void SetSlabDensity(Float64 d);
+         Float64 GetSlabDensity() const;
 
-   void SetBeamE(Float64 modE);
-   Float64 GetBeamE() const;
+         void SetBeamE(Float64 modE);
+         Float64 GetBeamE() const;
 
-   void SetBeamDensity(Float64 d);
-   Float64 GetBeamDensity() const;
+         void SetBeamDensity(Float64 d);
+         Float64 GetBeamDensity() const;
 
-   void SetHookPoint(std::shared_ptr<Point2d>& hookPnt);
-   void SetHookPoint(const Point2d& hookPnt);
-   std::shared_ptr<Point2d>& GetHookPoint();
-   const std::shared_ptr<Point2d>& GetHookPoint() const;
+         void SetHookPoint(std::shared_ptr<Point2d>& hookPnt);
+         void SetHookPoint(const Point2d& hookPnt);
+         std::shared_ptr<Point2d>& GetHookPoint();
+         const std::shared_ptr<Point2d>& GetHookPoint() const;
 
-   Rect2d GetBoundingBox(bool bExcludeNonstructuralComponents) const;
-   std::unique_ptr<Section> CreateClippedSection(const Line2d& line, Line2d::Side side) const;
-   std::unique_ptr<Section> CreateClippedSection(const Rect2d& r, Section::ClipRegion region) const;
+         Rect2d GetBoundingBox(bool bExcludeNonstructuralComponents) const;
+         std::unique_ptr<Section> CreateClippedSection(const Line2d& line, Line2d::Side side) const;
+         std::unique_ptr<Section> CreateClippedSection(const Rect2d& r, Section::ClipRegion region) const;
 
-   /// Returns the first moment of area of the deck slab
-   Float64 GetQslab() const;
+         /// Returns the first moment of area of the deck slab
+         Float64 GetQslab() const;
 
-   /// Returns the first moment of area at the specified elevation
-   /// \param y distance from bottom of section
-   Float64 GetQ(Float64 y) const;
+         /// Returns the first moment of area at the specified elevation
+         /// \param y distance from bottom of section
+         Float64 GetQ(Float64 y) const;
    
-   ElasticProperties GetElasticProperties() const;
-   MassProperties GetMassProperties() const;
+         /// @brief Returns the elastic properties of the beam
+         /// @return 
+         ElasticProperties GetElasticProperties() const;
 
-#if defined _DEBUG
-   virtual bool AssertValid() const;
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
+         /// @brief Returns the mass properties of the beam
+         /// @return 
+         MassProperties GetMassProperties() const;
 
-#if defined _UNITTEST
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
+      private:
+         Section m_Section;
 
-private:
-   Section m_Section;
-
-   void Init();
-   void Copy(const CompositeBeam& other);
-   void UpdateShapeLocations();
-};
-
+         void Init();
+         void Copy(const CompositeBeam& other);
+         void UpdateShapeLocations();
+      };
    }; // Geometry
 }; // WBFL

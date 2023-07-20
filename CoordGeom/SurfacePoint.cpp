@@ -108,15 +108,3 @@ WBFL::Geometry::Point3d SurfacePoint::GetPoint() const
 {
    return WBFL::Geometry::Point3d(m_Location, m_Elevation);
 }
-
-#if defined _UNITTEST
-bool SurfacePoint::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SurfacePoint");
-   auto point = SurfacePoint::Create(0.00, 10.0, 10.0, 50.0, WBFL::Geometry::Point2d(50, 50));
-   TRY_TESTME(point->GetPoint() == WBFL::Geometry::Point3d(50, 50, 50));
-   TESTME_EPILOG("SurfacePoint");
-}
-#endif // _UNITTEST
-
-

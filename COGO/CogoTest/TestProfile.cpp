@@ -130,7 +130,7 @@ void CTestProfile::Test1()
    //
    // Test Count
    //
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(profile->get_ProfileElementCount(nullptr),E_POINTER);
    TRY_TEST(profile->get_ProfileElementCount(&count),S_OK);
    TRY_TEST(count,2);

@@ -248,7 +248,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
             rebarPattern->get_IsLumped(&bLumped);
 
             Float64 X = 0;
-            CollectionIndexType nBars = 1;
+            IndexType nBars = 1;
 
             // If the rebar is "Lumped", the nominal area is Area/Length
             // Clone the rebar object, multiple nominal area by effective flange width
@@ -275,12 +275,12 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
                else
                {
                   Float64 fnBars = rebarSectionWidth / spacing;
-                  nBars = (CollectionIndexType)::Round(fnBars); // round to nearest integer
+                  nBars = (IndexType)::Round(fnBars); // round to nearest integer
                }
                X = -1.0*nBars*spacing/2.0;
             }
 
-            for ( CollectionIndexType barIdx = 0; barIdx < nBars; barIdx++ )
+            for ( IndexType barIdx = 0; barIdx < nBars; barIdx++ )
             {
                CComPtr<IPoint2d> point;
                point.CoCreateInstance(CLSID_Point2d);

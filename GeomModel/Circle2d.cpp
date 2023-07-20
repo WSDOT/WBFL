@@ -35,6 +35,7 @@ Circle2d::Circle2d(const Point2d& center, Float64 radius) :
    m_Radius(radius),
    m_Center(center)
 {
+   PRECONDITION(0 <= radius);
 }
 
 Circle2d::Circle2d(const Point2d& p1,const Point2d& p2)
@@ -92,14 +93,10 @@ bool Circle2d::operator!=(const Circle2d& other) const
    return !(*this == other);
 }
 
-void Circle2d::SetRadius(Float64 r)
+void Circle2d::SetRadius(Float64 radius)
 {
-   m_Radius = r;
-}
-
-Float64& Circle2d::GetRadius()
-{
-   return m_Radius;
+   PRECONDITION(0 <= radius);
+   m_Radius = radius;
 }
 
 Float64 Circle2d::GetRadius() const
@@ -132,46 +129,3 @@ bool Circle2d::IsPointOnPerimeter(const Point2d& p) const
    Float64 dist = m_Center.Distance(p);
    return IsEqual(dist,m_Radius);
 }
-
-#if defined _DEBUG
-bool Circle2d::AssertValid() const
-{
-   return true;
-}
-
-void Circle2d::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for Circle2d") << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool Circle2d::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Circle2d");
-
-   // Valid three point Circle2d
-   Circle2d c3p(Point2d(0,0),Point2d(10,0),Point2d(5,5));
-   TRY_TESTME( c3p.GetCenter() == Point2d(5,0) );
-   TRY_TESTME( IsEqual(c3p.GetRadius(),5.0) );
-
-   // Invalid three point Circle2d
-   try
-   {
-      Circle2d c3pi(Point2d(0, 0), Point2d(0, 0), Point2d(0, 0));
-      TRY_TESTME(false);
-   }
-   catch (...)
-   {
-      TRY_TESTME(true);
-   }
-
-   // Two point Circle2d
-   Circle2d c2p(Point2d(0,0),Point2d(10,0));
-   TRY_TESTME( c2p.GetCenter() == Point2d(5,0) );
-   TRY_TESTME( IsEqual(c2p.GetRadius(),5.0) );
-   TRY_TESTME( c2p.IsPointOnPerimeter(Point2d(5,-5)) == true );
-
-   TESTME_EPILOG("Circle2d");
-}
-#endif // _UNITTEST

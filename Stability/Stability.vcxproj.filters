@@ -40,9 +40,6 @@
     <ClCompile Include="StabilityProblemImp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LiftingTensionStressLimit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -124,9 +121,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Stability\StabilityTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Stability\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Stability\ReportingConstants.h">

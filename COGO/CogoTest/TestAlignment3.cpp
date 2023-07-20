@@ -67,7 +67,7 @@ void CTestAlignment3::Test1()
    TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),nullptr), E_POINTER);
    TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),&subAlignment), S_OK);
 
-   CollectionIndexType nElements;
+   IndexType nElements;
    subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,2);
@@ -167,7 +167,7 @@ void CTestAlignment3::Test2()
    TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),nullptr), E_POINTER);
    TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),&subAlignment), S_OK);
 
-   CollectionIndexType nElements;
+   IndexType nElements;
    subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,2);
@@ -279,7 +279,7 @@ void CTestAlignment3::Test3()
 
    CompareAlignments(alignment,subAlignment,-10,300,10);
 
-   CollectionIndexType nElements;
+   IndexType nElements;
    subAlignment->get_Count(&nElements);
 
    TRY_TEST(nElements,2);

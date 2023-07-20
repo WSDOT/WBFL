@@ -111,7 +111,7 @@ void CTestLoadCase::Test()
    TRY_TEST( vint.vt , VT_I4);
 
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST( pLoadCase->get_LoadGroupCount(&cnt), S_OK );
    TRY_TEST(cnt, 0);
 

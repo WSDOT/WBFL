@@ -29,25 +29,14 @@
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
-/****************************************************************************
-CLASS
-   lrfdApproximateLosses
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdApproximateLosses::lrfdApproximateLosses()
-{
-}
-
-lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
+ApproximateLosses::ApproximateLosses(BeamType beamType,
                          Float64 shipping,
                          Float64 ppr,
                          Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
-                         lrfdLosses::SectionPropertiesType sectionProperties,
+                         Losses::SectionPropertiesType sectionProperties,
                          WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
                          WBFL::Materials::PsStrand::Type typePerm, // strand type
                          WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
@@ -59,9 +48,9 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         const WBFL::Geometry::Point2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermRelease, // eccentricity of permanent ps strands with respect to CG of girder
                          const WBFL::Geometry::Point2d& epermFinal,
-                         const WBFL::Geometry::Point2d& etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& etemp, // eccentricity of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,
@@ -107,7 +96,7 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          bool bIgnoreInitialRelaxation,
                          bool bValidateLosses
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl1,Msidl2, Ag,Ixx,Iyy,Ixy,Ybg,Ac1,Ic1,Ybc1,Ac2,Ic2,Ybc2,An,Ixxn,Iyyn,Ixyn,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateLosses)
+Losses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl1,Msidl2, Ag,Ixx,Iyy,Ixy,Ybg,Ac1,Ic1,Ybc1,Ac2,Ic2,Ybc2,An,Ixxn,Iyyn,Ixyn,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateLosses)
 
 {
    m_ConcreteType = concreteType;
@@ -116,16 +105,12 @@ lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeT
    m_BeamType = beamType;
 }
 
-lrfdApproximateLosses::~lrfdApproximateLosses()
-{
-}
-
-Float64 lrfdApproximateLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
+Float64 ApproximateLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
 {
    return PermanentStrand_TimeDependentLossesAtShipping();
 }
 
-Float64 lrfdApproximateLosses::PermanentStrand_TimeDependentLossesAtShipping() const
+Float64 ApproximateLosses::PermanentStrand_TimeDependentLossesAtShipping() const
 {
    if ( m_Shipping < 0 )
    {
@@ -140,17 +125,17 @@ Float64 lrfdApproximateLosses::PermanentStrand_TimeDependentLossesAtShipping() c
    }
 }
 
-Float64 lrfdApproximateLosses::TimeDependentLossesBeforeDeck() const
+Float64 ApproximateLosses::TimeDependentLossesBeforeDeck() const
 {
    return TimeDependentLosses();
 }
 
-Float64 lrfdApproximateLosses::TimeDependentLossesAfterDeck() const
+Float64 ApproximateLosses::TimeDependentLossesAfterDeck() const
 {
    return 0;
 }
 
-Float64 lrfdApproximateLosses::TimeDependentLosses() const
+Float64 ApproximateLosses::TimeDependentLosses() const
 {
    if ( m_IsDirty )
    {
@@ -160,7 +145,7 @@ Float64 lrfdApproximateLosses::TimeDependentLosses() const
    return m_dfpLT;
 }
 
-Float64 lrfdApproximateLosses::PermanentStrand_Final() const
+Float64 ApproximateLosses::PermanentStrand_Final() const
 {
    // need to over ride this method because shipping losses could be a lump sum and it
    // doesn't have to be consistent with the other losses
@@ -176,7 +161,7 @@ Float64 lrfdApproximateLosses::PermanentStrand_Final() const
    return loss;
 }
 
-Float64 lrfdApproximateLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
+Float64 ApproximateLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
    {
@@ -187,7 +172,7 @@ Float64 lrfdApproximateLosses::PermanentStrand_BeforeTemporaryStrandRemoval() co
    return loss;
 }
 
-Float64 lrfdApproximateLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
+Float64 ApproximateLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
    {
@@ -198,11 +183,11 @@ Float64 lrfdApproximateLosses::PermanentStrand_AfterTemporaryStrandRemoval() con
    return loss;
 }
 
-void lrfdApproximateLosses::ValidateParameters() const
+void ApproximateLosses::ValidateParameters() const
 {
 }
 
-void lrfdApproximateLosses::UpdateLongTermLosses() const
+void ApproximateLosses::UpdateLongTermLosses() const
 {
    if ( IsZero( m_FpjPerm ) )
    {
@@ -212,12 +197,13 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
    else
    {
       // approximate loss method was removed from LRFD 5th Edition, 2010
-      CHECK( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FifthEdition2010 );
+      if( LRFDVersionMgr::Version::FifthEdition2010 <= LRFDVersionMgr::GetVersion())
+         WBFL_LRFD_THROW(XPsLosses, Specification);
 
       Float64 losses;
       const WBFL::Units::Stress* p_unit;
 
-      bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
+      bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
 
       if ( is_si )
       {
@@ -229,7 +215,7 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
       }
 
       Float64 lowRelaxReduction = 0.0;
-      if ( m_BeamType == IBeam )
+      if ( m_BeamType == BeamType::IBeam )
       {
          Float64 A,B; // Coefficients in the loss equation
          A = is_si ? 230. : 33.;
@@ -241,25 +227,25 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
 
          losses = A*(1.0 - 0.15*(fc - B)/B) + B*m_PPR;
       }
-      else if ( m_BeamType == UBeam )
+      else if ( m_BeamType == BeamType::UBeam )
       {
          losses = (is_si ? 145. + 28*m_PPR : 21.0 + 4.0*m_PPR);
 
          lowRelaxReduction = is_si ? 28.0 : 4.0;
       }
-      else if ( m_BeamType == SolidSlab )
+      else if ( m_BeamType == BeamType::SolidSlab )
       {
          losses = (is_si ? 180. + 28.*m_PPR : 26.0 + 4.0*m_PPR);
 
          lowRelaxReduction = is_si ? 41.0 : 6.0;
       }
-      else if ( m_BeamType == BoxBeam )
+      else if ( m_BeamType == BeamType::BoxBeam )
       {
          losses = (is_si ? 130. + 28*m_PPR : 19.0 + 4.0*m_PPR);
 
          lowRelaxReduction = is_si ? 28.0 : 4.0;
       }
-      else if ( m_BeamType == SingleT )
+      else if ( m_BeamType == BeamType::SingleT )
       {
          Float64 A,B; // Coefficients in the loss equation
          A = is_si ? 230. : 33.;
@@ -296,67 +282,6 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
    m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION] = -1 * (deltaFcd_nc + deltaFcd_c);
 }
 
-void lrfdApproximateLosses::UpdateHaulingLosses() const
+void ApproximateLosses::UpdateHaulingLosses() const
 {
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-#if defined _UNITTEST
-#include <Units\System.h>
-#include <Lrfd\AutoVersion.h>
-bool lrfdApproximateLosses::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdApproximateLosses");
-
-//   lrfdAutoVersion av;
-//
-//   Float64 Fpj   = WBFL::Units::ConvertToSysUnits( 0.80*1860, WBFL::Units::Measure::MPa );
-//   Float64 Ag    = WBFL::Units::ConvertToSysUnits( 486051, WBFL::Units::Measure::Millimeter2 );
-//   Float64 Ig    = WBFL::Units::ConvertToSysUnits( 126011e6, WBFL::Units::Measure::Millimeter4 );
-//   Float64 Ybg   = WBFL::Units::ConvertToSysUnits( 608, WBFL::Units::Measure::Millimeter );
-//   Float64 e     = WBFL::Units::ConvertToSysUnits( 489, WBFL::Units::Measure::Millimeter );
-//   Float64 Aps   = WBFL::Units::ConvertToSysUnits( 5133, WBFL::Units::Measure::Millimeter2 );
-//   Float64 Mdlg  = WBFL::Units::ConvertToSysUnits( 1328, WBFL::Units::Measure::KilonewtonMeter );
-//   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
-//   Float64 Fc    = WBFL::Units::ConvertToSysUnits( 48, WBFL::Units::Measure::MPa );
-//   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
-//   Float64 PPR   = 1.0;
-//
-//   lrfdApproximateLosses loss( WBFL::Materials::PsStrand::Grade::Gr1860,
-//                               WBFL::Materials::PsStrand::Type::LowRelaxation,
-//                               lrfdApproximateLosses::IBeam,
-//                               Fpj, 0, Ag, Ig, Ybg, e, e, e, Aps, 0, Mdlg, 1.0, Eci, Fc, PPR, t );
-//
-//   lrfdVersionMgr::RegisterListener( &loss );
-//
-//   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition );
-//   Float64 loss1 = loss.ImmediatelyAfterXferLosses();
-//   TRY_TEST (  IsEqual( WBFL::Units::ConvertFromSysUnits(loss1,WBFL::Units::Measure::MPa),165.7,0.1) );
-//
-//   Float64 loss2 = loss.FinalLosses();
-//   TRY_TEST (  IsEqual(WBFL::Units::ConvertFromSysUnits(loss2,WBFL::Units::Measure::MPa),339.8,0.1) );
-//
-//   loss.SetFpj(1);
-//   bool bDidCatch = false;
-//   try
-//   {
-//      Float64 loss3 = loss.FinalLosses();
-//   }
-//   catch( const lrfdXPsLosses& e )
-//   {
-//      bDidCatch = true;
-//      TRY_TEST( bDidCatch );
-//      TRY_TEST( e.GetReasonCode() == lrfdXPsLosses::fpjOutOfRange );
-//   }
-//   TRY_TEST( bDidCatch );
-//
-//   lrfdVersionMgr::UnregisterListener( &loss );
-//
-   TESTME_EPILOG("lrfdApproximateLosses");
-}
-
-#endif // _UNITTEST
-
-

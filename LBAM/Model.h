@@ -173,10 +173,10 @@ public:
 
 // ISuperstructureMembersEvents
    STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* item, BSTR stage, ChangeType change) override;
-   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType index) override;
-   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType index) override;
-	STDMETHOD(OnSuperstructureMembersMoveTo)(CollectionIndexType from, CollectionIndexType to) override;
-	STDMETHOD(OnSuperstructureMembersCopyTo)(CollectionIndexType from, CollectionIndexType to) override;
+   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, IndexType index) override;
+   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, IndexType index) override;
+	STDMETHOD(OnSuperstructureMembersMoveTo)(IndexType from, IndexType to) override;
+	STDMETHOD(OnSuperstructureMembersCopyTo)(IndexType from, IndexType to) override;
 	STDMETHOD(OnSuperstructureMembersReverse)() override;
 	STDMETHOD(OnSuperstructureMembersOffset)() override;
 
@@ -258,10 +258,10 @@ public:
 
 // IDistributionFactorsEvents
    STDMETHOD(OnDistributionFactorsChanged)() override;
-   STDMETHOD(OnDistributionFactorsAdded)(IDistributionFactorSegment* item, CollectionIndexType idx) override;
-   STDMETHOD(OnDistributionFactorsBeforeRemove)(IDistributionFactorSegment* item, CollectionIndexType idx) override;
-	STDMETHOD(OnDistributionFactorsMoveTo)(CollectionIndexType from, CollectionIndexType to) override;
-	STDMETHOD(OnDistributionFactorsCopyTo)(CollectionIndexType from, CollectionIndexType to) override;
+   STDMETHOD(OnDistributionFactorsAdded)(IDistributionFactorSegment* item, IndexType idx) override;
+   STDMETHOD(OnDistributionFactorsBeforeRemove)(IDistributionFactorSegment* item, IndexType idx) override;
+	STDMETHOD(OnDistributionFactorsMoveTo)(IndexType from, IndexType to) override;
+	STDMETHOD(OnDistributionFactorsCopyTo)(IndexType from, IndexType to) override;
 	STDMETHOD(OnDistributionFactorsReverse)() override;
 
 

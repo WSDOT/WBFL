@@ -57,19 +57,19 @@ class ModelStats
 {
 public:
    SpanIndexType NumSpans;
-   CollectionIndexType NumSuperstructureMembers;
+   IndexType NumSuperstructureMembers;
    SupportIndexType NumSupports;
    Float64 SpanLengths;
    Float64 MemberLengths;
    StageIndexType NumStages;
-   CollectionIndexType NumLoadGroups;
-   CollectionIndexType NumLoadCases;
-   CollectionIndexType NumLoadCombinations;
-   CollectionIndexType NumPointLoads;
-   CollectionIndexType NumDistributedLoads;
-   CollectionIndexType NumTemperatureLoads;
-   CollectionIndexType NumStrainLoads;
-   CollectionIndexType NumSettlementLoads;
+   IndexType NumLoadGroups;
+   IndexType NumLoadCases;
+   IndexType NumLoadCombinations;
+   IndexType NumPointLoads;
+   IndexType NumDistributedLoads;
+   IndexType NumTemperatureLoads;
+   IndexType NumStrainLoads;
+   IndexType NumSettlementLoads;
 
    bool operator==(const ModelStats& rother)
    {
@@ -751,7 +751,7 @@ void CTestModel::Test()
    CComPtr<IDistributionFactors> pgs;
    TRY_TEST(psm->get_DistributionFactors(&pgs), S_OK);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST(pgs->get_Count(&cnt), S_OK);
    TRY_TEST(cnt,0);
 
@@ -980,7 +980,7 @@ HRESULT CTestModel::OnModelChanged(ILBAMModel* Model, ChangeType change)
 
 void ComputeModelStatistics(ILBAMModel* pmodel, ModelStats* pstats)
 {
-   CollectionIndexType cnt = 0;
+   IndexType cnt = 0;
    Float64 len;
 
    CComPtr<ISuperstructureMembers> pssms;

@@ -132,7 +132,7 @@ void CAnalysisModel::BuildModel(BSTR bstrName)
    Float64 super_length;
    hr = pmembers->get_Length(&super_length);
 
-   CollectionIndexType super_cnt;
+   IndexType super_cnt;
    hr = pmembers->get_Count(&super_cnt);
 
    Float64 left_overhang;
@@ -353,11 +353,11 @@ void CAnalysisModel::GetStress(LoadGroupIDType lg_id, PoiIDType poiId, std::vect
       info.GetStressPoints(&left_sps, &right_sps);
       if (left_sps != nullptr)
       {
-         CollectionIndexType num_sps;
+         IndexType num_sps;
          hr = left_sps->get_Count(&num_sps);
          sLeft.reserve(num_sps);
 
-         for (CollectionIndexType isp = 0; isp<num_sps; isp++)
+         for (IndexType isp = 0; isp<num_sps; isp++)
          {
             CComPtr<IStressPoint> left_stress_point;
             hr = left_sps->get_Item(isp, &left_stress_point);
@@ -380,7 +380,7 @@ void CAnalysisModel::GetStress(LoadGroupIDType lg_id, PoiIDType poiId, std::vect
 
          sRight.reserve(num_sps);
 
-         for (CollectionIndexType isp = 0; isp<num_sps; isp++)
+         for (IndexType isp = 0; isp<num_sps; isp++)
          {
             CComPtr<IStressPoint> right_stress_point;
             hr = right_sps->get_Item(isp, &right_stress_point);
@@ -568,7 +568,7 @@ void CAnalysisModel::ApplyTemporarySupportReaction(LoadCaseIDType tempSupportLoa
       CComPtr<IFem2dJointLoadCollection> fem_joint_loads;
       fem_loading->get_JointLoads(&fem_joint_loads);
 
-      CollectionIndexType nLoads;
+      IndexType nLoads;
       fem_joint_loads->get_Count(&nLoads);
 
       LoadIDType jointLoadID = -(LoadIDType(nLoads) + LoadIDType(tempSupportLoadCaseID));
@@ -669,8 +669,8 @@ void CAnalysisModel::GetFemMembersForLBAMMember(MemberType mbrType, MemberIDType
       break;
    case mtSuperstructureMember:
       {
-         CollectionIndexType num_ssms = m_SuperstructureMemberEnds.size();
-         if (mbrId < 0 || num_ssms <= CollectionIndexType(mbrId) )
+         IndexType num_ssms = m_SuperstructureMemberEnds.size();
+         if (mbrId < 0 || num_ssms <= IndexType(mbrId) )
          {
             CComBSTR msg =CreateErrorMsg1L(IDS_E_SSM_NOT_EXIST, mbrId);
             THROW_LBAMA_MSG(SSM_NOT_EXIST,msg);
@@ -727,13 +727,13 @@ void CAnalysisModel::GetFemMembersForLBAMMember(MemberType mbrType, MemberIDType
 }
 
 
-void CAnalysisModel::GetFemMemberLocationAlongSSM( CollectionIndexType ssmIdx, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemMbrId, Float64* pfemLoc)
+void CAnalysisModel::GetFemMemberLocationAlongSSM( IndexType ssmIdx, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemMbrId, Float64* pfemLoc)
 {
    try
    {
       if ( !m_SuperstructureMemberElements.empty() )
       {
-         CollectionIndexType nSSMbrs = m_SuperstructureMemberEnds.size();
+         IndexType nSSMbrs = m_SuperstructureMemberEnds.size();
          if (ssmIdx < 0 || nSSMbrs <= ssmIdx)
          {
             THROW_HR(E_FAIL); // should already have been blocked
@@ -826,7 +826,7 @@ void CAnalysisModel::GetFemMemberLocationAlongMemberList( Float64 globalLoc, Flo
    CComPtr<IFem2dMemberCollection> members;
    m_pFem2d->get_Members(&members);
 
-   CollectionIndexType nMembers;
+   IndexType nMembers;
    members->get_Count(&nMembers);
 
    CComPtr<IFem2dJointCollection> joints;
@@ -1082,7 +1082,7 @@ void CAnalysisModel::GetFemMemberLocationAlongSupport(const ElementLayoutVec* pM
 
    try
    {
-      CollectionIndexType num_members = pMemberList->size();
+      IndexType num_members = pMemberList->size();
 
       // get length of support from fe model
       CComPtr<IFem2dMemberCollection> members;
@@ -1185,10 +1185,10 @@ void CAnalysisModel::ClearLoads()
    CComPtr<IFem2dLoadingCollection> fem_loadings;
    m_pFem2d->get_Loadings(&fem_loadings);
 
-   CollectionIndexType num_loadings;
+   IndexType num_loadings;
    fem_loadings->get_Count(&num_loadings);
 
-   for (CollectionIndexType ild = 0; ild<num_loadings; ild++)
+   for (IndexType ild = 0; ild<num_loadings; ild++)
    {
       CComPtr<IFem2dLoading> fem_loading;
       fem_loadings->get_Item(ild,&fem_loading);
@@ -1215,8 +1215,8 @@ void CAnalysisModel::ClearLoads()
 
 void CAnalysisModel::GenerateLoads()
 {
-   CollectionIndexType num_loadgroups = m_pLoadGroupOrder->LoadGroupCount();
-   for (CollectionIndexType ilg = 0; ilg<num_loadgroups; ilg++)
+   IndexType num_loadgroups = m_pLoadGroupOrder->LoadGroupCount();
+   for (IndexType ilg = 0; ilg<num_loadgroups; ilg++)
    {
       CComBSTR load_group = m_pLoadGroupOrder->LoadGroup(ilg);
       GenerateLoadsForLoadGroup(load_group);
@@ -1283,7 +1283,7 @@ void CAnalysisModel::GeneratePointLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadin
    CComPtr<IPointLoads> filtered_loads;
    hr = lbam_point_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-   CollectionIndexType cnt = 0;
+   IndexType cnt = 0;
    if (filtered_loads!=nullptr)
    {
       hr = filtered_loads->get_Count(&cnt);
@@ -1300,7 +1300,7 @@ void CAnalysisModel::GeneratePointLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadin
       CComPtr<IFem2dJointLoadCollection> fem_joint_loads;
       femLoading->get_JointLoads(&fem_joint_loads);
 
-      for (CollectionIndexType il = 0; il<cnt; il++)
+      for (IndexType il = 0; il<cnt; il++)
       {
          CComPtr<IPointLoadItem> lbam_point_load_item;
          hr = filtered_loads->get_Item(il, &lbam_point_load_item);
@@ -1436,7 +1436,7 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
       CComPtr<IDistributedLoads> filtered_loads;
       hr = lbam_distr_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-      CollectionIndexType cnt = 0;
+      IndexType cnt = 0;
       if (filtered_loads!=nullptr)
       {
          hr = filtered_loads->get_Count(&cnt);
@@ -1451,7 +1451,7 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
 
          LoadIDType last_load_id = 1;
 
-         for (CollectionIndexType il = 0; il<cnt; il++)
+         for (IndexType il = 0; il<cnt; il++)
          {
             CComPtr<IDistributedLoadItem> lbam_distr_load_item;
             hr = filtered_loads->get_Item(il, &lbam_distr_load_item);
@@ -1589,7 +1589,7 @@ void CAnalysisModel::GenDistributedLoadAlongElements(IFem2dDistributedLoadCollec
    }
 
    // create list of element locations along member
-   CollectionIndexType num_elements = pfemMbrList->size();
+   IndexType num_elements = pfemMbrList->size();
    std::vector<Float64> locations;
    locations.reserve(num_elements+1);
    locations.push_back(0.0);
@@ -1615,7 +1615,7 @@ void CAnalysisModel::GenDistributedLoadAlongElements(IFem2dDistributedLoadCollec
 
    // loop through elements and apply loads
    bool did_end=false;
-   for (CollectionIndexType ie = 0; ie<num_elements; ie++)
+   for (IndexType ie = 0; ie<num_elements; ie++)
    {
       MemberIDType mbr_id = pfemMbrList->at(ie).m_FemMemberID;
       Float64 mbr_start = locations[ie];
@@ -1677,7 +1677,7 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
       CComPtr<IStrainLoads> filtered_loads;
       hr = lbam_strain_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-      CollectionIndexType cnt = 0;
+      IndexType cnt = 0;
       if (filtered_loads!=nullptr)
       {
          hr = filtered_loads->get_Count(&cnt);
@@ -1692,7 +1692,7 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
 
          LoadIDType last_load_id = 1;
 
-         for (CollectionIndexType il = 0; il<cnt; il++)
+         for (IndexType il = 0; il<cnt; il++)
          {
             CComPtr<IStrainLoadItem> lbam_strain_load_item;
             hr = filtered_loads->get_Item(il, &lbam_strain_load_item);
@@ -1788,7 +1788,7 @@ void CAnalysisModel::GenStrainLoadAlongElements(IFem2dMemberStrainCollection* pF
    m_pFem2d->get_Joints(&joints);
 
    // create list of element locations along member
-   CollectionIndexType num_elements = pfemMbrList->size();
+   IndexType num_elements = pfemMbrList->size();
    std::vector<Float64> locations;
    locations.reserve(num_elements+1);
    locations.push_back(0.0);
@@ -1814,7 +1814,7 @@ void CAnalysisModel::GenStrainLoadAlongElements(IFem2dMemberStrainCollection* pF
 
    // loop through elements and apply loads
    bool did_end=false;
-   for (CollectionIndexType ie = 0; ie<num_elements; ie++)
+   for (IndexType ie = 0; ie<num_elements; ie++)
    {
       MemberIDType mbr_id = pfemMbrList->at(ie).m_FemMemberID;
       Float64 mbr_start = locations[ie];
@@ -1870,7 +1870,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
       CComPtr<ITemperatureLoads> filtered_loads;
       hr = lbam_temperature_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-      CollectionIndexType cnt = 0;
+      IndexType cnt = 0;
       if (filtered_loads!=nullptr)
       {
          hr = filtered_loads->get_Count(&cnt);
@@ -1886,7 +1886,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
 
          LoadIDType last_load_id = 1;
 
-         for (CollectionIndexType il = 0; il<cnt; il++)
+         for (IndexType il = 0; il<cnt; il++)
          {
             CComPtr<ITemperatureLoadItem> lbam_temperature_load_item;
             hr = filtered_loads->get_Item(il, &lbam_temperature_load_item);
@@ -1921,7 +1921,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
             GetFemMembersForLBAMMember(mtype, member_id, &pfem_mbr_list );
             ATLASSERT(pfem_mbr_list !=0 );
 
-            CollectionIndexType num_elements = pfem_mbr_list->size();
+            IndexType num_elements = pfem_mbr_list->size();
 
             if (num_elements==0)
             {
@@ -1931,7 +1931,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
             }
 
             // iterate over fem elements and apply temperature load for this load case
-            for ( CollectionIndexType ie = 0; ie<num_elements; ie++)
+            for ( IndexType ie = 0; ie<num_elements; ie++)
             {
                MemberIDType mbr_id = pfem_mbr_list->at(ie).m_FemMemberID;
                CComPtr<ISegmentCrossSection> psect = pfem_mbr_list->at(ie).m_XSect;
@@ -1984,7 +1984,7 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
       CComPtr<ISettlementLoads> filtered_loads;
       hr = lbam_settlement_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-      CollectionIndexType cnt = 0;
+      IndexType cnt = 0;
       if (filtered_loads!=nullptr)
       {
          hr = filtered_loads->get_Count(&cnt);
@@ -1999,7 +1999,7 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
 
          LoadIDType last_load_id = 1;
 
-         for (CollectionIndexType il = 0; il<cnt; il++)
+         for (IndexType il = 0; il<cnt; il++)
          {
             CComPtr<ISettlementLoadItem> lbam_settlement_load_item;
             hr = filtered_loads->get_Item(il, &lbam_settlement_load_item);
@@ -2274,7 +2274,7 @@ void CAnalysisModel::GenerateInternalPOIsAtSuperstructureMembers()
    CComPtr<ISuperstructureMembers> pssms;
    hr = m_pLBAMModel->get_SuperstructureMembers(&pssms);
 
-   CollectionIndexType ssms_cnt;
+   IndexType ssms_cnt;
    hr = pssms->get_Count(&ssms_cnt);
 
    // don't need to worry if there is only one ssm
@@ -2290,7 +2290,7 @@ void CAnalysisModel::GenerateInternalPOIsAtSuperstructureMembers()
       Float64 ssm_end = ssm_start;
       Float64 prev_ssm_length=0.0;
       Float64 ssm_length=0.0;
-      for (CollectionIndexType issm = 0; issm<ssms_cnt; issm++)
+      for (IndexType issm = 0; issm<ssms_cnt; issm++)
       {
          CComPtr<ISuperstructureMember> pssm;
          hr = pssms->get_Item(issm, &pssm);
@@ -2601,7 +2601,7 @@ void CAnalysisModel::CreateSupportPOI(PoiIDType poiID, SupportIDType supportID, 
 }
 
 
-void CAnalysisModel::CreateSsmPOI(PoiIDType poiID, CollectionIndexType ssmIdx, Float64 ssmLoc, IPOI* poi)
+void CAnalysisModel::CreateSsmPOI(PoiIDType poiID, IndexType ssmIdx, Float64 ssmLoc, IPOI* poi)
 {
    // get fem member and location for poi
    MemberLocationType mbl_type;
@@ -2679,7 +2679,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
       CComPtr<ISuperstructureMembers> ssms;
       hr = m_pLBAMModel->get_SuperstructureMembers(&ssms);
 
-      CollectionIndexType ssm_cnt;
+      IndexType ssm_cnt;
       hr = ssms->get_Count(&ssm_cnt);
 
       // we need to deal with the case where the poi location is at the junction of two ssm's
@@ -2692,7 +2692,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
       // loop over ssms until we find the one with our poi in it
       Float64 ssm_start=0.0;
       Float64 ssm_end=0.0;
-      for (CollectionIndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
+      for (IndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
       {
          CComPtr<ISuperstructureMember> ssm;
          hr = ssms->get_Item(i_ssm, &ssm);
@@ -2812,7 +2812,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
       CComPtr<ISuperstructureMembers> ssms;
       hr = m_pLBAMModel->get_SuperstructureMembers(&ssms);
 
-      CollectionIndexType ssm_cnt;
+      IndexType ssm_cnt;
       hr = ssms->get_Count(&ssm_cnt);
 
       CComPtr<ISuperstructureMember> ssm;
@@ -3293,7 +3293,7 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
 
          // Next, check if poi stress points override
          // Left side
-         CollectionIndexType num_cs_left_sps, num_poi_left_sps;
+         IndexType num_cs_left_sps, num_poi_left_sps;
          hr = left_sps->get_Count(&num_cs_left_sps);
          hr = poi_left_sps->get_Count(&num_poi_left_sps);
          if (num_poi_left_sps>0)
@@ -3309,14 +3309,14 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
                // collection and fill it partially with each
                CComPtr<IStressPoints> new_sps;
                hr = new_sps.CoCreateInstance(CLSID_StressPoints);
-               for (CollectionIndexType i = 0; i<num_poi_left_sps; i++) // fill first with poi sps
+               for (IndexType i = 0; i<num_poi_left_sps; i++) // fill first with poi sps
                {
                   CComPtr<IStressPoint> sp;
                   hr = poi_left_sps->get_Item(i, &sp);
                   hr = new_sps->Add(sp);
                }
 
-               for (CollectionIndexType i=num_poi_left_sps; i<num_cs_left_sps; i++) // next with cs sps
+               for (IndexType i=num_poi_left_sps; i<num_cs_left_sps; i++) // next with cs sps
                {
                   CComPtr<IStressPoint> sp;
                   hr = left_sps->get_Item(i, &sp);
@@ -3328,7 +3328,7 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
          }
 
          // Right side
-         CollectionIndexType num_cs_right_sps, num_poi_right_sps;
+         IndexType num_cs_right_sps, num_poi_right_sps;
          hr = right_sps->get_Count(&num_cs_right_sps);
          hr = poi_right_sps->get_Count(&num_poi_right_sps);
          if (num_poi_right_sps>0)
@@ -3344,14 +3344,14 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
                // collection and fill it partially with each
                CComPtr<IStressPoints> new_sps;
                hr = new_sps.CoCreateInstance(CLSID_StressPoints);
-               for (CollectionIndexType i = 0; i<num_poi_right_sps; i++) // fill first with poi sps
+               for (IndexType i = 0; i<num_poi_right_sps; i++) // fill first with poi sps
                {
                   CComPtr<IStressPoint> sp;
                   hr = poi_right_sps->get_Item(i, &sp);
                   hr = new_sps->Add(sp);
                }
 
-               for (CollectionIndexType i=num_poi_right_sps; i<num_cs_right_sps; i++) // next with cs sps
+               for (IndexType i=num_poi_right_sps; i<num_cs_right_sps; i++) // next with cs sps
                {
                   CComPtr<IStressPoint> sp;
                   hr = right_sps->get_Item(i, &sp);
@@ -3402,7 +3402,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDTyp
    CComPtr<ISuperstructureMembers> pssms;
    hr = m_pLBAMModel->get_SuperstructureMembers(&pssms);
 
-   CollectionIndexType ssm_cnt;
+   IndexType ssm_cnt;
    hr = pssms->get_Count(&ssm_cnt);
 
    // we need to deal with the case where the location is in dispute
@@ -3425,7 +3425,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDTyp
       return false;
    }
 
-   for (CollectionIndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
+   for (IndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       hr = pssms->get_Item(i_ssm, &ssm);
@@ -3585,7 +3585,7 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
    CHRException hr;
    // gather some statistics and pre allocate some space for element numbers
    SpanIndexType nSpans = m_SpanEnds.size();
-   CollectionIndexType nSuperstructureMembers = m_SuperstructureMemberEnds.size();
+   IndexType nSuperstructureMembers = m_SuperstructureMemberEnds.size();
 
    m_SpanElements.reserve(nSpans);
    for (SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++)
@@ -3594,7 +3594,7 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
    }
 
    m_SuperstructureMemberElements.reserve(nSuperstructureMembers);
-   for (CollectionIndexType ssmbrIdx = 0; ssmbrIdx < nSuperstructureMembers; ssmbrIdx++)
+   for (IndexType ssmbrIdx = 0; ssmbrIdx < nSuperstructureMembers; ssmbrIdx++)
    {
       m_SuperstructureMemberElements.push_back( SsmElementLayoutVec() );
    }
@@ -3760,13 +3760,13 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
             CComPtr<IIDArray> femMemberIDs;
             joint->get_Members(&femMemberIDs);
 
-            CollectionIndexType nMembers;
+            IndexType nMembers;
             femMemberIDs->get_Count(&nMembers);
             if (0 < nMembers)
             {
                // have some members attached to joint - make sure it is stable rotationally
                bool is_stable=false;
-               for (CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
+               for (IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
                {
                   MemberIDType mbrID;
                   femMemberIDs->get_Item(mbrIdx,&mbrID);
@@ -3966,7 +3966,7 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
    CHRException hr;
    try
    {  
-      CollectionIndexType nSubstructureNodeLocations = pSnls->size();
+      IndexType nSubstructureNodeLocations = pSnls->size();
 
       if (nSubstructureNodeLocations == 1)
       {
@@ -4208,10 +4208,10 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
    // left end of first member   
    InsertSuperSegmentNode(pSuperNodeLocs, -m_LeftOverhang, nullptr, nrMemberEnd);
 
-   CollectionIndexType nMembers;
+   IndexType nMembers;
    hr = pMembers->get_Count(&nMembers);
    Float64 loc = -m_LeftOverhang;
-   for (CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
+   for (IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
    {
       Float64 mbr_length;
 
@@ -4372,10 +4372,10 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
    CHRException hr;
 
    // superstructure members
-   CollectionIndexType nMembers;
+   IndexType nMembers;
    hr = pMembers->get_Count(&nMembers);
    Float64 start_loc = -LeftOverhang;
-   for (CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
+   for (IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
    {
       CComPtr<ISuperstructureMember> member;
       hr = pMembers->get_Item(mbrIdx, &member);
@@ -5162,7 +5162,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
    }
 
    // finally assign left and rightness to loads at equal locations
-   CollectionIndexType nInfluenceLoads = m_InfluenceLoadSet.size();
+   IndexType nInfluenceLoads = m_InfluenceLoadSet.size();
    if (2 < nInfluenceLoads)
    {
 #if defined (_DEBUG)
@@ -5354,7 +5354,7 @@ void CAnalysisModel::GenerateContraflexurePOIs()
 
    m_ContraflexurePOIs.clear();
 
-   CollectionIndexType cf_size;
+   IndexType cf_size;
    hr = m_ContraflexureLocations->get_Count(&cf_size);
    if ( cf_size < 1 )
    {
@@ -5368,7 +5368,7 @@ void CAnalysisModel::GenerateContraflexurePOIs()
 
    if (0 < cf_size)
    {
-      for (CollectionIndexType icf = 0; icf<cf_size; icf++)
+      for (IndexType icf = 0; icf<cf_size; icf++)
       {
          Float64 xloc;
          hr = m_ContraflexureLocations->get_Item(icf, &xloc);
@@ -5414,9 +5414,9 @@ void CAnalysisModel::IsPOIInContraflexureZone(PoiIDType poiID, InZoneType* isInZ
    CHRException hr;
 
    // first check to see if this poi is on an edge of a cf zone
-   CollectionIndexType cfp_size = m_ContraflexurePOIs.size();
+   IndexType cfp_size = m_ContraflexurePOIs.size();
    ATLASSERT(cfp_size%2==0);
-   for (CollectionIndexType icf = 0; icf<cfp_size; icf++)
+   for (IndexType icf = 0; icf<cfp_size; icf++)
    {
       PoiIDType id = m_ContraflexurePOIs[icf];
       if (id==poiID)
@@ -5450,7 +5450,7 @@ void CAnalysisModel::IsPOIInContraflexureZone(PoiIDType poiID, InZoneType* isInZ
    // cf locations are only on superstructure
    if (mtype==mtSpan || mtype==mtSuperstructureMember)
    {
-      CollectionIndexType cf_size;
+      IndexType cf_size;
       hr = m_ContraflexureLocations->get_Count(&cf_size);
       if( cf_size==0)
       {
@@ -5462,11 +5462,11 @@ void CAnalysisModel::IsPOIInContraflexureZone(PoiIDType poiID, InZoneType* isInZ
          ATLASSERT(cf_size%2==0); // need two sides to define each zone
 
          // we have zones and we have a poi on the ss. find the zone
-         CollectionIndexType cnt = cf_size/2;
-         for (CollectionIndexType izone = 0; izone<cnt; izone++)
+         IndexType cnt = cf_size/2;
+         for (IndexType izone = 0; izone<cnt; izone++)
          {
-            CollectionIndexType left_idx  = izone*2;
-            CollectionIndexType right_idx = left_idx+1;
+            IndexType left_idx  = izone*2;
+            IndexType right_idx = left_idx+1;
 
             Float64 left_edge;
             Float64 right_edge;
@@ -5507,7 +5507,7 @@ void CAnalysisModel::GetContraflexureForce( ForceEffectType effect, CInfluenceLi
    // Sort all pois (including internally generated ones) in superstructure by their global X location
    SortedPoiMapTracker poi_tracker(m_PoiMap, true);
 
-   CollectionIndexType size = poi_tracker.size();
+   IndexType size = poi_tracker.size();
    results->Reserve(size*12/10);    // assume 20% are dual-valued
 
    // set processing type for influence line so it retains raw values
@@ -5642,7 +5642,7 @@ void CAnalysisModel::GetNegativeMomentRegions(IDblArray* *locations)
    hr = m_ContraflexureLocations->Clone(&locs);
 
    SpanIndexType num_spans = m_AllSpanEnds.size();
-   CollectionIndexType num_locs;
+   IndexType num_locs;
    hr = locs->get_Count(&num_locs);
    if (num_locs>0 && num_spans>2)
    {
@@ -5688,7 +5688,7 @@ void CAnalysisModel::GetNegativeMomentRegions(IDblArray* *locations)
 void CAnalysisModel::ComputeContraflexureLocations()
 {
    CHRException hr;
-   CollectionIndexType cf_size;
+   IndexType cf_size;
    hr = m_ContraflexureLocations->get_Count(&cf_size);
 
    ATLASSERT( cf_size<1 ); // should never get here if we have results already
@@ -5699,7 +5699,7 @@ void CAnalysisModel::ComputeContraflexureLocations()
    CComPtr<IInfluenceLine> iholder(response); // ref cnt
    GetContraflexureForce( fetMz,  response );
 
-   CollectionIndexType size;
+   IndexType size;
    hr = response->get_Count(ilsBoth, &size);
    if (size < 2)
    {
@@ -5783,7 +5783,7 @@ void CAnalysisModel::GetReactionInfluenceLine(SupportIDType supportID, ForceEffe
    ATLASSERT(m_pFem2d!=nullptr);
    CHRException hr;
 
-   CollectionIndexType num_pts = m_InfluenceLoadSet.size();
+   IndexType num_pts = m_InfluenceLoadSet.size();
    if (num_pts == 0)
    {
       ATLASSERT(false);
@@ -5891,7 +5891,7 @@ void CAnalysisModel::GetSupportDeflectionInfluenceLine(SupportIDType supportID, 
    ATLASSERT(m_pFem2d!=nullptr);
    CHRException hr;
 
-   CollectionIndexType num_pts = m_InfluenceLoadSet.size();
+   IndexType num_pts = m_InfluenceLoadSet.size();
    if (num_pts==0)
    {
       ATLASSERT(false);
@@ -6029,7 +6029,7 @@ HRESULT CAnalysisModel::put_CantileverPoiIncrement( PoiIDType newVal)
 HRESULT CAnalysisModel::GetSuperstructurePois(IIDArray* *poiIDs, IDblArray* *poiLocations)
 {
    HRESULT hr;
-   CollectionIndexType size = m_pPoiTracker->size();
+   IndexType size = m_pPoiTracker->size();
 
    CComPtr<IIDArray> poi_ids;
    hr = poi_ids.CoCreateInstance(CLSID_IDArray);

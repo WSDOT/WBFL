@@ -32,8 +32,8 @@
 #include "ComCollections.h"
 
 class CLoadCases;
-using LoadCaseCollImpl = CComBSTRKeyedCollection<ldILoadCases, ldILoadCase, ldIEnumLoadCase, &IID_ldIEnumLoadCase, CollectionIndexType>;
-using PersistentLoadCaseCollImpl = CPersistentCollection<CLoadCases, LoadCaseCollImpl, CollectionIndexType>;
+using LoadCaseCollImpl = CComBSTRKeyedCollection<ldILoadCases, ldILoadCase, ldIEnumLoadCase, &IID_ldIEnumLoadCase, IndexType>;
+using PersistentLoadCaseCollImpl = CPersistentCollection<CLoadCases, LoadCaseCollImpl, IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadCases

@@ -107,8 +107,6 @@ void ShapeImpl::SetLocatorPoint(LocatorPoint lp, Point2d& position)
 
 Point2d ShapeImpl::GetLocatorPoint(LocatorPoint point) const
 {
-   ASSERTVALID;
-
    Rect2d rct;
    Point2d pnt;
 
@@ -201,26 +199,3 @@ void ShapeImpl::Copy(const ShapeImpl& other)
    m_pHookPoint = std::make_shared<Point2d>(*other.m_pHookPoint);
    m_CachedHookPoint = *m_pHookPoint;
 }
-
-#if defined _DEBUG
-bool ShapeImpl::AssertValid() const
-{
-   return true;
-}
-
-void ShapeImpl::Dump(WBFL::Debug::LogContext& os) const
-{
-   ASSERTVALID;
-   os << _T("Dump for ShapeImpl") << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-
-#if defined _UNITTEST
-bool ShapeImpl::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("ShapeImpl");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented");
-   TESTME_EPILOG("ShapeImpl");
-}
-#endif // _UNITTEST

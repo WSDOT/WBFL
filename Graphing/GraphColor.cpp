@@ -83,9 +83,9 @@ void GraphColor::Init()
 
 void GraphColor::SetHueRange(Float64 minHue,Float64 maxHue)
 {
-   ATLASSERT(minHue < maxHue);
-   ATLASSERT(0.0 <=minHue && minHue <= 1.0);
-   ATLASSERT(0.0 <=maxHue && maxHue <= 1.0);
+   PRECONDITION(minHue < maxHue);
+   PRECONDITION(0.0 <=minHue && minHue <= 360.0);
+   PRECONDITION(0.0 <=maxHue && maxHue <= 360.0);
 
    m_MinHue = minHue;
    m_MaxHue = maxHue;
@@ -93,9 +93,9 @@ void GraphColor::SetHueRange(Float64 minHue,Float64 maxHue)
 
 void GraphColor::SetSaturationRange(Float64 minSaturation, Float64 maxSaturation)
 {
-   ATLASSERT(minSaturation < maxSaturation);
-   ATLASSERT(0.0 <=minSaturation && minSaturation <= 360.0);
-   ATLASSERT(0.0 <=maxSaturation && maxSaturation <= 360.0);
+   PRECONDITION(minSaturation < maxSaturation);
+   PRECONDITION(0.0 <=minSaturation && minSaturation <= 1.0);
+   PRECONDITION(0.0 <=maxSaturation && maxSaturation <= 1.0);
 
    m_MinSaturation = minSaturation;
    m_MaxSaturation = maxSaturation;
@@ -103,9 +103,9 @@ void GraphColor::SetSaturationRange(Float64 minSaturation, Float64 maxSaturation
 
 void GraphColor::SetLightnessRange(Float64 minLightness, Float64 maxLightness)
 {
-   ATLASSERT(minLightness < maxLightness);
-   ATLASSERT(0.0 <=minLightness && minLightness <= 1.0);
-   ATLASSERT(0.0 <=maxLightness && maxLightness <= 1.0);
+   PRECONDITION(minLightness < maxLightness);
+   PRECONDITION(0.0 <=minLightness && minLightness <= 1.0);
+   PRECONDITION(0.0 <=maxLightness && maxLightness <= 1.0);
 
    m_MinLightness = minLightness;
    m_MaxLightness = maxLightness;
@@ -124,6 +124,6 @@ COLORREF GraphColor::GetColor(IndexType graphIndex)
    Float64 hue = pickHue(RangeType(m_MinHue, m_MaxHue), (int)graphIndex*5); // 5 gives a good color distribution (after testing)
 
    BYTE red, green, blue;
-   std::tie(red,green,blue) = WBFL::System::ColorConverter::HLStoRGB(hue,lightness,saturation);
+   std::tie(red,green,blue) = WBFL::System::ColorConverter::HSLtoRGB(hue,lightness,saturation);
    return RGB(red,green,blue);
 }

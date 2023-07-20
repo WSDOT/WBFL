@@ -75,7 +75,7 @@ END_COM_MAP()
 // IFem2dPOICollection
 public:
 	STDMETHOD(Create)(/*[in]*/PoiIDType ID, /*[in]*/MemberIDType memberID, /*[in]*/Float64 loc, /*[out, retval]*/ IFem2dPOI* *pVal) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/PoiIDType* pid) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/PoiIDType* pid) override;
 	STDMETHOD(Clear)() override;
 };
 

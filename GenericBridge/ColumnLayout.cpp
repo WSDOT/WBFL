@@ -616,10 +616,10 @@ STDMETHODIMP CColumnLayout::Load(IStructuredLoad2* pLoad)
    m_UniformSpacing = var.dblVal;
 
    pLoad->BeginUnit(CComBSTR("Columns"));
-   CollectionIndexType nColumns;
+   IndexType nColumns;
    pLoad->get_Property(CComBSTR("NumColumns"),&var);
    nColumns = var.iVal;
-   for ( CollectionIndexType i = 0; i < nColumns; i++ )
+   for ( IndexType i = 0; i < nColumns; i++ )
    {
       CComObject<CColumn>* pColumn;
       CComObject<CColumn>::CreateInstance(&pColumn);
@@ -641,10 +641,10 @@ STDMETHODIMP CColumnLayout::Load(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("RightOverhang"),&var);
    m_SpacingData.m_Overhang[1] = var.dblVal;
 
-   CollectionIndexType nSpaces;
+   IndexType nSpaces;
    pLoad->get_Property(CComBSTR("NumSpaces"),&var);
    nSpaces = var.iVal;
-   for ( CollectionIndexType j = 0; j < nSpaces; j++ )
+   for ( IndexType j = 0; j < nSpaces; j++ )
    {
       pLoad->get_Property(CComBSTR("Space"),&var);
       Float64 space = var.dblVal;

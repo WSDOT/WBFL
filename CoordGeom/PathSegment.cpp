@@ -321,33 +321,3 @@ std::vector<std::shared_ptr<PathElement>> PathSegment::CreateSubpath(Float64 sta
 
    return vElements;
 }
-
-#if defined _UNITTEST
-bool PathSegment::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Segment");
-
-   PathSegment segment(0.0, 0.0, 10.0, 10.0);
-
-   TRY_TESTME(IsEqual(segment.GetLength(), sqrt(200)));
-
-   // LocatePoint
-   auto point = segment.LocatePoint(5.0, OffsetType::AlongDirection, 5.0, 0.0);
-   TRY_TESTME(point == WBFL::Geometry::Point2d(5*sin(M_PI/4) + 5,5*cos(M_PI/4)));
-
-   point = segment.LocatePoint(5.0, OffsetType::AlongDirection, 5.0, M_PI / 4);
-   TRY_TESTME(point == WBFL::Geometry::Point2d(10 * sin(M_PI / 4), 10 * cos(M_PI / 4)));
-
-   auto offset_path = segment.CreateOffsetPath(10);
-   TRY_TESTME(offset_path.front()->GetStartPoint() == WBFL::Geometry::Point2d(7.071067812,-7.071067812));
-   TRY_TESTME(offset_path.front()->GetEndPoint() == WBFL::Geometry::Point2d(17.071067812, 10-7.071067812));
-
-   offset_path = segment.CreateOffsetPath(-10);
-   TRY_TESTME(offset_path.front()->GetStartPoint() == WBFL::Geometry::Point2d(-7.071067812, 7.071067812));
-   TRY_TESTME(offset_path.front()->GetEndPoint() == WBFL::Geometry::Point2d(10-7.071067812, 17.071067812));
-
-   TESTME_EPILOG("Segment");
-}
-#endif // _UNITTEST
-
-

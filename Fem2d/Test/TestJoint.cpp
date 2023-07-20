@@ -96,7 +96,7 @@ void CTestJoint::Test()
    TRY_TEST(x, 55);
    TRY_TEST(y, 35);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST_HR(pJoints->get_Count(&cnt));
    TRY_TEST(cnt,4);
 

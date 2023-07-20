@@ -42,13 +42,16 @@ namespace WBFL
 
          virtual ~FixedPointIteration() = default;
 
-         /// Finds the solution to g(x) = x starting at xo
+         /// @{
+         /// @brief Finds the solution to g(x) = x starting at xo
+         /// @param f Function to be evaluated
+         /// @param xo Starting point for the iteration
+         /// @param tol Convergence tolerance |g(x) - x| < tol
+         /// @param maxIter Maximum number of iterations
+         /// @return The solution to g(x) = x
          virtual Float64 Solve(const Function& f,Float64 xo,Float64 tol,Uint32 maxIter=100) const;
          virtual Float64 Solve(const std::function<Float64(Float64)>& f, Float64 xo, Float64 tol, Uint32 maxIter=100) const;
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
+         /// @}
       };
    };
 };

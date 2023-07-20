@@ -199,28 +199,6 @@ namespace WBFL
          /// @return Returns the pair<Offset,Elevation> where Offset is the distance from the first to the second ridge point and Elevation is the elevation of the second ridge point
          std::pair<Float64, Float64> GetRidgePointOffsetAndElevation(IDType surfaceID, const Station& station, IndexType ridgePoint1Idx, IndexType ridgePoint2Idx) const;
 
-
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         static bool Test1(WBFL::Debug::Log& rlog);
-         static bool Test2(WBFL::Debug::Log& rlog);
-         static bool Test3(WBFL::Debug::Log& rlog);
-         static bool Test4(WBFL::Debug::Log& rlog);
-         static bool Test5(WBFL::Debug::Log& rlog);
-         static bool Test6(WBFL::Debug::Log& rlog);
-         static bool Test7(WBFL::Debug::Log& rlog);
-         static bool Test8(WBFL::Debug::Log& rlog);
-         static bool Test9(WBFL::Debug::Log& rlog);
-         static bool Test10(WBFL::Debug::Log& rlog);
-         static bool Test11(WBFL::Debug::Log& rlog);
-         static bool Test12(WBFL::Debug::Log& rlog);
-         static bool Test13(WBFL::Debug::Log& rlog);
-         static bool Test14(WBFL::Debug::Log& rlog);
-         static bool Test15(WBFL::Debug::Log& rlog);
-         static bool Test16(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          std::unique_ptr<ProfileImpl> m_pImpl;
          void OnProfileChanged();

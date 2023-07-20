@@ -228,14 +228,9 @@
     <ClCompile Include="SurfaceTemplate.cpp" />
     <ClCompile Include="SurfaceTemplateImpl.cpp" />
     <ClCompile Include="SurfaceTemplateSegment.cpp" />
-    <ClCompile Include="Testing\TestAlignment1.cpp" />
-    <ClCompile Include="Testing\TestAlignment2.cpp" />
-    <ClCompile Include="Testing\TestAlignment3.cpp" />
-    <ClCompile Include="Testing\TestBridgeFramingGeometry.cpp" />
     <ClCompile Include="ThroughPointDiaphragmLineFactory.cpp" />
     <ClCompile Include="TransitionCurve.cpp" />
     <ClCompile Include="UniformSpacingLayoutLineFactory.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="COGO.cpp" />
     <ClCompile Include="VerticalCurve.cpp" />
     <ClCompile Include="Widening.cpp" />
@@ -294,7 +289,6 @@
     <ClInclude Include="..\Include\CoordGeom\ThroughPointDiaphragmLineFactory.h" />
     <ClInclude Include="..\Include\CoordGeom\TransitionCurve.h" />
     <ClInclude Include="..\Include\CoordGeom\UniformSpacingLayoutLineFactory.h" />
-    <ClInclude Include="..\Include\CoordGeom\UnitTest.h" />
     <ClInclude Include="..\Include\CoordGeom\COGO.h" />
     <ClInclude Include="..\Include\CoordGeom\VerticalCurve.h" />
     <ClInclude Include="..\Include\CoordGeom\Widening.h" />
@@ -303,10 +297,6 @@
     <ClInclude Include="SuperelevationImpl.h" />
     <ClInclude Include="SurfaceImpl.h" />
     <ClInclude Include="SurfaceTemplateImpl.h" />
-    <ClInclude Include="Testing\TestAlignment1.h" />
-    <ClInclude Include="Testing\TestAlignment2.h" />
-    <ClInclude Include="Testing\TestAlignment3.h" />
-    <ClInclude Include="Testing\TestBridgeFramingGeometry.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="CoordGeom.def" />

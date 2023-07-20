@@ -224,7 +224,7 @@ STDMETHODIMP CDeckedSlabBeam::get_RightBlockOut(VARIANT_BOOL* pbRightBlockOut)
    return S_OK;
 }
 
-STDMETHODIMP CDeckedSlabBeam::get_VoidCount(CollectionIndexType *pVal)
+STDMETHODIMP CDeckedSlabBeam::get_VoidCount(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -232,7 +232,7 @@ STDMETHODIMP CDeckedSlabBeam::get_VoidCount(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CDeckedSlabBeam::put_VoidCount(CollectionIndexType newVal)
+STDMETHODIMP CDeckedSlabBeam::put_VoidCount(IndexType newVal)
 {
    // Void count can be 0 or 1
    try

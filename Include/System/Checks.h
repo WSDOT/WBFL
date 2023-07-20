@@ -95,9 +95,22 @@ namespace WBFL
       class SYSCLASS Message
       {
       public:
+         /// @brief Called by the PRECONDITION macro. Throws XProgrammingError if the precondition is not satisfied. 
          static void Precondition(const std::_tstring& s, const std::_tstring& file, Uint32 line);
+         /// @brief Called by the CHECK macro. 
          static void Check(const std::_tstring& s, const std::_tstring& file, Uint32 line);
+         /// @brief Called by the ASSERTVALID macro. Throws XProgrammingError if AssertValid is false
          static void AssertValidFailed(const std::_tstring& s, const std::_tstring& file, Uint32 line);
+
+         /// @brief Enables or disables popup message window for Precondition and AssertValidFailed.
+         /// When running unit tests, popup messages can be a neusance when trying to test failed preconditions.
+         static void EnablePopup(bool bEnable);
+
+         /// @brief Returns true if popup message window is enabled
+         static bool IsPopupEnabled();
+
+      private:
+         static bool m_bPopup;
       };
    };
 };

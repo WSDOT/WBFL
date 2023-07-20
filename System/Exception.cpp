@@ -32,10 +32,6 @@ m_Line( line )
 {
 }
 
-XBase::~XBase()
-{
-}
-
 std::_tstring XBase::GetErrorMessage() const
 {
    const type_info& ti = typeid(*this);

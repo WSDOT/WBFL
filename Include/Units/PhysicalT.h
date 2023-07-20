@@ -61,6 +61,8 @@ namespace WBFL
       {
       }
 
+      bool operator==(const PhysicalT<m, l, t, k, a>& other) const { return m_ConvFactor == other.m_ConvFactor && m_UnitTag == other.m_UnitTag; }
+
       virtual Float64 ConvertFrom(Float64 value) const { return value * m_ConvFactor; };
       virtual Float64 ConvertTo(Float64 value) const { return value / m_ConvFactor; }
 

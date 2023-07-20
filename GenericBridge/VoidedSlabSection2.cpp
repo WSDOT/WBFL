@@ -83,7 +83,7 @@ void CVoidedSlabSection2::GetWebs(Float64* pIntWeb,Float64* pExtWeb)
    // pExtWeb = width of one exterior web
 
    Float64 Si, Se, Di, De, W, C1;
-   CollectionIndexType N;
+   IndexType N;
    m_Beam->get_InteriorVoidSpacing(&Si);
    m_Beam->get_InteriorVoidDiameter(&Di);
    m_Beam->get_ExteriorVoidSpacing(&Se);
@@ -235,7 +235,7 @@ STDMETHODIMP CVoidedSlabSection2::get_WebLocation(WebIndexType idx,Float64* loca
    CHECK_RETVAL(location);
 
    Float64 S1, S2, D1, D2, W;
-   CollectionIndexType N;
+   IndexType N;
    m_Beam->get_ExteriorVoidSpacing(&S1);
    m_Beam->get_InteriorVoidSpacing(&S2);
    m_Beam->get_ExteriorVoidDiameter(&D1);
@@ -243,7 +243,7 @@ STDMETHODIMP CVoidedSlabSection2::get_WebLocation(WebIndexType idx,Float64* loca
    m_Beam->get_Width(&W);
    m_Beam->get_VoidCount(&N);
 
-   CollectionIndexType nWebs = N + 1;
+   IndexType nWebs = N + 1;
 
    Float64 edge_width, between_ext_int_void_width, between_int_void_width;
    if (3 <= N)
@@ -311,7 +311,7 @@ STDMETHODIMP CVoidedSlabSection2::get_WebSpacing(WebIndexType idx,Float64* spaci
       return E_INVALIDARG;
    }
 
-   CollectionIndexType N;
+   IndexType N;
    m_Beam->get_VoidCount(&N);
 
    if ( idx == 0 || idx == 1 || idx == N || idx == N-1 )
@@ -333,7 +333,7 @@ STDMETHODIMP CVoidedSlabSection2::get_WebThickness(WebIndexType idx,Float64* tWe
 
    CHECK_RETVAL(tWeb);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -362,7 +362,7 @@ STDMETHODIMP CVoidedSlabSection2::get_MinWebThickness(Float64* tWeb)
 {
    CHECK_RETVAL(tWeb);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -541,7 +541,7 @@ STDMETHODIMP CVoidedSlabSection2::get_ShearWidth(Float64* shearwidth)
 {
    CHECK_RETVAL(shearwidth);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -898,7 +898,7 @@ STDMETHODIMP CVoidedSlabSection2::get_XYPosition(IXYPosition **pVal)
    return this->QueryInterface(IID_IXYPosition, (void**)pVal);
 }
 
-STDMETHODIMP CVoidedSlabSection2::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)
+STDMETHODIMP CVoidedSlabSection2::get_Item(IndexType idx,ICompositeShapeItem* *pVal)
 {
    CComPtr<ICompositeShape> compShape;
    compShape.CoCreateInstance(CLSID_CompositeShape);
@@ -926,7 +926,7 @@ STDMETHODIMP CVoidedSlabSection2::get__NewEnum(IUnknown* *pVal)
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection2::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CVoidedSlabSection2::get_Count(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    IndexType nVoids;
@@ -935,7 +935,7 @@ STDMETHODIMP CVoidedSlabSection2::get_Count(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CVoidedSlabSection2::Remove(CollectionIndexType idx)
+STDMETHODIMP CVoidedSlabSection2::Remove(IndexType idx)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;
@@ -947,13 +947,13 @@ STDMETHODIMP CVoidedSlabSection2::Clear()
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection2::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CVoidedSlabSection2::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection2::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CVoidedSlabSection2::Replace(IndexType idx,IShape* pShape)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;

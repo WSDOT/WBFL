@@ -46,9 +46,9 @@ namespace WBFL
       {
       public:
          XBase() = default;
-         XBase(const std::_tstring& file, Uint32 line);
+         explicit XBase(const std::_tstring& file, Uint32 line);
          XBase(const XBase&) = default;
-         virtual ~XBase();
+         virtual ~XBase() = default;
 
          XBase& operator=(const XBase&) = default;
 
@@ -90,7 +90,7 @@ namespace WBFL
 
        private:
 #pragma warning(disable:4251) // this string is private so it isn't accessible outside the class. this warning doesn't mean much
-          std::_tstring m_File{ _T("Unspecified") };
+         std::_tstring m_File{ _T("Unspecified") };
          Uint32  m_Line{ 0 };
       };
    };

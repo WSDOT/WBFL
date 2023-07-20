@@ -64,20 +64,16 @@ namespace WBFL
          /// Gets the coefficient c
          Float64 GetC() const;
 
-         /// Solves the quadratic equation. Returns the number of roots found
-         /// \param[out] x1 first root
-         /// \param[out] x2 second root
+         /// Solves the quadratic equation.
+         /// @param[out] x1 first root
+         /// @param[out] x2 second root
+         /// @return Number of roots found
          Uint8 Solve(Float64* x1, Float64* x2) const;
 
       private:
          Float64 m_A{0.0};
          Float64 m_B{0.0};
          Float64 m_C{0.0};
-
-      #if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
       };
    };
 };

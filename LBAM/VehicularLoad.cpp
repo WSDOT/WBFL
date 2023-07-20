@@ -555,9 +555,9 @@ STDMETHODIMP CVehicularLoad::SumAxleWeights(Float64* pWeight)
    CHECK_RETVAL(pWeight);
    Float64 w = 0;
 
-   CollectionIndexType nAxles;
+   IndexType nAxles;
    m_Axles->get_Count(&nAxles);
-   for ( CollectionIndexType axleIdx = 0; axleIdx < nAxles; axleIdx++ )
+   for ( IndexType axleIdx = 0; axleIdx < nAxles; axleIdx++ )
    {
       CComPtr<IAxle> axle;
       m_Axles->get_Item(axleIdx,&axle);

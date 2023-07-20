@@ -75,17 +75,17 @@ public:
    STDMETHOD(AddPoints)(/*[in]*/IPoint2dCollection* points) override;
 	STDMETHOD(AddPoint)(/*[in]*/Float64 x,/*[in]*/Float64 y) override;
 	STDMETHOD(AddPointEx)(/*[in]*/IPoint2d* point) override;
-   STDMETHOD(get_PointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
-	STDMETHOD(get_Point)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IPoint2d** point) override;
+   STDMETHOD(get_PointCount)(/*[out,retval]*/IndexType* nPoints) override;
+	STDMETHOD(get_Point)(/*[in]*/IndexType idx,/*[out,retval]*/IPoint2d** point) override;
    STDMETHOD(get_Points)(/*[out,retval]*/IPoint2dCollection** ppPoints) override;
 	STDMETHOD(Clear)() override;
 	STDMETHOD(put_StartDirection)(/*[in]*/ VARIANT varDirection) override;
 	STDMETHOD(get_StartDirection)(/*[out,retval]*/IDirection** dir) override;
 	STDMETHOD(put_EndDirection)(/*[in]*/ VARIANT varDirection) override;
 	STDMETHOD(get_EndDirection)(/*[out,retval]*/IDirection** dir) override;
-   STDMETHOD(BearingAtPoint)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IDirection** pDir) override;
-   STDMETHOD(NormalAtPoint)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IDirection** pDir) override;
-   STDMETHOD(DistanceFromStartAtPoint)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ Float64* dist) override;
+   STDMETHOD(BearingAtPoint)(/*[in]*/IndexType idx,/*[out,retval]*/IDirection** pDir) override;
+   STDMETHOD(NormalAtPoint)(/*[in]*/IndexType idx,/*[out,retval]*/IDirection** pDir) override;
+   STDMETHOD(DistanceFromStartAtPoint)(/*[in]*/ IndexType idx,/*[out,retval]*/ Float64* dist) override;
 
    // IPathElement
 public:

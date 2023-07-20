@@ -101,22 +101,3 @@ Float64 BisectionRootFinder::FindRootInRange(const Function& eval, Float64 a,Flo
 {
    return FindRootInRange([&eval](Float64 x) {return eval.Evaluate(x); }, a, b, tol);
 }
-
-#if defined _UNITTEST
-bool BisectionRootFinder::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("BisectionRootFinder");
-
-   BisectionRootFinder rf;
-   Float64 x1 = rf.FindRootInRange([](Float64 x) {return sin(x); }, -0.1, 0.1,0.001);
-   TRY_TESTME(IsEqual(x1, 0.0));
-
-   Float64 x2 = rf.FindRootInRange([](Float64 x) {return sin(x); }, M_PI - 0.1, M_PI + 0.1, 0.001);
-   TRY_TESTME(IsEqual(x2, M_PI));
-
-   Float64 x3 = rf.FindRootInRange([](Float64 x) {return cos(x); }, PI_OVER_2 - 0.1, PI_OVER_2 + 0.1, 0.001);
-   TRY_TESTME(IsEqual(x3, PI_OVER_2));
-
-   TESTME_EPILOG("BisectionRootFinder");
-}
-#endif

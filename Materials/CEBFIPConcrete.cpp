@@ -288,7 +288,7 @@ std::unique_ptr<ConcreteBaseShrinkageDetails> CEBFIPConcrete::GetFreeShrinkageSt
    // Time development factor CEB-FIP Eqn. 2.1-79
    Float64 h = GetH();
    h = WBFL::Units::ConvertFromSysUnits(h,WBFL::Units::Measure::Millimeter); // need h in millimeter
-   Float64 ho = 100; // 100 millimieter
+   Float64 ho = 100; // 100 millimeter
    Float64 betaS = sqrt( shrinkage_time/(350*pow(h/ho,2) + shrinkage_time) );
 
    Float64 esh = ecso * betaS;
@@ -412,7 +412,7 @@ Float64 CEBFIPConcrete::GetPhiRH() const
 {
    Float64 h = GetH();
    h = WBFL::Units::ConvertFromSysUnits(h,WBFL::Units::Measure::Millimeter); // need h in millimeter
-   Float64 ho = 100; // 100 millimieter
+   Float64 ho = 100; // 100 millimeter
 
    Float64 phiRH = 1 + (1-m_RelativeHumidity/100)/(0.46*(pow(h/ho,1./3.))); // CEB-FIP Eqn. 2.1-66
    return phiRH;
@@ -429,7 +429,7 @@ Float64 CEBFIPConcrete::GetBetaH() const
 {
    Float64 h = GetH();
    h = WBFL::Units::ConvertFromSysUnits(h,WBFL::Units::Measure::Millimeter); // need h in millimeter
-   Float64 ho = 100; // 100 millimieter
+   Float64 ho = 100; // 100 millimeter
 
    Float64 beta_H = 150*(1 + pow(1.2*m_RelativeHumidity/100,18))*(h/ho) + 250; // CEB-FIP Eqn. 2.1-71
    beta_H = Min(beta_H,1500.0);
@@ -488,7 +488,7 @@ Float64 CEBFIPConcrete::GetFr(Float64 t) const
    return fr;
 }
 
-// Could be using lrfdConcreteUtil::ModE, except that creates a circular
+// Could be using WBFL::LRFD::ConcreteUtil::ModE, except that creates a circular
 // dependency between WBFLMaterial and WBFLLrfd. Neither will link
 // without the other first being linked.
 //

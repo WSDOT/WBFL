@@ -75,12 +75,12 @@ public:
    STDMETHOD(get_Station)(IStation** station) override;
    STDMETHOD(get_Direction)(IDirection** direction) override;
    STDMETHOD(get_SkewAngle)(IAngle** skewAngle) override;
-   STDMETHOD(get_Item)(CollectionIndexType idx,ISurfacePoint** point) override;
-   STDMETHOD(get_Count)(CollectionIndexType* count) override;
-   STDMETHOD(GetSurfacePointElevationChange)(CollectionIndexType surfacePointIdx1,CollectionIndexType surfacePointIdx2,Float64* deltaElevation) override;
-   STDMETHOD(GetElevationChange)(CollectionIndexType surfacePointIdx,Float64 offset,Float64* deltaElevation) override;
-   STDMETHOD(GetSlope)(CollectionIndexType surfacePointIdx,Float64 offset,Float64* pSlope) override;
-   STDMETHOD(GetSegmentSlope)(CollectionIndexType segmentIdx,Float64* pSlope) override;
+   STDMETHOD(get_Item)(IndexType idx,ISurfacePoint** point) override;
+   STDMETHOD(get_Count)(IndexType* count) override;
+   STDMETHOD(GetSurfacePointElevationChange)(IndexType surfacePointIdx1,IndexType surfacePointIdx2,Float64* deltaElevation) override;
+   STDMETHOD(GetElevationChange)(IndexType surfacePointIdx,Float64 offset,Float64* deltaElevation) override;
+   STDMETHOD(GetSlope)(IndexType surfacePointIdx,Float64 offset,Float64* pSlope) override;
+   STDMETHOD(GetSegmentSlope)(IndexType segmentIdx,Float64* pSlope) override;
    STDMETHOD(GetSurfacePointOffset)(IndexType surfacePointIdx,Float64* pOffset) override;
    STDMETHOD(GetSurfacePointElevation)(IndexType surfacePointIdx,Float64* pOffset,Float64* pElev) override;
 

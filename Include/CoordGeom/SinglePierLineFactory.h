@@ -87,12 +87,6 @@ namespace WBFL
 
          virtual std::vector<std::shared_ptr<PierLine>> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const override;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          IDType m_ID = INVALID_ID; // The pier line ID
          IDType m_AlignmentID = INVALID_ID; // The alignment where the pier line is located relative to (does not need to be the bridge alignment)

@@ -1102,7 +1102,7 @@ STDMETHODIMP CBogusComboContext::GetSuperstructurePois(BSTR stage, IIDArray* *po
 		return E_POINTER;
 
    // get poi id's from list of benchmarks
-   CollectionIndexType siz = m_BenchMarks.size();
+   IndexType siz = m_BenchMarks.size();
 
    CComPtr<IIDArray> pois;
    pois.CoCreateInstance(CLSID_IDArray);
@@ -1131,7 +1131,7 @@ STDMETHODIMP CBogusComboContext::GetPoiInfo(BSTR stage, PoiIDType poiID, MemberT
 	return E_NOTIMPL;
 }
 // ILoadCases
-STDMETHODIMP CBogusComboContext::get_Count(CollectionIndexType * pVal)
+STDMETHODIMP CBogusComboContext::get_Count(IndexType * pVal)
 {
 	if (pVal == nullptr)
 		return E_POINTER;
@@ -1142,7 +1142,7 @@ STDMETHODIMP CBogusComboContext::get_Count(CollectionIndexType * pVal)
 		
 	return S_OK;
 }
-STDMETHODIMP CBogusComboContext::get_Item(CollectionIndexType index, ILoadCase * * pVal)
+STDMETHODIMP CBogusComboContext::get_Item(IndexType index, ILoadCase * * pVal)
 {
 	if (pVal == nullptr)
 		return E_POINTER;
@@ -1195,7 +1195,7 @@ STDMETHODIMP CBogusComboContext::RemoveByName(BSTR Name)
 {
 	return E_NOTIMPL;
 }
-STDMETHODIMP CBogusComboContext::RemoveByIndex(CollectionIndexType index, BSTR * Name)
+STDMETHODIMP CBogusComboContext::RemoveByIndex(IndexType index, BSTR * Name)
 {
 	if (Name == nullptr)
 		return E_POINTER;
@@ -1280,7 +1280,7 @@ STDMETHODIMP CBogusComboContext::FindIndex(BSTR Name, StageIndexType * index)
 	return E_NOTIMPL;
 }
 // ILoadCombinations
-STDMETHODIMP CBogusComboContext::get_Item(CollectionIndexType index, ILoadCombination * * pVal)
+STDMETHODIMP CBogusComboContext::get_Item(IndexType index, ILoadCombination * * pVal)
 {
 	if (pVal == nullptr)
 		return E_POINTER;
@@ -1356,7 +1356,7 @@ STDMETHODIMP CBogusComboContext::GetStressPointsAtPOI(PoiIDType poiID, BSTR stag
 STDMETHODIMP CBogusComboContext::CompareLoadCaseSectionResults(BSTR loadCase, BSTR stage, ResultsSummationType summ, VARIANT_BOOL doFlip, ISectionResult3Ds* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1389,7 +1389,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCaseSectionResults(BSTR loadCase, BS
 STDMETHODIMP CBogusComboContext::CompareLoadCaseResults(BSTR loadCase, BSTR stage, ResultsSummationType summ, IResult3Ds* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1415,7 +1415,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCaseResults(BSTR loadCase, BSTR stag
 STDMETHODIMP CBogusComboContext::CompareLoadCaseStressResults(BSTR loadCase, BSTR stage, ResultsSummationType summ, ISectionStressResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1449,7 +1449,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationSectionResults(BSTR loadC
                                                                       ILoadCombinationSectionResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1501,7 +1501,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationSectionRes(BSTR loadCombo
                                                                   ISectionResult3Ds* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1569,7 +1569,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationResults(BSTR loadCombo, B
                                                                       ILoadCombinationResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1599,7 +1599,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationRes(BSTR loadCombo, BSTR 
                                                            OptimizationType opt, IResult3Ds* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1637,7 +1637,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationStressResults(BSTR loadCo
                                                                      ILoadCombinationStressResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1671,7 +1671,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationStressRes(BSTR loadCombo,
                                                            OptimizationType opt, ISectionStressResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1850,10 +1850,10 @@ HRESULT ComboBenchMark::GetLiveLoadStress( BSTR stage, OptimizationType Optimiza
    if (FAILED(hr))
       return hr;
 
-   CollectionIndexType num_sps;
+   IndexType num_sps;
    sps->get_Count(&num_sps);
 
-   for (CollectionIndexType isp = 0; isp<num_sps; isp++)
+   for (IndexType isp = 0; isp<num_sps; isp++)
    {
       CComPtr<IStressPoint> sp;
       sps->get_Item(isp, &sp);

@@ -29,28 +29,21 @@
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
-/****************************************************************************
-CLASS
-   lrfdNoncompositeApproximateLosses2005
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005()
+NoncompositeApproximateLosses2005::NoncompositeApproximateLosses2005()
 {
    Init();
 
-   m_BeamType = SingleT;
-   m_Level = Average;
+   m_BeamType = BeamType::SingleT;
+   m_Level = Level::Average;
    m_Grade = WBFL::Materials::PsStrand::Grade::Gr1860;
    m_Type  = WBFL::Materials::PsStrand::Type::LowRelaxation;
    m_Eci   = WBFL::Units::ConvertToSysUnits(  25000, WBFL::Units::Measure::MPa );
-   m_Ep    = lrfdPsStrand::GetModE();
-   m_Fpu   = lrfdPsStrand::GetUltimateStrength( m_Grade );
+   m_Ep    = PsStrand::GetModE();
+   m_Fpu   = PsStrand::GetUltimateStrength( m_Grade );
    m_Fpj   = 0.80*m_Fpu;
-   m_Fpy   = lrfdPsStrand::GetYieldStrength( m_Grade, m_Type );
+   m_Fpy   = PsStrand::GetYieldStrength( m_Grade, m_Type );
    m_Aps   = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter2 );
    m_Ag    = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter2 );
    m_Ig    = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter4 );
@@ -63,7 +56,7 @@ lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005()
    m_K = 1;
 }
 
-lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005(WBFL::Materials::PsStrand::Grade gr,
+NoncompositeApproximateLosses2005::NoncompositeApproximateLosses2005(WBFL::Materials::PsStrand::Grade gr,
                            WBFL::Materials::PsStrand::Type type,
                            BeamType beamType,
                            Level level,
@@ -89,9 +82,9 @@ lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005(WBF
    m_Level = level;
    m_Fpj   = fpj;
    m_Eci   = Eci;
-   m_Ep    = lrfdPsStrand::GetModE();
-   m_Fpu   = lrfdPsStrand::GetUltimateStrength( m_Grade );
-   m_Fpy   = lrfdPsStrand::GetYieldStrength( m_Grade, m_Type );
+   m_Ep    = PsStrand::GetModE();
+   m_Fpu   = PsStrand::GetUltimateStrength( m_Grade );
+   m_Fpy   = PsStrand::GetYieldStrength( m_Grade, m_Type );
    m_Time  = t;
    m_Ag    = Ag;
    m_Ig    = Ig;
@@ -105,34 +98,14 @@ lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005(WBF
    m_K     = K;
 }
 
-lrfdNoncompositeApproximateLosses2005::lrfdNoncompositeApproximateLosses2005(const lrfdNoncompositeApproximateLosses2005& rOther)
+void NoncompositeApproximateLosses2005::OnUpdate()
 {
-   Init();
-   MakeCopy( rOther );
-}
-
-lrfdNoncompositeApproximateLosses2005::~lrfdNoncompositeApproximateLosses2005()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdNoncompositeApproximateLosses2005& lrfdNoncompositeApproximateLosses2005::operator=(const lrfdNoncompositeApproximateLosses2005& rOther)
-{
-   if ( this != &rOther )
-      MakeAssignment( rOther );
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void lrfdNoncompositeApproximateLosses2005::OnUpdate()
-{
-   lrfdVersionMgrListener::OnUpdate();
+   LRFDVersionMgrListener::OnUpdate();
 
    // Nothing actually changes.
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::ElasticShorteningLosses() const
+Float64 NoncompositeApproximateLosses2005::ElasticShorteningLosses() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -140,7 +113,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::ElasticShorteningLosses() const
    return m_dfES;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::RelaxationLossesAtXfer() const
+Float64 NoncompositeApproximateLosses2005::RelaxationLossesAtXfer() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -148,7 +121,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::RelaxationLossesAtXfer() const
    return m_dfR1;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::ImmediatelyBeforeXferLosses() const
+Float64 NoncompositeApproximateLosses2005::ImmediatelyBeforeXferLosses() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -156,7 +129,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::ImmediatelyBeforeXferLosses() con
    return m_dfR1;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::ImmediatelyAfterXferLosses() const
+Float64 NoncompositeApproximateLosses2005::ImmediatelyAfterXferLosses() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -164,7 +137,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::ImmediatelyAfterXferLosses() cons
    return m_dfES + m_dfR1;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::ApproxLosses() const
+Float64 NoncompositeApproximateLosses2005::ApproxLosses() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -172,7 +145,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::ApproxLosses() const
    return m_dfApprox;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::FinalLosses() const
+Float64 NoncompositeApproximateLosses2005::FinalLosses() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -180,7 +153,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::FinalLosses() const
    return m_dfES + m_dfApprox - m_dfR1;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::GetFcgp() const
+Float64 NoncompositeApproximateLosses2005::GetFcgp() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -188,7 +161,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::GetFcgp() const
    return m_Fcgp;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::GetFpy() const
+Float64 NoncompositeApproximateLosses2005::GetFpy() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -196,7 +169,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::GetFpy() const
    return m_Fpy;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::GetP() const
+Float64 NoncompositeApproximateLosses2005::GetP() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -204,7 +177,7 @@ Float64 lrfdNoncompositeApproximateLosses2005::GetP() const
    return m_P;
 }
 
-Float64 lrfdNoncompositeApproximateLosses2005::GetEp() const
+Float64 NoncompositeApproximateLosses2005::GetEp() const
 {
    if ( m_IsDirty )
       UpdateLosses();
@@ -212,81 +185,24 @@ Float64 lrfdNoncompositeApproximateLosses2005::GetEp() const
    return m_Ep;
 }
 
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdNoncompositeApproximateLosses2005::MakeAssignment( const lrfdNoncompositeApproximateLosses2005& rOther )
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdNoncompositeApproximateLosses2005::Init()
+void NoncompositeApproximateLosses2005::Init()
 {
    m_IsDirty = true;
    m_Fcgp = 0;
 }
 
-void lrfdNoncompositeApproximateLosses2005::MakeCopy( const lrfdNoncompositeApproximateLosses2005& rOther )
-{
-   m_BeamType = rOther.m_BeamType;
-   m_Level = rOther.m_Level;
-   m_Grade = rOther.m_Grade;
-   m_Type  = rOther.m_Type;
-   m_Ag    = rOther.m_Ag;
-   m_Ig    = rOther.m_Ig;
-   m_Ybg   = rOther.m_Ybg;
-   m_e     = rOther.m_e;
-   m_eperm = rOther.m_eperm;
-   m_Aps   = rOther.m_Aps;
-   m_Mdlg  = rOther.m_Mdlg;
-   m_Ep    = rOther.m_Ep;
-   m_Eci   = rOther.m_Eci;
-   m_Fpu   = rOther.m_Fpu;
-   m_Fpy   = rOther.m_Fpy;
-   m_Fpj   = rOther.m_Fpj;
-   m_Time  = rOther.m_Time;
-   m_Fc    = rOther.m_Fc;
-   m_PPR   = rOther.m_PPR;
-
-   m_K     = rOther.m_K;
-
-   m_Fcgp = rOther.m_Fcgp;
-   m_P = rOther.m_P;
-
-   m_dfES = rOther.m_dfES;
-   m_dfR1 = rOther.m_dfR1;
-   m_dfApprox = rOther.m_dfApprox;
-
-   m_IsDirty = rOther.m_IsDirty;
-}
-
-void lrfdNoncompositeApproximateLosses2005::UpdateLosses() const
+void NoncompositeApproximateLosses2005::UpdateLosses() const
 {
    if ( !IsZero( m_Fpj ) && !(0.5*m_Fpu < m_Fpj) )
-      THROW(lrfdXPsLosses,fpjOutOfRange);
+      WBFL_LRFD_THROW(XPsLosses,fpjOutOfRange);
 
-   bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
-   // Use a values that are just out of spec to avoid throwing for boundry values
+   bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+   // Use a values that are just out of spec to avoid throwing for boundary values
    // that have a little round-off error in them.
    Float64 fcMin = (is_si ? WBFL::Units::ConvertToSysUnits( 27.95, WBFL::Units::Measure::MPa ) : WBFL::Units::ConvertToSysUnits( 3.95, WBFL::Units::Measure::KSI ) );
    Float64 fcMax = (is_si ? WBFL::Units::ConvertToSysUnits( 70.05, WBFL::Units::Measure::MPa ) : WBFL::Units::ConvertToSysUnits( 10.05, WBFL::Units::Measure::KSI ) );
    if ( m_Fc < fcMin || fcMax < m_Fc )
-      THROW(lrfdXPsLosses,fcOutOfRange);
+      WBFL_LRFD_THROW(XPsLosses,fcOutOfRange);
 
    UpdateInitialLosses();
    UpdateLongTermLosses();
@@ -294,7 +210,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLosses() const
    m_IsDirty = false;
 }
 
-void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
+void NoncompositeApproximateLosses2005::UpdateInitialLosses() const
 {
    // Losses from jacking to release
    Float64 t_days = WBFL::Units::ConvertFromSysUnits( m_Time, WBFL::Units::Measure::Day );
@@ -306,7 +222,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
       m_dfR1 = (log10(24.*t_days)/A) * (m_Fpj/m_Fpy - 0.55) * m_Fpj;
 
    // Elastic shortening
-   lrfdElasticShortening es(m_Fpj,
+   ElasticShortening es(m_Fpj,
                             0,
                             m_dfR1,
                             0,
@@ -323,15 +239,22 @@ void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
                             1.0,
                             m_Eci,
                             m_Ep,
-                            lrfdElasticShortening::fcgpIterative);
+                            ElasticShortening::FcgpComputationMethod::Iterative);
 
    m_Fcgp = es.PermanentStrand_Fcgp();
    m_dfES = es.PermanentStrand_ElasticShorteningLosses();
    m_P    = es.P();
 }
 
-void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
+void NoncompositeApproximateLosses2005::UpdateLongTermLosses() const
 {
+   // need to make sure spec version is ok
+   if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims || LRFDVersionMgr::Version::FourthEditionWith2009Interims < LRFDVersionMgr::GetVersion())
+   {
+      // Introduced in 3rd edition 2005 and after 4th edition 2009
+      WBFL_LRFD_THROW(XPsLosses, Specification);
+   }
+
    if ( IsZero( m_Fpj ) )
    {
       // If the strands aren't jacked, then there can't be losses.
@@ -342,7 +265,7 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
       Float64 losses;
       const WBFL::Units::Stress* p_unit;
 
-      bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
+      bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
 
       if ( is_si )
          p_unit = &WBFL::Units::Measure::MPa;
@@ -354,8 +277,8 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
 
       switch (m_BeamType )
       {
-      case SolidSlab:
-          if ( m_Level == UpperBound )
+      case BeamType::SolidSlab:
+          if ( m_Level == Level::UpperBound )
               losses = (is_si ? 200 : 29) + (is_si ? 28 : 4)*m_PPR;
           else
               losses = (is_si ? 180 : 26) + (is_si ? 28 : 4)*m_PPR;
@@ -363,8 +286,8 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
           lowRelaxReduction = is_si ? 41 : 6;
           break;
 
-      case BoxBeam:
-          if ( m_Level == UpperBound )
+      case BeamType::BoxBeam:
+          if ( m_Level == Level::UpperBound )
               losses = (is_si ? 145 : 21) + (is_si ? 28 : 4)*m_PPR;
           else
               losses = (is_si ? 130 : 19) + (is_si ? 28 : 4)*m_PPR;
@@ -373,12 +296,12 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
           lowRelaxReduction = is_si ? 28 : 4;
           break;
 
-      case SingleT:
-      case Float64T:
-      case TripleT:
-      case HollowCore:
-      case VoidedSlab:
-          if ( m_Level == UpperBound )
+      case BeamType::SingleT:
+      case BeamType::DoubleT:
+      case BeamType::TripleT:
+      case BeamType::HollowCore:
+      case BeamType::VoidedSlab:
+          if ( m_Level == Level::UpperBound )
               losses = (is_si ? 270 : 39)*(1.0 - 0.15*(fc-(is_si?41:6))/(is_si?41:6)) + (is_si?41:6)*m_PPR;
           else
               losses = (is_si ? 230 : 33)*(1.0 - 0.15*(fc-(is_si?41:6))/(is_si?41:6)) + (is_si?41:6)*m_PPR;
@@ -393,64 +316,3 @@ void lrfdNoncompositeApproximateLosses2005::UpdateLongTermLosses() const
       m_dfApprox = WBFL::Units::ConvertToSysUnits( losses, *p_unit );
    }
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-#if defined _UNITTEST
-#include <Units\System.h>
-#include <Lrfd\AutoVersion.h>
-bool lrfdNoncompositeApproximateLosses2005::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdNoncompositeApproximateLosses2005");
-
-//   lrfdAutoVersion av;
-//
-//   Float64 Fpj   = WBFL::Units::ConvertToSysUnits( 0.80*1860, WBFL::Units::Measure::MPa );
-//   Float64 Ag    = WBFL::Units::ConvertToSysUnits( 486051, WBFL::Units::Measure::Millimeter2 );
-//   Float64 Ig    = WBFL::Units::ConvertToSysUnits( 126011e6, WBFL::Units::Measure::Millimeter4 );
-//   Float64 Ybg   = WBFL::Units::ConvertToSysUnits( 608, WBFL::Units::Measure::Millimeter );
-//   Float64 e     = WBFL::Units::ConvertToSysUnits( 489, WBFL::Units::Measure::Millimeter );
-//   Float64 Aps   = WBFL::Units::ConvertToSysUnits( 5133, WBFL::Units::Measure::Millimeter2 );
-//   Float64 Mdlg  = WBFL::Units::ConvertToSysUnits( 1328, WBFL::Units::Measure::KilonewtonMeter );
-//   Float64 Eci   = WBFL::Units::ConvertToSysUnits( 30360, WBFL::Units::Measure::MPa );
-//   Float64 Fc    = WBFL::Units::ConvertToSysUnits( 48, WBFL::Units::Measure::MPa );
-//   Float64 t     = WBFL::Units::ConvertToSysUnits( 4.0, WBFL::Units::Measure::Day );
-//   Float64 PPR   = 1.0;
-//
-//   lrfdNoncompositeApproximateLosses2005 loss( WBFL::Materials::PsStrand::Grade::Gr1860,
-//                               WBFL::Materials::PsStrand::Type::LowRelaxation,
-//                               lrfdNoncompositeApproximateLosses2005::IBeam,
-//                               Fpj, Ag, Ig, Ybg, e, Aps, Mdlg, 1.0, Eci, Fc, PPR, t );
-//
-//   lrfdVersionMgr::RegisterListener( &loss );
-//
-//   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition );
-//   Float64 loss1 = loss.ImmediatelyAfterXferLosses();
-//   TRY_TEST (  IsEqual( WBFL::Units::ConvertFromSysUnits(loss1,WBFL::Units::Measure::MPa),165.7,0.1) );
-//
-//   Float64 loss2 = loss.FinalLosses();
-//   TRY_TEST (  IsEqual(WBFL::Units::ConvertFromSysUnits(loss2,WBFL::Units::Measure::MPa),339.8,0.1) );
-//
-//   loss.SetFpj(1);
-//   bool bDidCatch = false;
-//   try
-//   {
-//      Float64 loss3 = loss.FinalLosses();
-//   }
-//   catch( const lrfdXPsLosses& e )
-//   {
-//      bDidCatch = true;
-//      TRY_TEST( bDidCatch );
-//      TRY_TEST( e.GetReasonCode() == lrfdXPsLosses::fpjOutOfRange );
-//   }
-//   TRY_TEST( bDidCatch );
-//
-//   lrfdVersionMgr::UnregisterListener( &loss );
-
-   TESTME_EPILOG("lrfdNoncompositeApproximateLosses2005");
-}
-
-#endif // _UNITTEST
-
-

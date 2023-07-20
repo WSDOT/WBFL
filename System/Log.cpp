@@ -132,7 +132,7 @@ Log& Log::operator<<(Log& (*pf)(Log&))
    return *this;
 }
 
-void Log::LogTestResult(std::_tstring& msg,  TestResult type)
+void Log::LogTestResult(const std::_tstring& msg,  TestResult type)
 {
    if (type == Log::TestResult::Failed)
    {

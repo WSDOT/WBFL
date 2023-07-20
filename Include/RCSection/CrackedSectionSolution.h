@@ -41,7 +41,7 @@ namespace WBFL
          CrackedSectionSolution();
          CrackedSectionSolution(
             const WBFL::Geometry::Point2d& cg, ///< Centroid of the cracked section
-            std::vector<std::unique_ptr<CrackedSectionSlice>>&& vSlices ///< Array of fibers ("slices") resulting from the discritization of the cross section.
+            std::vector<std::unique_ptr<CrackedSectionSlice>>&& vSlices ///< Array of fibers ("slices") resulting from the discretization of the cross section.
          );
          CrackedSectionSolution(const CrackedSectionSolution& other) = delete; // can't copy because of unique_ptr - also don't need copy semantics
          ~CrackedSectionSolution();
@@ -51,7 +51,7 @@ namespace WBFL
          /// Initialize with the solution results
          void InitSolution(
             const WBFL::Geometry::Point2d& cg, ///< Centroid of the cracked section
-            std::vector<std::unique_ptr<CrackedSectionSlice>>&& vSlices ///< Array of fibers ("slices") resulting from the discritization of the cross section.
+            std::vector<std::unique_ptr<CrackedSectionSlice>>&& vSlices ///< Array of fibers ("slices") resulting from the discretization of the cross section.
          );
 
          /// Centroid of the cracked section
@@ -61,18 +61,13 @@ namespace WBFL
          IndexType GetSliceCount() const;
 
          /// Returns a slice
-         const std::unique_ptr<CrackedSectionSlice>& GetSlice(IndexType sliceIdx) const;
+         const CrackedSectionSlice& GetSlice(IndexType sliceIdx) const;
 
          /// Returns the elastic properties of the cracked section
          WBFL::Geometry::ElasticProperties GetElasticProperties() const;
 
       private:
          std::unique_ptr<CrackedSectionSolutionImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

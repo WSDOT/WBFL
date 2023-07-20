@@ -199,7 +199,7 @@ void TestVehicularLoadContext::Test()
    TRY_TEST(!contrf, false);
    CComPtr<IDblArray> cfpnts;
    TRY_TEST(contrf->ComputeNegativeMomentRegions(CComBSTR("Stage 1"), &cfpnts), S_OK);
-   CollectionIndexType lsz;
+   IndexType lsz;
    cfpnts->get_Count(&lsz);
    TRY_TEST(lsz, 6); 
 

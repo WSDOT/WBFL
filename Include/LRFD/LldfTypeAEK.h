@@ -22,269 +22,97 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LLDFTYPEAEK_H_
-#define INCLUDED_LRFD_LLDFTYPEAEK_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\LldfTypeAEKIJ.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdLldfTypeAEK
-
-   Live load distribution factor calculator for cross section types A, E, K 
-   when cross frames or diaphragms are present.
-
-
-DESCRIPTION
-   Live load distribution factor calculator for cross section types A, E, K 
-   when cross frames or diaphragms are present.
-
-LOG
-   rab : 11.12.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdLldfTypeAEK : public lrfdLldfTypeAEKIJ
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace LRFD
+   {
+      /// @brief Live load distribution factor calculator for cross section types A, E, K when cross frames or diaphragms are present.
+      class LRFDCLASS LldfTypeAEK : public LldfTypeAEKIJ
+      {
+      public:
+         LldfTypeAEK() = delete;
+         LldfTypeAEK(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+                         Uint32 Nl, Float64 wLane,
+                         Float64 L,Float64 ts,Float64 n,
+                         Float64 I, Float64 A, Float64 eg,
+                         bool bXFrames, // if true, the rigid method is used
+                         Float64 skewAngle1, Float64 skewAngle2,
+                         bool bSkewMoment,
+                         bool bSkewShear);
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdLldfTypeAEK(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
-                   Uint32 Nl, Float64 wLane,
-                   Float64 L,Float64 ts,Float64 n,
-                   Float64 I, Float64 A, Float64 eg,
-                   bool bXFrames, // if true, the statical (rigid) method is used
-                   Float64 skewAngle1, Float64 skewAngle2,
-                   bool bSkewMoment,
-                   bool bSkewShear);
+         LldfTypeAEK(const LldfTypeAEK&) = default;
+         virtual ~LldfTypeAEK() override = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdLldfTypeAEK(const lrfdLldfTypeAEK& rOther);
+         LldfTypeAEK& operator=(const LldfTypeAEK&) = default;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdLldfTypeAEK() override;
+      protected:
+         virtual DFResult GetMomentDF_Ext_1_Strength() const override;
+         virtual DFResult GetMomentDF_Ext_2_Strength() const override;
+         virtual DFResult GetShearDF_Ext_1_Strength() const override;
+         virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdLldfTypeAEK& operator = (const lrfdLldfTypeAEK& rOther);
+      private:
+         bool m_bXFrames = true;
+      };
 
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      /// @brief Live load distribution factor calculator for cross section types A, E, K, accounting for WSDOT modifications.
+      /// These modifications are documented in a memorandum by C. C. Ruth, dated February 22, 1999.
+      /// 
+      /// The WSDOT modifications are:
+      /// 1. For exterior girders with a slab cantilever length less than or equal to
+      ///    the overhang threshold of the adjacent interior girder spacing,  compute the distribution
+      ///    factor using the equations for an interior girder.  The slab cantilever
+      ///    length is defined as the distance from the centerline of the exterior girder
+      ///    to the edge of the slab.
+      /// 2. For exterior girders with a slab cantilever length exceeding the overhang threshold
+      ///    of the adjacent interior girder spacing, compute the live load distribution
+      ///    factor in accordance with the LRFD specification, except use a multiple
+      ///    presence factor of 1.0 for one design lane loaded.
+      /// 3. The special analysis based on the conventional approximation of loads on 
+      ///    piles per AASHTO-LRFD Article C4.6.2.2.2d shall not be used unless the
+      ///    effectiveness of diaphragms on the lateral distribution of truck loads
+      ///    is investigated.
+      /// 4. Do not use rigid method
+      class LRFDCLASS WsdotLldfTypeAEK : public LldfTypeAEKIJ
+      {
+      public:
+         WsdotLldfTypeAEK() = delete;
+         WsdotLldfTypeAEK(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+                              Uint32 Nl, Float64 wLane,
+                              Float64 L,Float64 ts,Float64 n,
+                              Float64 I, Float64 A, Float64 eg,
+                              Float64 leftSlabOverhang,Float64 rightSlabOverhang,
+                              bool bXFrames,
+                              Float64 skewAngle1, Float64 skewAngle2,
+                              bool bSkewMoment,
+                              bool bSkewShear,
+                              Float64 SlabCantileverThreshold);
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdLldfTypeAEK& rOther);
+         WsdotLldfTypeAEK(const WsdotLldfTypeAEK&) = default;
+         virtual ~WsdotLldfTypeAEK() override = default;
 
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeAEK& rOther);
+         WsdotLldfTypeAEK& operator=(const WsdotLldfTypeAEK&) = default;
 
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const override;
+      protected:
+         Float64 m_LeftSlabOverhang;
+         Float64 m_RightSlabOverhang;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         Float64 m_SlabCantileverThreshold;
 
-private:
-   // GROUP: DATA MEMBERS
-   bool m_bXFrames;
+         // If test passes,  use the lever rule with the multiple presence factor of 1.0 for single
+         // lane to determine the live load distribution. The live load used to design the exterior 
+         // girder shall not be less than the live load used for the adjacent interior girder. 
+         bool SlabCantileverTest() const;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const override;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(WBFL::Debug::LogContext& os) const override;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   #endif // _UNITTEST
+         virtual DFResult GetMomentDF_Ext_1_Strength() const override;
+         virtual DFResult GetMomentDF_Ext_2_Strength() const override;
+         virtual DFResult GetShearDF_Ext_1_Strength() const override;
+         virtual DFResult GetShearDF_Ext_2_Strength() const override;
+      };
+   };
 };
-
-
-/*****************************************************************************
-CLASS 
-   lrfdWsdotLldfTypeAEK
-
-   Live load distribution factor calculator for cross section types A, E, K,
-   accounting for WSDOT modifications.
-
-
-DESCRIPTION
-   Live load distribution factor calculator for cross section types A, E, K,
-   accounting for WSDOT modifications.  These modifications are documented
-   in a memorandum by C. C. Ruth, dated February 22, 1999.
-
-   The WSDOT modifications are:
-   1. For exterior girders with a slab cantilever length less than or equal to
-      the overhang threshold of the adjacent interior girder spacing,  compute the distribution
-      factor using the equations for an interior girder.  The slab cantilever
-      length is defined as the distance from the centerline of the exterior girder
-      to the edge of the slab.
-   2. For exterior girders with a slab cantilever length exceeding the overhang threshold
-      of the adjacent interior girder spacing, compute the live load distribution
-      factor in accordance with the LRFD specification, except use a multiple
-      presence factor of 1.0 for one design lane loaded.
-   3. The special analysis based on the conventional approximation of loads on 
-      piles per AASHTO-LRFD Article C4.6.2.2.2d shall not be used unless the
-      effectiveness of diaphragms on the laterial distribution of truck loads
-      is investigated.
-   4. Do not use rigid method
-
-LOG
-   rab : 11.12.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdWsdotLldfTypeAEK : public lrfdLldfTypeAEKIJ
-{
-public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Constructor
-   lrfdWsdotLldfTypeAEK(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
-                        Uint32 Nl, Float64 wLane,
-                        Float64 L,Float64 ts,Float64 n,
-                        Float64 I, Float64 A, Float64 eg,
-                        Float64 leftSlabOverhang,Float64 rightSlabOverhang,
-                        bool bXFrames,
-                        Float64 skewAngle1, Float64 skewAngle2,
-                        bool bSkewMoment,
-                        bool bSkewShear,
-                        Float64 SlabCantileverThreshold);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdWsdotLldfTypeAEK(const lrfdWsdotLldfTypeAEK& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdWsdotLldfTypeAEK() override;
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdWsdotLldfTypeAEK& operator = (const lrfdWsdotLldfTypeAEK& rOther);
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   Float64 m_LeftSlabOverhang;
-   Float64 m_RightSlabOverhang;
-
-   Float64 m_SlabCantileverThreshold;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   // If test passes,  use the lever rule with the multiple presence factor of 1.0 for single
-   // lane to determine the live load distribution. The live load used to design the exterior 
-   // girder shall not be less than the live load used for the adjacent interior girder. 
-   bool SlabCantileverTest() const;
-
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
-
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const override;
-
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdWsdotLldfTypeAEK& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdWsdotLldfTypeAEK& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-
-   // GROUP: LIFECYCLE
-   // No default constructor
-   lrfdWsdotLldfTypeAEK();
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const override;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(WBFL::Debug::LogContext& os) const override;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   #endif // _UNITTEST
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_LLDFTYPEAEK_H_

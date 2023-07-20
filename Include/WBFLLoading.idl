@@ -331,9 +331,9 @@ library WBFLLoading
    interface ldIPointLoads : IUnknown
    {
       [propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
       [propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
-      HRESULT Item([in]CollectionIndexType index, [out, retval] ldIPointLoadItem* *pVal);
+      HRESULT Item([in]IndexType index, [out, retval] ldIPointLoadItem* *pVal);
       [propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
       HRESULT Load([in]IDType ID, [out, retval] ldIPointLoad* *pVal);
       [propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
@@ -347,7 +347,7 @@ library WBFLLoading
       [helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
       HRESULT RemoveByID([in]IDType ID);
       [helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
-      HRESULT RemoveByIndex([in]CollectionIndexType index);
+      HRESULT RemoveByIndex([in]IndexType index);
       [helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
       HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldIPointLoads** filteredcoll);
       [helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
@@ -493,11 +493,11 @@ library WBFLLoading
 	interface ldIDistributedLoads : IUnknown
 	{
 		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
-		HRESULT Item([in]CollectionIndexType index, [out, retval] ldIDistributedLoadItem* *pVal);
+		HRESULT Item([in]IndexType index, [out, retval] ldIDistributedLoadItem* *pVal);
 		[propget, helpstring("returns an enumerator for the collection.")]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
 		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
 		HRESULT Load([in]IDType ID, [out, retval] ldIDistributedLoad* *pVal);
 		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
@@ -511,7 +511,7 @@ library WBFLLoading
 		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
 		HRESULT RemoveByID([in]IDType ID);
 		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
-		HRESULT RemoveByIndex([in]CollectionIndexType index);
+		HRESULT RemoveByIndex([in]IndexType index);
 		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
 		HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldIDistributedLoads** filteredcoll);
 		[helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
@@ -637,9 +637,9 @@ library WBFLLoading
 	interface ldISettlementLoads : IUnknown
 	{
 		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
-		HRESULT Item([in]CollectionIndexType index, [out, retval] ldISettlementLoadItem* *pVal);
+		HRESULT Item([in]IndexType index, [out, retval] ldISettlementLoadItem* *pVal);
 		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
 		HRESULT Load([in]IDType ID, [out, retval] ldISettlementLoad* *pVal);
 		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
@@ -653,7 +653,7 @@ library WBFLLoading
 		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
 		HRESULT RemoveByID([in]IDType ID);
 		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
-		HRESULT RemoveByIndex([in]CollectionIndexType index);
+		HRESULT RemoveByIndex([in]IndexType index);
 		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
 		HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldISettlementLoads** filteredcoll);
 		[helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
@@ -782,9 +782,9 @@ library WBFLLoading
 	interface ldITemperatureLoads : IUnknown
 	{
 		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
-		HRESULT Item([in]CollectionIndexType index, [out, retval] ldITemperatureLoadItem* *pVal);
+		HRESULT Item([in]IndexType index, [out, retval] ldITemperatureLoadItem* *pVal);
 		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
 		HRESULT Load([in]IDType ID, [out, retval] ldITemperatureLoad* *pVal);
 		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
@@ -798,7 +798,7 @@ library WBFLLoading
 		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
 		HRESULT RemoveByID([in]IDType ID);
 		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
-		HRESULT RemoveByIndex([in]CollectionIndexType index);
+		HRESULT RemoveByIndex([in]IndexType index);
 		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
 		HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldITemperatureLoads** filteredcoll);
 		[helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
@@ -928,9 +928,9 @@ library WBFLLoading
 	interface ldIStrainLoads : IUnknown
 	{
 		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
-		HRESULT Item([in]CollectionIndexType index, [out, retval] ldIStrainLoadItem* *pVal);
+		HRESULT Item([in]IndexType index, [out, retval] ldIStrainLoadItem* *pVal);
 		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
 		HRESULT Load([in]IDType ID, [out, retval] ldIStrainLoad* *pVal);
 		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
@@ -944,7 +944,7 @@ library WBFLLoading
 		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
 		HRESULT RemoveByID([in]IDType ID);
 		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
-		HRESULT RemoveByIndex([in]CollectionIndexType index);
+		HRESULT RemoveByIndex([in]IndexType index);
 		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
 		HRESULT FilterByStageGroup([in]BSTR stage, [in]BSTR loadgroup, [out,retval] ldIStrainLoads** filteredcoll);
 		[helpstring("method Clone"),helpcontext(IDH_Load_Collections_Clone)] 
@@ -1326,11 +1326,11 @@ library WBFLLoading
 	interface ldILoadGroups : IUnknown
 	{
       [propget, helpstring("property Item"),helpcontext(IDH_LoadGroups_Item)] 
-      HRESULT Item([in]CollectionIndexType index, [out, retval] ldILoadGroup* *pVal);
+      HRESULT Item([in]IndexType index, [out, retval] ldILoadGroup* *pVal);
       [propget, helpstring("returns an enumerator for the collection.")]
       HRESULT _NewEnum([out, retval] IUnknown** retval);  
       [propget, helpstring("property Count"),helpcontext(IDH_LoadGroups_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
       [propget, helpstring("property _EnumElements"),helpcontext(IDH_LoadGroups__EnumElements)] 
       HRESULT _EnumElements([out, retval] ldIEnumLoadGroup* *pVal);
       [helpstring("method Find"),helpcontext(IDH_LoadGroups_Find)] 
@@ -1340,7 +1340,7 @@ library WBFLLoading
       [helpstring("method RemoveByName"),helpcontext(IDH_LoadGroups_RemoveByName)] 
       HRESULT RemoveByName([in]BSTR name);
       [helpstring("method RemoveByIndex"),helpcontext(IDH_LoadGroups_RemoveByIndex)] 
-      HRESULT RemoveByIndex([in]CollectionIndexType index, [out,retval]BSTR* name);
+      HRESULT RemoveByIndex([in]IndexType index, [out,retval]BSTR* name);
       [helpstring("method Clone"),helpcontext(IDH_LoadGroups_Clone)] 
       HRESULT Clone([out,retval] ldILoadGroups**);
       [helpstring("method Clear"),helpcontext(IDH_LoadGroups_Clear)] 
@@ -1394,17 +1394,17 @@ library WBFLLoading
 		[helpstring("method AddLoadGroup"),helpcontext(IDH_LoadCase_AddLoadGroup)] 
       HRESULT AddLoadGroup([in]BSTR loadGroupName);
 		[helpstring("method GetLoadGroup"),helpcontext(IDH_LoadCase_GetLoadGroup)] 
-      HRESULT GetLoadGroup([in]CollectionIndexType index, [out]BSTR* loadGroupName);
+      HRESULT GetLoadGroup([in]IndexType index, [out]BSTR* loadGroupName);
 		[helpstring("method SetLoadGroup"),helpcontext(IDH_LoadCase_SetLoadGroup)] 
-      HRESULT SetLoadGroup([in]CollectionIndexType index, [in]BSTR newName);
+      HRESULT SetLoadGroup([in]IndexType index, [in]BSTR newName);
 		[helpstring("method RemoveLoadGroup"),helpcontext(IDH_LoadCase_RemoveLoadGroup)] 
       HRESULT RemoveLoadGroup([in]BSTR loadGroupName);
 		[helpstring("method RemoveLoadGroupByIndex"),helpcontext(IDH_LoadCase_RemoveLoadGroupByIndex)] 
-      HRESULT RemoveLoadGroupByIndex([in]CollectionIndexType index);
+      HRESULT RemoveLoadGroupByIndex([in]IndexType index);
 		[helpstring("method Clone"),helpcontext(IDH_LoadCase_Clone)] 
       HRESULT Clone([out,retval] ldILoadCase** clone);
 		[propget, helpstring("property LoadGroupCount"),helpcontext(IDH_LoadCase_LoadGroupCount)] 
-      HRESULT LoadGroupCount([out, retval] CollectionIndexType *pVal);
+      HRESULT LoadGroupCount([out, retval] IndexType *pVal);
 	};
 
    [
@@ -1458,11 +1458,11 @@ library WBFLLoading
 	interface ldILoadCases : IUnknown
 	{
       [propget, helpstring("property Item"),helpcontext(IDH_LoadCases_Item)] 
-      HRESULT Item([in]CollectionIndexType index, [out, retval] ldILoadCase* *pVal);
+      HRESULT Item([in]IndexType index, [out, retval] ldILoadCase* *pVal);
       [propget, helpstring("returns an enumerator for the collection.")]
       HRESULT _NewEnum([out, retval] IUnknown** retval);  
       [propget, helpstring("property Count"),helpcontext(IDH_LoadCases_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
       [propget, helpstring("property _EnumElements"),helpcontext(IDH_LoadCases__EnumElements)] 
       HRESULT _EnumElements([out, retval] ldIEnumLoadCase* *pVal);
       [helpstring("method Find"),helpcontext(IDH_LoadCases_Find)] 
@@ -1472,7 +1472,7 @@ library WBFLLoading
       [helpstring("method RemoveByName"),helpcontext(IDH_LoadCases_RemoveByName)] 
       HRESULT RemoveByName([in]BSTR name);
       [helpstring("method RemoveByIndex"),helpcontext(IDH_LoadCases_RemoveByIndex)] 
-      HRESULT RemoveByIndex([in]CollectionIndexType index, [out,retval]BSTR* name);
+      HRESULT RemoveByIndex([in]IndexType index, [out,retval]BSTR* name);
       [helpstring("method Clone"),helpcontext(IDH_LoadCases_Clone)] 
       HRESULT Clone([out,retval] ldILoadCases** clone);
       [helpstring("method Clear"),helpcontext(IDH_LoadCases_Clear)] 
@@ -1526,17 +1526,17 @@ library WBFLLoading
 		[propput, helpstring("property LiveLoadFactor"),helpcontext(IDH_LoadCombination_LiveLoadFactor)] 
       HRESULT LiveLoadFactor([in] Float64 newVal);
 		[propget, helpstring("property LoadCaseFactorCount"),helpcontext(IDH_LoadCombination_LoadCaseFactorCount)] 
-      HRESULT LoadCaseFactorCount([out, retval] CollectionIndexType *pVal);
+      HRESULT LoadCaseFactorCount([out, retval] IndexType *pVal);
 		[helpstring("method SetLoadCaseFactor"),helpcontext(IDH_LoadCombination_SetLoadCaseFactor)] 
-      HRESULT SetLoadCaseFactor([in]CollectionIndexType index, [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
+      HRESULT SetLoadCaseFactor([in]IndexType index, [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
 		[helpstring("method AddLoadCaseFactor"),helpcontext(IDH_LoadCombination_AddLoadCaseFactor)] 
       HRESULT AddLoadCaseFactor( [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
 		[helpstring("method GetLoadCaseFactor"),helpcontext(IDH_LoadCombination_GetLoadCaseFactor)] 
-      HRESULT GetLoadCaseFactor([in]CollectionIndexType index,  [out]BSTR* loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
+      HRESULT GetLoadCaseFactor([in]IndexType index,  [out]BSTR* loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
 		[helpstring("method Clear"),helpcontext(IDH_LoadCombination_Clear)] 
       HRESULT Clear();
 		[helpstring("method RemoveLoadCaseFactor"),helpcontext(IDH_LoadCombination_RemoveLoadCaseFactor)] 
-      HRESULT RemoveLoadCaseFactor([in]CollectionIndexType index);
+      HRESULT RemoveLoadCaseFactor([in]IndexType index);
 		[helpstring("method Clone"),helpcontext(IDH_LoadCombination_Clone)] 
       HRESULT Clone([out,retval] ldILoadCombination* *lone);
 		[propget, helpstring("property ItemData"),helpcontext(IDH_LoadCases_OnLoadCasesAdded)] 
@@ -1600,11 +1600,11 @@ library WBFLLoading
 	interface ldILoadCombinations : IUnknown
 	{
       [propget, helpstring("property Item"),helpcontext(IDH_LoadCombinations_Item)] 
-      HRESULT Item([in]CollectionIndexType index, [out, retval] ldILoadCombination* *pVal);
+      HRESULT Item([in]IndexType index, [out, retval] ldILoadCombination* *pVal);
       [propget, helpstring("returns an enumerator for the collection.")]
       HRESULT _NewEnum([out, retval] IUnknown** retval);  
       [propget, helpstring("property Count"),helpcontext(IDH_LoadCombinations_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
       [propget, helpstring("property _EnumElements"),helpcontext(IDH_LoadCombinations__EnumElements)] 
       HRESULT _EnumElements([out, retval] ldIEnumLoadCombination* *pVal);
       [helpstring("method Find"),helpcontext(IDH_LoadCombinations_Find)] 
@@ -1614,7 +1614,7 @@ library WBFLLoading
       [helpstring("method RemoveByName"),helpcontext(IDH_LoadCombinations_RemoveByName)] 
       HRESULT RemoveByName([in]BSTR name);
       [helpstring("method RemoveByIndex"),helpcontext(IDH_LoadCombinations_RemoveByIndex)] 
-      HRESULT RemoveByIndex([in]CollectionIndexType index, [out,retval]BSTR* name);
+      HRESULT RemoveByIndex([in]IndexType index, [out,retval]BSTR* name);
       [helpstring("method Clone"),helpcontext(IDH_LoadCombinations_Clone)] 
       HRESULT Clone([out,retval] ldILoadCombinations**);
       [helpstring("method Clear"),helpcontext(IDH_LoadCombinations_Clear)] 

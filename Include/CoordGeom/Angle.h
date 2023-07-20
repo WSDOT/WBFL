@@ -91,12 +91,6 @@ namespace WBFL
          /// @brief Normalizes the angle by causing the value to be between 0 and \f$2\pi\f$ radians
          void Normalize();
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          Float64 m_Angle{ 0.0 };
       };

@@ -85,10 +85,6 @@ namespace WBFL
          /// @return The point where the diaphragm intersects the girder line
          const WBFL::Geometry::Point2d& GetPoint(IDType girderLineID, EndType endType) const;
 
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          std::weak_ptr<const BridgeFramingGeometry> m_pBridge;
          IDType m_ID = INVALID_ID;

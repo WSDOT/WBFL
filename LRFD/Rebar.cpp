@@ -29,43 +29,15 @@
 #include <Lrfd\RebarPool.h>
 #include <Lrfd\ConcreteUtil.h>
 
-// precompute conversions
-static const Float64 g_140p0_MPA  = WBFL::Units::ConvertToSysUnits(140.0,WBFL::Units::Measure::MPa);
+using namespace WBFL::LRFD;
 
-static const Float64 g_20p0_KSI   = WBFL::Units::ConvertToSysUnits(20.0,WBFL::Units::Measure::KSI);
-
-static const Float64 g_150_MM = WBFL::Units::ConvertToSysUnits( 150, WBFL::Units::Measure::Millimeter );
-static const Float64 g_300_MM = WBFL::Units::ConvertToSysUnits( 300, WBFL::Units::Measure::Millimeter );
-static const Float64 g_600_MM = WBFL::Units::ConvertToSysUnits( 600, WBFL::Units::Measure::Millimeter );
-
-static const Float64 g_6_IN =  WBFL::Units::ConvertToSysUnits( 6, WBFL::Units::Measure::Inch );
-static const Float64 g_12_IN = WBFL::Units::ConvertToSysUnits(12, WBFL::Units::Measure::Inch );
-static const Float64 g_24_IN = WBFL::Units::ConvertToSysUnits(24, WBFL::Units::Measure::Inch );
-
-
-/****************************************************************************
-CLASS
-   lrfdRebar
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdRebar::~lrfdRebar()
+Float64 Rebar::GetMaxBurstingStress(Float64 fy)
 {
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-Float64 lrfdRebar::GetMaxBurstingStress(Float64 fy)
-{
-   CHECK(fy>0.0);
-   bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-   if( lrfdVersionMgr::GetVersion() >= lrfdVersionMgr::FirstEditionWith1996Interims )
+   PRECONDITION(0.0 < fy);
+   bool is_si = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   if(LRFDVersionMgr::Version::FirstEditionWith1996Interims <= LRFDVersionMgr::GetVersion() )
    {
-      Float64 fym = is_si ? g_140p0_MPA : g_20p0_KSI;
+      Float64 fym = is_si ? WBFL::Units::ConvertToSysUnits(140.0, WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(20.0, WBFL::Units::Measure::KSI);
 
       fy = min(fy, fym);
    }
@@ -73,46 +45,52 @@ Float64 lrfdRebar::GetMaxBurstingStress(Float64 fy)
    return fy;
 }
 
-Float64 lrfdRebar::GetBurstingZoneLength(Float64 h)
+Float64 Rebar::GetBurstingZoneLength(Float64 h)
 {
-   if( lrfdVersionMgr::GetVersion() >= lrfdVersionMgr::FirstEditionWith1996Interims )
-      return h/5;
+   // 1994 d/4
+   // 1996 d/5
+   // 2002 d/4
+
+   if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FirstEditionWith1996Interims || LRFDVersionMgr::Version::SecondEditionWith2002Interims <= LRFDVersionMgr::GetVersion())
+      return h / 4;
    else
-      return h/4;
+      return h / 5;
 }
 
-WBFL::Materials::Rebar::Size lrfdRebar::GetMinConfinmentBarSize()
+WBFL::Materials::Rebar::Size Rebar::GetMinConfinementBarSize()
 {
    return WBFL::Materials::Rebar::Size::bs3;
 }
 
-Float64 lrfdRebar::GetMaxConfinmentBarSpacing()
+Float64 Rebar::GetMaxConfinementBarSpacing()
 {
-   bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-   Float64 bss = is_si ? g_150_MM : g_6_IN;
+   bool is_si = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   Float64 bss = is_si ? WBFL::Units::ConvertToSysUnits(150, WBFL::Units::Measure::Millimeter) : WBFL::Units::ConvertToSysUnits(6, WBFL::Units::Measure::Inch);
    return bss;
 }
 
-Float64 lrfdRebar::GetMinConfinmentAvS()
+Float64 Rebar::GetMinConfinementAvS()
 {
-   // manufacture a bogus rebar to get properties from
-   lrfdRebarPool* rp = lrfdRebarPool::GetInstance();
+   // #3 bars at 6" max spacing
+   const RebarPool* rp = RebarPool::GetInstance();
    CHECK(rp);
    const WBFL::Materials::Rebar* pr = rp->GetRebar(WBFL::Materials::Rebar::Type::A615,WBFL::Materials::Rebar::Grade::Grade60,WBFL::Materials::Rebar::Size::bs3);
    CHECK(pr);
 
-   Float64 s  = lrfdRebar::GetMaxConfinmentBarSpacing();
-   CHECK(s>0.0);
+   Float64 s  = Rebar::GetMaxConfinementBarSpacing();
+   CHECK(0.0 < s);
    Float64 av = pr->GetNominalArea();
    return av/s;
 }
 
-Float64 lrfdRebar::GetAvOverSMin(Float64 fc, Float64 bv, Float64 fy)
+Float64 Rebar::GetAvOverSMin(Float64 fc, Float64 bv, Float64 fy)
 {
-   CHECK(fy>0);
-   Float64 avs;
-   bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-   if (is_si)
+   PRECONDITION(0 < fc);
+   PRECONDITION(0 < bv);
+   PRECONDITION(0 < fy);
+
+   Float64 avs = -999999999;
+   if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
    {
       Float64 bv_u = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Millimeter);
       Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy, WBFL::Units::Measure::MPa);
@@ -133,24 +111,24 @@ Float64 lrfdRebar::GetAvOverSMin(Float64 fc, Float64 bv, Float64 fy)
 
 }
 
-void lrfdRebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
+void Rebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
 {
-   bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-   if (is_si)
+   if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
    {
-      *sUnderLimit = g_600_MM;
-      *sOverLimit  = g_300_MM;
+      *sUnderLimit = WBFL::Units::ConvertToSysUnits(600, WBFL::Units::Measure::Millimeter);
+      *sOverLimit  = WBFL::Units::ConvertToSysUnits(300, WBFL::Units::Measure::Millimeter);
    }
    else
    {
-      *sUnderLimit = g_24_IN;
-      *sOverLimit  = g_12_IN;
+      *sUnderLimit = WBFL::Units::ConvertToSysUnits(24, WBFL::Units::Measure::Inch);
+      *sOverLimit  = WBFL::Units::ConvertToSysUnits(12, WBFL::Units::Measure::Inch);
    }
 }
 
-Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& rebar, Float64 fc)
+Float64 Rebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& rebar, Float64 fc)
 {
-   CHECK(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
+   PRECONDITION(LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+   PRECONDITION(0 < fc);
 
    Float64 dl=0.0;
 
@@ -162,14 +140,12 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& reb
    WBFL::Materials::Rebar::Size size = rebar.GetSize();
 
    // Equations taken from 5.11.2.1.1
-   bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-   if (is_si)
+   if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
    {
       Float64 ab_u = WBFL::Units::ConvertFromSysUnits(ab,WBFL::Units::Measure::Millimeter2);
       Float64 db_u = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Millimeter);
       Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
       Float64 fc_u = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa);
-      CHECK(0 < fc_u);
 
       Float64 dl_u = 0;
 
@@ -202,7 +178,6 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& reb
       Float64 db_u = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Inch);
       Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
       Float64 fc_u = WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI);
-      CHECK(0 < fc_u);
 
       Float64 dl_u = 0;
 
@@ -233,22 +208,26 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& reb
    return dl;
 }
 
-Float64 lrfdRebar::GetHookExtension(WBFL::Materials::Rebar::Size size,Float64 db,Usage usage,Hook hook)
+Float64 Rebar::GetHookExtension(WBFL::Materials::Rebar::Size size,Float64 db,Usage usage,Hook hook)
 {
-   if ( usage == Longitudinal )
+#pragma Reminder("WORKING HERE - Revise this method... the db should be implied from Size - maybe just pass in a Rebar object")
+   if (hook == Hook::hookNone)
+      return 0.0; // no hook, no extension
+
+   if ( usage == Usage::Longitudinal )
    {
-      if ( hook == hook90 )
+      if ( hook == Hook::hook90 )
       {
          return 12*db;
       }
-      else if ( hook == hook180 )
+      else if ( hook == Hook::hook180 )
       {
          return Max(WBFL::Units::ConvertToSysUnits(2.5,WBFL::Units::Measure::Inch),4*db);
       }
    }
-   else if ( usage == Transverse )
+   else if ( usage == Usage::Transverse )
    {
-      if ( hook == hook90 )
+      if ( hook == Hook::hook90 )
       {
          if ( size <= WBFL::Materials::Rebar::Size::bs5 )
          {
@@ -259,7 +238,7 @@ Float64 lrfdRebar::GetHookExtension(WBFL::Materials::Rebar::Size size,Float64 db
             return 12*db;
          }
       }
-      else if ( hook == hook135 )
+      else if ( hook == Hook::hook135 )
       {
          if ( size <= WBFL::Materials::Rebar::Size::bs8 )
          {
@@ -269,28 +248,28 @@ Float64 lrfdRebar::GetHookExtension(WBFL::Materials::Rebar::Size size,Float64 db
    }
    else
    {
-      CHECK(usage == Seismic);
-      if ( hook == hook135 )
+      CHECK(usage == Usage::Seismic);
+      if ( hook == Hook::hook135 )
       {
          return Max(WBFL::Units::ConvertToSysUnits(3.0,WBFL::Units::Measure::Inch),6*db);
       }
    }
 
-   CHECK(false);
-   // invalid combination of usage and hook type
+   throw std::invalid_argument("Invalid combination of usage and hook type.");
    // See LRFD 5.10.2.1 for longitudinal standard hooks
-   return 0;
+   return -9999999;
 }
 
-Float64 lrfdRebar::GetBendDiameter(WBFL::Materials::Rebar::Size size,Float64 db,Usage usage,bool bFractional)
+Float64 Rebar::GetBendDiameter(WBFL::Materials::Rebar::Size size,Float64 db,Usage usage,bool bFractional)
 {
+#pragma Reminder("WORKING HERE - Revise this method... the db should be implied from Size - maybe just pass in a Rebar object")
    Float64 K = 0;
    switch(size)
    {
    case WBFL::Materials::Rebar::Size::bs3:
    case WBFL::Materials::Rebar::Size::bs4:
    case WBFL::Materials::Rebar::Size::bs5:
-      if ( usage == lrfdRebar::Longitudinal )
+      if ( usage == Usage::Longitudinal )
       {
          K = 6; // general
       }
@@ -331,7 +310,7 @@ Float64 lrfdRebar::GetBendDiameter(WBFL::Materials::Rebar::Size size,Float64 db,
    return D;
 }
 
-Float64 lrfdRebar::GetCompressionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade)
+Float64 Rebar::GetCompressionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade)
 {
    Float64 ecl;
    if ( grade <= WBFL::Materials::Rebar::Grade::Grade60 )
@@ -352,7 +331,7 @@ Float64 lrfdRebar::GetCompressionControlledStrainLimit(WBFL::Materials::Rebar::G
    return ecl;
 }
 
-Float64 lrfdRebar::GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade)
+Float64 Rebar::GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade grade)
 {
    Float64 etl;
    if ( grade <= WBFL::Materials::Rebar::Grade::Grade75 )
@@ -373,13 +352,15 @@ Float64 lrfdRebar::GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade
    return etl;
 }
 
-REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::SimpleConcrete& concrete, bool bIsTopBar, bool bEpoxyCoated, bool bMeetsCoverRequirements)
+REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::SimpleConcrete& concrete, bool bIsTopBar, bool bEpoxyCoated, bool bMeetsCoverRequirements)
 {
-   return lrfdRebar::GetRebarDevelopmentLengthDetails(size,Ab,db,fy,concrete.GetType(),concrete.GetFc(),concrete.HasAggSplittingStrength(),concrete.GetAggSplittingStrength(),concrete.GetDensity(), bIsTopBar, bEpoxyCoated, bMeetsCoverRequirements);
+#pragma Reminder("WORKING HERE - Revise this method... the db should be implied from Size - maybe just pass in a Rebar object")
+   return Rebar::GetRebarDevelopmentLengthDetails(size,Ab,db,fy,concrete.GetType(),concrete.GetFc(),concrete.HasAggSplittingStrength(),concrete.GetAggSplittingStrength(),concrete.GetDensity(), bIsTopBar, bEpoxyCoated, bMeetsCoverRequirements);
 }
 
-REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density, bool bIsTopBar, bool bEpoxyCoated, bool bMeetsCoverRequirements)
+REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density, bool bIsTopBar, bool bEpoxyCoated, bool bMeetsCoverRequirements)
 {
+#pragma Reminder("WORKING HERE - Revise this method... the db should be implied from Size - maybe just pass in a Rebar object")
    REBARDEVLENGTHDETAILS details;
    details.Ab = Ab;
    details.db = db;
@@ -390,7 +371,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
    details.lambdaRl = 1.0; // initialize lambdas even though only used for 2015+
    details.lambdaLw = 1.0;
 
-   if ( lrfdVersionMgr::SeventhEditionWith2015Interims <= lrfdVersionMgr::GetVersion())
+   if ( LRFDVersionMgr::Version::SeventhEditionWith2015Interims <= LRFDVersionMgr::GetVersion())
    {
       Float64 Ab = WBFL::Units::ConvertFromSysUnits(details.Ab,WBFL::Units::Measure::Inch2);
       Float64 db = WBFL::Units::ConvertFromSysUnits(details.db,WBFL::Units::Measure::Inch);
@@ -407,7 +388,7 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
       }
       else if (type == WBFL::Materials::ConcreteType::UHPC && size <= WBFL::Materials::Rebar::Size::bs8 && 14.0 < fc)
       {
-         fy = Min(fy, 100.0); // fy can be taken greater than 100 ksi
+         fy = Min(fy, 100.0); // fy cannot be taken greater than 100 ksi
          Float64 Nd = (fy <= 75.0 ? 10.0 : 12.0);
          details.ldb1 = Nd * db;
          details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1, WBFL::Units::Measure::Inch);
@@ -444,12 +425,12 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
       }
 
       // lightweight concrete factor
-      if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion())
+      if ( LRFDVersionMgr::Version::SeventhEditionWith2016Interims <= LRFDVersionMgr::GetVersion())
       {
          if (type == WBFL::Materials::ConcreteType::UHPC)
             details.lambdaLw = 1.0; // GS 1.10.8.2.1
          else
-            details.lambdaLw = lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(type,density,isFct,Fct,fc);
+            details.lambdaLw = ConcreteUtil::ComputeConcreteDensityModificationFactor(type,density,isFct,Fct,fc);
 
          details.factor = 1 / details.lambdaLw;// Eqn 5.11.2.1.1-1 was modified in LRFD 2016... using lambdaLw for lambda in the equation
       }
@@ -496,10 +477,10 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
    else
    {
       // UHPCs depend on LRFD 2020 or later so we should never get here with UHPC concrete
-      CHECK(type != WBFL::Materials::ConcreteType::PCI_UHPC);
-      CHECK(type != WBFL::Materials::ConcreteType::UHPC);
+      PRECONDITION(type != WBFL::Materials::ConcreteType::PCI_UHPC);
+      PRECONDITION(type != WBFL::Materials::ConcreteType::UHPC);
 
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::US )
       {
          Float64 Ab = WBFL::Units::ConvertFromSysUnits(details.Ab,WBFL::Units::Measure::Inch2);
          Float64 db = WBFL::Units::ConvertFromSysUnits(details.db,WBFL::Units::Measure::Inch);
@@ -608,48 +589,3 @@ REBARDEVLENGTHDETAILS lrfdRebar::GetRebarDevelopmentLengthDetails(WBFL::Material
 
    return details;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdRebar::AssertValid() const
-{
-   return true;
-}
-
-void lrfdRebar::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdRebar" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include <Lrfd\AutoVersion.h>
-#include <Lrfd\VersionMgr.h>
-#include <Lrfd\StrandPool.h>
-bool lrfdRebar::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdRebar");
-   TESTME_EPILOG("lrfdRebar");
-}
-#endif // _UNITTEST
-
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

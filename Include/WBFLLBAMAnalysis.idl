@@ -263,13 +263,13 @@ library WBFLLBAMAnalysis
 	interface ISectionResult3Ds : IUnknown
 	{
 		[propget, helpstring("property Item"),helpcontext(IDH_SectionResult3Ds_Item)] 
-		HRESULT Item([in]CollectionIndexType idx, [out, retval] ISectionResult3D** pVal);
+		HRESULT Item([in]IndexType idx, [out, retval] ISectionResult3D** pVal);
 
 		[propget, helpstring("returns an enumerator for the collection."),helpcontext(IDH_SectionResult3Ds__EnumElements)]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 		[propget, helpstring("property Count - Number of SectionResult3Ds in collection"),helpcontext(IDH_SectionResult3Ds_Count)] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 
 		[propget, helpstring("property _EnumElements"),helpcontext(IDH_SectionResult3Ds__EnumElements)] 
 		HRESULT _EnumElements([out, retval] IEnumSectionResult3D* *pVal);
@@ -278,10 +278,10 @@ library WBFLLBAMAnalysis
 		HRESULT Add([in] ISectionResult3D *pVal);
 
 		[helpstring("Insert a new SectionResult3D to the model"),helpcontext(IDH_SectionResult3Ds_Insert)]  
-		HRESULT Insert([in] CollectionIndexType index, [in] ISectionResult3D *pVal);
+		HRESULT Insert([in] IndexType index, [in] ISectionResult3D *pVal);
 
 		[helpstring("method Remove Remove a SectionResult3D using sequential index."),helpcontext(IDH_SectionResult3Ds_Remove)] 
-		HRESULT Remove([in]CollectionIndexType index);
+		HRESULT Remove([in]IndexType index);
 
 		[helpstring("method Clear - Remove all SectionResult3Ds"),helpcontext(IDH_SectionResult3Ds_Clear)] 
         HRESULT Clear();
@@ -290,7 +290,7 @@ library WBFLLBAMAnalysis
 		HRESULT Clone(ISectionResult3Ds** clone);
 
 		[helpstring("method Reserve some space to optimize memory allocations"),helpcontext(IDH_SectionResult3Ds_Reserve)] 
-		HRESULT Reserve(CollectionIndexType size);
+		HRESULT Reserve(IndexType size);
 	};
 
 	[
@@ -367,13 +367,13 @@ library WBFLLBAMAnalysis
 	interface IResult3Ds : IUnknown
 	{
 		[propget, helpstring("property Item"),helpcontext(IDH_Result3Ds)] 
-		HRESULT Item([in]CollectionIndexType idx, [out, retval] IResult3D** pVal);
+		HRESULT Item([in]IndexType idx, [out, retval] IResult3D** pVal);
 
 		[propget, helpstring("returns an enumerator for the collection."),helpcontext(IDH_Result3Ds__EnumElements)]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 		[propget, helpstring("property Count - Number of Result3Ds in collection"),helpcontext(IDH_Result3Ds_Count)] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 
 		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Result3Ds__EnumElements)] 
 		HRESULT _EnumElements([out, retval] IEnumResult3D* *pVal);
@@ -382,10 +382,10 @@ library WBFLLBAMAnalysis
 		HRESULT Add([in] IResult3D *pVal);
 
 		[helpstring("Insert a new Result3D to the model"),helpcontext(IDH_Result3Ds_Insert)] 
-		HRESULT Insert([in] CollectionIndexType index, [in] IResult3D *pVal);
+		HRESULT Insert([in] IndexType index, [in] IResult3D *pVal);
 
 		[helpstring("method Remove Remove a Result3D using sequential index."),helpcontext(IDH_Result3Ds_Remove)] 
-		HRESULT Remove([in]CollectionIndexType index);
+		HRESULT Remove([in]IndexType index);
 
 		[helpstring("method Clear - Remove all Result3Ds"),helpcontext(IDH_Result3Ds_Clear)] 
         HRESULT Clear();
@@ -394,7 +394,7 @@ library WBFLLBAMAnalysis
 		HRESULT Clone(IResult3Ds** clone);
 
 		[helpstring("method Reserve some space to optimize memory allocations"),helpcontext(IDH_Result3Ds_Reserve)] 
-		HRESULT Reserve(CollectionIndexType size);
+		HRESULT Reserve(IndexType size);
 	};
 
 	[
@@ -408,13 +408,13 @@ library WBFLLBAMAnalysis
 	interface IStressResult : IUnknown
 	{
 		[propget, helpstring("property Count"),helpcontext(IDH_StressResult_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 		[helpstring("method AddResult - Adds a new stress"),helpcontext(IDH_StressResult_AddResult)] 
       HRESULT AddResult([in] Float64 newVal);
 		[helpstring("method SetResult - Set stress at stress point"),helpcontext(IDH_StressResult_SetResult)] 
-      HRESULT SetResult([in]CollectionIndexType index, [in] Float64 newVal);
+      HRESULT SetResult([in]IndexType index, [in] Float64 newVal);
 		[helpstring("method GetResult - Returns stress using index"),helpcontext(IDH_StressResult_GetResult)] 
-      HRESULT GetResult([in]CollectionIndexType index, [out,retval] Float64 *pVal);
+      HRESULT GetResult([in]IndexType index, [out,retval] Float64 *pVal);
 		[helpstring("method Clone"),helpcontext(IDH_StressResult_Clone)] 
       HRESULT Clone([out,retval] IStressResult* *pClone);
 		[helpstring("method FactorAndSum"),helpcontext(IDH_StressResult_FactorAndSum)] 
@@ -455,13 +455,13 @@ library WBFLLBAMAnalysis
 	interface IStressResults : IUnknown
 	{
 		[propget, helpstring("property Item"),helpcontext(IDH_StressResults_Item)] 
-		HRESULT Item([in]CollectionIndexType idx, [out, retval] IStressResult** pVal);
+		HRESULT Item([in]IndexType idx, [out, retval] IStressResult** pVal);
 
 		[propget, helpstring("returns an enumerator for the collection."),helpcontext(IDH_StressResults__EnumElements)]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 		[propget, helpstring("property Count - Number of StressResults in collection"),helpcontext(IDH_StressResults_Count)] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 
 		[propget, helpstring("property _EnumElements"),helpcontext(IDH_StressResults__EnumElements)] 
 		HRESULT _EnumElements([out, retval] IEnumStressResult* *pVal);
@@ -470,10 +470,10 @@ library WBFLLBAMAnalysis
 		HRESULT Add([in] IStressResult *pVal);
 
 		[helpstring("Insert a new StressResult to the model"),helpcontext(IDH_StressResults_Insert)] 
-		HRESULT Insert([in] CollectionIndexType index, [in] IStressResult *pVal);
+		HRESULT Insert([in] IndexType index, [in] IStressResult *pVal);
 
 		[helpstring("method Remove Remove a StressResult using sequential index."),helpcontext(IDH_StressResults_Remove)] 
-		HRESULT Remove([in]CollectionIndexType index);
+		HRESULT Remove([in]IndexType index);
 
 		[helpstring("method Clear - Remove all StressResults"),helpcontext(IDH_StressResults_Clear)] 
         HRESULT Clear();
@@ -482,7 +482,7 @@ library WBFLLBAMAnalysis
 		HRESULT Clone(IStressResults** clone);
 
 		[helpstring("method Reserve some space to optimize memory allocations"),helpcontext(IDH_StressResults_Reserve)] 
-		HRESULT Reserve(CollectionIndexType size);
+		HRESULT Reserve(IndexType size);
 	};
 
 	[
@@ -496,21 +496,21 @@ library WBFLLBAMAnalysis
 	interface ISectionStressResult : IUnknown
 	{
 		[propget, helpstring("property LeftCount"),helpcontext(IDH_SectionStressResult_LeftCount)] 
-      HRESULT LeftCount([out, retval] CollectionIndexType *pVal);
+      HRESULT LeftCount([out, retval] IndexType *pVal);
 		[helpstring("method AddLeftResult - Adds a new stress"),helpcontext(IDH_SectionStressResult_AddLeftResult)] 
       HRESULT AddLeftResult([in] Float64 newVal);
 		[helpstring("method SetLeftResult - Set stress at stress point"),helpcontext(IDH_SectionStressResult_SetLeftResult)] 
-      HRESULT SetLeftResult([in]CollectionIndexType index, [in] Float64 newVal);
+      HRESULT SetLeftResult([in]IndexType index, [in] Float64 newVal);
 		[helpstring("method GetLeftResult - Returns stress using index"),helpcontext(IDH_SectionStressResult_GetLeftResult)] 
-      HRESULT GetLeftResult([in]CollectionIndexType index, [out,retval] Float64 *pVal);
+      HRESULT GetLeftResult([in]IndexType index, [out,retval] Float64 *pVal);
 		[propget, helpstring("property RightCount"),helpcontext(IDH_SectionStressResult_RightCount)] 
-      HRESULT RightCount([out, retval] CollectionIndexType *pVal);
+      HRESULT RightCount([out, retval] IndexType *pVal);
 		[helpstring("method AddRightResult - Adds a new stress"),helpcontext(IDH_SectionStressResult_AddRightResult)] 
       HRESULT AddRightResult([in] Float64 newVal);
 		[helpstring("method SetRightResult - Set stress at stress point"),helpcontext(IDH_SectionStressResult_SetRightResult)] 
-      HRESULT SetRightResult([in]CollectionIndexType index, [in] Float64 newVal);
+      HRESULT SetRightResult([in]IndexType index, [in] Float64 newVal);
 		[helpstring("method GetRightResult - Returns stress using index"),helpcontext(IDH_SectionStressResult_GetRightResult)] 
-      HRESULT GetRightResult([in]CollectionIndexType index, [out,retval] Float64 *pVal);
+      HRESULT GetRightResult([in]IndexType index, [out,retval] Float64 *pVal);
 		[helpstring("method Clone"),helpcontext(IDH_SectionStressResult_Clone)] 
       HRESULT Clone([out,retval] ISectionStressResult* *pClone);
 		[helpstring("method FactorAndSum"),helpcontext(IDH_SectionStressResult_FactorAndSum)] 
@@ -555,13 +555,13 @@ library WBFLLBAMAnalysis
 	interface ISectionStressResults : IUnknown
 	{
 		[propget, helpstring("property Item"),helpcontext(IDH_SectionStressResults_Item)] 
-		HRESULT Item([in]CollectionIndexType idx, [out, retval] ISectionStressResult** pVal);
+		HRESULT Item([in]IndexType idx, [out, retval] ISectionStressResult** pVal);
 
 		[propget, helpstring("returns an enumerator for the collection."),helpcontext(IDH_SectionStressResults__EnumElements)]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
 		[propget, helpstring("property Count - Number of SectionStressResults in collection"),helpcontext(IDH_SectionStressResults_Count)] 
-		HRESULT Count([out, retval] CollectionIndexType *pVal);
+		HRESULT Count([out, retval] IndexType *pVal);
 
 		[propget, helpstring("property _EnumElements"),helpcontext(IDH_SectionStressResults__EnumElements)] 
 		HRESULT _EnumElements([out, retval] IEnumSectionStressResult* *pVal);
@@ -570,10 +570,10 @@ library WBFLLBAMAnalysis
 		HRESULT Add([in] ISectionStressResult *pVal);
 
 		[helpstring("Insert a new SectionStressResult to the model"),helpcontext(IDH_SectionStressResults_Insert)] 
-		HRESULT Insert([in] CollectionIndexType index, [in] ISectionStressResult *pVal);
+		HRESULT Insert([in] IndexType index, [in] ISectionStressResult *pVal);
 
 		[helpstring("method Remove Remove a SectionStressResult using sequential index."),helpcontext(IDH_SectionStressResults_Remove)] 
-		HRESULT Remove([in]CollectionIndexType index);
+		HRESULT Remove([in]IndexType index);
 
 		[helpstring("method Clear - Remove all SectionStressResults"),helpcontext(IDH_SectionStressResults_Clear)] 
         HRESULT Clear();
@@ -582,7 +582,7 @@ library WBFLLBAMAnalysis
 		HRESULT Clone(ISectionStressResults** clone);
 
 		[helpstring("method Reserve some space to optimize memory allocations"),helpcontext(IDH_SectionStressResults_Reserve)] 
-		HRESULT Reserve(CollectionIndexType size);
+		HRESULT Reserve(IndexType size);
 	};
 
 
@@ -671,16 +671,16 @@ library WBFLLBAMAnalysis
 		HRESULT POI([out,retval]PoiIDType* poi);
 
 		[helpstring("Item - sequential access (sorted) to influence points"),helpcontext(IDH_InfluenceLine_Item)] 
-		HRESULT Item([in]CollectionIndexType idx, [in]InfluenceSideType side, [out] Float64* value, [out]InfluenceLocationType* locationType, [out]Float64* location);
+		HRESULT Item([in]IndexType idx, [in]InfluenceSideType side, [out] Float64* value, [out]InfluenceLocationType* locationType, [out]Float64* location);
 		
       [propget, helpstring("property Count - Number of InfluencePoints in collection"),helpcontext(IDH_InfluenceLine_Count)] 
-		HRESULT Count([in]InfluenceSideType side, [out, retval] CollectionIndexType *pVal);
+		HRESULT Count([in]InfluenceSideType side, [out, retval] IndexType *pVal);
 		
       [helpstring("Add a new influence point to the model - don't need to sort if points are added sequentially"),helpcontext(IDH_InfluenceLine_Add)] 
 		HRESULT Add([in]InfluenceLocationType locationType, [in]Float64 location, [in]Float64 value);
 		
       [helpstring("method Remove - Remove a InfluencePoint using sequential index"),helpcontext(IDH_InfluenceLine_Remove)] 
-		HRESULT Remove([in]CollectionIndexType index);
+		HRESULT Remove([in]IndexType index);
 		
       [helpstring("method Clear - Remove all InfluencePoints"),helpcontext(IDH_InfluenceLine_Clear)] 
       HRESULT Clear();

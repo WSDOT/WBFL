@@ -98,7 +98,7 @@ STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/Mem
 	return hr;
 }
 
-STDMETHODIMP CMemberStrainCollection::Remove(CollectionIndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
+STDMETHODIMP CMemberStrainCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
 {
    HRESULT hr = MemberStrainCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))

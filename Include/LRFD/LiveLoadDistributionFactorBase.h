@@ -22,267 +22,146 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LIVELOADDISTRIBUTIONFACTORBASE_H_
-#define INCLUDED_LRFD_LIVELOADDISTRIBUTIONFACTORBASE_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <assert.h>
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\ILiveLoadDistributionFactor.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-// NOTE: Use this inside of TestRangeOfApplicability() so it throws or returns a value 
-//       depending on the need of the caller
-#define THROW_DF(ex,code,extra) {if(doThrow) THROW_EX(ex,code,extra); return false; }
-
-// MISCELLANEOUS
-// A class with nifty utilities for computing common distribution factor stuff
-class LRFDCLASS lrfdLiveLoadDistributionFactorMixin
+namespace WBFL
 {
-public:
-   //------------------------------------------------------------------------
-   lrfdLiveLoadDistributionFactorMixin();
-
-   //------------------------------------------------------------------------
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl, bool applyMpf) const;
-   //------------------------------------------------------------------------
-   // Statical method only works for exterior beams
-   virtual lrfdILiveLoadDistributionFactor::RigidMethod DistributeByStaticalMethod(lrfdILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,
-                                                                                   Float64 wLane, IndexType firstLoadedLane,IndexType lastLoadedLane, bool applyMpf) const;
-   //------------------------------------------------------------------------
-   virtual Float64 GetShyDistance() const;
-   //------------------------------------------------------------------------
-   virtual Float64 GetWheelLineSpacing() const;
-   //------------------------------------------------------------------------
-   virtual Float64 GetTruckWidth() const;
-
-   virtual lrfdILiveLoadDistributionFactor::DFResult GetLanesBeamsMethod(IndexType Nl,GirderIndexType Nb, bool applyMpf) const;
-
-   // Local data to ignore MPF for lever rule when a single truck controls on exterior beams
-   void IgnoreMpfLeverRule(bool doIgnore);
-   bool IgnoreMpfLeverRule() const;
-
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdLiveLoadDistributionFactorMixin& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLiveLoadDistributionFactorMixin& rOther);
-
-
-private:
-   //------------------------------------------------------------------------
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang, Float64 wLane,IndexType Nl, bool applyMpf) const;
-   //------------------------------------------------------------------------
-   Float64 GetDistanceToAxle(Float64 S,Float64 roadOverhang,Float64 wLane,GirderIndexType nbeam,AxleIndexType naxle,bool bAlignLeft) const;
-
-
-   bool m_IgnoreMpfForLeverRuleSingleLane;
-};
-
-//
-/*****************************************************************************
-CLASS 
-   lrfdLiveLoadDistributionFactorBase
-
-   Base class for common implementation of lrfdILiveLoadDistributionFactor
-
-
-DESCRIPTION
-   Base class for common implementation of lrfdILiveLoadDistributionFactor.
-   This class implements template methods (Template Pattern) for computing
-   live load distribution factors.  Derived classes provide the details.
-
-LOG
-   rab : 11.12.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdLiveLoadDistributionFactorBase : public lrfdILiveLoadDistributionFactor, public lrfdLiveLoadDistributionFactorMixin
-{
-public:
-   // GROUP: LIFECYCLE
-   lrfdLiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
-                                      Float64 leftOverhang,Float64 rightOverhang,
-                                      CollectionIndexType Nl, Float64 wLane,
-                                      bool bSkewMoment, bool bSkewShear);
-private:
-   //------------------------------------------------------------------------
-   // no default
-   lrfdLiveLoadDistributionFactorBase();
-public:
-
-   //------------------------------------------------------------------------
-   lrfdLiveLoadDistributionFactorBase(const lrfdLiveLoadDistributionFactorBase& rOther);
-   
-   //------------------------------------------------------------------------
-   ~lrfdLiveLoadDistributionFactorBase();
-
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   lrfdLiveLoadDistributionFactorBase& operator=(const lrfdLiveLoadDistributionFactorBase& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   virtual Float64 MomentDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
-   virtual DFResult MomentDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
-
-   //------------------------------------------------------------------------
-   virtual Float64 ShearDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
-   virtual DFResult ShearDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
-   
-   //------------------------------------------------------------------------
-   virtual Float64 ReactionDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
-   virtual DFResult ReactionDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
-
-   //------------------------------------------------------------------------
-   virtual Float64 MomentSkewCorrectionFactor() const = 0;
-   virtual Float64 ShearSkewCorrectionFactor() const = 0;
-
-   //------------------------------------------------------------------------
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
-
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes, bool applyMpf) const;
-
-   // GROUP: ACCESS
-   void SetRangeOfApplicabilityAction(LldfRangeOfApplicabilityAction check);
-   LldfRangeOfApplicabilityAction GetRangeOfApplicabilityAction() const;
-
-   // GROUP: INQUIRY
-   // number of beams
-   GirderIndexType GetNb() const
+   namespace LRFD
    {
-      return m_Nb;
-   }
+      // NOTE: Use this inside of TestRangeOfApplicability() so it throws or returns a value 
+      //       depending on the need of the caller
+      #define THROW_DF(ex,code,extra) {if(doThrow) THROW_EX(ex,ex::Reason::code,extra); return false; }
 
-protected:
-   // GROUP: DATA MEMBERS
-   GirderIndexType   m_GdrNum;
-   std::vector<Float64> m_Spacings;
-   Float64 m_Savg;
-   Float64 m_LeftCurbOverhang;
-   Float64 m_RightCurbOverhang;
-   CollectionIndexType m_Nl;
-   Float64 m_wLane;
+      /// @brief A class with nifty utilities for computing common distribution factor stuff
+      class LRFDCLASS LiveLoadDistributionFactorMixin
+      {
+      public:
+         LiveLoadDistributionFactorMixin() = default;
+         LiveLoadDistributionFactorMixin(const LiveLoadDistributionFactorMixin&) = default;
+         virtual ~LiveLoadDistributionFactorMixin() = default;
+         LiveLoadDistributionFactorMixin& operator=(const LiveLoadDistributionFactorMixin&) = default;
 
-   bool m_bSkewMoment;
-   bool m_bSkewShear;
+         virtual ILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl, bool applyMpf) const;
 
-   DfSide  m_Side; // beam is nearest to this side
+         /// @brief Computes distribution factor by rigid (statical) method. This is only for exterior beams
+         virtual ILiveLoadDistributionFactor::RigidMethod DistributeByRigidMethod(ILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,
+                                                                                         Float64 wLane, IndexType firstLoadedLane,IndexType lastLoadedLane, bool applyMpf) const;
 
-   GirderIndexType   m_Nb; // cached number of beams
+         /// @brief Returns the distance from the curb line to the wheel line
+         virtual Float64 GetShyDistance() const;
 
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+         /// @brief Returns the spacing between wheel lines
+         virtual Float64 GetWheelLineSpacing() const;
 
-   LldfRangeOfApplicabilityAction m_RangeOfApplicabilityAction;
+         /// @brief Returns the width of the truck
+         virtual Float64 GetTruckWidth() const;
 
-   virtual bool DoCheckApplicablity() const
-   {
-      return m_RangeOfApplicabilityAction==roaEnforce;
-   }
+         virtual ILiveLoadDistributionFactor::DFResult GetLanesBeamsMethod(IndexType Nl,GirderIndexType Nb, bool applyMpf) const;
 
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdLiveLoadDistributionFactorBase& rOther);
+         void IgnoreMpfLeverRule(bool doIgnore);
+         bool IgnoreMpfLeverRule() const;
 
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLiveLoadDistributionFactorBase& rOther);
+      private:
+         ILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang, Float64 wLane,IndexType Nl, bool applyMpf) const;
+         Float64 GetDistanceToAxle(Float64 S,Float64 roadOverhang,Float64 wLane,GirderIndexType nbeam,AxleIndexType naxle,bool bAlignLeft) const;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         bool m_IgnoreMpfForLeverRuleSingleLane = false;
+      };
 
-   //------------------------------------------------------------------------
-   // return true if test passes (we are within range)
-   virtual bool TestRangeOfApplicability(Location loc) const = 0;
+      /// @brief Base class for common implementation of ILiveLoadDistributionFactor.
+      /// This class implements template methods (Template Pattern) for computing
+      /// live load distribution factors.  Derived classes provide the details.
+      class LRFDCLASS LiveLoadDistributionFactorBase : public ILiveLoadDistributionFactor, public LiveLoadDistributionFactorMixin
+      {
+      public:
+         LiveLoadDistributionFactorBase() = delete;
+         LiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
+                                            Float64 leftOverhang,Float64 rightOverhang,
+                                            IndexType Nl, Float64 wLane,
+                                            bool bSkewMoment, bool bSkewShear);
 
-   // Override for specific supporting component and deck type
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const = 0;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const = 0;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const = 0;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const = 0;
+         LiveLoadDistributionFactorBase(const LiveLoadDistributionFactorBase&) = default;
+         ~LiveLoadDistributionFactorBase() = default;
 
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const = 0;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const = 0;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const = 0;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const = 0;
+         LiveLoadDistributionFactorBase& operator=(const LiveLoadDistributionFactorBase&) = default;
 
-   //------------------------------------------------------------------------
-   virtual DFResult GetReactionDF_Int_1_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetReactionDF_Int_2_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetReactionDF_Ext_1_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetReactionDF_Ext_2_Strength() const;
+         virtual Float64 MomentDF(Location loc,NumLoadedLanes numLanes,LimitState ls) const override;
+         virtual DFResult MomentDFEx(Location loc,NumLoadedLanes numLanes,LimitState ls) const override;
 
-   //
-   // Default Behavior for fatigue is to remove multiple presence from single
-   // lane strength case
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_Fatigue() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_Fatigue() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_Fatigue() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_Fatigue() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetReactionDF_Ext_Fatigue() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetReactionDF_Int_Fatigue() const;
+         virtual Float64 ShearDF(Location loc,NumLoadedLanes numLanes,LimitState ls) const override;
+         virtual DFResult ShearDFEx(Location loc,NumLoadedLanes numLanes,LimitState ls) const override;
+   
+         virtual Float64 ReactionDF(Location loc,NumLoadedLanes numLanes,LimitState ls) const override;
+         virtual DFResult ReactionDFEx(Location loc,NumLoadedLanes numLanes,LimitState ls) const override;
 
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         virtual Float64 MomentSkewCorrectionFactor() const = 0;
+         virtual Float64 ShearSkewCorrectionFactor() const = 0;
 
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+         virtual ILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
+         virtual ILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
+         virtual ILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const override;
 
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-   #endif // _DEBUG
+         virtual ILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes, bool applyMpf) const;
 
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   #endif // _UNITTEST
+         void SetRangeOfApplicabilityAction(RangeOfApplicabilityAction check);
+         RangeOfApplicabilityAction GetRangeOfApplicabilityAction() const;
+
+         GirderIndexType GetNb() const
+         {
+            return m_Nb;
+         }
+
+      protected:
+         GirderIndexType   m_GdrNum;
+         std::vector<Float64> m_Spacings;
+         Float64 m_Savg;
+         Float64 m_LeftCurbOverhang;
+         Float64 m_RightCurbOverhang;
+         IndexType m_Nl;
+         Float64 m_wLane;
+
+         bool m_bSkewMoment;
+         bool m_bSkewShear;
+
+         DfSide  m_Side; // beam is nearest to this side
+
+         GirderIndexType   m_Nb; // cached number of beams
+
+         RangeOfApplicabilityAction m_RangeOfApplicabilityAction;
+
+         virtual bool DoCheckApplicablity() const
+         {
+            return m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Enforce;
+         }
+
+         /// @brief return true if test passes (we are within range)
+         virtual bool TestRangeOfApplicability(Location loc) const = 0;
+
+         virtual DFResult GetMomentDF_Int_1_Strength() const = 0;
+         virtual DFResult GetMomentDF_Int_2_Strength() const = 0;
+         virtual DFResult GetMomentDF_Ext_1_Strength() const = 0;
+         virtual DFResult GetMomentDF_Ext_2_Strength() const = 0;
+
+         virtual DFResult GetShearDF_Int_1_Strength() const = 0;
+         virtual DFResult GetShearDF_Int_2_Strength() const = 0;
+         virtual DFResult GetShearDF_Ext_1_Strength() const = 0;
+         virtual DFResult GetShearDF_Ext_2_Strength() const = 0;
+
+         virtual DFResult GetReactionDF_Int_1_Strength() const;
+         virtual DFResult GetReactionDF_Int_2_Strength() const;
+         virtual DFResult GetReactionDF_Ext_1_Strength() const;
+         virtual DFResult GetReactionDF_Ext_2_Strength() const;
+
+         // Default Behavior for fatigue is to remove multiple presence from single lane strength case
+         virtual DFResult GetMomentDF_Int_Fatigue() const;
+         virtual DFResult GetMomentDF_Ext_Fatigue() const;
+         virtual DFResult GetShearDF_Int_Fatigue() const;
+         virtual DFResult GetShearDF_Ext_Fatigue() const;
+         virtual DFResult GetReactionDF_Ext_Fatigue() const;
+         virtual DFResult GetReactionDF_Int_Fatigue() const;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_LIVELOADDISTRIBUTIONFACTORBASE_H_

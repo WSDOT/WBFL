@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_SHAPEONPOLYGONIMP_H_
-#define INCLUDED_GEOMMODEL_SHAPEONPOLYGONIMP_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -33,49 +31,32 @@ namespace WBFL
 {
    namespace Geometry
    {
+      /// A partial implementation of the Shape class for shapes that use a polygon representation for all properties
+      class GEOMMODELCLASS ShapeOnPolygonImpl : public ShapeOnAlternativePolygonImpl
+      {
+      public:
+         ShapeOnPolygonImpl();
+         ShapeOnPolygonImpl(std::shared_ptr<Point2d>& hookPnt);
+         ShapeOnPolygonImpl(const Point2d& hookPnt);
+         ShapeOnPolygonImpl(const ShapeOnPolygonImpl&);
 
-/// A partial implementation of the Shape class for shapes that use a polygon representation for all properties
-class GEOMMODELCLASS ShapeOnPolygonImpl : public ShapeOnAlternativePolygonImpl
-{
-public:
-   ShapeOnPolygonImpl();
-   ShapeOnPolygonImpl(std::shared_ptr<Point2d>& hookPnt);
-   ShapeOnPolygonImpl(const Point2d& hookPnt);
-   ShapeOnPolygonImpl(const ShapeOnPolygonImpl&);
+         virtual ~ShapeOnPolygonImpl();
 
-   virtual ~ShapeOnPolygonImpl();
+         ShapeOnPolygonImpl& operator=(const ShapeOnPolygonImpl&);
 
-   ShapeOnPolygonImpl& operator=(const ShapeOnPolygonImpl&);
+         virtual ShapeProperties GetProperties() const override;
+         virtual Rect2d GetBoundingBox() const override;
+         virtual std::vector<Point2d> GetPolyPoints() const override;
+         virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override;
+         virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override;
+         virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
+         virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
+         virtual bool PointInShape(const Point2d& p) const override;
+         virtual Float64 GetPerimeter() const override;
+         virtual void Reflect(const Line2d& line) override;
 
-   virtual ShapeProperties GetProperties() const override;
-   virtual Rect2d GetBoundingBox() const override;
-   virtual std::vector<Point2d> GetPolyPoints() const override;
-   virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override;
-   virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override;
-   virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
-   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
-   virtual bool PointInShape(const Point2d& p) const override;
-   virtual Float64 GetPerimeter() const override;
-   virtual void Reflect(const Line2d& line) override;
-
-
-#if defined _DEBUG
-   /// Returns true if the class is in a valid state, otherwise returns false
-   virtual bool AssertValid() const override;
-
-   /// Dumps the contents of the class to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const override;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   /// Self-diagnostic test function.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-private:
-   void Copy(const ShapeOnPolygonImpl& other);
-};
+      private:
+         void Copy(const ShapeOnPolygonImpl& other);
+      };
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMMODEL_SHAPEONPOLYGONIMP_H_

@@ -267,13 +267,6 @@ namespace WBFL
          /// @return 0 if s1 is at the same location as s2, 1 if s1 is before s2 and -1 if s1 is after s2
          Int8 CompareStations(const Station& s1, const Station& s2) const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         static bool TestStationEquations(WBFL::Debug::Log& rlog);
-         static bool TestAlignment(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          Float64 m_ReferenceStation{ 0.0 };
          std::shared_ptr<Path> m_Path;

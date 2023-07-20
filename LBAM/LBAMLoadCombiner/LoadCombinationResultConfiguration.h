@@ -66,14 +66,14 @@ END_COM_MAP()
 public:
 	STDMETHOD(get_SummationType)(/*[out, retval]*/ ResultsSummationType *pVal) override;
 	STDMETHOD(put_SummationType)(/*[in]*/ ResultsSummationType newVal) override;
-	STDMETHOD(GetLiveLoadConfigurationCount)(/*[out,retval]*/CollectionIndexType* count) override;
-	STDMETHOD(GetLiveLoadConfiguration)(/*[in]*/CollectionIndexType index,/*[out,retval]*/ILiveLoadConfiguration* *Config) override;
+	STDMETHOD(GetLiveLoadConfigurationCount)(/*[out,retval]*/IndexType* count) override;
+	STDMETHOD(GetLiveLoadConfiguration)(/*[in]*/IndexType index,/*[out,retval]*/ILiveLoadConfiguration* *Config) override;
 	STDMETHOD(AddLiveLoadConfiguration)(/*[in]*/ILiveLoadConfiguration* Config) override;
 	STDMETHOD(get_LiveLoadFactor)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_LiveLoadFactor)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(AddLoadCaseFactor)( /*[in]*/BSTR loadCase, /*[in]*/Float64 factor) override;
-	STDMETHOD(GetLoadCaseFactor)(/*[in]*/CollectionIndexType index, /*[out]*/BSTR* loadCase, /*[out]*/Float64* factor) override;
-	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(GetLoadCaseFactor)(/*[in]*/IndexType index, /*[out]*/BSTR* loadCase, /*[out]*/Float64* factor) override;
+	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ IndexType *pVal) override;
 
 // IStructuredStorage2
 	STDMETHOD(Load)(IStructuredLoad2 * Load) override;

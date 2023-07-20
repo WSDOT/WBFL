@@ -473,15 +473,3 @@ void DeckBoundary::CreateEdgePath(SideType sideType)
     }
     m_EdgePath[+sideType] = sub_path;
 }
-
-
-#if defined _UNITTEST
-bool DeckBoundary::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("DeckBoundary");
-
-   TESTME_EPILOG("DeckBoundary");
-}
-#endif // _UNITTEST
-
-

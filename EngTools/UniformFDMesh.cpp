@@ -97,7 +97,7 @@ void UniformFDMesh::AddElements(IndexType gridRowIdx, IndexType gridRowStartIdx,
 void UniformFDMesh::AddElementRow(IndexType gridRowStartIdx, IndexType nElements)
 {
    IndexType firstElementIdx = (m_vGridRows.size() == 0 ? 0 : m_vGridRows.back().GetNextRowFirstElementIndex());
-   m_vGridRows.emplace_back(gridRowStartIdx, nElements, firstElementIdx);
+   m_vGridRows.emplace_back(gridRowStartIdx, firstElementIdx, nElements);
    m_Nx = max(m_Nx, gridRowStartIdx + nElements);
    m_bIsDirty = true;
 }
@@ -132,9 +132,10 @@ void UniformFDMesh::GetElementPosition(IndexType elementIdx, IndexType* pGridRow
       (*pGridRowIdx)++;
    }
 
-   // element was not found
-   *pGridRowIdx = INVALID_INDEX;
-   *pGridRowPositionIdx = INVALID_INDEX;
+   std::ostringstream os;
+   os << "Element " << elementIdx << " not found.";
+   std::invalid_argument e(os.str());
+   throw e;
 }
 
 IndexType UniformFDMesh::GetElementCount() const
@@ -221,19 +222,25 @@ const FDMeshElement* UniformFDMesh::GetElementBelow(IndexType gridRowIdx, IndexT
    return pElement;
 }
 
-void UniformFDMesh::GetGridSize(IndexType* pNx, IndexType* pNy) const
+std::pair<IndexType,IndexType> UniformFDMesh::GetGridSize() const
 {
    if (m_bIsDirty)
    {
       Update();
    }
 
-   *pNx = m_Nx;
-   *pNy = m_vGridRows.size();
+   return std::make_pair(m_Nx,m_vGridRows.size());
 }
 
 void UniformFDMesh::Update() const
 {
+   if (std::any_of(m_vGridRows.begin(), m_vGridRows.end(), [](const auto& row) {return row.gridRowStartIdx == INVALID_INDEX || row.firstElementIdx == INVALID_INDEX || row.nElements == INVALID_INDEX; }))
+   {
+      std::domain_error e("Mesh rows have not been defined. Use AddElements or AddElementRow to defined mesh elements.");
+      throw e;
+   }
+
+   m_vElements.clear();
    m_vElements.reserve(m_vGridRows.back().firstElementIdx + m_vGridRows.back().nElements);
 
    auto& iter = std::begin(m_vGridRows);

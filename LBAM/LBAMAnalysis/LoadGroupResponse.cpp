@@ -267,22 +267,22 @@ STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersChanged(ISuperstructureM
 
    return S_OK;
 }
-STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersAdded(ISuperstructureMember* item, CollectionIndexType index)
+STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersAdded(ISuperstructureMember* item, IndexType index)
 {
    m_ChangeManager.OnModelHosed();
    return S_OK;
 }
-STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersBeforeRemove(ISuperstructureMember* item, CollectionIndexType index)
+STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersBeforeRemove(ISuperstructureMember* item, IndexType index)
 {
    m_ChangeManager.OnModelHosed();
    return S_OK;
 }
-STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersMoveTo(CollectionIndexType from, CollectionIndexType to)
+STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersMoveTo(IndexType from, IndexType to)
 {
    m_ChangeManager.OnModelHosed();
    return S_OK;
 }
-STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersCopyTo(CollectionIndexType from, CollectionIndexType to)
+STDMETHODIMP CLoadGroupResponse::OnSuperstructureMembersCopyTo(IndexType from, IndexType to)
 {
    m_ChangeManager.OnModelHosed();
    return S_OK;
@@ -922,9 +922,9 @@ void CLoadGroupResponse::CAnalysisController::UpdateLoadGroupOrder(ILBAMModel* p
 
    CComPtr<ILoadGroups> loadgroups;
    hr = pLBAM->get_LoadGroups(&loadgroups);
-   CollectionIndexType cnt;
+   IndexType cnt;
    hr = loadgroups->get_Count(&cnt);
-   for (CollectionIndexType i = 0; i<cnt; i++)
+   for (IndexType i = 0; i<cnt; i++)
    {
       CComPtr<ILoadGroup> loadgroup;
       hr = loadgroups->get_Item(i,&loadgroup);
@@ -1012,14 +1012,14 @@ void CLoadGroupResponse::CAnalysisController::Clear()
    m_LoadGroups.clear();
 }
 
-CollectionIndexType CLoadGroupResponse::CAnalysisController::LoadGroupCount()
+IndexType CLoadGroupResponse::CAnalysisController::LoadGroupCount()
 {
    return m_LoadGroups.size();
 }
 
-CComBSTR CLoadGroupResponse::CAnalysisController::LoadGroup(CollectionIndexType index)
+CComBSTR CLoadGroupResponse::CAnalysisController::LoadGroup(IndexType index)
 {
-   CollectionIndexType cnt = 0;
+   IndexType cnt = 0;
    LoadGroupsTypeIterator it( m_LoadGroups.begin() );
    LoadGroupsTypeIterator itend( m_LoadGroups.end() );
    for (; it!=itend; it++)
@@ -1034,9 +1034,9 @@ CComBSTR CLoadGroupResponse::CAnalysisController::LoadGroup(CollectionIndexType 
    return CComBSTR();
 }
 
-void CLoadGroupResponse::CAnalysisController::GetLoadGroupInfoByIndex(CollectionIndexType loadGroupIdx, LoadGroupIDType* femLgId, bool* isTransient)
+void CLoadGroupResponse::CAnalysisController::GetLoadGroupInfoByIndex(IndexType loadGroupIdx, LoadGroupIDType* femLgId, bool* isTransient)
 {
-   CollectionIndexType currentLoadGroupIdx = 0;
+   IndexType currentLoadGroupIdx = 0;
    LoadGroupsTypeIterator it( m_LoadGroups.begin() );
    LoadGroupsTypeIterator itend( m_LoadGroups.end() );
    for (; it != itend; it++)
@@ -1174,7 +1174,7 @@ void CLoadGroupResponse::CAnalysisController::SetLoadGroupAsActive(BSTR loadGrou
 IBstrArray* CLoadGroupResponse::CAnalysisController::GetActiveLoadGroups()
 {
    // get active loadgroup names
-   CollectionIndexType ttlsize = m_LoadGroups.size();
+   IndexType ttlsize = m_LoadGroups.size();
    CComPtr<IBstrArray> names;
    names.CoCreateInstance(CLSID_BstrArray);
    names->Reserve(ttlsize);
@@ -1348,13 +1348,13 @@ void CLoadGroupResponse::ValidateModels()
 
 void CLoadGroupResponse::ValidateTemporarySupportForces()
 {
-   CollectionIndexType nLoadGroups   = m_AnalysisController.LoadGroupCount();
+   IndexType nLoadGroups   = m_AnalysisController.LoadGroupCount();
    SupportIndexType nTempSupports = m_AnalysisController.TemporarySupportCount();
 
    CComPtr<ITemporarySupports> tempSupports;
    m_pLBAM->get_TemporarySupports(&tempSupports);
 
-   for (CollectionIndexType loadGroupIdx = 0; loadGroupIdx < nLoadGroups; loadGroupIdx++)
+   for (IndexType loadGroupIdx = 0; loadGroupIdx < nLoadGroups; loadGroupIdx++)
    {
       LoadGroupIDType lg_fe;
       bool is_transient;
@@ -1483,7 +1483,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(BSTR LoadGroup, IIDArray* poiIDs,
       ValidateModels();
 
       // let's see how many pois we have to return results for
-      CollectionIndexType nPOIs;
+      IndexType nPOIs;
       hr = poiIDs->get_Count(&nPOIs);
 
       // create our results collection 
@@ -1500,7 +1500,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(BSTR LoadGroup, IIDArray* poiIDs,
 
       // loop over stages and poi's
       Float64 fx_left, fx_right, fy_left, fy_right, mz_left, mz_right;
-      for (CollectionIndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
       {
          PoiIDType poiID;
          hr = poiIDs->get_Item(poiIdx, &poiID);
@@ -1559,7 +1559,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflections(BSTR LoadGroup, IIDArray* po
       ValidateModels();
 
       // let's see how many pois we have to return results for
-      CollectionIndexType nPOIs;
+      IndexType nPOIs;
       hr = poiIDs->get_Count(&nPOIs);
 
       // create our results collection 
@@ -1576,7 +1576,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflections(BSTR LoadGroup, IIDArray* po
 
       // loop over stages and poi's
       Float64 ldx, ldy, lrz, rdx, rdy, rrz;
-      for (CollectionIndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
       {
          PoiIDType poiID;
          hr = poiIDs->get_Item(poiIdx, &poiID);
@@ -1635,7 +1635,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
       ValidateModels();
 
       // let's see how many supports we have to return results for
-      CollectionIndexType nSupportIDs;
+      IndexType nSupportIDs;
       hr = supportIDs->get_Count(&nSupportIDs);
 
       // create our results collection 
@@ -1652,7 +1652,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
 
       // loop over stages and supports
       Float64 fx, fy, mz;
-      for (CollectionIndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
+      for (IndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
       {
          SupportIDType supportID;
          hr = supportIDs->get_Item(supportIDIdx, &supportID);
@@ -1819,7 +1819,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeStresses(BSTR LoadGroup, IIDArray* poiID
       ValidateModels();
 
       // let's see how many pois we have to return results for
-      CollectionIndexType nPOIs;
+      IndexType nPOIs;
       hr = poiIDs->get_Count(&nPOIs);
 
       // create our results collection 
@@ -1835,7 +1835,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeStresses(BSTR LoadGroup, IIDArray* poiID
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       // loop over stages and poi's
-      for (CollectionIndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
       {
          PoiIDType poiID;
          hr = poiIDs->get_Item(poiIdx, &poiID);
@@ -1872,17 +1872,17 @@ STDMETHODIMP CLoadGroupResponse::ComputeStresses(BSTR LoadGroup, IIDArray* poiID
 
             was_computed |= was_computed_for_this_load_case;
 
-            CollectionIndexType left_size  = s_left.size();
-            CollectionIndexType right_size = s_right.size();
+            IndexType left_size  = s_left.size();
+            IndexType right_size = s_right.size();
 
             // we have to pass data into the results object using arrays
             // of data... use a smart array pointer so we are exception safe
             boost::scoped_array<Float64> pLeft(new Float64[left_size]);
             boost::scoped_array<Float64> pRight(new Float64[right_size]);
-            for ( CollectionIndexType i = 0; i < left_size; i++ )
+            for ( IndexType i = 0; i < left_size; i++ )
                pLeft[i] = s_left[i];
 
-            for ( CollectionIndexType i = 0; i < right_size; i++ )
+            for ( IndexType i = 0; i < right_size; i++ )
                pRight[i] = s_right[i];
 
 
@@ -1936,7 +1936,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflections(BSTR LoadGroup, IIDAr
       ValidateModels();
 
       // let's see how many supports we have to return results for
-      CollectionIndexType nSupportIDs;
+      IndexType nSupportIDs;
       hr = supportIDs->get_Count(&nSupportIDs);
 
       // create our results collection 
@@ -1953,7 +1953,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflections(BSTR LoadGroup, IIDAr
 
       // loop over stages and supports
       Float64 dx, dy, rz;
-      for (CollectionIndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
+      for (IndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
       {
          SupportIDType supportID;
          hr = supportIDs->get_Item(supportIDIdx, &supportID);
@@ -2029,7 +2029,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(IIDArray* poiIDs,PoiIDType ldPoiI
 
 
       // let's see how many pois we have to return results for
-      CollectionIndexType nPOIs;
+      IndexType nPOIs;
       hr = poiIDs->get_Count(&nPOIs);
 
       // create our results collection 
@@ -2042,7 +2042,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(IIDArray* poiIDs,PoiIDType ldPoiI
 
       // loop over stages and poi's
       Float64 fx_left, fx_right, fy_left, fy_right, mz_left, mz_right;
-      for (CollectionIndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < nPOIs; poiIdx++)
       {
          PoiIDType poiID;
          hr = poiIDs->get_Item(poiIdx, &poiID);

@@ -36,7 +36,7 @@ class CReportButton;
 // Creation data that is needed by the report view to create the proper report
 struct EAFCLASS CEAFReportViewCreationData
 {
-   CollectionIndexType m_RptIdx; // Index of the report to be created (index into the report manager)
+   IndexType m_RptIdx; // Index of the report to be created (index into the report manager)
 
    // Option 1 - Provide Report Specification
    std::shared_ptr<WBFL::Reporting::ReportSpecification> m_pRptSpecification; // the report specification
@@ -106,10 +106,10 @@ public:
    virtual bool InitReport(std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder);
 
    // Creates a report. The report specification is created by the user through the UI
-   virtual bool CreateReport(CollectionIndexType rptIdx,BOOL bPromptForSpec=true);
+   virtual bool CreateReport(IndexType rptIdx,BOOL bPromptForSpec=true);
 
    // Creates a report. The report specification was created elsewhere and is supplied here
-   virtual bool CreateReport(CollectionIndexType rptIdx, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder);
+   virtual bool CreateReport(IndexType rptIdx, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder);
 
    // listen if our button was clicked
    void NotifyReportButtonWasClicked();
@@ -134,7 +134,7 @@ protected:
 
    virtual void EditReport();
    virtual void RefreshReport(); // called from EditReport when the report needs to be refreshed
-   virtual void CreateReportSpecification(CollectionIndexType rptIdx,BOOL bCreateDefaultReport);
+   virtual void CreateReportSpecification(IndexType rptIdx,BOOL bCreateDefaultReport);
    virtual HRESULT UpdateReportBrowser(const std::shared_ptr<const WBFL::Reporting::ReportHint>&  pHint);
 
    // Translate an MFC OnUpdate hint into a CReportHint object that will be passed into

@@ -135,11 +135,6 @@ namespace WBFL
          /// @return Returns the pair<Offset,Elevation> where Offset is the distance from the first to the second ridge point and Elevation is the elevation of the second ridge point
          std::pair<Float64,Float64> GetRidgePointOffsetAndElevation(IndexType ridgePoint1Idx, IndexType ridgePoint2Idx) const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          std::unique_ptr<SurfaceTemplateImpl> m_pImpl;
       };

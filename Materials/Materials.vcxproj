@@ -200,7 +200,6 @@
     <ClCompile Include="StressStrainModel.cpp" />
     <ClCompile Include="UHPCModel.cpp" />
     <ClCompile Include="UnconfinedConcreteModel.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Materials\ACI209Concrete.h" />
@@ -223,7 +222,6 @@
     <ClInclude Include="..\Include\Materials\StressStrainModel.h" />
     <ClInclude Include="..\Include\Materials\UHPCModel.h" />
     <ClInclude Include="..\Include\Materials\UnconfinedConcreteModel.h" />
-    <ClInclude Include="..\Include\Materials\UnitTest.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Materials.def" />

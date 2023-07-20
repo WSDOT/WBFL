@@ -241,19 +241,4 @@ bool PsStrand::AssertValid() const
 
    return true;
 }
-
-void PsStrand::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for PsStrand") << WBFL::Debug::endl;
-}
 #endif // _DEBUG
-
-#if defined _UNITTEST
-bool PsStrand::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("PsStrand");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for PsStrand");
-   TESTME_EPILOG("PsStrand");
-}
-#endif // _UNITTEST
-

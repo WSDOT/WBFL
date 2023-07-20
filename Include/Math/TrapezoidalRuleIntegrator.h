@@ -37,10 +37,6 @@ namespace WBFL
       public:
          virtual Float64 Evaluate(const Function& f,Float64 xMin,Float64 xMax,Uint16 nIntervals) const override;
          virtual Float64 Evaluate(const std::function<Float64(Float64)>& f, Float64 xMin, Float64 xMax, Uint16 nIntervals) const override;
-
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST 
       };
    };
 };

@@ -157,13 +157,13 @@ public:
 public:
    STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
    STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ IndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
 	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+	STDMETHOD(Remove)(/*[in]*/ IndexType idx) override;
 	STDMETHOD(Clear)() override;
-   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem) override;
-   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape) override;
+   STDMETHOD(ReplaceEx)(IndexType idx,ICompositeShapeItem* pShapeItem) override;
+   STDMETHOD(Replace)(IndexType idx,IShape* pShape) override;
 	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem) override;
    STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid) override;
 };

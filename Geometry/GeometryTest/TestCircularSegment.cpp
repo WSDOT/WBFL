@@ -551,11 +551,11 @@ void CTestCircularSegment::TestIShape()
    TRY_TEST(shape->get_PolyPoints(nullptr),E_POINTER);
    TRY_TEST(shape->get_PolyPoints(&points),S_OK);
 
-   CollectionIndexType nPoints = sizeof(px)/sizeof(Float64);
-   CollectionIndexType cPoints;
+   IndexType nPoints = sizeof(px)/sizeof(Float64);
+   IndexType cPoints;
    points->get_Count(&cPoints);
    TRY_TEST(cPoints,nPoints); // nPoints polypoints
-   for ( CollectionIndexType i = 0; i < cPoints && i < nPoints; i++ )
+   for ( IndexType i = 0; i < cPoints && i < nPoints; i++ )
    {
       CComPtr<IPoint2d> p;
       points->get_Item(i,&p);
@@ -689,7 +689,7 @@ void CTestCircularSegment::TestIShape()
    ATLTRACE("Trace of Points for CircularSegment - count = %d \n", cPoints);
    ATLTRACE("  pt         X         Y\n");
    ATLTRACE("---------------------------------\n");
-   for (CollectionIndexType ip = 0; ip < cPoints; ip++)
+   for (IndexType ip = 0; ip < cPoints; ip++)
    {
       CComPtr<IPoint2d> pnt;
       points->get_Item(ip, &pnt);

@@ -45,10 +45,10 @@ namespace WBFL
       /// ISBN 0-201-12110-7 pg 590 -593
       ///
       /// 
-      /// > Due to floating point to integer round off, a call to HLStoRGB followed by
-      /// > a call to RGBtoHLS will not yield the original HLS values.
+      /// > Due to floating point to integer round off, a call to HSLtoRGB followed by
+      /// > a call to RGBtoHSL will not yield the original HSL values.
       /// 
-      /// > A call to RGBtoHLS followed by a call to HLStoRGB will yield the original
+      /// > A call to RGBtoHSL followed by a call to HSLtoRGB will yield the original
       /// > RGB values.
       class SYSCLASS ColorConverter
       {
@@ -59,27 +59,32 @@ namespace WBFL
          ColorConverter& operator=(const ColorConverter&) = delete;
 
 
-         /// Converts color from HLS to RGB model
-         /// @return A tuple in the format (Red,Green,Blue)
-         static std::tuple <BYTE, BYTE, BYTE> HLStoRGB(Float64 hue, Float64 lightness, Float64 saturation);
+         /// @brief Converts color from HSL to RGB model
+         /// @param hue Color value between 0 and 360
+         /// @param saturation value between 0 and 1
+         /// @param lightness value between 0 and 1
+         /// @return A tuple in the format (Red,Green,Blue) with values between 0 and 255
+         static std::tuple <BYTE, BYTE, BYTE> HSLtoRGB(Float64 hue, Float64 saturation, Float64 lightness);
 
-         ///  Converts color from RGB to HLS model
-         /// @return A tuple in the format (Hue,Lightness,Saturation)
-         static std::tuple<Float64,Float64,Float64> RGBtoHLS(BYTE red, BYTE green, BYTE blue);
-
-         // Note:
-         // Due to floating point to integer round off, a call to HSVtoRGB followed by
-         // a call to RGBtoHSV will not yield the original HSV values.
-         //
-         // A call to RGBtoHSV followed by a call to HSVtoRGB will yield the original
-         // RGB values.
+         /// @brief Converts color from RGB to HSL model
+         /// @param red Value between 0 and 255
+         /// @param green Value between 0 and 255
+         /// @param blue Value between 0 and 255
+         /// @return A tuple in the format (Hue,Saturation,Lightness) with Hue between 0 and 360 and Lightness and Saturation between 0 and 1
+         static std::tuple<Float64,Float64,Float64> RGBtoHSL(BYTE red, BYTE green, BYTE blue);
 
          /// Converts color from HSV to RGB model
-         /// @return A tuple in the format (Red,Green,Blue)
+         /// @param hue Color value between 0 and 360
+         /// @param saturation value between 0 and 1
+         /// @param value value between saturation and 1
+         /// @return A tuple in the format (Red,Green,Blue) with values between 0 and 255
          static std::tuple <BYTE, BYTE, BYTE> HSVtoRGB(Float64 hue,Float64 saturation,Float64 value);
 
          /// Converts color from RGB to HSV model
-         /// @return A tuple in the format (Hue,Lightness,Value)
+         /// @param red Value between 0 and 255
+         /// @param green Value between 0 and 255
+         /// @param blue Value between 0 and 255
+         /// @return A tuple in the format (Hue,Saturation,Value) with Hue between 0 and 360 and Saturation and Value between 0 and 1
          static std::tuple<Float64, Float64, Float64> RGBtoHSV(BYTE red,BYTE green,BYTE blue);
 
       private:

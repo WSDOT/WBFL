@@ -81,7 +81,7 @@ namespace WBFL
          /// a given concrete strength and the time that strength occurs
          void SetFc28(Float64 fc,Float64 t);
 
-         /// Indiciates if a user value for Ec is used. If not, it is comptued
+         /// Indicates if a user value for Ec is used. If not, it is computed
          /// from Fc28
          void UserEc28(bool bUserEc);
          bool UserEc28() const;
@@ -90,13 +90,13 @@ namespace WBFL
          void SetEc28(Float64 Ec);
          Float64 GetEc28() const;
 
-         /// Sets the 28 day scent modulus by compute what it need to be
+         /// Sets the 28 day secant modulus by computing what it need to be
          /// based on the current values of alpha and beta for the given
          /// value of Ec and the time that that modulus occurs
          void SetEc28(Float64 Ec,Float64 t);
 
          /// Computes what the 28 day strength needs to be for a concrete strength
-         /// fc occuring at concrete age with parameters a (alpha, days) and b (beta)
+         /// fc occurring at concrete age with parameters a (alpha, days) and b (beta)
          static Float64 ComputeFc28(Float64 fc,Float64 age,Float64 a,Float64 b);
          static Float64 ComputeEc28(Float64 ec,Float64 age,Float64 a,Float64 b);
 
@@ -121,7 +121,7 @@ namespace WBFL
          /// t occurs before the time at casting, zero is returned.
          virtual Float64 GetFlexureFr(Float64 t) const override;
 
-         /// Returns the total free shrinkage that has occured from time at casting
+         /// Returns the total free shrinkage that has occurred from time at casting
          /// to the time specified
          virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
          virtual std::unique_ptr<ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;

@@ -160,19 +160,6 @@ std::unique_ptr<Shape> PlateGirder::CreateClone() const
    return std::make_unique<PlateGirder>(*this);
 }
 
-#if defined _DEBUG
-bool PlateGirder::AssertValid() const
-{
-   return __super::AssertValid();
-}
-
-void PlateGirder::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("*** Dump for PlateGirder ***")<< WBFL::Debug::endl;
-   __super::Dump(os);
-}
-#endif // _DEBUG
-
 void PlateGirder::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 {
    // start at bottom center and go around counter-clockwise
@@ -210,49 +197,3 @@ void PlateGirder::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
    polygon->Move(Point2d(0, 0), *GetHookPoint());
 }
-
-#if defined _UNITTEST
-#include <GeomModel/UnitTest.h>
-bool PlateGirder::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("PlateGirder");
-
-//   Triangle rt(Point2d(1,2),4,2,1);
-//   TRY_TESTME( IsEqual(2., rt.GetWidth())) ;
-//   TRY_TESTME( IsEqual(4., rt.GetHeight())) ;
-//   TRY_TESTME( IsEqual(1., rt.GetOffset())) ;
-//   TRY_TESTME( Point2d(1,2) == rt.GetHookPoint()); 
-//   ShapeProperties aprops = rt.GetProperties();
-//   TRY_TESTME ( IsEqual(aprops.GetArea(), 4.)) ;
-//   TRY_TESTME ( IsEqual(aprops.GetIxx(),   3.55, .1)) ;
-//   TRY_TESTME ( IsEqual(aprops.GetIyy(),   0.67, .1)) ;
-//   TRY_TESTME ( IsEqual(aprops.GetIxy(),   0.00, .001)) ;
-//   TRY_TESTME (rt.GetBoundingBox() == Rect2d(1,2,3,6)) ;
-//
-//   rt.SetHookPoint(Point2d(0,0));
-//   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
-//   rt.Move(Shape::LocatorPoint::CenterCenter, Point2d(0,0));
-//   TRY_TESTME (rt.GetBoundingBox() == Rect2d(-1,-2,1,2)) ;
-//
-//   Float64 ang = atan(.25);
-//   Float64 cosa = cos(ang);
-//   rt.SetHookPoint(Point2d(0,0));
-//   rt.Rotate(Point2d(0,0),ang);
-//   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2*cosa,4/cosa)) ;
-//   rt.SetRotationAngle(0);
-//   TRY_TESTME (rt.GetBoundingBox() == Rect2d(0,0,2,4)) ;
-//
-//#if defined _DEBUG
-//   rt.Dump(rlog.GetLogContext());
-//#endif
-
-   // Test hook point behavior
-   //TRY_TESTME(UnitTest::TestHookPoint(beam) == true);
-
-
-   TESTME_EPILOG("PlateGirder");
-}
-#endif // _UNITTEST
-
-
-

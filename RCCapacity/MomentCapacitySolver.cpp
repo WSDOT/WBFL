@@ -248,9 +248,9 @@ HRESULT CMomentCapacitySolver::UpdateLimits()
    Float64 compStrain =  -Float64_Max;
    Float64 tensStrain = -Float64_Max;
    
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    section->get_ShapeCount(&nShapes);
-   for (CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
+   for (IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
    {
       CComPtr<IStressStrain> material;
       section->get_ForegroundMaterial(shapeIdx, &material);
@@ -473,9 +473,9 @@ void CMomentCapacitySolver::UpdateAnalysisPoints(Float64 angle, SolutionMethod s
    CComPtr<IPoint2d> pntCompression, pntTension;
    Float64 dCompression = -Float64_Max;
    Float64 dTension = -Float64_Max;
-   CollectionIndexType shape_count;
+   IndexType shape_count;
    section->get_ShapeCount(&shape_count);
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < shape_count; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < shape_count; shapeIdx++ )
    {
       CComPtr<IShape> shape;
       section->get_Shape(shapeIdx,&shape);

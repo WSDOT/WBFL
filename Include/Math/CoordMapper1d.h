@@ -57,7 +57,7 @@ namespace WBFL
          CoordMapper1d(Float64 d, bool IsSameDirection);
 
 
-         /// Constructor for systems that are arbitrarly oriented to each other.
+         /// Constructor for systems that are arbitrarily oriented to each other.
          /// All that you need to do is map two sets of points from each system
          /// to each other and the mapper takes care of the rest.
          ///
@@ -108,11 +108,6 @@ namespace WBFL
          // transform is in the form of A = Bc + d
          // where c and d are constants
          Float64 m_c{1.0}, m_d{0.0};
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

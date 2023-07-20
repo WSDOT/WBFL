@@ -31,7 +31,7 @@
 #include "WBFLComCollections.h"
 
 class CCompositeSectionEx;
-using CompositeSectionExVectorImpl = CComVectorCollectionNoEnum<ICompositeSectionEx,ICompositeSectionItemEx,CollectionIndexType>;
+using CompositeSectionExVectorImpl = CComVectorCollectionNoEnum<ICompositeSectionEx,ICompositeSectionItemEx,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCompositeSection
@@ -69,10 +69,10 @@ public:
 public:
 	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
 	STDMETHOD(get_Section)(/*[out, retval]*/ ISection* *pVal) override;
-//	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeSectionItem* *pVal) override;
+//	STDMETHOD(get_Item)(/*[in]*/ IndexType idx, /*[out, retval]*/ ICompositeSectionItem* *pVal) override;
 //	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+//	STDMETHOD(Remove)(/*[in]*/ IndexType idx) override;
 	STDMETHOD(AddSectionEx)(/*[in]*/ ICompositeSectionItemEx* sectionItem) override;
    STDMETHOD(AddSection)(/*[in]*/ IShape* shape,/*[in]*/ Float64 Efg,/*[in]*/ Float64 Ebg,/*[in]*/ Float64 Dfg,/*[in]*/ Float64 Dbg,/*[in]*/ VARIANT_BOOL bStructural) override;
 

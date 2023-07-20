@@ -69,15 +69,15 @@ END_COM_MAP()
 	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IStressResult
-	STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out,retval]*/ IndexType *pVal) override;
 	STDMETHOD(AddResult)(/*[in]*/ Float64 newVal) override;
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal) override;
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal) override;
+	STDMETHOD(SetResult)(/*[in]*/IndexType index, /*[in]*/ Float64 newVal) override;
+	STDMETHOD(GetResult)(/*[in]*/IndexType index, /*[out,retval]*/ Float64 *pVal) override;
 	STDMETHOD(Clone)(/*[out,retval]*/ IStressResult* *pClone) override;
 
 // IHpStressResult
-	STDMETHOD(HpSumResults)(/*[in]*/CollectionIndexType num, /*[in]*/Float64* Vals) override;
-	STDMETHOD(HpSetResults)(/*[in]*/CollectionIndexType num, /*[in]*/Float64* Vals) override;
+	STDMETHOD(HpSumResults)(/*[in]*/IndexType num, /*[in]*/Float64* Vals) override;
+	STDMETHOD(HpSetResults)(/*[in]*/IndexType num, /*[in]*/Float64* Vals) override;
 
 public:
 	STDMETHOD(FactorAndSum)(IStressResult* incRes, Float64 factor) override;

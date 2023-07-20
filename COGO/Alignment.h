@@ -66,12 +66,12 @@ public:
 
 // IAlignment
 public:
-   STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IPathElement** pVal)  override;
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* pVal)  override;
+   STDMETHOD(get_Item)(/*[in]*/ IndexType idx,/*[out, retval]*/ IPathElement** pVal)  override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ IndexType* pVal)  override;
 	STDMETHOD(get_RefStation)(/*[out, retval]*/ IStation* *station) override;
 	STDMETHOD(put_RefStation)(/*[in]*/ VARIANT varStation) override;
    STDMETHOD(AddPathElement)(/*[in]*/ IPathElement* element) override;
-   STDMETHOD(InsertPathElement)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement* element) override;
+   STDMETHOD(InsertPathElement)(/*[in]*/ IndexType idx,/*[in]*/ IPathElement* element) override;
    STDMETHOD(ClearPathElements)() override;
 
    STDMETHOD(AddProfile)(IDType id, IProfile* pProfile) override;

@@ -127,10 +127,7 @@ bool MomentCurvatureSolverImpl::AnalyzeSection(Float64 Fz, Float64 angle, Float6
    CHECK(IsEqual(Fz, Pz, tol));
 #endif
 
-   Float64 Mx = capacity_solution->GetMx();
-   Float64 My = capacity_solution->GetMy();
-   Float64 M = sqrt(Mx * Mx + My * My);
-   pCurvatureSolution->AddPoint(M, k, std::move(capacity_solution));
+   pCurvatureSolution->AddPoint(std::move(capacity_solution));
 
    return true;
 }

@@ -24,19 +24,10 @@
 
 #include <Lrfd\LrfdLib.h>
 
-#include <Lrfd\UnitTest.h>
-#include <System\dllTest.h>
-
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE hinstDll,
                            DWORD     fdwReason,
                            LPVOID    plvReserved)
 {
     return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-   return lrfdUnitTest::TestMe(rlog);
 }

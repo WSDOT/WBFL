@@ -550,17 +550,17 @@ public:
       return m_CompositeShape->get__NewEnum(pVal);
    }
 
-   STDMETHODIMP get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal) override
+   STDMETHODIMP get_Item(IndexType idx, ICompositeShapeItem* *pVal) override
    {
       return m_CompositeShape->get_Item(idx,pVal);
    }
 
-   STDMETHODIMP ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem) override
+   STDMETHODIMP ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem) override
    {
       return m_CompositeShape->ReplaceEx(idx,pShapeItem);
    }
 
-   STDMETHODIMP Replace(CollectionIndexType idx,IShape* pShape) override
+   STDMETHODIMP Replace(IndexType idx,IShape* pShape) override
    {
       return m_CompositeShape->Replace(idx,pShape);
    }
@@ -575,7 +575,7 @@ public:
       return m_CompositeShape->AddShapeEx(shapeItem);
    }
 
-	STDMETHODIMP Remove(CollectionIndexType idx) override
+	STDMETHODIMP Remove(IndexType idx) override
    {
       return m_CompositeShape->Remove(idx);
    }
@@ -585,7 +585,7 @@ public:
       return m_CompositeShape->Clear();
    }
 
-   STDMETHODIMP get_Count(CollectionIndexType *pVal) override
+   STDMETHODIMP get_Count(IndexType *pVal) override
    {
       return m_CompositeShape->get_Count(pVal);
    }

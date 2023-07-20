@@ -25,24 +25,16 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\XRangeOfApplicability.h>
 
-/****************************************************************************
-CLASS
-   lrfdXRangeOfApplicability
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXRangeOfApplicability::lrfdXRangeOfApplicability(Reason reason,LPCTSTR msg,LPCTSTR file, long line) :
+XRangeOfApplicability::XRangeOfApplicability(Reason reason,LPCTSTR msg,LPCTSTR file, Uint32 line) :
    WBFL::System::XBase( file, line ),
 m_Reason( reason ),
 m_Message( msg )
 {
 }
 
-//======================== OPERATIONS =======================================
-std::_tstring lrfdXRangeOfApplicability::GetErrorMessage() const
+std::_tstring XRangeOfApplicability::GetErrorMessage() const
 {
    return m_Message;
 }

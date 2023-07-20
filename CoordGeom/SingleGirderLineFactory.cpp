@@ -97,14 +97,3 @@ std::vector<std::shared_ptr<GirderLine>> SingleGirderLineFactory::Create(std::sh
    girder_lines.emplace_back(girder_line);
    return girder_lines;
 }
-
-#if defined _UNITTEST
-bool SingleGirderLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SingleGirderLineFactory");
-
-   TESTME_EPILOG("SingleGirderLineFactory");
-}
-#endif // _UNITTEST
-
-

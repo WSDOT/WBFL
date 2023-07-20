@@ -1,2 +1,1 @@
 LIBRARY        WBFLLibraryFW.dll
-EXPORTS  UnitTest @1

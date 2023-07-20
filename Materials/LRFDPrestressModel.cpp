@@ -24,8 +24,6 @@
 #include <Materials/MatLib.h>
 #include <Materials/LRFDPrestressModel.h>
 
-#include <Units/Convert.h>
-#include <Units/Measure.h>
 
 using namespace WBFL::Materials;
 
@@ -82,7 +80,7 @@ Float64 LRFDPrestressModel::GetYieldStrain() const
 
 Float64 LRFDPrestressModel::GetModulusOfElasticity() const
 {
-   return WBFL::Units::ConvertToSysUnits(m_Eps, WBFL::Units::Measure::KSI);
+   return GetEps();
 }
 
 std::pair<Float64, bool> LRFDPrestressModel::ComputeStress(Float64 strain) const
@@ -98,11 +96,9 @@ std::pair<Float64, bool> LRFDPrestressModel::ComputeStress(Float64 strain) const
 
    fps *= sign;
 
-   Float64 stress = WBFL::Units::ConvertToSysUnits(fps, WBFL::Units::Measure::KSI);
-
    // this is a model for rebar and strand that is usually in tension and embedded in concrete. 
-   // the return value assumes the material is infinite strain capacity in compression
-   return std::make_pair(stress,::IsLT(m_MaxStrain, sign * strain) ? false : true);
+   // the return value assumes the material has infinite strain capacity in compression
+   return std::make_pair(fps,::IsLT(m_MaxStrain, sign * strain) ? false : true);
 }
 
 void LRFDPrestressModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
@@ -118,25 +114,3 @@ Float64 LRFDPrestressModel::GetStrainAtPeakStress() const
 {
    return m_MaxStrain;
 }
-
-#if defined _DEBUG
-bool LRFDPrestressModel::AssertValid() const
-{
-   return true;
-}
-
-void LRFDPrestressModel::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for LRFDPrestressModel")         << WBFL::Debug::endl;
-   os << _T("====================")         << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool LRFDPrestressModel::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("LRFDPrestressModel");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for LRFDPrestressModel");
-   TESTME_EPILOG("LRFDPrestressModel");
-}
-#endif // _UNITTEST

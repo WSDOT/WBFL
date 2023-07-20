@@ -22,161 +22,58 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LLDFTYPEHIJ_H_
-#define INCLUDED_LRFD_LLDFTYPEHIJ_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\LiveLoadDistributionFactorBase.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdLldfTypeHIJ
-
-   Live load distribution factor calculator for cross section types H and I and J
-   if not sufficiently connected.
-
-
-DESCRIPTION
-   Live load distribution factor calculator for cross section types H and I and J
-   if not sufficiently connected.
-
-LOG
-   rab : 07.15.2005 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdLldfTypeHIJ : public lrfdLiveLoadDistributionFactorBase
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace LRFD
+   {
+      /// @brief Live load distribution factor calculator for cross section types H and I and J if not sufficiently connected.
+      class LRFDCLASS LldfTypeHIJ : public LiveLoadDistributionFactorBase
+      {
+      public:
+         LldfTypeHIJ() = delete;
+         LldfTypeHIJ(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+                         Uint32 Nl, Float64 wLane,
+                         Float64 L,Float64 W,Float64 I,Float64 J,Float64 PossionRatio,
+                         Float64 leftDe,Float64 rightDe,
+                         Float64 skewAngle1, Float64 skewAngle2,
+                         bool bMomentSkew, bool bShearSkew);
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdLldfTypeHIJ(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
-                   Uint32 Nl, Float64 wLane,
-                   Float64 L,Float64 W,Float64 I,Float64 J,Float64 PossionRatio,
-                   Float64 leftDe,Float64 rightDe,
-                   Float64 skewAngle1, Float64 skewAngle2,
-                   bool bMomentSkew, bool bShearSkew);
+         LldfTypeHIJ(const LldfTypeHIJ&) = default;
+         virtual ~LldfTypeHIJ() override = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdLldfTypeHIJ(const lrfdLldfTypeHIJ& rOther);
+         LldfTypeHIJ& operator=(const LldfTypeHIJ& rOther) = default;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdLldfTypeHIJ() override;
+         Float64 MomentSkewCorrectionFactor() const;
+         Float64 ShearSkewCorrectionFactor() const;
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdLldfTypeHIJ& operator = (const lrfdLldfTypeHIJ& rOther);
+      protected:
+         Float64 m_L;
+         Float64 m_W;
+         Float64 m_I;
+         Float64 m_J;
+         Float64 m_PoissonRatio;
+         Float64 m_LeftDe;
+         Float64 m_RightDe;
+         Float64 m_SkewAngle1;
+         Float64 m_SkewAngle2;
 
-   // GROUP: OPERATIONS
+         virtual bool TestRangeOfApplicability(Location loc) const override;
 
-   //------------------------------------------------------------------------
-   Float64 MomentSkewCorrectionFactor() const;
+         bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
 
-   //------------------------------------------------------------------------
-   Float64 ShearSkewCorrectionFactor() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   Float64 m_L;
-   Float64 m_W;
-   Float64 m_I;
-   Float64 m_J;
-   Float64 m_PoissonRatio;
-   Float64 m_LeftDe;
-   Float64 m_RightDe;
-   Float64 m_SkewAngle1;
-   Float64 m_SkewAngle2;
-
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdLldfTypeHIJ& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeHIJ& rOther);
-
-   //------------------------------------------------------------------------
-   virtual bool TestRangeOfApplicability(Location loc) const override;
-
-   bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
-
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const override;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const override;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(WBFL::Debug::LogContext& os) const override;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   #endif // _UNITTEST
+         virtual DFResult GetMomentDF_Int_1_Strength() const override;
+         virtual DFResult GetMomentDF_Int_2_Strength() const override;
+         virtual DFResult GetMomentDF_Ext_1_Strength() const override;
+         virtual DFResult GetMomentDF_Ext_2_Strength() const override;
+         virtual DFResult GetShearDF_Int_1_Strength() const override;
+         virtual DFResult GetShearDF_Int_2_Strength() const override;
+         virtual DFResult GetShearDF_Ext_1_Strength() const override;
+         virtual DFResult GetShearDF_Ext_2_Strength() const override;
+      };
+   };
 };
-
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_LLDFTYPEHIJ_H_

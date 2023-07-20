@@ -144,14 +144,14 @@ STDMETHODIMP CVoidedSlab::put_VoidSpacing(Float64 newVal)
    return S_OK;
 }
 
-STDMETHODIMP CVoidedSlab::get_VoidCount(CollectionIndexType *pVal)
+STDMETHODIMP CVoidedSlab::get_VoidCount(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_Beam.GetVoidCount();
    return S_OK;
 }
 
-STDMETHODIMP CVoidedSlab::put_VoidCount(CollectionIndexType newVal)
+STDMETHODIMP CVoidedSlab::put_VoidCount(IndexType newVal)
 {
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_IVoidedSlab,GEOMETRY_E_DIMENSION);

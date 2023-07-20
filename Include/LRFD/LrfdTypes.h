@@ -22,61 +22,57 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LRFDTYPES_H_
-#define INCLUDED_LRFD_LRFDTYPES_H_
 #pragma once
 
-// "Global" data types for the LRFD package
-// These types aren't really global because they have been
-// scoped in the lrfdTypes struct.
-struct lrfdTypes
+namespace WBFL
 {
-   enum Optimization { Min, Max };
+   namespace LRFD
+   {
+      enum class Optimization { Min, Max };
 
-   enum LimitState { StrengthI,
-                     StrengthII,
-                     StrengthIII,
-                     StrengthIV,
-                     StrengthV,
-                     ExtremeEventI,
-                     ExtremeEventII_IC,  // Extreme Event II with IC load
-                     ExtremeEventII_CV,  // Extreme Event II with CV load
-                     ExtremeEventII_CT,  // Extreme Event II with CT load
-                     ServiceI,
-                     ServiceIA,          // Service I with half dead load (5.9.4.2.1)
-                     ServiceII,
-                     ServiceIII,
-                     FatigueI,
-                     FatigueII,
-                     LimitStateCount
-   };
-   enum LoadCombination { DC,
-                          DD,
-                          DW,
-                          EH,
-                          EV,
-                          ES,
-                          LLIM,
-                          CE,
-                          BR,
-                          PL,
-                          LS,
-                          EL,
-                          WA,
-                          WS,
-                          WL,
-                          FR,
-                          TU,
-                          CR,
-                          SH,
-                          TG,
-                          SE,
-                          EQ,
-                          IC,
-                          CT,
-                          CV,
-                          LoadCombinationCount
+      enum class LimitState { StrengthI,
+                        StrengthII,
+                        StrengthIII,
+                        StrengthIV,
+                        StrengthV,
+                        ExtremeEventI,
+                        ExtremeEventII_IC,  // Extreme Event II with IC load
+                        ExtremeEventII_CV,  // Extreme Event II with CV load
+                        ExtremeEventII_CT,  // Extreme Event II with CT load
+                        ServiceI,
+                        ServiceIA,          // Service I with half dead load (5.9.4.2.1)
+                        ServiceII,
+                        ServiceIII,
+                        FatigueI,
+                        FatigueII,
+                        LimitStateCount
+      };
+      enum class LoadCombination { DC,
+                             DD,
+                             DW,
+                             EH,
+                             EV,
+                             ES,
+                             LLIM,
+                             CE,
+                             BR,
+                             PL,
+                             LS,
+                             EL,
+                             WA,
+                             WS,
+                             WL,
+                             FR,
+                             TU,
+                             CR,
+                             SH,
+                             TG,
+                             SE,
+                             EQ,
+                             IC,
+                             CT,
+                             CV,
+                             LoadCombinationCount
+      };
    };
 };
-
-#endif // INCLUDED_LRFD_LRFDTYPES_H_

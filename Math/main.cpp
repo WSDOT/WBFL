@@ -22,19 +22,11 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Math\MathLib.h>
-#include <Math\UnitTest.h>
-#include <System\dllTest.h>
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
                            DWORD     /*fdwRreason*/,
                            LPVOID    /*plvReserved*/)
 {
-    return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-   return WBFL::Math::UnitTest::TestMe(rlog);
+    return TRUE;   // Indicate that the DLL was initialized successfully.
 }

@@ -1022,10 +1022,10 @@ library WBFLCogo
      [helpstring("method AddPointEx")] HRESULT AddPointEx([in]IPoint2d* point);
 
      /// Returns the number of points
-     [propget,helpstring("property PointCount")] HRESULT PointCount([out,retval]CollectionIndexType* nPoints);
+     [propget,helpstring("property PointCount")] HRESULT PointCount([out,retval]IndexType* nPoints);
 
      /// Returns a point at the specified index.
-     [propget,helpstring("property Point")] HRESULT Point([in]CollectionIndexType idx,[out,retval]IPoint2d** point);
+     [propget,helpstring("property Point")] HRESULT Point([in]IndexType idx,[out,retval]IPoint2d** point);
 
      /// Returns a collection containing all spline points.
      [propget,helpstring("property Points")] HRESULT Points([out,retval]IPoint2dCollection** ppPoints);
@@ -1042,13 +1042,13 @@ library WBFLCogo
      [propget, helpstring("property EndDirection")] HRESULT EndDirection([out,retval]IDirection** dir);
 
       /// Computes the bearing of a line tangent to the spline at a specified point.
-     [helpstring("method BearingAtPoint")] HRESULT BearingAtPoint([in]CollectionIndexType idx,[out,retval]IDirection** pDir);
+     [helpstring("method BearingAtPoint")] HRESULT BearingAtPoint([in]IndexType idx,[out,retval]IDirection** pDir);
 
      /// Computes the bearing of a line normal to the spline at a specified point.
-     [helpstring("method NormalAtPoint")] HRESULT NormalAtPoint([in]CollectionIndexType idx,[out,retval]IDirection** pDir);
+     [helpstring("method NormalAtPoint")] HRESULT NormalAtPoint([in]IndexType idx,[out,retval]IDirection** pDir);
 
       /// Computes the distance along the spline from the start point to a specified point
-      [helpstring("method DistanceFromStartAtPoint")] HRESULT DistanceFromStartAtPoint([in] CollectionIndexType idx,[out,retval] Float64* dist);
+      [helpstring("method DistanceFromStartAtPoint")] HRESULT DistanceFromStartAtPoint([in] IndexType idx,[out,retval] Float64* dist);
    };
 
    /// Interface for objects that represent a Surface widening modification
@@ -1265,23 +1265,23 @@ library WBFLCogo
       /// Returns the number of segments in the template.
       ///
       /// > NOTE: All SurfaceTemplates associated with a Surface must have the same number of Segments.
-      [propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
+      [propget,helpstring("property Count")] HRESULT Count([out,retval]IndexType* count);
 
       /// Gets a SurfaceTemplate
-      [propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]ISurfaceTemplateSegment** segment);
+      [propget,helpstring("property Item")] HRESULT Item([in]IndexType idx,[out,retval]ISurfaceTemplateSegment** segment);
 
       /// Computes the change in elevation between two ridge points.
       [helpstring("method GetRidgePointElevationChange")] 
       HRESULT GetRidgePointElevationChange(
-         [in]CollectionIndexType ridgePointIdx1, ///< The first ridge point
-         [in]CollectionIndexType ridgePointIdx2, ///< The second ridge point
+         [in]IndexType ridgePointIdx1, ///< The first ridge point
+         [in]IndexType ridgePointIdx2, ///< The second ridge point
          [out,retval]Float64* deltaElevation ///< The change in elevation from the first to second ridge points
       );
 
       /// Computes the elevation change from a ridge point to an offset point
       [helpstring("method GetElevationChange")] 
       HRESULT GetElevationChange(
-         [in]CollectionIndexType ridgePointIdx, ///< Index of a ridge point
+         [in]IndexType ridgePointIdx, ///< Index of a ridge point
          [in]Float64 offset, ///< Offset from the ridge point
          [out,retval]Float64* deltaElevation ///< Change of elevation between the ridge point and the offset point
       );
@@ -1289,13 +1289,13 @@ library WBFLCogo
       /// Computes the slope at a point offset from a ridge point
       [helpstring("method GetSlope")] 
       HRESULT GetSlope(
-         [in]CollectionIndexType ridgePointIdx, ///< Index of a ridge point
+         [in]IndexType ridgePointIdx, ///< Index of a ridge point
          [in]Float64 offset, ///< Offset from the ridge point
          [out,retval]Float64* pSlope ///< Slope at the offset point
       );
 
       /// Returns the slope from horizontal of a segment
-      [helpstring("method GetSegmentSlope")] HRESULT GetSegmentSlope([in]CollectionIndexType segmentIdx,[out,retval]Float64* pSlope);
+      [helpstring("method GetSegmentSlope")] HRESULT GetSegmentSlope([in]IndexType segmentIdx,[out,retval]Float64* pSlope);
 
       /// Computes the offset from a reference ridge point to another ridge point
       [helpstring("method GetRidgePointOffset")] 
@@ -1392,23 +1392,23 @@ library WBFLCogo
       [propget, helpstring("property Direction")] HRESULT Direction([out, retval]IDirection** direction);
 
       /// Gets the number of surface points
-      [propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
+      [propget,helpstring("property Count")] HRESULT Count([out,retval]IndexType* count);
 
       /// Gets the SurfacePoint at the specified index
-      [propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]ISurfacePoint** point);
+      [propget,helpstring("property Item")] HRESULT Item([in]IndexType idx,[out,retval]ISurfacePoint** point);
 
       /// Gets the change in elevation between two surface points
       [helpstring("method GetSurfacePointElevationChange")] 
       HRESULT GetSurfacePointElevationChange(
-         [in]CollectionIndexType surfacePointIdx1, ///< Index of the first surface point
-         [in]CollectionIndexType surfacePointIdx2, ///< Index of the second surface point
+         [in]IndexType surfacePointIdx1, ///< Index of the first surface point
+         [in]IndexType surfacePointIdx2, ///< Index of the second surface point
          [out,retval]Float64* deltaElevation ///< The change in elevation from the first to the second surface points.
       );
 
       /// Computes the elevation change from a surface point to an offset
       [helpstring("method GetElevationChange")] 
       HRESULT GetElevationChange(
-         [in]CollectionIndexType surfacePointIdx, ///< Index of a surface point
+         [in]IndexType surfacePointIdx, ///< Index of a surface point
          [in]Float64 offset, ///< Offset from the surface point
          [out,retval]Float64* deltaElevation ///< Change of elevation between the surface point and the offset point
       );
@@ -1416,13 +1416,13 @@ library WBFLCogo
       /// Computes the slope at a point offset from a surface point
       [helpstring("method GetSlope")] 
       HRESULT GetSlope(
-         [in]CollectionIndexType surfacePointIdx, ///< Index of a surface point
+         [in]IndexType surfacePointIdx, ///< Index of a surface point
          [in]Float64 offset, ///< Offset from the surface point
          [out,retval]Float64* pSlope ///< Slope in the direction of the cutline at the offset point
       );
 
       /// Returns the slope from horizontal in the direction of the cutline
-      [helpstring("method GetSegmentSlope")] HRESULT GetSegmentSlope([in]CollectionIndexType segmentIdx,[out,retval]Float64* pSlope);
+      [helpstring("method GetSegmentSlope")] HRESULT GetSegmentSlope([in]IndexType segmentIdx,[out,retval]Float64* pSlope);
 
       /// Returns the offset distance along the cutline to a surface point
       [helpstring("method GetSurfacePointOffset")] HRESULT GetSurfacePointOffset([in]IndexType ridgePointIdx,[out]Float64* pOffset);
@@ -1561,10 +1561,10 @@ library WBFLCogo
       [helpstring("method AddProfileElement"), helpcontext(IDH_Profile_Add)] HRESULT AddProfileElement([in] IProfileElement* element);
 
       /// A ProfileElement item
-      [propget, helpstring("property Item"), helpcontext(IDH_Profile_Item)] HRESULT Item([in] CollectionIndexType idx, [out, retval] IProfileElement** pVal);
+      [propget, helpstring("property Item"), helpcontext(IDH_Profile_Item)] HRESULT Item([in] IndexType idx, [out, retval] IProfileElement** pVal);
 
       /// The number of ProfileElement items in the path
-      [propget, helpstring("property ProfileElementCount"), helpcontext(IDH_Profile_Count)] HRESULT ProfileElementCount([out, retval] CollectionIndexType* pVal);
+      [propget, helpstring("property ProfileElementCount"), helpcontext(IDH_Profile_Count)] HRESULT ProfileElementCount([out, retval] IndexType* pVal);
 
       /// Removes all ProfileElement objects from the profile
       [helpstring("method ClearProfileElements"), helpcontext(IDH_Profile_Clear)] HRESULT ClearProfileElements();
@@ -1608,7 +1608,7 @@ library WBFLCogo
       HRESULT SurfaceTemplateSegmentSlope(
          [in]IDType surfaceID, ///< ID of a Surface object
          [in]VARIANT varStation, ///< Station where a SurfaceTemplate is created
-         [in]CollectionIndexType templateSegmentIdx, ///< Index of the SurfaceTemplateSegment from which the slope is returned
+         [in]IndexType templateSegmentIdx, ///< Index of the SurfaceTemplateSegment from which the slope is returned
          [out,retval]Float64* pSlope ///< The SurfaceTemplateSegment slope
       );
 
@@ -1750,17 +1750,17 @@ library WBFLCogo
    interface IPath : IUnknown //IPathElement
    {
       /// A PathElement item in the path
-      [propget, helpstring("property Item"), helpcontext(IDH_Path_Item)] HRESULT Item([in] CollectionIndexType idx,[out, retval] IPathElement* *pVal);
-      [propput, helpstring("property Item"), helpcontext(IDH_Path_Item)] HRESULT Item([in] CollectionIndexType idx,[in] IPathElement *pVal);
+      [propget, helpstring("property Item"), helpcontext(IDH_Path_Item)] HRESULT Item([in] IndexType idx,[out, retval] IPathElement* *pVal);
+      [propput, helpstring("property Item"), helpcontext(IDH_Path_Item)] HRESULT Item([in] IndexType idx,[in] IPathElement *pVal);
 
       /// The number of PathElement items in the path
-      [propget, helpstring("property Count"), helpcontext(IDH_Path_Count)] HRESULT Count([out, retval] CollectionIndexType *pVal);
+      [propget, helpstring("property Count"), helpcontext(IDH_Path_Count)] HRESULT Count([out, retval] IndexType *pVal);
 
       /// Adds a PathElement to the collection
       [helpstring("method Add"), helpcontext(IDH_Path_Add)] HRESULT Add([in] IPathElement* element);
 
       /// Inserts a PathElement object into the Path at the specified index.
-      [helpstring("method Insert"), helpcontext(IDH_Path_Insert)] HRESULT Insert([in] CollectionIndexType idx,[in] IPathElement* element);
+      [helpstring("method Insert"), helpcontext(IDH_Path_Insert)] HRESULT Insert([in] IndexType idx,[in] IPathElement* element);
 
       /// Removes all PathElement objects from the path
       [helpstring("method Clear"), helpcontext(IDH_Path_Clear)] HRESULT Clear();
@@ -1817,13 +1817,13 @@ library WBFLCogo
       [helpstring("method AddPathElement"), helpcontext(IDH_Alignment_Add)] HRESULT AddPathElement([in] IPathElement* element);
 
       /// Inserts a PathElement object into the alignment at the specified index.
-      [helpstring("method InsertPathElement"), helpcontext(IDH_Alignment_Insert)] HRESULT InsertPathElement([in] CollectionIndexType idx,[in] IPathElement* element);
+      [helpstring("method InsertPathElement"), helpcontext(IDH_Alignment_Insert)] HRESULT InsertPathElement([in] IndexType idx,[in] IPathElement* element);
 
       /// A PathElement item in the alignment
-      [propget, helpstring("property Item"), helpcontext(IDH_Alignment_Item)] HRESULT Item([in] CollectionIndexType idx, [out, retval] IPathElement** pVal);
+      [propget, helpstring("property Item"), helpcontext(IDH_Alignment_Item)] HRESULT Item([in] IndexType idx, [out, retval] IPathElement** pVal);
 
       /// The number of PathElement items in the alignment
-      [propget, helpstring("property Count"), helpcontext(IDH_Alignment_Count)] HRESULT Count([out, retval] CollectionIndexType* pVal);
+      [propget, helpstring("property Count"), helpcontext(IDH_Alignment_Count)] HRESULT Count([out, retval] IndexType* pVal);
 
       /// Removes all PathElement objects from the alignment
       [helpstring("method ClearPathElements"), helpcontext(IDH_Alignment_Clear)] HRESULT ClearPathElements();
@@ -2539,7 +2539,7 @@ library WBFLCogo
          [in] IDType fromID,  ///< ID of the point the arc is measured from
          [in] IDType vertexID,  ///< ID of the vertex point
          [in] IDType toID, ///< ID of the point the arc is measured to
-         [in] CollectionIndexType nParts ///< Number of parts to divide the arc into.
+         [in] IndexType nParts ///< Number of parts to divide the arc into.
       );
 
       /// Divides the distance between two points.
@@ -2550,7 +2550,7 @@ library WBFLCogo
          [in] IDType idInc, ///< Point ID increment
          [in] IDType fromID,  ///< ID of the start line segment point
          [in] IDType toID, ///< ID of the end line segment point
-         [in] CollectionIndexType nParts ///< Number of parts to divide the line segment into.
+         [in] IndexType nParts ///< Number of parts to divide the line segment into.
       );
 
       /// Divides a line segment.
@@ -2560,7 +2560,7 @@ library WBFLCogo
          [in]IDType firstID, ///< ID of the first new point
          [in] IDType idInc,  ///< Point ID increment
          [in] IDType lineID, ///< ID of the line segment
-         [in] CollectionIndexType nParts ///< Number of parts to divide the line segment into.
+         [in] IndexType nParts ///< Number of parts to divide the line segment into.
       );
 
       /// Divides a CompoundCurve.
@@ -2570,7 +2570,7 @@ library WBFLCogo
          [in]IDType firstID,  ///< ID of the first new point
          [in] IDType idInc,  ///< Point ID increment
          [in] IDType curveID, ///< ID of the CompoundCurve
-         [in] CollectionIndexType nParts ///< Number of parts to divide the CompoundCurve into.
+         [in] IndexType nParts ///< Number of parts to divide the CompoundCurve into.
       );
 
       /// Divides a Path.
@@ -2580,7 +2580,7 @@ library WBFLCogo
          [in]IDType firstID,///< ID of the first new point
          [in]IDType idInc,///< Point ID increment
          [in] IDType pathID, ///< ID of the Path
-         [in] CollectionIndexType nParts, ///< Number of parts to divide the Path into.
+         [in] IndexType nParts, ///< Number of parts to divide the Path into.
          [in] Float64 start, ///< Distance from the start of the path to the start of the divided range
          [in] Float64 end ///< Distance from the start of the path to the end of the divided range
       );
@@ -2604,7 +2604,7 @@ library WBFLCogo
          [in] IPoint2d* from, ///< Point arc is measured from
          [in] IPoint2d* vertex,  ///< Vertex point
          [in] IPoint2d* to, ///< Point arc is measured to
-         [in] CollectionIndexType nParts, ///< Number of parts to divide the arc into.
+         [in] IndexType nParts, ///< Number of parts to divide the arc into.
          [out,retval] IPoint2dCollection** points ///< A collection of the resulting points.
       );
 
@@ -2614,7 +2614,7 @@ library WBFLCogo
       [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints(
          [in] IPoint2d* from, ///< Start point
          [in] IPoint2d* to,///< End points
-         [in] CollectionIndexType nParts, ///< Number of parts to divide the line segment into.
+         [in] IndexType nParts, ///< Number of parts to divide the line segment into.
          [out,retval] IPoint2dCollection** points ///< A collection of the resulting points.
       );
 
@@ -2623,7 +2623,7 @@ library WBFLCogo
       /// \image html /Divide2/DivideLineSegment.jpg
       [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment(
          [in] ILineSegment2d* seg, ///< Line segment to divide
-         [in] CollectionIndexType nParts, ///< Number of parts to divide the line segment into.
+         [in] IndexType nParts, ///< Number of parts to divide the line segment into.
          [out,retval]IPoint2dCollection** points ///< A collection of the resulting points.
       );
 
@@ -2632,7 +2632,7 @@ library WBFLCogo
       /// \image html /Divide2/DivideCompoundCurve.jpg
       [helpstring("method CompoundCurve"),helpcontext(IDH_IDivide_CompoundCurve)] HRESULT CompoundCurve(
          [in] ICompoundCurve* curve, ///< CompoundCurve to divide
-         [in] CollectionIndexType nParts,  ///< Number of parts to divide the CompoundCurve into.
+         [in] IndexType nParts,  ///< Number of parts to divide the CompoundCurve into.
          [out,retval] IPoint2dCollection** points ///< A collection of the resulting points.
       );
 
@@ -2641,7 +2641,7 @@ library WBFLCogo
       /// \image html /Divide2/DividePath.png
       [helpstring("method Path"),helpcontext(IDH_IDivide_Path)] HRESULT Path(
          [in]IPath* pPath, ///< The Path to divide
-         [in] CollectionIndexType nParts, ///< Number of parts to divide the Path into.
+         [in] IndexType nParts, ///< Number of parts to divide the Path into.
          [in] Float64 start, ///< Distance from the start of the path to the start of the divided range
          [in] Float64 end, ///< Distance from the start of the path to the end of the divided range
          [out,retval]IPoint2dCollection** points ///< A collection of the resulting points.

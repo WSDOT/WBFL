@@ -99,7 +99,7 @@ public:
       }
    }
 
-   STDMETHOD_(CollectionIndexType,GetSocketCount)()
+   STDMETHOD_(IndexType,GetSocketCount)()
    {
       return m_Sockets.size();
    }

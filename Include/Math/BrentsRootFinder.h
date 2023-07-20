@@ -40,10 +40,6 @@ namespace WBFL
 
          virtual Float64 FindRootInRange(const Function& f,Float64 xMin,Float64 xMax,Float64 tol) const override;
          virtual Float64 FindRootInRange(const std::function<Float64(Float64)>& f, Float64 xMin, Float64 xMax, Float64 tol) const override;
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
       };
    };
 };

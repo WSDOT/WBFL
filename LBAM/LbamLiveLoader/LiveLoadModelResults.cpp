@@ -57,7 +57,7 @@ STDMETHODIMP CLiveLoadModelResults::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelResults::Reserve(CollectionIndexType size)
+STDMETHODIMP CLiveLoadModelResults::Reserve(IndexType size)
 {
 	if (size>0)
       m_Results.reserve(size);
@@ -67,7 +67,7 @@ STDMETHODIMP CLiveLoadModelResults::Reserve(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelResults::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CLiveLoadModelResults::get_Count(IndexType *pVal)
 {
 	CHECK_RETVAL(pVal);
 
@@ -84,10 +84,10 @@ STDMETHODIMP CLiveLoadModelResults::Add(Float64 result, ILiveLoadConfiguration *
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelResults::SetResult(CollectionIndexType index, Float64 result, ILiveLoadConfiguration *config)
+STDMETHODIMP CLiveLoadModelResults::SetResult(IndexType index, Float64 result, ILiveLoadConfiguration *config)
 {
 
-	if (0 <= index && index < (CollectionIndexType)m_Results.size())
+	if (0 <= index && index < (IndexType)m_Results.size())
    {
       LlmResults& rresult = m_Results[index];
       rresult.m_Result  = result;
@@ -99,9 +99,9 @@ STDMETHODIMP CLiveLoadModelResults::SetResult(CollectionIndexType index, Float64
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelResults::GetResult(CollectionIndexType index, Float64 *result, ILiveLoadConfiguration **config)
+STDMETHODIMP CLiveLoadModelResults::GetResult(IndexType index, Float64 *result, ILiveLoadConfiguration **config)
 {
-	if (0 <= index && index < (CollectionIndexType)m_Results.size())
+	if (0 <= index && index < (IndexType)m_Results.size())
    {
       LlmResults& rresult = m_Results[index];
 
@@ -203,13 +203,13 @@ STDMETHODIMP CLiveLoadModelResults::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      CollectionIndexType cnt = m_Results.size();
+      IndexType cnt = m_Results.size();
 
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic = 0; ic<cnt; ic++)
+      for (IndexType ic = 0; ic<cnt; ic++)
       {
          const LlmResults& llres = m_Results[ic];
 

@@ -61,36 +61,3 @@ std::pair<Float64,Float64> RoarkBeam::GetProperties() const
 {
    return std::make_pair(L, EI);
 }
-
-
-#if defined _DEBUG
-bool RoarkBeam::AssertValid() const
-{
-   if ( !(0 < L) ) // L must be > 0
-      return false;
-
-   if ( !(0 < EI) ) // EI must be > 0
-      return false;
-
-   return true;
-}
-
-void RoarkBeam::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for RoarkBeam" << WBFL::Debug::endl;
-   os << "L  = " << L << WBFL::Debug::endl;
-   os << "EI = " << EI << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool RoarkBeam::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("RoarkBeam");
-
-   // Nothing to test here... 
-   // All meaningful tests are conducted on derived classes.
-
-   TESTME_EPILOG("RoarkBeam");
-}
-#endif // _UNITTEST

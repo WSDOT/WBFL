@@ -81,8 +81,8 @@ public:
    STDMETHOD(get_VoidDiameter)(/*[out,retval]*/Float64* d) override;
    STDMETHOD(put_VoidSpacing)(/*[in]*/Float64 s) override;
    STDMETHOD(get_VoidSpacing)(/*[out,retval]*/Float64* s) override;
-   STDMETHOD(put_VoidCount)(/*[in]*/CollectionIndexType nv) override;
-   STDMETHOD(get_VoidCount)(/*[out,retval]*/CollectionIndexType* nv) override;
+   STDMETHOD(put_VoidCount)(/*[in]*/IndexType nv) override;
+   STDMETHOD(get_VoidCount)(/*[out,retval]*/IndexType* nv) override;
    STDMETHOD(GetSlabShape)(/*[out]*/IShape** ppShape) override;
    STDMETHOD(GetVoidShape)(/*[in]*/IndexType idx, /*[out]*/IShape** ppShape) override;
    STDMETHOD(get_HookPoint)(/*[out,retval]*/IPoint2d** hookPnt) override;

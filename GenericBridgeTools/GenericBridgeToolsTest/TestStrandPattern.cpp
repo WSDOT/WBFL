@@ -208,7 +208,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(nStrands == 16, true);
 
    points.Release();
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(strand_filler->GetStrandPositions(nullptr),E_POINTER);
    TRY_TEST(strand_filler->GetStrandPositions(&points),S_OK);
    points->get_Count(&count);
@@ -318,7 +318,7 @@ void CTestStrandPattern::Test()
 
 
    Float64 dl, dr;
-   for (CollectionIndexType is = 0; is < count; is++)
+   for (IndexType is = 0; is < count; is++)
    {
       TRY_TEST(strand_filler->GetDebondLengthByGridIndex(is,&x,&y,&dl, &dr),S_FALSE);
       TRY_TEST(dl == 0.0,true);
@@ -573,7 +573,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(l1, 3.0);
 
    fill_array.Release();
-   CollectionIndexType item;
+   IndexType item;
    TRY_TEST(strand_filler->GetDebondAtLeftSection(0, &fill_array),S_OK);
    TRY_TEST(fill_array->get_Count(&count),S_OK);
    TRY_TEST(count,1);

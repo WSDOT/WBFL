@@ -162,7 +162,8 @@ namespace WBFL
          /// \f[ f_r = \frac{1}{2} k_e \rho_s f_{yh} \f]
          /// \f[ f_{cc} = f_{co} \left( -1.254 + 2.254\sqrt{1+7.94\frac{f_r}{f_{cc}}} - 2\frac{f_r}{f_{co}}  \right) \f]
          /// \f[ e_{co} \left( 1+R\left(\frac{f_{cc}}{f_{co}} -1 \right) \right) \f]
-         void ComputeConcreteProperties(Float64* pfr, Float64* pfcc, Float64* pecc) const;
+         /// Returns a tuple of the format (fr,fcc,ecc);
+         std::tuple<Float64,Float64,Float64> ComputeConcreteProperties() const;
 
          /// Creates a clone of the stress-strain model
          virtual std::unique_ptr<StressStrainModel> Clone() const override;
@@ -181,15 +182,6 @@ namespace WBFL
 
          /// Returns the strain that corresponds to the peak stress
          virtual Float64 GetStrainAtPeakStress() const override;
-
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          Float64 m_fco{ 0.0 };

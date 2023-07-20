@@ -51,7 +51,7 @@ namespace WBFL
          void AddReportBuilder(std::shared_ptr<ReportBuilder>& pRptBuilder);
 
          /// Returns the number of report builders
-         CollectionIndexType GetReportBuilderCount(
+         IndexType GetReportBuilderCount(
             bool bIncludeHidden = false ///< If true, the count includes hidden report builders
          ) const;
 

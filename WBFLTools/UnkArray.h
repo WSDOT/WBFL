@@ -61,14 +61,14 @@ END_COM_MAP()
 // IUnkArray
 public:
 	STDMETHOD(Clone)(/*[out,retval]*/IUnkArray* *clone) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/IUnknown* item) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/IndexType relPosition, /*[in]*/IUnknown* item) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType relPosition) override;
 	STDMETHOD(Add)(/*[in]*/IUnknown* item) override;
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ IUnknown* *pVal) override;
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ IUnknown* newVal) override;
+	STDMETHOD(get_Item)(/*[in]*/IndexType relPosition, /*[out, retval]*/ IUnknown* *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/IndexType relPosition, /*[in]*/ IUnknown* newVal) override;
 	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
 	STDMETHOD(get__EnumElements)(struct IEnumUnkArray ** ) override;
 

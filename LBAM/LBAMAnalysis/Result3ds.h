@@ -33,8 +33,8 @@
 #include "LBAMUtils.h"
 
 class CResult3Ds;
-using FRVectorImpl = CComVectorCollection<IResult3Ds, IResult3D, IEnumResult3D, &IID_IEnumResult3D, CollectionIndexType>;
-using PersistentFRCollImpl = CPersistentCollection<CResult3Ds, FRVectorImpl,CollectionIndexType>;
+using FRVectorImpl = CComVectorCollection<IResult3Ds, IResult3D, IEnumResult3D, &IID_IEnumResult3D, IndexType>;
+using PersistentFRCollImpl = CPersistentCollection<CResult3Ds, FRVectorImpl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CResult3Ds

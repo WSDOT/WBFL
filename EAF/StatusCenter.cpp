@@ -124,13 +124,13 @@ bool CEAFStatusCenter::RemoveByID(StatusItemIDType id)
    return false;
 }
 
-bool CEAFStatusCenter::RemoveByIndex(CollectionIndexType index)
+bool CEAFStatusCenter::RemoveByIndex(IndexType index)
 {
-   if ( index < 0 || (CollectionIndexType)m_Items.size() <= index )
+   if ( index < 0 || (IndexType)m_Items.size() <= index )
       return false;
 
    Container::iterator iter = m_Items.begin();
-   for ( CollectionIndexType i = 1; i < index; i++ )
+   for ( IndexType i = 1; i < index; i++ )
    {
       iter++;
    }
@@ -209,13 +209,13 @@ const CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id) const
    return nullptr;
 }
 
-CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index)
+CEAFStatusItem* CEAFStatusCenter::GetByIndex(IndexType index)
 {
    if ( m_Items.size() <= index )
       return nullptr;
 
    auto iter = m_Items.begin();
-   for ( CollectionIndexType i = 0; i < index; i++ )
+   for ( IndexType i = 0; i < index; i++ )
    {
       iter++;
    }
@@ -223,13 +223,13 @@ CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index)
    return iter->get();
 }
 
-const CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index) const
+const CEAFStatusItem* CEAFStatusCenter::GetByIndex(IndexType index) const
 {
    if (m_Items.size() <= index)
       return nullptr;
 
    auto iter = m_Items.cbegin();
-   for (CollectionIndexType i = 0; i < index; i++)
+   for (IndexType i = 0; i < index; i++)
    {
       iter++;
    }
@@ -237,7 +237,7 @@ const CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index) co
    return iter->get();
 }
 
-CollectionIndexType CEAFStatusCenter::Count() const
+IndexType CEAFStatusCenter::Count() const
 {
    return m_Items.size();
 }

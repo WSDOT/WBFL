@@ -119,21 +119,21 @@ public:
 	STDMETHOD(putref_Beam)(/*[in]*/ IShape* newVal) override;
 
    STDMETHOD(AddRebarLayer)(/*[in]*/ Float64 ds,/*[in]*/ Float64 As,/*[in]*/ Float64 devFactor) override;
-   STDMETHOD(get_RebarLayerCount)(/*[out,retval]*/ CollectionIndexType * count) override;
-   STDMETHOD(get_RebarLayerDepth)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * ds) override;
-   STDMETHOD(get_RebarLayerSteel)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * As) override;
-   STDMETHOD(get_RebarLayerDevFactor)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * devFactor) override;
-   STDMETHOD(GetRebarLayer)(/*[in]*/ CollectionIndexType index,/*[out]*/ Float64 * ds, /*[out]*/ Float64 * As, /*[out]*/ Float64* devFactor) override;
-   STDMETHOD(RemoveRebarLayer)(/*[in]*/ CollectionIndexType index) override;
+   STDMETHOD(get_RebarLayerCount)(/*[out,retval]*/ IndexType * count) override;
+   STDMETHOD(get_RebarLayerDepth)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * ds) override;
+   STDMETHOD(get_RebarLayerSteel)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * As) override;
+   STDMETHOD(get_RebarLayerDevFactor)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * devFactor) override;
+   STDMETHOD(GetRebarLayer)(/*[in]*/ IndexType index,/*[out]*/ Float64 * ds, /*[out]*/ Float64 * As, /*[out]*/ Float64* devFactor) override;
+   STDMETHOD(RemoveRebarLayer)(/*[in]*/ IndexType index) override;
    STDMETHOD(ClearRebarLayers)() override;
 
    STDMETHOD(AddStrandLayer)(/*[in]*/ Float64 dps,/*[in]*/ Float64 Aps, /*[in]*/ Float64 devFactor) override;
-   STDMETHOD(get_StrandLayerCount)(/*[out,retval]*/ CollectionIndexType * count) override;
-   STDMETHOD(get_StrandLayerDepth)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * dps) override;
-   STDMETHOD(get_StrandLayerSteel)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * Aps) override;
-   STDMETHOD(get_StrandLayerDevFactor)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * devFactor) override;
-   STDMETHOD(GetStrandLayer)(/*[in]*/ CollectionIndexType index,/*[out]*/ Float64 * dps, /*[out]*/ Float64 * Aps, /*[out]*/ Float64* devFactor) override;
-   STDMETHOD(RemoveStrandLayer)(/*[in]*/ CollectionIndexType index) override;
+   STDMETHOD(get_StrandLayerCount)(/*[out,retval]*/ IndexType * count) override;
+   STDMETHOD(get_StrandLayerDepth)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * dps) override;
+   STDMETHOD(get_StrandLayerSteel)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * Aps) override;
+   STDMETHOD(get_StrandLayerDevFactor)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * devFactor) override;
+   STDMETHOD(GetStrandLayer)(/*[in]*/ IndexType index,/*[out]*/ Float64 * dps, /*[out]*/ Float64 * Aps, /*[out]*/ Float64* devFactor) override;
+   STDMETHOD(RemoveStrandLayer)(/*[in]*/ IndexType index) override;
    STDMETHOD(ClearStrandLayers)() override;
 
 // ISupportUnitServer

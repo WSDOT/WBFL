@@ -93,7 +93,7 @@ STDMETHODIMP_(void) CDisplayListImpl::AddDisplayObject(iDisplayObject* pDO)
    Fire_OnDisplayObjectAdded(pDO);
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::GetDisplayObject(CollectionIndexType index,iDisplayObject** dispObj)
+STDMETHODIMP_(void) CDisplayListImpl::GetDisplayObject(IndexType index,iDisplayObject** dispObj)
 {
    (*dispObj) = 0;
    if ( index < 0 || m_DisplayObjects.size() <= index )
@@ -168,7 +168,7 @@ STDMETHODIMP_(void) CDisplayListImpl::Clear()
    }
 }
 
-STDMETHODIMP_(CollectionIndexType) CDisplayListImpl::GetDisplayObjectCount()
+STDMETHODIMP_(IndexType) CDisplayListImpl::GetDisplayObjectCount()
 {
    return m_DisplayObjects.size();
 }
@@ -247,8 +247,8 @@ STDMETHODIMP_(void) CDisplayListImpl::GetWorldExtents(ISize2d* *ext)
    CComPtr<IRect2d> worldRect;
    worldRect.CoCreateInstance(CLSID_Rect2d);
 
-   CollectionIndexType nDisplayObjects = GetDisplayObjectCount();
-   for ( CollectionIndexType i = 0; i < nDisplayObjects; i++ )
+   IndexType nDisplayObjects = GetDisplayObjectCount();
+   for ( IndexType i = 0; i < nDisplayObjects; i++ )
    {
       CComPtr<iDisplayObject> pDO;
       GetDisplayObject(i,&pDO);

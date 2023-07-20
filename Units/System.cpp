@@ -129,12 +129,3 @@ Float64 System::GetGravitationalAcceleration()
    // Convert the outbound value to system units.
    return WBFL::Units::ConvertToSysUnits(ms_Gravity,ms_GravityUnit);
 }
-
-#if defined _UNITTEST
-bool System::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("System");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for System");
-   TESTME_EPILOG("System");
-}
-#endif

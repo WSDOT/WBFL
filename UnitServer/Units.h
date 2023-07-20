@@ -112,7 +112,7 @@ END_CONNECTION_POINT_MAP()
 // IUnits
 public:
 	STDMETHOD(Remove)(/*[in]*/VARIANT Index) override;
-	STDMETHOD(get_Count)(CollectionIndexType* retval) override;
+	STDMETHOD(get_Count)(IndexType* retval) override;
 	STDMETHOD(get_Item)(VARIANT Index, IUnit** retval) override;
 //	STDMETHOD(get__NewEnum)(IUnknown** retval) override;
 	STDMETHOD(Add)(/*[in]*/BSTR tag,/*[in]*/Float64 preTerm,/*[in]*/Float64 cf,/*[in]*/Float64 postTerm,/*[in]*/UnitSystemType unitSystem,/*[out,retval]*/IUnit** ppUnit) override;

@@ -137,7 +137,7 @@ void CTestCrossSection::Test()
 
    // muck with stress points
    CComPtr<IStressPoints> psps;
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST( pcs->get_StressPoints(&psps), S_OK );
    TRY_TEST( psps->get_Count(&cnt), S_OK );
    TRY_TEST( cnt, 0 );

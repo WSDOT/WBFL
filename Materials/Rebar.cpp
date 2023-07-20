@@ -329,32 +329,12 @@ Float64 Rebar::GetElongation(Type type, Grade grade, Size size)
 #if defined _DEBUG
 bool Rebar::AssertValid() const
 {
-   if ( m_Fu < m_Fy )
-      return false;
-
    if ( m_Dimension <= 0 )
       return false;
 
    if ( m_Area <= 0 )
       return false;
 
-   if ( m_Es <= 0 )
-      return false;
-
    return true;
 }
-
-void Rebar::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for Rebar" << WBFL::Debug::endl;
-}
 #endif // _DEBUG
-
-#if defined _UNITTEST
-bool Rebar::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Rebar");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for Rebar");
-   TESTME_EPILOG("Rebar");
-}
-#endif // _UNITTEST

@@ -94,12 +94,6 @@ namespace WBFL
 
          virtual std::vector<std::shared_ptr<GirderLine>> Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const override;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          IDType m_GirderLineID = INVALID_ID;     // ID of the girder line that will be created
          IDType m_GirderLineIDIncrement = 1;

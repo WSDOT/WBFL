@@ -52,7 +52,7 @@ STDMETHODIMP CUnkArray::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CUnkArray::get_Item(CollectionIndexType relPosition, IUnknown* *pVal)
+STDMETHODIMP CUnkArray::get_Item(IndexType relPosition, IUnknown* *pVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -70,7 +70,7 @@ STDMETHODIMP CUnkArray::get_Item(CollectionIndexType relPosition, IUnknown* *pVa
 	return S_OK;
 }
 
-STDMETHODIMP CUnkArray::put_Item(CollectionIndexType relPosition, IUnknown* newVal)
+STDMETHODIMP CUnkArray::put_Item(IndexType relPosition, IUnknown* newVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -103,7 +103,7 @@ STDMETHODIMP CUnkArray::Add(IUnknown* item)
 	return S_OK;
 }
 
-STDMETHODIMP CUnkArray::Remove(CollectionIndexType relPosition)
+STDMETHODIMP CUnkArray::Remove(IndexType relPosition)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -124,7 +124,7 @@ STDMETHODIMP CUnkArray::Remove(CollectionIndexType relPosition)
 	return S_OK;
 }
 
-STDMETHODIMP CUnkArray::Insert(CollectionIndexType relPosition, IUnknown* item)
+STDMETHODIMP CUnkArray::Insert(IndexType relPosition, IUnknown* item)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -145,7 +145,7 @@ STDMETHODIMP CUnkArray::Insert(CollectionIndexType relPosition, IUnknown* item)
 	return S_OK;
 }
 
-STDMETHODIMP CUnkArray::Reserve(CollectionIndexType count)
+STDMETHODIMP CUnkArray::Reserve(IndexType count)
 {
    if (count<0)
       return E_INVALIDARG;
@@ -247,7 +247,7 @@ STDMETHODIMP CUnkArray::get__EnumElements(/*[out, retval]*/ IEnumUnkArray* *ppen
    return S_OK;
 }
 
-STDMETHODIMP CUnkArray::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CUnkArray::get_Count(IndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 

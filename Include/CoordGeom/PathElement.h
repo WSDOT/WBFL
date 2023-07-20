@@ -141,10 +141,6 @@ namespace WBFL
          /// @return 
          virtual std::vector<std::shared_ptr<PathElement>> CreateSubpath(Float64 start, Float64 end) const = 0;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         //static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       protected:
 
          /// @brief Adjust the offset so that it is measured along the specified direction. Subclasses can use this when implementing LocatePoint

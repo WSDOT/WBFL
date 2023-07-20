@@ -114,26 +114,3 @@ void ShapeOnPolygonImpl::Reflect(const Line2d& line)
 {
    GetPolygon()->Reflect(line);
 }
-
-#if defined _DEBUG
-bool ShapeOnPolygonImpl::AssertValid() const
-{
-   return true;
-}
-
-void ShapeOnPolygonImpl::Dump(WBFL::Debug::LogContext& os) const
-{
-   ASSERTVALID;
-   os << _T("Dump for ShapeOnPolygonImpl") << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-
-#if defined _UNITTEST
-bool ShapeOnPolygonImpl::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("ShapeOnPolygonImpl");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented");
-   TESTME_EPILOG("ShapeOnPolygonImpl");
-}
-#endif // _UNITTEST

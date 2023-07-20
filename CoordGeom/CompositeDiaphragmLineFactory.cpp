@@ -41,14 +41,3 @@ std::vector<std::shared_ptr<DiaphragmLine>> CompositeDiaphragmLineFactory::Creat
    }
    return diaphragm_lines;
 }
-
-#if defined _UNITTEST
-bool CompositeDiaphragmLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CompositeDiaphragmLineFactory");
-
-   TESTME_EPILOG("CompositeDiaphragmLineFactory");
-}
-#endif // _UNITTEST
-
-

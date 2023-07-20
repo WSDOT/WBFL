@@ -61,7 +61,7 @@ void CTestUnitTypes::Test()
 
    /////////////////////////////////////////////////////
    // Test Count
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(unitTypes->get_Count(nullptr),E_POINTER);
    TRY_TEST(unitTypes->get_Count(&count),S_OK);
    TRY_TEST(count,16); // Default configuration

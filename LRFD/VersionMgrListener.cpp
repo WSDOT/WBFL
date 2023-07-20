@@ -25,78 +25,19 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\VersionMgrListener.h>
 
-/****************************************************************************
-CLASS
-   lrfdVersionMgrListener
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdVersionMgrListener::lrfdVersionMgrListener()
-{
-}
-
-lrfdVersionMgrListener::lrfdVersionMgrListener(const lrfdVersionMgrListener& rOther)
-{
-}
-
-lrfdVersionMgrListener::~lrfdVersionMgrListener()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdVersionMgrListener& lrfdVersionMgrListener::operator= (const lrfdVersionMgrListener& rOther)
-{
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void lrfdVersionMgrListener::OnRegistered()
+void LRFDVersionMgrListener::OnRegistered()
 {
    // Do nothing
 }
 
-void lrfdVersionMgrListener::OnUnregistered()
+void LRFDVersionMgrListener::OnUnregistered()
 {
    // Do nothing
 }
 
-void lrfdVersionMgrListener::OnUpdate()
+void LRFDVersionMgrListener::OnUpdate()
 {
    // Do nothing
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdVersionMgrListener::AssertValid() const
-{
-   return true;
-}
-
-void lrfdVersionMgrListener::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdVersionMgrListener" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

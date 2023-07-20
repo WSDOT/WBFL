@@ -91,7 +91,7 @@ void CTestAlignment::Test()
    //
    // Test Count
    //
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(alignment->get_Count(nullptr),E_POINTER);
    TRY_TEST(alignment->get_Count(&count),S_OK);
    TRY_TEST(count,2);

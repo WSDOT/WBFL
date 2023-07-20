@@ -55,7 +55,7 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
 /// \param[in] mesh the finite difference mesh
 /// \param[in] meshValues the solution to the finite difference equations
 /// \return tuple containing the volume under the membrane for the specified range of elements, the maximum membrane slope, and the index of the element where the maximum slop occurs
-std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues);
+std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::vector<Float64>& meshValues);
 
 
 void PrandtlMembraneSolver::Initialize(Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry)
@@ -65,12 +65,12 @@ void PrandtlMembraneSolver::Initialize(Float64 dxMin, Float64 dyMin, bool bIgnor
    m_bIgnoreSymmetry = bIgnoreSymmetry;
 }
 
-PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape) const
+PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const WBFL::Geometry::Shape* shape) const
 {
    return Solve(shape, m_DxMin, m_DyMin, m_bIgnoreSymmetry);
 }
 
-PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const std::unique_ptr<WBFL::Geometry::Shape>& shape, Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry)
+PrandtlMembraneSolution PrandtlMembraneSolver::Solve(const WBFL::Geometry::Shape* shape, Float64 dxMin, Float64 dyMin, bool bIgnoreSymmetry)
 {
    FDMeshGenerator mesh_generator(dxMin, dyMin);
 
@@ -168,7 +168,7 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
    if (bIsSymmetric)
    {
       IndexType Nx, Ny;
-      mesh->GetGridSize(&Nx, &Ny);
+      std::tie(Nx,Ny) = mesh->GetGridSize();
       symmetryIdx = Nx - 1;
    }
 
@@ -193,29 +193,29 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
 
          if (pElement->Node[+FDMeshElement::Corner::BottomRight] != INVALID_INDEX)
          {
-            matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomRight]) = K0;
+            matrix.SetCoefficient(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomRight], K0);
 
             const auto* pBelowElement = mesh->GetElementBelow(meshRowIdx, elementIdx - startElementIdx);
             if (pBelowElement && pBelowElement->Node[+FDMeshElement::Corner::BottomRight] != INVALID_INDEX)
             {
-               matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pBelowElement->Node[+FDMeshElement::Corner::BottomRight]) = K13;
+               matrix.SetCoefficient(pElement->Node[+FDMeshElement::Corner::BottomRight], pBelowElement->Node[+FDMeshElement::Corner::BottomRight], K13);
             }
 
             if (pElement->Node[+FDMeshElement::Corner::BottomLeft] != INVALID_INDEX)
             {
                if (bIsSymmetric && gridRowStartIdx == symmetryIdx)
                {
-                  matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomLeft]) = K24_Sym;
+                  matrix.SetCoefficient(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomLeft], K24_Sym);
                }
                else
                {
-                  matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomLeft]) = K24;
+                  matrix.SetCoefficient(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::BottomLeft], K24);
                }
             }
 
             if (pElement->Node[+FDMeshElement::Corner::TopRight] != INVALID_INDEX)
             {
-               matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::TopRight]) = K13;
+               matrix.SetCoefficient(pElement->Node[+FDMeshElement::Corner::BottomRight], pElement->Node[+FDMeshElement::Corner::TopRight], K13);
             }
 
             if (!bIsSymmetric || gridRowStartIdx != symmetryIdx)
@@ -223,17 +223,17 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
                const auto* pNextElement = mesh->GetElement(elementIdx + 1);
                if (pNextElement->Node[+FDMeshElement::Corner::BottomRight] != INVALID_INDEX)
                {
-                  matrix(pElement->Node[+FDMeshElement::Corner::BottomRight], pNextElement->Node[+FDMeshElement::Corner::BottomRight]) = K24;
+                  matrix.SetCoefficient(pElement->Node[+FDMeshElement::Corner::BottomRight], pNextElement->Node[+FDMeshElement::Corner::BottomRight], K24);
                }
             }
 
-            matrix[pElement->Node[+FDMeshElement::Corner::BottomRight]] = Dy2;
+            matrix.SetC(pElement->Node[+FDMeshElement::Corner::BottomRight], Dy2);
          }
       }
    }
 }
 
-std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::GetElementVolumeAndMaxSlope(IndexType elementIndex, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
+std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::GetElementVolumeAndMaxSlope(IndexType elementIndex, const UniformFDMesh* mesh, const std::vector<Float64>& meshValues)
 {
    Float64 area = mesh->GetElementArea();
    static std::array<Float64, 5> area_factor{ 0, 1. / 3., 0.5, 5. / 6., 1.0 }; // factors for computing volume based on number of non-boundary nodes
@@ -358,13 +358,13 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
    return std::tuple<Float64, Float64, WBFL::Geometry::Vector2d>(V, maxSlope, shear_stress_direction);
 }
 
-std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::unique_ptr<Float64[]>& meshValues)
+std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType startElementIdx, IndexType endElementIdx, const std::unique_ptr<UniformFDMesh>& mesh, const std::vector<Float64>& meshValues)
 {
    std::tuple<Float64, Float64, IndexType> result{ 0,-Float64_Max,INVALID_INDEX };
 
    for (IndexType elementIdx = startElementIdx; elementIdx <= endElementIdx; elementIdx++)
    {
-      auto element_result = PrandtlMembraneSolver::GetElementVolumeAndMaxSlope(elementIdx, mesh, meshValues);
+      auto element_result = PrandtlMembraneSolver::GetElementVolumeAndMaxSlope(elementIdx, mesh.get(), meshValues);
       std::get<0>(result) += std::get<0>(element_result); // += Volume
 
       if (std::get<1>(result) < std::get<1>(element_result))
@@ -376,67 +376,3 @@ std::tuple<Float64, Float64, IndexType> ComputeVolumeAndMaxSlope(IndexType start
    }
    return result;
 }
-
-#if defined _UNITTEST
-#include <GeomModel/GeomModel.h>
-bool PrandtlMembraneSolver::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("PrandtlMembraneSolver");
-
-   auto beam = std::make_unique<WBFL::Geometry::PrecastBeam>();
-   beam->SetC1(1);
-   beam->SetD1(3);
-   beam->SetD2(3);
-   beam->SetD3(3);
-   beam->SetD4(3);
-   beam->SetD5(4.5);
-   beam->SetD6(5.125);
-   beam->SetHeight(100);
-   beam->SetT1(6.125);
-   beam->SetT2(6.125);
-   beam->SetW1(6);
-   beam->SetW2(18.4375);
-   beam->SetW3(3);
-   beam->SetW4(3);
-   beam->SetW5(13.125);
-
-   std::unique_ptr<WBFL::Geometry::Shape> shape(std::move(beam));
-
-   Float64 maxSlope;
-   IndexType maxSlopeElementIdx;
-
-   // use symmetry
-   PrandtlMembraneSolution solution = PrandtlMembraneSolver::Solve(shape, 0.25, 0.25);
-   TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
-   TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
-   solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 31.320506783765548));
-   TRY_TESTME(maxSlopeElementIdx == 6412);
-   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
-
-   // ignore symmetry
-   solution = PrandtlMembraneSolver::Solve(shape, 0.25, 0.25, false);
-   TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
-   TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
-   solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 31.320506783765548));
-   TRY_TESTME(maxSlopeElementIdx == 6412);
-   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
-
-   // use a solver object
-   PrandtlMembraneSolver solver;
-   solver.Initialize(0.25, 0.25);
-   solution = solver.Solve(shape);
-   TRY_TESTME(IsEqual(solution.GetJ(), 18506.51360));
-   TRY_TESTME(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
-   solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
-   TRY_TESTME(IsEqual(maxSlope, 31.320506783765548));
-   TRY_TESTME(maxSlopeElementIdx == 6412);
-   TRY_TESTME(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
-
-   TESTME_EPILOG("PrandtlMembraneSolver");
-}
-
-#endif // _UNITTEST
-
-

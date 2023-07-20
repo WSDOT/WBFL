@@ -84,7 +84,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
       {
          hr = config->get_AxleConfig(&axle_config);
 
-         CollectionIndexType axle_config_size;
+         IndexType axle_config_size;
          hr = axle_config->get_Count(&axle_config_size);
          if (0 < axle_config_size)
          {
@@ -127,7 +127,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
 
          if (is_axle_config)
          {
-            CollectionIndexType fi;
+            IndexType fi;
             HRESULT hResult = axle_config->Find(axleIdx, &fi);
             if ( SUCCEEDED(hResult) )
             {

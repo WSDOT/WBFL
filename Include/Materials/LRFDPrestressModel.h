@@ -26,6 +26,8 @@
 #include <Materials/MaterialsExp.h>
 #include <Materials/StressStrainModel.h>
 #include <Materials/MaterialTypes.h>
+#include <Units/Convert.h>
+#include <Units/Measure.h>
 
 namespace WBFL
 {
@@ -79,21 +81,12 @@ namespace WBFL
          /// Returns the strain that corresponds to the peak stress
          virtual Float64 GetStrainAtPeakStress() const override;
 
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
       private:
          StrandType m_Type{ StrandType::LowRelaxation };
          Float64 m_MinStrain{ -10 }; // assumes material doesn't fracture in compression
          Float64 m_MaxStrain{ 0.035 }; // per ASTM A416 material specification
-         Float64 m_fpu{ 270.0 }; // KSI
-         Float64 m_Eps{ 28500.0 }; // KSI
+         Float64 m_fpu{ WBFL::Units::ConvertToSysUnits(270.0, WBFL::Units::Measure::KSI) };
+         Float64 m_Eps{ WBFL::Units::ConvertToSysUnits(28500.0, WBFL::Units::Measure::KSI) }; 
       };
    };
 };

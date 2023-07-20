@@ -450,8 +450,8 @@ void CEAFApp::ShowUsageMessage()
    CString strUsage;
    strUsage.Format(_T("%s"),cmdInfo.GetUsageMessage());
    
-   CollectionIndexType nPlugins = GetAppPluginManager()->GetPluginCount();
-   for ( CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+   IndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+   for ( IndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFAppPlugin> appPlugin;
       GetAppPluginManager()->GetPlugin(idx,&appPlugin);
@@ -1183,7 +1183,7 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
 
    if (cmdInfo.m_nShellCommand == CCommandLineInfo::RestartByRestartManager)
    {
-      // don't continue processing the commandline if there was a restart
+      // don't continue processing the command line if there was a restart
       return;
    }
 
@@ -1247,8 +1247,8 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
          
          if ( !bHandled && !cmdInfo.m_bError )
          {
-            CollectionIndexType nPlugins = GetAppPluginManager()->GetPluginCount();
-            for ( CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+            IndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+            for ( IndexType idx = 0; idx < nPlugins; idx++ )
             {
                CComPtr<IEAFAppPlugin> appPlugin;
                GetAppPluginManager()->GetPlugin(idx,&appPlugin);

@@ -30,47 +30,47 @@ namespace WBFL
 {
    namespace Geometry
    {
-/// Partial implementation of the Shape class for complex shapes that utilize a CompositeShape for the implementation.
-class GEOMMODELCLASS ShapeOnCompositeImpl : public ShapeImpl
-{
-public:
-   ShapeOnCompositeImpl();
-   ShapeOnCompositeImpl(std::shared_ptr<Point2d>& hookPnt);
-   ShapeOnCompositeImpl(const Point2d& hookPnt);
-   ShapeOnCompositeImpl(const ShapeOnCompositeImpl& rOther);
-   virtual ~ShapeOnCompositeImpl();
+      /// Partial implementation of the Shape class for complex shapes that utilize a CompositeShape for the implementation.
+      class GEOMMODELCLASS ShapeOnCompositeImpl : public ShapeImpl
+      {
+      public:
+         ShapeOnCompositeImpl();
+         ShapeOnCompositeImpl(std::shared_ptr<Point2d>& hookPnt);
+         ShapeOnCompositeImpl(const Point2d& hookPnt);
+         ShapeOnCompositeImpl(const ShapeOnCompositeImpl& rOther);
+         virtual ~ShapeOnCompositeImpl();
 
-   ShapeOnCompositeImpl& operator= (const ShapeOnCompositeImpl& rOther);
+         ShapeOnCompositeImpl& operator= (const ShapeOnCompositeImpl& rOther);
 
-   virtual ShapeProperties GetProperties() const override;
-   virtual Rect2d GetBoundingBox() const override;
-   virtual std::vector<Point2d> GetPolyPoints() const override;
-   virtual bool PointInShape(const Point2d& p) const override;
-   virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override;
-   virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override;
-   virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
-   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
-   virtual Float64 GetPerimeter() const override;
-   virtual void Reflect(const Line2d& line) override;
+         virtual ShapeProperties GetProperties() const override;
+         virtual Rect2d GetBoundingBox() const override;
+         virtual std::vector<Point2d> GetPolyPoints() const override;
+         virtual bool PointInShape(const Point2d& p) const override;
+         virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override;
+         virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override;
+         virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
+         virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
+         virtual Float64 GetPerimeter() const override;
+         virtual void Reflect(const Line2d& line) override;
 
-protected:
-   virtual void OnUpdateComposite(std::unique_ptr<CompositeShape>& composite) const = 0;
+      protected:
+         virtual void OnUpdateComposite(std::unique_ptr<CompositeShape>& composite) const = 0;
 
-   /// Retrieves the composite shape representation. DO NOT CALL THIS FROM OnUpdateComposite.
-   std::unique_ptr<CompositeShape>& GetComposite() const;
-   void SetDirtyFlag(bool bFlag = true);
-   bool IsDirty() const;
+         /// Retrieves the composite shape representation. DO NOT CALL THIS FROM OnUpdateComposite.
+         std::unique_ptr<CompositeShape>& GetComposite() const;
+         void SetDirtyFlag(bool bFlag = true);
+         bool IsDirty() const;
 
-protected:
-   virtual void DoOffset(const Size2d& delta) override;
-   virtual void DoRotate(const Point2d& center, Float64 angle) override;
+      protected:
+         virtual void DoOffset(const Size2d& delta) override;
+         virtual void DoRotate(const Point2d& center, Float64 angle) override;
 
-private:
-   void Copy(const ShapeOnCompositeImpl& other);
-   void UpdateComposite() const;
-   mutable bool m_bIsDirty{ true };
-   mutable std::unique_ptr<CompositeShape> m_Composite;
-};
+      private:
+         void Copy(const ShapeOnCompositeImpl& other);
+         void UpdateComposite() const;
+         mutable bool m_bIsDirty{ true };
+         mutable std::unique_ptr<CompositeShape> m_Composite;
+      };
 
    }; // Geometry
 }; // WBFL

@@ -32,8 +32,8 @@
 #include "WBFLComCollections.h"
 
 class CRebarLayout;
-using ItemColl = CComVectorCollection<IRebarLayout, IRebarLayoutItem, IEnumRebarLayoutItems, &IID_IEnumRebarLayoutItems, CollectionIndexType>;
-using PersistentRebarLayout = CPersistentCollection<CRebarLayout,ItemColl,CollectionIndexType>;
+using ItemColl = CComVectorCollection<IRebarLayout, IRebarLayoutItem, IEnumRebarLayoutItems, &IID_IEnumRebarLayoutItems, IndexType>;
+using PersistentRebarLayout = CPersistentCollection<CRebarLayout,ItemColl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CRebarLayout

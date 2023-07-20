@@ -26,14 +26,11 @@
 #include <Lrfd\RebarPool.h>
 #include <algorithm>
 
-/****************************************************************************
-CLASS
-   lrfdRebarPool
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-lrfdRebarPool* lrfdRebarPool::ms_pInstance = 0;
-std::map<Int32, std::shared_ptr<WBFL::Materials::Rebar> > lrfdRebarPool::ms_Rebar;
-lrfdRebarPool::Killer lrfdRebarPool::ms_Killer;
+RebarPool* RebarPool::ms_pInstance = nullptr;
+RebarPool::Pool RebarPool::ms_Rebar;
+RebarPool::Killer RebarPool::ms_Killer;
 
 Int32 hash( WBFL::Materials::Rebar::Grade grade, WBFL::Materials::Rebar::Type type, WBFL::Materials::Rebar::Size size )
 {
@@ -41,22 +38,11 @@ Int32 hash( WBFL::Materials::Rebar::Grade grade, WBFL::Materials::Rebar::Type ty
    return hv;
 }
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdRebarPool::~lrfdRebarPool()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-//======================== ACCESS     =======================================
-lrfdRebarPool* lrfdRebarPool::GetInstance()
+const RebarPool* RebarPool::GetInstance()
 {
    if ( !ms_pInstance )
    {
-      ms_pInstance = new lrfdRebarPool;
+      ms_pInstance = new RebarPool();
       ms_Killer.SetSingleton( ms_pInstance );
    }
 
@@ -86,9 +72,10 @@ const Int16 gs_KeyMap[19] = {
 10   // 18
 };
 
-bool lrfdRebarPool::MapOldRebarKey(Int32 oldKey,WBFL::Materials::Rebar::Grade& grade,WBFL::Materials::Rebar::Type& type,WBFL::Materials::Rebar::Size& size)
+bool RebarPool::MapOldRebarKey(Int32 oldKey,WBFL::Materials::Rebar::Grade& grade,WBFL::Materials::Rebar::Type& type,WBFL::Materials::Rebar::Size& size)
 {
-   // old pool had A615 A615 Steel, grade 60
+   // old pool had A615 Grade 60 Steel so the keys were just the bar sizes
+   // this method returns the full set of rebar key parameters for the old keys
    grade = WBFL::Materials::Rebar::Grade::Grade60;
    type = WBFL::Materials::Rebar::Type::A615;
 
@@ -115,7 +102,7 @@ bool lrfdRebarPool::MapOldRebarKey(Int32 oldKey,WBFL::Materials::Rebar::Grade& g
    return true;
 }
 
-std::_tstring lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade)
+std::_tstring RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade)
 {
    std::_tstring str;
    if ( type == WBFL::Materials::Rebar::Type::A615 )
@@ -178,7 +165,7 @@ std::_tstring lrfdRebarPool::GetMaterialName(WBFL::Materials::Rebar::Type type,W
    return str;
 }
 
-std::_tstring lrfdRebarPool::GetBarSize(WBFL::Materials::Rebar::Size size)
+std::_tstring RebarPool::GetBarSize(WBFL::Materials::Rebar::Size size)
 {
    std::_tstring str;
    switch(size)
@@ -202,7 +189,7 @@ std::_tstring lrfdRebarPool::GetBarSize(WBFL::Materials::Rebar::Size size)
    return str;
 }
 
-WBFL::Materials::Rebar::Size lrfdRebarPool::GetBarSize(LPCTSTR strSize)
+WBFL::Materials::Rebar::Size RebarPool::GetBarSize(LPCTSTR strSize)
 {
    std::_tstring size(strSize);
    if ( size == _T("#3") )
@@ -232,19 +219,19 @@ WBFL::Materials::Rebar::Size lrfdRebarPool::GetBarSize(LPCTSTR strSize)
    return WBFL::Materials::Rebar::Size::bsNone;
 }
 
-void lrfdRebarPool::GetBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize)
+void RebarPool::GetBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize)
 {
    minSize = WBFL::Materials::Rebar::Size::bs3;
    maxSize = WBFL::Materials::Rebar::Size::bs18;
 }
 
-void lrfdRebarPool::GetTransverseBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize)
+void RebarPool::GetTransverseBarSizeRange(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,WBFL::Materials::Rebar::Size& minSize,WBFL::Materials::Rebar::Size& maxSize)
 {
    minSize = WBFL::Materials::Rebar::Size::bs3;
    maxSize = WBFL::Materials::Rebar::Size::bs8; // LRFD 5.10.2.1
 }
 
-const WBFL::Materials::Rebar* lrfdRebarPool::GetRebar(Int32 key)
+const WBFL::Materials::Rebar* RebarPool::GetRebar(Int32 key) const
 {
    std::map<Int32, std::shared_ptr<WBFL::Materials::Rebar> >::iterator found;
 
@@ -257,47 +244,22 @@ const WBFL::Materials::Rebar* lrfdRebarPool::GetRebar(Int32 key)
    return (*found).second.get();
 } 
 
-const WBFL::Materials::Rebar* lrfdRebarPool::GetRebar( WBFL::Materials::Rebar::Type type,
+const WBFL::Materials::Rebar* RebarPool::GetRebar( WBFL::Materials::Rebar::Type type,
                                          WBFL::Materials::Rebar::Grade grade,
-                                         WBFL::Materials::Rebar::Size size )
+                                         WBFL::Materials::Rebar::Size size ) const
 {
    return GetRebar( hash(grade,type,size) );
 }
 
-Int32 lrfdRebarPool::GetRebarKey(const WBFL::Materials::Rebar* pRebar)
+Int32 RebarPool::GetRebarKey(const WBFL::Materials::Rebar* pRebar) const
 {
-   return hash( pRebar->GetGrade(), pRebar->GetType(), pRebar->GetSize() );
+   return pRebar ? hash(pRebar->GetGrade(), pRebar->GetType(), pRebar->GetSize()) : -1;
 }
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdRebarPool::AssertValid() const
-{
-   return true;
-}
-
-void lrfdRebarPool::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for lrfdRebarPool") << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
 
 #define NEW_BAR(name,size,type,grade) \
    ms_Rebar.insert( std::make_pair(hash(WBFL::Materials::Rebar::Grade::##grade,WBFL::Materials::Rebar::Type::##type,WBFL::Materials::Rebar::Size::##size),std::make_shared<WBFL::Materials::Rebar>(_T(name),WBFL::Materials::Rebar::Grade::##grade,WBFL::Materials::Rebar::Type::##type,WBFL::Materials::Rebar::Size::##size) ) );
 
-//======================== LIFECYCLE  =======================================
-lrfdRebarPool::lrfdRebarPool()
+RebarPool::RebarPool()
 {
    // A615 (A615) Grade 60 must come first so we don't mess up
    // legacy rebar pool keys
@@ -386,53 +348,20 @@ lrfdRebarPool::lrfdRebarPool()
    NEW_BAR( "#18", bs18, A1035, Grade100 ); 
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
+/////////////////////////////////
 
-
-/****************************************************************************
-CLASS
-   lrfdRebarIter
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdRebarIter::lrfdRebarIter(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,bool bTransverseBarsOnly)
+RebarIter::RebarIter(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade,bool bTransverseBarsOnly)
 {
    m_Type  = type;
    m_Grade = grade;
    m_bTransverseBarsOnly = bTransverseBarsOnly;
 
-   // Make sure the rebarpool is up and running
-   lrfdRebarPool* pPool = lrfdRebarPool::GetInstance();
+   // Make sure the rebar pool is up and running
+   const RebarPool* pPool = RebarPool::GetInstance();
 
    Begin();
 }
 
-lrfdRebarIter::lrfdRebarIter(const lrfdRebarIter& rOther)
-{
-   MakeCopy( rOther );
-}
-
-lrfdRebarIter::~lrfdRebarIter()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdRebarIter& lrfdRebarIter::operator=(const lrfdRebarIter& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
 class BarDiaSorter
 {
 public:
@@ -449,21 +378,21 @@ public:
    }
 };
 
-void lrfdRebarIter::Begin()
+void RebarIter::Begin()
 {
    WBFL::Materials::Rebar::Size minBarSize, maxBarSize;
    if ( m_bTransverseBarsOnly )
    {
-      lrfdRebarPool::GetTransverseBarSizeRange(m_Type,m_Grade,minBarSize,maxBarSize);
+      RebarPool::GetTransverseBarSizeRange(m_Type,m_Grade,minBarSize,maxBarSize);
    }
    else
    {
-      lrfdRebarPool::GetBarSizeRange(m_Type,m_Grade,minBarSize,maxBarSize);
+      RebarPool::GetBarSizeRange(m_Type,m_Grade,minBarSize,maxBarSize);
    }
    m_Bars.clear();
    CHECK(m_Bars.size() == 0);
    CHECK(m_Bars.empty() == true);
-   std::map< Int32, std::shared_ptr<WBFL::Materials::Rebar> >* pBars = &lrfdRebarPool::ms_Rebar;
+   std::map< Int32, std::shared_ptr<WBFL::Materials::Rebar> >* pBars = &RebarPool::ms_Rebar;
    std::map< Int32, std::shared_ptr<WBFL::Materials::Rebar> >::const_iterator iter;
    for ( iter = pBars->begin(); iter != pBars->end(); iter++ )
    {
@@ -484,12 +413,12 @@ void lrfdRebarIter::Begin()
    m_End     = m_Bars.end();
 }
 
-void lrfdRebarIter::End()
+void RebarIter::End()
 {
    m_Current = m_End;
 }
 
-void lrfdRebarIter::Next()
+void RebarIter::Next()
 {
    if ( m_Current != m_End )
    {
@@ -497,7 +426,7 @@ void lrfdRebarIter::Next()
    }
 }
 
-void lrfdRebarIter::Move(Int32 pos)
+void RebarIter::Move(Int32 pos)
 {
    m_Current = m_Begin;
    if ( m_End < m_Begin + pos )
@@ -510,7 +439,7 @@ void lrfdRebarIter::Move(Int32 pos)
    }
 }
 
-void lrfdRebarIter::MoveBy(Int32 dPos)
+void RebarIter::MoveBy(Int32 dPos)
 {
    m_Current += dPos;
    if ( m_End < m_Current )
@@ -519,7 +448,7 @@ void lrfdRebarIter::MoveBy(Int32 dPos)
    }
 }
 
-lrfdRebarIter::operator void*() const
+RebarIter::operator void*() const
 {
    if ( m_Current != m_End )
    {
@@ -531,7 +460,7 @@ lrfdRebarIter::operator void*() const
    }
 }
 
-const WBFL::Materials::Rebar* lrfdRebarIter::GetCurrentRebar() const
+const WBFL::Materials::Rebar* RebarIter::GetCurrentRebar() const
 {
    if ( *this )
    {
@@ -542,110 +471,24 @@ const WBFL::Materials::Rebar* lrfdRebarIter::GetCurrentRebar() const
       return nullptr;
    }
 }
-void lrfdRebarIter::SetGrade(WBFL::Materials::Rebar::Grade grade)
+void RebarIter::SetGrade(WBFL::Materials::Rebar::Grade grade)
 {
    m_Grade = grade;
    Begin();
 }
 
-WBFL::Materials::Rebar::Grade lrfdRebarIter::GetGrade() const
+WBFL::Materials::Rebar::Grade RebarIter::GetGrade() const
 {
    return m_Grade;
 }
 
-void lrfdRebarIter::SetType(WBFL::Materials::Rebar::Type type)
+void RebarIter::SetType(WBFL::Materials::Rebar::Type type)
 {
    m_Type = type;
    Begin();
 }
 
-WBFL::Materials::Rebar::Type lrfdRebarIter::GetType() const
+WBFL::Materials::Rebar::Type RebarIter::GetType() const
 {
    return m_Type;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdRebarIter::AssertValid() const
-{
-   return true;
-}
-
-void lrfdRebarIter::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for lrfdRebarIter" << WBFL::Debug::endl;
-}
-
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-void lrfdRebarIter::MakeAssignment(const lrfdRebarIter& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void lrfdRebarIter::MakeCopy(const lrfdRebarIter& rOther)
-{
-   m_Current = rOther.m_Current;
-   m_Begin   = rOther.m_Begin;
-   m_End     = rOther.m_End;
-   m_Grade   = rOther.m_Grade;
-   m_Type    = rOther.m_Type;
-   m_bTransverseBarsOnly = rOther.m_bTransverseBarsOnly;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-#if defined _UNITTEST
-
-bool lrfdRebarPool::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdRebarPool");
-
-   lrfdRebarPool* pPool = lrfdRebarPool::GetInstance();
-
-   // Test to see if the rebar returned from the iterator can
-   // be found in the pool.
-   lrfdRebarIter iter;
-   for ( iter.Begin(); iter; iter.Next() )
-   {
-      const WBFL::Materials::Rebar* pRebar1 = iter.GetCurrentRebar();
-      BarSizeType key = pPool->GetRebarKey( pRebar1 );
-      const WBFL::Materials::Rebar* pRebar2 = pPool->GetRebar( key );
-      TRY_TESTME( pRebar1 == pRebar2 );
-   }
-
-   // Test to see pool correctly rejects a rebar not in the pool
-   //std::shared_ptr<WBFL::Materials::Rebar> pDummyRebar( new WBFL::Materials::Rebar );
-   //Int32 key = pPool->GetRebarKey( pDummyRebar.get() );
-   //TRY_TESTME( key == INVALID_INDEX );
-
-   TESTME_EPILOG("lrfdRebarPool");
-}
-
-bool lrfdRebarIter::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("lrfdRebarIter");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for lrfdRebarIter");
-   TESTME_EPILOG("lrfdRebarIter");
-}
-#endif // _UNITTEST
-
-

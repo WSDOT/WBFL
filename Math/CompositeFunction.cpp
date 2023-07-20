@@ -90,12 +90,3 @@ void CompositeFunction::Clear()
 {
    m_Segments.clear();
 }
-
-#if defined _UNITTEST
-bool CompositeFunction::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CompositeFunction");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for CompositeFunction");
-   TESTME_EPILOG("CompositeFunction");
-}
-#endif

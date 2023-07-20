@@ -43,7 +43,7 @@ namespace WBFL
       class IndirectMeasureDataT
       {
       public:
-         IndirectMeasureDataT(const T& um,Float64 t = 0.001,Int16 w = 6,Int16 p = 3, WBFL::System::NumericFormatTool::Format f=WBFL::System::NumericFormatTool::Format::Automatic) :
+         IndirectMeasureDataT(const T& um,Float64 t = 0.001,Uint16 w = 6,Uint16 p = 3, WBFL::System::NumericFormatTool::Format f=WBFL::System::NumericFormatTool::Format::Automatic) :
             UnitOfMeasure(um), Tol(t), Width(w), Precision(p), Format( f )
             {
             }

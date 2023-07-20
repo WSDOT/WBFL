@@ -225,7 +225,6 @@
     <ClCompile Include="RefinedLossesTxDOT2013.cpp" />
     <ClCompile Include="Shear.cpp" />
     <ClCompile Include="StrandPool.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="VersionMgr.cpp" />
     <ClCompile Include="VersionMgrListener.cpp" />
@@ -281,7 +280,6 @@
     <ClInclude Include="..\Include\LRFD\RefinedLossesTxDOT2013.h" />
     <ClInclude Include="..\Include\LRFD\Shear.h" />
     <ClInclude Include="..\Include\LRFD\StrandPool.h" />
-    <ClInclude Include="..\Include\LRFD\UnitTest.h" />
     <ClInclude Include="..\Include\LRFD\Utility.h" />
     <ClInclude Include="..\Include\LRFD\VersionMgr.h" />
     <ClInclude Include="..\Include\LRFD\VersionMgrListener.h" />

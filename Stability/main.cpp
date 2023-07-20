@@ -23,10 +23,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Stability/StabilityLib.h>
-#include <System/dllTest.h>
-#include <Stability/UnitTest.h>
-
-using namespace WBFL::Stability;
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
@@ -34,10 +30,4 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
                            LPVOID    /*plvReserved*/)
 {
     return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-   return UnitTest::TestMe(rlog);
 }

@@ -56,7 +56,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelSectionResults::Reserve(CollectionIndexType size)
+STDMETHODIMP CLiveLoadModelSectionResults::Reserve(IndexType size)
 {
 	if (size>=0)
       m_Results.reserve(size);
@@ -66,7 +66,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::Reserve(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelSectionResults::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CLiveLoadModelSectionResults::get_Count(IndexType *pVal)
 {
 	CHECK_RETVAL(pVal);
 
@@ -83,10 +83,10 @@ STDMETHODIMP CLiveLoadModelSectionResults::Add(Float64 leftResult, ILiveLoadConf
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelSectionResults::SetResult(CollectionIndexType index, Float64 leftResult, ILiveLoadConfiguration *leftConfig, Float64 rightResult, ILiveLoadConfiguration *rightConfig)
+STDMETHODIMP CLiveLoadModelSectionResults::SetResult(IndexType index, Float64 leftResult, ILiveLoadConfiguration *leftConfig, Float64 rightResult, ILiveLoadConfiguration *rightConfig)
 {
 
-	if (0 <= index && index < (CollectionIndexType)m_Results.size())
+	if (0 <= index && index < (IndexType)m_Results.size())
    {
       LlmResults& rresult = m_Results[index];
       rresult.m_LeftResult  = leftResult;
@@ -100,11 +100,11 @@ STDMETHODIMP CLiveLoadModelSectionResults::SetResult(CollectionIndexType index, 
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelSectionResults::GetResult(CollectionIndexType index, Float64 *leftResult, ILiveLoadConfiguration **leftConfig, Float64 *rightResult, ILiveLoadConfiguration **rightConfig)
+STDMETHODIMP CLiveLoadModelSectionResults::GetResult(IndexType index, Float64 *leftResult, ILiveLoadConfiguration **leftConfig, Float64 *rightResult, ILiveLoadConfiguration **rightConfig)
 {
    // Left and Right config can be nullptr
   
-	if (0 <= index && index < (CollectionIndexType)m_Results.size())
+	if (0 <= index && index < (IndexType)m_Results.size())
    {
       LlmResults& rresult = m_Results[index];
 
@@ -242,13 +242,13 @@ STDMETHODIMP CLiveLoadModelSectionResults::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      CollectionIndexType cnt = m_Results.size();
+      IndexType cnt = m_Results.size();
 
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic = 0; ic<cnt; ic++)
+      for (IndexType ic = 0; ic<cnt; ic++)
       {
          const LlmResults& llres = m_Results[ic];
 

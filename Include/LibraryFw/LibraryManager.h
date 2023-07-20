@@ -21,220 +21,113 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LIBRARY_LIBRARYMANAGER_H_
-#define INCLUDED_LIBRARY_LIBRARYMANAGER_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
 #include <vector>
-
 #include <memory>
-
-
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-#if !defined INCLUDED_LIBRARYFW_LIBRARYFWEXP_H_
 #include <LibraryFw\LibraryFwExp.h>
-#endif
-
-#if !defined INCLUDED_LIBRARYFW_ILIBRARY_H_
 #include <LibraryFw\ILibrary.h>
-#endif
-
-#if !defined INCLUDED_SYSTEM_TIME_H_
 #include <System\Time.h>
-#endif
 
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-struct LIBRARYFWCLASS libEntryUsageRecord
+namespace WBFL
 {
-   std::_tstring LibName;   // name of the library the contains the entry
-   std::_tstring EntryName; // name of the library entry
-   bool bEditable;        // true if the entry can be editied
-
-   bool operator<(const libEntryUsageRecord& other) const
+   namespace Library
    {
-      return LibName < other.LibName;
-   }
+      struct LIBRARYFWCLASS EntryUsageRecord
+      {
+         std::_tstring LibName;   // name of the library the contains the entry
+         std::_tstring EntryName; // name of the library entry
+         bool bEditable;        // true if the entry can be edited
 
-   bool operator==(const libEntryUsageRecord& other) const
-   {
-      return (LibName == other.LibName)
-         && (EntryName == other.EntryName) 
-         && (bEditable == other.bEditable);
-   }
+         bool operator<(const EntryUsageRecord& other) const
+         {
+            return LibName < other.LibName;
+         }
+
+         bool operator==(const EntryUsageRecord& other) const
+         {
+            return (LibName == other.LibName)
+               && (EntryName == other.EntryName) 
+               && (bEditable == other.bEditable);
+         }
+      };
+
+      /// @brief keeps a list of all current libraries
+      /// This class provides a container for all defined system libraries
+      class LIBRARYFWCLASS LibraryManager
+      {
+      public:
+         LibraryManager() = default;
+         LibraryManager(const LibraryManager&) = delete;
+         virtual ~LibraryManager() = default;
+
+         LibraryManager& operator=(const LibraryManager&) = delete;
+
+         /// @brief Add a new library to the list. The library manager takes ownership of 
+         /// the pointer and will delete it. Hence, you must create the library on
+         /// the heap.
+         IndexType AddLibrary(ILibrary* pLibrary);
+
+         /// @brief Get manager's name
+         std::_tstring GetName() const;
+
+         /// @brief Set manager's name
+         void SetName(LPCTSTR name);
+
+         /// @brief Get the identifier name of a library based on its index
+         std::_tstring GetLibraryIdName(IndexType index) const;
+
+         /// @brief Get the display name of a library based on its index
+         std::_tstring GetLibraryDisplayName(IndexType index) const;
+
+         /// @brief Get a pointer to a library based on its index
+         ILibrary* GetLibrary(IndexType index);
+         const ILibrary* GetLibrary(IndexType index) const;
+
+         /// @brief Get a pointer to a library based on its display name
+         ILibrary* GetLibrary(LPCTSTR displayName);
+         const ILibrary* GetLibrary(LPCTSTR displayName) const;
+
+         /// @brief Get the index of a library based on its display name
+         //// Returns -1 if no library exists.
+         IndexType GetIndex(LPCTSTR displayName) const;
+
+         /// @brief Clears all entries from all contained libraries. This function can
+         /// be dangerous because it will try to delete entries regardless if
+         /// they have outstanding references.
+         virtual void ClearAllEntries();
+
+         /// @brief Clears libraries from collection
+         virtual void ClearLibraries();
+
+         /// @brief set flags to enable (or disable) editing for all entries in all libraries
+         virtual void EnableEditingForAllEntries(bool enable);
+
+         /// @brief Save to structured storage
+         virtual bool SaveMe(WBFL::System::IStructuredSave* pSave);
+
+         /// @brief Load from structured storage. This function will load the library. It
+         /// should only be called once during the lifetime of this class.
+         virtual bool LoadMe(WBFL::System::IStructuredLoad* pLoad);
+
+         /// @brief Get number of libraries in manager
+         IndexType GetLibraryCount() const;
+
+         bool IsDepreciated(IndexType idx) const;
+
+         const WBFL::System::Time& GetTimeStamp() const;
+
+         std::vector<EntryUsageRecord> GetInUseLibraryEntries() const;
+
+      protected:
+         using LibraryEntryType = std::shared_ptr<ILibrary>;
+         using LibraryContainerType = std::vector<LibraryEntryType>;
+         LibraryContainerType m_Libraries;
+
+         WBFL::System::Time m_LastSavedTime;
+
+      private:
+         std::_tstring m_Name = _T("");
+      };
+   };
 };
-
-/*****************************************************************************
-CLASS 
-   libLibraryManager
-
-   Library manager - keeps a list of all current libraries
-
-
-DESCRIPTION
-   This class provides a container for all defined system libraries
-
-LOG
-   rdp : 07.09.1998 : Created file
-*****************************************************************************/
-
-class LIBRARYFWCLASS libLibraryManager
-{
-public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Constructor
-   libLibraryManager();
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~libLibraryManager();
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Add a new library to the list. The library manager takes ownership of 
-   // the pointer and will delete it. Hence, you must create the library on
-   // the heap.
-   CollectionIndexType AddLibrary(libILibrary* pLibrary);
-
-   // GROUP: ACCESS
-   //------------------------------------------------------------------------
-   // Get manager's name
-   std::_tstring GetName() const;
-
-   //------------------------------------------------------------------------
-   // Set manager's name
-   void SetName(LPCTSTR name);
-
-   //------------------------------------------------------------------------
-   // Get the identifier name of a library based on its index
-   std::_tstring GetLibraryIdName(CollectionIndexType index) const;
-
-   //------------------------------------------------------------------------
-   // Get the display name of a library based on its index
-   std::_tstring GetLibraryDisplayName(CollectionIndexType index) const;
-
-   //------------------------------------------------------------------------
-   // Get a pointer to a library based on its index
-   libILibrary* GetLibrary(CollectionIndexType index);
-   const libILibrary* GetLibrary(CollectionIndexType index) const;
-
-   //------------------------------------------------------------------------
-   // Get a pointer to a library based on its display name
-   libILibrary* GetLibrary(LPCTSTR displayName);
-   const libILibrary* GetLibrary(LPCTSTR displayName) const;
-
-   //------------------------------------------------------------------------
-   // Get the index of a library based on its display name
-   // Returns -1 if no library exists.
-   CollectionIndexType GetIndex(LPCTSTR displayName) const;
-
-   //------------------------------------------------------------------------
-   // Clears all entries from all contained libraries. This function can
-   // be dangerous because it will try to delete entries regardless if
-   // they have outstanding references.
-   virtual void ClearAllEntries();
-
-   //------------------------------------------------------------------------
-   // Clears libraries from collection
-   virtual void ClearLibraries();
-
-   //------------------------------------------------------------------------
-   // set flags to enable (or disable) editing for all entries in all libraries
-   virtual void EnableEditingForAllEntries(bool enable);
-
-   //------------------------------------------------------------------------
-   // Save to structured storage
-   virtual bool SaveMe(WBFL::System::IStructuredSave* pSave);
-
-   //------------------------------------------------------------------------
-   // Load from structured storage. This function will load the library. It
-   // should only be called once during the lifetime of this class.
-   virtual bool LoadMe(WBFL::System::IStructuredLoad* pLoad);
-
-   // GROUP: INQUIRY
-   //------------------------------------------------------------------------
-   // Get number of libraries in manager
-   CollectionIndexType GetLibraryCount() const;
-
-   bool IsDepreciated(CollectionIndexType idx) const;
-
-   const WBFL::System::Time& GetTimeStamp() const;
-
-   std::vector<libEntryUsageRecord> GetInUseLibraryEntries() const;
-
-protected:
-   // GROUP: DATA MEMBERS
-   using LibraryEntryType = std::shared_ptr<libILibrary>;
-   using LibraryContainerType = std::vector<LibraryEntryType>;
-   using LibraryIterator = LibraryContainerType::iterator;
-   using ConstLibraryIterator = LibraryContainerType::const_iterator;
-   //------------------------------------------------------------------------
-   LibraryContainerType m_Libraries;
-
-   WBFL::System::Time m_LastSavedTime;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-
-   //------------------------------------------------------------------------
-   // Name of the manager
-   std::_tstring m_Name;
-
-
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   libLibraryManager(const libLibraryManager&);
-   libLibraryManager& operator=(const libLibraryManager&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given stream.
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   #endif // _UNITTEST
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LIBRARY_LIBRARYMANAGER_H_

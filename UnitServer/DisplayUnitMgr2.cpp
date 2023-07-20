@@ -153,7 +153,7 @@ STDMETHODIMP CDisplayUnitMgr2::get_Item(BSTR bstrGroup,IDisplayUnitGroup** retva
    return S_OK;
 }
 
-STDMETHODIMP CDisplayUnitMgr2::get_Count(CollectionIndexType* retval)
+STDMETHODIMP CDisplayUnitMgr2::get_Count(IndexType* retval)
 {
    CHECK_RETVAL(retval);
    long count;

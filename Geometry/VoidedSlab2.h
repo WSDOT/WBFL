@@ -98,8 +98,8 @@ public:
    STDMETHOD(get_ExteriorVoidElevation)(/*[out,retval]*/Float64* h1) override;
    STDMETHOD(put_InteriorVoidElevation)(/*[in]*/Float64 h2) override;
    STDMETHOD(get_InteriorVoidElevation)(/*[out,retval]*/Float64* h2) override;
-   STDMETHOD(put_VoidCount)(/*[in]*/CollectionIndexType nv) override;
-   STDMETHOD(get_VoidCount)(/*[out,retval]*/CollectionIndexType* nv) override;
+   STDMETHOD(put_VoidCount)(/*[in]*/IndexType nv) override;
+   STDMETHOD(get_VoidCount)(/*[out,retval]*/IndexType* nv) override;
    STDMETHOD(GetSlabShape)(/*[out]*/IShape** ppShape) override;
    STDMETHOD(GetVoidShape)(/*[in]*/IndexType idx, /*[out]*/IShape** ppShape) override;
    STDMETHOD(get_HookPoint)(/*[out,retval]*/IPoint2d** hookPnt) override;

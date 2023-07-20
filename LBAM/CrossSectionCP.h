@@ -53,7 +53,7 @@ class CProxyDStressPointsEvents : public IConnectionPointImpl<T, &IID_IStressPoi
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnStressPointsChanged(CollectionIndexType index)
+	VOID Fire_OnStressPointsChanged(IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -69,7 +69,7 @@ public:
             events->OnStressPointsChanged(index);
 		}
 	}
-	VOID Fire_OnStressPointsAdded(CollectionIndexType index)
+	VOID Fire_OnStressPointsAdded(IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -85,7 +85,7 @@ public:
             events->OnStressPointsAdded(index);
 		}
 	}
-	VOID Fire_OnStressPointsRemoved(CollectionIndexType index)
+	VOID Fire_OnStressPointsRemoved(IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;

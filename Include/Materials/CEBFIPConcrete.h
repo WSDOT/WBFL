@@ -64,7 +64,7 @@ namespace WBFL
          enum class CementType 
          {
             RS, ///< rapid hardening, high strength
-            N,  ///< normal hardining
+            N,  ///< normal hardening
             R,  ///< rapid hardening
             SL  ///< slow hardening
          };
@@ -81,7 +81,7 @@ namespace WBFL
          static void GetModelParameters(CementType cement,Float64* pS,Float64* pBetaSC);
 
          /// Computes what the 28 day strength needs to be for a concrete strength
-         /// fc occuring at concrete age for the specified cement type
+         /// fc occurring at concrete age for the specified cement type
          static Float64 ComputeFc28(Float64 fc,Float64 age,CementType type);
          static Float64 ComputeEc28(Float64 Ec,Float64 age,CementType type);
 
@@ -102,7 +102,7 @@ namespace WBFL
          /// a given concrete strength and the time that strength occurs
          void SetFc28(Float64 fc,Float64 t);
 
-         /// Indiciates if a user value for Ec is used. If not, it is comptued from Fc28
+         /// Indicates if a user value for Ec is used. If not, it is computed from Fc28
          void UserEc28(bool bUserEc);
          bool UserEc28() const;
 
@@ -116,7 +116,7 @@ namespace WBFL
          void SetEc28(Float64 Ec,Float64 t);
 
          /// Computes what the 28 day strength needs to be for a concrete strength
-         /// fc occuring at concrete age with parameter s
+         /// fc occurring at concrete age with parameter s
          static Float64 ComputeFc28(Float64 fc,Float64 age,Float64 s);
          static Float64 ComputeEc28(Float64 ec,Float64 age,Float64 s);
 
@@ -140,7 +140,7 @@ namespace WBFL
          /// t occurs before the time at casting, zero is returned.
          virtual Float64 GetFlexureFr(Float64 t) const override;
 
-         /// Returns the total free shrinkage that has occured from time at casting
+         /// Returns the total free shrinkage that has occurred from time at casting
          /// to the time specified
          virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
          virtual std::unique_ptr<ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
@@ -171,15 +171,15 @@ namespace WBFL
          virtual void OnChanged() override;
 
       private:
-         Float64 m_Fc28;
-         Float64 m_Ec28;
-         Float64 m_S;
-         Float64 m_BetaSc;   // Beta-SC for use in CEB-FIP Eqn. 2.1-76
-         bool m_bUserEc;
+         Float64 m_Fc28 = 0.0;
+         Float64 m_Ec28 = 0.0;
+         Float64 m_S = 0.0;
+         Float64 m_BetaSc = 0.0;   // Beta-SC for use in CEB-FIP Eqn. 2.1-76
+         bool m_bUserEc = false;
 
-         mutable Float64 m_Ec; // this is the validated Ec28 (could be user input or could be computed)
+         mutable Float64 m_Ec = 0.0; // this is the validated Ec28 (could be user input or could be computed)
 
-         mutable bool m_bIsValid;
+         mutable bool m_bIsValid = false;
          void Validate() const;
 
          Float64 GetFr(Float64 t) const;

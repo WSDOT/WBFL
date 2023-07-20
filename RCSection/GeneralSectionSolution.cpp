@@ -55,14 +55,16 @@ namespace WBFL
          Float64 GetFz() const;
          Float64 GetMx() const;
          Float64 GetMy() const;
+         Float64 GetM() const;
          const WBFL::Geometry::Line2d& GetNeutralAxis() const;
          Float64 GetNeutralAxisDirection() const;
          Float64 GetCompressionResultant() const;
          Float64 GetTensionResultant() const;
          const WBFL::Geometry::Point2d& GetCompressionResultantLocation() const;
          const WBFL::Geometry::Point2d& GetTensionResultantLocation() const;
+         Float64 GetMomentArm() const;
          IndexType GetSliceCount() const;
-         const std::unique_ptr<GeneralSectionSlice>& GetSlice(IndexType sliceIdx) const;
+         const GeneralSectionSlice& GetSlice(IndexType sliceIdx) const;
          std::vector<const GeneralSectionSlice*> FindSlices(IndexType shapeIdx) const;
          bool ExceededStrainLimits() const;
 
@@ -120,6 +122,11 @@ namespace WBFL
          return m_My;
       }
 
+      Float64 GeneralSectionSolutionImpl::GetM() const
+      {
+         return sqrt(m_Mx * m_Mx + m_My * m_My);
+      }
+
       const WBFL::Geometry::Line2d& GeneralSectionSolutionImpl::GetNeutralAxis() const
       {
          return m_NeutralAxis;
@@ -153,15 +160,20 @@ namespace WBFL
          return m_cgT;
       }
 
+      Float64 GeneralSectionSolutionImpl::GetMomentArm() const
+      {
+         return m_cgC.Distance(m_cgT);
+      }
+
       IndexType GeneralSectionSolutionImpl::GetSliceCount() const
       {
          return m_vSlices.size();
       }
 
-      const std::unique_ptr<GeneralSectionSlice>& GeneralSectionSolutionImpl::GetSlice(IndexType sliceIdx) const
+      const GeneralSectionSlice& GeneralSectionSolutionImpl::GetSlice(IndexType sliceIdx) const
       {
          PRECONDITION(sliceIdx < m_vSlices.size());
-         return m_vSlices[sliceIdx];
+         return *m_vSlices[sliceIdx];
       }
 
       std::vector<const GeneralSectionSlice*> GeneralSectionSolutionImpl::FindSlices(IndexType shapeIdx) const
@@ -204,7 +216,7 @@ GeneralSectionSolution& GeneralSectionSolution::operator=(const GeneralSectionSo
    for (auto idx = 0; idx < nSlices; idx++)
    {
       const auto& other_slice = other.GetSlice(idx);
-      auto slice(std::make_unique<GeneralSectionSlice>(*other_slice));
+      auto slice(std::make_unique<GeneralSectionSlice>(other_slice));
       vSlices.emplace_back(std::move(slice));
    }
 
@@ -250,6 +262,11 @@ Float64 GeneralSectionSolution::GetMy() const
    return m_pImpl->GetMy();
 }
 
+Float64 GeneralSectionSolution::GetM() const
+{
+   return m_pImpl->GetM();
+}
+
 const WBFL::Geometry::Line2d& GeneralSectionSolution::GetNeutralAxis() const
 {
    return m_pImpl->GetNeutralAxis();
@@ -280,12 +297,17 @@ const WBFL::Geometry::Point2d& GeneralSectionSolution::GetTensionResultantLocati
    return m_pImpl->GetTensionResultantLocation();
 }
 
+Float64 GeneralSectionSolution::GetMomentArm() const
+{
+   return m_pImpl->GetMomentArm();
+}
+
 IndexType GeneralSectionSolution::GetSliceCount() const
 {
    return m_pImpl->GetSliceCount();
 }
 
-const std::unique_ptr<GeneralSectionSlice>& GeneralSectionSolution::GetSlice(IndexType sliceIdx) const
+const GeneralSectionSlice& GeneralSectionSolution::GetSlice(IndexType sliceIdx) const
 {
    return m_pImpl->GetSlice(sliceIdx);
 }
@@ -299,15 +321,3 @@ bool GeneralSectionSolution::ExceededStrainLimits() const
 {
    return m_pImpl->ExceededStrainLimits();
 }
-
-#if defined _UNITTEST
-bool GeneralSectionSolution::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("GeneralSectionSolution");
-
-   //TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for GeneralSectionSolution");
-   // not much to test here
-
-   TESTME_EPILOG("GeneralSectionSolution");
-}
-#endif // _UNITTEST

@@ -714,17 +714,17 @@ STDMETHODIMP CMultiWebSection::get__NewEnum(IUnknown* *pVal)
    return m_CompositeShape->get__NewEnum(pVal);
 }
 
-STDMETHODIMP CMultiWebSection::get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal)
+STDMETHODIMP CMultiWebSection::get_Item(IndexType idx, ICompositeShapeItem* *pVal)
 {
    return m_CompositeShape->get_Item(idx,pVal);
 }
 
-STDMETHODIMP CMultiWebSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CMultiWebSection::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
    return m_CompositeShape->ReplaceEx(idx,pShapeItem);
 }
 
-STDMETHODIMP CMultiWebSection::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CMultiWebSection::Replace(IndexType idx,IShape* pShape)
 {
    return m_CompositeShape->Replace(idx,pShape);
 }
@@ -739,7 +739,7 @@ STDMETHODIMP CMultiWebSection::AddShapeEx(ICompositeShapeItem* shapeItem)
    return m_CompositeShape->AddShapeEx(shapeItem);
 }
 
-STDMETHODIMP CMultiWebSection::Remove(CollectionIndexType idx)
+STDMETHODIMP CMultiWebSection::Remove(IndexType idx)
 {
    return m_CompositeShape->Remove(idx);
 }
@@ -749,7 +749,7 @@ STDMETHODIMP CMultiWebSection::Clear()
    return m_CompositeShape->Clear();
 }
 
-STDMETHODIMP CMultiWebSection::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CMultiWebSection::get_Count(IndexType *pVal)
 {
    return m_CompositeShape->get_Count(pVal);
 }

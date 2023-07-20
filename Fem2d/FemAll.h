@@ -41,7 +41,7 @@
 #define  zero_val( x )     (((-EPS)<=(x)) && ((x)<=(EPS)))
 
 
-inline CComBSTR CreateErrorMsg1(UINT nid, CollectionIndexType someInt)
+inline CComBSTR CreateErrorMsg1(UINT nid, IndexType someInt)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
@@ -51,7 +51,7 @@ inline CComBSTR CreateErrorMsg1(UINT nid, CollectionIndexType someInt)
    return CComBSTR(msg);
 }
 
-inline CComBSTR CreateErrorMsg2(UINT nid, CollectionIndexType someInt1, CollectionIndexType someInt2)
+inline CComBSTR CreateErrorMsg2(UINT nid, IndexType someInt1, IndexType someInt2)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);

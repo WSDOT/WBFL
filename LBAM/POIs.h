@@ -31,8 +31,8 @@
 #include <WBFLComCollections.h>
 
 class CPOIs;
-using POICollImpl = CComIDKeyedCollection<IPOIs, IPOI, IEnumPOI, &IID_IEnumPOI, CollectionIndexType>;
-using PersistentPOICollImpl = CPersistentCollection<CPOIs, POICollImpl,CollectionIndexType>;
+using POICollImpl = CComIDKeyedCollection<IPOIs, IPOI, IEnumPOI, &IID_IEnumPOI, IndexType>;
+using PersistentPOICollImpl = CPersistentCollection<CPOIs, POICollImpl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPOIs

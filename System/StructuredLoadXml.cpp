@@ -28,6 +28,7 @@
 
 #include "FindReplaceAll.h"
 
+
 using namespace WBFL::System;
 
 // Utility function to parse a BSTR to double
@@ -95,16 +96,6 @@ namespace WBFL
          MSXML::IXMLDOMNodePtr GetCurrentNode(LPCTSTR name);
          bool GetProperty(LPCTSTR name, _variant_t* pval);
          void ReadNext();
-
-      public:
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
       };
    };
 };
@@ -229,31 +220,6 @@ std::_tstring StructuredLoadXml::GetUnit() const
 {
    return m_pImp->GetUnit();
 }
-
-#if defined _DEBUG
-bool StructuredLoadXml::AssertValid() const
-{
-   return m_pImp->AssertValid();
-}
-
-void StructuredLoadXml::Dump(WBFL::Debug::LogContext& os) const
-{
-   m_pImp->Dump(os);
-}
-
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool StructuredLoadXml::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("StructuredLoadXml");
-
-   // Tests performed by main UnitTest in project.
-
-   TESTME_EPILOG("StructuredLoadXml");
-}
-
-#endif // _UNITTEST
 
 
 HRESULT CheckLoad(MSXML::IXMLDOMDocument* pDoc);
@@ -392,6 +358,8 @@ void StructuredLoadXml_Impl::EndLoad()
 
 bool StructuredLoadXml_Impl::BeginUnit(LPCTSTR name)
 {
+   std::_tstring strName(name);
+   PRECONDITION(std::find_if(strName.begin(), strName.end(), [](auto& t) {std::iswspace(t)}) == strName.end()); // name can't have spaces
    ASSERTVALID;
    bool retval = false;
 
@@ -426,7 +394,7 @@ bool StructuredLoadXml_Impl::BeginUnit(LPCTSTR name)
          // push new unit onto the stack
          m_Level++;
          ListItem tmp;
-         tmp.Name = std::_tstring(name);
+         tmp.Name = strName;
          tmp.Version = vers;
          if (ptest->hasChildNodes())
             tmp.spCurrentChild = ptest->firstChild;
@@ -757,45 +725,6 @@ std::_tstring StructuredLoadXml_Impl::GetUnit() const
 
    return std::_tstring((LPTSTR)bstrXML);
 }
-
-#if defined _DEBUG
-bool StructuredLoadXml_Impl::AssertValid() const
-{
-   // cannot have negative levels
-   if (m_Level<0) 
-      return false;
-
-   // pointers have to be up and ready
-   if (m_pIStream==0)
-      return false;
-   if (m_spDoc==0)
-      return false;
-   if (m_UnitList.empty())
-      return false;
-
-   return true;
-}
-
-void StructuredLoadXml_Impl::Dump(WBFL::Debug::LogContext& os) const
-{
-   std::_tstring tmp;
-   tmp = GetStateDump();
-   os << tmp << WBFL::Debug::endl;
-}
-
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool StructuredLoadXml_Impl::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("StructuredLoadXml_Impl");
-
-   // Tests performed by main UnitTest in project.
-
-   TESTME_EPILOG("StructuredLoadXml_Impl");
-}
-
-#endif // _UNITTEST
 
 ////////////////////////////////////////////////////////////////////////////
 // Helper function: Check load results

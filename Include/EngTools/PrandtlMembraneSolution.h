@@ -38,7 +38,7 @@ namespace WBFL
       public:
          PrandtlMembraneSolution() = default; ///< Call Initialize to initialize the solution
          PrandtlMembraneSolution(PrandtlMembraneSolution&& other);
-         PrandtlMembraneSolution(Float64 J, Float64 maxSlope,IndexType elementIdx,std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues);
+         PrandtlMembraneSolution(Float64 J, Float64 maxSlope,IndexType elementIdx,std::unique_ptr<UniformFDMesh>&& mesh, const std::vector<Float64>& meshValues);
          PrandtlMembraneSolution& operator=(PrandtlMembraneSolution&& other);
 
          /// Initializes the solution
@@ -48,7 +48,7 @@ namespace WBFL
          /// @param elementIdx Index of the element where the maximum slope occurs
          /// @param mesh the finite difference mesh used to solve the problem
          /// @param meshValues the mesh ordinate values for the solution
-         void Initialize(Float64 J, Float64 maxSlope, IndexType elementIdx, std::unique_ptr<UniformFDMesh>&& mesh, std::unique_ptr<Float64[]>&& meshValues);
+         void Initialize(Float64 J, Float64 maxSlope, IndexType elementIdx, std::unique_ptr<UniformFDMesh>&& mesh, const std::vector<Float64>& meshValues);
 
          /// Returns the torsion constant
          Float64 GetJ() const;
@@ -72,7 +72,7 @@ namespace WBFL
          /// 
          /// Access a FD solution value with GetFiniteDifferenceMesh()->GetElement(elementIndex)->Node[corner], where corner
          /// is one of the FDMeshElement::Corner enum values.
-         const std::unique_ptr<Float64[]>& GetFiniteDifferenceSolution() const;
+         const std::vector<Float64>& GetFiniteDifferenceSolution() const;
 
          /// @brief Returns the geometric shape of a mesh element. The top left corner of the FD grid is at (0,0).
          /// @param elementIdx 
@@ -84,7 +84,7 @@ namespace WBFL
          Float64 m_MaxSlope{ 0 }; // maximum slope on the membrane surface
          IndexType m_ElementIndex{ INVALID_INDEX }; // element where the maximum slope occurs
          std::unique_ptr<UniformFDMesh> m_Mesh; // finite difference mesh
-         std::unique_ptr<Float64[]> m_MeshValues; // solution (ordinate values at the mesh nodes)
+         std::vector<Float64> m_MeshValues; // solution (ordinate values at the mesh nodes)
       };
    };
 };

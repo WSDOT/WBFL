@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_TRAFFICBARRIER_H_
-#define INCLUDED_GEOMMODEL_TRAFFICBARRIER_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -32,107 +30,93 @@ namespace WBFL
 {
    namespace Geometry
    {
-class Polygon;
+      class Polygon;
 
+      /// Object representing the shape of a traffic barrier
+      ///
+      /// \image html TrafficBarrier/TrafficBarrier.jpg   	
+      class GEOMMODELCLASS TrafficBarrier : public ShapeOnPolygonImpl
+      {
+      public:
+         enum class Orientation { Left, Right };
 
-/// Object representing the shape of a traffic barrier
-///
-/// \image html TrafficBarrier/TrafficBarrier.jpg   	
-class GEOMMODELCLASS TrafficBarrier : public ShapeOnPolygonImpl
-{
-public:
-   enum class Orientation { Left, Right };
+         TrafficBarrier();
 
-   TrafficBarrier();
+         TrafficBarrier(Float64 x1,Float64 x2,Float64 x3,Float64 x4,Float64 x5,
+                        Float64 y1,Float64 y2,Float64 y3,
+                        Float64 tSlab,
+                        Orientation orient,
+            std::shared_ptr<Point2d>& hookPoint);
 
-   TrafficBarrier(Float64 x1,Float64 x2,Float64 x3,Float64 x4,Float64 x5,
-                  Float64 y1,Float64 y2,Float64 y3,
-                  Float64 tSlab,
-                  Orientation orient,
-      std::shared_ptr<Point2d>& hookPoint);
+         TrafficBarrier(const TrafficBarrier& other) = default;
+         TrafficBarrier& operator=(const TrafficBarrier& other) = default;
 
-   TrafficBarrier(const TrafficBarrier& other) = default;
-   TrafficBarrier& operator=(const TrafficBarrier& other) = default;
+         virtual ~TrafficBarrier();
 
-   virtual ~TrafficBarrier();
+         void SetX1(Float64 x1);
+         Float64 GetX1() const;
 
-   void SetX1(Float64 x1);
-   Float64 GetX1() const;
+         void SetX2(Float64 x2);
+         Float64 GetX2() const;
 
-   void SetX2(Float64 x2);
-   Float64 GetX2() const;
+         void SetX3(Float64 x3);
+         Float64 GetX3() const;
 
-   void SetX3(Float64 x3);
-   Float64 GetX3() const;
+         void SetX4(Float64 x4);
+         Float64 GetX4() const;
 
-   void SetX4(Float64 x4);
-   Float64 GetX4() const;
+         void SetX5(Float64 x5);
+         Float64 GetX5() const;
 
-   void SetX5(Float64 x5);
-   Float64 GetX5() const;
+         void SetY1(Float64 y1);
+         Float64 GetY1() const;
 
-   void SetY1(Float64 y1);
-   Float64 GetY1() const;
+         void SetY2(Float64 y2);
+         Float64 GetY2() const;
 
-   void SetY2(Float64 y2);
-   Float64 GetY2() const;
+         void SetY3(Float64 y3);
+         Float64 GetY3() const;
 
-   void SetY3(Float64 y3);
-   Float64 GetY3() const;
+         void SetSlabDepth(Float64 tSlab);
+         Float64 GetSlabDepth() const;
 
-   void SetSlabDepth(Float64 tSlab);
-   Float64 GetSlabDepth() const;
+         void SetOrientation(Orientation orient);
+         Orientation GetOrientation() const;
 
-   void SetOrientation(Orientation orient);
-   Orientation GetOrientation() const;
+         /// Translates a shape by a delta amount.
+         virtual void DoOffset(const Size2d& delta) override;
 
-   /// Translates a shape by a delta amount.
-   virtual void DoOffset(const Size2d& delta) override;
+         /// Rotates a shape.  The rotation is centered about point center.  The 
+         /// rotation angle is measured in radians counter clockwise.
+         virtual void DoRotate(const Point2d& center, Float64 angle) override;
 
-   /// Rotates a shape.  The rotation is centered about point center.  The 
-   /// rotation angle is measured in radians counter clockwise.
-   virtual void DoRotate(const Point2d& center, Float64 angle) override;
+         ShapeProperties GetProperties() const;
 
-   ShapeProperties GetProperties() const;
+         Rect2d GetBoundingBox() const;
 
-   Rect2d GetBoundingBox() const;
+         std::unique_ptr<Shape> CreateClone() const;
 
-   std::unique_ptr<Shape> CreateClone() const;
+         std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const;
 
-   std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const;
+         std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const;
 
-   std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const;
+         Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const;
 
-   Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const;
+      protected:
+         virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
 
-protected:
-   virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
-
-private:
-   Float64 m_Rotation{ 0.0 };
-   Float64 m_X1{ 0.0 };
-   Float64 m_X2{ 0.0 };
-   Float64 m_X3{ 0.0 };
-   Float64 m_X4{ 0.0 };
-   Float64 m_X5{ 0.0 };
-   Float64 m_Y1{ 0.0 };
-   Float64 m_Y2{ 0.0 };
-   Float64 m_Y3{ 0.0 };
-   Float64 m_tSlab{ 0.0 };
-   Orientation m_Orientation{ Orientation::Left };
-
-public:
-   #if defined _DEBUG
-   virtual bool AssertValid() const override;
-   virtual void Dump(WBFL::Debug::LogContext& os) const override;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   static bool TestMe(WBFL::Debug::Log& rlog);
-   #endif // _UNITTEST
-};
-
+      private:
+         Float64 m_Rotation{ 0.0 };
+         Float64 m_X1{ 0.0 };
+         Float64 m_X2{ 0.0 };
+         Float64 m_X3{ 0.0 };
+         Float64 m_X4{ 0.0 };
+         Float64 m_X5{ 0.0 };
+         Float64 m_Y1{ 0.0 };
+         Float64 m_Y2{ 0.0 };
+         Float64 m_Y3{ 0.0 };
+         Float64 m_tSlab{ 0.0 };
+         Orientation m_Orientation{ Orientation::Left };
+      };
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMMODEL_TRAFFICBARRIER_H_

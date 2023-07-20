@@ -103,14 +103,14 @@ STDMETHODIMP CSurfaceTemplate::UpdateSegmentParameters(IndexType segmentIdx, Flo
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceTemplate::get_Count(CollectionIndexType* count)
+STDMETHODIMP CSurfaceTemplate::get_Count(IndexType* count)
 {
    CHECK_RETVAL(count);
    *count = m_Template->GetCount();
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceTemplate::get_Item(CollectionIndexType idx,ISurfaceTemplateSegment** segment)
+STDMETHODIMP CSurfaceTemplate::get_Item(IndexType idx,ISurfaceTemplateSegment** segment)
 {
    CHECK_RETOBJ(segment);
    return cogoUtil::CreateSurfaceTemplateSegment(m_Template->GetSegment(idx), segment);
@@ -122,28 +122,28 @@ STDMETHODIMP CSurfaceTemplate::Clear()
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceTemplate::GetRidgePointElevationChange(CollectionIndexType ridgePoint1Idx,CollectionIndexType ridgePoint2Idx,Float64* deltaElevation)
+STDMETHODIMP CSurfaceTemplate::GetRidgePointElevationChange(IndexType ridgePoint1Idx,IndexType ridgePoint2Idx,Float64* deltaElevation)
 {
    CHECK_RETVAL(deltaElevation);
    *deltaElevation = m_Template->GetRidgePointElevationChange(ridgePoint1Idx, ridgePoint2Idx);
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceTemplate::GetElevationChange(CollectionIndexType ridgePointIdx,Float64 offset,Float64* deltaElevation)
+STDMETHODIMP CSurfaceTemplate::GetElevationChange(IndexType ridgePointIdx,Float64 offset,Float64* deltaElevation)
 {
    CHECK_RETVAL(deltaElevation);
    *deltaElevation = m_Template->GetElevationChange(ridgePointIdx, offset);
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceTemplate::GetSlope(CollectionIndexType ridgePointIdx,Float64 offset,Float64* pSlope)
+STDMETHODIMP CSurfaceTemplate::GetSlope(IndexType ridgePointIdx,Float64 offset,Float64* pSlope)
 {
    CHECK_RETVAL(pSlope);
    *pSlope = m_Template->GetSlope(ridgePointIdx, offset);
    return S_OK;
 }
 
-STDMETHODIMP CSurfaceTemplate::GetSegmentSlope(CollectionIndexType segmentIdx,Float64* pSlope)
+STDMETHODIMP CSurfaceTemplate::GetSegmentSlope(IndexType segmentIdx,Float64* pSlope)
 {
    CHECK_RETVAL(pSlope);
    *pSlope = m_Template->GetSegmentSlope(segmentIdx);

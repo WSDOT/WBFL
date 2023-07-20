@@ -215,7 +215,6 @@ cpp_quote("#define ALL_STAGES       INVALID_INDEX")
 cpp_quote("#define ALL_DUCTS        INVALID_INDEX")
 cpp_quote("#define INVALID_BAR_SIZE INVALID_INDEX")
 
-typedef IndexType CollectionIndexType;
 typedef IndexType StageIndexType;
 typedef IndexType EventIndexType;
 typedef IndexType SupportIndexType;

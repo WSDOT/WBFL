@@ -450,51 +450,6 @@ void Polygon::Reflect(const Line2d& line)
    m_Symmetry = Symmetry::None;
 }
 
-#if defined _DEBUG
-bool Polygon::AssertValid() const
-{
-   if (m_Points.empty()) return true;
-
-   // could add test for bow ties here if a suitable algorithm can be found
-   auto iter = m_Points.begin();
-   auto end = m_Points.end();
-   Point2d p0(*iter); // previous point
-   iter++;
-   for (; iter != end; iter++)
-   {
-      Point2d p1(*iter); // current point
-
-      if (m_Symmetry == Symmetry::X)
-      {
-         // when symmetry is about the Y=0 axis, the current point cannot be on the opposite side of the symmetry axis that the previous point
-         Float64 d0 = p0.Y() - m_SymmetryAxis;
-         Float64 d1 = p1.Y() - m_SymmetryAxis;
-         if( !IsZero(d0) && !IsZero(d1) && ::BinarySign(d0) != ::BinarySign(d1))
-            return false;
-      }
-      else if (m_Symmetry == Symmetry::Y )
-      {
-         // when symmetry is about the X=0 axis, the current point cannot be on the opposite side of the symmetry axis that the previous point
-         Float64 d0 = p0.X() - m_SymmetryAxis;
-         Float64 d1 = p1.X() - m_SymmetryAxis;
-         if (!IsZero(d0) && !IsZero(d1) && ::BinarySign(d0) != ::BinarySign(d1))
-            return false;
-      }
-
-      p0 = p1; // update previous point
-   }
-
-   return ShapeImpl::AssertValid();
-}
-
-void Polygon::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for Polygon") << WBFL::Debug::endl;
-   ShapeImpl::Dump( os );
-}
-
-#endif // _DEBUG
-
 void Polygon::UpdateProperties() const
 {
    if (!m_bIsDirty) return;
@@ -745,7 +700,7 @@ bool Polygon::PointInShape_Private(const Point2d& point) const
    // G. Steven Gipson
    // Adv. Eng. Software, 1986, Vol. 8, No. 2
 
-   CollectionIndexType num_points = m_Points.size();
+   IndexType num_points = m_Points.size();
    if (num_points < 3)
       return false;   // points and lines can't contain anything.
 
@@ -933,7 +888,7 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, L
                   // of this Polygon
 
    // If the polyPolygon isn't at least a triangle, just get the heck out of here.
-   CollectionIndexType nPoints = points.size();
+   IndexType nPoints = points.size();
    if (nPoints < 3)
       return nullptr;
 
@@ -1036,358 +991,40 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, L
       return clipped_Polygon;
 }
 
-
-#if defined _UNITTEST
-#include <GeomModel/UnitTest.h>
-bool Polygon::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Polygon");
-
-   // create an angle shape. Taken from "Statics" 1st Ed. by J.L. Merriam, page 373
-
-   Polygon anglep;
-   anglep.AddPoint(Point2d(0, 0));
-   anglep.AddPoint(Point2d(0, 50));
-   anglep.AddPoint(Point2d(10, 50));
-   anglep.AddPoint(Point2d(10, 10));
-   anglep.AddPoint(Point2d(40, 10));
-   anglep.AddPoint(Point2d(40, 0));  // don't close polygon
-
-   ShapeProperties aprops = anglep.GetProperties();
-   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
-   TRY_TESTME(IsEqual(aprops.GetIxx(), 181666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIyy(), 101666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIxy(), -75000., 10.));
-   TRY_TESTME(anglep.GetBoundingBox() == Rect2d(0, 0, 40, 50));
-
-   // test assignment
-   Polygon anglec = anglep;
-   aprops = anglec.GetProperties();
-   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
-   TRY_TESTME(IsEqual(aprops.GetIxx(), 181666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIyy(), 101666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIxy(), -75000., 10.));
-   TRY_TESTME(anglep.GetBoundingBox() == Rect2d(0, 0, 40, 50));
-
-   // try translation
-   Point2d center = anglec.GetLocatorPoint(Shape::LocatorPoint::CenterCenter);
-   TRY_TESTME(center == Point2d(20, 25));
-   Point2d top_right = anglec.GetLocatorPoint(Shape::LocatorPoint::TopRight);
-   TRY_TESTME(top_right == Point2d(40, 50));
-
-   anglec.Move(center, top_right);
-   aprops = anglec.GetProperties();
-   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
-   TRY_TESTME(IsEqual(aprops.GetIxx(), 181666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIyy(), 101666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIxy(), -75000., 10.));
-   TRY_TESTME(anglec.GetBoundingBox() == Rect2d(20, 25, 60, 75));
-
-   // turn shape into a rectangle
-   anglec.RemovePoint(4);
-   anglec.RemovePoint(3);
-   anglec.ReplacePoint(2, Point2d(60, 75));
-   aprops = anglec.GetProperties();
-   TRY_TESTME(IsEqual(aprops.GetArea(), 2000.));
-   TRY_TESTME(IsEqual(aprops.GetIxx(), 416666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIyy(), 266666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIxy(), 0., 1.));
-   TRY_TESTME(anglec.GetBoundingBox() == Rect2d(20, 25, 60, 75));
-
-   // rotate to principal axes
-   anglep.Rotate(center, -0.54105);
-   aprops = anglep.GetProperties();
-   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
-   TRY_TESTME(IsEqual(aprops.GetIxx(), 226666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIyy(), 56666., 10.));
-   TRY_TESTME(IsEqual(aprops.GetIxy(), 107., 10.));
-
-   // create a line and find farthest point
-   Line2d down_left(Point2d(25, 25), Vector2d(Size2d(1, -1)));
-   Float64 dist = anglec.GetFurthestDistance(down_left, Line2d::Side::Left);
-   TRY_TESTME(IsEqual(60.1, dist, .1));
-   dist = anglec.GetFurthestDistance(down_left, Line2d::Side::Right);
-   TRY_TESTME(IsEqual(3.53, dist, .01));
-
-   // create a rectangle and clip it into a triangle
-   Polygon rect;
-   rect.AddPoint(Point2d(0, 0));
-   rect.AddPoint(Point2d(0, 50));
-   rect.AddPoint(Point2d(40, 50));
-   rect.AddPoint(Point2d(40, 0));
-   Line2d up_left(Point2d(0, 0), Vector2d(Size2d(1, 1)));
-   Line2d up_rgt(Point2d(40, 0), Vector2d(Size2d(-3, 5)));
-   std::unique_ptr<Shape> pfirst(rect.CreateClippedShape(up_left, Line2d::Side::Left));
-   aprops = pfirst->GetProperties();
-   TRY_TESTME(IsEqual(aprops.GetArea(), 800.));
-   TRY_TESTME(IsEqual(aprops.GetCentroid().X(), 26.666666667));
-   TRY_TESTME(IsEqual(aprops.GetCentroid().Y(), 13.333333333));
-
-   std::unique_ptr<Shape> ptriang(pfirst->CreateClippedShape(up_rgt, Line2d::Side::Right));
-   aprops = ptriang->GetProperties();
-   TRY_TESTME(IsEqual(aprops.GetArea(), 500.));
-   TRY_TESTME(ptriang->GetBoundingBox() == Rect2d(0, 0, 40, 25));
-
-   // clip triangle into a right triangle
-   Rect2d clip_box(0, 5, 20, 25);
-   std::unique_ptr<Shape> prtri(ptriang->CreateClippedShape(clip_box, Shape::ClipRegion::In));
-   aprops = prtri->GetProperties();
-   TRY_TESTME(IsEqual(aprops.GetArea(), 112.5));
-   TRY_TESTME(prtri->GetBoundingBox() == Rect2d(5, 5, 20, 20));
-
-   auto hookPnt = rect.GetHookPoint();
-   TRY_TESTME(*hookPnt == Point2d(0, 0));
-   hookPnt->Move(10, 10);
-   auto points = rect.GetPolyPoints();
-   TRY_TESTME(points[0] == Point2d(10, 10));
-   TRY_TESTME(points[1] == Point2d(10, 60));
-   TRY_TESTME(points[2] == Point2d(50, 60));
-   TRY_TESTME(points[3] == Point2d(50, 10));
-
-
 #if defined _DEBUG
-   prtri->Dump(rlog.GetLogContext());
-#endif
+bool Polygon::AssertValid() const
+{
+   if (m_Points.empty()) return true;
 
-   // Test hook point behavior
-   TRY_TESTME(UnitTest::TestHookPoint(anglep) == true);
+   // could add test for bow ties here if a suitable algorithm can be found
+   auto iter = m_Points.begin();
+   auto end = m_Points.end();
+   Point2d p0(*iter); // previous point
+   iter++;
+   for (; iter != end; iter++)
+   {
+      Point2d p1(*iter); // current point
 
+      if (m_Symmetry == Symmetry::X)
+      {
+         // when symmetry is about the Y=0 axis, the current point cannot be on the opposite side of the symmetry axis that the previous point
+         Float64 d0 = p0.Y() - m_SymmetryAxis;
+         Float64 d1 = p1.Y() - m_SymmetryAxis;
+         if (!IsZero(d0) && !IsZero(d1) && ::BinarySign(d0) != ::BinarySign(d1))
+            return false;
+      }
+      else if (m_Symmetry == Symmetry::Y)
+      {
+         // when symmetry is about the X=0 axis, the current point cannot be on the opposite side of the symmetry axis that the previous point
+         Float64 d0 = p0.X() - m_SymmetryAxis;
+         Float64 d1 = p1.X() - m_SymmetryAxis;
+         if (!IsZero(d0) && !IsZero(d1) && ::BinarySign(d0) != ::BinarySign(d1))
+            return false;
+      }
 
-   // Test X-axis Symmetry (shape defined above Y=0)
-   //
-   //  (0,10) +=============+ (10,10)
-   //         |             |
-   //         |             |
-   //         |             |  Input
-   //         |             |
-   //  (0,0)  +=============+ (10,0)
-   //         :             :
-   //         :             :
-   //         :             :  Assumed from symmetry
-   //         :             :
-   // (0,-10) +-------------+ (10,-10)
-   Polygon sym_shape;
-   sym_shape.SetSymmetry(Polygon::Symmetry::X);
-   // shape is symmetric about the Y=0 axis so don't define an edge on that axis
-   sym_shape.AddPoint(10, 0);
-   sym_shape.AddPoint(10, 10);
-   sym_shape.AddPoint(0, 10);
-   sym_shape.AddPoint(0, 0);
-   
-   Polygon shape;
-   shape.AddPoint(0, -10);
-   shape.AddPoint(10, -10);
-   shape.AddPoint(10, 10);
-   shape.AddPoint(0, 10);
-   
-   TRY_TESTME(sym_shape.GetProperties() == shape.GetProperties());
-   TRY_TESTME(sym_shape.GetBoundingBox() == shape.GetBoundingBox());
-   TRY_TESTME(IsEqual(sym_shape.GetPerimeter(),shape.GetPerimeter()));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(5,  5)) == shape.PointInShape(Point2d(5,5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(5, -5)) == shape.PointInShape(Point2d(5, -5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, 5)) == shape.PointInShape(Point2d(-5, 5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
+      p0 = p1; // update previous point
+   }
 
-   Line2d line(Point2d(-10, 20), Point2d(20, 20));
-   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Right), shape.GetFurthestDistance(line, Line2d::Side::Right)));
-   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Left), shape.GetFurthestDistance(line, Line2d::Side::Left)));
-
-   line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
-   auto clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);
-   auto clip2 = shape.CreateClippedShape(line, Line2d::Side::Left);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Right);
-   clip2 = shape.CreateClippedShape(line, Line2d::Side::Right);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   Rect2d clipRect(-15, -5, 15, 5);
-   clip1 = sym_shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
-   clip2 = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   // Test X-axis Symmetry (shape defined below Y=0)
-   //
-   //  (0,10) +-------------+ (10,10)
-   //         :             :
-   //         :             :
-   //         :             :  Assumed by symmetry
-   //         :             :
-   //  (0,0)  +=============+ (10,0)
-   //         |             |
-   //         |             |
-   //         |             |  Input
-   //         |             |
-   // (0,-10) +=============+ (10,-10)
-   sym_shape.Clear();
-   sym_shape.SetSymmetry(Polygon::Symmetry::X);
-   // shape is symmetric about the Y=0 axis so don't define an edge on that axis
-   sym_shape.AddPoint(0, 0);
-   sym_shape.AddPoint(0, -10);
-   sym_shape.AddPoint(10, -10);
-   sym_shape.AddPoint(10, 0);
-
-   TRY_TESTME(sym_shape.GetProperties() == shape.GetProperties());
-   TRY_TESTME(sym_shape.GetBoundingBox() == shape.GetBoundingBox());
-   TRY_TESTME(IsEqual(sym_shape.GetPerimeter(), shape.GetPerimeter()));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(5, 5)) == shape.PointInShape(Point2d(5, 5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(5, -5)) == shape.PointInShape(Point2d(5, -5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, 5)) == shape.PointInShape(Point2d(-5, 5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
-
-   line.ThroughPoints(Point2d(-10, 20), Point2d(20, 20));
-   Point2d furthestPoint, sym_furthestPoint;
-   Float64 furthestDistance, sym_furthestDistance;
-   sym_shape.GetFurthestPoint(line, Line2d::Side::Right, sym_furthestPoint, sym_furthestDistance);
-   shape.GetFurthestPoint(line, Line2d::Side::Right, furthestPoint, furthestDistance);
-   TRY_TESTME(IsEqual(sym_furthestDistance,furthestDistance));
-   TRY_TESTME(sym_furthestPoint == furthestPoint);
-   TRY_TESTME(sym_furthestPoint == Point2d(0, -10));
-   
-   sym_shape.GetFurthestPoint(line, Line2d::Side::Left, sym_furthestPoint, sym_furthestDistance);
-   shape.GetFurthestPoint(line, Line2d::Side::Left, furthestPoint, furthestDistance);
-   TRY_TESTME(IsEqual(sym_furthestDistance, furthestDistance));
-   // NOTE: there are two valid solutions.... shape and sym_shape each get one of them
-   TRY_TESTME(furthestPoint == Point2d(10,10));
-   TRY_TESTME(sym_furthestPoint == Point2d(0, 10));
-
-   line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
-   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);
-   clip2 = shape.CreateClippedShape(line, Line2d::Side::Left);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Right);
-   clip2 = shape.CreateClippedShape(line, Line2d::Side::Right);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   clipRect.Set(-15, -5, 15, 5);
-   clip1 = sym_shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
-   clip2 = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   // Test Y axis symmetry (shape defined right of X=0)
-   //  (-10,10)    (0,10)         (10,10)
-   //  +------------+=============+
-   //  :            |             |
-   //  :            |             |
-   //  :            |             |  Input
-   //  :            |             |
-   //  +------------+=============+
-   // (-10,0)     (0,0)          (10,0)
-   sym_shape.Clear();
-   sym_shape.SetSymmetry(Polygon::Symmetry::Y);
-   // shape is symmetric about the X=0 axis so don't define an edge on that axis
-   sym_shape.AddPoint(0, 0);
-   sym_shape.AddPoint(10, 0);
-   sym_shape.AddPoint(10, 10);
-   sym_shape.AddPoint(0, 10);
-
-   shape.Clear();
-   shape.AddPoint(-10,0);
-   shape.AddPoint(10, 0);
-   shape.AddPoint(10, 10);
-   shape.AddPoint(-10, 10);
-
-   TRY_TESTME(sym_shape.GetProperties() == shape.GetProperties());
-   TRY_TESTME(sym_shape.GetBoundingBox() == shape.GetBoundingBox());
-   TRY_TESTME(IsEqual(sym_shape.GetPerimeter(), shape.GetPerimeter()));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(5, 5)) == shape.PointInShape(Point2d(5, 5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(5, -5)) == shape.PointInShape(Point2d(5, -5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, 5)) == shape.PointInShape(Point2d(-5, 5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
-
-   line.ThroughPoints(Point2d(-20, -20), Point2d(-20, 20));
-   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Right), shape.GetFurthestDistance(line, Line2d::Side::Right)));
-   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Left), shape.GetFurthestDistance(line, Line2d::Side::Left)));
-
-   line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
-   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);
-   clip2 = shape.CreateClippedShape(line, Line2d::Side::Left);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Right);
-   clip2 = shape.CreateClippedShape(line, Line2d::Side::Right);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   clipRect.Set(-15, 2, 15, 8);
-   clip1 = sym_shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
-   clip2 = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-
-   // Test Y axis symmetry (shape defined left of X=0)
-   //  (-10,10)    (0,10)         (10,10)
-   //  +============+-------------+
-   //  |            |             :
-   //  |            |             :
-   //  |            |             :  Input
-   //  |            |             :
-   //  +============+-------------+
-   // (-10,0)     (0,0)          (10,0)
-   sym_shape.Clear();
-   sym_shape.SetSymmetry(Polygon::Symmetry::Y);
-   // shape is symmetric about the X=0 axis so don't define an edge on that axis
-   sym_shape.AddPoint(0, 10);
-   sym_shape.AddPoint(-10, 10);
-   sym_shape.AddPoint(-10, 0);
-   sym_shape.AddPoint(0, 0);
-
-   shape.Clear();
-   shape.AddPoint(-10, 0);
-   shape.AddPoint(10, 0);
-   shape.AddPoint(10, 10);
-   shape.AddPoint(-10, 10);
-
-   TRY_TESTME(sym_shape.GetProperties() == shape.GetProperties());
-   TRY_TESTME(sym_shape.GetBoundingBox() == shape.GetBoundingBox());
-   TRY_TESTME(IsEqual(sym_shape.GetPerimeter(), shape.GetPerimeter()));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(5, 5)) == shape.PointInShape(Point2d(5, 5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(5, -5)) == shape.PointInShape(Point2d(5, -5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, 5)) == shape.PointInShape(Point2d(-5, 5)));
-   TRY_TESTME(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
-
-   line.ThroughPoints(Point2d(-20, -20), Point2d(-20, 20));
-   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Right), shape.GetFurthestDistance(line, Line2d::Side::Right)));
-   TRY_TESTME(IsEqual(sym_shape.GetFurthestDistance(line, Line2d::Side::Left), shape.GetFurthestDistance(line, Line2d::Side::Left)));
-
-   line.ThroughPoints(shape.GetBoundingBox().TopLeft(), shape.GetBoundingBox().BottomRight()); // diagonal line from top-left to bottom-right
-   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Left);
-   clip2 = shape.CreateClippedShape(line, Line2d::Side::Left);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   clip1 = sym_shape.CreateClippedShape(line, Line2d::Side::Right);
-   clip2 = shape.CreateClippedShape(line, Line2d::Side::Right);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   clipRect.Set(-15, 2, 15, 8);
-   clip1 = sym_shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
-   clip2 = shape.CreateClippedShape(clipRect, Shape::ClipRegion::In);
-   TRY_TESTME(clip1->GetProperties() == clip2->GetProperties());
-   TRY_TESTME(clip1->GetBoundingBox() == clip2->GetBoundingBox());
-   TRY_TESTME(clip1->GetPerimeter() == clip2->GetPerimeter());
-
-   TESTME_EPILOG("Polygon");
+   return true;
 }
-#endif // _UNITTEST
+#endif // _DEBUG

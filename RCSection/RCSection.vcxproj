@@ -207,7 +207,6 @@
     <ClCompile Include="MomentInteractionCurveSolver.cpp" />
     <ClCompile Include="MomentInteractionCurveSolverImpl.cpp" />
     <ClCompile Include="SectionBuilder.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="VariableStressBlockFactor.cpp" />
     <ClCompile Include="XRCSection.cpp" />
   </ItemGroup>
@@ -234,7 +233,6 @@
     <ClInclude Include="..\Include\RCSection\RCSectionLib.h" />
     <ClInclude Include="..\Include\RCSection\SectionBuilder.h" />
     <ClInclude Include="..\Include\RCSection\StressBlockFactor.h" />
-    <ClInclude Include="..\Include\RCSection\UnitTest.h" />
     <ClInclude Include="..\Include\RCSection\VariableStressBlockFactor.h" />
     <ClInclude Include="..\Include\RCSection\XRCSection.h" />
     <ClInclude Include="AxialInteractionCurveSolverImpl.h" />

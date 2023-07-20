@@ -25,6 +25,7 @@
 #include <EngTools\EngToolsExp.h>
 #include <GeomModel\Primitives.h>
 #include <GeomModel\Plane3d.h>
+#include <GeomModel\Line2d.h>
 
 namespace WBFL
 {
@@ -86,16 +87,6 @@ namespace WBFL
          /// \param[out] Y the Y-ordinate
          /// \return true if successful
          bool GetYStrainLocation(Float64 strain, Float64 X, Float64& Y) const;
-
-
-#if defined _DEBUG
-         bool AssertValid() const;
-         void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
 
       private:
          WBFL::Geometry::Plane3d m_Plane;

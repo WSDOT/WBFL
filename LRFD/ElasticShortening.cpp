@@ -27,19 +27,9 @@
 #include <Lrfd\ElasticShortening.h>
 #include <Lrfd\VersionMgr.h>
 
-/****************************************************************************
-CLASS
-   lrfdElasticShortening
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-// preconvert for performance
-static const Float64 g_25000_MPA = WBFL::Units::ConvertToSysUnits(  25000, WBFL::Units::Measure::MPa );
-static const Float64 g_1_MM2 = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter2 );
-static const Float64 g_1_MM4 = WBFL::Units::ConvertToSysUnits( 1, WBFL::Units::Measure::Millimeter4 );
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdElasticShortening::lrfdElasticShortening() :
+ElasticShortening::ElasticShortening() :
    m_ePerm(0,0), m_eTemp(0,0)
 {
    m_FpjPerm   = 0;
@@ -51,21 +41,21 @@ lrfdElasticShortening::lrfdElasticShortening() :
    m_ApsPerm   = 0;
    m_ApsTemp   = 0;
 
-   m_Eci   = g_25000_MPA;
-   m_Ep    = lrfdPsStrand::GetModE();
+   m_Eci   = WBFL::Units::ConvertToSysUnits(25000, WBFL::Units::Measure::MPa);
+   m_Ep    = PsStrand::GetModE();
 
    m_bGrossProperties = false; // assume transformed
-   m_Ag    = g_1_MM2;
-   m_Ixx = g_1_MM4;
-   m_Iyy = g_1_MM4;
-   m_Ixy = g_1_MM4;
+   m_Ag    = WBFL::Units::ConvertToSysUnits(1, WBFL::Units::Measure::Millimeter2);
+   m_Ixx = WBFL::Units::ConvertToSysUnits(1, WBFL::Units::Measure::Millimeter4);
+   m_Iyy = WBFL::Units::ConvertToSysUnits(1, WBFL::Units::Measure::Millimeter4);
+   m_Ixy = WBFL::Units::ConvertToSysUnits(1, WBFL::Units::Measure::Millimeter4);
 
    m_Mdlg  = 0;
    m_K     = 1;
 
    m_P = 0;
 
-   m_FcgpMethod = fcgpIterative;
+   m_FcgpMethod = FcgpComputationMethod::Iterative;
 
    m_dfESPerm = 0;
    m_dfESTemp = 0;
@@ -76,7 +66,7 @@ lrfdElasticShortening::lrfdElasticShortening() :
    m_bUpdate = true;
 }
 
-lrfdElasticShortening::lrfdElasticShortening(Float64 fpjPerm,   // jacking stress
+ElasticShortening::ElasticShortening(Float64 fpjPerm,   // jacking stress
                                              Float64 fpjTemp,   // jacking stress
                                              Float64 dfpR1Perm, // initial relaxation
                                              Float64 dfpR1Temp, // initial relaxation
@@ -132,28 +122,7 @@ lrfdElasticShortening::lrfdElasticShortening(Float64 fpjPerm,   // jacking stres
    m_bUpdate = true;
 }
 
-lrfdElasticShortening::lrfdElasticShortening(const lrfdElasticShortening& rOther)
-{
-   MakeCopy( rOther );
-}
-
-lrfdElasticShortening::~lrfdElasticShortening()
-{
-}
-
-//======================== OPERATORS  =======================================
-lrfdElasticShortening& lrfdElasticShortening::operator=(const lrfdElasticShortening& rOther)
-{
-   if ( this != &rOther )
-   {
-      MakeAssignment( rOther );
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-Float64 lrfdElasticShortening::P() const
+Float64 ElasticShortening::P() const
 {
    if ( m_bUpdate )
    {
@@ -163,7 +132,7 @@ Float64 lrfdElasticShortening::P() const
    return m_P;
 }
 
-Float64 lrfdElasticShortening::TemporaryStrand_ElasticShorteningLosses() const
+Float64 ElasticShortening::TemporaryStrand_ElasticShorteningLosses() const
 {
    if ( m_bUpdate )
    {
@@ -173,7 +142,7 @@ Float64 lrfdElasticShortening::TemporaryStrand_ElasticShorteningLosses() const
    return m_dfESTemp;
 }
 
-Float64 lrfdElasticShortening::PermanentStrand_ElasticShorteningLosses() const
+Float64 ElasticShortening::PermanentStrand_ElasticShorteningLosses() const
 {
    if ( m_bUpdate )
    {
@@ -183,7 +152,7 @@ Float64 lrfdElasticShortening::PermanentStrand_ElasticShorteningLosses() const
    return m_dfESPerm;
 }
 
-Float64 lrfdElasticShortening::TemporaryStrand_Fcgp() const
+Float64 ElasticShortening::TemporaryStrand_Fcgp() const
 {
    if ( m_bUpdate )
    {
@@ -193,7 +162,7 @@ Float64 lrfdElasticShortening::TemporaryStrand_Fcgp() const
    return m_FcgpTemp;
 }
 
-Float64 lrfdElasticShortening::PermanentStrand_Fcgp() const
+Float64 ElasticShortening::PermanentStrand_Fcgp() const
 {
    if ( m_bUpdate )
    {
@@ -204,7 +173,7 @@ Float64 lrfdElasticShortening::PermanentStrand_Fcgp() const
 }
 
 
-void lrfdElasticShortening::SetProperties(Float64 A, Float64 Ixx, Float64 Iyy, Float64 Ixy)
+void ElasticShortening::SetProperties(Float64 A, Float64 Ixx, Float64 Iyy, Float64 Ixy)
 {
    m_Ag = A;
    m_Ixx = Ixx;
@@ -213,7 +182,7 @@ void lrfdElasticShortening::SetProperties(Float64 A, Float64 Ixx, Float64 Iyy, F
    m_bUpdate = true;
 }
 
-void lrfdElasticShortening::GetProperties(Float64* pA, Float64* pIxx, Float64* pIyy, Float64* pIxy) const
+void ElasticShortening::GetProperties(Float64* pA, Float64* pIxx, Float64* pIyy, Float64* pIxy) const
 {
    *pA = m_Ag;
    *pIxx = m_Ixx;
@@ -221,22 +190,7 @@ void lrfdElasticShortening::GetProperties(Float64* pA, Float64* pIxx, Float64* p
    *pIxy = m_Ixy;
 }
 
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdElasticShortening::MakeAssignment( const lrfdElasticShortening& rOther )
-{
-   MakeCopy( rOther );
-}
-
-void lrfdElasticShortening::Update() const
+void ElasticShortening::Update() const
 {
    Float64 dfESPerm = 0.00; // Guess
    Float64 dfESTemp = 0.00; // Guess
@@ -262,7 +216,7 @@ void lrfdElasticShortening::Update() const
       m_dfESTemp = 0;
       m_dfESPerm = 0;
    }
-   else if (m_FcgpMethod == fcgpIterative)
+   else if (m_FcgpMethod == FcgpComputationMethod::Iterative)
    {
       Float64 D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
 
@@ -344,7 +298,7 @@ void lrfdElasticShortening::Update() const
          m_dfESPerm = kn * m_FcgpPerm;
       }
    }
-   else if (m_FcgpMethod == fcgp07Fpu)
+   else if (m_FcgpMethod == FcgpComputationMethod::AssumedFpe)
    {
       // A bit of slight of hand here: This method assumes that the strand stress after release is 0.7Fpu, 
       // but we can have negative losses for a jacking stress of less. So, just assume that our client set
@@ -383,50 +337,3 @@ void lrfdElasticShortening::Update() const
 
    m_bUpdate = false;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdElasticShortening::MakeCopy( const lrfdElasticShortening& rOther )
-{
-   m_ApsPerm = rOther.m_ApsPerm;
-   m_ApsTemp = rOther.m_ApsTemp;
-   m_ePerm   = rOther.m_ePerm;
-   m_eTemp   = rOther.m_eTemp;  
-
-   m_FpjPerm = rOther.m_FpjPerm;
-   m_FpjTemp = rOther.m_FpjTemp;
-
-   m_dFpR1Perm = rOther.m_dFpR1Perm;
-   m_dFpR1Temp = rOther.m_dFpR1Temp;
-
-   m_bGrossProperties = rOther.m_bGrossProperties;
-   m_Ag   = rOther.m_Ag;
-   m_Ixx = rOther.m_Ixx;
-   m_Iyy = rOther.m_Iyy;
-   m_Ixy = rOther.m_Ixy;
-
-   m_Mdlg = rOther.m_Mdlg;
-   m_Eci  = rOther.m_Eci;
-   m_Ep   = rOther.m_Ep;
-   m_K    = rOther.m_K;
-
-   m_P        = rOther.m_P;
-
-   m_FcgpMethod = rOther.m_FcgpMethod;
-
-   m_dfESPerm = rOther.m_dfESPerm;
-   m_dfESTemp = rOther.m_dfESTemp;
-   m_FcgpPerm = rOther.m_FcgpPerm;
-   m_FcgpTemp = rOther.m_FcgpTemp;
-
-   m_bUpdate = rOther.m_bUpdate;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================

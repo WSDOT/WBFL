@@ -118,7 +118,7 @@ public:
             events->OnDistributionFactorsChanged();
 		}
 	}
-	VOID Fire_OnDistributionFactorsAdded(IDistributionFactorSegment * DistributionFactor, CollectionIndexType idx)
+	VOID Fire_OnDistributionFactorsAdded(IDistributionFactorSegment * DistributionFactor, IndexType idx)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -134,7 +134,7 @@ public:
             events->OnDistributionFactorsAdded(DistributionFactor,idx);
 		}
 	}
-	VOID Fire_OnDistributionFactorsBeforeRemove(IDistributionFactorSegment * DistributionFactor, CollectionIndexType idx)
+	VOID Fire_OnDistributionFactorsBeforeRemove(IDistributionFactorSegment * DistributionFactor, IndexType idx)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -150,7 +150,7 @@ public:
             events->OnDistributionFactorsBeforeRemove(DistributionFactor,idx);
 		}
 	}
-	VOID Fire_OnDistributionFactorsMoveTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnDistributionFactorsMoveTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -166,7 +166,7 @@ public:
             events->OnDistributionFactorsMoveTo(from,to);
 		}
 	}
-	VOID Fire_OnDistributionFactorsCopyTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnDistributionFactorsCopyTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;

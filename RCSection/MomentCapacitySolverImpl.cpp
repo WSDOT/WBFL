@@ -105,25 +105,16 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::Solve(Float64 
 
       // start with a zero capacity solution since it is initialized for the zero curvature case
       auto solution = CreateMomentCapacitySolution();
-
-
-      // populate the solution object with the values from the controlling case
-      const auto& cgC = solution->GetCompressionResultantLocation();
-      const auto& cgT = solution->GetTensionResultantLocation();
-
-      Float64 C = solution->GetCompressionResultant();
-      Float64 T = solution->GetTensionResultant();
-
       const auto& incrementalStrainPlane = solution->GetIncrementalStrainPlane();
 
       UpdateAnalysisPoints(angle, solutionMethod, strainLocation);
       if (IsEqual(Fz, compression_capacity_limit.Fz))
       {
-         solution->InitSolution(compression_capacity_limit.Fz, compression_capacity_limit.Mx, compression_capacity_limit.My, incrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_CompressionSolution)));
+         solution->InitSolution(incrementalStrainPlane, m_ExtremeCompressionPoint, m_ExtremeTensionPoint, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_CompressionSolution)));
       }
       else
       {
-         solution->InitSolution(tension_capacity_limit.Fz, tension_capacity_limit.Mx, tension_capacity_limit.My, incrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_TensionSolution)));
+         solution->InitSolution(incrementalStrainPlane, m_ExtremeCompressionPoint, m_ExtremeTensionPoint, 0.0, std::move(std::make_unique<GeneralSectionSolution>(*m_TensionSolution)));
       }
 
       return solution;
@@ -344,14 +335,14 @@ void MomentCapacitySolverImpl::UpdateAnalysisPoints(Float64 angle, MomentCapacit
    Float64 dCompression = -Float64_Max;
    Float64 dTension = -Float64_Max;
    IndexType nShapes = section->GetShapeCount();
-   for (CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
+   for (IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
    {
       const auto& shape = section->GetShape(shapeIdx);
 
       WBFL::Geometry::Point2d pntC, pntT;
       Float64 dist_compression, dist_tension;
-      shape->GetFurthestPoint(compression_side_line, WBFL::Geometry::Line2d::Side::Right, pntC, dist_compression);
-      shape->GetFurthestPoint(tension_side_line, WBFL::Geometry::Line2d::Side::Right, pntT, dist_tension);
+      shape.GetFurthestPoint(compression_side_line, WBFL::Geometry::Line2d::Side::Right, pntC, dist_compression);
+      shape.GetFurthestPoint(tension_side_line, WBFL::Geometry::Line2d::Side::Right, pntT, dist_tension);
 
       if (dCompression < dist_compression)
       {
@@ -581,15 +572,7 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::AnalyzeSection
       }
    }
 
-   Float64 Pz = Fz_r + Fz;
-
-   Float64 C = m_GeneralSolution->GetCompressionResultant();
-   Float64 T = m_GeneralSolution->GetTensionResultant();
-
-   CHECK(IsZero(C + T - Fz, m_AxialTolerance));
-
-   const auto& cgC = m_GeneralSolution->GetCompressionResultantLocation();
-   const auto& cgT = m_GeneralSolution->GetTensionResultantLocation();
+   CHECK(IsZero(m_GeneralSolution->GetCompressionResultant() + m_GeneralSolution->GetTensionResultant() - Fz, m_AxialTolerance));
 
    // Compute curvature
    const auto& section = GetSection();
@@ -612,7 +595,7 @@ std::unique_ptr<MomentCapacitySolution> MomentCapacitySolverImpl::AnalyzeSection
 #endif
 
    auto solution = CreateMomentCapacitySolution();
-   solution->InitSolution(Pz, Mx, My, m_IncrementalStrainPlane, m_ExtremeCompressionPoint, cgC, C, m_ExtremeTensionPoint, cgT, T, k, std::move(m_GeneralSolution));
+   solution->InitSolution(m_IncrementalStrainPlane, m_ExtremeCompressionPoint, m_ExtremeTensionPoint, k, std::move(m_GeneralSolution));
 
    if (m_MaxIter <= iter)
    {

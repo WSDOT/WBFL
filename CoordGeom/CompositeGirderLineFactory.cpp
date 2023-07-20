@@ -41,14 +41,3 @@ std::vector<std::shared_ptr<GirderLine>> CompositeGirderLineFactory::Create(std:
    }
    return girder_lines;
 }
-
-#if defined _UNITTEST
-bool CompositeGirderLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CompositeGirderLineFactory");
-
-   TESTME_EPILOG("CompositeGirderLineFactory");
-}
-#endif // _UNITTEST
-
-

@@ -182,8 +182,8 @@ void CEditCustomReportDlg::FillChapterData(bool initial)
 
       GET_IFACE2(m_pConfigureReportsDlg->m_pBroker,IReportManager,pReportMgr);
       std::shared_ptr<WBFL::Reporting::ReportBuilder> pBuilder = pReportMgr->GetReportBuilder(rptname);
-      CollectionIndexType nc = pBuilder->GetChapterBuilderCount();
-      for (CollectionIndexType ic = 0; ic<nc; ic++)
+      IndexType nc = pBuilder->GetChapterBuilderCount();
+      for (IndexType ic = 0; ic<nc; ic++)
       {
          std::shared_ptr<WBFL::Reporting::ChapterBuilder> pCb = pBuilder->GetChapterBuilder(ic);
          std::_tstring cbname = pCb->GetName();

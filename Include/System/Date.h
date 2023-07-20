@@ -187,10 +187,6 @@ namespace WBFL
          static PrintFormat SetPrintFormat(PrintFormat h );
          static PrintFormat GetPrintFormat();
 
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
       protected:
 
           static Int16 AssertWeekDayNumber( DayTy d );

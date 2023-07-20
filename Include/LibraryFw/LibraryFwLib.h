@@ -21,18 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LIBRARYFW_LIBRARYFWLIB_H_
-#define INCLUDED_LIBRARYFW_LIBRARYFWLIB_H_
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   LibraryFw
-
-   Support library that provides library services.
-
-DESCRIPTION
-   Support library that provides library services.
-*****************************************************************************/
-
-#endif // INCLUDED_LIBRARYFW_LIBRARYFWLIB_H_
+#include <WBFLTypes.h>

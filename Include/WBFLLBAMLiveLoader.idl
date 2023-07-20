@@ -256,19 +256,19 @@ library WBFLLBAMLiveLoader
       HRESULT Clear();
 
       [helpstring("method Reserve"),helpcontext(IDH_LiveLoadModelSectionResults_Reserve)] 
-      HRESULT Reserve([in]CollectionIndexType size);
+      HRESULT Reserve([in]IndexType size);
 
       [propget, helpstring("property Count"),helpcontext(IDH_LiveLoadModelSectionResults_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       [helpstring("method Add"),helpcontext(IDH_LiveLoadModelSectionResults_Add)] 
       HRESULT Add([in]Float64 leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]Float64 rightResult, [in]ILiveLoadConfiguration* rightConfig);
 
       [helpstring("method SetResult"),helpcontext(IDH_LiveLoadModelSectionResults_SetResult)] 
-      HRESULT SetResult([in]CollectionIndexType index, [in]Float64 leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]Float64 rightResult, [in]ILiveLoadConfiguration* rightConfig);
+      HRESULT SetResult([in]IndexType index, [in]Float64 leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]Float64 rightResult, [in]ILiveLoadConfiguration* rightConfig);
 
       [helpstring("method GetResult"),helpcontext(IDH_LiveLoadModelSectionResults_GetResult)] 
-      HRESULT GetResult([in]CollectionIndexType index, [out]Float64* leftResult, [out]ILiveLoadConfiguration* *leftConfig, [out]Float64* rightResult, [out]ILiveLoadConfiguration* *rightConfig);
+      HRESULT GetResult([in]IndexType index, [out]Float64* leftResult, [out]ILiveLoadConfiguration* *leftConfig, [out]Float64* rightResult, [out]ILiveLoadConfiguration* *rightConfig);
 	};
 
 	[
@@ -285,19 +285,19 @@ library WBFLLBAMLiveLoader
       HRESULT Clear();
 
       [helpstring("method Reserve"),helpcontext(IDH_LiveLoadModelResults_Reserve)] 
-      HRESULT Reserve([in]CollectionIndexType size);
+      HRESULT Reserve([in]IndexType size);
 
       [propget, helpstring("property Count"),helpcontext(IDH_LiveLoadModelResults_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       [helpstring("method Add"),helpcontext(IDH_LiveLoadModelResults_Add)] 
       HRESULT Add([in]Float64 result, [in]ILiveLoadConfiguration* config);
 
       [helpstring("method SetResult"),helpcontext(IDH_LiveLoadModelResults_SetResult)] 
-      HRESULT SetResult([in]CollectionIndexType index, [in]Float64 result, [in]ILiveLoadConfiguration* config);
+      HRESULT SetResult([in]IndexType index, [in]Float64 result, [in]ILiveLoadConfiguration* config);
 
       [helpstring("method GetResult"),helpcontext(IDH_LiveLoadModelResults_GetResult)] 
-      HRESULT GetResult([in]CollectionIndexType index, [out]Float64* result, [out]ILiveLoadConfiguration* *config);
+      HRESULT GetResult([in]IndexType index, [out]Float64* result, [out]ILiveLoadConfiguration* *config);
 	};
 
 	[
@@ -314,19 +314,19 @@ library WBFLLBAMLiveLoader
       HRESULT Clear();
 
       [helpstring("method Reserve"),helpcontext(IDH_LiveLoadModelStressResults_Reserve)] 
-      HRESULT Reserve([in]CollectionIndexType size);
+      HRESULT Reserve([in]IndexType size);
 
       [propget, helpstring("property Count"),helpcontext(IDH_LiveLoadModelStressResults_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 
       [helpstring("method Add"),helpcontext(IDH_LiveLoadModelStressResults_Add)] 
       HRESULT Add([in]IStressResult* leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILiveLoadConfiguration* rightConfig);
 
       [helpstring("method SetResult"),helpcontext(IDH_LiveLoadModelStressResults_SetResult)] 
-      HRESULT SetResult([in]CollectionIndexType index, [in]IStressResult* leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILiveLoadConfiguration* rightConfig);
+      HRESULT SetResult([in]IndexType index, [in]IStressResult* leftResult, [in]ILiveLoadConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILiveLoadConfiguration* rightConfig);
 
       [helpstring("method GetResult"),helpcontext(IDH_LiveLoadModelStressResults_GetResult)] 
-      HRESULT GetResult([in]CollectionIndexType index, [out]IStressResult* *leftResult, [out]ILiveLoadConfiguration* *leftConfig, [out]IStressResult* *rightResult, [out]ILiveLoadConfiguration* *rightConfig);
+      HRESULT GetResult([in]IndexType index, [out]IStressResult* *leftResult, [out]ILiveLoadConfiguration* *leftConfig, [out]IStressResult* *rightResult, [out]ILiveLoadConfiguration* *rightConfig);
 	};
 
 	[

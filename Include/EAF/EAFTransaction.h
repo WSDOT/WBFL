@@ -26,8 +26,8 @@
 #include <EAF\EAFExp.h>
 #include <string>
 
-/// Abstract base class of all transactions. A transaction is a unit of change in the system.
-/// Transactions are excuted, undone, and redone
+/// @brief Abstract base class of all transactions. A transaction is a unit of change in the system.
+/// Transactions are executed, undone, and redone
 class EAFCLASS CEAFTransaction
 {
 public:
@@ -37,35 +37,24 @@ public:
    CEAFTransaction(const CEAFTransaction&) = delete;
    CEAFTransaction& operator=(const CEAFTransaction&) = delete;
 
-   /// Excutes the transation. Returns true if successful.
+   /// @brief Executes the transaction. Returns true if successful.
    virtual bool Execute();
 
-   /// Causes the transaction to undo itself
+   /// @brief Causes the transaction to undo itself
    virtual void Undo();
 
-   /// Creates a copy of the transaction
+   /// @brief Creates a copy of the transaction
    virtual std::unique_ptr<CEAFTransaction> CreateClone() const = 0;
 
-   /// Writes the name of the transaction to a stream
+   /// @brief Writes the name of the transaction to a stream
    virtual void Log(std::_tostream& os) const;
 
-   /// Returns the name of the transaction. This is useful for Undo/Redo menu commands.
+   /// @brief Returns the name of the transaction. This is useful for Undo/Redo menu commands.
    virtual std::_tstring Name() const = 0;
 
-   /// Returns true if the transaction can be undone
+   /// @brief Returns true if the transaction can be undone
    virtual bool IsUndoable() const;
 
-   /// Returns true if the transaction can be repeated
+   /// @brief Returns true if the transaction can be repeated
    virtual bool IsRepeatable() const;
-
-#if defined _DEBUG
-public:
-   bool AssertValid() const;
-   void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-public:
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
 };

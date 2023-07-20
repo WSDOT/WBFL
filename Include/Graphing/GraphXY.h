@@ -33,411 +33,394 @@ namespace WBFL
 {
    namespace Graphing
    {
-/// An X-Y line graph object.
-class GRAPHINGCLASS GraphXY
-{
-public:
-   /// Defines the border style for the graph legend
-   enum class Style { 
-      None,  ///< legend does not have a border
-      Checker, ///< each legend item has a rectangular border
-      Boundary ///< legend has a single rectangular border
-   };
+      /// An X-Y line graph object.
+      class GRAPHINGCLASS GraphXY
+      {
+      public:
+         /// Defines the border style for the graph legend
+         enum class Style {
+            None,  ///< legend does not have a border
+            Checker, ///< each legend item has a rectangular border
+            Boundary ///< legend has a single rectangular border
+         };
 
-   GraphXY() = delete;
-   GraphXY(WBFL::System::NumericFormatTool& rXAxisFormat, WBFL::System::NumericFormatTool& rYAxisFormat);
+         using DataSeries = std::vector<Point>;
 
-   virtual ~GraphXY();
+         GraphXY() = delete;
+         GraphXY(WBFL::System::NumericFormatTool* pXAxisFormat, WBFL::System::NumericFormatTool* pYAxisFormat);
 
-   /// Creates a new data series in the graph.  Returns a cookie used to
-   /// reference this data series at a later time.
-   IndexType CreateDataSeries();
+         virtual ~GraphXY();
 
-   /// Creates a new data series in the graph and defines the attributes of the pen used to draw the line.
-   /// Returns a cookie used to reference this data series at a later time.
-   IndexType CreateDataSeries(LPCTSTR lpszLabel,///< name of the data series
-      int nPenStyle, ///< pen style
-      int nWidth, ///< pen width
-      COLORREF crColor ///< pen color
-   );
+         /// Creates a new data series in the graph.  Returns a cookie used to
+         /// reference this data series at a later time.
+         IndexType CreateDataSeries();
 
-   /// Find an existing data series and return its cookie. Returns INVALID_INDEX if not found
-   IndexType FindDataSeries(LPCTSTR lpszLabel);
+         /// Creates a new data series in the graph and defines the attributes of the pen used to draw the line.
+         /// Returns a cookie used to reference this data series at a later time.
+         IndexType CreateDataSeries(LPCTSTR lpszLabel,///< name of the data series
+            int nPenStyle, ///< pen style
+            int nWidth, ///< pen width
+            COLORREF crColor ///< pen color
+         );
 
-   /// @brief  Updates the label for a data series
-   /// @param cookie 
-   /// @param lpszLabel 
-   void SetDataSeriesLabel(IndexType cookie, LPCTSTR lpszLabel);
+         /// Find an existing data series and return its cookie. Returns INVALID_INDEX if not found
+         IndexType FindDataSeries(LPCTSTR lpszLabel);
 
-   /// Returns the list of data series cookies
-   std::vector<IndexType> GetCookies() const;
+         /// @brief  Updates the label for a data series
+         /// @param cookie Data series identifier returned from CreateDataSeries
+         /// @param lpszLabel Data series label
+         void SetDataSeriesLabel(IndexType cookie, LPCTSTR lpszLabel);
 
-   /// Gets the data series data
-   void GetDataSeriesData(IndexType cookie, std::_tstring* pLabel, int* pPenStyle, int* pWidth, COLORREF* pColor) const;
+         /// Returns the list of data series cookies
+         std::vector<IndexType> GetCookies() const;
 
-   /// Gets the data series data points
-   void GetDataSeriesPoints(IndexType cookie, std::vector<Point>* pvPoints) const;
-   
-   /// Adds an individual point to the graph.
-   void AddPoint(IndexType cookie,const Point& rPoint);
+         /// Gets the data series data
+         void GetDataSeriesData(IndexType cookie, std::_tstring* pLabel, int* pPenStyle, int* pWidth, COLORREF* pColor) const;
 
-   /// Adds a collection of points to the graph.
-   void AddPoints(IndexType cookie,const std::vector<Point>& vPoints);
+         /// Gets the data series data points
+         void GetDataSeriesPoints(IndexType cookie, DataSeries* pvPoints) const;
 
-   /// Sets the points to the graph.
-   void SetPoints(IndexType cookie, const std::vector<Point>& vPoints);
+         /// Adds an individual point to the graph.
+         void AddPoint(IndexType cookie, const Point& rPoint);
 
-   /// Removes all the points from the graph
-   void ClearPoints(IndexType cookie);
+         /// Adds a collection of points to the graph.
+         void AddPoints(IndexType cookie, const DataSeries& vPoints);
 
-   /// Clears all data from the graph
-   void ClearData();
+         /// Sets the points to the graph.
+         void SetPoints(IndexType cookie, const DataSeries& vPoints);
 
-   /// Returns the point of points in the graph
-   IndexType GetPointCount(IndexType cookie) const;
+         /// Removes all the points from the graph
+         void ClearPoints(IndexType cookie);
 
-   /// Removes the data series from the graph.
-   void RemoveDataSeries(IndexType cookie);
+         /// Clears all data from the graph
+         void ClearData();
 
-   /// Returns the number of data series from the graph
-   IndexType GetDataSeriesCount() const;
+         /// Returns the point of points in the graph
+         IndexType GetPointCount(IndexType cookie) const;
 
-   /// Returns the output rectangle
-   RECT GetOutputRect() const;
+         /// Removes the data series from the graph.
+         void RemoveDataSeries(IndexType cookie);
 
-   /// Sets the device rectangle that the world points will be mapped to.
-   /// NOTE: This must be called at least once prior to Draw()
-   void SetOutputRect(const RECT& rOutputRect);
+         /// Returns the number of data series from the graph
+         IndexType GetDataSeriesCount() const;
 
-   // Get raw boundary of data rect. This means that min boundaries and 'Pinned" status are ignored
-   Rect GetRawWorldRect() const; 
+         /// Returns the output rectangle
+         RECT GetOutputRect() const;
 
-   /// Draws the graph on the given device context.
-   /// This method calls UpdateGraphMetrics, DrawBackground, and DrawDataSeries
-   /// You can call these three steps individual if you want to enhance the
-   /// graph drawing. You MUST call UpdateGraphMetrics before any drawing
-   /// takes place
-   virtual void Draw(HDC hDC);
+         /// Sets the device rectangle that the world points will be mapped to.
+         /// NOTE: This must be called at least once prior to Draw()
+         void SetOutputRect(const RECT& rOutputRect);
 
-   /// Draw only the background
-   virtual void DrawBackground(HDC hDC);
+         // Get raw boundary of data rect. This means that min boundaries and 'Pinned" status are ignored
+         Rect GetRawWorldRect() const;
 
-   /// Draw only the data series
-   virtual void DrawDataSeries(HDC hDC);
+         /// Draws the graph on the given device context.
+         /// This method calls UpdateGraphMetrics, DrawBackground, and DrawDataSeries
+         /// You can call these three steps individual if you want to enhance the
+         /// graph drawing. You MUST call UpdateGraphMetrics before any drawing
+         /// takes place
+         virtual void Draw(HDC hDC);
 
-   /// Updates the metrics of the graph. Must be called before calling any drawing methods except for  Draw.
-   virtual void UpdateGraphMetrics(HDC hDC);
+         /// Draw only the background
+         virtual void DrawBackground(HDC hDC);
 
-   /// Sets the graph title
-   void SetTitle(LPCTSTR strTitle);
+         /// Draw only the data series
+         virtual void DrawDataSeries(HDC hDC);
 
-   /// Returns the graph title
-   LPCTSTR GetTitle() const;
+         /// Updates the metrics of the graph. Must be called before calling any drawing methods except for  Draw.
+         virtual void UpdateGraphMetrics(HDC hDC);
 
-   /// Sets the title size in points
-   void SetTitleSize(LONG size);
+         /// Sets the graph title
+         void SetTitle(LPCTSTR strTitle);
 
-   /// Returns the title size in points
-   LONG GetTitleSize() const;
+         /// Returns the graph title
+         LPCTSTR GetTitle() const;
 
-   /// Sets the graph subtitle
-   void SetSubtitle(LPCTSTR strSubtitle);
+         /// Sets the title size in points
+         void SetTitleSize(LONG size);
 
-   /// Returns the graph subtitle
-   LPCTSTR GetSubtitle() const;
+         /// Returns the title size in points
+         LONG GetTitleSize() const;
 
-   /// Sets the Subtitle size in points
-   void SetSubtitleSize(LONG size);
+         /// Sets the graph subtitle
+         void SetSubtitle(LPCTSTR strSubtitle);
 
-   /// Returns the Subtitle size in points
-   LONG GetSubtitleSize() const;
+         /// Returns the graph subtitle
+         LPCTSTR GetSubtitle() const;
 
-   /// Sets the size in points of titles for x and y axis
-   void SetAxisTitleSize(LONG size);
+         /// Sets the Subtitle size in points
+         void SetSubtitleSize(LONG size);
 
-   /// Returns the size in points of titles for x and y axis
-   LONG GetAxisTitleSize() const;
+         /// Returns the Subtitle size in points
+         LONG GetSubtitleSize() const;
 
-   /// Sets size in points of subtitles for x and y axis
-   void SetAxisSubtitleSize(LONG size);
+         /// Sets the size in points of titles for x and y axis
+         void SetAxisTitleSize(LONG size);
 
-   /// Returns the size in points of subtitles for x and y axis
-   LONG GetAxisSubtitleSize() const;
+         /// Returns the size in points of titles for x and y axis
+         LONG GetAxisTitleSize() const;
 
-   /// Sets the title for the X axis
-   void SetXAxisTitle(LPCTSTR strTitle);
+         /// Sets size in points of subtitles for x and y axis
+         void SetAxisSubtitleSize(LONG size);
 
-   /// Returns the title for the X axis
-   LPCTSTR GetXAxisTitle() const;
+         /// Returns the size in points of subtitles for x and y axis
+         LONG GetAxisSubtitleSize() const;
 
-   /// Sets the subtitle for the X axis
-   void SetXAxisSubtitle(LPCTSTR strSubtitle);
+         /// Sets the title for the X axis
+         void SetXAxisTitle(LPCTSTR strTitle);
 
-   /// Returns the subtitle for the x axis
-   LPCTSTR GetXAxisSubtitle() const;
+         /// Returns the title for the X axis
+         LPCTSTR GetXAxisTitle() const;
 
-   /// Sets the numeric formatting for x axis
-   void SetXAxisValueFormat(WBFL::System::NumericFormatTool& format);
+         /// Sets the subtitle for the X axis
+         void SetXAxisSubtitle(LPCTSTR strSubtitle);
 
-   /// Returns the numeric formatting for x axis
-   const WBFL::System::NumericFormatTool* GetXAxisValueFormat() const;
+         /// Returns the subtitle for the x axis
+         LPCTSTR GetXAxisSubtitle() const;
 
-   /// Sets the x axis scale
-   void SetXAxisScale(AxisXY::AxisScale scale);
+         /// Sets the numeric formatting for x axis
+         void SetXAxisValueFormat(WBFL::System::NumericFormatTool* pFormat);
 
-   /// Returns the x axis scale
-   AxisXY::AxisScale GetXAxisScale() const;
+         /// Returns the numeric formatting for x axis
+         const WBFL::System::NumericFormatTool* GetXAxisValueFormat() const;
 
-   /// Sets the y axis scale
-   void SetYAxisScale(AxisXY::AxisScale scale);
+         /// Sets the x axis scale
+         void SetXAxisScale(AxisXY::AxisScale scale);
 
-   /// Returns the y axis scale
-   AxisXY::AxisScale GetYAxisScale() const;
+         /// Returns the x axis scale
+         AxisXY::AxisScale GetXAxisScale() const;
 
-   /// Sets the numeric formatting for y axis
-   void SetYAxisValueFormat(WBFL::System::NumericFormatTool& format);
+         /// Sets the y axis scale
+         void SetYAxisScale(AxisXY::AxisScale scale);
 
-   /// Gets the numeric formatting for y axis
-   const WBFL::System::NumericFormatTool* GetYAxisValueFormat() const;
+         /// Returns the y axis scale
+         AxisXY::AxisScale GetYAxisScale() const;
 
-   /// Sets the title for the Y axis
-   void SetYAxisTitle(LPCTSTR strTitle);
+         /// Sets the numeric formatting for y axis
+         void SetYAxisValueFormat(WBFL::System::NumericFormatTool* pFormat);
 
-   /// Returns the title for the Y axis
-   LPCTSTR GetYAxisTitle() const;
+         /// Gets the numeric formatting for y axis
+         const WBFL::System::NumericFormatTool* GetYAxisValueFormat() const;
 
-   /// Sets the subtitle for the Y axis
-   void SetYAxisSubtitle(LPCTSTR strSubtitle);
+         /// Sets the title for the Y axis
+         void SetYAxisTitle(LPCTSTR strTitle);
 
-   /// Returns the title for the Y axis
-   LPCTSTR GetYAxisSubtitle() const;
+         /// Returns the title for the Y axis
+         LPCTSTR GetYAxisTitle() const;
 
-   /// Sets the number of minor tics on the x axis
-   void SetXAxisNumberOfMinorTics(LONG num);
+         /// Sets the subtitle for the Y axis
+         void SetYAxisSubtitle(LPCTSTR strSubtitle);
 
-   /// Returns the number of minor tics on the x axis
-   LONG GetXAxisNumberOfMinorTics() const;
+         /// Returns the title for the Y axis
+         LPCTSTR GetYAxisSubtitle() const;
 
-   /// Sets the number of minor tics on the y axis.
-   void SetYAxisNumberOfMinorTics(LONG num);
+         /// Sets the number of minor tics on the x axis
+         void SetXAxisNumberOfMinorTics(LONG num);
 
-   /// Returns the number of minor tics on the y axis
-   LONG GetYAxisNumberOfMinorTics() const;
+         /// Returns the number of minor tics on the x axis
+         LONG GetXAxisNumberOfMinorTics() const;
 
-   /// Sets the number of Major tics on the x axis
-   void SetXAxisNumberOfMajorTics(LONG num);
+         /// Sets the number of minor tics on the y axis.
+         void SetYAxisNumberOfMinorTics(LONG num);
 
-   /// Returns the number of Major tics on the x axis
-   LONG GetXAxisNumberOfMajorTics() const;
+         /// Returns the number of minor tics on the y axis
+         LONG GetYAxisNumberOfMinorTics() const;
 
-   /// Sets the number of Major tics on the y axis.
-   void SetYAxisNumberOfMajorTics(LONG num);
+         /// Sets the number of Major tics on the x axis
+         void SetXAxisNumberOfMajorTics(LONG num);
 
-   /// Returns the number of Major tics on the y axis
-   LONG GetYAxisNumberOfMajorTics() const;
+         /// Returns the number of Major tics on the x axis
+         LONG GetXAxisNumberOfMajorTics() const;
 
-   /// Sets the angle from the X-axis for the text in 10ths of a degree
-   /// (455 = 45.5 degrees)
-   void SetXAxisLabelAngle(LONG angle);
+         /// Sets the number of Major tics on the y axis.
+         void SetYAxisNumberOfMajorTics(LONG num);
 
-   /// Returns the angle from the X-axis for the text in 10ths of a degree
-   LONG GetXAxisLabelAngle() const;
+         /// Returns the number of Major tics on the y axis
+         LONG GetYAxisNumberOfMajorTics() const;
 
-   /// Sets the angle from the X-axis for the text in 10ths of a degree
-   // (455 = 45.5 degrees)
-   void SetYAxisLabelAngle(LONG angle);
+         /// Sets the angle from the X-axis for the text in 10ths of a degree
+         /// (455 = 45.5 degrees)
+         void SetXAxisLabelAngle(LONG angle);
 
-   /// Returns the angle from the Y-axis for the text in 10ths of a degree
-   LONG GetYAxisLabelAngle() const;
+         /// Returns the angle from the X-axis for the text in 10ths of a degree
+         LONG GetXAxisLabelAngle() const;
 
-   /// Sets if nice numbers are to be used for X axis
-   void XAxisNiceRange(bool nice);
+         /// Sets the angle from the X-axis for the text in 10ths of a degree
+         // (455 = 45.5 degrees)
+         void SetYAxisLabelAngle(LONG angle);
 
-   /// Returns true if nice numbers are to be used for X axis
-   bool XAxisNiceRange() const;
+         /// Returns the angle from the Y-axis for the text in 10ths of a degree
+         LONG GetYAxisLabelAngle() const;
 
-   /// Forces X-axis values into the specified range.
-   void SetXAxisForcedRange(Float64 leftVal, Float64 rightVal, Float64 increment);
+         /// Sets if nice numbers are to be used for X axis
+         void XAxisNiceRange(bool nice);
 
-   /// Returns true if X-axis values are forced into a range
-   bool IsXAxisRangeForced() const;
+         /// Returns true if nice numbers are to be used for X axis
+         bool XAxisNiceRange() const;
 
-   /// Sets if nice numbers are to be used for Y axis
-   void YAxisNiceRange(bool nice);
+         /// Forces X-axis values into the specified range.
+         void SetXAxisForcedRange(Float64 leftVal, Float64 rightVal, Float64 increment);
 
-   /// Returns true if nice numbers are to be used for Y axis
-   bool YAxisNiceRange() const;
+         /// Returns true if X-axis values are forced into a range
+         bool IsXAxisRangeForced() const;
 
-   /// Forces zero to be contained along Y axis
-   void PinYAxisAtZero(bool pin);
+         /// Sets if nice numbers are to be used for Y axis
+         void YAxisNiceRange(bool nice);
 
-   /// Returns true if the Y axis is forced to contain zero
-   bool PinYAxisAtZero() const;
+         /// Returns true if nice numbers are to be used for Y axis
+         bool YAxisNiceRange() const;
 
-   /// Specifies if the X and Y axis are to have the same scale
-   void IsotropicAxes(bool bIsotropic);
+         /// Forces zero to be contained along Y axis
+         void PinYAxisAtZero(bool pin);
 
-   /// Returns true if the X and Y axis have the same scale
-   bool IsotropicAxes() const;
+         /// Returns true if the Y axis is forced to contain zero
+         bool PinYAxisAtZero() const;
 
-   /// Specifies if a horizontal control line is to be drawn. 
-   /// The horizontal control line is located at Y=0. 
-   /// This line is not an axis and is not labeled. 
-   /// It provides a reference for Y=0;
-   void HorizontalControlLine(bool set);
+         /// Specifies if the X and Y axis are to have the same scale
+         void IsotropicAxes(bool bIsotropic);
 
-   /// Returns true if a horizontal control line is to be drawn
-   bool HorizontalControlLine() const;
+         /// Returns true if the X and Y axis have the same scale
+         bool IsotropicAxes() const;
 
-   /// Sets whether to show the grid or not
-   void DrawGrid(bool doDraw) {m_DoDrawGrid=doDraw;}
+         /// Specifies if a horizontal control line is to be drawn. 
+         /// The horizontal control line is located at Y=0. 
+         /// This line is not an axis and is not labeled. 
+         /// It provides a reference for Y=0;
+         void HorizontalControlLine(bool set);
 
-   /// Returnst rue if a grid is to be drawn
-   bool DrawGrid() const {return m_DoDrawGrid;}
+         /// Returns true if a horizontal control line is to be drawn
+         bool HorizontalControlLine() const;
 
-   /// Sets whether to draw the graph legend
-   void DrawLegend(bool bDrawLegend) { m_bDrawLegend = bDrawLegend; }
+         /// Sets whether to show the grid or not
+         void DrawGrid(bool doDraw) { m_DoDrawGrid = doDraw; }
 
-   /// Returns true if the graph legend is to be drawn
-   bool DrawLegend() const { return m_bDrawLegend; }
+         /// Returns true if a grid is to be drawn
+         bool DrawGrid() const { return m_DoDrawGrid; }
 
-   /// Sets the legend border style
-   void SetLegendBorderStyle(Style type);
+         /// Sets whether to draw the graph legend
+         void DrawLegend(bool bDrawLegend) { m_bDrawLegend = bDrawLegend; }
 
-   /// Returns the legend border style
-   Style GetLegendBorderStyle() const;
+         /// Returns true if the graph legend is to be drawn
+         bool DrawLegend() const { return m_bDrawLegend; }
 
-   /// Sets the pen style for a dataset. Parameters are the same as for CreatePen in the Windows API.
-   void SetPenStyle(IndexType cookie, int nPenStyle, int nWidth, COLORREF crColor);
+         /// Sets the legend border style
+         void SetLegendBorderStyle(Style type);
 
-   /// Set the pen style for the overlay grid
-   void SetGridPenStyle(int nPenStyle, int nWidth, COLORREF crColor);
+         /// Returns the legend border style
+         Style GetLegendBorderStyle() const;
 
-   /// Sets the pen style for the horizontal control line
-   void SetHorizontalControlLinePenStyle(int nPenStyle, int nWidth, COLORREF crColor);
+         /// Sets the pen style for a dataset. Parameters are the same as for CreatePen in the Windows API.
+         void SetPenStyle(IndexType cookie, int nPenStyle, int nWidth, COLORREF crColor);
 
-   /// Sets the label that will be displayed in the legend
-   void SetDataLabel(IndexType cookie,LPCTSTR lpszLabel);
+         /// Set the pen style for the overlay grid
+         void SetGridPenStyle(int nPenStyle, int nWidth, COLORREF crColor);
 
-   /// Returns a point mapper for drawing into the client area of the graph
-   const PointMapper& GetClientAreaPointMapper(HDC hDC);
+         /// Sets the pen style for the horizontal control line
+         void SetHorizontalControlLinePenStyle(int nPenStyle, int nWidth, COLORREF crColor);
 
-   /// Sets the background color of the client area
-   void SetClientAreaColor(COLORREF color) {m_ClientAreaColor=color;}
+         /// Sets the label that will be displayed in the legend
+         void SetDataLabel(IndexType cookie, LPCTSTR lpszLabel);
 
-   /// Returns the background color of the client area
-   COLORREF GetClientAreaColor() const {return m_ClientAreaColor;}
+         /// Returns a point mapper for drawing into the client area of the graph
+         const PointMapper& GetClientAreaPointMapper(HDC hDC);
 
-   /// Sets the minimum zoom bounds for the graph in world coordinates. This is
-   /// the smallest height and width that the graph will shrink to. Setting this to zero
-   /// will allow you to display data from very small domains, but will also cause
-   /// numerical problems if the actual width or height of the data set is zero.
-   /// The default values for height and width are 1.0e-6.
-   void SetMinimumZoomBounds(Float64 Height, Float64 Width);
+         /// Sets the background color of the client area
+         void SetClientAreaColor(COLORREF color) { m_ClientAreaColor = color; }
 
-   /// Returns teh minimum zoom bounds
-   void GetMinimumZoomBounds(Float64* pHeight, Float64* pWidth) const;
+         /// Returns the background color of the client area
+         COLORREF GetClientAreaColor() const { return m_ClientAreaColor; }
 
-   /// Sets the minimum size of the graph. The graph plotting space will be no smaller
-   /// than these values regardless of the size of the data sets
-   void SetMinimumSize(Float64 Xmin,Float64 Xmax,Float64 Ymin,Float64 Ymax);
+         /// Sets the minimum zoom bounds for the graph in world coordinates. This is
+         /// the smallest height and width that the graph will shrink to. Setting this to zero
+         /// will allow you to display data from very small domains, but will also cause
+         /// numerical problems if the actual width or height of the data set is zero.
+         /// The default values for height and width are 1.0e-6.
+         void SetMinimumZoomBounds(Float64 Height, Float64 Width);
 
-   /// Returns the minimum size of the graph
-   void GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax) const;
+         /// Returns teh minimum zoom bounds
+         void GetMinimumZoomBounds(Float64* pHeight, Float64* pWidth) const;
 
-protected:
+         /// Sets the minimum size of the graph. The graph plotting space will be no smaller
+         /// than these values regardless of the size of the data sets
+         void SetMinimumSize(Float64 Xmin, Float64 Xmax, Float64 Ymin, Float64 Ymax);
 
-private:
-   struct PenData
-   {
-      int Style;
-      int Width;
-      COLORREF Color;
-   };
+         /// Returns the minimum size of the graph
+         void GetMinimumSize(Float64* pXmin, Float64* pXmax, Float64* pYmin, Float64* pYmax) const;
 
-   using DataSeries = std::vector<Point>;
+      private:
+         struct PenData
+         {
+            int Style;
+            int Width;
+            COLORREF Color;
+         };
 
-   struct GraphData
-   {
-      std::_tstring Label;
-      PenData Pen;
-      DataSeries Series;
-   };
+         struct GraphData
+         {
+            std::_tstring Label;
+            PenData Pen;
+            DataSeries Series;
+         };
 
-   using GraphDataMap = std::map<IndexType,GraphData>;
-   GraphDataMap m_GraphDataMap;
+         using GraphDataMap = std::map<IndexType, GraphData>;
+         GraphDataMap m_GraphDataMap;
 
-   Rect m_WorldRect;
+         Rect m_WorldRect{Float64_Max, Float64_Max, -Float64_Max, -Float64_Max };
 
-   RECT m_OutputRect;
-   RECT m_LegendRect;
-   SIZE m_LegendItemSize;
-   int  m_nLegendRows;
-   int  m_nLegendCols;
-   int  m_LegendBorder;
-   int  m_LegendSymbolLength;
+         AxisXY m_XAxis;
+         AxisXY m_YAxis;
+         bool m_XAxisRangeForced = false; // if true, the XAxis range is forced by the user
+         bool m_XAxisNiceRange = true; // if true, the XAxis is set to a nice range
+         bool m_YAxisNiceRange = true;
+         bool m_PinYAxisAtZero = true;
+         bool m_bIsotropicAxes = false;
+         bool m_bHorizontalControlLine = true;
 
-   AxisXY m_XAxis;
-   AxisXY m_YAxis;
-   bool m_XAxisRangeForced; // if true, the XAxis range is forced by the user
-   bool m_XAxisNiceRange; // if true, the XAxis is set to a nice range
-   bool m_YAxisNiceRange;
-   bool m_PinYAxisAtZero;
-   bool m_bIsotropicAxes;
-   bool m_bHorizontalControlLine;
+         bool m_DoDrawAxis = true;
+         bool m_DoDrawGrid = true;
+         bool m_bDrawLegend = true;
+         Style m_LegendBorderStyle = Style::Checker;
+         PenData m_GridPenData{ PS_SOLID,1,RGB(0,0,0) };
+         PenData m_HorzControlLinePenData{ PS_SOLID,2,RGB(0,0,0) };
 
-   PointMapper m_PointMapper;
-   bool m_IsBroken;
+         std::_tstring m_GraphTitle;
+         std::_tstring m_GraphSubtitle;
+         LONG    m_GraphTitleSize = 14;
+         LONG    m_GraphSubtitleSize = 10;
+         LONG    m_LegendFontSize = 8;
 
-   bool m_DoDrawAxis;
-   bool m_DoDrawGrid;
-   bool m_bDrawLegend;
-   Style m_LegendBorderStyle;
-   PenData m_GridPenData;
-   PenData m_HorzControlLinePenData;
+         COLORREF m_ClientAreaColor = RGB(240, 240, 240);
 
-   std::_tstring m_GraphTitle;
-   std::_tstring m_GraphSubtitle;
-   LONG    m_GraphTitleSize;
-   LONG    m_GraphSubtitleSize;
-   LONG    m_LegendFontSize;
+         Float64 m_MinZoomHeight = 1.0e-06;
+         Float64 m_MinZoomWidth = 1.0e-06;
 
-   COLORREF m_ClientAreaColor;
+         Float64 m_Xmin = 0, m_Xmax = 1, m_Ymin = 0, m_Ymax = 1;
+         bool m_bWasMinSet = false;
 
-   // metrics for drawing graph - don't need to copy since they are 
-   // updated on every draw.
-   LONG    m_TitleLoc;
-   LONG    m_SubtitleLoc;
+         RECT m_OutputRect;
+         RECT m_LegendRect;
+         SIZE m_LegendItemSize;
+         int  m_nLegendRows;
+         int  m_nLegendCols;
+         int  m_LegendBorder;
+         int  m_LegendSymbolLength;
 
-   static const Float64 m_RightBorderFraction;
+         PointMapper m_PointMapper;
 
-   Float64 m_MinZoomHeight;
-   Float64 m_MinZoomWidth;
+         // metrics for drawing graph - don't need to copy since they are 
+         // updated on every draw.
+         LONG    m_TitleLoc;
+         LONG    m_SubtitleLoc;
 
-   Float64 m_Xmin, m_Xmax, m_Ymin, m_Ymax;
-   bool m_bWasMinSet;
+         static const Float64 m_RightBorderFraction;
 
 
-   void DrawCurve(HDC hDC);
-   void DrawAxes(HDC hDC);
-   void DrawLegend(HDC hDC);
-   void SetBroken();
-   void SetFixed();
-   int UpdateLegendMetrics(HDC hDC);
 
-   bool IsBroken();
-
-public:
-#if defined _DEBUG
-   virtual bool AssertValid() const;
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-};
+         void DrawCurve(HDC hDC);
+         void DrawAxes(HDC hDC);
+         void DrawLegend(HDC hDC);
+         int UpdateLegendMetrics(HDC hDC);
+      };
    }; // Graphing
 }; // WBFL
 

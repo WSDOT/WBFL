@@ -64,11 +64,11 @@ END_COM_MAP()
 
 // ILoadCombinationResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* Result, /*[out]*/ILoadCombinationResultConfiguration** Config) override;
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 Result, /*[in]*/ILoadCombinationResultConfiguration* Config) override;
+	STDMETHOD(GetResult)(/*[in]*/IndexType index, /*[out]*/Float64* Result, /*[out]*/ILoadCombinationResultConfiguration** Config) override;
+	STDMETHOD(SetResult)(/*[in]*/IndexType index, /*[in]*/Float64 Result, /*[in]*/ILoadCombinationResultConfiguration* Config) override;
 	STDMETHOD(Add)(/*[in]*/Float64 Result, /*[in]*/ILoadCombinationResultConfiguration* Config) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clear)() override;
 
    // IStructuredStorage2
@@ -77,10 +77,10 @@ public:
 
 // functions available to non-com pals
 public:
-   HRESULT AllocateResults(CollectionIndexType size, bool createConfig, ResultsSummationType summ);
-   HRESULT SumResultNoConfig(CollectionIndexType index, Float64 Result);
-	HRESULT SumResult(CollectionIndexType index, BSTR loadCase, Float64 Result, Float64 Factor);
-	HRESULT SumLLResult(CollectionIndexType index, Float64 Result, ILiveLoadConfiguration* Config, Float64 Factor);
+   HRESULT AllocateResults(IndexType size, bool createConfig, ResultsSummationType summ);
+   HRESULT SumResultNoConfig(IndexType index, Float64 Result);
+	HRESULT SumResult(IndexType index, BSTR loadCase, Float64 Result, Float64 Factor);
+	HRESULT SumLLResult(IndexType index, Float64 Result, ILiveLoadConfiguration* Config, Float64 Factor);
 
 private:
    struct ComboRes

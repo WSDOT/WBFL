@@ -139,7 +139,7 @@ HRESULT CTestTwoSpan::Test()
    }
 
    // compute location of all pois
-   CollectionIndexType nPOIs;
+   IndexType nPOIs;
    poilist->get_Count(&nPOIs);
    std::vector<Float64> poi_locs;
    poi_locs.reserve(nPOIs);
@@ -328,8 +328,8 @@ HRESULT CTestTwoSpan::Test()
       hr =pcontrf->ComputeContraflexureLocations(_bstr_t("Stage 1"), &vlocs);
       ATLASSERT(SUCCEEDED(hr));
 
-      TIArrayHelper<Float64, IDblArray, CollectionIndexType> locs(vlocs);
-      CollectionIndexType size = locs.Size();
+      TIArrayHelper<Float64, IDblArray, IndexType> locs(vlocs);
+      IndexType size = locs.Size();
       TRY_TEST(size,2);
       Float64 d = locs[0];
       TRY_TEST( IsEqual(d, 73.29562, 1.0e-4), true);
@@ -342,8 +342,8 @@ HRESULT CTestTwoSpan::Test()
       hr =pcontrf->ComputeContraflexureLocations(_bstr_t("Stage 2"), &vlocs);
       ATLASSERT(SUCCEEDED(hr));
 
-      TIArrayHelper<Float64, IDblArray, CollectionIndexType> locs(vlocs);
-      CollectionIndexType size = locs.Size();
+      TIArrayHelper<Float64, IDblArray, IndexType> locs(vlocs);
+      IndexType size = locs.Size();
       TRY_TEST(size,2);
       Float64 d = locs[0];
       TRY_TEST( IsEqual(d, 69.379347, 1.0e-4), true);
@@ -355,8 +355,8 @@ HRESULT CTestTwoSpan::Test()
    CComPtr<IBstrArray> valgs;
    CComQIPtr<IGetActiveLoadGroups> active_groups(pcontrf);
    active_groups->GetActiveLoadGroups(&valgs);
-   TIArrayHelper<BSTR, IBstrArray, CollectionIndexType> aalgs(valgs);
-   CollectionIndexType nActiveLoadGroups = aalgs.Size();
+   TIArrayHelper<BSTR, IBstrArray, IndexType> aalgs(valgs);
+   IndexType nActiveLoadGroups = aalgs.Size();
    TRY_TEST(nActiveLoadGroups, 7);
    CComBSTR sw_nm(aalgs[0]);
    TRY_TEST(sw_nm, "Distributed Loads");
@@ -429,11 +429,11 @@ void CTestTwoSpan::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
    Float64 left_overhang;
    ssms->get_Offset(&left_overhang);
 
-   CollectionIndexType ssm_cnt;
+   IndexType ssm_cnt;
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
+   for(IndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -447,9 +447,9 @@ void CTestTwoSpan::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
    CComPtr<IPOIs> pois;
    pModel->get_POIs(&pois);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    ppoilist->get_Count(&cnt);
-   for (CollectionIndexType i = 0; i<cnt; i++)
+   for (IndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id;
       ppoilist->get_Item(i, &poi_id);

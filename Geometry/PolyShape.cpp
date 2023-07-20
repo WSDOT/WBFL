@@ -88,10 +88,10 @@ STDMETHODIMP CPolyShape::AddPoints(IPoint2dCollection *pPoints)
 {
    CHECK_IN(pPoints);
 
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    pPoints->get_Count(&cPoints);
 
-   for (CollectionIndexType i = 0; i < cPoints; i++)
+   for (IndexType i = 0; i < cPoints; i++)
    {
       CComPtr<IPoint2d> pPoint;
       pPoints->get_Item(i, &pPoint);
@@ -105,11 +105,11 @@ STDMETHODIMP CPolyShape::SetPoints(IPoint2dCollection* pPoints)
 {
    CHECK_IN(pPoints);
 
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    pPoints->get_Count(&cPoints);
 
    m_Polygon.Clear();
-   for (CollectionIndexType i = 0; i < cPoints; i++)
+   for (IndexType i = 0; i < cPoints; i++)
    {
       CComPtr<IPoint2d> pPoint;
       pPoints->get_Item(i, &pPoint);
@@ -119,7 +119,7 @@ STDMETHODIMP CPolyShape::SetPoints(IPoint2dCollection* pPoints)
    return S_OK;
 }
 
-STDMETHODIMP CPolyShape::ChangePoint(CollectionIndexType index, Float64 x, Float64 y)
+STDMETHODIMP CPolyShape::ChangePoint(IndexType index, Float64 x, Float64 y)
 {
    try
    {
@@ -132,7 +132,7 @@ STDMETHODIMP CPolyShape::ChangePoint(CollectionIndexType index, Float64 x, Float
    return S_OK;
 }
 
-STDMETHODIMP CPolyShape::ChangePointEx(CollectionIndexType index, IPoint2d* pPoint)
+STDMETHODIMP CPolyShape::ChangePointEx(IndexType index, IPoint2d* pPoint)
 {
    CHECK_IN(pPoint);
    Float64 x, y;
@@ -140,7 +140,7 @@ STDMETHODIMP CPolyShape::ChangePointEx(CollectionIndexType index, IPoint2d* pPoi
    return ChangePoint(index, x, y);
 }
 
-STDMETHODIMP CPolyShape::RemovePoint(CollectionIndexType index)
+STDMETHODIMP CPolyShape::RemovePoint(IndexType index)
 {
    try 
    {
@@ -153,7 +153,7 @@ STDMETHODIMP CPolyShape::RemovePoint(CollectionIndexType index)
    return S_OK;
 }
 
-STDMETHODIMP CPolyShape::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CPolyShape::get_Count(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_Polygon.GetCount();
@@ -161,7 +161,7 @@ STDMETHODIMP CPolyShape::get_Count(CollectionIndexType *pVal)
 }
 
 
-STDMETHODIMP CPolyShape::GetPoint(CollectionIndexType index, Float64* pX, Float64* pY)
+STDMETHODIMP CPolyShape::GetPoint(IndexType index, Float64* pX, Float64* pY)
 {
    CHECK_RETVAL(pX);
    CHECK_RETVAL(pY);
@@ -178,7 +178,7 @@ STDMETHODIMP CPolyShape::GetPoint(CollectionIndexType index, Float64* pX, Float6
    return S_OK;
 }
 
-STDMETHODIMP CPolyShape::get_Point(CollectionIndexType index, IPoint2d **ppPoint)
+STDMETHODIMP CPolyShape::get_Point(IndexType index, IPoint2d **ppPoint)
 {
    CHECK_RETOBJ(ppPoint);
    try

@@ -108,7 +108,7 @@ void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, c
    INIT_UV_PROTOTYPE(rptSqrtPressureValue, tension_coeff, pDisplayUnits->SqrtPressure, false);
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
-   bool bLambda = (lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() ? true : false);
+   bool bLambda = (WBFL::LRFD::LRFDVersionMgr::Version::SeventhEditionWith2016Interims <= WBFL::LRFD::LRFDVersionMgr::GetVersion() ? true : false);
 
    *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(TensionCoefficient);
    if (bLambda)
@@ -146,7 +146,7 @@ void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneE
    *pPara << RPT_FCI << _T(" required for tensile stress = ");
    if (fcReqd < 0)
    {
-      ATLASSERT(fcReqd == -99999);
+      CHECK(fcReqd == -99999);
       *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
    }
    else
@@ -160,7 +160,7 @@ void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneE
       *pPara << RPT_FCI << _T(" required for tensile stress with bonded reinforcement sufficient to resist the tensile force in the concrete = ");
       if (fcReqd < 0)
       {
-         ATLASSERT(fcReqd == -99999);
+         CHECK(fcReqd == -99999);
          *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
       }
       else
@@ -222,7 +222,7 @@ void UHPCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const On
    *pPara << RPT_FCI << _T(" required for tensile stress = ");
    if (fcReqd < 0)
    {
-      ATLASSERT(fcReqd == -99999);
+      CHECK(fcReqd == -99999);
       *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
    }
    else

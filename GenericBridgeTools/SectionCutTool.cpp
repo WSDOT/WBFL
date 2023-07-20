@@ -677,7 +677,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
             MatingSurfaceIndexType nMatingSurfaces;
             girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
-            for ( CollectionIndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
+            for ( IndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
             {
                Float64 ms_width;
                girder_section->get_MatingSurfaceWidth(msIdx, VARIANT_FALSE, &ms_width);
@@ -1209,9 +1209,9 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
             // Store into a composite container
             CComQIPtr<ICompositeSectionEx> cmpsection(girder_section);
             ATLASSERT(cmpsection);
-            CollectionIndexType item_count;
+            IndexType item_count;
             cmpsection->get_Count(&item_count);
-            for ( CollectionIndexType i = 0; i < item_count; i++ )
+            for ( IndexType i = 0; i < item_count; i++ )
             {
                CComPtr<ICompositeSectionItemEx> item;
                cmpsection->get_Item(i,&item);
@@ -1226,9 +1226,9 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    // The deck shape is a flat rectangle, so move the tops of the girders up so
    // that they touch to bottom of the slab.
    // If the deck model improves, improve this.
-   CollectionIndexType nSections;
+   IndexType nSections;
    bridge_section->get_Count(&nSections);
-   for ( CollectionIndexType sectionIdx = 0; sectionIdx < nSections; sectionIdx++ )
+   for ( IndexType sectionIdx = 0; sectionIdx < nSections; sectionIdx++ )
    {
       CComPtr<ICompositeSectionItemEx> item;
       bridge_section->get_Item(sectionIdx,&item);
@@ -1439,13 +1439,13 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
 
       // The slab is the next item in the container... get the item count,
       // which is the next index. This is the slab index
-      CollectionIndexType nItems;
+      IndexType nItems;
       cmpSection->get_Count(&nItems);
       *pSlabIdx = nItems;
 
       CComQIPtr<ICompositeSectionEx> cmpDeckSection(deckSection);
       cmpDeckSection->get_Count(&nItems);
-      for ( CollectionIndexType idx = 0; idx < nItems; idx++ )
+      for ( IndexType idx = 0; idx < nItems; idx++ )
       {
          CComPtr<ICompositeSectionItemEx> sectionItem;
          cmpDeckSection->get_Item(idx,&sectionItem);
@@ -1551,7 +1551,7 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
       Float64 xms_cl = xTC + (msleft + msright) / 2.0; // CL of all mating surfaces in bridge coords. This is where our slab is centered over
 
       // loop over all mating surfaces and build our hanch shape (points 1-4ish)
-      for ( CollectionIndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
+      for ( IndexType msIdx = 0; msIdx < nMatingSurfaces; msIdx++ )
       {
          Float64 ms_width;
          pGirderSection->get_MatingSurfaceWidth(msIdx, VARIANT_FALSE, &ms_width);
@@ -2902,7 +2902,7 @@ std::vector<CSectionCutTool::GirderPointRecord> CSectionCutTool::GetGirderPoints
       GirderIDType girderID;
       mbr->get_ID(&girderID);
 
-      CollectionIndexType nSegments;
+      IndexType nSegments;
       mbr->get_SegmentCount(&nSegments);
 
       for ( IndexType segIdx = 0; segIdx < nSegments; segIdx++ )

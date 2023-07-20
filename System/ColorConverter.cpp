@@ -29,44 +29,32 @@
 
 using namespace WBFL::System;
 
-std::tuple<BYTE,BYTE,BYTE> ColorConverter::HLStoRGB(Float64 hue,Float64 lightness,Float64 saturation)
+std::tuple<BYTE,BYTE,BYTE> ColorConverter::HSLtoRGB(Float64 hue,Float64 saturation,Float64 lightness)
 {
-   Float64 red,green,blue;
-   Float64 m1,m2;
-
-   CHECK(hue <= 360.);
+   CHECK(0. <= hue && hue <= 360.);
    CHECK(0. <= lightness && lightness <= 1.);
    CHECK(0. <= saturation && saturation <= 1.);
 
-   if (lightness <= 0.5)
-   {
-      m2 = lightness*(1 + saturation);
-   }
-   else
-   {
-      m2 = lightness + saturation - lightness*saturation;
-   }
-
-   m1 = 2*lightness - m2;
+   Float64 red,green,blue;
+   Float64 m1,m2;
 
    if (IsZero(saturation))
    {
-      // Achromatic : there is no hue
-      if (hue < 0) // UNDEFINED
-      {
-         red   = lightness;
-         green = lightness;
-         blue  = lightness;
-      }
-      else
-      {
-         // Major error... Throw an exception
-         // if hue is undefined, saturation must be zero...
-         THROW(XProgrammingError,InvalidValue);
-      }
+      red = green = blue = lightness; // achromatic case
    }
    else
    {
+      if (lightness <= 0.5)
+      {
+         m2 = lightness * (1 + saturation);
+      }
+      else
+      {
+         m2 = lightness + saturation - lightness * saturation;
+      }
+
+      m1 = 2 * lightness - m2;
+
       // Chromatic case, so there is a hue
       red   = ComputeValue(m1,m2,hue + 120.);
       green = ComputeValue(m1,m2,hue);
@@ -83,8 +71,12 @@ std::tuple<BYTE,BYTE,BYTE> ColorConverter::HLStoRGB(Float64 hue,Float64 lightnes
    return std::make_tuple(BYTE(red  *255. + 0.001), BYTE(green*255. + 0.001), BYTE(blue *255. + 0.001));
 }
 
-std::tuple<Float64,Float64,Float64> ColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE b)
+std::tuple<Float64,Float64,Float64> ColorConverter::RGBtoHSL(BYTE r,BYTE g,BYTE b)
 {
+   CHECK(0 <= r && r <= 255);
+   CHECK(0 <= b && b <= 255);
+   CHECK(0 <= g && g <= 255);
+
    Float64 maxColor, minColor;
    Float64 delta;
    Float64 red, green, blue;
@@ -92,10 +84,6 @@ std::tuple<Float64,Float64,Float64> ColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE 
    Float64 hue = 0;
    Float64 lightness = 0;
    Float64 saturation = 0;
-
-   CHECK(0 <= r && r <= 255);
-   CHECK(0 <= b && b <= 255);
-   CHECK(0 <= g && g <= 255);
 
    // convert r,g,b to [0,1]
    red   = r/255.;
@@ -113,7 +101,7 @@ std::tuple<Float64,Float64,Float64> ColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE 
    {
       // Achromatic case, because r=b=g
       saturation = 0.0;
-      hue        = -1.0; // UNDEFINED
+      hue        = 0.0; // UNDEFINED
    }
    else
    {
@@ -153,7 +141,7 @@ std::tuple<Float64,Float64,Float64> ColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE 
       }
    }
 
-   return std::make_tuple(hue, lightness, saturation);
+   return std::make_tuple(hue, saturation, lightness);
 }
 
 std::tuple<BYTE,BYTE,BYTE> ColorConverter::HSVtoRGB(Float64 hue,Float64 saturation,Float64 value)
@@ -169,19 +157,10 @@ std::tuple<BYTE,BYTE,BYTE> ColorConverter::HSVtoRGB(Float64 hue,Float64 saturati
    if (IsZero(saturation))
    {
       // color is on the black-and-white centerline
-      if (hue < 0) // UNDEFINED
-      {
-         // Achromatic color : There is no hue
-         red   = value;
-         green = value;
-         blue  = value;
-      }
-      else
-      {
-         // Major error... Throw an exception
-         // if hue is undefined, saturation must be zero...
-         THROW(XProgrammingError,InvalidValue);
-      }
+      // Achromatic color : There is no hue
+      red   = value;
+      green = value;
+      blue  = value;
    }
    else
    {
@@ -279,7 +258,7 @@ std::tuple<Float64,Float64,Float64> ColorConverter::RGBtoHSV(BYTE r,BYTE g,BYTE 
    if (IsZero(saturation))
    {
       // Achromatic case
-      hue = -1; // UNDEFINED
+      hue = 0; // UNDEFINED
    }
    else
    {

@@ -73,7 +73,7 @@ END_COM_MAP()
 // IFem2dMemberCollection
 public:
 	STDMETHOD(Create)(/*[in]*/MemberIDType ID, /*[in]*/JointIDType startJoint,/*[in]*/JointIDType endJoint,/*[in]*/Float64 EA, /*[in]*/Float64 EI, /*[out, retval]*/ IFem2dMember* *pVal) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/MemberIDType* pid) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/MemberIDType* pid) override;
 	STDMETHOD(Clear)() override;
 
 private:

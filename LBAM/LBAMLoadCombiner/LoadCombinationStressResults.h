@@ -62,11 +62,11 @@ END_COM_MAP()
 
 // ILoadCombinationStressResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/IStressResult** leftResult, /*[out]*/ILoadCombinationResultConfiguration** leftConfig, /*[out]*/IStressResult** rightResult, /*[out]*/ILoadCombinationResultConfiguration** rightConfig) override;
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/IStressResult* leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
+	STDMETHOD(GetResult)(/*[in]*/IndexType index, /*[out]*/IStressResult** leftResult, /*[out]*/ILoadCombinationResultConfiguration** leftConfig, /*[out]*/IStressResult** rightResult, /*[out]*/ILoadCombinationResultConfiguration** rightConfig) override;
+	STDMETHOD(SetResult)(/*[in]*/IndexType index, /*[in]*/IStressResult* leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
 	STDMETHOD(Add)(/*[in]*/IStressResult* leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clear)() override;
 
    // IStructuredStorage2

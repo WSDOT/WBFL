@@ -53,14 +53,14 @@ STDMETHODIMP CInteractionCurveSolution::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CInteractionCurveSolution::get_NeutralAxisDirection(CollectionIndexType index,Float64* angle)
+STDMETHODIMP CInteractionCurveSolution::get_NeutralAxisDirection(IndexType index,Float64* angle)
 {
    CHECK_RETVAL(angle);
    *angle = m_CurvatureInfo[index].NeutralAxis;
    return S_OK;
 }
 
-STDMETHODIMP CInteractionCurveSolution::get_MomentCurvatureSolution(CollectionIndexType index,IMomentCurvatureSolution** solution)
+STDMETHODIMP CInteractionCurveSolution::get_MomentCurvatureSolution(IndexType index,IMomentCurvatureSolution** solution)
 {
    CHECK_RETOBJ(solution);
    *solution = m_CurvatureInfo[index].Curvature;
@@ -80,7 +80,7 @@ STDMETHODIMP CInteractionCurveSolution::AddSolutionPoint(Float64 angle,IMomentCu
    return S_OK;
 }
 
-STDMETHODIMP CInteractionCurveSolution::get_SolutionPointCount(CollectionIndexType* nPoints)
+STDMETHODIMP CInteractionCurveSolution::get_SolutionPointCount(IndexType* nPoints)
 {
    CHECK_RETVAL(nPoints);
    *nPoints = m_CurvatureInfo.size();

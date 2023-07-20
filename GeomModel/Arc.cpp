@@ -202,18 +202,6 @@ std::vector<Point2d> Arc::Divide(IndexType nSpaces) const
    return vPoints;
 }
 
-#if defined _DEBUG
-bool Arc::AssertValid() const
-{
-   return true;
-}
-
-void Arc::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for Arc" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
 bool Arc::operator==(const Arc& other) const
 {
    return IsEqual(GetRadius(),other.GetRadius()) && GetCenter() == other.GetCenter();
@@ -223,59 +211,3 @@ bool Arc::operator!=(const Arc& other) const
 {
    return !(*this == other);
 }
-
-#if defined _UNITTEST
-bool Arc::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("Arc");
-
-   Arc a1(Point2d(10,0),Point2d(0,0),Point2d(0,10));
-   Arc a2( Point2d(-5,-5), Point2d(0,0), Point2d(-5,5) );
-
-   // IsPointOnArc
-   TRY_TESTME( a1.IsPointOnArc(Point2d(-10,  0)) == false );
-   TRY_TESTME( a1.IsPointOnArc(Point2d(  0,-10)) == false );
-   TRY_TESTME( a1.IsPointOnArc(Point2d( 10,  0)) == true );
-   TRY_TESTME( a1.IsPointOnArc(Point2d(  0, 10)) == true );
-
-   TRY_TESTME( a2.IsPointOnArc(Point2d( 7.07106781187,0)) == true );
-   TRY_TESTME( a2.IsPointOnArc(Point2d(-7.07106781187,0)) == false );
-
-   // CentralAngle
-   TRY_TESTME( IsEqual(a1.GetCentralAngle(),PI_OVER_2) );
-   a1.Reverse();
-   TRY_TESTME( IsEqual(a1.GetCentralAngle(),3*PI_OVER_2) );
-
-   TRY_TESTME( IsEqual(a2.GetCentralAngle(),3*PI_OVER_2) );
-   a2.Reverse();
-   TRY_TESTME( IsEqual(a2.GetCentralAngle(),PI_OVER_2) );
-
-   //
-   // DivideArc
-   //
-   Arc a3(Point2d(10, 0),Point2d(0, 0),Point2d(-10, 0));
-   try
-   {
-      a3.Divide(0);
-      TRY_TESTME(false);
-   }
-   catch (...)
-   {
-      TRY_TESTME(true);
-   }
-   auto points = a3.Divide(1);
-   TRY_TESTME(points.size() == 2);
-
-   points = a3.Divide(4);
-   TRY_TESTME(points.size() == 5);
-   TRY_TESTME(points[0] == Point2d(10, 0));
-   TRY_TESTME(points[1] == Point2d(7.0710678, 7.0710678));
-   TRY_TESTME(points[2] == Point2d(0, 10));
-   TRY_TESTME(points[3] == Point2d(-7.0710678, 7.0710678));
-   TRY_TESTME(points[4] == Point2d(-10, 0));
-
-   TESTME_EPILOG("Arc");
-}
-#endif // _UNITTEST
-
-

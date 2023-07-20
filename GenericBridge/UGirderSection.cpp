@@ -770,17 +770,17 @@ STDMETHODIMP CUGirderSection::get__NewEnum(IUnknown* *pVal)
    return m_CompositeShape->get__NewEnum(pVal);
 }
 
-STDMETHODIMP CUGirderSection::get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal)
+STDMETHODIMP CUGirderSection::get_Item(IndexType idx, ICompositeShapeItem* *pVal)
 {
    return m_CompositeShape->get_Item(idx,pVal);
 }
 
-STDMETHODIMP CUGirderSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CUGirderSection::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
    return m_CompositeShape->ReplaceEx(idx,pShapeItem);
 }
 
-STDMETHODIMP CUGirderSection::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CUGirderSection::Replace(IndexType idx,IShape* pShape)
 {
    return m_CompositeShape->Replace(idx,pShape);
 }
@@ -795,7 +795,7 @@ STDMETHODIMP CUGirderSection::AddShapeEx(ICompositeShapeItem* shapeItem)
    return m_CompositeShape->AddShapeEx(shapeItem);
 }
 
-STDMETHODIMP CUGirderSection::Remove(CollectionIndexType idx)
+STDMETHODIMP CUGirderSection::Remove(IndexType idx)
 {
    return m_CompositeShape->Remove(idx);
 }
@@ -805,7 +805,7 @@ STDMETHODIMP CUGirderSection::Clear()
    return m_CompositeShape->Clear();
 }
 
-STDMETHODIMP CUGirderSection::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CUGirderSection::get_Count(IndexType *pVal)
 {
    return m_CompositeShape->get_Count(pVal);
 }

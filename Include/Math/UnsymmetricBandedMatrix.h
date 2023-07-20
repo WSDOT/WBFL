@@ -53,41 +53,74 @@ namespace WBFL
 
          UnsymmetricBandedMatrix() = default;
          UnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage = Storage::Column);
-
-         // Creates the matrix and vector. The matrix object takes ownership of ba and b
-         UnsymmetricBandedMatrix(IndexType N, IndexType BW,Storage storage, Float64** ba, Float64* b);
-         ~UnsymmetricBandedMatrix();
+         ~UnsymmetricBandedMatrix() = default;
 
          // copy semantics are non-trivial and have not been implemented
          UnsymmetricBandedMatrix(const UnsymmetricBandedMatrix&) = delete;
          UnsymmetricBandedMatrix& operator=(const UnsymmetricBandedMatrix&) = delete;
 
+         /// @brief Initialize the size of the matrix
+         /// @param N Number of columns or rows, depending on storage type
+         /// @param BW Band width
          void Initialize(IndexType N, IndexType BW);
+
+         /// @brief Returns the size of the matrix
+         /// @return Number of columns or rows depending on storage type
          IndexType GetSize() const;
+
+         /// @brief Returns the bandwidth
+         /// @return 
          IndexType GetBandwidth() const;
+
+         /// @brief Sets a value in the coefficient matrix
+         /// @param i Row i
+         /// @param j Column j
+         /// @param aij Coefficient
          void SetCoefficient(IndexType i, IndexType j, Float64 aij);
-         Float64 GetCoefficient(IndexType i, IndexType j);
-         void SetB(IndexType i, Float64 bi);
-         Float64 GetB(IndexType i) const;
-         std::unique_ptr<Float64[]> Solve();
 
-         Float64& operator()(IndexType i, IndexType j);
-         Float64& operator[](IndexType i);
+         /// @brief Returns a value from the coefficient matrix
+         /// @param i Row i
+         /// @param j Column j
+         /// @return 
+         Float64 GetCoefficient(IndexType i, IndexType j) const;
 
+         /// @brief Sets a value in the vector C
+         /// @param i Row i
+         /// @param bi Value
+         void SetC(IndexType i, Float64 bi);
+
+         /// @brief Return a value from the vector C
+         /// @param i Row i
+         /// @return 
+         Float64 GetC(IndexType i) const;
+
+         /// @brief Returns the solution vector C.
+         /// Calling this method row-reduces the coefficient matrix.
+         /// @return 
+         std::vector<Float64> Solve();
+
+         /// @brief Returns a value from the coefficient matrix
+         Float64 operator()(IndexType i, IndexType j) const;
+
+         /// @brief Returns a value from vector B
+         Float64 operator[](IndexType i) const;
+
+         /// @brief Writes the matrix to a stream
+         /// @param os The output string
+         /// @param bFull If true, dumps the full matrix, otherwise dumps it in it's row reduced form
          void Dump(std::ostream& os, bool bFull) const;
 
       private:
          IndexType N{0};
          IndexType BW{0};
          IndexType half_band_width{0};
-         Float64** ba = nullptr;
-         Float64* b = nullptr;
+         std::vector<std::vector<Float64>> ba;
+         std::vector<Float64> b;
          Storage storage{Storage::Column};
 
          void Full2Condensed(IndexType i, IndexType j, IndexType half_band_width, IndexType& m, IndexType& n) const;
          void ReduceRow(Float64 c, IndexType i, IndexType j, IndexType kStart, IndexType kEnd);
 
-         void Clear();
          void DumpBanded(std::ostream& os) const;
          void DumpFull(std::ostream& os) const;
       };

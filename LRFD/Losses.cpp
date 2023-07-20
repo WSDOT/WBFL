@@ -28,6 +28,8 @@
 #include <Lrfd\VersionMgr.h>
 #include <Units\Convert.h>
 
+using namespace WBFL::LRFD;
+
 // NOTE: Eccentricities have the opposite sign from the coordinate system used to compute stresses
 // That is [(Pex*Ixx + Pey*Ixy)(x) - (Pey*Iyy + Pex*Ixy)(y)]/(IxxIyy - Ixy^2)
 // x = -ex, y = -ey
@@ -35,14 +37,9 @@
 // positive ey is below the X axis
 // these are negative coordinates
 
-/****************************************************************************
-CLASS
-   lrfdLosses
-****************************************************************************/
-
-lrfdLosses::lrfdLosses(Float64 x,
+Losses::Losses(Float64 x,
    Float64 Lg,
-   lrfdLosses::SectionPropertiesType sectionProperties,
+   Losses::SectionPropertiesType sectionProperties,
    WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
    WBFL::Materials::PsStrand::Type typePerm, // strand type
    WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
@@ -54,10 +51,10 @@ lrfdLosses::lrfdLosses(Float64 x,
    Float64 ApsPerm,  // area of permanent strand
    Float64 ApsTemp,   // area of TTS 
    Float64 aps,      // area of one temp strand
-   const WBFL::Geometry::Point2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+   const WBFL::Geometry::Point2d& epermRelease, // eccentricity of permanent ps strands with respect to CG of girder
    const WBFL::Geometry::Point2d& epermFinal,
-   const WBFL::Geometry::Point2d& etemp, // eccentricty of temporary strands with respect to CG of girder
-   lrfdLosses::TempStrandUsage usage,
+   const WBFL::Geometry::Point2d& etemp, // eccentricity of temporary strands with respect to CG of girder
+   Losses::TempStrandUsage usage,
    Float64 anchorSet,
    Float64 wobble,
    Float64 friction,
@@ -136,12 +133,12 @@ lrfdLosses::lrfdLosses(Float64 x,
    m_FrictionCoefficient = friction;
    m_AngleChange = angleChange;
 
-   m_Ep = lrfdPsStrand::GetModE();
+   m_Ep = PsStrand::GetModE();
 
-   m_FpuPerm = lrfdPsStrand::GetUltimateStrength(m_GradePerm);
-   m_FpyPerm = lrfdPsStrand::GetYieldStrength(m_GradePerm, m_TypePerm);
-   m_FpuTemp = lrfdPsStrand::GetUltimateStrength(m_GradeTemp);
-   m_FpyTemp = lrfdPsStrand::GetYieldStrength(m_GradeTemp, m_TypeTemp);
+   m_FpuPerm = PsStrand::GetUltimateStrength(m_GradePerm);
+   m_FpyPerm = PsStrand::GetYieldStrength(m_GradePerm, m_TypePerm);
+   m_FpuTemp = PsStrand::GetUltimateStrength(m_GradeTemp);
+   m_FpyTemp = PsStrand::GetYieldStrength(m_GradeTemp, m_TypeTemp);
 
    m_Mdlg = Mdlg;
    m_InputMadlg = Madlg;
@@ -180,7 +177,7 @@ lrfdLosses::lrfdLosses(Float64 x,
    m_IsDirty               = true;
 }
 
-lrfdLosses::lrfdLosses()
+Losses::Losses()
 {
    Init();
 
@@ -192,7 +189,7 @@ lrfdLosses::lrfdLosses()
    m_GradeTemp                 = WBFL::Materials::PsStrand::Grade::Gr1860;
    m_CoatingTemp               = WBFL::Materials::PsStrand::Coating::None;
 
-   m_TempStrandUsage = tsPretensioned;
+   m_TempStrandUsage = TempStrandUsage::Pretensioned;
 
    m_FpjPerm               = 0;
    m_FpjTemp               = 0;
@@ -217,11 +214,11 @@ lrfdLosses::lrfdLosses()
    m_FrictionCoefficient = 0.25;
    m_AngleChange = 0.0;
 
-   m_Ep                    = lrfdPsStrand::GetModE();
-   m_FpuPerm               = lrfdPsStrand::GetUltimateStrength( m_GradePerm );
-   m_FpyPerm               = lrfdPsStrand::GetYieldStrength( m_GradePerm, m_TypePerm );
-   m_FpuTemp               = lrfdPsStrand::GetUltimateStrength( m_GradeTemp );
-   m_FpyTemp               = lrfdPsStrand::GetYieldStrength( m_GradeTemp, m_TypeTemp );
+   m_Ep                    = PsStrand::GetModE();
+   m_FpuPerm               = PsStrand::GetUltimateStrength( m_GradePerm );
+   m_FpyPerm               = PsStrand::GetYieldStrength( m_GradePerm, m_TypePerm );
+   m_FpuTemp               = PsStrand::GetUltimateStrength( m_GradeTemp );
+   m_FpyTemp               = PsStrand::GetYieldStrength( m_GradeTemp, m_TypeTemp );
 
    m_Mdlg                  = 0;
    //m_Madlg                 = 0;
@@ -230,7 +227,7 @@ lrfdLosses::lrfdLosses()
 
    m_bIgnoreInitialRelaxation = true;
 
-   m_SectionProperties = sptGross;
+   m_SectionProperties = SectionPropertiesType::Gross;
 
    m_Ag                    = 0;
    m_Ixx                    = 0;
@@ -260,7 +257,7 @@ lrfdLosses::lrfdLosses()
    m_IsDirty               = true;
 }
 
-void lrfdLosses::Init()
+void Losses::Init()
 {
    m_bValidateParameters = true;
    m_dfpR0[TEMPORARY_STRAND] = 0;
@@ -300,14 +297,14 @@ void lrfdLosses::Init()
    m_La = 0;
 }
 
-void lrfdLosses::OnUpdate()
+void Losses::OnUpdate()
 {
-   lrfdVersionMgrListener::OnUpdate();
+   LRFDVersionMgrListener::OnUpdate(); // call base class
 
    // Nothing actually changes.
 }
 
-Float64 lrfdLosses::GetFpyPermanent() const
+Float64 Losses::GetFpyPermanent() const
 {
    if ( m_IsDirty )
    {
@@ -317,7 +314,7 @@ Float64 lrfdLosses::GetFpyPermanent() const
    return m_FpyPerm;
 }
 
-Float64 lrfdLosses::GetFpyTemporary() const
+Float64 Losses::GetFpyTemporary() const
 {
    if ( m_IsDirty )
    {
@@ -327,7 +324,7 @@ Float64 lrfdLosses::GetFpyTemporary() const
    return m_FpyTemp;
 }
 
-Float64 lrfdLosses::GetEp() const
+Float64 Losses::GetEp() const
 {
    if ( m_IsDirty )
    {
@@ -337,12 +334,12 @@ Float64 lrfdLosses::GetEp() const
    return m_Ep;
 }
 
-Float64 lrfdLosses::GetApsPermanent() const
+Float64 Losses::GetApsPermanent() const
 { 
    return m_ApsPerm; 
 }
 
-void lrfdLosses::SetApsPermanent(Float64 Aps)
+void Losses::SetApsPermanent(Float64 Aps)
 { 
    if ( !IsEqual(m_ApsPerm,Aps) )
    {
@@ -351,12 +348,12 @@ void lrfdLosses::SetApsPermanent(Float64 Aps)
    }
 }
 
-Float64 lrfdLosses::GetApsTemporary() const
+Float64 Losses::GetApsTemporary() const
 { 
    return m_ApsTemp; 
 }
 
-void lrfdLosses::SetApsTemporary(Float64 Aps)
+void Losses::SetApsTemporary(Float64 Aps)
 { 
    if ( !IsEqual(m_ApsTemp,Aps) )
    {
@@ -365,7 +362,7 @@ void lrfdLosses::SetApsTemporary(Float64 Aps)
    }
 }
 
-void lrfdLosses::SetStrandArea(Float64 aps)
+void Losses::SetStrandArea(Float64 aps)
 {
    if ( !IsEqual(m_aps,aps) )
    {
@@ -374,12 +371,12 @@ void lrfdLosses::SetStrandArea(Float64 aps)
    }
 }
 
-Float64 lrfdLosses::GetStrandArea() const
+Float64 Losses::GetStrandArea() const
 {
    return m_aps;
 }
 
-void lrfdLosses::SetEccPermanentRelease(const WBFL::Geometry::Point2d& e)
+void Losses::SetEccPermanentRelease(const WBFL::Geometry::Point2d& e)
 {
    if ( m_epermRelease != e )
    {
@@ -388,12 +385,12 @@ void lrfdLosses::SetEccPermanentRelease(const WBFL::Geometry::Point2d& e)
    }
 }
 
-const WBFL::Geometry::Point2d& lrfdLosses::GetEccPermanentRelease() const
+const WBFL::Geometry::Point2d& Losses::GetEccPermanentRelease() const
 {
    return m_epermRelease;
 }
 
-void lrfdLosses::SetEccPermanentFinal(const WBFL::Geometry::Point2d& e)
+void Losses::SetEccPermanentFinal(const WBFL::Geometry::Point2d& e)
 {
    if ( m_epermFinal != e )
    {
@@ -402,12 +399,12 @@ void lrfdLosses::SetEccPermanentFinal(const WBFL::Geometry::Point2d& e)
    }
 }
 
-const WBFL::Geometry::Point2d& lrfdLosses::GetEccPermanentFinal() const
+const WBFL::Geometry::Point2d& Losses::GetEccPermanentFinal() const
 {
    return m_epermFinal;
 }
 
-void lrfdLosses::SetEccTemporary(const WBFL::Geometry::Point2d& e)
+void Losses::SetEccTemporary(const WBFL::Geometry::Point2d& e)
 {
    if ( m_etemp != e )
    {
@@ -416,34 +413,34 @@ void lrfdLosses::SetEccTemporary(const WBFL::Geometry::Point2d& e)
    }
 }
 
-const WBFL::Geometry::Point2d& lrfdLosses::GetEccTemporary() const
+const WBFL::Geometry::Point2d& Losses::GetEccTemporary() const
 {
    return m_etemp;
 }
 
-Float64 lrfdLosses::GetEccpc() const
+Float64 Losses::GetEccpc() const
 {
-   // eccentricty of permanent strand on composite girder
+   // eccentricity of permanent strand on composite girder
    return m_epermFinal.Y() + (m_Ybc2 - m_Ybg);
 }
 
-WBFL::Geometry::Point2d lrfdLosses::GetEccpgRelease() const
+WBFL::Geometry::Point2d Losses::GetEccpgRelease() const
 {
-   // eccentricty of all strand on non-composite girder
+   // eccentricity of all strand on non-composite girder
    Float64 Aps = m_ApsPerm + m_ApsTemp;
    WBFL::Geometry::Point2d ecc = IsZero(Aps) ? WBFL::Geometry::Point2d(0,0) : (m_ApsPerm*m_epermRelease + m_ApsTemp*m_etemp)/Aps;
    return ecc;
 }
 
-WBFL::Geometry::Point2d lrfdLosses::GetEccpgFinal() const
+WBFL::Geometry::Point2d Losses::GetEccpgFinal() const
 {
-   // eccentricty of all strand on non-composite girder
+   // eccentricity of all strand on non-composite girder
    Float64 Aps = m_ApsPerm + m_ApsTemp;
    WBFL::Geometry::Point2d ecc = IsZero(Aps) ? WBFL::Geometry::Point2d(0,0) : (m_ApsPerm*m_epermFinal + m_ApsTemp*m_etemp)/Aps;
    return ecc;
 }
 
-void lrfdLosses::SetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx, Float64 Iyy, Float64 Ixy)
+void Losses::SetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx, Float64 Iyy, Float64 Ixy)
 {
    m_Ag = Ag;
    m_Ybg = Ybg;
@@ -453,7 +450,7 @@ void lrfdLosses::SetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx,
    m_IsDirty = true;
 }
 
-void lrfdLosses::GetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx, Float64* pIyy, Float64* pIxy) const
+void Losses::GetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx, Float64* pIyy, Float64* pIxy) const
 {
    *pAg = m_Ag;
    *pYbg = m_Ybg;
@@ -462,7 +459,7 @@ void lrfdLosses::GetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64*
    *pIxy = m_Ixy;
 }
 
-void lrfdLosses::SetNetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx, Float64 Iyy, Float64 Ixy)
+void Losses::SetNetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx, Float64 Iyy, Float64 Ixy)
 {
    m_An = Ag;
    m_Ybn = Ybg;
@@ -472,7 +469,7 @@ void lrfdLosses::SetNetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 I
    m_IsDirty = true;
 }
 
-void lrfdLosses::GetNetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx, Float64* pIyy, Float64* pIxy) const
+void Losses::GetNetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx, Float64* pIyy, Float64* pIxy) const
 {
    *pAg = m_An;
    *pYbg = m_Ybn;
@@ -481,7 +478,7 @@ void lrfdLosses::GetNetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float
    *pIxy = m_Ixyn;
 }
 
-void lrfdLosses::SetCompositeProperties1(Float64 Ag, Float64 Ybg, Float64 Ixx)
+void Losses::SetCompositeProperties1(Float64 Ag, Float64 Ybg, Float64 Ixx)
 {
    m_Ac1 = Ag;
    m_Ybc1 = Ybg;
@@ -489,14 +486,14 @@ void lrfdLosses::SetCompositeProperties1(Float64 Ag, Float64 Ybg, Float64 Ixx)
    m_IsDirty = true;
 }
 
-void lrfdLosses::GetCompositeProperties1(Float64* pAg, Float64* pYbg, Float64* pIxx) const
+void Losses::GetCompositeProperties1(Float64* pAg, Float64* pYbg, Float64* pIxx) const
 {
    *pAg = m_Ac1;
    *pYbg = m_Ybc1;
    *pIxx = m_Ic1;
 }
 
-void lrfdLosses::SetCompositeProperties2(Float64 Ag, Float64 Ybg, Float64 Ixx)
+void Losses::SetCompositeProperties2(Float64 Ag, Float64 Ybg, Float64 Ixx)
 {
    m_Ac2 = Ag;
    m_Ybc2 = Ybg;
@@ -504,14 +501,14 @@ void lrfdLosses::SetCompositeProperties2(Float64 Ag, Float64 Ybg, Float64 Ixx)
    m_IsDirty = true;
 }
 
-void lrfdLosses::GetCompositeProperties2(Float64* pAg, Float64* pYbg, Float64* pIxx) const
+void Losses::GetCompositeProperties2(Float64* pAg, Float64* pYbg, Float64* pIxx) const
 {
    *pAg = m_Ac2;
    *pYbg = m_Ybc2;
    *pIxx = m_Ic2;
 }
 
-void lrfdLosses::SetNetCompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx)
+void Losses::SetNetCompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx)
 {
    m_Acn = Ag;
    m_Ybcn = Ybg;
@@ -519,14 +516,14 @@ void lrfdLosses::SetNetCompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx)
    m_IsDirty = true;
 }
 
-void lrfdLosses::GetNetCompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx) const
+void Losses::GetNetCompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx) const
 {
    *pAg = m_Acn;
    *pYbg = m_Ybcn;
    *pIxx = m_Icn;
 }
 
-const lrfdElasticShortening& lrfdLosses::ElasticShortening() const 
+const ElasticShortening& Losses::GetElasticShortening() const 
 { 
    if ( m_IsDirty )
    {
@@ -537,7 +534,7 @@ const lrfdElasticShortening& lrfdLosses::ElasticShortening() const
 }
 
 
-Float64 lrfdLosses::PermanentStrand_BeforeTransfer() const
+Float64 Losses::PermanentStrand_BeforeTransfer() const
 {
    if ( m_IsDirty )
    {
@@ -547,7 +544,7 @@ Float64 lrfdLosses::PermanentStrand_BeforeTransfer() const
    return PermanentStrand_RelaxationLossesBeforeTransfer();
 }
 
-Float64 lrfdLosses::PermanentStrand_AfterTransfer() const
+Float64 Losses::PermanentStrand_AfterTransfer() const
 {
    if ( m_IsDirty )
    {
@@ -559,7 +556,7 @@ Float64 lrfdLosses::PermanentStrand_AfterTransfer() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_AtLifting() const
+Float64 Losses::PermanentStrand_AtLifting() const
 {
    if ( m_IsDirty )
    {
@@ -571,7 +568,7 @@ Float64 lrfdLosses::PermanentStrand_AtLifting() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_AtShipping() const
+Float64 Losses::PermanentStrand_AtShipping() const
 {
    if ( m_IsDirty )
    {
@@ -583,7 +580,7 @@ Float64 lrfdLosses::PermanentStrand_AtShipping() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandInstallation() const
+Float64 Losses::PermanentStrand_AfterTemporaryStrandInstallation() const
 {
    if ( m_IsDirty )
    {
@@ -592,7 +589,7 @@ Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandInstallation() const
 
    Float64 loss = PermanentStrand_AfterTransfer();
 
-   if ( m_TempStrandUsage == tsPTBeforeShipping )
+   if ( m_TempStrandUsage == TempStrandUsage::PTBeforeShipping )
    {
       loss += PermanentStrand_TimeDependentLossesAtShipping();
    }
@@ -600,7 +597,7 @@ Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandInstallation() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
+Float64 Losses::PermanentStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
    {
@@ -611,7 +608,7 @@ Float64 lrfdLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
+Float64 Losses::PermanentStrand_AfterTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
    {
@@ -622,7 +619,7 @@ Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_AfterDeckPlacement() const
+Float64 Losses::PermanentStrand_AfterDeckPlacement() const
 {
    if ( m_IsDirty )
    {
@@ -634,7 +631,7 @@ Float64 lrfdLosses::PermanentStrand_AfterDeckPlacement() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_AfterSIDL() const
+Float64 Losses::PermanentStrand_AfterSIDL() const
 {
    if ( m_IsDirty )
    {
@@ -646,7 +643,7 @@ Float64 lrfdLosses::PermanentStrand_AfterSIDL() const
    return loss;
 }
 
-Float64 lrfdLosses::PermanentStrand_Final() const
+Float64 Losses::PermanentStrand_Final() const
 {
    if ( m_IsDirty )
    {
@@ -657,7 +654,7 @@ Float64 lrfdLosses::PermanentStrand_Final() const
    return loss;
 }
 
-Float64 lrfdLosses::TemporaryStrand_BeforeTransfer() const
+Float64 Losses::TemporaryStrand_BeforeTransfer() const
 {
    if ( m_IsDirty )
    {
@@ -667,7 +664,7 @@ Float64 lrfdLosses::TemporaryStrand_BeforeTransfer() const
    return TemporaryStrand_RelaxationLossesBeforeTransfer();
 }
 
-Float64 lrfdLosses::TemporaryStrand_AfterTransfer() const
+Float64 Losses::TemporaryStrand_AfterTransfer() const
 {
    if ( m_IsDirty )
    {
@@ -678,7 +675,7 @@ Float64 lrfdLosses::TemporaryStrand_AfterTransfer() const
    return TemporaryStrand_RelaxationLossesBeforeTransfer();
 }
 
-Float64 lrfdLosses::TemporaryStrand_AtLifting() const
+Float64 Losses::TemporaryStrand_AtLifting() const
 {
    if ( m_IsDirty )
    {
@@ -687,11 +684,11 @@ Float64 lrfdLosses::TemporaryStrand_AtLifting() const
 
    Float64 loss = 0;
    
-   if ( m_TempStrandUsage == tsPretensioned )
+   if ( m_TempStrandUsage == TempStrandUsage::Pretensioned )
    {
       loss = TemporaryStrand_AfterTransfer();
    }
-   else if ( m_TempStrandUsage == tsPTBeforeLifting || m_TempStrandUsage == tsPTAfterLifting )
+   else if ( m_TempStrandUsage == TempStrandUsage::PTBeforeLifting || m_TempStrandUsage == TempStrandUsage::PTAfterLifting )
    {
       loss = TemporaryStrand_AfterTemporaryStrandInstallation();
    }
@@ -700,7 +697,7 @@ Float64 lrfdLosses::TemporaryStrand_AtLifting() const
 }
 
 
-Float64 lrfdLosses::TemporaryStrand_AtShipping() const
+Float64 Losses::TemporaryStrand_AtShipping() const
 {
    if ( m_IsDirty )
    {
@@ -709,23 +706,29 @@ Float64 lrfdLosses::TemporaryStrand_AtShipping() const
 
    Float64 loss = 0;
 
-   if (m_TempStrandUsage == tsPretensioned )
+   switch (m_TempStrandUsage)
    {
+   case TempStrandUsage::Pretensioned:
       loss = TemporaryStrand_AtLifting() + TemporaryStrand_TimeDependentLossesAtShipping();
-   }
-   else if ( m_TempStrandUsage == tsPTBeforeShipping )
-   {
+      break;
+
+   case TempStrandUsage::PTBeforeShipping:
       loss = TemporaryStrand_AfterTemporaryStrandInstallation();
-   }
-   else // tsPTBeforeLifting || tsPTAfterLifting
-   {
+      break;
+
+   case TempStrandUsage::PTBeforeLifting:
+   case TempStrandUsage::PTAfterLifting:
       loss = TemporaryStrand_AfterTemporaryStrandInstallation() + TemporaryStrand_TimeDependentLossesAtShipping();
+      break;
+
+   default:
+      CHECK(false); // is there a new type?
    }
 
    return loss;
 }
 
-Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
+Float64 Losses::TemporaryStrand_AfterTemporaryStrandInstallation() const
 {
    if ( m_IsDirty )
    {
@@ -733,7 +736,7 @@ Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
    }
 
    Float64 loss = 0;
-   if (m_TempStrandUsage == tsPretensioned )
+   if (m_TempStrandUsage == TempStrandUsage::Pretensioned )
    {
       loss = TemporaryStrand_AfterTransfer();
    }
@@ -741,7 +744,7 @@ Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
    return loss;
 }
 
-Float64 lrfdLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
+Float64 Losses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
    {
@@ -752,7 +755,7 @@ Float64 lrfdLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
    return loss;
 }
 
-Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandRemoval() const
+Float64 Losses::TemporaryStrand_AfterTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
    {
@@ -762,7 +765,7 @@ Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandRemoval() const
    return 0;
 }
 
-Float64 lrfdLosses::TemporaryStrand_AfterDeckPlacement() const
+Float64 Losses::TemporaryStrand_AfterDeckPlacement() const
 {
    if ( m_IsDirty )
    {
@@ -772,7 +775,7 @@ Float64 lrfdLosses::TemporaryStrand_AfterDeckPlacement() const
    return 0;
 }
 
-Float64 lrfdLosses::TemporaryStrand_AfterSIDL() const
+Float64 Losses::TemporaryStrand_AfterSIDL() const
 {
    if ( m_IsDirty )
    {
@@ -782,7 +785,7 @@ Float64 lrfdLosses::TemporaryStrand_AfterSIDL() const
    return 0;
 }
 
-Float64 lrfdLosses::TemporaryStrand_Final() const
+Float64 Losses::TemporaryStrand_Final() const
 {
    if ( m_IsDirty )
    {
@@ -792,7 +795,7 @@ Float64 lrfdLosses::TemporaryStrand_Final() const
    return 0;
 }
 
-Float64 lrfdLosses::PermanentStrand_RelaxationLossesBeforeTransfer() const
+Float64 Losses::PermanentStrand_RelaxationLossesBeforeTransfer() const
 {
    if ( m_IsDirty )
    {
@@ -802,7 +805,7 @@ Float64 lrfdLosses::PermanentStrand_RelaxationLossesBeforeTransfer() const
    return m_dfpR0[PERMANENT_STRAND];
 }
 
-Float64 lrfdLosses::PermanentStrand_ElasticShorteningLosses() const
+Float64 Losses::PermanentStrand_ElasticShorteningLosses() const
 {
    if ( m_IsDirty )
    {
@@ -812,7 +815,7 @@ Float64 lrfdLosses::PermanentStrand_ElasticShorteningLosses() const
    return m_dfpES[PERMANENT_STRAND];
 }
 
-Float64 lrfdLosses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
+Float64 Losses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
 {
    if ( m_IsDirty )
    {
@@ -822,7 +825,7 @@ Float64 lrfdLosses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
    return m_dfpR0[TEMPORARY_STRAND];
 }
 
-Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
+Float64 Losses::TemporaryStrand_ElasticShorteningLosses() const
 {
    if ( m_IsDirty )
    {
@@ -832,7 +835,7 @@ Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
    return m_dfpES[TEMPORARY_STRAND];
 }
 
-Float64 lrfdLosses::ElasticGainDueToDeckPlacement(bool bApplyElasticGainReduction) const
+Float64 Losses::ElasticGainDueToDeckPlacement(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty ) 
    {
@@ -842,7 +845,7 @@ Float64 lrfdLosses::ElasticGainDueToDeckPlacement(bool bApplyElasticGainReductio
    return bApplyElasticGainReduction ? m_dfpED[WITH_ELASTIC_GAIN_REDUCTION] : m_dfpED[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
-Float64 lrfdLosses::ElasticGainDueToSIDL(bool bApplyElasticGainReduction) const
+Float64 Losses::ElasticGainDueToSIDL(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty ) 
    {
@@ -852,7 +855,7 @@ Float64 lrfdLosses::ElasticGainDueToSIDL(bool bApplyElasticGainReduction) const
    return bApplyElasticGainReduction ? m_dfpSIDL[WITH_ELASTIC_GAIN_REDUCTION] : m_dfpSIDL[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
-Float64 lrfdLosses::ElasticGainDueToDeckShrinkage() const
+Float64 Losses::ElasticGainDueToDeckShrinkage() const
 {
    if ( m_IsDirty )
    {
@@ -862,20 +865,20 @@ Float64 lrfdLosses::ElasticGainDueToDeckShrinkage() const
    return m_dfpSS;
 }
 
-Float64 lrfdLosses::ElasticGainDueToLiveLoad(Float64 Mllim) const
+Float64 Losses::ElasticGainDueToLiveLoad(Float64 Mllim) const
 {
    Float64 dFcdLL = GetDeltaFcdLL(Mllim);
    Float64 dfLL = IsZero(m_ApsPerm) ? 0 : (m_Ep / m_Ec)*dFcdLL;
    return dfLL;
 }
 
-void lrfdLosses::GetDeckShrinkageEffects(Float64* pA,Float64* pM) const
+void Losses::GetDeckShrinkageEffects(Float64* pA,Float64* pM) const
 {
    *pA = 0;
    *pM = 0;
 }
 
-Float64 lrfdLosses::FrictionLoss() const
+Float64 Losses::FrictionLoss() const
 {
    if ( m_IsDirty )
    {
@@ -885,7 +888,7 @@ Float64 lrfdLosses::FrictionLoss() const
    return m_dfpF;
 }
 
-Float64 lrfdLosses::TotalFrictionLoss() const
+Float64 Losses::TotalFrictionLoss() const
 {
    if ( m_IsDirty )
    {
@@ -895,7 +898,7 @@ Float64 lrfdLosses::TotalFrictionLoss() const
    return m_dfpFT;
 }
 
-Float64 lrfdLosses::AnchorSetLoss() const
+Float64 Losses::AnchorSetLoss() const
 {
    if ( m_IsDirty )
    {
@@ -905,7 +908,7 @@ Float64 lrfdLosses::AnchorSetLoss() const
    return m_dfpA;
 }
 
-Float64 lrfdLosses::TotalAnchorSetLoss() const
+Float64 Losses::TotalAnchorSetLoss() const
 {
    if ( m_IsDirty )
    {
@@ -915,7 +918,7 @@ Float64 lrfdLosses::TotalAnchorSetLoss() const
    return m_dfpAT;
 }
 
-Float64 lrfdLosses::AnchorSetZone() const
+Float64 Losses::AnchorSetZone() const
 {
    if ( m_IsDirty )
    {
@@ -925,7 +928,7 @@ Float64 lrfdLosses::AnchorSetZone() const
    return m_La;
 }
 
-Float64 lrfdLosses::GetFptMax() const
+Float64 Losses::GetFptMax() const
 {
    if ( m_IsDirty )
    {
@@ -935,7 +938,7 @@ Float64 lrfdLosses::GetFptMax() const
    return m_fptMax;
 }
 
-Float64 lrfdLosses::GetFptMin() const
+Float64 Losses::GetFptMin() const
 {
    if ( m_IsDirty )
    {
@@ -945,7 +948,7 @@ Float64 lrfdLosses::GetFptMin() const
    return m_fptMin;
 }
 
-Float64 lrfdLosses::GetFptAvg() const
+Float64 Losses::GetFptAvg() const
 {
    if ( m_IsDirty )
    {
@@ -955,7 +958,7 @@ Float64 lrfdLosses::GetFptAvg() const
    return m_fptAvg;
 }
 
-Float64 lrfdLosses::GetPptMax() const
+Float64 Losses::GetPptMax() const
 {
    if ( m_IsDirty )
    {
@@ -965,7 +968,7 @@ Float64 lrfdLosses::GetPptMax() const
    return m_PptMax;
 }
 
-Float64 lrfdLosses::GetPptMin() const
+Float64 Losses::GetPptMin() const
 {
    if ( m_IsDirty )
    {
@@ -975,7 +978,7 @@ Float64 lrfdLosses::GetPptMin() const
    return m_PptMin;
 }
 
-Float64 lrfdLosses::GetPptAvg() const
+Float64 Losses::GetPptAvg() const
 {
    if ( m_IsDirty )
    {
@@ -985,7 +988,7 @@ Float64 lrfdLosses::GetPptAvg() const
    return m_PptAvg;
 }
 
-Float64 lrfdLosses::GetDeltaFptAvg() const
+Float64 Losses::GetDeltaFptAvg() const
 {
    if ( m_IsDirty )
    {
@@ -995,7 +998,7 @@ Float64 lrfdLosses::GetDeltaFptAvg() const
    return m_dfptAvg;
 }
 
-Float64 lrfdLosses::GetFcgpt() const
+Float64 Losses::GetFcgpt() const
 {
    if ( m_IsDirty )
    {
@@ -1005,7 +1008,7 @@ Float64 lrfdLosses::GetFcgpt() const
    return m_Fcgpt;
 }
 
-Float64 lrfdLosses::GetDeltaFpt() const
+Float64 Losses::GetDeltaFpt() const
 {
    if ( m_IsDirty )
    {
@@ -1015,7 +1018,7 @@ Float64 lrfdLosses::GetDeltaFpt() const
    return m_dfpt;
 }
 
-Float64 lrfdLosses::GetFptr() const
+Float64 Losses::GetFptr() const
 {
    if ( m_IsDirty )
    {
@@ -1025,7 +1028,7 @@ Float64 lrfdLosses::GetFptr() const
    return m_fptr;
 }
 
-Float64 lrfdLosses::GetDeltaFptr() const
+Float64 Losses::GetDeltaFptr() const
 {
    if ( m_IsDirty )
    {
@@ -1035,7 +1038,7 @@ Float64 lrfdLosses::GetDeltaFptr() const
    return m_dfptr;
 }
 
-Float64 lrfdLosses::GetPtr() const
+Float64 Losses::GetPtr() const
 {
    if ( m_IsDirty )
    {
@@ -1045,7 +1048,7 @@ Float64 lrfdLosses::GetPtr() const
    return m_Ptr;
 }
 
-Float64 lrfdLosses::GetFcgpp() const
+Float64 Losses::GetFcgpp() const
 {
    if ( m_IsDirty )
    {
@@ -1055,7 +1058,7 @@ Float64 lrfdLosses::GetFcgpp() const
    return m_Fcgpp;
 }
 
-Float64 lrfdLosses::GetDeltaFpp() const
+Float64 Losses::GetDeltaFpp() const
 {
    if ( m_IsDirty )
    {
@@ -1065,7 +1068,7 @@ Float64 lrfdLosses::GetDeltaFpp() const
    return m_dfpp;
 }
 
-Float64 lrfdLosses::GetDeltaFcd1(bool bApplyElasticGainReduction) const
+Float64 Losses::GetDeltaFcd1(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty )
    {
@@ -1075,7 +1078,7 @@ Float64 lrfdLosses::GetDeltaFcd1(bool bApplyElasticGainReduction) const
    return bApplyElasticGainReduction ? m_DeltaFcd1[WITH_ELASTIC_GAIN_REDUCTION] : m_DeltaFcd1[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
-Float64 lrfdLosses::GetDeltaFcd2(bool bApplyElasticGainReduction) const
+Float64 Losses::GetDeltaFcd2(bool bApplyElasticGainReduction) const
 {
    if ( m_IsDirty )
    {
@@ -1085,12 +1088,12 @@ Float64 lrfdLosses::GetDeltaFcd2(bool bApplyElasticGainReduction) const
    return bApplyElasticGainReduction ? m_DeltaFcd2[WITH_ELASTIC_GAIN_REDUCTION] : m_DeltaFcd2[WITHOUT_ELASTIC_GAIN_REDUCTION];
 }
 
-Float64 lrfdLosses::GetDeltaFcdLL(Float64 Mllim) const
+Float64 Losses::GetDeltaFcdLL(Float64 Mllim) const
 {
    return Mllim * (m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2;
 }
 
-void lrfdLosses::UpdateLosses() const
+void Losses::UpdateLosses() const
 {
    static bool bUpdating = false;
 
@@ -1146,36 +1149,36 @@ void lrfdLosses::UpdateLosses() const
 }
 
 
-void lrfdLosses::UpdateInitialLosses() const
+void Losses::UpdateInitialLosses() const
 {
    UpdateRelaxationBeforeTransfer();
    UpdateElasticShortening();
    UpdatePostTensionLosses();
 }
 
-void lrfdLosses::UpdateRelaxationBeforeTransfer() const
+void Losses::UpdateRelaxationBeforeTransfer() const
 {
    // Losses from jacking to release
    // Using methodology from LRFD 2004... these losses were taken out of the 2005 spec
-   // and not guidance was given for their computation...
+   // and no guidance was given for their computation...
    if ( !m_bIgnoreInitialRelaxation )
    {
       // requirement per 2004 LRFD 5.9.5.4.4b
       if ( !IsZero( m_FpjPerm ) && !(0.5*m_FpuPerm < m_FpjPerm) )
       {
-         THROW(lrfdXPsLosses,fpjOutOfRange);
+         WBFL_LRFD_THROW(XPsLosses,fpjOutOfRange);
       }
 
       if ( !IsZero( m_FpjTemp ) && !(0.5*m_FpuPerm < m_FpjTemp) )
       {
-         THROW(lrfdXPsLosses,fpjOutOfRange);
+         WBFL_LRFD_THROW(XPsLosses,fpjOutOfRange);
       }
 
       Float64 t_days = WBFL::Units::ConvertFromSysUnits( m_ti, WBFL::Units::Measure::Day );
       Float64 Aperm = (m_TypePerm == WBFL::Materials::PsStrand::Type::LowRelaxation ? 40. : 10. );
       Float64 Atemp = (m_TypeTemp == WBFL::Materials::PsStrand::Type::LowRelaxation ? 40. : 10. );
 
-      if ( m_TempStrandUsage == tsPretensioned )
+      if ( m_TempStrandUsage == TempStrandUsage::Pretensioned )
       {
          if ( t_days*24. < 1 || IsZero(m_FpjTemp))
          {
@@ -1220,27 +1223,27 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
    }
 }
 
-void lrfdLosses::UpdateElasticShortening() const
+void Losses::UpdateElasticShortening() const
 {
    // Elastic shortening
-   lrfdElasticShortening es(m_FpjPerm,
-                            (m_TempStrandUsage == tsPretensioned ? m_FpjTemp : 0),
-                            m_dfpR0[PERMANENT_STRAND], // perm
-                            m_dfpR0[TEMPORARY_STRAND], // temp
-                            m_ApsPerm,
-                            (m_TempStrandUsage == tsPretensioned ? m_ApsTemp : 0),
-                            m_SectionProperties == sptGross ? true : false,
-                            m_Ag,
-                            m_Ixx,
-                            m_Iyy,
-                            m_Ixy,
-                            m_epermRelease,
-                            m_etemp,
-                            m_Mdlg,
-                            1.0,
-                            m_Eci,
-                            m_Ep,
-                            lrfdElasticShortening::fcgpIterative);
+   WBFL::LRFD::ElasticShortening es(m_FpjPerm,
+                        (m_TempStrandUsage == TempStrandUsage::Pretensioned ? m_FpjTemp : 0),
+                        m_dfpR0[PERMANENT_STRAND], // perm
+                        m_dfpR0[TEMPORARY_STRAND], // temp
+                        m_ApsPerm,
+                        (m_TempStrandUsage == TempStrandUsage::Pretensioned ? m_ApsTemp : 0),
+                        m_SectionProperties == SectionPropertiesType::Gross ? true : false,
+                        m_Ag,
+                        m_Ixx,
+                        m_Iyy,
+                        m_Ixy,
+                        m_epermRelease,
+                        m_etemp,
+                        m_Mdlg,
+                        1.0,
+                        m_Eci,
+                        m_Ep,
+                        WBFL::LRFD::ElasticShortening::FcgpComputationMethod::Iterative);
 
    m_ElasticShortening = es;
 
@@ -1248,7 +1251,7 @@ void lrfdLosses::UpdateElasticShortening() const
    m_dfpES[PERMANENT_STRAND] = m_ElasticShortening.PermanentStrand_ElasticShorteningLosses();
 }
 
-void lrfdLosses::UpdatePostTensionLosses() const
+void Losses::UpdatePostTensionLosses() const
 {
    // initialize values relating to effect of post-tensioning
    m_dfpp   = 0;
@@ -1275,12 +1278,12 @@ void lrfdLosses::UpdatePostTensionLosses() const
 
    // if temp strands are post-tensioned compute losses in PT strands AND
    // effect on permanent strands
-   if ( m_TempStrandUsage != tsPretensioned && !IsZero(m_FpjTemp*m_ApsTemp))
+   if ( m_TempStrandUsage != TempStrandUsage::Pretensioned && !IsZero(m_FpjTemp*m_ApsTemp))
    {
       // compute loss and stress profile of one post-tensioned strand
       // friction loss
       Float64 K, x, lg;
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
       {
          K = WBFL::Units::ConvertFromSysUnits(m_WobbleCoefficient,WBFL::Units::Measure::PerMillimeter);
          x = WBFL::Units::ConvertFromSysUnits(m_X,WBFL::Units::Measure::Millimeter);
@@ -1365,7 +1368,7 @@ void lrfdLosses::UpdatePostTensionLosses() const
       m_Fcgpt = m_PptMax / m_Ag + (my*m_Ixx + mx*m_Ixy)*-m_etemp.X() / D - (mx*m_Iyy + my*m_Ixy)*-m_etemp.Y() / D;
 
       // effect on the stress in the previously jacked strands is
-      if ( m_TempStrandUsage == tsPTBeforeShipping )
+      if ( m_TempStrandUsage == TempStrandUsage::PTBeforeShipping )
       {
          m_dfpt = m_Fcgpt*m_Ep/m_Ec;
       }
@@ -1387,12 +1390,12 @@ void lrfdLosses::UpdatePostTensionLosses() const
       // average pt force
       m_PptAvg = m_ApsTemp*m_fptAvg;
 
-      // compute effect of pt on the perminate strands
+      // compute effect of pt on the permanent strands
       //m_Fcgpp = m_PptAvg/m_Ag + m_PptAvg*m_etemp.Y()*m_epermFinal.Y()/m_Ixx;
       mx = m_PptAvg*m_etemp.Y();
       m_Fcgpp = m_PptAvg / m_Ag + (my*m_Ixx + mx*m_Ixy)*-m_epermFinal.X() / D - (mx*m_Iyy + my*m_Ixy)*-m_epermFinal.Y() / D;
 
-      if ( m_TempStrandUsage == tsPTBeforeShipping )
+      if ( m_TempStrandUsage == TempStrandUsage::PTBeforeShipping )
       {
          m_dfpp  = m_Fcgpp*(m_Ep/m_Ec);
       }
@@ -1403,7 +1406,7 @@ void lrfdLosses::UpdatePostTensionLosses() const
    }
 }
 
-void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
+void Losses::UpdateTemporaryStrandRemovalEffect() const
 {
    // Change in permanent strand stress due to removal of temporary strand
    Float64 f;
@@ -1413,13 +1416,13 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
    {
       f = 0;
    }
-   else if ( m_TempStrandUsage == tsPretensioned )
+   else if ( m_TempStrandUsage == TempStrandUsage::Pretensioned )
    {
       f = fpj - m_dfpR0[TEMPORARY_STRAND]
               - TemporaryStrand_TimeDependentLossesAtShipping()
               - m_dfpp - m_dfpES[TEMPORARY_STRAND];
    }
-   else if ( m_TempStrandUsage == tsPTBeforeShipping )
+   else if ( m_TempStrandUsage == TempStrandUsage::PTBeforeShipping )
    {
       f = fpj - m_dfpF
               - m_dfpA

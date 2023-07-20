@@ -1430,7 +1430,7 @@ protected:
 
 public:
    // count
-	STDMETHOD(get_Count)(CollectionIndexType* pcount)
+	STDMETHOD(get_Count)(IndexType* pcount)
 	{
       CHECK_RETVAL(pcount);
 
@@ -1537,7 +1537,7 @@ public:
       return E_FAIL;
    }
 
-   STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType Index,/*[out]*/KeyType* key)
+   STDMETHOD(RemoveByIndex)(/*[in]*/IndexType Index,/*[out]*/KeyType* key)
    {
       CHECK_RETVAL(key);
 
@@ -1550,7 +1550,7 @@ public:
       {
          // zero-based access
          ContainerIteratorType it( m_coll.begin() );
-         for (CollectionIndexType i=0; i<Index; i++)
+         for (IndexType i=0; i<Index; i++)
          {
             it++;
          }
@@ -1600,7 +1600,7 @@ public:
    }
 
 
-   STDMETHOD(get_Item)(CollectionIndexType idx, /*[out, retval]*/ ItemType* *pVal)
+   STDMETHOD(get_Item)(IndexType idx, /*[out, retval]*/ ItemType* *pVal)
    {
       CHECK_RETOBJ(pVal);
 

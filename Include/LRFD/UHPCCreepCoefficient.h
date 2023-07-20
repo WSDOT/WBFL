@@ -27,36 +27,28 @@
 #include <LRFD\LrfdExp.h>
 #include <LRFD\CreepCoefficient2005.h>
 
-/*****************************************************************************
-CLASS 
-   lrfdUHPCCreepCoefficient
-
-   Computes the creep coefficient per UHPC GS 1.4.2.8.2
-*****************************************************************************/
-
-class LRFDCLASS lrfdUHPCCreepCoefficient : public lrfdCreepCoefficient2005
+namespace WBFL
 {
-public:
-   lrfdUHPCCreepCoefficient();
-   virtual ~lrfdUHPCCreepCoefficient();
+   namespace LRFD
+   {
+      /// @brief Computes the creep coefficient per UHPC GS 1.4.2.8.2
+      class LRFDCLASS UHPCCreepCoefficient : public CreepCoefficient2005
+      {
+      public:
+         UHPCCreepCoefficient() = default;
+         virtual ~UHPCCreepCoefficient() = default;
 
-protected:
-   virtual Float64 GetUltimateCreep() const override;
-   virtual Float64 GetAdjustedInitialAge(Float64 ti) const override;
-   virtual Float64 GetKl(Float64 ti) const override;
-   virtual Float64 ComputeKvs() const override;
-   virtual Float64 ComputeKhc() const override;
-   virtual Float64 ComputeKf() const override;
-   virtual Float64 ComputeKtd(Float64 t) const override;
+      protected:
+         virtual Float64 GetUltimateCreep() const override;
+         virtual Float64 GetAdjustedInitialAge(Float64 ti) const override;
+         virtual Float64 GetKl(Float64 ti) const override;
+         virtual Float64 ComputeKvs() const override;
+         virtual Float64 ComputeKhc() const override;
+         virtual Float64 ComputeKf() const override;
+         virtual Float64 ComputeKtd(Float64 t) const override;
 
-private:
-   bool m_bPCTT;
-
-#if defined _UNITTEST
-public:
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
+      private:
+         bool m_bPCTT;
+      };
+   };
 };

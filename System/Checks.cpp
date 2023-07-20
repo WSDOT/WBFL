@@ -80,44 +80,58 @@ bool Diagnostics::IsWarnPopupEnabled()
    return bWarnPopup;
 }
 
+bool Message::m_bPopup = true;
+
 void Message::Precondition(const std::_tstring& s,const std::_tstring& file, Uint32 line)
 {
+   if (IsPopupEnabled())
+   {
 #if defined _DEBUG
 #if defined _UNICODE
-    if ( _CrtDbgReportW(_CRT_ASSERT,file.c_str(), line, nullptr, _T("[Precondition] %s\n"), s.c_str()) == 1)
+      if (_CrtDbgReportW(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Precondition] %s\n"), s.c_str()) == 1)
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Precondition] %s\n"),s.c_str()) == 1 )
+      if (_CrtDbgReport(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Precondition] %s\n"), s.c_str()) == 1)
 #endif
-       _CrtDbgBreak();
-#else
-    throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::InvalidValue,file,line);
+         _CrtDbgBreak();
 #endif
+   }
+    throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::Precondition,file,line);
 }
 
 void Message::Check(const std::_tstring& s,const std::_tstring& file, Uint32 line)
 {
 #if defined _DEBUG
 #if defined _UNICODE
-    if ( _CrtDbgReportW(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Check] %s\n"),s.c_str()) == 1 )
+      if (_CrtDbgReportW(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Check] %s\n"), s.c_str()) == 1)
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Check] %s\n"),s.c_str()) == 1 )
+      if (_CrtDbgReport(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Check] %s\n"), s.c_str()) == 1)
 #endif
        _CrtDbgBreak();
-#else
-    throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::CodeFault,file,line);
 #endif
 }
 
 void Message::AssertValidFailed(const std::_tstring& s,const std::_tstring& file, Uint32 line)
 {
+   if (IsPopupEnabled())
+   {
 #if defined _DEBUG
-    if ( _CrtDbgReportW(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Assert Valid Failed] %s\n"),s.c_str()) == 1 )
 #if defined _UNICODE
+      if (_CrtDbgReportW(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Assert Valid Failed] %s\n"), s.c_str()) == 1)
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file.c_str(),line,nullptr,_T("[Assert Valid Failed] %s\n"),s.c_str()) == 1 )
+      if (_CrtDbgReport(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Assert Valid Failed] %s\n"), s.c_str()) == 1)
 #endif
-       _CrtDbgBreak();
-#else
-    throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::AssertValidFailed,file,line);
+            _CrtDbgBreak();
 #endif
+   }
+   throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::AssertValidFailed,file,line);
+}
+
+void Message::EnablePopup(bool bEnable)
+{
+   m_bPopup = bEnable;
+}
+
+bool Message::IsPopupEnabled()
+{
+   return m_bPopup;
 }

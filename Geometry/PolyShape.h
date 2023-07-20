@@ -73,14 +73,14 @@ public:
 public:
 	STDMETHOD(get_Points)(/*[out,retval]*/IPoint2dCollection** coll) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(get_Point)(/*[in]*/ CollectionIndexType index, /*[out, retval]*/ IPoint2d* *pVal) override;
-   STDMETHOD(GetPoint)(/*[in] */ CollectionIndexType index, /*[out]*/ Float64* pX, /*[out]*/ Float64* pY) override;
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Point)(/*[in]*/ IndexType index, /*[out, retval]*/ IPoint2d* *pVal) override;
+   STDMETHOD(GetPoint)(/*[in] */ IndexType index, /*[out]*/ Float64* pX, /*[out]*/ Float64* pY) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
-	STDMETHOD(RemovePoint)(/*[in]*/ CollectionIndexType index) override;
-   STDMETHOD(ChangePoint)(/*[in]*/ CollectionIndexType index, /*[in]*/ Float64 x, /*[in]*/ Float64 y) override;
-   STDMETHOD(ChangePointEx)(/*[in]*/ CollectionIndexType index, /*[in]*/ IPoint2d* pPoint) override;
+	STDMETHOD(RemovePoint)(/*[in]*/ IndexType index) override;
+   STDMETHOD(ChangePoint)(/*[in]*/ IndexType index, /*[in]*/ Float64 x, /*[in]*/ Float64 y) override;
+   STDMETHOD(ChangePointEx)(/*[in]*/ IndexType index, /*[in]*/ IPoint2d* pPoint) override;
    STDMETHOD(SetPoints)(/*[in]*/ IPoint2dCollection* pPoints) override;
    STDMETHOD(AddPoints)(/*[in]*/ IPoint2dCollection* pPoints) override;
 	STDMETHOD(AddPointEx)(/*[in]*/ IPoint2d* pPoint) override;

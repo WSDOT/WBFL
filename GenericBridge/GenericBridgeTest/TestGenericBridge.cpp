@@ -117,7 +117,7 @@ void CTestGenericBridge::TestSegments(IGenericBridge* bridge)
       CComPtr<ISuperstructureMember> ssMbr;
       TRY_TEST(bridge->get_SuperstructureMember(id,&ssMbr),S_OK);
 
-      CollectionIndexType nSegments;
+      IndexType nSegments;
       ssMbr->get_SegmentCount(&nSegments);
       ATLASSERT(nSegments == 1);
 

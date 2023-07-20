@@ -85,14 +85,3 @@ std::vector<std::shared_ptr<DiaphragmLine>> ThroughPointDiaphragmLineFactory::Cr
    diaphragm_lines.emplace_back(diaphragm_line);
    return diaphragm_lines;
 }
-
-#if defined _UNITTEST
-bool ThroughPointDiaphragmLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("ThroughPointDiaphragmLineFactory");
-
-   TESTME_EPILOG("ThroughPointDiaphragmLineFactory");
-}
-#endif // _UNITTEST
-
-

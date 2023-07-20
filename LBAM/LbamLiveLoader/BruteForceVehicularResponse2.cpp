@@ -204,7 +204,7 @@ inline void LLSectionToRes(ILiveLoadModelSectionResults* secRes, OptimizationTyp
 {
    CHRException hr;
 
-   CollectionIndexType ressize;
+   IndexType ressize;
    hr = secRes->get_Count(&ressize);
 
    CComObject<CLiveLoadModelResults>* cresults;
@@ -212,7 +212,7 @@ inline void LLSectionToRes(ILiveLoadModelSectionResults* secRes, OptimizationTyp
    CComPtr<ILiveLoadModelResults> results(cresults);
    hr = results->Reserve(ressize);
 
-   for (CollectionIndexType is = 0; is<ressize; is++)
+   for (IndexType is = 0; is<ressize; is++)
    {
       Float64 left_val, right_val;
       CComPtr<ILiveLoadConfiguration> left_config, right_config;
@@ -253,11 +253,11 @@ static Float64 GetMinSpanLength(ISupportLocations* suppLocs)
    hr = suppLocs->get_SupportLocations(&supp_locs);
 
    Float64 min_length = DBL_MAX;
-   CollectionIndexType num_supps;
+   IndexType num_supps;
    hr = supp_locs->get_Count(&num_supps);
    Float64 start_loc;
    hr = supp_locs->get_Item(0, &start_loc);
-   for (CollectionIndexType i=1; i<num_supps; i++)
+   for (IndexType i=1; i<num_supps; i++)
    {
       Float64 end_loc;
       hr = supp_locs->get_Item(i, &end_loc);
@@ -280,11 +280,11 @@ static Float64 GetMaxSpanLength(ISupportLocations* suppLocs)
    hr = suppLocs->get_SupportLocations(&supp_locs);
 
    Float64 max_length = 0;
-   CollectionIndexType num_supps;
+   IndexType num_supps;
    hr = supp_locs->get_Count(&num_supps);
    Float64 start_loc;
    hr = supp_locs->get_Item(0, &start_loc);
-   for (CollectionIndexType i=1; i<num_supps; i++)
+   for (IndexType i=1; i<num_supps; i++)
    {
       Float64 end_loc;
       hr = supp_locs->get_Item(i, &end_loc);
@@ -746,7 +746,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
 
       Configure(stage, type, vehicleIndex, vehConfiguration, doApplyImpact);
 
-      CollectionIndexType nPoi;
+      IndexType nPoi;
       hr = poiIDs->get_Count(&nPoi);
 
       // create results collection
@@ -759,7 +759,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
       // see if this effect has a sign change at left/right faces
       Float64 flip_factor = m_pInflStrategy->SignFlip();
 
-      for (CollectionIndexType poiIdx = 0; poiIdx < nPoi; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < nPoi; poiIdx++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -1295,18 +1295,18 @@ void CBruteForceVehicularResponse2::ConfigureAnalysisPoints(BSTR stage)
       CComPtr<IDblArray> poilocs;
       hr = poi_utility->GetSuperstructurePois(m_CachedStage , &poiids, &poilocs);
 
-      CollectionIndexType nPois;
+      IndexType nPois;
       hr = poiids->get_Count(&nPois);
 
 #ifdef _DEBUG
-      CollectionIndexType tsiz;
+      IndexType tsiz;
       hr = poilocs->get_Count(&tsiz);
       ATLASSERT(nPois==tsiz); // number of items must match
 #endif
 
       Float64 last_loc;
       bool first = true;
-      for (CollectionIndexType i = 0; i < nPois; i++)
+      for (IndexType i = 0; i < nPois; i++)
       {
          PoiIDType id;
          hr = poiids->get_Item(i, &id);
@@ -1532,13 +1532,13 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
    CComPtr<IDblArray> supportLocations;
    m_SupportLocations->get_SupportLocations(&supportLocations);
 
-   CollectionIndexType nSupports;
+   IndexType nSupports;
    supportLocations->get_Count(&nSupports);
 
    Float64 prevSupportLocation;
    Float64 nextSupportLocation;
    Float64 minValue, prevMinLocation, nextMinLocation;
-   for ( CollectionIndexType supportIdx = 0; supportIdx < nSupports; supportIdx++ )
+   for ( IndexType supportIdx = 0; supportIdx < nSupports; supportIdx++ )
    {
       Float64 currSupportLocation;
       supportLocations->get_Item(supportIdx,&currSupportLocation);
@@ -1920,10 +1920,10 @@ void CBruteForceVehicularResponse2::EvaluateForInteriorSupportReaction(LiveLoadM
    CComPtr<IDblArray> supportLocations;
    m_SupportLocations->get_SupportLocations(&supportLocations);
 
-   CollectionIndexType nSupports;
+   IndexType nSupports;
    supportLocations->get_Count(&nSupports);
 
-   for ( CollectionIndexType supportIdx = 0; supportIdx < nSupports; supportIdx++ )
+   for ( IndexType supportIdx = 0; supportIdx < nSupports; supportIdx++ )
    {
       Float64 currSupportLocation;
       supportLocations->get_Item(supportIdx,&currSupportLocation);

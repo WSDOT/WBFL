@@ -183,13 +183,13 @@ STDMETHODIMP CLBAMModelEnveloper::Initialize(IUnkArray* pModels, AnalysisType aT
       return S_OK;
 
    // loop over each model and set up an engine for it
-   CollectionIndexType nModels;
+   IndexType nModels;
    hr = pModels->get_Count(&nModels);
    if (FAILED(hr))
       return hr;
 
 
-   for (CollectionIndexType im = 0; im < nModels; im++)
+   for (IndexType im = 0; im < nModels; im++)
    {
       CComPtr<IUnknown> unk;
       hr = pModels->get_Item(im, &unk);
@@ -273,8 +273,8 @@ STDMETHODIMP CLBAMModelEnveloper::get_Engines(IUnkArray* *pVal)
    if (FAILED(hr))
       return hr;
 
-   CollectionIndexType cnt = m_Engines.size();
-   for (CollectionIndexType im = 0; im<cnt; im++)
+   IndexType cnt = m_Engines.size();
+   for (IndexType im = 0; im<cnt; im++)
    {
      
       hr = unka->Add(m_Engines[im].m_T);
@@ -299,12 +299,12 @@ STDMETHODIMP CLBAMModelEnveloper::get_OptimizationType(OptimizationType* pVal)
 	return S_OK;
 }
 
-CollectionIndexType CLBAMModelEnveloper::EngineCount()
+IndexType CLBAMModelEnveloper::EngineCount()
 {
    return m_Engines.size();
 }
 
-void CLBAMModelEnveloper::GetEngine(CollectionIndexType idx, ILBAMAnalysisEngine* *engine)
+void CLBAMModelEnveloper::GetEngine(IndexType idx, ILBAMAnalysisEngine* *engine)
 {
    try
    {

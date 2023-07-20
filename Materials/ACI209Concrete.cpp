@@ -31,14 +31,14 @@ using namespace WBFL::Materials;
 
 void ACI209Concrete::GetModelParameters(CuringType cure,CementType cement,Float64* pA,Float64* pB)
 {
-   Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
-                        WBFL::Units::ConvertToSysUnits(2.3,WBFL::Units::Measure::Day)} ,  // Moist, Type III
-                       {WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day),    // Steam, Type I
-                        WBFL::Units::ConvertToSysUnits(0.7,WBFL::Units::Measure::Day)} }; // Steam, Type III
-   Float64 b[2][2] = { {0.85,  // Moist, Type I
-                        0.92}, // Moist, Type III
-                        {0.95, // Steam, Type I
-                        0.98} }; // Steam, Type III
+   static Float64 a[2][2] = { {WBFL::Units::ConvertToSysUnits(4.0,WBFL::Units::Measure::Day),    // Moist, Type I
+                               WBFL::Units::ConvertToSysUnits(2.3,WBFL::Units::Measure::Day)} ,  // Moist, Type III
+                              {WBFL::Units::ConvertToSysUnits(1.0,WBFL::Units::Measure::Day),    // Steam, Type I
+                               WBFL::Units::ConvertToSysUnits(0.7,WBFL::Units::Measure::Day)} }; // Steam, Type III
+   static Float64 b[2][2] = { {0.85,  // Moist, Type I
+                              0.92}, // Moist, Type III
+                             {0.95, // Steam, Type I
+                              0.98} }; // Steam, Type III
 
    *pA = a[+cure][+cement];
    *pB = b[+cure][+cement];
@@ -242,7 +242,7 @@ std::unique_ptr<ConcreteBaseShrinkageDetails> ACI209Concrete::GetFreeShrinkageSt
    // Limits (see paragraph between 2.5.5b and 2.5.6
    correction_factor = Max(correction_factor,0.2);
 
-   // Shrinakge strain
+   // Shrinkage strain
    Float64 sh = time_factor * correction_factor * m_Eshu;
 
    pDetails->f = f;
@@ -304,7 +304,7 @@ std::unique_ptr<ConcreteBaseCreepDetails> ACI209Concrete::GetCreepCoefficientDet
    // Volume-Surface Ratio (2.5.5b)
    correction_factor *= m_VSC;
 
-   // Creep coefficent
+   // Creep coefficient
    Float64 c = time_factor * correction_factor * m_Cu;
 
    pDetails->time_factor = time_factor;
@@ -500,7 +500,7 @@ Float64 ACI209Concrete::GetFr(Float64 t) const
    return fr;
 }
 
-// Could be using lrfdConcreteUtil::ModE, except that creates a circular
+// Could be using WBFL::LRFD::ConcreteUtil::ModE, except that creates a circular
 // dependency between WBFLMaterial and WBFLLrfd. Neither will link
 // without the other first being linked.
 //

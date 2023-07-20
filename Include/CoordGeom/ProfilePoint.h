@@ -68,11 +68,6 @@ namespace WBFL
          /// @return Pair containing (Station,Elevation) 
          std::pair<Station,Float64> GetLocation() const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          Station m_Station{ 0.0 };
          Float64 m_Elevation{ 0.0 };

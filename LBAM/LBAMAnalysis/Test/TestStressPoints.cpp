@@ -72,7 +72,7 @@ inline void TestSpsAtPoi(IGetStressPoints* pigsp, CComBSTR Stage, PoiIDType poiI
 {
    CComQIPtr<IStressPoints> left_sps, right_sps;
    pigsp->GetStressPointsAtPOI(poiID, Stage, &left_sps, &right_sps);
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST(left_sps->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 3);
    CComQIPtr<IStressPoint> sp0, sp1, sp2;

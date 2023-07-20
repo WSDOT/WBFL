@@ -98,7 +98,7 @@ STDMETHODIMP CJointCollection::Create(JointIDType id, Float64 fltX, Float64 fltY
 	return hr;
 }
 
-STDMETHODIMP CJointCollection::Remove(CollectionIndexType IDorIndex, Fem2dAccessType AccessMethod, JointIDType* pid)
+STDMETHODIMP CJointCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, JointIDType* pid)
 {
    HRESULT hr = JointCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))

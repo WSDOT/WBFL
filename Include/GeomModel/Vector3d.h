@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_VECTOR3D_H_
-#define INCLUDED_GEOMETRY_VECTOR3D_H_
 #pragma once
 
 
@@ -191,19 +189,6 @@ namespace WBFL
          /// Returns the dimensions of this vector.
          std::tuple<Float64,Float64,Float64> GetDimensions() const;
 
-      #if defined _DEBUG
-         /// Returns true if the class is in a valid state, otherwise returns false
-         bool AssertValid() const;
-
-         /// Dumps the contents of the class to the given stream.
-         void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
       private:
          Float64 m_X{ 0.0 };
          Float64 m_Y{ 0.0 };
@@ -217,6 +202,3 @@ namespace WBFL
       GEOMMODELFUNC Vector3d operator-(const Vector3d& lhs, const Vector3d& rhs);
    }; // Geometry
 }; // WBFL
-
-
-#endif // INCLUDED_GEOMETRY_VECTOR3D_H_

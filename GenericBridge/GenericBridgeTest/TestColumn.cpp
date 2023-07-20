@@ -85,7 +85,7 @@ void CTestColumn::Test()
    //TRY_TEST(column->get_BaseOffset(&baseOffset),S_OK);
    //TRY_TEST(IsEqual(baseOffset,0.0),true);
 
-   //CollectionIndexType count;
+   //IndexType count;
    //TRY_TEST(column->get_SegmentCount(nullptr),E_POINTER);
    //TRY_TEST(column->get_SegmentCount(&count),S_OK);
    //TRY_TEST(count,0);

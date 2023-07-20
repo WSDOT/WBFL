@@ -71,32 +71,3 @@ std::pair<Station,Float64> ProfilePoint::GetLocation() const
 {
    return std::make_pair(m_Station, m_Elevation);
 }
-
-
-#if defined _UNITTEST
-bool ProfilePoint::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("ProfilePoint");
-
-   Station s(100.0);
-   ProfilePoint p(s, 200);
-   Station x;
-   Float64 y;
-   std::tie(x,y) = p.GetLocation();
-   TRY_TESTME(s == x);
-   TRY_TESTME(IsEqual(y, 200.));
-
-   ProfilePoint z;
-   TRY_TESTME(z.GetStation() == 0.0);
-   TRY_TESTME(IsZero(z.GetElevation()));
-
-   ProfilePoint zz(z);
-   TRY_TESTME(zz == z);
-
-   TRY_TESTME(p != z);
-
-   TESTME_EPILOG("ProfilePoint");
-}
-#endif // _UNITTEST
-
-

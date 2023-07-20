@@ -54,12 +54,12 @@ public:
    STDMETHOD(OnStressPointChanged)(/*[in]*/IStressPoint* StressPoint);
 
 // _IStressPointCollectionEvents
-   STDMETHOD(OnStressPointsChanged)(/*[in]*/CollectionIndexType idx);
-   STDMETHOD(OnStressPointsAdded)(/*[in]*/CollectionIndexType idx);
-   STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType idx);
+   STDMETHOD(OnStressPointsChanged)(/*[in]*/IndexType idx);
+   STDMETHOD(OnStressPointsAdded)(/*[in]*/IndexType idx);
+   STDMETHOD(OnStressPointsRemoved)(/*[in]*/IndexType idx);
 
    bool m_spFired;
-   CollectionIndexType m_spCollFired;
+   IndexType m_spCollFired;
 
    DWORD m_SpCookie;   // cookies for connection points
    DWORD m_CollCookie;

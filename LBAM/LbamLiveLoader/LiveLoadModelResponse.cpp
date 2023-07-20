@@ -75,7 +75,7 @@ bool CompareMin(Float64 newv, Float64 oldv)
 
 
 // section values
-static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, CollectionIndexType numPois, 
+static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, IndexType numPois, 
                 bool (*leftCompare)(Float64, Float64), bool (*rightCompare)(Float64, Float64), 
                 VARIANT_BOOL doComputePlacement, 
                 ILiveLoadModelSectionResults* envResults, ILiveLoadModelSectionResults* results)
@@ -84,7 +84,7 @@ static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, Collecti
    if (vehIdx==0)
    {
       // first vehicle. no comparison needed. first is optimal, by definition
-      for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
       {
          Float64 left_result, right_result;
          CComPtr<ILiveLoadConfiguration> left_config, right_config;
@@ -95,7 +95,7 @@ static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, Collecti
    else
    {
       // need to perform comparison with previously computed results
-      for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
       {
          // pull out new result to compare with
          Float64 new_left_result, new_right_result;
@@ -147,7 +147,7 @@ static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, Collecti
 }
 
 // single values
-static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, CollectionIndexType numPois, 
+static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, IndexType numPois, 
                        bool (*Compare)(Float64, Float64), VARIANT_BOOL doComputePlacement, 
                        ILiveLoadModelResults* envResults, ILiveLoadModelResults* results)
 {
@@ -155,7 +155,7 @@ static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, Collecti
    if (vehIdx == 0)
    {
       // first vehicle. no comparison needed. first is optimal, by definition
-      for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
       {
          Float64 result;
          CComPtr<ILiveLoadConfiguration> config;
@@ -166,7 +166,7 @@ static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, Collecti
    else
    {
       // need to perform comparison with previously computed results
-      for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
       {
          // pull out new result to compare with
          Float64 new_result;
@@ -230,7 +230,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeForces(IIDArray* poiIDs, BSTR stage,
       VehicleIndexType nVehicles;
       hr = pVehicularLoads->get_Count(&nVehicles);
 
-      CollectionIndexType nPOI;
+      IndexType nPOI;
       hr = poiIDs->get_Count(&nPOI);
 
       // create our results object
@@ -242,7 +242,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeForces(IIDArray* poiIDs, BSTR stage,
       if (nVehicles == 0)
       {
          // no vehicles - need to create empty results and return
-         for (CollectionIndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
+         for (IndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
          {
             CComPtr<ILiveLoadConfiguration> left_config, right_config;
             if ( computePlacement == VARIANT_TRUE )
@@ -327,7 +327,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeDeflections(IIDArray* poiIDs, BSTR s
       VehicleIndexType nVehicles;
       hr = vehicularLoads->get_Count(&nVehicles);
 
-      CollectionIndexType nPOI;
+      IndexType nPOI;
       hr = poiIDs->get_Count(&nPOI);
 
       // create our results object
@@ -339,7 +339,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeDeflections(IIDArray* poiIDs, BSTR s
       if (nVehicles == 0)
       {
          // no vehicles - need to create empty results and return
-         for (CollectionIndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
+         for (IndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
          {
             hr = results->Add(0.0, nullptr, 0.0, nullptr);
          }
@@ -417,7 +417,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeReactions(IIDArray* supportIDs, BSTR
       VehicleIndexType nVehicles;
       hr = pvls->get_Count(&nVehicles);
 
-      CollectionIndexType nSupports;
+      IndexType nSupports;
       hr = supportIDs->get_Count(&nSupports);
 
       // create our results object
@@ -429,7 +429,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeReactions(IIDArray* supportIDs, BSTR
       if (nVehicles == 0)
       {
          // no vehicles - need to create empty results and return
-         for (CollectionIndexType supportIdx = 0; supportIdx < nSupports; supportIdx++)
+         for (IndexType supportIdx = 0; supportIdx < nSupports; supportIdx++)
          {
             hr = results->Add(0.0, nullptr);
          }
@@ -503,7 +503,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeSupportDeflections(IIDArray* support
       VehicleIndexType nVehicles;
       hr = pvls->get_Count(&nVehicles);
 
-      CollectionIndexType nSupports;
+      IndexType nSupports;
       hr = supportIDs->get_Count(&nSupports);
 
       // create our results object
@@ -515,7 +515,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeSupportDeflections(IIDArray* support
       if (nVehicles == 0)
       {
          // no vehicles - need to create empty results and return
-         for (CollectionIndexType supportIdx = 0; supportIdx < nSupports; supportIdx++)
+         for (IndexType supportIdx = 0; supportIdx < nSupports; supportIdx++)
          {
             hr = results->Add(0.0, nullptr);
          }

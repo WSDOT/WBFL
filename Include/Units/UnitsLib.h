@@ -21,21 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_UNITS_UNITSLIB_H_
-#define INCLUDED_UNITS_UNITSLIB_H_
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   Units
-
-   Support library that provides unit conversion and system units management
-   services.
-
-DESCRIPTION
-   Support library that provides unit conversion and system units management
-   services.
-*****************************************************************************/
-
-
-#endif // INCLUDED_UNITS_UNITSLIB_H_
+#include <WbflAll.h>

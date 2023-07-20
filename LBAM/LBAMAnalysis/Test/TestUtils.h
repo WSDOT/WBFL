@@ -29,9 +29,9 @@ static void DumpSectionForceResults(std::_tofstream& os, IIDArray* pois , CComPt
 {
    // have to attach and detach variant to safearray
 
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    pois->get_Count(&poi_cnt);
-   for (CollectionIndexType i = 0; i<poi_cnt; i++)
+   for (IndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<ISectionResult3D> res;
       pres->get_Item(i,&res);
@@ -88,10 +88,10 @@ static void DumpSectionForceResults(std::_tofstream& os, IIDArray* pois , CComPt
 
 static void DumpDeflectionResults(std::_tofstream& os, IIDArray* pois , CComPtr<ISectionResult3Ds> pres, std::vector<Float64>& poi_locs)
 {
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    pois->get_Count(&poi_cnt);
 
-   for (CollectionIndexType i = 0; i<poi_cnt; i++)
+   for (IndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<ISectionResult3D> res;
       pres->get_Item(i,&res);
@@ -111,10 +111,10 @@ static void DumpDeflectionResults(std::_tofstream& os, IIDArray* pois , CComPtr<
 
 static void DumpSupportDeflectionResults(std::_tofstream& os, IIDArray* pois , CComPtr<IResult3Ds> pres)
 {
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    pois->get_Count(&poi_cnt);
 
-   for (CollectionIndexType i = 0; i<poi_cnt; i++)
+   for (IndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<IResult3D> res;
       pres->get_Item(i,&res);
@@ -135,10 +135,10 @@ static void DumpSupportDeflectionResults(std::_tofstream& os, IIDArray* pois , C
 static void DumpReactionResults(std::_tofstream& os, IIDArray* pois , CComPtr<IResult3Ds> pres)
 {
    // have to attach and detach variant to safearray
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    pois->get_Count(&poi_cnt);
 
-   for (CollectionIndexType i = 0; i<poi_cnt; i++)
+   for (IndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<IResult3D> res;
       pres->get_Item(i,&res);
@@ -157,9 +157,9 @@ static void DumpReactionResults(std::_tofstream& os, IIDArray* pois , CComPtr<IR
 
 static void DumpStressResults(std::_tofstream& os, IIDArray* pois , CComPtr<ISectionStressResults> pres)
 {
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    pois->get_Count(&poi_cnt);
-   for (CollectionIndexType i = 0; i<poi_cnt; i++)
+   for (IndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<ISectionStressResult> res;
       pres->get_Item(i,&res);
@@ -167,11 +167,11 @@ static void DumpStressResults(std::_tofstream& os, IIDArray* pois , CComPtr<ISec
       PoiIDType pid;
       pois->get_Item(i,&pid);
 
-      CollectionIndexType num_left, num_right;
+      IndexType num_left, num_right;
       res->get_LeftCount(&num_left);
       res->get_RightCount(&num_right);
 
-      for (CollectionIndexType j = 0; j<max(num_left,num_right); j++)
+      for (IndexType j = 0; j<max(num_left,num_right); j++)
       {
          os<<std::setw(6)<< pid;
 

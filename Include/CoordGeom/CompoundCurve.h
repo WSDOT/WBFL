@@ -315,28 +315,6 @@ namespace WBFL
          virtual std::vector<std::shared_ptr<PathElement>> CreateOffsetPath(Float64 offset) const override;
          virtual std::vector<std::shared_ptr<PathElement>> CreateSubpath(Float64 start, Float64 end) const override;
 
-
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-         static bool Test1(WBFL::Debug::Log& rlog);
-         static bool Test2(WBFL::Debug::Log& rlog);
-         static bool Test3(WBFL::Debug::Log& rlog);
-         static bool Test4(WBFL::Debug::Log& rlog);
-         static bool Test5(WBFL::Debug::Log& rlog);
-         static bool Test6(WBFL::Debug::Log& rlog);
-         static bool Test7(WBFL::Debug::Log& rlog);
-         static bool Test8a(WBFL::Debug::Log& rlog);
-         static bool Test8b(WBFL::Debug::Log& rlog);
-         static bool Test9a(WBFL::Debug::Log& rlog);
-         static bool Test9b(WBFL::Debug::Log& rlog);
-         static bool Test10a(WBFL::Debug::Log& rlog);
-         static bool Test10b(WBFL::Debug::Log& rlog);
-         static bool Test11a(WBFL::Debug::Log& rlog);
-         static bool Test11b(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
-
       private:
          WBFL::Geometry::Point2d m_PBT, m_PI, m_PFT;
          Float64 m_Radius;

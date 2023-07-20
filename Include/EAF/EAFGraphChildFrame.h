@@ -102,7 +102,7 @@ protected:
 
    // returns a graph builder from the graph manager (not the close stored in m_pMyGraphBuilders)
    // This graph builder does not have access to the actual graph control window.
-   std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder(IndexType index);
+   WBFL::Graphing::GraphBuilder& GetGraphBuilder(IndexType index);
 
    friend CEAFGraphView; 
 };

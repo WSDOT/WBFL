@@ -230,7 +230,6 @@
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UBeam.cpp" />
     <ClCompile Include="UBeam2.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="Vector2d.cpp" />
     <ClCompile Include="Vector3d.cpp" />
     <ClCompile Include="VoidedSlab.cpp" />
@@ -288,7 +287,6 @@
     <ClInclude Include="..\Include\GeomModel\Triangle.h" />
     <ClInclude Include="..\Include\GeomModel\UBeam.h" />
     <ClInclude Include="..\Include\GeomModel\UBeam2.h" />
-    <ClInclude Include="..\Include\GeomModel\UnitTest.h" />
     <ClInclude Include="..\Include\GeomModel\Vector2d.h" />
     <ClInclude Include="..\Include\GeomModel\Vector3d.h" />
     <ClInclude Include="..\Include\GeomModel\VoidedSlab.h" />

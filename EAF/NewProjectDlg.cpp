@@ -111,8 +111,8 @@ void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CE
       *pDefaultItem = hGroup;
    }
 
-   CollectionIndexType nGroups = pGroup->GetGroupCount();
-   for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
+   IndexType nGroups = pGroup->GetGroupCount();
+   for ( IndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
    {
       const CEAFTemplateGroup* p = pGroup->GetGroup(grpIdx);
       AddProjectGroup(hGroup,hGroup,p,strLastSelection, isInSelectedProject, pDefaultItem);
@@ -196,8 +196,8 @@ BOOL CNewProjectDlg::OnInitDialog()
          hSelectedItem = hPrevItem;
       }
 
-      CollectionIndexType nGroups = pTemplateGroup->GetGroupCount();
-      for ( CollectionIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
+      IndexType nGroups = pTemplateGroup->GetGroupCount();
+      for ( IndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
       {
          const CEAFTemplateGroup* pGroup = pTemplateGroup->GetGroup(grpIdx);
          AddProjectGroup(hPrevItem,hPrevItem,pGroup,strLastSelection,isSelectedProject,&hSelectedItem);
@@ -253,8 +253,8 @@ void CNewProjectDlg::OnProjectTypeSelectionChanged(NMHDR *pNMHDR, LRESULT *pResu
 
       LPARAM lParam = pNMTreeView->itemNew.lParam;
       const CEAFTemplateGroup* pGroup = (const CEAFTemplateGroup*)lParam;
-      CollectionIndexType nItems = pGroup->GetItemCount();
-      for ( CollectionIndexType itemIdx = 0; itemIdx < nItems; itemIdx++ )
+      IndexType nItems = pGroup->GetItemCount();
+      for ( IndexType itemIdx = 0; itemIdx < nItems; itemIdx++ )
       {
          const CEAFTemplateItem* pItem = pGroup->GetItem(itemIdx);
 

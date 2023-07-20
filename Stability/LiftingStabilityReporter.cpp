@@ -1167,8 +1167,8 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fps[+Corner::TopLeft], sectionResult.fps[+Corner::TopRight], 0.001));
-         ATLASSERT(IsEqual(sectionResult.fps[+Corner::BottomLeft], sectionResult.fps[+Corner::BottomRight], 0.001));
+         CHECK(IsEqual(sectionResult.fps[+Corner::TopLeft], sectionResult.fps[+Corner::TopRight], 0.001));
+         CHECK(IsEqual(sectionResult.fps[+Corner::BottomLeft], sectionResult.fps[+Corner::BottomRight], 0.001));
          (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::TopLeft]);
          (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[+Corner::BottomLeft]);
       }
@@ -1284,8 +1284,8 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fg[+Corner::TopLeft],    sectionResult.fg[+Corner::TopRight]));
-         ATLASSERT(IsEqual(sectionResult.fg[+Corner::BottomLeft], sectionResult.fg[+Corner::BottomRight]));
+         CHECK(IsEqual(sectionResult.fg[+Corner::TopLeft], sectionResult.fg[+Corner::TopRight]));
+         CHECK(IsEqual(sectionResult.fg[+Corner::BottomLeft], sectionResult.fg[+Corner::BottomRight]));
          (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::TopLeft]);
          (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[+Corner::BottomLeft]);
       }
@@ -1306,8 +1306,8 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
       if (bSimpleFormat)
       {
-         ATLASSERT(IsEqual(sectionResult.fcable[+Corner::TopLeft],    sectionResult.fcable[+Corner::TopRight]));
-         ATLASSERT(IsEqual(sectionResult.fcable[+Corner::BottomLeft], sectionResult.fcable[+Corner::BottomRight]));
+         CHECK(IsEqual(sectionResult.fcable[+Corner::TopLeft], sectionResult.fcable[+Corner::TopRight]));
+         CHECK(IsEqual(sectionResult.fcable[+Corner::BottomLeft], sectionResult.fcable[+Corner::BottomRight]));
          (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[+Corner::TopLeft]);
          (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcable[+Corner::BottomLeft]);
       }
@@ -1916,7 +1916,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
       if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
       {
          rptRcTable* pRebarTable = nullptr;
-         std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
+         std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(WBFL::LRFD::LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
          ColumnIndexType nColumns = (bSimpleFormat ? 8 : 19);
          if (bReportTensileForceDetails)
          {

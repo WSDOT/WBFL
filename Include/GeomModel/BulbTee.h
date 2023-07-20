@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_BULBTEE_H_
-#define INCLUDED_GEOMMODEL_BULBTEE_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -149,17 +147,6 @@ public:
    virtual Float64 GetMatingSurfaceWidth(MatingSurfaceIndexType idx) const override;
    virtual Float64 GetMatingSurfaceLocation(MatingSurfaceIndexType idx) const override;
 
-
-#if defined _DEBUG
-   virtual bool AssertValid() const;
-   virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   static bool TestMe(WBFL::Debug::Log& rlog);
-
-#endif // _UNITTEST
-
 protected:
    virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
 
@@ -190,5 +177,3 @@ private:
 
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMMODEL_BULBTEE_H_

@@ -32,7 +32,7 @@ DEFINE_GUID(IID_IReportManager,
 interface IReportManager : IUnknown
 {
    virtual void AddReportBuilder(std::shared_ptr<WBFL::Reporting::ReportBuilder>& pReportBuilder) = 0;
-   virtual CollectionIndexType GetReportBuilderCount(bool bIncludeHidden = false) const = 0;
+   virtual IndexType GetReportBuilderCount(bool bIncludeHidden = false) const = 0;
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(LPCTSTR strReportName) = 0;
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(const std::_tstring& strReportName) = 0;
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) = 0;

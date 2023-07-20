@@ -516,7 +516,7 @@ HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, IndexType nClsid,IIndexArray** p
       }
    }
 
-   CollectionIndexType nErrors;
+   IndexType nErrors;
    (*plErrIndex)->get_Count(&nErrors);
    if ( 0 < nErrors )
    {
@@ -852,18 +852,18 @@ STDMETHODIMP CBrokerImp2::AddCLSID(BSTR bstrOldCLSID,BSTR bstrNewCLSID)
    return S_OK;
 }
 
-STDMETHODIMP CBrokerImp2::get_AgentCount(CollectionIndexType* nAgents)
+STDMETHODIMP CBrokerImp2::get_AgentCount(IndexType* nAgents)
 {
    CHECK_RETVAL(nAgents);
    *nAgents = m_Agents.size();
    return S_OK;
 }
 
-STDMETHODIMP CBrokerImp2::get_Agent(CollectionIndexType idx,IAgent** ppAgent)
+STDMETHODIMP CBrokerImp2::get_Agent(IndexType idx,IAgent** ppAgent)
 {
    CHECK_RETOBJ(ppAgent);
 
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    Agents::iterator iter(m_Agents.begin());
    Agents::iterator iterEnd(m_Agents.end());
    for ( ; iter != iterEnd && i != idx; iter++, i++ )
@@ -875,18 +875,18 @@ STDMETHODIMP CBrokerImp2::get_Agent(CollectionIndexType idx,IAgent** ppAgent)
    return S_OK;
 }
 
-STDMETHODIMP CBrokerImp2::get_ExtensionAgentCount(CollectionIndexType* nAgents)
+STDMETHODIMP CBrokerImp2::get_ExtensionAgentCount(IndexType* nAgents)
 {
    CHECK_RETVAL(nAgents);
    *nAgents = m_ExtensionAgents.size();
    return S_OK;
 }
 
-STDMETHODIMP CBrokerImp2::get_ExtensionAgent(CollectionIndexType idx,IAgent** ppAgent)
+STDMETHODIMP CBrokerImp2::get_ExtensionAgent(IndexType idx,IAgent** ppAgent)
 {
    CHECK_RETOBJ(ppAgent);
 
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    Agents::iterator iter(m_ExtensionAgents.begin());
    Agents::iterator iterEnd(m_ExtensionAgents.end());
    for ( ; iter != iterEnd && i != idx; iter++, i++ )

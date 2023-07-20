@@ -151,14 +151,14 @@ STDMETHODIMP CGeneralSectionSolution::get_ExceededStrainLimits(VARIANT_BOOL* pbE
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSectionSolution::get_SliceCount(CollectionIndexType* nSlices)
+STDMETHODIMP CGeneralSectionSolution::get_SliceCount(IndexType* nSlices)
 {
    return m_Slices->get_Count(nSlices);
 }
 
-STDMETHODIMP CGeneralSectionSolution::get_Slice(CollectionIndexType sliceIdx,IGeneralSectionSlice** pSlice)
+STDMETHODIMP CGeneralSectionSolution::get_Slice(IndexType sliceIdx,IGeneralSectionSlice** pSlice)
 {
-   CollectionIndexType nSlices;
+   IndexType nSlices;
    m_Slices->get_Count(&nSlices);
    if ( sliceIdx < 0 || nSlices <= sliceIdx )
       return E_INVALIDARG;
@@ -175,7 +175,7 @@ STDMETHODIMP CGeneralSectionSolution::FindSlices(IndexType shapeIdx, IUnkArray**
    CComPtr<IUnkArray> slices;
    slices.CoCreateInstance(CLSID_UnkArray);
 
-   CollectionIndexType nSlices;
+   IndexType nSlices;
    m_Slices->get_Count(&nSlices);
    for (IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++)
    {

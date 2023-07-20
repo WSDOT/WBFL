@@ -29,5 +29,3 @@
 #include <afxext.h>         // MFC extensions
 #include <afxpriv.h>        // Private MFC extensions
 
-#include <WbflGrid.h>
-

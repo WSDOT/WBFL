@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_BOXBEAM_H_
-#define INCLUDED_GEOMMODEL_BOXBEAM_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -116,15 +114,6 @@ namespace WBFL
          std::shared_ptr<Shape> GetBoxShape() const;
          std::shared_ptr<Shape> GetVoidShape(IndexType voidIdx) const;
 
-#if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-
-#endif // _UNITTEST
       protected:
          virtual void OnUpdateComposite(std::unique_ptr<CompositeShape>& composite) const override;
 
@@ -154,5 +143,3 @@ namespace WBFL
       };
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMMODEL_BOXBEAM_H_

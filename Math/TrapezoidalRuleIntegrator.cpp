@@ -49,12 +49,3 @@ Float64 TrapezoidalRuleIntegrator::Evaluate(const Function& f,Float64 xMin,Float
 {
    return Evaluate([&f](Float64 x) {return f.Evaluate(x); }, xMin, xMax, nIntervals);
 }
-
-#if defined _UNITTEST
-bool TrapezoidalRuleIntegrator::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("TrapezoidalRuleIntegrator");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for TrapezoidalRuleIntegrator");
-   TESTME_EPILOG("TrapezoidalRuleIntegrator");
-}
-#endif

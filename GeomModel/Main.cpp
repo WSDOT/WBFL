@@ -22,8 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <GeomModel/GeomModelLib.h>
-#include <GeomModel/UnitTest.h>
-#include <System\dllTest.h>
+
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
@@ -31,10 +30,4 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
                            LPVOID    /*plvReserved*/)
 {
     return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-   return WBFL::Geometry::UnitTest::TestMe(rlog);
 }

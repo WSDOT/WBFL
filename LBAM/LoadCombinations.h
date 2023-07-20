@@ -31,8 +31,8 @@
 #include <WBFLComCollections.h>
 
 class CLoadCombinations;
-using LoadCombinationCollImpl = CComBSTRKeyedCollection<ILoadCombinations, ILoadCombination, IEnumLoadCombination, &IID_IEnumLoadCombination, CollectionIndexType>;
-using PersistentLoadCombinationCollImpl = CPersistentCollection<CLoadCombinations, LoadCombinationCollImpl,CollectionIndexType>;
+using LoadCombinationCollImpl = CComBSTRKeyedCollection<ILoadCombinations, ILoadCombination, IEnumLoadCombination, &IID_IEnumLoadCombination, IndexType>;
+using PersistentLoadCombinationCollImpl = CPersistentCollection<CLoadCombinations, LoadCombinationCollImpl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadCombinations

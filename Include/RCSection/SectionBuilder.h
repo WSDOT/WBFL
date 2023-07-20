@@ -50,8 +50,8 @@ namespace WBFL
             IndexType Nh, ///< Number of bars over the height of the section (N2)
             IndexType Nw, ///< Number of bars over the width of the section (N1)
             Float64 As, ///< Area of one reinforcing bar
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& concrete, ///< Constituative model for concrete
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& rebar, ///< Constituative model for reinforcing bars
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& concrete, ///< Constitutive model for concrete
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& rebar, ///< Constitutive model for reinforcing bars
             bool bModelBarsAsGenericShape ///< If true, bars are modeled as a WBFL::Geometry::GenericShape, otherwise they are modeled as a WBFL::Geometry::Circle
          );
 
@@ -63,15 +63,10 @@ namespace WBFL
             IndexType Nb, ///< Number of reinforcing bars
             Float64 As, ///< Area of one reinforcing bar
             Float64 startAngle, ///< Angle from the right end a horizontal line passing through the center of a circle where the first bar is located (rad)
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& concrete, ///< Constituative model for concrete
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& rebar, ///< Constituative model for reinforcing bars
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& concrete, ///< Constitutive model for concrete
+            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& rebar, ///< Constitutive model for reinforcing bars
             bool bModelBarsAsGenericShape ///< If true, bars are modeled as a WBFL::Geometry::GenericShape, otherwise they are modeled as a WBFL::Geometry::Circle
          );
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

@@ -72,15 +72,15 @@ namespace WBFL
          struct SHAPEINFO
          {
             IndexType ShapeIdx; // index of the shape in the general section model
-            std::shared_ptr<const WBFL::Geometry::Shape> Shape; // shape of the slice
-            std::shared_ptr<const WBFL::Materials::StressStrainModel> FgMaterial;
-            std::shared_ptr<const WBFL::Materials::StressStrainModel> BgMaterial;
+            std::shared_ptr<WBFL::Geometry::Shape> Shape; // shape of the slice
+            std::weak_ptr<const WBFL::Materials::StressStrainModel> FgMaterial;
+            std::weak_ptr<const WBFL::Materials::StressStrainModel> BgMaterial;
             SHAPEINFO() = default;
             SHAPEINFO(
                IndexType shapeIdx,
-               const std::shared_ptr<const WBFL::Geometry::Shape>& shape,
-               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fg,
-               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bg
+               const std::shared_ptr<WBFL::Geometry::Shape>& shape,
+               const std::weak_ptr<const WBFL::Materials::StressStrainModel>& fg,
+               const std::weak_ptr<const WBFL::Materials::StressStrainModel>& bg
             ) : ShapeIdx(shapeIdx), Shape(shape), FgMaterial(fg), BgMaterial(bg)
             {}
          };
@@ -89,14 +89,14 @@ namespace WBFL
          // Slice properties
          struct SLICEINFO
          {
-            IndexType ShapeIdx; // index of the general section shape from which this slice is taken
-            Float64 Area; // slice area
-            Float64 Top; // top of slice elevation (may be off the section)
-            Float64 Bottom; // bottom of slice elevation (may be off the section)
+            IndexType ShapeIdx{ INVALID_INDEX }; // index of the general section shape from which this slice is taken
+            Float64 Area{ 0.0 }; // slice area
+            Float64 Top{ 0.0 }; // top of slice elevation (may be off the section)
+            Float64 Bottom{ 0.0 }; // bottom of slice elevation (may be off the section)
             WBFL::Geometry::Point2d pntCG;
-            std::shared_ptr<const WBFL::Materials::StressStrainModel> FgMaterial;
-            std::shared_ptr<const WBFL::Materials::StressStrainModel> BgMaterial;
-            std::shared_ptr<const WBFL::Geometry::Shape> SliceShape;
+            std::weak_ptr<const WBFL::Materials::StressStrainModel> FgMaterial;
+            std::weak_ptr<const WBFL::Materials::StressStrainModel> BgMaterial;
+            std::shared_ptr<WBFL::Geometry::Shape> SliceShape;
 
             SLICEINFO() = default;
             SLICEINFO(SLICEINFO& other) = default;

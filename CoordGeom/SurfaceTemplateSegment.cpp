@@ -72,12 +72,3 @@ SurfaceTemplateSegment::SlopeType SurfaceTemplateSegment::GetSlopeType() const
 {
    return m_SlopeType;
 }
-
-#if defined _UNITTEST
-bool SurfaceTemplateSegment::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SurfaceTemplateSegment");
-   // This class is basically plain old data - there isn't anything to test
-   TESTME_EPILOG("SurfaceTemplateSegment");
-}
-#endif // _UNITTEST

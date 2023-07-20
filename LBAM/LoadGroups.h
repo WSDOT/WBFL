@@ -31,8 +31,8 @@
 #include <WBFLComCollections.h>
 
 class CLoadGroups;
-using LoadGroupCollImpl = CComBSTRKeyedCollection<ILoadGroups, ILoadGroup, IEnumLoadGroup, &IID_IEnumLoadGroup, CollectionIndexType>;
-using PersistentLoadGroupCollImpl = CPersistentCollection<CLoadGroups, LoadGroupCollImpl,CollectionIndexType>;
+using LoadGroupCollImpl = CComBSTRKeyedCollection<ILoadGroups, ILoadGroup, IEnumLoadGroup, &IID_IEnumLoadGroup, IndexType>;
+using PersistentLoadGroupCollImpl = CPersistentCollection<CLoadGroups, LoadGroupCollImpl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadGroups

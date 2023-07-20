@@ -356,7 +356,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoint(IGenericBridge* bridge, Float64 
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::DeckEdgePoints(IGenericBridge* bridge,DirectionType side,CollectionIndexType nPoints,IPoint2dCollection** points)
+STDMETHODIMP CBridgeGeometryTool::DeckEdgePoints(IGenericBridge* bridge,DirectionType side,IndexType nPoints,IPoint2dCollection** points)
 {
    CComPtr<IPoint2dCollection> edge_points;
    edge_points.CoCreateInstance(CLSID_Point2dCollection);
@@ -412,7 +412,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoints(IGenericBridge* bridge,Directio
    Float64 station_inc = (last_station - first_station)/(nPoints-1);
    Float64 station = first_station;
    Float64 direction = first_direction;
-   for ( CollectionIndexType i = 0; i < nPoints; i++, station += station_inc)
+   for ( IndexType i = 0; i < nPoints; i++, station += station_inc)
    {
       if (station > first_normal_station && station < last_normal_station)
       {

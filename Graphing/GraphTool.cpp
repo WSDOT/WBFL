@@ -120,7 +120,7 @@ HFONT GraphTool::CreateRotatedFont(HDC hDC, LONG rotation, LONG nPointSize, LPCT
 
 
 void GraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 originalMax, bool bOffsetZero,
-                        CollectionIndexType& numberOfSegments,
+                        IndexType& numberOfSegments,
                         Float64& niceMin, Float64& niceMax,
                         Float64& niceIncrement)
 {
@@ -132,7 +132,7 @@ void GraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 orig
    bool  is_defseg;
 
    const Float64  tol = 1.0e-09;
-   const CollectionIndexType nscale = 9;
+   const IndexType nscale = 9;
    const Float64 prturb = 1.1;
    const Float64 supply[nscale] = {25.0, 20.0, 15.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5 };
 
@@ -185,7 +185,7 @@ void GraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 orig
 
 //     test each scale and keep the largest one that works
 
-   for (CollectionIndexType i = 0; i<nscale; i++)
+   for (IndexType i = 0; i<nscale; i++)
    {
        test_scale = factor*supply[i];
        nmin = (LONG)floor(niceMin/test_scale);

@@ -94,11 +94,6 @@ namespace WBFL
          Float64 m_Fy{60.0};
          Float64 m_Es{29000};
          std::shared_ptr<const StressBlockFactor> m_StressBlockFactor{ std::make_shared<ConstantStressBlockFactor>() };
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

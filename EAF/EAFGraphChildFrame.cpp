@@ -101,13 +101,18 @@ std::unique_ptr<WBFL::Graphing::GraphBuilder>& CEAFGraphChildFrame::GetGraphBuil
 
 bool CEAFGraphChildFrame::CreateGraph(IndexType graphIdx)
 {
-   std::unique_ptr<WBFL::Graphing::GraphBuilder>& pGraphBuilder = GetGraphBuilder(graphIdx);
-   if ( pGraphBuilder == nullptr )
-      return false;
+	try
+	{
+		auto& graph_builder = GetGraphBuilder(graphIdx);
 
-   // Because multiple graph views can be created, we have to create a clone
-   // of the graph builder. Each view needs its own unique graph builder.
-   m_pMyGraphBuilder = std::unique_ptr<WBFL::Graphing::GraphBuilder>(pGraphBuilder->Clone());
+		// Because multiple graph views can be created, we have to create a clone
+		// of the graph builder. Each view needs its own unique graph builder.
+		m_pMyGraphBuilder = graph_builder.Clone();
+	}
+	catch (...)
+	{
+		return false;
+	}
 
    if ( m_pMyGraphBuilder->InitializeGraphController(this,AFX_IDW_CONTROLBAR_LAST) < 0 )
       return false;
@@ -122,7 +127,7 @@ bool CEAFGraphChildFrame::CreateGraph(IndexType graphIdx)
    return true;
 }
 
-std::unique_ptr<WBFL::Graphing::GraphBuilder>& CEAFGraphChildFrame::GetGraphBuilder(IndexType index)
+WBFL::Graphing::GraphBuilder& CEAFGraphChildFrame::GetGraphBuilder(IndexType index)
 {
    if ( m_pGraphMgr )
    {

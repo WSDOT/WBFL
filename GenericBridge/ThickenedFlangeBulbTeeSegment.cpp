@@ -743,7 +743,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }

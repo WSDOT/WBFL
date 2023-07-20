@@ -172,13 +172,3 @@ void mfcTemplateTabHelper::Dump(WBFL::Debug::LogContext& os) const
    }
 }
 #endif // _DEBUG
-
-#if defined _UNITTEST
-bool mfcTemplateTabHelper::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("mfcTemplateTabHelper");
-
-
-   TESTME_EPILOG("TemplateTabHelper");
-}
-#endif // _UNITTEST

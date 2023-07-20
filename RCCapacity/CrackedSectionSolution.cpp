@@ -80,14 +80,14 @@ STDMETHODIMP CCrackedSectionSolution::get_CG(IPoint2d** pntCG)
    return S_OK;
 }
 
-STDMETHODIMP CCrackedSectionSolution::get_SliceCount(CollectionIndexType* nSlices)
+STDMETHODIMP CCrackedSectionSolution::get_SliceCount(IndexType* nSlices)
 {
    return m_Slices->get_Count(nSlices);
 }
 
-STDMETHODIMP CCrackedSectionSolution::get_Slice(CollectionIndexType sliceIdx,ICrackedSectionSlice** pSlice)
+STDMETHODIMP CCrackedSectionSolution::get_Slice(IndexType sliceIdx,ICrackedSectionSlice** pSlice)
 {
-   CollectionIndexType nSlices;
+   IndexType nSlices;
    m_Slices->get_Count(&nSlices);
    if ( sliceIdx < 0 || nSlices <= sliceIdx )
       return E_INVALIDARG;
@@ -106,9 +106,9 @@ STDMETHODIMP CCrackedSectionSolution::get_ElasticProperties(IElasticProperties**
    composite_section.CoCreateInstance(CLSID_CompositeSectionEx);
 
    // add each slice into a composite section object
-   CollectionIndexType nSlices;
+   IndexType nSlices;
    get_SliceCount(&nSlices);
-   for ( CollectionIndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++ )
+   for ( IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++ )
    {
       CComPtr<ICrackedSectionSlice> slice;
       get_Slice(sliceIdx,&slice);

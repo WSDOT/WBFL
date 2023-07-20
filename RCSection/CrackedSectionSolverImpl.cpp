@@ -189,7 +189,7 @@ void CrackedSectionSolverImpl::DecomposeSection() const
       const auto& fgMaterial = m_Section->GetForegroundMaterial(shapeIdx);
       const auto& bgMaterial = m_Section->GetBackgroundMaterial(shapeIdx);
 
-      auto& shape = original_shape->CreateClone();
+      auto& shape = original_shape.CreateClone();
       shape->Rotate(0, 0, -m_Angle);
 
       auto bndbox = shape->GetBoundingBox();
@@ -246,7 +246,7 @@ void CrackedSectionSolverImpl::DecomposeSection() const
    // Slice each shape
    m_Slices.clear();
    nShapes = shapes.size();
-   for (CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
+   for (IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++)
    {
       // get shape and related information
       SHAPEINFO& shape_info = shapes[shapeIdx];
@@ -315,11 +315,8 @@ void CrackedSectionSolverImpl::AnalyzeSection(Float64 Yguess, std::vector<std::u
    os << std::setw(10) << "Area, " << std::setw(10) << "Side, " << std::setw(10) << "Top, " << std::setw(10) << "Bottom, " << std::setw(20) << "Xcg, " << std::setw(20) << "Ycg, " << std::setw(20) << "FG, " << std::setw(20) << "BG" << std::endl;
 #endif // _DEBUG_LOGGING
 
-   std::vector<SLICEINFO>::iterator iter;
-   for (iter = m_Slices.begin(); iter != m_Slices.end(); iter++)
+   for(auto& slice : m_Slices)
    {
-      SLICEINFO& slice = *iter;
-
       if ((slice.Bottom < Yguess) && (Yguess < slice.Top))
       {
          // this slice spans the guess location... 
@@ -328,6 +325,7 @@ void CrackedSectionSolverImpl::AnalyzeSection(Float64 Yguess, std::vector<std::u
          shape_info.BgMaterial = slice.BgMaterial;
          shape_info.FgMaterial = slice.FgMaterial;
          shape_info.Shape = slice.SliceShape;
+         shape_info.ShapeIdx = slice.ShapeIdx;
 
          SLICEINFO top_slice;
          bool bResult = SliceShape(shape_info, slice.Top, Yguess, top_slice);
@@ -399,6 +397,8 @@ void CrackedSectionSolverImpl::AnalyzeSection(Float64 Yguess, std::vector<std::u
 
 void CrackedSectionSolverImpl::AnalyzeSlice(Float64 Yguess, SLICEINFO& slice, Float64& EA, Float64& EAx, Float64& EAy, Float64& Efg, Float64& Ebg) const
 {
+   auto fgMaterial = slice.FgMaterial.lock();
+
    if (slice.pntCG.Y() < Yguess)
    {
       // Slice is on the tension side of the assumed neutral axis
@@ -411,24 +411,27 @@ void CrackedSectionSolverImpl::AnalyzeSlice(Float64 Yguess, SLICEINFO& slice, Fl
       Efg = 0;
       Ebg = 0;
 
-      if (!slice.FgMaterial)
+      if (!fgMaterial)
          return;
 
       Float64 minStrain, maxStrain;
-      slice.FgMaterial->GetStrainLimits(&minStrain, &maxStrain);
+      fgMaterial->GetStrainLimits(&minStrain, &maxStrain);
 
-      auto result = slice.FgMaterial->ComputeStress(maxStrain);
+      auto result = fgMaterial->ComputeStress(maxStrain);
       if (result.first == 0)
       {
          return;
       }
    }
 
-   if (slice.FgMaterial)
-      Efg = slice.FgMaterial->GetModulusOfElasticity();
+   Efg = fgMaterial->GetModulusOfElasticity();
 
-   if (slice.BgMaterial)
-      Ebg = slice.BgMaterial->GetModulusOfElasticity();
+   auto bgMaterial = slice.BgMaterial.lock();
+
+   if (bgMaterial)
+      Ebg = bgMaterial->GetModulusOfElasticity();
+   else
+      Ebg = 0.0;
 
    Float64 E = (Efg - Ebg);
 
@@ -454,11 +457,9 @@ bool CrackedSectionSolverImpl::SliceShape(const SHAPEINFO& shapeInfo, Float64 sl
    sliceInfo.Top = IsZero(sliceTop) ? 0 : sliceTop;
    sliceInfo.Bottom = IsZero(sliceBottom) ? 0 : sliceBottom;
    sliceInfo.SliceShape = std::move(clipped_shape);
+   sliceInfo.ShapeIdx = shapeInfo.ShapeIdx;
    sliceInfo.Area = props.GetArea();
-
-   // compute the initial strain at the CG of the slice using the shape's initial strain plane
-   Float64 cgX, cgY;
-   std::tie(cgX,cgY) = sliceInfo.pntCG.GetLocation();
+   sliceInfo.pntCG = props.GetCentroid();
 
    sliceInfo.FgMaterial = shapeInfo.FgMaterial;
    sliceInfo.BgMaterial = shapeInfo.BgMaterial;

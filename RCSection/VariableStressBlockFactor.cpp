@@ -71,31 +71,3 @@ Float64 VariableStressBlockFactor::GetDepthFactor() const
 {
    return m_Beta1;
 }
-
-#if defined _UNITTEST
-bool VariableStressBlockFactor::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("VariableStressBlockFactor");
-
-   VariableStressBlockFactor factor;
-   factor.SetFc(1);
-   TRY_TESTME(IsEqual(factor.GetIntensityFactor(), 0.85));
-
-   factor.SetFc(10);
-   TRY_TESTME(IsEqual(factor.GetIntensityFactor(), 0.85));
-
-   factor.SetFc(12.5);
-   TRY_TESTME(IsEqual(factor.GetIntensityFactor(), 0.80));
-
-   factor.SetFc(15);
-   TRY_TESTME(IsEqual(factor.GetIntensityFactor(), 0.75));
-
-   factor.SetFc(20);
-   TRY_TESTME(IsEqual(factor.GetIntensityFactor(), 0.75));
-
-   TRY_TESTME(IsEqual(factor.GetDepthFactor(), 0.85));
-
-
-   TESTME_EPILOG("VariableStressBlockFactor");
-}
-#endif // _UNITTEST

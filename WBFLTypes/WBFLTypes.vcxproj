@@ -95,6 +95,7 @@
     </Midl>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\WBFLTypes.h" />
     <ClInclude Include="..\Include\WBFLVersion.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

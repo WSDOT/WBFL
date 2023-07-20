@@ -1,2 +1,1 @@
 LIBRARY        WBFLStability.dll
-EXPORTS  UnitTest @1

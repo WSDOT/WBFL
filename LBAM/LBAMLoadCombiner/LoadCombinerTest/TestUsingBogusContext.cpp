@@ -79,7 +79,7 @@ void CTestUsingBogusContext::Test()
    CComPtr<IDblArray> bogus;
    anpois->GetSuperstructurePois(CComBSTR("Stage 1"), &pois, &bogus);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    pois->get_Count(&num_pois);
    PoiIDType id;
    pois->get_Item(0,&id);
@@ -92,7 +92,7 @@ void CTestUsingBogusContext::Test()
    // test load case results
    CComQIPtr<IStages> stages(plclc);
    CComQIPtr<ILoadCases> loadcases(plclc);
-   CollectionIndexType num_loadcases;
+   IndexType num_loadcases;
    StageIndexType num_stages;
    stages->get_Count(&num_stages);
    loadcases->get_Count(&num_loadcases);
@@ -104,7 +104,7 @@ void CTestUsingBogusContext::Test()
       CComBSTR stage;
       ostg->get_Name(&stage);
 
-      for (CollectionIndexType ilc = 0; ilc<num_loadcases; ilc++)
+      for (IndexType ilc = 0; ilc<num_loadcases; ilc++)
       {
          CComPtr<ILoadCase> olc;
          loadcases->get_Item(ilc, &olc);
@@ -167,7 +167,7 @@ void CTestUsingBogusContext::Test()
    CComQIPtr<IConcurrentLoadCombinationResponse> conc_response(lc_response);
 
    CComQIPtr<ILoadCombinations> loadcombos(plclc);
-   CollectionIndexType num_loadcombos;
+   IndexType num_loadcombos;
    loadcombos->get_Count(&num_loadcombos);
 
    for (StageIndexType istg = 0; istg<num_stages; istg++)
@@ -179,7 +179,7 @@ void CTestUsingBogusContext::Test()
 
       VARIANT_BOOL compute_ll = istg==num_stages-1 ? VARIANT_TRUE : VARIANT_FALSE;
 
-      for (CollectionIndexType ilc = 0; ilc<num_loadcombos; ilc++)
+      for (IndexType ilc = 0; ilc<num_loadcombos; ilc++)
       {
          CComPtr<ILoadCombination> olc;
          loadcombos->get_Item(ilc, &olc);
@@ -217,7 +217,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+                  for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> left_config, right_config;
                      Float64 left_val, right_val;
@@ -241,7 +241,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+                  for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> left_config, right_config;
                      Float64 left_val, right_val;
@@ -265,7 +265,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+                  for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> config;
                      Float64 val;
@@ -286,7 +286,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+                  for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> config;
                      Float64 val;
@@ -307,7 +307,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+                  for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> leftconfig, rightconfig;
                      CComPtr<IStressResult> leftval, rightval;

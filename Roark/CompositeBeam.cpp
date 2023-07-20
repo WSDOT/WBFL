@@ -27,8 +27,8 @@
 
 using namespace WBFL::Beams;
 
-CompositeBeam::CompositeBeam() :
-RoarkBeam(1,1)
+CompositeBeam::CompositeBeam(Float64 length, Float64 ei) :
+RoarkBeam(length,ei)
 {
 }
 
@@ -44,12 +44,12 @@ void CompositeBeam::AddBeam(std::shared_ptr<RoarkBeam> beam)
    m_Beams.emplace_back(beam);
 }
 
-CollectionIndexType CompositeBeam::GetBeamCount() const
+IndexType CompositeBeam::GetBeamCount() const
 {
    return m_Beams.size();
 }
 
-std::shared_ptr<const RoarkBeam> CompositeBeam::GetBeam(CollectionIndexType index) const
+std::shared_ptr<const RoarkBeam> CompositeBeam::GetBeam(IndexType index) const
 {
    return m_Beams[index];
 }
@@ -61,9 +61,7 @@ void CompositeBeam::RemoveAllBeams()
 
 std::shared_ptr<RoarkBeam> CompositeBeam::CreateClone() const
 {
-   std::shared_ptr<CompositeBeam> clone(std::make_shared<CompositeBeam>());
-   clone->SetL(GetL());
-   clone->SetEI(GetEI());
+   std::shared_ptr<CompositeBeam> clone(std::make_shared<CompositeBeam>(GetL(),GetEI()));
    for (auto& beam : m_Beams)
    {
       clone->AddBeam(beam->CreateClone());
@@ -164,44 +162,10 @@ Float64 CompositeBeam::ComputeRotation(Float64 x) const
 Float64 CompositeBeam::ComputeDeflection(Float64 x) const
 {
    Float64 y = 0;
-   for(const auto& beam : m_Beams)
+   for (const auto& beam : m_Beams)
    {
       y += beam->ComputeDeflection(x);
    }
 
    return y;
 }
-
-#if defined _DEBUG
-bool CompositeBeam::AssertValid() const
-{
-   for(const auto& beam : m_Beams)
-   {
-      if ( beam->AssertValid() == false )
-         return false;
-   }
-
-   return true;
-}
-
-void CompositeBeam::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for CompositeBeam" << WBFL::Debug::endl;
-   for(const auto& beam : m_Beams)
-   {
-      beam->Dump(os);
-      os << WBFL::Debug::endl;
-   }
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool CompositeBeam::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("CompositeBeam");
-
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for CompositeBeam");
-
-   TESTME_EPILOG("Composite");
-}
-#endif // _UNITTEST

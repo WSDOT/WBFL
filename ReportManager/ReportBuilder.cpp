@@ -129,12 +129,12 @@ bool ReportBuilder::RemoveChapterBuilder(LPCTSTR strKey)
    return false;
 }
 
-CollectionIndexType ReportBuilder::GetChapterBuilderCount() const
+IndexType ReportBuilder::GetChapterBuilderCount() const
 {
    return m_ChapterBuilders.size();
 }
 
-std::shared_ptr<ChapterBuilder> ReportBuilder::GetChapterBuilder(CollectionIndexType idx)
+std::shared_ptr<ChapterBuilder> ReportBuilder::GetChapterBuilder(IndexType idx)
 {
    return m_ChapterBuilders[idx];
 }
@@ -152,7 +152,7 @@ std::shared_ptr<ChapterBuilder> ReportBuilder::GetChapterBuilder(LPCTSTR strKey)
    return nullptr;
 }
 
-std::shared_ptr<const ChapterBuilder> ReportBuilder::GetChapterBuilder(CollectionIndexType idx) const
+std::shared_ptr<const ChapterBuilder> ReportBuilder::GetChapterBuilder(IndexType idx) const
 {
    return m_ChapterBuilders[idx];
 }

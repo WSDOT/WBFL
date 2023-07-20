@@ -258,13 +258,13 @@ public:
    virtual StatusGroupIDType CreateStatusGroupID() override;
    virtual StatusItemIDType Add(CEAFStatusItem* pItem) override;
    virtual bool RemoveByID(StatusItemIDType id) override;
-   virtual bool RemoveByIndex(CollectionIndexType index) override;
+   virtual bool RemoveByIndex(IndexType index) override;
    virtual bool RemoveByStatusGroupID(StatusGroupIDType statusGroupID) override;
    virtual CEAFStatusItem* GetByID(StatusItemIDType id) override;
-   virtual CEAFStatusItem* GetByIndex(CollectionIndexType index) override;
+   virtual CEAFStatusItem* GetByIndex(IndexType index) override;
    virtual eafTypes::StatusSeverityType GetSeverity(const CEAFStatusItem* pItem) override;
    virtual eafTypes::StatusSeverityType GetSeverity() override;
-   virtual CollectionIndexType Count() override;
+   virtual IndexType Count() override;
 
 // IEAFTransactions
 public:

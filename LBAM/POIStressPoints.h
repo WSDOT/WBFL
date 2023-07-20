@@ -84,9 +84,9 @@ END_CONNECTION_POINT_MAP()
 	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IStressPointsEvents
-   STDMETHOD(OnStressPointsChanged)(/*[in]*/CollectionIndexType index) override;
-   STDMETHOD(OnStressPointsAdded)(/*[in]*/CollectionIndexType index) override;
-   STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(OnStressPointsChanged)(/*[in]*/IndexType index) override;
+   STDMETHOD(OnStressPointsAdded)(/*[in]*/IndexType index) override;
+   STDMETHOD(OnStressPointsRemoved)(/*[in]*/IndexType index) override;
 
 // IPOIStressPoints
 public:
@@ -95,7 +95,7 @@ public:
 	STDMETHOD(Insert)(/*[in]*/BSTR Stage, /*[in]*/IStressPoints* leftSps, /*[in]*/IStressPoints* rightSps) override;
 	STDMETHOD(Clear)() override;
 	STDMETHOD(get_Item)(/*[in]*/VARIANT idx, /*[out, retval]*/ IPOIStressPointsItem* *pVal) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
    STDMETHOD(get__EnumElements)(IEnumPOIStressPoints **ppenum) override;
    STDMETHOD(get__NewEnum)(IUnknown** ppUnk) override;
 

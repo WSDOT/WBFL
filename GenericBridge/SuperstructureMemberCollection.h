@@ -31,7 +31,7 @@
 #include "WBFLComCollections.h"
 #include "resource.h"       // main symbols
 
-using SSMBRVectorImpl = CComVectorCollection<ISuperstructureMemberCollection, ISuperstructureMember, IEnumSuperstructureMembers, &IID_IEnumSuperstructureMembers, CollectionIndexType>;
+using SSMBRVectorImpl = CComVectorCollection<ISuperstructureMemberCollection, ISuperstructureMember, IEnumSuperstructureMembers, &IID_IEnumSuperstructureMembers, IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSuperstructureMemberCollection
@@ -69,14 +69,14 @@ END_COM_MAP()
 public:
    // commented methods are implemented by the base class
    //STDMETHOD(Add)(/*[in]*/ISuperstructureMember* pSSMbr) override;
-   //STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-   //STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out, retval]*/ ISuperstructureMember* *pVal) override;
+   //STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+   //STDMETHOD(get_Item)(/*[in]*/IndexType index, /*[out, retval]*/ ISuperstructureMember* *pVal) override;
    //STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSuperstructureMembers* *pVal) override;
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
-   //STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index) override;
+   //STDMETHOD(Remove)(/*[in]*/ IndexType Index) override;
    //STDMETHOD(Clear)() override;
    //STDMETHOD(Reverse)() override;
-   //STDMETHOD(Insert)(/*[in]*/CollectionIndexType index,/*[in]*/ISuperstructureMember* pVal) override;
+   //STDMETHOD(Insert)(/*[in]*/IndexType index,/*[in]*/ISuperstructureMember* pVal) override;
 };
 
 #endif //__SUPERSTRUCTUREMEMBERCOLLECTION_H_

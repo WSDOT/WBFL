@@ -86,7 +86,7 @@ void CTestNUBeam::TestIShape3()
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   const CollectionIndexType nPoints = 172;
+   const IndexType nPoints = 172;
    CComPtr<IPoint2d> points[nPoints];
    ULONG fetched;
    Enum->Next(nPoints,&points[0],&fetched);
@@ -94,7 +94,7 @@ void CTestNUBeam::TestIShape3()
 
    coll.Release();
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
    TRY_TEST( cPoints, 90 );
 

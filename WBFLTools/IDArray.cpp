@@ -51,7 +51,7 @@ STDMETHODIMP CIDArray::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CIDArray::get_Item(CollectionIndexType relPosition, IDType *pVal)
+STDMETHODIMP CIDArray::get_Item(IndexType relPosition, IDType *pVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -68,7 +68,7 @@ STDMETHODIMP CIDArray::get_Item(CollectionIndexType relPosition, IDType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CIDArray::put_Item(CollectionIndexType relPosition, IDType newVal)
+STDMETHODIMP CIDArray::put_Item(IndexType relPosition, IDType newVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -99,7 +99,7 @@ STDMETHODIMP CIDArray::Add(IDType item)
 	return S_OK;
 }
 
-STDMETHODIMP CIDArray::Remove(CollectionIndexType relPosition)
+STDMETHODIMP CIDArray::Remove(IndexType relPosition)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -120,7 +120,7 @@ STDMETHODIMP CIDArray::Remove(CollectionIndexType relPosition)
 	return S_OK;
 }
 
-STDMETHODIMP CIDArray::Insert(CollectionIndexType relPosition, IDType item)
+STDMETHODIMP CIDArray::Insert(IndexType relPosition, IDType item)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -141,7 +141,7 @@ STDMETHODIMP CIDArray::Insert(CollectionIndexType relPosition, IDType item)
 	return S_OK;
 }
 
-STDMETHODIMP CIDArray::Reserve(CollectionIndexType count)
+STDMETHODIMP CIDArray::Reserve(IndexType count)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -244,7 +244,7 @@ STDMETHODIMP CIDArray::get__EnumElements(/*[out, retval]*/ IEnumIDArray* *ppenum
    return S_OK;
 }
 
-STDMETHODIMP CIDArray::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CIDArray::get_Count(IndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -276,7 +276,7 @@ STDMETHODIMP CIDArray::Clone(IIDArray **clone)
 	return S_OK;
 }
 
-STDMETHODIMP CIDArray::ReDim(CollectionIndexType size)
+STDMETHODIMP CIDArray::ReDim(IndexType size)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -290,11 +290,11 @@ STDMETHODIMP CIDArray::ReDim(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CIDArray::Find(IDType value, CollectionIndexType *fndIndex)
+STDMETHODIMP CIDArray::Find(IDType value, IndexType *fndIndex)
 {
    HRESULT hr = E_FAIL;
 
-   CollectionIndexType idx = 0;
+   IndexType idx = 0;
    for(ContainerIterator it=m_Values.begin(); it!=m_Values.end(); it++)
    {
       if(value == *it)

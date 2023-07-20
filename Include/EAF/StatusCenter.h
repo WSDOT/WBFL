@@ -54,13 +54,13 @@ public:
    StatusGroupIDType CreateStatusGroupID();
    StatusItemIDType Add(CEAFStatusItem* pItem);
    bool RemoveByID(StatusItemIDType id);
-   bool RemoveByIndex(CollectionIndexType index);
+   bool RemoveByIndex(IndexType index);
    bool RemoveByStatusGroupID(StatusGroupIDType id);
    CEAFStatusItem* GetByID(StatusItemIDType id);
    const CEAFStatusItem* GetByID(StatusItemIDType id) const;
-   CEAFStatusItem* GetByIndex(CollectionIndexType index);
-   const CEAFStatusItem* GetByIndex(CollectionIndexType index) const;
-   CollectionIndexType Count() const;
+   CEAFStatusItem* GetByIndex(IndexType index);
+   const CEAFStatusItem* GetByIndex(IndexType index) const;
+   IndexType Count() const;
 
    eafTypes::StatusSeverityType GetSeverity() const;
 

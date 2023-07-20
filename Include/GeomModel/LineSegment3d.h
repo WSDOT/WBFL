@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_LINESEGMENT3D_H_
-#define INCLUDED_GEOMETRY_LINESEGMENT3D_H_
 #pragma once
 
 #include <vector>
@@ -95,19 +93,6 @@ namespace WBFL
          std::vector<Point3d> Divide(Uint16 nSpaces) const;
 
          Float64 DistanceToPoint(const Point3d& p) const;
-  
-      #if defined _DEBUG
-         /// Returns true if the class is in a valid state, otherwise returns false
-         bool AssertValid() const;
-
-         /// Dumps the contents of the class to the given stream.
-         void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         /// Self-Test function. Returns true if successful.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          Point3d m_Start;
@@ -115,5 +100,3 @@ namespace WBFL
       };
    }; // Geometry
 }; // WBFL
-
-#endif // INCLUDED_GEOMETRY_LINESEGMENT3D_H_

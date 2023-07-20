@@ -89,7 +89,7 @@ void CReportManagerAgent::AddReportBuilder(std::shared_ptr<WBFL::Reporting::Repo
    m_pRptMgr->AddReportBuilder(pReportBuilder);
 }
 
-CollectionIndexType CReportManagerAgent::GetReportBuilderCount(bool bIncludeHidden) const
+IndexType CReportManagerAgent::GetReportBuilderCount(bool bIncludeHidden) const
 {
    return m_pRptMgr->GetReportBuilderCount(bIncludeHidden);
 }

@@ -78,12 +78,12 @@ namespace WBFL
          bool operator!=(const Size3d& rOther) const;
 
          /// Offset this Size3d object by the given size argument.  This Size3d
-         /// object is chaged to (Dx+size.Dx(),Dy+size.Dy(),Dz+size.Dz()).
+         /// object is changed to (Dx+size.Dx(),Dy+size.Dy(),Dz+size.Dz()).
          /// Returns a reference to this object.
          Size3d& operator+= (const Size3d& rOther);
 
          /// Negatively offset this Size3d object by the given size argument.  
-         /// This Size3d object is chaged to (Dx+size.Dx(),Dy+size.Dy(),Dz+size.Dz()).
+         /// This Size3d object is changed to (Dx+size.Dx(),Dy+size.Dy(),Dz+size.Dz()).
          /// Returns a reference to this object.
          Size3d& operator-= (const Size3d& rOther);
 
@@ -119,16 +119,6 @@ namespace WBFL
 
          /// Returns the size dimensions
          std::tuple<Float64,Float64,Float64> GetDimensions() const;
-
-      #if defined _DEBUG
-         /// Dumps the contents of the class to the given stream.
-         void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         /// Self-Test function. Returns true if successful.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          Float64 m_Dx{ 0.0 };
@@ -184,9 +174,8 @@ namespace WBFL
          /// Returns the point (-x,-y,-z). This point is not changed.
          Point3d operator- () const;
 
-         //------------------------------------------------------------------------
-         // Offsets this point by the given size argument.  This point is changed to
-         // (x+size.Dx(),y+size.Dy(),z+size.Dz()).  Returns a reference to this point.
+         /// Offsets this point by the given size argument.  This point is changed to
+         /// (x+size.Dx(),y+size.Dy(),z+size.Dz()).  Returns a reference to this point.
          Point3d& operator+= (const Size3d& size);
 
          /// Offsets this point by the given size argument.  This point is changed to
@@ -250,16 +239,6 @@ namespace WBFL
 
          /// Returns the location of this point
          std::tuple<Float64,Float64,Float64> GetLocation() const;
-      
-      #if defined _DEBUG
-         /// Dumps the contents of the class to the given stream.
-         void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         /// Self-Test function. Returns true if successful.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          Float64 m_X{ 0.0 };

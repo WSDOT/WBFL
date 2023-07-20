@@ -25,49 +25,25 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\XPsLosses.h>
 
-/****************************************************************************
-CLASS
-   lrfdXPsLosses
-****************************************************************************/
+using namespace WBFL::LRFD;
 
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXPsLosses::lrfdXPsLosses(Reason reason,
-                             LPCTSTR file,
-                             Int16 line) :
+XPsLosses::XPsLosses(Reason reason, LPCTSTR file, Uint32 line) :
    WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-//======================== OPERATIONS =======================================
-void lrfdXPsLosses::Throw() const
+void XPsLosses::Throw() const
 {
-   throw *static_cast<const lrfdXPsLosses*>(this);
+   throw *static_cast<const XPsLosses*>(this);
 }
 
-Int32 lrfdXPsLosses::GetReason() const noexcept
+Int32 XPsLosses::GetReason() const noexcept
+{
+   return (Int32)m_Reason;
+}
+
+XPsLosses::Reason XPsLosses::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-lrfdXPsLosses::Reason lrfdXPsLosses::GetReasonCode() const noexcept
-{
-   return m_Reason;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdXPsLosses::AssertValid() const
-{
-   return true;
-}
-
-void lrfdXPsLosses::Dump(WBFL::Debug::LogContext& os) const
-{
-}
-#endif // _DEBUG

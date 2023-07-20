@@ -48,16 +48,9 @@ namespace WBFL
 
          /// Initialize with the solution results
          void InitSolution(
-            Float64 fz, ///< Resultant axial force
-            Float64 mx, ///< Resultant moment about the horizontal centroidal axis
-            Float64 my, ///< Resultant moment about the vertical centroidal axis
             const WBFL::Geometry::Plane3d& incrementalStrainPlane, ///< Plane3d object representing the incremental strain plane
             const WBFL::Geometry::Point2d& pntC, ///< Location on the section that is furthest from the neutral axis on the compression side
-            const WBFL::Geometry::Point2d& cgC, ///< Location of resultant compression force
-            Float64 C, ///< Resultant compression force
             const WBFL::Geometry::Point2d& pntT, ///< Location on the section that is furthest from the neutral axis on the tension side
-            const WBFL::Geometry::Point2d& cgT, ///< Location of resultant tension force
-            Float64 T, ///< Resultant tension force
             Float64 k, /// Curvature of primary shape
             std::unique_ptr<GeneralSectionSolution>&& solution ///< GeneralSectionSolution object corresponding to the resulting strain plane
          );
@@ -70,6 +63,9 @@ namespace WBFL
 
          /// Resultant moment about the vertical centroidal axis
          Float64 GetMy() const;
+
+         /// Returns result moment about the centroid
+         Float64 GetM() const;
 
          /// Plane3d object representing the incremental strain plane
          const WBFL::Geometry::Plane3d& GetIncrementalStrainPlane() const;
@@ -118,11 +114,6 @@ namespace WBFL
 
       private:
          std::unique_ptr<MomentCapacitySolutionImpl> m_pImpl;
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
       };
    };
 };

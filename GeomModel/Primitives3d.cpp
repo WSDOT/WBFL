@@ -164,32 +164,19 @@ std::tuple<Float64,Float64,Float64> Size3d::GetDimensions() const
    return std::make_tuple(m_Dx, m_Dy, m_Dz);
 }
 
-#if defined _DEBUG
-void Size3d::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for Size3d" << WBFL::Debug::endl;
-   os << "  (m_Dx, m_Dy, m_Dz) = (" << m_Dx << ", " << m_Dy << ", " << m_Dz << ")" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool Size3d::TestMe(WBFL::Debug::Log& rlog)
-{
-   return true;
-}
-#endif // _UNITTEST
-
-std::ostream& operator<<(std::ostream& os,Size3d& size)
+std::ostream& operator<<(std::ostream& os, const Size3d& size)
 {
    os << "(" << size.Dx() << " x " << size.Dy() << " x " << size.Dz() << ")";
    return os;
 }
 
+////////////////////////////
+
 Point3d::Point3d()
 {
 }
 
-Point3d::Point3d(Float64 x,Float64 y,Float64 z)
+Point3d::Point3d(Float64 x, Float64 y, Float64 z)
 {
    Move(x, y, z);
 }
@@ -215,37 +202,37 @@ bool Point3d::operator!=(const Point3d& other) const
 
 Point3d Point3d::operator+ (const Size3d& size) const
 {
-   return Point3d(m_X+size.Dx(), m_Y+size.Dy(), m_Z + size.Dz());
+   return Point3d(m_X + size.Dx(), m_Y + size.Dy(), m_Z + size.Dz());
 }
 
 Point3d Point3d::operator- (const Size3d& size) const
 {
-   return Point3d(m_X-size.Dx(), m_Y-size.Dy(), m_Z - size.Dz());
+   return Point3d(m_X - size.Dx(), m_Y - size.Dy(), m_Z - size.Dz());
 }
 
 Size3d Point3d::operator- (const Point3d& p) const
 {
-   return Size3d(m_X-p.X(), m_Y-p.Y(), m_Z-p.Z());
+   return Size3d(m_X - p.X(), m_Y - p.Y(), m_Z - p.Z());
 }
 
 Point3d Point3d::operator- () const
 {
-   return Point3d(-m_X,-m_Y,-m_Z);
+   return Point3d(-m_X, -m_Y, -m_Z);
 }
 
 Point3d& Point3d::operator+= (const Size3d& size)
 {
-   return Offset( size );
+   return Offset(size);
 }
 
 Point3d& Point3d::operator-= (const Size3d& size)
 {
-   return Offset( -size );
+   return Offset(-size);
 }
 
 Float64 Point3d::Magnitude() const
 {
-   return sqrt( m_X*m_X + m_Y*m_Y + m_Z*m_Z);
+   return sqrt(m_X * m_X + m_Y * m_Y + m_Z * m_Z);
 }
 
 void Point3d::Scale(Float64 c)
@@ -255,7 +242,7 @@ void Point3d::Scale(Float64 c)
    m_Z *= c;
 }
 
-void Point3d::Move(Float64 x,Float64 y,Float64 z)
+void Point3d::Move(Float64 x, Float64 y, Float64 z)
 {
    m_X = x;
    m_Y = y;
@@ -272,8 +259,8 @@ void Point3d::Move(const Point2d& pnt, Float64 z)
 void Point3d::Move(const Point3d& newPosition)
 {
    m_X = newPosition.X();
-   m_Y = newPosition.Y(); 
-   m_Z = newPosition.Z(); 
+   m_Y = newPosition.Y();
+   m_Z = newPosition.Z();
 }
 
 Float64 Point3d::Distance(Float64 x, Float64 y, Float64 z) const
@@ -287,7 +274,7 @@ Float64 Point3d::Distance(const Point3d& p) const
    return size.Magnitude();
 }
 
-Point3d& Point3d::Offset(Float64 dx,Float64 dy,Float64 dz)
+Point3d& Point3d::Offset(Float64 dx, Float64 dy, Float64 dz)
 {
    m_X += dx;
    m_Y += dy;
@@ -303,14 +290,14 @@ Point3d& Point3d::Offset(const Size3d& size)
    return *this;
 }
 
-Point3d Point3d::OffsetBy(Float64 dx,Float64 dy,Float64 dz) const
+Point3d Point3d::OffsetBy(Float64 dx, Float64 dy, Float64 dz) const
 {
-   return Point3d( m_X+dx, m_Y+dy, m_Z+dz );
+   return Point3d(m_X + dx, m_Y + dy, m_Z + dz);
 }
 
 Point3d Point3d::OffsetBy(const Size3d& size) const
 {
-   return Point3d( m_X+size.Dx(), m_Y+size.Dy(), m_Z+size.Dz() );
+   return Point3d(m_X + size.Dx(), m_Y + size.Dy(), m_Z + size.Dz());
 }
 
 Float64 Point3d::X() const
@@ -348,22 +335,7 @@ std::tuple<Float64, Float64, Float64> Point3d::GetLocation() const
    return std::make_tuple(m_X, m_Y, m_Z);
 }
 
-#if defined _DEBUG
-void Point3d::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for Point3d" << WBFL::Debug::endl;
-   os << "  (m_X, m_Y, m_Z) = ("<< m_X<<", "<< m_Y<<", "<< m_Z<<")"<< WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool Point3d::TestMe(WBFL::Debug::Log& rlog)
-{
-   return true;
-}
-#endif // _UNITTEST
-
-std::ostream& operator<<(std::ostream& os,const Point3d& p)
+std::ostream& operator<<(std::ostream& os, const Point3d& p)
 {
    os << "(" << p.X() << "," << p.Y() << "," << p.Z() << ")";
    return os;

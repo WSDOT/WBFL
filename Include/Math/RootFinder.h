@@ -47,16 +47,19 @@ namespace WBFL
          /// Finds the root of f that is nearest to xNearest, such that -tol < f(x) < tol.
          /// Throws a XRootFinder exception if a root could not be found.
          virtual Float64 FindRoot(const Function& f,Float64 xNearest,Float64 tol) const;
+         virtual Float64 FindRoot(const std::function<Float64(Float64)>& f, Float64 xNearest, Float64 tol) const;
 
          /// Finds the root of f that is nearest to xNearest, subject to the constraint
          /// x > xMin, such that -tol < f(x) < tol.
          /// Throws a XRootFinder exception if a root could not be found.
          virtual Float64 FindRootConstrainedMin(const Function& f,Float64 xNearest,Float64 xMin, Float64 tol) const;
+         virtual Float64 FindRootConstrainedMin(const std::function<Float64(Float64)>& f, Float64 xNearest, Float64 xMin, Float64 tol) const;
 
          /// Finds the root of f that is nearest to xNearest, subject to the constraint
          /// x < xMax, such that -tol < f(x) < tol.
          /// Throws a XRootFinder exception if a root could not be found.
-         virtual Float64 FindRootConstrainedMax(const Function& f,Float64 xNearest, Float64 xMax, Float64 tol) const;
+         virtual Float64 FindRootConstrainedMax(const Function& f, Float64 xNearest, Float64 xMax, Float64 tol) const;
+         virtual Float64 FindRootConstrainedMax(const std::function<Float64(Float64)>& f, Float64 xNearest, Float64 xMax, Float64 tol) const;
 
          /// Finds the root of f that is in the range [xMin,xMax], such that -tol < f(x) < tol.
          /// Throws a XRootFinder exception if a root could not be found.
@@ -69,36 +72,23 @@ namespace WBFL
          /// Sets the maximum number of iterations
          void SetMaxIter(Uint32 maxIter);
 
-         /// Returns the maximum number of iteratioms
+         /// Returns the maximum number of iterations
          Uint32 GetMaxIter() const;
 
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
-
       protected:
-         enum class BracketOutcome { Bracketted, ///< bracket was sucessful. put in x[0,1]
+         enum class BracketOutcome { Bracketted, ///< bracket was successful. put in x[0,1]
                                      FoundRoot,  ///< found a root - stored it in x[0]
                                      Failed      ///< bracket failed.
          };
 
          //------------------------------------------------------------------------
          // bracketing functions. These functions are not meant to find a root, merely
-         // find x values on either side of it. If they sucessfully bracket a root they will
-         // return Bracketted put the x values in x[0,1]. However, if they are lucky enough
+         // find x values on either side of it. If they successfully bracket a root they will
+         // return Bracketed put the x values in x[0,1]. However, if they are lucky enough
          // to actually find a root, they will return FoundRoot and place the root into x[0].
-         virtual BracketOutcome Bracket(const Function& eval, Float64 x[], Float64 tol) const;
-         virtual BracketOutcome BracketConstrainedMin(const Function& eval, Float64 x[], Float64 xmin, Float64 tol) const;
-         virtual BracketOutcome BracketConstrainedMax(const Function& eval, Float64 x[], Float64 xmax, Float64 tol) const;
-
-         // GROUP: ACCESS
-         // GROUP: INQUIRY
+         virtual BracketOutcome Bracket(const std::function<Float64(Float64)>& f, Float64 x[], Float64 tol) const;
+         virtual BracketOutcome BracketConstrainedMin(const std::function<Float64(Float64)>& f, Float64 x[], Float64 xmin, Float64 tol) const;
+         virtual BracketOutcome BracketConstrainedMax(const std::function<Float64(Float64)>& f, Float64 x[], Float64 xmax, Float64 tol) const;
 
       private:
          Uint32 m_MaxIter{1000};

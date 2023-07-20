@@ -2,10 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "Graphing.h"
-
-#include <System\dllTest.h>
-#include <Graphing/UnitTest.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,10 +34,4 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	}
 
 	return nRetCode;
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(WBFL::Debug::Log& rlog)
-{
-	return WBFL::Graphing::UnitTest::TestMe(rlog);
 }

@@ -66,9 +66,9 @@ public:
       if (FAILED(hr))
          return hr;
 
-      CollectionIndexType count = varlong.ulVal;
+      IndexType count = varlong.ulVal;
 
-      for (CollectionIndexType i = 0; i<count; i++)
+      for (IndexType i = 0; i<count; i++)
       {
          // create a new joint
          CComObject<StoredType>* pjnt;
@@ -118,7 +118,7 @@ public:
          return hr;
 
       // save out count
-      CollectionIndexType count = m_coll.size();
+      IndexType count = m_coll.size();
       hr = save->put_Property(CComBSTR("Count"),CComVariant(count));
       if (FAILED(hr))
          return hr;

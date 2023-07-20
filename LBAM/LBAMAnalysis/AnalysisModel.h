@@ -296,7 +296,7 @@ private:
 
    void ClearPOIs(IFem2dPOICollection* femPois);
    void CreateSpanPOI(PoiIDType poiID, SpanIndexType spanIdx, Float64 mbrLoc, IPOI* poi=nullptr);
-   void CreateSsmPOI(PoiIDType poiID, CollectionIndexType ssmbrIdx, Float64 mbrLoc, IPOI* poi=nullptr);
+   void CreateSsmPOI(PoiIDType poiID, IndexType ssmbrIdx, Float64 mbrLoc, IPOI* poi=nullptr);
    void CreateSupportPOI(PoiIDType poiID, SupportIDType supportID, Float64 mbrLoc, IPOI* poi=nullptr);
    void CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType tempSupportID, Float64 mbrLoc, IPOI* poi=nullptr);
    void CreateFemPOI(PoiIDType poiID, MemberType mbrType, MemberIDType lbamMbrID, Float64 lbamMbrLoc, MemberIDType femMbrID, Float64 femMbrLoc, MemberLocationType locType, IPOI* poi);
@@ -318,7 +318,7 @@ private:
    void GetFemLocForLBAMLoc(MemberType lbamMbrType, MemberIDType lbamMbrId, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
    void GetFemLocAtSupport(MemberType supportType, MemberIDType lbamMbrId, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
    void GetFemMemberLocationAlongSupport(const ElementLayoutVec* pMemberList, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
-   void GetFemMemberLocationAlongSSM(  CollectionIndexType ssmIdx,  Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
+   void GetFemMemberLocationAlongSSM(  IndexType ssmIdx,  Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
    void GetFemMemberLocationAlongSpan( SpanIndexType spanIdx, Float64 lbamLoc, MemberLocationType* locType, MemberIDType* pfemId, Float64* pfemLoc);
    void GetSuperstructureMemberLocationAlongSpan(SpanIndexType spanIdx,Float64 spanLoc,MemberIDType* mbrID,Float64* pMbrLoc);
 

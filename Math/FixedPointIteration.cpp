@@ -48,12 +48,3 @@ Float64 FixedPointIteration::Solve(const Function& eval,Float64 xo,Float64 tol,U
 {
    return Solve([&eval](Float64 x) {return eval.Evaluate(x); }, xo, tol, maxIter);
 }
-
-#if defined _UNITTEST
-bool FixedPointIteration::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("FixedPointIteration");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for FixedPointIteration");
-   TESTME_EPILOG("FixedPointIteration");
-}
-#endif

@@ -40,6 +40,20 @@ namespace WBFL
          ConnectionGeometry& operator=(const ConnectionGeometry& other) = default;
          ~ConnectionGeometry() = default;
 
+         bool operator==(const ConnectionGeometry& other) const
+         {
+            return IsEqual(BearingOffset, other.BearingOffset) && 
+               BearingOffsetMeasurementType == other.BearingOffsetMeasurementType && 
+               IsEqual(EndDistance, other.EndDistance) && 
+               EndDistanceMeasurementType == other.EndDistanceMeasurementType && 
+               EndDistanceMeasurementLocationType == other.EndDistanceMeasurementLocationType;
+         }
+
+         bool operator!=(const ConnectionGeometry& other) const
+         {
+            return !operator==(other);
+         }
+
          Float64 BearingOffset = 0.0; ///< Distance from centerline of pier to the centerline of bearing point
          MeasurementType BearingOffsetMeasurementType = MeasurementType::NormalToItem; ///< The method of measuring the bearing offset
          Float64 EndDistance = 0.0; ///< The distance from a datum point to the end of the beam supported by a pier

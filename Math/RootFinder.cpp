@@ -32,7 +32,12 @@ const int NTRY = 50;
 const Float64 FACTOR = 1.6;
 const Float64 EPS = 3.0e-10; // from Ken P.
 
-Float64 RootFinder::FindRoot(const Function& f,Float64 xNearest, Float64 tol) const
+Float64 RootFinder::FindRoot(const Function& f, Float64 xNearest, Float64 tol) const
+{
+   return FindRoot([&f](Float64 x) {return f.Evaluate(x); }, xNearest, tol);
+}
+
+Float64 RootFinder::FindRoot(const std::function<Float64(Float64)>& f, Float64 xNearest, Float64 tol) const
 {
    // This form of findRoot attempts to find a root by geometrically expanding a range out 
    // in the vicinity of "xNearest".
@@ -56,7 +61,12 @@ Float64 RootFinder::FindRoot(const Function& f,Float64 xNearest, Float64 tol) co
    }
 }
 
-Float64 RootFinder::FindRootConstrainedMin(const Function& f,Float64 xNearest, Float64 xMin,Float64 tol) const
+Float64 RootFinder::FindRootConstrainedMin(const Function& f, Float64 xNearest, Float64 xMin, Float64 tol) const
+{
+   return FindRootConstrainedMin([&f](Float64 x) {return f.Evaluate(x); }, xNearest, xMin, tol);
+}
+
+Float64 RootFinder::FindRootConstrainedMin(const std::function<Float64(Float64)>& f, Float64 xNearest, Float64 xMin, Float64 tol) const
 {
    // This form of findRoot attempts to find a root by geometrically expanding a range out 
    // in the vicinity of "a" subject to the constraint that the function will never be
@@ -81,7 +91,12 @@ Float64 RootFinder::FindRootConstrainedMin(const Function& f,Float64 xNearest, F
    }
 }
 
-Float64 RootFinder::FindRootConstrainedMax(const Function& f,Float64 xNearest, Float64 xMax,Float64 tol) const
+Float64 RootFinder::FindRootConstrainedMax(const Function& f, Float64 xNearest, Float64 xMax, Float64 tol) const
+{
+   return FindRootConstrainedMax([&f](Float64 x) {return f.Evaluate(x); }, xNearest, xMax, tol);
+}
+
+Float64 RootFinder::FindRootConstrainedMax(const std::function<Float64(Float64)>& f,Float64 xNearest, Float64 xMax,Float64 tol) const
 {
    // This form of findRoot attempts to find a root by geometrically expanding a range out 
    // in the vicinity of "a" subject to the constraint that the function will never be
@@ -116,28 +131,7 @@ Uint32 RootFinder::GetMaxIter() const
    return m_MaxIter;
 }
 
-#if defined _DEBUG
-bool RootFinder::AssertValid() const
-{
-   return true;
-}
-
-void RootFinder::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for RootFinder - Not Implemented" << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool RootFinder::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("RootFinder");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for RootFinder");
-   TESTME_EPILOG("RootFinder");
-}
-#endif
-
-RootFinder::BracketOutcome RootFinder::Bracket(const Function& eval, Float64 x[], Float64 tol) const
+RootFinder::BracketOutcome RootFinder::Bracket(const std::function<Float64(Float64)>& f, Float64 x[], Float64 tol) const
 {
    if (x[0] == 0.0 && x[1] == 0.0) 
    {
@@ -148,7 +142,7 @@ RootFinder::BracketOutcome RootFinder::Bracket(const Function& eval, Float64 x[]
       x[1] = FACTOR*x[0];
    }
    
-   Float64 f0 = eval.Evaluate(x[0]);
+   Float64 f0 = f(x[0]);
    if (fabs(f0)<tol)
    {
       x[0] = x[0];
@@ -156,7 +150,7 @@ RootFinder::BracketOutcome RootFinder::Bracket(const Function& eval, Float64 x[]
       return BracketOutcome::FoundRoot;
    }
 
-   Float64 f1 = eval.Evaluate(x[1]);
+   Float64 f1 = f(x[1]);
    if (fabs(f1)<tol)
    {
       x[0] = x[1];
@@ -175,7 +169,7 @@ RootFinder::BracketOutcome RootFinder::Bracket(const Function& eval, Float64 x[]
       else if (fabs(f0) < fabs(f1))
       {
          x[0] += FACTOR*(x[0] - x[1]);
-         f0 = eval.Evaluate(x[0]);
+         f0 = f(x[0]);
          if (fabs(f0)<tol)
          {
             x[0] = x[0];
@@ -186,7 +180,7 @@ RootFinder::BracketOutcome RootFinder::Bracket(const Function& eval, Float64 x[]
       else 
       {
          x[1] += FACTOR*(x[1] - x[0]);
-         f1 = eval.Evaluate(x[1]);
+         f1 = f(x[1]);
          if (fabs(f1)<tol)
          {
             x[0] = x[1];
@@ -199,7 +193,7 @@ RootFinder::BracketOutcome RootFinder::Bracket(const Function& eval, Float64 x[]
    return BracketOutcome::Failed;
 }
 
-RootFinder::BracketOutcome RootFinder::BracketConstrainedMin(const Function& eval, Float64 x[], Float64 xmin, Float64 tol) const
+RootFinder::BracketOutcome RootFinder::BracketConstrainedMin(const std::function<Float64(Float64)>& f, Float64 x[], Float64 xmin, Float64 tol) const
 {
    // need to insure that both x[0] and x[1] are greater than xmin.
    if (x[0] <= xmin || x[1] <= xmin) 
@@ -224,14 +218,14 @@ RootFinder::BracketOutcome RootFinder::BracketConstrainedMin(const Function& eva
       x[1] = t;
    }
 
-   Float64 f0 = eval.Evaluate(x[0]);
+   Float64 f0 = f(x[0]);
    if (fabs(f0)<tol)
    {
       x[0] = x[0];
       x[1] = f0;
       return BracketOutcome::FoundRoot;
    }
-   Float64 f1 = eval.Evaluate(x[1]);
+   Float64 f1 = f(x[1]);
    if (fabs(f1)<tol)
    {
       x[0] = x[1];
@@ -255,7 +249,7 @@ RootFinder::BracketOutcome RootFinder::BracketConstrainedMin(const Function& eva
             constrainedMin = true;
          }
 
-         f0 = eval.Evaluate(x[0]);
+         f0 = f(x[0]);
          if (fabs(f0)<tol)
          {
             x[0] = x[0];
@@ -266,7 +260,7 @@ RootFinder::BracketOutcome RootFinder::BracketConstrainedMin(const Function& eva
       else 
       {
          x[1] += FACTOR*(x[1] - x[0]);
-         f1 = eval.Evaluate(x[1]);
+         f1 = f(x[1]);
 
          if (fabs(f1)<tol)
          {
@@ -279,7 +273,7 @@ RootFinder::BracketOutcome RootFinder::BracketConstrainedMin(const Function& eva
    return BracketOutcome::Failed;
 }
 
-RootFinder::BracketOutcome RootFinder::BracketConstrainedMax(const Function& eval, Float64 x[], Float64 xmax, Float64 tol) const
+RootFinder::BracketOutcome RootFinder::BracketConstrainedMax(const std::function<Float64(Float64)>& f, Float64 x[], Float64 xmax, Float64 tol) const
 {
    // need to insure that both x[0] and x[1] are less than xmax.
    if (xmax <= x[0] || xmax <= x[1])
@@ -312,7 +306,7 @@ RootFinder::BracketOutcome RootFinder::BracketConstrainedMax(const Function& eva
       std::swap(x[0], x[1]);
    }
 
-   Float64 f0 = eval.Evaluate(x[0]);
+   Float64 f0 = f(x[0]);
    if (fabs(f0)<tol)
    {
       x[0] = x[0];
@@ -320,7 +314,7 @@ RootFinder::BracketOutcome RootFinder::BracketConstrainedMax(const Function& eva
       return BracketOutcome::FoundRoot;
    }
 
-   Float64 f1 = eval.Evaluate(x[1]);
+   Float64 f1 = f(x[1]);
    if (fabs(f1)<tol)
    {
       x[0] = x[1];
@@ -345,7 +339,7 @@ RootFinder::BracketOutcome RootFinder::BracketConstrainedMax(const Function& eva
             constrainedMax = true;
          }
 
-         f1 = eval.Evaluate(x[1]);
+         f1 = f(x[1]);
          if (fabs(f1)<tol)
          {
             x[0] = x[1];
@@ -356,7 +350,7 @@ RootFinder::BracketOutcome RootFinder::BracketConstrainedMax(const Function& eva
       else 
       {
          x[0] += FACTOR*(x[0] - x[1]);
-         f0 = eval.Evaluate(x[0]);
+         f0 = f(x[0]);
 
          if (fabs(f0)<tol)
          {

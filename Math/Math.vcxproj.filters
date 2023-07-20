@@ -46,9 +46,6 @@
     <ClCompile Include="TrapezoidalRuleIntegrator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UnsymmetricBandedMatrix..cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -130,9 +127,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Math\TrapezoidalRuleIntegrator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Math\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Math\UnsymmetricBandedMatrix.h">

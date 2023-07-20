@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="UnitTests\ConcreteMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LibraryEntry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -13,15 +10,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\LibraryFw\AutoLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UnitTests\ConcreteMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LibraryFw\ILibrary.h">
@@ -46,9 +37,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\LibraryFw\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -221,7 +221,7 @@ void CTestCubicSpline::Test()
    TRY_TEST(element->Intersect(nullptr,VARIANT_TRUE,VARIANT_TRUE,&points),E_INVALIDARG);
    TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,nullptr),E_POINTER);
    TRY_TEST(element->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    points->get_Count(&nPoints);
    TRY_TEST( nPoints, 3 );
 
@@ -331,7 +331,7 @@ void CTestCubicSpline::Test()
    Float64 cx = 0;
    Float64 cy = 0;
    nPoints = 5;
-   for ( CollectionIndexType i = 0; i < nPoints; i++ )
+   for ( IndexType i = 0; i < nPoints; i++ )
    {
       angle = (M_PI/2)*i/(nPoints-1);
       x = cx + R*cos(angle);

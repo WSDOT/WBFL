@@ -86,12 +86,3 @@ PolynomialFunction PolynomialFunction::GetDerivative() const
 
    return PolynomialFunction(coefficients);
 }
-
-#if defined _UNITTEST
-bool PolynomialFunction::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("PolynomialFunction");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for PolynomialFunction");
-   TESTME_EPILOG("PolynomialFunction");
-}
-#endif

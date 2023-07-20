@@ -26,17 +26,8 @@
 
 using namespace WBFL::Geometry;
 
-MassProperties::MassProperties():
-m_Mpl(0)
-{
-}
-
 MassProperties::MassProperties(Float64 mpl):
 m_Mpl(mpl)
-{
-}
-
-MassProperties::~MassProperties()
 {
 }
 
@@ -71,77 +62,3 @@ Float64 MassProperties::GetMassPerLength() const
 {
    return m_Mpl;
 }
-
-#if defined _DEBUG
-bool MassProperties::AssertValid() const
-{
-   return true;
-}
-
-void MassProperties::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << "Dump for MassProperties" << WBFL::Debug::endl;
-   os << " m_Mpl   = "<< m_Mpl << WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include <MathEx.h>
-bool MassProperties::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("MassProperties");
-
-   MassProperties props;
-
-   // Default value should be zero
-   TRY_TESTME(IsZero(props.GetMassPerLength()));
-
-   props.SetMassPerLength(50.0);
-   TRY_TESTME(IsEqual(props.GetMassPerLength(), 50.0));
-
-   // Add mass properties
-   MassProperties props2;
-   props.SetMassPerLength(100);
-   props2.SetMassPerLength(5.5);
-   props += props2;
-   TRY_TESTME(IsEqual(props.GetMassPerLength(), 105.5));
-
-   props.SetMassPerLength(100);
-   props2.SetMassPerLength(5.5);
-   props2 += props;
-   TRY_TESTME(IsEqual(props2.GetMassPerLength(), 105.5));
-
-   props.SetMassPerLength(100);
-   props2.SetMassPerLength(5.5);
-   auto props3 = props + props2;
-   TRY_TESTME(IsEqual(props3.GetMassPerLength(), 105.5));
-
-   props.SetMassPerLength(100);
-   props2.SetMassPerLength(5.5);
-   props3 = props2 + props;
-   TRY_TESTME(IsEqual(props3.GetMassPerLength(), 105.5));
-
-
-   props.SetMassPerLength(100);
-   props2.SetMassPerLength(5.5);
-   props -= props2;
-   TRY_TESTME(IsEqual(props.GetMassPerLength(), 94.5));
-
-   props.SetMassPerLength(100);
-   props2.SetMassPerLength(5.5);
-   props2 -= props;
-   TRY_TESTME(IsEqual(props2.GetMassPerLength(), -94.5));
-
-   props.SetMassPerLength(100);
-   props2.SetMassPerLength(5.5);
-   props3 = props - props2;
-   TRY_TESTME(IsEqual(props3.GetMassPerLength(), 94.5));
-
-   props.SetMassPerLength(100);
-   props2.SetMassPerLength(5.5);
-   props3 = props2 - props;
-   TRY_TESTME(IsEqual(props3.GetMassPerLength(), -94.5));
-
-   TESTME_EPILOG("MassProperties");
-}
-#endif // _UNITTEST

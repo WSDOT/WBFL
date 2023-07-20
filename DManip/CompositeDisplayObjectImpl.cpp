@@ -91,7 +91,7 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::GetDisplayObject(IDType key,Acc
       m_CompositeItems->FindDisplayObject(key,ppDO);
 }
 
-STDMETHODIMP_(CollectionIndexType) CCompositeDisplayObjectImpl::GetDisplayObjectCount()
+STDMETHODIMP_(IndexType) CCompositeDisplayObjectImpl::GetDisplayObjectCount()
 {
    return m_CompositeItems->GetDisplayObjectCount();
 }
@@ -126,8 +126,8 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::SetDisplayList(iDisplayList * p
 
 STDMETHODIMP_(void) CCompositeDisplayObjectImpl::Visible(BOOL bVisible)
 {
-   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-   for ( CollectionIndexType i = 0; i < nDO; i++ )
+   IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for ( IndexType i = 0; i < nDO; i++ )
    {
       CComPtr<iDisplayObject> dispObj;
       m_CompositeItems->GetDisplayObject(i,&dispObj);
@@ -153,8 +153,8 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlit
    if ( !IsVisible() ) // Don't draw if not visible
       return;
 
-   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-   for ( CollectionIndexType i = 0; i < nDO; i++ )
+   IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for ( IndexType i = 0; i < nDO; i++ )
    {
       CComPtr<iDisplayObject> dispObj;
       m_CompositeItems->GetDisplayObject(i,&dispObj);
@@ -173,8 +173,8 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::DrawGravityWell(CDC* pDC)
 STDMETHODIMP_(CRect) CCompositeDisplayObjectImpl::GetBoundingBox()
 {
    CRect box;
-   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-   for ( CollectionIndexType i = 0; i < nDO; i++ )
+   IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for ( IndexType i = 0; i < nDO; i++ )
    {
       CComPtr<iDisplayObject> dispObj;
       m_CompositeItems->GetDisplayObject(i,&dispObj);
@@ -200,8 +200,8 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::GetBoundingBox(IRect2d** rect)
 
    m_BoundingBox.CoCreateInstance(CLSID_Rect2d);
 
-   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-   for ( CollectionIndexType i = 0; i < nDO; i++ )
+   IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for ( IndexType i = 0; i < nDO; i++ )
    {
       CComPtr<iDisplayObject> dispObj;
       m_CompositeItems->GetDisplayObject(i,&dispObj);
@@ -243,8 +243,8 @@ STDMETHODIMP_(BOOL) CCompositeDisplayObjectImpl::HitTest(CPoint point)
    else
    {
       // Hit test each member of the composite individually
-      CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-      for ( CollectionIndexType i = 0; i < nDO; i++ )
+      IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+      for ( IndexType i = 0; i < nDO; i++ )
       {
          CComPtr<iDisplayObject> dispObj;
          m_CompositeItems->GetDisplayObject(i,&dispObj);
@@ -261,8 +261,8 @@ STDMETHODIMP_(BOOL) CCompositeDisplayObjectImpl::HitTest(CPoint point)
 
 STDMETHODIMP_(BOOL) CCompositeDisplayObjectImpl::TouchesRect(CRect r)
 {
-   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-   for ( CollectionIndexType i = 0; i < nDO; i++ )
+   IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for ( IndexType i = 0; i < nDO; i++ )
    {
       CComPtr<iDisplayObject> dispObj;
       m_CompositeItems->GetDisplayObject(i,&dispObj);
@@ -280,8 +280,8 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::Select(BOOL bSelect)
    if ( Do_GetSelectionType() == stNone )
       return;
 
-   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-   for ( CollectionIndexType i = 0; i < nDO; i++ )
+   IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for ( IndexType i = 0; i < nDO; i++ )
    {
       CComPtr<iDisplayObject> dispObj;
       m_CompositeItems->GetDisplayObject(i,&dispObj);
@@ -294,8 +294,8 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::Select(BOOL bSelect)
 
 STDMETHODIMP_(void) CCompositeDisplayObjectImpl::SetSelectionType(SelectionType st)
 {
-   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-   for ( CollectionIndexType i = 0; i < nDO; i++ )
+   IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for ( IndexType i = 0; i < nDO; i++ )
    {
       CComPtr<iDisplayObject> dispObj;
       m_CompositeItems->GetDisplayObject(i,&dispObj);
@@ -308,8 +308,8 @@ STDMETHODIMP_(void) CCompositeDisplayObjectImpl::SetSelectionType(SelectionType 
 
 STDMETHODIMP_(void) CCompositeDisplayObjectImpl::RetainSelection(BOOL bRetain)
 {
-   CollectionIndexType nDO = m_CompositeItems->GetDisplayObjectCount();
-   for (CollectionIndexType i = 0; i < nDO; i++)
+   IndexType nDO = m_CompositeItems->GetDisplayObjectCount();
+   for (IndexType i = 0; i < nDO; i++)
    {
       CComPtr<iDisplayObject> dispObj;
       m_CompositeItems->GetDisplayObject(i, &dispObj);

@@ -55,24 +55,6 @@ namespace WBFL
       private:
          Float64 m_Alpha1{ 0.85 };
          Float64 m_Beta1{ 0.85 };
-
-#if defined _UNITTEST
-      public:
-         static bool TestMe(WBFL::Debug::Log& rlog)
-         {
-            TESTME_PROLOGUE("ConstantStressBlockFactor");
-
-            ConstantStressBlockFactor factor;
-            TRY_TESTME(IsEqual(factor.GetIntensityFactor(), 0.85));
-            TRY_TESTME(IsEqual(factor.GetDepthFactor(), 0.85));
-
-            ConstantStressBlockFactor factor1(0.90,0.65);
-            TRY_TESTME(IsEqual(factor1.GetIntensityFactor(), 0.90));
-            TRY_TESTME(IsEqual(factor1.GetDepthFactor(), 0.65));
-
-            TESTME_EPILOG("ConstantStressBlockFactor");
-         }
-#endif // _UNITTEST
       };
    };
 };

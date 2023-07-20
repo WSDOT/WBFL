@@ -70,7 +70,7 @@ public:
       return m_Beam->get_D4(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -78,7 +78,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -268,7 +268,7 @@ public:
       return m_Beam->get_D6(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
          return E_INVALIDARG;
@@ -276,7 +276,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
          return E_INVALIDARG;
@@ -720,7 +720,7 @@ public:
       return m_Beam->get_D4(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -730,7 +730,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -974,7 +974,7 @@ public:
       return m_Beam->get_D5(tf); // NUBeam
    } 
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -982,7 +982,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -1364,7 +1364,7 @@ public:
       return m_Beam->get_D4(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -1374,7 +1374,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -1872,7 +1872,7 @@ public:
       return m_Beam->get_D9(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -1882,7 +1882,7 @@ public:
       return m_Beam->get_D7(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
       {

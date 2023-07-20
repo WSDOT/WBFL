@@ -29,17 +29,23 @@
    #error It is for external users only
 #endif
 
+#include <RCSection/AxialInteractionCurveSolver.h>
+#include <RCSection/CapacityLimit.h>
+#include <RCSection/CircularColumn.h>
+#include <RCSection/ConstantStressBlockFactor.h>
+#include <RCSection/CrackedSectionSlice.h>
+#include <RCSection/CrackedSectionSolution.h>
+#include <RCSection/CrackedSectionSolver.h>
 #include <RCSection/GeneralSection.h>
 #include <RCSection/GeneralSectionSlice.h>
 #include <RCSection/GeneralSectionSolution.h>
 #include <RCSection/GeneralSectionSolver.h>
+#include <RCSection/InteractionCurveSolution.h>
 #include <RCSection/MomentCapacitySolution.h>
 #include <RCSection/MomentCapacitySolver.h>
-#include <RCSection/CircularColumn.h>
-#include <RCSection/ConstantStressBlockFactor.h>
-#include <RCSection/VariableStressBlockFactor.h>
 #include <RCSection/MomentCurvatureSolution.h>
 #include <RCSection/MomentCurvatureSolver.h>
-#include <RCSection/InteractionCurveSolution.h>
-#include <RCSection/AxialInteractionCurveSolver.h>
 #include <RCSection/MomentInteractionCurveSolver.h>
+#include <RCSection/SectionBuilder.h>
+#include <RCSection/VariableStressBlockFactor.h>
+#include <RCSection/XRCSection.h>

@@ -94,15 +94,6 @@ namespace WBFL
          /// Returns the strain that corresponds to the peak stress
          virtual Float64 GetStrainAtPeakStress() const override;
 
-      #if defined _DEBUG
-         virtual bool AssertValid() const;
-         virtual void Dump(WBFL::Debug::LogContext& os) const;
-      #endif // _DEBUG
-
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
-
       private:
          Float64 m_MinStrain{ -10 }; // assumes material doesn't fracture in compression
          Float64 m_MaxStrain{ 0.07 };

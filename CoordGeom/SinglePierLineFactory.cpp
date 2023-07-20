@@ -112,14 +112,3 @@ std::vector<std::shared_ptr<PierLine>> SinglePierLineFactory::Create(std::shared
    pier_lines.emplace_back(pier_line);
    return pier_lines;
 }
-
-#if defined _UNITTEST
-bool SinglePierLineFactory::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SinglePierLineFactory");
-
-   TESTME_EPILOG("SinglePierLineFactory");
-}
-#endif // _UNITTEST
-
-

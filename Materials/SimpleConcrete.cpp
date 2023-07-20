@@ -83,7 +83,6 @@ SimpleConcrete::SimpleConcrete(const std::_tstring& name, Float64 fc, Float64 de
    m_gamma_u(1.0),
    m_bExperimental_ecu(false)
 {
-   ASSERTVALID;
 }
 
 SimpleConcrete::~SimpleConcrete()
@@ -271,7 +270,6 @@ std::_tstring SimpleConcrete::GetName() const
 void SimpleConcrete::SetFc(Float64 fc)
 {
    m_Fc = fc;
-   ASSERTVALID;
 }
 
 Float64 SimpleConcrete::GetFc() const
@@ -282,7 +280,6 @@ Float64 SimpleConcrete::GetFc() const
 void SimpleConcrete::SetDensity(Float64 density)
 {
    m_Density = density;
-   ASSERTVALID;
 }
 
 Float64 SimpleConcrete::GetDensity() const
@@ -293,7 +290,6 @@ Float64 SimpleConcrete::GetDensity() const
 void SimpleConcrete::SetDensityForWeight(Float64 d)
 {
    m_WeightDensity = d;
-   ASSERTVALID;
 }
 
 Float64 SimpleConcrete::GetDensityForWeight() const
@@ -304,7 +300,6 @@ Float64 SimpleConcrete::GetDensityForWeight() const
 void SimpleConcrete::SetShearFr(Float64 fr)
 {
    m_FrShear = fr;
-   ASSERTVALID;
 }
 
 Float64 SimpleConcrete::GetShearFr() const
@@ -315,7 +310,6 @@ Float64 SimpleConcrete::GetShearFr() const
 void SimpleConcrete::SetFlexureFr(Float64 fr)
 {
    m_FrFlexure = fr;
-   ASSERTVALID;
 }
 
 Float64 SimpleConcrete::GetFlexureFr() const
@@ -326,7 +320,6 @@ Float64 SimpleConcrete::GetFlexureFr() const
 void SimpleConcrete::SetE(Float64 modE)
 {
    m_ModE = modE;
-   ASSERTVALID;
 }
 
 Float64 SimpleConcrete::GetE() const
@@ -494,40 +487,3 @@ Float64 SimpleConcrete::GetCompressiveStrainLimit(bool* pbIsExperimental) const
       return Min(e_cp, -0.0035);
    }
 }
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool SimpleConcrete::AssertValid() const
-{
-   //if ( !(m_Fc > 0) )
-   //   return false;
-
-   //if ( !(m_Density > 0) )
-   //   return false;
-
-   //if ( !(m_ModE > 0) )
-   //   return false;
-
-   return true;
-}
-
-void SimpleConcrete::Dump(WBFL::Debug::LogContext& os) const
-{
-   os << _T("Dump for SimpleConcrete")         << WBFL::Debug::endl;
-   os << _T("====================")         << WBFL::Debug::endl;
-   os << _T("Name    : ") << m_Name.c_str() << WBFL::Debug::endl;
-   os << _T("Fc      : ") << m_Fc           << WBFL::Debug::endl;
-   os << _T("Density : ") << m_Density      << WBFL::Debug::endl;
-   os << _T("Mod E   : ") << m_ModE         << WBFL::Debug::endl;
-   os << _T("Max Aggr: ") << m_MaxAggregateSize<< WBFL::Debug::endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool SimpleConcrete::TestMe(WBFL::Debug::Log& rlog)
-{
-   TESTME_PROLOGUE("SimpleConcrete");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for SimpleConcrete");
-   TESTME_EPILOG("SimpleConcrete");
-}
-#endif // _UNITTEST

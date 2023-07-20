@@ -336,11 +336,11 @@ public:
       if ( FAILED(hr) )
          return hr;
 
-      CollectionIndexType count;
+      IndexType count;
       pLoad->get_Property(CComBSTR("Count"),&var);
       count = var.lVal;
 
-      for ( CollectionIndexType i = 0; i < count; i++ )
+      for ( IndexType i = 0; i < count; i++ )
       {
          IDType ID;
          pLoad->BeginUnit(GetItemName());

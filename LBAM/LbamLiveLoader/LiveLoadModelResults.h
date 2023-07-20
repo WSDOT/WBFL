@@ -66,11 +66,11 @@ END_COM_MAP()
 
 // ILiveLoadModelResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* result, /*[out]*/ILiveLoadConfiguration* *Config) override;
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 result, /*[in]*/ILiveLoadConfiguration* Config) override;
+	STDMETHOD(GetResult)(/*[in]*/IndexType index, /*[out]*/Float64* result, /*[out]*/ILiveLoadConfiguration* *Config) override;
+	STDMETHOD(SetResult)(/*[in]*/IndexType index, /*[in]*/Float64 result, /*[in]*/ILiveLoadConfiguration* Config) override;
 	STDMETHOD(Add)(/*[in]*/Float64 result, /*[in]*/ILiveLoadConfiguration* Config) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clear)() override;
 
 private:

@@ -401,9 +401,9 @@ void CCrackedSectionSolver::DecomposeSection()
    std::vector<SHAPEINFO> shapes;
 
    // Rotate the shapes and determine the overall size of the section (bounding box)
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    m_Section->get_ShapeCount(&nShapes);
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
    {
       CComPtr<IShape> original_shape;
       m_Section->get_Shape(shapeIdx,&original_shape);
@@ -476,7 +476,7 @@ void CCrackedSectionSolver::DecomposeSection()
    // Slice each shape
    m_SliceInfo.clear();
    nShapes = shapes.size();
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
    {
       // get shape and related information
       SHAPEINFO& shape_info = shapes[shapeIdx];

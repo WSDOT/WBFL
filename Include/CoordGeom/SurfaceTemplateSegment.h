@@ -80,11 +80,6 @@ namespace WBFL
          /// @return 
          SlopeType GetSlopeType() const;
 
-#if defined _UNITTEST
-         /// A self-test function - returns true if passed.
-         static bool TestMe(WBFL::Debug::Log& rlog);
-#endif // _UNITTEST
-
       private:
          Float64 m_Width{ 1.0 };
          Float64 m_Slope{ 0.02 };

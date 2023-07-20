@@ -69,7 +69,7 @@ public:
             events->OnStagesChanged(Stage,change);
 		}
 	}
-	VOID Fire_OnStagesAdded(IStage * Stage, CollectionIndexType relPos)
+	VOID Fire_OnStagesAdded(IStage * Stage, IndexType relPos)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -85,7 +85,7 @@ public:
             events->OnStagesAdded(Stage,relPos);
 		}
 	}
-	VOID Fire_OnStagesBeforeRemove(IStage * Stage, CollectionIndexType relPos)
+	VOID Fire_OnStagesBeforeRemove(IStage * Stage, IndexType relPos)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -101,7 +101,7 @@ public:
             events->OnStagesBeforeRemove(Stage,relPos);
 		}
 	}
-	VOID Fire_OnStagesMoveTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnStagesMoveTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -117,7 +117,7 @@ public:
             events->OnStagesMoveTo(from,to);
 		}
 	}
-	VOID Fire_OnStagesCopyTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnStagesCopyTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;

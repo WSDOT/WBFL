@@ -101,13 +101,7 @@ namespace WBFL
 
       #if defined _DEBUG
          bool AssertValid() const;
-
-         void Dump(WBFL::Debug::LogContext& os) const;
       #endif // _DEBUG
-      
-      #if defined _UNITTEST
-         static bool TestMe(WBFL::Debug::Log& rlog);
-      #endif // _UNITTEST
 
       private:
          std::_tstring m_Name;
@@ -116,9 +110,7 @@ namespace WBFL
          Type m_Type;
          Float64     m_Dimension;
          Float64     m_Area;
-         Float64     m_Fu;
-         Float64     m_Fy;
-         Float64     m_Es;
+
       };
 
       inline void Rebar::SetName(const std::_tstring& name)

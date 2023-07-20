@@ -880,7 +880,7 @@ STDMETHODIMP CBoxBeamSection::get_XYPosition(IXYPosition **pVal)
    return this->QueryInterface(IID_IXYPosition, (void**)pVal);
 }
 
-STDMETHODIMP CBoxBeamSection::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)
+STDMETHODIMP CBoxBeamSection::get_Item(IndexType idx,ICompositeShapeItem* *pVal)
 {
    CComPtr<ICompositeShape> compShape;
    compShape.CoCreateInstance(CLSID_CompositeShape);
@@ -908,7 +908,7 @@ STDMETHODIMP CBoxBeamSection::get__NewEnum(IUnknown* *pVal)
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CBoxBeamSection::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CBoxBeamSection::get_Count(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    IndexType nVoids;
@@ -917,7 +917,7 @@ STDMETHODIMP CBoxBeamSection::get_Count(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CBoxBeamSection::Remove(CollectionIndexType idx)
+STDMETHODIMP CBoxBeamSection::Remove(IndexType idx)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;
@@ -929,13 +929,13 @@ STDMETHODIMP CBoxBeamSection::Clear()
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CBoxBeamSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CBoxBeamSection::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;
 }
 
-STDMETHODIMP CBoxBeamSection::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CBoxBeamSection::Replace(IndexType idx,IShape* pShape)
 {
    ATLASSERT(false); // can't add a shape
    return E_INVALIDARG;
