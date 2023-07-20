@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 8,0,0,1
- PRODUCTVERSION 8,0,0,1
+ FILEVERSION 8,0,0,2
+ PRODUCTVERSION 8,0,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +70,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFL COGO Module"
-            VALUE "FileVersion", "8.0.0.1"
+            VALUE "FileVersion", "8.0.0.2"
             VALUE "InternalName", "COGO"
             VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "COGO.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "8.0.0.1"
+            VALUE "ProductVersion", "8.0.0.2"
         END
     END
     BLOCK "VarFileInfo"
@@ -93,59 +91,101 @@ END
 //
 
 IDR_ANGLE               REGISTRY                "Angle.rgs"
+
 IDR_DIRECTION           REGISTRY                "Direction.rgs"
+
 IDR_COGOMODEL           REGISTRY                "CogoModel.rgs"
+
 IDR_PROFILEPOINT        REGISTRY                "ProfilePoint.rgs"
-IDR_VERTICALCURVE           REGISTRY                "VerticalCurve.rgs"
-IDR_COMPOUNDCURVE           REGISTRY                "CompoundCurve.rgs"
+
+IDR_VERTICALCURVE       REGISTRY                "VerticalCurve.rgs"
+
+IDR_COMPOUNDCURVE       REGISTRY                "CompoundCurve.rgs"
+
 IDR_PROFILESEGMENT      REGISTRY                "ProfileSegment.rgs"
+
 IDR_PROFILE             REGISTRY                "Profile.rgs"
+
 IDR_CROSSSECTION        REGISTRY                "CrossSection.rgs"
+
 IDR_PATHSEGMENT         REGISTRY                "PathSegment.rgs"
+
 IDR_ALIGNMENT           REGISTRY                "Alignment.rgs"
+
 IDR_ANGLEDISPLAYUNITFORMATTER REGISTRY                "AngleDisplayUnitFormatter.rgs"
+
 IDR_DIRECTIONDISPLAYUNITFORMATTER REGISTRY                "DirectionDisplayUnitFormatter.rgs"
+
 IDR_STATION             REGISTRY                "Station.rgs"
+
 IDR_COGOENGINE          REGISTRY                "CogoEngine.rgs"
+
 IDR_PATH                REGISTRY                "Path.rgs"
+
 IDR_CUBICSPLINE         REGISTRY                "CubicSpline.rgs"
+
 IDR_STATIONEQUATION     REGISTRY                "StationEquation.rgs"
+
 IDR_WIDENING            REGISTRY                "Widening.rgs"
+
 IDR_SUPERELEVATION      REGISTRY                "Superelevation.rgs"
-IDR_SURFACETEMPLATESEGMENT     REGISTRY                "SurfaceTemplateSegment.rgs"
+
+IDR_SURFACETEMPLATESEGMENT REGISTRY                "SurfaceTemplateSegment.rgs"
+
 IDR_SURFACETEMPLATE     REGISTRY                "SurfaceTemplate.rgs"
+
 IDR_SURFACE             REGISTRY                "Surface.rgs"
+
 IDR_SURFACEPOINT        REGISTRY                "SurfacePoint.rgs"
-IDR_SURFACEPROFILE        REGISTRY                "SurfaceProfile.rgs"
-IDR_TRANSITIONCURVE REGISTRY "TransitionCurve.rgs"
-IDR_CIRCULARCURVE REGISTRY "CircularCurve.rgs"
-IDR_BRIDGEGEOMETRY REGISTRY "BridgeGeometry.rgs"
-IDR_PIERLINE REGISTRY "PierLine.rgs"
-IDR_SINGLEPIERLINEFACTORY REGISTRY "SinglePierLineFactory.rgs"
-IDR_ALIGNMENTOFFSETLAYOUTLINEFACTORY REGISTRY "AlignmentOffsetLayoutLineFactory.rgs"
-IDR_SIMPLELAYOUTLINEFACTORY REGISTRY "SimpleLayoutLineFactory.rgs"
-IDR_UNIFORMSPACINGLAYOUTLINEFACTORY REGISTRY "UniformSpacingLayoutLineFactory.rgs"
-IDR_GIRDERLINE REGISTRY "GirderLine.rgs"
-IDR_SIMPLEGIRDERLINEFACTORY REGISTRY "SimpleGirderLineFactory.rgs"
-IDR_SINGLEGIRDERLINEFACTORY REGISTRY "SingleGirderLineFactory.rgs"
-IDR_DIAPHRAGMLINE REGISTRY "DiaphragmLine.rgs"
-IDR_EQUALSPACINGDIAPHRAGMLINEFACTORY REGISTRY "EqualSpacingDiaphragmLineFactory.rgs"
-IDR_SINGLEDIAPHRAGMLINEFACTORY REGISTRY "SingleDiaphragmLineFactory.rgs"
-IDR_THROUGHPOINTDIAPHRAGMLINEFACTORY REGISTRY "ThroughPointDiaphragmLineFactory.rgs"
-IDR_DECKBOUNDARY REGISTRY "DeckBoundary.rgs"
-IDR_SIMPLEDECKBOUNDARYFACTORY REGISTRY "SimpleDeckBoundaryFactory.rgs"
+
+IDR_SURFACEPROFILE      REGISTRY                "SurfaceProfile.rgs"
+
+IDR_TRANSITIONCURVE     REGISTRY                "TransitionCurve.rgs"
+
+IDR_CIRCULARCURVE       REGISTRY                "CircularCurve.rgs"
+
+IDR_BRIDGEGEOMETRY      REGISTRY                "BridgeGeometry.rgs"
+
+IDR_PIERLINE            REGISTRY                "PierLine.rgs"
+
+IDR_SINGLEPIERLINEFACTORY REGISTRY                "SinglePierLineFactory.rgs"
+
+IDR_ALIGNMENTOFFSETLAYOUTLINEFACTORY REGISTRY                "AlignmentOffsetLayoutLineFactory.rgs"
+
+IDR_SIMPLELAYOUTLINEFACTORY REGISTRY                "SimpleLayoutLineFactory.rgs"
+
+IDR_UNIFORMSPACINGLAYOUTLINEFACTORY REGISTRY                "UniformSpacingLayoutLineFactory.rgs"
+
+IDR_GIRDERLINE          REGISTRY                "GirderLine.rgs"
+
+IDR_SIMPLEGIRDERLINEFACTORY REGISTRY                "SimpleGirderLineFactory.rgs"
+
+IDR_SINGLEGIRDERLINEFACTORY REGISTRY                "SingleGirderLineFactory.rgs"
+
+IDR_DIAPHRAGMLINE       REGISTRY                "DiaphragmLine.rgs"
+
+IDR_EQUALSPACINGDIAPHRAGMLINEFACTORY REGISTRY                "EqualSpacingDiaphragmLineFactory.rgs"
+
+IDR_SINGLEDIAPHRAGMLINEFACTORY REGISTRY                "SingleDiaphragmLineFactory.rgs"
+
+IDR_THROUGHPOINTDIAPHRAGMLINEFACTORY REGISTRY                "ThroughPointDiaphragmLineFactory.rgs"
+
+IDR_DECKBOUNDARY        REGISTRY                "DeckBoundary.rgs"
+
+IDR_SIMPLEDECKBOUNDARYFACTORY REGISTRY                "SimpleDeckBoundaryFactory.rgs"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PROJNAME            "COGO"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_E_POINTNOTFOUND     "Point %d was not found"
     IDS_E_POINTALREADYDEFINED "Point %d is already defined"
@@ -166,7 +206,7 @@ BEGIN
     IDS_E_VERTCURVEPOINTS   "Vertical curve points are out of order. Check stations of the BVC, PVI, and EVC points"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_E_VERTCURVENOTFOUND "Vertical curve %d was not found"
     IDS_E_VERTCURVEALREADYDEFINED "Vertical curve %d is already defined"
@@ -187,7 +227,7 @@ BEGIN
     IDS_E_NOINTERSECTION    "The intersection point was not found"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_E_ALIGNMENTNOTFOUND "Alignment %d was not found"
     IDS_E_ALIGNMENTALREADYDEFINED "Alignment %d is already defined"
@@ -207,7 +247,7 @@ BEGIN
     IDS_E_INVALIDRIDGEPOINT "The ridge point index is invalid."
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

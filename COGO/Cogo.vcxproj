@@ -301,6 +301,7 @@
     <None Include="CogoEngine.rgs" />
     <None Include="CogoModel.rgs" />
     <None Include="CogoUtil.rgs" />
+    <None Include="CrossSection.rgs" />
     <None Include="CubicSpline.rgs" />
     <None Include="DeckBoundary.rgs" />
     <None Include="DiaphragmLine.rgs" />
