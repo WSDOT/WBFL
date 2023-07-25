@@ -92,6 +92,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="TestBearing.cpp" />
+    <ClCompile Include="TestBearingCalculator.cpp" />
+    <ClCompile Include="TestBearingLoads.cpp" />
     <ClCompile Include="TestBiaxialBeamStrain.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

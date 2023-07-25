@@ -29,6 +29,9 @@
 
 #include <EngTools/BiaxialBeamStrain.h>
 #include <EngTools/MohrCircle.h>
+#include <EngTools/Bearing.h>
+#include <EngTools/BearingLoads.h>
+#include <EngTools/BearingCalculator.h>
 #include <EngTools/PrandtlMembraneSolution.h>
 #include <EngTools/PrandtlMembraneSolver.h>
 #include <EngTools/UniformFDMesh.h>
