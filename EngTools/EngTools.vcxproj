@@ -181,6 +181,9 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bearing.cpp" />
+    <ClCompile Include="BearingCalculator.cpp" />
+    <ClCompile Include="BearingLoads.cpp" />
     <ClCompile Include="BiaxialBeamStrain.cpp" />
     <ClCompile Include="FDMeshGenerator.cpp" />
     <ClCompile Include="main.cpp">
@@ -194,6 +197,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\EngTools\AutoLib.h" />
+    <ClInclude Include="..\Include\EngTools\Bearing.h" />
+    <ClInclude Include="..\Include\EngTools\BearingCalculator.h" />
+    <ClInclude Include="..\Include\EngTools\BearingLoads.h" />
     <ClInclude Include="..\Include\EngTools\BiaxialBeamStrain.h" />
     <ClInclude Include="..\Include\EngTools\EngTools.h" />
     <ClInclude Include="..\Include\EngTools\EngToolsExp.h" />
