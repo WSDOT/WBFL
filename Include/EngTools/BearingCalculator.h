@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EngTools - Library of miscellaneous engineering tools
-// Copyright © 1999-2023  Washington State Department of Transportation
+// Copyright Â© 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -249,15 +249,10 @@ namespace WBFL
             /// @return Check for the maximum allowable hydrostatic stress
             bool HydrostaticStressCheck(const Bearing&, const BearingLoads&) const;
 
-
         private:
            Float64 m_maximum_allowable_stress{ WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI) };///< max allowable stress
            Float64 m_absolute_minimum_shim_thickness{ WBFL::Units::ConvertToSysUnits(0.0625, WBFL::Units::Measure::Inch) };///< absolute minimum shim thickness
            Float64 m_elastomer_bulk_modulus{ WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI) };///< elastomer bulk modulus
-
-
-            
-
         };
     }; // EngTools
 }; // WBFL
