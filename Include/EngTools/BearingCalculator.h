@@ -62,192 +62,192 @@ namespace WBFL
             /// @return Elastomer Bulk Modulus
             Float64 GetElastomerBulkModulus() const;
             /// @return Method A Concrete Elastic Modulus
-            Float64 GetConcreteElasticModulusMethodA(Bearing&) const;
+            Float64 GetConcreteElasticModulusMethodA(const Bearing&) const;
             /// @return Method B Concrete Elastic Modulus 
-            Float64 GetConcreteElasticModulusMethodB(Bearing&) const;
+            Float64 GetConcreteElasticModulusMethodB(const Bearing&) const;
             /// @return Method A Initial Dead Load Deflection
-            Float64 GetInitialDeadLoadDeflectionMethodA(Bearing&, BearingLoads&) const;
+            Float64 GetInitialDeadLoadDeflectionMethodA(const Bearing&, const BearingLoads&) const;
             /// @return Method B Initial Dead Load Deflection 
-            Float64 GetInitialDeadLoadDeflectionMethodB(Bearing&, BearingLoads&) const;
+            Float64 GetInitialDeadLoadDeflectionMethodB(const Bearing&, const BearingLoads&) const;
             /// @return Method A Instantaneous Live Load Deflection 
-            Float64 GetInstantaneousLiveLoadDeflectionMethodA(Bearing&, BearingLoads&) const;
+            Float64 GetInstantaneousLiveLoadDeflectionMethodA(const Bearing&, const BearingLoads&) const;
             /// @return Method B Instantaneous Live Load Deflection 
-            Float64 GetInstantaneousLiveLoadDeflectionMethodB(Bearing&, BearingLoads&) const;
+            Float64 GetInstantaneousLiveLoadDeflectionMethodB(const Bearing&, const BearingLoads&) const;
             /// @return Total Load Stress
-            Float64 GetTotalLoadStress(Bearing&, BearingLoads&) const;
+            Float64 GetTotalLoadStress(const Bearing&, const BearingLoads&) const;
             /// @return Live load Stress
-            Float64 GetLiveLoadStress(Bearing&, BearingLoads&) const;
+            Float64 GetLiveLoadStress(const Bearing&, const BearingLoads&) const;
             /// @return Multiplier for max stress
-            Float64 GetSigmaMultiplier(BearingLoads&) const;
+            Float64 GetSigmaMultiplier(const BearingLoads&) const;
             /// @return Multiplier for Nlay
-            Float64 GetNlayMultiplier(Bearing&) const;
+            Float64 GetNlayMultiplier(const Bearing&) const;
             /// @return Primary shear strain due to static shear displacement
-            Float64 GetStaticDisplacementPrimaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetStaticDisplacementPrimaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Primary shear strain due to cyclic shear displacement
-            Float64 GetCyclicDisplacementPrimaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetCyclicDisplacementPrimaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Primary shear strain due to static axial load
-            Float64 GetStaticAxialPrimaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetStaticAxialPrimaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Primary shear strain due to cyclic axial load 
-            Float64 GetCyclicAxialPrimaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetCyclicAxialPrimaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Primary shear strain due to static rotation
-            Float64 GetStaticRotationalPrimaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetStaticRotationalPrimaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Primary shear strain due to cyclic rotation 
-            Float64 GetCyclicRotationalPrimaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetCyclicRotationalPrimaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Primary shear strain combination sum 
-            Float64 GetPrimaryShearStrainComboSum(Bearing&, BearingLoads&) const;
+            Float64 GetPrimaryShearStrainComboSum(const Bearing&, const BearingLoads&) const;
             /// @return Secondary shear strain due to static shear displacement 
             Float64 GetStaticDisplacementSecondaryShearStrain() const;
             /// @return Secondary shear strain due to cyclic shear displacement 
             Float64 GetCyclicDisplacementSecondaryShearStrain() const;
             /// @return Secondary shear strain due to static axial load 
-            Float64 GetStaticAxialSecondaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetStaticAxialSecondaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Secondary shear strain due to cyclic axial load 
-            Float64 GetCyclicAxialSecondaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetCyclicAxialSecondaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Secondary shear strain due to static rotation 
-            Float64 GetStaticRotationalSecondaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetStaticRotationalSecondaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Secondary shear strain due to cyclic rotation 
-            Float64 GetCyclicRotationalSecondaryShearStrain(Bearing&, BearingLoads&) const;
+            Float64 GetCyclicRotationalSecondaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Secondary shear strain combination sum 
-            Float64 GetSecondaryShearStrainComboSum(Bearing&, BearingLoads&) const;
+            Float64 GetSecondaryShearStrainComboSum(const Bearing&, const BearingLoads&) const;
             /// @return Static stress 
-            Float64 GetStaticStress(Bearing&, BearingLoads&) const;
+            Float64 GetStaticStress(const Bearing&, const BearingLoads&) const;
             /// @return Cyclic stress 
-            Float64 GetCyclicStress(Bearing&, BearingLoads&) const;
+            Float64 GetCyclicStress(const Bearing&, const BearingLoads&) const;
             /// @return Total stress 
-            Float64 GetTotalStress(Bearing&, BearingLoads&) const;
+            Float64 GetTotalStress(const Bearing&, const BearingLoads&) const;
             /// @return Primary Intermediate Calculation for parameter A 
-            Float64 GetPrimaryIntermediateCalculationA(Bearing&) const;
+            Float64 GetPrimaryIntermediateCalculationA(const Bearing&) const;
             /// @return Secondary Intermediate Calculation for parameter A 
-            Float64 GetSecondaryIntermediateCalculationA(Bearing&) const;
+            Float64 GetSecondaryIntermediateCalculationA(const Bearing&) const;
             /// @return Primary Intermediate Calculation for parameter B
-            Float64 GetPrimaryIntermediateCalculationB(Bearing&) const;
+            Float64 GetPrimaryIntermediateCalculationB(const Bearing&) const;
             /// @return Secondary Intermediate Calculation for parameter B 
-            Float64 GetSecondaryIntermediateCalculationB(Bearing&) const;
-            /// @return Compressibility Index 
-            Float64 GetCompressibilityIndex(Bearing&) const;
+            Float64 GetSecondaryIntermediateCalculationB(const Bearing&) const;
+            /// @return Compressibility Index
+            Float64 GetCompressibilityIndex(const Bearing&) const;
             /// @return da1 parameter 
-            Float64 Getda1(Bearing&) const;
+            Float64 Getda1(const Bearing&) const;
             /// @return da2 parameter
-            Float64 Getda2(Bearing&) const;
+            Float64 Getda2(const Bearing&) const;
             /// @return da3 parameter
-            Float64 Getda3(Bearing&) const;
+            Float64 Getda3(const Bearing&) const;
             /// @return Coefficient for primary shear strain due to axial load 
-            Float64 GetPrimaryShearStrainAxialCoefficient(Bearing&) const;
+            Float64 GetPrimaryShearStrainAxialCoefficient(const Bearing&) const;
             /// @return Coefficient for secondary shear strain due to axial load 
-            Float64 GetSecondaryShearStrainAxialCoefficient(Bearing&) const;
+            Float64 GetSecondaryShearStrainAxialCoefficient(const Bearing&) const;
             /// @return Coefficient for primary strain due to rotation 
-            Float64 GetPrimaryShearStrainRotationCoefficient(Bearing&) const;
+            Float64 GetPrimaryShearStrainRotationCoefficient(const Bearing&) const;
             /// @return Coefficient for secondary shear strain due to rotation 
-            Float64 GetSecondaryShearStrainRotationCoefficient(Bearing&) const;
+            Float64 GetSecondaryShearStrainRotationCoefficient(const Bearing&) const;
             /// @return Coefficient for peak hydrostatic stress 
-            Float64 GetPeakHydrostaticStressCoefficient(Bearing&) const;
+            Float64 GetPeakHydrostaticStressCoefficient(const Bearing&) const;
             /// @return Total axial strain 
-            Float64 GetTotalAxialStrain(Bearing&, BearingLoads&) const;
+            Float64 GetTotalAxialStrain(const Bearing&, const BearingLoads&) const;
             /// @return Alpha coefficent 
-            Float64 GetAlphaCoefficient(Bearing&, BearingLoads&) const;
+            Float64 GetAlphaCoefficient(const Bearing&, const BearingLoads&) const;
             /// @return Ca 
-            Float64 GetCaCoefficient(Bearing&, BearingLoads&) const;
+            Float64 GetCaCoefficient(const Bearing&, const BearingLoads&) const;
             /// @return Hydrostatic stress 
-            Float64 GetHydrostaticStress(Bearing&, BearingLoads&) const;
+            Float64 GetHydrostaticStress(const Bearing&, const BearingLoads&) const;
             /// @return Maximum stress 
-            Float64 GetMaximumStress(Bearing&) const;
+            Float64 GetMaximumStress(const Bearing&) const;
             /// @return Minimum allowable area 
-            Float64 GetMinimumAllowableArea(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableArea(const Bearing&, const BearingLoads&) const;
             /// @return Minimum Allowable length 
-            Float64 GetMinimumAllowableLength(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableLength(const Bearing&, const BearingLoads&) const;
             /// @return Minimum Allowable width 
-            Float64 GetMinimumAllowableWidth(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableWidth(const Bearing&, const BearingLoads&) const;
             /// @return Maximum allowable intermediate elastomer layer thickness
-            Float64 GetMaximumAllowableIntermediateLayerThickness(Bearing&, BearingLoads&) const;
+            Float64 GetMaximumAllowableIntermediateLayerThickness(const Bearing&, const BearingLoads&) const;
             /// @return Minimum allowable shape factor
-            Float64 GetMinimumAllowableShapeFactor(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableShapeFactor(const Bearing&, const BearingLoads&) const;
             /// @return Maximum allowable shape factor
-            Float64 GetMaximumAllowableShapeFactor(Bearing&, BearingLoads&) const;
+            Float64 GetMaximumAllowableShapeFactor(const Bearing&, const BearingLoads&) const;
             /// @return Minimum allowable number of elastomer layers for shear deformation
-            Float64 GetMinimumAllowableNumLayersShearDeformation(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableNumLayersShearDeformation(const Bearing&, const BearingLoads&) const;
             /// @return Calculation for minimum allowable number of elastomer layers for X-axis rotation
-            Float64 GetNumLayersRotationXCalc(Bearing&, BearingLoads&) const;
+            Float64 GetNumLayersRotationXCalc(const Bearing&, const BearingLoads&) const;
             /// @return Calculation for minimum allowable number of elastomer layers for Y-axis rotation
-            Float64 GetMinimumAllowableNumLayersRotationX(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableNumLayersRotationX(const Bearing&, const BearingLoads&) const;
             /// @return Minimum allowable number of elastomer layers for Y-axis rotation
-            Float64 GetNumLayersRotationYCalc(Bearing&, BearingLoads&) const;
+            Float64 GetNumLayersRotationYCalc(const Bearing&, const BearingLoads&) const;
             /// @return Minimum allowable number of elastomer layers for X-axis rotation
-            Float64 GetMinimumAllowableNumLayersRotationY(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableNumLayersRotationY(const Bearing&, const BearingLoads&) const;
             /// @return Maximum allowable number of elastomer layers for stability in the X direction 
-            Float64 GetMaximumAllowableNumLayersStabilityX(Bearing&, BearingLoads&) const;
+            Float64 GetMaximumAllowableNumLayersStabilityX(const Bearing&, const BearingLoads&) const;
             /// @return Maximum allowable number of elastomer layers for stability in the Y direction 
-            Float64 GetMaximumAllowableNumLayersStabilityY(Bearing&, BearingLoads&) const;
+            Float64 GetMaximumAllowableNumLayersStabilityY(const Bearing&, const BearingLoads&) const;
             /// @return Check applicapility for checking X direction stability due to total load 
-            bool CheckApplicabilityTotalStressStabilityX(Bearing&, BearingLoads&) const;
+            bool CheckApplicabilityTotalStressStabilityX(const Bearing&, const BearingLoads&) const;
             /// @return Check applicapility for checking Y direction stability due to total load
-            bool CheckApplicabilityTotalStressStabilityY(Bearing&, BearingLoads&) const;
+            bool CheckApplicabilityTotalStressStabilityY(const Bearing&, const BearingLoads&) const;
             /// @return Allowable Total Load Stress for Stability in the X direction
-            Float64 GetAllowableTotalLoadStressStabilityX(Bearing&, BearingLoads&) const;
+            Float64 GetAllowableTotalLoadStressStabilityX(const Bearing&, const BearingLoads&) const;
             /// @return Allowable Total Load Stress for Stability in the Y direction 
-            Float64 GetAllowableTotalLoadStressStabilityY(Bearing&, BearingLoads&) const;
+            Float64 GetAllowableTotalLoadStressStabilityY(const Bearing&, const BearingLoads&) const;
             /// @return Minimum allowable steel shim thickness for service limit state
-            Float64 GetMinimumAllowableSteelShimThicknessService(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableSteelShimThicknessService(const Bearing&, const BearingLoads&) const;
             /// @return Minimum allowable steel shim thickness for fatigue limit state 
-            Float64 GetMinimumAllowableSteelShimThicknessFatigue(Bearing&, BearingLoads&) const;
+            Float64 GetMinimumAllowableSteelShimThicknessFatigue(const Bearing&, const BearingLoads&) const;
             /// @return Restraint system applicability calculation 
-            Float64 RestraintSystemCalc(Bearing&, BearingLoads&) const;
+            Float64 RestraintSystemCalc(const Bearing&, const BearingLoads&) const;
             /// @return horizontal force
-            Float64 GetHorizontalForce(Bearing&, BearingLoads&) const;
+            Float64 GetHorizontalForce(const Bearing&, const BearingLoads&) const;
 
             /// @return Check for the minimum required bearing pad area
-            bool MinimumAreaCheck(Bearing&, BearingLoads&) const;
+            bool MinimumAreaCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the minimum required bearing pad length
-            bool MinimumLengthCheck(Bearing&, BearingLoads&) const;
+            bool MinimumLengthCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the minimum required bearing pad width
-            bool MinimumWidthCheck(Bearing&, BearingLoads&) const;
+            bool MinimumWidthCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowed bearing pad stress
-            bool MaximumStressCheck(Bearing&, BearingLoads&) const;
+            bool MaximumStressCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for maximum allowable intermediate elastomer layer thickness
-            bool MaximumIntermediateLayerThicknessCheck(Bearing&, BearingLoads&) const;
+            bool MaximumIntermediateLayerThicknessCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the minimum required shape factor
-            bool MinimumShapeFactorCheck(Bearing&, BearingLoads&) const;
+            bool MinimumShapeFactorCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowed shape factor
-            bool MaximumShapeFactorCheck(Bearing&, BearingLoads&) const;
+            bool MaximumShapeFactorCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the required number of elastomer layers for shear deformation resistance 
-            bool MinimumNumLayersShearDeformationCheck(Bearing&, BearingLoads&) const;
+            bool MinimumNumLayersShearDeformationCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the minimum required number of elastomer layers for X-axis rotation resistance 
-            bool MinimumNumLayersRotationXCheck(Bearing&, BearingLoads&) const;
+            bool MinimumNumLayersRotationXCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the minimum allowable number of elastomer layers for Y-axis rotation resistance
-            bool MinimumNumLayersRotationYCheck(Bearing&, BearingLoads&) const;
+            bool MinimumNumLayersRotationYCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable number of elastomer layers for stability in the X direction
-            bool MaximumNumLayersStabilityXCheck(Bearing&, BearingLoads&) const;
+            bool MaximumNumLayersStabilityXCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowed number of elastomer layers for stability in the Y direction 
-            bool MaximumNumLayersStabilityYCheck(Bearing&, BearingLoads&) const;
+            bool MaximumNumLayersStabilityYCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the absolute minimum required steel shim thickness
-            bool MinimumSteelShimThicknessAbsoluteCheck(Bearing&, BearingLoads&) const;
+            bool MinimumSteelShimThicknessAbsoluteCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the minimum steel shim thickness for the service limit state 
-            bool MinimumSteelShimThicknessServiceCheck(Bearing&, BearingLoads&) const;
+            bool MinimumSteelShimThicknessServiceCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the minimum steel shim thickness for the fatigue limit state 
-            bool MinimumSteelShimThicknessFatigueCheck(Bearing&, BearingLoads&) const;
+            bool MinimumSteelShimThicknessFatigueCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable compressive strain
-            bool MaximumCompressiveStrainCheck(Bearing&, BearingLoads&) const;
+            bool MaximumCompressiveStrainCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for static rotational primary shear strain
-            bool StaticRotationalPrimaryShearStrainCheck(Bearing&, BearingLoads&) const;
+            bool StaticRotationalPrimaryShearStrainCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable shear deformation
-            bool ShearDeformationCheck(Bearing&, BearingLoads&) const;
+            bool ShearDeformationCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable shear strain in the primary direction due to static axial load 
-            bool StaticAxialPrimaryShearStrainCheck(Bearing&, BearingLoads&) const;
+            bool StaticAxialPrimaryShearStrainCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable shear strain in the secondary direction due to static axial load 
-            bool StaticAxialSecondaryShearStrainCheck(Bearing&, BearingLoads&) const;
+            bool StaticAxialSecondaryShearStrainCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable shear strain combination sum in the primary direction 
-            bool PrimaryShearStrainComboSumCheck(Bearing&, BearingLoads&) const;
+            bool PrimaryShearStrainComboSumCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable shear strain combination sum in the secondary direction
-            bool SecondaryShearStrainComboSumCheck(Bearing&, BearingLoads&) const;
+            bool SecondaryShearStrainComboSumCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for stability in the X direction 
-            bool StabilityXDirectionCheck(Bearing&, BearingLoads&) const;
+            bool StabilityXDirectionCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for stability in the Y direction 
-            bool StabilityYDirectionCheck(Bearing&, BearingLoads&) const;
+            bool StabilityYDirectionCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check if a restraint system is required for stability
-            bool RestraintSystemRequirementCheck(Bearing&, BearingLoads&) const;
+            bool RestraintSystemRequirementCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check if a restraint system is required for horizontal force
-            bool HorizontalForceCheck(Bearing&, BearingLoads&) const;
+            bool HorizontalForceCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable hydrostatic stress
-            bool HydrostaticStressCheck(Bearing&, BearingLoads&) const;
+            bool HydrostaticStressCheck(const Bearing&, const BearingLoads&) const;
 
 
         private:

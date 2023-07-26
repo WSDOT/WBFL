@@ -57,7 +57,7 @@ Float64 BearingCalculator::GetElastomerBulkModulus() const
 {
 	return m_elastomer_bulk_modulus;
 }
-Float64 BearingCalculator::GetConcreteElasticModulusMethodA(Bearing& brg) const
+Float64 BearingCalculator::GetConcreteElasticModulusMethodA(const Bearing& brg) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 Gmax = brg.GetShearModulusMaximum();
@@ -65,7 +65,7 @@ Float64 BearingCalculator::GetConcreteElasticModulusMethodA(Bearing& brg) const
 	Float64 EcMethodA = 3 * (Gmin + Gmax) * pow(S, 2);
     return EcMethodA;
 }
-Float64 BearingCalculator::GetInitialDeadLoadDeflectionMethodA(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetInitialDeadLoadDeflectionMethodA(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 DL = brg_loads.GetDeadLoad();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
@@ -74,7 +74,7 @@ Float64 BearingCalculator::GetInitialDeadLoadDeflectionMethodA(Bearing& brg, Bea
 	Float64 deltaDLi = DL * ttotal / A / EcMethodA;
     return  deltaDLi;
 }
-Float64 BearingCalculator::GetInitialDeadLoadDeflectionMethodB(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetInitialDeadLoadDeflectionMethodB(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 DL = brg_loads.GetDeadLoad();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
@@ -83,7 +83,7 @@ Float64 BearingCalculator::GetInitialDeadLoadDeflectionMethodB(Bearing& brg, Bea
 	Float64 deltaDLi = DL * ttotal / A / EcMethodB;
 	return  deltaDLi;
 }
-Float64 BearingCalculator::GetInstantaneousLiveLoadDeflectionMethodA(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetInstantaneousLiveLoadDeflectionMethodA(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 LL = brg_loads.GetLiveLoad();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
@@ -92,7 +92,7 @@ Float64 BearingCalculator::GetInstantaneousLiveLoadDeflectionMethodA(Bearing& br
 	Float64 deltaLL = LL * ttotal / A / EcMethodA;
     return deltaLL;
 }
-Float64 BearingCalculator::GetInstantaneousLiveLoadDeflectionMethodB(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetInstantaneousLiveLoadDeflectionMethodB(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 LL = brg_loads.GetLiveLoad();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
@@ -101,21 +101,21 @@ Float64 BearingCalculator::GetInstantaneousLiveLoadDeflectionMethodB(Bearing& br
 	Float64 deltaLL = LL * ttotal / A / EcMethodB;
 	return deltaLL;
 }
-Float64 BearingCalculator::GetTotalLoadStress(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetTotalLoadStress(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 TL = brg_loads.GetTotalLoad();
 	Float64 A = brg.GetArea();
 	Float64 Sigma_TL = TL / A;
     return Sigma_TL;
 }
-Float64 BearingCalculator::GetLiveLoadStress(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetLiveLoadStress(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 LL = brg_loads.GetLiveLoad();
 	Float64 A = brg.GetArea();
 	Float64 Sigma_LL = LL / A;
     return Sigma_LL;
 }
-Float64 BearingCalculator::GetSigmaMultiplier(BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetSigmaMultiplier(const BearingLoads& brg_loads) const
 {
 	Float64 shear_delta = brg_loads.GetShearDeformation();
 	if (shear_delta == 0)
@@ -129,7 +129,7 @@ Float64 BearingCalculator::GetSigmaMultiplier(BearingLoads& brg_loads) const
 		return sigmaX;
 	}
 }
-Float64 BearingCalculator::GetNlayMultiplier(Bearing& brg) const
+Float64 BearingCalculator::GetNlayMultiplier(const Bearing& brg) const
 {
 	Float64 tcover = brg.GetCoverThickness();
 	Float64 tlay = brg.GetIntermediateLayerThickness();
@@ -144,7 +144,7 @@ Float64 BearingCalculator::GetNlayMultiplier(Bearing& brg) const
 		return NlayX;
 	}
 }
-Float64 BearingCalculator::GetMinimumAllowableArea(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableArea(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 TL = brg_loads.GetTotalLoad();
 	Float64 sigma_max = GetMaximumAllowableStress();
@@ -152,21 +152,21 @@ Float64 BearingCalculator::GetMinimumAllowableArea(Bearing& brg, BearingLoads& b
 	Float64 Amin = TL / (sigma_max * GetSigmaMultiplier(brg_loads));
 	return Amin;
 }
-Float64 BearingCalculator::GetMinimumAllowableLength(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableLength(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Amin = GetMinimumAllowableArea(brg, brg_loads);
 	Float64 w = brg.GetWidth();
 	Float64 Lmin = Amin / w;
     return Lmin;
 }
-Float64 BearingCalculator::GetMinimumAllowableWidth(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableWidth(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Amin = GetMinimumAllowableArea(brg, brg_loads);
 	Float64 l = brg.GetLength();
 	Float64 Wmin = Amin / l;
 	return Wmin;
 }
-Float64 BearingCalculator::GetMinimumAllowableShapeFactor(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableShapeFactor(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 sigmaTL = GetTotalLoadStress(brg, brg_loads);
 	Float64 Gmin = brg.GetShearModulusMinimum();
@@ -174,7 +174,7 @@ Float64 BearingCalculator::GetMinimumAllowableShapeFactor(Bearing& brg, BearingL
 	Float64 Smin = sigmaTL / (1.25 * Gmin * (shear_delta == 0 ? 1.1 : 1));
 	return Smin;
 }
-Float64 BearingCalculator::GetMaximumAllowableIntermediateLayerThickness(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMaximumAllowableIntermediateLayerThickness(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 l = brg.GetLength();
 	Float64 w = brg.GetWidth();
@@ -182,7 +182,7 @@ Float64 BearingCalculator::GetMaximumAllowableIntermediateLayerThickness(Bearing
 	Float64 tlayer_max = l * w / (2 * Smin * (l + w));
 	return tlayer_max;
 }
-Float64 BearingCalculator::GetMaximumAllowableShapeFactor(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMaximumAllowableShapeFactor(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	IndexType Nlay = brg.GetNumIntLayers();
 	Float64 tcover = brg.GetCoverThickness();
@@ -190,7 +190,7 @@ Float64 BearingCalculator::GetMaximumAllowableShapeFactor(Bearing& brg, BearingL
 	Float64 Smax = sqrt(22 * (Nlay + (tcover >= 0.5 * tlay ? 1 : 0)));
     return Smax;
 }
-Float64 BearingCalculator::GetMinimumAllowableNumLayersShearDeformation(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableNumLayersShearDeformation(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 shear_delta = brg_loads.GetShearDeformation();
 	Float64 tcover = brg.GetCoverThickness();
@@ -200,7 +200,7 @@ Float64 BearingCalculator::GetMinimumAllowableNumLayersShearDeformation(Bearing&
 }
 
 
-Float64 BearingCalculator::GetNumLayersRotationXCalc(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetNumLayersRotationXCalc(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Gmax = brg.GetShearModulusMaximum();
 	Float64 S = brg.GetShapeFactor();
@@ -213,14 +213,14 @@ Float64 BearingCalculator::GetNumLayersRotationXCalc(Bearing& brg, BearingLoads&
 	return n_lay_r_x;
 }
 
-Float64 BearingCalculator::GetMinimumAllowableNumLayersRotationX(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableNumLayersRotationX(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Nlay_rx = max(0, GetNumLayersRotationXCalc(brg,brg_loads));
 	return Nlay_rx;
 }
 
 
-Float64 BearingCalculator::GetNumLayersRotationYCalc(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetNumLayersRotationYCalc(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Gmax = brg.GetShearModulusMaximum();
 	Float64 S = brg.GetShapeFactor();
@@ -233,12 +233,12 @@ Float64 BearingCalculator::GetNumLayersRotationYCalc(Bearing& brg, BearingLoads&
 	return n_lay_r_y;
 }
 
-Float64 BearingCalculator::GetMinimumAllowableNumLayersRotationY(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableNumLayersRotationY(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Nlay_ry = max(0, GetNumLayersRotationXCalc(brg, brg_loads));
 	return Nlay_ry;
 }
-Float64 BearingCalculator::GetMaximumAllowableNumLayersStabilityX(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMaximumAllowableNumLayersStabilityX(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 l = brg.GetLength();
 	Float64 tcover = brg.GetCoverThickness();
@@ -247,7 +247,7 @@ Float64 BearingCalculator::GetMaximumAllowableNumLayersStabilityX(Bearing& brg, 
 	Float64 Nlay_stabX = (l / 3 - 2 * tcover - tshim) / (tlayer + tshim);
     return Nlay_stabX;
 }
-Float64 BearingCalculator::GetMaximumAllowableNumLayersStabilityY(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMaximumAllowableNumLayersStabilityY(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 w = brg.GetWidth();
 	Float64 tcover = brg.GetCoverThickness();
@@ -256,7 +256,7 @@ Float64 BearingCalculator::GetMaximumAllowableNumLayersStabilityY(Bearing& brg, 
 	Float64 Nlay_stabY = (w / 3 - 2 * tcover - tshim) / (tlayer + tshim);
     return Nlay_stabY;
 }
-Float64 BearingCalculator::GetMinimumAllowableSteelShimThicknessService(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableSteelShimThicknessService(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 	Float64 sigma_TL = GetTotalLoadStress(brg, brg_loads);
@@ -264,7 +264,7 @@ Float64 BearingCalculator::GetMinimumAllowableSteelShimThicknessService(Bearing&
 	Float64 tshim_service = 3 * tlayer * sigma_TL / fy;
 	return tshim_service;
 }
-Float64 BearingCalculator::GetMinimumAllowableSteelShimThicknessFatigue(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetMinimumAllowableSteelShimThicknessFatigue(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 	Float64 sigma_LL = GetLiveLoadStress(brg, brg_loads);
@@ -273,18 +273,18 @@ Float64 BearingCalculator::GetMinimumAllowableSteelShimThicknessFatigue(Bearing&
 	return tshim_fatigue;
 }
 
-Float64 BearingCalculator::GetStaticDisplacementPrimaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetStaticDisplacementPrimaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 shear_delta = brg_loads.GetShearDeformation();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
 	Float64 es_Xdisp = shear_delta/ttotal;
 	return  es_Xdisp;
 }
-Float64 BearingCalculator::GetCyclicDisplacementPrimaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetCyclicDisplacementPrimaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	return 0.0;
 }
-Float64 BearingCalculator::GetStaticAxialPrimaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetStaticAxialPrimaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Da = GetPrimaryShearStrainAxialCoefficient(brg);
 	Float64 Sstatic = GetStaticStress(brg, brg_loads);
@@ -293,7 +293,7 @@ Float64 BearingCalculator::GetStaticAxialPrimaryShearStrain(Bearing& brg, Bearin
 	Float64 es = Da*Sstatic/Gmin/S;
 	return  es;
 }
-Float64 BearingCalculator::GetCyclicAxialPrimaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetCyclicAxialPrimaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Da = GetPrimaryShearStrainAxialCoefficient(brg);
 	Float64 sigma_cyclic = GetCyclicStress(brg, brg_loads);
@@ -302,7 +302,7 @@ Float64 BearingCalculator::GetCyclicAxialPrimaryShearStrain(Bearing& brg, Bearin
 	Float64 es = Da * sigma_cyclic / Gmin / S;
 	return es;
 }
-Float64 BearingCalculator::GetStaticRotationalPrimaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetStaticRotationalPrimaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Dr = GetPrimaryShearStrainRotationCoefficient(brg);
 	Float64 l = brg.GetLength();
@@ -313,7 +313,7 @@ Float64 BearingCalculator::GetStaticRotationalPrimaryShearStrain(Bearing& brg, B
 	Float64 es = Dr * pow(l / tlayer, 2) * rot_static / (Nlay + (tcover >= 0.5 * tlayer ? 1 : 0));
 	return es;
 }
-Float64 BearingCalculator::GetCyclicRotationalPrimaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetCyclicRotationalPrimaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Dr = GetPrimaryShearStrainRotationCoefficient(brg);
 	Float64 l = brg.GetLength();
@@ -324,7 +324,7 @@ Float64 BearingCalculator::GetCyclicRotationalPrimaryShearStrain(Bearing& brg, B
 	Float64 es = Dr * pow(l / tlayer, 2) * rot_cyclic / (Nlay + (tcover >= 0.5 * tlayer ? 1 : 0));
 	return es;
 }
-Float64 BearingCalculator::GetPrimaryShearStrainComboSum(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetPrimaryShearStrainComboSum(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 D = GetStaticDisplacementPrimaryShearStrain(brg, brg_loads);
 	Float64 es_axial = GetStaticAxialPrimaryShearStrain(brg, brg_loads);
@@ -343,7 +343,7 @@ Float64 BearingCalculator::GetCyclicDisplacementSecondaryShearStrain() const
 {
 	return 0;
 }
-Float64 BearingCalculator::GetStaticAxialSecondaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetStaticAxialSecondaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Da = GetSecondaryShearStrainAxialCoefficient(brg);
 	Float64 sigma_static = GetStaticStress(brg, brg_loads);
@@ -352,7 +352,7 @@ Float64 BearingCalculator::GetStaticAxialSecondaryShearStrain(Bearing& brg, Bear
 	Float64 es = Da * sigma_static / Gmin / S;
 	return es;
 }
-Float64 BearingCalculator::GetCyclicAxialSecondaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetCyclicAxialSecondaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Da = GetSecondaryShearStrainAxialCoefficient(brg);
 	Float64 sigma_cyclic = GetCyclicStress(brg, brg_loads);
@@ -361,7 +361,7 @@ Float64 BearingCalculator::GetCyclicAxialSecondaryShearStrain(Bearing& brg, Bear
 	Float64 es = Da * sigma_cyclic / Gmin / S;
 	return es;
 }
-Float64 BearingCalculator::GetStaticRotationalSecondaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetStaticRotationalSecondaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Dr = GetSecondaryShearStrainRotationCoefficient(brg);
 	Float64 w = brg.GetWidth();
@@ -372,11 +372,11 @@ Float64 BearingCalculator::GetStaticRotationalSecondaryShearStrain(Bearing& brg,
 	Float64 es = Dr * pow(w / tlayer, 2) * 0.01 / (Nlay + (tcover >= 0.5 * tlayer ? 1 : 0));
 	return es;
 }
-Float64 BearingCalculator::GetCyclicRotationalSecondaryShearStrain(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetCyclicRotationalSecondaryShearStrain(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	return 0;
 }
-Float64 BearingCalculator::GetSecondaryShearStrainComboSum(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetSecondaryShearStrainComboSum(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 es_disp_static = GetStaticDisplacementSecondaryShearStrain();
 	Float64 es_axial_static = GetStaticAxialSecondaryShearStrain(brg, brg_loads);
@@ -390,7 +390,7 @@ Float64 BearingCalculator::GetSecondaryShearStrainComboSum(Bearing& brg, Bearing
 
 
 
-Float64 BearingCalculator::GetCompressibilityIndex(Bearing& brg) const
+Float64 BearingCalculator::GetCompressibilityIndex(const Bearing& brg) const
 {
 	Float64 K = GetElastomerBulkModulus();
 	Float64 S = brg.GetShapeFactor();
@@ -400,28 +400,28 @@ Float64 BearingCalculator::GetCompressibilityIndex(Bearing& brg) const
 }
 
 
-Float64 BearingCalculator::Getda1(Bearing& brg) const ///da1
+Float64 BearingCalculator::Getda1(const Bearing& brg) const ///da1
 {
 	Float64 i = GetCompressibilityIndex(brg);
 	Float64 da1 = 1.06 + 0.210 * i + 0.413 * pow(i, 2);
 	return da1;
 }
 
-Float64 BearingCalculator::Getda2(Bearing& brg) const ///da2
+Float64 BearingCalculator::Getda2(const Bearing& brg) const ///da2
 {
 	Float64 i = GetCompressibilityIndex(brg);
 	Float64 da2 = 1.506 - 0.071 * i + 0.406 * pow(i, 2);
 	return da2;
 }
 
-Float64 BearingCalculator::Getda3(Bearing& brg) const ///da3
+Float64 BearingCalculator::Getda3(const Bearing& brg) const ///da3
 {
 	Float64 i = GetCompressibilityIndex(brg);
 	Float64 da3 = -0.315 + 0.195 * i - 0.047 * pow(i, 2);
 	return da3;
 }
 
-Float64 BearingCalculator::GetPrimaryShearStrainAxialCoefficient(Bearing& brg) const ///Dax
+Float64 BearingCalculator::GetPrimaryShearStrainAxialCoefficient(const Bearing& brg) const ///Dax
 {
 	Float64 da1 = Getda1(brg);
 	Float64 da2 = Getda2(brg);
@@ -431,7 +431,7 @@ Float64 BearingCalculator::GetPrimaryShearStrainAxialCoefficient(Bearing& brg) c
 	Float64 Da = max(da1, (da2 + da3 * l / w));
 	return Da;
 }
-Float64 BearingCalculator::GetSecondaryShearStrainAxialCoefficient(Bearing& brg) const ///Day
+Float64 BearingCalculator::GetSecondaryShearStrainAxialCoefficient(const Bearing& brg) const ///Day
 {
 	Float64 da1 = Getda1(brg);
 	Float64 da2 = Getda2(brg);
@@ -441,7 +441,7 @@ Float64 BearingCalculator::GetSecondaryShearStrainAxialCoefficient(Bearing& brg)
 	Float64 Da = max(da1, (da2 + da3 * w / l));
 	return Da;
 }
-Float64 BearingCalculator::GetPrimaryShearStrainRotationCoefficient(Bearing& brg) const ///Dr
+Float64 BearingCalculator::GetPrimaryShearStrainRotationCoefficient(const Bearing& brg) const ///Dr
 {
 	Float64 lambda = GetCompressibilityIndex(brg);
 	Float64 l = brg.GetLength();
@@ -449,7 +449,7 @@ Float64 BearingCalculator::GetPrimaryShearStrainRotationCoefficient(Bearing& brg
 	Float64 Dr = min((1.552 - 0.627 * lambda) / (2.233 + 0.156 * lambda + l / w), 0.5);
 	return Dr;
 }
-Float64 BearingCalculator::GetSecondaryShearStrainRotationCoefficient(Bearing& brg) const ///Dr
+Float64 BearingCalculator::GetSecondaryShearStrainRotationCoefficient(const Bearing& brg) const ///Dr
 {
 	Float64 lambda = GetCompressibilityIndex(brg);
 	Float64 w = brg.GetWidth();
@@ -457,7 +457,7 @@ Float64 BearingCalculator::GetSecondaryShearStrainRotationCoefficient(Bearing& b
 	Float64 Dr = min((1.552 - 0.627 * lambda) / (2.233 + 0.156 * lambda + w / l), 0.5);
 	return Dr;
 }
-Float64 BearingCalculator::GetPeakHydrostaticStressCoefficient(Bearing& brg) const //Ba
+Float64 BearingCalculator::GetPeakHydrostaticStressCoefficient(const Bearing& brg) const //Ba
 {
 	Float64 lambda = GetCompressibilityIndex(brg);
 	Float64 l = brg.GetLength();
@@ -465,28 +465,28 @@ Float64 BearingCalculator::GetPeakHydrostaticStressCoefficient(Bearing& brg) con
 	Float64 Ba = (2.31 - 1.86 * lambda) + (-0.90 + 0.96 * lambda) * pow(1 - min(l / w, w / l), 2);
 	return Ba;
 }
-Float64 BearingCalculator::GetStaticStress(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetStaticStress(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 DL = brg_loads.GetDeadLoad();
 	Float64 A = brg.GetArea();
 	Float64 sigma_static = DL/A;
 	return sigma_static;
 }
-Float64 BearingCalculator::GetCyclicStress(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetCyclicStress(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 LL = brg_loads.GetLiveLoad();
 	Float64 A = brg.GetArea();
 	Float64 sigma_cyclic = LL / A;
 	return sigma_cyclic;
 }
-Float64 BearingCalculator::GetTotalStress(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetTotalStress(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 sigma_static = GetStaticStress(brg, brg_loads);
 	Float64 sigma_cyclic = GetCyclicStress(brg, brg_loads);
 	Float64 sigma_total = sigma_static + sigma_cyclic;
 	return sigma_total;
 }
-Float64 BearingCalculator::GetPrimaryIntermediateCalculationA(Bearing& brg) const
+Float64 BearingCalculator::GetPrimaryIntermediateCalculationA(const Bearing& brg) const
 {
 	Float64 ttotal = brg.GetTotalElastomerThickness();
 	Float64 l = brg.GetLength();
@@ -494,7 +494,7 @@ Float64 BearingCalculator::GetPrimaryIntermediateCalculationA(Bearing& brg) cons
 	Float64 Ax = 1.92 * ttotal / l / sqrt(1 + 2 * l / w);
 	return Ax;
 }
-Float64 BearingCalculator::GetSecondaryIntermediateCalculationA(Bearing& brg) const
+Float64 BearingCalculator::GetSecondaryIntermediateCalculationA(const Bearing& brg) const
 {
 	Float64 tlayer = brg.GetTotalElastomerThickness();
 	Float64 w = brg.GetWidth();
@@ -502,7 +502,7 @@ Float64 BearingCalculator::GetSecondaryIntermediateCalculationA(Bearing& brg) co
 	Float64 Ay = 1.92 * tlayer / w / sqrt(1 + 2 * w / l);
 	return Ay;
 }
-Float64 BearingCalculator::GetPrimaryIntermediateCalculationB(Bearing& brg) const
+Float64 BearingCalculator::GetPrimaryIntermediateCalculationB(const Bearing& brg) const
 {
 	Float64 S = brg.GetShapeFactor();
 	Float64 l = brg.GetLength();
@@ -510,7 +510,7 @@ Float64 BearingCalculator::GetPrimaryIntermediateCalculationB(Bearing& brg) cons
 	Float64 Bx = 2.67 / (S + 2) / (1 + l / 4 / w);
 	return Bx;
 }
-Float64 BearingCalculator::GetSecondaryIntermediateCalculationB(Bearing& brg) const
+Float64 BearingCalculator::GetSecondaryIntermediateCalculationB(const Bearing& brg) const
 {
 	Float64 S = brg.GetShapeFactor();
 	Float64 w = brg.GetWidth();
@@ -518,14 +518,14 @@ Float64 BearingCalculator::GetSecondaryIntermediateCalculationB(Bearing& brg) co
 	Float64 By = 2.67 / (S + 2) / (1 + w / 4 / l);
 	return By;
 }
-Float64 BearingCalculator::GetConcreteElasticModulusMethodB(Bearing& brg) const
+Float64 BearingCalculator::GetConcreteElasticModulusMethodB(const Bearing& brg) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 S = brg.GetShapeFactor();
 	Float64 EcMethodB = 6 * Gmin * pow(S, 2);
 	return EcMethodB;
 }
-Float64 BearingCalculator::GetTotalAxialStrain(Bearing& brg, BearingLoads& brg_loads) const //epsilon_a
+Float64 BearingCalculator::GetTotalAxialStrain(const Bearing& brg, const BearingLoads& brg_loads) const //epsilon_a
 {
 	Float64 sigma_stress = GetStaticStress(brg, brg_loads);
 	Float64 sigma_cyclic = GetCyclicStress(brg, brg_loads);
@@ -535,7 +535,7 @@ Float64 BearingCalculator::GetTotalAxialStrain(Bearing& brg, BearingLoads& brg_l
 	Float64 es_total = (sigma_stress + 1.75 * sigma_cyclic) / 3 / sigma_hydrostatic / Gmin / pow(S, 2);
 	return es_total;
 }
-Float64 BearingCalculator::GetAlphaCoefficient(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetAlphaCoefficient(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 es_total = GetTotalAxialStrain(brg, brg_loads);
 	IndexType Nlay = brg.GetNumIntLayers();
@@ -544,13 +544,13 @@ Float64 BearingCalculator::GetAlphaCoefficient(Bearing& brg, BearingLoads& brg_l
 	Float64 alpha = es_total * (Nlay + (tcover >= 0.5 * tlayer ? 1 : 0)) / brg.GetShapeFactor() / (brg_loads.GetStaticRotation() + 1.75 * brg_loads.GetCyclicRotation());
 	return alpha;
 }
-Float64 BearingCalculator::GetCaCoefficient(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetCaCoefficient(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 alpha = GetAlphaCoefficient(brg, brg_loads);
 	Float64 Ca = 4.0 / 3 * (pow(pow(alpha, 2) + (1 / 3.0), 1.5) - alpha * (1 - pow(alpha, 2)));
 	return Ca;
 }
-Float64 BearingCalculator::GetHydrostaticStress(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetHydrostaticStress(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 S = brg.GetShapeFactor();
@@ -563,13 +563,13 @@ Float64 BearingCalculator::GetHydrostaticStress(Bearing& brg, BearingLoads& brg_
 	Float64 sigma_hydrostatic = 3 * Gmin * pow(S, 3) * (r_static + 1.75 * r_cyclic) / (Nlay + (tcover >= 0.5 * tlayer ? 1:0))*Ca;
 	return sigma_hydrostatic;
 }
-Float64 BearingCalculator::GetMaximumStress(Bearing& brg) const
+Float64 BearingCalculator::GetMaximumStress(const Bearing& brg) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 sigma_max = 2.25 * Gmin;
 	return sigma_max;
 }
-bool BearingCalculator::CheckApplicabilityTotalStressStabilityX(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::CheckApplicabilityTotalStressStabilityX(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 S = brg.GetShapeFactor();
@@ -585,7 +585,7 @@ bool BearingCalculator::CheckApplicabilityTotalStressStabilityX(Bearing& brg, Be
 		return false;
 	}
 }
-bool BearingCalculator::CheckApplicabilityTotalStressStabilityY(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::CheckApplicabilityTotalStressStabilityY(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 S = brg.GetShapeFactor();
@@ -601,7 +601,7 @@ bool BearingCalculator::CheckApplicabilityTotalStressStabilityY(Bearing& brg, Be
 		return false;
 	}
 }
-Float64 BearingCalculator::GetAllowableTotalLoadStressStabilityX(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetAllowableTotalLoadStressStabilityX(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 S = brg.GetShapeFactor();
@@ -611,7 +611,7 @@ Float64 BearingCalculator::GetAllowableTotalLoadStressStabilityX(Bearing& brg, B
 	Float64 sigmaTLstabX = Gmin * S / (KeffX * Ax - Bx);
 	return sigmaTLstabX;
 }
-Float64 BearingCalculator::GetAllowableTotalLoadStressStabilityY(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetAllowableTotalLoadStressStabilityY(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 S = brg.GetShapeFactor();
@@ -623,7 +623,7 @@ Float64 BearingCalculator::GetAllowableTotalLoadStressStabilityY(Bearing& brg, B
 }
 
 
-Float64 BearingCalculator::RestraintSystemCalc(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::RestraintSystemCalc(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 rot_static = brg_loads.GetStaticRotation();
 	Float64 rot_cyclic = brg_loads.GetCyclicRotation();
@@ -637,7 +637,7 @@ Float64 BearingCalculator::RestraintSystemCalc(Bearing& brg, BearingLoads& brg_l
 	return restraint_system_calc;
 }
 
-Float64 BearingCalculator::GetHorizontalForce(Bearing& brg, BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetHorizontalForce(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 A = brg.GetArea();
@@ -647,7 +647,7 @@ Float64 BearingCalculator::GetHorizontalForce(Bearing& brg, BearingLoads& brg_lo
 	return horizontal_force;
 }
 
-bool BearingCalculator::MinimumAreaCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumAreaCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetArea() >= GetMinimumAllowableArea(brg, brg_loads))
 	{
@@ -658,7 +658,7 @@ bool BearingCalculator::MinimumAreaCheck(Bearing& brg, BearingLoads& brg_loads) 
 		return false;
 	}
 }
-bool BearingCalculator::MinimumLengthCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumLengthCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetLength() >= GetMinimumAllowableLength(brg, brg_loads))
 	{
@@ -669,7 +669,7 @@ bool BearingCalculator::MinimumLengthCheck(Bearing& brg, BearingLoads& brg_loads
 		return false;
 	}
 }
-bool BearingCalculator::MinimumWidthCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumWidthCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetLength() >= GetMinimumAllowableWidth(brg, brg_loads))
 	{
@@ -680,7 +680,7 @@ bool BearingCalculator::MinimumWidthCheck(Bearing& brg, BearingLoads& brg_loads)
 		return false;
 	}
 }
-bool BearingCalculator::MaximumStressCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MaximumStressCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetTotalLoadStress(brg, brg_loads) <= GetMaximumAllowableStress())
 	{
@@ -691,7 +691,7 @@ bool BearingCalculator::MaximumStressCheck(Bearing& brg, BearingLoads& brg_loads
 		return false;
 	}
 }
-bool BearingCalculator::MaximumIntermediateLayerThicknessCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MaximumIntermediateLayerThicknessCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetIntermediateLayerThickness() <= GetMaximumAllowableIntermediateLayerThickness(brg, brg_loads))
 	{
@@ -702,7 +702,7 @@ bool BearingCalculator::MaximumIntermediateLayerThicknessCheck(Bearing& brg, Bea
 		return false;
 	}
 }
-bool BearingCalculator::MinimumShapeFactorCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumShapeFactorCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetShapeFactor() >= GetMinimumAllowableShapeFactor(brg, brg_loads))
 	{
@@ -713,7 +713,7 @@ bool BearingCalculator::MinimumShapeFactorCheck(Bearing& brg, BearingLoads& brg_
 		return false;
 	}
 }
-bool BearingCalculator::MaximumShapeFactorCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MaximumShapeFactorCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetShapeFactor() <= GetMaximumAllowableShapeFactor(brg, brg_loads))
 	{
@@ -724,7 +724,7 @@ bool BearingCalculator::MaximumShapeFactorCheck(Bearing& brg, BearingLoads& brg_
 		return false;
 	}
 }
-bool BearingCalculator::MinimumNumLayersShearDeformationCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumNumLayersShearDeformationCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetNumIntLayers() >= GetMinimumAllowableNumLayersShearDeformation(brg, brg_loads))
 	{
@@ -735,7 +735,7 @@ bool BearingCalculator::MinimumNumLayersShearDeformationCheck(Bearing& brg, Bear
 		return false;
 	}
 }
-bool BearingCalculator::MinimumNumLayersRotationXCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumNumLayersRotationXCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetNumIntLayers() >= GetMinimumAllowableNumLayersRotationX(brg, brg_loads))
 	{
@@ -746,7 +746,7 @@ bool BearingCalculator::MinimumNumLayersRotationXCheck(Bearing& brg, BearingLoad
 		return false;
 	}
 }
-bool BearingCalculator::MinimumNumLayersRotationYCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumNumLayersRotationYCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetNumIntLayers() >= GetMinimumAllowableNumLayersRotationY(brg, brg_loads))
 	{
@@ -760,7 +760,7 @@ bool BearingCalculator::MinimumNumLayersRotationYCheck(Bearing& brg, BearingLoad
 
 
 
-bool BearingCalculator::MaximumNumLayersStabilityXCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MaximumNumLayersStabilityXCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetNumIntLayers() <= GetMaximumAllowableNumLayersStabilityX(brg, brg_loads))
 	{
@@ -771,7 +771,7 @@ bool BearingCalculator::MaximumNumLayersStabilityXCheck(Bearing& brg, BearingLoa
 		return false;
 	}
 }
-bool BearingCalculator::MaximumNumLayersStabilityYCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MaximumNumLayersStabilityYCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetNumIntLayers() <= GetMaximumAllowableNumLayersStabilityY(brg, brg_loads))
 	{
@@ -782,7 +782,7 @@ bool BearingCalculator::MaximumNumLayersStabilityYCheck(Bearing& brg, BearingLoa
 		return false;
 	}
 }
-bool BearingCalculator::MinimumSteelShimThicknessAbsoluteCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumSteelShimThicknessAbsoluteCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetSteelShimThickness() >= GetAbsoluteMinimumShimThickness())
 	{
@@ -793,7 +793,7 @@ bool BearingCalculator::MinimumSteelShimThicknessAbsoluteCheck(Bearing& brg, Bea
 		return false;
 	}
 }
-bool BearingCalculator::MinimumSteelShimThicknessServiceCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumSteelShimThicknessServiceCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetSteelShimThickness() >= GetMinimumAllowableSteelShimThicknessService(brg, brg_loads))
 	{
@@ -804,7 +804,7 @@ bool BearingCalculator::MinimumSteelShimThicknessServiceCheck(Bearing& brg, Bear
 		return false;
 	}
 }
-bool BearingCalculator::MinimumSteelShimThicknessFatigueCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumSteelShimThicknessFatigueCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetSteelShimThickness() >= GetMinimumAllowableSteelShimThicknessFatigue(brg, brg_loads))
 	{
@@ -815,7 +815,7 @@ bool BearingCalculator::MinimumSteelShimThicknessFatigueCheck(Bearing& brg, Bear
 		return false;
 	}
 }
-bool BearingCalculator::MaximumCompressiveStrainCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::MaximumCompressiveStrainCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetTotalLoadStress(brg, brg_loads) / GetConcreteElasticModulusMethodA(brg) <= 0.07)
 	{
@@ -827,7 +827,7 @@ bool BearingCalculator::MaximumCompressiveStrainCheck(Bearing& brg, BearingLoads
 	}
 }
 
-bool BearingCalculator::StaticRotationalPrimaryShearStrainCheck(Bearing& brg, BearingLoads& brg_load) const
+bool BearingCalculator::StaticRotationalPrimaryShearStrainCheck(const Bearing& brg, const BearingLoads& brg_load) const
 {
 
 	if (1.552-0.627*GetCompressibilityIndex(brg)/(2.233 + 0.156 * GetCompressibilityIndex(brg)*brg.GetLength()) >= 0.5)
@@ -840,7 +840,7 @@ bool BearingCalculator::StaticRotationalPrimaryShearStrainCheck(Bearing& brg, Be
 	}
 }
 
-bool BearingCalculator::ShearDeformationCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::ShearDeformationCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (brg.GetTotalElastomerThickness() >= 2 * brg_loads.GetShearDeformation())
 	{
@@ -851,7 +851,7 @@ bool BearingCalculator::ShearDeformationCheck(Bearing& brg, BearingLoads& brg_lo
 		return false;
 	}
 }
-bool BearingCalculator::StaticAxialPrimaryShearStrainCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::StaticAxialPrimaryShearStrainCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetStaticAxialPrimaryShearStrain(brg, brg_loads) <= 3.0)
 	{
@@ -862,7 +862,7 @@ bool BearingCalculator::StaticAxialPrimaryShearStrainCheck(Bearing& brg, Bearing
 		return false;
 	}
 }
-bool BearingCalculator::StaticAxialSecondaryShearStrainCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::StaticAxialSecondaryShearStrainCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetStaticAxialSecondaryShearStrain(brg, brg_loads) <= 3.0)
 	{
@@ -873,7 +873,7 @@ bool BearingCalculator::StaticAxialSecondaryShearStrainCheck(Bearing& brg, Beari
 		return false;
 	}
 }
-bool BearingCalculator::PrimaryShearStrainComboSumCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::PrimaryShearStrainComboSumCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetPrimaryShearStrainComboSum(brg, brg_loads) <= 5.0)
 	{
@@ -884,7 +884,7 @@ bool BearingCalculator::PrimaryShearStrainComboSumCheck(Bearing& brg, BearingLoa
 		return false;
 	}
 }
-bool BearingCalculator::SecondaryShearStrainComboSumCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::SecondaryShearStrainComboSumCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetSecondaryShearStrainComboSum(brg, brg_loads) <= 5.0)
 	{
@@ -895,7 +895,7 @@ bool BearingCalculator::SecondaryShearStrainComboSumCheck(Bearing& brg, BearingL
 		return false;
 	}
 }
-bool BearingCalculator::StabilityXDirectionCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::StabilityXDirectionCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetTotalStress(brg, brg_loads) <= GetAllowableTotalLoadStressStabilityX(brg, brg_loads))
 	{
@@ -906,7 +906,7 @@ bool BearingCalculator::StabilityXDirectionCheck(Bearing& brg, BearingLoads& brg
 		return false;
 	}
 }
-bool BearingCalculator::StabilityYDirectionCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::StabilityYDirectionCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetTotalStress(brg, brg_loads) <= GetAllowableTotalLoadStressStabilityY(brg, brg_loads))
 	{
@@ -918,7 +918,7 @@ bool BearingCalculator::StabilityYDirectionCheck(Bearing& brg, BearingLoads& brg
 	}
 }
 
-bool BearingCalculator::RestraintSystemRequirementCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::RestraintSystemRequirementCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if ( RestraintSystemCalc(brg,brg_loads) <= 1)
 	{
@@ -929,7 +929,7 @@ bool BearingCalculator::RestraintSystemRequirementCheck(Bearing& brg, BearingLoa
 		return false;
 	}
 }
-bool BearingCalculator::HydrostaticStressCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::HydrostaticStressCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetMaximumStress(brg) >= GetHydrostaticStress(brg, brg_loads))
 
@@ -941,7 +941,7 @@ bool BearingCalculator::HydrostaticStressCheck(Bearing& brg, BearingLoads& brg_l
 		return false;
 	}
 }
-bool BearingCalculator::HorizontalForceCheck(Bearing& brg, BearingLoads& brg_loads) const
+bool BearingCalculator::HorizontalForceCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
 	if (GetHorizontalForce(brg,brg_loads) <= brg_loads.GetDeadLoad()/5.0)
 
