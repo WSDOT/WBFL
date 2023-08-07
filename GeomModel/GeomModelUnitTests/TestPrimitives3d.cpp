@@ -12,8 +12,8 @@ namespace GeomModelUnitTest
 		TEST_METHOD(TestSize3d)
 		{
 			Size3d s0_0_0(0, 0, 0), s1_1_1(1, 1, 1), s0_1_4(0, 1, 4), s1_2_3(1, 2, 3);
-			Size3d default;
-			Assert::IsTrue(default == s0_0_0);
+			Size3d default_size;
+			Assert::IsTrue(default_size == s0_0_0);
 			Assert::IsTrue(Size3d(1, 2, 5) == (s1_1_1 + s0_1_4));
 			Assert::IsTrue(Size3d(1, 1, -1) == (s1_2_3 - s0_1_4));
 			Assert::IsTrue(s1_1_1 != (s1_2_3 - s0_1_4));

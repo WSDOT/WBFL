@@ -109,8 +109,7 @@ WBFL::System::SectionValue PPPartialUniformLoad::ComputeShear(Float64 x) const
 
    Float64 L = GetL();
 
-   Float64 Ra, Rb;
-   std::tie(Ra,Rb) = GetReactions();
+   auto [Ra,Rb] = GetReactions();
 
    if (x < a)
       V = Ra;
@@ -130,8 +129,7 @@ WBFL::System::SectionValue PPPartialUniformLoad::ComputeMoment(Float64 x) const
    if ( IsZero(W) )
       return 0;
 
-   Float64 Ra, Rb;
-   std::tie(Ra,Rb) = GetReactions();
+   auto [Ra,Rb] = GetReactions();
 
    if (x < a)
       M = Ra*x;
@@ -150,11 +148,8 @@ Float64 PPPartialUniformLoad::ComputeRotation(Float64 x) const
    if ( IsZero(W) )
       return 0;
 
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
-
-   Float64 Ra, Rb;
-   std::tie(Ra,Rb) = GetReactions();
+   auto [L, EI] = GetProperties();
+   auto [Ra,Rb] = GetReactions();
 
    Float64 K1, K2, K3, K6;
 
@@ -188,11 +183,8 @@ Float64 PPPartialUniformLoad::ComputeDeflection(Float64 x) const
    if ( IsZero(W) )
       return 0;
 
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
-
-   Float64 Ra, Rb;
-   std::tie(Ra,Rb) = GetReactions();
+   auto [L,EI] = GetProperties();
+   auto [Ra,Rb] = GetReactions();
 
    Float64 K1, K2, K3, K6;
 

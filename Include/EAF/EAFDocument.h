@@ -74,7 +74,7 @@ public:
    virtual void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode);
 
    // Transactions
-   virtual void Execute(CEAFTransaction& rTxn);
+   virtual void Execute(const CEAFTransaction& rTxn);
    virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn);
    virtual void Undo();
    virtual void Redo();
@@ -290,7 +290,7 @@ public:
    virtual void DocumentationSourceChanged();
 
    // Returns the documentation set name for this document
-   // The default implentation returns the IEAFAppPlugin's documentation
+   // The default implementation returns the IEAFAppPlugin's documentation
    // set name
    virtual CString GetDocumentationSetName();
 
@@ -301,8 +301,8 @@ public:
    // Documents may use this to build their documentation URLs
    virtual CString GetDocumentationRootLocation() = 0;
 
-   // Return the URL for documation for the application
-   // Called by GetDocumenentLocation to form the complete
+   // Return the URL for documentation for the application
+   // Called by GetDocumentLocation to form the complete
    // documentation URL. The default documentation URL is:
    // For an Online source
    //     GetDocumentationRootLocation() + m_pszExeName + major.minor version number
@@ -378,7 +378,7 @@ private:
    CStatusCenterDlg* m_pStatusCenterDlg;
    IEAFStatusCenterEventSink* m_pStatusCenterEventSink;
 
-   BOOL m_bUIIntegrated; // true if UI intergration happened
+   BOOL m_bUIIntegrated; // true if UI integration happened
 
 
    CString m_strDocumentationMapFile;
@@ -388,7 +388,7 @@ private:
 
 
    // called after document is created and initialized (called from CEAFDocTemplate::InitialUpdateFrame with TRUE
-   // and OnCloseDocument with FALSE). Encapusulates the overall procedure for UI integration.. Calls
+   // and OnCloseDocument with FALSE). Encapsulates the overall procedure for UI integration.. Calls
    // DoIntegrateWithUI(bIntegrate) 
    void IntegrateWithUI(BOOL bIntegrate);
 

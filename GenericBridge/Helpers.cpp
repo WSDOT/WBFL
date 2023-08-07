@@ -959,7 +959,7 @@ WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, b
             // from the function to get the profile based on the top of the girder
             // being at zero. That negative cancels out the negative used here and we
             // get the profile we want
-            WBFL::Math::PolynomialFunction func(GenerateParabola(xStart, xEnd, -precamber, h1));
+            WBFL::Math::PolynomialFunction func(WBFL::Math::GenerateParabola(xStart, xEnd, -precamber, h1));
             pCompositeFunction->AddFunction(xStart, xEnd, func);
             slopeParabola = 0;
          }
@@ -1094,13 +1094,13 @@ WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, b
                if (yParabolaEnd < yParabolaStart)
                {
                   // slope at end is zero
-                  WBFL::Math::PolynomialFunction func = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
+                  WBFL::Math::PolynomialFunction func = WBFL::Math::GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
                   pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func);
                }
                else
                {
                   // slope at start is zero
-                  WBFL::Math::PolynomialFunction func = GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+                  WBFL::Math::PolynomialFunction func = WBFL::Math::GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
                   pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func);
                }
 
@@ -1129,11 +1129,11 @@ WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, b
             WBFL::Math::PolynomialFunction func_left_parabola;
             if (yParabolaEnd < yParabolaStart)
             {
-               func_left_parabola = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
+               func_left_parabola = WBFL::Math::GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, 0.0);
             }
             else
             {
-               func_left_parabola = GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+               func_left_parabola = WBFL::Math::GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
             }
 
             pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func_left_parabola);
@@ -1221,11 +1221,11 @@ WBFL::Math::CompositeFunction* GetGirderProfile(ISuperstructureMember* pSSMbr, b
                   {
                      slopeParabola = 0;
                   }
-                  func_right_parabola = GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+                  func_right_parabola = WBFL::Math::GenerateParabola2(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
                }
                else
                {
-                  func_right_parabola = GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
+                  func_right_parabola = WBFL::Math::GenerateParabola1(xParabolaStart, yParabolaStart, xParabolaEnd, yParabolaEnd, slopeParabola);
                }
 
                pCompositeFunction->AddFunction(xParabolaStart, xParabolaEnd, func_right_parabola);

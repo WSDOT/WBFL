@@ -60,8 +60,7 @@ namespace RoarkUnitTest
          }
       }
 
-      Float64 yl, yr;
-      std::tie(yl, yr) = beam.GetDeflections();
+      auto [yl, yr] = beam.GetDeflections();
       Assert::IsTrue(IsZero(yl));
       Assert::IsTrue(IsZero(yr));
    }

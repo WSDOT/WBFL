@@ -255,9 +255,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathPoint(IGenericBridge* bridge,GirderI
    CComPtr<IPoint2d> point_on_alignment;
    alignment->LocatePoint(varStation,omtAlongDirection, 0.00,CComVariant(0.00),&point_on_alignment);
 
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if ( FAILED(hr) )
    {
       ATLASSERT(false);

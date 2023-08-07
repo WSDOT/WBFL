@@ -65,9 +65,7 @@ STDMETHODIMP CProfilePoint::get_Station(IStation* *station)
 
 STDMETHODIMP CProfilePoint::put_Station(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    m_ProfilePoint->SetStation(station);
@@ -98,9 +96,7 @@ STDMETHODIMP CProfilePoint::Location(IStation** pStation, Float64* pElevation)
 
 STDMETHODIMP CProfilePoint::Move(VARIANT varStation, Float64 elevation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    m_ProfilePoint->Move(station, elevation);

@@ -142,9 +142,7 @@ STDMETHODIMP CCubicSpline::Clear()
 
 STDMETHODIMP CCubicSpline::put_StartDirection(VARIANT varDirection)
 {
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    m_Curve->SetStartDirection(direction);
@@ -158,9 +156,7 @@ STDMETHODIMP CCubicSpline::get_StartDirection(IDirection** dir)
 
 STDMETHODIMP CCubicSpline::put_EndDirection( VARIANT varDirection)
 {
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    m_Curve->SetEndDirection(direction);
@@ -201,9 +197,7 @@ STDMETHODIMP CCubicSpline::Clone(IPathElement** clone)
 
 STDMETHODIMP CCubicSpline::Move(Float64 dist, VARIANT varDirection)
 {
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    m_Curve->Move(dist, direction);
@@ -251,9 +245,7 @@ STDMETHODIMP CCubicSpline::LocatePoint(Float64 distFromStart, OffsetMeasureType 
 {
    CHECK_RETOBJ(ppPoint);
 
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
 
@@ -279,10 +271,7 @@ STDMETHODIMP CCubicSpline::ProjectPoint(IPoint2d* point, IPoint2d** pNewPoint, F
    CHECK_RETVAL(pvbOnProjection);
    CHECK_RETOBJ(pNewPoint);
 
-   WBFL::Geometry::Point2d newPoint;
-   Float64 distFromStart;
-   bool bOnProjection;
-   std::tie(newPoint, distFromStart, bOnProjection) = m_Curve->ProjectPoint(cogoUtil::GetPoint(point));
+   auto [newPoint, distFromStart, bOnProjection] = m_Curve->ProjectPoint(cogoUtil::GetPoint(point));
 
    *pDistFromStart = distFromStart;
    *pvbOnProjection = (bOnProjection ? VARIANT_TRUE : VARIANT_FALSE);

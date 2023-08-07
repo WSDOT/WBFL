@@ -25,6 +25,7 @@
 #include <CoordGeom/DiaphragmLine.h>
 #include <CoordGeom/BridgeFramingGeometry.h>
 #include <CoordGeom/XCoordGeom.h>
+#include <numeric>
 
 using namespace WBFL::COGO;
 
@@ -98,9 +99,7 @@ void DiaphragmLine::LocatePoints()
    auto left_path = left_girder_line->GetPath();
    auto right_path = right_girder_line->GetPath();
 
-   WBFL::Geometry::Point2d p;
-   WBFL::Geometry::Vector2d v;
-   std::tie(p,v) = m_Line.GetExplicit();
+   auto[p,v] = m_Line.GetExplicit();
 
    bool bSuccess;
    std::tie(bSuccess, m_Point[+EndType::Start]) = left_path->Intersect(m_Line, p, true, true);
@@ -126,11 +125,10 @@ void DiaphragmLine::LocatePoints()
       {
          // find mid-point between pntLeft and pntRight. This is the point the staggered diaphragm
          // passes through in the center of the girder bay
-         Float64 xl, yl, xr, yr;
-         std::tie(xl, yl) = left_point.GetLocation();
-         std::tie(xr, yr) = next_point.GetLocation();
-         Float64 cx = (xl + xr) / 2;
-         Float64 cy = (yl + yr) / 2;
+         auto [xl, yl] = left_point.GetLocation();
+         auto [xr, yr] = next_point.GetLocation();
+         Float64 cx = std::midpoint(xl, xr);
+         Float64 cy = std::midpoint(yl, yr);
          WBFL::Geometry::Point2d center_point(cx, cy);
 
          // Find the point on the left girder line where the normal passes through (cx,cy)

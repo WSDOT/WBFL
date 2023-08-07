@@ -127,7 +127,7 @@ public:
       if (AccessMethod==atID)
       {
          // erase by id
-         ContainerType::iterator it(m_coll.find(IDorIndex));
+         auto it(m_coll.find(IDorIndex));
          if (it!=m_coll.end())
          {
             // must release element before erasing it
@@ -152,7 +152,7 @@ public:
          else
          {
             // zero-based access
-            ContainerType::iterator it(m_coll.begin());
+            auto it(m_coll.begin());
             for (IndexType i = 0; i<IDorIndex; i++)
             {
                it++;
@@ -169,7 +169,7 @@ public:
    {
       CHECK_RETOBJ(pVal);
 
-      ContainerType::iterator it(m_coll.find(id));
+      auto it(m_coll.find(id));
       if (it!=m_coll.end())
       {
          *pVal = it->second;
@@ -214,8 +214,8 @@ public:
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access
-		ContainerType::iterator iter(m_coll.begin());
-		ContainerType::iterator iterend(m_coll.end());
+		auto iter(m_coll.begin());
+		auto iterend(m_coll.end());
 		while (iter != iterend && idx > 0)
 		{
 			iter++;
@@ -234,8 +234,8 @@ public:
    STDMETHOD(Clear)()
    {
       // release all members first, then clear
-		ContainerType::iterator it(m_coll.begin());
-		ContainerType::iterator itend(m_coll.end());
+		auto it(m_coll.begin());
+		auto itend(m_coll.end());
       for (; it != itend; it++)
       {
          it->second.Release();
@@ -248,7 +248,7 @@ public:
 // Classes for local C++ clients
    StoredType* Find(IDType id)
    {
-      ContainerType::iterator it(m_coll.find(id));
+      auto it(m_coll.find(id));
       if (it!=m_coll.end())
       {
          // Get the COM pointer

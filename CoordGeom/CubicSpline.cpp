@@ -201,9 +201,7 @@ WBFL::Geometry::Point2d CubicSpline::PointOnCurve(Float64 distFromStart) const
    distFromStart = IsZero(distFromStart) ? 0 : distFromStart;
    distFromStart = IsEqual(distFromStart, length) ? length : distFromStart;
 
-   Float64 splineDist;
-   SplineSegment* pSplineSegment;
-   std::tie(pSplineSegment, splineDist) = FindSplineSegment(distFromStart);
+   auto [pSplineSegment, splineDist] = FindSplineSegment(distFromStart);
 
    if (pSplineSegment == nullptr) // before or after spline
    {
@@ -212,8 +210,7 @@ WBFL::Geometry::Point2d CubicSpline::PointOnCurve(Float64 distFromStart) const
          // before start
          const auto& pntStart = m_vPoints.front();
 
-         Float64 sx, sy;
-         std::tie(sx,sy) = pntStart.GetLocation();
+         auto [sx,sy] = pntStart.GetLocation();
 
          Float64 x = sx + splineDist * cos(m_StartDirection);
          Float64 y = sy + splineDist * sin(m_StartDirection);
@@ -225,8 +222,7 @@ WBFL::Geometry::Point2d CubicSpline::PointOnCurve(Float64 distFromStart) const
          // after end
          const auto& pntEnd = m_vPoints.back();
 
-         Float64 ex, ey;
-         std::tie(ex,ey) = pntEnd.GetLocation();
+         auto [ex,ey] = pntEnd.GetLocation();
 
          Float64 x = ex + splineDist * cos(m_EndDirection);
          Float64 y = ey + splineDist * sin(m_EndDirection);
@@ -236,8 +232,7 @@ WBFL::Geometry::Point2d CubicSpline::PointOnCurve(Float64 distFromStart) const
    }
    else
    {
-      Float64 x, y;
-      std::tie(x,y) = pSplineSegment->GetPoint(splineDist);
+      auto [x,y] = pSplineSegment->GetPoint(splineDist);
 
       point.Move(x, y);
 
@@ -453,8 +448,7 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> CubicSpline::ProjectPoint(con
       // we have to work in the rotated coordinate system
       auto pntRotated = m_CoordXform.XformBy(point, WBFL::Geometry::CoordinateXform2d::Type::OldToNew);
 
-      Float64 px, py;
-      std::tie(px,py) = pntRotated.GetLocation();
+      auto [px,py] = pntRotated.GetLocation();
 
       // NOTE: when comparing distance from the point to be projected onto the spline and the point on 
       // the spline where a normal vector passes through the point to be projected, the square of the 
@@ -494,8 +488,7 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> CubicSpline::ProjectPoint(con
 
          bFound = true;
 
-         Float64 x, y;
-         std::tie(x,y) = splineSegment.GetPoint(s);
+         auto [x,y] = splineSegment.GetPoint(s);
 
          Float64 dist2 = (px - x) * (px - x) + (py - y) * (py - y); // square of the distance
 
@@ -577,9 +570,7 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::Intersect(const WBFL::Geometry
          // if the directions are the same, the direction from the start of the spline
          // to the back tangent point, the intersection occurs within the spline and
          // that isn't what we are looking for
-         Float64 dist;
-         Direction dir;
-         std::tie(dist,dir) = COGO::ComputeInverse(pntStart, bkTangentPoint);
+         auto [dist,dir] = COGO::ComputeInverse(pntStart, bkTangentPoint);
 
          if (m_StartDirection != dir)
          {
@@ -596,9 +587,7 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::Intersect(const WBFL::Geometry
    // the line is in the global coordinate system and the spline segments
    // are in the local spline coordinate system. create a line object
    // in the local coordinate system
-   WBFL::Geometry::Point2d pnt;
-   WBFL::Geometry::Vector2d v;
-   std::tie(pnt,v) = line.GetExplicit();
+   auto [pnt,v] = line.GetExplicit();
    m_CoordXform.Xform(pnt, WBFL::Geometry::CoordinateXform2d::Type::OldToNew);
    v.Rotate(-m_RotationAngle);
    WBFL::Geometry::Line2d line2(pnt, v);
@@ -638,9 +627,7 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::Intersect(const WBFL::Geometry
          // if the directions are the same, the direction from the end of the spline
          // to the ahead tangent point, the intersection occurs after the spline and
          // that is what we are looking for
-         Float64 dist;
-         Direction dir;
-         std::tie(dist,dir) = COGO::ComputeInverse(endPoint, aheadTangentPoint);
+         auto [dist,dir] = COGO::ComputeInverse(endPoint, aheadTangentPoint);
 
          if (m_EndDirection == dir)
          {
@@ -779,20 +766,20 @@ std::vector<std::shared_ptr<PathElement>> CubicSpline::CreateSubpath(Float64 sta
       }
 
 
-      for (const auto& pair : vPoints)
+      for (const auto& [distFromStart,index] : vPoints)
       {
          // start and end points are handled elsewhere... make sure we aren't duplicating them
-         CHECK(!IsEqual(pair.first, start));
-         CHECK(!IsEqual(pair.first, end));
+         CHECK(!IsEqual(distFromStart, start));
+         CHECK(!IsEqual(distFromStart, end));
 
          WBFL::Geometry::Point2d p;
-         if (pair.second == INVALID_INDEX)
+         if (index == INVALID_INDEX)
          {
-            p = PointOnCurve(pair.first);
+            p = PointOnCurve(distFromStart);
          }
          else
          {
-            p = GetPoint(pair.second);
+            p = GetPoint(index);
          }
          subpath_spline->AddPoint(p);
       }
@@ -870,9 +857,7 @@ void CubicSpline::CreateSplineSegments() const
    const auto& p0 = GetStartPoint(); // point 0
    const auto& pn = GetEndPoint(); // point "n"
 
-   Float64 distance;
-   Direction direction;
-   std::tie(distance,direction) = COGO::ComputeInverse(p0, pn);
+   auto [distance,direction] = COGO::ComputeInverse(p0, pn);
 
    m_RotationAngle = direction.GetValue();
 
@@ -1113,10 +1098,8 @@ void CubicSpline::ValidateSpline() const
       }
 
       // project a point on the spline onto the spline will result in the same point
-      Float64 dist_from_start;
-      bool bOnProjection;
-      std::tie(pnt2,dist_from_start,bOnProjection) = ProjectPoint(pnt);
-      CHECK(pnt ==  pnt2);
+      auto [pnt4,dist_from_start,bOnProjection] = ProjectPoint(pnt);
+      CHECK(pnt ==  pnt4);
    }
 
    // make sure location and slope at comment segment boundaries are the same
@@ -1210,8 +1193,7 @@ std::pair<Float64,Float64> CubicSpline::SplineSegment::GetPoint(Float64 distance
 Float64 CubicSpline::SplineSegment::Bearing(Float64 distance) const
 {
    // evaluate the slope... convert to a bearing
-   Float64 x, y;
-   std::tie(x,y) = GetPoint(distance);
+   auto [x,y] = GetPoint(distance);
 
    Float64 slope = Slope(x);
 
@@ -1235,9 +1217,7 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::SplineSegment::Intersect(const
 
    // get the explicit form of the line and derive the slope, m, 
    // from the vector running in the direction of the line
-   WBFL::Geometry::Point2d p;
-   WBFL::Geometry::Vector2d dir;
-   std::tie(p,dir) = line.GetExplicit();
+   auto [p,dir] = line.GetExplicit();
 
    auto size = dir.GetSize();
    auto dx = size.Dx();
@@ -1265,8 +1245,7 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::SplineSegment::Intersect(const
       WBFL::Geometry::Point2d origin(0, 0);
 
       auto poln = WBFL::Geometry::GeometricOperations::PointOnLineNearest(line, origin);
-      Float64 X, Y;
-      std::tie(X,Y) = poln.GetLocation();
+      auto [X,Y] = poln.GetLocation();
       Float64 k = Y - m * (X - xa);
 
       // solve A + Bx + Cx^2 + Dx^3 - (mx+k) = (A-k) + (B-m)x + Cx^2 + Dx^3 = 0
@@ -1357,8 +1336,7 @@ Float64 CubicSpline::SplineSegmentProjectPointFunction::Evaluate(Float64 s) cons
 {
    Float64 angle = m_SplineSegment.Normal(s);
 
-   Float64 x, y;
-   std::tie(x,y) = m_SplineSegment.GetPoint(s);
+   auto [x,y] = m_SplineSegment.GetPoint(s);
 
    WBFL::Geometry::Line2d line(WBFL::Geometry::Point2d(x,y), WBFL::Geometry::Vector2d(1.0, angle));  // line that is normal to the curve at "s" from the start
 

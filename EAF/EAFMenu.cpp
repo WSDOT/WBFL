@@ -402,10 +402,11 @@ int CEAFMenu::GetMenuString(UINT nIDItem,CString& rString,UINT nFlags) const
 
 BOOL CEAFMenu::SetMenuString(UINT nIDItem,LPTSTR lpString,UINT nFlags)
 {
-   return SetMenuString(nIDItem,CString(lpString),nFlags);
+   CString str(lpString);
+   return SetMenuString(nIDItem,str,nFlags);
 }
 
-BOOL CEAFMenu::SetMenuString(UINT nIDItem,CString& rString,UINT nFlags)
+BOOL CEAFMenu::SetMenuString(UINT nIDItem, CString& rString,UINT nFlags)
 {
    CMenu* pMenu = GetMenu();
    if ( pMenu )

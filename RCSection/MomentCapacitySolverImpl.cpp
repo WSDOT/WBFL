@@ -286,8 +286,7 @@ void MomentCapacitySolverImpl::UpdateStrainPlane(Float64 angle, Float64 k_or_ec,
          }
          else
          {
-            Float64 X, Y;
-            std::tie(X,Y) = m_ControlPoint.GetLocation();
+            auto [X,Y] = m_ControlPoint.GetLocation();
             m_P1.Move(X - d * cos_angle, Y - d * sin_angle, eo);
             m_P2.Move(X + d * cos_angle, Y + d * sin_angle, eo);
          }
@@ -339,10 +338,8 @@ void MomentCapacitySolverImpl::UpdateAnalysisPoints(Float64 angle, MomentCapacit
    {
       const auto& shape = section->GetShape(shapeIdx);
 
-      WBFL::Geometry::Point2d pntC, pntT;
-      Float64 dist_compression, dist_tension;
-      shape.GetFurthestPoint(compression_side_line, WBFL::Geometry::Line2d::Side::Right, pntC, dist_compression);
-      shape.GetFurthestPoint(tension_side_line, WBFL::Geometry::Line2d::Side::Right, pntT, dist_tension);
+      auto [pntC,dist_compression] = shape.GetFurthestPoint(compression_side_line, WBFL::Geometry::Line2d::Side::Right);
+      auto [pntT,dist_tension] = shape.GetFurthestPoint(tension_side_line, WBFL::Geometry::Line2d::Side::Right);
 
       if (dCompression < dist_compression)
       {

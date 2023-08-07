@@ -81,8 +81,7 @@ namespace WBFL
                Float64 Le) : ShapeIdx(shapeIdx), Shape(shape), FgMaterial(fg), BgMaterial(bg), InitialStrain(initialStrain), Le(Le)
             {}
          };
-         using SHAPEINFO = SHAPEINFO;
-
+         
          // Slice properties
          struct SLICEINFO
          {
@@ -98,10 +97,9 @@ namespace WBFL
             std::shared_ptr<const WBFL::Geometry::Shape> SliceShape;
 
             SLICEINFO() = default;
-            SLICEINFO(SLICEINFO& other) = default;
-            SLICEINFO& operator=(SLICEINFO& other) = default;
+            SLICEINFO(const SLICEINFO& other) = default;
+            SLICEINFO& operator=(const SLICEINFO& other) = default;
          };
-         using SLICEINFO = SLICEINFO;
 
          mutable std::vector<SLICEINFO> m_Slices;
 

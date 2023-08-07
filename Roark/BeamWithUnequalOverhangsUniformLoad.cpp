@@ -114,8 +114,7 @@ WBFL::System::SectionValue BeamWithUnequalOverhangsUniformLoad::ComputeShear(Flo
    Float64 d = L - c - e;
    Float64 W = m_W*L;
 
-   Float64 Rl, Rr;
-   std::tie(Rl,Rr) = GetReactions();
+   auto [Rl,Rr] = GetReactions();
 
    WBFL::System::SectionValue v;
    if ( x < c )
@@ -155,8 +154,7 @@ WBFL::System::SectionValue BeamWithUnequalOverhangsUniformLoad::ComputeMoment(Fl
    Float64 d = L - c - e;
    Float64 W = m_W*L;
 
-   Float64 Rl, Rr;
-   std::tie(Rl,Rr) = GetReactions();
+   auto [Rl,Rr] = GetReactions();
 
    Float64 m;
    if ( x < c )
@@ -180,8 +178,7 @@ WBFL::System::SectionValue BeamWithUnequalOverhangsUniformLoad::ComputeMoment(Fl
 
 Float64 BeamWithUnequalOverhangsUniformLoad::ComputeRotation(Float64 x) const
 {
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
+   auto [L,EI] = GetProperties();
 
    PRECONDITION(0.0 <= x && x <= L);
    Float64 c = m_LeftOverhang;
@@ -211,8 +208,7 @@ Float64 BeamWithUnequalOverhangsUniformLoad::ComputeRotation(Float64 x) const
 
 Float64 BeamWithUnequalOverhangsUniformLoad::ComputeDeflection(Float64 x) const
 {
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
+   auto [L,EI] = GetProperties();
 
    PRECONDITION(0.0 <= x && x <= L);
    Float64 c = m_LeftOverhang;
@@ -220,8 +216,7 @@ Float64 BeamWithUnequalOverhangsUniformLoad::ComputeDeflection(Float64 x) const
    Float64 d = L - c - e;
    Float64 W = m_W*L;
 
-   Float64 Rl, Rr;
-   std::tie(Rl,Rr) = GetReactions();
+   auto [Rl,Rr] = GetReactions();
 
    Float64 y_ei;
    if ( x < c )

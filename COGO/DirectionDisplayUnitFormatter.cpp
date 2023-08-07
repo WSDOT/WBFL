@@ -142,12 +142,8 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    if ( m_bBearingFormat )
    {
       WBFL::COGO::Direction direction(val);
-      WBFL::COGO::Direction::NSDirection ns;
-      WBFL::COGO::Direction::EWDirection ew;
-      unsigned short deg;
-      unsigned short min;
-      Float64 sec;
-      std::tie(ns, deg, min, sec, ew) = direction.GetDMS();
+      auto [ns, deg, min, sec, ew] = direction.GetDMS();
+
       NSDirectionType n = NSDirectionType(ns);
       EWDirectionType e = EWDirectionType(ew);
 
@@ -176,10 +172,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    {
       // azimuth
       val = WBFL::COGO::COGO::NormalizeAngle(PI_OVER_2 - val);
-      short deg;
-      unsigned short min;
-      Float64 sec;
-      std::tie(deg, min, sec) = WBFL::COGO::COGO::ToDMS(val);
+      auto [deg, min, sec] = WBFL::COGO::COGO::ToDMS(val);
 
       sec = IsZero(sec,m_ZeroTolerance) ? 0 : sec;
       s << deg;

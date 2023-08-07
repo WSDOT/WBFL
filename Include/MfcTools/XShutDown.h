@@ -49,7 +49,7 @@ CLASS
 
 
 DESCRIPTION
-   Shut down exception.  Throw this exception when a fatal error has occured
+   Shut down exception.  Throw this exception when a fatal error has occurred
    in PGSuper.  This will cause the application to shut down.  Optionally,
    the user can be given an opportunity to save their work.  If possible, 
    the exception data will be written into the log file.
@@ -71,8 +71,8 @@ public:
               Int32 reason,      // A reason code
               bool bAttemptSave, // if true asks user if they want to save
                                  // before the shut down
-              LPCTSTR file,  // File where the exception occured
-              Int16 line         // Line number where the exception occured
+              LPCTSTR file,  // File where the exception occurred
+              Int16 line         // Line number where the exception occurred
               );
 
    //------------------------------------------------------------------------

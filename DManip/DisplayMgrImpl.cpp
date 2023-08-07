@@ -53,11 +53,11 @@ public:
    bool operator()(DisplayObjectItem dispObj)
    {
       CComPtr<iDisplayList> list;
-      dispObj.m_T->GetDisplayList(&list);
+      dispObj->GetDisplayList(&list);
       BOOL bRemove = m_bInclusive ? ( list->GetID() == m_ListID ) : ( list->GetID() != m_ListID );
       if ( bRemove )
       {
-         dispObj.m_T->Select(FALSE);
+         dispObj->Select(FALSE);
          return true;
       }
 
@@ -398,7 +398,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::ClearSelectedObjectsByList(IDType key,Acces
       listID = key;
    }
 
-   std::remove_if(m_SelectedObjects.begin(),m_SelectedObjects.end(),RemoveByListID(listID,bInclusive));
+   std::erase_if(m_SelectedObjects,RemoveByListID(listID,bInclusive));
 }
 
 STDMETHODIMP_(void) CDisplayMgrImpl::EnableLBtnMultiSelect(BOOL bEnable,DWORD dwKey)
@@ -725,7 +725,7 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
    }
    else
    {
-      // check if right-click occured over a currently selected display object
+      // check if right-click occurred over a currently selected display object
       DisplayObjectContainer curSel;
       GetSelectedObjects(&curSel);
       DisplayObjectContainer::iterator iter;

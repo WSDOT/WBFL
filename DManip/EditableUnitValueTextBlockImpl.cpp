@@ -365,7 +365,7 @@ STDMETHODIMP_(bool) CEditableUnitValueTextBlockImpl::OnLButtonDown(UINT nFlags,C
 {
    // Confirm this point is really over the text block
    // Text blocks are often aggregated with other objects. The
-   // LButtonDown event could have occured over the other display object
+   // LButtonDown event could have occurred over the other display object
    // and been forwarded here. The edit task should not begin if
    // the mouse was not pressed over the text.
    CComPtr<iDisplayList> pDL;

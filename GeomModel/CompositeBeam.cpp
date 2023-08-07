@@ -322,7 +322,7 @@ Float64 CompositeBeam::GetBeamDensity() const
    return m_Section.GetComponent(BEAM).GetForegroundDensity();
 }
 
-void CompositeBeam::SetHookPoint(std::shared_ptr<Point2d>& hookPnt)
+void CompositeBeam::SetHookPoint(std::shared_ptr<Point2d> hookPnt)
 {
    m_Section.SetHookPoint(hookPnt);
 }
@@ -332,12 +332,12 @@ void CompositeBeam::SetHookPoint(const Point2d& hookPnt)
    m_Section.SetHookPoint(hookPnt);
 }
 
-std::shared_ptr<Point2d>& CompositeBeam::GetHookPoint()
+std::shared_ptr<Point2d> CompositeBeam::GetHookPoint()
 {
    return m_Section.GetHookPoint();
 }
 
-const std::shared_ptr<Point2d>& CompositeBeam::GetHookPoint() const
+std::shared_ptr<const Point2d> CompositeBeam::GetHookPoint() const
 {
    return m_Section.GetHookPoint();
 }

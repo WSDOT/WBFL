@@ -729,7 +729,7 @@ ILBAMModel* CTestTwoSpan::CreateModel()
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(lbamModel->get_LoadGroups(&pLoadGroups), S_OK);
 
-   TCHAR* lgns[]={_T("Point Loads"),
+   CComBSTR lgns[]={_T("Point Loads"),
                   _T("Distributed Loads"),
                   _T("Temperature Loads"),
                   _T("Strain Loads"),
@@ -742,7 +742,7 @@ ILBAMModel* CTestTwoSpan::CreateModel()
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );
-      TRY_TEST( pLoadGroup->put_Name( CComBSTR(lgns[i]) ), S_OK );
+      TRY_TEST( pLoadGroup->put_Name( lgns[i] ), S_OK );
       TRY_TEST(pLoadGroups->Add(pLoadGroup), S_OK);
    }
 

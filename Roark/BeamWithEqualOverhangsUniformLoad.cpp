@@ -145,8 +145,7 @@ WBFL::System::SectionValue BeamWithEqualOverhangsUniformLoad::ComputeMoment(Floa
 
 Float64 BeamWithEqualOverhangsUniformLoad::ComputeRotation(Float64 x) const
 {
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
+   auto [L,EI] = GetProperties();
 
    PRECONDITION(0.0 <= x && x <= L);
 
@@ -186,8 +185,7 @@ Float64 BeamWithEqualOverhangsUniformLoad::ComputeRotation(Float64 x) const
 
 Float64 BeamWithEqualOverhangsUniformLoad::ComputeDeflection(Float64 x) const
 {
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
+   auto [L,EI] = GetProperties();
 
    PRECONDITION(0.0 <= x && x <= L);
 

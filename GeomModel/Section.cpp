@@ -75,7 +75,7 @@ void Section::Rotate(const Point2d& center, Float64 angle)
    std::for_each(std::begin(m_Components), std::end(m_Components), [&](auto& component) {component.GetShape().Rotate(center, angle); });
 }
 
-void Section::SetHookPoint(std::shared_ptr<Point2d>& hookPnt)
+void Section::SetHookPoint(std::shared_ptr<Point2d> hookPnt)
 {
    if (!m_Components.empty()) m_Components.front().GetShape().SetHookPoint(hookPnt);
 }
@@ -85,14 +85,14 @@ void Section::SetHookPoint(const Point2d& hookPnt)
    if (!m_Components.empty()) m_Components.front().GetShape().SetHookPoint(hookPnt);
 }
 
-std::shared_ptr<Point2d>& Section::GetHookPoint()
+std::shared_ptr<Point2d> Section::GetHookPoint()
 {
-   return m_Components.empty() ? m_DummyHookPoint : m_Components.front().GetShape().GetHookPoint();
+   return m_Components.empty() ? std::shared_ptr<Point2d>() : m_Components.front().GetShape().GetHookPoint();
 }
 
-const std::shared_ptr<Point2d>& Section::GetHookPoint() const
+std::shared_ptr<const Point2d> Section::GetHookPoint() const
 {
-   return m_Components.empty() ? m_DummyHookPoint : m_Components.front().GetShape().GetHookPoint();
+   return m_Components.empty() ? std::shared_ptr<const Point2d>() : m_Components.front().GetShape().GetHookPoint();
 }
 
 Point2d Section::GetLocatorPoint(Shape::LocatorPoint lp) const
@@ -100,7 +100,7 @@ Point2d Section::GetLocatorPoint(Shape::LocatorPoint lp) const
    return m_Components.empty() ? Point2d(0, 0) : m_Components.front().GetShape().GetLocatorPoint(lp);
 }
 
-void Section::SetLocatorPoint(Shape::LocatorPoint lp, Point2d& position)
+void Section::SetLocatorPoint(Shape::LocatorPoint lp, const Point2d& position)
 {
    Move(lp, position);
 }

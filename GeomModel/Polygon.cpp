@@ -363,19 +363,15 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape(const Rect2d& r, Shape::ClipR
 
 Float64 Polygon::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
-   Point2d furthestPoint;
-   Float64 furthestDistance;
-   GetFurthestPoint(line, side, furthestPoint, furthestDistance);
+   auto [furthestPoint, furthestDistance] = GetFurthestPoint(line, side);
    return furthestDistance;
 }
 
-void Polygon::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+std::pair<Point2d,Float64> Polygon::GetFurthestPoint(const Line2d& line, Line2d::Side side) const
 {
    // need to determine which side of line each point is on. Implicit rep of line has normal
    // vector which always points left.
-   Float64  c;
-   Vector2d n;
-   std::tie(c,n) = line.GetImplicit();
+   auto [c,n] = line.GetImplicit();
 
    // change n to point toward desired side of line
    if (Line2d::Side::Right == side)
@@ -427,7 +423,7 @@ void Polygon::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& f
    }
 
    CHECK(idx != INVALID_INDEX && idx < m_Points.size());
-   furthestPoint = m_Points[idx];
+   auto furthestPoint = m_Points[idx];
    if (bIsSymPoint)
    {
       Float64 xSign = m_Symmetry == Symmetry::X ? 1 : -1;
@@ -435,7 +431,8 @@ void Polygon::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& f
       furthestPoint.X() *= xSign;
       furthestPoint.Y() *= ySign;
    }
-   furthestDistance = max_dist;
+   auto furthestDistance = max_dist;
+   return std::make_pair(furthestPoint, furthestDistance);
 }
 
 void Polygon::Reflect(const Line2d& line)
@@ -868,11 +865,9 @@ std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, L
 {
    // could optimize this routine to work with Line2d and LineSegment2d, but 
    // would not likely gain much.
-   Vector2d dir;
-   Point2d  pnt_a;
    Point2d  pnt_b;
 
-   std::tie(pnt_a,dir) = line.GetExplicit();  // point on the line and direction vector
+   auto [pnt_a,dir] = line.GetExplicit();  // point on the line and direction vector
    if (side == Line2d::Side::Right)
    {
       pnt_b = pnt_a.OffsetBy(dir.X(), dir.Y());

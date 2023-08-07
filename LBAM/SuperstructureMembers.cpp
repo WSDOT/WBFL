@@ -103,7 +103,7 @@ STDMETHODIMP CSuperstructureMembers::Load(IStructuredLoad2 * pload)
 
    HRESULT hr;
 
-   hr = pload->BeginUnit(OLESTR("SuperstructureMembers"));
+   hr = pload->BeginUnit(_bstr_t("SuperstructureMembers"));
    if (FAILED(hr))
       return hr;
 
@@ -145,8 +145,8 @@ STDMETHODIMP CSuperstructureMembers::Save(IStructuredSave2 * psave)
    CHRException hr;
    try
    {
-      hr = psave->BeginUnit(OLESTR("SuperstructureMembers"), MY_VER);
-      hr = psave->put_Property(OLESTR("Offset"),_variant_t(m_Offset));
+      hr = psave->BeginUnit(_bstr_t("SuperstructureMembers"), MY_VER);
+      hr = psave->put_Property(_bstr_t("Offset"),_variant_t(m_Offset));
       hr = PersistentSuperstructureMemberCollImpl::Save(psave);
       hr = psave->EndUnit();
    }

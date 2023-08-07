@@ -81,11 +81,11 @@ namespace WBFL
 
          /// Sets the centroid of the shape, measured in current coordinates.
          /// The shared_ptr is replace with centroid
-         void SetCentroid(std::shared_ptr<Point2d>& centoid);
+         void SetCentroid(std::shared_ptr<Point2d> centoid);
 
          /// Returns the centroid of the shape, measured in current coordinates.
-         std::shared_ptr<Point2d>& GetCentroid();
-         const std::shared_ptr<Point2d>& GetCentroid() const;
+         std::shared_ptr<Point2d> GetCentroid();
+         std::shared_ptr<const Point2d> GetCentroid() const;
 
          /// Sets the moment of inertia about the x axis of the current coordinate system.
          void SetIxx(Float64 ixx);
@@ -157,20 +157,20 @@ namespace WBFL
          virtual void SetHookPoint(const Point2d& hookPnt) override;
 
          /// Sets the hook point location. Same as calling SetCentroid
-         virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) override;
+         virtual void SetHookPoint(std::shared_ptr<Point2d> hookPnt) override;
 
          /// Returns the hook point location. Same as calling GetCentroid
-         virtual std::shared_ptr<Point2d>& GetHookPoint() override;
+         virtual std::shared_ptr<Point2d> GetHookPoint() override;
 
          /// Returns the hook point location. Same as calling GetCentroid
-         virtual const std::shared_ptr<Point2d>& GetHookPoint() const override;
+         virtual std::shared_ptr<const Point2d> GetHookPoint() const override;
 
          /// Returns a point located at the specified location on the bounding box 
          /// around the shape.
          virtual Point2d GetLocatorPoint(LocatorPoint lp) const override;
 
          /// Moves the shape so that the locator point is at the specified position
-         virtual void SetLocatorPoint(LocatorPoint lp, Point2d& position) override;
+         virtual void SetLocatorPoint(LocatorPoint lp, const Point2d& position) override;
 
          /// Assigns a Properties object to the object pointed to by pProperties. 
          /// The origin of the shape properties object is the centroid of this shape
@@ -205,7 +205,7 @@ namespace WBFL
          virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
 
          /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
-         virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
+         virtual std::pair<Point2d,Float64> GetFurthestPoint(const Line2d& line, Line2d::Side side) const override;
 
          /// Returns the perimeter of the shape
          virtual Float64 GetPerimeter() const override;

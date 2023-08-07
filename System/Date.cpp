@@ -431,7 +431,7 @@ static void  SkipDelim( std::_tistream  & strm )
 static LPCTSTR  ParseMonth( std::_tistream  & s )
 {
     static TCHAR month[12];
-    register LPTSTR p = month;
+    LPTSTR p = month;
     TCHAR c;
     SkipDelim(s);
     s.get(c);

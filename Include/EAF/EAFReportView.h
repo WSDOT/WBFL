@@ -149,7 +149,7 @@ protected:
 
    BOOL m_bInvalidReport; // true if an update event is received and the contents of the report are not invalid
    BOOL m_bNoBrowser;     // true if the browser window couldn't be created
-   BOOL m_bUpdateError;   // true if an error occured while updating the report contents
+   BOOL m_bUpdateError;   // true if an error occurred while updating the report contents
    BOOL m_bIsNewReport;   // true while calls are coming from OnInitialUpdate
    BOOL m_bUpdateInProgress; // true if the report is being generated/updated
 

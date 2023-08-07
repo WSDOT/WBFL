@@ -25,6 +25,7 @@
 //
 #include "stdafx.h"
 #include <mfcTools\DocTemplateDialog.h>
+#include <array>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,17 +39,17 @@ static char THIS_FILE[] = __FILE__;
 // data for list control
 #define NUM_COLUMNS	3
 
-static _TCHAR *_gszColumnLabel[NUM_COLUMNS] =
+static std::array<std::_tstring,NUM_COLUMNS> _gszColumnLabel =
 {
 	_T("Template"), _T("Size"), _T("Modified")
 };
 
-static int _gnColumnFmt[NUM_COLUMNS] = 
+static std::array<int,NUM_COLUMNS> _gnColumnFmt = 
 {
 	LVCFMT_LEFT, LVCFMT_RIGHT, LVCFMT_LEFT
 };
 
-static int _gnColumnWidth[NUM_COLUMNS] = 
+static std::array<int,NUM_COLUMNS> _gnColumnWidth = 
 {
 	190, 80, 140
 };
@@ -170,7 +171,7 @@ BOOL CDocTemplateDialog::OnInitDialog()
 	for(int i = 0; i<NUM_COLUMNS; i++)
 	{
 		lvc.iSubItem = i;
-		lvc.pszText = _gszColumnLabel[i];
+		lvc.pszText = (TCHAR*)_gszColumnLabel[i].c_str();
 		lvc.cx = _gnColumnWidth[i];
 		lvc.fmt = _gnColumnFmt[i];
 		m_FileListCtrl.InsertColumn(i,&lvc);
@@ -184,18 +185,16 @@ BOOL CDocTemplateDialog::OnInitDialog()
 	TC_ITEM TabCtrlItem;
    int igen=-1;
    int i = 0;
-   for(TabListIterator it=m_pTabList->begin(); it!=m_pTabList->end(); it++)
+   for(auto&[name,tab_helper] : *m_pTabList)
    {
       i++;
       TCHAR buf[MAX_PATH];
-
-      mfcTemplateTabHelper& tab_helper = (*it).second;
 
       std::vector<mfcTemplateTabHelper::TabDisplayFile> file_list;
       tab_helper.GetFileList(&file_list);
       if ( 0 < file_list.size() )
       {
-         if ((*it).first == _T("general") )
+         if (name == _T("general") )
          {
             igen = i-1;
          }
@@ -203,7 +202,7 @@ BOOL CDocTemplateDialog::OnInitDialog()
          std::_tstring tmp = tab_helper.GetName();
          _tcscpy_s(buf, MAX_PATH, tmp.c_str());
          TabCtrlItem.pszText = buf;
-         TabCtrlItem.lParam = (LPARAM)&((*it).first); // store pointer to key
+         TabCtrlItem.lParam = (LPARAM)&(name); // store pointer to key
          TabCtrlItem.mask = TCIF_TEXT|TCIF_PARAM;
 
 	      m_TabCtrl.InsertItem( i, &TabCtrlItem);

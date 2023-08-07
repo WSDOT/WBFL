@@ -159,9 +159,9 @@ STDMETHODIMP CManderModel::ComputeStress(Float64 strain,Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   auto result = m_Model.ComputeStress(strain);
-   *pVal = result.first;
-   return (result.second == true ? S_OK : S_FALSE);
+   auto [stress, bStrainWithinLimits]= m_Model.ComputeStress(strain);
+   *pVal = stress;
+   return (bStrainWithinLimits ? S_OK : S_FALSE);
 }
 
 STDMETHODIMP CManderModel::StrainLimits(Float64* minStrain,Float64* maxStrain)

@@ -1703,8 +1703,8 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             (*pPara) << M_CR << _T(" = Cracking Moment") << rptNewLine;
             if (bSimpleFormat)
             {
-               std::_tstring strLeftSign(pResults->ThetaEq[+impactDir[impactCase]][+wind] < 0 ? _T("") : _T("-"));
-               std::_tstring strRightSign(pResults->ThetaEq[+impactDir[impactCase]][+wind] < 0 ? _T("-") : _T(""));
+               std::_tstring strLeftSign(pResults->ThetaEq[+slope][+impactDir[impactCase]][+wind] < 0 ? _T("") : _T("-"));
+               std::_tstring strRightSign(pResults->ThetaEq[+slope][+impactDir[impactCase]][+wind] < 0 ? _T("-") : _T(""));
                (*pPara) << _T("Top Left ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w"));
                if (slope == HaulingSlope::Superelevation)
                {

@@ -1431,7 +1431,7 @@ STDMETHODIMP CStrandGrid::IsExteriorStrandDebondedInRow(/*[in]*/ RowIndexType ro
       return E_INVALIDARG;
 
    // advance the iterator
-   auto& iter = std::cbegin(m_Rows);
+   auto iter = std::cbegin(m_Rows);
    std::advance(iter, rowIndex);
 
    // this is the row we want
@@ -1595,7 +1595,7 @@ STDMETHODIMP CStrandGrid::GetDebondedConfigurationCountByRow(/*[in]*/RowIndexTyp
          record.LdbEnd = LdbEnd;
          record.nStrands = 1;
 
-         auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
+         auto found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [&record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
          if (found == debondConfigs.end())
          {
             debondConfigs.push_back(record);
@@ -1637,7 +1637,7 @@ STDMETHODIMP CStrandGrid::GetDebondConfigurationByRow(/*[in]*/RowIndexType rowId
          record.YSum = Ycoord;
          record.nStrands = 1;
 
-         auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
+         auto found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [&record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
          if (found == debondConfigs.end())
          {
             debondConfigs.push_back(record);

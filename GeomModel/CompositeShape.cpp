@@ -63,13 +63,13 @@ CompositeShape& CompositeShape::operator= (const CompositeShape& rOther)
 
 void CompositeShape::Offset(const Size2d& delta)
 {
-   std::for_each(m_Shapes.begin(), m_Shapes.end(), [&](auto& shape) {shape.first->Offset(delta); });
+   std::ranges::for_each(m_Shapes, [&](auto& shape) {shape.first->Offset(delta); });
    SetDirtyFlag();
 }
 
 void CompositeShape::Rotate(const Point2d& center, Float64 angle)
 {
-   std::for_each(m_Shapes.begin(), m_Shapes.end(), [&](auto& shape) {shape.first->Rotate(center,angle); });
+   std::ranges::for_each(m_Shapes, [&](auto& shape) {shape.first->Rotate(center,angle); });
    SetDirtyFlag();
 }
 
@@ -93,7 +93,7 @@ void CompositeShape::Rotate(Float64 cx, Float64 cy, Float64 angle)
    Rotate(Point2d(cx, cy), angle);
 }
 
-void CompositeShape::SetHookPoint(std::shared_ptr<Point2d>& hookPnt)
+void CompositeShape::SetHookPoint(std::shared_ptr<Point2d> hookPnt)
 {
    if (0 < m_Shapes.size()) m_Shapes.front().first->SetHookPoint(hookPnt);
 }
@@ -103,14 +103,14 @@ void CompositeShape::SetHookPoint(const Point2d& hookPnt)
    if (0 < m_Shapes.size()) m_Shapes.front().first->SetHookPoint(hookPnt);
 }
 
-std::shared_ptr<Point2d>& CompositeShape::GetHookPoint()
+std::shared_ptr<Point2d> CompositeShape::GetHookPoint()
 {
-   return (0 < m_Shapes.size() ? m_Shapes.front().first->GetHookPoint() : m_DummyHookPoint);
+   return (0 < m_Shapes.size() ? m_Shapes.front().first->GetHookPoint() : std::shared_ptr<Point2d>());
 }
 
-const std::shared_ptr<Point2d>& CompositeShape::GetHookPoint() const
+std::shared_ptr<const Point2d> CompositeShape::GetHookPoint() const
 {
-   return (0 < m_Shapes.size() ? m_Shapes.front().first->GetHookPoint() : m_DummyHookPoint);
+   return (0 < m_Shapes.size() ? m_Shapes.front().first->GetHookPoint() : std::shared_ptr<Point2d>());
 }
 
 Point2d CompositeShape::GetLocatorPoint(LocatorPoint point) const
@@ -121,7 +121,7 @@ Point2d CompositeShape::GetLocatorPoint(LocatorPoint point) const
       return Point2d(0, 0);
 }
 
-void CompositeShape::SetLocatorPoint(LocatorPoint lp, Point2d& position)
+void CompositeShape::SetLocatorPoint(LocatorPoint lp, const Point2d& position)
 {
    Move(lp, position);
 }
@@ -136,15 +136,13 @@ Float64 CompositeShape::GetFurthestDistance(const Line2d& line, Line2d::Side sid
    return fd;
 }
 
-void CompositeShape::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+std::pair<Point2d,Float64> CompositeShape::GetFurthestPoint(const Line2d& line, Line2d::Side side) const
 {
    Point2d fp;
    Float64 fd = -Float64_Max;
    for (const auto& pair : m_Shapes)
    {
-      Point2d p;
-      Float64 dist;
-      pair.first->GetFurthestPoint(line, side, p, dist);
+      auto [p,dist] = pair.first->GetFurthestPoint(line, side);
       if (fd < dist)
       {
          fp = p;
@@ -152,15 +150,14 @@ void CompositeShape::GetFurthestPoint(const Line2d& line, Line2d::Side side, Poi
       }
    }
 
-   furthestPoint = fp;
-   furthestDistance = fd;
+   return std::make_pair(fp, fd);
 }
 
 bool CompositeShape::PointInShape(const Point2d& p) const
 {
-   for (const auto& pair : m_Shapes)
+   for (const auto& [shape,type] : m_Shapes)
    {
-      if (pair.first->PointInShape(p) && pair.second == ShapeType::Solid)
+      if (shape->PointInShape(p) && type == ShapeType::Solid)
       {
          return true;
       }
@@ -192,14 +189,14 @@ Rect2d CompositeShape::GetBoundingBox() const
 std::vector<Point2d> CompositeShape::GetPolyPoints() const
 {
    if (m_Shapes.size() == 0)
-      return m_DummyPoints;
+      return std::vector<Point2d>();
    else
       return m_Shapes.front().first->GetPolyPoints();
 }
 
 void CompositeShape::Reflect(const Line2d& line)
 {
-   std::for_each(m_Shapes.begin(), m_Shapes.end(), [&line](auto& pair) {pair.first->Reflect(line); });
+   std::ranges::for_each(m_Shapes, [&line](auto& pair) {pair.first->Reflect(line); });
 }
 
 std::unique_ptr<Shape> CompositeShape::CreateReflectedShape(const Line2d& line) const
@@ -217,10 +214,10 @@ std::unique_ptr<Shape> CompositeShape::CreateClone() const
 std::unique_ptr<Shape> CompositeShape::CreateClippedShape(const Line2d& line, Line2d::Side side) const
 {
    std::unique_ptr<CompositeShape> clipped(std::make_unique<CompositeShape>());
-   for(const auto& pair : m_Shapes)
+   for(const auto& [shape,type] : m_Shapes)
    {
-      std::unique_ptr<Shape> clipped_piece = pair.first->CreateClippedShape(line, side);
-      if (clipped_piece) clipped->AddShape(std::move(clipped_piece), pair.second);
+      std::unique_ptr<Shape> clipped_piece = shape->CreateClippedShape(line, side);
+      if (clipped_piece) clipped->AddShape(std::move(clipped_piece), type);
    }
 
    if (clipped->GetShapeCount() == 0)
@@ -232,10 +229,10 @@ std::unique_ptr<Shape> CompositeShape::CreateClippedShape(const Line2d& line, Li
 std::unique_ptr<Shape> CompositeShape::CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const
 {
    std::unique_ptr<CompositeShape> clipped(std::make_unique<CompositeShape>());
-   for (const auto& pair : m_Shapes)
+   for (const auto& [shape,type] : m_Shapes)
    {
-      std::unique_ptr<Shape> clipped_piece = pair.first->CreateClippedShape(r, region);
-      if (clipped_piece) clipped->AddShape(std::move(clipped_piece), pair.second);
+      std::unique_ptr<Shape> clipped_piece = shape->CreateClippedShape(r, region);
+      if (clipped_piece) clipped->AddShape(std::move(clipped_piece), type);
    }
 
    if (clipped->GetShapeCount() == 0)
@@ -326,9 +323,9 @@ const ShapeProperties& CompositeShape::GetShapeProperties() const
       auto end = m_Shapes.end();
       for(; iter != end; iter++)
       {
-         const auto& pair(*iter);
-         const ShapeProperties& p = pair.first->GetProperties();
-         if (pair.second == ShapeType::Solid)
+         const auto& [shape,type](*iter);
+         const ShapeProperties& p = shape->GetProperties();
+         if (type == ShapeType::Solid)
             props += p; // shape is a solid
          else
             props -= p; // shape is a void
@@ -345,8 +342,8 @@ void CompositeShape::Copy(const CompositeShape& other)
    m_bIsDirty = other.m_bIsDirty;
    m_Properties = other.m_Properties;
 
-   for (const auto& pair : other.m_Shapes)
+   for (const auto& [shape,type] : other.m_Shapes)
    {
-      m_Shapes.emplace_back(pair.first->CreateClone(), pair.second);
+      m_Shapes.emplace_back(shape->CreateClone(), type);
    }
 }

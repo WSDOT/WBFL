@@ -46,9 +46,9 @@ BridgeFramingGeometry::BridgeFramingGeometry(IDType bridgeAlignmentID, const std
    std::shared_ptr<DiaphragmLineFactory> diaphragmLineFactory, std::shared_ptr<DeckBoundaryFactory> deckBoundaryFactory) :
    m_BridgeAlignmentID(bridgeAlignmentID)
 {
-   for (const auto& alignment : alignments)
+   for (const auto& [id,alignment] : alignments)
    {
-      AddAlignment(alignment.first, alignment.second);
+      AddAlignment(id, alignment);
    }
 
    m_LayoutLineFactory->AddFactory(layoutLineFactory);
@@ -232,10 +232,10 @@ std::shared_ptr<const Path> BridgeFramingGeometry::FindLayoutLine(IDType id) con
 {
    ValidateState(LayoutLineState);
 
-   for (const auto& layout_line_record : m_LayoutLines)
+   for (const auto& [ID,path] : m_LayoutLines)
    {
-      if (layout_line_record.first == id)
-         return layout_line_record.second;
+      if (ID == id)
+         return path;
    }
 
    return std::shared_ptr<const Path>();

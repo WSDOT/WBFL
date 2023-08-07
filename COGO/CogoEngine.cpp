@@ -183,9 +183,7 @@ STDMETHODIMP CCogoEngine::ByDistAngle(/*[in]*/ IPoint2d* from,/*[in]*/ IPoint2d*
    auto pntFrom = cogoUtil::GetPoint(from);
    auto pntTo = cogoUtil::GetPoint(to);
 
-   HRESULT hr;
-   WBFL::COGO::Angle angle;
-   std::tie(hr, angle) = cogoUtil::AngleFromVariant(varAngle);
+   auto [hr, angle] = cogoUtil::AngleFromVariant(varAngle);
    if (FAILED(hr)) return hr;
    return cogoUtil::CreatePoint(WBFL::COGO::COGO::LocateByDistanceAndAngle(pntFrom, pntTo, dist, angle, offset), point);
 }
@@ -206,9 +204,7 @@ STDMETHODIMP CCogoEngine::ByDistDefAngle(/*[in]*/ IPoint2d* from, /*[in]*/ IPoin
    auto pntFrom = cogoUtil::GetPoint(from);
    auto pntTo = cogoUtil::GetPoint(to);
 
-   HRESULT hr;
-   WBFL::COGO::Angle defAngle;
-   std::tie(hr, defAngle) = cogoUtil::AngleFromVariant(varDefAngle);
+   auto [hr, defAngle] = cogoUtil::AngleFromVariant(varDefAngle);
    if (FAILED(hr)) return hr;
    return cogoUtil::CreatePoint(WBFL::COGO::COGO::LocateByDistanceAndDeflectionAngle(pntFrom, pntTo, dist, defAngle, offset), point);
 }
@@ -220,9 +216,7 @@ STDMETHODIMP CCogoEngine::ByDistDir(/*[in]*/ IPoint2d* from, /*[in]*/ Float64 di
 
    auto pntFrom = cogoUtil::GetPoint(from);
 
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDir);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDir);
    if (FAILED(hr)) return hr;
    return cogoUtil::CreatePoint(WBFL::COGO::COGO::LocateByDistanceAndDirection(pntFrom, dist, direction, offset), point);
 }
@@ -248,8 +242,7 @@ STDMETHODIMP CCogoEngine::ParallelLineByPoints(/*[in]*/ IPoint2d* from,/*[in]*/ 
    auto pntFrom = cogoUtil::GetPoint(from);
    auto pntTo = cogoUtil::GetPoint(to);
 
-   WBFL::Geometry::Point2d pnt1, pnt2;
-   std::tie(pnt1, pnt2) = WBFL::COGO::COGO::LocateParallelLineByPoints(pntFrom, pntTo, offset);
+   auto [pnt1, pnt2] = WBFL::COGO::COGO::LocateParallelLineByPoints(pntFrom, pntTo, offset);
    HRESULT hr1 = cogoUtil::CreatePoint(pnt1, p1);
    HRESULT hr2 = cogoUtil::CreatePoint(pnt2, p2);
    return (FAILED(hr1) || FAILED(hr2) ? E_FAIL : S_OK);
@@ -270,12 +263,13 @@ STDMETHODIMP CCogoEngine::Bearings(/*[in]*/ IPoint2d* p1, /*[in]*/ VARIANT varDi
    CHECK_IN(p2);
    CHECK_RETOBJ(point);
 
-   HRESULT hr;
    auto pnt1 = cogoUtil::GetPoint(p1);
    auto pnt2 = cogoUtil::GetPoint(p2);
-   WBFL::COGO::Direction dir1, dir2;
-   std::tie(hr, dir1) = cogoUtil::DirectionFromVariant(varDir1);
+
+   auto [hr, dir1] = cogoUtil::DirectionFromVariant(varDir1);
    if (FAILED(hr)) return hr;
+
+   WBFL::COGO::Direction dir2;
    std::tie(hr, dir2) = cogoUtil::DirectionFromVariant(varDir2);
    if (FAILED(hr)) return hr;
 
@@ -293,9 +287,7 @@ STDMETHODIMP CCogoEngine::BearingCircle(/*[in]*/ IPoint2d* pnt1, /*[in]*/ VARIAN
       return E_INVALIDARG;
 
    // Get the input data and validate
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDir);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDir);
 
    auto p1 = cogoUtil::GetPoint(pnt1);
    auto pC = cogoUtil::GetPoint(pntCenter);
@@ -552,8 +544,7 @@ STDMETHODIMP CCogoEngine::External(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 
 
    auto c1 = cogoUtil::GetPoint(center1);
    auto c2 = cogoUtil::GetPoint(center2);
-   WBFL::Geometry::Point2d pnt1, pnt2;
-   std::tie(pnt1, pnt2) = WBFL::COGO::COGO::ExternalTangents(c1, radius1, c2, radius2, WBFL::COGO::TangentSign(sign));
+   auto [pnt1, pnt2] = WBFL::COGO::COGO::ExternalTangents(c1, radius1, c2, radius2, WBFL::COGO::TangentSign(sign));
    HRESULT hr1 = cogoUtil::CreatePoint(pnt1, t1);
    HRESULT hr2 = cogoUtil::CreatePoint(pnt2, t2);
    return (FAILED(hr1) || FAILED(hr2) ? E_FAIL : S_OK);
@@ -575,8 +566,7 @@ STDMETHODIMP CCogoEngine::Cross(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 rad
 
    auto c1 = cogoUtil::GetPoint(center1);
    auto c2 = cogoUtil::GetPoint(center2);
-   WBFL::Geometry::Point2d pnt1, pnt2;
-   std::tie(pnt1, pnt2) = WBFL::COGO::COGO::CrossingTangents(c1, radius1, c2, radius2, WBFL::COGO::TangentSign(sign));
+   auto [pnt1, pnt2] = WBFL::COGO::COGO::CrossingTangents(c1, radius1, c2, radius2, WBFL::COGO::TangentSign(sign));
    HRESULT hr1 = cogoUtil::CreatePoint(pnt1, t1);
    HRESULT hr2 = cogoUtil::CreatePoint(pnt2, t2);
    return (FAILED(hr1) || FAILED(hr2) ? E_FAIL : S_OK);

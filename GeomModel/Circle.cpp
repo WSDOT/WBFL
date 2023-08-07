@@ -28,6 +28,7 @@
 #include <GeomModel/ShapeProperties.h>
 #include <GeomModel/GeomOp2d.h>
 #include <MathEx.h>
+#include <numeric>
 
 using namespace WBFL::Geometry;
 
@@ -98,7 +99,7 @@ void Circle::SetParameters(const Point2d& center, Float64 radius)
    SetDirtyFlag();
 }
 
-std::pair<std::shared_ptr<Point2d>, Float64> Circle::GetParameters() const
+std::pair<std::shared_ptr<const Point2d>, Float64> Circle::GetParameters() const
 {
    return std::make_pair(GetHookPoint(), m_Radius);
 }
@@ -124,14 +125,14 @@ void Circle::ThroughThreePoints(const Point2d& p1, const Point2d& p2, const Poin
    if (line1.IsColinear(line2)) THROW_GEOMETRY(WBFL_GEOMETRY_E_COLINEARLINES);
 
    // Create lines that are normal to line1 and line2, passing through the midpoint
-   Float64 x1, y1; std::tie(x1,y1) = p1.GetLocation();
-   Float64 x2, y2; std::tie(x2,y2) = p2.GetLocation();
-   Float64 x3, y3; std::tie(x3,y3) = p3.GetLocation();
+   auto [x1,y1] = p1.GetLocation();
+   auto [x2,y2] = p2.GetLocation();
+   auto [x3,y3] = p3.GetLocation();
 
-   Float64 mx1 = (x1 + x2) / 2;
-   Float64 my1 = (y1 + y2) / 2;
-   Float64 mx2 = (x2 + x3) / 2;
-   Float64 my2 = (y2 + y3) / 2;
+   Float64 mx1 = std::midpoint(x1,x2);
+   Float64 my1 = std::midpoint(y1,y2);
+   Float64 mx2 = std::midpoint(x2,x3);
+   Float64 my2 = std::midpoint(y2,y3);
 
    // Line mid-points
    Point2d mp1(mx1, my1);
@@ -274,36 +275,34 @@ std::unique_ptr<Shape> Circle::CreateClippedShape(const Rect2d& r, Shape::ClipRe
 
 Float64 Circle::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
-   Point2d fp;
-   Float64 fd;
-   GetFurthestPoint(line, side, fp, fd);
+   auto [fp,fd] = GetFurthestPoint(line, side);
    return fd;
 }
 
-void Circle::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+std::pair<Point2d,Float64> Circle::GetFurthestPoint(const Line2d& line, Line2d::Side side) const
 {
-   Float64 c;
-   Vector2d n;
-   std::tie(c,n) = line.GetImplicit();
+   auto [c,n] = line.GetImplicit();
    Float64 angle = n.GetDirection();
    if (side == Line2d::Side::Right)
       angle += M_PI;
 
    Float64 x = cos(angle) * m_Radius + GetHookPoint()->X();
    Float64 y = sin(angle) * m_Radius + GetHookPoint()->Y();
-   furthestPoint.Move(x, y);
+   Point2d furthestPoint(x, y);
       
    CHECK(IsEqual(m_Radius, furthestPoint.Distance(*GetHookPoint())));
 
-   furthestDistance = line.DistanceToPoint(furthestPoint);
+   auto furthestDistance = line.DistanceToPoint(furthestPoint);
    if (side == Line2d::Side::Right)
       furthestDistance *= -1;
 
    // check distance from line to center
    CHECK(IsEqual(furthestDistance, (side == Line2d::Side::Right ? -1 : 1) * line.DistanceToPoint(*GetHookPoint()) + m_Radius));
 
-   // check point is on correct side of line. if furhtestDistance < 0, the correct side is the opposite side than the request
+   // check point is on correct side of line. if furthestDistance < 0, the correct side is the opposite side than the request
    CHECK(line.GetSide(furthestPoint) == (furthestDistance < 0 ? (side == Line2d::Side::Right ? Line2d::Side::Left : Line2d::Side::Right) : side));
+
+   return std::make_pair(furthestPoint, furthestDistance);
 }
 
 void Circle::Copy(const Circle& other)
@@ -319,8 +318,7 @@ void Circle::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
    Float64 rad = sqrt(M_PI * m_Radius * m_Radius /
       (NUM_POINTS * sin(M_PI / NUM_POINTS) * cos(M_PI / NUM_POINTS)));
 
-   Float64 cx, cy;
-   std::tie(cx,cy) = GetHookPoint()->GetLocation();
+   auto [cx,cy] = GetHookPoint()->GetLocation();
    for (Int32 i = 0; i <= NUM_POINTS; i++)
    {
       Float64 a = i * angle_inc;

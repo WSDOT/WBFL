@@ -126,7 +126,7 @@ BEGIN
     IDS_E_INVALID_INTEGER_ARRAY 
                             "Invalid SafeArray of Integers. Cannot process results."
     IDS_E_INVALID_VEHICULAR_CONTEXT 
-                            "A problem occured getting an interface from the VehicularContext."
+                            "A problem occurred getting an interface from the VehicularContext."
     IDS_E_VAR_AXLE_OOR      "Index of variable axle out of range for Vehicular Load %S"
     IDS_E_VAR_SPACING_OOR   "Variable axle spacing exceeds max for Vehicular Load %S"
 END

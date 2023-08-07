@@ -172,10 +172,7 @@ std::tuple<Direction::NSDirection, unsigned short, unsigned short, Float64, Dire
       dir = m_Direction - 3 * PI_OVER_2;
    }
 
-   short deg;
-   unsigned short min;
-   Float64 sec;
-   std::tie(deg,min,sec) = COGO::ToDMS(dir);
+   auto [deg,min,sec] = COGO::ToDMS(dir);
    return std::make_tuple(ns, deg, min, sec, ew);
 }
 
@@ -293,18 +290,12 @@ std::_tstring Direction::AsString(const std::_tstring& strFormat, bool bAsBearin
 
    value = COGO::NormalizeAngle(value);
 
-   std::_tstring strDegTag, strMinTag, strSecTag;
-   std::tie(strDegTag, strMinTag, strSecTag) = COGO::ParseAngleTags(strFormat);
+   auto [strDegTag, strMinTag, strSecTag] = COGO::ParseAngleTags(strFormat);
 
    std::_tostringstream os;
    if (bAsBearing)
    {
-      NSDirection ns;
-      EWDirection ew;
-      unsigned short deg;
-      unsigned short min;
-      Float64 sec;
-      std::tie(ns, deg, min, sec, ew) = GetDMS();
+      auto [ns, deg, min, sec, ew] = GetDMS();
 
       sec = IsZero(sec) ? 0.0 : sec;
 
@@ -322,10 +313,7 @@ std::_tstring Direction::AsString(const std::_tstring& strFormat, bool bAsBearin
    {
       // azimuth
       value = COGO::NormalizeAngle(PI_OVER_2 - value);
-      short deg;
-      unsigned short min;
-      Float64 sec;
-      std::tie(deg, min, sec) = WBFL::COGO::COGO::ToDMS(value);
+      auto [deg, min, sec] = WBFL::COGO::COGO::ToDMS(value);
 
       sec = IsZero(sec) ? 0.0 : sec;
 

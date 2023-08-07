@@ -194,7 +194,7 @@ public:                                                                    \
                                                                            \
 private:                                                                   \
      static Flags Flags;                                                   \
-     static LPTSTR Name;                                                    \
+     static LPCTSTR Name;                                                    \
 }
 
 #define DIAG_DECLARE_GROUP(g)                                              \
@@ -216,7 +216,7 @@ void dbgDiagGroup##g::Warn( Uint8 level, const std::_tstring& msg,              
           WBFL::Debug::Diagnostics::Warn( Name, msg, fname, line );                     \
 }                                                                          \
                                                                            \
-LPTSTR dbgDiagGroup##g::Name = _T(#g);                                          \
+LPCTSTR dbgDiagGroup##g::Name = _T(#g);                                          \
 WBFL::Debug::Diagnostics::Flags dbgDiagGroup##g::Flags = { (e), (l) }
 
 #define DIAG_ENABLE(g,s)            dbgDiagGroup##g::Enable(s)

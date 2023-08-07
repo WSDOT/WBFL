@@ -71,7 +71,7 @@ public:
    IndexType NumStrainLoads;
    IndexType NumSettlementLoads;
 
-   bool operator==(const ModelStats& rother)
+   bool operator==(const ModelStats& rother) const
    {
       return NumSpans                 == rother.NumSpans &&
              NumSuperstructureMembers == rother.NumSuperstructureMembers &&

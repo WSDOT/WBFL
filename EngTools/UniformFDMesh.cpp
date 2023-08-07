@@ -243,8 +243,8 @@ void UniformFDMesh::Update() const
    m_vElements.clear();
    m_vElements.reserve(m_vGridRows.back().firstElementIdx + m_vGridRows.back().nElements);
 
-   auto& iter = std::begin(m_vGridRows);
-   auto& end = std::end(m_vGridRows);
+   auto iter = std::begin(m_vGridRows);
+   auto end = std::end(m_vGridRows);
 
    // create elements for the first row
    // by definition, the top left and top right nodes are boundary nodes

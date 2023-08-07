@@ -117,8 +117,7 @@ void TransitionCurve::Init(const WBFL::Geometry::Point2d& start, const Direction
    y_ *= m_Sign * m_SignY;
 
    // start of transition curve in global coordinates
-   Float64 x, y;
-   std::tie(x,y) = m_StartPoint.GetLocation();
+   auto [x,y] = m_StartPoint.GetLocation();
 
    delta = m_StartDirectionValue;
    if (m_R1 < m_R2)
@@ -315,9 +314,7 @@ std::vector<WBFL::Geometry::Point2d> TransitionCurve::Divide(IndexType nParts) c
 
 Float64 TransitionCurve::DistanceFromStart(const WBFL::Geometry::Point2d& point) const
 {
-   Float64 dist;
-   WBFL::Geometry::Point2d prjPoint;
-   std::tie(dist,prjPoint) = DoProjectPoint(point);
+   auto [dist,prjPoint] = DoProjectPoint(point);
    return dist;
 }
 

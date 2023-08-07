@@ -325,9 +325,9 @@ STDMETHODIMP CDistributedLoad::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         CComBSTR or = LoadOrientationToString(m_Orientation);
+         CComBSTR orientation = LoadOrientationToString(m_Orientation);
 
-         hr = psave->put_Property(CComBSTR("Orientation"),CComVariant(or));
+         hr = psave->put_Property(CComBSTR("Orientation"),CComVariant(orientation));
          if (FAILED(hr))
             return hr;
 

@@ -66,12 +66,12 @@ namespace WBFL
          void Move(const Point2d& from, const Point2d& to);
          void Rotate(Float64 cx, Float64 cy, Float64 angle);
          void Rotate(const Point2d& center, Float64 angle);
-         void SetHookPoint(std::shared_ptr<Point2d>& hookPnt);
+         void SetHookPoint(std::shared_ptr<Point2d> hookPnt);
          void SetHookPoint(const Point2d& hookPnt);
-         std::shared_ptr<Point2d>& GetHookPoint();
-         const std::shared_ptr<Point2d>& GetHookPoint() const;
+         std::shared_ptr<Point2d> GetHookPoint();
+         std::shared_ptr<const Point2d> GetHookPoint() const;
          Point2d GetLocatorPoint(Shape::LocatorPoint lp) const;
-         void SetLocatorPoint(Shape::LocatorPoint lp, Point2d& position);
+         void SetLocatorPoint(Shape::LocatorPoint lp, const Point2d& position);
 
          /// Adds a component to the section.
          ///
@@ -121,7 +121,6 @@ namespace WBFL
 
       private:
          std::vector<SectionComponent> m_Components;
-         std::shared_ptr<Point2d> m_DummyHookPoint{ nullptr };
       };
 
    }; // Geometry

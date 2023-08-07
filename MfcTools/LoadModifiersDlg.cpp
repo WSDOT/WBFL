@@ -153,15 +153,15 @@ BOOL CLoadModifiersDlg::OnInitDialog()
    int idx;
 
    idx = GetPageIndex( m_pDuctilityPage.get() );
-	tcItem.pszText = _T("Ductility");
+	tcItem.pszText = (TCHAR*)TEXT("Ductility");
 	GetTabControl()->SetItem(idx, &tcItem );
 
    idx = GetPageIndex( m_pRedundancyPage.get() );
-	tcItem.pszText = _T("Redundancy");
+	tcItem.pszText = (TCHAR*)TEXT("Redundancy");
 	GetTabControl()->SetItem(idx, &tcItem );
    
    idx = GetPageIndex( m_pImportancePage.get() );
-	tcItem.pszText = _T("Importance");
+	tcItem.pszText = (TCHAR*)TEXT("Importance");
 	GetTabControl()->SetItem(idx, &tcItem );
 	
 	return bResult;

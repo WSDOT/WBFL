@@ -92,10 +92,8 @@ HRESULT CreateBridgeGeometry(const std::vector<std::tuple<IDType,Float64,BSTR>>&
 
    for (const auto& pier : vPiers)
    {
-      IDType id;
-      Float64 station;
-      CComBSTR strDirection;
-      std::tie(id, station, strDirection) = pier;
+      auto [id, station, strDirection] = pier;
+
       CComPtr<ISinglePierLineFactory> factory;
       TRY_TEST(factory.CoCreateInstance(CLSID_SinglePierLineFactory), S_OK);
       factory->put_PierLineID(id);
@@ -252,10 +250,7 @@ void CTestBridgeFramingGeometry::Test3()
 
    for (const auto& pier : piers)
    {
-      IDType id;
-      Float64 station;
-      CComBSTR direction;
-      std::tie(id, station, direction) = pier;
+      auto [id, station, direction] = pier;
       CComPtr<ISinglePierLineFactory> factory;
       TRY_TEST(factory.CoCreateInstance(CLSID_SinglePierLineFactory), S_OK);
       factory->put_PierLineID(id);

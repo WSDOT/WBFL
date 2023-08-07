@@ -77,11 +77,7 @@ STDMETHODIMP CDirection::get_NSDirection(NSDirectionType *pVal)
 {
    CHECK_RETVAL(pVal);
     
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns,d,m,s,ew) = m_Direction.GetDMS();
+   auto [ns,d,m,s,ew] = m_Direction.GetDMS();
 
    *pVal = (ns == WBFL::COGO::Direction::NSDirection::North ? nsNorth : nsSouth);
 
@@ -92,11 +88,8 @@ STDMETHODIMP CDirection::put_NSDirection(NSDirectionType newVal)
 {
    if (newVal != nsNorth && newVal != nsSouth) return E_INVALIDARG;
 
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
+
    ns = (newVal == nsNorth ? WBFL::COGO::Direction::NSDirection::North : WBFL::COGO::Direction::NSDirection::South);
    try { m_Direction.SetDMS(ns, d, m, s, ew); }
    catch (...) { return E_FAIL; }
@@ -106,11 +99,7 @@ STDMETHODIMP CDirection::put_NSDirection(NSDirectionType newVal)
 STDMETHODIMP CDirection::get_EWDirection(EWDirectionType *pVal)
 {
    CHECK_RETVAL(pVal);
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
 
    *pVal = (ew == WBFL::COGO::Direction::EWDirection::East ? ewEast : ewWest);
 
@@ -121,11 +110,8 @@ STDMETHODIMP CDirection::put_EWDirection(EWDirectionType newVal)
 {
    if (newVal != ewEast && newVal != ewWest) return E_INVALIDARG;
 
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
+
    ew = (newVal == ewEast ? WBFL::COGO::Direction::EWDirection::East: WBFL::COGO::Direction::EWDirection::West);
    try { m_Direction.SetDMS(ns, d, m, s, ew); }
    catch (...) { return E_INVALIDARG; }
@@ -135,22 +121,16 @@ STDMETHODIMP CDirection::put_EWDirection(EWDirectionType newVal)
 STDMETHODIMP CDirection::get_Degree(long *pVal)
 {
    CHECK_RETVAL(pVal);
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
+
    *pVal = d;
    return S_OK;
 }
 
 STDMETHODIMP CDirection::put_Degree(long newVal)
 {
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
    d = (unsigned short)newVal;
    try { m_Direction.SetDMS(ns, d, m, s, ew); }
    catch (...) { return E_INVALIDARG; }
@@ -160,11 +140,7 @@ STDMETHODIMP CDirection::put_Degree(long newVal)
 STDMETHODIMP CDirection::get_Minute(long *pVal)
 {
    CHECK_RETVAL(pVal);
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
    *pVal = m;
 
 	return S_OK;
@@ -172,11 +148,7 @@ STDMETHODIMP CDirection::get_Minute(long *pVal)
 
 STDMETHODIMP CDirection::put_Minute(long newVal)
 {
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
    m = (unsigned short)newVal;
    try { m_Direction.SetDMS(ns, d, m, s, ew); }
    catch (...) { return E_INVALIDARG; }
@@ -186,11 +158,7 @@ STDMETHODIMP CDirection::put_Minute(long newVal)
 STDMETHODIMP CDirection::get_Second(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
    *pVal = s;
 
 	return S_OK;
@@ -198,11 +166,7 @@ STDMETHODIMP CDirection::get_Second(Float64 *pVal)
 
 STDMETHODIMP CDirection::put_Second(Float64 newVal)
 {
-   WBFL::COGO::Direction::NSDirection ns;
-   unsigned short d, m;
-   Float64 s;
-   WBFL::COGO::Direction::EWDirection ew;
-   std::tie(ns, d, m, s, ew) = m_Direction.GetDMS();
+   auto [ns, d, m, s, ew] = m_Direction.GetDMS();
    s = (unsigned short)newVal;
    try { m_Direction.SetDMS(ns, d, m, s, ew); }
    catch (...) { return E_INVALIDARG; }
@@ -211,9 +175,7 @@ STDMETHODIMP CDirection::put_Second(Float64 newVal)
 
 STDMETHODIMP CDirection::IncrementBy(VARIANT varAngle)
 {
-   HRESULT hr;
-   WBFL::COGO::Angle inc_angle;
-   std::tie(hr, inc_angle) = cogoUtil::AngleFromVariant(varAngle);
+   auto [hr, inc_angle] = cogoUtil::AngleFromVariant(varAngle);
    if (FAILED(hr)) return hr;
 
    m_Direction.Increment(inc_angle);
@@ -225,9 +187,7 @@ STDMETHODIMP CDirection::Increment(VARIANT varAngle, IDirection* *pVal)
 {
    CHECK_RETOBJ(pVal);
    
-   HRESULT hr;
-   WBFL::COGO::Angle inc_angle;
-   std::tie(hr, inc_angle) = cogoUtil::AngleFromVariant(varAngle);
+   auto [hr, inc_angle] = cogoUtil::AngleFromVariant(varAngle);
    if (FAILED(hr)) return hr;
 
    auto new_direction = m_Direction.IncrementBy(inc_angle);
@@ -301,9 +261,7 @@ STDMETHODIMP CDirection::FromAzimuthEx(long Degree, long Minute, Float64 Second)
 
 STDMETHODIMP CDirection::FromVariant(VARIANT varDirection)
 {
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
    m_Direction = direction;
    return S_OK;

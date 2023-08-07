@@ -74,6 +74,7 @@
       <GenDoxygen>false</GenDoxygen>
       <GenIntellisense>true</GenIntellisense>
       <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <CxxStd>1</CxxStd>
     </CXX_Tree_Mapping_Rule>
     <PreBuildEvent>
       <Command />
@@ -157,13 +158,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CXX_Tree_Mapping_Rule>
-      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
       <OutDir>.\Schema</OutDir>
       <CharType>1</CharType>
       <GenSerialization>true</GenSerialization>
       <GenDoxygen>false</GenDoxygen>
       <GenIntellisense>true</GenIntellisense>
       <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <CxxStd>1</CxxStd>
     </CXX_Tree_Mapping_Rule>
     <PreBuildEvent>
       <Command />

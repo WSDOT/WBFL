@@ -263,11 +263,11 @@ STDMETHODIMP CUHPConcrete::ComputeStress(Float64 strain, Float64* pVal)
 {
    CHECK_RETVAL(pVal);
 
-   auto result = m_Model.ComputeStress(strain);
-   *pVal = result.first;
+   auto [stress, bStrainWithinLimits] = m_Model.ComputeStress(strain);
+   *pVal = stress;
    *pVal = WBFL::Units::ConvertFromSysUnits(*pVal, WBFL::Units::Measure::KSI);
    m_Convert->ConvertToBaseUnits(*pVal, m_ksiUnit, pVal);
-   return (result.second == true ? S_OK : S_FALSE);
+   return (bStrainWithinLimits ? S_OK : S_FALSE);
 };
 
 STDMETHODIMP CUHPConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)

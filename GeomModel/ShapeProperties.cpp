@@ -233,18 +233,16 @@ Float64 ShapeProperties::GetXright() const
 Float64 ShapeProperties::GetI11() const
 {
    MohrCircle ms(m_CurrIxx, m_CurrIyy, m_CurrIxy);
-   Float64 ixx, iyy, ixy, angle;
-   angle = ms.GetPrincipalDirection();
-   std::tie(ixx,iyy,ixy) = ms.ComputeState(angle);
+   auto angle = ms.GetPrincipalDirection();
+   auto [ixx,iyy,ixy] = ms.ComputeState(angle);
    return ixx;
 }
 
 Float64 ShapeProperties::GetI22() const
 {
    MohrCircle ms(m_CurrIxx, m_CurrIyy, m_CurrIxy);
-   Float64 ixx, iyy, ixy, angle;
-   angle = ms.GetPrincipalDirection();
-   std::tie(ixx,iyy,ixy) = ms.ComputeState(angle);
+   auto angle = ms.GetPrincipalDirection();
+   auto [ixx, iyy, ixy] = ms.ComputeState(angle);
    return iyy;
 }
 
@@ -351,9 +349,8 @@ void ShapeProperties::UpdateOrientation()
       {
          // not centroidal - need to rotate into orientation
          // first rotate about centroid
-         Float64 ixx, iyy, ixy;
          MohrCircle ms(m_Properties.ixx, m_Properties.iyy, m_Properties.ixy);
-         std::tie(ixx,iyy,ixy) = ms.ComputeState(m_Orientation);
+         auto [ixx,iyy,ixy] = ms.ComputeState(m_Orientation);
 
          // next need to transform into origin coordinates
          Point2d delta( m_Properties.centroid.X() - m_Origin.X(), m_Properties.centroid.Y() - m_Origin.Y());
@@ -384,11 +381,8 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
    Float64 ixx = 0, iyy = 0, ixy = 0; // about global axes
    Float64 mxx = 0, myy = 0;        // first moments
 
-   Float64 cx1, cy1;
-   std::tie(cx1,cy1) = m_Properties.centroid.GetLocation();
-
-   Float64 cx2, cy2;
-   std::tie(cx2,cy2) = other.GetCentroid().GetLocation();
+   auto [cx1,cy1] = m_Properties.centroid.GetLocation();
+   auto [cx2,cy2] = other.GetCentroid().GetLocation();
 
    mxx = m_Properties.area * m_Properties.centroid.Y() + scale* other.m_Properties.area * other.m_Properties.centroid.Y();
    myy = m_Properties.area * m_Properties.centroid.X() + scale * other.m_Properties.area * other.m_Properties.centroid.X();
@@ -408,8 +402,7 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
    m_Properties.centroid.Y() = mxx / m_Properties.area;
    m_Properties.centroid.X() = myy / m_Properties.area;
 
-   Float64 cgx, cgy;
-   std::tie(cgx,cgy) = m_Properties.centroid.GetLocation();
+   auto [cgx,cgy] = m_Properties.centroid.GetLocation();
 
    m_Properties.ixx = ixx - m_Properties.area * m_Properties.centroid.Y() * m_Properties.centroid.Y();
    m_Properties.iyy = iyy - m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.X();

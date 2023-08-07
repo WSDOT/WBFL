@@ -449,12 +449,12 @@ ILBAMModel* CTestPoiPlacement::CreateModel()
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   TCHAR* lgns[]={_T("Self Weight")};
+   CComBSTR lgns[]={_T("Self Weight")};
    for (long i = 0; i<1; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );
-      TRY_TEST( pLoadGroup->put_Name( CComBSTR(lgns[i]) ), S_OK );
+      TRY_TEST( pLoadGroup->put_Name( lgns[i] ), S_OK );
       TRY_TEST(pLoadGroups->Add(pLoadGroup), S_OK);
    }
 

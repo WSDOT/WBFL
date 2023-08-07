@@ -454,7 +454,7 @@ static void ComputeLlmMax(IndexType numPois, bool (*leftCompare)(Float64, Float6
          right_config = old_right_config;
       }
 
-      // only need to update if a new maximum occured
+      // only need to update if a new maximum occurred
       if (new_max_occurred)
       {
          hr = envResults->SetResult(poiIdx,left_result, left_config, right_result, right_config);

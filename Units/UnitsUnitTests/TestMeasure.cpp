@@ -11,14 +11,14 @@ namespace UnitsUnitTest
 	public:
 		
 		template<typename T>
-		void Check(const T& t, Float64 cf, TCHAR* strUnit)
+		void Check(const T& t, Float64 cf, LPCTSTR strUnit)
 		{
 			Assert::AreEqual(cf, t.GetConvFactor());
 			Assert::AreEqual(strUnit, t.UnitTag().c_str());
 		}
 
 		template<typename T>
-		void Check(const T& t, Float64 pre, Float64 cf, Float64 post, TCHAR* strUnit)
+		void Check(const T& t, Float64 pre, Float64 cf, Float64 post, LPCTSTR strUnit)
 		{
 			Assert::AreEqual(pre, t.GetPreTerm());
 			Assert::AreEqual(cf, t.GetConvFactor());

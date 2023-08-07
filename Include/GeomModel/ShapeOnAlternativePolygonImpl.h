@@ -47,7 +47,7 @@ namespace WBFL
 
          virtual std::vector<Point2d> GetPolyPoints() const override;
 
-         virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) override;
+         virtual void SetHookPoint(std::shared_ptr<Point2d> hookPnt) override;
          virtual void SetHookPoint(const Point2d& hookPnt) override;
 
          virtual void Offset(const Size2d& delta) override;

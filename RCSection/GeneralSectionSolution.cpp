@@ -134,9 +134,7 @@ namespace WBFL
 
       Float64 GeneralSectionSolutionImpl::GetNeutralAxisDirection() const
       {
-         WBFL::Geometry::Point2d p;
-         WBFL::Geometry::Vector2d d;
-         std::tie(p,d) = m_NeutralAxis.GetExplicit();
+         auto [p,d] = m_NeutralAxis.GetExplicit();
          return d.GetDirection();
       }
 

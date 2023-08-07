@@ -36,6 +36,10 @@ namespace WBFL
       {
       public:
          ConnectionGeometry() = default;
+         ConnectionGeometry(Float64 bearingOffset, MeasurementType brgOffsetMeasure, Float64 endDistance, MeasurementType endDistMeasure, MeasurementLocation endDistMeasureLocation) :
+            BearingOffset(bearingOffset), BearingOffsetMeasurementType(brgOffsetMeasure), EndDistance(endDistance), EndDistanceMeasurementType(endDistMeasure), EndDistanceMeasurementLocationType(endDistMeasureLocation)
+         {
+         }
          ConnectionGeometry(const ConnectionGeometry&) = default;
          ConnectionGeometry& operator=(const ConnectionGeometry& other) = default;
          ~ConnectionGeometry() = default;

@@ -68,7 +68,7 @@ bool ReportBuilder::IncludeTimingChapter() const
    return m_bIncludeTimingChapter;
 }
 
-void ReportBuilder::AddTitlePageBuilder(std::shared_ptr<TitlePageBuilder>& pTitlePageBuilder)
+void ReportBuilder::AddTitlePageBuilder(std::shared_ptr<TitlePageBuilder> pTitlePageBuilder)
 {
    m_pTitlePageBuilder = pTitlePageBuilder;
 }
@@ -78,12 +78,12 @@ std::shared_ptr<TitlePageBuilder> ReportBuilder::GetTitlePageBuilder()
    return m_pTitlePageBuilder;
 }
 
-void ReportBuilder::AddChapterBuilder(std::shared_ptr<ChapterBuilder>& pChapterBuilder)
+void ReportBuilder::AddChapterBuilder(std::shared_ptr<ChapterBuilder> pChapterBuilder)
 {
    m_ChapterBuilders.push_back( pChapterBuilder );
 }
 
-bool ReportBuilder::InsertChapterBuilder(std::shared_ptr<ChapterBuilder>& pNewChapterBuilder,LPCTSTR strKey)
+bool ReportBuilder::InsertChapterBuilder(std::shared_ptr<ChapterBuilder> pNewChapterBuilder,LPCTSTR strKey)
 {
    std::_tstring tstrAfterChapterKey(strKey);
 
@@ -182,7 +182,7 @@ ReportDescription ReportBuilder::GetReportDescription() const
    return rptDesc;
 }
 
-void ReportBuilder::SetReportSpecificationBuilder(std::shared_ptr<ReportSpecificationBuilder>& pRptSpecBuilder)
+void ReportBuilder::SetReportSpecificationBuilder(std::shared_ptr<ReportSpecificationBuilder> pRptSpecBuilder)
 {
    m_pRptSpecBuilder = pRptSpecBuilder;
 }
@@ -197,7 +197,7 @@ std::shared_ptr<const ReportSpecificationBuilder> ReportBuilder::GetReportSpecif
    return m_pRptSpecBuilder;
 }
 
-bool ReportBuilder::NeedsUpdate(const std::shared_ptr<const ReportHint>& pHint, const std::shared_ptr<const ReportSpecification>& pRptSpec) const
+bool ReportBuilder::NeedsUpdate(const std::shared_ptr<const ReportHint> pHint, const std::shared_ptr<const ReportSpecification> pRptSpec) const
 {
    std::vector<ChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
@@ -218,7 +218,7 @@ bool ReportBuilder::NeedsUpdate(const std::shared_ptr<const ReportHint>& pHint, 
    return false;
 }
 
-std::shared_ptr<rptReport> ReportBuilder::CreateReport(const std::shared_ptr<const ReportSpecification>& pRptSpec) const
+std::shared_ptr<rptReport> ReportBuilder::CreateReport(const std::shared_ptr<const ReportSpecification> pRptSpec) const
 {
    WBFL::System::Time start;
 

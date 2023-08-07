@@ -88,9 +88,7 @@ STDMETHODIMP CPathSegment::Clone(IPathElement** clone)
 
 STDMETHODIMP CPathSegment::Move(Float64 dist, VARIANT varDirection)
 {
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    m_Curve->Move(dist, direction);
@@ -138,9 +136,7 @@ STDMETHODIMP CPathSegment::LocatePoint(Float64 distFromStart, OffsetMeasureType 
 {
    CHECK_RETOBJ(ppPoint);
 
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreatePoint(m_Curve->LocatePoint(distFromStart, WBFL::COGO::OffsetType(offsetType), offset, direction), ppPoint);
@@ -165,10 +161,7 @@ STDMETHODIMP CPathSegment::ProjectPoint(IPoint2d* point, IPoint2d** ppProjPoint,
    CHECK_RETVAL(pDistFromStart);
    CHECK_RETVAL(pvbOnProjection);
 
-   WBFL::Geometry::Point2d prjPoint;
-   Float64 distFromStart;
-   bool bOnProjection;
-   std::tie(prjPoint, distFromStart, bOnProjection) = m_Curve->ProjectPoint(cogoUtil::GetPoint(point));
+   auto [prjPoint, distFromStart, bOnProjection] = m_Curve->ProjectPoint(cogoUtil::GetPoint(point));
    *pDistFromStart = distFromStart;
    *pvbOnProjection = (bOnProjection ? VARIANT_TRUE : VARIANT_FALSE);
    return cogoUtil::CreatePoint(prjPoint, ppProjPoint);

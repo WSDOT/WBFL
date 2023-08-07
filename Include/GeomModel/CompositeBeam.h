@@ -88,10 +88,10 @@ namespace WBFL
          void SetBeamDensity(Float64 d);
          Float64 GetBeamDensity() const;
 
-         void SetHookPoint(std::shared_ptr<Point2d>& hookPnt);
+         void SetHookPoint(std::shared_ptr<Point2d> hookPnt);
          void SetHookPoint(const Point2d& hookPnt);
-         std::shared_ptr<Point2d>& GetHookPoint();
-         const std::shared_ptr<Point2d>& GetHookPoint() const;
+         std::shared_ptr<Point2d> GetHookPoint();
+         std::shared_ptr<const Point2d> GetHookPoint() const;
 
          Rect2d GetBoundingBox(bool bExcludeNonstructuralComponents) const;
          std::unique_ptr<Section> CreateClippedSection(const Line2d& line, Line2d::Side side) const;

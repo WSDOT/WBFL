@@ -150,25 +150,25 @@ private:
 // IStructuredStorage2
 	STDMETHOD(Load)(IStructuredLoad2 * pLoad)
 	{
-      pLoad->BeginUnit(OLESTR("CPCompositeShape"));
+      pLoad->BeginUnit(CComBSTR("CPCompositeShape"));
 
       HRESULT hr;
       VARIANT var;
-      hr = pLoad->get_Property(OLESTR("X"), &var);
+      hr = pLoad->get_Property(CComBSTR("X"), &var);
       if (FAILED(hr)) return hr;
       m_X = var.dblVal;
 
-      hr = pLoad->get_Property(OLESTR("Y"), &var);
+      hr = pLoad->get_Property(CComBSTR("Y"), &var);
       if (FAILED(hr)) return hr;
       m_Y = var.dblVal;
 
-      hr = pLoad->get_Property(OLESTR("Count"), &var);
+      hr = pLoad->get_Property(CComBSTR("Count"), &var);
       if (FAILED(hr)) return hr;
       int cnt = var.intVal;
 
       for (int i = 0; i<cnt; i++)
       {
-         hr = pLoad->get_Property(OLESTR("Shape"), &var);
+         hr = pLoad->get_Property(CComBSTR("Shape"), &var);
          if (FAILED(hr)) return hr;
 
          ATLASSERT(var.punkVal!=nullptr);
@@ -194,22 +194,22 @@ private:
 	STDMETHOD(Save)(IStructuredSave2 * pSave)
 	{
       HRESULT hr;
-      hr = pSave->BeginUnit(OLESTR("CPCompositeShape"), 1.0);
+      hr = pSave->BeginUnit(CComBSTR("CPCompositeShape"), 1.0);
       if (FAILED(hr)) return hr;
 
-      hr = pSave->put_Property(OLESTR("X"), CComVariant(m_X));
+      hr = pSave->put_Property(CComBSTR("X"), CComVariant(m_X));
       if (FAILED(hr)) return hr;
 
-      hr = pSave->put_Property(OLESTR("Y"), CComVariant(m_Y));
+      hr = pSave->put_Property(CComBSTR("Y"), CComVariant(m_Y));
       if (FAILED(hr)) return hr;
 
       IndexType cnt = m_Shapes.size();
-      hr = pSave->put_Property(OLESTR("Count"), CComVariant(cnt));
+      hr = pSave->put_Property(CComBSTR("Count"), CComVariant(cnt));
       if (FAILED(hr)) return hr;
 
       for (IndexType i = 0; i<cnt; i++)
       {
-         hr = pSave->put_Property(OLESTR("Shape"), CComVariant(m_Shapes[i]));
+         hr = pSave->put_Property(CComBSTR("Shape"), CComVariant(m_Shapes[i]));
          if (FAILED(hr)) return hr;
       }
 

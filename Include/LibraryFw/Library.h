@@ -244,11 +244,18 @@ namespace WBFL
          bool GetEntryKey( const T& rValue, std::_tstring& rkey ) const
          {
             // linear search to compare pointers
-            for(const auto& entry : m_EntryList)
+#if (201703L <= _MSVC_LANG)
+            for (const auto& [name, item] : m_EntryList)
             {
-               if (&rValue == entry.second.get())
+#else
+            for (const auto& entry : m_EntryList)
+            {
+               const auto& name(entry.first);
+               auto& item(entry.second);
+#endif
+               if (&rValue == item.get())
                {
-                  rkey = entry.first;
+                  rkey = name;
                   return true;
                }
             }
@@ -355,12 +362,19 @@ namespace WBFL
             pSave->BeginUnit(_T("LIBRARY"), 1.0);
             pSave->Property(_T("LIBRARY_ID_NAME"), m_IdName.c_str());
             pSave->Property(_T("LIBRARY_DISPLAY_NAME"), m_DisplayName.c_str());
-            for(const auto& entry : m_EntryList)
+#if (201703L <= _MSVC_LANG)
+            for (const auto& [name, item] : m_EntryList)
             {
+#else
+            for (const auto& entry : m_EntryList)
+            {
+               const auto& name(entry.first);
+               auto& item(entry.second);
+#endif
                pSave->BeginUnit(_T("LIBRARY_ENTRY"),1.0);
-               pSave->Property(_T("ENTRY_KEY"), entry.first.c_str());
+               pSave->Property(_T("ENTRY_KEY"), name.c_str());
 
-               entry.second->SaveMe(pSave);
+               item->SaveMe(pSave);
 
                pSave->EndUnit();
             }
@@ -471,9 +485,15 @@ namespace WBFL
          void KeyList(KeyListType& rList) const
          {
             rList.clear();
-            for( const auto& entry : m_EntryList)
+#if (201703L <= _MSVC_LANG)
+            for( const auto& [name,item] : m_EntryList)
             {
-               rList.emplace_back(entry.first);
+#else
+            for(const auto& entry : m_EntryList)
+            {
+               const auto& name(entry.first);
+#endif
+               rList.emplace_back(name);
             }
          }
 

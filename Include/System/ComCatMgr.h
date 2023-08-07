@@ -41,7 +41,7 @@ namespace WBFL
 
          /// Creates a component category
          static HRESULT CreateCategory(
-            OLECHAR* lpszDesc, ///< Component category description
+            LPCTSTR lpszDesc, ///< Component category description
             const CATID& catid ///< Category ID
          );
 

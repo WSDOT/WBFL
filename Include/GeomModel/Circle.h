@@ -65,7 +65,7 @@ public:
 
    void SetParameters(const Point2d& center, Float64 radius);
    void SetParameters(std::shared_ptr<Point2d>& center, Float64 radius);
-   std::pair<std::shared_ptr<Point2d>, Float64> GetParameters() const;
+   std::pair<std::shared_ptr<const Point2d>, Float64> GetParameters() const;
 
    void ThroughTwoPoints(const Point2d& p1, const Point2d& p2);
    void ThroughThreePoints(const Point2d& p1, const Point2d& p2, const Point2d& p3);
@@ -111,7 +111,7 @@ public:
    virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
 
    /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
-   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
+   virtual std::pair<Point2d,Float64> GetFurthestPoint(const Line2d& line, Line2d::Side side) const override;
 
 protected:
    virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;

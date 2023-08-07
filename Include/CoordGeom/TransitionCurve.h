@@ -244,10 +244,7 @@ namespace WBFL
             CParallelLineFunction(const TransitionCurve* tc, const WBFL::Geometry::Line2d& line) :
                m_pCurve(tc), m_Line(line)
             {
-               WBFL::Geometry::Point2d p;
-               WBFL::Geometry::Vector2d v;
-               std::tie(p,v) = m_Line.GetExplicit();
-
+               auto [p,v] = m_Line.GetExplicit();
                m_Angle = v.GetDirection();
             }
 

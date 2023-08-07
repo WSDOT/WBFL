@@ -40,7 +40,7 @@ CEAFBrokerReportSpecificationBuilder::~CEAFBrokerReportSpecificationBuilder(void
 {
 }
 
-std::shared_ptr<WBFL::Reporting::ReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateReportSpec(const WBFL::Reporting::ReportDescription& rptDesc, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec) const
+std::shared_ptr<WBFL::Reporting::ReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateReportSpec(const WBFL::Reporting::ReportDescription& rptDesc, std::shared_ptr<WBFL::Reporting::ReportSpecification> pRptSpec) const
 {
    // create a regular report spec using the base class implementation... that way we get to use the UI
    auto pReportSpec = WBFL::Reporting::ReportSpecificationBuilder::CreateReportSpec(rptDesc,pRptSpec);

@@ -58,9 +58,9 @@ void CTestDistributedLoad::Test()
    TRY_TEST( d, 0.0 );
    TRY_TEST( pDistributedLoad->get_WEnd(&d), S_OK );
    TRY_TEST( d, 0.0 );
-   ldLoadOrientation or;
-   TRY_TEST( pDistributedLoad->get_Orientation(&or), S_OK );
-   TRY_TEST( or, ldloGlobal);
+   ldLoadOrientation orientation;
+   TRY_TEST( pDistributedLoad->get_Orientation(&orientation), S_OK );
+   TRY_TEST(orientation, ldloGlobal);
    ldLoadDirection dir;
    TRY_TEST( pDistributedLoad->get_Direction(&dir), S_OK );
    TRY_TEST( dir, ldldFy);
@@ -77,8 +77,8 @@ void CTestDistributedLoad::Test()
    // cause some events to fire
    TRY_TEST( pDistributedLoad->put_Orientation(ldloGlobalProjected), S_OK );
    TEST_LOAD_FIRED();
-   TRY_TEST( pDistributedLoad->get_Orientation(&or), S_OK );
-   TRY_TEST( or, ldloGlobalProjected );
+   TRY_TEST( pDistributedLoad->get_Orientation(&orientation), S_OK );
+   TRY_TEST(orientation, ldloGlobalProjected );
 
    TRY_TEST( pDistributedLoad->put_Direction(ldldFx), S_OK );
    TEST_LOAD_FIRED();

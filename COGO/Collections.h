@@ -297,11 +297,10 @@ public:
       if ( FAILED(hr) )
          return hr;
 
-      pSave->put_Property(CComBSTR("Count"),CComVariant(m_coll.size()));
+      pSave->put_Property(CComBSTR("Count"),CComVariant(__super::m_coll.size()));
 
-      std::map<IDType,CComVariant>::const_iterator iter;
       CComBSTR bstrItemName(GetItemName());
-      for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
+      for ( auto iter = __super::m_coll.begin(); iter != __super::m_coll.end(); iter++ )
       {
          pSave->BeginUnit(bstrItemName,m_ItemVersion);
 

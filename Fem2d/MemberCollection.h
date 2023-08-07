@@ -77,7 +77,7 @@ public:
 	STDMETHOD(Clear)() override;
 
 private:
-   HRESULT CMemberCollection::DuplicateJointError(JointIDType id);
+   HRESULT DuplicateJointError(JointIDType id);
 
 };
 

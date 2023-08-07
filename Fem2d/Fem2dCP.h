@@ -39,12 +39,12 @@ public:
 		CComVariant varResult;
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IFem2dModelEvents> events(sp);
          if ( events )
@@ -58,12 +58,12 @@ public:
 		CComVariant varResult;
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IFem2dModelEvents> events(sp);
          if ( events )

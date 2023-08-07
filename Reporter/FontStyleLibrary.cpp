@@ -81,9 +81,9 @@ void rptFontStyleLibrary::GetStyleNames(std::vector<rptStyleName, std::allocator
    myNames.push_back(_T("Default"));
 
    // get all names in map
-   for (StyleMap::const_iterator i=m_StyleMap.begin(); i!=m_StyleMap.end(); i++)
+   for(const auto& [name,style] : m_StyleMap)
    {
-      myNames.push_back( (*i).first );
+      myNames.push_back( name );
    }
 }
 

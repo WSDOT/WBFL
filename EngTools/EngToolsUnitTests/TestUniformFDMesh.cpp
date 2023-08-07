@@ -84,8 +84,7 @@ namespace EngToolsUnitTests
 			Assert::AreEqual((IndexType)INVALID_INDEX, element->Node[+FDMeshElement::Corner::TopRight]);
 			Assert::AreEqual((IndexType)8, element->Node[+FDMeshElement::Corner::TopLeft]);
 
-			IndexType Nx, Ny;
-			std::tie(Nx,Ny) = mesh.GetGridSize();
+			auto [Nx,Ny] = mesh.GetGridSize();
 			Assert::AreEqual((IndexType)5, Nx);
 			Assert::AreEqual((IndexType)6, Ny);
 		}

@@ -2420,8 +2420,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    std::vector<std::pair<Float64,Float64>> vPointLoads = pGirder->GetAdditionalLoads();
    for ( const auto& ptLoad : vPointLoads )
    {
-      Float64 X = ptLoad.first;
-      Float64 P = ptLoad.second;
+      auto [X, P](ptLoad);
       MemberIDType mbrID = 0;
       Float64 Xmbr;
 

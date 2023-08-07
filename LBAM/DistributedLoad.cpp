@@ -307,8 +307,8 @@ STDMETHODIMP CDistributedLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      _bstr_t or(var);
-      hr = StringToLoadOrientation(or, &m_Orientation);
+      _bstr_t orientation(var);
+      hr = StringToLoadOrientation(orientation, &m_Orientation);
       if (FAILED(hr))
          return hr;
 
@@ -381,9 +381,9 @@ STDMETHODIMP CDistributedLoad::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         _bstr_t or = LoadOrientationToString(m_Orientation);
+         _bstr_t orientation = LoadOrientationToString(m_Orientation);
 
-         hr = psave->put_Property(CComBSTR("Orientation"),_variant_t(or));
+         hr = psave->put_Property(CComBSTR("Orientation"),_variant_t(orientation));
          if (FAILED(hr))
             return hr;
 

@@ -167,8 +167,7 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
    IndexType symmetryIdx = 0;
    if (bIsSymmetric)
    {
-      IndexType Nx, Ny;
-      std::tie(Nx,Ny) = mesh->GetGridSize();
+      auto [Nx,Ny] = mesh->GetGridSize();
       symmetryIdx = Nx - 1;
    }
 
@@ -294,13 +293,12 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
    };
 
    WBFL::Geometry::Plane3d plane;
-   WBFL::Geometry::Point3d p0, p1, p2(dx/2,dy/2, center_value); // p2 is the center point
+   WBFL::Geometry::Point3d p2(dx/2,dy/2, center_value); // p2 is the center point
 
    for (long i = 0; i < 4; i++) // loop over the four planes
    {
       // three points to make a plane... the z value at all these points is set to zero
-      p0 = planePoints[i].first;
-      p1 = planePoints[i].second;
+      auto& [p0,p1] = planePoints[i];
 
       // set the z value based on the mesh results
       p0.Z() = pElement->Node[+elementCorners[i].first]  == INVALID_INDEX ? 0.0 : meshValues[pElement->Node[+elementCorners[i].first]];

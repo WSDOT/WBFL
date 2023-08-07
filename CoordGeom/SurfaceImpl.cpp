@@ -218,10 +218,10 @@ std::pair<Station, Station> SurfaceImpl::GetStationRange() const
 
 bool SurfaceImpl::ContainsStation(const Station& station) const
 {
-   auto boundary_stations = GetStationRange();
+   auto [start_station,end_station] = GetStationRange();
    auto alignment = GetProfile()->GetAlignment();
-   auto result1 = alignment->CompareStations(boundary_stations.first, station);
-   auto result2 = alignment->CompareStations(station, boundary_stations.second);
+   auto result1 = alignment->CompareStations(start_station, station);
+   auto result2 = alignment->CompareStations(station, end_station);
    if (0 <= result1 && 0 <= result2)
    {
       // station is between surface boundary stations
@@ -244,8 +244,7 @@ void SurfaceImpl::ConfigureSurfaceTemplate(std::shared_ptr<SurfaceTemplate> surf
    const auto& station = surfaceTemplate->GetStation();
 
    // Find the two surface templates that bound the station.
-   std::shared_ptr<SurfaceTemplate> template1, template2;
-   std::tie(template1, template2) = GetBoundingTemplates(station);
+   auto [template1, template2] = GetBoundingTemplates(station);
 
    // number of templates segments must be the same in both templates
    auto nSegments1 = template1->GetCount();
@@ -265,15 +264,11 @@ void SurfaceImpl::ConfigureSurfaceTemplate(std::shared_ptr<SurfaceTemplate> surf
    for (IndexType segIdx = 0; segIdx < nSegments1; segIdx++)
    {
       // Get these values from the Template
-      Float64 width1, width2;
-      Float64 slope1, slope2;
-      SurfaceTemplateSegment::SlopeType slopeType1, slopeType2;
-
       const auto& segment1 = template1->GetSegment(segIdx);
       const auto& segment2 = template2->GetSegment(segIdx);
 
-      std::tie(width1, slope1, slopeType1) = segment1.GetParameters();
-      std::tie(width2, slope2, slopeType2) = segment2.GetParameters();
+      auto [width1, slope1, slopeType1] = segment1.GetParameters();
+      auto [width2, slope2, slopeType2] = segment2.GetParameters();
 
       if (slopeType1 != slopeType2 && (slopeType1 == SurfaceTemplateSegment::SlopeType::Horizontal || slopeType2 == SurfaceTemplateSegment::SlopeType::Horizontal))
       {
@@ -346,9 +341,7 @@ void SurfaceImpl::ConfigureSurfaceProfile(std::shared_ptr<SurfaceProfile> surfac
       {
          const auto& ridgeLine = vRidgeLines[ridgeLineIdx];
 
-         bool bFound;
-         WBFL::Geometry::Point2d point;
-         std::tie(bFound, point) = ridgeLine->Intersect(cutLine, point_on_alignment, true, true);
+         auto [bFound, point] = ridgeLine->Intersect(cutLine, point_on_alignment, true, true);
 
          if (bFound == false && (subSurfaceIdx == 0 || subSurfaceIdx == nSubSurfaces - 1))
          {
@@ -373,9 +366,7 @@ void SurfaceImpl::ConfigureSurfaceProfile(std::shared_ptr<SurfaceProfile> surfac
 
          if (bFound)
          {
-            Station station;
-            Float64 normal_offset;
-            std::tie(station, normal_offset) = alignment->StationAndOffset(point);
+            auto [station, normal_offset] = alignment->StationAndOffset(point);
             Float64 elev = GetProfile()->Elevation(GetSurface(), station, normal_offset);
 
             Float64 cut_line_offset = point_on_alignment.Distance(point);

@@ -102,8 +102,8 @@ UHPCLosses::UHPCLosses(
                          bool bIgnoreInitialRelaxation,
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod,
-                         std::shared_ptr<const CreepCoefficient2005>& pGirderCreep,
-                         std::shared_ptr<const CreepCoefficient2005>& pDeckCreep
+                         std::shared_ptr<const CreepCoefficient2005> pGirderCreep,
+                         std::shared_ptr<const CreepCoefficient2005> pDeckCreep
                          ) :
 RefinedLosses2005(x, Lg, sectionProperties, gradePerm, typePerm, coatingPerm, gradeTemp, typeTemp, coatingTemp, fpjPerm, fpjTemp, ApsPerm, ApsTemp, aps, epermRelease, epermFinal, etemp, usage, anchorSet, wobble, friction, angleChange, ShrinkageK1, ShrinkageK2,  DeckShrinkageK1, DeckShrinkageK2, 
    Fc, Fci,FcSlab, Ec, Eci, Ecd, 

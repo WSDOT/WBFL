@@ -174,8 +174,8 @@ BEGIN
     IDS_E_JOINT_DISP_TO_FIXED_DOF_ONLY 
                             "Joint Deflections may be applied to supported DOF's only. Joint Deflection %d at Joint %d attempts to load a free DOF."
     IDS_E_MATRIX_BACK_SUBSTITUTION 
-                            "Error occured during matrix solution while solving for joint %d, dof=%d. It is likely that the structure is unstable."
-    IDS_E_MATRIX_FACTORING  "Error occured during matrix factoring while solving for joint %d, dof=%d. It is likely that the structure is unstable."
+                            "Error occurred during matrix solution while solving for joint %d, dof=%d. It is likely that the structure is unstable."
+    IDS_E_MATRIX_FACTORING  "Error occurred during matrix factoring while solving for joint %d, dof=%d. It is likely that the structure is unstable."
     IDS_E_DIST_LOAD_OFF_GIRDER_END 
                             "Distrubuted load %d in Loading %d is located beyond the end of a member"
     IDS_E_DIST_LOAD_REF_MEMBER_NOT_EXISTS 

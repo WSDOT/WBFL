@@ -24,6 +24,8 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include "StdAfx.h"
+
+#define SKIP_TEMPLATE
 #include "TestSeg.h"
 
 #ifdef _DEBUG

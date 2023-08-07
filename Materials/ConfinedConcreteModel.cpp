@@ -122,8 +122,7 @@ std::pair<Float64, bool> ConfinedConcreteModel::ComputeStress(Float64 strain) co
    strain *= -1.0; // swap signs so we are working with positive strains
 
    Float64 Ec = GetEc();
-   Float64 fr, fcc, ecc;
-   std::tie(fr,fcc,ecc) = ComputeConcreteProperties();
+   auto [fr, fcc, ecc] = ComputeConcreteProperties();
 
    fr = WBFL::Units::ConvertFromSysUnits(fr, WBFL::Units::Measure::PSI);
    fcc = WBFL::Units::ConvertFromSysUnits(fcc, WBFL::Units::Measure::PSI);
@@ -149,8 +148,7 @@ void ConfinedConcreteModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxSt
    PRECONDITION(pMinStrain != nullptr);
    PRECONDITION(pMaxStrain != nullptr);
 
-   Float64 fr, fcc, ecc;
-   std::tie(fr,fcc,ecc) = ComputeConcreteProperties();
+   auto [fr, fcc, ecc] = ComputeConcreteProperties();
 
    fr = WBFL::Units::ConvertFromSysUnits(fr, WBFL::Units::Measure::PSI);
    fcc = WBFL::Units::ConvertFromSysUnits(fcc, WBFL::Units::Measure::PSI);
@@ -170,8 +168,7 @@ void ConfinedConcreteModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxSt
 
 Float64 ConfinedConcreteModel::GetStrainAtPeakStress() const
 {
-   Float64 fr, fcc, ecc;
-   std::tie(fr,fcc,ecc) = ComputeConcreteProperties();
+   auto [fr, fcc, ecc] = ComputeConcreteProperties();
    return -ecc;
 }
 

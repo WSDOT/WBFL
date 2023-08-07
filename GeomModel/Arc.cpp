@@ -168,32 +168,25 @@ std::vector<Point2d> Arc::Divide(IndexType nSpaces) const
 
    std::vector<Point2d> vPoints;
 
-   Float64 sx, sy; // Start Point
-   Float64 cx, cy; // Center Point
-   Float64 ex, ey; // End point
-   Float64 radius; // Radius (measured center to start)
-   Float64 dir;    // Direction of start vector measured from Y = 0 (+X)
+   auto [sx, sy]  = m_Start.GetLocation(); // start point
+   auto [cx, cy] = m_Center.GetLocation(); // center point
+   auto [ex, ey] = m_End.GetLocation(); // end point
 
-   std::tie(sx,sy) = m_Start.GetLocation();
-   std::tie(cx,cy) = m_Center.GetLocation();
-   std::tie(ex,ey) = m_End.GetLocation();
+   auto radius = sqrt(pow(sx - cx, 2) + pow(sy - cy, 2)); // Radius (measured center to start)
+   auto dir = atan2(sy - cy, sx - cx);// Direction of start vector measured from Y = 0 (+X) 
 
-   radius = sqrt(pow(sx - cx, 2) + pow(sy - cy, 2));
-
-   dir = atan2(sy - cy, sx - cx);
-
-   Float64 sweep_angle = GetCentralAngle();
-   Float64 delta_angle = sweep_angle / nSpaces;
+   auto sweep_angle = GetCentralAngle();
+   auto delta_angle = sweep_angle / nSpaces;
 
    vPoints.emplace_back(m_Start);
 
-   for (IndexType i = 0; i < nSpaces - 1; i++)
+   for (auto i = 0; i < nSpaces - 1; i++)
    {
-      Float64 angle = dir + (i + 1) * delta_angle;
-      Float64 dx = radius * cos(angle);
-      Float64 dy = radius * sin(angle);
-      Float64 x = cx + dx;
-      Float64 y = cy + dy;
+      auto angle = dir + (i + 1) * delta_angle;
+      auto dx = radius * cos(angle);
+      auto dy = radius * sin(angle);
+      auto x = cx + dx;
+      auto y = cy + dy;
 
       vPoints.emplace_back(x, y);
    }

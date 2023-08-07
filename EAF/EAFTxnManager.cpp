@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 std::unique_ptr<CEAFTxnManagerFactory> CEAFTxnManager::ms_pFactory;
 std::unique_ptr<CEAFTxnManager> CEAFTxnManager::ms_pInstance;
 
-void CEAFTxnManager::Execute(CEAFTransaction& txn)
+void CEAFTxnManager::Execute(const CEAFTransaction& txn)
 {
    Execute(std::move(txn.CreateClone()));
 }

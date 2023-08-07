@@ -56,11 +56,12 @@ namespace WBFL
       class ROARKCLASS RoarkBeam
       {
       public:
+         RoarkBeam() = default;
          RoarkBeam(Float64 length,Float64 ei);
-         RoarkBeam(const RoarkBeam&) = delete;
+         RoarkBeam(const RoarkBeam&) = default;
          virtual ~RoarkBeam() {}
 
-         RoarkBeam& operator=(const RoarkBeam&) = delete;
+         RoarkBeam& operator=(const RoarkBeam&) = default;
 
       public:
          /// Beam length

@@ -34,12 +34,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[2];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -58,12 +58,12 @@
 //		CComVariant varResult;
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -81,12 +81,12 @@
 //		CComVariant varResult;
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -104,12 +104,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[1];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -127,12 +127,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[3];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -152,12 +152,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[5];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -179,12 +179,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[8];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -209,12 +209,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[2];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -233,12 +233,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[2];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -257,12 +257,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[1];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -280,12 +280,12 @@
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;
 //		CComVariant* pvars = new CComVariant[1];
-//		int nConnections = m_vec.GetSize();
+//		int nConnections = __super::m_vec.GetSize();
 //		
 //		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 //		{
 //			pT->Lock();
-//			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+//			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
 //			if (pDispatch != nullptr)
@@ -310,12 +310,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIDistributedLoadEvents> events(sp);
          if (events)
@@ -333,12 +333,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIDistributedLoadsEvents> events(sp);
          if ( events )
@@ -349,12 +349,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIDistributedLoadsEvents> events(sp);
          if ( events )
@@ -365,12 +365,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIDistributedLoadsEvents> events(sp);
          if ( events )
@@ -388,12 +388,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldISettlementLoadEvents> events(sp);
          if ( events )
@@ -411,12 +411,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldISettlementLoadsEvents> events(sp);
          if ( events )
@@ -427,12 +427,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldISettlementLoadsEvents> events(sp);
          if ( events )
@@ -443,12 +443,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldISettlementLoadsEvents> events(sp);
          if ( events )
@@ -466,12 +466,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldITemperatureLoadEvents> events(sp);
          if ( events )
@@ -490,12 +490,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldITemperatureLoadsEvents> events(sp);
          if (events)
@@ -506,12 +506,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldITemperatureLoadsEvents> events(sp);
          if (events)
@@ -522,12 +522,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldITemperatureLoadsEvents> events(sp);
          if (events)
@@ -545,12 +545,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIStrainLoadEvents> events(sp);
          if (events)
@@ -568,12 +568,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIStrainLoadsEvents> events(sp);
          if ( events )
@@ -584,12 +584,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIStrainLoadsEvents> events(sp);
          if ( events )
@@ -600,12 +600,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIStrainLoadsEvents> events(sp);
          if ( events )
@@ -625,12 +625,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIAxlesEvents> events(sp);
          if (events)
@@ -641,12 +641,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIAxlesEvents> events(sp);
          if (events)
@@ -657,12 +657,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIAxlesEvents> events(sp);
          if (events)
@@ -673,12 +673,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIAxlesEvents> events(sp);
          if (events)
@@ -689,12 +689,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIAxlesEvents> events(sp);
          if (events)
@@ -705,12 +705,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIAxlesEvents> events(sp);
          if (events)
@@ -728,12 +728,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIAxleEvents> events(sp);
          if (events)
@@ -751,12 +751,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIVehicularLoadEvents> events(sp);
          if ( events )
@@ -774,12 +774,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIVehicularLoadsEvents> events(sp);
          if ( events )
@@ -790,12 +790,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIVehicularLoadsEvents> events(sp);
          if ( events )
@@ -806,12 +806,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIVehicularLoadsEvents> events(sp);
          if ( events )
@@ -822,12 +822,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldIVehicularLoadsEvents> events(sp);
          if ( events )
@@ -845,12 +845,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCaseEvents> events(sp);
          if (events)
@@ -861,12 +861,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCaseEvents> events(sp);
          if (events)
@@ -883,12 +883,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCasesEvents> events(sp);
          if (events)
@@ -899,12 +899,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCasesEvents> events(sp);
          if (events)
@@ -915,12 +915,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCasesEvents> events(sp);
          if (events)
@@ -931,12 +931,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCasesEvents> events(sp);
          if (events)
@@ -953,12 +953,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadGroupEvents> events(sp);
          if ( events )
@@ -969,12 +969,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadGroupEvents> events(sp);
          if ( events )
@@ -992,12 +992,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadGroupsEvents> events(sp);
          if ( events )
@@ -1008,12 +1008,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadGroupsEvents> events(sp);
          if ( events )
@@ -1024,12 +1024,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadGroupsEvents> events(sp);
          if ( events )
@@ -1040,12 +1040,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadGroupsEvents> events(sp);
          if ( events )
@@ -1063,12 +1063,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCombinationEvents> events(sp);
          if ( events )
@@ -1079,12 +1079,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCombinationEvents> events(sp);
          if ( events )
@@ -1102,12 +1102,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCombinationsEvents> events(sp);
          if ( events )
@@ -1120,12 +1120,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCombinationsEvents> events(sp);
          if ( events )
@@ -1136,12 +1136,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCombinationsEvents> events(sp);
          if ( events )
@@ -1152,12 +1152,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ldILoadCombinationsEvents> events(sp);
          if ( events )
@@ -1178,12 +1178,12 @@ public:
 		HRESULT ret = S_OK;
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
 			ldIPointLoadEvents* pIPointLoadEvents = reinterpret_cast<ldIPointLoadEvents*>(sp.p);
 			if (pIPointLoadEvents != nullptr)
@@ -1203,12 +1203,12 @@ public:
 		HRESULT ret = S_OK;
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
 			ldIPointLoadsEvents* pIPointLoadsEvents = reinterpret_cast<ldIPointLoadsEvents*>(sp.p);
 			if (pIPointLoadsEvents != nullptr)
@@ -1221,12 +1221,12 @@ public:
 		HRESULT ret = S_OK;
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
 			ldIPointLoadsEvents* pIPointLoadsEvents = reinterpret_cast<ldIPointLoadsEvents*>(sp.p);
 			if (pIPointLoadsEvents != nullptr)
@@ -1239,12 +1239,12 @@ public:
 		HRESULT ret = S_OK;
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
 			ldIPointLoadsEvents* pIPointLoadsEvents = reinterpret_cast<ldIPointLoadsEvents*>(sp.p);
 			if (pIPointLoadsEvents != nullptr)

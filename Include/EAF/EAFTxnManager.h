@@ -65,7 +65,7 @@ public:
    /// A copy of this transaction is made using CreateClone()
    /// The cloned transaction is maintained in the transaction history
    /// and will be used for Undo/Redo/Repeat if permitted
-   virtual void Execute(CEAFTransaction& rTxn);
+   virtual void Execute(const CEAFTransaction& rTxn);
 
    /// @brief Executes a transaction.
    /// The transaction is maintained in the transaction history

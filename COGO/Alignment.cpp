@@ -59,11 +59,11 @@ void CAlignment::SetAlignment(std::shared_ptr<WBFL::COGO::Alignment> alignment)
    }
    
    m_Profiles.clear();
-   for(const auto& profile_record : m_Alignment->GetProfiles())
+   for(const auto& [id,profile] : m_Alignment->GetProfiles())
    {
-      CComPtr<IProfile> profile;
-      cogoUtil::CreateProfile(profile_record.second, &profile);
-      m_Profiles.emplace(profile_record.first, profile);
+      CComPtr<IProfile> new_profile;
+      cogoUtil::CreateProfile(profile, &new_profile);
+      m_Profiles.emplace(id, new_profile);
    }
 }
 
@@ -81,10 +81,8 @@ void CAlignment::Validate() const
       ATLASSERT(cogoUtil::GetInnerPathElement(path_element) == m_Alignment->GetPathElement(idx++));
    }
 
-   for (auto profile_data : m_Profiles)
+   for (const auto& [ID,profile] : m_Profiles)
    {
-      auto ID = profile_data.first;
-      auto profile = profile_data.second;
       ATLASSERT(cogoUtil::GetInnerProfile(profile) == m_Alignment->GetProfile(ID));
    }
 }
@@ -114,9 +112,7 @@ STDMETHODIMP CAlignment::get_RefStation(IStation** station)
 
 STDMETHODIMP CAlignment::put_RefStation(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
    m_Alignment->SetReferenceStation(station);
    return S_OK;
@@ -200,9 +196,7 @@ STDMETHODIMP CAlignment::ClearProfiles()
 
 STDMETHODIMP CAlignment::Move(Float64 dist, VARIANT varDirection)
 {
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
    m_Alignment->Move(dist, direction);
    VALIDATE;
@@ -216,9 +210,7 @@ STDMETHODIMP CAlignment::StationAndOffset(IPoint2d* point, IStation** station, F
    CHECK_RETVAL(offset);
    VALIDATE;
 
-   WBFL::COGO::Station s;
-   Float64 o;
-   std::tie(s, o) = m_Alignment->StationAndOffset(cogoUtil::GetPoint(point));
+   auto [s, o] = m_Alignment->StationAndOffset(cogoUtil::GetPoint(point));
    *offset = o;
    return cogoUtil::CreateStation(s, station);
 }
@@ -231,10 +223,7 @@ STDMETHODIMP CAlignment::ProjectPoint(IPoint2d* point, IPoint2d** newPoint, ISta
    CHECK_RETVAL(pvbOnProjection);
    VALIDATE;
 
-   WBFL::Geometry::Point2d np;
-   WBFL::COGO::Station station;
-   bool bOP;
-   std::tie(np, station, bOP) = m_Alignment->ProjectPoint(cogoUtil::GetPoint(point));
+   auto [np, station, bOP] = m_Alignment->ProjectPoint(cogoUtil::GetPoint(point));
 
    *pvbOnProjection = (bOP ? VARIANT_TRUE : VARIANT_FALSE);
    cogoUtil::CreateStation(station, ppStation);
@@ -246,9 +235,7 @@ STDMETHODIMP CAlignment::LocatePoint( VARIANT varStation, OffsetMeasureType offs
    CHECK_RETOBJ(newPoint);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    WBFL::COGO::Direction direction;
@@ -265,9 +252,7 @@ STDMETHODIMP CAlignment::Intersect(ILine2d* pLine, IPoint2d* pNearest, IPoint2d*
    CHECK_RETOBJ(point);
    VALIDATE;
 
-   bool bFound;
-   WBFL::Geometry::Point2d ip;
-   std::tie(bFound, ip) = m_Alignment->Intersect(cogoUtil::GetLine(pLine), cogoUtil::GetPoint(pNearest), true, true);
+   auto [bFound, ip] = m_Alignment->Intersect(cogoUtil::GetLine(pLine), cogoUtil::GetPoint(pNearest), true, true);
    if (bFound)
       return cogoUtil::CreatePoint(ip, point);
    else
@@ -281,9 +266,7 @@ STDMETHODIMP CAlignment::IntersectEx(ILine2d* pLine, IPoint2d* pNearest, VARIANT
    CHECK_RETOBJ(point);
    VALIDATE;
 
-   bool bFound;
-   WBFL::Geometry::Point2d ip;
-   std::tie(bFound, ip) = m_Alignment->Intersect(cogoUtil::GetLine(pLine), cogoUtil::GetPoint(pNearest), vbProjectBack == VARIANT_TRUE, vbProjectAhead == VARIANT_TRUE);
+   auto [bFound, ip] = m_Alignment->Intersect(cogoUtil::GetLine(pLine), cogoUtil::GetPoint(pNearest), vbProjectBack == VARIANT_TRUE, vbProjectAhead == VARIANT_TRUE);
    if (bFound)
       return cogoUtil::CreatePoint(ip, point);
    else
@@ -295,9 +278,7 @@ STDMETHODIMP CAlignment::GetBearing(VARIANT varStation,IDirection* *dir)
    CHECK_RETOBJ(dir);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreateDirection(m_Alignment->GetBearing(station), dir);
@@ -308,9 +289,7 @@ STDMETHODIMP CAlignment::GetNormal(VARIANT varStation,IDirection* *dir)
    CHECK_RETOBJ(dir);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreateDirection(m_Alignment->GetNormal(station), dir);
@@ -323,9 +302,7 @@ STDMETHODIMP CAlignment::GetDirection(VARIANT varStation, BSTR bstrOrientation,I
 
    CHECK_RETOBJ(direction);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
 
@@ -347,11 +324,10 @@ STDMETHODIMP CAlignment::CreateSubAlignment(VARIANT varStartStation,VARIANT varE
    CHECK_RETOBJ(ppAlignment);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station startStation, endStation;
-   std::tie(hr, startStation) = cogoUtil::StationFromVariant(varStartStation);
+   auto [hr, startStation] = cogoUtil::StationFromVariant(varStartStation);
    if (FAILED(hr)) return hr;
 
+   WBFL::COGO::Station endStation;
    std::tie(hr, endStation) = cogoUtil::StationFromVariant(varEndStation);
    if (FAILED(hr)) return hr;
 
@@ -380,11 +356,10 @@ STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation, VARIANT varEndSt
    CHECK_RETOBJ(path);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station startStation, endStation;
-   std::tie(hr, startStation) = cogoUtil::StationFromVariant(varStartStation);
+   auto [hr, startStation] = cogoUtil::StationFromVariant(varStartStation);
    if (FAILED(hr)) return hr;
 
+   WBFL::COGO::Station endStation;
    std::tie(hr, endStation) = cogoUtil::StationFromVariant(varEndStation);
    if (FAILED(hr)) return hr;
 
@@ -424,9 +399,7 @@ STDMETHODIMP CAlignment::IncrementStation(VARIANT varStation, Float64 distance, 
 {
    CHECK_RETOBJ(ppStation);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreateStation(m_Alignment->IncrementStation(station, distance), ppStation);
@@ -443,9 +416,7 @@ STDMETHODIMP CAlignment::ConvertToNormalizedStation(VARIANT varStation, Float64*
 {
    CHECK_RETVAL(pStation);
    
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *pStation = m_Alignment->ConvertToNormalizedStation(station).GetValue();
@@ -456,9 +427,7 @@ STDMETHODIMP CAlignment::ConvertToNormalizedStationEx(VARIANT varStation, IStati
 {
    CHECK_RETOBJ(ppStation);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreateStation(m_Alignment->ConvertToNormalizedStation(station), ppStation);
@@ -475,9 +444,7 @@ STDMETHODIMP CAlignment::ConvertFromNormalizedStationEx(VARIANT varStation, ISta
 {
    CHECK_RETOBJ(ppStation);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreateStation(m_Alignment->ConvertFromNormalizedStation(station), ppStation);
@@ -487,9 +454,7 @@ STDMETHODIMP CAlignment::CompareStations(VARIANT varStation1, VARIANT varStation
 {
    CHECK_RETVAL(pResult);
 
-   HRESULT hr;
-   WBFL::COGO::Station station1;
-   std::tie(hr, station1) = cogoUtil::StationFromVariant(varStation1);
+   auto [hr, station1] = cogoUtil::StationFromVariant(varStation1);
    if (FAILED(hr)) return hr;
 
    WBFL::COGO::Station station2;
@@ -504,9 +469,7 @@ STDMETHODIMP CAlignment::DistanceBetweenStations(VARIANT varStation1, VARIANT va
 {
    CHECK_RETVAL(pDist);
 
-   HRESULT hr;
-   WBFL::COGO::Station station1;
-   std::tie(hr, station1) = cogoUtil::StationFromVariant(varStation1);
+   auto [hr, station1] = cogoUtil::StationFromVariant(varStation1);
    if (FAILED(hr)) return hr;
 
    WBFL::COGO::Station station2;

@@ -38,7 +38,7 @@ using namespace WBFL::Reporting;
 std::shared_ptr<ReportSpecification> DoCreateReportSpec(const ReportDescription& rptDesc, const std::vector<ChapterInfo>& vChInfo);
 std::shared_ptr<ReportSpecification> DoCreateReportSpec(const ReportDescription& rptDesc, const std::vector<std::_tstring>& vChList);
 
-std::shared_ptr<ReportSpecification> ReportSpecificationBuilder::CreateReportSpec(const ReportDescription& rptDesc, std::shared_ptr<ReportSpecification>& pRptSpec) const
+std::shared_ptr<ReportSpecification> ReportSpecificationBuilder::CreateReportSpec(const ReportDescription& rptDesc, std::shared_ptr<ReportSpecification> pRptSpec) const
 {
    if ( 0 < rptDesc.GetChapterCount() )
    {

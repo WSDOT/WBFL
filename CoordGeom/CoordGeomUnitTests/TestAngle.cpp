@@ -45,10 +45,7 @@ namespace CoordGeomUnitTest
          try { angle.SetDMS(-14, 25, 13.5); } // Valid angle
          catch (XCoordGeom&) { Assert::IsTrue(false); } // should not get here
 
-         short d;
-         unsigned short m;
-         Float64 s;
-         std::tie(d, m, s) = angle.GetDMS();
+         auto [d, m, s] = angle.GetDMS();
          Assert::IsTrue(d == -14);
          Assert::IsTrue(m == 25);
          Assert::IsTrue(IsEqual(s, 13.5));
@@ -170,10 +167,7 @@ namespace CoordGeomUnitTest
          // these should work
          try { angle.FromString(_T("12 13 R")); }
          catch (XCoordGeom&) { Assert::IsTrue(false); }
-         short d;
-         unsigned short m;
-         Float64 s;
-         std::tie(d, m, s) = angle.GetDMS();
+         auto [d, m, s] = angle.GetDMS();
          Assert::IsTrue(d == -12);
          Assert::IsTrue(m == 13);
          Assert::IsTrue(IsZero(s));

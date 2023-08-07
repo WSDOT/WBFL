@@ -112,10 +112,7 @@ void Path::Clear()
 std::pair<Float64, Float64> Path::DistanceAndOffset(const WBFL::Geometry::Point2d& point) const
 {
    // Find where the point projects onto the path
-   WBFL::Geometry::Point2d prjPoint;
-   Float64 distFromStart;
-   bool bOnProjection;
-   std::tie(prjPoint,distFromStart,bOnProjection) = ProjectPoint(point);
+   auto [prjPoint,distFromStart,bOnProjection] = ProjectPoint(point);
 
    // Get the bearing at the location where the point projects onto the path
    auto brg = GetBearing(distFromStart);
@@ -265,18 +262,14 @@ std::vector<WBFL::Geometry::Point2d> Path::GetKeyPoints() const
 
 WBFL::Geometry::Point2d Path::LocatePoint(Float64 distFromStart, OffsetType offsetType, Float64 offset, const Direction& dir) const
 {
-   std::shared_ptr<const PathElement> element;
-   Float64 beginDist;
-   std::tie(element,beginDist) = FindElement(distFromStart);
+   auto [element,beginDist] = FindElement(distFromStart);
    Float64 dist_from_start_of_element = distFromStart - beginDist;
    return element->LocatePoint(dist_from_start_of_element, offsetType, offset, dir);
 }
 
 Direction Path::GetBearing(Float64 distFromStart) const
 {
-   std::shared_ptr<const PathElement> element;
-   Float64 beginDist;
-   std::tie(element, beginDist) = FindElement(distFromStart);
+   auto [element, beginDist] = FindElement(distFromStart);
    Float64 dist_from_start_of_element = distFromStart - beginDist;
    return element->GetBearing(dist_from_start_of_element);
 }

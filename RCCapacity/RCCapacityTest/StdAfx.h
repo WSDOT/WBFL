@@ -47,6 +47,7 @@
 
 #include <MathEx.h>
 #include <WBFLTest.h>
+#include <WBFLDebug.h>
 
 
 // TODO: reference additional headers your program requires here

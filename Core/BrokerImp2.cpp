@@ -41,7 +41,7 @@ DIAG_DEFINE_GROUP(IFC,DIAG_GROUP_ENABLE,0);
 
 template <class T>
 HRESULT Integrate(BOOL bIntegrating,BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,BOOL bIntegrateWithDocumentation,
-                  T& begin,T& end)
+                  T begin,T end)
 {
    while ( begin != end )
    {
@@ -802,8 +802,8 @@ HRESULT CBrokerImp2::SaveAgentData(IStructuredSave* pStrSave,Agents::iterator be
 {
    while ( begin != end )
    {
+      auto [clsid, pAgent](*begin);
       HRESULT hr = S_OK;
-      IAgentEx* pAgent = (*begin).second;
       IAgentPersist* pPersist;
       hr = pAgent->QueryInterface( IID_IAgentPersist, (void**)&pPersist );
       if ( SUCCEEDED(hr) )
@@ -812,7 +812,7 @@ HRESULT CBrokerImp2::SaveAgentData(IStructuredSave* pStrSave,Agents::iterator be
          pStrSave->BeginUnit(_T("Agent"),1.0);
 
          LPOLESTR postr = 0;
-         hr = StringFromCLSID((*begin).first, &postr);
+         hr = StringFromCLSID(clsid, &postr);
 
          // capture the class id of the agent
          pStrSave->put_Property(_T("CLSID"),CComVariant(postr));

@@ -450,9 +450,9 @@ STDMETHODIMP CCogoModel::ClearCircularCurves()
 
 STDMETHODIMP CCogoModel::StoreTransitionCurve(IDType id, IDType startID, VARIANT varDirection, Float64 r1, Float64 r2, Float64 L, TransitionCurveType transitionType)
 {
-   auto result = cogoUtil::DirectionFromVariant(varDirection);
-   if (FAILED(result.first)) return result.first;
-   return m_Model->StoreTransitionCurve(id, startID, result.second, r1, r2, L, WBFL::COGO::TransitionCurveType(transitionType)) ? S_OK : E_INVALIDARG;
+   auto [hr,direction] = cogoUtil::DirectionFromVariant(varDirection);
+   if (FAILED(hr)) return hr;
+   return m_Model->StoreTransitionCurve(id, startID, direction, r1, r2, L, WBFL::COGO::TransitionCurveType(transitionType)) ? S_OK : E_INVALIDARG;
 }
 
 STDMETHODIMP CCogoModel::GetTransitionCurveByID(IDType id, IDType* startID, IDirection** ppDirection, Float64* r1, Float64* r2, Float64* L, TransitionCurveType* transitionType)
@@ -676,9 +676,9 @@ STDMETHODIMP CCogoModel::GetAlignmentPathElementByID(IDType alignmentID, IndexTy
       }
       else
       {
-         const auto& pair = vAlignmentElements[elementIndex];
-         *pType = PathElementType(pair.first);
-         *pElementID = pair.second;
+         const auto& [type,id] = vAlignmentElements[elementIndex];
+         *pType = PathElementType(type);
+         *pElementID = id;
          hr = S_OK;
       }
    }
@@ -750,11 +750,9 @@ STDMETHODIMP CCogoModel::ClearAlignments()
 
 STDMETHODIMP CCogoModel::SetAlignmentReferenceStation(IDType alignmentID, VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
-   return m_Model->SetAlignmentReferneceStation(alignmentID, station) ? S_OK : E_INVALIDARG;
+   return m_Model->SetAlignmentReferenceStation(alignmentID, station) ? S_OK : E_INVALIDARG;
 }
 
 STDMETHODIMP CCogoModel::RemoveAlignmentReferenceStation(IDType alignmentID)
@@ -795,10 +793,10 @@ STDMETHODIMP CCogoModel::GetStationEquation(IDType alignmentID, IndexType equati
    CHECK_RETVAL(pAhead);
    const auto& equations = m_Model->GetStationEquations(alignmentID);
    if (equations.size() <= equationIndex) return E_INVALIDARG;
-  const auto& equation = equations[equationIndex];
-  *pBack = equation.first;
-  *pAhead = equation.second;
-  return S_OK;
+   const auto& [back,ahead] = equations[equationIndex];
+   *pBack = back;
+   *pAhead = ahead;
+   return S_OK;
 }
 
 STDMETHODIMP CCogoModel::ClearStationEquations()
@@ -868,9 +866,9 @@ STDMETHODIMP CCogoModel::GetPathElementByID(IDType pathID, IndexType elementInde
       }
       else
       {
-         const auto& pair = vPathElements[elementIndex];
-         *pType = PathElementType(pair.first);
-         *pElementID = pair.second;
+         const auto& [type,id] = vPathElements[elementIndex];
+         *pType = PathElementType(type);
+         *pElementID = id;
          hr = S_OK;
       }
    }
@@ -942,9 +940,7 @@ STDMETHODIMP CCogoModel::ClearPaths()
 
 STDMETHODIMP CCogoModel::StoreProfilePoint(IDType id, VARIANT varStation, Float64 elevation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
    return m_Model->StoreProfilePoint(id, station, elevation) ? S_OK : E_INVALIDARG;
 }
@@ -1232,9 +1228,9 @@ STDMETHODIMP CCogoModel::GetProfileElementByID(IDType profileID, IndexType eleme
       }
       else
       {
-         const auto& pair = vProfileElements[elementIndex];
-         *pType = ProfileElementType(pair.first);
-         *pElementID = pair.second;
+         const auto& [type,id] = vProfileElements[elementIndex];
+         *pType = ProfileElementType(type);
+         *pElementID = id;
          hr = S_OK;
       }
    }
@@ -1307,18 +1303,14 @@ STDMETHODIMP CCogoModel::GetSurfaceCount(IndexType* nSurfaces)
 
 STDMETHODIMP CCogoModel::AddSurfaceTemplate(IDType surfaceID, VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
    return m_Model->AddSurfaceTemplate(surfaceID, station) ? S_OK : E_INVALIDARG;
 }
 
 STDMETHODIMP CCogoModel::CopySurfaceTemplateByID(IDType surfaceID, IndexType templateIdx, VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
    return m_Model->CopySurfaceTemplate(surfaceID, templateIdx, station) ? S_OK : E_INVALIDARG;
 }
@@ -1332,9 +1324,7 @@ STDMETHODIMP CCogoModel::CopySurfaceTemplateByIndex(IndexType surfaceIndex, Inde
 
 STDMETHODIMP CCogoModel::MoveSurfaceTemplateByID(IDType surfaceID, IndexType templateIdx, VARIANT varNewStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varNewStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varNewStation);
    if (FAILED(hr)) return hr;
    return m_Model->MoveSurfaceTemplate(surfaceID, templateIdx, station);
 }
@@ -1700,9 +1690,7 @@ STDMETHODIMP CCogoModel::Inverse(IDType fromID,IDType toID, Float64* dist, IDire
 // ILocate
 STDMETHODIMP CCogoModel::ByDistAngle(IDType newID,IDType fromID,IDType toID,Float64 dist,VARIANT varAngle,Float64 offset)
 {
-   HRESULT hr;
-   WBFL::COGO::Angle angle;
-   std::tie(hr, angle) = cogoUtil::AngleFromVariant(varAngle);
+   auto [hr, angle] = cogoUtil::AngleFromVariant(varAngle);
    if (FAILED(hr)) return hr;
    try
    {
@@ -1719,9 +1707,7 @@ STDMETHODIMP CCogoModel::ByDistAngle(IDType newID,IDType fromID,IDType toID,Floa
 
 STDMETHODIMP CCogoModel::ByDistDefAngle(IDType newID,IDType fromID,IDType toID,Float64 dist,VARIANT varDefAngle,Float64 offset)
 {
-   HRESULT hr;
-   WBFL::COGO::Angle defAngle;
-   std::tie(hr, defAngle) = cogoUtil::AngleFromVariant(varDefAngle);
+   auto [hr, defAngle] = cogoUtil::AngleFromVariant(varDefAngle);
    if (FAILED(hr)) return hr;
    try
    {
@@ -1738,9 +1724,7 @@ STDMETHODIMP CCogoModel::ByDistDefAngle(IDType newID,IDType fromID,IDType toID,F
 
 STDMETHODIMP CCogoModel::ByDistDir(IDType newID,IDType fromID,Float64 dist,VARIANT varDir,Float64 offset)
 {
-   HRESULT hr;
-   WBFL::COGO::Direction dir;
-   std::tie(hr, dir) = cogoUtil::DirectionFromVariant(varDir);
+   auto [hr, dir] = cogoUtil::DirectionFromVariant(varDir);
    if (FAILED(hr)) return hr;
   
    try
@@ -1798,10 +1782,13 @@ STDMETHODIMP CCogoModel::Bearings(IDType newID, IDType id1, VARIANT varDir1, Flo
    CHECK_RETVAL(bFound);
    HRESULT hr = S_OK;
    WBFL::COGO::Direction dir1, dir2;
+   
    std::tie(hr, dir1) = cogoUtil::DirectionFromVariant(varDir1);
    if (FAILED(hr)) return hr;
+
    std::tie(hr, dir2) = cogoUtil::DirectionFromVariant(varDir2);
    if (FAILED(hr)) return hr;
+
    try
    {
       bool bResult = m_Model->IntersectBearings(newID, id1, dir1, offset1, id2, dir2, offset2);
@@ -1822,9 +1809,7 @@ STDMETHODIMP CCogoModel::BearingCircle(IDType newID, IDType id1, VARIANT varDir,
    if (radius <= 0.0)
       return E_INVALIDARG;
 
-   HRESULT hr = S_OK;
-   WBFL::COGO::Direction dir;
-   std::tie(hr, dir) = cogoUtil::DirectionFromVariant(varDir);
+   auto [hr, dir] = cogoUtil::DirectionFromVariant(varDir);
    if (FAILED(hr)) return hr;
    try
    {

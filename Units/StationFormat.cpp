@@ -63,10 +63,7 @@ std::pair<Float64, ZoneIndexType> StationFormat::FromString(const std::_tstring&
 {
    Int16 nSepDigits = (m_UnitOfMeasure == UnitOfMeasure::Meter) ? 3 : 2;
 
-   bool bSuccess;
-   Float64 station;
-   ZoneIndexType zoneIdx;
-   std::tie(bSuccess, station, zoneIdx) = parse_station(strStation, nSepDigits);
+   auto [bSuccess, station, zoneIdx] = parse_station(strStation, nSepDigits);
    if ( !bSuccess)
       THROW(XUnit,Reason::BadStationFormat);
 

@@ -104,17 +104,13 @@ void Plane3d::ThroughLine(const Line2d& line, const Point3d& point)
    }
 
    // get two points on the line
-   Point2d p1;
-   Vector2d v;
-   std::tie(p1,v) = line.GetExplicit();
+   auto [p1,v] = line.GetExplicit();
 
-   Float64 x, y;
-   std::tie(x,y) = p1.GetLocation();
+   auto [x,y] = p1.GetLocation();
 
    Point3d p1_3d(x, y, 0.0);
 
-   Float64 dx, dy;
-   std::tie(dx,dy) = v.GetDimensions();
+   auto [dx,dy] = v.GetDimensions();
 
    Point3d p2_3d(x, y, 0.0);
    p2_3d.Offset(dx, dy, 0.0);
@@ -134,12 +130,9 @@ void Plane3d::ThroughPoints(const Point3d& p1, const Point3d& p2, const Point3d&
    std::array<Float64, 3> v1;
    std::array<Float64, 3> v2;
 
-   Float64 x1, x2, x3;
-   Float64 y1, y2, y3;
-   Float64 z1, z2, z3;
-   std::tie(x1,y1,z1) = p1.GetLocation();
-   std::tie(x2,y2,z2) = p2.GetLocation();
-   std::tie(x3,y3,z3) = p3.GetLocation();
+   auto [x1,y1,z1] = p1.GetLocation();
+   auto [x2,y2,z2] = p2.GetLocation();
+   auto [x3,y3,z3] = p3.GetLocation();
 
    v1[x] = x2 - x1;
    v1[y] = y2 - y1;
@@ -294,8 +287,7 @@ Float64 Plane3d::ShortestDistance(const Point3d& point) const
       THROW_GEOMETRY(WBFL_GEOMETRY_E_NOSOLUTIONS); // invalid plane
    }
 
-   Float64 x, y, z;
-   std::tie(x,y,z) = point.GetLocation();
+   auto [x,y,z] = point.GetLocation();
 
    Float64 distance = (m_A * x + m_B * y + m_C * z + m_D) / sqrt(K);
    // distance > 0... point is above plane (on same side as normal)

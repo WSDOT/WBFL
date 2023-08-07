@@ -54,7 +54,7 @@ public:
 };
 
 #include <EAF\EAFComponentInfo.h>
-using CEAFComponentInfoManager = CEAFPluginManagerBase<IEAFComponentInfo,CEAFApp>;
+using CEAFComponentInfoManager = CEAFPluginManagerBase<IEAFComponentInfo, CEAFApp>;
 
 
 class CEAFHelpWindowThread;
@@ -99,7 +99,7 @@ public:
    BOOL ReadWindowPlacement(const CString& strSection,const CString& strKey,LPWINDOWPLACEMENT pwp);
    void WriteWindowPlacement(const CString& strSection,const CString& strKey,LPWINDOWPLACEMENT pwp);
 
-   // Registery helper functions
+   // Registry helper functions
    UINT GetLocalMachineInt(LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault);
    CString GetLocalMachineString(LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault);
 
@@ -124,8 +124,8 @@ public:
    // Documents may use this to build their documentation URLs
    virtual CString GetDocumentationRootLocation() = 0;
 
-   // Return the URL for documation for the application
-   // Called by GetDocumenentLocation to form the complete
+   // Return the URL for documentation for the application
+   // Called by GetDocumentLocation to form the complete
    // documentation URL. The default documentation URL is:
    // For an Online source
    //     GetDocumentationRootLocation() + m_pszExeName + major.minor version number
@@ -256,9 +256,9 @@ private:
    friend CEAFHelpWindowThread;
    CEAFHelpWindowThread* m_pHelpWindowThread;
 
-   BOOL m_bUseOnlineDocumentation; // set to TRUE if documenation is from an online source
+   BOOL m_bUseOnlineDocumentation; // set to TRUE if documentation is from an online source
    CString m_strOnlineDocumentationMapFile;
-   CString m_strDocumentationMapFile; // name of documenation map file
+   CString m_strDocumentationMapFile; // name of documentation map file
    std::map<UINT,CString> m_HelpTopics; // maps a help topic ID to the topic file name
 
    CString m_LastError;
@@ -313,11 +313,11 @@ public:
    BOOL InitInstance();
 
    // Category information for plug-in applications
-   virtual OLECHAR* GetAppPluginCategoryName() = 0;
+   virtual LPCTSTR GetAppPluginCategoryName() = 0;
    virtual CATID GetAppPluginCategoryID() = 0;
 
    // Category information for plug-ins to the main application
-   virtual OLECHAR* GetPluginCategoryName() = 0;
+   virtual LPCTSTR GetPluginCategoryName() = 0;
    virtual CATID GetPluginCategoryID() = 0;
    
    afx_msg void OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI);

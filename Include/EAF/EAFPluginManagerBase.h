@@ -31,12 +31,11 @@
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFAcceleratorTable.h>
 #include <EAF\EAFUtilities.h>
+#include <EAF\EAFAppPlugin.h>
 #include <atlcomcli.h>
 
 #include <comcat.h>
 #include <map>
-
-bool operator<(REFIID a,REFIID b);
 
 // Generic template class for managing plugins
 
@@ -63,13 +62,13 @@ public:
       m_CATID = catid;
    }
 
-   virtual void SetParent(P* parent)
+   virtual void SetParent(typename P* parent)
    {
       m_pParent = parent;
       m_PluginAcceleratorTable.Init(m_pParent->GetPluginCommandManager());
    }
 
-   P* GetParent()
+   typename P* GetParent()
    {
       return m_pParent;
    }
@@ -86,18 +85,24 @@ public:
          return FALSE;
       }
 
-      auto result = m_Plugins.insert(std::make_pair(clsid,pPlugin));
-      if ( result.second == true )
+#if (201703L <= _MSVC_LANG)
+      auto [iter,bSuccess] = m_Plugins.insert(std::make_pair(clsid, pPlugin));
+#else
+      auto result = m_Plugins.insert(std::make_pair(clsid, pPlugin));
+      auto iter = result.first;
+      auto bSuccess = result.second;
+#endif
+      if ( bSuccess )
       {
          // plugin added to container
          if ( !pPlugin->Init(m_pParent) )
          {
-            // plugin did not initalize properly
+            // plugin did not initialize properly
             // remove from container
-            m_Plugins.erase(result.first);
+            m_Plugins.erase(iter);
             return FALSE; // plug-in not added
          }
-         return TRUE; // plug-in added successfullly
+         return TRUE; // plug-in added successfully
       }
 
       return FALSE; // plugin not added to container
@@ -128,7 +133,7 @@ public:
 
       pICatInfo->EnumClassesOfCategories(nID,ID,0,nullptr,&pIEnumCLSID);
 
-      CEAFApp* pApp = EAFGetApp();
+      auto* pApp = AfxGetApp();
 
       // load plug-ins 5 at a time
       CLSID clsid[5]; 

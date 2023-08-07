@@ -27,9 +27,14 @@
 
 #include <WBFLTypes.h>
 #include <math.h>
+#include <cmath>
 #include <cassert>
 #include <xutility>
 #include <limits>
+
+#if (202002L <= _MSVC_LANG )
+#include <numbers>
+#endif
 
 #if !defined TOLERANCE
 #define TOLERANCE 0.00001
@@ -239,17 +244,22 @@ inline V LinInterp( const H& a, const V& l,const V& h, const H& delta)
    }
    else
    {
-      return l + (h - l)*(V)a / (V)delta;
+#if (202002L <= _MSVC_LANG)
+      auto t = a / delta;
+      return std::lerp(l, h, t);
+#else
+      return l + (h - l) * (V)a / (V)delta;
+#endif
    }
 }
 
 /// Linear interpolation using line analogy. Return Y(x) along a line defined by the points (x1, y1), (x2, y2)
-template <class V>
-inline V LinInterpLine( V x1, V y1, V x2, V y2, V x)
+template <typename T>
+inline T LinInterpLine(const T& x1, const T& y1, const T& x2, const T& y2, const T& x)
 {
-   V dX = x - x1;
-   V deltaY = y2 - y1;
-   V deltaX = x2 - x1;
+   auto dX = x - x1;
+   auto deltaY = y2 - y1;
+   auto deltaX = x2 - x1;
    if (deltaX == 0)
    {
       if (dX == 0)
@@ -259,7 +269,7 @@ inline V LinInterpLine( V x1, V y1, V x2, V y2, V x)
       else
       {
          assert(false);
-         return std::numeric_limits<V>::infinity(); // No Solution. For lack of better option
+         return std::numeric_limits<T>::infinity(); // No Solution. For lack of better option
       }
    }
    else if (deltaY==0)
@@ -271,6 +281,13 @@ inline V LinInterpLine( V x1, V y1, V x2, V y2, V x)
       return y1 + dX * deltaY / deltaX;
    }
 }
+
+#if (_MSVC_LANG < 202002L)
+namespace std
+{
+   inline Float64 midpoint(Float64 a, Float64 b) { return a + (b - a) / 2; }
+};
+#endif
 
 /// Forces v into the range [l,h]
 template <class T>
@@ -562,13 +579,17 @@ std::vector<T> linspace(T a, T b, size_t N)
 }
 
 #undef  M_PI
+#if (202002L <= _MSVC_LANG)
+#define M_PI        std::numbers::pi_v<Float64>
+#else
 #define M_PI        3.1415926535897932384626433832795
+#endif
 
 #undef  TWO_PI
-#define TWO_PI      6.28318530717958647692528676655901
+#define TWO_PI      2.0*M_PI //6.28318530717958647692528676655901
 
 #undef  PI_OVER_2
-#define PI_OVER_2   1.57079632679489661923132169163975
+#define PI_OVER_2   M_PI/2 //1.57079632679489661923132169163975
 
 /// Converts an angle from degrees to radians
 inline Float64 ToRadians(Float64 deg) { return deg*M_PI/180.; }

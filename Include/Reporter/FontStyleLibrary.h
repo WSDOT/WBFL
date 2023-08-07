@@ -81,7 +81,7 @@ private:
    static Killer ms_Killer;
 
    // map of custom styles
-   using StyleMap = std::map<rptStyleName, rptRiStyle, std::less<rptStyleName>, std::allocator<rptRiStyle>>;
+   using StyleMap = std::map<rptStyleName, rptRiStyle, std::less<rptStyleName>>;
    StyleMap m_StyleMap;
 
    // a default style

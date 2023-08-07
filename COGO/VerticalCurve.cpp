@@ -230,9 +230,7 @@ STDMETHODIMP CVerticalCurve::Elevation(VARIANT varStation, Float64 *elev)
 {
    CHECK_RETVAL(elev);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *elev = m_Curve->GetElevation(station);
@@ -244,9 +242,7 @@ STDMETHODIMP CVerticalCurve::Grade(VARIANT varStation, Float64 *grade)
 {
    CHECK_RETVAL(grade);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *grade = m_Curve->GetGrade(station);
@@ -323,9 +319,7 @@ STDMETHODIMP CVerticalCurve::ComputeGradeAndElevation(VARIANT varStation, Float6
    CHECK_RETVAL(pGrade);
    CHECK_RETVAL(pElevation);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    std::tie(*pGrade, *pElevation) = m_Curve->ComputeGradeAndElevation(station);

@@ -19,8 +19,7 @@ namespace GeomModelUnitTest
 		
 		TEST_METHOD(IsPointOnArc)
 		{
-			WBFL::Geometry::Arc a1, a2;
-			std::tie(a1, a2) = GetTestArcs();
+			auto [a1, a2] = GetTestArcs();
 
 			Assert::IsFalse(a1.IsPointOnArc(Point2d(-10, 0)));
 			Assert::IsFalse(a1.IsPointOnArc(Point2d(0, -10)));
@@ -33,8 +32,7 @@ namespace GeomModelUnitTest
 
 		TEST_METHOD(GetCentralAngle)
 		{
-			WBFL::Geometry::Arc a1, a2;
-			std::tie(a1, a2) = GetTestArcs();
+			auto [a1, a2] = GetTestArcs();
 
 			Assert::IsTrue(IsEqual(a1.GetCentralAngle(), PI_OVER_2));
 			a1.Reverse();

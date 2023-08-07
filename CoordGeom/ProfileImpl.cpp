@@ -35,7 +35,7 @@ using namespace WBFL::COGO;
 class CompareProfileElements
 {
 public:
-   CompareProfileElements(std::shared_ptr<const Alignment>& alignment) :m_Alignment(alignment) { }
+   CompareProfileElements(std::shared_ptr<const Alignment> alignment) :m_Alignment(alignment) { }
    bool operator()(const std::shared_ptr<ProfileElement>& pX, const std::shared_ptr<ProfileElement>& pY)
    {
       const auto& prev_element_end_point = pX->GetEndPoint();
@@ -58,10 +58,8 @@ ProfileImpl::ProfileImpl(const ProfileImpl& profileImpl)
       AddProfileElement(profile_element->Clone());
    }
 
-   for (const auto& pair : m_Surfaces)
+   for (const auto& [id,surface] : m_Surfaces)
    {
-      auto id(pair.first);
-      const auto& surface(pair.second);
       AddSurface(id,Surface::Create(*surface));
    }
 }
@@ -128,7 +126,7 @@ std::pair<IDType, std::shared_ptr<const Surface>> ProfileImpl::GetSurfaceContain
    return std::make_pair(INVALID_ID, nullptr);
 }
 
-void ProfileImpl::AddProfileElement(std::shared_ptr<ProfileElement>& profileElement)
+void ProfileImpl::AddProfileElement(std::shared_ptr<ProfileElement> profileElement)
 {
    m_Elements.emplace_back(profileElement);
    std::sort(std::begin(m_Elements), std::end(m_Elements), CompareProfileElements(GetAlignment()));
@@ -173,15 +171,13 @@ Float64 ProfileImpl::Elevation(IDType surfaceID, const Station& station, Float64
 
 Float64 ProfileImpl::Elevation(std::shared_ptr<const Surface> surface, const Station& station, Float64 offset) const
 {
-   Float64 grade, elevation, slope;
-   std::tie(grade,elevation,slope) = GradeAndElevation(surface, station, offset);
+   auto [grade,elevation,slope] = GradeAndElevation(surface, station, offset);
    return elevation;
 }
 
 Float64 ProfileImpl::Grade(const Station& station) const
 {
-   Float64 grade, elevation, slope;
-   std::tie(grade, elevation, slope) = GradeAndElevation(nullptr, station, 0.0);
+   auto [grade, elevation, slope] = GradeAndElevation(nullptr, station, 0.0);
    return grade;
 }
 
@@ -203,8 +199,7 @@ Float64 ProfileImpl::CrossSlope(IDType surfaceID, const Station& station, Float6
 
 Float64 ProfileImpl::CrossSlope(std::shared_ptr<const Surface> surface, const Station& station, Float64 offset) const
 {
-   Float64 grade, elevation, slope;
-   std::tie(grade, elevation, slope) = GradeAndElevation(surface, station, offset);
+   auto [grade, elevation, slope] = GradeAndElevation(surface, station, offset);
    return slope;
 }
 
@@ -285,9 +280,7 @@ std::pair<Float64,Float64> ProfileImpl::ProfileGradeAndElevation(const Station& 
 {
    auto alignment = GetAlignment();
    auto ns = alignment->ConvertToNormalizedStation(station).GetValue();
-   std::shared_ptr<ProfileElement> element;
-   Float64 distFromStart;
-   std::tie(element,distFromStart) = FindElement(ns);
+   auto [element,distFromStart] = FindElement(ns);
    return element->ComputeGradeAndElevation(station);
 }
 

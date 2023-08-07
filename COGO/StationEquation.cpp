@@ -57,8 +57,7 @@ STDMETHODIMP CStationEquation::GetEquation(Float64* pBackStation,Float64* pAhead
    CHECK_RETVAL(pBackStation);
    CHECK_RETVAL(pAheadStation);
 
-   Float64 back, ahead, normal;
-   std::tie(back, ahead, normal) = m_Equation.GetEquationParameters();
+   auto [back, ahead, normal] = m_Equation.GetEquationParameters();
    *pBackStation  = back;
    *pAheadStation = ahead;
 

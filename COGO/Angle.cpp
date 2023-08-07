@@ -70,10 +70,7 @@ STDMETHODIMP CAngle::get_Degree(long *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   short d;
-   unsigned short m;
-   Float64 s;
-   std::tie(d, m, s) = m_Angle->GetDMS();
+   auto [d, m, s] = m_Angle->GetDMS();
    *pVal = d;
 
 	return S_OK;
@@ -83,10 +80,7 @@ STDMETHODIMP CAngle::get_Minute(long *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   short d;
-   unsigned short m;
-   Float64 s;
-   std::tie(d, m, s) = m_Angle->GetDMS();
+   auto [d, m, s] = m_Angle->GetDMS();
    *pVal = m;
 
 	return S_OK;
@@ -96,10 +90,7 @@ STDMETHODIMP CAngle::get_Second(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   short d;
-   unsigned short m;
-   Float64 s;
-   std::tie(d, m, s) = m_Angle->GetDMS();
+   auto [d, m, s] = m_Angle->GetDMS();
    *pVal = s;
 
 	return S_OK;
@@ -145,9 +136,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
 
 STDMETHODIMP CAngle::FromVariant(VARIANT varAngle)
 {
-   HRESULT hr;
-   WBFL::COGO::Angle angle;
-   std::tie(hr,angle) = cogoUtil::AngleFromVariant(varAngle);
+   auto [hr,angle] = cogoUtil::AngleFromVariant(varAngle);
    if (FAILED(hr)) return hr;
    *m_Angle = angle;
    return S_OK;
@@ -157,9 +146,7 @@ STDMETHODIMP CAngle::Increment( VARIANT varAngle, IAngle* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   HRESULT hr;
-   WBFL::COGO::Angle inc_angle;
-   std::tie(hr, inc_angle) = cogoUtil::AngleFromVariant(varAngle);
+   auto [hr, inc_angle] = cogoUtil::AngleFromVariant(varAngle);
    if (FAILED(hr)) return hr;
 
    WBFL::COGO::Angle new_angle = *m_Angle;
@@ -170,9 +157,7 @@ STDMETHODIMP CAngle::Increment( VARIANT varAngle, IAngle* *pVal)
 
 STDMETHODIMP CAngle::IncrementBy(VARIANT varAngle)
 {
-   HRESULT hr;
-   WBFL::COGO::Angle inc_angle;
-   std::tie(hr,inc_angle) = cogoUtil::AngleFromVariant(varAngle);
+   auto [hr, inc_angle] = cogoUtil::AngleFromVariant(varAngle);
    if (FAILED(hr)) return hr;
 
    m_Angle->Increment(inc_angle);

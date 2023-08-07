@@ -13,7 +13,7 @@ public:
    virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override { return std::make_unique<TestShape>(*this); }
    virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override { return std::make_unique<TestShape>(*this); }
    virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override { return 0; }
-   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override {}
+   virtual std::pair<Point2d, Float64> GetFurthestPoint(const Line2d& line, Line2d::Side side) const override { return std::make_pair(Point2d(0, 0), 0); }
    virtual Rect2d GetBoundingBox() const override { return Rect2d(); }
    virtual bool PointInShape(const Point2d& p) const override { return true; }
    virtual Float64 GetPerimeter() const override { return 0.0; }

@@ -67,9 +67,9 @@ inline LPCOLESTR GetHelpFile()
    return A2OLE("WBFLFem2d.chm");
 }
 
-inline void CheckLoadOrientation(Fem2dLoadOrientation or)
+inline void CheckLoadOrientation(Fem2dLoadOrientation orientation)
 {
-   if (or!=lotGlobal && or!=lotMember && or!=lotGlobalProjected)
+   if (orientation !=lotGlobal && orientation !=lotMember && orientation !=lotGlobalProjected)
    {
       THROW_IDS(IDS_E_INVALID_LOAD_ORIENTATION,FEM2D_E_INVALID_LOAD_ORIENTATION,IDH_E_INVALID_LOAD_ORIENTATION);
    }

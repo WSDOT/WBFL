@@ -116,19 +116,16 @@ void Station::FromString(const std::_tstring& strStation)
 
 void Station::FromString(const std::_tstring& strStation, const WBFL::Units::StationFormat& format)
 {
-   Float64 station;
-   ZoneIndexType zoneIdx;
    try
    {
-      std::tie(station, zoneIdx) = format.FromString(strStation);
+      auto [station, zoneIdx] = format.FromString(strStation);
+      m_Value = station;
+      m_ZoneIndex = zoneIdx;
    }
    catch (...)
    {
       THROW_COGO(WBFL_COGO_E_STATION);
    }
-
-   m_Value = station;
-   m_ZoneIndex = zoneIdx;
 }
 
 std::_tstring Station::AsString(const WBFL::Units::StationFormat& format, bool bIncludeStationZone) const

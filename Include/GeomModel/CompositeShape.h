@@ -52,13 +52,13 @@ public:
    virtual void Move(const Point2d& from, const Point2d& to) override;
    virtual void Rotate(Float64 cx, Float64 cy, Float64 angle) override;
 
-   virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) override;
+   virtual void SetHookPoint(std::shared_ptr<Point2d> hookPnt) override;
    virtual void SetHookPoint(const Point2d& hookPnt) override;
-   virtual std::shared_ptr<Point2d>& GetHookPoint() override;
-   virtual const std::shared_ptr<Point2d>& GetHookPoint() const override;
+   virtual std::shared_ptr<Point2d> GetHookPoint() override;
+   virtual std::shared_ptr<const Point2d> GetHookPoint() const override;
 
    virtual Point2d GetLocatorPoint(LocatorPoint point) const override;
-   virtual void SetLocatorPoint(LocatorPoint lp, Point2d& position) override;
+   virtual void SetLocatorPoint(LocatorPoint lp, const Point2d& position) override;
 
    virtual void Reflect(const Line2d& line) override;
    virtual std::unique_ptr<Shape> CreateReflectedShape(const Line2d& line) const override;
@@ -96,7 +96,7 @@ public:
    virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
 
    /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
-   virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
+   virtual std::pair<Point2d,Float64> GetFurthestPoint(const Line2d& line, Line2d::Side side) const override;
 
    /// Returns the perimeter of the shape
    virtual Float64 GetPerimeter() const override;
@@ -141,8 +141,6 @@ protected:
 
 private:
    std::vector<std::pair<std::shared_ptr<Shape>,ShapeType>> m_Shapes;
-   std::vector<Point2d> m_DummyPoints; // used in GetPolyPoints if this composite is empty
-   std::shared_ptr<Point2d> m_DummyHookPoint{ std::make_shared<Point2d>(0,0) };
 
    mutable bool m_bIsDirty{ true };
    mutable ShapeProperties m_Properties;

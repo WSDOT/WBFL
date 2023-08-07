@@ -546,9 +546,9 @@ STDMETHODIMP CSupport::Load(IStructuredLoad2 * pload)
       m_pSegments->Load(pload);
 
 
-      hr = pload->BeginUnit(_T("AssociatedSupports"));
+      hr = pload->BeginUnit(CComBSTR("AssociatedSupports"));
       var.Clear();
-      hr = pload->get_Property(_T("Count"),&var);
+      hr = pload->get_Property(CComBSTR("Count"),&var);
       if ( FAILED(hr) )
          return hr;
       
@@ -557,7 +557,7 @@ STDMETHODIMP CSupport::Load(IStructuredLoad2 * pload)
       for ( IndexType i = 0; i < count; i++ )
       {
          var.Clear();
-         hr = pload->get_Property(_T("SupportID"),&var);
+         hr = pload->get_Property(CComBSTR("SupportID"),&var);
          if ( FAILED(hr) )
             return hr;
 
@@ -615,13 +615,13 @@ STDMETHODIMP CSupport::Save(IStructuredSave2 * psave)
       
       m_pSegments->Save(psave);
 
-      hr = psave->BeginUnit(_T("AssociatedSupports"),1.0);
-      hr = psave->put_Property(_T("Count"),_variant_t(m_AssociatedSupportIDs.size()));
+      hr = psave->BeginUnit(CComBSTR("AssociatedSupports"),1.0);
+      hr = psave->put_Property(CComBSTR("Count"),_variant_t(m_AssociatedSupportIDs.size()));
       std::vector<SupportIDType>::iterator iter(m_AssociatedSupportIDs.begin());
       std::vector<SupportIDType>::iterator end(m_AssociatedSupportIDs.end());
       for ( ; iter != end; iter++ )
       {
-         hr = psave->put_Property(_T("SupportID"),_variant_t(*iter));
+         hr = psave->put_Property(CComBSTR("SupportID"),_variant_t(*iter));
       }
       hr = psave->EndUnit(); // Associated Supports
 

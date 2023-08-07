@@ -64,9 +64,7 @@ STDMETHODIMP CLine2d::GetExplicit(IPoint2d** p,IVector2d** d)
    CHECK_RETOBJ(p);
    CHECK_RETOBJ(d);
 
-   WBFL::Geometry::Point2d pu;
-   WBFL::Geometry::Vector2d pv;
-   std::tie(pu,pv) = m_Line.GetExplicit();
+   auto [pu,pv] = m_Line.GetExplicit();
 
    CreatePoint(pu, p);
    CreateVector(pv, d);

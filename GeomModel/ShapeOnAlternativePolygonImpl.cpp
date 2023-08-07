@@ -65,7 +65,7 @@ std::vector<Point2d> ShapeOnAlternativePolygonImpl::GetPolyPoints() const
    return GetPolygon()->GetPolyPoints();
 }
 
-void ShapeOnAlternativePolygonImpl::SetHookPoint(std::shared_ptr<Point2d>& hookPnt)
+void ShapeOnAlternativePolygonImpl::SetHookPoint(std::shared_ptr<Point2d> hookPnt)
 {
    __super::SetHookPoint(hookPnt);
    SetDirtyFlag();

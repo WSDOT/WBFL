@@ -260,7 +260,7 @@ BEGIN
     IDS_E_INCOMP_STRESSRESULTS 
                             "Stress results are incompatible. Results must have the same number of stress points in order to be summed."
     IDS_E_INSTABILITY       "The Fem2D engine was unable to solve the model for stage %S. It is likely that this model is unstable."
-    IDS_E_FEM2D             "An error occured during the Fem2D solution for stage %S. This error was not further translated."
+    IDS_E_FEM2D             "An error occurred during the Fem2D solution for stage %S. This error was not further translated."
     IDS_E_POINT_LOAD_ZERO_LENGTH 
                             "Point loads cannot be applied to zero-length supports or temporary supports."
 END

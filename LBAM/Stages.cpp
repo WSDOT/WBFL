@@ -103,8 +103,8 @@ STDMETHODIMP CStages::Insert(StageIndexType relPos, IStage *pstage)
    IStage* pstg = Find(name);
    if (pstg)
    {
-      _bstr_t msg = CreateErrorMsg1S(IDS_DUPLICATE_STAGE, name);
-      return AtlReportError(CLSID_Stages, (const wchar_t*)msg, IID_IStages, WCC_E_NAME_ALREADY_EXISTS);
+      auto msg = CreateErrorMsg1S(IDS_DUPLICATE_STAGE, name);
+      return AtlReportError(CLSID_Stages, msg, IID_IStages, WCC_E_NAME_ALREADY_EXISTS);
     }
    else
    {
@@ -128,8 +128,8 @@ STDMETHODIMP CStages::Add(IStage *pstage)
    IStage* pstg = Find(name);
    if (pstg)
    {
-      _bstr_t msg = CreateErrorMsg1S(IDS_DUPLICATE_STAGE, name);
-      return AtlReportError(CLSID_Stages, (const wchar_t*)msg, IID_IStages, WCC_E_NAME_ALREADY_EXISTS);
+      auto msg = CreateErrorMsg1S(IDS_DUPLICATE_STAGE, name);
+      return AtlReportError(CLSID_Stages, msg, IID_IStages, WCC_E_NAME_ALREADY_EXISTS);
     }
    else
    {
@@ -226,6 +226,6 @@ STDMETHODIMP CStages::RemoveByName(BSTR name)
       idx++;
    }
 
-   _bstr_t msg = CreateErrorMsg1S(IDS_E_STAGE_NOT_EXISTS, name);
-   return AtlReportError(CLSID_Stages, (const wchar_t*)msg, IID_IStages, LBAM_E_STAGE_NOT_EXISTS);
+   auto msg = CreateErrorMsg1S(IDS_E_STAGE_NOT_EXISTS, name);
+   return AtlReportError(CLSID_Stages, msg, IID_IStages, LBAM_E_STAGE_NOT_EXISTS);
 }

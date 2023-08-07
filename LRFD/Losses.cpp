@@ -1103,26 +1103,26 @@ void Losses::UpdateLosses() const
 
       m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] = 0;
       m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
-      for (const auto& moment : m_InputMadlg)
+      for (const auto& [moment,elastic_gain_factor]: m_InputMadlg)
       {
-         m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second; // moment*factor
-         m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first; // moment
+         m_Madlg[WITH_ELASTIC_GAIN_REDUCTION] += moment * elastic_gain_factor; // moment*factor
+         m_Madlg[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment; // moment
       }
 
       m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] = 0;
       m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
-      for (const auto& moment : m_InputMsidl1)
+      for (const auto& [moment, elastic_gain_factor] : m_InputMsidl1)
       {
-         m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second;
-         m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first;
+         m_Msidl1[WITH_ELASTIC_GAIN_REDUCTION] += moment * elastic_gain_factor;
+         m_Msidl1[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment;
       }
 
       m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] = 0;
       m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] = 0;
-      for (const auto& moment : m_InputMsidl2)
+      for (const auto& [moment, elastic_gain_factor] : m_InputMsidl2)
       {
-         m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] += moment.first * moment.second;
-         m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment.first;
+         m_Msidl2[WITH_ELASTIC_GAIN_REDUCTION] += moment * elastic_gain_factor;
+         m_Msidl2[WITHOUT_ELASTIC_GAIN_REDUCTION] += moment;
       }
 
       try

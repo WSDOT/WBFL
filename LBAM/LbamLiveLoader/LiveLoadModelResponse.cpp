@@ -137,7 +137,7 @@ static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, IndexTyp
             right_config = old_right_config;
          }
 
-         // only need to update if a new maximum occured
+         // only need to update if a new maximum occurred
          if (new_max_occurred)
          {
             hr = results->SetResult(poiIdx,left_result, left_config, right_result, right_config);

@@ -66,7 +66,7 @@ interface IEAFViewRegistrar : IUnknown
 // {FF33AA7F-3FA8-4f24-80F1-07F2A345D6D3}
 DEFINE_GUID(IID_IEAFCommandCallback, 
 0xff33aa7f, 0x3fa8, 0x4f24, 0x80, 0xf1, 0x7, 0xf2, 0xa3, 0x45, 0xd6, 0xd3);
-
+struct __declspec(uuid("{FF33AA7F-3FA8-4f24-80F1-07F2A345D6D3}")) IEAFCommandCallback;
 interface IEAFCommandCallback : IUnknown
 {
    // Called by the framework when a command is selected. Pass the parameters into a CCmdTarget object
@@ -88,7 +88,7 @@ interface IEAFCommandCallback : IUnknown
 // {35A2295C-C062-4bfe-B86F-86A6333C2D7B}
 DEFINE_GUID(IID_IEAFMainMenu, 
 0x35a2295c, 0xc062, 0x4bfe, 0xb8, 0x6f, 0x86, 0xa6, 0x33, 0x3c, 0x2d, 0x7b);
-
+struct __declspec(uuid("{35A2295C-C062-4bfe-B86F-86A6333C2D7B}")) IEAFMainMenu;
 interface IEAFMainMenu : IUnknown
 {
    // returns the applications main menu
@@ -104,7 +104,7 @@ interface IEAFMainMenu : IUnknown
 // {F8D84C5E-DEE9-4bfb-9C97-D4EEEAD610A6}
 DEFINE_GUID(IID_IEAFToolbars, 
 0xf8d84c5e, 0xdee9, 0x4bfb, 0x9c, 0x97, 0xd4, 0xee, 0xea, 0xd6, 0x10, 0xa6);
-
+struct __declspec(uuid("{F8D84C5E-DEE9-4bfb-9C97-D4EEEAD610A6}")) IEAFToolbars;
 interface IEAFToolbars : IUnknown
 {
    // Creates a new, empty toolbar. Returns the Toolbar ID
@@ -128,6 +128,7 @@ interface IEAFToolbars : IUnknown
 // {2D663F88-1B17-4d1b-9DE8-8CD06050E2C2}
 DEFINE_GUID(IID_IEAFAcceleratorTable, 
 0x2d663f88, 0x1b17, 0x4d1b, 0x9d, 0xe8, 0x8c, 0xd0, 0x60, 0x50, 0xe2, 0xc2);
+struct __declspec(uuid("{2D663F88-1B17-4d1b-9DE8-8CD06050E2C2}")) IEAFAcceleratorTable;
 interface IEAFAcceleratorTable : IUnknown
 {
    // Adds an accelerator table
@@ -151,7 +152,7 @@ interface IEAFAcceleratorTable : IUnknown
 // {37322672-EFA0-4823-95AE-EFCDC8812450}
 DEFINE_GUID(IID_IEAFDocument, 
 0x37322672, 0xefa0, 0x4823, 0x95, 0xae, 0xef, 0xcd, 0xc8, 0x81, 0x24, 0x50);
-
+struct __declspec(uuid("{37322672-EFA0-4823-95AE-EFCDC8812450}")) IEAFDocument;
 interface IEAFDocument : IUnknown
 {
    // Returns TRUE if the document is modified
@@ -179,12 +180,12 @@ interface IEAFDocument : IUnknown
 // IEAFProcessCommandLine
 //
 // Implement this interface in agents and extension agents that process
-// command line prameters. DO NOT register this interface with the broker.
+// command line parameters. DO NOT register this interface with the broker.
 
 // {D39456A3-33CD-4ea0-91EE-D15BBEA574B8}
 DEFINE_GUID(IID_IEAFProcessCommandLine, 
 0xd39456a3, 0x33cd, 0x4ea0, 0x91, 0xee, 0xd1, 0x5b, 0xbe, 0xa5, 0x74, 0xb8);
-
+struct __declspec(uuid("{D39456A3-33CD-4ea0-91EE-D15BBEA574B8}")) IEAFProcessCommandLine;
 interface IEAFProcessCommandLine : IUnknown
 {
    // Processes command line options. Return TRUE if they were handled, otherwise FALSE.
@@ -193,7 +194,7 @@ interface IEAFProcessCommandLine : IUnknown
    // example may be used
    //
    // CMyCommandLineInfo ci; // your custom command line parser derived from CEAFCommandLineInfo
-   // EAFGetApp()->ParcseCommandLine(ci);
+   // EAFGetApp()->ParseCommandLine(ci);
    // cmdInfo = ci; // copies the base parameters... note there will be object slicing here
    // if ( ci.IsThisMyCommandLine )
    // {

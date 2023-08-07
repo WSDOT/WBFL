@@ -71,9 +71,7 @@ HRESULT CTransitionCurve::Init(IPoint2d* pStartPoint, VARIANT varStartDirection,
    ATLASSERT(!IsEqual(R1,R2)); // both can't same number
    ATLASSERT(!IsZero(L)); // curve must have a length
 
-   HRESULT hr;
-   WBFL::COGO::Direction startDirection;
-   std::tie(hr, startDirection) = cogoUtil::DirectionFromVariant(varStartDirection);
+   auto [hr, startDirection] = cogoUtil::DirectionFromVariant(varStartDirection);
    if (FAILED(hr)) return hr;
 
    auto startPoint = pStartPoint ? cogoUtil::GetPoint(pStartPoint) : WBFL::Geometry::Point2d(0, 0);;
@@ -188,9 +186,7 @@ STDMETHODIMP CTransitionCurve::Clone(IPathElement** clone)
 
 STDMETHODIMP CTransitionCurve::Move(Float64 dist, VARIANT varDirection)
 {
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    m_Curve->Move(dist, direction);
@@ -240,9 +236,7 @@ STDMETHODIMP CTransitionCurve::LocatePoint(Float64 distFromStart, OffsetMeasureT
 {
    CHECK_RETOBJ(ppPoint);
 
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreatePoint(m_Curve->LocatePoint(distFromStart, WBFL::COGO::OffsetType(offsetType), offset, direction), ppPoint);
@@ -267,10 +261,7 @@ STDMETHODIMP CTransitionCurve::ProjectPoint(IPoint2d* point, IPoint2d** pNewPoin
    CHECK_RETVAL(pvbOnProjection);
    CHECK_RETOBJ(pNewPoint);
 
-   WBFL::Geometry::Point2d newPoint;
-   Float64 distFromStart;
-   bool bOnProjection;
-   std::tie(newPoint, distFromStart, bOnProjection) = m_Curve->ProjectPoint(cogoUtil::GetPoint(point));
+   auto [newPoint, distFromStart, bOnProjection] = m_Curve->ProjectPoint(cogoUtil::GetPoint(point));
 
    *pDistFromStart = distFromStart;
    *pvbOnProjection = (bOnProjection ? VARIANT_TRUE : VARIANT_FALSE);

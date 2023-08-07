@@ -46,8 +46,7 @@ int randomWithin(const RangeType & range, int seed)
    //
    //Seeded random algorithm from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
    //
-   Float64 min = range.first;
-   Float64 max = range.second;
+   auto [min, max](range);
    min = min < 0 ? 0 : min;
    seed = size_t(seed * 9301 + 49297) % 233280;
    Float64 rnd   = seed / 233280.0;
@@ -123,7 +122,6 @@ COLORREF GraphColor::GetColor(IndexType graphIndex)
 
    Float64 hue = pickHue(RangeType(m_MinHue, m_MaxHue), (int)graphIndex*5); // 5 gives a good color distribution (after testing)
 
-   BYTE red, green, blue;
-   std::tie(red,green,blue) = WBFL::System::ColorConverter::HSLtoRGB(hue,lightness,saturation);
+   auto [red,green,blue] = WBFL::System::ColorConverter::HSLtoRGB(hue,lightness,saturation);
    return RGB(red,green,blue);
 }

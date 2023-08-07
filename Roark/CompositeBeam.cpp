@@ -75,8 +75,7 @@ std::pair<Float64, Float64> CompositeBeam::GetReactions() const
    Float64 Rb = 0;
    for(const auto& beam : m_Beams)
    {
-      Float64 ra, rb;
-      std::tie(ra,rb) = beam->GetReactions();
+      auto [ra,rb] = beam->GetReactions();
       Ra += ra;
       Rb += rb;
    }
@@ -90,8 +89,7 @@ std::pair<Float64, Float64> CompositeBeam::GetMoments() const
    Float64 Mb = 0;
    for(const auto& beam : m_Beams)
    {
-      Float64 ma, mb;
-      std::tie(ma,mb) = beam->GetMoments();
+      auto [ma,mb] = beam->GetMoments();
       Ma += ma;
       Mb += mb;
    }
@@ -104,8 +102,7 @@ std::pair<Float64, Float64> CompositeBeam::GetRotations() const
    Float64 rb = 0;
    for(const auto& beam : m_Beams)
    {
-      Float64 _ra, _rb;
-      std::tie(_ra,_rb) = beam->GetRotations();
+      auto [_ra,_rb] = beam->GetRotations();
       ra += _ra;
       rb += _rb;
    }
@@ -118,8 +115,7 @@ std::pair<Float64, Float64> CompositeBeam::GetDeflections() const
    Float64 Yb = 0;
    for(const auto& beam : m_Beams)
    {
-      Float64 ya, yb;
-      std::tie(ya,yb) = beam->GetDeflections();
+      auto [ya,yb] = beam->GetDeflections();
       Ya += ya;
       Yb += yb;
    }

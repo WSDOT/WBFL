@@ -52,15 +52,16 @@ STDMETHODIMP CEqualSpacingDiaphragmLineFactory::get_AlignmentID(IDType* ID)
 
 STDMETHODIMP CEqualSpacingDiaphragmLineFactory::SetStationRange(VARIANT varStartStation, VARIANT varEndStation)
 {
-   auto result = cogoUtil::StationFromVariant(varStartStation);
-   if (FAILED(result.first)) return result.first;
-   auto start_station = result.second;
+   HRESULT hr;
+   WBFL::COGO::Station startStation;
+   std::tie(hr,startStation) = cogoUtil::StationFromVariant(varStartStation);
+   if (FAILED(hr)) return hr;
    
-   result = cogoUtil::StationFromVariant(varEndStation);
-   if (FAILED(result.first)) return result.first;
-   auto end_station = result.second;
-
-   m_Factory->SetStationRange(start_station, end_station);
+   WBFL::COGO::Station endStation;
+   std::tie(hr,endStation) = cogoUtil::StationFromVariant(varEndStation);
+   if (FAILED(hr)) return hr;
+   
+   m_Factory->SetStationRange(startStation, endStation);
    return S_OK;
 }
 
@@ -68,11 +69,11 @@ STDMETHODIMP CEqualSpacingDiaphragmLineFactory::GetStationRange(IStation** ppSta
 {
    CHECK_RETOBJ(ppStartStation);
    CHECK_RETOBJ(ppEndStation);
-   auto range = m_Factory->GetStationRange();
+   const auto& [startStation,endStation] = m_Factory->GetStationRange();
    HRESULT hr = S_OK;
-   hr = cogoUtil::CreateStation(range.first, ppStartStation);
+   hr = cogoUtil::CreateStation(startStation, ppStartStation);
    if (FAILED(hr)) return hr;
-   hr = cogoUtil::CreateStation(range.second, ppEndStation);
+   hr = cogoUtil::CreateStation(endStation, ppEndStation);
    if (FAILED(hr)) return hr;
    return S_OK;
 }

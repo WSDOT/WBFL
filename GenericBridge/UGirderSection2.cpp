@@ -579,23 +579,23 @@ STDMETHODIMP CUGirderSection2::GetWebSections(IDblArray** ppY, IDblArray** ppW, 
    {
       (*ppY)->Add(-(D4 + D5));
       (*ppW)->Add(2 * t_web);
-      (*ppDesc)->Add(_T("Top Flange - Web"));
+      (*ppDesc)->Add(CComBSTR("Top Flange - Web"));
    }
    else
    {
       (*ppY)->Add(-(D4 + D5));
       (*ppW)->Add(2 * (W7*(D6-D4-D5)/D6 + t_web));
-      (*ppDesc)->Add(_T("Top Flange - Web"));
+      (*ppDesc)->Add(CComBSTR("Top Flange - Web"));
 
       (*ppY)->Add(-D6);
       (*ppW)->Add(2 * t_web);
-      (*ppDesc)->Add(_T("Interior Web Transition"));
+      (*ppDesc)->Add(CComBSTR("Interior Web Transition"));
    }
 
 
    (*ppY)->Add(-D1 + D2 + D3);
    (*ppW)->Add(2 * t_web);
-   (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
+   (*ppDesc)->Add(CComBSTR("Bottom Flange - Web"));
 
    return S_OK;
 }

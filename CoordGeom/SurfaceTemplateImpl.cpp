@@ -92,10 +92,7 @@ Float64 SurfaceTemplateImpl::GetRidgePointElevationChange(IndexType ridgePoint1I
    IndexType endIdx = max(ridgePoint1Idx, ridgePoint2Idx);
    for (IndexType idx = startIdx; idx < endIdx; idx++)
    {
-      Float64 width, slope;
-      SurfaceTemplateSegment::SlopeType slopeType;
-      std::tie(width,slope,slopeType) = m_SegmentTemplates[idx].GetParameters();
-
+      auto [width,slope,slopeType] = m_SegmentTemplates[idx].GetParameters();
       delta += sign * width * slope;
    }
 
@@ -117,9 +114,7 @@ Float64 SurfaceTemplateImpl::GetElevationChange(IndexType ridgePointIdx, Float64
       Float64 running_offset = 0;
       for (IndexType idx = ridgePointIdx; idx < nSegments; idx++)
       {
-         Float64 width, slope;
-         SurfaceTemplateSegment::SlopeType slopeType;
-         std::tie(width,slope,slopeType) = m_SegmentTemplates[idx].GetParameters();
+         auto [width,slope,slopeType] = m_SegmentTemplates[idx].GetParameters();
 
          if (offset < running_offset + width)
          {
@@ -141,9 +136,7 @@ Float64 SurfaceTemplateImpl::GetElevationChange(IndexType ridgePointIdx, Float64
       Float64 running_offset = 0;
       for (IndexType idx = ridgePointIdx - 1; idx != INVALID_INDEX; idx--)
       {
-         Float64 width, slope;
-         SurfaceTemplateSegment::SlopeType slopeType;
-         std::tie(width,slope,slopeType) = m_SegmentTemplates[idx].GetParameters();
+         auto [width,slope,slopeType] = m_SegmentTemplates[idx].GetParameters();
 
          if (running_offset - width < offset)
          {
@@ -172,9 +165,7 @@ Float64 SurfaceTemplateImpl::GetSlope(IndexType ridgePointIdx, Float64 offset) c
       SegmentIndexType nSegments = m_SegmentTemplates.size();
       for (IndexType idx = ridgePointIdx; idx < nSegments; idx++)
       {
-         Float64 width, slope;
-         SurfaceTemplateSegment::SlopeType slopeType;
-         std::tie(width,slope,slopeType) = m_SegmentTemplates[idx].GetParameters();
+         auto [width,slope,slopeType] = m_SegmentTemplates[idx].GetParameters();
 
          if (::InRange(leftEdge, offset, leftEdge + width))
          {
@@ -198,9 +189,7 @@ Float64 SurfaceTemplateImpl::GetSlope(IndexType ridgePointIdx, Float64 offset) c
       Float64 rightEdge = 0;
       for (IndexType idx = ridgePointIdx - 1; idx != INVALID_INDEX; idx--)
       {
-         Float64 width, slope;
-         SurfaceTemplateSegment::SlopeType slopeType;
-         std::tie(width,slope,slopeType) = m_SegmentTemplates[idx].GetParameters();
+         auto [width,slope,slopeType] = m_SegmentTemplates[idx].GetParameters();
 
          if (::InRange(rightEdge - width, offset, rightEdge))
          {
@@ -225,9 +214,7 @@ Float64 SurfaceTemplateImpl::GetSlope(IndexType ridgePointIdx, Float64 offset) c
 
 Float64 SurfaceTemplateImpl::GetSegmentSlope(IndexType idx) const
 {
-   Float64 width, slope;
-   SurfaceTemplateSegment::SlopeType slopeType;
-   std::tie(width,slope,slopeType) = m_SegmentTemplates[idx].GetParameters();
+   auto [width,slope,slopeType] = m_SegmentTemplates[idx].GetParameters();
 
    Float64 segment_slope = slope;
    if (slopeType == SurfaceTemplateSegment::SlopeType::FixedVertical)

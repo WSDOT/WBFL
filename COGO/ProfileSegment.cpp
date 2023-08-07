@@ -83,8 +83,7 @@ STDMETHODIMP CProfileSegment::SetEndPoint(IProfilePoint* pEnd)
 
 STDMETHODIMP CProfileSegment::Location(IProfilePoint** ppStart, IProfilePoint** ppEnd)
 {
-   WBFL::COGO::ProfilePoint start, end;
-   std::tie(start, end) = m_Segment->GetLocation();
+   auto [start, end] = m_Segment->GetLocation();
    auto hr1 = cogoUtil::CreateProfilePoint(std::make_shared<WBFL::COGO::ProfilePoint>(start), ppStart);
    auto hr2 = cogoUtil::CreateProfilePoint(std::make_shared<WBFL::COGO::ProfilePoint>(end), ppEnd);
    return (FAILED(hr1) || FAILED(hr2) ? E_FAIL : S_OK);
@@ -142,9 +141,7 @@ STDMETHODIMP CProfileSegment::ComputeGradeAndElevation(VARIANT varStation, Float
    CHECK_RETVAL(pGrade);
    CHECK_RETVAL(pElevation);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    std::tie(*pGrade, *pElevation) = m_Segment->ComputeGradeAndElevation(station);

@@ -189,7 +189,7 @@ void CrackedSectionSolverImpl::DecomposeSection() const
       const auto& fgMaterial = m_Section->GetForegroundMaterial(shapeIdx);
       const auto& bgMaterial = m_Section->GetBackgroundMaterial(shapeIdx);
 
-      auto& shape = original_shape.CreateClone();
+      auto shape = original_shape.CreateClone();
       shape->Rotate(0, 0, -m_Angle);
 
       auto bndbox = shape->GetBoundingBox();
@@ -417,8 +417,8 @@ void CrackedSectionSolverImpl::AnalyzeSlice(Float64 Yguess, SLICEINFO& slice, Fl
       Float64 minStrain, maxStrain;
       fgMaterial->GetStrainLimits(&minStrain, &maxStrain);
 
-      auto result = fgMaterial->ComputeStress(maxStrain);
-      if (result.first == 0)
+      auto [stress, bStrainWithinLimits] = fgMaterial->ComputeStress(maxStrain);
+      if (IsZero(stress))
       {
          return;
       }

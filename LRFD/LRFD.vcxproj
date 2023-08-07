@@ -86,6 +86,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -148,6 +150,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -296,9 +300,8 @@
     <ResourceCompile Include="Lrfd.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\COGO\Cogo.vcxproj">
-      <Project>{905d99ea-8bc5-45ab-bd0e-9531bb9d9f95}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\CoordGeom\CoordGeom.vcxproj">
+      <Project>{7ea2e3a4-a83a-412c-831a-057e9ec9e73c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
       <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>

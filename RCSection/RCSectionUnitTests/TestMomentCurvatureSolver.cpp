@@ -62,8 +62,7 @@ namespace RCSectionUnitTest
          auto nPoints = solution->GetPointCount();
          Assert::IsTrue(nPoints == 123);
 
-         Float64 Mmax, k;
-         std::tie(Mmax, k) = solution->GetPeakCapacity();
+         auto [Mmax, k] = solution->GetPeakCapacity();
          Assert::IsTrue(IsEqual(Mmax, 28986.080336362313));
          Assert::IsTrue(IsEqual(k, 0.0011981250000000024));
 

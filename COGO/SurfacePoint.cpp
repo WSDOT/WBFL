@@ -84,9 +84,7 @@ STDMETHODIMP CSurfacePoint::get_Station(IStation* *station)
 
 STDMETHODIMP CSurfacePoint::put_Station(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
    m_SurfacePoint->SetStation(station);
 	return S_OK;

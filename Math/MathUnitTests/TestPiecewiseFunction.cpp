@@ -23,8 +23,8 @@ namespace MathUnitTests
          Assert::IsTrue(fun1.Evaluate(-3) == -1);
          Assert::IsTrue(fun1.Evaluate(1) == 2);
          Assert::IsTrue(fun1.Evaluate(3) == -1);
-         Assert::IsTrue(fun1.Evaluate(-5. / 3.) == 0.0);
-         Assert::IsTrue(fun1.Evaluate(7. / 3.) == 0.0);
+         Assert::IsTrue(IsZero(fun1.Evaluate(-5. / 3.)));
+         Assert::IsTrue(IsZero(fun1.Evaluate(7. / 3.)));
          Assert::IsTrue(fun1.Evaluate(0.0) == 1.25);
          Assert::IsTrue(fun1.GetPoint(1) == WBFL::Geometry::Point2d(-3, -1));
 

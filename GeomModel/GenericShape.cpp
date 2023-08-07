@@ -107,17 +107,17 @@ void GenericShape::SetCentroid(const Point2d& centroid)
    m_pCentroid->Move(centroid);
 }
 
-void GenericShape::SetCentroid(std::shared_ptr<Point2d>& centroid)
+void GenericShape::SetCentroid(std::shared_ptr<Point2d> centroid)
 {
    m_pCentroid = centroid;
 }
 
-const std::shared_ptr<Point2d>& GenericShape::GetCentroid() const
+std::shared_ptr<const Point2d> GenericShape::GetCentroid() const
 {
    return m_pCentroid;
 }
 
-std::shared_ptr<Point2d>& GenericShape::GetCentroid()
+std::shared_ptr<Point2d> GenericShape::GetCentroid()
 {
    return m_pCentroid;
 }
@@ -246,7 +246,7 @@ void GenericShape::Rotate(const Point2d& center, Float64 angle)
    m_Rotation += angle;
 }
 
-void GenericShape::SetHookPoint(std::shared_ptr<Point2d>& hookPnt)
+void GenericShape::SetHookPoint(std::shared_ptr<Point2d> hookPnt)
 {
    SetCentroid(hookPnt);
 }
@@ -256,12 +256,12 @@ void GenericShape::SetHookPoint(const Point2d& hookPnt)
    SetCentroid(hookPnt);
 }
 
-std::shared_ptr<Point2d>& GenericShape::GetHookPoint()
+std::shared_ptr<Point2d> GenericShape::GetHookPoint()
 {
    return GetCentroid();
 }
 
-const std::shared_ptr<Point2d>& GenericShape::GetHookPoint() const
+std::shared_ptr<const Point2d> GenericShape::GetHookPoint() const
 {
    return GetCentroid();
 }
@@ -313,7 +313,7 @@ Point2d GenericShape::GetLocatorPoint(LocatorPoint lp) const
    return p;
 }
 
-void GenericShape::SetLocatorPoint(LocatorPoint lp, Point2d& position)
+void GenericShape::SetLocatorPoint(LocatorPoint lp, const Point2d& position)
 {
    Move(GetLocatorPoint(lp), position);
 }
@@ -334,8 +334,7 @@ ShapeProperties GenericShape::GetProperties() const
 
 Rect2d GenericShape::GetBoundingBox() const
 {
-   Float64 cx, cy;
-   std::tie(cx,cy) = m_pCentroid->GetLocation();
+   auto [cx,cy] = m_pCentroid->GetLocation();
    return Rect2d(cx - m_Xleft, cy - m_Ybottom, cx + m_Xright, cy + m_Ytop);
 }
 
@@ -346,11 +345,8 @@ std::vector<Point2d> GenericShape::GetPolyPoints() const
 
 bool GenericShape::PointInShape(const Point2d& p) const
 {
-   Float64 x,y;
-   std::tie(x,y) = p.GetLocation();
-
-   Float64 cx,cy;
-   std::tie(cx,cy) = m_pCentroid->GetLocation();
+   auto [x,y] = p.GetLocation();
+   auto [cx,cy] = m_pCentroid->GetLocation();
 
    if ( (cx-m_Xleft <= x && x <= cx+m_Xright) &&
         (cy-m_Ybottom <= y && y <= cy+m_Ytop) )
@@ -392,20 +388,20 @@ std::unique_ptr<Shape> GenericShape::CreateClippedShape(const Rect2d& r, Shape::
 
 Float64 GenericShape::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
-   Point2d p;
-   Float64 fd;
-   GetFurthestPoint(line, side, p, fd);
+   auto [p, fd] = GetFurthestPoint(line, side);
    return fd;
 }
 
-void GenericShape::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+std::pair<Point2d,Float64> GenericShape::GetFurthestPoint(const Line2d& line, Line2d::Side side) const
 {
-   furthestPoint = *m_pCentroid;
+   auto furthestPoint = *m_pCentroid;
 
    // get distance from left side of line to center
-   furthestDistance = line.DistanceToPoint(*m_pCentroid);
+   auto furthestDistance = line.DistanceToPoint(*m_pCentroid);
    if (side == Line2d::Side::Right)
       furthestDistance = -furthestDistance;
+
+   return std::make_pair(furthestPoint, furthestDistance);
 }
 
 std::unique_ptr<Shape> GenericShape::CreateClone() const

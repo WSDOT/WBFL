@@ -188,13 +188,11 @@ void GirderLine::CreatePath()
       auto end_line = GetGirderSpacingLine(EndType::End);
 
       // intersect the spacing layout lines with the girder path
-      auto result = layout_path->Intersect(start_line, m_PierPoint[+EndType::Start], true, true);
-      CHECK(result.first == true);
-      auto pnt1 = result.second;
+      auto [bSuccess1,pnt1] = layout_path->Intersect(start_line, m_PierPoint[+EndType::Start], true, true);
+      CHECK(bSuccess1 == true);
 
-      result = layout_path->Intersect(end_line, m_PierPoint[+EndType::End], true, true);
-      CHECK(result.first == true);
-      auto pnt2 = result.second;
+      auto [bSuccess2,pnt2] = layout_path->Intersect(end_line, m_PierPoint[+EndType::End], true, true);
+      CHECK(bSuccess2 == true);
 
       // create a work line through the points on the girder spacing measurement line
       WBFL::Geometry::Line2d line(pnt1, pnt2);
@@ -213,11 +211,10 @@ void GirderLine::CreatePath()
       // girder line is a sub-path of the layout path
 
       // determine where the girder path starts and end
-      Float64 start_distance, end_distance, offset;
-      std::tie(start_distance, offset) = layout_path->DistanceAndOffset(m_PierPoint[+EndType::Start]);
-      CHECK(IsZero(offset));
-      std::tie(end_distance, offset) = layout_path->DistanceAndOffset(m_PierPoint[+EndType::End]);
-      CHECK(IsZero(offset));
+      auto [start_distance, start_offset] = layout_path->DistanceAndOffset(m_PierPoint[+EndType::Start]);
+      CHECK(IsZero(start_offset));
+      auto [end_distance, end_offset] = layout_path->DistanceAndOffset(m_PierPoint[+EndType::End]);
+      CHECK(IsZero(end_offset));
 
       auto subpath_elements = layout_path->CreateSubpath(start_distance, end_distance);
       m_Path = Path::Create();
@@ -492,18 +489,14 @@ WBFL::Geometry::Line2d GirderLine::GetGirderSpacingLine(EndType endType)
 
             // intersect CL bearing with alignment
             const auto& pier_point = m_PierLine[+endType]->GetAlignmentPoint();
-            bool bSuccess;
-            WBFL::Geometry::Point2d brg_point;
-            std::tie(bSuccess, brg_point) = alignment->Intersect(cl_bearing, pier_point, true, true);
+            auto [bSuccess, brg_point] = alignment->Intersect(cl_bearing, pier_point, true, true);
             CHECK(bSuccess);
             //CComPtr<IPoint2d> pntPier, pntBrg;
             //pPierLine->get_AlignmentPoint(&pntPier);
             //alignment->Intersect(centerline, pntPier, &pntBrg);
 
             // get station and offset of CL Bearing/Alignment intersection point
-            Station cl_bearing_station;
-            Float64 offset;
-            std::tie(cl_bearing_station,offset) = alignment->StationAndOffset(brg_point);
+            auto [cl_bearing_station,offset] = alignment->StationAndOffset(brg_point);
             CHECK(IsZero(offset));
 
             // get the normal at this station

@@ -81,8 +81,7 @@ std::unique_ptr<UniformFDMesh> FDMeshGenerator::GenerateMesh(const WBFL::Geometr
    mesh->SetElementSize(Dx, Dy);
 
    auto pntTopLeft = bbox.TopLeft();
-   Float64 tlx, tly;
-   std::tie(tlx,tly) = pntTopLeft.GetLocation();
+   auto [tlx,tly] = pntTopLeft.GetLocation();
 
    mesh->AllocateElementRows(Ny); // preallocate the rows so we can add them in any order
 

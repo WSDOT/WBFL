@@ -112,8 +112,8 @@ namespace WBFL
                                bool bIgnoreInitialRelaxation,
                                bool bValidateParameters,
                                RelaxationLossMethod relaxationMethod,
-                               std::shared_ptr<const CreepCoefficient2005>& pGirderCreep,
-                               std::shared_ptr<const CreepCoefficient2005>& pDeckCreep
+                               std::shared_ptr<const CreepCoefficient2005> pGirderCreep,
+                               std::shared_ptr<const CreepCoefficient2005> pDeckCreep
                                );
 
          UHPCLosses(const UHPCLosses&) = default;

@@ -137,13 +137,8 @@ STDMETHODIMP_(BOOL) CDragDataSinkImpl::Write(UINT cfFormat,void* pBuf,UINT nMax)
 
 void CDragDataSinkImpl::CacheGlobalData(COleDataSource* pODS)
 {
-   std::map<UINT,DataSink*>::iterator iter(m_Sinks.begin());
-   std::map<UINT,DataSink*>::iterator end(m_Sinks.end());
-   for ( ; iter != end; iter++ )
+   for(auto [cf,pSink] : m_Sinks)
    {
-      UINT cf = (*iter).first;
-      DataSink* pSink = (*iter).second;
-
       pSink->m_pArchive->Close();
       HGLOBAL hGlobal = pSink->m_pSharedFile->Detach();
       pODS->CacheGlobalData(cf,hGlobal);

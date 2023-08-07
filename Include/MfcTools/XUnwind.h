@@ -69,8 +69,8 @@ public:
    // Default constructor
    CXUnwind(LPCTSTR msg,   // The error message
             Int32 reason,      // A reason code
-            LPCTSTR file,  // File where the exception occured
-            Int16 line         // Line number where the exception occured
+            LPCTSTR file,  // File where the exception occurred
+            Int16 line         // Line number where the exception occurred
             );
 
    //------------------------------------------------------------------------

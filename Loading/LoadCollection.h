@@ -923,7 +923,7 @@ protected:
 
       IDType ID;
       item->get_ID(&ID);
-      ContainerType::size_type nRemoved = pThis->m_Container.erase(ID);
+      auto nRemoved = pThis->m_Container.erase(ID);
       ATLASSERT(nRemoved == 1);
 
       pThis->FireAfterRemove();

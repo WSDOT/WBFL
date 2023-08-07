@@ -316,7 +316,7 @@ private:
 
 
 // some useful predicates and stl container typedefs for PoiMap's
-struct PoiMapLess: public std::binary_function<PoiMap*,PoiMap*,int>
+struct PoiMapLess
 {
    bool operator ()(PoiMap* left, PoiMap* right) const
    {
@@ -325,7 +325,7 @@ struct PoiMapLess: public std::binary_function<PoiMap*,PoiMap*,int>
 };
 
 
-struct PoiMapIdMatch: public std::unary_function<PoiMap*,bool>
+struct PoiMapIdMatch
 {
    PoiMapIdMatch(PoiIDType id):
    m_ID(id)

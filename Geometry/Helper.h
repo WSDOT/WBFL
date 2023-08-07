@@ -250,9 +250,7 @@ HRESULT GetFurthestPoint(const T& shape, ILine2d* line, IPoint2d** ppPoint, Floa
    CHECK_IN(line);
    CHECK_RETVAL(pVal);
    CHECK_RETOBJ(ppPoint);
-   WBFL::Geometry::Point2d point;
-   Float64 dist;
-   shape.GetFurthestPoint(GetLine(line), WBFL::Geometry::Line2d::Side::Right,point,dist);
+   auto [point,dist] = shape.GetFurthestPoint(GetLine(line), WBFL::Geometry::Line2d::Side::Right);
    CreatePoint(point, ppPoint);
    *pVal = dist;
    return S_OK;

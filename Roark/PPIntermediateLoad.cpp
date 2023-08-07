@@ -96,8 +96,7 @@ WBFL::System::SectionValue PPIntermediateLoad::ComputeShear(Float64 x) const
    Float64 L = GetL();
 
    // Compute shear left and right of W
-   Float64 Ra, Rb;
-   std::tie(Ra,Rb) = GetReactions();
+   auto [Ra,Rb] = GetReactions();
    Float64 left  =  Ra;
    Float64 right = -Rb;
 
@@ -162,8 +161,7 @@ Float64 PPIntermediateLoad::ComputeRotation(Float64 x) const
 {
    Float64 r = 0;
 
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
+   auto [L,EI] = GetProperties();
 
    if ( x < a )
    {
@@ -181,8 +179,7 @@ Float64 PPIntermediateLoad::ComputeDeflection(Float64 x) const
 {
    Float64 y = 0;
 
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
+   auto [L,EI] = GetProperties();
 
    if (x < a)
    {

@@ -27,6 +27,7 @@
 
 #include <MfcTools\MfcToolsExp.h>
 #include <MfcTools\CacheEdit.h>
+#include <System\Tokenizer.h>
 #include <Units\Convert.h>
 #include <limits>
 
@@ -83,10 +84,15 @@ void DDX_Keyword(CDataExchange* pDX,int nIDC,LPCTSTR lpszKeyword,T& value)
    }
    else
    {
-      if ( value == -1 )
-         DDX_Text(pDX,nIDC,CString(lpszKeyword));
+      if (value == -1)
+      {
+         CString strKeyword(lpszKeyword);
+         DDX_Text(pDX, nIDC, strKeyword);
+      }
       else
-         DDX_Text(pDX,nIDC,value);
+      {
+         DDX_Text(pDX, nIDC, value);
+      }
    }
 }
 
@@ -147,7 +153,7 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
          int tokenIdx = (int)abs(value)-1;
          ATLASSERT(tokenIdx < tokenizer.size());
          CString strToken(tokenizer[tokenIdx].c_str());
-         DDX_Text(pDX, nIDC, CString(strToken));
+         DDX_Text(pDX, nIDC, strToken);
          DDX_Tag(pDX, nIDCTag, umIndirectMeasure);
       }
       else
@@ -378,14 +384,14 @@ void DDX_CBItemData(CDataExchange* pDX,int nIDC, const T* vData,T& itemData)
    {
       int selidx = pCB->GetCurSel();
       if ( selidx != CB_ERR )
-         itemdata = vData[pCB->GetItemData(selidx)];
+         itemData = vData[pCB->GetItemData(selidx)];
    }
    else
    {
       int count = pCB->GetCount();
       for ( int i = 0; i < count; i++ )
       {
-         if ( vData[pCB->GetItemData(i)] == itemdata )
+         if ( vData[pCB->GetItemData(i)] == itemData )
          {
             pCB->SetCurSel(i);
             return;

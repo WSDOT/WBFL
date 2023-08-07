@@ -38,7 +38,7 @@ m_Left(left), m_Right(right)
 {
 }
 
-bool SectionValue::operator==(const SectionValue& rOther)
+bool SectionValue::operator==(const SectionValue& rOther) const
 {
    return IsEqual(Left(),rOther.Left()) && IsEqual(Right(),rOther.Right());
 }

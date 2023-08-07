@@ -93,7 +93,7 @@ STDMETHODIMP_(void) CLocalDragDropTaskImpl::Start()
                                   &startRect);
 
    // If we are in the WaitingForDragEnter state when DoDragDrop completes, this
-   // means the drop occured in a foreign window. A simple intra-view drag did
+   // means the drop occurred in a foreign window. A simple intra-view drag did
    // not occur. If there is a meaningful drop effect the current drag objects
    // need to be notified about it.
    if ( de != DROPEFFECT_NONE && CompareStates(WaitingForDragEnter) )

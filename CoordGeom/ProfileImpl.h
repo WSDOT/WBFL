@@ -49,7 +49,7 @@ namespace WBFL
 
          /// @brief Adds a ProfileElement to this profile
          /// @param profileElement 
-         void AddProfileElement(std::shared_ptr<ProfileElement>& profileElement);
+         void AddProfileElement(std::shared_ptr<ProfileElement> profileElement);
 
          /// @brief Returns the specified ProfileElement
          /// @param idx Index of the element to return

@@ -39,11 +39,7 @@ std::shared_ptr<WBFL::COGO::BridgeFramingGeometry> CreateBridgeGeometry(Float64 
 
    for (const auto& pier : piers)
    {
-      IDType id;
-      Float64 station;
-      std::_tstring direction;
-      ConnectionGeometry back, ahead;
-      std::tie(id, station, direction, back, ahead) = pier;
+      auto [id, station, direction, back, ahead] = pier;
       auto single_pier_line_factory = std::make_shared<SinglePierLineFactory>(id, g_AlignmentID, station, direction, pier_length, pier_length / 2, back, ahead);
       bridge->AddPierLineFactory(single_pier_line_factory);
    }
@@ -85,7 +81,7 @@ namespace CoordGeomUnitTest
       TEST_METHOD(Test1)
       {
          std::vector<std::tuple<IDType, Float64, std::_tstring, ConnectionGeometry, ConnectionGeometry>> piers;
-         ConnectionGeometry connection_geometry{ 2.5,MeasurementType::NormalToItem,1.0,MeasurementType::NormalToItem,MeasurementLocation::CenterlineBearing };
+         ConnectionGeometry connection_geometry( 2.5,MeasurementType::NormalToItem,1.0,MeasurementType::NormalToItem,MeasurementLocation::CenterlineBearing );
          piers.emplace_back(100, 100.0, _T("N 45 W"), ConnectionGeometry(), connection_geometry);
          piers.emplace_back(200, 200.0, _T("NORMAL"), connection_geometry, ConnectionGeometry());
          auto bridge = CreateBridgeGeometry(piers, true);
@@ -145,11 +141,7 @@ namespace CoordGeomUnitTest
 
          for (const auto& pier : piers)
          {
-            IDType id;
-            Float64 station;
-            std::_tstring direction;
-            ConnectionGeometry back, ahead;
-            std::tie(id, station, direction, back, ahead) = pier;
+            auto [id, station, direction, back, ahead] = pier;
             auto single_pier_line_factory = std::make_shared<SinglePierLineFactory>(id, g_AlignmentID, station, direction, pier_length, pier_length / 2, back, ahead);
             bridge->AddPierLineFactory(single_pier_line_factory);
          }

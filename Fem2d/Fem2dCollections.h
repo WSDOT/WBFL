@@ -78,7 +78,7 @@ public:
 
          CComPtr<ItemType> item(pjnt);
 
-         // intialize using virtual function
+         // initialize using virtual function
          CallOnCreate(pjnt);
 
          // load
@@ -90,8 +90,7 @@ public:
          pjnt->get_ID(&id);
 
          // insert new joint
-         std::pair<ContainerIteratorType, bool> st;
-         st = m_coll.insert(ContainerValueType(id, item));
+         auto st = __super::m_coll.insert(CComKeyedCollection< T, ItemType, StoredType, EnumType, piidenum, IDType>::ContainerValueType(id, item));
          if (!st.second)
          {
             ATLASSERT(false); // insert failed - better check why
@@ -118,13 +117,13 @@ public:
          return hr;
 
       // save out count
-      IndexType count = m_coll.size();
+      IndexType count = __super::m_coll.size();
       hr = save->put_Property(CComBSTR("Count"),CComVariant(count));
       if (FAILED(hr))
          return hr;
 
       // cycle though collection and save members
-      for (ContainerIteratorType it= m_coll.begin(); it != m_coll.end(); it++)
+      for (auto it= __super::m_coll.begin(); it != __super::m_coll.end(); it++)
       {
          CComQIPtr<ItemType> item (it->second);
          StoredType* pItem = dynamic_cast<StoredType*>(item.p);

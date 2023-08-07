@@ -221,9 +221,7 @@ Line2d& Line2d::Rotate(const Point2d& centerPoint, Float64 angle)
 {
    ASSERTVALID;
 
-   Point2d U;
-   Vector2d V;
-   std::tie(U,V) = ImplicitToExplicit(m_c, m_N);
+   auto [U,V] = ImplicitToExplicit(m_c, m_N);
    U.Rotate(centerPoint, angle);
    V.Rotate(angle);
    std::tie(m_c,m_N) = ExplicitToImplicit(U,V);
@@ -256,9 +254,7 @@ Line2d Line2d::Parallel(const Point2d& point) const
 {
    ASSERTVALID;
 
-   Point2d U;
-   Vector2d V;
-   std::tie(U,V) = ImplicitToExplicit(m_c, m_N);
+   auto [U,V] = ImplicitToExplicit(m_c, m_N);
    // create a new point with explicit U at point
    Line2d t;
    U = point;
@@ -272,12 +268,12 @@ Line2d Line2d::Normal(const Point2d& point) const
 
    Point2d q = PointOnLineNearest(point);
    if (q != point)
+   {
       return Line2d(point, q);
+   }
    else
    {
-      Point2d u;
-      Vector2d v;
-      std::tie(u,v) = ImplicitToExplicit(m_c,m_N);
+      auto [u,v] = ImplicitToExplicit(m_c,m_N);
       Vector2d direction = v.Normal(); // direct of line is normal to this line 
       return Line2d(point,direction);
    }

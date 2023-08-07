@@ -60,7 +60,7 @@ public:
 private:
    bool m_DidVisit;
 
-   using StyleElementMap = std::map<rptStyleName, std::_tstring, std::less<rptStyleName>, std::allocator<std::_tstring>>;
+   using StyleElementMap = std::map<rptStyleName, std::_tstring, std::less<rptStyleName>>;
    StyleElementMap m_StyleElementMap;
 };
 

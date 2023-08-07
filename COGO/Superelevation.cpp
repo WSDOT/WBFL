@@ -121,9 +121,7 @@ STDMETHODIMP CSuperelevation::putref_Surface(ISurface* newVal)
 
 STDMETHODIMP CSuperelevation::put_BeginTransition(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    hr = ValidateStation(station);
@@ -141,9 +139,7 @@ STDMETHODIMP CSuperelevation::get_BeginTransition(IStation** station)
 
 STDMETHODIMP CSuperelevation::put_BeginFullSuper(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    hr = ValidateStation(station);
@@ -161,9 +157,7 @@ STDMETHODIMP CSuperelevation::get_BeginFullSuper(IStation** station)
 
 STDMETHODIMP CSuperelevation::put_EndFullSuper(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    hr = ValidateStation(station);
@@ -181,9 +175,7 @@ STDMETHODIMP CSuperelevation::get_EndFullSuper(IStation** station)
 
 STDMETHODIMP CSuperelevation::put_EndTransition(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    hr = ValidateStation(station);
@@ -299,9 +291,7 @@ STDMETHODIMP CSuperelevation::GetSlope(VARIANT varStation,Float64 templateSlope,
    // adjusts the specified template slope with the superelevation
    CHECK_RETVAL(pSlope);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *pSlope = m_Superelevation->GetSlope(station, templateSlope);

@@ -190,10 +190,8 @@ HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* p
          return hr;
       }
 
-      std::vector<StrStorageData<T> >::iterator i;
-      for ( i = pData->m_Children.begin(); i != pData->m_Children.end(); i++ )
+      for(auto& child_data : pData->m_Children)
       {
-         StrStorageData<T>& child_data = *i;
          hr = Save( pSave, &child_data, pProgress );
          if ( FAILED(hr) )
          {
@@ -340,10 +338,8 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
          return STRLOAD_E_BADVERSION;
       }
 
-      std::vector<StrStorageData<T> >::iterator i;
-      for ( i = pData->m_Children.begin(); i != pData->m_Children.end(); i++ )
+      for(auto& child_data : pData->m_Children)
       {
-         StrStorageData<T>& child_data = *i;
          hr = Load( pLoad, &child_data, pProgress );
          if ( FAILED(hr) )
          {

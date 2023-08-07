@@ -116,7 +116,7 @@ BEGIN
     IDS_PROJNAME            "WBFLLBAMLoadCombiner"
     IDS_E_LC_INITIALIZATION "Initialize must be called once and only once."
     IDS_E_INVALID_LC_CONTEXT 
-                            "A problem occured getting an interface from the LoadCombinationAnalysisContext."
+                            "A problem occurred getting an interface from the LoadCombinationAnalysisContext."
     IDS_E_LOADCASE_NO_EXIST "The requested LoadCase does not exist. Name was %S"
     IDS_E_INVALID_LG_RESP   "Could not compute response for load group in load case. LoadGroup not Found. LoadCase was %S. LoadGroup was %S"
 END

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_MATHEXP_H_
-#define INCLUDED_MATH_MATHEXP_H_
 #pragma once
 
 // Define BUILDMATHLIB when building this library
@@ -46,5 +44,3 @@
 
 #include <Math\AutoLib.h>
 #include <WbflAll.h>
-
-#endif // INCLUDED_MATH_MATHEXP_H_

@@ -72,10 +72,9 @@ void CircularSegment::SetCenter(const Point2d& center)
 
 Point2d CircularSegment::GetCenter() const
 {
-   Float64 hx, hy;
-   std::tie(hx,hy) = GetHookPoint()->GetLocation();
-   Float64 cx = hx - (m_Radius - m_MidOrdinate) * cos(m_Rotation);
-   Float64 cy = hy - (m_Radius - m_MidOrdinate) * sin(m_Rotation);
+   auto [hx,hy] = GetHookPoint()->GetLocation();
+   auto cx = hx - (m_Radius - m_MidOrdinate) * cos(m_Rotation);
+   auto cy = hy - (m_Radius - m_MidOrdinate) * sin(m_Rotation);
    return Point2d(cx, cy);
 }
 
@@ -130,17 +129,13 @@ LineSegment2d CircularSegment::GetChord() const
       p2 = center; p2.Offset(0, -m_Radius);
    }
 
-   Float64 cx, cy;
-   std::tie(cx,cy) = center.GetLocation();
+   auto [cx, cy] = center.GetLocation();
 
-   Float64 x1, y1;
-   Float64 x2, y2;
+   auto x1 = cx + m_Radius * cos(m_Rotation - angle / 2);
+   auto y1 = cy + m_Radius * sin(m_Rotation - angle / 2);
 
-   x1 = cx + m_Radius * cos(m_Rotation - angle / 2);
-   y1 = cy + m_Radius * sin(m_Rotation - angle / 2);
-
-   x2 = cx + m_Radius * cos(m_Rotation + angle / 2);
-   y2 = cy + m_Radius * sin(m_Rotation + angle / 2);
+   auto x2 = cx + m_Radius * cos(m_Rotation + angle / 2);
+   auto y2 = cy + m_Radius * sin(m_Rotation + angle / 2);
 
    p1.Move(x1, y1);
    p2.Move(x2, y2);
@@ -268,9 +263,7 @@ Rect2d CircularSegment::GetBoundingBox() const
    // Get boundary line
    Line2d line(chord);
 
-   Float64 c;
-   Vector2d n;
-   std::tie(c,n) = line.GetImplicit(); // normal to line
+   auto [c,n] = line.GetImplicit(); // normal to line
    Float64 nx,ny;
    nx = n.X();
    ny = n.Y();
@@ -279,9 +272,8 @@ Rect2d CircularSegment::GetBoundingBox() const
    ny = IsZero(ny) ? 0.00 : ny;
 
    // Center of circle
-   Float64 cx, cy;
    Point2d center(GetCenter());
-   std::tie(cx,cy) = center.GetLocation();
+   auto [cx,cy] = center.GetLocation();
 
    // Find sides
    Float64 left, right, top, bottom;
@@ -400,12 +392,8 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Line2d& line, L
       // on the right side of the line, it remains
       // Determine if the shape is on the left or right of the line.
       Line2d normal_line = GeometricOperations::CreateNormalLineThroughPoint(line, GetCenter());
-      Float64 c;
-      Vector2d v1;
-      std::tie(c,v1) = clipLine.GetImplicit(); // v1 is normal to line
-      Point2d p;
-      Vector2d v2;
-      std::tie(p,v2) = normal_line.GetExplicit(); // v2 is in the direction of normal_line
+      auto [c,v1] = clipLine.GetImplicit(); // v1 is normal to line
+      auto [p,v2] = normal_line.GetExplicit(); // v2 is in the direction of normal_line
 
       // If v2 and v1 have the same direction their dot product will be > 0
       Float64 dot = v1.Dot(v2);
@@ -432,10 +420,8 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Line2d& line, L
       // If the clipping line is in the same direction as the edge line,
       // the resulting shape is a circular segment, unless the clipping line and
       // edge line intersect on the shape boundary
-      Float64 c;
-      Vector2d n1,n2;
-      std::tie(c,n1) = chord_line.GetImplicit(); // normal to chord line
-      std::tie(c,n2) = clipLine.GetImplicit(); // normal to clipping line
+      auto [c1,n1] = chord_line.GetImplicit(); // normal to chord line
+      auto [c2,n2] = clipLine.GetImplicit(); // normal to clipping line
 
       Float64 dot = n1.Dot(n2);
 
@@ -461,8 +447,7 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Line2d& line, L
          {
             // resulting shape is a circular segment
             auto clone = std::make_unique<CircularSegment>(*this);
-            Float64 nx, ny;
-            std::tie(nx,ny) = n2.GetDimensions();
+            auto [nx,ny] = n2.GetDimensions();
             Float64 rotation = atan2(-ny, -nx);
             clone->Rotate(GetCenter(),rotation);
 
@@ -506,22 +491,19 @@ std::unique_ptr<Shape> CircularSegment::CreateClippedShape(const Rect2d& r, Shap
 
 Float64 CircularSegment::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
-   Point2d fp;
-   Float64 fd;
-   GetFurthestPoint(line, side, fp, fd);
+   auto [fp,fd] = GetFurthestPoint(line, side);
    return fd;
 }
 
-void CircularSegment::GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const
+std::pair<Point2d,Float64> CircularSegment::GetFurthestPoint(const Line2d& line, Line2d::Side side) const
 {
+   Point2d furthestPoint;
+   Float64 furthestDistance = -99999;
+
    Line2d bndLine(GetChord());
 
-   Float64 temp;
-   Vector2d n1; // normal of boundary line
-   Vector2d n2; // normal of input line
-
-   std::tie(temp,n1) = bndLine.GetImplicit();
-   std::tie(temp,n2) = line.GetImplicit();
+   auto [temp1,n1] = bndLine.GetImplicit(); // n1, normal of boundary line
+   auto [temp2,n2] = line.GetImplicit(); // n2, normal of input line
 
    Float64 dot;
    dot = n1.Dot(n2);
@@ -558,7 +540,7 @@ void CircularSegment::GetFurthestPoint(const Line2d& line, Line2d::Side side, Po
       // shortest distance from the line to the center of the circle plus
       // the radius
       Circle circle(GetCenter(), m_Radius);
-      circle.GetFurthestPoint(line, side, furthestPoint, furthestDistance);
+      std::tie(furthestPoint,furthestDistance) = circle.GetFurthestPoint(line, side);
 
 #if defined _DEBUG
       Float64 distToCenter; // Shortest distance from line to center of circle
@@ -568,6 +550,8 @@ void CircularSegment::GetFurthestPoint(const Line2d& line, Line2d::Side side, Po
       CHECK(IsEqual(furthestDistance, m_Radius + distToCenter));
 #endif
    }
+
+   return std::make_pair(furthestPoint, furthestDistance);
 }
 
 void CircularSegment::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
@@ -588,8 +572,7 @@ void CircularSegment::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
    CHECK( IsEqual(cfArea,polyArea) );
 #endif // _DEBUG
 
-   Float64 cx, cy;
-   std::tie(cx,cy) = GetCenter().GetLocation();
+   auto [cx,cy] = GetCenter().GetLocation();
 
    Float64 startAngle = m_Rotation - angle;
 

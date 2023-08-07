@@ -97,8 +97,8 @@ HRESULT DealWithExceptionsInContext(T* psource, const IID& iid)
       catch (CComException& re)
       {
          // Local flavor. Append context to message
-        _bstr_t msg = CreateLBAMContextMsg(psource->GetMemberType(), psource->m_ID);
-        re.AppendToMessage((BSTR)msg);
+        auto msg = CreateLBAMContextMsg(psource->GetMemberType(), psource->m_ID);
+        re.AppendToMessage(msg);
         throw re;
       }
       catch (...)

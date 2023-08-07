@@ -163,9 +163,9 @@ public:
          if (IsEqual(m_Location, other.m_Location))
          {
             // tie breaker if equal locations and left-right
-            if (m_Location==iflDualLeft)
+            if (m_Location==static_cast<int>(iflDualLeft))
             {
-               if (other.m_Location==iflDualRight)
+               if (other.m_Location== static_cast<int>(iflDualRight))
                {
                   return true;
                }
@@ -175,9 +175,9 @@ public:
                   return m_Location < other.m_Location; 
                }
             }
-            else if (m_Location==iflDualRight)
+            else if (m_Location== static_cast<int>(iflDualRight))
             {
-               if (other.m_Location==iflDualLeft)
+               if (other.m_Location== static_cast<int>(iflDualLeft))
                {
                   return false;
                }

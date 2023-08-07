@@ -78,23 +78,23 @@ namespace WBFL
          virtual std::unique_ptr<Shape> CreateReflectedShape(const Line2d& line) const = 0;
 
          /// Sets the hook point object
-         virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) = 0;
+         virtual void SetHookPoint(std::shared_ptr<Point2d> hookPnt) = 0;
 
          /// Sets the value of the current hook point
          virtual void SetHookPoint(const Point2d& hookPnt) = 0;
 
          /// Returns the hook point object
-         virtual std::shared_ptr<Point2d>& GetHookPoint() = 0;
+         virtual std::shared_ptr<Point2d> GetHookPoint() = 0;
 
          /// Returns the hook point object
-         virtual const std::shared_ptr<Point2d>& GetHookPoint() const = 0;
+         virtual std::shared_ptr<const Point2d> GetHookPoint() const = 0;
 
          /// Returns a point located at the specified location on the bounding box 
          /// around the shape.
          virtual Point2d GetLocatorPoint(LocatorPoint lp) const = 0;
 
          /// Moves the shape so that the locator point is at the specified position
-         virtual void SetLocatorPoint(LocatorPoint lp, Point2d& position) = 0;
+         virtual void SetLocatorPoint(LocatorPoint lp, const Point2d& position) = 0;
 
          /// Returns the geometric properties of the shape
          /// The origin of the shape properties object is the centroid of this shape
@@ -126,7 +126,7 @@ namespace WBFL
          virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const = 0;
 
          /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of the provided line
-         virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const = 0;
+         virtual std::pair<Point2d,Float64> GetFurthestPoint(const Line2d& line, Line2d::Side side) const = 0;
 
          /// Returns the perimeter of the shape
          virtual Float64 GetPerimeter() const = 0;

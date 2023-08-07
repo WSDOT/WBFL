@@ -111,9 +111,7 @@ STDMETHODIMP CWidening::putref_Surface(ISurface* newVal)
 
 STDMETHODIMP CWidening::put_BeginTransition(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    hr = ValidateStation(station);
@@ -131,9 +129,7 @@ STDMETHODIMP CWidening::get_BeginTransition(IStation** station)
 
 STDMETHODIMP CWidening::put_BeginFullWidening(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    hr = ValidateStation(station);
@@ -151,9 +147,7 @@ STDMETHODIMP CWidening::get_BeginFullWidening(IStation** station)
 
 STDMETHODIMP CWidening::put_EndFullWidening(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    hr = ValidateStation(station);
@@ -171,9 +165,7 @@ STDMETHODIMP CWidening::get_EndFullWidening(IStation** station)
 
 STDMETHODIMP CWidening::put_EndTransition(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    hr = ValidateStation(station);
@@ -221,9 +213,7 @@ STDMETHODIMP CWidening::GetWidening(VARIANT varStation,IndexType templateSegment
 {
    CHECK_RETVAL(pWidening);
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *pWidening = m_Widening->GetWidening(station, templateSegmentIdx);

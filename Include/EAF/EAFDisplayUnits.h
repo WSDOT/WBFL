@@ -92,7 +92,7 @@ DESCRIPTION
 // {015A4130-272C-11d2-8EB0-006097DF3C68}
 DEFINE_GUID(IID_IEAFDisplayUnitsEventSink,
 0x015A4130, 0x272C, 0x11d2, 0x8E, 0xB0, 0x00, 0x60, 0x97, 0xDF, 0x3C, 0x68);
-interface IEAFDisplayUnitsEventSink : IUnknown
+interface __declspec(uuid("{015A4130-272C-11d2-8EB0-006097DF3C68}")) IEAFDisplayUnitsEventSink : IUnknown
 {
    virtual HRESULT OnUnitsChanging() = 0;
    virtual HRESULT OnUnitsChanged(eafTypes::UnitMode newUnitsMode) = 0;

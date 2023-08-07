@@ -55,17 +55,15 @@ HRESULT CEAFDocPluginManager::SavePluginData(IStructuredSave* pStrSave)
 
    pStrSave->BeginUnit(_T("Plugins"),1.0);
 
-   Plugins::iterator iter;
-   for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
+   for(auto [clsid,plugin] : m_Plugins)
    {
-      CComPtr<IEAFDocumentPlugin> plugin = iter->second;
       CComQIPtr<IEAFPluginPersist> persist(plugin);
       if ( persist )
       {
          pStrSave->BeginUnit(_T("Plugin"),1.0);
 
          LPOLESTR bstrCLSID = 0;
-         HRESULT hr = StringFromCLSID((*iter).first, &bstrCLSID);
+         HRESULT hr = StringFromCLSID(clsid, &bstrCLSID);
          pStrSave->put_Property(_T("CLSID"),CComVariant(bstrCLSID));
          ::CoTaskMemFree(bstrCLSID);
 
@@ -79,11 +77,7 @@ HRESULT CEAFDocPluginManager::SavePluginData(IStructuredSave* pStrSave)
 
    if ( m_bSaveMissingPluginData )
    {
-      std::vector<std::_tstring>::iterator iter2;
-      for ( iter2 = m_MissingPluginData.begin(); iter2 != m_MissingPluginData.end(); iter2++ )
-      {
-         pStrSave->SaveRawUnit(iter2->c_str());
-      }
+      std::ranges::for_each(m_MissingPluginData, [&pStrSave](auto& d) {pStrSave->SaveRawUnit(d.c_str()); });
    }
 
    pStrSave->EndUnit();

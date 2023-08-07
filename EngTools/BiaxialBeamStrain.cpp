@@ -95,10 +95,8 @@ bool BiaxialBeamStrain::GetYStrainLocation(Float64 Strain, Float64 X, Float64& Y
 void BiaxialBeamStrain::SetStrainPlane(const Line2d& rnaLine,const Point2d& p3,Float64 strain)
 {
    // get two points on the line
-   Point2d  p1, p2;
-   Vector2d tv;
-   std::tie(p1,tv) = rnaLine.GetExplicit();
-   p2 = p1.OffsetBy(tv.X(), tv.Y());
+   auto [p1,tv] = rnaLine.GetExplicit();
+   auto p2 = p1.OffsetBy(tv.X(), tv.Y());
 
    SetStrainPlane(p1, 0., p2, 0., p3, strain);
 }
@@ -114,9 +112,7 @@ void BiaxialBeamStrain::SetStrainPlane(const Line2d& rnaLine, Float64 dist, Floa
 {
    // get location of some p3
    Line2d tl = rnaLine.Parallel(dist,Line2d::Side::Left);
-   Point2d  p3;
-   Vector2d tv;
-   std::tie(p3,tv) = tl.GetExplicit();  // get a point along offset line
+   auto [p3,tv] = tl.GetExplicit();  // get a point along offset line
 
    SetStrainPlane(rnaLine, p3, strain);
 }

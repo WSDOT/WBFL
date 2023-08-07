@@ -36,11 +36,12 @@ namespace WBFL
       class ROARKCLASS CompositeBeam : public RoarkBeam
       {
       public:
+         CompositeBeam() = default;
          CompositeBeam(Float64 length, Float64 ei);
-         CompositeBeam(const CompositeBeam& other) = delete;
+         CompositeBeam(const CompositeBeam& other) = default;
          virtual ~CompositeBeam() {}
 
-         CompositeBeam& operator=(const CompositeBeam& other) = delete;
+         CompositeBeam& operator=(const CompositeBeam& other) = default;
 
       public:
          /// Adds a clone of beam to the composite. 

@@ -84,7 +84,6 @@ namespace WBFL
             ) : ShapeIdx(shapeIdx), Shape(shape), FgMaterial(fg), BgMaterial(bg)
             {}
          };
-         using SHAPEINFO = SHAPEINFO;
 
          // Slice properties
          struct SLICEINFO
@@ -99,12 +98,11 @@ namespace WBFL
             std::shared_ptr<WBFL::Geometry::Shape> SliceShape;
 
             SLICEINFO() = default;
-            SLICEINFO(SLICEINFO& other) = default;
-            SLICEINFO& operator=(SLICEINFO& other) = default;
+            SLICEINFO(const SLICEINFO&) = default;
+            SLICEINFO& operator=(const SLICEINFO&) = default;
 
             bool operator<(const SLICEINFO& other) { return other.pntCG.Y() < pntCG.Y(); }
          };
-         using SLICEINFO = SLICEINFO;
 
          mutable std::vector<SLICEINFO> m_Slices;
          mutable Float64 m_Angle;

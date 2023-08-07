@@ -170,7 +170,7 @@ namespace WBFL
          virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
 
          /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
-         virtual void GetFurthestPoint(const Line2d& line, Line2d::Side side, Point2d& furthestPoint, Float64& furthestDistance) const override;
+         virtual std::pair<Point2d,Float64> GetFurthestPoint(const Line2d& line, Line2d::Side side) const override;
 
          /// Reflects the polygon across the line. This operations removes the symmetrical property of the shape
          virtual void Reflect(const Line2d& line) override;

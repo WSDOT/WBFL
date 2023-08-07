@@ -54,8 +54,7 @@ namespace RoarkUnitTest
          Float64 ei = 1;
 
          PPPartialUniformLoad beam(La, Lb, w, l, ei);
-         Float64 Ra, Rb;
-         std::tie(Ra, Rb) = beam.GetReactions();
+         auto [Ra, Rb] = beam.GetReactions();
          Assert::IsTrue(IsEqual(Ra, 5.0));
          Assert::IsTrue(IsEqual(Rb, 5.0));
 

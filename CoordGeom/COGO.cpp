@@ -106,9 +106,7 @@ Float64 COGO::NormalizeAngle(Float64 angle)
 
 bool COGO::IsPointBeforeStart(const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end, const WBFL::Geometry::Point2d& point)
 {
-   Float64 distance;
-   Direction direction;
-   std::tie(distance,direction) = ComputeInverse(start, end);
+   auto [distance,direction] = ComputeInverse(start, end);
 
    auto newPoint = WBFL::Geometry::GeometricOperations::GlobalToLocal(start, direction.GetValue(), point);
 
@@ -117,9 +115,7 @@ bool COGO::IsPointBeforeStart(const WBFL::Geometry::Point2d& start, const WBFL::
 
 bool COGO::IsPointAfterEnd(const WBFL::Geometry::Point2d& start, const WBFL::Geometry::Point2d& end, const WBFL::Geometry::Point2d& point)
 {
-   Float64 distance;
-   Direction direction;
-   std::tie(distance,direction) = ComputeInverse(start, end);
+   auto [distance,direction] = ComputeInverse(start, end);
 
    auto newPoint = WBFL::Geometry::GeometricOperations::GlobalToLocal(end, direction.GetValue(), point);
 
@@ -157,9 +153,7 @@ Float64 COGO::MeasureDistance(const WBFL::Geometry::Point2d& p1, const WBFL::Geo
 
 WBFL::COGO::Direction COGO::MeasureDirection(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Point2d& p2)
 {
-   Float64 distance;
-   WBFL::COGO::Direction direction;
-   std::tie(distance,direction) = ComputeInverse(p1, p2);
+   auto [distance,direction] = ComputeInverse(p1, p2);
    return direction;
 }
 
@@ -214,7 +208,7 @@ WBFL::Geometry::Point2d COGO::LocateByDistanceAndDeflectionAngle(const WBFL::Geo
 
 WBFL::Geometry::Point2d COGO::LocateByDistanceAndDirection(const WBFL::Geometry::Point2d& from, Float64 distance, const Direction& direction, Float64 offset)
 {
-   Float64 x, y; std::tie(x,y) = from.GetLocation();
+   auto [x,y] = from.GetLocation();
    Float64 dir = direction.GetValue();
 
    Float64 sindir = sin(dir);
@@ -522,8 +516,8 @@ std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d> COGO::CrossingTangen
    PRECONDITION(0 < radius2);
 
    // Compute "delta". The angle of the line connecting the centers of the circle
-   Float64 Ax, Ay; std::tie(Ax,Ay) = center1.GetLocation();
-   Float64 Bx, By; std::tie(Bx,By) = center2.GetLocation();
+   auto[Ax,Ay] = center1.GetLocation();
+   auto[Bx,By] = center2.GetLocation();
 
    Float64 delta;
    Float64 dx = Bx - Ax;
@@ -595,8 +589,8 @@ std::pair<WBFL::Geometry::Point2d, WBFL::Geometry::Point2d> COGO::ExternalTangen
    JG = Ar - Br;
 
    // Compute "delta". The angle of the line connecting the centers of the circle
-   Float64 Ax, Ay; std::tie(Ax, Ay) = A.GetLocation();
-   Float64 Bx, By; std::tie(Bx, By) = B.GetLocation();
+   auto [Ax, Ay] = A.GetLocation();
+   auto [Bx, By] = B.GetLocation();
 
    Float64 delta;
    Float64 dx = Bx - Ax;
@@ -647,8 +641,8 @@ WBFL::Geometry::Point2d COGO::TangentPoint(const WBFL::Geometry::Point2d& center
    PRECONDITION(0 < radius);
 
    // Compute "delta". The angle of the line connecting the centers of the circle
-   Float64 Ax, Ay; std::tie(Ax,Ay) = center.GetLocation();
-   Float64 Bx, By; std::tie(Bx,By) = point.GetLocation();
+   auto [Ax,Ay] = center.GetLocation();
+   auto [Bx,By] = point.GetLocation();
 
    Float64 delta;
    Float64 dx = Bx - Ax;

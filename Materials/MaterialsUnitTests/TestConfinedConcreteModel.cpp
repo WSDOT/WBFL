@@ -31,8 +31,7 @@ namespace MaterialsUnitTest
 			model.Set_eco(0.003);
 			model.Set_fco(5);
 
-			Float64 fr, fcc, ecc;
-			std::tie(fr, fcc, ecc) = model.ComputeConcreteProperties();
+			auto [fr, fcc, ecc] = model.ComputeConcreteProperties();
 			Assert::AreEqual(0.25668951715790977, fr);
 			Assert::AreEqual(6.5877194021790491, fcc);
 			Assert::AreEqual(0.0077631582065371459, ecc);

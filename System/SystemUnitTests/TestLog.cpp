@@ -7,7 +7,7 @@ using namespace WBFL::Debug;
 
 namespace SystemUnitTest
 {
-	class TestLogContext : public LogContext
+	class TestLogContextType : public LogContext
 	{
       public:
       using LogContext::LogContext;
@@ -40,7 +40,7 @@ namespace SystemUnitTest
 		
 		TEST_METHOD(Test)
 		{
-         TestLogContext context;
+         TestLogContextType context;
          Log log(context);
 
          log.LogTestResult(_T("Passed"), Log::TestResult::Passed);

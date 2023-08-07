@@ -42,7 +42,7 @@ DEFINE_GUID(IID_IEAFTransactions,
 0x3fa1c988, 0xfc39, 0x4a3d, 0xa0, 0xe9, 0xf4, 0xec, 0x48, 0x87, 0x1a, 0xc1);
 interface IEAFTransactions : IUnknown
 {
-   virtual void Execute(CEAFTransaction& rTxn) = 0;
+   virtual void Execute(const CEAFTransaction& rTxn) = 0;
    virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn) = 0;
    virtual void Undo() = 0;
    virtual void Redo() = 0;

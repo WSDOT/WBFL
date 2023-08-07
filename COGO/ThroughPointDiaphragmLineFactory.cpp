@@ -52,9 +52,9 @@ STDMETHODIMP CThroughPointDiaphragmLineFactory::get_Point(IPoint2d** point)
 
 STDMETHODIMP CThroughPointDiaphragmLineFactory::put_Direction(VARIANT varDirection)
 {
-   auto result = cogoUtil::DirectionFromVariant(varDirection);
-   if (FAILED(result.first)) return result.first;
-   m_Factory->SetDirection(result.second);
+   auto [hr,direction] = cogoUtil::DirectionFromVariant(varDirection);
+   if (FAILED(hr)) return hr;
+   m_Factory->SetDirection(direction);
    return S_OK;
 }
 

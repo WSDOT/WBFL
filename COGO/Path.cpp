@@ -165,9 +165,7 @@ STDMETHODIMP CPath::IntersectEx(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vb
    CHECK_RETOBJ(point);
    VALIDATE;
 
-   bool bResult;
-   WBFL::Geometry::Point2d p;
-   std::tie(bResult, p) = m_Path->Intersect(cogoUtil::GetLine(line), cogoUtil::GetPoint(pNearest), vbProjectBack == VARIANT_TRUE, vbProjectAhead == VARIANT_TRUE);
+   auto [bResult, p] = m_Path->Intersect(cogoUtil::GetLine(line), cogoUtil::GetPoint(pNearest), vbProjectBack == VARIANT_TRUE, vbProjectAhead == VARIANT_TRUE);
    if (bResult)
    {
       return cogoUtil::CreatePoint(p, point);
@@ -196,9 +194,7 @@ STDMETHODIMP CPath::Move(Float64 dist, VARIANT varDirection)
 {
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    m_Path->Move(dist, direction);
@@ -249,9 +245,7 @@ STDMETHODIMP CPath::LocatePoint(Float64 distance, OffsetMeasureType offsetMeasur
    CHECK_RETOBJ(newPoint);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr, direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr, direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreatePoint(m_Path->LocatePoint(distance, WBFL::COGO::OffsetType(offsetMeasure), offset, direction), newPoint);
@@ -279,10 +273,7 @@ STDMETHODIMP CPath::ProjectPoint(IPoint2d* point, IPoint2d** newPoint, Float64* 
    CHECK_RETVAL(pvbOnProjection);
    VALIDATE;
 
-   WBFL::Geometry::Point2d np;
-   Float64 dfs;
-   bool bOP;
-   std::tie(np, dfs, bOP) = m_Path->ProjectPoint(cogoUtil::GetPoint(point));
+   auto [np, dfs, bOP] = m_Path->ProjectPoint(cogoUtil::GetPoint(point));
 
    *pDistFromStart = dfs;
    *pvbOnProjection = (bOP ? VARIANT_TRUE : VARIANT_FALSE);

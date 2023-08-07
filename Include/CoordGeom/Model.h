@@ -455,19 +455,19 @@ namespace WBFL
          bool AppendElementToAlignment(IDType alignentID, const PathElementDefinition& item);
 
          /// @brief Removes a previously stored alignment definition
-         /// @param alignemntID ID of the alignment
+         /// @param alignmentID ID of the alignment
          /// @return true if successful
-         bool RemoveAlignment(IDType alignemntID);
+         bool RemoveAlignment(IDType alignmentID);
 
          /// @brief Returns a previously stored alignment definition
-         /// @param alignemntID ID of the alignment
+         /// @param alignmentID ID of the alignment
          /// @return Collection of path element items.
-         const std::vector<PathElementDefinition>& GetAlignment(IDType alignemntID) const;
+         const std::vector<PathElementDefinition>& GetAlignment(IDType alignmentID) const;
 
          /// @brief Creates an Alignment from a previously stored alignment definition
-         /// @param alignemntID ID of the alignment
+         /// @param alignmentID ID of the alignment
          /// @return Pointer to an Alignment object
-         std::shared_ptr<Alignment> CreateAlignment(IDType alignemntID) const;
+         std::shared_ptr<Alignment> CreateAlignment(IDType alignmentID) const;
 
          /// @brief Returns the alignment definitions
          const std::map<IDType, std::vector<PathElementDefinition>>& GetAlignments() const;
@@ -477,28 +477,28 @@ namespace WBFL
          void ClearAlignments(bool bClearRefStations=true);
 
          /// @brief Sets the reference station for a previously defined alignment
-         /// @param alignemntID ID of the alignment
+         /// @param alignmentID ID of the alignment
          /// @param station Reference station value (station at the beginning of the alignment)
          /// @return true if successful
-         bool SetAlignmentReferneceStation(IDType alignemntID, const Station& station);
+         bool SetAlignmentReferenceStation(IDType alignmentID, const Station& station);
 
          /// @brief Removes a previously defined alignment reference station.
          /// Alignments without explicitly defined references are assumed to have a reference station of 0.0 at the start of the alignment.
-         /// @param alignemntID ID of the alignment
+         /// @param alignmentID ID of the alignment
          /// @return true if successful
-         bool RemoveAlignmentReferenceStation(IDType alignemntID);
+         bool RemoveAlignmentReferenceStation(IDType alignmentID);
 
          /// @brief Returns the reference station for an alignment
-         /// @param alignemntID ID of the alignment
+         /// @param alignmentID ID of the alignment
          /// @return 
-         const Station& GetAlignmentReferenceStation(IDType alignemntID) const;
+         const Station& GetAlignmentReferenceStation(IDType alignmentID) const;
 
          /// @brief Adds a station equation definition to an alignment
-         /// @param alignemntID ID of the alignment 
+         /// @param alignmentID ID of the alignment 
          /// @param back Back stationing value
          /// @param ahead Ahead stationing value
          /// @return true if successful
-         bool AddStationEquation(IDType alignemntID, Float64 back, Float64 ahead);
+         bool AddStationEquation(IDType alignmentID, Float64 back, Float64 ahead);
 
          /// @brief Adds a station equation definition to an alignment
          /// @param alignmentID ID of the alignment
@@ -507,9 +507,9 @@ namespace WBFL
          bool AddStationEquation(IDType alignmentID, const StationEquationDefinition& definition);
 
          /// @brief Returns the station equations definition for an alignment
-         /// @param alignemntID ID of the alignment
+         /// @param alignmentID ID of the alignment
          /// @return A collection of (Back Station, Ahead Station) pairs
-         const std::vector<StationEquationDefinition>& GetStationEquations(IDType alignemntID) const;
+         const std::vector<StationEquationDefinition>& GetStationEquations(IDType alignmentID) const;
 
          /// @brief Removes station equations from an alignment
          /// @param alignmentID ID of the alignment. Use INVALID_ID to clear station equations from all alignments
@@ -1308,7 +1308,7 @@ namespace WBFL
 
          std::shared_ptr<Profile> CreateProfile(IDType profileID,std::shared_ptr<Alignment> alignment) const;
          const ProfilePoint& GetStartProfilePoint(const std::pair<ProfileElementType, IDType>& elementData) const;
-         const WBFL::Geometry::Point2d& GetStartPathPoint(const std::pair<PathElementType, IDType>& elementData) const;
+         WBFL::Geometry::Point2d GetStartPathPoint(const std::pair<PathElementType, IDType>& elementData) const;
 
          std::shared_ptr<Surface> CreateSurface(IDType surfaceID, std::shared_ptr<Profile> profile) const;
 

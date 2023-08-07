@@ -159,7 +159,7 @@ public:
    // to their interface maps.
    //
    // This chains their primary map to this secondary map
-   typedef typename CPersistentCollection<Tderived,TColl,IndexType> _ThisClass;
+   using _ThisClass = CPersistentCollection<Tderived,TColl,IndexType>;
    BEGIN_COM_MAP(_ThisClass)
       COM_INTERFACE_ENTRY(IStructuredStorage2)
 
@@ -179,7 +179,7 @@ protected:
    // Override these if you want prettier names than typeid gives you
    virtual CComBSTR GetCollectionName()
    {
-      const type_info& t = typeid(CollectionType);
+      const type_info& t = typeid(TColl::CollectionType);
       // string is in the form "struct Name". Need to get rid of the "struct " part
       const char* nm = t.name();
       nm += 7;
@@ -296,10 +296,10 @@ public:
          return hr;
 
       // cycle though collection and save members
-      for (iterator it= begin(); it != end(); it++)
+      for (auto it= TColl::begin(); it != TColl::end(); it++)
       {
-         CComPtr<ItemType> value = it->second;
-         hr = DoSaveItem(save,value);
+         auto value = it->second;
+         hr = DoSaveItem(save,value.m_T);
          if (FAILED(hr))
             return hr;
       }
@@ -319,7 +319,7 @@ protected:
       return save->put_Property(GetStoredName(),CComVariant(item));
    }
 
-   virtual HRESULT DoLoadItem(IStructuredLoad2* load,typename TColl::ItemType* *ppItem)
+   virtual HRESULT DoLoadItem(IStructuredLoad2* load, typename TColl::ItemType* *ppItem)
    {
       // get item from store
       CComVariant var;
@@ -329,7 +329,7 @@ protected:
 
       _CopyVariantToInterface<TColl::ItemType>::copy(ppItem, &var);
 
-      // intialize using virtual function
+      // initialize using virtual function
       CallOnCreate(*ppItem);
 
       return S_OK;
@@ -343,7 +343,7 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////
 // CComVectorCollectionNoEnum
-template <class T, class ItemType,class IndexType>
+template <class T, class ItemTypeT,class IndexType>
 class  CComVectorCollectionNoEnum :
 public T
 {
@@ -351,11 +351,12 @@ public:
 
    // typedef used by CPersistentCollection to identify the interface
    // of the collection
-   typedef T                                     CollectionType;
-   typedef ItemType                              ItemType;
+   using CollectionType = T;
    // Store a cookie along with interface pointer to facilitate dealing with connection points
    // Could have externalized this to make more extensible
-   typedef std::pair< DWORD, CAdapt<CComPtr<ItemType>>>          StoredType; // <cookie, pointer>
+   using ItemType = ItemTypeT;
+   using StoredType = std::pair< DWORD, CAdapt<CComPtr<ItemType>>>; // <cookie, pointer>
+
 
 protected:
    // some virtual methods for dealing with adding and 
@@ -371,12 +372,12 @@ protected:
    virtual HRESULT OnAfterClear() { return S_OK; }
 
 protected:
-   typedef typename std::vector< StoredType >             ContainerType;
-   typedef typename ContainerType::iterator               ContainerIteratorType;
+   using ContainerType = std::vector< StoredType >;
+   using ContainerIteratorType = typename ContainerType::iterator;
    ContainerType m_coll;
 
-   typedef typename _CopyInterfacePair<ItemType,StoredType> CustomCopyType;
-   typedef typename _CopyVariantFromInterfacePair<StoredType> CopyType;
+   using CustomCopyType = _CopyInterfacePair<ItemType,StoredType>;
+   using CopyType = _CopyVariantFromInterfacePair<StoredType>;
 
 public:
 	CComVectorCollectionNoEnum()
@@ -438,12 +439,12 @@ public:
          return hr;
 
       // erase by index
-      ContainerType::iterator it( m_coll.begin() );
+      auto it( m_coll.begin() );
       it += index;
 
-      ContainerType::iterator insertLoc( m_coll.insert(it, store) );
+      auto insertLoc( m_coll.insert(it, store) );
 
-      StoredType& realStoredItem = *insertLoc;
+      auto& realStoredItem = *insertLoc;
 
       return OnAfterAdd(&realStoredItem,index);
    }
@@ -455,7 +456,7 @@ public:
 		*ppUnk = NULL;
 		HRESULT hRes = S_OK;
 
-      typedef typename CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType > VecEnumType;
+      using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType>;
 		CComObject<VecEnumType>* p;
 		hRes = CComObject<VecEnumType>::CreateInstance(&p);
 		if (SUCCEEDED(hRes))
@@ -475,7 +476,7 @@ public:
          return E_INVALIDARG;
 
       // erase by index
-      ContainerType::iterator it( m_coll.begin() );
+      auto it( m_coll.begin() );
       it += index;
 
   		HRESULT hr = S_OK;
@@ -650,7 +651,7 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef typename CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType> MyEnumType;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidenum, ItemType*, CComVectorCollectionNoEnum<T, ItemType, IndexType>::CustomCopyType, CComVectorCollectionNoEnum<T, ItemType, IndexType>::ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )
@@ -658,7 +659,7 @@ public:
 
       CComPtr<EnumType> pHolder(pEnum); // memory leak avoidance
 
-      hr = pEnum->Init( NULL, m_coll );
+      hr = pEnum->Init( NULL, CComVectorCollectionNoEnum<T, ItemType, IndexType>::m_coll );
       if ( FAILED(hr) )
          return hr;
 
@@ -672,17 +673,18 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 // CComSegmentCollection
-template <class T, class ItemType, class EnumType, const IID* piidenum,class IndexType>
+template <class T, class ItemTypeT, class EnumType, const IID* piidenum,class IndexType>
 class  CComSegmentCollection : public T
 {
 public:
 
    // typedef's used to identify the interface of the collection and its items
-   typedef T                                             CollectionType;
-   typedef ItemType                                      ItemType;
+   using CollectionType = T;
    // Store a cookie along with interface pointer to facilitate dealing with connection points
    // Could have externalized this to make more extensible
-   typedef typename std::pair< DWORD, CAdapt<CComPtr<ItemType>>> StoredType; // <cookie, pointer>
+   using ItemType = ItemTypeT;
+   using StoredType = std::pair< DWORD, CAdapt<CComPtr<ItemType>>>; // <cookie, pointer>
+
 
 protected:
    // some virtual methods for allowing parents to deal with adding and 
@@ -696,12 +698,12 @@ protected:
    virtual HRESULT OnAfterReverse() { return S_OK; }
 
 private:
-   typedef typename std::vector< StoredType >             ContainerType;
-   typedef typename ContainerType::iterator               ContainerIteratorType;
+   using ContainerType = std::vector< StoredType >;
+   using ContainerIteratorType = typename ContainerType::iterator;
    ContainerType m_coll;
 
-   typedef typename _CopyInterfacePair<ItemType,StoredType> CustomCopyType;
-   typedef typename _CopyVariantFromInterfacePair<StoredType> CopyType;
+   using CustomCopyType = _CopyInterfacePair<ItemType,StoredType>;
+   using CopyType = _CopyVariantFromInterfacePair<StoredType>;
 
 public:
 	CComSegmentCollection()
@@ -757,11 +759,11 @@ public:
          return hr;
 
       // insert by index
-      ContainerType::iterator it( m_coll.begin() );
+      auto it( m_coll.begin() );
       it += index;
 
-      ContainerType::iterator insertLoc( m_coll.insert(it, store) );
-      StoredType& realStoredItem = *insertLoc;
+      auto insertLoc( m_coll.insert(it, store) );
+      auto& realStoredItem = *insertLoc;
       return OnAfterAdd(&realStoredItem, index);
    }
 
@@ -781,7 +783,7 @@ public:
       StoredType store( m_coll[fromIndex] );
 
       // erase by index
-      ContainerType::iterator it( m_coll.begin() );
+      auto it( m_coll.begin() );
       it += fromIndex;
 
       m_coll.erase(it);
@@ -811,7 +813,7 @@ public:
          return hr;
 
       // insert by index
-      ContainerType::iterator it( m_coll.begin() );
+      auto it( m_coll.begin() );
       it += toIndex;
 
       m_coll.insert(it, store);
@@ -825,7 +827,7 @@ public:
          return E_INVALIDARG;
 
       // erase by index
-      ContainerType::iterator it( m_coll.begin() );
+      auto it( m_coll.begin() );
       it += index;
 
   		HRESULT hr = S_OK;
@@ -849,7 +851,7 @@ public:
 		*ppUnk = NULL;
 		HRESULT hRes = S_OK;
 
-      typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType > VecEnumType;
+      using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType>;
 		CComObject<VecEnumType>* p;
 		hRes = CComObject<VecEnumType>::CreateInstance(&p);
 		if (SUCCEEDED(hRes))
@@ -867,7 +869,7 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef typename CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType> MyEnumType;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )
@@ -1046,25 +1048,26 @@ protected:
 
 /////////////////////////////////////////////////////////////////////////////
 // CComBSTRKeyedCollection
-template <class T, class ItemType, class EnumType, const IID* piidenum,class IndexType>
+template <class T, class ItemTypeT, class EnumType, const IID* piidenum,class IndexType>
 class  CComBSTRKeyedCollection : public T
 {
 public:
    // typedef's used to identify the interface of the collection and its items
-   typedef T                                             CollectionType;
-   typedef ItemType                                      ItemType;
+   using CollectionType = T;
    // Store a cookie along with interface pointer to facilitate dealing with connection points
    // Could have externalized this to make more extensible
-   typedef std::pair< unsigned long, CAdapt<CComPtr<ItemType>>> StoredType; // <cookie, pointer>
+   using ItemType = ItemTypeT;
+   using StoredType = std::pair< unsigned long, CAdapt<CComPtr<ItemType>>>; // <cookie, pointer>
+
 
 protected:
-   typedef typename std::map<CComBSTR, StoredType>  ContainerType;
-   typedef typename ContainerType::iterator     ContainerIteratorType;
-   typedef typename ContainerType::value_type   ContainerValueType;
+   using ContainerType = std::map<CComBSTR, StoredType>;
+   using ContainerIteratorType = typename ContainerType::iterator;
+   using ContainerValueType = typename ContainerType::value_type;
    ContainerType m_coll;
 
-   typedef typename _CopyInterfacePairPair<ItemType,ContainerValueType> CustomCopyType;
-   typedef typename _CopyVariantFromInterfacePairPair<ContainerValueType> CopyType;
+   using CustomCopyType = _CopyInterfacePairPair<ItemType,ContainerValueType>;
+   using CopyType = _CopyVariantFromInterfacePairPair<ContainerValueType>;
 
 public:
 	CComBSTRKeyedCollection()
@@ -1141,7 +1144,7 @@ public:
 		*ppUnk = NULL;
 		HRESULT hRes = S_OK;
 
-      typedef typename CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType > VecEnumType;
+      using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType>;
 		CComObject<VecEnumType>* p;
 		hRes = CComObject<VecEnumType>::CreateInstance(&p);
 		if (SUCCEEDED(hRes))
@@ -1159,7 +1162,7 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef typename CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType> MyEnumType;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )
@@ -1273,8 +1276,8 @@ public:
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access
-		ContainerType::iterator iter( m_coll.begin() );
-		ContainerType::iterator iterend( m_coll.end() );
+		auto iter( m_coll.begin() );
+		auto iterend( m_coll.end() );
 		while (iter != iterend && idx > 0)
 		{
 			iter++;
@@ -1391,25 +1394,26 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 // CComLongKeyedCollection
-template <class T, class ItemType, class EnumType, const IID* piidenum,class KeyType>
+template <class T, class ItemTypeT, class EnumType, const IID* piidenum,class KeyType>
 class  CComLongKeyedCollection : public T
 {
 public:
    // typedef's used to identify the interface of the collection and its items
-   typedef T                                             CollectionType;
-   typedef ItemType                                      ItemType;
+   using CollectionType = T;
    // Store a cookie along with interface pointer to facilitate dealing with connection points
    // Could have externalized this to make more extensible
-   typedef typename std::pair< DWORD, CAdapt<CComPtr<ItemType>>> StoredType; // <cookie, pointer>
+   using ItemType = ItemTypeT;
+   using StoredType = std::pair< DWORD, CAdapt<CComPtr<ItemType>>>; // <cookie, pointer>
+
 
 protected:
-   typedef typename std::map<KeyType, StoredType>  ContainerType;
-   typedef typename ContainerType::iterator     ContainerIteratorType;
-   typedef typename ContainerType::value_type   ContainerValueType;
+   using ContainerType = std::map<KeyType, StoredType>;
+   using ContainerIteratorType = typename ContainerType::iterator;
+   using ContainerValueType = typename ContainerType::value_type;
    ContainerType m_coll;
 
-   typedef typename _CopyInterfacePairPair<ItemType,ContainerValueType> CustomCopyType;
-   typedef typename _CopyVariantFromInterfacePairPair<ContainerValueType> CopyType;
+   using CustomCopyType = _CopyInterfacePairPair<ItemType,ContainerValueType>;
+   using CopyType = _CopyVariantFromInterfacePairPair<ContainerValueType>;
 
 public:
 	CComLongKeyedCollection()
@@ -1479,7 +1483,7 @@ public:
 		*ppUnk = NULL;
 		HRESULT hRes = S_OK;
 
-      typedef typename CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType > VecEnumType;
+      using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType>;
 		CComObject<VecEnumType>* p;
 		hRes = CComObject<VecEnumType>::CreateInstance(&p);
 		if (SUCCEEDED(hRes))
@@ -1497,7 +1501,7 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef typename CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType> MyEnumType;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )
@@ -1610,8 +1614,8 @@ public:
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access
-		ContainerType::iterator iter( m_coll.begin() );
-		ContainerType::iterator iterend( m_coll.end() );
+		auto iter( m_coll.begin() );
+		auto iterend( m_coll.end() );
 		while (iter != iterend && idx > 0)
 		{
 			iter++;
@@ -1729,25 +1733,26 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 // CComIDKeyedCollection
-template <class T, class ItemType, class EnumType, const IID* piidenum,class IndexType>
+template <class T, class ItemTypeT, class EnumType, const IID* piidenum,class IndexType>
 class  CComIDKeyedCollection : public T
 {
 public:
    // typedef's used to identify the interface of the collection and its items
-   typedef T                                             CollectionType;
-   typedef ItemType                                      ItemType;
+   using CollectionType = T;
    // Store a cookie along with interface pointer to facilitate dealing with connection points
    // Could have externalized this to make more extensible
-   typedef typename std::pair< DWORD, CAdapt<CComPtr<ItemType>>> StoredType; // <cookie, pointer>
+   using ItemType = ItemTypeT;
+   using StoredType = std::pair< DWORD, CAdapt<CComPtr<ItemType>>>; // <cookie, pointer>
+
 
 protected:
-   typedef typename std::map<IDType, StoredType>  ContainerType;
-   typedef typename ContainerType::iterator     ContainerIteratorType;
-   typedef typename ContainerType::value_type   ContainerValueType;
+   using ContainerType = std::map<IDType, StoredType>;
+   using ContainerIteratorType = typename ContainerType::iterator;
+   using ContainerValueType = typename ContainerType::value_type;
    ContainerType m_coll;
 
-   typedef typename _CopyInterfacePairPair<ItemType,ContainerValueType> CustomCopyType;
-   typedef typename _CopyVariantFromInterfacePairPair<ContainerValueType> CopyType;
+   using CustomCopyType = _CopyInterfacePairPair<ItemType,ContainerValueType>;
+   using CopyType = _CopyVariantFromInterfacePairPair<ContainerValueType>;
 
 public:
 	CComIDKeyedCollection()
@@ -1817,7 +1822,7 @@ public:
 		*ppUnk = NULL;
 		HRESULT hRes = S_OK;
 
-      typedef typename CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType > VecEnumType;
+      using VecEnumType = CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, CopyType, ContainerType>;
 		CComObject<VecEnumType>* p;
 		hRes = CComObject<VecEnumType>::CreateInstance(&p);
 		if (SUCCEEDED(hRes))
@@ -1835,7 +1840,7 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef typename CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType> MyEnumType;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )
@@ -1948,8 +1953,8 @@ public:
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access
-		ContainerType::iterator iter( m_coll.begin() );
-		ContainerType::iterator end( m_coll.end() );
+		auto iter( m_coll.begin() );
+		auto end( m_coll.end() );
 		while (iter != end && idx > 0)
 		{
 			iter++;

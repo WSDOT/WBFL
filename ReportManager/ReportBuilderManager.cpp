@@ -125,11 +125,11 @@ std::shared_ptr<ReportBuilder> ReportBuilderManager::RemoveReportBuilder(const s
 std::vector<std::_tstring> ReportBuilderManager::GetReportNames(bool bIncludeHidden) const
 {
    std::vector<std::_tstring> names;
-   for (const auto& builder : m_RptBuilders)
+   for (const auto& [name,builder] : m_RptBuilders)
    {
-      if (bIncludeHidden || !builder.second->Hidden())
+      if (bIncludeHidden || !builder->Hidden())
       {
-         names.emplace_back(builder.first);
+         names.emplace_back(name);
       }
    }
 

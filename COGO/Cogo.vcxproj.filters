@@ -429,6 +429,9 @@
     <None Include="SimpleDeckBoundaryFactory.rgs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="CrossSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

@@ -100,7 +100,7 @@ std::unique_ptr<Shape> ShapeImpl::CreateReflectedShape(const Line2d& line) const
    return clone;
 }
 
-void ShapeImpl::SetLocatorPoint(LocatorPoint lp, Point2d& position)
+void ShapeImpl::SetLocatorPoint(LocatorPoint lp, const Point2d& position)
 {
    Move(lp, position);
 }
@@ -162,7 +162,7 @@ Point2d ShapeImpl::GetLocatorPoint(LocatorPoint point) const
    return pnt;
 }
 
-void ShapeImpl::SetHookPoint(std::shared_ptr<Point2d>& hookPnt)
+void ShapeImpl::SetHookPoint(std::shared_ptr<Point2d> hookPnt)
 {
    m_pHookPoint = hookPnt;
 }
@@ -172,12 +172,12 @@ void ShapeImpl::SetHookPoint(const Point2d& hookPnt)
    m_pHookPoint->Move(hookPnt);
 }
 
-std::shared_ptr<Point2d>& ShapeImpl::GetHookPoint()
+std::shared_ptr<Point2d> ShapeImpl::GetHookPoint()
 {
    return m_pHookPoint;
 }
 
-const std::shared_ptr<Point2d>& ShapeImpl::GetHookPoint() const
+std::shared_ptr<const Point2d> ShapeImpl::GetHookPoint() const
 {
    return m_pHookPoint;
 }

@@ -281,11 +281,8 @@ std::vector<std::shared_ptr<PathElement>> PathSegment::CreateSubpath(Float64 sta
       const auto& startPoint = GetStartPoint();
       const auto& endPoint = GetEndPoint();
 
-      Float64 xs, ys;
-      std::tie(xs,ys) = startPoint.GetLocation();
-
-      Float64 xe, ye;
-      std::tie(xe,ye) = endPoint.GetLocation();
+      auto [xs,ys] = startPoint.GetLocation();
+      auto [xe,ye] = endPoint.GetLocation();
 
       auto subpath = PathSegment::Create();
       auto subpath_start_point = subpath->GetStartPoint();

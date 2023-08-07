@@ -70,10 +70,10 @@ void CTestAlignment3::Test1()
    IndexType nElements;
    subAlignment->get_Count(&nElements);
 
-   TRY_TEST(nElements,2);
+   TRY_TEST(nElements,3);
 
    CComPtr<IPathElement> element;
-   subAlignment->get_Item(1,&element);
+   subAlignment->get_Item(0,&element);
 
    CComQIPtr<IPathSegment> segment(element);
    TRY_TEST(segment != nullptr, true);
@@ -84,11 +84,11 @@ void CTestAlignment3::Test1()
    
    Float64 x,y;
    start->Location(&x, &y);
-   TRY_TEST(IsEqual(x, 0.0),true);
+   TRY_TEST(IsEqual(x,-110.0),true);
    TRY_TEST(IsEqual(y, 0.0),true);
 
    end->Location(&x, &y);
-   TRY_TEST(IsEqual(x, 100.0), true);
+   TRY_TEST(IsEqual(x, 0.0), true);
    TRY_TEST(IsEqual(y, 0.0), true);
 
    // sub-Alignment that captures start
@@ -97,10 +97,10 @@ void CTestAlignment3::Test1()
 
    subAlignment->get_Count(&nElements);
 
-   TRY_TEST(nElements,2);
+   TRY_TEST(nElements,1);
 
    element.Release();
-   subAlignment->get_Item(1,&element);
+   subAlignment->get_Item(0,&element);
    segment.Release();
    element.QueryInterface(&segment);
 
@@ -122,10 +122,10 @@ void CTestAlignment3::Test1()
 
    subAlignment->get_Count(&nElements);
 
-   TRY_TEST(nElements,2);
+   TRY_TEST(nElements,1);
 
    element.Release();
-   subAlignment->get_Item(1,&element);
+   subAlignment->get_Item(0,&element);
    segment.Release();
    element.QueryInterface(&segment);
 
@@ -170,7 +170,7 @@ void CTestAlignment3::Test2()
    IndexType nElements;
    subAlignment->get_Count(&nElements);
 
-   TRY_TEST(nElements,2);
+   TRY_TEST(nElements,3);
 
    element.Release();
    subAlignment->get_Item(1,&element);
@@ -197,10 +197,10 @@ void CTestAlignment3::Test2()
 
    subAlignment->get_Count(&nElements);
 
-   TRY_TEST(nElements,2);
+   TRY_TEST(nElements,1);
 
    element.Release();
-   subAlignment->get_Item(1,&element);
+   subAlignment->get_Item(0,&element);
 
    start.Release(); end.Release();
    element->GetStartPoint(&start);
@@ -220,10 +220,10 @@ void CTestAlignment3::Test2()
 
    subAlignment->get_Count(&nElements);
 
-   TRY_TEST(nElements,2);
+   TRY_TEST(nElements,1);
 
    element.Release();
-   subAlignment->get_Item(1, &element);
+   subAlignment->get_Item(0, &element);
 
    start.Release(); end.Release();
    element->GetStartPoint(&start);

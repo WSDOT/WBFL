@@ -52,10 +52,8 @@ Alignment::Alignment(const Alignment& alignment)
    m_Path = Path::Create(*alignment.m_Path);
    m_StationEquations = alignment.m_StationEquations;
 
-   for (const auto& pair : alignment.m_Profiles)
+   for (const auto& [id,profile] : alignment.m_Profiles)
    {
-      auto id = pair.first;
-      const auto& profile(pair.second);
       AddProfile(id, Profile::Create(*profile));
    }
 }
@@ -122,9 +120,7 @@ Station Alignment::IncrementStationBy(const Station& station, Float64 distance) 
 
 Station Alignment::ConvertToNormalizedStation(const Station& station) const
 {
-   ZoneIndexType zoneIdx;
-   Float64 value;
-   std::tie(value,zoneIdx) = station.GetStation();
+   auto [value,zoneIdx] = station.GetStation();
    if (zoneIdx == INVALID_INDEX)
    {
       return value;
@@ -244,8 +240,9 @@ Int8 Alignment::CompareStations(const Station& s1, const Station& s2) const
 void Alignment::AddProfile(IDType id,std::shared_ptr<Profile> profile)
 {
    PRECONDITION(profile->GetAlignment() == nullptr); // profile can't be associated with multiple alignments
-   auto result = m_Profiles.emplace(id, profile);
-   result.first->second->SetAlignment(weak_from_this());
+   auto [iter,bSuccess] = m_Profiles.emplace(id, profile);
+   CHECK(bSuccess);
+   iter->second->SetAlignment(weak_from_this());
 }
 
 std::shared_ptr<Profile> Alignment::GetProfile(IDType id)
@@ -331,9 +328,7 @@ void Alignment::Move(Float64 distance, const Direction& direction)
 
 std::pair<Station, Float64> Alignment::StationAndOffset(const WBFL::Geometry::Point2d& point) const
 {
-   Float64 distFromStart;
-   Float64 offset;
-   std::tie(distFromStart, offset) = m_Path->DistanceAndOffset(point);
+   auto [distFromStart, offset] = m_Path->DistanceAndOffset(point);
    Station station = ConvertFromNormalizedStation(m_ReferenceStation + distFromStart);
    return std::make_pair(station, offset);
 }
@@ -356,10 +351,7 @@ std::vector<WBFL::Geometry::Point2d> Alignment::Divide(const Station& start, con
 
 std::tuple<WBFL::Geometry::Point2d, Station, bool> Alignment::ProjectPoint(const WBFL::Geometry::Point2d& point) const
 {
-   WBFL::Geometry::Point2d prjPoint;
-   Float64 distFromStart;
-   bool bOnProjection;
-   std::tie(prjPoint,distFromStart,bOnProjection) = m_Path->ProjectPoint(point);
+   auto [prjPoint,distFromStart,bOnProjection] = m_Path->ProjectPoint(point);
    Station station = ConvertFromNormalizedStation(m_ReferenceStation + distFromStart);
    return std::make_tuple(prjPoint, station, bOnProjection);
 }
@@ -480,11 +472,8 @@ std::shared_ptr<Alignment> Alignment::CreateSubAlignment(const Station& start, c
    }
 
    // clone profile here if needed
-   for (const auto& profile_record : m_Profiles)
+   for (const auto& [ID,profile] : m_Profiles)
    {
-      auto ID = profile_record.first;
-      const auto& profile = profile_record.second;
-
       // copy the profiles and all of it's surfaces and modifiers (superelevation and widenings)
       // and add to offset_alignment
       auto offset_alignment_profile = Profile::Create();

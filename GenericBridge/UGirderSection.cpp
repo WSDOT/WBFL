@@ -590,16 +590,16 @@ STDMETHODIMP CUGirderSection::GetWebSections(IDblArray** ppY, IDblArray** ppW, I
    (*ppW)->Add(2 * t_web);
    if (IsZero(H))
    {
-      (*ppDesc)->Add(_T("Top Girder"));
+      (*ppDesc)->Add(CComBSTR("Top Girder"));
    }
    else
    {
-      (*ppDesc)->Add(_T("Top Flange - Web"));
+      (*ppDesc)->Add(CComBSTR("Top Flange - Web"));
    }
 
    (*ppY)->Add(-D1 + D2 + D3);
    (*ppW)->Add(2 * t_web);
-   (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
+   (*ppDesc)->Add(CComBSTR("Bottom Flange - Web"));
 
    return S_OK;
 }

@@ -130,13 +130,8 @@ Int16 GeometricOperations::Intersect(const Line2d& l, const Line2d& m, Point2d* 
 {
    // Use method as outlined in Graphics Gems, page 11. Get explicit form of
    // l1 and implicit form of l2
-   Float64    lc;
-   Vector2d ln;
-   Point2d  mu;
-   Vector2d mv;
-
-   std::tie(lc,ln) = l.GetImplicit();
-   std::tie(mu,mv) = m.GetExplicit();
+   auto [lc,ln] = l.GetImplicit();
+   auto [mu,mv] = m.GetExplicit();
 
    Float64 d = ln.Dot(mv);
    if (d!=0)
@@ -148,10 +143,8 @@ Int16 GeometricOperations::Intersect(const Line2d& l, const Line2d& m, Point2d* 
       mv.SetMagnitude(fabs(f));
       if (f < 0) mv.Reflect();
 
-      Float64 x1, y1;
-      std::tie(x1,y1) = muv.GetDimensions();
-      Float64 x2, y2;
-      std::tie(x2,y2) = mv.GetDimensions();
+      auto [x1,y1] = muv.GetDimensions();
+      auto [x2,y2] = mv.GetDimensions();
       point->Move(x1 - x2, y1 - y2);
 
       return 1;
@@ -213,9 +206,7 @@ Int16 GeometricOperations::Intersect(const Line2d& l,const Circle2d& c,Point2d* 
    if ( radius < distance && !IsEqual(radius,distance) )
       return 0; // Shortest dist to line is > radius.  They can't intersect
 
-   Point2d p;
-   Vector2d v;
-   std::tie(p,v) = l.GetExplicit();
+   auto [p,v] = l.GetExplicit();
    Size2d size = v.GetSize();
 
    if ( IsZero(size.Dx()) )
@@ -334,8 +325,8 @@ Int16 GeometricOperations::Intersect(const Circle2d& c1, const Circle2d& c2, Poi
    // OK... do the regular intersection calculations
 
    // Compute some constants used in the solution of the quadratic equation
-   Float64 cx1, cy1; std::tie(cx1,cy1) = center1.GetLocation();
-   Float64 cx2, cy2; std::tie(cx2,cy2) = center2.GetLocation();
+   auto [cx1,cy1] = center1.GetLocation();
+   auto [cx2,cy2] = center2.GetLocation();
 
    Float64 K = (r1 * r1 - r2 * r2) - cx1 * cx1 + cx2 * cx2 - (cy2 - cy1) * (cy2 - cy1);
 
@@ -420,10 +411,8 @@ Point2d GeometricOperations::PointOnLine(const Point2d& p1, const Point2d& p2, F
 
 bool GeometricOperations::IsParallel(const Line2d& l1, const Line2d& l2)
 {
-   Float64 c1, c2;
-   Vector2d n1, n2;
-   std::tie(c1,n1) = l1.GetImplicit();
-   std::tie(c2,n2) = l2.GetImplicit();
+   auto [c1,n1] = l1.GetImplicit();
+   auto [c2,n2] = l2.GetImplicit();
    // test normal vectors. if they are in the same, or opposite directions, the lines are parallel
    return (n1 == n2 || n1 == -n2); 
 }
@@ -445,10 +434,8 @@ bool GeometricOperations::IsParallel(const Line2d& l1, const LineSegment2d& l2)
 
 bool GeometricOperations::SameDirection(const Line2d& l1, const Line2d& l2)
 {
-   Float64 c1, c2;
-   Vector2d n1, n2;
-   std::tie(c1,n1) = l1.GetImplicit();
-   std::tie(c2,n2) = l2.GetImplicit();
+   auto [c1,n1] = l1.GetImplicit();
+   auto [c2,n2] = l2.GetImplicit();
    return (n1 == n2);
 }
 
@@ -499,21 +486,15 @@ void GeometricOperations::GenerateCircle(const Point2d& center,
 
 Float64 GeometricOperations::Angle(const Point2d& start, const Point2d& center, const Point2d& end)
 {
-   Float64 sx, sy; // Start Point
-   Float64 cx, cy; // Center Point
-   Float64 ex, ey; // End Points
-   Float64 dx1, dy1; // Delta x and y center to start point
-   Float64 dx2, dy2; // Delta x and y center to end point
-
-   std::tie(sx,sy) = start.GetLocation();
-   std::tie(cx,cy) = center.GetLocation();
-   std::tie(ex,ey) = end.GetLocation();
+   auto [sx,sy] = start.GetLocation(); // Start Point
+   auto [cx,cy] = center.GetLocation(); // Center Point
+   auto [ex,ey] = end.GetLocation(); // End Points
    
-   dx1 = sx - cx;
-   dy1 = sy - cy;
+   auto dx1 = sx - cx; // Delta x and y center to start point
+   auto dy1 = sy - cy; // Delta x and y center to end point
 
-   dx2 = ex - cx;
-   dy2 = ey - cy;
+   auto dx2 = ex - cx;
+   auto dy2 = ey - cy;
 
    if (IsZero(dx1) && IsZero(dy1) || IsZero(dx2) && IsZero(dy2))
       THROW_GEOMETRY(WBFL_GEOMETRY_E_COINCIDENTPOINTS);
@@ -560,9 +541,7 @@ Float64 GeometricOperations::ShortestOffsetToPoint(const Line2d& line, const Poi
 
    Vector2d v(poln - point);
 
-   Float64 c;
-   Vector2d n;
-   std::tie(c,n) = line.GetImplicit();
+   auto [c,n] = line.GetImplicit();
 
    Float64 dot = n.Dot(v);
    if (dot < 0) distance *= -1.0;
@@ -572,9 +551,7 @@ Float64 GeometricOperations::ShortestOffsetToPoint(const Line2d& line, const Poi
 
 Point2d GeometricOperations::ReflectPointAcrossLine(const Point2d& point, const Line2d& line)
 {
-   Float64 c;
-   Vector2d n;
-   std::tie(c,n) = line.GetImplicit();
+   auto [c,n] = line.GetImplicit();
 
    Float64 dist = line.DistanceToPoint(point);
 
@@ -666,7 +643,7 @@ Point2d GeometricOperations::GlobalToLocal(const Point2d& origin,
 
 Line2d GeometricOperations::CreateParallelLine(const Line2d& line, Float64 dist)
 {
-   Float64 c;  Vector2d n;  std::tie(c,n) = line.GetImplicit();
+   auto [c,n] = line.GetImplicit();
    c -= dist;
    return Line2d(c, n);
 }
@@ -682,7 +659,7 @@ LineSegment2d GeometricOperations::CreateParallelLineSegment(const LineSegment2d
 
 Line2d GeometricOperations::CreateParallelLineThroughPoint(const Line2d& line, const Point2d& point)
 {
-   Point2d u; Vector2d v; std::tie(u,v) = line.GetExplicit();
+   auto [u,v] = line.GetExplicit();
    return Line2d(point, v);
 }
 
@@ -696,9 +673,7 @@ Line2d GeometricOperations::CreateNormalLineThroughPoint(const Line2d& line, con
    }
    else
    {
-      Point2d u;
-      Vector2d v;
-      std::tie(u,v) = line.GetExplicit();
+      auto [u,v] = line.GetExplicit();
 
       Vector2d n = v.Normal();
 
@@ -708,7 +683,7 @@ Line2d GeometricOperations::CreateNormalLineThroughPoint(const Line2d& line, con
 
 Point2d GeometricOperations::PointOnLineNearest(const Line2d& line, const Point2d& point)
 {
-   Float64 c; Vector2d n; std::tie(c,n) = line.GetImplicit();
+   auto [c,n] = line.GetImplicit();
 
    n.Normalize(); // N must be normalized for this calculation
 
@@ -720,8 +695,8 @@ Point2d GeometricOperations::PointOnLineNearest(const Line2d& line, const Point2
 
    n.Scale(q);
 
-   Float64 xn, yn; std::tie(xn,yn) = n.GetDimensions();
-   Float64 x, y; std::tie(x,y) = point.GetLocation();
+   auto [xn,yn] = n.GetDimensions();
+   auto [x,y] = point.GetLocation();
 
    return Point2d(x - xn, y - yn);
 }

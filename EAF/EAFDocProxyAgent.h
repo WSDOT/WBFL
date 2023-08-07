@@ -61,8 +61,8 @@ public:
 
       pT->Lock();
 		HRESULT ret = S_OK;
-		IUnknown** pp = m_vec.begin();
-		while (pp < m_vec.end())
+		IUnknown** pp = this->m_vec.begin();
+		while (pp < this->m_vec.end())
 		{
 			if (*pp != nullptr)
 			{
@@ -86,8 +86,8 @@ public:
 
       pT->Lock();
 		HRESULT ret = S_OK;
-		IUnknown** pp = m_vec.begin();
-		while (pp < m_vec.end())
+		IUnknown** pp = this->m_vec.begin();
+		while (pp < this->m_vec.end())
 		{
 			if (*pp != nullptr)
 			{
@@ -268,7 +268,7 @@ public:
 
 // IEAFTransactions
 public:
-   virtual void Execute(CEAFTransaction& rTxn) override;
+   virtual void Execute(const CEAFTransaction& rTxn) override;
    virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn) override;
    virtual void Undo() override;
    virtual void Redo() override;

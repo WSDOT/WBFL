@@ -200,9 +200,8 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
    }
 
    // determine where to stop dividing the edge paths
-   Float64 left_edge_end, right_edge_end, offset;
-   std::tie(left_edge_end,offset) = m_EdgePath[+SideType::Left]->DistanceAndOffset(left_end_point);
-   std::tie(right_edge_end,offset) = m_EdgePath[+SideType::Right]->DistanceAndOffset(right_end_point);
+   auto [left_edge_end,left_edge_offset] = m_EdgePath[+SideType::Left]->DistanceAndOffset(left_end_point);
+   auto [right_edge_end,right_edge_offset] = m_EdgePath[+SideType::Right]->DistanceAndOffset(right_end_point);
 
    std::map<Float64,WBFL::Geometry::Point2d> right_path_points;
    IndexType nPathElements = m_EdgePath[+SideType::Right]->GetPathElementCount();
@@ -214,8 +213,7 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
 
       for(const auto& key_point : key_points)
       {
-         Float64 distance, offset;
-         std::tie(distance,offset) = m_EdgePath[+SideType::Right]->DistanceAndOffset(key_point);
+         auto [distance,offset] = m_EdgePath[+SideType::Right]->DistanceAndOffset(key_point);
          if (::InRange(right_edge_start, distance, right_edge_end))
          {
             right_path_points.insert(std::make_pair(distance, key_point));
@@ -270,8 +268,7 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
 
       for (const auto& key_point : key_points)
       {
-         Float64 distance, offset;
-         std::tie(distance, offset) = m_EdgePath[+SideType::Left]->DistanceAndOffset(key_point);
+         auto [distance, offset] = m_EdgePath[+SideType::Left]->DistanceAndOffset(key_point);
          if (::InRange(right_edge_start, distance, right_edge_end))
          {
             left_path_points.insert(std::make_pair(distance, key_point));
@@ -389,10 +386,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
       CHECK(bSuccess);
 
       // create a line that is normal to the alignment passing through this intersection point
-      WBFL::Geometry::Point2d point_on_alignment;
-      Station station;
-      bool bOnProjection;
-      std::tie(point_on_alignment, station, bOnProjection) = alignment->ProjectPoint(end_point_2);
+      auto [point_on_alignment, station, bOnProjection] = alignment->ProjectPoint(end_point_2);
 
       WBFL::Geometry::Line2d break_line(point_on_alignment, end_point_2);
 
@@ -420,10 +414,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
       CHECK(bSuccess);
 
       // create a line that is normal to the alignment passing through this intersection point
-      WBFL::Geometry::Point2d point_on_alignment;
-      Station station;
-      bool bOnProjection;
-      std::tie(point_on_alignment, station, bOnProjection) = alignment->ProjectPoint(end_point_3);
+      auto [point_on_alignment, station, bOnProjection] = alignment->ProjectPoint(end_point_3);
 
       WBFL::Geometry::Line2d break_line(point_on_alignment, end_point_3);
 

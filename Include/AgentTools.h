@@ -60,14 +60,14 @@ public:
    operator T*() const throw()
 	{
       m_bUsed = true;
-		return p;
+		return this->p;
 	}
 
 	ATL::_NoAddRefReleaseOnCComPtr<T>* operator->() const throw()
 	{
       m_bUsed = true;
-		ATLASSERT(p!=nullptr);
-		return (ATL::_NoAddRefReleaseOnCComPtr<T>*)p;
+		ATLASSERT(this->p!=nullptr);
+		return (ATL::_NoAddRefReleaseOnCComPtr<T>*)(this->p);
 	}
 
 protected:

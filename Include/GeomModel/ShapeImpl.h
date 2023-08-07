@@ -47,10 +47,10 @@ namespace WBFL
 
          ShapeImpl& operator=(const ShapeImpl&);
 
-         virtual void SetHookPoint(std::shared_ptr<Point2d>& hookPnt) override;
+         virtual void SetHookPoint(std::shared_ptr<Point2d> hookPnt) override;
          virtual void SetHookPoint(const Point2d& hookPnt) override;
-         virtual std::shared_ptr<Point2d>& GetHookPoint() override;
-         virtual const std::shared_ptr<Point2d>& GetHookPoint() const override;
+         virtual std::shared_ptr<Point2d> GetHookPoint() override;
+         virtual std::shared_ptr<const Point2d> GetHookPoint() const override;
 
          virtual void Offset(const Size2d& delta) override;
          virtual void Offset(Float64 dx, Float64 dy) override;
@@ -60,7 +60,7 @@ namespace WBFL
          virtual void Rotate(Float64 cx, Float64 cy, Float64 angle) override;
          virtual std::unique_ptr<Shape> CreateReflectedShape(const Line2d& line) const override;
          virtual Point2d GetLocatorPoint(LocatorPoint lp) const override;
-         virtual void SetLocatorPoint(LocatorPoint lp, Point2d& position) override;
+         virtual void SetLocatorPoint(LocatorPoint lp, const Point2d& position) override;
 
       protected:
          virtual void DoOffset(const Size2d& delta) = 0;

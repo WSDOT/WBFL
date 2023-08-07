@@ -132,9 +132,7 @@ STDMETHODIMP CSurface::get_SurfaceTemplateSegmentCount(IndexType* pnSegments)
 
 STDMETHODIMP CSurface::CreateSurfaceTemplate(VARIANT varStation, ISurfaceTemplate** ppTemplate)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    CComPtr<ISurfaceTemplate> tpl;
@@ -179,9 +177,7 @@ STDMETHODIMP CSurface::AddSuperelevation(ISuperelevation* pSuperelevation)
 
 STDMETHODIMP CSurface::FindSuperelevation(VARIANT varStation, ISuperelevation** ppSuperelevation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreateSuperelevation(m_Surface->FindSuperelevation(station), ppSuperelevation);
@@ -202,9 +198,7 @@ STDMETHODIMP CSurface::AddWidening(IWidening* pWidening)
 
 STDMETHODIMP CSurface::FindWidening(VARIANT varStation, IWidening** ppWidening)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreateWidening(m_Surface->FindWidening(station), ppWidening);
@@ -230,19 +224,16 @@ STDMETHODIMP CSurface::get_EndBoundaryLine(ILineSegment2d** ppEndLine)
 
 STDMETHODIMP CSurface::CreateSurfaceTemplateSectionCut(VARIANT varStation, VARIANT_BOOL bApplySuperelevations, ISurfaceTemplate** ppSurfaceTemplate)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
    return cogoUtil::CreateSurfaceTemplate(this, m_Surface->CreateSurfaceTemplateSectionCut(station, bApplySuperelevations == VARIANT_TRUE), ppSurfaceTemplate);
 }
 
 STDMETHODIMP CSurface::CreateSurfaceProfileSectionCut(VARIANT varStation, VARIANT varSkewAngle, VARIANT_BOOL bApplySuperelevations, ISurfaceProfile** ppSurfaceProfile)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
+
    WBFL::COGO::Angle skew_angle;
    std::tie(hr, skew_angle) = cogoUtil::AngleFromVariant(varSkewAngle);
    if (FAILED(hr)) return hr;
@@ -256,8 +247,7 @@ STDMETHODIMP CSurface::GetStationRange(IStation** ppStart,IStation** ppEnd)
    CHECK_RETOBJ(ppStart);
    CHECK_RETOBJ(ppEnd);
 
-   WBFL::COGO::Station start, end;
-   std::tie(start, end) = m_Surface->GetStationRange();
+   auto [start, end] = m_Surface->GetStationRange();
    HRESULT hr1 = cogoUtil::CreateStation(start, ppStart);
    HRESULT hr2 = cogoUtil::CreateStation(end, ppEnd);
    return (FAILED(hr1) || FAILED(hr2) ? E_FAIL : S_OK);

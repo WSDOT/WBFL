@@ -248,24 +248,21 @@ void BulbTee::GetTopFlangePoints(Point2d* leftTop, Point2d* leftBottom, Point2d*
 
    if (IsZero(m_C2))
    {
-      Float64 x, y;
-      std::tie(x,y) = leftTop->GetLocation();
+      auto [x,y] = leftTop->GetLocation();
       x += m_W5;
       y += m_W5 * m_N2;
       topCL->Move(x, y);
    }
    else if (IsEqual(m_C2, m_W5 + m_W6))
    {
-      Float64 x, y;
-      std::tie(x,y) = leftTop->GetLocation();
+      auto [x,y] = leftTop->GetLocation();
       x += m_W5;
       y += m_W5 * m_N1;
       topCL->Move(x, y);
    }
    else
    {
-      Float64 x, y;
-      std::tie(x,y) = leftTop->GetLocation();
+      auto [x,y] = leftTop->GetLocation();
       x += m_W5;
       if (m_C2 < m_W5)
       {

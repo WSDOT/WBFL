@@ -119,7 +119,7 @@ STDMETHODIMP_(void) CSocketImpl::Disconnect(DWORD dwCookie)
 
 STDMETHODIMP_(void) CSocketImpl::Disconnect(iPlug* plug)
 {
-   auto& iter = m_Plugs.begin();
+   auto iter = m_Plugs.begin();
    const auto& end = m_Plugs.end();
    for ( ; iter != end; iter++)
    {

@@ -225,13 +225,9 @@ std::_tstring Angle::AsString(const std::_tstring& strFormat, bool bSigned, bool
 
    value = COGO::NormalizeAngle(value);
 
-   std::_tstring strDegTag, strMinTag, strSecTag;
-   std::tie(strDegTag,strMinTag,strSecTag) = COGO::ParseAngleTags(strFormat);
+   auto [strDegTag,strMinTag,strSecTag] = COGO::ParseAngleTags(strFormat);
 
-   short deg;
-   unsigned short min;
-   Float64 sec;
-   std::tie(deg, min, sec) = COGO::ToDMS(value);
+   auto [deg, min, sec] = COGO::ToDMS(value);
 
    std::_tostringstream os;
    os << (bSigned ? deg : abs(deg)) << strDegTag;

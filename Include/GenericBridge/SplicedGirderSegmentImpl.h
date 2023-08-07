@@ -905,8 +905,8 @@ protected:
       section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
 
       // add all the secondary shapes
-      std::vector<ShapeData>::iterator iter(m_Shapes.begin());
-      std::vector<ShapeData>::iterator end(m_Shapes.end());
+      auto iter(m_Shapes.begin());
+      auto end(m_Shapes.end());
       iter++; // skip the first shape, we already processed it
 
       for ( ; iter != end; iter++ )

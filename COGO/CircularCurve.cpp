@@ -264,9 +264,7 @@ STDMETHODIMP CCircularCurve::LocatePoint(Float64 distFromStart, OffsetMeasureTyp
 {
    CHECK_RETVAL(ppPoint);
 
-   HRESULT hr;
-   WBFL::COGO::Direction direction;
-   std::tie(hr,direction) = cogoUtil::DirectionFromVariant(varDirection);
+   auto [hr,direction] = cogoUtil::DirectionFromVariant(varDirection);
    if (FAILED(hr)) return hr;
 
    return cogoUtil::CreatePoint(m_Curve->LocatePoint(distFromStart, WBFL::COGO::OffsetType(offsetType), offset, direction), ppPoint);
@@ -279,10 +277,7 @@ STDMETHODIMP CCircularCurve::ProjectPoint(IPoint2d* point, IPoint2d** pNewPoint,
    CHECK_RETVAL(pvbOnProjection);
    CHECK_RETOBJ(pNewPoint);
 
-   WBFL::Geometry::Point2d newPoint;
-   Float64 distFromStart;
-   bool bOnProjection;
-   std::tie(newPoint, distFromStart, bOnProjection) = m_Curve->ProjectPoint(cogoUtil::GetPoint(point));
+   auto [newPoint, distFromStart, bOnProjection] = m_Curve->ProjectPoint(cogoUtil::GetPoint(point));
 
    *pDistFromStart = distFromStart;
    *pvbOnProjection = (bOnProjection ? VARIANT_TRUE : VARIANT_FALSE);

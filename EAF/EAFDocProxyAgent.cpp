@@ -608,7 +608,7 @@ IndexType CEAFDocProxyAgent::Count()
 
 ///////////////////////////////////////////////////////////////////////////////////
 // IEAFTransactions
-void CEAFDocProxyAgent::Execute(CEAFTransaction& rTxn)
+void CEAFDocProxyAgent::Execute(const CEAFTransaction& rTxn)
 {
    m_pDoc->Execute(rTxn);
 }

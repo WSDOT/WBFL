@@ -26,7 +26,7 @@
 
 using namespace WBFL::System;
 
-HRESULT ComCatMgr::CreateCategory(OLECHAR* lpszDesc,const CATID& catid)
+HRESULT ComCatMgr::CreateCategory(LPCTSTR lpszDesc,const CATID& catid)
 {
    // Create the standard COM Category Manager
    ICatRegister* pICatReg = nullptr;

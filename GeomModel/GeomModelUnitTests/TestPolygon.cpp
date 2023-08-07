@@ -203,16 +203,16 @@ namespace GeomModelUnitTest
          Assert::IsTrue(sym_shape.PointInShape(Point2d(-5, -5)) == shape.PointInShape(Point2d(-5, -5)));
 
          line.ThroughPoints(Point2d(-10, 20), Point2d(20, 20));
-         Point2d furthestPoint, sym_furthestPoint;
-         Float64 furthestDistance, sym_furthestDistance;
-         sym_shape.GetFurthestPoint(line, Line2d::Side::Right, sym_furthestPoint, sym_furthestDistance);
-         shape.GetFurthestPoint(line, Line2d::Side::Right, furthestPoint, furthestDistance);
+         Point2d sym_furthestPoint, furthestPoint;
+         Float64 sym_furthestDistance, furthestDistance;
+         std::tie(sym_furthestPoint,sym_furthestDistance) = sym_shape.GetFurthestPoint(line, Line2d::Side::Right);
+         std::tie(furthestPoint, furthestDistance) = shape.GetFurthestPoint(line, Line2d::Side::Right);
          Assert::IsTrue(IsEqual(sym_furthestDistance, furthestDistance));
          Assert::IsTrue(sym_furthestPoint == furthestPoint);
          Assert::IsTrue(sym_furthestPoint == Point2d(0, -10));
 
-         sym_shape.GetFurthestPoint(line, Line2d::Side::Left, sym_furthestPoint, sym_furthestDistance);
-         shape.GetFurthestPoint(line, Line2d::Side::Left, furthestPoint, furthestDistance);
+         std::tie(sym_furthestPoint, sym_furthestDistance) = sym_shape.GetFurthestPoint(line, Line2d::Side::Left);
+         std::tie(furthestPoint, furthestDistance) = shape.GetFurthestPoint(line, Line2d::Side::Left);
          Assert::IsTrue(IsEqual(sym_furthestDistance, furthestDistance));
          // NOTE: there are two valid solutions.... shape and sym_shape each get one of them
          Assert::IsTrue(furthestPoint == Point2d(10, 10));

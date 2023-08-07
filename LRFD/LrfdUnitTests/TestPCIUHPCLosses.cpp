@@ -103,7 +103,7 @@ namespace LrfdUnitTests
             std::vector<std::pair<Float64, Float64>>{std::make_pair(0, 1.0)},
             std::vector<std::pair<Float64, Float64>>{std::make_pair(494526.00384487113, 1.0)}, // Superimposed dead loads
 
-            75,  // Relative humidity [0,100]
+            75.0,  // Relative humidity [0,100]
             86400.000000000000,   // Time until prestress transfer
             864000.00000000000,   // Time at hauling
             10368000.000000000,   // Time to deck placement

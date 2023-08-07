@@ -120,8 +120,8 @@ RefinedLosses2005::RefinedLosses2005(
                          bool bIgnoreInitialRelaxation,
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod,
-                         std::shared_ptr<const CreepCoefficient2005>& pGirderCreep,
-                         std::shared_ptr<const CreepCoefficient2005>& pDeckCreep
+                         std::shared_ptr<const CreepCoefficient2005> pGirderCreep,
+                         std::shared_ptr<const CreepCoefficient2005> pDeckCreep
 ) :
 Losses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl1,Msidl2, Ag,Ixx,Iyy,Ixy,Ybg,Ac1,Ic1,Ybc1,Ac2,Ic2,Ybc2,An,Ixxn,Iyyn,Ixyn,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters),
 m_pGirderCreep(pGirderCreep),m_pDeckCreep(pDeckCreep)

@@ -417,20 +417,20 @@ std::shared_ptr<Alignment> Model::CreateAlignment(IDType alignmentID) const
    if (found_stationequations != m_StationEquations.end())
    {
       const auto& vEquations = found_stationequations->second;
-      for (const auto& equation : vEquations)
+      for (const auto& [back,ahead] : vEquations)
       {
-         alignment->AddStationEquation(equation.first, equation.second);
+         alignment->AddStationEquation(back,ahead);
       }
    }
 
    // Go through all the profile-alignment associations to see if any profiles
    // are associated with the alignment that is being created. If so,
    // create the profile and add it to the alignment
-   for (const auto& association : m_ProfileAlignmentAssociations)
+   for (const auto& [profileID,association_alignmentID] : m_ProfileAlignmentAssociations)
    {
-      if (association.second == alignmentID)
+      if (association_alignmentID == alignmentID)
       {
-         auto profile = CreateProfile(association.first, alignment);
+         auto profile = CreateProfile(profileID, alignment);
       }
    }
 
@@ -448,7 +448,7 @@ void Model::ClearAlignments(bool bClearRefStations)
    if (bClearRefStations) m_AlignmentReferenceStations.clear();
 }
 
-bool Model::SetAlignmentReferneceStation(IDType alignmentID, const Station& station)
+bool Model::SetAlignmentReferenceStation(IDType alignmentID, const Station& station)
 {
    auto result = m_AlignmentReferenceStations.emplace(alignmentID, station);
    return result.second;
@@ -478,10 +478,10 @@ bool Model::AddStationEquation(IDType alignmentID, const StationEquationDefiniti
    auto found = m_StationEquations.find(alignmentID);
    if (found == m_StationEquations.end())
    {
-      auto result = m_StationEquations.emplace(alignmentID, std::vector<StationEquationDefinition>());
-      if (result.second == false) THROW_COGO(WBFL_COGO_E_INVALIDARG);
+      auto [iter,bSuccess] = m_StationEquations.emplace(alignmentID, std::vector<StationEquationDefinition>());
+      if (bSuccess == false) THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-      found = result.first;
+      found = iter;
    }
 
    found->second.emplace_back(definition);
@@ -839,8 +839,7 @@ const Model::SurfaceDefinition& Model::GetSurface(IDType surfaceID) const
 
 bool Model::AddSurfaceTemplate(IDType surfaceID, const Station& station)
 {
-   IndexType nSegments, alignmentPointIdx, profilePointIdx;
-   std::tie(nSegments,alignmentPointIdx,profilePointIdx) = GetSurface(surfaceID); // throws on bad ID
+   auto [nSegments,alignmentPointIdx,profilePointIdx] = GetSurface(surfaceID); // throws on bad ID
 
    // default surface template segment (width = 1, slope = 0, horizontal slope)
    auto default_segment = std::make_tuple(1.0, 0.0, SurfaceTemplateSegment::SlopeType::Horizontal);
@@ -861,11 +860,8 @@ bool Model::AddSurfaceTemplate(IDType surfaceID, const Station& station)
       vSurfaceTemplates.emplace_back(std::make_pair(station, vSurfaceTemplateSegments));
 
       // put the collection of surface templates for this surface into the surface templates storage
-      auto result = m_SurfaceTemplates.emplace(surfaceID, vSurfaceTemplates);
-      if (result.second == false)
-         return false;
-      else
-         found = result.first;
+      auto [iter,bSuccess] = m_SurfaceTemplates.emplace(surfaceID, vSurfaceTemplates);
+      return bSuccess;
    }
    else
    {
@@ -881,10 +877,13 @@ bool Model::CopySurfaceTemplate(IDType surfaceID, IndexType templateIdx, const S
 
    auto found = m_SurfaceTemplates.find(surfaceID);
    if (found == m_SurfaceTemplates.end()) return false;
-   if (found->second.size() <= templateIdx) return false;
 
-   const auto& surface_template = found->second[templateIdx];
-   auto& this_surface_template = found->second.back();
+   auto& [ID, surface_templates] = *found;
+
+   if (surface_templates.size() <= templateIdx) return false;
+
+   const auto& surface_template = surface_templates[templateIdx];
+   auto& this_surface_template = surface_templates.back();
    this_surface_template = surface_template;
    this_surface_template.first = station; // the assignment on the line above changes the station - put it back to the correct value
    return true;
@@ -894,8 +893,11 @@ bool Model::MoveSurfaceTemplate(IDType surfaceID, IndexType templateIdx, const S
 {
    auto found = m_SurfaceTemplates.find(surfaceID);
    if (found == m_SurfaceTemplates.end()) return false;
-   if (found->second.size() <= templateIdx) return false;
-   found->second[templateIdx].first = station;
+
+   auto& [ID, surface_templates] = *found;
+   if (surface_templates.size() <= templateIdx) return false;
+
+   surface_templates[templateIdx].first = station;
    return true;
 }
 
@@ -914,10 +916,11 @@ const Station& Model::GetSurfaceTemplateLocation(IDType surfaceID, IndexType tem
    if (found == m_SurfaceTemplates.end())
       THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-   if(found->second.size() <= templateIdx)
+   auto& [ID, surface_templates] = *found;
+   if(surface_templates.size() <= templateIdx)
       THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-   return found->second[templateIdx].first;
+   return surface_templates[templateIdx].first;
 }
 
 const Model::SurfaceTemplateDefinition& Model::GetSurfaceTemplate(IDType surfaceID, IndexType templateIdx) const
@@ -926,10 +929,11 @@ const Model::SurfaceTemplateDefinition& Model::GetSurfaceTemplate(IDType surface
    if (found == m_SurfaceTemplates.end())
       THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-   if (found->second.size() <= templateIdx)
+   auto& [ID, surface_templates] = *found;
+   if (surface_templates.size() <= templateIdx)
       THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-   return found->second[templateIdx];
+   return surface_templates[templateIdx];
 }
 
 bool Model::UpdateSurfaceTemplateSegment(IDType surfaceID, IndexType templateIdx, IndexType segmentIdx, Float64 width, Float64 slope, SurfaceTemplateSegment::SlopeType slopeType)
@@ -943,15 +947,15 @@ bool Model::UpdateSurfaceTemplateSegment(IDType surfaceID, IndexType templateIdx
    if (found == m_SurfaceTemplates.end())
       THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-   if (found->second.size() <= templateIdx)
+   auto& [ID, surface_templates] = *found;
+   if (surface_templates.size() <= templateIdx)
       THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-   IndexType nSegments, alignmentPointIdx, profilePointIdx;
-   std::tie(nSegments, alignmentPointIdx, profilePointIdx) = GetSurface(surfaceID); // throws on bad ID
+   auto [nSegments, alignmentPointIdx, profilePointIdx] = GetSurface(surfaceID); // throws on bad ID
    if (nSegments <= segmentIdx)
       THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-   found->second[templateIdx].second[segmentIdx] = surfaceTemplateSegment;
+   surface_templates[templateIdx].second[segmentIdx] = surfaceTemplateSegment;
    return true;
 }
 
@@ -969,8 +973,10 @@ bool Model::StoreSuperelevation(IDType surfaceID, const SuperelevationDefinition
    {
       // this is a new superelevation. create the superelevation record
       std::vector<SuperelevationDefinition> vSuperelevations;
-      auto result = m_Superelevations.emplace(surfaceID, vSuperelevations);
-      found = result.first;
+      auto [iter,bSuccess] = m_Superelevations.emplace(surfaceID, vSuperelevations);
+      if (!bSuccess) return false;
+
+      found = iter;
    }
 
    found->second.emplace_back(definition);
@@ -989,7 +995,8 @@ const std::vector<Model::SuperelevationDefinition>& Model::GetSuperelevations(ID
    if (found == m_Superelevations.end())
       THROW_COGO(WBFL_COGO_E_INVALIDARG);
 
-   return found->second;
+   const auto& [id, definitions] = *found;
+   return definitions;
 }
 
 bool Model::ClearSuperelevations(IDType surfaceID)
@@ -1000,7 +1007,8 @@ bool Model::ClearSuperelevations(IDType surfaceID)
       return false;
    }
 
-   found->second.clear();
+   auto& [id, definitions] = *found;
+   definitions.clear();
    return true;
 }
 
@@ -1022,11 +1030,14 @@ bool Model::StoreWidening(IDType surfaceID, const WideningDefinition& definition
    {
       // this is a new widening. create the widening record
       std::vector<WideningDefinition> vWidenings;
-      auto result = m_Widenings.emplace(surfaceID, vWidenings);
-      found = result.first;
+      auto [iter,bSuccess] = m_Widenings.emplace(surfaceID, vWidenings);
+      if (!bSuccess) return false;
+      found = iter;
    }
 
-   found->second.emplace_back(definition);
+   auto& [id, widenings] = *found;
+   widenings.emplace_back(definition);
+
    return true;
 }
 
@@ -1249,8 +1260,7 @@ bool Model::LocateParallelLineByPoints(IDType newFromID, IDType newToID, IDType 
    const auto& to = GetPoint(toID);
    try
    {
-      WBFL::Geometry::Point2d newFrom, newTo;
-      std::tie(newFrom, newTo) = COGO::LocateParallelLineByPoints(from, to, offset);
+      auto [newFrom, newTo] = COGO::LocateParallelLineByPoints(from, to, offset);
       std::vector<std::pair<IDType, WBFL::Geometry::Point2d>> points;
       points.emplace_back(newFromID, newFrom);
       points.emplace_back(newToID, newTo);
@@ -1399,10 +1409,7 @@ bool Model::ProjectPointOnCompoundCurve(IDType newID, IDType fromID, IDType curv
    const auto& point = GetPoint(fromID);
    try
    {
-      WBFL::Geometry::Point2d newPoint;
-      Float64 distFromStart;
-      bool bOnProjection;
-      std::tie(newPoint, distFromStart, bOnProjection) = curve->ProjectPoint(point);
+      auto [newPoint, distFromStart, bOnProjection] = curve->ProjectPoint(point);
       return StorePoint(newID, newPoint);
    }
    catch (...)
@@ -1417,10 +1424,7 @@ bool Model::ProjectPointOnTransitionCurve(IDType newID, IDType fromID, IDType cu
    const auto& point = GetPoint(fromID);
    try
    {
-      WBFL::Geometry::Point2d newPoint;
-      Float64 distFromStart;
-      bool bOnProjection;
-      std::tie(newPoint, distFromStart, bOnProjection) = curve->ProjectPoint(point);
+      auto [newPoint, distFromStart, bOnProjection] = curve->ProjectPoint(point);
       return StorePoint(newID, newPoint);
    }
    catch (...)
@@ -1435,10 +1439,7 @@ bool Model::ProjectPointOnCircularCurve(IDType newID, IDType fromID, IDType curv
    const auto& point = GetPoint(fromID);
    try
    {
-      WBFL::Geometry::Point2d newPoint;
-      Float64 distFromStart;
-      bool bOnProjection;
-      std::tie(newPoint, distFromStart, bOnProjection) = curve->ProjectPoint(point);
+      auto [newPoint, distFromStart, bOnProjection] = curve->ProjectPoint(point);
       return StorePoint(newID, newPoint);
    }
    catch (...)
@@ -1453,10 +1454,7 @@ bool Model::ProjectPointOnPath(IDType newID, IDType fromID, IDType pathID)
    const auto& point = GetPoint(fromID);
    try
    {
-      WBFL::Geometry::Point2d newPoint;
-      Float64 distFromStart;
-      bool bOnProjection;
-      std::tie(newPoint, distFromStart, bOnProjection) = path->ProjectPoint(point);
+      auto [newPoint, distFromStart, bOnProjection] = path->ProjectPoint(point);
       return StorePoint(newID, newPoint);
    }
    catch (...)
@@ -1471,10 +1469,7 @@ bool Model::ProjectPointOnAlignment(IDType newID, IDType fromID, IDType alignmen
    const auto& point = GetPoint(fromID);
    try
    {
-      WBFL::Geometry::Point2d newPoint;
-      Station station;
-      bool bOnProjection;
-      std::tie(newPoint, station, bOnProjection) = alignment->ProjectPoint(point);
+      auto [newPoint, station, bOnProjection] = alignment->ProjectPoint(point);
       return StorePoint(newID, newPoint);
    }
    catch (...)
@@ -1661,8 +1656,7 @@ bool Model::CrossingTangents(IDType newID1, IDType centerID1, Float64 radius1, I
 
    try
    {
-      WBFL::Geometry::Point2d t1, t2;
-      std::tie(t1, t2) = COGO::CrossingTangents(center1, radius1, center2, radius2, sign);
+      auto [t1, t2] = COGO::CrossingTangents(center1, radius1, center2, radius2, sign);
       std::vector<std::pair<IDType, WBFL::Geometry::Point2d>> points;
       points.emplace_back(newID1, t1);
       points.emplace_back(newID2, t2);
@@ -1684,8 +1678,7 @@ bool Model::ExternalTangents(IDType newID1, IDType centerID1, Float64 radius1, I
 
    try
    {
-      WBFL::Geometry::Point2d t1, t2;
-      std::tie(t1, t2) = COGO::ExternalTangents(center1, radius1, center2, radius2, sign);
+      auto [t1, t2] = COGO::ExternalTangents(center1, radius1, center2, radius2, sign);
 
       std::vector<std::pair<IDType, WBFL::Geometry::Point2d>> points;
       points.emplace_back(newID1, t1);
@@ -1722,8 +1715,8 @@ bool Model::AtomicStorePoints(std::vector<std::pair<IDType, WBFL::Geometry::Poin
    auto end = points.end();
    for (; iter != end; iter++)
    {
-      auto& pair(*iter);
-      bSucceeded &= StorePoint(pair.first, pair.second);
+      auto& [id,point](*iter);
+      bSucceeded &= StorePoint(id,point);
       if (!bSucceeded) break; // point storage failed... break out so we don't store any more points
    }
 
@@ -1754,9 +1747,8 @@ std::shared_ptr<Profile> Model::CreateProfile(IDType profileID, std::shared_ptr<
    auto end = profile_data.end();
    for (; iter != end; iter++)
    {
-      const auto& profile_element_data(*iter);
-      auto element_id = profile_element_data.second;
-      switch (profile_element_data.first)
+      const auto& [element_type, element_id](*iter);
+      switch (element_type)
       {
       case ProfileElementType::Point:
       {
@@ -1841,11 +1833,11 @@ std::shared_ptr<Profile> Model::CreateProfile(IDType profileID, std::shared_ptr<
    // Go through all the surface-profile associations to see if any surfaces
    // are associated with the profile that is being created. If so,
    // create the surface and add it to the profile
-   for (const auto& association : m_SurfaceProfileAssociations)
+   for (const auto& [surfaceID,association_profileID] : m_SurfaceProfileAssociations)
    {
-      if (association.second == profileID)
+      if (association_profileID == profileID)
       {
-         auto surface = CreateSurface(association.first,profile);
+         auto surface = CreateSurface(surfaceID,profile);
       }
    }
 
@@ -1854,19 +1846,20 @@ std::shared_ptr<Profile> Model::CreateProfile(IDType profileID, std::shared_ptr<
 
 const ProfilePoint& Model::GetStartProfilePoint(const std::pair<ProfileElementType, IDType>& elementData) const
 {
-   const ProfilePoint* point;
-   switch (elementData.first)
+   const auto& [type, id](elementData);
+   const ProfilePoint* point = nullptr;
+   switch (type)
    {
    case ProfileElementType::Point:
-      point = &GetProfilePoint(elementData.second);
+      point = &GetProfilePoint(id);
       break;
 
    case ProfileElementType::Segment:
-      point = &GetProfilePoint(GetProfileSegment(elementData.second).startID);
+      point = &GetProfilePoint(GetProfileSegment(id).startID);
       break;
 
    case ProfileElementType::VerticalCurve:
-      point = &GetProfilePoint(GetVerticalCurve(elementData.second).pbgID);
+      point = &GetProfilePoint(GetVerticalCurve(id).pbgID);
    
    default:
       CHECK(false); // is there a new type?
@@ -1874,43 +1867,44 @@ const ProfilePoint& Model::GetStartProfilePoint(const std::pair<ProfileElementTy
    return *point;
 }
 
-const WBFL::Geometry::Point2d& Model::GetStartPathPoint(const std::pair<PathElementType, IDType>& elementData) const
+WBFL::Geometry::Point2d Model::GetStartPathPoint(const std::pair<PathElementType, IDType>& elementData) const
 {
-   const WBFL::Geometry::Point2d* point;
-   switch (elementData.first)
+   const auto& [type, id](elementData);
+   WBFL::Geometry::Point2d point;
+   switch (type)
    {
    case PathElementType::Point:
-      point = &GetPoint(elementData.second);
+      point = GetPoint(id);
       break;
 
    case PathElementType::Segment:
-      point = &GetPoint(GetPathSegment(elementData.second).startID);
+      point = GetPoint(GetPathSegment(id).startID);
       break;
 
    case PathElementType::CompoundCurve:
-      point = &(CreateCompoundCurve(elementData.second)->GetTS());
+      point = CreateCompoundCurve(id)->GetTS();
       break;
 
    case PathElementType::CircularCurve:
-      point = &(CreateCircularCurve(elementData.second)->GetPC());
+      point = CreateCircularCurve(id)->GetPC();
       break;
 
    case PathElementType::TransitionCurve:
-      point = &GetPoint(GetTransitionCurve(elementData.second).startID);
+      point = GetPoint(GetTransitionCurve(id).startID);
       break;
 
    case PathElementType::CubicSpline:
-      point = &GetPoint(GetCubicSpline(elementData.second).front());
+      point = GetPoint(GetCubicSpline(id).front());
       break;
 
    case PathElementType::Path:
-      point = &GetStartPathPoint(GetPath(elementData.second).front());
+      point = GetStartPathPoint(GetPath(id).front());
 
    default:
       CHECK(false); // is there a new type?
    }
 
-   return *point;
+   return point;
 }
 
 std::shared_ptr<Surface> Model::CreateSurface(IDType surfaceID,std::shared_ptr<Profile> profile) const
@@ -1923,8 +1917,7 @@ std::shared_ptr<Surface> Model::CreateSurface(IDType surfaceID,std::shared_ptr<P
       profile->AddSurface(surfaceID, surface);
    }
 
-   IndexType nSegments, alignmentPointIdx, profilePointIdx;
-   std::tie(nSegments, alignmentPointIdx, profilePointIdx) = surface_definition;
+   auto [nSegments, alignmentPointIdx, profilePointIdx] = surface_definition;
    surface->SetSurfaceTemplateSegmentCount(nSegments);
    surface->SetAlignmentPoint(alignmentPointIdx);
    surface->SetProfileGradePoint(profilePointIdx);
@@ -1934,15 +1927,12 @@ std::shared_ptr<Surface> Model::CreateSurface(IDType surfaceID,std::shared_ptr<P
    if (found != m_SurfaceTemplates.end())
    {
       const auto& surface_template_definitions = found->second;
-      for (const auto& surface_template_definition : surface_template_definitions)
+      for (const auto& [station,surface_template_definition] : surface_template_definitions)
       {
-         auto surface_template = surface->CreateSurfaceTemplate(surface_template_definition.first);
+         auto surface_template = surface->CreateSurfaceTemplate(station);
          IndexType segmentIdx = 0;
-         for (const auto& surface_template_segment_definition : surface_template_definition.second)
+         for (const auto& [width,slope,slopeType] : surface_template_definition)
          {
-            Float64 width, slope;
-            SurfaceTemplateSegment::SlopeType slopeType;
-            std::tie(width, slope, slopeType) = surface_template_segment_definition;
             surface_template->UpdateSegmentParameters(segmentIdx, width, slope, slopeType);
             segmentIdx++;
          }
@@ -2009,9 +1999,8 @@ void Model::CreatePath(IDType id,const C& container, std::shared_ptr<P> path) co
 
    for (; iter != end; iter++)
    {
-      const auto& path_element_data(*iter);
-      auto element_id = path_element_data.second;
-      switch (path_element_data.first)
+      const auto& [type, element_id](*iter);
+      switch (type)
       {
       case PathElementType::Point:
       {

@@ -125,7 +125,7 @@ public:
    virtual void OnPOIRemoved(PoiIDType ID) override;
    virtual void OnPOIsCleared() override;
 
-   HRESULT CModel::FinalConstruct();
+   HRESULT FinalConstruct();
 
 private:
    // data to support change management

@@ -39,7 +39,7 @@ interface IBroker;
 EAFFUNC CEAFApp* EAFGetApp();
 
 // Returns a pointer to the broker. Only call this method if you are using a document
-// type that is a desendent of CEAFBrokerDocument
+// type that is a descendent of CEAFBrokerDocument
 EAFFUNC HRESULT EAFGetBroker(IBroker** ppBroker);
 
 // Displays a dialog for enabling/disabling plugin components. catid is the component

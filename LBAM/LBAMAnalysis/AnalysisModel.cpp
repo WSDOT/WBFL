@@ -229,7 +229,8 @@ void CAnalysisModel::GetDeflection(LoadGroupIDType lgId, PoiIDType poiId, Float6
    try
    {
       // Location of results depends on poi type
-      PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
+      PoiMap target(poiId);
+      PoiMapIterator it(m_PoiMap.find( &target ));
       if (it != m_PoiMap.end() )
       {
          PoiMap& rinfo = *(*it);
@@ -254,7 +255,8 @@ void CAnalysisModel::GetForce(LoadGroupIDType lgId, PoiIDType poiId, ResultsOrie
    try
    {
       // get poi information and call local function
-      PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
+      PoiMap target(poiId);
+      PoiMapIterator it(m_PoiMap.find( &target ));
       if (it != m_PoiMap.end() )
       {
          PoiMap& rinfo = *(*it);
@@ -282,7 +284,8 @@ void CAnalysisModel::GetUnitLoadResponse(PoiIDType poiID,PoiIDType loadPoiID, Fo
 
 
    // get poi information
-   PoiMapIterator itpoi(m_PoiMap.find( &PoiMap(poiID) ));
+   PoiMap target(poiID);
+   PoiMapIterator itpoi(m_PoiMap.find( &target ));
    if (itpoi!= m_PoiMap.end() )
    {
       PoiMap& poi_map = *(*itpoi);
@@ -339,7 +342,8 @@ void CAnalysisModel::GetStress(LoadGroupIDType lg_id, PoiIDType poiId, std::vect
    sRight.clear();
    *wasComputed = false;
 
-   PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
+   PoiMap target(poiId);
+   PoiMapIterator it(m_PoiMap.find( &target ));
    if (it != m_PoiMap.end() )
    {
       PoiMap& info = *(*it);
@@ -448,8 +452,8 @@ void CAnalysisModel::GetReaction(LoadGroupIDType loadGroupID, SupportIDType supp
    }
    catch (CComException& re)
    {
-      _bstr_t msg=CreateErrorMsg1S(IDS_STAGE_CONTEXT, m_Stage);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg=CreateErrorMsg1S(IDS_STAGE_CONTEXT, m_Stage);
+      re.AppendToMessage(msg);
       throw re;
    }
 }
@@ -495,8 +499,8 @@ void CAnalysisModel::GetSupportDeflection(LoadGroupIDType loadGroupID, SupportID
    }
    catch (CComException& re)
    {
-      _bstr_t msg=CreateErrorMsg1S(IDS_STAGE_CONTEXT, m_Stage);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg=CreateErrorMsg1S(IDS_STAGE_CONTEXT, m_Stage);
+      re.AppendToMessage(msg);
       throw re;
    }
 }
@@ -1534,8 +1538,8 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
    catch (CComException& re)
    {
       // add some more information
-      _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_DISTR_LOAD, loadGroup);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1S(IDS_E_GENERATING_DISTR_LOAD, loadGroup);
+      re.AppendToMessage(msg);
       throw;
    }
 }
@@ -1768,8 +1772,8 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
    catch (CComException& re)
    {
       // add some more information
-      _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_STRAIN_LOAD, loadGroup);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1S(IDS_E_GENERATING_STRAIN_LOAD, loadGroup);
+      re.AppendToMessage(msg);
       throw;
    }
 }
@@ -1964,8 +1968,8 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
    catch (CComException& re)
    {
       // add some more information
-      _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_TEMPERATURE_LOAD, loadGroup);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1S(IDS_E_GENERATING_TEMPERATURE_LOAD, loadGroup);
+      re.AppendToMessage(msg);
       throw;
    }
 }
@@ -2053,8 +2057,8 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
    catch (CComException& re)
    {
       // add some more information
-      _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_SETTLEMENT_LOAD, loadGroup);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1S(IDS_E_GENERATING_SETTLEMENT_LOAD, loadGroup);
+      re.AppendToMessage(msg);
       throw;
    }
 }
@@ -2414,7 +2418,8 @@ void CAnalysisModel::GenerateInternalPOIsAtTemporarySupports()
                      // there is already a POI at this point. since we want to access POI by ID
                      // give that POI that already exists and alternate ID so we can find it
                      ATLASSERT(coveringID != INVALID_ID);
-                     PoiMapIterator found(m_PoiMap.find( &PoiMap(coveringID) ));
+                     PoiMap target(coveringID);
+                     PoiMapIterator found(m_PoiMap.find( &target ));
                      ATLASSERT(found != m_PoiMap.end());
                      PoiMap* poi_map(*found);
                      poi_map->AddAlternateLBAMPoiID(ts_id);
@@ -2505,8 +2510,8 @@ void CAnalysisModel::CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType su
    catch(CComException& re)
    {
       // location not found. add some context and rethrow
-      _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
+      re.AppendToMessage(msg);
       throw;
    }
 
@@ -2525,15 +2530,15 @@ void CAnalysisModel::CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType su
       catch(CComException& re)
       {
          // location not found. add some context and rethrow
-         _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-         re.AppendToMessage((TCHAR*)msg);
+         auto msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
+         re.AppendToMessage(msg);
          throw;
       }
 
       if (mltStraddle==mbl_type)
       {
          // poi straddles two fem members - we want to block this for supports since we would need to write 
-         // extra code to transform member coordinates to local cordinates, and that nothing really interesting
+         // extra code to transform member coordinates to local coordinates, and that nothing really interesting
          // happens along supports
          ATLASSERT(fem_loc==-1.0); // we should always be mapped to end of right member
 
@@ -2570,8 +2575,8 @@ void CAnalysisModel::CreateSupportPOI(PoiIDType poiID, SupportIDType supportID, 
    catch(CComException& re)
    {
       // location not found. add some context and rethrow
-      _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
+      re.AppendToMessage(msg);
       throw;
    }
 
@@ -2614,8 +2619,8 @@ void CAnalysisModel::CreateSsmPOI(PoiIDType poiID, IndexType ssmIdx, Float64 ssm
    catch(CComException& re)
    {
       // location not found. add some context and rethrow
-      _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
+      re.AppendToMessage(msg);
       throw;
    }
 
@@ -2645,8 +2650,8 @@ void CAnalysisModel::CreateSpanPOI(PoiIDType poiID, SpanIndexType spanIdx, Float
    catch(CComException& re)
    {
       // location not found. add some context and rethrow
-      _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
+      re.AppendToMessage(msg);
       throw;
    }
 
@@ -2941,7 +2946,8 @@ void CAnalysisModel::GetSegmentCrossSectionAtPOI(PoiIDType poiId, ISegmentCrossS
    *rightCs = nullptr;
 
    // get from cached data
-   PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
+   PoiMap target(poiId);
+   PoiMapIterator it(m_PoiMap.find( &target ));
    if (it != m_PoiMap.end() )
    {
       PoiMap& info = *(*it);
@@ -2971,7 +2977,8 @@ void CAnalysisModel::GetStressPointsAtPOI(PoiIDType poiId, IStressPoints* *leftS
    *rightSps = nullptr;
 
    // get from cached data
-   PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
+   PoiMap target(poiId);
+   PoiMapIterator it(m_PoiMap.find( &target ));
    if (it != m_PoiMap.end() )
    {
       PoiMap& info = *(*it);
@@ -5156,8 +5163,8 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
    catch(CComException& re)
    {
       // location not found. add some context and rethrow
-      _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFLUENCELOCATION,poiID);
-      re.AppendToMessage((TCHAR*)msg);
+      auto msg =CreateErrorMsg1L(IDS_POI_INFLUENCELOCATION,poiID);
+      re.AppendToMessage(msg);
       throw;
    }
 
@@ -5750,7 +5757,8 @@ void CAnalysisModel::GetInfluenceLines(PoiIDType poiID,
 
 
    // get poi information
-   PoiMapIterator itpoi(m_PoiMap.find( &PoiMap(poiID) ));
+   PoiMap target(poiID);
+   PoiMapIterator itpoi(m_PoiMap.find( &target ));
    if (itpoi!= m_PoiMap.end() )
    {
       PoiMap& poi_map = *(*itpoi);

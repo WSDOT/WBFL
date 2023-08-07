@@ -117,10 +117,7 @@ std::tuple<Float64, Float64, Float64> get_lane_parameters()
 
 Float64 Utility::GetDesignLaneWidth(Float64 wCurbToCurb)
 {
-   Float64 wStdLane;
-   Float64 wCurbToCurbMin;
-   Float64 wCurbToCurbMax;
-   std::tie(wStdLane, wCurbToCurbMin, wCurbToCurbMax) = get_lane_parameters();
+   auto [wStdLane, wCurbToCurbMin, wCurbToCurbMax] = get_lane_parameters();
 
    Uint16 nDesignLanes = (Uint16)floor(wCurbToCurb/wStdLane);
 
@@ -137,10 +134,7 @@ Float64 Utility::GetDesignLaneWidth(Float64 wCurbToCurb)
 
 Uint16 Utility::GetNumDesignLanes(Float64 wCurbToCurb)
 {
-   Float64 wStdLane;
-   Float64 wCurbToCurbMin;
-   Float64 wCurbToCurbMax;
-   std::tie(wStdLane, wCurbToCurbMin, wCurbToCurbMax) = get_lane_parameters();
+   auto [wStdLane, wCurbToCurbMin, wCurbToCurbMax] = get_lane_parameters();
 
    Uint16 nDesignLanes = (Uint16)floor(wCurbToCurb/wStdLane);
    if (wCurbToCurb/wStdLane - nDesignLanes > 0.99999 )

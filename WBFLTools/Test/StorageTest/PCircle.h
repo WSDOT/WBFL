@@ -120,18 +120,18 @@ public:
 // IStructuredStorage2
 	STDMETHOD(Load)(IStructuredLoad2 * pLoad)
 	{
-      HRESULT hr = pLoad->BeginUnit(OLESTR("CPCircle"));
+      HRESULT hr = pLoad->BeginUnit(CComBSTR("CPCircle"));
       
       CComVariant var;
-      hr = pLoad->get_Property(OLESTR("X"), &var);
+      hr = pLoad->get_Property(CComBSTR("X"), &var);
       if (FAILED(hr)) return hr;
       m_X = var.dblVal;
 
-      hr = pLoad->get_Property(OLESTR("Y"), &var);
+      hr = pLoad->get_Property(CComBSTR("Y"), &var);
       if (FAILED(hr)) return hr;
       m_Y = var.dblVal;
 
-      hr = pLoad->get_Property(OLESTR("Diameter"), &var);
+      hr = pLoad->get_Property(CComBSTR("Diameter"), &var);
       if (FAILED(hr)) return hr;
       m_Diameter = var.dblVal;
 
@@ -143,11 +143,11 @@ public:
 	}
 	STDMETHOD(Save)(IStructuredSave2 * pSave)
 	{
-      pSave->BeginUnit(L"CPCircle", 1.0);
+      pSave->BeginUnit(CComBSTR("CPCircle"), 1.0);
 
-      pSave->put_Property(L"X", CComVariant(m_X));
-      pSave->put_Property(L"Y", CComVariant(m_Y));
-      pSave->put_Property(L"Diameter", CComVariant(m_Diameter));
+      pSave->put_Property(CComBSTR("X"), CComVariant(m_X));
+      pSave->put_Property(CComBSTR("Y"), CComVariant(m_Y));
+      pSave->put_Property(CComBSTR("Diameter"), CComVariant(m_Diameter));
 
       Float64 ver;
       TRY_TEST( pSave->get_Version(&ver), S_OK); 

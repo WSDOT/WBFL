@@ -102,11 +102,11 @@ void CProfile::SetProfile(std::shared_ptr<WBFL::COGO::Profile> profile)
    }
 
    m_Surfaces.clear();
-   for (const auto& surface_record : m_Profile->GetSurfaces())
+   for (const auto& [id,surface] : m_Profile->GetSurfaces())
    {
-      CComPtr<ISurface> surface;
-      cogoUtil::CreateSurface(std::const_pointer_cast<WBFL::COGO::Surface>(surface_record.second), &surface);
-      m_Surfaces.emplace(surface_record.first, surface);
+      CComPtr<ISurface> new_surface;
+      cogoUtil::CreateSurface(std::const_pointer_cast<WBFL::COGO::Surface>(surface), &new_surface);
+      m_Surfaces.emplace(id, new_surface);
    }
 
    VALIDATE;
@@ -243,9 +243,7 @@ STDMETHODIMP CProfile::CreateSurfaceTemplateSectionCutEx(ISurface* pSurface, VAR
    CHECK_RETOBJ(ppTemplate);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    auto surface = cogoUtil::GetInnerSurface(pSurface);
@@ -260,9 +258,7 @@ STDMETHODIMP CProfile::GetSurfaceContainingStation(VARIANT varStation, IDType* p
    CHECK_RETOBJ(ppSurface);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    std::shared_ptr<const WBFL::COGO::Surface> surface;
@@ -285,9 +281,7 @@ STDMETHODIMP CProfile::Elevation(IDType surfaceID, VARIANT varStation, Float64 o
    CHECK_RETVAL(elev);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *elev = m_Profile->Elevation(surfaceID, station, offset);
@@ -299,9 +293,7 @@ STDMETHODIMP CProfile::Grade(VARIANT varStation, Float64 *grade)
    CHECK_RETVAL(grade);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *grade = m_Profile->Grade(station);
@@ -313,9 +305,7 @@ STDMETHODIMP CProfile::CrossSlope(IDType surfaceID, VARIANT varStation, Float64 
    CHECK_RETVAL(slope);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *slope = m_Profile->CrossSlope(surfaceID, station, offset);
@@ -327,9 +317,7 @@ STDMETHODIMP CProfile::SurfaceTemplateSegmentSlope(IDType surfaceID,VARIANT varS
    CHECK_RETVAL(pSlope);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    *pSlope = m_Profile->SurfaceTemplateSegmentSlope(surfaceID, station, templateSegmentIdx);
@@ -341,9 +329,7 @@ STDMETHODIMP CProfile::GetRidgePointOffset(IDType surfaceID,VARIANT varStation,I
    CHECK_RETVAL(pOffset);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
     
    try
@@ -363,9 +349,7 @@ STDMETHODIMP CProfile::GetRidgePointElevation(IDType surfaceID, VARIANT varStati
    CHECK_RETVAL(pElev);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    try
@@ -386,10 +370,9 @@ STDMETHODIMP CProfile::GetRidgePointOffsetAndElevation(IDType surfaceID, VARIANT
    CHECK_RETVAL(pElev);
    VALIDATE;
 
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
+
    try
    {
       std::tie(*pOffset,*pElev) = m_Profile->GetRidgePointOffsetAndElevation(surfaceID, station, ridgePoint1Idx, ridgePoint2Idx);

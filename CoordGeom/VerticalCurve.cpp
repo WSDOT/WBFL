@@ -206,9 +206,7 @@ ProfilePoint VerticalCurve::GetHighPoint() const
       auto g2 = GetExitGrade();
 
 
-      Station staTrans;
-      Float64 elevTrans, gTrans;
-      std::tie(staTrans,elevTrans,gTrans) = TransitionPoint();
+      auto [staTrans,elevTrans,gTrans] = TransitionPoint();
 
       auto alignment = GetAlignment();
       // High point on left curve
@@ -294,9 +292,7 @@ ProfilePoint VerticalCurve::GetLowPoint() const
       auto g1 = GetEntryGrade();
       auto g2 = GetExitGrade();
 
-      Station staTrans;
-      Float64 elevTrans, gTrans;
-      std::tie(staTrans, elevTrans, gTrans) = TransitionPoint();
+      auto [staTrans, elevTrans, gTrans] = TransitionPoint();
 
       auto alignment = GetAlignment();
 
@@ -413,9 +409,7 @@ Float64 VerticalCurve::GetGrade(const Station& station) const
       else
       {
          // On curve
-         Station staTrans;
-         Float64 elevTrans, gTrans;
-         std::tie(staTrans, elevTrans, gTrans) = TransitionPoint();
+         auto [staTrans, elevTrans, gTrans] = TransitionPoint();
 
 
          if (0 < COGO::CompareStations(alignment,station,staTrans))
@@ -453,9 +447,7 @@ Float64 VerticalCurve::GetElevation(const Station& station) const
    if (IsZero(m_L1) && IsZero(m_L2))
    {
       // this curve is has no length so it is just a profile point
-      Station staPVI;
-      Float64 elevPVI;
-      std::tie(staPVI,elevPVI) = m_PVI.GetLocation();
+      auto [staPVI,elevPVI] = m_PVI.GetLocation();
 
       Float64 pviValue = COGO::ConvertToNormalizedStation(GetAlignment(),staPVI);
 
@@ -481,17 +473,13 @@ Float64 VerticalCurve::GetElevation(const Station& station) const
    else
    {
       auto bvc = GetBVC(); // can we use m_BVC directly?
-      Station staBVC;
-      Float64 elevBVC;
-      std::tie(staBVC,elevBVC) = bvc.GetLocation();
+      auto [staBVC,elevBVC] = bvc.GetLocation();
       
       Float64 bvcValue = COGO::ConvertToNormalizedStation(GetAlignment(),staBVC);
 
       auto evc = GetEVC(); // can we use m_EVC directly?
 
-      Station staEVC;
-      Float64 elevEVC;
-      std::tie(staEVC,elevEVC) = evc.GetLocation();
+      auto [staEVC,elevEVC] = evc.GetLocation();
       Float64 evcValue = COGO::ConvertToNormalizedStation(GetAlignment(),staEVC);
 
       if (staValue < bvcValue)
@@ -507,9 +495,7 @@ Float64 VerticalCurve::GetElevation(const Station& station) const
       else
       {
          // On curve
-         Station staTrans;
-         Float64 elevTrans, gradeTrans; // transition point
-         std::tie(staTrans,elevTrans,gradeTrans) = TransitionPoint();
+         auto [staTrans,elevTrans,gradeTrans] = TransitionPoint();
          Float64 transValue = COGO::ConvertToNormalizedStation(GetAlignment(), staTrans);
 
          if (staValue < transValue)
@@ -552,8 +538,7 @@ Float64 VerticalCurve::GetElevation(const Station& station) const
 
 Float64 VerticalCurve::GetE(Float64 t) const
 {
-   Float64 L, L1, L2;
-   std::tie(L,L1,L2) = GetCurveLengths();
+   auto [L,L1,L2] = GetCurveLengths();
 
    Float64 h = GetH();
 
@@ -577,8 +562,7 @@ Float64 VerticalCurve::GetE(Float64 t) const
 
 Float64 VerticalCurve::GetH() const
 {
-   Float64 L, L1, L2;
-   std::tie(L,L1,L2) = GetCurveLengths();
+   auto [L, L1, L2] = GetCurveLengths();
 
    if (IsZero(L))
    {
@@ -592,8 +576,7 @@ Float64 VerticalCurve::GetH() const
 
 Float64 VerticalCurve::GetK1() const
 {
-   Float64 L, L1, L2;
-   std::tie(L, L1, L2) = GetCurveLengths();
+   auto [L, L1, L2] = GetCurveLengths();
 
    Float64 k = 0;
    if (IsZero(L2) || IsEqual(L1, L2))
@@ -606,10 +589,7 @@ Float64 VerticalCurve::GetK1() const
    else
    {
       // curve is unsymmetrical
-      Station station;
-      Float64 elev;
-      Float64 grade;
-      std::tie(station,elev,grade) = TransitionPoint();
+      auto [station,elev,grade] = TransitionPoint();
 
       Float64 entry_grade = GetEntryGrade();
 
@@ -622,8 +602,7 @@ Float64 VerticalCurve::GetK1() const
 
 Float64 VerticalCurve::GetK2() const
 {
-   Float64 L, L1, L2;
-   std::tie(L, L1, L2) = GetCurveLengths();
+   auto [L, L1, L2] = GetCurveLengths();
 
    Float64 k = 0;
    if (IsZero(L2) || IsEqual(L1, L2))
@@ -633,10 +612,7 @@ Float64 VerticalCurve::GetK2() const
    }
    else
    {
-      Station station;
-      Float64 elev;
-      Float64 grade;
-      std::tie(station,elev,grade) = TransitionPoint();
+      auto [station,elev,grade] = TransitionPoint();
 
       Float64 exit_grade = GetExitGrade();
 

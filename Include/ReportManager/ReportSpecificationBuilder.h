@@ -43,10 +43,10 @@ namespace WBFL
          /// Displays a user interface to guide the user in create a report specification
          virtual std::shared_ptr<ReportSpecification> CreateReportSpec(
             const ReportDescription& rptDesc,  ///< The report description
-            std::shared_ptr<ReportSpecification>& pRptSpec ///< A previously create report specification used to initalize the user interface. May be nullptr
+            std::shared_ptr<ReportSpecification> pRptSpec ///< A previously create report specification used to initialize the user interface. May be nullptr
          ) const;
          
-         /// Creates a default report specificiation without display a user interface
+         /// Creates a default report specification without display a user interface
          virtual std::shared_ptr<ReportSpecification> CreateDefaultReportSpec(
             const ReportDescription& rptDesc ///< The report description
          ) const;

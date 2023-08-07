@@ -563,7 +563,7 @@ void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
    }
    else
    {
-      CString strMsg(_T("An error occured and the log file could not be created.\n\n"));
+      CString strMsg(_T("An error occurred and the log file could not be created.\n\n"));
       std::vector<CString>::iterator iter(strings.begin());
       std::vector<CString>::iterator end(strings.end());
       for ( ; iter != end; iter++ )
@@ -886,7 +886,7 @@ void CEAFDocument::OnErrorDeletingBadSave(LPCTSTR lpszPathName,LPCTSTR lpszBacku
 {
    CString msg;
    msg.Format(_T("%s\n%s%s%s\n%s\n%s%s\n%s%s%s%s"),
-              _T("An error occured while recovering your last successful save."),
+              _T("An error occurred while recovering your last successful save."),
               _T("It is highly likely that the file "), lpszPathName, _T(" is corrupt."),
               _T("To recover from this error,"),
               _T("   1. Delete "), lpszPathName,
@@ -899,7 +899,7 @@ void CEAFDocument::OnErrorRenamingSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBa
 {
    CString msg;
    msg.Format(_T("%s\n%s%s%s\n%s\n%s%s%s\n%s%s%s%s"),
-              _T("An error occured while recovering your last successful save."),
+              _T("An error occurred while recovering your last successful save."),
               _T("It is highly likely that the file "), lpszPathName, _T(" no longer exists."),
               _T("To recover from this error,"),
               _T("   1. If "), lpszPathName, _T(" exists, delete it."),
@@ -1005,21 +1005,21 @@ HRESULT CEAFDocument::ConvertTheDocument(LPCTSTR lpszPathName, CString* realFile
 void CEAFDocument::HandleConvertDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
    CString strMsg;
-   strMsg.Format(_T("An error occured while converting %s (%d)"),lpszPathName,hr);
+   strMsg.Format(_T("An error occurred while converting %s (%d)"),lpszPathName,hr);
    AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
 }
 
 void CEAFDocument::HandleOpenDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
    CString strMsg;
-   strMsg.Format(_T("An error occured while opening %s (%d)"),lpszPathName,hr);
+   strMsg.Format(_T("An error occurred while opening %s (%d)"),lpszPathName,hr);
    AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
 }
 
 void CEAFDocument::HandleSaveDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
    CString strMsg;
-   strMsg.Format(_T("An error occured while saving %s (%d)"),lpszPathName,hr);
+   strMsg.Format(_T("An error occurred while saving %s (%d)"),lpszPathName,hr);
    AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
 }
 
@@ -1371,7 +1371,7 @@ void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
    OnUpdateAllViews(nullptr,EAF_HINT_UNITS_CHANGED,0);
 }
 
-void CEAFDocument::Execute(CEAFTransaction& rTxn)
+void CEAFDocument::Execute(const CEAFTransaction& rTxn)
 {
    CWaitCursor wait;
    CEAFTxnManager::GetInstance().Execute(rTxn);

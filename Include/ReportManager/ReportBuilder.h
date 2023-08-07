@@ -50,7 +50,7 @@ namespace WBFL
          /// lists of available reports
          void Hidden(bool bHide);
 
-         /// Returns the status of the Hidden attribue
+         /// Returns the status of the Hidden attribute
          bool Hidden() const;
 
          /// Sets the state of the timing chapter attribute
@@ -63,17 +63,17 @@ namespace WBFL
          LPCTSTR GetName() const;
 
          /// Adds a title page builder to generate the report's title page
-         void AddTitlePageBuilder(std::shared_ptr<TitlePageBuilder>& pTitlePageBuilder);
+         void AddTitlePageBuilder(std::shared_ptr<TitlePageBuilder> pTitlePageBuilder);
 
          /// Returns the title page builder
          std::shared_ptr<TitlePageBuilder> GetTitlePageBuilder();
 
          /// Adds a chapter builder to generate a chapter for the report
-         void AddChapterBuilder(std::shared_ptr<ChapterBuilder>& pChapterBuilder);
+         void AddChapterBuilder(std::shared_ptr<ChapterBuilder> pChapterBuilder);
 
          /// Inserts a chapter builder after the chapter builder with the specified key
          bool InsertChapterBuilder(
-            std::shared_ptr<ChapterBuilder>& pChapterBuilder, ///< A new chapter builder
+            std::shared_ptr<ChapterBuilder> pChapterBuilder, ///< A new chapter builder
             LPCTSTR strKey ///< Chapter builder key of the chapter builder after which the new chapter builder is inserted
          );
 
@@ -96,14 +96,14 @@ namespace WBFL
          ReportDescription GetReportDescription() const;
 
          /// Sets the report specification builder
-         void SetReportSpecificationBuilder(std::shared_ptr<ReportSpecificationBuilder>& pRptSpecBuilder);
+         void SetReportSpecificationBuilder(std::shared_ptr<ReportSpecificationBuilder> pRptSpecBuilder);
 
          /// Returns the report specification builder
          std::shared_ptr<ReportSpecificationBuilder> GetReportSpecificationBuilder();
          std::shared_ptr<const ReportSpecificationBuilder> GetReportSpecificationBuilder() const;
 
          /// Creates a report using the report specification
-         virtual std::shared_ptr<rptReport> CreateReport(const std::shared_ptr<const ReportSpecification>& pRptSpec) const;
+         virtual std::shared_ptr<rptReport> CreateReport(const std::shared_ptr<const ReportSpecification> pRptSpec) const;
 
          /// Sets the bitmap object to be displayed on the Report menu
          void SetMenuBitmap(const CBitmap* pBmp);
@@ -114,8 +114,8 @@ namespace WBFL
          /// Determine if a report needs to be updated
          /// \return true if an updated is needed
          virtual bool NeedsUpdate(
-            const std::shared_ptr<const ReportHint>&, ///< A hint that indicates what might have changed
-            const std::shared_ptr<const ReportSpecification>& pRptSpec ///< The specification that would be used to create the report
+            const std::shared_ptr<const ReportHint>, ///< A hint that indicates what might have changed
+            const std::shared_ptr<const ReportSpecification> pRptSpec ///< The specification that would be used to create the report
          ) const;
 
       private:

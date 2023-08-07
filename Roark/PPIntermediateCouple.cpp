@@ -128,8 +128,7 @@ Float64 PPIntermediateCouple::ComputeRotation(Float64 x) const
 {
    Float64 r = 0;
 
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
+   auto [L,EI] = GetProperties();
 
    if ( x < a )
    {
@@ -149,8 +148,7 @@ Float64 PPIntermediateCouple::ComputeDeflection(Float64 x) const
 {
    Float64 y = 0;
 
-   Float64 L, EI;
-   std::tie(L,EI) = GetProperties();
+   auto [L,EI] = GetProperties();
 
    if ( x < a )
    {

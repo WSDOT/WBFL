@@ -52,9 +52,9 @@ STDMETHODIMP CSingleDiaphragmLineFactory::get_AlignmentID(IDType* ID)
 
 STDMETHODIMP CSingleDiaphragmLineFactory::put_Station(VARIANT varStation)
 {
-   auto result = cogoUtil::StationFromVariant(varStation);
-   if (FAILED(result.first)) return result.first;
-   m_Factory->SetStation(result.second);
+   auto [hr,station] = cogoUtil::StationFromVariant(varStation);
+   if (FAILED(hr)) return hr;
+   m_Factory->SetStation(station);
    return S_OK;
 }
 

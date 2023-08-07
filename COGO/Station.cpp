@@ -104,9 +104,7 @@ STDMETHODIMP CStation::SetStation(ZoneIndexType zoneIdx,Float64 station)
 
 STDMETHODIMP CStation::FromVariant(VARIANT varStation)
 {
-   HRESULT hr;
-   WBFL::COGO::Station station;
-   std::tie(hr, station) = cogoUtil::StationFromVariant(varStation);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
    if (FAILED(hr)) return hr;
 
    m_Station = station;

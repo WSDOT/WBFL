@@ -70,11 +70,11 @@ IndexType GraphXY::CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth,
 
 IndexType GraphXY::FindDataSeries(LPCTSTR lpszLabel)
 {
-   for (const auto& series : m_GraphDataMap)
+   for (const auto& [index,series] : m_GraphDataMap)
    {
-      if (series.second.Label == lpszLabel)
+      if (series.Label == lpszLabel)
       {
-         return series.first;
+         return index;
       }
    }
 
@@ -93,12 +93,12 @@ void GraphXY::SetDataSeriesLabel(IndexType cookie, LPCTSTR lpszLabel)
 std::vector<IndexType> GraphXY::GetCookies() const
 {
     std::vector<IndexType> cookies;
-    for (const auto& index : m_GraphDataMap)
+    for (const auto& [index,data] : m_GraphDataMap)
     {
        // only return cookies for series that contain data
-       if (index.second.Series.size() > 0)
+       if (0 < data.Series.size())
        {
-          cookies.push_back(index.first);
+          cookies.push_back(index);
        }
     }
 
@@ -108,17 +108,12 @@ std::vector<IndexType> GraphXY::GetCookies() const
 void GraphXY::GetDataSeriesData(IndexType cookie, std::_tstring* pLabel, int* pPenStyle, int* pWidth, COLORREF* pColor) const
 {
    GraphDataMap::const_iterator found = m_GraphDataMap.find(cookie);
-   if (found != m_GraphDataMap.end())
-   {
-      *pLabel = found->second.Label;
-      *pPenStyle = found->second.Pen.Style;
-      *pWidth = found->second.Pen.Width;
-      *pColor = found->second.Pen.Color;
-   }
-   else
-   {
-      ATLASSERT(0);
-   }
+   CHECK(found != m_GraphDataMap.end());
+   const auto [index, graph_data](*found);
+   *pLabel = graph_data.Label;
+   *pPenStyle = graph_data.Pen.Style;
+   *pWidth = graph_data.Pen.Width;
+   *pColor = graph_data.Pen.Color;
 }
 
 void GraphXY::GetDataSeriesPoints(IndexType cookie, DataSeries* pvPoints) const
