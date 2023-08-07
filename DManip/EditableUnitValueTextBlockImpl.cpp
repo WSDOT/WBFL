@@ -69,7 +69,7 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
    str.Format(_T("%f"),m_Value);
    m_EditableTextBlock->SetText(str);
 
-   m_pctlUnitTag = new CStatic;
+   m_pctlUnitTag = std::make_unique<CStatic>();
 
    return S_OK;
 }
@@ -78,9 +78,6 @@ void CEditableUnitValueTextBlockImpl::FinalRelease()
 {
    m_EditableTextBlock->UnregisterEventSink();
    m_EditableTextBlock.Release();
-
-   delete m_pctlUnitTag;
-   m_pctlUnitTag = nullptr;
 
    m_UnitSystem.Release();
 }
@@ -632,10 +629,10 @@ STDMETHODIMP_(Float64) CEditableUnitValueTextBlockImpl::GetEditedValue()
    else
    {
       editedValue = _wtof(m_EditableTextBlock->GetEditedText()); // value in display units (without unit tag)
+      // Convert back to base units
+      m_UnitSystem->ConvertFromDisplayUnits(editedValue, m_bstrDisplayUnitGroup, &editedValue);
    }
 
-   // Convert back to base units
-   m_UnitSystem->ConvertFromDisplayUnits(editedValue,m_bstrDisplayUnitGroup,&editedValue);
 
    return editedValue;
 }

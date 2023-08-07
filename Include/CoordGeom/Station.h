@@ -84,7 +84,7 @@ namespace WBFL
          void FromString(const std::_tstring& strStation, const WBFL::Units::StationFormat& format);
 
          /// @brief Initializes the station object with a string. The string must include the "+" station separator. The unit of measure is determined from the
-         /// location of the "+" separrator.
+         /// location of the "+" separator.
          /// @param strStation The station represented as a string
          void FromString(const std::_tstring& strStation);
 
@@ -92,7 +92,7 @@ namespace WBFL
          /// @param format Unit format for the station (use WBFL::Units::StationFormats::US or WBFL::Units::StationFormats::SI)
          /// @param bIncludeStationZone Indicates if the station zone should be appended to the string. e.g. 5+01.23,2 The trailing ,2 indicates station zone 2
          /// @return 
-         std::_tstring AsString(const WBFL::Units::StationFormat& format, bool bIncludeStationZone) const;
+         std::_tstring AsString(const WBFL::Units::StationFormat& format, bool bIncludeStationZone = false) const;
 
          /// @brief Returns true if the station is normalized
          /// @return 
