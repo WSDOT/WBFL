@@ -72,16 +72,19 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
 {
    std::vector<WBFL::Geometry::Point2d> boundary_points;
    auto bridge = GetBridge();
-   auto start_pier_line = bridge->GetPierLine(0);
-   auto end_pier_line = bridge->GetPierLine(bridge->GetPierLineCount() - 1);
+   auto first_pier_line = bridge->GetPierLine(0); // first pier line in the bridge
+   auto last_pier_line = bridge->GetPierLine(bridge->GetPierLineCount() - 1); // last pier line in the bridge
 
-   auto start_pier_id = start_pier_line->GetID();
-   auto end_pier_id = end_pier_line->GetID();
+   auto first_pier_id = first_pier_line->GetID();
+   auto last_pier_id = last_pier_line->GetID();
+
+   auto start_pier_line = bridge->FindPierLine(startPierID); // starting pier line where the perimeter is requested
+   auto end_pier_line = bridge->FindPierLine(endPierID); // ending pier line where the perimieter is requested
 
    Float64 left_edge_start, right_edge_start; // distance along the edge path to the start of this DeckBoundary segment
 
    // build starting edge of DeckBoundary
-   if (start_pier_id == startPierID && IsZero(Xstart))
+   if (first_pier_id == startPierID && IsZero(Xstart))
    {
       // starting with first pier
       // use the DeckBoundary transverse end points at the start
@@ -154,7 +157,7 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
 
    // determine where to stop dividing the DeckBoundary edge paths
    WBFL::Geometry::Point2d left_end_point, right_end_point;
-   if (end_pier_id == endPierID && IsZero(Xend))
+   if (last_pier_id == endPierID && IsZero(Xend))
    {
       left_end_point = m_EdgePoint[+EndType::End][+SideType::Left];
       right_end_point = m_EdgePoint[+EndType::End][+SideType::Right];
@@ -235,7 +238,7 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
    }
 
    // define the transverse line at the end of the DeckBoundary
-   if (end_pier_id == endPierID && IsZero(Xend))
+   if (last_pier_id == endPierID && IsZero(Xend))
    {
       boundary_points.emplace_back(m_EdgePoint[+EndType::End][+SideType::Right]);
 
