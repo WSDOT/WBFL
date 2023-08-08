@@ -1,4 +1,4 @@
-# Redirecting std::cout
+# Redirecting std::cout {#WBFL_Redirecting_cout}
 
 It is often useful during testing to redirect std::cout to a string so output can be compared to expected values.
 

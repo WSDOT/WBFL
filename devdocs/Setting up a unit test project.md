@@ -1,4 +1,4 @@
-# Setting up a Visual Studio Unit Test project for WBFL
+# Setting up a Visual Studio Unit Test project {#WBFL_Unit_Tests}
 
 This process document details the steps for setting up a new Visual Studio unit test project.
 
@@ -9,9 +9,9 @@ Search for "Native Unit Test Project" or use the filters with the settings C++, 
 
 Enter the name of the test project in the Project Name field. The convention we are using is *ProjectName*UnitTests where *ProjectName* is the name of the DLL to be tested (without the WBFL prefix).
 
-Set the location to X:\ARP\WBFL\\*ProjectName* (substitute your drive letter for X).
+Set the location to X:/ARP/WBFL/*ProjectName* (substitute your drive letter for X).
 
-Check the project to be created in setting. It should read something like "F:\ARP\WBFL\Math\MathUnitTests\" if *ProjectName* is Math.
+Check the project to be created in setting. It should read something like "F:/ARP/WBFL/Math/MathUnitTests/" if *ProjectName* is Math.
 
 Press [Create].
 
@@ -23,12 +23,12 @@ In the Property Manager window, locate your new test project. Expand the project
 
 Right click on your test project and select Remove for the "Debug | Win32" and "Release | Win32" folders. WBFL only supports x64 builds.
 
-Right click on your test project and select Add Existing Property Sheet. Navigate to X:\ARP\WBFL (substitute your drive letter for X) and select WBFL.props. Press [Open].
+Right click on your test project and select Add Existing Property Sheet. Navigate to X:/ARP/WBFL (substitute your drive letter for X) and select WBFL.props. Press [Open].
 
 ### Output Directory
 In the Solution Explorer window, locate your new test project. Right click on the new test project and select Properties. Set the Configuration to "All Configurations" and set the Platform to "x64".
 
-Set Configuration Properties > General > Output Directory to $(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\
+Set Configuration Properties > General > Output Directory to "$(ARPDIR)/WBFL/RegFreeCOM/$(Platform)/$(Configuration)/"
 
 Press [OK]
 
@@ -46,3 +46,10 @@ Open the pch.h header file and #include the main header file for the DLL that is
 
 ## Create Test Cases
 Visual Studio creates a default file with the same name as your test project. This file has a default test class and test method. This file isn't particularly useful. We generally create one test class for each class exported from the DLL. The tests are implemented in a file named Test*classname*.cpp. In the Solution Explorer, rename the default test file for the first class to be tested. Change the TEST_CLASS() to Test*classname*. Rename the default TEST_METHOD and create new TEST_METHODs to test the class. Create a new file and TEST_CLASS for each class to be tested.
+
+## More information
+https://learn.microsoft.com/en-us/visualstudio/test/getting-started-with-unit-testing
+
+https://learn.microsoft.com/en-us/visualstudio/test/writing-unit-tests-for-c-cpp
+
+https://learn.microsoft.com/en-us/visualstudio/test/microsoft-visualstudio-testtools-cppunittestframework-api-reference
