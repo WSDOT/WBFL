@@ -37,12 +37,14 @@ GraphXY::GraphXY(WBFL::System::NumericFormatTool* pXAxisFormat, WBFL::System::Nu
    // set up the x axis
    m_XAxis.SetNumberOfMinorTics(5);
    m_XAxis.SetTicLocation(AxisXY::TicLocation::Above);
-   m_YAxis.SetTextLocation(AxisXY::TextLocation::Below);
+   m_XAxis.SetTextLocation(AxisXY::TextLocation::Below);
+   m_XAxis.SetValueFormat(pXAxisFormat);
 
    // set up the y axis
    m_YAxis.SetTicLocation(AxisXY::TicLocation::Below);
    m_YAxis.SetTextLocation(AxisXY::TextLocation::Above);
    m_YAxis.SetNumberOfMinorTics(5);
+   m_YAxis.SetValueFormat(pYAxisFormat);
 }
 
 GraphXY::~GraphXY()
