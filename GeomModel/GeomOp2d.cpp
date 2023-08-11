@@ -718,7 +718,7 @@ bool GeometricOperations::IsPointInTriangle(const Point2d& p, const Point2d& A, 
    Float64 dot12 = v1.Dot(v2);
 
    Float64 denom = dot00 * dot11 - dot01 * dot01;
-   if (IsZero(denom))
+   if (denom == 0.0)
    {
       THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDARG);
    }
