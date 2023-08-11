@@ -324,8 +324,6 @@ std::pair<Point2d,Vector2d> Line2d::GetExplicit() const
 
 void Line2d::ThroughPoints(const Point2d& p1,const Point2d& p2)
 {
-   if(p1 == p2) THROW_GEOMETRY(WBFL_GEOMETRY_E_COINCIDENTPOINTS);
-
    std::tie(m_c,m_N) = PointToImplicit(p1,p2);
 
    ASSERTVALID;

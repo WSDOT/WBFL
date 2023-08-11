@@ -73,7 +73,6 @@
 #include <CoordGeom/ThroughPointDiaphragmLineFactory.h>
 #include <CoordGeom/SingleDiaphragmLineFactory.h>
 #include <CoordGeom/EqualSpacingDiaphragmLineFactory.h>
-#include <CoordGeom/CoordGeom.h>
 #include <CoordGeom/CompositePierLineFactory.h>
 #include <CoordGeom/CompositeLayoutLineFactory.h>
 #include <CoordGeom/CompositeGirderLineFactory.h>

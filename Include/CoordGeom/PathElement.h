@@ -77,12 +77,12 @@ namespace WBFL
          /// @param direction Direction to move
          virtual void Move(Float64 distance, const Direction& direction) = 0;
 
-         /// @brief Offsets the curve from its present location
-         /// @param dx Distance to offset the curve in the X (East-West) direction.
-         /// @param dy Distance to offset the curve in the Y (North-South) direction.
+         /// @brief Offsets the element from its present location
+         /// @param dx Distance to offset the element in the X (East-West) direction.
+         /// @param dy Distance to offset the element in the Y (North-South) direction.
          virtual void Offset(Float64 dx, Float64 dy) = 0;
 
-         /// @brief Offsets the curve from its present location
+         /// @brief Offsets the element from its present location
          /// @param size The offset amount as a size object
          virtual void Offset(const WBFL::Geometry::Size2d& size) {Offset(size.Dx(), size.Dy());}
 
@@ -140,6 +140,12 @@ namespace WBFL
          /// @param end Distance from the start of the element to the end of the sub-path element
          /// @return 
          virtual std::vector<std::shared_ptr<PathElement>> CreateSubpath(Float64 start, Float64 end) const = 0;
+
+         /// @brief Returns a line tangent to the start of the path element
+         WBFL::Geometry::Line2d GetStartTangent() const;
+
+         /// @brief Returns a line tangent to the end of the path element
+         WBFL::Geometry::Line2d GetEndTangent() const;
 
       protected:
 

@@ -651,34 +651,9 @@ std::vector<std::shared_ptr<PathElement>> TransitionCurve::CreateOffsetPath(Floa
    auto d1 = pntStart.Distance(cc);
    auto d2 = pntEnd.Distance(cc);
 
-   // Deal with the case of the curve degrading to a single point
-   if ((curve_direction == CurveDirection::Right && (d1 <= offset || d2 <= offset)) ||
-      (curve_direction == CurveDirection::Left && (d1 <= -offset || d2 <= -offset)))
+   if ((curve_direction == CurveDirection::Right && (offset < d1 && offset < d2)) ||
+      (curve_direction == CurveDirection::Left && (-offset < d1 && -offset < d2)))
    {
-      // The parallel curve is past the CC point... this degrades the curve to a point
-      auto PI = GetPI();
-
-      WBFL::Geometry::Line2d l1(pntStart, PI);
-      WBFL::Geometry::Line2d l2(PI, pntEnd);
-
-      // offset the curve tangents and intersect them
-      l1.Offset(-offset);
-      l2.Offset(-offset);
-
-      WBFL::Geometry::Point2d ip;
-      auto nIntersections = WBFL::Geometry::GeometricOperations::Intersect(l1, l2, &ip);
-      CHECK(nIntersections == 1);
-
-      // implement as zero length path segment
-      auto path_element = PathSegment::Create(ip, ip);
-      vElements.emplace_back(path_element);
-   }
-   else
-   {
-      //
-      // Curve remains a curve
-      //
-
       // There isn't a way to make a parallel offset for a clothoid spiral. We will approximate the parallel offset with a spline curve
       IndexType nPoints = 10;
 

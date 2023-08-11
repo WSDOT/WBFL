@@ -74,6 +74,7 @@ CompoundCurve::CompoundCurve()
 CompoundCurve::CompoundCurve(const WBFL::Geometry::Point2d& pbt, const WBFL::Geometry::Point2d& pi, const WBFL::Geometry::Point2d& pft, Float64 radius,Float64 lsEntry,TransitionCurveType lsEntryType,Float64 lsExit,TransitionCurveType lsExitType) :
    m_PBT(pbt), m_PI(pi), m_PFT(pft), m_Radius(radius), m_LsEntry(lsEntry), m_LsEntryType(lsEntryType), m_LsExit(lsExit), m_LsExitType(lsExitType)
 {
+   PRECONDITION(0 <= radius);
 }
 
 
@@ -112,7 +113,7 @@ const WBFL::Geometry::Point2d& CompoundCurve::GetPFT() const
 
 void CompoundCurve::SetRadius(Float64 radius)
 {
-   PRECONDITION(0 < radius);
+   PRECONDITION(0 <= radius);
    m_Radius = radius;
    OnPathElementChanged();
 }
@@ -476,10 +477,10 @@ WBFL::Geometry::Point2d CompoundCurve::GetCC() const
    auto TS = GetTS();
    auto ST = GetST();
 
-   if (m_PI == TS || m_PI == ST)
+   if (m_Radius == 0.0 && m_LsEntry == 0.0 && m_LsExit == 0.0)
    {
       // this curve is really just a point... CC is going to be at the same location
-      // creating lines t1 and t2 will fail below.... just you the PI and the CC and return
+      // creating lines t1 and t2 will fail below.... just use the PI for the CC and return
       return m_PI;
    }
 
@@ -1536,29 +1537,9 @@ std::vector<std::shared_ptr<PathElement>> CompoundCurve::CreateOffsetPath(Float6
    WBFL::Geometry::Line2d l1(PBT, PI);
    WBFL::Geometry::Line2d l2(PI, PFT);
 
-   // Deal with the case of the curve degrading to a single point
-   if ((curve_direction == CurveDirection::Right && (d1 <= offset || d2 <= offset)) ||
-      (curve_direction == CurveDirection::Left && (d1 <= -offset || d2 <= -offset)))
+   if ((curve_direction == CurveDirection::Right && (offset < d1 && offset < d2)) ||
+      (curve_direction == CurveDirection::Left && (-offset < d1 && -offset < d2)))
    {
-      // The parallel curve is past the CC point... this degrades the curve to a point
-
-      // offset the curve tangents and intersect them
-      l1.Offset(-offset);
-      l2.Offset(-offset);
-
-      WBFL::Geometry::Point2d ip;
-      auto nIntersections = WBFL::Geometry::GeometricOperations::Intersect(l1, l2, &ip);
-      CHECK(nIntersections == 1);
-
-      // model point as a zero length line segment
-      auto path_element = PathSegment::Create(ip, ip);
-      vElements.emplace_back(path_element);
-   }
-   else
-   {
-      //
-      // Curve remains a curve
-      //
       IndexType nPoints = 10;
 
       //

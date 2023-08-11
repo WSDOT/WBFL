@@ -26,6 +26,7 @@
 #include <CoordGeom/PathSegment.h>
 
 #include <GeomModel/GeomOp2d.h>
+#include <CoordGeom/COGO.h>
 
 #include <xutility>
 
@@ -358,11 +359,54 @@ std::vector<std::shared_ptr<PathElement>> Path::CreateOffsetPath(Float64 offset)
 
    std::vector<std::shared_ptr<PathElement>> path_elements;
    const auto& vElements = GetConnectedPathElements();
-   for (const auto& element : vElements)
+   auto begin = vElements.begin();
+   auto iter = begin;
+   auto end = vElements.end();
+
+   // start iterating over vElements until the first element whose offset path
+   // doesn't degrade to nothing (curves will degrade to nothing when the offset is greater than the radius)
+   while (path_elements.empty() && iter != end)
    {
-      auto e = element.element->CreateOffsetPath(offset);
-      if (!e.empty())  path_elements.insert(path_elements.end(), e.begin(), e.end());
+      const auto& element = iter->element;
+      auto e = element->CreateOffsetPath(offset);
+      path_elements.insert(path_elements.end(), e.begin(), e.end());
+      iter++;
    }
+
+   // loop over all the remaining path elements, creating an offset element for each one, and
+   // adjusting end points so the resulting offset path is continuous
+   for (; iter != end; iter++)
+   {
+      const auto& element = iter->element;
+      auto e = element->CreateOffsetPath(offset);
+
+      if (!e.empty())
+      {
+         auto& prev_offset_element = path_elements.back();
+         auto& next_offset_element = e.front();
+         if (prev_offset_element->GetEndPoint() != next_offset_element->GetStartPoint())
+         {
+            // the offset path isn't continuous, adjust end points
+            auto prev_offset_tangent = prev_offset_element->GetEndTangent();
+            auto next_offset_tangent = next_offset_element->GetStartTangent();
+
+            WBFL::Geometry::Point2d pi;
+            auto result = WBFL::Geometry::GeometricOperations::Intersect(prev_offset_tangent, next_offset_tangent, &pi);
+            CHECK(result == 1);
+
+            // Assuming that the discontinuous elements are PathSegments
+            auto prev_segment = std::dynamic_pointer_cast<PathSegment>(prev_offset_element);
+            auto next_segment = std::dynamic_pointer_cast<PathSegment>(next_offset_element);
+            CHECK(prev_segment);
+            CHECK(next_segment);
+            prev_segment->ThroughPoints(prev_segment->GetStartPoint(), pi);
+            next_segment->ThroughPoints(pi, next_segment->GetEndPoint());
+         }
+      }
+
+      path_elements.insert(path_elements.end(), e.begin(), e.end());
+   }
+
    return path_elements;
 }
 
@@ -409,8 +453,6 @@ std::vector<std::shared_ptr<PathElement>> Path::CreateSubpath(Float64 start, Flo
          subpath_elements.emplace_back(segment);
    }
 
-
-
    return subpath_elements;
 }
 
@@ -445,7 +487,7 @@ std::pair<std::shared_ptr<const PathElement>,Float64> Path::FindElement(Float64 
    }
 
    const auto& element(*lowerBound);
-   return std::make_pair(element.element, element.start);;
+   return std::make_pair(element.element, element.start);
 }
 
 const std::vector<Path::Element>& Path::GetConnectedPathElements() const
@@ -456,7 +498,6 @@ const std::vector<Path::Element>& Path::GetConnectedPathElements() const
       // we can compute the path length as we go instead of having to do it later
       m_PathLength = 0;
 
-      // container has been requested before... initialized
       if (m_Elements.size() == 0)
       {
          // There are no Path elements defined
@@ -470,9 +511,6 @@ const std::vector<Path::Element>& Path::GetConnectedPathElements() const
       else if (m_Elements.size() == 1)
       {
          // There is exactly one element defining the Path
-         //
-         // The first Path element is projected
-         // to define the Path
          Float64 length = m_Elements.front()->GetLength();
          m_ConnectedPathElements.emplace_back(0.0, length, m_Elements.front());
          m_PathLength += length;
@@ -482,32 +520,86 @@ const std::vector<Path::Element>& Path::GetConnectedPathElements() const
          // There are multiple Path elements
          Float64 start = 0.0;
          auto begin = m_Elements.begin();
-         auto iter = begin;
-         auto endIter = m_Elements.end();
-         for (; iter != endIter; iter++)
+         auto left_iter = begin;
+         auto right_iter = std::next(left_iter);
+         auto end = m_Elements.end();
+         bool bLastElementStored = false;
+         for (; right_iter != end; left_iter++, right_iter++)
          {
-            const auto& element = *iter;
-            auto length = element->GetLength();
+            const auto& left_element = *left_iter;
+            const auto& right_element = *right_iter;
 
-            if (iter != begin)
+            if (left_element->GetEndPoint() != right_element->GetStartPoint())
             {
-               // check if this element is connected to the previous element
-               const auto& endPrev = m_ConnectedPathElements.back().element->GetEndPoint();
-               const auto& startNext = element->GetStartPoint();
-               if (endPrev != startNext)
+               // adjacent elements are not connected
+               auto gap_direction = COGO::MeasureDirection(left_element->GetEndPoint(), right_element->GetStartPoint());
+               auto left_segment = std::dynamic_pointer_cast<PathSegment>(left_element);
+               auto right_segment = std::dynamic_pointer_cast<PathSegment>(right_element);
+
+               if (gap_direction == left_element->GetBearing(left_element->GetLength()) && left_segment)
                {
-                  // there is a gap between elements - fill it with a straight segment
-                  auto segment = PathSegment::Create(endPrev, startNext);
-                  auto segment_length = segment->GetLength();
-                  m_ConnectedPathElements.emplace_back(start, start + segment_length, segment);
-                  m_PathLength += segment_length;
-                  start += segment_length;
+                  // the gap element is in the same direction as the left element - extend the end of the left element instead of creating a new element
+                  auto extended_left_segment = std::dynamic_pointer_cast<PathSegment>(left_segment->Clone());
+                  extended_left_segment->ThroughPoints(extended_left_segment->GetStartPoint(), right_element->GetStartPoint());
+                  auto length = extended_left_segment->GetLength();
+                  m_ConnectedPathElements.emplace_back(start, start + length, extended_left_segment);
+                  start += length;
+                  m_PathLength += length;
+               }
+               else if (gap_direction == right_element->GetBearing(0.0) && right_segment)
+               {
+                  // the gap element is in the same direction as the right element - extend the start of the right element instead of creating a new element
+
+                  // store the left segment
+                  auto length = left_element->GetLength();
+                  m_ConnectedPathElements.emplace_back(start, start + length, left_element);
+                  start += length;
+                  m_PathLength += length;
+
+                  // adjust and store the right segment
+                  auto extended_right_segment = std::dynamic_pointer_cast<PathSegment>(right_segment->Clone());
+                  extended_right_segment->ThroughPoints(left_element->GetEndPoint(), extended_right_segment->GetEndPoint());
+                  length = extended_right_segment->GetLength();
+                  m_ConnectedPathElements.emplace_back(start, start + length, extended_right_segment);
+                  start += length;
+                  m_PathLength += length;
+
+                  if (std::next(right_iter) == end)
+                     bLastElementStored = true;
+               }
+               else
+               {
+                  // make a gap element
+
+                  // store the left element
+                  auto length = left_element->GetLength();
+                  m_ConnectedPathElements.emplace_back(start, start + length, left_element);
+                  start += length;
+                  m_PathLength += length;
+
+                  // create and store a gap element
+                  auto gap_segment = PathSegment::Create(left_element->GetEndPoint(), right_element->GetStartPoint());
+                  length = gap_segment->GetLength();
+                  m_ConnectedPathElements.emplace_back(start, start + length, gap_segment);
+                  m_PathLength += length;
+                  start += length;
                }
             }
+            else
+            {
+               auto length = left_element->GetLength();
+               m_ConnectedPathElements.emplace_back(start, start + length, left_element);
+               start += length;
+               m_PathLength += length;
+            }
+         }
 
-            m_ConnectedPathElements.emplace_back(start, start + length, element);
+         if (!bLastElementStored)
+         {
+            const auto& last_element = m_Elements.back();
+            auto length = last_element->GetLength();
+            m_ConnectedPathElements.emplace_back(start, start + length, last_element);
             m_PathLength += length;
-            start += length;
          }
       }
    }

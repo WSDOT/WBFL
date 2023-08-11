@@ -61,6 +61,7 @@ CircularCurve::CircularCurve()
 CircularCurve::CircularCurve(const WBFL::Geometry::Point2d& pbt, const WBFL::Geometry::Point2d& pi, const WBFL::Geometry::Point2d& pft, Float64 radius) :
    m_PBT(pbt), m_PI(pi), m_PFT(pft),m_Radius(radius)
 {
+   PRECONDITION(0 <= radius);
 }
 
 void CircularCurve::SetPBT(const WBFL::Geometry::Point2d& pbt)
@@ -98,7 +99,7 @@ const WBFL::Geometry::Point2d& CircularCurve::GetPFT() const
 
 void CircularCurve::SetRadius(Float64 radius)
 {
-   PRECONDITION(0 < radius);
+   PRECONDITION(0 <= radius);
    m_Radius = radius;
    OnPathElementChanged();
 }
@@ -178,10 +179,10 @@ WBFL::Geometry::Point2d CircularCurve::GetCenter() const
    auto PC = GetPC();
    auto PT = GetPT();
 
-   if (m_PI == PC || m_PI == PT)
+   if (m_Radius == 0.0)
    {
       // this curve is really just a point... CC is going to be at the same location
-      // creating lines t1 and t2 will fail below.... just you the PI and the CC and return
+      // creating lines t1 and t2 will fail below.... just use the PI for the CC and return
       return m_PI;
    }
 
@@ -665,28 +666,9 @@ std::vector<std::shared_ptr<PathElement>> CircularCurve::CreateOffsetPath(Float6
    WBFL::Geometry::Line2d l1(PBT, PI);
    WBFL::Geometry::Line2d l2(PI, PFT);
 
-   // Deal with the case of the curve degrading to a single point
-   if ((curve_direction == CurveDirection::Right && m_Radius <= offset) ||
-       (curve_direction == CurveDirection::Left && m_Radius <= -offset))
+   if ((curve_direction == CurveDirection::Right && offset < m_Radius) ||
+       (curve_direction == CurveDirection::Left && -offset < m_Radius))
    {
-      // The parallel curve is past the CC point... this degrades the curve to a point
-
-      // offset the curve tangents and intersect them
-      l1.Offset(-offset);
-      l2.Offset(-offset);
-
-      WBFL::Geometry::Point2d ip;
-      auto nIntersections = WBFL::Geometry::GeometricOperations::Intersect(l1, l2, &ip);
-      CHECK(nIntersections == 1);
-
-      // implement as a zero length path segment
-      vElements.emplace_back(PathSegment::Create(ip, ip));
-   }
-   else
-   {
-      //
-      // Curve remains a curve
-      //
       // Use the curve tangents to create new tangents at an offset. The intersection point of these lines is the new PI.
       auto bkTangent = WBFL::Geometry::GeometricOperations::CreateParallelLine(l1, offset);
       auto fwdTangent = WBFL::Geometry::GeometricOperations::CreateParallelLine(l2, offset);

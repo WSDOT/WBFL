@@ -44,6 +44,24 @@ std::shared_ptr<Path> PathElement::GetPath()
    return m_Path.lock();
 }
 
+WBFL::Geometry::Line2d PathElement::GetStartTangent() const
+{
+   auto direction = GetBearing(0.0);
+   WBFL::Geometry::Vector2d v(1.0, direction);
+   const auto& start_point = GetStartPoint();
+   WBFL::Geometry::Line2d tangent(start_point, v);
+   return tangent;
+}
+
+WBFL::Geometry::Line2d PathElement::GetEndTangent() const
+{
+   auto direction = GetBearing(GetLength());
+   WBFL::Geometry::Vector2d v(1.0, direction);
+   const auto& end_point = GetEndPoint();
+   WBFL::Geometry::Line2d tangent(end_point, v);
+   return tangent;
+}
+
 void PathElement::OnPathElementChanged()
 {
    auto path = GetPath();

@@ -152,7 +152,7 @@ Vector2d& Vector2d::Reflect()
 Vector2d& Vector2d::Normalize()
 {
    Float64 mag = GetMagnitude();
-   if (::IsZero(mag))
+   if (mag == 0.0)
       THROW_GEOMETRY(WBFL_GEOMETRY_E_ZEROMAGNITUDE);
 
    m_X /= mag;
@@ -163,7 +163,7 @@ Vector2d& Vector2d::Normalize()
 Vector2d Vector2d::NormalizeBy() const
 {
    Float64 len = this->GetMagnitude();
-   if ( !::IsZero(len) )
+   if ( len != 0.0 )
       return Vector2d(Size2d(m_X/len, m_Y/len));
    else
       return Vector2d();
