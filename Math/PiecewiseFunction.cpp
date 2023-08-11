@@ -97,15 +97,13 @@ Float64 interpolate(const WBFL::Geometry::Point2d& p1, const WBFL::Geometry::Poi
    return LinInterp( a, l, h, delta);
 }
 
-PiecewiseFunction::PiecewiseFunction() :
-   m_OutOfRangeBehavior(orbExtendOuterValue)
+PiecewiseFunction::PiecewiseFunction()
 {
    ASSERTVALID;
 }
 
 PiecewiseFunction::PiecewiseFunction(const std::vector<WBFL::Geometry::Point2d>& points) :
-m_Points(points),
-m_OutOfRangeBehavior(orbExtendOuterValue)
+m_Points(points)
 {
    ASSERTVALID;
 }
@@ -116,7 +114,7 @@ Float64 PiecewiseFunction::Evaluate(Float64 x) const
    // first find which segment x lies in
    bool found=false;
 
-   if (m_Points.size()<2) // a single point or empty collection does not make a line
+   if (m_Points.empty())
    {
       // x not in function range - throw
       THROW_FUNCTION(XFunction::Reason::Undefined);
@@ -127,11 +125,11 @@ Float64 PiecewiseFunction::Evaluate(Float64 x) const
    // Deal with out of range x's
    if ( x < range.GetLeftBoundLocation() )
    {
-      if (m_OutOfRangeBehavior == orbExtendOuterValue)
+      if (m_OutOfRangeBehavior == OutOfRangeBehavior::ExtendOuterValue)
       {
          return m_Points.front().Y();
       }
-      else if (m_OutOfRangeBehavior == orbExtrapolate)
+      else if (m_OutOfRangeBehavior == OutOfRangeBehavior::Extrapolate)
       {
          // interpolate outside of our bounds
          Float64 yval = interpolate(m_Points[0],m_Points[1],x);
@@ -144,18 +142,18 @@ Float64 PiecewiseFunction::Evaluate(Float64 x) const
    }
    else if ( range.GetRightBoundLocation() < x )
    {
-      if (m_OutOfRangeBehavior == orbExtendOuterValue)
+      if (m_OutOfRangeBehavior == OutOfRangeBehavior::ExtendOuterValue)
       {
          return m_Points.back().Y();
       }
-      else if (m_OutOfRangeBehavior == orbExtrapolate)
+      else if (m_OutOfRangeBehavior == OutOfRangeBehavior::Extrapolate)
       {
          // interpolate outside of our bounds
          std::size_t lastval = m_Points.size() - 1;
          Float64 yval = interpolate(m_Points[lastval-1], m_Points[lastval], x);
          return yval;
       }
-      else // (m_OutOfRangeBehavior == orbThrowException)
+      else // (m_OutOfRangeBehavior == OutOfRangeBehavior::ThrowException)
       {
          THROW_FUNCTION(XFunction::Reason::Undefined);
       }

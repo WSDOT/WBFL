@@ -10,7 +10,7 @@ namespace MathUnitTests
 	{
 	public:
 		
-		TEST_METHOD(Test)
+		TEST_METHOD(Test1)
 		{
          PiecewiseFunction fun1;
          Assert::IsTrue(fun1.AddPoint(WBFL::Geometry::Point2d(-4, -2)) == 1);
@@ -109,6 +109,56 @@ namespace MathUnitTests
          {
             Assert::IsTrue(e.GetReasonCode() == XFunction::Reason::Undefined);
          }
+      }
+
+      TEST_METHOD(Test2)
+      {
+         PiecewiseFunction fn;
+         try
+         {
+            auto result = fn.Evaluate(10.0);
+            Assert::Fail(); // should not get here
+         }
+         catch (XFunction& e)
+         {
+            Assert::IsTrue(e.GetReasonCode() == XFunction::Reason::Undefined);
+         }
+
+         fn.AddPoint(0, 20);
+         fn.SetOutOfRangeBehavior(PiecewiseFunction::OutOfRangeBehavior::ThrowException);
+         try
+         {
+            auto result = fn.Evaluate(10.0);
+            Assert::Fail(); // should not get here
+         }
+         catch (XFunction& e)
+         {
+            Assert::IsTrue(e.GetReasonCode() == XFunction::Reason::Undefined);
+         }
+
+         fn.SetOutOfRangeBehavior(PiecewiseFunction::OutOfRangeBehavior::ExtendOuterValue);
+         try
+         {
+            auto result = fn.Evaluate(10.0);
+            Assert::AreEqual(20.0, result);
+         }
+         catch ([[maybe_unused]] XFunction& e)
+         {
+            Assert::Fail(); // should not get here
+         }
+
+         fn.AddPoint(20, 40);
+         fn.SetOutOfRangeBehavior(PiecewiseFunction::OutOfRangeBehavior::Extrapolate);
+         try
+         {
+            auto result = fn.Evaluate(40.0);
+            Assert::AreEqual(60.0, result);
+         }
+         catch ([[maybe_unused]] XFunction& e)
+         {
+            Assert::Fail(); // should not get here
+         }
+
       }
 	};
 }

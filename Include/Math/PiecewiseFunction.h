@@ -54,10 +54,10 @@ namespace WBFL
          Range GetRange() const;
 
          // Behavior for case when Evaluate is called with an x value that's outside of the function's range 
-         enum OutOfRangeBehavior {
-            orbThrowException,      // Obvious, throw XFunction::Reason::Undefined
-            orbExtendOuterValue,    // Return boundary Y value at edge of range that was violated
-            orbExtrapolate  // Extend endmost line to x value that is out of range
+         enum class OutOfRangeBehavior {
+            ThrowException,      // Obvious, throw XFunction::Reason::Undefined
+            ExtendOuterValue,    // Return boundary Y value at edge of range that was violated
+            Extrapolate  // Extend endmost line to x value that is out of range
          };
 
          void SetOutOfRangeBehavior(OutOfRangeBehavior behavior);
@@ -116,7 +116,7 @@ namespace WBFL
       private:
          std::vector<WBFL::Geometry::Point2d> m_Points;
 
-         OutOfRangeBehavior m_OutOfRangeBehavior;
+         OutOfRangeBehavior m_OutOfRangeBehavior{ OutOfRangeBehavior::ExtendOuterValue };
 
          // Optimize evaluations by assuming that the last segment evaluated was 
          // close the the next evaluation. Segment counting is one-based.
