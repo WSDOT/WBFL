@@ -3216,5 +3216,58 @@ namespace CoordGeomUnitTest
          vPoints = curve->Intersect(line, false, false);
          Assert::IsTrue(vPoints.size() == 0);
       }
+
+      TEST_METHOD(CreateOffsetPath)
+      {
+         auto curve = CompoundCurve::Create();
+
+         curve->SetPBT(WBFL::Geometry::Point2d(0, 1000));
+         curve->SetPI(WBFL::Geometry::Point2d(1000, 1000));
+         curve->SetPFT(WBFL::Geometry::Point2d(1000, 1500));
+         curve->SetSpiralLength(CompoundCurve::SpiralLocation::Entry, 100);
+         curve->SetSpiralLength(CompoundCurve::SpiralLocation::Exit, 50);
+         curve->SetRadius(1000.0);
+         Assert::IsTrue(curve->GetCurveDirection() == CurveDirection::Left);
+
+         // offset to the right (radius increases)
+         auto path_elements = curve->CreateOffsetPath(500);
+         Assert::AreEqual((size_t)3, path_elements.size());
+         auto offset_entry_spiral = std::dynamic_pointer_cast<CubicSpline>(path_elements[0]);
+         auto offset_curve = std::dynamic_pointer_cast<CircularCurve>(path_elements[1]);
+         auto offset_exit_spiral = std::dynamic_pointer_cast<CubicSpline>(path_elements[2]);
+         Assert::IsNotNull(offset_entry_spiral.get());
+         Assert::IsNotNull(offset_curve.get());
+         Assert::IsNotNull(offset_exit_spiral.get());
+         Assert::AreEqual(1500.0, offset_curve->GetRadius());
+         Assert::IsTrue(WBFL::Geometry::Point2d(-50.099997964221757, 500.0) == offset_entry_spiral->GetStartPoint());
+         Assert::IsTrue(WBFL::Geometry::Point2d(74.864589564469000, 502.29123887380922) == offset_entry_spiral->GetEndPoint());
+         Assert::IsTrue(WBFL::Geometry::Point2d(74.864589564469000, 502.29123887380922) == offset_curve->GetPC());
+         Assert::IsTrue(WBFL::Geometry::Point2d(1464.6428025222817, 571.83811491332131) == offset_curve->GetPI());
+         Assert::IsTrue(WBFL::Geometry::Point2d(1499.4271100720034, 1962.9205355941872) == offset_curve->GetPT());
+         Assert::IsTrue(WBFL::Geometry::Point2d(1499.4271100720034, 1962.9205355941872) == offset_exit_spiral->GetStartPoint());
+         Assert::IsTrue(WBFL::Geometry::Point2d(1500.0000000000000, 2025.4161086419674) == offset_exit_spiral->GetEndPoint());
+
+         // offset to the left (radius decreases)
+         path_elements = curve->CreateOffsetPath(-500);
+         Assert::AreEqual((size_t)3, path_elements.size());
+         offset_entry_spiral = std::dynamic_pointer_cast<CubicSpline>(path_elements[0]);
+         offset_curve = std::dynamic_pointer_cast<CircularCurve>(path_elements[1]);
+         offset_exit_spiral = std::dynamic_pointer_cast<CubicSpline>(path_elements[2]);
+         Assert::IsNotNull(offset_entry_spiral.get());
+         Assert::IsNotNull(offset_curve.get());
+         Assert::IsNotNull(offset_exit_spiral.get());
+         Assert::AreEqual(500.0, offset_curve->GetRadius());
+         Assert::IsTrue(WBFL::Geometry::Point2d(-50.099997964221757, 1500.0) == offset_entry_spiral->GetStartPoint());
+         Assert::IsTrue(WBFL::Geometry::Point2d(24.885420293790663, 1501.0414992687756) == offset_entry_spiral->GetEndPoint());
+         Assert::IsTrue(WBFL::Geometry::Point2d(24.885420293790663, 1501.0414992687756) == offset_curve->GetPC());
+         Assert::IsTrue(WBFL::Geometry::Point2d(488.14482461306159, 1524.2237912819462) == offset_curve->GetPI());
+         Assert::IsTrue(WBFL::Geometry::Point2d(499.73959379630071, 1987.9179315089000) == offset_curve->GetPT());
+         Assert::IsTrue(WBFL::Geometry::Point2d(499.73959379630071, 1987.9179315089000) == offset_exit_spiral->GetStartPoint());
+         Assert::IsTrue(WBFL::Geometry::Point2d(500.0000000000000, 2025.4161086419674) == offset_exit_spiral->GetEndPoint());
+
+         // offset to the left (offset greater than radius - curve degrades to nothing)
+         path_elements = curve->CreateOffsetPath(-1500);
+         Assert::IsTrue(path_elements.empty());
+      }
    };
 }
