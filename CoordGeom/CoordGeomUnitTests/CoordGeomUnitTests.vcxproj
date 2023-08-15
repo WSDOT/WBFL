@@ -138,6 +138,7 @@
     <ClCompile Include="TestSurfaceTemplate.cpp" />
     <ClCompile Include="TestSurfaceTemplateSegment.cpp" />
     <ClCompile Include="TestThroughPointDiaphragmLineFactory.cpp" />
+    <ClCompile Include="TestTransitionCurve.cpp" />
     <ClCompile Include="TestUniformSpacingLayoutLineFactory.cpp" />
     <ClCompile Include="TestVerticalCurve.cpp" />
     <ClCompile Include="TestWidening.cpp" />

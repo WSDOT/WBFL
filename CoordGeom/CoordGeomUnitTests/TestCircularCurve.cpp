@@ -157,5 +157,40 @@ namespace CoordGeomUnitTest
          Assert::IsTrue(IsEqual(distFromStart, 821.98840358006942));
          Assert::IsTrue(bOnProjection == true);
       }
+
+      TEST_METHOD(CreateOffsetPath)
+      {
+         auto curve = CircularCurve::Create();
+
+         curve->SetPBT(WBFL::Geometry::Point2d(0, 1000));
+         curve->SetPI(WBFL::Geometry::Point2d(1000, 1000));
+         curve->SetPFT(WBFL::Geometry::Point2d(1000, 1500));
+         Assert::AreEqual(1000.0, curve->GetRadius());
+         Assert::IsTrue(curve->GetCurveDirection() == CurveDirection::Left);
+
+         // offset to the right (radius increases)
+         auto path_elements = curve->CreateOffsetPath(500);
+         Assert::AreEqual((size_t)1, path_elements.size());
+         auto element = path_elements.back();
+         auto offset_curve = std::dynamic_pointer_cast<CircularCurve>(element);
+         Assert::AreEqual(1500.0, offset_curve->GetRadius());
+         Assert::IsTrue(WBFL::Geometry::Point2d(0,500) == offset_curve->GetPC());
+         Assert::IsTrue(WBFL::Geometry::Point2d(1500,500) == offset_curve->GetPI());
+         Assert::IsTrue(WBFL::Geometry::Point2d(1500,2000) == offset_curve->GetPT());
+
+         // offset to the left (radius decreases)
+         path_elements = curve->CreateOffsetPath(-500);
+         Assert::AreEqual((size_t)1, path_elements.size());
+         element = path_elements.back();
+         offset_curve = std::dynamic_pointer_cast<CircularCurve>(element);
+         Assert::AreEqual(500.0, offset_curve->GetRadius());
+         Assert::IsTrue(WBFL::Geometry::Point2d(0, 1500) == offset_curve->GetPC());
+         Assert::IsTrue(WBFL::Geometry::Point2d(500, 1500) == offset_curve->GetPI());
+         Assert::IsTrue(WBFL::Geometry::Point2d(500, 2000) == offset_curve->GetPT());
+
+         // offset to the left (offset greater than radius - curve degrades to nothing)
+         path_elements = curve->CreateOffsetPath(-1500);
+         Assert::IsTrue(path_elements.empty());
+      }
 	};
 }
