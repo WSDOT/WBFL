@@ -494,7 +494,8 @@ LiveLoadDistributionFactorBase::LiveLoadDistributionFactorBase(GirderIndexType g
  m_Nl(Nl),
  m_wLane(wLane),
  m_bSkewMoment(bSkewMoment),
- m_bSkewShear(bSkewShear)
+ m_bSkewShear(bSkewShear),
+ m_BwRangeOfApplicability(0)
 {
     // Cache nb
     m_Nb = gdrSpacings.size()+1;
@@ -1056,14 +1057,20 @@ ILiveLoadDistributionFactor::DFResult LiveLoadDistributionFactorBase::Distribute
    return DistributeShearByLeverRule(loc, numLanes, applyMpf);
 }
 
-void LiveLoadDistributionFactorBase::SetRangeOfApplicabilityAction(RangeOfApplicabilityAction action)
+void LiveLoadDistributionFactorBase::SetRangeOfApplicability(RangeOfApplicabilityAction action, Int32 bridgeWideRangeOfApplicability)
 {
    m_RangeOfApplicabilityAction = action;
+   m_BwRangeOfApplicability = bridgeWideRangeOfApplicability;
 }
 
 RangeOfApplicabilityAction LiveLoadDistributionFactorBase::GetRangeOfApplicabilityAction() const
 {
    return m_RangeOfApplicabilityAction;
+}
+
+Int32 WBFL::LRFD::LiveLoadDistributionFactorBase::GetBridgeWideRangeOfApplicabilityIssue() const
+{
+   return m_BwRangeOfApplicability;
 }
 
 //////////////////////////

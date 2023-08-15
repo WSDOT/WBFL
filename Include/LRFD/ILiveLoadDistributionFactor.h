@@ -54,6 +54,11 @@ namespace WBFL
          IgnoreUseLeverRule  ///< Compute g using lever rule if any parameters outside of ROA
       };
 
+      // There are some range of applicability issues that must be computed bridge-wide. These constants represent those and may be OR'd
+      // A value of zero means there is no issue
+      constexpr int LLDF_BWROA_EXCESSIVE_CURVATURE = 0x0001; // Bridge curvature exceeds ROA
+      constexpr int LLDF_BWROA_DIFFERENT_STIFFNESS = 0x0002; // Stiffness of beams are too different
+      constexpr int LLDF_BWROA_NOT_PARALLEL        = 0x0004; // Beams are not parallel
 
       /// @brief Standard interface for all live load distribution factor calculators.
       class LRFDCLASS ILiveLoadDistributionFactor
@@ -191,6 +196,13 @@ namespace WBFL
          virtual ILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes,bool applyMpf) const = 0;
          virtual ILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const = 0;
          virtual ILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes, bool applyMpf) const = 0;
+
+         // ------- use these to deal with how range of applicability is to be treated. Bridge Wide values are determined by clients -------------------
+         // Bridge-wide range of applicability issues (constants: LLDF_BWROA_*) that are computed by outside sources
+         // Return value of zero means that there are no issues
+         virtual void SetRangeOfApplicability(RangeOfApplicabilityAction action,Int32 bridgeWideRangeOfApplicability) = 0;
+         virtual RangeOfApplicabilityAction GetRangeOfApplicabilityAction() const = 0;
+         virtual Int32 GetBridgeWideRangeOfApplicabilityIssue() const = 0;
       };
    };
 };

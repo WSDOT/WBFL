@@ -106,8 +106,13 @@ namespace WBFL
 
          virtual ILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes, bool applyMpf) const;
 
-         void SetRangeOfApplicabilityAction(RangeOfApplicabilityAction check);
-         RangeOfApplicabilityAction GetRangeOfApplicabilityAction() const;
+         virtual void SetRangeOfApplicability(RangeOfApplicabilityAction action,Int32 bridgeWideRangeOfApplicability) override;
+
+         virtual RangeOfApplicabilityAction GetRangeOfApplicabilityAction() const override;
+
+         // Bridge-wide range of applicability issues (constants: LLDF_BWROA_*) that are computed by outside sources
+         // Return value of zero means that there are no issues
+         virtual Int32 GetBridgeWideRangeOfApplicabilityIssue() const override;
 
          GirderIndexType GetNb() const
          {
@@ -129,6 +134,9 @@ namespace WBFL
          DfSide  m_Side; // beam is nearest to this side
 
          GirderIndexType   m_Nb; // cached number of beams
+
+         // Bridge-wide range of applicability issues (constants: LLDF_BWROA_*)
+         Int32 m_BwRangeOfApplicability;
 
          RangeOfApplicabilityAction m_RangeOfApplicabilityAction;
 
