@@ -854,13 +854,13 @@ void StabilityProblemImp::GetImpact(Float64* pIMup,Float64* pIMdown) const
    *pIMdown = m_ImpactDown;
 }
 
-void StabilityProblemImp::GetWindLoading(WindType* pType,Float64* pLoad) const
+void StabilityProblemImp::GetWindLoading(WindLoadType* pType,Float64* pLoad) const
 {
    *pType = m_WindLoadType;
    *pLoad = m_WindLoad;
 }
 
-void StabilityProblemImp::SetWindLoading(WindType type,Float64 load)
+void StabilityProblemImp::SetWindLoading(WindLoadType type,Float64 load)
 {
    m_WindLoadType = type;
    m_WindLoad = load;

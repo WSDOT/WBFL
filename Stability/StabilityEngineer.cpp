@@ -2198,11 +2198,11 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    Float64 unitWeight = density*g;
 
 
-   WindType windLoadType;
+   WindLoadType windLoadType;
    Float64 windLoad;
    pStabilityProblem->GetWindLoading(&windLoadType,&windLoad);
    Float64 WindPressure;
-   if ( windLoadType == WindType::Pressure )
+   if ( windLoadType == WindLoadType::Pressure )
    {
       WindPressure = windLoad;
    }

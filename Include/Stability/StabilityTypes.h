@@ -87,12 +87,12 @@ namespace WBFL
       inline constexpr auto operator+(WindDirection t) noexcept { return std::underlying_type<WindDirection>::type(t); }
 
       /// Constant indicating how wind load is defined
-      enum class WindType
+      enum class WindLoadType
       {
          Speed, ///< defined by a wind speed and wind pressure is to be computed
          Pressure ///< wind pressure is input
       };
-      inline constexpr auto operator+(WindType t) noexcept { return std::underlying_type<WindType>::type(t); }
+      inline constexpr auto operator+(WindLoadType t) noexcept { return std::underlying_type<WindLoadType>::type(t); }
 
       /// Constant indicating a nominal corner of the girder
       enum class Corner

@@ -434,10 +434,10 @@ namespace WBFL
          void GetImpact(Float64* pIMup, Float64* pIMdown) const;
 
          /// Gets the wind loading parameters
-         virtual void GetWindLoading(WindType* pType, Float64* pLoad) const;
+         virtual void GetWindLoading(WindLoadType* pType, Float64* pLoad) const;
 
          /// Sets the wind loading parameters.
-         void SetWindLoading(WindType type, Float64 load);
+         void SetWindLoading(WindLoadType type, Float64 load);
 
 
          ///  Sets the appurtenance loading and eccentricity
@@ -498,7 +498,7 @@ namespace WBFL
          Float64 m_ImpactUp{ 0.0 };
          Float64 m_ImpactDown{ 0.0 };
 
-         WindType m_WindLoadType{ WindType::Speed };
+         WindLoadType m_WindLoadType{ WindLoadType::Speed };
          Float64 m_WindLoad{ 0.0 }; // velocity or pressure, depending on m_WindLoadType
 
          // eccentricity and weight per unit length of appurtenances
@@ -650,10 +650,10 @@ namespace WBFL
          virtual void GetImpact(Float64* pIMup, Float64* pIMdown) const  override { m_Imp.GetImpact(pIMup, pIMdown); }
 
          /// Gets the wind loading parameters
-         virtual void GetWindLoading(WindType* pType, Float64* pLoad) const  override { m_Imp.GetWindLoading(pType, pLoad); }
+         virtual void GetWindLoading(WindLoadType* pType, Float64* pLoad) const  override { m_Imp.GetWindLoading(pType, pLoad); }
 
          /// Sets the wind loading parameters.
-         void SetWindLoading(WindType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
+         void SetWindLoading(WindLoadType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
 
          ///  Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
@@ -845,10 +845,10 @@ namespace WBFL
          virtual HaulingImpact GetImpactUsage() const override;
 
          /// Gets the wind loading parameters
-         virtual void GetWindLoading(WindType* pType, Float64* pLoad) const override { m_Imp.GetWindLoading(pType, pLoad); }
+         virtual void GetWindLoading(WindLoadType* pType, Float64* pLoad) const override { m_Imp.GetWindLoading(pType, pLoad); }
 
          /// Sets the wind loading parameters.
-         void SetWindLoading(WindType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
+         void SetWindLoading(WindLoadType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
 
          /// Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
@@ -1086,10 +1086,10 @@ namespace WBFL
          virtual void GetImpact(Float64* pIMup, Float64* pIMdown) const override { m_Imp.GetImpact(pIMup, pIMdown); }
 
          /// Gets the wind loading parameters
-         virtual void GetWindLoading(WindType* pType, Float64* pLoad) const override { m_Imp.GetWindLoading(pType, pLoad); }
+         virtual void GetWindLoading(WindLoadType* pType, Float64* pLoad) const override { m_Imp.GetWindLoading(pType, pLoad); }
 
          /// Sets the wind loading parameters.
-         void SetWindLoading(WindType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
+         void SetWindLoading(WindLoadType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
 
          /// Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }

@@ -121,7 +121,7 @@ namespace StabilityUnitTest
 
          // Example 6.1.3
          stabilityProblem.SetImpact(0, 0);
-         stabilityProblem.SetWindLoading(WindType::Pressure, WBFL::Units::ConvertToSysUnits(2.5, WBFL::Units::Measure::PSF));
+         stabilityProblem.SetWindLoading(WindLoadType::Pressure, WBFL::Units::ConvertToSysUnits(2.5, WBFL::Units::Measure::PSF));
          result = engineer.AnalyzeLifting(&girder, &stabilityProblem);
          for (int i = 0; i < 3; i++)
          {

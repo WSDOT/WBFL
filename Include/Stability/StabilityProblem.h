@@ -176,7 +176,7 @@ namespace WBFL
 
          /// Returns the method that wind loading is defined and the wind load parameter
          virtual void GetWindLoading(
-            WindType* pType, ///< Method for defining wind load
+            WindLoadType* pType, ///< Method for defining wind load
             Float64* pLoad ///< The wind load parameter (wind speed or wind pressure). 
          ) const = 0;
 

@@ -61,7 +61,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
    LPCTSTR strCorner[] = {_T("Top Left"),_T("Top Right"),_T("Bottom Left"),_T("Bottom Right")};
    LPCTSTR strFace[] = { _T("Top"), _T("Bottom") };
 
-   WindType windLoadType;
+   WindLoadType windLoadType;
    Float64 windLoad;
    pStabilityProblem->GetWindLoading(&windLoadType,&windLoad);
    IndexType nWindCases = IsZero(windLoad) ? 0 : 1;
@@ -638,7 +638,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
       impactIndex[+ImpactDirection::ImpactDown] = nImpactCases;
    }
 
-   WindType windLoadType;
+   WindLoadType windLoadType;
    Float64 windLoad;
    pStabilityProblem->GetWindLoading(&windLoadType,&windLoad);
    IndexType nWindCases = IsZero(windLoad) ? 0 : 1;
@@ -1180,7 +1180,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
    *pPara << _T("Wind Load Parameters") << rptNewLine;
    pPara = new rptParagraph;
    *pChapter << pPara;
-   if ( windLoadType == WindType::Speed )
+   if ( windLoadType == WindLoadType::Speed )
    {
       *pPara << _T("Wind Speed, V = ") << velocity.SetValue(windLoad) << rptNewLine;
       *pPara << _T("Pressure exposure and elevation coefficient, ") << Sub2(_T("K"),_T("z")) << _T(" = 1.0 for Service I (LRFD 3.8.1.2)") << rptNewLine;
