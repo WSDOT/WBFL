@@ -1876,7 +1876,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
          }
          else
          {
-            *pPara << THETA_FAILURE << _T(" = ") << symbol(ROOT) << _T("((") << EI << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(") / (2.5") << ZO << _T(")) ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
+            *pPara << THETA_FAILURE << _T(" = ") << symbol(ROOT) << overline(ON) << _T("((") << EI << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(") / (2.5") << ZO << _T(")) ") << overline(OFF) << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
          }
          *pPara << THETA_FAILURE << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[+impactDir[impactCase]][+wind]) << rptNewLine;
          *pPara << _T("Assumed direction of tilt is ") << strTiltRotation[+pResults->AssumedTiltDirection] << _T(" (bottom of girder tilts towards the ") << strTiltDirection[+pResults->AssumedTiltDirection] << _T(").") << rptNewLine;

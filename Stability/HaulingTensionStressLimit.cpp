@@ -88,7 +88,7 @@ void CCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptPara
    {
       *pPara << symbol(lambda);
    }
-   *pPara << symbol(ROOT) << RPT_FC;
+   *pPara << RPT_SQRT_FC;
    if (bMaxTension[+slope])
    {
       *pPara << _T(" but not more than ") << stress.SetValue(MaxTension[+slope]);
@@ -102,7 +102,7 @@ void CCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptPara
       {
          *pPara << symbol(lambda);
       }
-      *pPara << symbol(ROOT) << RPT_FC;
+      *pPara << RPT_SQRT_FC;
       *pPara << _T(" if bonded reinforcement sufficient to resist the tensile force in the concrete is provided = ") << stress.SetValue(AllowableTensionWithRebar[+slope]) << rptNewLine;
    }
    else
@@ -204,7 +204,7 @@ Float64 PCIUHPCHaulingTensionStressLimit::GetRequiredFcTension(HaulingSlope slop
 void PCIUHPCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
-   *pPara << _T("Tension stress limit = (2/3)(") << RPT_STRESS(_T("fc")) << _T(")") << symbol(ROOT) << _T("(") << RPT_FCI << _T("/") << RPT_FC << _T(")") << _T(" = ") << stress.SetValue(AllowableTension[+slope]) << rptNewLine;
+   *pPara << _T("Tension stress limit = (2/3)(") << RPT_STRESS(_T("fc")) << _T(")") << symbol(ROOT) << overline(ON) << _T("(") << RPT_FCI << _T("/") << RPT_FC << _T(")") << overline(OFF) << _T(" = ") << stress.SetValue(AllowableTension[+slope]) << rptNewLine;
 }
 
 void PCIUHPCHaulingTensionStressLimit::ReportRequiredConcreteStrength(HaulingSlope slope, const HaulingCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const

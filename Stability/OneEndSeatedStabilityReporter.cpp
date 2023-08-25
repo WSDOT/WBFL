@@ -1830,7 +1830,7 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
          {
             *pPara << _T(" + ");
          }
-         *pPara << symbol(ROOT) << _T("{") << Super2(symbol(alpha), _T("2"));
+         *pPara << symbol(ROOT) << overline(ON) << _T("{") << Super2(symbol(alpha), _T("2"));
          if (pResults->ThetaRollover[+impactDir[impactCase]][+wind] < alpha)
          {
             *pPara << _T(" - ");
@@ -1860,7 +1860,7 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
             *pPara << _T(" - ");
          }
          *pPara << Z_WIND;
-         *pPara << _T(")") << symbol(alpha) << _T("]/(2.5(IM)") << ZO << _T(")}") << rptNewLine;
+         *pPara << _T(")") << symbol(alpha) << _T("]/(2.5(IM)") << ZO << _T(")}") << overline(OFF) << rptNewLine;
 
          if (pResults->ThetaRollover[+impactDir[impactCase]][+wind] < alpha)
          {
