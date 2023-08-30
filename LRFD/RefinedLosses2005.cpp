@@ -24,7 +24,7 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\RefinedLosses2005.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
@@ -585,12 +585,12 @@ void RefinedLosses2005::GetDeckShrinkageEffects(Float64* pA,Float64* pM) const
 void RefinedLosses2005::ValidateParameters() const
 {
    // need to make sure spec version is ok
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       WBFL_LRFD_THROW(XPsLosses,Specification);
    }
 
-   bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+   bool is_si = (BDSManager::GetUnits() == BDSManager::Units::SI);
    // Use a values that are just out of spec to avoid throwing for boundary values
    // that have a little round-off error in them.
    // 5.4.2.1 - Sets limits between 4 and 10KSI, but allows greater than 10 KSI when specific articles permit it
@@ -746,7 +746,7 @@ void RefinedLosses2005::UpdateLongTermLosses() const
    }
 
 
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007 && m_dfpCD < 0 )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::FourthEdition2007 && m_dfpCD < 0 )
    {
       // removed inequality forcing dfpCD >= 0 in 4th Edition, 2007
       m_dfpCD = 0;
@@ -1013,7 +1013,7 @@ void RefinedLosses2005::UpdateHaulingLosses() const
 
 bool RefinedLosses2005::AdjustShrinkageStrain() const
 {
-   //if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::FourthEdition2007 )
+   //if ( BDSManager::GetEdition() < BDSManager::FourthEdition2007 )
    //{
       //if ( GetAdjustedInitialAge() < WBFL::Units::ConvertToSysUnits(5.0,WBFL::Units::Measure::Day) )
       //   return true;

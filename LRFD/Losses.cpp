@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\Losses.h>
 #include <Lrfd\XPsLosses.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Units\Convert.h>
 
 using namespace WBFL::LRFD;
@@ -299,7 +299,7 @@ void Losses::Init()
 
 void Losses::OnUpdate()
 {
-   LRFDVersionMgrListener::OnUpdate(); // call base class
+   BDSManagerListener::OnUpdate(); // call base class
 
    // Nothing actually changes.
 }
@@ -1283,7 +1283,7 @@ void Losses::UpdatePostTensionLosses() const
       // compute loss and stress profile of one post-tensioned strand
       // friction loss
       Float64 K, x, lg;
-      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+      if ( BDSManager::GetUnits() == BDSManager::Units::SI )
       {
          K = WBFL::Units::ConvertFromSysUnits(m_WobbleCoefficient,WBFL::Units::Measure::PerMillimeter);
          x = WBFL::Units::ConvertFromSysUnits(m_X,WBFL::Units::Measure::Millimeter);

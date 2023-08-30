@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LiveLoadDistributionFactorBase.h>
 #include <Lrfd\Utility.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <set>
 #include <algorithm>
 
@@ -1403,7 +1403,7 @@ Float64 LiveLoadDistributionFactorMixin::GetShyDistance() const
    // LRFD 3.6.1.3.1
    Float64 shy;
 
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       shy = WBFL::Units::ConvertToSysUnits(600.0, WBFL::Units::Measure::Millimeter);
    }
@@ -1419,7 +1419,7 @@ Float64 LiveLoadDistributionFactorMixin::GetWheelLineSpacing() const
 {
    // LRFD Figure 3.6.1.2.2-1
    Float64 space;
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       space = WBFL::Units::ConvertToSysUnits(1800.0, WBFL::Units::Measure::Millimeter);
    }
@@ -1435,7 +1435,7 @@ Float64 LiveLoadDistributionFactorMixin::GetTruckWidth() const
 {
    // LRFD 3.6.1.2.1
    Float64 width;
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       width = WBFL::Units::ConvertToSysUnits(3000.0, WBFL::Units::Measure::Millimeter);
    }

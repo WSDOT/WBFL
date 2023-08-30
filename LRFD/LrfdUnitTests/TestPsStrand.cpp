@@ -12,7 +12,7 @@ namespace LrfdUnitTests
 		
       TEST_METHOD(LRFD_1st_Edition)
       {
-         LRFDAutoVersion auto_ver;
+         BDSAutoVersion auto_ver;
 
          Uint16 nStrands = 10;
          Float64 Pjack;
@@ -21,8 +21,8 @@ namespace LrfdUnitTests
 
          // LRFD 1st Edition
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          // Grade 1725 SR
          const auto* pStrand = pPool->GetStrand(WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270);
@@ -63,7 +63,7 @@ namespace LrfdUnitTests
 
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(197000.0, WBFL::Units::Measure::MPa), PsStrand::GetModE());
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(250, WBFL::Units::Measure::KSI), PsStrand::GetUltimateStrength(WBFL::Materials::PsStrand::Grade::Gr1725));
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(270, WBFL::Units::Measure::KSI), PsStrand::GetUltimateStrength(WBFL::Materials::PsStrand::Grade::Gr1860));
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(300, WBFL::Units::Measure::KSI), PsStrand::GetUltimateStrength(WBFL::Materials::PsStrand::Grade::Gr2070));
@@ -85,7 +85,7 @@ namespace LrfdUnitTests
 
       TEST_METHOD(LRFD_1st_Edition_with_1997_interims)
       {
-         LRFDAutoVersion auto_ver;
+         BDSAutoVersion auto_ver;
 
          Uint16 nStrands = 10;
          Float64 Pjack;
@@ -94,8 +94,8 @@ namespace LrfdUnitTests
 
          // LRFD 1st Edition with 1996 and/or 1997 interim provisions
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEditionWith1997Interims);
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetEdition(BDSManager::Edition::FirstEditionWith1997Interims);
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          // Grade 1725 SR
          const auto* pStrand = pPool->GetStrand(WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270);

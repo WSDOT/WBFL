@@ -23,7 +23,7 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LRFDConcrete.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 
 using namespace WBFL::LRFD;
 
@@ -306,7 +306,7 @@ Float64 LRFDConcrete::GetEc(Float64 t) const
       }
    }
 
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       Float64 k1, k2;
       GetEcCorrectionFactors(&k1, &k2);
@@ -372,11 +372,11 @@ Float64 LRFDConcrete::GetFreeShrinkageStrain(Float64 t) const
 
 std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> LRFDConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
 {
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       return GetFreeShrinkageStrainBefore2005(t);
    }
-   else if ( LRFDVersionMgr::Version::SeventhEditionWith2015Interims <= LRFDVersionMgr::GetVersion() )
+   else if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition() )
    {
       return GetFreeShrinkageStrain2015(t);
    }
@@ -393,11 +393,11 @@ Float64 LRFDConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
 
 std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> LRFDConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
 {
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       return GetCreepCoefficientBefore2005(t,tla);
    }
-   else if ( LRFDVersionMgr::Version::SeventhEditionWith2015Interims <= LRFDVersionMgr::GetVersion() )
+   else if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition() )
    {
       return GetCreepCoefficient2015(t,tla);
    }
@@ -433,7 +433,7 @@ std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> LRFDConcrete::Get
    }
 
    Float64 ks = 1.0;
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Millimeter);
       Float64 k1 = shrinkage_time/(26.0*exp(0.36*vs) + shrinkage_time);
@@ -571,7 +571,7 @@ std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> LRFDConcrete::GetCree
       return pDetails;
    }
 
-   bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
    
    // Check volume to surface ratio
    Float64 vs, fc;

@@ -23,66 +23,66 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Lrfd\LrfdLib.h>
-#include <Lrfd\VersionMgr.h>
-#include <Lrfd\VersionMgrListener.h>
+#include <Lrfd/BDSManager.h>
+#include <Lrfd/BDSManagerListener.h>
 #include <algorithm>
 
 using namespace WBFL::LRFD;
 
 // Make the default, the most current version
-LRFDVersionMgr::Version LRFDVersionMgr::ms_Version = LRFDVersionMgr::GetLatestVersion();
-LRFDVersionMgr::Units   LRFDVersionMgr::ms_Units   = LRFDVersionMgr::Units::US;
-bool LRFDVersionMgr::ms_IsDamaged = false;
+BDSManager::Edition BDSManager::ms_Edition = BDSManager::GetLatestEdition();
+BDSManager::Units   BDSManager::ms_Units   = BDSManager::Units::US;
+bool BDSManager::ms_bIsDamaged = false;
 
-using Listeners = std::list<LRFDVersionMgrListener*,std::allocator<LRFDVersionMgrListener*>>;
-Listeners LRFDVersionMgr::ms_Listeners;
+using Listeners = std::list<BDSManagerListener*,std::allocator<BDSManagerListener*>>;
+Listeners BDSManager::ms_Listeners;
 
-void LRFDVersionMgr::BeginDamage()
+void BDSManager::BeginDamage()
 {
-   ms_IsDamaged = true;
+   ms_bIsDamaged = true;
 }
 
-void LRFDVersionMgr::EndDamage()
+void BDSManager::EndDamage()
 {
-   ms_IsDamaged = false;
+   ms_bIsDamaged = false;
    NotifyAllListeners();
 }
 
-bool LRFDVersionMgr::IsDamaged()
+bool BDSManager::IsDamaged()
 {
-   return ms_IsDamaged;
+   return ms_bIsDamaged;
 }
 
-LRFDVersionMgr::Version LRFDVersionMgr::SetVersion(Version version)
+BDSManager::Edition BDSManager::SetEdition(Edition edition)
 {
-   if ( version == ms_Version )
-      return ms_Version;
+   if (edition == ms_Edition )
+      return ms_Edition;
 
-   Version temp = ms_Version;
-   ms_Version = version;
+   Edition temp = ms_Edition;
+   ms_Edition = edition;
 
-   if ( LRFDVersionMgr::Version::FourthEdition2007 <= ms_Version && ms_Units == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::Edition::FourthEdition2007 <= ms_Edition && ms_Units == BDSManager::Units::SI )
    {
       // SI units were dropped from LRFD starting with 4th Edition 2007
       WATCH(_T("LRFD Specification units forced to US"));
-      ms_Units = LRFDVersionMgr::Units::US;
+      ms_Units = BDSManager::Units::US;
    }
 
    NotifyAllListeners();
    return temp;
 }
 
-LRFDVersionMgr::Version LRFDVersionMgr::GetVersion()
+BDSManager::Edition BDSManager::GetEdition()
 {
-   return ms_Version;
+   return ms_Edition;
 }
 
-LRFDVersionMgr::Version LRFDVersionMgr::GetLatestVersion()
+BDSManager::Edition BDSManager::GetLatestEdition()
 {
-   return LRFDVersionMgr::Version(std::underlying_type<LRFDVersionMgr::Version>::type(Version::LastVersion) - 1);
+   return BDSManager::Edition(std::underlying_type<BDSManager::Edition>::type(Edition::LastEdition) - 1);
 }
 
-LRFDVersionMgr::Units LRFDVersionMgr::SetUnits(Units units)
+BDSManager::Units BDSManager::SetUnits(Units units)
 {
    if ( units == ms_Units )
       return ms_Units;
@@ -91,110 +91,110 @@ LRFDVersionMgr::Units LRFDVersionMgr::SetUnits(Units units)
    ms_Units = units;
 
 
-   if ( LRFDVersionMgr::Version::FourthEdition2007 <= ms_Version && ms_Units == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::Edition::FourthEdition2007 <= ms_Edition && ms_Units == BDSManager::Units::SI )
    {
       // SI units were dropped from LRFD starting with 4th Edition 2007
       WATCH(_T("LRFD Specification units forced to US"));
-      ms_Units = LRFDVersionMgr::Units::US;
+      ms_Units = BDSManager::Units::US;
    }
 
    NotifyAllListeners();
    return temp;
 }
 
-LRFDVersionMgr::Units LRFDVersionMgr::GetUnits()
+BDSManager::Units BDSManager::GetUnits()
 {
    return ms_Units;
 }
 
-LPCTSTR LRFDVersionMgr::GetCodeString()
+LPCTSTR BDSManager::GetSpecificationName()
 {
    return _T("AASHTO LRFD Bridge Design Specifications");
 }
 
-LPCTSTR LRFDVersionMgr::GetVersionString(bool bAbbreviated)
+LPCTSTR BDSManager::GetEditionAsString(bool bAbbreviated)
 {
-   return LRFDVersionMgr::GetVersionString(ms_Version,bAbbreviated);
+   return BDSManager::GetEditionAsString(ms_Edition,bAbbreviated);
 }
 
-LPCTSTR LRFDVersionMgr::GetVersionString(LRFDVersionMgr::Version version,bool bAbbreviated)
+LPCTSTR BDSManager::GetEditionAsString(BDSManager::Edition edition,bool bAbbreviated)
 {
-   switch( version )
+   switch(edition)
    {
-   case Version::FirstEdition1994:
+   case Edition::FirstEdition1994:
       return (bAbbreviated ? _T("AashtoLrfd1994") : _T("First Edition 1994"));
 
-   case Version::FirstEditionWith1996Interims:
+   case Edition::FirstEditionWith1996Interims:
       return (bAbbreviated ? _T("AashtoLrfd1996") : _T("First Edition 1994 with 1996 interim provisions"));
 
-   case Version::FirstEditionWith1997Interims:
+   case Edition::FirstEditionWith1997Interims:
       return (bAbbreviated ? _T("AashtoLrfd1997") : _T("First Edition 1994 with 1996 - 1997 interim provisions"));
 
-   case Version::SecondEdition1998:
+   case Edition::SecondEdition1998:
       return (bAbbreviated ? _T("AashtoLrfd1998") : _T("Second Edition 1998"));
 
-   case Version::SecondEditionWith1999Interims:
+   case Edition::SecondEditionWith1999Interims:
       return (bAbbreviated ? _T("AashtoLrfd1999") : _T("Second Edition 1998 with 1999 interim provisions"));
 
-   case Version::SecondEditionWith2000Interims:
+   case Edition::SecondEditionWith2000Interims:
       return (bAbbreviated ? _T("AashtoLrfd2000") : _T("Second Edition 1998 with 1999 - 2000 interim provisions"));
 
-   case Version::SecondEditionWith2001Interims:
+   case Edition::SecondEditionWith2001Interims:
       return (bAbbreviated ? _T("AashtoLrfd2001") : _T("Second Edition 1998 with 1999 - 2001 interim provisions"));
 
-   case Version::SecondEditionWith2002Interims:
+   case Edition::SecondEditionWith2002Interims:
       return (bAbbreviated ? _T("AashtoLrfd2002") : _T("Second Edition 1998 with 1999 - 2002 interim provisions"));
 
-   case Version::SecondEditionWith2003Interims:
+   case Edition::SecondEditionWith2003Interims:
       return (bAbbreviated ? _T("AashtoLrfd2003") : _T("Second Edition 1998 with 1999 - 2003 interim provisions"));
 
-   case Version::ThirdEdition2004:
+   case Edition::ThirdEdition2004:
       return (bAbbreviated ? _T("AashtoLrfd2004") : _T("Third Edition 2004"));
 
-   case Version::ThirdEditionWith2005Interims:
+   case Edition::ThirdEditionWith2005Interims:
       return (bAbbreviated ? _T("AashtoLrfd2005") : _T("Third Edition 2004 with 2005 interim provisions"));
 
-   case Version::ThirdEditionWith2006Interims:
+   case Edition::ThirdEditionWith2006Interims:
       return (bAbbreviated ? _T("AashtoLrfd2006") : _T("Third Edition 2004 with 2005 - 2006 interim provisions"));
 
       // NOTE: 4th is not spelled out in the official name of the 4th edition, but
       // it is spelled out in all other editions. That is why 4th is used here
       // instead of fourth
-   case Version::FourthEdition2007:
+   case Edition::FourthEdition2007:
       return (bAbbreviated ? _T("AashtoLrfd2007") : _T("4th Edition 2007"));
 
-   case Version::FourthEditionWith2008Interims:
+   case Edition::FourthEditionWith2008Interims:
       return (bAbbreviated ? _T("AashtoLrfd2008") : _T("4th Edition 2007 with 2008 interim provisions"));
 
-   case Version::FourthEditionWith2009Interims:
+   case Edition::FourthEditionWith2009Interims:
       return (bAbbreviated ? _T("AashtoLrfd2009") : _T("4th Edition 2007 with 2008 - 2009 interim provisions"));
 
-   case Version::FifthEdition2010:
+   case Edition::FifthEdition2010:
       return (bAbbreviated ? _T("AashtoLrfd2010") : _T("Fifth Edition 2010"));
 
-   case Version::SixthEdition2012:
+   case Edition::SixthEdition2012:
       return (bAbbreviated ? _T("AashtoLrfd2012") : _T("Sixth Edition 2012"));
 
-   case Version::SixthEditionWith2013Interims:
+   case Edition::SixthEditionWith2013Interims:
       return (bAbbreviated ? _T("AashtoLrfd2013") : _T("Sixth Edition 2012 with 2013 interim provisions"));
 
-   case Version::SeventhEdition2014:
+   case Edition::SeventhEdition2014:
       return (bAbbreviated ? _T("AashtoLrfd2014") : _T("Seventh Edition 2014"));
 
-   case Version::SeventhEditionWith2015Interims:
+   case Edition::SeventhEditionWith2015Interims:
       return (bAbbreviated ? _T("AashtoLrfd2015") : _T("Seventh Edition 2014 with 2015 interim provisions"));
 
-   case Version::SeventhEditionWith2016Interims:
+   case Edition::SeventhEditionWith2016Interims:
       return (bAbbreviated ? _T("AashtoLrfd2016") : _T("Seventh Edition 2014 with 2016 interim provisions"));
 
-   case Version::EighthEdition2017:
+   case Edition::EighthEdition2017:
       return (bAbbreviated ? _T("AashtoLrfd2017") : _T("8th Edition 2017"));
 
-   case Version::NinthEdition2020:
+   case Edition::NinthEdition2020:
       return (bAbbreviated ? _T("AashtoLrfd2020") : _T("9th Edition 2020"));
 
-   case Version::LastVersion:
-      return GetVersionString(GetLatestVersion(), bAbbreviated);
+   case Edition::LastEdition:
+      return GetEditionAsString(GetLatestEdition(), bAbbreviated);
 
    default:
       CHECK(false);
@@ -202,105 +202,105 @@ LPCTSTR LRFDVersionMgr::GetVersionString(LRFDVersionMgr::Version version,bool bA
    }
 }
 
-LPCTSTR LRFDVersionMgr::GetUnitString()
+LPCTSTR BDSManager::GetUnitAsString()
 {
    return ( ms_Units == Units::SI ? _T("SI Units") : _T("Customary U.S. Units")) ;
 }
 
-LRFDVersionMgr::Version LRFDVersionMgr::GetVersion(LPCTSTR strAbbrev)
+BDSManager::Edition BDSManager::GetEdition(LPCTSTR strAbbrev)
 {
    std::_tstring tmp(strAbbrev);
    if (tmp == _T("AashtoLrfd2020"))
    {
-      return Version::NinthEdition2020;
+      return Edition::NinthEdition2020;
    }
    else if(tmp==_T("AashtoLrfd2017"))
    {
-      return Version::EighthEdition2017;
+      return Edition::EighthEdition2017;
    }
    else if(tmp==_T("AashtoLrfd2016"))
    {
-      return Version::SeventhEditionWith2016Interims;
+      return Edition::SeventhEditionWith2016Interims;
    }
    else if(tmp==_T("AashtoLrfd2015"))
    {
-      return Version::SeventhEditionWith2015Interims;
+      return Edition::SeventhEditionWith2015Interims;
    }
    else if(tmp==_T("AashtoLrfd2014"))
    {
-      return Version::SeventhEdition2014;
+      return Edition::SeventhEdition2014;
    }
    else if(tmp==_T("AashtoLrfd2013"))
    {
-      return Version::SixthEditionWith2013Interims;
+      return Edition::SixthEditionWith2013Interims;
    }
    else if(tmp==_T("AashtoLrfd2012"))
    {
-      return Version::SixthEdition2012;
+      return Edition::SixthEdition2012;
    }
    else if(tmp==_T("AashtoLrfd2010"))
    {
-      return Version::FifthEdition2010;
+      return Edition::FifthEdition2010;
    }
    else if(tmp==_T("AashtoLrfd2009"))
    {
-      return Version::FourthEditionWith2009Interims;
+      return Edition::FourthEditionWith2009Interims;
    }
    else if(tmp==_T("AashtoLrfd2008"))
    {
-      return Version::FourthEditionWith2008Interims;
+      return Edition::FourthEditionWith2008Interims;
    }
    else if(tmp==_T("AashtoLrfd2007"))
    {
-      return Version::FourthEdition2007;
+      return Edition::FourthEdition2007;
    }
    else if(tmp==_T("AashtoLrfd2006"))
    {
-      return Version::ThirdEditionWith2006Interims;
+      return Edition::ThirdEditionWith2006Interims;
    }
    else if(tmp==_T("AashtoLrfd2005"))
    {
-      return Version::ThirdEditionWith2005Interims;
+      return Edition::ThirdEditionWith2005Interims;
    }
    else if(tmp==_T("AashtoLrfd2004"))
    {
-      return Version::ThirdEdition2004;
+      return Edition::ThirdEdition2004;
    }
    else if(tmp==_T("AashtoLrfd2003"))
    {
-      return Version::SecondEditionWith2003Interims;
+      return Edition::SecondEditionWith2003Interims;
    }
    else if(tmp==_T("AashtoLrfd2002"))
    {
-      return Version::SecondEditionWith2002Interims;
+      return Edition::SecondEditionWith2002Interims;
    }
    else if(tmp==_T("AashtoLrfd2001"))
    {
-      return Version::SecondEditionWith2001Interims;
+      return Edition::SecondEditionWith2001Interims;
    }
    else if(tmp==_T("AashtoLrfd2000"))
    {
-      return Version::SecondEditionWith2000Interims;
+      return Edition::SecondEditionWith2000Interims;
    }
    else if(tmp==_T("AashtoLrfd1999"))
    {
-      return Version::SecondEditionWith1999Interims;
+      return Edition::SecondEditionWith1999Interims;
    }
    else if(tmp==_T("AashtoLrfd1998"))
    {
-      return Version::SecondEdition1998;
+      return Edition::SecondEdition1998;
    }
    else if(tmp==_T("AashtoLrfd1997"))
    {
-      return Version::FirstEditionWith1997Interims;
+      return Edition::FirstEditionWith1997Interims;
    }
    else if(tmp==_T("AashtoLrfd1996"))
    {
-      return Version::FirstEditionWith1996Interims;
+      return Edition::FirstEditionWith1996Interims;
    }
    else if (tmp==_T("AashtoLrfd1994"))
    {
-      return Version::FirstEdition1994;
+      return Edition::FirstEdition1994;
    }
    else
    {
@@ -309,14 +309,14 @@ LRFDVersionMgr::Version LRFDVersionMgr::GetVersion(LPCTSTR strAbbrev)
    }
 }
 
-void LRFDVersionMgr::RegisterListener(LRFDVersionMgrListener* pListener)
+void BDSManager::RegisterListener(BDSManagerListener* pListener)
 {
    PRECONDITION(pListener != nullptr);
    ms_Listeners.push_back( pListener );
    pListener->OnRegistered();
 }
 
-void LRFDVersionMgr::UnregisterListener(LRFDVersionMgrListener* pListener)
+void BDSManager::UnregisterListener(BDSManagerListener* pListener)
 {
    Listeners::iterator found;
    found = std::find( ms_Listeners.begin(), ms_Listeners.end(), pListener );
@@ -331,12 +331,12 @@ void LRFDVersionMgr::UnregisterListener(LRFDVersionMgrListener* pListener)
    }
 }
 
-IndexType LRFDVersionMgr::ListenerCount()
+IndexType BDSManager::ListenerCount()
 {
    return ms_Listeners.size();
 }
 
-void LRFDVersionMgr::NotifyAllListeners()
+void BDSManager::NotifyAllListeners()
 {
    if ( !IsDamaged() )
    {

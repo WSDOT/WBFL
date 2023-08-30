@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LldfTxdotMultiWeb.h>
 #include <Lrfd\XRangeOfApplicability.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\Utility.h>
 
 using namespace WBFL::LRFD;
@@ -67,7 +67,7 @@ ILiveLoadDistributionFactor::DFResult TxdotLldfMultiWeb::GetMomentDF_Int_1_Stren
 {
    Float64 W, S, L;
    Float64 f;
-   bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
    if ( bSI )
    {
       W = WBFL::Units::ConvertFromSysUnits(m_W,WBFL::Units::Measure::Millimeter);

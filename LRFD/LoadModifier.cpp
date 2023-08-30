@@ -24,7 +24,7 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LoadModifier.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <MathEx.h>
 
 using namespace WBFL::LRFD;
@@ -39,7 +39,7 @@ Float64 LoadModifier::GetLoadModifier(LimitState ls,Optimization opt) const
    {
       n = m_Ductility * m_Importance * m_Redundancy;
 
-      if ( LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEdition1994 )
+      if ( BDSManager::GetEdition() == BDSManager::Edition::FirstEdition1994 )
       {
          n = max(n,0.95);
       }

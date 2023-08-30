@@ -12,7 +12,7 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
 
          std::shared_ptr<PCIUHPCCreepCoefficient> pGirderCreep = std::make_shared<PCIUHPCCreepCoefficient>();
@@ -114,9 +114,9 @@ namespace LrfdUnitTests
             true, false // UHPC Girder, no PCTT
          );
 
-         LRFDVersionMgr::RegisterListener(&loss);
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::NinthEdition2020);
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::RegisterListener(&loss);
+         BDSManager::SetEdition(BDSManager::Edition::NinthEdition2020);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Float64 value;
 
@@ -182,7 +182,7 @@ namespace LrfdUnitTests
          value = loss.TemporaryStrand_Final();
          Assert::IsTrue(IsEqual(value, 0.));
 
-         LRFDVersionMgr::UnregisterListener(&loss);
+         BDSManager::UnregisterListener(&loss);
       }
 	};
 }

@@ -23,21 +23,21 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Lrfd\LrfdLib.h>
-#include <Lrfd\LRFRVersionMgrListener.h>
+#include <Lrfd/MBEManagerListener.h>
 
 using namespace WBFL::LRFD;
 
-void LRFRVersionMgrListener::OnRegistered()
+void MBEManagerListener::OnRegistered()
 {
    // Do nothing
 }
 
-void LRFRVersionMgrListener::OnUnregistered()
+void MBEManagerListener::OnUnregistered()
 {
    // Do nothing
 }
 
-void LRFRVersionMgrListener::OnUpdate()
+void MBEManagerListener::OnUpdate()
 {
    // Do nothing
 }

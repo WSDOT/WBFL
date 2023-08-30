@@ -12,7 +12,7 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-			LRFDVersionMgrListener listener;
+			BDSManagerListener listener;
 			// this is a class with 3 do-nothing methods
 			// there isn't anything to test
 		}

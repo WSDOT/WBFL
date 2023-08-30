@@ -210,8 +210,8 @@
     <ClCompile Include="LRFDConcrete.cpp" />
     <ClCompile Include="LRFDConcreteBase.cpp" />
     <ClCompile Include="LRFDTimeDependentConcrete.cpp" />
-    <ClCompile Include="LRFRVersionMgr.cpp" />
-    <ClCompile Include="LRFRVersionMgrListener.cpp" />
+    <ClCompile Include="MBEManager.cpp" />
+    <ClCompile Include="MBEManagerListener.cpp" />
     <ClCompile Include="LumpSumLosses.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -230,8 +230,8 @@
     <ClCompile Include="Shear.cpp" />
     <ClCompile Include="StrandPool.cpp" />
     <ClCompile Include="Utility.cpp" />
-    <ClCompile Include="VersionMgr.cpp" />
-    <ClCompile Include="VersionMgrListener.cpp" />
+    <ClCompile Include="BDSManager.cpp" />
+    <ClCompile Include="BDSManagerListener.cpp" />
     <ClCompile Include="XCodeVersion.cpp" />
     <ClCompile Include="XCreepCoefficient.cpp" />
     <ClCompile Include="XPsLosses.cpp" />
@@ -269,8 +269,8 @@
     <ClInclude Include="..\Include\LRFD\LrfdLib.h" />
     <ClInclude Include="..\Include\LRFD\LRFDTimeDependentConcrete.h" />
     <ClInclude Include="..\Include\LRFD\LrfdTypes.h" />
-    <ClInclude Include="..\Include\LRFD\LRFRVersionMgr.h" />
-    <ClInclude Include="..\Include\LRFD\LRFRVersionMgrListener.h" />
+    <ClInclude Include="..\Include\LRFD\MBEManager.h" />
+    <ClInclude Include="..\Include\LRFD\MBEManagerListener.h" />
     <ClInclude Include="..\Include\LRFD\LumpSumLosses.h" />
     <ClInclude Include="..\Include\LRFD\NoncompositeApproximateLosses2005.h" />
     <ClInclude Include="..\Include\LRFD\PCIUHPCCreepCoefficient.h" />
@@ -285,8 +285,8 @@
     <ClInclude Include="..\Include\LRFD\Shear.h" />
     <ClInclude Include="..\Include\LRFD\StrandPool.h" />
     <ClInclude Include="..\Include\LRFD\Utility.h" />
-    <ClInclude Include="..\Include\LRFD\VersionMgr.h" />
-    <ClInclude Include="..\Include\LRFD\VersionMgrListener.h" />
+    <ClInclude Include="..\Include\LRFD\BDSManager.h" />
+    <ClInclude Include="..\Include\LRFD\BDSManagerListener.h" />
     <ClInclude Include="..\Include\LRFD\XCodeVersion.h" />
     <ClInclude Include="..\Include\LRFD\XCreepCoefficient.h" />
     <ClInclude Include="..\Include\LRFD\XPsLosses.h" />

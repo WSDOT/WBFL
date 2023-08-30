@@ -25,7 +25,7 @@
 #pragma once
 
 #include <LRFD\LrfdExp.h>
-#include <LRFD\VersionMgrListener.h>
+#include <Lrfd/BDSManagerListener.h>
 #include <LRFD\PsStrand.h>
 #include <LRFD\ElasticShortening.h>
 #include <LRFD\CreepCoefficient.h>
@@ -47,7 +47,7 @@ namespace WBFL
       constexpr int WITHOUT_ELASTIC_GAIN_REDUCTION = 1;
 
       /// @brief An abstract class for prestress loss calculation methods
-      class LRFDCLASS Losses : public LRFDVersionMgrListener
+      class LRFDCLASS Losses : public BDSManagerListener
       {
       public:
          /// @brief Identifies how temporary strands are used
@@ -133,7 +133,7 @@ namespace WBFL
                     bool bValidateLosses ///< if true, ValidateLossParameters() is called and XPsLosses exceptions will be thrown if the loss parameters are not valid
          );
 
-         /// @brief Called by LRFDVersionMgr whenever the code version or unit system changes
+         /// @brief Called by BDSManager whenever the code version or unit system changes
          virtual void OnUpdate() override;
 
          void SetFc(Float64 fc);

@@ -55,10 +55,10 @@
     <ClCompile Include="LRFDTimeDependentConcrete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LRFRVersionMgr.cpp">
+    <ClCompile Include="MBEManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LRFRVersionMgrListener.cpp">
+    <ClCompile Include="MBEManagerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LumpSumLosses.cpp">
@@ -100,10 +100,10 @@
     <ClCompile Include="Utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VersionMgr.cpp">
+    <ClCompile Include="BDSManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VersionMgrListener.cpp">
+    <ClCompile Include="BDSManagerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XCodeVersion.cpp">
@@ -216,10 +216,10 @@
     <ClInclude Include="..\Include\LRFD\LrfdTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\LRFRVersionMgr.h">
+    <ClInclude Include="..\Include\LRFD\MBEManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\LRFRVersionMgrListener.h">
+    <ClInclude Include="..\Include\LRFD\MBEManagerListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\LumpSumLosses.h">
@@ -258,10 +258,10 @@
     <ClInclude Include="..\Include\LRFD\Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\VersionMgr.h">
+    <ClInclude Include="..\Include\LRFD\BDSManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\VersionMgrListener.h">
+    <ClInclude Include="..\Include\LRFD\BDSManagerListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\XCodeVersion.h">

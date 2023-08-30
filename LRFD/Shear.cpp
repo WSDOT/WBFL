@@ -26,7 +26,7 @@
 #include <Lrfd\Shear.h>
 #include <Lrfd\XShear.h>
 #include <Lrfd\XCodeVersion.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <MathEx.h>
 #include <Units\Units.h>
 #include <GeomModel/GeomModel.h>
@@ -73,12 +73,12 @@ static const Int16 gs_ex_count_2003 = sizeof(gs_ex_2003)/sizeof(Float64);
 
 Float64 get_vfc(Int16 row)
 {
-   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
-   if ( version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_vfc[row];  // 1994 to 1999
    }
-   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_vfc_2000[row]; // 2000-2002
    }
@@ -90,12 +90,12 @@ Float64 get_vfc(Int16 row)
 
 Int16 get_vfc_count()
 {
-   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
-   if ( version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_vfc_count;  // 1994 to 1999
    }
-   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_vfc_count_2000; // 2000-2002
    }
@@ -107,12 +107,12 @@ Int16 get_vfc_count()
 
 Float64 get_ex(Int16 col)
 {
-   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
-   if ( version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_ex[col];  // 1994 to 1999
    }
-   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_ex_2000[col]; // 2000-2002
    }
@@ -124,12 +124,12 @@ Float64 get_ex(Int16 col)
 
 Int16 get_ex_count()
 {
-   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
-   if ( version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_ex_count;  // 1994 to 1999
    }
-   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_ex_count_2000; // 2000-2002
    }
@@ -197,17 +197,17 @@ static const BT gs_Data_2003_interims[gs_vfc_count_2003][gs_ex_count_2003] =
 
 BT get_beta_theta(Int16 row,Int16 col)
 {
-   LRFDVersionMgr::Version version = LRFDVersionMgr::GetVersion();
-   if ( version < LRFDVersionMgr::Version::FirstEditionWith1997Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::FirstEditionWith1997Interims )
    {
       return gs_Data_pre_97_interims[row][col];  // 1994 to 1996
    }
-   else if ( LRFDVersionMgr::Version::FirstEditionWith1997Interims <= version && // 1997 - 1999
-             version < LRFDVersionMgr::Version::SecondEditionWith2000Interims )
+   else if ( BDSManager::Edition::FirstEditionWith1997Interims <= version && // 1997 - 1999
+             version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_Data_97_interims[row][col];
    }
-   else if ( LRFDVersionMgr::Version::SecondEditionWith2000Interims <= version && version <= LRFDVersionMgr::Version::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_Data_2000_interims[row][col]; // 2000-2002
    }
@@ -265,14 +265,14 @@ void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2);
 void Shear::ComputeThetaAndBeta(ShearData* pData, Shear::Method method )
 {
    // if 4th or before, method must be tables
-   PRECONDITION( (LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::FourthEdition2007 && method == Method::Tables) ||
-      LRFDVersionMgr::Version::FourthEdition2007 < LRFDVersionMgr::GetVersion() );
+   PRECONDITION( (BDSManager::GetEdition() <= BDSManager::Edition::FourthEdition2007 && method == Method::Tables) ||
+      BDSManager::Edition::FourthEdition2007 < BDSManager::GetEdition() );
 
-   if ( LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::SecondEditionWith1999Interims )
+   if ( BDSManager::GetEdition() <= BDSManager::Edition::SecondEditionWith1999Interims )
    {
       compute_theta_and_beta2( pData );
    }
-   else if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007 )
+   else if ( BDSManager::GetEdition() < BDSManager::Edition::FourthEdition2007 )
    {
       compute_theta_and_beta3( pData, false );
    }
@@ -295,7 +295,7 @@ void Shear::ComputeThetaAndBeta(ShearData* pData, Shear::Method method )
 
 void Shear::ComputeVciVcw(ShearData* pData)
 {
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007 || LRFDVersionMgr::Version::EighthEdition2017 <= LRFDVersionMgr::GetVersion())
+   if ( BDSManager::GetEdition() < BDSManager::Edition::FourthEdition2007 || BDSManager::Edition::EighthEdition2017 <= BDSManager::GetEdition())
    {
       // Vci/Vcw wasn't in LRFD before 4th edition, and was removed in the 8th... 
       // set values to zero
@@ -329,7 +329,7 @@ void Shear::ComputeVciVcw(ShearData* pData)
    const WBFL::Units::Force* p_force_unit;
 
    Float64 K1, K2, Kfct;
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       fc   = WBFL::Units::ConvertFromSysUnits(fc,   WBFL::Units::Measure::MPa);
       fct  = WBFL::Units::ConvertFromSysUnits(fct,  WBFL::Units::Measure::MPa);
@@ -372,7 +372,7 @@ void Shear::ComputeVciVcw(ShearData* pData)
    }
 
    Float64 sqrt_fc;
-   if ( LRFDVersionMgr::Version::SeventhEditionWith2016Interims <= LRFDVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::SeventhEditionWith2016Interims <= BDSManager::GetEdition() )
    {
       sqrt_fc = lambda*sqrt(fc);
    }
@@ -421,7 +421,7 @@ Float64 Shear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 b
 {
    Float64 vu;
 
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007 )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::FourthEdition2007 )
    {
       vu = (Vu - phi*Vp)/(phi*bv*dv);
    }
@@ -437,7 +437,7 @@ Float64 Shear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 b
 
 void WsdotShear::ComputeThetaAndBeta(ShearData* pData,bool bEndRegion)
 {
-   if ( LRFDVersionMgr::GetVersion() <= LRFDVersionMgr::Version::SecondEditionWith1999Interims )
+   if ( BDSManager::GetEdition() <= BDSManager::Edition::SecondEditionWith1999Interims )
    {
       Shear::ComputeThetaAndBeta(pData);
    }
@@ -713,7 +713,7 @@ void compute_theta_and_beta3(ShearData* pData, bool bWSDOT)
 
    // Determine whether we meet minimum steel requirements - then we can choose equations and tables
    Float64 minSteel;
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
       minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
@@ -816,7 +816,7 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
+            if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -826,7 +826,7 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
             }
          }
 
-         if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEditionWith2003Interims )
+         if ( BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2003Interims )
          {
             ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
          }
@@ -846,7 +846,7 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
+            if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -871,7 +871,7 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
             // Eqn 5.8.3.4.2-3
             pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-            if (LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion())
+            if (BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition())
             {
                ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1003,7 +1003,7 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
+            if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1013,7 +1013,7 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
             }
          }
 
-         if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEditionWith2003Interims )
+         if ( BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2003Interims )
          {
             ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
          }
@@ -1033,7 +1033,7 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
+            if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1058,7 +1058,7 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
             // Eqn 5.8.3.4.2-3
             pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-            if (LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion())
+            if (BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition())
             {
                ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1151,7 +1151,7 @@ void compute_theta_and_beta4(ShearData* pData)
    Float64 minSteel;
    Int16 eqn;
 
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
       minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
@@ -1209,7 +1209,7 @@ void compute_theta_and_beta4(ShearData* pData)
          ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
       }
 
-      if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEditionWith2003Interims )
+      if ( BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2003Interims )
       {
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
       }
@@ -1409,7 +1409,7 @@ void compute_theta_and_beta5(ShearData* pData)
 
    // Get Beta/Theta;
    Float64 minSteel;
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
       minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)

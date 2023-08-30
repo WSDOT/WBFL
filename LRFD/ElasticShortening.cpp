@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\PsStrand.h>
 #include <Lrfd\ElasticShortening.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 
 using namespace WBFL::LRFD;
 

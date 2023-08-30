@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LldfTypeAEKIJ.h>
 #include <Lrfd\XRangeOfApplicability.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\Utility.h>
 
 using namespace WBFL::LRFD;
@@ -62,7 +62,7 @@ bool LldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
    }
 
    bool doThrow=true;
-   bool bSISpec = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = (BDSManager::GetUnits() == BDSManager::Units::SI );
 
    // if S exceeds 16' use lever rule and don't check other params
    if ( !SpGreaterThan16_Rule(bSISpec) )
@@ -82,8 +82,8 @@ bool LldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
 
          GirderIndexType nb = GetNb();
 
-         if ( LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEdition1994 ||
-              LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEditionWith1996Interims )
+         if ( BDSManager::GetEdition() == BDSManager::Edition::FirstEdition1994 ||
+              BDSManager::GetEdition() == BDSManager::Edition::FirstEditionWith1996Interims )
          {
             if ( nb < 4 )
             {
@@ -125,7 +125,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Int_1_Strength(
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    if ( SpGreaterThan16_Rule(bSISpec) )
    {
@@ -167,7 +167,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Int_1_Strength(
       g.EqnData.m = Utility::GetMultiplePresenceFactor(1);
 
       GirderIndexType nb = GetNb();
-      if ( LRFDVersionMgr::Version::FirstEditionWith1997Interims <= LRFDVersionMgr::GetVersion() && nb == 3 )
+      if ( BDSManager::Edition::FirstEditionWith1997Interims <= BDSManager::GetEdition() && nb == 3 )
       {
          g.LeverRuleData = DistributeByLeverRuleEx(Location::IntGirder, NumLoadedLanes::One, true);
          // controlling g is minimum of equation and lever rule
@@ -201,7 +201,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Int_2_Strength(
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    if ( SpGreaterThan16_Rule(bSISpec) )
    {
@@ -214,7 +214,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Int_2_Strength(
       // using equation
       Float64 de_raw = m_Side==DfSide::LeftSide ? m_LeftDe : m_RightDe;
 
-      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+      if ( BDSManager::GetUnits() == BDSManager::Units::SI )
       {
          Float64 S     = WBFL::Units::ConvertFromSysUnits( m_Savg,  WBFL::Units::Measure::Millimeter );
          Float64 L     = WBFL::Units::ConvertFromSysUnits( m_L,     WBFL::Units::Measure::Millimeter );
@@ -248,7 +248,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Int_2_Strength(
       g.EqnData.m = Utility::GetMultiplePresenceFactor(1);
 
       GirderIndexType nb = GetNb();
-      if ( LRFDVersionMgr::Version::FirstEditionWith1997Interims <= LRFDVersionMgr::GetVersion() && nb == 3 )
+      if ( BDSManager::Edition::FirstEditionWith1997Interims <= BDSManager::GetEdition() && nb == 3 )
       {
          g.LeverRuleData = DistributeByLeverRuleEx(Location::IntGirder, NumLoadedLanes::TwoOrMore, true);
 
@@ -300,7 +300,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Ext_1_Strength(
 
 ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Ext_2_Strength() const
 {
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // Skew correction factor is included int GetMomentDF_Int_2_Strength
    // Because this are virtual methods, it is important that we call the
@@ -317,9 +317,9 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Ext_2_Strength(
       {
          Float64 de = WBFL::Units::ConvertFromSysUnits( de_raw, WBFL::Units::Measure::Millimeter );
 
-         CHECK( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEdition2014 );
+         CHECK( BDSManager::GetEdition() < BDSManager::Edition::SeventhEdition2014 );
 
-         if ( LRFDVersionMgr::Version::FirstEdition1994 < LRFDVersionMgr::GetVersion()  )
+         if ( BDSManager::Edition::FirstEdition1994 < BDSManager::GetEdition()  )
          {
             e = 0.77 + de/2800.;
          }
@@ -332,7 +332,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Ext_2_Strength(
       {
          Float64 de = WBFL::Units::ConvertFromSysUnits( de_raw, WBFL::Units::Measure::Feet );
 
-         if ( LRFDVersionMgr::Version::SeventhEdition2014 <= LRFDVersionMgr::GetVersion() )
+         if ( BDSManager::Edition::SeventhEdition2014 <= BDSManager::GetEdition() )
          {
             if ( de < -1.0 )
             {
@@ -340,7 +340,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetMomentDF_Ext_2_Strength(
             }
          }
 
-         if ( LRFDVersionMgr::Version::FirstEdition1994 < LRFDVersionMgr::GetVersion()  )
+         if ( BDSManager::Edition::FirstEdition1994 < BDSManager::GetEdition()  )
          {
             e = 0.77 + de/9.1;
          }
@@ -394,7 +394,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetShearDF_Int_1_Strength()
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    if( (InteriorShearEquationRule(bSISpec, false)) && 3 < GetNb() )
    {
@@ -441,7 +441,7 @@ ILiveLoadDistributionFactor::DFResult  LldfTypeAEKIJ::GetShearDF_Int_2_Strength(
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    if( ( InteriorShearEquationRule(bSISpec, false)) && 3 < GetNb() )
    {
@@ -506,7 +506,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetShearDF_Ext_1_Strength()
 
 ILiveLoadDistributionFactor::DFResult LldfTypeAEKIJ::GetShearDF_Ext_2_Strength() const
 {
-   bool bSISpec = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = (BDSManager::GetUnits() == BDSManager::Units::SI );
    // Skew correction factor is included in GetShearDF_Int_2_Strength
    // Because this are virtual methods,  it is important that we call the
    // GetShearDF_Int_2_Strength() for this class and not an overriden one.
@@ -568,7 +568,7 @@ Float64 LldfTypeAEKIJ::MomentSkewCorrectionFactor() const
    }
    else
    {
-      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+      if ( BDSManager::GetUnits() == BDSManager::Units::SI )
       {
          Float64 L  = WBFL::Units::ConvertFromSysUnits( m_L,  WBFL::Units::Measure::Millimeter );
          Float64 Kg = WBFL::Units::ConvertFromSysUnits( m_Kg, WBFL::Units::Measure::Millimeter4 );
@@ -616,7 +616,7 @@ Float64 LldfTypeAEKIJ::ShearSkewCorrectionFactor() const
 //   if ( 60.0 < WBFL::Units::ConvertFromSysUnits(avg_skew_angle, WBFL::Units::Measure::Degree) )
 //      avg_skew_angle = WBFL::Units::ConvertToSysUnits(60.0,WBFL::Units::Measure::Degree);
 
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       Float64 L  = WBFL::Units::ConvertFromSysUnits( m_L,  WBFL::Units::Measure::Millimeter );
       Float64 Kg = WBFL::Units::ConvertFromSysUnits( m_Kg, WBFL::Units::Measure::Millimeter4 );
@@ -655,7 +655,7 @@ bool LldfTypeAEKIJ::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
    // same as for shear and more
    if ( InteriorShearEquationRule(bSISpec,doThrow) )
    {
-      if ( LRFDVersionMgr::Version::SecondEditionWith2001Interims <= LRFDVersionMgr::GetVersion() ) // 2001 or later
+      if ( BDSManager::Edition::SecondEditionWith2001Interims <= BDSManager::GetEdition() ) // 2001 or later
       {
          Float64 Kgmin = WBFL::Units::ConvertToSysUnits( bSISpec ? 4e9 : 10000., bSISpec ? WBFL::Units::Measure::Millimeter4 : WBFL::Units::Measure::Inch4);
          Float64 Kgmax = WBFL::Units::ConvertToSysUnits( bSISpec ? 3e12 : 7000000., bSISpec ? WBFL::Units::Measure::Millimeter4 : WBFL::Units::Measure::Inch4);
@@ -728,7 +728,7 @@ bool LldfTypeAEKIJ::DeRule(bool bSISpec, bool doThrow) const
    Float64 de_raw = m_Side==DfSide::LeftSide ? m_LeftDe : m_RightDe;
 
    bool bBad_de = false;
-   if ( LRFDVersionMgr::Version::SeventhEdition2014 <= LRFDVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::SeventhEdition2014 <= BDSManager::GetEdition() )
    {
       // beginning with LRFD 7th Edition, 2014 de can be less than -1 feet (-300 mm) so only
       // check the upper bound on the value.

@@ -12,37 +12,37 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(MaxBurstingStress)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 			Float64 fy = WBFL::Units::ConvertToSysUnits(60.0, WBFL::Units::Measure::KSI);
 			Assert::AreEqual(fy, Rebar::GetMaxBurstingStress(fy));
 
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEditionWith1996Interims);
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+			BDSManager::SetEdition(BDSManager::Edition::FirstEditionWith1996Interims);
+			BDSManager::SetUnits(BDSManager::Units::US);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(20.0, WBFL::Units::Measure::KSI), Rebar::GetMaxBurstingStress(fy));
 			Assert::AreEqual(fy/10, Rebar::GetMaxBurstingStress(fy/10));
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+			BDSManager::SetUnits(BDSManager::Units::SI);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(140, WBFL::Units::Measure::MPa), Rebar::GetMaxBurstingStress(fy));
 			Assert::AreEqual(fy / 10, Rebar::GetMaxBurstingStress(fy / 10));
 		}
 
 		TEST_METHOD(BurstingZoneLength)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 			Assert::AreEqual(4.0, Rebar::GetBurstingZoneLength(16.0)); // h/4
 
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEditionWith1996Interims);
+			BDSManager::SetEdition(BDSManager::Edition::FirstEditionWith1996Interims);
 			Assert::AreEqual(5.0, Rebar::GetBurstingZoneLength(25.0)); // h/5
 
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SecondEditionWith2001Interims);
+			BDSManager::SetEdition(BDSManager::Edition::SecondEditionWith2001Interims);
 			Assert::AreEqual(5.0, Rebar::GetBurstingZoneLength(25.0)); // h/5
 
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SecondEditionWith2002Interims);
+			BDSManager::SetEdition(BDSManager::Edition::SecondEditionWith2002Interims);
 			Assert::AreEqual(4.0, Rebar::GetBurstingZoneLength(16.0)); // h/4
 
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::LastVersion);
+			BDSManager::SetEdition(BDSManager::Edition::LastEdition);
 			Assert::AreEqual(4.0, Rebar::GetBurstingZoneLength(16.0)); // h/4
 		}
 
@@ -53,56 +53,56 @@ namespace LrfdUnitTests
 
 		TEST_METHOD(MaxConfinmentBarSpacing)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+			BDSManager::SetUnits(BDSManager::Units::US);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(6.0, WBFL::Units::Measure::Inch), Rebar::GetMaxConfinementBarSpacing());
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+			BDSManager::SetUnits(BDSManager::Units::SI);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(150.0, WBFL::Units::Measure::Millimeter), Rebar::GetMaxConfinementBarSpacing());
 		}
 
 		TEST_METHOD(MinConfinementAvS)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+			BDSManager::SetUnits(BDSManager::Units::US);
 			Assert::AreEqual(0.00046566666666666675, Rebar::GetMinConfinementAvS());
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+			BDSManager::SetUnits(BDSManager::Units::SI);
 			Assert::AreEqual(0.00047311733333333338, Rebar::GetMinConfinementAvS());
 		}
 
 		TEST_METHOD(AvOverSMin)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
 			Float64 fc = WBFL::Units::ConvertToSysUnits(5.0, WBFL::Units::Measure::KSI);
 			Float64 fy = WBFL::Units::ConvertToSysUnits(60.0, WBFL::Units::Measure::KSI);
 			Float64 bv = WBFL::Units::ConvertToSysUnits(6.0, WBFL::Units::Measure::Inch);
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+			BDSManager::SetUnits(BDSManager::Units::US);
 			Assert::AreEqual(0.00017947576014604313, Rebar::GetAvOverSMin(fc, bv, fy));
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+			BDSManager::SetUnits(BDSManager::Units::SI);
 			Assert::AreEqual(0.00017953011939713382, Rebar::GetAvOverSMin(fc, bv, fy));
 		}
 
 		TEST_METHOD(MaxStirrupSpacing)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
 			Float64 sUnderLimit, sOverLimit;
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+			BDSManager::SetUnits(BDSManager::Units::US);
 			Rebar::GetMaxStirrupSpacing(&sUnderLimit, &sOverLimit);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(24.0, WBFL::Units::Measure::Inch), sUnderLimit);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(12.0, WBFL::Units::Measure::Inch), sOverLimit);
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+			BDSManager::SetUnits(BDSManager::Units::SI);
 			Rebar::GetMaxStirrupSpacing(&sUnderLimit, &sOverLimit);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(600.0, WBFL::Units::Measure::Millimeter), sUnderLimit);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(300.0, WBFL::Units::Measure::Millimeter), sOverLimit);
@@ -110,8 +110,8 @@ namespace LrfdUnitTests
 
 		TEST_METHOD(TensileDevelopmentLength)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
 			Float64 fc = WBFL::Units::ConvertToSysUnits(7.5, WBFL::Units::Measure::KSI);
 
@@ -130,7 +130,7 @@ namespace LrfdUnitTests
 			bars.push_back(rebar_pool->GetRebar(WBFL::Materials::Rebar::Type::A615, WBFL::Materials::Rebar::Grade::Grade60, WBFL::Materials::Rebar::Size::bs14));
 			bars.push_back(rebar_pool->GetRebar(WBFL::Materials::Rebar::Type::A615, WBFL::Materials::Rebar::Grade::Grade60, WBFL::Materials::Rebar::Size::bs18));
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+			BDSManager::SetUnits(BDSManager::Units::US);
 
 			std::vector<Float64> us_results
 			{
@@ -157,7 +157,7 @@ namespace LrfdUnitTests
 			}
 
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+			BDSManager::SetUnits(BDSManager::Units::SI);
 			std::vector<Float64> si_results
 			{
 				0.30499999999999999,

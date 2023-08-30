@@ -12,7 +12,7 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
          std::shared_ptr<UHPCCreepCoefficient> pGirderCreep = std::make_shared<UHPCCreepCoefficient>();
          pGirderCreep->SetFci(WBFL::Units::ConvertToSysUnits(14.0, WBFL::Units::Measure::KSI));
@@ -106,9 +106,9 @@ namespace LrfdUnitTests
             std::shared_ptr<const CreepCoefficient2005>(pDeckCreep)
          );
 
-         LRFDVersionMgr::RegisterListener(&loss);
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::NinthEdition2020);
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::RegisterListener(&loss);
+         BDSManager::SetEdition(BDSManager::Edition::NinthEdition2020);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.0001);
@@ -134,7 +134,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_AfterSIDL(), 0.0001);
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.0001);
 
-         LRFDVersionMgr::UnregisterListener(&loss);
+         BDSManager::UnregisterListener(&loss);
       }
 	};
 }

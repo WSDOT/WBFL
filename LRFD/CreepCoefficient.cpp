@@ -25,13 +25,13 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\CreepCoefficient.h>
 #include <Lrfd\XCreepCoefficient.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 
 using namespace WBFL::LRFD;
 
 Float64 CreepCoefficient::ComputeKtd(Float64 t) const
 {
-    bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+    bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
 
     // Check volume to surface ratio
     Float64 VS = m_V / m_S;
@@ -198,7 +198,7 @@ Float64 CreepCoefficient::GetKtd(Float64 t) const
 
 Float64 CreepCoefficient::ComputeKf() const
 {
-    bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+    bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
     Float64 kf;
     if (bSI)
     {
@@ -215,7 +215,7 @@ Float64 CreepCoefficient::ComputeKf() const
 void CreepCoefficient::Update() const
 {
    // need to make sure spec version is ok
-   if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
    {
       WBFL_LRFD_THROW(XCreepCoefficient,Specification);
    }

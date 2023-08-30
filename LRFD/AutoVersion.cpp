@@ -27,30 +27,30 @@
 
 using namespace WBFL::LRFD;
 
-LRFDAutoVersion::LRFDAutoVersion()
+BDSAutoVersion::BDSAutoVersion()
 {
-   m_Version = LRFDVersionMgr::GetVersion();
-   m_Units   = LRFDVersionMgr::GetUnits();
+   m_Edition = BDSManager::GetEdition();
+   m_Units   = BDSManager::GetUnits();
 }
 
-LRFDAutoVersion::~LRFDAutoVersion()
+BDSAutoVersion::~BDSAutoVersion()
 {
-   LRFDVersionMgr::BeginDamage();
-   LRFDVersionMgr::SetUnits( m_Units );
-   LRFDVersionMgr::SetVersion(m_Version);
-   LRFDVersionMgr::EndDamage();
+   BDSManager::BeginDamage();
+   BDSManager::SetUnits( m_Units );
+   BDSManager::SetEdition(m_Edition);
+   BDSManager::EndDamage();
 }
 
 /////////////////
 
-LRFRAutoVersion::LRFRAutoVersion()
+MBEAutoVersion::MBEAutoVersion()
 {
-   m_Version = LRFRVersionMgr::GetVersion();
+   m_Edition = MBEManager::GetEdition();
 }
 
-LRFRAutoVersion::~LRFRAutoVersion()
+MBEAutoVersion::~MBEAutoVersion()
 {
-   LRFRVersionMgr::BeginDamage();
-   LRFRVersionMgr::SetVersion(m_Version);
-   LRFRVersionMgr::EndDamage();
+   MBEManager::BeginDamage();
+   MBEManager::SetEdition(m_Edition);
+   MBEManager::EndDamage();
 }

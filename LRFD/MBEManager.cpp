@@ -23,102 +23,102 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Lrfd\LrfdLib.h>
-#include <Lrfd\LRFRVersionMgr.h>
-#include <Lrfd\LRFRVersionMgrListener.h>
+#include <Lrfd/MBEManager.h>
+#include <Lrfd/MBEManagerListener.h>
 #include <algorithm>
 
 using namespace WBFL::LRFD;
 
 // Make the default, the most current version
-LRFRVersionMgr::Version LRFRVersionMgr::ms_Version = LRFRVersionMgr::GetLatestVersion();
-bool LRFRVersionMgr::ms_IsDamaged = false;
+MBEManager::Edition MBEManager::ms_Edition = MBEManager::GetLatestEdition();
+bool MBEManager::ms_IsDamaged = false;
 
-LRFRVersionMgr::Listeners LRFRVersionMgr::ms_Listeners;
+MBEManager::Listeners MBEManager::ms_Listeners;
 
 
-void LRFRVersionMgr::BeginDamage()
+void MBEManager::BeginDamage()
 {
    ms_IsDamaged = true;
 }
 
-void LRFRVersionMgr::EndDamage()
+void MBEManager::EndDamage()
 {
    ms_IsDamaged = false;
    NotifyAllListeners();
 }
 
-bool LRFRVersionMgr::IsDamaged()
+bool MBEManager::IsDamaged()
 {
    return ms_IsDamaged;
 }
 
-LRFRVersionMgr::Version LRFRVersionMgr::SetVersion(Version version)
+MBEManager::Edition MBEManager::SetEdition(Edition edition)
 {
-   if ( version == ms_Version )
-      return ms_Version;
+   if (edition == ms_Edition )
+      return ms_Edition;
 
-   Version temp = ms_Version;
-   ms_Version = version;
+   Edition temp = ms_Edition;
+   ms_Edition = edition;
    NotifyAllListeners();
    return temp;
 }
 
-LRFRVersionMgr::Version LRFRVersionMgr::GetVersion()
+MBEManager::Edition MBEManager::GetEdition()
 {
-   return ms_Version;
+   return ms_Edition;
 }
 
-LRFRVersionMgr::Version LRFRVersionMgr::GetLatestVersion()
+MBEManager::Edition MBEManager::GetLatestEdition()
 {
-   return (LRFRVersionMgr::Version)(std::underlying_type<LRFRVersionMgr::Version>::type(Version::LastVersion) - 1);
+   return (MBEManager::Edition)(std::underlying_type<MBEManager::Edition>::type(Edition::LastEdition) - 1);
 }
 
-LPCTSTR LRFRVersionMgr::GetCodeString()
+LPCTSTR MBEManager::GetSpecificationName()
 {
    return _T("The Manual for Bridge Evaluation");
 }
 
-LPCTSTR LRFRVersionMgr::GetVersionString(bool bAbbreviated)
+LPCTSTR MBEManager::GetEditionAsString(bool bAbbreviated)
 {
-   return GetVersionString(ms_Version,bAbbreviated);
+   return GetEditionAsString(ms_Edition,bAbbreviated);
 }
 
-LPCTSTR LRFRVersionMgr::GetVersionString(LRFRVersionMgr::Version version,bool bAbbreviated)
+LPCTSTR MBEManager::GetEditionAsString(MBEManager::Edition edition,bool bAbbreviated)
 {
-   switch( version )
+   switch(edition)
    {
-   case Version::FirstEdition2008:
+   case Edition::FirstEdition2008:
       return (bAbbreviated ? _T("LRFR2008") : _T("First Edition 2008"));
 
-   case Version::FirstEditionWith2010Interims:
+   case Edition::FirstEditionWith2010Interims:
       return (bAbbreviated ? _T("LRFR2010") : _T("First Edition 2008, with 2010 interim provisions"));
 
-   case Version::SecondEdition2011:
+   case Edition::SecondEdition2011:
       return (bAbbreviated ? _T("LRFR2011") : _T("Second Edition 2011"));
       
-   case Version::SecondEditionWith2011Interims:
+   case Edition::SecondEditionWith2011Interims:
       return (bAbbreviated ? _T("LRFR2011i") : _T("Second Edition 2011, with 2011 interim provisions"));
 
-   case Version::SecondEditionWith2013Interims:
+   case Edition::SecondEditionWith2013Interims:
       return (bAbbreviated ? _T("LRFR2013") : _T("Second Edition 2011, with 2011-2013 interim provisions"));
 
-   case Version::SecondEditionWith2014Interims:
+   case Edition::SecondEditionWith2014Interims:
       return (bAbbreviated ? _T("LRFR2015") : _T("Second Edition 2011, with 2011-2014 interim provisions"));
 
-   case Version::SecondEditionWith2015Interims:
+   case Edition::SecondEditionWith2015Interims:
       return (bAbbreviated ? _T("LRFR2015") : _T("Second Edition 2011, with 2011-2015 interim provisions"));
    
-   case Version::SecondEditionWith2016Interims:
+   case Edition::SecondEditionWith2016Interims:
       return (bAbbreviated ? _T("LRFR2016") : _T("Second Edition 2011, with 2011-2016 interim provisions"));
 
-   case Version::ThirdEdition2018:
+   case Edition::ThirdEdition2018:
       return (bAbbreviated ? _T("LRFR2018") : _T("Third Edition 2018"));
 
-   case Version::ThirdEditionWith2020Interims:
+   case Edition::ThirdEditionWith2020Interims:
       return (bAbbreviated ? _T("LRFR2020") : _T("Third Edition 2018, with 2020 interim provisions"));
 
-   case Version::LastVersion:
-      return GetVersionString(GetLatestVersion(), bAbbreviated);
+   case Edition::LastEdition:
+      return GetEditionAsString(GetLatestEdition(), bAbbreviated);
 
    default:
       CHECK(false);
@@ -126,48 +126,48 @@ LPCTSTR LRFRVersionMgr::GetVersionString(LRFRVersionMgr::Version version,bool bA
    }
 }
 
-LRFRVersionMgr::Version LRFRVersionMgr::GetVersion(LPCTSTR strAbbrev)
+MBEManager::Edition MBEManager::GetEdition(LPCTSTR strAbbrev)
 {
    std::_tstring strSpecVersion(strAbbrev);
    if(strSpecVersion == _T("LRFR2008"))
    {
-      return Version::FirstEdition2008;
+      return Edition::FirstEdition2008;
    }
    else if(strSpecVersion == _T("LRFR2010"))
    {
-      return Version::FirstEditionWith2010Interims;
+      return Edition::FirstEditionWith2010Interims;
    }
    else if (strSpecVersion == _T("LRFR2011"))
    {
-      return Version::SecondEdition2011;
+      return Edition::SecondEdition2011;
    }
    else if (strSpecVersion == _T("LRFR2011i"))
    {
-      return Version::SecondEditionWith2011Interims;
+      return Edition::SecondEditionWith2011Interims;
    }
    else if (strSpecVersion == _T("LRFR2013"))
    {
-      return Version::SecondEditionWith2013Interims;
+      return Edition::SecondEditionWith2013Interims;
    }
    else if (strSpecVersion == _T("LRFR2014"))
    {
-      return Version::SecondEditionWith2014Interims;
+      return Edition::SecondEditionWith2014Interims;
    }
    else if (strSpecVersion == _T("LRFR2015"))
    {
-      return Version::SecondEditionWith2015Interims;
+      return Edition::SecondEditionWith2015Interims;
    }
    else if (strSpecVersion == _T("LRFR2016"))
    {
-      return Version::SecondEditionWith2016Interims;
+      return Edition::SecondEditionWith2016Interims;
    }
    else if (strSpecVersion == _T("LRFR2018"))
    {
-      return Version::ThirdEdition2018;
+      return Edition::ThirdEdition2018;
    }
    else if (strSpecVersion == _T("LRFR2020"))
    {
-      return Version::ThirdEditionWith2020Interims;
+      return Edition::ThirdEditionWith2020Interims;
    }
    else
    {
@@ -176,14 +176,14 @@ LRFRVersionMgr::Version LRFRVersionMgr::GetVersion(LPCTSTR strAbbrev)
    }
 }
 
-void LRFRVersionMgr::RegisterListener(LRFRVersionMgrListener* pListener)
+void MBEManager::RegisterListener(MBEManagerListener* pListener)
 {
    PRECONDITION(pListener != nullptr);
    ms_Listeners.push_back( pListener );
    pListener->OnRegistered();
 }
 
-void LRFRVersionMgr::UnregisterListener(LRFRVersionMgrListener* pListener)
+void MBEManager::UnregisterListener(MBEManagerListener* pListener)
 {
    Listeners::iterator found;
    found = std::find( ms_Listeners.begin(), ms_Listeners.end(), pListener );
@@ -198,12 +198,12 @@ void LRFRVersionMgr::UnregisterListener(LRFRVersionMgrListener* pListener)
    }
 }
 
-IndexType LRFRVersionMgr::ListenerCount()
+IndexType MBEManager::ListenerCount()
 {
    return ms_Listeners.size();
 }
 
-void LRFRVersionMgr::NotifyAllListeners()
+void MBEManager::NotifyAllListeners()
 {
    if ( !IsDamaged() )
    {

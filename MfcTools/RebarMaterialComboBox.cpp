@@ -77,7 +77,7 @@ void CRebarMaterialComboBox::Initialize(bool bFilterBySpec)
 
    if ( bFilterBySpec )
    {
-      if (WBFL::LRFD::LRFDVersionMgr::Version::SixthEditionWith2013Interims <= WBFL::LRFD::LRFDVersionMgr::GetVersion() )
+      if (WBFL::LRFD::BDSManager::Edition::SixthEditionWith2013Interims <= WBFL::LRFD::BDSManager::GetEdition() )
       {
          AddString(WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A1035, WBFL::Materials::Rebar::Grade::Grade100).c_str() );
       }

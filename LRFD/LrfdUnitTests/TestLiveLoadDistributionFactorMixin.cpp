@@ -62,17 +62,17 @@ namespace LrfdUnitTests
 
 		TEST_METHOD(Other)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
 			LiveLoadDistributionFactorMixin mixin;
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+			BDSManager::SetUnits(BDSManager::Units::US);
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(2.0,WBFL::Units::Measure::Feet), mixin.GetShyDistance());
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(6.0,WBFL::Units::Measure::Feet), mixin.GetWheelLineSpacing());
 			Assert::AreEqual(WBFL::Units::ConvertToSysUnits(10.0,WBFL::Units::Measure::Feet), mixin.GetTruckWidth());
 
-			LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+			BDSManager::SetUnits(BDSManager::Units::SI);
 			Assert::AreEqual(0.6, mixin.GetShyDistance());
 			Assert::AreEqual(1.8, mixin.GetWheelLineSpacing());
 			Assert::AreEqual(3.0, mixin.GetTruckWidth());

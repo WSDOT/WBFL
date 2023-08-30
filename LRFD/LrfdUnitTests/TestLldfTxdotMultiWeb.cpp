@@ -12,7 +12,7 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Int16 Nb = 5;
          Float64 Savg = WBFL::Units::ConvertToSysUnits(6, WBFL::Units::Measure::Feet);
@@ -47,7 +47,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(0.42004, df.ShearDF(ILiveLoadDistributionFactor::Location::ExtGirder, ILiveLoadDistributionFactor::NumLoadedLanes::One, LimitState::FatigueII), 0.001);
 
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetUnits(BDSManager::Units::SI);
       }
 	};
 }

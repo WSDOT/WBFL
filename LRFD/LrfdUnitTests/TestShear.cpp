@@ -12,12 +12,12 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(ShearStress)
 		{
-			LRFDAutoVersion av;
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2006Interims); // changed in 2007
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2006Interims); // changed in 2007
 			Assert::AreEqual(0.29320987654320985, Shear::ComputeShearStress(100, 90, 0.9, 6, 12), 0.001);
 			Assert::AreEqual(-1.0956790123456788, Shear::ComputeShearStress(10, 90, 0.9, 6, 12), 0.001);
 
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEdition2007);
+			BDSManager::SetEdition(BDSManager::Edition::FourthEdition2007);
 			Assert::AreEqual(0.29320987654320985, Shear::ComputeShearStress(100, 90, 0.9, 6, 12), 0.001);
 			Assert::AreEqual(1.0956790123456788, Shear::ComputeShearStress(10, 90, 0.9, 6, 12), 0.001);
 		}
@@ -30,17 +30,17 @@ namespace LrfdUnitTests
 			WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
 			WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-			LRFDAutoVersion av;
+			BDSAutoVersion av;
 
 			ShearData data;
 			// This method is only valid between 3rd Edition 2006 and was removed in 8th Edition 2017
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2006Interims);
+			BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2006Interims);
 			Assert::ExpectException<XCodeVersion>([&]() {Shear::ComputeVciVcw(&data); });
 
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::EighthEdition2017);
+			BDSManager::SetEdition(BDSManager::Edition::EighthEdition2017);
 			Assert::ExpectException<XCodeVersion>([&]() {Shear::ComputeVciVcw(&data); });
 
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEdition2007);
+			BDSManager::SetEdition(BDSManager::Edition::FourthEdition2007);
 
 			data.Mu = 500;
 			data.Nu = 100;
@@ -85,7 +85,7 @@ namespace LrfdUnitTests
 			WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
 			WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-			LRFDAutoVersion av;
+			BDSAutoVersion av;
 
 			ShearData data;
 			data.Mu = 500;
@@ -152,7 +152,7 @@ namespace LrfdUnitTests
 			WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
 			WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-			LRFDAutoVersion av;
+			BDSAutoVersion av;
 
 			ShearData data;
 			data.Mu = 500;
@@ -216,7 +216,7 @@ namespace LrfdUnitTests
 			WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
 			WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-			LRFDAutoVersion av;
+			BDSAutoVersion av;
 
 			ShearData data;
 			data.Mu = 500;
@@ -250,16 +250,16 @@ namespace LrfdUnitTests
 			data.sx = 2;
 			data.ag = 0.1;
 
-			std::vector<LRFDVersionMgr::Version> specs
+			std::vector<BDSManager::Edition> specs
 			{
-				LRFDVersionMgr::Version::FirstEdition1994,
-				LRFDVersionMgr::Version::FirstEditionWith1997Interims,
-				LRFDVersionMgr::Version::SecondEditionWith1999Interims,
-				LRFDVersionMgr::Version::SecondEditionWith2000Interims,
-				LRFDVersionMgr::Version::SecondEditionWith2002Interims,
-				LRFDVersionMgr::Version::SecondEditionWith2003Interims,
-				LRFDVersionMgr::Version::ThirdEditionWith2005Interims,
-				LRFDVersionMgr::Version::FourthEditionWith2008Interims,
+				BDSManager::Edition::FirstEdition1994,
+				BDSManager::Edition::FirstEditionWith1997Interims,
+				BDSManager::Edition::SecondEditionWith1999Interims,
+				BDSManager::Edition::SecondEditionWith2000Interims,
+				BDSManager::Edition::SecondEditionWith2002Interims,
+				BDSManager::Edition::SecondEditionWith2003Interims,
+				BDSManager::Edition::ThirdEditionWith2005Interims,
+				BDSManager::Edition::FourthEditionWith2008Interims,
 			};
 
 			std::vector<std::pair<Float64, Float64>> expected_tables
@@ -289,13 +289,13 @@ namespace LrfdUnitTests
 			int i = 0;
 			for(const auto& spec : specs)
 			{
-				LRFDVersionMgr::SetVersion(spec);
+				BDSManager::SetEdition(spec);
 
 				Shear::ComputeThetaAndBeta(&data, Shear::Method::Tables);
 				Assert::AreEqual(expected_tables[i].first, data.Beta, 0.0001);
 				Assert::AreEqual(expected_tables[i].second, data.Theta, 0.0001);
 
-				if (LRFDVersionMgr::Version::FourthEditionWith2008Interims <= LRFDVersionMgr::GetVersion())
+				if (BDSManager::Edition::FourthEditionWith2008Interims <= BDSManager::GetEdition())
 				{
 					// equations where introduced in 2008 interims to the 4th edition
 					Shear::ComputeThetaAndBeta(&data, Shear::Method::Equations);

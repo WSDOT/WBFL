@@ -77,12 +77,12 @@ namespace LrfdUnitTests
             true // validate parameters
          );
 
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEdition2004); // loss method became invalid in 2005
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEdition2004); // loss method became invalid in 2005
          Assert::ExpectException<XPsLosses>([&]() {loss.PermanentStrand_AfterTransfer(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims); // first time loss method was added to 
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims); // first time loss method was added to 
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -108,7 +108,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_AfterSIDL(), 0.00001);
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.00001);
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEdition2007); // relaxation losses changed in 4th edition 2007
+         BDSManager::SetEdition(BDSManager::Edition::FourthEdition2007); // relaxation losses changed in 4th edition 2007
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -135,11 +135,11 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.00001);
 
          // Concrete limit exceptions
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims); // max f'c = 15 ksi
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims); // max f'c = 15 ksi
          loss.SetFc(WBFL::Units::ConvertToSysUnits(20.0, WBFL::Units::Measure::KSI));
          Assert::ExpectException<XPsLosses>([&]() {loss.PermanentStrand_AfterTransfer(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // max f'c = 10 ksi
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // max f'c = 10 ksi
          loss.SetFc(WBFL::Units::ConvertToSysUnits(13.0, WBFL::Units::Measure::KSI));
          Assert::ExpectException<XPsLosses>([&]() {loss.PermanentStrand_AfterTransfer(); });
       }

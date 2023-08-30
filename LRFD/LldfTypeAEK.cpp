@@ -26,7 +26,7 @@
 
 #include <Lrfd\LldfTypeAEK.h>
 #include <Lrfd\XRangeOfApplicability.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\Utility.h>
 #include <Units\Convert.h>
 

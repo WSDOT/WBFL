@@ -53,18 +53,18 @@ namespace LrfdUnitTests
 
       TEST_METHOD(GetDesignLaneWidth)
       {
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet), Utility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet)));
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(12., WBFL::Units::Measure::Feet), Utility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(18., WBFL::Units::Measure::Feet)));
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(11., WBFL::Units::Measure::Feet), Utility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(22., WBFL::Units::Measure::Feet)));
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(12., WBFL::Units::Measure::Feet), Utility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(28., WBFL::Units::Measure::Feet)));
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(12., WBFL::Units::Measure::Feet), Utility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(37., WBFL::Units::Measure::Feet)));
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetUnits(BDSManager::Units::SI);
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(3200., WBFL::Units::Measure::Millimeter), Utility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(3200., WBFL::Units::Measure::Millimeter)));
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(3600., WBFL::Units::Measure::Millimeter), Utility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(5000., WBFL::Units::Measure::Millimeter)));
          Assert::AreEqual(WBFL::Units::ConvertToSysUnits(3250., WBFL::Units::Measure::Millimeter), Utility::GetDesignLaneWidth(WBFL::Units::ConvertToSysUnits(6500., WBFL::Units::Measure::Millimeter)));
@@ -74,18 +74,18 @@ namespace LrfdUnitTests
 
       TEST_METHOD(GetNumDesignLanes)
       {
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
          Assert::IsTrue(Utility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(10., WBFL::Units::Measure::Feet)) == 1);
          Assert::IsTrue(Utility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(18., WBFL::Units::Measure::Feet)) == 1);
          Assert::IsTrue(Utility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(22., WBFL::Units::Measure::Feet)) == 2);
          Assert::IsTrue(Utility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(28., WBFL::Units::Measure::Feet)) == 2);
          Assert::IsTrue(Utility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(37., WBFL::Units::Measure::Feet)) == 3);
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetUnits(BDSManager::Units::SI);
          Assert::IsTrue(Utility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(3200., WBFL::Units::Measure::Millimeter)) == 1);
          Assert::IsTrue(Utility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(5000., WBFL::Units::Measure::Millimeter)) == 1);
          Assert::IsTrue(Utility::GetNumDesignLanes(WBFL::Units::ConvertToSysUnits(6500., WBFL::Units::Measure::Millimeter)) == 2);

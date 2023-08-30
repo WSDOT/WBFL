@@ -12,7 +12,7 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-			LRFDAutoVersion av;
+			BDSAutoVersion av;
 			
 			Float64 Fpj   = WBFL::Units::ConvertToSysUnits( 0.80*1860, WBFL::Units::Measure::MPa );
 			Float64 Ag    = WBFL::Units::ConvertToSysUnits( 486051, WBFL::Units::Measure::Millimeter2 );
@@ -37,12 +37,12 @@ namespace LrfdUnitTests
 			                     Fpj, Ag, Ig, Ybg, Ic, Ybc, e, Aps, Mdlg, Madlg, Msidl,
 			                     Rh, Eci, dfFR, Fcgp, dfES );
 			
-			LRFDVersionMgr::RegisterListener( &loss );
+			BDSManager::RegisterListener( &loss );
 			
-			LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEdition2007);
+			BDSManager::SetEdition(BDSManager::Edition::FourthEdition2007);
 			Assert::ExpectException<XPsLosses>([&]() {loss.FinalLosses(); });
 
-			LRFDVersionMgr::SetVersion( LRFDVersionMgr::Version::FirstEdition1994 );
+			BDSManager::SetEdition( BDSManager::Edition::FirstEdition1994 );
 
 			Assert::AreEqual(33715363.163601309, loss.ShrinkageLosses(), 0.00001);
 			Assert::AreEqual(600289394.63437223, loss.CreepLosses(), 0.00001);
@@ -52,7 +52,7 @@ namespace LrfdUnitTests
 			Assert::AreEqual(1675426022.2403100, loss.GetFpy(), 0.00001);
 			Assert::AreEqual(196500582855.34500, loss.GetEp(), 0.00001);
 
-			LRFDVersionMgr::UnregisterListener( &loss );
+			BDSManager::UnregisterListener( &loss );
 		}
 	};
 }

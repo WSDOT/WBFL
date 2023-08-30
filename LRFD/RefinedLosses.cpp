@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\RefinedLosses.h>
 #include <Lrfd\ElasticShortening.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
@@ -38,7 +38,7 @@ Float64 relaxation_after_transfer(WBFL::Materials::PsStrand::Type type,Float64 e
 
 bool IsSI() 
 {
-   return (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+   return (BDSManager::GetUnits() == BDSManager::Units::SI);
 }
 
 RefinedLosses::RefinedLosses(Float64 x, // location along girder where losses are computed

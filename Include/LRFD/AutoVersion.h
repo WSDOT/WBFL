@@ -25,43 +25,43 @@
 #pragma once
 
 #include <Lrfd\LrfdExp.h>
-#include <Lrfd\VersionMgr.h>
-#include <LRFD\LRFRVersionMgr.h>
+#include <Lrfd/BDSManager.h>
+#include <Lrfd/MBEManager.h>
 
 namespace WBFL
 {
    namespace LRFD
    {
-      /// @brief Automatic object used to reset LRFD specification version settings.
-      class LRFDCLASS LRFDAutoVersion
+      /// @brief Automatic object used to reset LRFD specification edition settings.
+      class LRFDCLASS BDSAutoVersion
       {
       public:
-         /// @brief Sets version and units to the current version and units returned from LRFDVersionMgr.
-         LRFDAutoVersion();
+         /// @brief Sets edition and units to the current edition and units returned from BDSManager.
+         BDSAutoVersion();
 
-         LRFDAutoVersion(const LRFDAutoVersion&) = delete;
+         BDSAutoVersion(const BDSAutoVersion&) = delete;
 
-         ~LRFDAutoVersion();
+         ~BDSAutoVersion();
 
-         LRFDAutoVersion& operator=(const LRFDAutoVersion&) = delete;
+         BDSAutoVersion& operator=(const BDSAutoVersion&) = delete;
 
       private:
-         LRFDVersionMgr::Version m_Version;
-         LRFDVersionMgr::Units m_Units;
+         BDSManager::Edition m_Edition;
+         BDSManager::Units m_Units;
       };
 
-      /// @brief Automatic object used to reset LRFR specification version settings.
-      class LRFDCLASS LRFRAutoVersion
+      /// @brief Automatic object used to reset LRFR specification edition settings.
+      class LRFDCLASS MBEAutoVersion
       {
       public:
-         LRFRAutoVersion();
-         LRFRAutoVersion(const LRFRAutoVersion&) = delete;
-         ~LRFRAutoVersion();
+         MBEAutoVersion();
+         MBEAutoVersion(const MBEAutoVersion&) = delete;
+         ~MBEAutoVersion();
 
-         LRFRAutoVersion& operator=(const LRFRAutoVersion& rOther) = delete;
+         MBEAutoVersion& operator=(const MBEAutoVersion& rOther) = delete;
 
       private:
-         LRFRVersionMgr::Version m_Version;
+         MBEManager::Edition m_Edition;
       };
    };
 };

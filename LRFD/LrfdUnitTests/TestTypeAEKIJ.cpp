@@ -12,9 +12,9 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          Float64 S = WBFL::Units::ConvertToSysUnits(2000., WBFL::Units::Measure::Millimeter);
          Float64 de = WBFL::Units::ConvertToSysUnits(910., WBFL::Units::Measure::Millimeter);

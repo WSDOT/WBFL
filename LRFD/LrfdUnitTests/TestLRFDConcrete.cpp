@@ -112,8 +112,8 @@ namespace LrfdUnitTests
 			// Creep and shrinkage changed in 2005 and 2015
 			// Test pre2005, 2005-pre 2015, and 2015 and later
 			{
-				LRFDAutoVersion av;
-				LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEdition2004);
+				BDSAutoVersion av;
+				BDSManager::SetEdition(BDSManager::Edition::ThirdEdition2004);
 				Assert::AreEqual(0.0, concrete.GetFreeShrinkageStrain(0), 0.00001);
 				Assert::AreEqual(0.0, concrete.GetFreeShrinkageStrain(1), 0.00001);
 				Assert::AreEqual(-0.00025227462944248081, concrete.GetFreeShrinkageStrain(10), 0.00001);
@@ -130,8 +130,8 @@ namespace LrfdUnitTests
 			}
 
 			{
-				LRFDAutoVersion av;
-				LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEdition2014);
+				BDSAutoVersion av;
+				BDSManager::SetEdition(BDSManager::Edition::SeventhEdition2014);
 				Assert::AreEqual(0.0, concrete.GetFreeShrinkageStrain(0), 0.00001);
 				Assert::AreEqual(0.0, concrete.GetFreeShrinkageStrain(1), 0.00001);
 				Assert::AreEqual(-0.00010368000000000000, concrete.GetFreeShrinkageStrain(10), 0.00001);
@@ -149,8 +149,8 @@ namespace LrfdUnitTests
 
 
 			{
-				LRFDAutoVersion av;
-				LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+				BDSAutoVersion av;
+				BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2015Interims);
 				Assert::AreEqual(0.0, concrete.GetFreeShrinkageStrain(0), 0.00001);
 				Assert::AreEqual(0.0, concrete.GetFreeShrinkageStrain(1), 0.00001);
 				Assert::AreEqual(-0.00010936708860759493, concrete.GetFreeShrinkageStrain(10), 0.00001);

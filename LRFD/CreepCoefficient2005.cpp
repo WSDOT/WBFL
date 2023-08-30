@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\CreepCoefficient2005.h>
 #include <Lrfd\XCreepCoefficient.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 
 using namespace WBFL::LRFD;
 
@@ -46,7 +46,7 @@ Float64 CreepCoefficient2005::GetCreepCoefficient(Float64 t, Float64 ti) const
 Float64 CreepCoefficient2005::GetAdjustedInitialAge(Float64 ti) const
 {
    Float64 tiAdjusted = ti;
-   if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FourthEdition2007 && m_CuringMethod == CuringMethod::Normal)
+   if (BDSManager::GetEdition() < BDSManager::Edition::FourthEdition2007 && m_CuringMethod == CuringMethod::Normal)
    {
       // NCHRP 496...
       // ti = age of concrete, in days, when load is initially applied
@@ -117,7 +117,7 @@ Float64 CreepCoefficient2005::GetUltimateCreep() const
 
 Float64 CreepCoefficient2005::ComputeKvs() const
 {
-   bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // Check volume to surface ratio
    // Sometimes, V and S are zero... like in the case of a noncomposite girder and the
@@ -125,13 +125,13 @@ Float64 CreepCoefficient2005::ComputeKvs() const
    Float64 VS = (m_S == 0 ? 0 : m_V / m_S);
 
    // kvs_limit is 1.0 in 2005, changed to 0.0 in 2006, changed back to 1.0 in 2007
-   Float64 kvs_limit = (LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::ThirdEditionWith2006Interims ? 0.0 : 1.0);
+   Float64 kvs_limit = (BDSManager::GetEdition() == BDSManager::Edition::ThirdEditionWith2006Interims ? 0.0 : 1.0);
 
    Float64 kvs;
    if (bSI)
    {
       kvs = Max(kvs_limit, 1.45 - 0.0051 * WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Millimeter));
-      CHECK(LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+      CHECK(BDSManager::GetEdition() < BDSManager::Edition::SeventhEditionWith2015Interims);
    }
    else
    {
@@ -149,11 +149,11 @@ Float64 CreepCoefficient2005::ComputeKhc() const
 Float64 CreepCoefficient2005::ComputeKf() const
 {
    Float64 kf;
-   bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
    if (bSI)
    {
       kf = 35.0 / (7.0 + WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::MPa));
-      CHECK(LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+      CHECK(BDSManager::GetEdition() < BDSManager::Edition::SeventhEditionWith2015Interims);
    }
    else
    {
@@ -165,7 +165,7 @@ Float64 CreepCoefficient2005::ComputeKf() const
 
 Float64 CreepCoefficient2005::ComputeKtd(Float64 t) const
 {
-   bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    t = WBFL::Units::ConvertFromSysUnits(t, WBFL::Units::Measure::Day);
 
@@ -173,11 +173,11 @@ Float64 CreepCoefficient2005::ComputeKtd(Float64 t) const
    if (bSI)
    {
       ktd = t / (61. - 0.58 * WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::MPa) + t);
-      CHECK(LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+      CHECK(BDSManager::GetEdition() < BDSManager::Edition::SeventhEditionWith2015Interims);
    }
    else
    {
-      if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims)
+      if (BDSManager::GetEdition() < BDSManager::Edition::SeventhEditionWith2015Interims)
       {
          ktd = t / (61. - 4. * WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::KSI) + t);
       }
@@ -195,7 +195,7 @@ Float64 CreepCoefficient2005::ComputeKtd(Float64 t) const
 void CreepCoefficient2005::Update() const
 {
    // need to make sure spec version is ok
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
       WBFL_LRFD_THROW(XCreepCoefficient,Specification);
 
    m_khc = ComputeKhc();

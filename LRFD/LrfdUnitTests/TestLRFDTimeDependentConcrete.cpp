@@ -51,8 +51,8 @@ namespace LrfdUnitTests
 
 			{
 				// this call only valid before LRFD 2005
-				LRFDAutoVersion av;
-				LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEdition2004);
+				BDSAutoVersion av;
+				BDSManager::SetEdition(BDSManager::Edition::ThirdEdition2004);
 				Assert::AreEqual(0.75551897172962801, concrete.GetConcreteStrengthFactor());
 			}
 			Assert::ExpectException<XCreepCoefficient>([&]() {concrete.GetConcreteStrengthFactor(); });
@@ -140,8 +140,8 @@ namespace LrfdUnitTests
 
 			{
 				// this call only valid before LRFD 2005
-				LRFDAutoVersion av;
-				LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEdition2004);
+				BDSAutoVersion av;
+				BDSManager::SetEdition(BDSManager::Edition::ThirdEdition2004);
 				Assert::AreEqual(0.75551897172962801, concrete.GetConcreteStrengthFactor());
 			}
 			Assert::ExpectException<XCreepCoefficient>([&]() {concrete.GetConcreteStrengthFactor(); });

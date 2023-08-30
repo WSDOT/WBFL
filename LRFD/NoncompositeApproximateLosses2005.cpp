@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\NoncompositeApproximateLosses2005.h>
 #include <Lrfd\ElasticShortening.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
@@ -100,7 +100,7 @@ NoncompositeApproximateLosses2005::NoncompositeApproximateLosses2005(WBFL::Mater
 
 void NoncompositeApproximateLosses2005::OnUpdate()
 {
-   LRFDVersionMgrListener::OnUpdate();
+   BDSManagerListener::OnUpdate();
 
    // Nothing actually changes.
 }
@@ -196,7 +196,7 @@ void NoncompositeApproximateLosses2005::UpdateLosses() const
    if ( !IsZero( m_Fpj ) && !(0.5*m_Fpu < m_Fpj) )
       WBFL_LRFD_THROW(XPsLosses,fpjOutOfRange);
 
-   bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+   bool is_si = (BDSManager::GetUnits() == BDSManager::Units::SI);
    // Use a values that are just out of spec to avoid throwing for boundary values
    // that have a little round-off error in them.
    Float64 fcMin = (is_si ? WBFL::Units::ConvertToSysUnits( 27.95, WBFL::Units::Measure::MPa ) : WBFL::Units::ConvertToSysUnits( 3.95, WBFL::Units::Measure::KSI ) );
@@ -249,7 +249,7 @@ void NoncompositeApproximateLosses2005::UpdateInitialLosses() const
 void NoncompositeApproximateLosses2005::UpdateLongTermLosses() const
 {
    // need to make sure spec version is ok
-   if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims || LRFDVersionMgr::Version::FourthEditionWith2009Interims < LRFDVersionMgr::GetVersion())
+   if (BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims || BDSManager::Edition::FourthEditionWith2009Interims < BDSManager::GetEdition())
    {
       // Introduced in 3rd edition 2005 and after 4th edition 2009
       WBFL_LRFD_THROW(XPsLosses, Specification);
@@ -265,7 +265,7 @@ void NoncompositeApproximateLosses2005::UpdateLongTermLosses() const
       Float64 losses;
       const WBFL::Units::Stress* p_unit;
 
-      bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+      bool is_si = (BDSManager::GetUnits() == BDSManager::Units::SI);
 
       if ( is_si )
          p_unit = &WBFL::Units::Measure::MPa;

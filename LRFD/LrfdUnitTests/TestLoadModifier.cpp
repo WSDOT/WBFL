@@ -12,12 +12,12 @@ namespace LrfdUnitTests
 		
       TEST_METHOD(LRFD_1st_Edition)
       {
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
          LoadModifier lm;
 
          // Test First Edition Implementation
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
          lm.SetDuctilityFactor(LoadModifier::Level::High);
          lm.SetImportanceFactor(LoadModifier::Level::High);
          lm.SetRedundancyFactor(LoadModifier::Level::High);
@@ -97,12 +97,12 @@ namespace LrfdUnitTests
 
       TEST_METHOD(LRFD_2nd_Edition)
       {
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
          LoadModifier lm;
 
          // Test First Edition + 1996, 1997 Interims and Second Edition Implementation
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SecondEdition1998);
+         BDSManager::SetEdition(BDSManager::Edition::SecondEdition1998);
          lm.SetDuctilityFactor(LoadModifier::Level::High);
          lm.SetImportanceFactor(LoadModifier::Level::High);
          lm.SetRedundancyFactor(LoadModifier::Level::High);

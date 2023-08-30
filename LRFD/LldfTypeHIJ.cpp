@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LldfTypeHIJ.h>
 #include <Lrfd\XRangeOfApplicability.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\Utility.h>
 
 using namespace WBFL::LRFD;
@@ -54,7 +54,7 @@ bool LldfTypeHIJ::TestRangeOfApplicability(Location loc) const
    if (!DoCheckApplicablity())
       return true;
 
-   bool bSISpec = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = (BDSManager::GetUnits() == BDSManager::Units::SI );
    bool doThrow=true;
 
    if (!InteriorMomentEquationRule(bSISpec, true))
@@ -64,7 +64,7 @@ bool LldfTypeHIJ::TestRangeOfApplicability(Location loc) const
    {
       // NOTE: In LRFD 7th Edition, 2014 Table 4.6.2.2.2e-1 was expanded to include type i and j if connected to prevent vertical displacements
       // however, Table 4.6.2.2.3c was not updated and therefore skew is still not applicable to this type of girder.
-      if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEdition2014)
+      if (BDSManager::GetEdition() < BDSManager::Edition::SeventhEdition2014)
       {
          THROW_DF(XRangeOfApplicability, SkewAngle, _T("Skew corrections are not defined for this girder type. See 4.6.2.2.2e"));
       }
@@ -101,13 +101,13 @@ bool LldfTypeHIJ::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 ILiveLoadDistributionFactor::DFResult LldfTypeHIJ::GetMomentDF_Int_1_Strength() const
 {
    ILiveLoadDistributionFactor::DFResult g;
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    if( m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || InteriorMomentEquationRule(bSISpec, false) )
    {
       Float64 J, I, W, S, L;
       Float64 f;
-      bool bSI = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+      bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
       if ( bSI )
       {
          J = WBFL::Units::ConvertFromSysUnits(m_J,WBFL::Units::Measure::Millimeter4);
@@ -298,7 +298,7 @@ Float64 LldfTypeHIJ::MomentSkewCorrectionFactor() const
 
    Float64 skew = 1.0;  // no skew correction given in AASHTO, before 7th edition
 
-   if ( LRFDVersionMgr::Version::SeventhEdition2014 <= LRFDVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::SeventhEdition2014 <= BDSManager::GetEdition() )
    {
       // LRFD 7th Edition 2014 added skew correction for moment for type h,i,j sections
       

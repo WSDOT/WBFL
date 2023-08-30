@@ -12,9 +12,9 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(StrandPoolTest)
 		{
-         LRFDAutoVersion auto_ver;
+         BDSAutoVersion auto_ver;
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          const StrandPool* pPool = StrandPool::GetInstance();
          const WBFL::Materials::PsStrand* pStrand;

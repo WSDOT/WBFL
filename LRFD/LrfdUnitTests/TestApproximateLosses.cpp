@@ -86,18 +86,18 @@ namespace LrfdUnitTests
 
       TEST_METHOD(IBeam)
 		{
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
 
 
          auto loss = CreateTestObject(ApproximateLosses::BeamType::IBeam);
 
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FifthEdition2010); // loss method became invalid in 2010
+         BDSManager::SetEdition(BDSManager::Edition::FifthEdition2010); // loss method became invalid in 2010
          Assert::ExpectException<XPsLosses>([&]() {loss.PermanentStrand_AfterTransfer(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -124,8 +124,8 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.00001);
 
          // SI Spec
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -154,18 +154,18 @@ namespace LrfdUnitTests
 
       TEST_METHOD(UBeam)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
 
 
          auto loss = CreateTestObject(ApproximateLosses::BeamType::UBeam);
 
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FifthEdition2010); // loss method became invalid in 2010
+         BDSManager::SetEdition(BDSManager::Edition::FifthEdition2010); // loss method became invalid in 2010
          Assert::ExpectException<XPsLosses>([&]() {loss.PermanentStrand_AfterTransfer(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -192,8 +192,8 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.00001);
 
          // SI Spec
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -222,18 +222,18 @@ namespace LrfdUnitTests
 
       TEST_METHOD(BoxBeam)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
 
 
          auto loss = CreateTestObject(ApproximateLosses::BeamType::BoxBeam);
 
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FifthEdition2010); // loss method became invalid in 2010
+         BDSManager::SetEdition(BDSManager::Edition::FifthEdition2010); // loss method became invalid in 2010
          Assert::ExpectException<XPsLosses>([&]() {loss.PermanentStrand_AfterTransfer(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -260,8 +260,8 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.00001);
 
          // SI Spec
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -290,18 +290,18 @@ namespace LrfdUnitTests
 
       TEST_METHOD(SingleT)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
 
 
          auto loss = CreateTestObject(ApproximateLosses::BeamType::SingleT);
 
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FifthEdition2010); // loss method became invalid in 2010
+         BDSManager::SetEdition(BDSManager::Edition::FifthEdition2010); // loss method became invalid in 2010
          Assert::ExpectException<XPsLosses>([&]() {loss.PermanentStrand_AfterTransfer(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -328,8 +328,8 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.00001);
 
          // SI Spec
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -358,18 +358,18 @@ namespace LrfdUnitTests
 
       TEST_METHOD(SolidSlab)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
 
 
          auto loss = CreateTestObject(ApproximateLosses::BeamType::SolidSlab);
 
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FifthEdition2010); // loss method became invalid in 2010
+         BDSManager::SetEdition(BDSManager::Edition::FifthEdition2010); // loss method became invalid in 2010
          Assert::ExpectException<XPsLosses>([&]() {loss.PermanentStrand_AfterTransfer(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEditionWith2009Interims); // last  where this method is applicable
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetEdition(BDSManager::Edition::FourthEditionWith2009Interims); // last  where this method is applicable
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);
@@ -396,8 +396,8 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.00001);
 
          // SI Spec
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2006Interims); // last  where this method is applicable with SI Units
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          // permanent strands
          Assert::AreEqual(13649748.378800517, loss.PermanentStrand_BeforeTransfer(), 0.00001);

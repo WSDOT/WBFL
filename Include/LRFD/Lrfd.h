@@ -64,10 +64,10 @@
 #include <LRFD\UHPCShear.h>
 #include <LRFD\StrandPool.h>
 #include <LRFD\Utility.h>
-#include <LRFD\VersionMgr.h>
-#include <LRFD\VersionMgrListener.h>
-#include <LRFD\LRFRVersionMgr.h>
-#include <LRFD\LRFRVersionMgrListener.h>
+#include <Lrfd/BDSManager.h>
+#include <Lrfd/BDSManagerListener.h>
+#include <Lrfd/MBEManager.h>
+#include <Lrfd/MBEManagerListener.h>
 #include <LRFD\CreepCoefficient.h>
 #include <LRFD\CreepCoefficient2005.h>
 #include <LRFD\PCIUHPCCreepCoefficient.h>

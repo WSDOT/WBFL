@@ -38,15 +38,15 @@ namespace LrfdUnitTests
 		{
          auto loss = GetLossModel(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, NoncompositeApproximateLosses2005::BeamType::BoxBeam, NoncompositeApproximateLosses2005::Level::Average);
 
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEdition2004); // loss method became invalid in 2005
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEdition2004); // loss method became invalid in 2005
          Assert::ExpectException<XPsLosses>([&]() {loss.FinalLosses(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FifthEdition2010); // loss method became invalid in 2010
+         BDSManager::SetEdition(BDSManager::Edition::FifthEdition2010); // loss method became invalid in 2010
          Assert::ExpectException<XPsLosses>([&]() {loss.FinalLosses(); });
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims); // first time loss method was added to 
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims); // first time loss method was added to 
 
          loss.SetLevel(NoncompositeApproximateLosses2005::Level::Average);
          Assert::AreEqual(109087651.86937881, loss.ElasticShorteningLosses(), 0.00001);
@@ -109,8 +109,8 @@ namespace LrfdUnitTests
       {
          auto loss = GetLossModel(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, NoncompositeApproximateLosses2005::BeamType::DoubleT, NoncompositeApproximateLosses2005::Level::Average);
 
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims); // first time loss method was added to 
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims); // first time loss method was added to 
 
          loss.SetLevel(NoncompositeApproximateLosses2005::Level::Average);
          Assert::AreEqual(109087651.86937881, loss.ElasticShorteningLosses(), 0.00001);
@@ -168,8 +168,8 @@ namespace LrfdUnitTests
       {
          auto loss = GetLossModel(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, NoncompositeApproximateLosses2005::BeamType::HollowCore, NoncompositeApproximateLosses2005::Level::Average);
 
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims); // first time loss method was added to 
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims); // first time loss method was added to 
 
          loss.SetLevel(NoncompositeApproximateLosses2005::Level::Average);
          Assert::AreEqual(109087651.86937881, loss.ElasticShorteningLosses(), 0.00001);
@@ -227,8 +227,8 @@ namespace LrfdUnitTests
       {
          auto loss = GetLossModel(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, NoncompositeApproximateLosses2005::BeamType::SingleT, NoncompositeApproximateLosses2005::Level::Average);
 
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims); // first time loss method was added to 
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims); // first time loss method was added to 
 
          loss.SetLevel(NoncompositeApproximateLosses2005::Level::Average);
          Assert::AreEqual(109087651.86937881, loss.ElasticShorteningLosses(), 0.00001);
@@ -286,8 +286,8 @@ namespace LrfdUnitTests
       {
          auto loss = GetLossModel(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, NoncompositeApproximateLosses2005::BeamType::VoidedSlab, NoncompositeApproximateLosses2005::Level::Average);
 
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims); // first time loss method was added to 
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims); // first time loss method was added to 
 
          loss.SetLevel(NoncompositeApproximateLosses2005::Level::Average);
          Assert::AreEqual(109087651.86937881, loss.ElasticShorteningLosses(), 0.00001);
@@ -345,8 +345,8 @@ namespace LrfdUnitTests
       {
          auto loss = GetLossModel(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, NoncompositeApproximateLosses2005::BeamType::SolidSlab, NoncompositeApproximateLosses2005::Level::Average);
 
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims); // first time loss method was added to 
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims); // first time loss method was added to 
 
          loss.SetLevel(NoncompositeApproximateLosses2005::Level::Average);
          Assert::AreEqual(109087651.86937881, loss.ElasticShorteningLosses(), 0.00001);

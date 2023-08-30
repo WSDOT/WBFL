@@ -26,7 +26,7 @@
 
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\PsStrand.h>
-#include <Lrfd\VersionMgrListener.h>
+#include <Lrfd/BDSManagerListener.h>
 #include <Lrfd\Losses.h>
 
 namespace WBFL

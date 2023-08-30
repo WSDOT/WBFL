@@ -12,8 +12,8 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(LRFD)
 		{
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSAutoVersion av;
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Float64 S = WBFL::Units::ConvertToSysUnits(8.57, WBFL::Units::Measure::Feet);
          Float64 de = WBFL::Units::ConvertToSysUnits(2.574, WBFL::Units::Measure::Feet);
@@ -55,8 +55,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(WSDOT)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSAutoVersion av;
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Float64 S = WBFL::Units::ConvertToSysUnits(8.57, WBFL::Units::Measure::Feet);
          Float64 de = WBFL::Units::ConvertToSysUnits(2.574, WBFL::Units::Measure::Feet);
@@ -100,7 +100,7 @@ namespace LrfdUnitTests
 
 		TEST_METHOD(TxDOT)
 		{
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Float64 S = WBFL::Units::ConvertToSysUnits(8.57, WBFL::Units::Measure::Feet);
          Float64 de = WBFL::Units::ConvertToSysUnits(2.574, WBFL::Units::Measure::Feet);
@@ -139,7 +139,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(0.6255, df.ShearDF(ILiveLoadDistributionFactor::Location::IntGirder, ILiveLoadDistributionFactor::NumLoadedLanes::One, LimitState::FatigueII), 0.001);
          Assert::AreEqual(1.1706, df.ShearDF(ILiveLoadDistributionFactor::Location::ExtGirder, ILiveLoadDistributionFactor::NumLoadedLanes::One, LimitState::FatigueII), 0.001);
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSManager::SetUnits(BDSManager::Units::SI);
       }
 	};
 }

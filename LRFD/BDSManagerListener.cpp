@@ -22,34 +22,22 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include <Lrfd\LrfdLib.h>
+#include <Lrfd/BDSManagerListener.h>
 
-#include <Lrfd\LrfdExp.h>
+using namespace WBFL::LRFD;
 
-namespace WBFL
+void BDSManagerListener::OnRegistered()
 {
-   namespace LRFD
-   {
-      /// @brief Base class for LRFDVersionMgr listener objects
-      /// Create subclasses and override the virtual callback methods to
-      /// be notified when the version manager changes.
-      class LRFDCLASS LRFDVersionMgrListener
-      {
-      public:
-         LRFDVersionMgrListener() = default;
-         LRFDVersionMgrListener(const LRFDVersionMgrListener&) = default;
-         virtual ~LRFDVersionMgrListener() = default;
+   // Do nothing
+}
 
-         LRFDVersionMgrListener& operator=(const LRFDVersionMgrListener&) = default;
+void BDSManagerListener::OnUnregistered()
+{
+   // Do nothing
+}
 
-         /// @brief Called by LRFDVersionMgr after a listener is registered
-         virtual void OnRegistered();
-
-         /// @brief Called by LRFDVersionMgr before a listener is unregistered
-         virtual void OnUnregistered();
-
-         /// @brief Called by LRFDVersionMgr whenever it is updated
-         virtual void OnUpdate();
-      };
-   };
-};
+void BDSManagerListener::OnUpdate()
+{
+   // Do nothing
+}

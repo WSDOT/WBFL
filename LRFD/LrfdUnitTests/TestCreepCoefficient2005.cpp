@@ -12,9 +12,9 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims);
+         BDSAutoVersion av;
+         BDSManager::SetUnits(BDSManager::Units::US);
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims);
 
 
          CreepCoefficient2005 creep;

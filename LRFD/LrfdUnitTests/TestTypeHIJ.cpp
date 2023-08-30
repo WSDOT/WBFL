@@ -12,8 +12,8 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSAutoVersion av;
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Int16 Nb = 5;
          Float64 S = WBFL::Units::ConvertToSysUnits(6, WBFL::Units::Measure::Feet);

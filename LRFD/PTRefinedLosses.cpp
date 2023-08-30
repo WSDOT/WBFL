@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\PTRefinedLosses.h>
 #include <Lrfd\ElasticShortening.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
@@ -37,7 +37,7 @@ Float64 pt_relaxation_after_transfer(WBFL::Materials::PsStrand::Type type,Float6
 
 bool pt_IsSI() 
 {
-   return (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+   return (BDSManager::GetUnits() == BDSManager::Units::SI);
 }
 
 PTRefinedLosses::PTRefinedLosses()
@@ -110,7 +110,7 @@ PTRefinedLosses::PTRefinedLosses(WBFL::Materials::PsStrand::Grade gr,
 
 void PTRefinedLosses::OnUpdate()
 {
-   LRFDVersionMgrListener::OnUpdate();
+   BDSManagerListener::OnUpdate();
 
    // Nothing actually changes.
 }
@@ -188,7 +188,7 @@ void PTRefinedLosses::UpdateLosses() const
 void PTRefinedLosses::UpdateLongTermLosses() const
 {
    // need to make sure spec version is ok
-   if (LRFDVersionMgr::Version::ThirdEditionWith2005Interims < LRFDVersionMgr::GetVersion())
+   if (BDSManager::Edition::ThirdEditionWith2005Interims < BDSManager::GetEdition())
    {
       // Removed in 3rd edition 2005
       WBFL_LRFD_THROW(XPsLosses, Specification);

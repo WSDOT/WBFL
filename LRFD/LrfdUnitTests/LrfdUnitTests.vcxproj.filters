@@ -66,12 +66,6 @@
     <ClCompile Include="TestLRFDTimeDependentConcrete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestLRFRVersionMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestLRFRVersionMgrListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestLumpSumLosses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -138,10 +132,10 @@
     <ClCompile Include="TestUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestVersionMgr.cpp">
+    <ClCompile Include="TestBDSManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestVersionMgrListener.cpp">
+    <ClCompile Include="TestBDSManagerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestXCodeVesrion.cpp">
@@ -160,6 +154,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestLiveLoadDistributionFactorMixin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestMBEManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestMBEManagerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

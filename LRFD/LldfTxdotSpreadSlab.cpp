@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LldfTxdotSpreadSlab.h>
 #include <Lrfd\XRangeOfApplicability.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\Utility.h>
 
 using namespace WBFL::LRFD;

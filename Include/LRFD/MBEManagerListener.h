@@ -30,25 +30,25 @@ namespace WBFL
 {
    namespace LRFD
    {
-      /// @brief Base class for LRFRVersionMgr listener objects
+      /// @brief Base class for MBEManager listener objects
       /// Create subclasses and override the virtual callback methods to
       /// be notified when the version manager changes.
-      class LRFDCLASS LRFRVersionMgrListener
+      class LRFDCLASS MBEManagerListener
       {
       public:
-         LRFRVersionMgrListener() = default;
-         LRFRVersionMgrListener(const LRFRVersionMgrListener& rOther) = default;
-         virtual ~LRFRVersionMgrListener() = default;
+         MBEManagerListener() = default;
+         MBEManagerListener(const MBEManagerListener& rOther) = default;
+         virtual ~MBEManagerListener() = default;
 
-         LRFRVersionMgrListener& operator=(const LRFRVersionMgrListener& rOther) = default;
+         MBEManagerListener& operator=(const MBEManagerListener& rOther) = default;
 
-         /// @brief Called by LRFRVersionMgr after a listener is registered
+         /// @brief Called by MBEManager after a listener is registered
          virtual void OnRegistered();
 
-         /// @brief Called by LRFRVersionMgr before a listener is unregistered
+         /// @brief Called by MBEManager before a listener is unregistered
          virtual void OnUnregistered();
 
-         /// @brief Called by LRFRVersionMgr whenever it is updated
+         /// @brief Called by MBEManager whenever it is updated
          virtual void OnUpdate();
       };
    };

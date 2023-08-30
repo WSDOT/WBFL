@@ -26,7 +26,7 @@
 
 #include <Lrfd\LldfTypeG.h>
 #include <Lrfd\XRangeOfApplicability.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\Utility.h>
 
 using namespace WBFL::LRFD;
@@ -59,7 +59,7 @@ bool LldfTypeG::TestRangeOfApplicability(Location loc) const
       return true;
 
    bool doThrow=true;
-   bool bSISpec = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = (BDSManager::GetUnits() == BDSManager::Units::SI );
 
    ExteriorMomentEquationRule(bSISpec, true);
 
@@ -185,7 +185,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeG::GetMomentDF_Int_1_Strength() co
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    if(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || InteriorMomentEquationRule(bSISpec, false) )
    {
@@ -265,7 +265,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeG::GetMomentDF_Ext_1_Strength() co
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
    
    if(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || ExteriorMomentEquationRule(bSISpec, false) )
    {
@@ -308,13 +308,13 @@ ILiveLoadDistributionFactor::DFResult LldfTypeG::GetMomentDF_Ext_2_Strength() co
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
    
    if(m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || ExteriorMomentEquationRule(bSISpec, false) )
    {
       g = GetMomentDF_Int_2_Strength();
 
-      bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+      bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
       Float64 A = (bSISpec ? 7600 : 25);
 
       Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
@@ -352,7 +352,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeG::GetShearDF_Int_1_Strength() con
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
    if ( InteriorShearEquationRule(bSISpec) )
    {
@@ -410,7 +410,7 @@ ILiveLoadDistributionFactor::DFResult  LldfTypeG::GetShearDF_Int_2_Strength() co
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
    if ( InteriorShearEquationRule(bSISpec) )
    {
@@ -473,7 +473,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeG::GetShearDF_Ext_1_Strength() con
 {
    ILiveLoadDistributionFactor::DFResult g;
    
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
@@ -482,7 +482,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeG::GetShearDF_Ext_1_Strength() con
       if (g.ControllingMethod & SPEC_EQN)
       {
          // only apply e factor to equation method
-         bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+         bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
          Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
          Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
          Float64 K = (bSISpec ? 6100 : 20);
@@ -523,7 +523,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeG::GetShearDF_Ext_2_Strength() con
 {
    ILiveLoadDistributionFactor::DFResult g;
    
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
@@ -532,7 +532,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeG::GetShearDF_Ext_2_Strength() con
       if (g.ControllingMethod & SPEC_EQN)
       {
          // only use e factor for equation methods
-         bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+         bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
          Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
          Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
@@ -676,7 +676,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeF::GetMomentDF_Int_1_Strength() co
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
    if ( m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || InteriorMomentEquationRule(bSISpec,false) )
    {
@@ -724,7 +724,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeF::GetMomentDF_Int_2_Strength() co
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
    if ( m_RangeOfApplicabilityAction == RangeOfApplicabilityAction::Ignore || InteriorMomentEquationRule(bSISpec,false) )
    {
@@ -774,7 +774,7 @@ bool LldfTypeF::TestRangeOfApplicability(Location loc) const
    if (!DoCheckApplicablity())
       return true;
 
-   bool bSISpec = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = (BDSManager::GetUnits() == BDSManager::Units::SI );
    bool doThrow=true;
 
    // most rules are for exterior moment
@@ -870,7 +870,7 @@ ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetMomentDF_Int_2_Strengt
 ILiveLoadDistributionFactor::DFResult TxdotVoidedSlab::GetMomentDF_Ext_1_Strength() const
 {
    ILiveLoadDistributionFactor::DFResult g;
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // Lever rule must be applied at this level if ROA exceeded
    bool brule = ExteriorMomentEquationRule(bSISpec, false);
@@ -1043,7 +1043,7 @@ ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetBaseShearDF_Ext_1
    // so the TxDOT interpretation does not change
    ILiveLoadDistributionFactor::DFResult g;
    
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
@@ -1054,7 +1054,7 @@ ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetBaseShearDF_Ext_1
          if (g.ControllingMethod & SPEC_EQN)
          {
             // only apply e factor to equation method
-            bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+            bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
             Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
             Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);
             Float64 K = (bSISpec ? 6100 : 20);
@@ -1136,7 +1136,7 @@ ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetBaseShearDF_Ext_2
    // so the TxDOT interpretation does not change
    ILiveLoadDistributionFactor::DFResult g;
    
-   bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
@@ -1149,7 +1149,7 @@ ILiveLoadDistributionFactor::DFResult TxdotLldfAdjacentBox::GetBaseShearDF_Ext_2
          if (g.ControllingMethod & SPEC_EQN)
          {
             // only use e factor for equation methods
-            bool bSISpec = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+            bool bSISpec = ( BDSManager::GetUnits() == BDSManager::Units::SI );
 
             Float64 de_raw = m_Side == DfSide::LeftSide ? m_LeftDe : m_RightDe;
             Float64 de = WBFL::Units::ConvertFromSysUnits(de_raw,bSISpec?WBFL::Units::Measure::Millimeter:WBFL::Units::Measure::Feet);

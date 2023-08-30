@@ -12,7 +12,7 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
          std::shared_ptr<CreepCoefficient2005> pGirderCreep = std::make_shared<CreepCoefficient2005>();
          pGirderCreep->SetCuringMethod(CreepCoefficient2005::CuringMethod::Accelerated);
@@ -101,9 +101,9 @@ namespace LrfdUnitTests
             true // validate parameters
          );
 
-         LRFDVersionMgr::RegisterListener(&loss);
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims);
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::RegisterListener(&loss);
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Assert::AreEqual(56199167.768542737, loss.ShrinkageLosses(), 0.00001);
          Assert::AreEqual(94276196.292824641, loss.CreepLosses(), 0.00001);
@@ -143,7 +143,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(0., loss.TemporaryStrand_AfterSIDL(), 0.00001);
          Assert::AreEqual(0., loss.TemporaryStrand_Final(), 0.00001);
 
-         LRFDVersionMgr::UnregisterListener(&loss);
+         BDSManager::UnregisterListener(&loss);
       }
 	};
 }

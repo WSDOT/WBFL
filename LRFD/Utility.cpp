@@ -24,7 +24,7 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\Utility.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 
 using namespace WBFL::LRFD;
 
@@ -99,7 +99,7 @@ std::tuple<Float64, Float64, Float64> get_lane_parameters()
    Float64 wStdLane; // Standard design lane width
    Float64 wCurbToCurbMin;
    Float64 wCurbToCurbMax;
-   if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
+   if (BDSManager::GetUnits() == BDSManager::Units::SI)
    {
       wStdLane = WBFL::Units::ConvertToSysUnits(3600., WBFL::Units::Measure::Millimeter);
       wCurbToCurbMin = WBFL::Units::ConvertToSysUnits(6000., WBFL::Units::Measure::Millimeter);

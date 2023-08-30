@@ -81,7 +81,7 @@ void CCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptPara
    INIT_UV_PROTOTYPE(rptSqrtPressureValue, tension_coeff, pDisplayUnits->SqrtPressure, false);
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
-   bool bLambda = (WBFL::LRFD::LRFDVersionMgr::Version::SeventhEditionWith2016Interims <= WBFL::LRFD::LRFDVersionMgr::GetVersion() ? true : false);
+   bool bLambda = (WBFL::LRFD::BDSManager::Edition::SeventhEditionWith2016Interims <= WBFL::LRFD::BDSManager::GetEdition() ? true : false);
 
    *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(TensionCoefficient[+slope]);
    if (bLambda)

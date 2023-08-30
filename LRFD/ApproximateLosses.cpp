@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\ApproximateLosses.h>
 #include <Lrfd\ElasticShortening.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
@@ -197,13 +197,13 @@ void ApproximateLosses::UpdateLongTermLosses() const
    else
    {
       // approximate loss method was removed from LRFD 5th Edition, 2010
-      if( LRFDVersionMgr::Version::FifthEdition2010 <= LRFDVersionMgr::GetVersion())
+      if( BDSManager::Edition::FifthEdition2010 <= BDSManager::GetEdition())
          WBFL_LRFD_THROW(XPsLosses, Specification);
 
       Float64 losses;
       const WBFL::Units::Stress* p_unit;
 
-      bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+      bool is_si = (BDSManager::GetUnits() == BDSManager::Units::SI);
 
       if ( is_si )
       {

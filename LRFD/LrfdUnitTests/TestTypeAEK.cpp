@@ -27,7 +27,7 @@ namespace LrfdUnitTests
          spacings.assign(Nb - 1, S);
 
          // use us units for this test
-         LRFDVersionMgr::Units old_units = LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::Units old_units = BDSManager::SetUnits(BDSManager::Units::US);
 
 
          LldfTypeAEK df(1, S, spacings, de, de,
@@ -54,14 +54,14 @@ namespace LrfdUnitTests
          Assert::IsTrue(IsEqual(df.ShearDF(ILiveLoadDistributionFactor::Location::IntGirder, ILiveLoadDistributionFactor::NumLoadedLanes::One, LimitState::FatigueII), 0.5666, 0.001));
          Assert::IsTrue(IsEqual(df.ShearDF(ILiveLoadDistributionFactor::Location::ExtGirder, ILiveLoadDistributionFactor::NumLoadedLanes::One, LimitState::FatigueII), 0.625, 0.001));
 
-         LRFDVersionMgr::SetUnits(old_units);
+         BDSManager::SetUnits(old_units);
       }
 
       TEST_METHOD(WSDOT)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
+         BDSManager::SetUnits(BDSManager::Units::SI);
 
          Float64 S = WBFL::Units::ConvertToSysUnits(2000., WBFL::Units::Measure::Millimeter);
          Float64 de = WBFL::Units::ConvertToSysUnits(910., WBFL::Units::Measure::Millimeter);

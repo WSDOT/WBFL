@@ -24,7 +24,7 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\PsStrand.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XCodeVersion.h>
 #include <Math\QuadraticSolver.h>
 
@@ -33,7 +33,7 @@ using namespace WBFL::LRFD;
 Float64 PsStrand::GetUltimateStrength(WBFL::Materials::PsStrand::Grade gr)
 {
    Float64 fpu;
-   bool is_si = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool is_si = ( BDSManager::GetUnits() == BDSManager::Units::SI );
    if ( gr == WBFL::Materials::PsStrand::Grade::Gr1725 )
    {
       fpu = is_si ? WBFL::Units::ConvertToSysUnits(1725, WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(250, WBFL::Units::Measure::KSI);
@@ -67,7 +67,7 @@ Float64 PsStrand::GetStressLimit(WBFL::Materials::PsStrand::Grade gr,WBFL::Mater
    Float64 fpy = GetYieldStrength( gr, type );
    Float64 f_limit;
 
-   bool is_first_edition = ( LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEdition1994 );
+   bool is_first_edition = ( BDSManager::GetEdition() == BDSManager::Edition::FirstEdition1994 );
    switch( stage )
    {
    case Stage::Jacking:
@@ -103,7 +103,7 @@ Float64 PsStrand::GetModE()
 {
    Float64 e;
 
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       e = WBFL::Units::ConvertToSysUnits(197000., WBFL::Units::Measure::MPa);
    }
@@ -135,7 +135,7 @@ Float64 PsStrand::GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToX
 {
    Float64 fpj;
    Float64 coeff; // coefficient on fpu
-   if ( LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEdition1994 )
+   if ( BDSManager::GetEdition() == BDSManager::Edition::FirstEdition1994 )
    {
       coeff = ( strand.GetType() == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.78 : 0.72 );
    }
@@ -152,7 +152,7 @@ Float64 PsStrand::GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToX
 {
    Float64 fpj;
 
-   if ( LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::FirstEdition1994 || LRFDVersionMgr::Version::ThirdEdition2004 < LRFDVersionMgr::GetVersion())
+   if ( BDSManager::GetEdition() == BDSManager::Edition::FirstEdition1994 || BDSManager::Edition::ThirdEdition2004 < BDSManager::GetEdition())
    {
       fpj = coeff * strand.GetUltimateStrength();
    }
@@ -219,7 +219,7 @@ Float64 PsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
    Float64 k;
    Float64 d;
    Float64 d_limit;
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
        d = WBFL::Units::ConvertFromSysUnits(mbrDepth,WBFL::Units::Measure::Millimeter);
        d_limit = 600;
@@ -235,7 +235,7 @@ Float64 PsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
    {
       k = 2.0;
    }
-   else if ( d <= d_limit && LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
+   else if ( d <= d_limit && BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
    {
       k = 1.0;
    }
@@ -257,7 +257,7 @@ Float64 PsStrand::GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64 mbr
 {
    Float64 ld;
    Float64 k = GetDevLengthFactor(mbrDepth,bDebonded);
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI)
    {
       db  = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Millimeter);
       fps = WBFL::Units::ConvertFromSysUnits(fps,WBFL::Units::Measure::MPa);

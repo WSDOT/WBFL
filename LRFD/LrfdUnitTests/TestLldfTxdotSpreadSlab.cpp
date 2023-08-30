@@ -12,7 +12,7 @@ namespace LrfdUnitTests
 		
 		TEST_METHOD(Test)
 		{
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Float64 Savg = WBFL::Units::ConvertToSysUnits(7.5, WBFL::Units::Measure::Feet);
          Int16 Nb = 5;

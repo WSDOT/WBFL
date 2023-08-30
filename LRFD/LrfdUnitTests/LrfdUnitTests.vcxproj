@@ -116,8 +116,8 @@
     <ClCompile Include="TestLRFDConcrete.cpp" />
     <ClCompile Include="TestLRFDConcreteBase.cpp" />
     <ClCompile Include="TestLRFDTimeDependentConcrete.cpp" />
-    <ClCompile Include="TestLRFRVersionMgr.cpp" />
-    <ClCompile Include="TestLRFRVersionMgrListener.cpp" />
+    <ClCompile Include="TestMBEManager.cpp" />
+    <ClCompile Include="TestMBEManagerListener.cpp" />
     <ClCompile Include="TestLumpSumLosses.cpp" />
     <ClCompile Include="TestNoncompositeApproximateLosses2005.cpp" />
     <ClCompile Include="TestPCIUHPCCreepCoefficient.cpp" />
@@ -140,8 +140,8 @@
     <ClCompile Include="TestUHPCLosses.cpp" />
     <ClCompile Include="TestUHPCShear.cpp" />
     <ClCompile Include="TestUtility.cpp" />
-    <ClCompile Include="TestVersionMgr.cpp" />
-    <ClCompile Include="TestVersionMgrListener.cpp" />
+    <ClCompile Include="TestBDSManager.cpp" />
+    <ClCompile Include="TestBDSManagerListener.cpp" />
     <ClCompile Include="TestXCodeVesrion.cpp" />
     <ClCompile Include="TestXCreepCoefficient.cpp" />
     <ClCompile Include="TestXPsLosses.cpp" />

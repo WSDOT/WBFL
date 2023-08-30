@@ -26,14 +26,14 @@
 
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\PsStrand.h>
-#include <Lrfd\VersionMgrListener.h>
+#include <Lrfd/BDSManagerListener.h>
 
 namespace WBFL
 {
    namespace LRFD
    {
       /// @brief Utility class for computing losses using the LRFD Refined Estimate Method for post-tension members.
-      class LRFDCLASS PTRefinedLosses : public LRFDVersionMgrListener
+      class LRFDCLASS PTRefinedLosses : public BDSManagerListener
       {
       public:
          PTRefinedLosses();

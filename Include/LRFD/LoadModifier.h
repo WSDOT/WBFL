@@ -43,7 +43,7 @@ namespace WBFL
          LoadModifier& operator=(const LoadModifier&) = default;
 
          /// @brief Computes the load modifier. The type parameter is ignored if the current 
-         /// specification is LRFDVersionMgr::Version::FirstEdition.
+         /// specification is BDSManager::Version::FirstEdition.
          Float64 GetLoadModifier(LimitState ls, Optimization opt = Optimization::Max) const;
 
          /// @brief Sets the load modifier for ductility.  If nd is zero, the load modifier

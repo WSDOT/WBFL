@@ -23,7 +23,7 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LRFDTimeDependentConcrete.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\ConcreteUtil.h>
 #include <LRFD\XCreepCoefficient.h>
 #include <System\XProgrammingError.h>
@@ -205,7 +205,7 @@ Float64 LRFDTimeDependentConcrete::GetEc(Float64 t) const
    }
 
    Float64 Ec;
-   if ( LRFDVersionMgr::Version::SeventhEditionWith2015Interims <= LRFDVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition() )
    {
       Ec = m_Ec*pow(age/(m_Alpha + m_Beta*age),0.33);
    }
@@ -214,7 +214,7 @@ Float64 LRFDTimeDependentConcrete::GetEc(Float64 t) const
       Ec = m_Ec*sqrt(age/(m_Alpha + m_Beta*age));
    }
 
-   if ( LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
    {
       Float64 k1, k2;
       GetEcCorrectionFactors(&k1, &k2);
@@ -247,11 +247,11 @@ Float64 LRFDTimeDependentConcrete::GetFreeShrinkageStrain(Float64 t) const
 
 std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> LRFDTimeDependentConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
 {
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       return GetFreeShrinkageStrainBefore2005(t);
    }
-   else if ( LRFDVersionMgr::Version::SeventhEditionWith2015Interims <= LRFDVersionMgr::GetVersion() )
+   else if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition() )
    {
       return GetFreeShrinkageStrain2015(t);
    }
@@ -268,11 +268,11 @@ Float64 LRFDTimeDependentConcrete::GetCreepCoefficient(Float64 t,Float64 tla) co
 
 std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> LRFDTimeDependentConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
 {
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       return GetCreepCoefficientBefore2005(t,tla);
    }
-   else if ( LRFDVersionMgr::Version::SeventhEditionWith2015Interims <= LRFDVersionMgr::GetVersion() )
+   else if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition() )
    {
       return GetCreepCoefficient2015(t,tla);
    }
@@ -353,14 +353,14 @@ Float64 LRFDTimeDependentConcrete::GetSizeFactorCreep(Float64 t,Float64 tla) con
 
    Float64 ks;
    CHECK(0 < m_VS); // did you forget to set V/S ratio?
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       // LRFD 5.4.2.3.2-1
       Float64 maturity = GetAge(t) - GetAge(tla);
       Float64 a,b,c;
       Float64 x1, x2;
       Float64 vs;
-      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+      if ( BDSManager::GetUnits() == BDSManager::Units::SI )
       {
          x1 = 0.0142;
          x2 = -0.0213;
@@ -394,11 +394,11 @@ Float64 LRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
 
    Float64 ks;
    CHECK(0 < m_VS); // did you forget to set V/S ratio?
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       // LRFD C5.4.2.3.3-1
       Float64 maturity = t - (m_CureTime + m_TimeAtCasting);
-      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::US )
+      if ( BDSManager::GetUnits() == BDSManager::Units::US )
       {
          Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
          Float64 k1 = maturity/(26.0*exp(0.36*vs) + maturity);
@@ -417,7 +417,7 @@ Float64 LRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
    }
    else
    {
-      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+      if ( BDSManager::GetUnits() == BDSManager::Units::SI )
       {
          Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Millimeter);
          ks = 1.45 - 0.0051*vs; // LRFD 5.4.2.3.2-2
@@ -428,11 +428,11 @@ Float64 LRFDTimeDependentConcrete::GetSizeFactorShrinkage(Float64 t) const
          ks = 1.45 - 0.13*vs; // LRFD 5.4.2.3.2-2
       }
 
-      if ( LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+      if ( BDSManager::GetEdition() == BDSManager::Edition::ThirdEditionWith2005Interims )
       {
          ks = Max(ks,1.0);
       }
-      else if ( LRFDVersionMgr::GetVersion() == LRFDVersionMgr::Version::ThirdEditionWith2006Interims )
+      else if ( BDSManager::GetEdition() == BDSManager::Edition::ThirdEditionWith2006Interims )
       {
          ks = Max(ks,0.0);
       }
@@ -449,7 +449,7 @@ Float64 LRFDTimeDependentConcrete::GetConcreteStrengthFactor() const
 {
    // this method is only valid for pre-2005 loss methods
    // 2005 and later, kf is a function of the concrete strength at time of loading
-   if (LRFDVersionMgr::Version::ThirdEditionWith2005Interims <= LRFDVersionMgr::GetVersion())
+   if (BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition())
    {
       WBFL_LRFD_THROW(XCreepCoefficient, Specification);
    }
@@ -611,7 +611,7 @@ void LRFDTimeDependentConcrete::Validate() const
    }
 
    // Relative Humidity correction factors
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       m_khc = 1.58 - m_RelativeHumidity/120;
       if ( m_RelativeHumidity < 80 )
@@ -638,10 +638,10 @@ void LRFDTimeDependentConcrete::Validate() const
    // and we'll get into a recursive loop. Mark validation complete here so that doesn't
    // happen. When GetFc returns we will finish the validation.
 
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       Float64 fc = GetFc(m_TimeAtCasting + 28);
-      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+      if ( BDSManager::GetUnits() == BDSManager::Units::SI )
       {
          fc = WBFL::Units::ConvertFromSysUnits(fc, WBFL::Units::Measure::MPa);
          m_kf = 62.0/(42 + fc);
@@ -667,7 +667,7 @@ Float64 LRFDTimeDependentConcrete::ModE(Float64 fc,Float64 density) const
    Float64 e;           // modulus of elasticity in System Units
 
    // Convert input to required units
-   if ( LRFDVersionMgr::Version::SeventhEditionWith2015Interims <= LRFDVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition() )
    {
       Fc      = WBFL::Units::ConvertFromSysUnits( fc,      WBFL::Units::Measure::KSI         );
       Density = WBFL::Units::ConvertFromSysUnits( density, WBFL::Units::Measure::KipPerFeet3 );
@@ -760,7 +760,7 @@ std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> LRFDTimeDependent
 
    Float64 ktd;
    Float64 fci = GetFc(m_TimeAtCasting + m_AgeAtInitialLoading);
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       fci = WBFL::Units::ConvertFromSysUnits(fci,WBFL::Units::Measure::MPa);
       ktd = (shrinkage_time)/(61.0 - 0.58*fci + shrinkage_time);
@@ -882,7 +882,7 @@ std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> LRFDTimeDependentConc
    pDetails->fci = fci;
 
    Float64 ktd;
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       fci = WBFL::Units::ConvertFromSysUnits(fci, WBFL::Units::Measure::MPa);
       ktd = (maturity)/(61.0 - 0.58*fci + maturity);

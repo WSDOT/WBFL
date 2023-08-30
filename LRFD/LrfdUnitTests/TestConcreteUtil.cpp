@@ -13,8 +13,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(Beta1)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEditionWith1996Interims); // use a version before SI units were dropped
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEditionWith1996Interims); // use a version before SI units were dropped
 
          {
             // want to work in KSI
@@ -33,7 +33,7 @@ namespace LrfdUnitTests
 
          {
             // working in default SI Units
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSManager::SetUnits(BDSManager::Units::SI);
 
             Assert::AreEqual(0.85, ConcreteUtil::Beta1(28e6), 0.01);
             Assert::AreEqual(0.80, ConcreteUtil::Beta1(35e6), 0.01);
@@ -46,8 +46,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(ModulusOfRupture_PreLRFD2005)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEditionWith1996Interims); // use a version before SI units were dropped
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEditionWith1996Interims); // use a version before SI units were dropped
 
          {
             // want to work in KSI
@@ -56,7 +56,7 @@ namespace LrfdUnitTests
             WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
             WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+            BDSManager::SetUnits(BDSManager::Units::US);
             Float64 fc = WBFL::Units::ConvertToSysUnits(5, WBFL::Units::Measure::KSI);
             Assert::AreEqual(0.53665631460153684, ConcreteUtil::ModRupture(fc, WBFL::Materials::ConcreteType::Normal), 0.001);
             Assert::AreEqual(0.44721359550128076, ConcreteUtil::ModRupture(fc, WBFL::Materials::ConcreteType::SandLightweight), 0.001);
@@ -65,7 +65,7 @@ namespace LrfdUnitTests
 
          {
             // working in default SI Units
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSManager::SetUnits(BDSManager::Units::SI);
             Float64 fc = WBFL::Units::ConvertToSysUnits(50, WBFL::Units::Measure::MPa);
 
             Assert::AreEqual(4454772.7214752492, ConcreteUtil::ModRupture(fc, WBFL::Materials::ConcreteType::Normal), 0.001);
@@ -76,8 +76,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(ModulusOfRupture_LRFD2005)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims);
 
          // want to work in KSI
          WBFL::Units::AutoSystem au;
@@ -85,7 +85,7 @@ namespace LrfdUnitTests
          WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
          WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
          Float64 fc = WBFL::Units::ConvertToSysUnits(5, WBFL::Units::Measure::KSI);
          Assert::AreEqual(0.82734515167736944, ConcreteUtil::ModRupture(fc, WBFL::Materials::ConcreteType::Normal), 0.001);
          Assert::AreEqual(0.44721359550128076, ConcreteUtil::ModRupture(fc, WBFL::Materials::ConcreteType::SandLightweight), 0.001);
@@ -94,8 +94,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(ModulusOfRupture)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2005Interims);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2005Interims);
 
          // want to work in KSI
          WBFL::Units::AutoSystem au;
@@ -103,7 +103,7 @@ namespace LrfdUnitTests
          WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
          WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
          Float64 fc = WBFL::Units::ConvertToSysUnits(5, WBFL::Units::Measure::KSI);
 
          Assert::AreEqual(0.55901699409906491, ConcreteUtil::ModRupture(fc, 0.25));
@@ -123,8 +123,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(FcFromEc_PreLRFD2015)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
          {
             // US units
@@ -133,7 +133,7 @@ namespace LrfdUnitTests
             WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
             WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+            BDSManager::SetUnits(BDSManager::Units::US);
 
             Float64 density = WBFL::Units::ConvertToSysUnits(0.155, WBFL::Units::Measure::KipPerFeet3);
             Assert::AreEqual(5.0, ConcreteUtil::FcFromEc(ConcreteType::Normal, 4502.9434123826095, density), 0.0001);
@@ -143,7 +143,7 @@ namespace LrfdUnitTests
 
          {
             // SI units
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSManager::SetUnits(BDSManager::Units::SI);
 
             Float64 density = WBFL::Units::ConvertToSysUnits(0.155, WBFL::Units::Measure::KipPerFeet3);
             Assert::AreEqual(34473786.465850003, ConcreteUtil::FcFromEc(ConcreteType::Normal, 31235019059.731911, density), 0.0001);
@@ -154,8 +154,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(FcFromEc_LRFD2015)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2015Interims);
 
          // in 2015, modulus of elasticity equation changed
 
@@ -165,7 +165,7 @@ namespace LrfdUnitTests
          WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
          WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Float64 density = WBFL::Units::ConvertToSysUnits(0.155, WBFL::Units::Measure::KipPerFeet3);
          Assert::AreEqual(5.0, ConcreteUtil::FcFromEc(ConcreteType::Normal,4903.4837886254563, density), 0.0001);
@@ -188,8 +188,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(ModulusOfElasticity_PreLRFD2015)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
          {
             // US units
@@ -198,7 +198,7 @@ namespace LrfdUnitTests
             WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
             WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+            BDSManager::SetUnits(BDSManager::Units::US);
 
             Float64 fc = WBFL::Units::ConvertToSysUnits(5.0, WBFL::Units::Measure::KSI);
             Float64 density = WBFL::Units::ConvertToSysUnits(0.155, WBFL::Units::Measure::KipPerFeet3);
@@ -224,7 +224,7 @@ namespace LrfdUnitTests
 
          {
             // SI units
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSManager::SetUnits(BDSManager::Units::SI);
 
             Float64 fc = WBFL::Units::ConvertToSysUnits(5.0, WBFL::Units::Measure::KSI);
             Float64 density = WBFL::Units::ConvertToSysUnits(0.155, WBFL::Units::Measure::KipPerFeet3);
@@ -250,8 +250,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(ModulusOfElasticity_LRFD2015)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2015Interims);
 
          // in 2015, modulus of elasticity equation changed
 
@@ -261,7 +261,7 @@ namespace LrfdUnitTests
          WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
          WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
 
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          Float64 fc = WBFL::Units::ConvertToSysUnits(5.0, WBFL::Units::Measure::KSI);
          Float64 density = WBFL::Units::ConvertToSysUnits(0.155, WBFL::Units::Measure::KipPerFeet3);
@@ -278,25 +278,25 @@ namespace LrfdUnitTests
             WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::PoundMass);
             WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Feet);
 
-            LRFDAutoVersion av;
-            LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+            BDSAutoVersion av;
+            BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
             Assert::AreEqual(135.0, ConcreteUtil::GetNWCDensityLimit());
             Assert::AreEqual(120.0, ConcreteUtil::GetLWCDensityLimit());
 
-            LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2016Interims);
+            BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2016Interims);
             Assert::AreEqual(135.0, ConcreteUtil::GetNWCDensityLimit());
             Assert::AreEqual(135.0, ConcreteUtil::GetLWCDensityLimit());
          }
 
          {
             // SI Units
-            LRFDAutoVersion av;
-            LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSAutoVersion av;
+            BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
+            BDSManager::SetUnits(BDSManager::Units::SI);
             Assert::AreEqual(2150.0, ConcreteUtil::GetNWCDensityLimit());
             Assert::AreEqual(1925.0, ConcreteUtil::GetLWCDensityLimit());
 
-            LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2016Interims);
+            BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2016Interims);
             Assert::AreEqual(2162.4925554846186, ConcreteUtil::GetNWCDensityLimit());
             Assert::AreEqual(2162.4925554846186, ConcreteUtil::GetLWCDensityLimit());
          }
@@ -330,8 +330,8 @@ namespace LrfdUnitTests
          WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
 
          // LRFD before 4th Edition
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::ThirdEditionWith2006Interims);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::ThirdEditionWith2006Interims);
 
          Float64 c, u, k1, k2;
          ConcreteUtil::InterfaceShearParameters(true, ConcreteType::Normal, ConcreteType::Normal, &c, &u, &k1, &k2);
@@ -347,7 +347,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(0.8, k2, 0.0001);
 
          // LRFD changed in 4th Edition
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEdition2007);
+         BDSManager::SetEdition(BDSManager::Edition::FourthEdition2007);
 
          ConcreteUtil::InterfaceShearParameters(true, ConcreteType::Normal, ConcreteType::Normal, &c, &u, &k1, &k2);
          Assert::AreEqual(0.28, c, 0.0001);
@@ -446,9 +446,9 @@ namespace LrfdUnitTests
 
       TEST_METHOD(InterfaceShearResistance)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SixthEdition2012);
+         BDSAutoVersion av;
+         BDSManager::SetUnits(BDSManager::Units::US);
+         BDSManager::SetEdition(BDSManager::Edition::SixthEdition2012);
 
          WBFL::Units::AutoSystem au;
          WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
@@ -465,7 +465,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(18.0, eq3, 0.00001);
 
          // Beginning with 7th Edition, fy is no longer limited to 60 ksi
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEdition2014);
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEdition2014);
          ConcreteUtil::InterfaceShearResistances(c, u, k1, k2, 10.0, 0.88, 1.0, 5.0, 100.0, &eq1, &eq2, &eq3);
 
          Assert::AreEqual(91.8, eq1, 0.00001);
@@ -475,23 +475,23 @@ namespace LrfdUnitTests
 
       TEST_METHOD(LowerLimitOfShearStrength)
       {
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
          
          // before 2nd Edition
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
          Assert::AreEqual(0.0, ConcreteUtil::LowerLimitOfShearStrength(true, true));
          Assert::AreEqual(0.0, ConcreteUtil::LowerLimitOfShearStrength(true, false));
          Assert::AreEqual(0.0, ConcreteUtil::LowerLimitOfShearStrength(false, true));
          Assert::AreEqual(0.0, ConcreteUtil::LowerLimitOfShearStrength(false, false));
 
          // 2nd edition
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SecondEdition1998);
+         BDSManager::SetEdition(BDSManager::Edition::SecondEdition1998);
          {
             // US units
             WBFL::Units::AutoSystem au;
             WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
             WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch); 
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+            BDSManager::SetUnits(BDSManager::Units::US);
 
             Assert::AreEqual(0.1, ConcreteUtil::LowerLimitOfShearStrength(true, true), 0.0001);
             Assert::AreEqual(0.1, ConcreteUtil::LowerLimitOfShearStrength(true, false), 0.0001);
@@ -501,7 +501,7 @@ namespace LrfdUnitTests
 
          {
             // SI Units
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSManager::SetUnits(BDSManager::Units::SI);
 
             Assert::AreEqual(0.7e6, ConcreteUtil::LowerLimitOfShearStrength(true, true), 0.0001);
             Assert::AreEqual(0.7e6, ConcreteUtil::LowerLimitOfShearStrength(true, false), 0.0001);
@@ -510,13 +510,13 @@ namespace LrfdUnitTests
          }
 
          // 4th edition
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEdition2007);
+         BDSManager::SetEdition(BDSManager::Edition::FourthEdition2007);
          {
             // US units
             WBFL::Units::AutoSystem au;
             WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
             WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+            BDSManager::SetUnits(BDSManager::Units::US);
 
             Assert::AreEqual(0.21, ConcreteUtil::LowerLimitOfShearStrength(true, true), 0.0001);
             Assert::AreEqual(0.0, ConcreteUtil::LowerLimitOfShearStrength(true, false), 0.0001);
@@ -527,61 +527,61 @@ namespace LrfdUnitTests
 
       TEST_METHOD(UpperLimitForBv)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEditionWith1997Interims);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEditionWith1997Interims);
          {
             // US units
             WBFL::Units::AutoSystem au;
             WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
             WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
 
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+            BDSManager::SetUnits(BDSManager::Units::US);
             Assert::AreEqual(36.0, ConcreteUtil::UpperLimitForBv());
          }
 
          {
             // SI units
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSManager::SetUnits(BDSManager::Units::SI);
             Assert::AreEqual(0.9, ConcreteUtil::UpperLimitForBv());
          }
 
          // no limit starting with 2nd Edition
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SecondEdition1998);
+         BDSManager::SetEdition(BDSManager::Edition::SecondEdition1998);
          Assert::AreEqual(Float64_Max, ConcreteUtil::UpperLimitForBv());
       }
 
       TEST_METHOD(MinLegsForBv)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEditionWith1997Interims);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEditionWith1997Interims);
          {
             // US units
             WBFL::Units::AutoSystem au;
             WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
             WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
 
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+            BDSManager::SetUnits(BDSManager::Units::US);
             Assert::AreEqual((Uint16)1, ConcreteUtil::MinLegsForBv(12.0));
             Assert::AreEqual((Uint16)4, ConcreteUtil::MinLegsForBv(56.0));
          }
 
          {
             // SI units
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSManager::SetUnits(BDSManager::Units::SI);
             Assert::AreEqual((Uint16)1, ConcreteUtil::MinLegsForBv(0.1));
             Assert::AreEqual((Uint16)4, ConcreteUtil::MinLegsForBv(1.0));
          }
 
          // Always 1 starting with 2nd Edition
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SecondEdition1998);
+         BDSManager::SetEdition(BDSManager::Edition::SecondEdition1998);
          Assert::AreEqual((Uint16)1, ConcreteUtil::MinLegsForBv(0.1));
          Assert::AreEqual((Uint16)1, ConcreteUtil::MinLegsForBv(Float64_Max));
       }
 
       TEST_METHOD(AvfOverSMin)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEditionWith1997Interims);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEditionWith1997Interims);
 
          WBFL::Units::AutoSystem au;
          WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
@@ -597,7 +597,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(0.024, results.AvfOverSMin, 0.0001);
 
          // additional requirements added 4th Edition 2007
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FourthEdition2007);
+         BDSManager::SetEdition(BDSManager::Edition::FourthEdition2007);
          results = ConcreteUtil::AvfOverSMin(48.0, 100.0, 30.0, 0.9, c, u, 0.0);
          Assert::IsTrue(ConcreteUtil::HsAvfOverSMinType::ValidEqnsType::eqBoth == results.ValidEqns);
          Assert::AreEqual(0.024, results.res5_7_4_2_1, 0.0001);
@@ -607,11 +607,11 @@ namespace LrfdUnitTests
 
       TEST_METHOD(MaxStirrupSpacingForHoriz)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::FirstEdition1994);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::FirstEdition1994);
 
          {
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+            BDSManager::SetUnits(BDSManager::Units::US);
 
             WBFL::Units::AutoSystem au;
             WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
@@ -622,15 +622,15 @@ namespace LrfdUnitTests
          }
 
          {
-            LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::SI);
+            BDSManager::SetUnits(BDSManager::Units::SI);
             Assert::AreEqual(0.6, ConcreteUtil::MaxStirrupSpacingForHoriz(0.6));
             Assert::AreEqual(0.6, ConcreteUtil::MaxStirrupSpacingForHoriz(1.2));
          }
 
          
          // Changed in 7th Edition 2014
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEdition2014);
+         BDSManager::SetUnits(BDSManager::Units::US);
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEdition2014);
          {
             // US units
             WBFL::Units::AutoSystem au;
@@ -644,8 +644,8 @@ namespace LrfdUnitTests
 
       TEST_METHOD(AvfRequiredForHoriz)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetUnits(LRFDVersionMgr::Units::US);
+         BDSAutoVersion av;
+         BDSManager::SetUnits(BDSManager::Units::US);
 
          WBFL::Units::AutoSystem au;
          WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
@@ -659,13 +659,13 @@ namespace LrfdUnitTests
 
       TEST_METHOD(ComputeConcreteDensityModificationFactor)
       {
-         LRFDAutoVersion av;
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEdition2014);
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEdition2014);
          // there wasn't LWC modifications before 2nd Edition 2016 interims, also no modifications for Normal concrete or UHPC
          Assert::AreEqual(1.0, ConcreteUtil::ComputeConcreteDensityModificationFactor(ConcreteType::AllLightweight, 0.0, false, 0.0, 0.0));
          Assert::AreEqual(1.0, ConcreteUtil::ComputeConcreteDensityModificationFactor(ConcreteType::SandLightweight, 0.0, false, 0.0, 0.0));
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2016Interims);
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2016Interims);
          Assert::AreEqual(1.0, ConcreteUtil::ComputeConcreteDensityModificationFactor(ConcreteType::Normal, 0.0, false, 0.0, 0.0));
          Assert::AreEqual(1.0, ConcreteUtil::ComputeConcreteDensityModificationFactor(ConcreteType::PCI_UHPC, 0.0, false, 0.0, 0.0));
          Assert::AreEqual(1.0, ConcreteUtil::ComputeConcreteDensityModificationFactor(ConcreteType::UHPC, 0.0, false, 0.0, 0.0));
@@ -696,7 +696,7 @@ namespace LrfdUnitTests
 
       TEST_METHOD(GetTypeName)
       {
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
 
          Assert::AreEqual(_T("Normal Weight Concrete"), ConcreteUtil::GetTypeName(ConcreteType::Normal, true).c_str());
          Assert::AreEqual(_T("Normal"), ConcreteUtil::GetTypeName(ConcreteType::Normal, false).c_str());
@@ -707,7 +707,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(_T("Ultra High Performance Concrete (UHPC)"), ConcreteUtil::GetTypeName(ConcreteType::UHPC, true).c_str());
          Assert::AreEqual(_T("UHPC"), ConcreteUtil::GetTypeName(ConcreteType::UHPC, false).c_str());
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2015Interims);
          Assert::AreEqual(_T("All Lightweight Concrete"), ConcreteUtil::GetTypeName(ConcreteType::AllLightweight, true).c_str());
          Assert::AreEqual(_T("AllLightweight"), ConcreteUtil::GetTypeName(ConcreteType::AllLightweight, false).c_str());
 
@@ -715,7 +715,7 @@ namespace LrfdUnitTests
          Assert::AreEqual(_T("SandLightweight"), ConcreteUtil::GetTypeName(ConcreteType::SandLightweight, false).c_str());
 
          // 7th Edition w/ 2016 interims, All and Sand LWC became just LWC
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2016Interims);
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2016Interims);
          Assert::AreEqual(_T("Lightweight Concrete"), ConcreteUtil::GetTypeName(ConcreteType::AllLightweight, true).c_str());
          Assert::AreEqual(_T("AllLightweight"), ConcreteUtil::GetTypeName(ConcreteType::AllLightweight, false).c_str());
 
@@ -725,17 +725,17 @@ namespace LrfdUnitTests
 
       TEST_METHOD(GetTypeFromTypeName)
       {
-         LRFDAutoVersion av;
+         BDSAutoVersion av;
          Assert::IsTrue(ConcreteType::Normal == ConcreteUtil::GetTypeFromTypeName(_T("Normal")));
          Assert::IsTrue(ConcreteType::PCI_UHPC == ConcreteUtil::GetTypeFromTypeName(_T("PCI-UHPC")));
          Assert::IsTrue(ConcreteType::UHPC == ConcreteUtil::GetTypeFromTypeName(_T("UHPC")));
 
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2015Interims);
          Assert::IsTrue(ConcreteType::AllLightweight == ConcreteUtil::GetTypeFromTypeName(_T("AllLightweight")));
          Assert::IsTrue(ConcreteType::SandLightweight == ConcreteUtil::GetTypeFromTypeName(_T("SandLightweight")));
 
          // 7th Edition w/ 2016 interims, All and Sand LWC became just LWC, using SandLightWeight to mean LWC
-         LRFDVersionMgr::SetVersion(LRFDVersionMgr::Version::SeventhEditionWith2016Interims);
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2016Interims);
          Assert::IsTrue(ConcreteType::SandLightweight == ConcreteUtil::GetTypeFromTypeName(_T("AllLightweight")));
          Assert::IsTrue(ConcreteType::SandLightweight == ConcreteUtil::GetTypeFromTypeName(_T("SandLightweight")));
       }

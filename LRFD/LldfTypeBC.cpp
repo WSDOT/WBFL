@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LldfTypeBC.h>
 #include <Lrfd\XRangeOfApplicability.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\Utility.h>
 
 using namespace WBFL::LRFD;
@@ -52,7 +52,7 @@ bool LldfTypeBC::TestRangeOfApplicability(Location loc) const
       return true;
 
    bool doThrow=true;
-   bool bSISpec = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool bSISpec = (BDSManager::GetUnits() == BDSManager::Units::SI );
 
    // if S exceeds 16' use lever rule and don't check other params
    if ( !SpacingTriggersLeverRule(bSISpec) )
@@ -81,7 +81,7 @@ bool LldfTypeBC::TestRangeOfApplicability(Location loc) const
          THROW_DF( XRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2e-1"));
 
       Float64 smax = DBL_MAX;
-      if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FirstEditionWith1997Interims )
+      if ( BDSManager::GetEdition() < BDSManager::Edition::FirstEditionWith1997Interims )
       {
          smax =  WBFL::Units::ConvertToSysUnits( bSISpec ? 3500. : 11.5, bSISpec ? WBFL::Units::Measure::Millimeter : WBFL::Units::Measure::Feet);
       }
@@ -150,8 +150,8 @@ bool LldfTypeBC::SpacingTriggersLeverRule(bool bSISpec) const
    if (bSISpec)
    {
       Float64 S     = WBFL::Units::ConvertFromSysUnits( m_Savg,     WBFL::Units::Measure::Millimeter );
-      Float64 Slimit = LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEditionWith2002Interims ? 3500. : 5500.;
-      if ( S>Slimit && LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FirstEditionWith1997Interims )
+      Float64 Slimit = BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2002Interims ? 3500. : 5500.;
+      if ( S>Slimit && BDSManager::GetEdition() < BDSManager::Edition::FirstEditionWith1997Interims )
       {
          // lever rule introduced in 97, otherwise roa is exceeded
          return false;
@@ -164,8 +164,8 @@ bool LldfTypeBC::SpacingTriggersLeverRule(bool bSISpec) const
    else
    {
       Float64 S     = WBFL::Units::ConvertFromSysUnits( m_Savg, WBFL::Units::Measure::Feet );
-      Float64 Slimit = LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SecondEditionWith2002Interims ? 11.5 : 18.0;
-      if ( S>Slimit && LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FirstEditionWith1997Interims )
+      Float64 Slimit = BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2002Interims ? 11.5 : 18.0;
+      if ( S>Slimit && BDSManager::GetEdition() < BDSManager::Edition::FirstEditionWith1997Interims )
       {
          // lever rule introduced in 97, otherwise roa is exceeded
          return false;
@@ -182,7 +182,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeBC::GetMomentDF_Int_1_Strength() c
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // use lever rule for any case of spacing over limit
    bool do_lever = SpacingTriggersLeverRule(bSISpec);
@@ -237,7 +237,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeBC::GetMomentDF_Int_2_Strength() c
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // lever rule for any case of spacing over limit
    bool do_lever = SpacingTriggersLeverRule(bSISpec);
@@ -314,7 +314,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeBC::GetMomentDF_Ext_2_Strength() c
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // lever rule for any case of spacing over limit
    bool do_lever = SpacingTriggersLeverRule(bSISpec);
@@ -366,7 +366,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeBC::GetShearDF_Int_1_Strength() co
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // shear ROA same as moment
    if(!SpacingTriggersLeverRule(bSISpec) &&  InteriorMomentEquationRule(bSISpec, false) )
@@ -420,7 +420,7 @@ ILiveLoadDistributionFactor::DFResult  LldfTypeBC::GetShearDF_Int_2_Strength() c
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // lever rule for any case of spacing over limit
    bool do_lever = SpacingTriggersLeverRule(bSISpec);
@@ -493,7 +493,7 @@ ILiveLoadDistributionFactor::DFResult LldfTypeBC::GetShearDF_Ext_2_Strength() co
 {
    ILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+   bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
 
    // lever rule for any case of spacing over limit
    bool do_lever = SpacingTriggersLeverRule(bSISpec);
@@ -599,7 +599,7 @@ Float64 LldfTypeBC::ShearSkewCorrectionFactor() const
 //   if ( 60.0 < WBFL::Units::ConvertFromSysUnits(avg_skew_angle, WBFL::Units::Measure::Degree) )
 //      avg_skew_angle = WBFL::Units::ConvertToSysUnits(60.0,WBFL::Units::Measure::Degree);
 
-   if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
       Float64 L = WBFL::Units::ConvertFromSysUnits( m_L,    WBFL::Units::Measure::Millimeter );
       Float64 d = WBFL::Units::ConvertFromSysUnits( m_d,    WBFL::Units::Measure::Millimeter );
@@ -872,7 +872,7 @@ ILiveLoadDistributionFactor::DFResult TxDotLldfTypeBC::GetMomentDF_Ext_2_Strengt
    }
    else
    {
-      bool bSISpec = LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI;
+      bool bSISpec = BDSManager::GetUnits() == BDSManager::Units::SI;
       // ROA for TxDOT moment is more like shear: all outside of equation goes to lever rule
       // lever rule for any case of spacing over limit
       bool do_lever = SpacingTriggersLeverRule(bSISpec);

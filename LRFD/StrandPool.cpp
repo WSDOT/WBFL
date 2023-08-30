@@ -24,7 +24,7 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\StrandPool.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\AutoVersion.h>
 #include <algorithm>
 
@@ -52,11 +52,11 @@ const StrandPool* StrandPool::GetInstance()
    return ms_pInstance;
 }
 
-const WBFL::Materials::PsStrand* StrandPool::GetStrand(Int64 key,LRFDVersionMgr::Units units) const
+const WBFL::Materials::PsStrand* StrandPool::GetStrand(Int64 key,BDSManager::Units units) const
 {
    std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> >::iterator found;
 
-   if ( units == LRFDVersionMgr::Units::US )
+   if ( units == BDSManager::Units::US )
    {
       found = ms_USStrand.find( key );
       if ( found == ms_USStrand.end() )
@@ -74,7 +74,7 @@ const WBFL::Materials::PsStrand* StrandPool::GetStrand(Int64 key,LRFDVersionMgr:
 
 const WBFL::Materials::PsStrand* StrandPool::GetStrand(Int64 key) const
 {
-   return GetStrand(key,LRFDVersionMgr::GetUnits());
+   return GetStrand(key,BDSManager::GetUnits());
 } 
 
 const WBFL::Materials::PsStrand* StrandPool::GetStrand(WBFL::Materials::PsStrand::Grade grade,
@@ -243,7 +243,7 @@ void StrandIter::Begin()
    m_Strands.clear();
    CHECK(m_Strands.size() == 0);
    CHECK(m_Strands.empty() == true);
-   std::map< Int64, std::shared_ptr<WBFL::Materials::PsStrand> >* pStrands = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI) ? &StrandPool::ms_SIStrand : &StrandPool::ms_USStrand;
+   std::map< Int64, std::shared_ptr<WBFL::Materials::PsStrand> >* pStrands = (BDSManager::GetUnits() == BDSManager::Units::SI) ? &StrandPool::ms_SIStrand : &StrandPool::ms_USStrand;
    std::map< Int64, std::shared_ptr<WBFL::Materials::PsStrand> >::const_iterator iter;
    for ( iter = pStrands->begin(); iter != pStrands->end(); iter++ )
    {

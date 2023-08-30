@@ -26,7 +26,7 @@
 
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\PsStrand.h>
-#include <Lrfd\VersionMgrListener.h>
+#include <Lrfd/BDSManagerListener.h>
 
 namespace WBFL
 {
@@ -37,7 +37,7 @@ namespace WBFL
       /// Sum Method introduced in the LRFD 3rd Edition with 2005 interims. This method
       /// is very similar to the pre-2005 losses, but is constrained to only non-composite
       /// sections.
-      class LRFDCLASS NoncompositeApproximateLosses2005 : public LRFDVersionMgrListener
+      class LRFDCLASS NoncompositeApproximateLosses2005 : public BDSManagerListener
       {
       public:
          enum class BeamType { SolidSlab, BoxBeam, SingleT, DoubleT, TripleT, HollowCore, VoidedSlab};

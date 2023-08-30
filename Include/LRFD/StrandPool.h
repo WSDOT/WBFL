@@ -29,7 +29,7 @@
 #include <Materials/PsStrand.h>
 #include <Lrfd\PsStrand.h>
 #include <System\SingletonKiller.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 
 namespace WBFL
 {
@@ -47,7 +47,7 @@ namespace WBFL
          /// @brief Returns a pointer to an instance of the strand pool.
          static const StrandPool* GetInstance();
 
-         const WBFL::Materials::PsStrand* GetStrand(Int64 key,LRFDVersionMgr::Units units) const;
+         const WBFL::Materials::PsStrand* GetStrand(Int64 key,BDSManager::Units units) const;
 
          const WBFL::Materials::PsStrand* GetStrand(Int64 key) const;
 

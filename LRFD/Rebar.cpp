@@ -24,7 +24,7 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\Rebar.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XCodeVersion.h>
 #include <Lrfd\RebarPool.h>
 #include <Lrfd\ConcreteUtil.h>
@@ -34,8 +34,8 @@ using namespace WBFL::LRFD;
 Float64 Rebar::GetMaxBurstingStress(Float64 fy)
 {
    PRECONDITION(0.0 < fy);
-   bool is_si = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
-   if(LRFDVersionMgr::Version::FirstEditionWith1996Interims <= LRFDVersionMgr::GetVersion() )
+   bool is_si = ( BDSManager::GetUnits() == BDSManager::Units::SI );
+   if(BDSManager::Edition::FirstEditionWith1996Interims <= BDSManager::GetEdition() )
    {
       Float64 fym = is_si ? WBFL::Units::ConvertToSysUnits(140.0, WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(20.0, WBFL::Units::Measure::KSI);
 
@@ -51,7 +51,7 @@ Float64 Rebar::GetBurstingZoneLength(Float64 h)
    // 1996 d/5
    // 2002 d/4
 
-   if (LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::FirstEditionWith1996Interims || LRFDVersionMgr::Version::SecondEditionWith2002Interims <= LRFDVersionMgr::GetVersion())
+   if (BDSManager::GetEdition() < BDSManager::Edition::FirstEditionWith1996Interims || BDSManager::Edition::SecondEditionWith2002Interims <= BDSManager::GetEdition())
       return h / 4;
    else
       return h / 5;
@@ -64,7 +64,7 @@ WBFL::Materials::Rebar::Size Rebar::GetMinConfinementBarSize()
 
 Float64 Rebar::GetMaxConfinementBarSpacing()
 {
-   bool is_si = ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI );
+   bool is_si = ( BDSManager::GetUnits() == BDSManager::Units::SI );
    Float64 bss = is_si ? WBFL::Units::ConvertToSysUnits(150, WBFL::Units::Measure::Millimeter) : WBFL::Units::ConvertToSysUnits(6, WBFL::Units::Measure::Inch);
    return bss;
 }
@@ -90,7 +90,7 @@ Float64 Rebar::GetAvOverSMin(Float64 fc, Float64 bv, Float64 fy)
    PRECONDITION(0 < fy);
 
    Float64 avs = -999999999;
-   if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
+   if (BDSManager::GetUnits() == BDSManager::Units::SI)
    {
       Float64 bv_u = WBFL::Units::ConvertFromSysUnits(bv, WBFL::Units::Measure::Millimeter);
       Float64 fy_u = WBFL::Units::ConvertFromSysUnits(fy, WBFL::Units::Measure::MPa);
@@ -113,7 +113,7 @@ Float64 Rebar::GetAvOverSMin(Float64 fc, Float64 bv, Float64 fy)
 
 void Rebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
 {
-   if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
+   if (BDSManager::GetUnits() == BDSManager::Units::SI)
    {
       *sUnderLimit = WBFL::Units::ConvertToSysUnits(600, WBFL::Units::Measure::Millimeter);
       *sOverLimit  = WBFL::Units::ConvertToSysUnits(300, WBFL::Units::Measure::Millimeter);
@@ -127,7 +127,7 @@ void Rebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
 
 Float64 Rebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& rebar, Float64 fc)
 {
-   PRECONDITION(LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::SeventhEditionWith2015Interims);
+   PRECONDITION(BDSManager::GetEdition() < BDSManager::Edition::SeventhEditionWith2015Interims);
    PRECONDITION(0 < fc);
 
    Float64 dl=0.0;
@@ -140,7 +140,7 @@ Float64 Rebar::GetTensileDevelopmentLength(const WBFL::Materials::Rebar& rebar, 
    WBFL::Materials::Rebar::Size size = rebar.GetSize();
 
    // Equations taken from 5.11.2.1.1
-   if (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI)
+   if (BDSManager::GetUnits() == BDSManager::Units::SI)
    {
       Float64 ab_u = WBFL::Units::ConvertFromSysUnits(ab,WBFL::Units::Measure::Millimeter2);
       Float64 db_u = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Millimeter);
@@ -371,7 +371,7 @@ REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::R
    details.lambdaRl = 1.0; // initialize lambdas even though only used for 2015+
    details.lambdaLw = 1.0;
 
-   if ( LRFDVersionMgr::Version::SeventhEditionWith2015Interims <= LRFDVersionMgr::GetVersion())
+   if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition())
    {
       Float64 Ab = WBFL::Units::ConvertFromSysUnits(details.Ab,WBFL::Units::Measure::Inch2);
       Float64 db = WBFL::Units::ConvertFromSysUnits(details.db,WBFL::Units::Measure::Inch);
@@ -425,7 +425,7 @@ REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::R
       }
 
       // lightweight concrete factor
-      if ( LRFDVersionMgr::Version::SeventhEditionWith2016Interims <= LRFDVersionMgr::GetVersion())
+      if ( BDSManager::Edition::SeventhEditionWith2016Interims <= BDSManager::GetEdition())
       {
          if (type == WBFL::Materials::ConcreteType::UHPC)
             details.lambdaLw = 1.0; // GS 1.10.8.2.1
@@ -480,7 +480,7 @@ REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::R
       PRECONDITION(type != WBFL::Materials::ConcreteType::PCI_UHPC);
       PRECONDITION(type != WBFL::Materials::ConcreteType::UHPC);
 
-      if ( LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::US )
+      if ( BDSManager::GetUnits() == BDSManager::Units::US )
       {
          Float64 Ab = WBFL::Units::ConvertFromSysUnits(details.Ab,WBFL::Units::Measure::Inch2);
          Float64 db = WBFL::Units::ConvertFromSysUnits(details.db,WBFL::Units::Measure::Inch);

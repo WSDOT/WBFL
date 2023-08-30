@@ -31,16 +31,16 @@ namespace WBFL
 {
    namespace LRFD
    {
-      class LRFDVersionMgrListener;
+      class BDSManagerListener;
 
-      /// @brief LRFD specification manager. This class is a global manager of the
-      /// LRFD specification currently in use. LRFDVersionMgrListener objects may
+      /// @brief LRFD Bridge Design Specification (BDS) manager. This class is a global manager of the
+      /// LRFD specification currently in use. BDSManagerListener objects may
       /// be registered and will receive notifications when the specification changes
-      class LRFDCLASS LRFDVersionMgr
+      class LRFDCLASS BDSManager
       {
       public:
          /// @brief Identifies the specification edition
-         enum class Version { FirstEdition1994              = 1,
+         enum class Edition { FirstEdition1994              = 1,
                         // no interims in 1995
                         FirstEditionWith1996Interims  = 2,
                         FirstEditionWith1997Interims  = 3,
@@ -66,17 +66,17 @@ namespace WBFL
                         EighthEdition2017              = 22,
                         // AASHTO changed to a 3 year publication cycle, no interims
                         NinthEdition2020               = 23,
-                        LastVersion
+                        LastEdition
          };
 
          /// @brief Identifies the unit system of the specification. 
          /// AASHTO published dual US and SI LRFD specifications until 4th Edition 2007
          enum class Units { SI, US };
 
-         LRFDVersionMgr() = delete;
-         LRFDVersionMgr(const LRFDVersionMgr&) = delete;
-         LRFDVersionMgr& operator=(const LRFDVersionMgr&) = delete;
-         ~LRFDVersionMgr() = delete;
+         BDSManager() = delete;
+         BDSManager(const BDSManager&) = delete;
+         BDSManager& operator=(const BDSManager&) = delete;
+         ~BDSManager() = delete;
 
          /// @brief Sets the version manager into damage state. In damage state listeners are not notified of 
          /// changes until EndDamage is called
@@ -89,66 +89,62 @@ namespace WBFL
          static bool IsDamaged();
 
          /// @brief Registers a callback listener.
-         static void RegisterListener(LRFDVersionMgrListener* pListener);
+         static void RegisterListener(BDSManagerListener* pListener);
 
          /// @brief Unregisters a callback listener.
-         static void UnregisterListener(LRFDVersionMgrListener* pListener);
+         static void UnregisterListener(BDSManagerListener* pListener);
 
          /// @brief Returns the listener count
          static IndexType ListenerCount();
 
-         /// @brief Sets the current version of the LRFD specification.  Returns the previous version.
-         /// If the specification units are SI and version is set to 4th Edition 2007 or later, the
+         /// @brief Sets the edition of the LRFD specification.  Returns the previous edition.
+         /// If the specification units are SI and edition is set to 4th Edition 2007 or later, the
          /// units well be automatically set to US
-         static Version SetVersion(Version version);
+         static Edition SetEdition(Edition version);
 
-         /// @brief Returns the current version of the specification.
-         static Version GetVersion();
+         /// @brief Returns the selected edition of the specification.
+         static Edition GetEdition();
 
-         /// @brief Returns the must recent version
-         static Version GetLatestVersion();
+         /// @brief Returns the must recent edition
+         static Edition GetLatestEdition();
 
          /// @brief Sets the units of the specification.
-         /// If the specification version is 4th Edition 2007 or later, the units will automatically be set to US
+         /// If the specification edition is 4th Edition 2007 or later, the units will automatically be set to US
          static Units SetUnits(Units units);
 
          /// @brief Returns the units of the specification.
          static Units GetUnits();
 
          /// @brief Returns the name of the specification - "AASHTO LRFD Bridge Design Specification"
-         static LPCTSTR GetCodeString();
+         static LPCTSTR GetSpecificationName();
 
-         /// @brief Returns the current version of the specification as a string.
-         /// @param bAbbreviated If true, an abbreviated version is returned. The abbreviated version
+         /// @brief Returns the current edition of the specification as a string.
+         /// @param bAbbreviated If true, an abbreviated version is returned. The abbreviated edition
          /// is a single word useful as a key
-         static LPCTSTR GetVersionString(bool bAbbreviated=false);
+         static LPCTSTR GetEditionAsString(bool bAbbreviated=false);
 
-         /// @brief Returns the specified version of the specification as a string.
-         /// @param version The version for which a string is returned
-         /// @param bAbbreviated If true, an abbreviated version is returned. The abbreviated version
+         /// @brief Returns the specified edition of the specification as a string.
+         /// @param edition The edition for which a string is returned
+         /// @param bAbbreviated If true, an abbreviated edition is returned. The abbreviated edition
          /// is a single word useful as a key
-         static LPCTSTR GetVersionString(LRFDVersionMgr::Version version,bool bAbbreviated=false);
+         static LPCTSTR GetEditionAsString(BDSManager::Edition edition,bool bAbbreviated=false);
 
          /// @brief Returns the name of the specification unit system as a string.
-         static LPCTSTR GetUnitString();
+         static LPCTSTR GetUnitAsString();
 
          /// @brief Returns the version from the abbreviated version string
-         static Version GetVersion(LPCTSTR strAbbrev);
+         static Edition GetEdition(LPCTSTR strAbbrev);
 
       private:
-         static Version ms_Version;
+         static Edition ms_Edition;
          static Units   ms_Units;
-         static bool    ms_IsDamaged;
+         static bool    ms_bIsDamaged;
 
-         using Listeners = std::list<LRFDVersionMgrListener*, std::allocator<LRFDVersionMgrListener*>>;
+         using Listeners = std::list<BDSManagerListener*, std::allocator<BDSManagerListener*>>;
          static Listeners ms_Listeners;
 
          static void NotifyAllListeners();
       };
-
-      /// Function to support the 8th Edition, 2017 reorganization of chapter 5 of the Specifications
-      // The mapping document for this endeavor by AASHTO T10 was called "Crosswalk", hence the function name
-
 
       /// @brief Updates a specification reference number to the 8th Edition 2007 specification. 
       /// Chapter 5 of the 8th Edition 2017 specification was reorganized and the reference number for
@@ -158,9 +154,9 @@ namespace WBFL
       /// @param newArticleNumber The 8th Edition (and later) reference number
       /// @param version The version of the specification in use
       /// @return The reference number after applying the crosswalk
-      inline LPCTSTR LrfdCw8th(LPCTSTR oldArticleNumber, LPCTSTR newArticleNumber,LRFDVersionMgr::Version version=LRFDVersionMgr::GetVersion())
+      inline LPCTSTR LrfdCw8th(LPCTSTR oldArticleNumber, LPCTSTR newArticleNumber,BDSManager::Edition edition =BDSManager::GetEdition())
       {
-         return (version < LRFDVersionMgr::Version::EighthEdition2017) ? oldArticleNumber : newArticleNumber;
+         return (edition < BDSManager::Edition::EighthEdition2017) ? oldArticleNumber : newArticleNumber;
       }
    };
 };

@@ -25,7 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\ApproximateLosses2005.h>
 #include <Lrfd\ElasticShortening.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
@@ -123,7 +123,7 @@ Float64 ApproximateLosses2005::PermanentStrand_RelaxationLossesAtXfer() const
 Float64 ApproximateLosses2005::RelaxationLossesAtXfer(bool bPerm) const
 {
    Float64 loss = 0;
-   bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+   bool is_si = (BDSManager::GetUnits() == BDSManager::Units::SI);
    WBFL::Materials::PsStrand::Type type = (bPerm ? m_TypePerm : m_TypeTemp);
    if ( type == WBFL::Materials::PsStrand::Type::LowRelaxation )
    {
@@ -133,7 +133,7 @@ Float64 ApproximateLosses2005::RelaxationLossesAtXfer(bool bPerm) const
       }
       else
       {
-         if ( LRFDVersionMgr::Version::FourthEdition2007 <= LRFDVersionMgr::GetVersion() )
+         if ( BDSManager::Edition::FourthEdition2007 <= BDSManager::GetEdition() )
          {
             loss = WBFL::Units::ConvertToSysUnits(2.4,WBFL::Units::Measure::KSI);
          }
@@ -313,7 +313,7 @@ Float64 ApproximateLosses2005::GetHumidityFactor() const
 
 Float64 ApproximateLosses2005::GetStrengthFactor() const
 {
-   bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+   bool is_si = (BDSManager::GetUnits() == BDSManager::Units::SI);
    if ( is_si )
    {
       return 35/(7 + WBFL::Units::ConvertFromSysUnits(m_Fci,WBFL::Units::Measure::MPa));
@@ -327,12 +327,12 @@ Float64 ApproximateLosses2005::GetStrengthFactor() const
 void ApproximateLosses2005::ValidateParameters() const
 {
    // need to make sure spec version is ok
-   if ( LRFDVersionMgr::GetVersion() < LRFDVersionMgr::Version::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       WBFL_LRFD_THROW(XPsLosses,Specification);
    }
 
-   bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+   bool is_si = (BDSManager::GetUnits() == BDSManager::Units::SI);
    // Use a values that are just out of spec to avoid throwing for boundary values
    // that have a little round-off error in them.
    // 5.4.2.1 - Sets limits between 4 and 10KSI, but allows greater than 10 KSI when specific articles permit it
@@ -341,7 +341,7 @@ void ApproximateLosses2005::ValidateParameters() const
    Float64 fcMax = (is_si ? WBFL::Units::ConvertToSysUnits(105.05,WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(15.05,WBFL::Units::Measure::KSI) );
 
    // LRFD 2009 limits approximate stresses per 5.9.5.3 to 10 KSI
-   if ( LRFDVersionMgr::Version::FourthEditionWith2009Interims <= LRFDVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::FourthEditionWith2009Interims <= BDSManager::GetEdition() )
    {
       fcMax = (is_si ? WBFL::Units::ConvertToSysUnits(69.05,WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(10.05,WBFL::Units::Measure::KSI) );
    }
@@ -367,7 +367,7 @@ void ApproximateLosses2005::UpdateLongTermLosses() const
       Float64 gamma_H = GetHumidityFactor();
       Float64 gamma_ST = GetStrengthFactor();
 
-      bool is_si = (LRFDVersionMgr::GetUnits() == LRFDVersionMgr::Units::SI);
+      bool is_si = (BDSManager::GetUnits() == BDSManager::Units::SI);
       Float64 fpj = (m_ApsPerm*m_FpjPerm+m_ApsTemp*m_FpjTemp)/(m_ApsPerm+m_ApsTemp);
       Float64 dfpR0 = (m_ApsTemp*m_dfpR0[TEMPORARY_STRAND] + m_ApsPerm*m_dfpR0[PERMANENT_STRAND])/(m_ApsPerm+m_ApsTemp);
       if ( is_si )
