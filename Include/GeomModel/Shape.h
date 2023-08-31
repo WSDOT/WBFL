@@ -25,6 +25,7 @@
 
 #include <GeomModel/GeomModelExp.h>
 #include <GeomModel/Line2d.h>
+#include <memory>
 
 namespace WBFL
 {

@@ -314,7 +314,7 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
             try
             {
                CComPtr<IFem2dPointLoad> ptLoad;
-               CollectionIndexType count;
+               IndexType count;
                pointLoads->get_Count(&count);
                pointLoads->Create(count,dlg.m_MbrID,dlg.m_Location,dlg.m_Fx,dlg.m_Fy,dlg.m_Mz,lotGlobal,&ptLoad);
             }
@@ -365,7 +365,7 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
 
       CComPtr<IFem2dPointLoadCollection> ptLoads;
       loading->get_PointLoads(&ptLoads);
-      CollectionIndexType id;
+      IndexType id;
       ptLoads->get_Count(&id);
 
       try

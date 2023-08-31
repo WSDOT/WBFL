@@ -48,9 +48,9 @@ BOOL CPoiListPage::OnInitDialog()
    CComPtr<IFem2dPOICollection> POIs;
    pParent->m_pFem2d->get_POIs(&POIs);
 
-   CollectionIndexType nPoi;
+   IndexType nPoi;
    POIs->get_Count(&nPoi);
-   for ( CollectionIndexType poiIdx = 0; poiIdx < nPoi; poiIdx++ )
+   for ( IndexType poiIdx = 0; poiIdx < nPoi; poiIdx++ )
    {
       CComPtr<IFem2dPOI> poi;
       POIs->get_Item(poiIdx,&poi);

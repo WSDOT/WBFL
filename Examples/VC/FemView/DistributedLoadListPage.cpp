@@ -57,18 +57,18 @@ BOOL CDistributedLoadListPage::OnInitDialog()
    CString strDirection[] = {_T("X"),_T("Y")};
 
    int listIdx = 0;
-   CollectionIndexType nLoadings;
+   IndexType nLoadings;
    loadings->get_Count(&nLoadings);
-   for ( CollectionIndexType idx = 0; idx < nLoadings; idx++ )
+   for ( IndexType idx = 0; idx < nLoadings; idx++ )
    {
       CComPtr<IFem2dLoading> loading;
       loadings->get_Item(idx,&loading);
 
       CComPtr<IFem2dDistributedLoadCollection> loads;
       loading->get_DistributedLoads(&loads);
-      CollectionIndexType nLoads;
+      IndexType nLoads;
       loads->get_Count(&nLoads);
-      for ( CollectionIndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
+      for ( IndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
       {
          CComPtr<IFem2dDistributedLoad> load;
          loads->get_Item(ldIdx,&load);

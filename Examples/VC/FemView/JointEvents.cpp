@@ -286,7 +286,7 @@ void CJointEvents::DeleteJoint(IDType jntID)
    CComPtr<IIDArray> mbrIDs;
    joint->get_Members(&mbrIDs);
 
-   CollectionIndexType count;
+   IndexType count;
    mbrIDs->get_Count(&count);
    if ( count == 0 )
    {

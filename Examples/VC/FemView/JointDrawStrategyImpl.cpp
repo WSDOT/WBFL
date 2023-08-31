@@ -88,9 +88,9 @@ STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::DrawDragImage(iP
    CComPtr<IIDArray> mbrIDs;
    joint->get_Members(&mbrIDs);
 
-   CollectionIndexType count;
+   IndexType count;
    mbrIDs->get_Count(&count);
-   for ( CollectionIndexType i = 0; i < count; i++ )
+   for ( IndexType i = 0; i < count; i++ )
    {
       MemberIDType mbrID;
       mbrIDs->get_Item(i,&mbrID);

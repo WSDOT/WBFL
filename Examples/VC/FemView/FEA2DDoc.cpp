@@ -215,9 +215,9 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("JOINT COORDINATES GLOBAL") << std::endl;
    CComPtr<IFem2dJointCollection> joints;
    m_Model->get_Joints(&joints);
-   CollectionIndexType nJoints;
+   IndexType nJoints;
    joints->get_Count(&nJoints);
-   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
       CComPtr<IFem2dJoint> joint;
       joints->get_Item(jntIdx,&joint);
@@ -235,7 +235,7 @@ void CFEA2DDoc::OnGTStrudl()
 
    // Status Support
    ofile << _T("STATUS SUPPORT");
-   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
       CComPtr<IFem2dJoint> joint;
       joints->get_Item(jntIdx,&joint);
@@ -255,7 +255,7 @@ void CFEA2DDoc::OnGTStrudl()
 
    // Joint Releases
    ofile << _T("JOINT RELEASES") << std::endl;
-   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
       CComPtr<IFem2dJoint> joint;
       joints->get_Item(jntIdx,&joint);
@@ -300,9 +300,9 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("MEMBER INCIDENCES") << std::endl;
    CComPtr<IFem2dMemberCollection> members;
    m_Model->get_Members(&members);
-   CollectionIndexType nMembers;
+   IndexType nMembers;
    members->get_Count(&nMembers);
-   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
+   for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
       CComPtr<IFem2dMember> member;
       members->get_Item(mbrIdx,&member);
@@ -319,7 +319,7 @@ void CFEA2DDoc::OnGTStrudl()
 
    // Member Releases
    ofile << _T("MEMBER RELEASES") << std::endl;
-   for (CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
+   for (IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
    {
       CComPtr<IFem2dMember> member;
       members->get_Item(mbrIdx, &member);
@@ -375,7 +375,7 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("$ WSDOT Internal FEM model has EA and EI. Strudl wants E, A, and I.") << std::endl;
    ofile << _T("$ The properties below for A are really EA (kip) and I are really EI (kip*in^2).") << std::endl;
    ofile << _T("$ E will be set to 1.0 below.") << std::endl;
-   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
+   for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
       CComPtr<IFem2dMember> member;
       members->get_Item(mbrIdx,&member);
@@ -410,9 +410,9 @@ void CFEA2DDoc::OnGTStrudl()
    CComPtr<IFem2dLoadingCollection> loadings;
    m_Model->get_Loadings(&loadings);
 
-   CollectionIndexType nLoadings;
+   IndexType nLoadings;
    loadings->get_Count(&nLoadings);
-   for ( CollectionIndexType ldIdx = 0; ldIdx < nLoadings; ldIdx++ )
+   for ( IndexType ldIdx = 0; ldIdx < nLoadings; ldIdx++ )
    {
       CComPtr<IFem2dLoading> loading;
       loadings->get_Item(ldIdx,&loading);
@@ -426,10 +426,10 @@ void CFEA2DDoc::OnGTStrudl()
       CComPtr<IFem2dDistributedLoadCollection> distLoads;
       loading->get_DistributedLoads(&distLoads);
 
-      CollectionIndexType nLoads;
+      IndexType nLoads;
       distLoads->get_Count(&nLoads);
 
-      for ( CollectionIndexType idx = 0; idx < nLoads; idx++ )
+      for ( IndexType idx = 0; idx < nLoads; idx++ )
       {
          CComPtr<IFem2dDistributedLoad> load;
          distLoads->get_Item(idx,&load);
@@ -467,7 +467,7 @@ void CFEA2DDoc::OnGTStrudl()
 
       pointLoads->get_Count(&nLoads);
 
-      for ( CollectionIndexType idx = 0; idx < nLoads; idx++ )
+      for ( IndexType idx = 0; idx < nLoads; idx++ )
       {
          CComPtr<IFem2dPointLoad> load;
          pointLoads->get_Item(idx,&load);
