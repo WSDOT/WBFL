@@ -4,7 +4,7 @@ Organize numeric tests so that they follow the points on a numberline. In genera
 
 ~~~
 MinElmts <= i && i <= MaxElmts
-i < MinElmts || MaxElmts < 1
+i < MinElmts || MaxElmts < i
 ~~~
 
 The idea is to order the elements left to right, from smallest to largest. In the first line, _MinElmts_ and _MaxElmts_ are the two endpoints, so they go at the ends. The variable _i_ is supposed to be between them, so it goes in the middle. In the second example, you're testing whether _i_ is ouside the range, so _i_ goes on the outside of the test at either end and _MinElmts_ and _MaxElmts_ go on the inside. This approach maps easily to a visual image of the comparison.

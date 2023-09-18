@@ -1,5 +1,7 @@
 # Returning Multiple Values {#WBFL_Returning_Multiple_Values}
 
+https://cpppatterns.com/patterns/return-multiple-values.html
+
 C++ functions return a single value. In older style programming, multiple return values were handled in a function's argument list with pointers or references. 
 
 An example of using pointers for return values is:
@@ -20,7 +22,13 @@ void WBFL::Geometry::Point::Location(Float64* pX,Float64* pY) const
 }
 ~~~~~~~~~~~
 
-The problem with this implementation is that it can be called with invalid pointers leading to undefined behavior. A more robust implementation would validate the pointers and throw exceptions to signal errors.
+The problem with this implementation is that it can be called with invalid pointers leading to undefined behavior. A more robust implementation would validate the pointers and throw exceptions to signal errors. For example
+~~~
+WBFL::Geometry::Point point;
+point.Location(nullptr,nullptr);
+~~~
+
+This is a perfectly valid method call, but will crash the program. Extra programming is required to guard against this situation.
 
 An example of using references for return values is:
 ~~~~
@@ -57,10 +65,17 @@ std::pair<Float64,Float64> WBFL::Geometry::Point::Location() const
    return std::make_pair(m_X,m_Y);
 }
 ~~~
+ or 
+~~~
+std::pair<Float64,Float64> WBFL::Geometry::Point::Location() const
+{
+   return {m_X,m_Y};
+}
+~~~
 
 > Note: `std::pair` is automatically converted to `std::tuple` so they are essentinally interchangable.
 
-Calling functions can use *structured bindings* or `std::tie` objects to relate the elements of the returned `std::pair` or `std::tuple` to individual, and well named, parameters. Here is an example for the `Point` class
+Calling functions can use *structured bindings* (https://en.cppreference.com/w/cpp/language/structured_binding) or `std::tie` objects to relate the elements of the returned `std::pair` or `std::tuple` to individual, and well named, parameters. Here is an example for the `Point` class
 
 ~~~
    Point p(10,10);
@@ -81,14 +96,14 @@ Calling functions can use *structured bindings* or `std::tie` objects to relate 
    std::cout << "X = " << x << ", Y = " << y << std::endl;
 ~~~
 
-One problem with structured bindings and `std::tie` is the return values and the order they occur lack contextual meaing. This is especially true for methods that return more than about 3 or 4 parameters. In these situations consider returning a struct or class so the returned values have context.
+One problem with structured bindings and `std::tie` is the return values and the order they occur lack contextual meaning. This is especially true for methods that return more than about 3 or 4 parameters. In these situations consider returning a struct or class so the returned values have context.
 
 
 Structured bindings can also be used to bind variables from structures as show in this example.
 ~~~
-   struct Values {Float64 x, Uint32 y, WBFL::Geometry::Point z};
+   struct Values {Float64 u, Uint32 w, WBFL::Geometry::Point z};
    Values v{10.0,20,{15.0,15.0}};
-   auto [a,b,c] = values;
+   auto& [a,b,c] = values; // binds u to a, w to b, and z to c by reference
    std::cout << "X = " << c.X() << ", Y = " << c.Y() << std::endl;
 ~~~
 
@@ -104,7 +119,7 @@ Structred bindings make looping over maps more readable
 
    auto [iter,bSucceeded] = m_insert(std::make_pair(4,40.0)); // returns iterator and bool
    CHECK(bSucceeded);
-   CHECK(iter->first == 40));
+   CHECK(iter->first == 4));
    CHECK(IsEqual(iter->second,40.0));
 
    // structured bindings make looping over the elements of a std::map more readable 
