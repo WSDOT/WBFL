@@ -67,10 +67,9 @@ void UniformFDMesh::SetElementSize(Float64 dx, Float64 dy)
    m_Dy = dy;
 }
 
-void UniformFDMesh::GetElementSize(Float64* pdx, Float64* pdy) const
+std::pair<Float64,Float64> UniformFDMesh::GetElementSize() const
 {
-   *pdx = m_Dx;
-   *pdy = m_Dy;
+   return { m_Dx,m_Dy };
 }
 
 Float64 UniformFDMesh::GetElementArea() const
@@ -107,17 +106,15 @@ IndexType UniformFDMesh::GetElementRowCount() const
    return m_vGridRows.size();
 }
 
-void UniformFDMesh::GetElementRange(IndexType gridRowIdx, IndexType* pGridRowStartIdx, IndexType* pFirstElementIdx, IndexType* pLastElementIdx) const
+std::tuple<IndexType, IndexType, IndexType> UniformFDMesh::GetElementRange(IndexType gridRowIdx) const
 {
    const auto& gridRow(m_vGridRows[gridRowIdx]);
-   *pGridRowStartIdx = gridRow.gridRowStartIdx;
-   *pFirstElementIdx = gridRow.firstElementIdx;
-   *pLastElementIdx = *pFirstElementIdx + gridRow.nElements - 1;
+   return { gridRow.gridRowStartIdx, gridRow.firstElementIdx, gridRow.firstElementIdx + gridRow.nElements - 1 };
 }
 
-void UniformFDMesh::GetElementPosition(IndexType elementIdx, IndexType* pGridRowIdx, IndexType* pGridRowPositionIdx) const
+std::pair<IndexType, IndexType> UniformFDMesh::GetElementPosition(IndexType elementIdx) const
 {
-   *pGridRowIdx = 0; // keep track of the rows
+   IndexType gridRowIdx = 0; // keep track of the rows
    for (const auto& gridRow : m_vGridRows)
    {
       if (gridRow.ContainsElement(elementIdx))
@@ -125,11 +122,11 @@ void UniformFDMesh::GetElementPosition(IndexType elementIdx, IndexType* pGridRow
          // element is contained in the row
 
          IndexType d = elementIdx - gridRow.firstElementIdx; // element count from first element to current element
-         *pGridRowPositionIdx = gridRow.gridRowStartIdx + d; // position of the element from the start of the grid row
-         return;
+         IndexType gridRowPositionIdx = gridRow.gridRowStartIdx + d; // position of the element from the start of the grid row
+         return { gridRowIdx, gridRowPositionIdx };
       }
 
-      (*pGridRowIdx)++;
+      gridRowIdx++;
    }
 
    std::ostringstream os;

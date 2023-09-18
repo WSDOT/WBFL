@@ -58,10 +58,9 @@ Float64 PrandtlMembraneSolution::GetJ() const
    return m_J;
 }
 
-void PrandtlMembraneSolution::GetMaxSlope(Float64* pMaxSlope, IndexType* pElementIdx) const
+std::pair<Float64,IndexType> PrandtlMembraneSolution::GetMaxSlope() const
 {
-   *pMaxSlope = m_MaxSlope;
-   *pElementIdx = m_ElementIndex;
+   return { m_MaxSlope, m_ElementIndex };
 }
 
 Float64 PrandtlMembraneSolution::GetTmaxPerUnitTorque() const
@@ -84,11 +83,9 @@ const std::vector<Float64>& PrandtlMembraneSolution::GetFiniteDifferenceSolution
 WBFL::Geometry::Rectangle PrandtlMembraneSolution::GetMeshElement(IndexType elementIdx) const
 {
    // top left corner is at (0,0)
-   Float64 dx, dy;
-   m_Mesh->GetElementSize(&dx, &dy);
+   auto [dx, dy] = m_Mesh->GetElementSize();
 
-   IndexType gridRowIdx, gridRowPositionIdx;
-   m_Mesh->GetElementPosition(elementIdx, &gridRowIdx, &gridRowPositionIdx);
+   auto [gridRowIdx, gridRowPositionIdx] = m_Mesh->GetElementPosition(elementIdx);
    Float64 x = gridRowPositionIdx * dx;
    Float64 y = -1.0 * gridRowIdx * dy;
 

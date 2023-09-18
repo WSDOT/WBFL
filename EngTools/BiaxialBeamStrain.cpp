@@ -64,31 +64,27 @@ Float64 BiaxialBeamStrain::GetAxialStrain(Float64 x, Float64 y) const
 }
 
 
-bool BiaxialBeamStrain::GetXStrainLocation(Float64 Strain, Float64 Y, Float64& X) const
+std::pair<Float64,bool> BiaxialBeamStrain::GetXStrainLocation(Float64 strain, Float64 Y) const
 {
    try
    {
-      X = m_Plane.GetX(Y, Strain);
-      return true;
+      return { m_Plane.GetX(Y, strain), true };
    }
    catch(...)
    {
-      X = -99999999;
-      return false;
+      return { -99999999, false };
    }
 }
 
-bool BiaxialBeamStrain::GetYStrainLocation(Float64 Strain, Float64 X, Float64& Y) const
+std::pair<Float64, bool> BiaxialBeamStrain::GetYStrainLocation(Float64 strain, Float64 X) const
 {
    try
    {
-      Y = m_Plane.GetY(X, Strain);
-      return true;
+      return { m_Plane.GetY(X, strain), true };
    }
    catch (...)
    {
-      Y = -999999999;
-      return false;
+      return { -999999999, false };
    }
 }
 

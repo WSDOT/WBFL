@@ -147,6 +147,9 @@
     <ClInclude Include="..\Include\Stability\OneEndSeatedStabilityReporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Stability\ControllingCases.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Stability.def" />

@@ -154,8 +154,7 @@ void BuildMatrix(const std::unique_ptr<UniformFDMesh>& mesh, WBFL::Math::Unsymme
 void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const std::unique_ptr<UniformFDMesh>& mesh, WBFL::Math::UnsymmetricBandedMatrix& matrix)
 {
    // compute constants that are the same for all rows
-   Float64 Dx, Dy;
-   mesh->GetElementSize(&Dx, &Dy);
+   auto [Dx, Dy] = mesh->GetElementSize();
    Float64 R2 = pow(Dy / Dx, 2);
    Float64 K0 = 0.5 * (1 + R2);
    Float64 K13 = -0.25;
@@ -173,8 +172,7 @@ void BuildMatrixRow(IndexType startMeshRowIdx, IndexType endMeshRowIdx, const st
 
    for (IndexType meshRowIdx = startMeshRowIdx; meshRowIdx <= endMeshRowIdx; meshRowIdx++)
    {
-      IndexType gridRowStartIdx, startElementIdx, endElementIdx;
-      mesh->GetElementRange(meshRowIdx, &gridRowStartIdx, &startElementIdx, &endElementIdx);
+      auto [gridRowStartIdx, startElementIdx, endElementIdx] = mesh->GetElementRange(meshRowIdx);
       if (bIsSymmetric)
       {
          // the loop below doesn't cover the last element in the row because, for full grids
@@ -240,8 +238,7 @@ std::tuple<Float64, Float64, WBFL::Geometry::Vector2d> PrandtlMembraneSolver::Ge
    Float64 maxSlope = -Float64_Max;
    WBFL::Geometry::Vector2d shear_stress_direction;
 
-   Float64 dx, dy;
-   mesh->GetElementSize(&dx, &dy);
+   auto [dx, dy] = mesh->GetElementSize();
 
    const auto* pElement = mesh->GetElement(elementIndex);
    auto nInteriorNodes = std::count_if(pElement->Node.begin(), pElement->Node.end(), [](auto idx) {return idx != INVALID_INDEX; });

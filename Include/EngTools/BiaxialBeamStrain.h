@@ -77,16 +77,14 @@ namespace WBFL
          /// Given a strain and Y-ordinate, returns the corresponding X-ordinate. 
          /// \param[in] strain the strain
          /// \param[in] Y the Y-ordinate
-         /// \param[out] X the X-ordinate
-         /// \return true if successful
-         bool GetXStrainLocation(Float64 strain, Float64 Y, Float64& X) const;
+         /// \return the X-ordinate and a boolean indicating success.
+         std::pair<Float64,bool> GetXStrainLocation(Float64 strain, Float64 Y) const;
 
          /// Given a strain and X-ordinate, returns the corresponding Y-ordinate. 
          /// \param[in] strain the strain
          /// \param[in] X the X-ordinate
-         /// \param[out] Y the Y-ordinate
-         /// \return true if successful
-         bool GetYStrainLocation(Float64 strain, Float64 X, Float64& Y) const;
+         /// \return the Y-ordinate and a boolean indicating success.
+         std::pair<Float64,bool> GetYStrainLocation(Float64 strain, Float64 X) const;
 
       private:
          WBFL::Geometry::Plane3d m_Plane;

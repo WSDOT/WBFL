@@ -57,7 +57,7 @@ namespace WBFL
 
          void AllocateElementRows(IndexType nRows); ///< Allocates element rows for the mesh. This must be called prior to calling AddElements()
          void SetElementSize(Float64 dx, Float64 dy); ///< Sets the size of the mesh elements
-         void GetElementSize(Float64* pdx, Float64* pdy) const; ///< Gets the size of the mesh elements
+         std::pair<Float64,Float64> GetElementSize() const; ///< Gets the size of the mesh elements (dx,dy)
          Float64 GetElementArea() const; ///< Returns the area of a single mesh element
          Float64 GetMeshArea() const; ///< Returns the total mesh area
 
@@ -76,13 +76,17 @@ namespace WBFL
 
 
          /// Gets the range of element indices in a row
-         void GetElementRange(IndexType gridRowIdx, ///<[in] grid row for which to get the element range
-            IndexType* pGridRowStartIdx, ///<[out] index within the grid row where the first element is located
-            IndexType* pFirstElementIdx, ///<[out] global index of the first element in the row
-            IndexType* pLastElementIdx ///<[out] global index of the last element in the row
-         ) const;
+         /// \param gridRowIdx grid row for which to get the element range
+         /// \return GridRowStartIdx, FirstElementIdx, LastElementIdx
+         /// GridRowStartIdx = index within the grid row where the first element is located
+         /// FirstElementIdx = global index of the first element in the row
+         /// LastElementIdx = global index of the last element in the row
+         std::tuple<IndexType,IndexType,IndexType> GetElementRange(IndexType gridRowIdx) const;
 
-         void GetElementPosition(IndexType elementIdx, IndexType* pGridRowIdx, IndexType* pGridRowPositionIdx) const;
+         /// @brief Gets the position of an element
+         /// @param elementIdx 
+         /// @return GridRowIdx, GridRowPositionIdx
+         std::pair<IndexType,IndexType> GetElementPosition(IndexType elementIdx) const;
 
          IndexType GetElementCount() const; ///< Returns the total number of elements in the mesh
          IndexType GetInteriorNodeCount() const; ///< Returns the number of interior nodes

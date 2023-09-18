@@ -51,8 +51,10 @@ const HaulingCriteria& HaulingCheckArtifact::GetCriteria() const
    return m_Criteria;
 }
 
-void HaulingCheckArtifact::GetControllingTensionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const
+ControllingTensionCase HaulingCheckArtifact::GetControllingTensionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult) const
 {
+   ControllingTensionCase controlling_case;
+
    Float64 Fallow;
    Float64 CD = Float64_Max;
    for (int i = 0; i < 3; i++)
@@ -69,13 +71,11 @@ void HaulingCheckArtifact::GetControllingTensionCase(HaulingSlope slope, const H
          Float64 fAllow = GetAllowableTension(slope, sectionResult, impact, wind);
 #endif
 
-         Float64 cd;
-         Corner corner;
-         corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Positive,
+         auto [cd, corner] = WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Positive,
             fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::TopLeft],
             fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::TopRight],
             fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomLeft],
-            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomRight], &cd);
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomRight]);
 
          if ((i == 0 && w == 0) || // this is the first time so this cd wins
             (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -83,35 +83,34 @@ void HaulingCheckArtifact::GetControllingTensionCase(HaulingSlope slope, const H
             )
          {
             CD = cd;
-            *pImpact = impact;
-            *pWind = wind;
-            *pCorner = corner;
+            controlling_case.impact = impact;
+            controlling_case.wind = wind;
+            controlling_case.corner = (Corner)corner;
             Fallow = fAllow;
          }
       }
    }
 
-   *pfAllow = Fallow;
-   *pbPassed = (::IsLE(sectionResult.f[+slope][+(*pImpact)][+(*pWind)][+(*pCorner)], *pfAllow));
-
-   *pCD = CD;
+   controlling_case.stress_limit = Fallow;
+   controlling_case.bPassed = (::IsLE(sectionResult.f[+slope][+(controlling_case.impact)][+(controlling_case.wind)][+(controlling_case.corner)], controlling_case.stress_limit));
+   controlling_case.CD = CD;
+   return controlling_case;
 }
 
-void HaulingCheckArtifact::GetControllingGlobalCompressionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const
+ControllingGlobalCompressionCase HaulingCheckArtifact::GetControllingGlobalCompressionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult) const
 {
+   ControllingGlobalCompressionCase controlling_case;
    Float64 fAllow = m_Criteria.AllowableCompression_GlobalStress;
    Float64 CD = Float64_Max;
    for (int i = 0; i < 3; i++)
    {
       ImpactDirection impact = (ImpactDirection)i;
 
-      Float64 cd;
-      Corner corner;
-      corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
+      auto [cd, corner] = WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
          fAllow, sectionResult.fDirect[+slope][+impact][+Corner::TopLeft],
          fAllow, sectionResult.fDirect[+slope][+impact][+Corner::TopRight],
          fAllow, sectionResult.fDirect[+slope][+impact][+Corner::BottomLeft],
-         fAllow, sectionResult.fDirect[+slope][+impact][+Corner::BottomRight], &cd);
+         fAllow, sectionResult.fDirect[+slope][+impact][+Corner::BottomRight]);
 
       if ((i == 0) || // this is the first time so this cd wins
          (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -119,19 +118,20 @@ void HaulingCheckArtifact::GetControllingGlobalCompressionCase(HaulingSlope slop
          )
       {
          CD = cd;
-         *pImpact = impact;
-         *pCorner = corner;
+         controlling_case.impact = impact;
+         controlling_case.corner = (Corner)corner;
       }
    }
 
-   *pfAllow = fAllow;
-   *pbPassed = (::IsLT(*pfAllow, sectionResult.fDirect[+slope][+(*pImpact)][+(*pCorner)]));
-
-   *pCD = CD;
+   controlling_case.stress_limit = fAllow;
+   controlling_case.bPassed = (::IsLT(controlling_case.stress_limit, sectionResult.fDirect[+slope][+(controlling_case.impact)][+(controlling_case.corner)]));
+   controlling_case.CD = CD;
+   return controlling_case;
 }
 
-void HaulingCheckArtifact::GetControllingPeakCompressionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const
+ControllingPeakCompressionCase HaulingCheckArtifact::GetControllingPeakCompressionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult) const
 {
+   ControllingPeakCompressionCase controlling_case;
    Float64 fAllow = m_Criteria.AllowableCompression_PeakStress;
    Float64 CD = Float64_Max;
    for (int i = 0; i < 3; i++)
@@ -140,13 +140,11 @@ void HaulingCheckArtifact::GetControllingPeakCompressionCase(HaulingSlope slope,
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
-         Float64 cd;
-         Corner corner;
-         corner = (Corner)WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
+         auto [cd,corner] = WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
             fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::TopLeft],
             fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::TopRight],
             fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomLeft],
-            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomRight], &cd);
+            fAllow, sectionResult.f[+slope][+impact][+wind][+Corner::BottomRight]);
 
          if ((i == 0 && w == 0) || // this is the first time so this cd wins
             (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -154,17 +152,17 @@ void HaulingCheckArtifact::GetControllingPeakCompressionCase(HaulingSlope slope,
             )
          {
             CD = cd;
-            *pImpact = impact;
-            *pWind = wind;
-            *pCorner = corner;
+            controlling_case.impact = impact;
+            controlling_case.wind = wind;
+            controlling_case.corner = (Corner)corner;
          }
       }
    }
 
-   *pfAllow = fAllow;
-   *pbPassed = (::IsLT(*pfAllow, sectionResult.f[+slope][+(*pImpact)][+(*pWind)][+(*pCorner)]));
-
-   *pCD = CD;
+   controlling_case.stress_limit = fAllow;
+   controlling_case.bPassed = (::IsLT(controlling_case.stress_limit, sectionResult.f[+slope][+(controlling_case.impact)][+(controlling_case.wind)][+(controlling_case.corner)]));
+   controlling_case.CD = CD;
+   return controlling_case;
 }
 
 bool HaulingCheckArtifact::Passed(bool bIgnoreConfigurationLimits) const

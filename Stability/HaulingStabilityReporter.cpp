@@ -330,13 +330,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
          const auto& pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
          (*pStressTable)(row,col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength,offset,false));
 
-         ImpactDirection impact;
-         WindDirection wind;
-         Corner corner;
-         Float64 fAllow;
-         bool bPassed;
-         Float64 cd;
-         pArtifact->GetControllingTensionCase(slope,sectionResult,&impact,&wind,&corner,&fAllow,&bPassed,&cd);
+         auto [impact, wind, corner, fAllow, bPassed, cd] = pArtifact->GetControllingTensionCase(slope,sectionResult);
 
          Float64 f = sectionResult.f[+slope][+impact][+wind][+corner];
 
@@ -378,15 +372,15 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
             LPCTSTR strLocation;
             if (i == 0)
             {
-               pArtifact->GetControllingPeakCompressionCase(slope, sectionResult, &impact, &wind, &corner, &fAllow, &bPassed, &cd);
-               f = sectionResult.f[+slope][+impact][+wind][+corner];
-               strLocation = strCorner[+corner];
+               auto controlling_case = pArtifact->GetControllingPeakCompressionCase(slope, sectionResult);
+               f = sectionResult.f[+slope][+controlling_case.impact][+controlling_case.wind][+controlling_case.corner];
+               strLocation = strCorner[+controlling_case.corner];
             }
             else
             {
-               pArtifact->GetControllingGlobalCompressionCase(slope, sectionResult, &impact, &corner, &fAllow, &bPassed, &cd);
-               f = sectionResult.fDirect[+slope][+impact][+corner];
-               strLocation = strFace[+GetFace(corner)];
+               auto controlling_case = pArtifact->GetControllingGlobalCompressionCase(slope, sectionResult);
+               f = sectionResult.fDirect[+slope][+controlling_case.impact][+controlling_case.corner];
+               strLocation = strFace[+GetFace(controlling_case.corner)];
             }
 
             if (i == 1) (*pStressTable)(row, col) << rptNewLine;

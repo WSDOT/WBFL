@@ -54,9 +54,8 @@ namespace WBFL
          /// @param[in] demand3 demand for third C/D ratio
          /// @param[in] capacity4 capacity for fourth C/D ratio
          /// @param[in] demand4 demand for fourth C/D ratio
-         /// @param[out] pCD The minimum C/D ratio
-         /// @return Returns the index of the controlling C/D ratio
-         static int MinCDRatio(Sense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4,Float64* pCD);
+         /// @return Returns the minimum C/D ratio and the index of the controlling C/D ratio
+         static std::pair<Float64,int> MinCDRatio(Sense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4);
       };
    };
 };

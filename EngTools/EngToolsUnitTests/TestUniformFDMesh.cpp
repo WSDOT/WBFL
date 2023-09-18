@@ -35,36 +35,34 @@ namespace EngToolsUnitTests
 			Assert::AreEqual((IndexType)9, mesh.GetInteriorNodeCount());
 			Assert::AreEqual((IndexType)3, mesh.GetMaxIntriorNodesPerRow());
 
-			IndexType gridRowStartIdx, firstElementIdx, lastElementIdx;
-			mesh.GetElementRange(0, &gridRowStartIdx, &firstElementIdx, &lastElementIdx);
+			auto [gridRowStartIdx, firstElementIdx, lastElementIdx] = mesh.GetElementRange(0);
 			Assert::AreEqual((IndexType)1, gridRowStartIdx);
 			Assert::AreEqual((IndexType)0, firstElementIdx);
 			Assert::AreEqual((IndexType)2, lastElementIdx);
 
-			mesh.GetElementRange(2, &gridRowStartIdx, &firstElementIdx, &lastElementIdx);
+			std::tie(gridRowStartIdx, firstElementIdx, lastElementIdx) = mesh.GetElementRange(2);
 			Assert::AreEqual((IndexType)0, gridRowStartIdx);
 			Assert::AreEqual((IndexType)6, firstElementIdx);
 			Assert::AreEqual((IndexType)9, lastElementIdx);
 
-			mesh.GetElementRange(5, &gridRowStartIdx, &firstElementIdx, &lastElementIdx);
+			std::tie(gridRowStartIdx, firstElementIdx, lastElementIdx) = mesh.GetElementRange(5);
 			Assert::AreEqual((IndexType)0, gridRowStartIdx);
 			Assert::AreEqual((IndexType)16, firstElementIdx);
 			Assert::AreEqual((IndexType)19, lastElementIdx);
 
-			IndexType gridRowIdx, gridRowPositionIdx;
-			mesh.GetElementPosition(0, &gridRowIdx, &gridRowPositionIdx);
+			auto [gridRowIdx,gridRowPositionIdx] = mesh.GetElementPosition(0);
 			Assert::AreEqual((IndexType)0, gridRowIdx);
 			Assert::AreEqual((IndexType)1, gridRowPositionIdx);
 
-			mesh.GetElementPosition(10, &gridRowIdx, &gridRowPositionIdx);
+			std::tie(gridRowIdx, gridRowPositionIdx) = mesh.GetElementPosition(10);
 			Assert::AreEqual((IndexType)3, gridRowIdx);
 			Assert::AreEqual((IndexType)2, gridRowPositionIdx);
 
-			mesh.GetElementPosition(19, &gridRowIdx, &gridRowPositionIdx);
+			std::tie(gridRowIdx, gridRowPositionIdx) = mesh.GetElementPosition(19);
 			Assert::AreEqual((IndexType)5, gridRowIdx);
 			Assert::AreEqual((IndexType)3, gridRowPositionIdx);
 
-			Assert::ExpectException<std::invalid_argument>([&]() {mesh.GetElementPosition(35, &gridRowIdx, &gridRowPositionIdx); });
+			Assert::ExpectException<std::invalid_argument>([&]() {auto[a,b] = mesh.GetElementPosition(35); });
 
 			const auto* element = mesh.GetElement(0);
 			Assert::AreEqual((IndexType)INVALID_INDEX, element->Node[+FDMeshElement::Corner::BottomLeft]);

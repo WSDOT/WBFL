@@ -185,14 +185,11 @@ Float64 PsStrand::GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToX
       b = -1*(1.0 + 0.55*K);
       c = fbt;
 
-      Float64 fpj1, fpj2; // Solutions to a quadratic equation
       WBFL::Math::QuadraticSolver solver(a,b,c);
-      bool bSolved = (0 < solver.Solve( &fpj1, &fpj2 ));
-      CHECK( bSolved );
-      CHECK( fpj1 > fpj2 );
-
-      fpj = fpj2;
-
+      auto [fpj1, fpj2] = solver.Solve();
+      CHECK(fpj1.has_value() and fpj2.has_value());
+      CHECK(fpj1.value() < fpj2.value());
+      fpj = fpj2.value(); // we want the larger value
       fpj = WBFL::Units::ConvertToSysUnits( fpj, WBFL::Units::Measure::MPa );
    }
 

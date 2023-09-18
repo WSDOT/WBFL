@@ -134,7 +134,7 @@ bool CDRatio::IsCDRatioLess(CDRatio::Sense sense, Float64 capacity1, Float64 dem
    }
 }
 
-int CDRatio::MinCDRatio(CDRatio::Sense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4,Float64* pCD)
+std::pair<Float64,int> CDRatio::MinCDRatio(CDRatio::Sense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4)
 {
    bool b1LessThan2 = CDRatio::IsCDRatioLess(sense,capacity1,demand1,capacity2,demand2);
    bool b3LessThan4 = CDRatio::IsCDRatioLess(sense,capacity3,demand3,capacity4,demand4);
@@ -170,6 +170,5 @@ int CDRatio::MinCDRatio(CDRatio::Sense sense, Float64 capacity1, Float64 demand1
       }
    }
 
-   *pCD = cd;
-   return corner;
+   return { cd,corner };
 }

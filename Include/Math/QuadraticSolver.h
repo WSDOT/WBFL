@@ -24,6 +24,7 @@
 #pragma once
 
 #include <Math\MathExp.h>
+#include <optional>
 
 namespace WBFL
 {
@@ -65,10 +66,8 @@ namespace WBFL
          Float64 GetC() const;
 
          /// Solves the quadratic equation.
-         /// @param[out] x1 first root
-         /// @param[out] x2 second root
-         /// @return Number of roots found
-         Uint8 Solve(Float64* x1, Float64* x2) const;
+         /// @return The roots
+         std::pair<std::optional<Float64>, std::optional<Float64>> Solve() const;
 
       private:
          Float64 m_A{0.0};

@@ -26,6 +26,7 @@
 #include <Stability/StabilityExp.h>
 #include <Stability/HaulingResults.h>
 #include <Stability/HaulingCriteria.h>
+#include <Stability/ControllingCases.h>
 
 namespace WBFL
 {
@@ -58,37 +59,18 @@ namespace WBFL
          /// Returns the hauling check criteria
          const HaulingCriteria& GetCriteria() const;
 
-         /// Analyzes the section results and retrieves the controlling tension stress case
-         /// \param[in] slope Specifies the roadway slope type
-         /// \param[in] sectionResult Analysis results to be evaluated
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pWind Wind direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingTensionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         /// Analyzes the section results and retrieves the valuated
+         ControllingTensionCase GetControllingTensionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult) const;
 
          /// Analyzes the section results and retrieves the controlling global compression case.
-         /// \param[in] slope Specifies the roadway slope type
-         /// \param[in] sectionResult Analysis results to be evaluated
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingGlobalCompressionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         /// \param slope Specifies the roadway slope type
+         /// \param sectionResult Analysis results to be evaluated
+         ControllingGlobalCompressionCase GetControllingGlobalCompressionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult) const;
 
          /// Analyzes the section results and retrieves the controlling peak compression case.
-         /// \param[in] slope Specifies the roadway slope type
-         /// \param[in] sectionResult Analysis results to be evaluated
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pWind Wind direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingPeakCompressionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         /// \param slope Specifies the roadway slope type
+         /// \param sectionResult Analysis results to be evaluated
+         ControllingPeakCompressionCase GetControllingPeakCompressionCase(HaulingSlope slope, const HaulingSectionResult& sectionResult) const;
 
          /// Returns true if the hauling check was successful
          /// \param[in] bIgnoreConfigurationLimits If true the clear span, leading overhang, and max weight limits are ignored

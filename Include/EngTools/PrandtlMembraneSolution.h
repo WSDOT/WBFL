@@ -54,9 +54,8 @@ namespace WBFL
          Float64 GetJ() const;
 
          /// @brief Returns the maximum slope on the membrane surface
-         /// @param[out] pMaxSlope Maximum slope
-         /// @param[out] pElementIdx Element where the maximum slope occurs
-         void GetMaxSlope(Float64* pMaxSlope, IndexType* pElementIdx) const;
+         /// @return Maximum slope, Element where the maximum slope occurs
+         std::pair<Float64,IndexType> GetMaxSlope() const;
 
          /// @brief Returns the maximum shear stress per unit torque
          /// @return Max shear stress per unit torque

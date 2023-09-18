@@ -24,6 +24,7 @@
 #pragma once
 
 #include <Math\MathExp.h>
+#include <optional>
 
 namespace WBFL
 {
@@ -75,11 +76,8 @@ namespace WBFL
          Float64 GetD() const;
 
          /// Solves the cubic equation.
-         /// @param[out] x1 first root
-         /// @param[out] x2 second root
-         /// @param[out] x3 third root
-         /// @return Number of roots found
-         Uint8 Solve(Float64* x1, Float64* x2, Float64* x3) const;
+         /// @return The roots
+         std::tuple<std::optional<Float64>, std::optional<Float64>, std::optional<Float64>> Solve() const;
 
       private:
          Float64 m_A{0.0};

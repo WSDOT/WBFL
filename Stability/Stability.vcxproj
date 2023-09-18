@@ -232,6 +232,7 @@
     <ClInclude Include="..\Include\Stability\AnalysisPoint.h" />
     <ClInclude Include="..\Include\Stability\AnalysisPointImp.h" />
     <ClInclude Include="..\Include\Stability\AutoLib.h" />
+    <ClInclude Include="..\Include\Stability\ControllingCases.h" />
     <ClInclude Include="..\Include\Stability\HaulingCheckArtifact.h" />
     <ClInclude Include="..\Include\Stability\HaulingCriteria.h" />
     <ClInclude Include="..\Include\Stability\HaulingResults.h" />

@@ -59,34 +59,37 @@ namespace WBFL
          /// Returns the OneEndSeated check criteria
          const OneEndSeatedCriteria& GetCriteria() const;
 
+         struct ControllingTensionCase
+         {
+            ImpactDirection impact; ///< Impact direction associated with the controlling case
+            WindDirection wind; ///< Wind direction associated with the controlling case
+            Corner corner; ///< Corner associated with the controlling case
+            Float64 stress_limit; ///< Tension stress limit associated with the controlling case
+            bool  bPassed; ///< Indicates if the controlling case passes the specification check
+            Float64 CD; ///< Capacity-Demand ratio for the controlling case
+         };
+
          /// Analyzes the section results and retrieves the controlling tension stress case
-         /// \param[in] sectionResult Analysis results to be evaluated
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pWind Wind direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingTensionCase(const OneEndSeatedSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         /// \param sectionResult Analysis results to be evaluated
+         ControllingTensionCase GetControllingTensionCase(const OneEndSeatedSectionResult& sectionResult) const;
+
+         struct ControllingGlobalCompressionCase
+         {
+            ImpactDirection impact; ///< Impact direction associated with the controlling case
+            Corner corner; ///< Corner associated with the controlling case
+            Float64 stress_limit; ///< Tension stress limit associated with the controlling case
+            bool bPassed; ///< Indicates if the controlling case passes the specification check
+            Float64 CD; ///< Capacity-Demand ratio for the controlling case
+         };
 
          /// Analyzes the section results and retrieves the controlling global compression case.
          /// \param[in] sectionResult Analysis results to be evaluated
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingGlobalCompressionCase(const OneEndSeatedSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         ControllingGlobalCompressionCase GetControllingGlobalCompressionCase(const OneEndSeatedSectionResult& sectionResult) const;
 
+         using ControllingPeakCompressionCase = ControllingTensionCase;
          /// Analyzes the section results and retrieves the controlling peak compression case.
-         /// \param[in] sectionResult Analysis results to be evaluated
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pWind Wind direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingPeakCompressionCase(const OneEndSeatedSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         /// \param sectionResult Analysis results to be evaluated
+         ControllingPeakCompressionCase GetControllingPeakCompressionCase(const OneEndSeatedSectionResult& sectionResult) const;
 
          /// Returns true if the OneEndSeated check was successful
          bool Passed() const;

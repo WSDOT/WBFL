@@ -20,33 +20,39 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+
 #pragma once
 
-// This is a master include file for the Stability Package
-#if defined(BUILDSTABILITY)
-	#error Do not use this header file in the Stability Package
-   #error It is for external users only
-#endif
-
+#include <Stability/StabilityExp.h>
 #include <Stability/StabilityTypes.h>
-#include <Stability/StabilityProblem.h>
-#include <Stability/StabilityProblemImp.h>
-#include <Stability/AnalysisPoint.h>
-#include <Stability/AnalysisPointImp.h>
-#include <Stability/LiftingCriteria.h>
-#include <Stability/HaulingCriteria.h>
-#include <Stability/OneEndSeatedCriteria.h>
-#include <Stability/StabilityEngineer.h>
-#include <Stability/LiftingResults.h>
-#include <Stability/HaulingResults.h>
-#include <Stability/OneEndSeatedResults.h>
-#include <Stability/LiftingCheckArtifact.h>
-#include <Stability/LiftingStabilityReporter.h>
-#include <Stability/HaulingCheckArtifact.h>
-#include <Stability/HaulingStabilityReporter.h>
-#include <Stability/OneEndSeatedCheckArtifact.h>
-#include <Stability/OneEndSeatedStabilityReporter.h>
-#include <Stability/LiftingTensionStressLimit.h>
-#include <Stability/HaulingTensionStressLimit.h>
-#include <Stability/OneEndSeatedTensionStressLimit.h>
-#include <Stability/ControllingCases.h>
+
+namespace WBFL
+{
+   namespace Stability
+   {
+
+      struct STABILITYCLASS ControllingTensionCase
+      {
+         ImpactDirection impact; ///< Impact direction associated with the controlling case
+         WindDirection wind; ///< Wind direction associated with the controlling case
+         Corner corner; ///< Corner associated with the controlling case
+         Float64 stress_limit; ///< Tension stress limit associated with the controlling case
+         bool  bPassed; ///< Indicates if the controlling case passes the specification check
+         Float64 CD; ///< Capacity-Demand ratio for the controlling case
+      };
+
+
+      struct STABILITYCLASS ControllingGlobalCompressionCase
+      {
+         ImpactDirection impact; ///< Impact direction associated with the controlling case
+         Corner corner; ///< Corner associated with the controlling case
+         Float64 stress_limit; ///< Tension stress limit associated with the controlling case
+         bool bPassed; ///< Indicates if the controlling case passes the specification check
+         Float64 CD; ///< Capacity-Demand ratio for the controlling case
+      };
+
+
+      using ControllingPeakCompressionCase = ControllingTensionCase;
+
+   }
+}

@@ -75,11 +75,13 @@ Float64 QuadraticSolver::GetC() const
    return m_C;
 }
 
-Uint8 QuadraticSolver::Solve(Float64* x1, Float64* x2) const
+std::pair<std::optional<Float64>, std::optional<Float64>> QuadraticSolver::Solve() const
 {
    Float64 a = m_A;
    Float64 b = m_B;
    Float64 c = m_C;
+
+   std::optional<Float64> r1, r2;
 
    if (IsZero(a))
    {
@@ -87,25 +89,25 @@ Uint8 QuadraticSolver::Solve(Float64* x1, Float64* x2) const
       if (IsZero(b))
       {
          // the function is a horizontal line
-         return 0; // no roots
+         return { r1,r2 }; // no roots
       }
       else
       {
          // the function is a sloped line
-         *x1 = -c / b;
-         return 1; // 1 root
+         r1 = -c / b;
+         return { r1,r2 }; // 1 roots
       }
    }
 
    Float64 K = b * b - 4.0 * a * c;
 
    if (K < 0)
-      return 0;
+      return { r1,r2 }; // no roots
 
    K = sqrt(K);
 
-   *x1 = (-b + K) / (2 * a);
-   *x2 = (-b - K) / (2 * a);
+   r1 = (-b + K) / (2 * a);
+   r2 = (-b - K) / (2 * a);
 
-   return 2;
+   return { r1,r2 };
 }

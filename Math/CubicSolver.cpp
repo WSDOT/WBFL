@@ -90,33 +90,27 @@ Float64 CubicSolver::GetD() const
    return m_D;
 }
 
-Uint8 CubicSolver::Solve(Float64* pX1, Float64* pX2, Float64* pX3) const
+std::tuple<std::optional<Float64>, std::optional<Float64>, std::optional<Float64>> CubicSolver::Solve() const
 {
    Float64 a = m_A;
    Float64 b = m_B;
    Float64 c = m_C;
    Float64 d = m_D;
 
-   Float64 X[3];
-   X[0] = DBL_MAX;
-   X[1] = DBL_MAX;
-   X[2] = DBL_MAX;
-
-   Uint8 nRoots = 0;
+   std::optional<Float64> r1, r2, r3;
 
    if (a == 0)
    {
       // function is a quadratic
       QuadraticSolver solver(b, c, d);
-      nRoots = solver.Solve(&X[0], &X[1]);
+      std::tie(r1,r2) = solver.Solve();
    }
    else  if (d == 0)
    {
       // one of the roots is zero. divide through by x and solve the quadratic
       QuadraticSolver solver(a, b, c);
-
-      nRoots = solver.Solve(&X[0], &X[1]);
-      X[nRoots++] = 0;
+      std::tie(r1,r2) = solver.Solve();
+      r3 = 0.0;
    }
    else
    {
@@ -131,10 +125,7 @@ Uint8 CubicSolver::Solve(Float64* pX1, Float64* pX2, Float64* pX3) const
          if (IsZero(h) && IsZero(f) && IsZero(g))
          {
             // all roots are real and equal
-            X[0] = -(d / a < 0 ? -pow(-d / a, 1. / 3.) : pow(d / a, 1. / 3.));
-            X[1] = X[0];
-            X[2] = X[0];
-            nRoots = 1; // only one unique root
+            r1 = -(d / a < 0 ? -pow(-d / a, 1. / 3.) : pow(d / a, 1. / 3.));
          }
          else
          {
@@ -146,28 +137,33 @@ Uint8 CubicSolver::Solve(Float64* pX1, Float64* pX2, Float64* pX3) const
             Float64 m = cos(k / 3);
             Float64 n = sqrt(3.) * sin(k / 3);
             Float64 p = -b / (3 * a);
-            X[0] = 2 * j * cos(k / 3) + p;
-            X[1] = l * (m + n) + p;
-            X[2] = l * (m - n) + p;
+            Float64 x1 = 2 * j * cos(k / 3) + p;
+            Float64 x2 = l * (m + n) + p;
+            Float64 x3 = l * (m - n) + p;
 
             // if h = 0, then two of the roots are the same
             if (IsZero(h))
             {
                // 2 roots are the same, eliminate the redundant root
-               if (IsEqual(X[0], X[1]))
+               if (IsEqual(x1, x2))
                {
-                  X[1] = X[2];
-                  X[2] = DBL_MAX;
+                  // roots 1 and 2 are the same so roots 1 and 3 are unique
+                  r1 = x1;
+                  r2 = x3;
                }
-               else if (IsEqual(X[1], X[2]))
+               else if (IsEqual(x2, x3) || IsEqual(x1,x3))
                {
-                  X[2] = DBL_MAX;
+                  // roots 2 and 3 or 1 and 3 are the same so roots 1 and 2 are unique
+                  r1 = x1;
+                  r2 = x2;
                }
-               nRoots = 2;
             }
             else
             {
-               nRoots = 3;
+               // all roots are unique
+               r1 = x1;
+               r2 = x2;
+               r3 = x3;
             }
          }
       }
@@ -179,16 +175,20 @@ Uint8 CubicSolver::Solve(Float64* pX1, Float64* pX2, Float64* pX3) const
          Float64 s = (r < 0 ? -pow(-r, 1. / 3.) : pow(r, 1. / 3.));
          Float64 t = -g / 2 - sqrt(h);
          Float64 u = (t < 0 ? -pow(-t, 1. / 3.) : pow(t, 1. / 3.));
-         X[0] = (s + u) - b / (3 * a);
-         nRoots = 1;
+         r1 = (s + u) - b / (3 * a);
       }
    }
 
-   std::sort(&X[0], &X[3]);
+   std::vector<std::optional<Float64>*> values{ &r1,&r2,&r3 };
+   std::sort(values.begin(), values.end(),
+      [](const auto& a, const auto& b)
+      {
+         if (a->has_value() && !b->has_value()) return true;
+         if (b->has_value() && !a->has_value()) return false;
+         if (!a->has_value() && !b->has_value()) return false;
+         return a->value() < b->value();
+      }
+   );
 
-   *pX1 = X[0];
-   *pX2 = X[1];
-   *pX3 = X[2];
-
-   return nRoots;
+   return { *values[0], *values[1], *values[2] };
 }

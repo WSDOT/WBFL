@@ -28,9 +28,9 @@ namespace MathUnitTests
 
 		TEST_METHOD(MinCDRatio)
 		{
-			Float64 cd;
-			Assert::AreEqual(3, CDRatio::MinCDRatio(CDRatio::Sense::Positive, 50.0, 10.0, 40.0, 10.0, 30.0, 10.0, 20.0, 10.0, &cd));
+			auto [cd,idx] = CDRatio::MinCDRatio(CDRatio::Sense::Positive, 50.0, 10.0, 40.0, 10.0, 30.0, 10.0, 20.0, 10.0);
 			Assert::AreEqual(2.0, cd);
+			Assert::AreEqual(3, idx);
 		}
 	};
 }

@@ -1226,14 +1226,11 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::SplineSegment::Intersect(const
    auto xa = pntA.X();
    auto xb = pntB.X();
 
-   int nRoots = 0;
-   std::array<Float64, 3> x;
+   std::tuple<std::optional<Float64>, std::optional<Float64>, std::optional<Float64>> roots;
    if (IsZero(dx))
    {
       // the line is vertical. there will be exactly one intersection point
-      nRoots = 1;
-      x[0] = p.X();
-      x[0] -= xa;
+      std::get<0>(roots) = p.X() - xa;
    }
    else
    {
@@ -1256,27 +1253,33 @@ std::vector<WBFL::Geometry::Point2d> CubicSpline::SplineSegment::Intersect(const
       // Solver   A          B          C        D
       WBFL::Math::CubicSolver solver(D, C, (B - m), (A - k));
 
-      nRoots = solver.Solve(&x[0], &x[1], &x[2]);
+      roots = solver.Solve();
+
 
 #if defined _DEBUG
-      for (int i = 0; i < nRoots; i++)
-      {
-         Float64 z1 = A + B * x[i] + C * x[i] * x[i] + D * x[i] * x[i] * x[i];
-         Float64 z2 = m * x[i] + k;
-         CHECK(IsEqual(z1, z2, 0.0001));
-      }
+      const auto& [r1, r2, r3] = roots;
+      auto check = [&](Float64 x)
+         {
+            Float64 z1 = A + B * x + C * x * x + D * x * x * x;
+            Float64 z2 = m * x + k;
+            CHECK(IsEqual(z1, z2, 0.0001));
+         };
+      if (r1.has_value()) check(r1.value());
+      if (r2.has_value()) check(r2.value());
+      if (r3.has_value()) check(r3.value());
 #endif // _DEBUG
    }
 
-   for (int i = 0; i < nRoots; i++)
-   {
-      if (InRange(xa, x[i] + xa, xb))
+   // keep only the roots that are within the limits of the spline segment
+   auto keep_root = [&](Float64 x)
       {
-         // keep only the roots that are within the limits of the spline segment
-         vPoints.emplace_back(x[i] + xa, Evaluate(x[i] + xa));
-      }
-   }
-
+         if (InRange(xa, x + xa, xb)) vPoints.emplace_back(x + xa, this->Evaluate(x + xa));
+      };
+   const auto& [r1, r2, r3] = roots;
+   if (r1.has_value()) keep_root(r1.value());
+   if (r2.has_value()) keep_root(r2.value());
+   if (r3.has_value()) keep_root(r3.value());
+   
    return vPoints;
 }
 

@@ -22,9 +22,7 @@ namespace EngToolsUnitTests
 
 			PrandtlMembraneSolution solution(100, 5, 2, std::move(mesh), meshValues);
 			Assert::AreEqual(100.0, solution.GetJ());
-			Float64 slope;
-			IndexType idx;
-			solution.GetMaxSlope(&slope, &idx);
+			auto [slope,idx] = solution.GetMaxSlope();
 			Assert::AreEqual(5.0, slope);
 			Assert::AreEqual((IndexType)2, idx);
 			Assert::AreEqual(5. / 200., solution.GetTmaxPerUnitTorque());

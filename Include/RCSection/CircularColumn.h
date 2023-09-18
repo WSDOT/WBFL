@@ -78,11 +78,11 @@ namespace WBFL
          /// Computes an axial force - moment interaction curve and applies the LRFD Resistance Factor
          ///
          /// The resistance factor is computed as \f$ 0.75 \le \phi = 0.75 + \frac{0.15(\epsilon_t - \epsilon_{cl})}{(\epsilon_{tl} - \epsilon_{cl})} \le 0.90 \f$
-         /// \param[in] nSteps number of axial load steps for the analysis
-         /// \param[in] ecl Strain limit for compression controlled sections
-         /// \param[in] etl Strain limit for tension controlled sections
-         /// \param[out] unfactored  the unfactored interaction curve points. The first element of the pair is Moment, the second element is Axial force
-         /// \param[out] factored  the factored interaction curve points. The first element of the pair is Moment, the second element is Axial force
+         /// \param nSteps number of axial load steps for the analysis
+         /// \param ecl Strain limit for compression controlled sections
+         /// \param etl Strain limit for tension controlled sections
+         /// \param unfactored Vector to receive the unfactored interaction curve points. The first element of the pair is Moment, the second element is Axial force
+         /// \param factored  Vector to receive the factored interaction curve points. The first element of the pair is Moment, the second element is Axial force
          void ComputeInteraction(IndexType nSteps, Float64 ecl, Float64 etl, std::vector<std::pair<Float64, Float64>>& unfactored, std::vector<std::pair<Float64, Float64>>& factored) const;
 
       private:

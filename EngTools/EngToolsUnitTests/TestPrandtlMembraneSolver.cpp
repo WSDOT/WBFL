@@ -30,14 +30,11 @@ namespace EngToolsUnitTests
          beam.SetW4(3);
          beam.SetW5(13.125);
 
-         Float64 maxSlope;
-         IndexType maxSlopeElementIdx;
-
          // use symmetry
          PrandtlMembraneSolution solution = PrandtlMembraneSolver::Solve(&beam, 0.25, 0.25);
          Assert::IsTrue(IsEqual(solution.GetJ(), 18506.51360));
          Assert::IsTrue(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
-         solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
+         auto [maxSlope,maxSlopeElementIdx] = solution.GetMaxSlope();
          Assert::IsTrue(IsEqual(maxSlope, 31.320506783765548));
          Assert::IsTrue(maxSlopeElementIdx == 6412);
          Assert::IsTrue(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
@@ -46,7 +43,7 @@ namespace EngToolsUnitTests
          solution = PrandtlMembraneSolver::Solve(&beam, 0.25, 0.25, false);
          Assert::IsTrue(IsEqual(solution.GetJ(), 18506.51360));
          Assert::IsTrue(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
-         solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
+         std::tie(maxSlope,maxSlopeElementIdx) = solution.GetMaxSlope();
          Assert::IsTrue(IsEqual(maxSlope, 31.320506783765548));
          Assert::IsTrue(maxSlopeElementIdx == 6412);
          Assert::IsTrue(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
@@ -57,7 +54,7 @@ namespace EngToolsUnitTests
          solution = solver.Solve(&beam);
          Assert::IsTrue(IsEqual(solution.GetJ(), 18506.51360));
          Assert::IsTrue(IsEqual(solution.GetFiniteDifferenceMesh()->GetMeshArea(), 1109.25));
-         solution.GetMaxSlope(&maxSlope, &maxSlopeElementIdx);
+         std::tie(maxSlope, maxSlopeElementIdx) = solution.GetMaxSlope();
          Assert::IsTrue(IsEqual(maxSlope, 31.320506783765548));
          Assert::IsTrue(maxSlopeElementIdx == 6412);
          Assert::IsTrue(IsEqual(solution.GetTmaxPerUnitTorque(), 0.00084620224738361023));
