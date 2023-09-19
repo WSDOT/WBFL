@@ -90,27 +90,27 @@ Float64 CubicSolver::GetD() const
    return m_D;
 }
 
-std::tuple<std::optional<Float64>, std::optional<Float64>, std::optional<Float64>> CubicSolver::Solve() const
+std::vector<Float64> CubicSolver::Solve() const
 {
    Float64 a = m_A;
    Float64 b = m_B;
    Float64 c = m_C;
    Float64 d = m_D;
 
-   std::optional<Float64> r1, r2, r3;
+   std::vector<Float64> roots;
 
    if (a == 0)
    {
       // function is a quadratic
       QuadraticSolver solver(b, c, d);
-      std::tie(r1,r2) = solver.Solve();
+      roots = solver.Solve();
    }
    else  if (d == 0)
    {
       // one of the roots is zero. divide through by x and solve the quadratic
       QuadraticSolver solver(a, b, c);
-      std::tie(r1,r2) = solver.Solve();
-      r3 = 0.0;
+      roots = solver.Solve();
+      roots.push_back(0.0);
    }
    else
    {
@@ -125,7 +125,7 @@ std::tuple<std::optional<Float64>, std::optional<Float64>, std::optional<Float64
          if (IsZero(h) && IsZero(f) && IsZero(g))
          {
             // all roots are real and equal
-            r1 = -(d / a < 0 ? -pow(-d / a, 1. / 3.) : pow(d / a, 1. / 3.));
+            roots.push_back(-(d / a < 0 ? -pow(-d / a, 1. / 3.) : pow(d / a, 1. / 3.)));
          }
          else
          {
@@ -148,22 +148,22 @@ std::tuple<std::optional<Float64>, std::optional<Float64>, std::optional<Float64
                if (IsEqual(x1, x2))
                {
                   // roots 1 and 2 are the same so roots 1 and 3 are unique
-                  r1 = x1;
-                  r2 = x3;
+                  roots.push_back(x1);
+                  roots.push_back(x3);
                }
                else if (IsEqual(x2, x3) || IsEqual(x1,x3))
                {
                   // roots 2 and 3 or 1 and 3 are the same so roots 1 and 2 are unique
-                  r1 = x1;
-                  r2 = x2;
+                  roots.push_back(x1);
+                  roots.push_back(x2);
                }
             }
             else
             {
                // all roots are unique
-               r1 = x1;
-               r2 = x2;
-               r3 = x3;
+               roots.push_back(x1);
+               roots.push_back(x2);
+               roots.push_back(x3);
             }
          }
       }
@@ -175,20 +175,10 @@ std::tuple<std::optional<Float64>, std::optional<Float64>, std::optional<Float64
          Float64 s = (r < 0 ? -pow(-r, 1. / 3.) : pow(r, 1. / 3.));
          Float64 t = -g / 2 - sqrt(h);
          Float64 u = (t < 0 ? -pow(-t, 1. / 3.) : pow(t, 1. / 3.));
-         r1 = (s + u) - b / (3 * a);
+         roots.push_back( (s + u) - b / (3 * a) );
       }
    }
 
-   std::vector<std::optional<Float64>*> values{ &r1,&r2,&r3 };
-   std::sort(values.begin(), values.end(),
-      [](const auto& a, const auto& b)
-      {
-         if (a->has_value() && !b->has_value()) return true;
-         if (b->has_value() && !a->has_value()) return false;
-         if (!a->has_value() && !b->has_value()) return false;
-         return a->value() < b->value();
-      }
-   );
-
-   return { *values[0], *values[1], *values[2] };
+   std::sort(roots.begin(), roots.end());
+   return roots;
 }

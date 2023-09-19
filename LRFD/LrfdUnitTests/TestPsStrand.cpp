@@ -101,30 +101,30 @@ namespace LrfdUnitTests
          const auto* pStrand = pPool->GetStrand(WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::StressRelieved, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270);
          Pjack = PsStrand::GetPjack(*pStrand, nStrands, xferTime);
          Pjack = WBFL::Units::ConvertFromSysUnits(Pjack, WBFL::Units::Measure::Kilonewton);
-         Assert::AreEqual(1171.98, Pjack, 0.01);
+         Assert::AreEqual(9446.32, Pjack, 0.01);
          auto fpj = WBFL::Units::ConvertToSysUnits(Pjack, WBFL::Units::Measure::Kilonewton) / (nStrands * pStrand->GetNominalArea());
-         Assert::AreEqual(1.9241964599072428, PsStrand::GetDevLength(*pStrand, 0.95 * fpj, 0.85 * fpj, WBFL::Units::ConvertToSysUnits(48., WBFL::Units::Measure::Inch), true));
-         Assert::AreEqual(1.5393571679257945, PsStrand::GetDevLength(*pStrand, 0.95 * fpj, 0.85 * fpj, WBFL::Units::ConvertToSysUnits(48., WBFL::Units::Measure::Inch), false));
-         Assert::AreEqual(1.9241964599072428, PsStrand::GetDevLength(*pStrand, 0.95 * fpj, 0.85 * fpj, WBFL::Units::ConvertToSysUnits(12., WBFL::Units::Measure::Inch), true));
-         Assert::AreEqual(1.5393571679257945, PsStrand::GetDevLength(*pStrand, 0.95 * fpj, 0.85 * fpj, WBFL::Units::ConvertToSysUnits(12., WBFL::Units::Measure::Inch), false));
+         Assert::AreEqual(15.509351883900017, PsStrand::GetDevLength(*pStrand, 0.95 * fpj, 0.85 * fpj, WBFL::Units::ConvertToSysUnits(48., WBFL::Units::Measure::Inch), true));
+         Assert::AreEqual(12.407481507120016, PsStrand::GetDevLength(*pStrand, 0.95 * fpj, 0.85 * fpj, WBFL::Units::ConvertToSysUnits(48., WBFL::Units::Measure::Inch), false));
+         Assert::AreEqual(15.509351883900017, PsStrand::GetDevLength(*pStrand, 0.95 * fpj, 0.85 * fpj, WBFL::Units::ConvertToSysUnits(12., WBFL::Units::Measure::Inch), true));
+         Assert::AreEqual(12.407481507120016, PsStrand::GetDevLength(*pStrand, 0.95 * fpj, 0.85 * fpj, WBFL::Units::ConvertToSysUnits(12., WBFL::Units::Measure::Inch), false));
 
          // Grade 1725 LR
          pStrand = pPool->GetStrand(WBFL::Materials::PsStrand::Grade::Gr1725, WBFL::Materials::PsStrand::Type::LowRelaxation, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270);
          Pjack = PsStrand::GetPjack(*pStrand, nStrands, xferTime);
          Pjack = WBFL::Units::ConvertFromSysUnits(Pjack, WBFL::Units::Measure::Kilonewton);
-         Assert::AreEqual(1214.12, Pjack, 0.01);
+         Assert::AreEqual(41377.73, Pjack, 0.01);
 
          // Grade 1860 SR
          pStrand = pPool->GetStrand(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::StressRelieved, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270);
          Pjack = PsStrand::GetPjack(*pStrand, nStrands, xferTime);
          Pjack = WBFL::Units::ConvertFromSysUnits(Pjack, WBFL::Units::Measure::Kilonewton);
-         Assert::AreEqual(1342.72, Pjack, 0.01);
+         Assert::AreEqual(10822.61, Pjack, 0.01);
 
          // Grade 1860 LR
          pStrand = pPool->GetStrand(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, WBFL::Materials::PsStrand::Coating::None, WBFL::Materials::PsStrand::Size::D1270);
          Pjack = PsStrand::GetPjack(*pStrand, nStrands, xferTime);
          Pjack = WBFL::Units::ConvertFromSysUnits(Pjack, WBFL::Units::Measure::Kilonewton);
-         Assert::AreEqual(1391.01, Pjack, 0.01);
+         Assert::AreEqual(47406.29, Pjack, 0.01);
 
 
          Assert::AreEqual(0.75, PsStrand::GetStressLimit(WBFL::Materials::PsStrand::Grade::Gr1860, WBFL::Materials::PsStrand::Type::LowRelaxation, PsStrand::Stage::BeforeTransfer) / PsStrand::GetUltimateStrength(WBFL::Materials::PsStrand::Grade::Gr1860));

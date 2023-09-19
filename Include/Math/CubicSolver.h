@@ -24,7 +24,6 @@
 #pragma once
 
 #include <Math\MathExp.h>
-#include <optional>
 
 namespace WBFL
 {
@@ -77,7 +76,7 @@ namespace WBFL
 
          /// Solves the cubic equation.
          /// @return The roots
-         std::tuple<std::optional<Float64>, std::optional<Float64>, std::optional<Float64>> Solve() const;
+         std::vector<Float64> Solve() const;
 
       private:
          Float64 m_A{0.0};

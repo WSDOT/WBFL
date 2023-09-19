@@ -24,7 +24,6 @@
 #pragma once
 
 #include <Math\MathExp.h>
-#include <optional>
 
 namespace WBFL
 {
@@ -67,7 +66,7 @@ namespace WBFL
 
          /// Solves the quadratic equation.
          /// @return The roots
-         std::pair<std::optional<Float64>, std::optional<Float64>> Solve() const;
+         std::vector<Float64> Solve() const;
 
       private:
          Float64 m_A{0.0};

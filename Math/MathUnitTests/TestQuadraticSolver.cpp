@@ -14,35 +14,31 @@ namespace MathUnitTests
 		{
          QuadraticSolver solver(10, 10, 10);
 
-         auto [r1, r2] = solver.Solve();
-         Assert::IsFalse(r1.has_value());
-         Assert::IsFalse(r2.has_value());
+         auto roots = solver.Solve();
+         Assert::AreEqual((size_t)0, roots.size());
 
          solver.SetA(1.0);
          solver.SetB(9.0);
          solver.SetC(-2.0);
-         std::tie(r1, r2) = solver.Solve();
-         Assert::IsTrue(r1.has_value());
-         Assert::IsTrue(r2.has_value());
-         Assert::IsTrue(IsEqual(r1.value(), 0.21699056605));
-         Assert::IsTrue(IsEqual(r2.value(), -9.21699056605));
+         roots = solver.Solve();
+         Assert::AreEqual((size_t)2, roots.size());
+         Assert::IsTrue(IsEqual(roots[0], -9.21699056605));
+         Assert::IsTrue(IsEqual(roots[1], 0.21699056605));
 
          solver.SetA(1.0);
          solver.SetB(0);
          solver.SetC(-25);
-         std::tie(r1, r2) = solver.Solve();
-         Assert::IsTrue(r1.has_value());
-         Assert::IsTrue(r2.has_value());
-         Assert::IsTrue(IsEqual(r1.value(), 5.0));
-         Assert::IsTrue(IsEqual(r2.value(), -5.0));
+         roots = solver.Solve();
+         Assert::AreEqual((size_t)2, roots.size());
+         Assert::IsTrue(IsEqual(roots[0], -5.0));
+         Assert::IsTrue(IsEqual(roots[1], 5.0));
 
          solver.SetA(0);
          solver.SetB(10);
          solver.SetC(-25);
-         std::tie(r1, r2) = solver.Solve();
-         Assert::IsTrue(r1.has_value());
-         Assert::IsFalse(r2.has_value());
-         Assert::IsTrue(IsEqual(r1.value(), 2.5));
+         roots = solver.Solve();
+         Assert::AreEqual((size_t)1, roots.size());
+         Assert::IsTrue(IsEqual(roots[0], 2.5));
       }
 	};
 }
