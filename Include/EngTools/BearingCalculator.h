@@ -44,6 +44,15 @@ namespace WBFL
 
 
         public:
+            /// @return Analysis Method A
+            enum class AnalysisMethodA
+            {
+                Yes,
+                No,
+            };
+
+            /// @brief Set Analysis Method A
+            void SetMethodA(AnalysisMethodA);
             /// @brief Set Maximum Alowable Bearing Stress
             /// @param sigma_max
             void SetMaximumAllowableStress(Float64 sigma_max);
@@ -55,6 +64,8 @@ namespace WBFL
             void SetElastomerBulkModulus(Float64 k);
 
 
+            /// @return if Method A
+            AnalysisMethodA GetAnalysisMethodA() const;
             /// @return Maximum Allowable Stress
             Float64 GetMaximumAllowableStress() const;
             /// @return Absolute Minimimum Shim Thickness
@@ -250,6 +261,7 @@ namespace WBFL
             bool HydrostaticStressCheck(const Bearing&, const BearingLoads&) const;
 
         private:
+           AnalysisMethodA m_method_a{AnalysisMethodA::Yes};
            Float64 m_maximum_allowable_stress{ WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI) };///< max allowable stress
            Float64 m_absolute_minimum_shim_thickness{ WBFL::Units::ConvertToSysUnits(0.0625, WBFL::Units::Measure::Inch) };///< absolute minimum shim thickness
            Float64 m_elastomer_bulk_modulus{ WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI) };///< elastomer bulk modulus

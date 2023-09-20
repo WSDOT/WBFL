@@ -30,6 +30,13 @@
 using namespace WBFL::EngTools;
 
 
+
+
+
+void BearingCalculator::SetMethodA(BearingCalculator::AnalysisMethodA method_a)
+{
+	m_method_a = method_a;
+}
 void BearingCalculator::SetMaximumAllowableStress(Float64 sigma_max)
 {
 	m_maximum_allowable_stress = sigma_max;
@@ -43,6 +50,11 @@ void BearingCalculator::SetElastomerBulkModulus(Float64 k)
 	m_elastomer_bulk_modulus = k;
 }
 
+
+BearingCalculator::AnalysisMethodA BearingCalculator::GetAnalysisMethodA() const
+{
+	return m_method_a;
+}
 
 
 Float64 BearingCalculator::GetMaximumAllowableStress() const
