@@ -21,11 +21,5 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
-
-#include <System\Checks.h>
-#include <System\Log.h>
-#include <System\LogContext.h>
-#include <System\DebugWindowLogContext.h>
-#include <System\FileLogContext.h>
-#include <System\OutputDebugStringAsStream.h>
+#include <System\SysLib.h>
+#include <System/OutputDebugStringAsStream.h>
