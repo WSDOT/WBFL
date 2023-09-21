@@ -261,7 +261,7 @@ Float64 BearingCalculator::GetNumLayersRotationYCalc(const Bearing& brg, const B
 
 Float64 BearingCalculator::GetMinimumAllowableNumLayersRotationY(const Bearing& brg, const BearingLoads& brg_loads) const
 {
-	Float64 Nlay_ry = max(0, GetNumLayersRotationXCalc(brg, brg_loads));
+	Float64 Nlay_ry = max(0, GetNumLayersRotationYCalc(brg, brg_loads));
 	return Nlay_ry;
 }
 
