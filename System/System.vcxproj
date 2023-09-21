@@ -207,6 +207,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="NumericFormatTool.cpp" />
+    <ClCompile Include="OutputDebugStringAsStream.cpp" />
     <ClCompile Include="SectionValue.cpp" />
     <ClCompile Include="StructuredLoadXml.cpp" />
     <ClCompile Include="StructuredSaveXmlPrs.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="..\Include\System\IStructuredSave.h" />
     <ClInclude Include="..\Include\System\Log.h" />
     <ClInclude Include="..\Include\System\NumericFormatTool.h" />
+    <ClInclude Include="..\Include\System\OutputDebugStringAsStream.h" />
     <ClInclude Include="..\Include\System\SectionValue.h" />
     <ClInclude Include="..\Include\System\SingletonKiller.h" />
     <ClInclude Include="..\Include\System\StructuredLoadXml.h" />
