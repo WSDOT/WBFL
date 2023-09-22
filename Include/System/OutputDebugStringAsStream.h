@@ -42,10 +42,10 @@ namespace WBFL
             virtual ~basic_debugbuf() { sync(); }
 
          protected:
-            int sync()
+            virtual int sync() override
             {
                output_debug_string(this->str().c_str());
-               this->str(std::basic_string<CharT>()); // cear the string buffer
+               this->str(std::basic_string<CharT>()); // clear the string buffer
                return 0;
             }
 
@@ -77,7 +77,7 @@ namespace WBFL
       /// WBFL::Debug::dostream debug_stream;
       /// Logger::SetOutput(&debug_stream);
       /// Logger::LogMessage("Error Message"); // the string is written to the debugger output window
-      /// debug_stream << "A differement message" << std::endl; // this string is written to the debugger output window too
+      /// debug_stream << "A different message" << std::endl; // this string is written to the debugger output window too
       /// ~~~
       template<class CharT, class TraitsT = std::char_traits<CharT>>
       class basic_dostream : public std::basic_ostream<CharT, TraitsT>
