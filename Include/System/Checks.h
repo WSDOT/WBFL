@@ -224,8 +224,8 @@ WBFL::Debug::Diagnostics::Flags dbgDiagGroup##g::Flags = { (e), (l) }
 #define DIAG_SETLEVEL(g,l)          dbgDiagGroup##g::SetLevel(l)
 #define DIAG_GETLEVEL(g)            dbgDiagGroup##g::GetLevel()
 
-#define DIAG_WARNPOPUP(b)           dbgDiagnostics::EnableWarnPopup(b)
-#define DIAG_ISENABLED_WARNPOPUP    dbgDiagnostics::IsWarnPopupEnabled()
+#define DIAG_WARNPOPUP(b)           WBFL::Debug::Diagnostics::EnableWarnPopup(b)
+#define DIAG_ISENABLED_WARNPOPUP    WBFL::Debug::Diagnostics::IsWarnPopupEnabled()
 
 #if !defined( BUILD_CHECKS ) && !defined( _DEF_DECLARED )
 #define _DEF_DECLARED
