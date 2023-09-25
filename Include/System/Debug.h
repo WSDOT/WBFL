@@ -28,4 +28,4 @@
 #include <System\LogContext.h>
 #include <System\DebugWindowLogContext.h>
 #include <System\FileLogContext.h>
-#include <System\OutputDebugStringAsStream.h>
+//#include <System\OutputDebugStringAsStream.h>
