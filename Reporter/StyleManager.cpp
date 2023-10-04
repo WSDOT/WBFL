@@ -31,6 +31,12 @@ std::_tstring rptStyleManager::ms_ReportSubtitleStyle        = _T("ReportSubtitl
 std::_tstring rptStyleManager::ms_ChapterTitleStyle          = _T("ChapterTitle");
 std::_tstring rptStyleManager::ms_HeadingStyle               = _T("Heading");
 std::_tstring rptStyleManager::ms_SubheadingStyle            = _T("Subheading");
+std::_tstring rptStyleManager::ms_Heading1Style              = _T("Heading1");
+std::_tstring rptStyleManager::ms_Heading2Style              = _T("Heading2");
+std::_tstring rptStyleManager::ms_Heading3Style              = _T("Heading3");
+std::_tstring rptStyleManager::ms_Heading4Style              = _T("Heading4");
+std::_tstring rptStyleManager::ms_Heading5Style              = _T("Heading5");
+std::_tstring rptStyleManager::ms_Heading6Style              = _T("Heading6");
 std::_tstring rptStyleManager::ms_TableColumnHeadingStyle    = _T("ColumnHeading");
 std::_tstring rptStyleManager::ms_FootnoteStyle              = _T("Footnote");
 std::_tstring rptStyleManager::ms_CopyrightStyle             = _T("Copyright");
@@ -103,6 +109,26 @@ void rptStyleManager::InitStyles()
    flag = psl->AddNamedStyle(ms_SubheadingStyle, subheadings);
    //ATLASSERT(flag);
 
+   // Level1Headings
+   rptRiStyle level1headings;
+   headings.SetFontType(rptRiStyle::SWISS);
+   headings.SetFontSize(11);
+   headings.SetIsHeading(true);
+   headings.SetBold(true);
+   flag = psl->AddNamedStyle(ms_Heading1Style, level1headings);
+   //ATLASSERT(flag);
+
+   // Level2Headings
+   rptRiStyle level2headings;
+   headings.SetFontType(rptRiStyle::SWISS);
+   headings.SetFontSize(10);
+   headings.SetIsHeading(true);
+   headings.SetBold(true);
+   flag = psl->AddNamedStyle(ms_Heading2Style, level2headings);
+   //ATLASSERT(flag);
+
+   //others........
+
    // Table Column Headings
    rptRiStyle colheadings;
    colheadings.SetFontSize(9);
@@ -173,6 +199,7 @@ void rptStyleManager::InitStyles()
       psl->AddNamedStyle( ms_TableStripeRowCellStyle[i],stripe_row_cell);
    }
 
+
    // Footnote style
    rptRiStyle footnote;
    footnote.SetFontType( rptRiStyle::SWISS );
@@ -207,6 +234,36 @@ LPCTSTR rptStyleManager::GetChapterTitleStyle()
 LPCTSTR rptStyleManager::GetHeadingStyle()
 {
    return ms_HeadingStyle.c_str();
+}
+
+LPCTSTR rptStyleManager::GetHeading1Style()
+{
+   return ms_Heading1Style.c_str();
+}
+
+LPCTSTR rptStyleManager::GetHeading2Style()
+{
+    return ms_Heading2Style.c_str();
+}
+
+LPCTSTR rptStyleManager::GetHeading3Style()
+{
+    return ms_Heading3Style.c_str();
+}
+
+LPCTSTR rptStyleManager::GetHeading4Style()
+{
+    return ms_Heading4Style.c_str();
+}
+
+LPCTSTR rptStyleManager::GetHeading5Style()
+{
+    return ms_Heading5Style.c_str();
+}
+
+LPCTSTR rptStyleManager::GetHeading6Style()
+{
+    return ms_Heading6Style.c_str();
 }
 
 LPCTSTR rptStyleManager::GetSubheadingStyle()

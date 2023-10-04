@@ -79,6 +79,24 @@ public:
    /// Returns the style for Headings
    static LPCTSTR GetHeadingStyle();
 
+   /// Returns the style for Level 1 Heading
+   static LPCTSTR GetHeading1Style();
+
+   /// Returns the style for Level 2 Heading
+   static LPCTSTR GetHeading2Style();
+
+   /// Returns the style for Level 3 Heading
+   static LPCTSTR GetHeading3Style();
+
+   /// Returns the style for Level 4 Heading
+   static LPCTSTR GetHeading4Style();
+
+   /// Returns the style for Level 5 Heading
+   static LPCTSTR GetHeading5Style();
+
+   /// Returns the style for Level 6 Heading
+   static LPCTSTR GetHeading6Style();
+
    /// Returns the style for Subheadings
    static LPCTSTR GetSubheadingStyle(); 
 
@@ -138,6 +156,13 @@ private:
    static std::_tstring ms_ChapterTitleStyle;
    static std::_tstring ms_HeadingStyle;
    static std::_tstring ms_SubheadingStyle;
+   static std::_tstring ms_Heading1Style;
+   static std::_tstring ms_Heading2Style;
+   static std::_tstring ms_Heading3Style;
+   static std::_tstring ms_Heading4Style;
+   static std::_tstring ms_Heading5Style;
+   static std::_tstring ms_Heading6Style;
+
    static std::_tstring ms_TableColumnHeadingStyle;
    static std::_tstring ms_FootnoteStyle;
    static std::_tstring ms_CopyrightStyle;
