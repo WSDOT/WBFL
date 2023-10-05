@@ -31,12 +31,12 @@ std::_tstring rptStyleManager::ms_ReportSubtitleStyle        = _T("ReportSubtitl
 std::_tstring rptStyleManager::ms_ChapterTitleStyle          = _T("ChapterTitle");
 std::_tstring rptStyleManager::ms_HeadingStyle               = _T("Heading");
 std::_tstring rptStyleManager::ms_SubheadingStyle            = _T("Subheading");
-std::_tstring rptStyleManager::ms_Heading1Style              = _T("Heading1");
-std::_tstring rptStyleManager::ms_Heading2Style              = _T("Heading2");
-std::_tstring rptStyleManager::ms_Heading3Style              = _T("Heading3");
-std::_tstring rptStyleManager::ms_Heading4Style              = _T("Heading4");
-std::_tstring rptStyleManager::ms_Heading5Style              = _T("Heading5");
-std::_tstring rptStyleManager::ms_Heading6Style              = _T("Heading6");
+std::_tstring rptStyleManager::ms_Heading1Style              = _T("Level1Heading");
+std::_tstring rptStyleManager::ms_Heading2Style              = _T("Level2Heading");
+std::_tstring rptStyleManager::ms_Heading3Style              = _T("Level3Heading");
+std::_tstring rptStyleManager::ms_Heading4Style              = _T("Level4Heading");
+std::_tstring rptStyleManager::ms_Heading5Style              = _T("Level5Heading");
+std::_tstring rptStyleManager::ms_Heading6Style              = _T("Level6Heading");
 std::_tstring rptStyleManager::ms_TableColumnHeadingStyle    = _T("ColumnHeading");
 std::_tstring rptStyleManager::ms_FootnoteStyle              = _T("Footnote");
 std::_tstring rptStyleManager::ms_CopyrightStyle             = _T("Copyright");
@@ -109,25 +109,59 @@ void rptStyleManager::InitStyles()
    flag = psl->AddNamedStyle(ms_SubheadingStyle, subheadings);
    //ATLASSERT(flag);
 
-   // Level1Headings
+   // Level 1 Headings
    rptRiStyle level1headings;
-   headings.SetFontType(rptRiStyle::SWISS);
-   headings.SetFontSize(11);
-   headings.SetIsHeading(true);
-   headings.SetBold(true);
+   level1headings.SetFontType(rptRiStyle::SWISS);
+   level1headings.SetFontSize(11);
+   level1headings.SetIsHeading(true);
+   level1headings.SetBold(true);
    flag = psl->AddNamedStyle(ms_Heading1Style, level1headings);
    //ATLASSERT(flag);
 
-   // Level2Headings
+   // Level 2 Headings
    rptRiStyle level2headings;
-   headings.SetFontType(rptRiStyle::SWISS);
-   headings.SetFontSize(10);
-   headings.SetIsHeading(true);
-   headings.SetBold(true);
+   level2headings.SetFontType(rptRiStyle::SWISS);
+   level2headings.SetFontSize(10);
+   level2headings.SetIsHeading(true);
+   level2headings.SetBold(true);
    flag = psl->AddNamedStyle(ms_Heading2Style, level2headings);
    //ATLASSERT(flag);
 
-   //others........
+   // Level 3 Headings
+   rptRiStyle level3headings;
+   level3headings.SetFontType(rptRiStyle::SWISS);
+   level3headings.SetFontSize(9);
+   level3headings.SetIsHeading(true);
+   level3headings.SetBold(true);
+   flag = psl->AddNamedStyle(ms_Heading3Style, level3headings);
+   //ATLASSERT(flag);
+
+   // Level 4 Headings
+   rptRiStyle level4headings;
+   level4headings.SetFontType(rptRiStyle::SWISS);
+   level4headings.SetFontSize(8);
+   level4headings.SetIsHeading(true);
+   level4headings.SetBold(true);
+   flag = psl->AddNamedStyle(ms_Heading4Style, level4headings);
+   //ATLASSERT(flag);
+
+   // Level 5 Headings
+   rptRiStyle level5headings;
+   level5headings.SetFontType(rptRiStyle::SWISS);
+   level5headings.SetFontSize(7);
+   level5headings.SetIsHeading(true);
+   level5headings.SetBold(true);
+   flag = psl->AddNamedStyle(ms_Heading5Style, level5headings);
+   //ATLASSERT(flag);
+
+   // Level 6 Headings
+   rptRiStyle level6headings;
+   level6headings.SetFontType(rptRiStyle::SWISS);
+   level6headings.SetFontSize(6);
+   level6headings.SetIsHeading(true);
+   level6headings.SetBold(true);
+   flag = psl->AddNamedStyle(ms_Heading6Style, level6headings);
+   //ATLASSERT(flag);
 
    // Table Column Headings
    rptRiStyle colheadings;
@@ -236,32 +270,32 @@ LPCTSTR rptStyleManager::GetHeadingStyle()
    return ms_HeadingStyle.c_str();
 }
 
-LPCTSTR rptStyleManager::GetHeading1Style()
+LPCTSTR rptStyleManager::GetLevel1HeadingStyle()
 {
    return ms_Heading1Style.c_str();
 }
 
-LPCTSTR rptStyleManager::GetHeading2Style()
+LPCTSTR rptStyleManager::GetLevel2HeadingStyle()
 {
     return ms_Heading2Style.c_str();
 }
 
-LPCTSTR rptStyleManager::GetHeading3Style()
+LPCTSTR rptStyleManager::GetLevel3HeadingStyle()
 {
     return ms_Heading3Style.c_str();
 }
 
-LPCTSTR rptStyleManager::GetHeading4Style()
+LPCTSTR rptStyleManager::GetLevel4HeadingStyle()
 {
     return ms_Heading4Style.c_str();
 }
 
-LPCTSTR rptStyleManager::GetHeading5Style()
+LPCTSTR rptStyleManager::GetLevel5HeadingStyle()
 {
     return ms_Heading5Style.c_str();
 }
 
-LPCTSTR rptStyleManager::GetHeading6Style()
+LPCTSTR rptStyleManager::GetLevel6HeadingStyle()
 {
     return ms_Heading6Style.c_str();
 }
