@@ -79,26 +79,26 @@ public:
    /// Returns the style for Headings
    static LPCTSTR GetHeadingStyle();
 
-   /// Returns the style for Level 1 Headings
-   static LPCTSTR GetLevel1HeadingStyle();
+   /// Returns the style for Level 1 Heading
+   static LPCTSTR GetHeading1Style();
 
    /// Returns the style for Level 2 Heading
-   static LPCTSTR GetLevel2HeadingStyle();
+   static LPCTSTR GetHeading2Style();
 
    /// Returns the style for Level 3 Heading
-   static LPCTSTR GetLevel3HeadingStyle();
+   static LPCTSTR GetHeading3Style();
 
    /// Returns the style for Level 4 Heading
-   static LPCTSTR GetLevel4HeadingStyle();
+   static LPCTSTR GetHeading4Style();
 
    /// Returns the style for Level 5 Heading
-   static LPCTSTR GetLevel5HeadingStyle();
+   static LPCTSTR GetHeading5Style();
 
    /// Returns the style for Level 6 Heading
-   static LPCTSTR GetLevel6HeadingStyle();
+   static LPCTSTR GetHeading6Style();
 
    /// Returns the style for Subheadings
-   static LPCTSTR GetSubheadingStyle();
+   static LPCTSTR GetSubheadingStyle(); 
 
    /// Returns the style for table column headings
    static LPCTSTR GetTableColumnHeadingStyle();

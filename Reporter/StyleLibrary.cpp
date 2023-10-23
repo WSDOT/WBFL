@@ -14,12 +14,6 @@ std::_tstring rptStyleLibrary::ms_ReportSubtitleStyle        = _T("ReportSubtitl
 std::_tstring rptStyleLibrary::ms_ChapterTitleStyle          = _T("ChapterTitleStyle");
 std::_tstring rptStyleLibrary::ms_HeadingStyle               = _T("HeadingStyle");
 std::_tstring rptStyleLibrary::ms_SubheadingStyle            = _T("SubheadingStyle");
-std::_tstring rptStyleLibrary::ms_Heading1Style              = _T("Level1HeadingStyle");
-std::_tstring rptStyleLibrary::ms_Heading2Style              = _T("Level2HeadingStyle");
-std::_tstring rptStyleLibrary::ms_Heading3Style              = _T("Level3HeadingStyle");
-std::_tstring rptStyleLibrary::ms_Heading4Style              = _T("Level4HeadingStyle");
-std::_tstring rptStyleLibrary::ms_Heading5Style              = _T("Level5HeadingStyle");
-std::_tstring rptStyleLibrary::ms_Heading6Style              = _T("Level6HeadingStyle");
 std::_tstring rptStyleLibrary::ms_TableColumnHeadingStyle    = _T("TableColumnHeadingStyle");
 std::_tstring rptStyleLibrary::ms_TableDataStyleLeftJustify  = _T("TableDataStyle-LJ");
 std::_tstring rptStyleLibrary::ms_TableDataStyleRightJustify = _T("TableDataStyle-RJ");
@@ -88,54 +82,6 @@ void rptStyleLibrary::InitStyles(const std::_tstring& imagePath)
    subheadings.SetItalic( true );
    subheadings.SetBold( true );
    flag = psl->AddNamedStyle(ms_SubheadingStyle, subheadings);
-   //CHECK(flag);
-
-   // Level 1 Headings
-   rptRiStyle level1headings;
-   headings.SetFontType(rptRiStyle::SWISS);
-   headings.SetFontSize(11);
-   headings.SetBold(true);
-   flag = psl->AddNamedStyle(ms_Heading1Style, level1headings);
-   //CHECK(flag);
-
-   // Level 2 Headings
-   rptRiStyle level2headings;
-   headings.SetFontType(rptRiStyle::SWISS);
-   headings.SetFontSize(10);
-   headings.SetBold(true);
-   flag = psl->AddNamedStyle(ms_Heading1Style, level2headings);
-   //CHECK(flag);
-
-   // Level 3 Headings
-   rptRiStyle level3headings;
-   headings.SetFontType(rptRiStyle::SWISS);
-   headings.SetFontSize(9);
-   headings.SetBold(true);
-   flag = psl->AddNamedStyle(ms_Heading1Style, level3headings);
-   //CHECK(flag);
-
-   // Level 4 Headings
-   rptRiStyle level4headings;
-   headings.SetFontType(rptRiStyle::SWISS);
-   headings.SetFontSize(8);
-   headings.SetBold(true);
-   flag = psl->AddNamedStyle(ms_Heading1Style, level4headings);
-   //CHECK(flag);
-
-   // Level 5 Headings
-   rptRiStyle level5headings;
-   headings.SetFontType(rptRiStyle::SWISS);
-   headings.SetFontSize(7);
-   headings.SetBold(true);
-   flag = psl->AddNamedStyle(ms_Heading1Style, level5headings);
-   //CHECK(flag);
-
-   // Level 6 Headings
-   rptRiStyle level6headings;
-   headings.SetFontType(rptRiStyle::SWISS);
-   headings.SetFontSize(6);
-   headings.SetBold(true);
-   flag = psl->AddNamedStyle(ms_Heading1Style, level6headings);
    //CHECK(flag);
 
    // Table Column Headings
@@ -243,36 +189,6 @@ return ms_HeadingStyle;
 const std::_tstring& rptStyleLibrary::GetSubheadingStyle()
 {
 return ms_SubheadingStyle;
-}
-
-const std::_tstring& rptStyleLibrary::GetLevel1HeadingStyle()
-{
-    return ms_Heading1Style;
-}
-
-const std::_tstring& rptStyleLibrary::GetLevel2HeadingStyle()
-{
-    return ms_Heading2Style;
-}
-
-const std::_tstring& rptStyleLibrary::GetLevel3HeadingStyle()
-{
-    return ms_Heading3Style;
-}
-
-const std::_tstring& rptStyleLibrary::GetLevel4HeadingStyle()
-{
-    return ms_Heading4Style;
-}
-
-const std::_tstring& rptStyleLibrary::GetLevel5HeadingStyle()
-{
-    return ms_Heading5Style;
-}
-
-const std::_tstring& rptStyleLibrary::GetLevel6HeadingStyle()
-{
-    return ms_Heading6Style;
 }
 
 const std::_tstring& rptStyleLibrary::GetTableColumnHeadingStyle()
