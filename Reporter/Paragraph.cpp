@@ -199,6 +199,11 @@ void rptParagraph::Accept( rptParagraphVisitor& MyVisitor )
    MyVisitor.VisitParagraph(this);
 }
 
+void rptHeading::Accept(rptParagraphVisitor& MyVisitor)
+{
+   MyVisitor.VisitHeading(this);
+}
+
 
 rptParagraph* rptParagraph::CreateClone() const
 {

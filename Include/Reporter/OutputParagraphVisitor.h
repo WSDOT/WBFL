@@ -47,6 +47,9 @@ public:
    /// Visits a paragraph
    virtual void VisitParagraph(rptParagraph* pParagraph) = 0;
 
+   /// visit a heading
+   virtual void VisitHeading(rptParagraph* pHeading) = 0;
+
 protected:
    std::_tostream* m_pOstream;
 
@@ -54,6 +57,7 @@ private:
    rptOutputParagraphVisitor() = delete;
    rptOutputParagraphVisitor(const rptOutputParagraphVisitor&) = delete;
    rptOutputParagraphVisitor& operator=(const rptOutputParagraphVisitor&) = delete;
+
 };
 
 #endif // INCLUDED_REPORTER_OUTPUTPARAGRAPHVISITOR_H_

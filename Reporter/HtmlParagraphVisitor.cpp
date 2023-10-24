@@ -48,7 +48,7 @@ rptHtmlParagraphVisitor::~rptHtmlParagraphVisitor()
 {
 }
 
-void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
+void rptHtmlParagraphVisitor::GenerateHtmlHelper(rptParagraph* pPara, std::_tstring& tag)
 {
    bool lib_style = false;
 
@@ -66,12 +66,12 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
       *m_pOstream<< _T("<A ID=\"_") << anchor << _T("\" TITLE=\"") << sname << _T("\" NAME=\"_") << anchor << _T("\">");
    }
 
-   // Default styles use the <P> style
+   // Default styles use the <tag> style
    if (style == _T("Default"))
-      *m_pOstream << _T("<P>");
+      *m_pOstream << _T("<") << tag << _T(">");
    else
    {
-      *m_pOstream << _T("<P CLASS=") << el_name << _T(">");
+      *m_pOstream << _T("<") << tag << _T(" CLASS = ") << el_name << _T(">");
       lib_style=true;
    }
 
@@ -124,13 +124,28 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
       *m_pOstream << _T("</LI></UL>")<<std::endl;
    else
 
-   // send paragraph end
+   // send end tag
    if (!lib_style)
-      *m_pOstream << _T("</P>")<<std::endl;
+      *m_pOstream << _T("</") << tag << _T(">") << std::endl;
    else
       // only "Hn" elements include a line break
-      *m_pOstream << _T("</P>")<< std::endl;
-
+      *m_pOstream << _T("</") << tag << _T(">") << std::endl;
 
 
 }
+
+
+void rptHtmlParagraphVisitor::VisitHeading(rptParagraph* pHeading)
+{
+    std::_tstring h_tag{_T("h")};
+    GenerateHtmlHelper(pHeading, h_tag);
+}
+
+
+void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
+{
+    std::_tstring p_tag{ _T("p")};
+    GenerateHtmlHelper(pPara, p_tag);
+}
+
+

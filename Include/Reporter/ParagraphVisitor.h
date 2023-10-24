@@ -36,12 +36,17 @@ public:
    rptParagraphVisitor();
    virtual ~rptParagraphVisitor();
 
+   /// Visit a heading
+   virtual void VisitHeading(rptParagraph* pHeading) = 0;
+
    /// Visit a paragraph
-   virtual void VisitParagraph(rptParagraph* pParagraph) = 0;
+   virtual void VisitParagraph(rptParagraph* pPara) = 0;
 
 private:
    rptParagraphVisitor(const rptParagraphVisitor&) = delete;
-   rptParagraphVisitor& operator=(const rptParagraphVisitor&) = delete;
+
+
+
 };
 
 #endif // INCLUDED_REPORTER_PARAGRAPHVISITOR_H_

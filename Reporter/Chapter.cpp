@@ -86,7 +86,6 @@ void rptChapter::Insert(rptParagraph* pPara)
 
 void rptChapter::Accept( rptChapterVisitor& MyVisitor )
 {
-
    MyVisitor.VisitChapter(this);
 }
 

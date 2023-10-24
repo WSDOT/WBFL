@@ -134,4 +134,14 @@ private:
    std::_tstring m_Name;
 };
 
+
+class REPORTERCLASS rptHeading : public rptParagraph
+{
+    /// Accepts a pargraph visitor and calls VisitParagraph(this)
+    void Accept(rptParagraphVisitor& MyVisitor) override;
+
+};
+
+
+
 #endif
