@@ -65,6 +65,9 @@ STDMETHODIMP CStrandModelBase::get_StrandMaterial(StrandType strandType,IPrestre
 
 STDMETHODIMP CStrandModelBase::SetHarpingPoints(Float64 hp1, Float64 hp2)
 {
+   hp1 = IsZero(hp1) ? 0.0 : hp1;
+   hp2 = IsZero(hp2) ? 0.0 : hp2;
+
    // must be positive values... HarpPointMeasure will indicate if this is fractional
    if (hp1 < 0 || hp2 < 0)
    {
