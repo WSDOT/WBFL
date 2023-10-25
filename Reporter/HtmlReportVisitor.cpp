@@ -49,7 +49,7 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
       *m_pOstream << _T("<title>") << pReport->GetName() << _T("</title>") << std::endl<<std::endl;
 
    // If heading numbers are enabled, include CSS for heading numbers in the generated HTML
-   if (pReport->IsUseHeadingNumbers()) {
+   if (pReport->HeadingNumbersEnabled()) {
        *m_pOstream << _T("<style>") << std::endl;
        *m_pOstream << _T("   h1:before {counter-increment: h1; content: counter(h1) '. ';}") << std::endl;
        *m_pOstream << _T("   h2:before {counter-increment: h2; content: counter(h2) '. ';}") << std::endl;
