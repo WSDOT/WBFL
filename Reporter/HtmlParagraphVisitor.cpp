@@ -48,7 +48,7 @@ rptHtmlParagraphVisitor::~rptHtmlParagraphVisitor()
 {
 }
 
-void rptHtmlParagraphVisitor::GenerateHtmlHelper(rptParagraph* pPara, std::_tstring& tag)
+void rptHtmlParagraphVisitor::GenerateHtmlHelper(rptParagraph* pPara, const std::_tstring& tag)
 {
    bool lib_style = false;
 
@@ -135,17 +135,19 @@ void rptHtmlParagraphVisitor::GenerateHtmlHelper(rptParagraph* pPara, std::_tstr
 }
 
 
-void rptHtmlParagraphVisitor::VisitHeading(rptParagraph* pHeading)
+void rptHtmlParagraphVisitor::VisitHeading(rptHeading* pHeading)
 {
-    std::_tstring h_tag{_T("h")};
-    GenerateHtmlHelper(pHeading, h_tag);
+    std::_tostringstream os;
+    os << "h" << pHeading->GetHeadingLevel();
+    GenerateHtmlHelper(pHeading, os.str());
 }
 
 
 void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
 {
-    std::_tstring p_tag{ _T("p")};
-    GenerateHtmlHelper(pPara, p_tag);
+    std::_tostringstream os;
+    os << "p";
+    GenerateHtmlHelper(pPara, os.str());
 }
 
 

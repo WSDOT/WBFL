@@ -52,7 +52,7 @@ public:
    virtual void VisitParagraph(rptParagraph* pParagraph) override;
 
    /// visit a heading and generate Html
-   virtual void VisitHeading(rptParagraph* pHeader) override;
+   virtual void VisitHeading(rptHeading* pHeading) override;
 
    /// Returns the last anchor number
    Uint32 GetLastAnchor()            {return m_CurrAnchor;}
@@ -78,7 +78,7 @@ private:
    rptHtmlParagraphVisitor& operator=(const rptHtmlParagraphVisitor&) = delete;
 
    // generate html for heading or paragraph
-   virtual void GenerateHtmlHelper(rptParagraph* pPara, std::_tstring& tag);
+   virtual void GenerateHtmlHelper(rptParagraph* pPara, const std::_tstring& tag);
 
    Uint32 GetNextAnchor() 
    {

@@ -137,8 +137,22 @@ private:
 
 class REPORTERCLASS rptHeading : public rptParagraph
 {
+
+public:
+
+    /// Creates an unnamed heading with a heading level
+    rptHeading(const Uint8 hLevel);
+
+    /// get heading level
+    Uint8 GetHeadingLevel() const;
+
     /// Accepts a pargraph visitor and calls VisitParagraph(this)
     void Accept(rptParagraphVisitor& MyVisitor) override;
+
+
+private:
+
+    Uint8 m_headingLevel;
 
 };
 
