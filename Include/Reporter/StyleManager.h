@@ -102,6 +102,9 @@ public:
    /// Returns the maximum table width to be used in any given chapter
    static Float64 GetMaxTableWidth();
 
+   /// Returns heading at specified level
+   static rptHeading* CreateHeading(Uint8 hLevel);
+
    /// Returns a pointer to a dynamically allocated defaultly configured table with 0.75" wide columns
    static rptRcTable* CreateDefaultTable(ColumnIndexType numColumns, LPCTSTR lpszLabel=nullptr);
 
