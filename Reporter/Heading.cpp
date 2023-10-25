@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2023  Washington State Department of Transportation
+// Copyright Â© 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,7 @@
 
 rptHeading::rptHeading(const Uint8 level)
 	:m_headingLevel{ level }
-{
+{PRECONDITION(1 <= m_headingLevel && m_headingLevel <= 6);
 }
 
 Uint8 rptHeading::GetHeadingLevel() const
