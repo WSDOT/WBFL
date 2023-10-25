@@ -27,6 +27,7 @@
 #include <Reporter\HtmlHelper.h>
 #include <Reporter\HtmlRcVisitor.h>
 #include <Reporter\RiStyle.h>
+#include "Reporter\Heading.h"
 
 rptHtmlParagraphVisitor::rptHtmlParagraphVisitor(std::_tostream* pMyOstream, 
                                                  const rptPageLayout*   MypPageLayout,

@@ -27,6 +27,8 @@
 
 #include <Reporter\ReporterExp.h>
 #include <Reporter\RcTable.h>
+#include <Reporter\Heading.h>
+
 
 #define RPT_BEARING(_value_) rptRcString(_value_,true)
 #define RPT_ANGLE(_value_) rptRcString(_value_,true)
@@ -104,6 +106,12 @@ public:
 
    /// Returns heading at specified level
    static rptHeading* CreateHeading(Uint8 hLevel);
+
+   /// Returns a level 1 heading
+   static rptHeading* CreateHeading();
+
+   /// Returns a level 2 heading
+   static rptHeading* CreateSubHeading();
 
    /// Returns a pointer to a dynamically allocated defaultly configured table with 0.75" wide columns
    static rptRcTable* CreateDefaultTable(ColumnIndexType numColumns, LPCTSTR lpszLabel=nullptr);

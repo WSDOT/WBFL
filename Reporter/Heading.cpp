@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2023  Washington State Department of Transportation
+// Copyright � 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Reporter\ReporterLib.h>
-#include <Reporter\Paragraph.h>
+#include <Reporter\Heading.h>
 #include <Reporter\RcString.h>
 #include <Reporter\RcInt.h>
 #include <Reporter\RcUnsigned.h>
@@ -32,9 +32,10 @@
 #include <Reporter\RcScalar.h>
 
 
-rptHeading::rptHeading(const Uint8 level)
-	:m_headingLevel{ level }
-{PRECONDITION(1 <= m_headingLevel && m_headingLevel <= 6);
+rptHeading::rptHeading(Uint8 hLevel)
+	:m_headingLevel{ hLevel }
+{
+	PRECONDITION(1 <= m_headingLevel && m_headingLevel <= 6);
 }
 
 Uint8 rptHeading::GetHeadingLevel() const
@@ -45,4 +46,9 @@ Uint8 rptHeading::GetHeadingLevel() const
 void rptHeading::Accept(rptParagraphVisitor& MyVisitor)
 {
 	MyVisitor.VisitHeading(this);
+}
+
+bool rptHeading::operator==(const rptHeading& other) const
+{
+	return m_headingLevel == other.m_headingLevel;
 }

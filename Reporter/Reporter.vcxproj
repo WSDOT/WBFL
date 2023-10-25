@@ -188,6 +188,7 @@
     <ClCompile Include="ChapterVisitor.cpp" />
     <ClCompile Include="FontStyleLibrary.cpp" />
     <ClCompile Include="FormattedLengthUnitValue.cpp" />
+    <ClCompile Include="Heading.cpp" />
     <ClCompile Include="HtmlChapterVisitor.cpp" />
     <ClCompile Include="HtmlHelper.cpp" />
     <ClCompile Include="HtmlParagraphVisitor.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="..\Include\Reporter\ChapterVisitor.h" />
     <ClInclude Include="..\Include\Reporter\FontStyleLibrary.h" />
     <ClInclude Include="..\Include\Reporter\FormattedLengthUnitValue.h" />
+    <ClInclude Include="..\Include\Reporter\Heading.h" />
     <ClInclude Include="..\Include\Reporter\HtmlChapterVisitor.h" />
     <ClInclude Include="..\Include\Reporter\HtmlHelper.h" />
     <ClInclude Include="..\Include\Reporter\HtmlParagraphVisitor.h" />

@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_PARAGRAPH_H_
-#define INCLUDED_REPORTER_PARAGRAPH_H_
+
 #pragma once
 
 #include <vector>
@@ -135,27 +134,5 @@ private:
 };
 
 
-class REPORTERCLASS rptHeading : public rptParagraph
-{
-
-public:
-
-    /// Creates an unnamed heading with a heading level
-    rptHeading(const Uint8 hLevel);
-
-    /// get heading level
-    Uint8 GetHeadingLevel() const;
-
-    /// Accepts a pargraph visitor and calls VisitParagraph(this)
-    void Accept(rptParagraphVisitor& MyVisitor) override;
 
 
-private:
-
-    Uint8 m_headingLevel;
-
-};
-
-
-
-#endif

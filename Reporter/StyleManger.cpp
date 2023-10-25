@@ -320,14 +320,27 @@ Float64 rptStyleManager::GetMaxTableWidth()
 rptHeading* rptStyleManager::CreateHeading(Uint8 hLevel)
 {
     PRECONDITION(1 <= hLevel && hLevel <= 6);
-    rptHeading* pHeading = &rptHeading(hLevel);
+    rptHeading* pHeading = new rptHeading(hLevel);
 
-     //create styles for levels......
-    //rptReportItem(rStyleName)
+
+    //set heading styles...
+
 
 
     return pHeading;
 }
+
+rptHeading* rptStyleManager::CreateHeading()
+{
+    return CreateHeading(1);
+}
+
+
+rptHeading* rptStyleManager::CreateSubHeading()
+{
+    return CreateHeading(2);
+}
+
 
 
 rptRcTable* rptStyleManager::CreateDefaultTable(ColumnIndexType numColumns, const std::_tstring& strLabel)
