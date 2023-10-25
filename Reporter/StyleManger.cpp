@@ -322,10 +322,27 @@ rptHeading* rptStyleManager::CreateHeading(Uint8 hLevel)
     PRECONDITION(1 <= hLevel && hLevel <= 6);
     rptHeading* pHeading = new rptHeading(hLevel);
 
-
-    //set heading styles...
-
-
+    switch (hLevel)
+    {
+        case 1:
+            pHeading->SetStyleName(GetHeadingStyle());
+            break;
+        case 2:
+            pHeading->SetStyleName(GetSubheadingStyle());
+            break;
+        case 3:
+            pHeading->SetStyleName(GetHeadingStyle()); //3
+            break;
+        case 4:
+            pHeading->SetStyleName(GetHeadingStyle()); //4
+            break;
+        case 5:
+            pHeading->SetStyleName(GetHeadingStyle()); //5
+            break;
+        case 6:
+            pHeading->SetStyleName(GetHeadingStyle()); //6
+            break;
+    }
 
     return pHeading;
 }
