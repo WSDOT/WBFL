@@ -241,7 +241,7 @@
     <ClCompile Include="RiStyle.cpp" />
     <ClCompile Include="StyleHolder.cpp" />
     <ClCompile Include="StyleLibrary.cpp" />
-    <ClCompile Include="StyleManger.cpp" />
+    <ClCompile Include="StyleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Reporter\AutoLib.h" />

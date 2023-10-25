@@ -157,7 +157,7 @@
     <ClCompile Include="StyleLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StyleManger.cpp">
+    <ClCompile Include="StyleManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RcComposite.cpp">
